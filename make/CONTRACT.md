@@ -25,6 +25,8 @@
 | `MAKE-DIR-003` | make root file boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-DOCKER-001` | make docker contract boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-DOCS-001` | make docs line budgets | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-DOCS-002` | make help recipe budget | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-DOCS-003` | make target deprecation policy | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-DRIFT-001` | make target list drift | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-ENGINE-001` | make direct tool boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-ENV-001` | make env file singularity | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
@@ -41,6 +43,7 @@
 | `MAKE-NAME-002` | make public file naming | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-NET-001` | make network commands banned | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-OPS-001` | make ops control plane boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-PATH-001` | legacy makefiles forbidden refs | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-REPRO-001` | make runenv exports | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-SHELL-001` | make shell path stability | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-SHELL-002` | make shell pipeline bound | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
@@ -72,6 +75,8 @@
 | `MAKE-DIR-003` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-DOCKER-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-DOCS-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-DOCS-002` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-DOCS-003` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-DRIFT-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-ENGINE-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-ENV-001` | `bijux dev atlas contracts make --mode static` |
@@ -88,6 +93,7 @@
 | `MAKE-NAME-002` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-NET-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-OPS-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-PATH-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-REPRO-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-SHELL-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-SHELL-002` | `bijux dev atlas contracts make --mode static` |
