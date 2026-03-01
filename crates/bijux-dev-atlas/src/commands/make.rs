@@ -518,4 +518,22 @@ mod tests {
             "Use `bijux dev atlas make list --format json` to inspect supported targets."
         );
     }
+
+    #[test]
+    fn make_list_excludes_hidden_and_invalid_tokens() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        fs::create_dir_all(temp.path().join("make")).expect("create make dir");
+        fs::write(
+            temp.path().join("make/root.mk"),
+            "CURATED_TARGETS := \\\n\tfmt _hidden help invalid$name test-all\n",
+        )
+        .expect("write root.mk");
+        let (rendered, code) = run_list(common(temp.path()), Instant::now()).expect("run list");
+        assert_eq!(code, 0);
+        let payload: Value = serde_json::from_str(&rendered).expect("parse payload");
+        assert_eq!(
+            payload["public_targets"],
+            serde_json::json!(["fmt", "help", "test-all"])
+        );
+    }
 }

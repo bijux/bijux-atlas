@@ -456,6 +456,135 @@ fn test_make_docs_001_line_budgets(ctx: &RunContext) -> TestResult {
     TestResult::Pass
 }
 
+fn test_make_docs_002_help_recipe_budget(ctx: &RunContext) -> TestResult {
+    let declared = match declared_targets(&ctx.repo_root) {
+        Ok(targets) => targets,
+        Err(err) => {
+            return fail(
+                "MAKE-DOCS-002",
+                "make.docs.help_recipe_budget",
+                "make/root.mk",
+                err,
+            )
+        }
+    };
+    let Some((file, recipes)) = declared.get("help") else {
+        return fail(
+            "MAKE-DOCS-002",
+            "make.docs.help_recipe_budget",
+            "make/root.mk",
+            "help target is missing",
+        );
+    };
+    if recipes.len() > 3 {
+        return fail(
+            "MAKE-DOCS-002",
+            "make.docs.help_recipe_budget",
+            file,
+            format!("help target has {} recipe lines and exceeds budget 3", recipes.len()),
+        );
+    }
+    if !recipes.iter().any(|line| line.contains("docs/")) {
+        return fail(
+            "MAKE-DOCS-002",
+            "make.docs.help_recipe_budget",
+            file,
+            "help target must include docs pointers",
+        );
+    }
+    TestResult::Pass
+}
+
+fn test_make_paths_001_legacy_makefiles_do_not_reference_forbidden_paths(ctx: &RunContext) -> TestResult {
+    let dir = ctx.repo_root.join("make/makefiles");
+    if !dir.is_dir() {
+        return TestResult::Pass;
+    }
+    let mut violations = Vec::new();
+    let Ok(entries) = std::fs::read_dir(&dir) else {
+        return fail(
+            "MAKE-PATH-001",
+            "make.paths.legacy_makefiles_forbidden_refs",
+            "make/makefiles",
+            "unable to read make/makefiles",
+        );
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.extension().and_then(|ext| ext.to_str()) != Some("mk") {
+            continue;
+        }
+        let rel_path = rel(&path, &ctx.repo_root);
+        let text = match read_text(&path) {
+            Ok(text) => text,
+            Err(err) => {
+                return fail(
+                    "MAKE-PATH-001",
+                    "make.paths.legacy_makefiles_forbidden_refs",
+                    &rel_path,
+                    err,
+                )
+            }
+        };
+        if text.contains("scripts/") {
+            violations.push(Violation {
+                contract_id: "MAKE-PATH-001".to_string(),
+                test_id: "make.paths.legacy_makefiles_forbidden_refs".to_string(),
+                file: Some(rel_path.clone()),
+                line: Some(1),
+                message: "legacy makefiles must not reference scripts/ paths".to_string(),
+                evidence: None,
+            });
+        }
+        if text.contains("configs/docs/node_modules") {
+            violations.push(Violation {
+                contract_id: "MAKE-PATH-001".to_string(),
+                test_id: "make.paths.legacy_makefiles_forbidden_refs".to_string(),
+                file: Some(rel_path),
+                line: Some(1),
+                message: "legacy makefiles must not reference configs/docs/node_modules".to_string(),
+                evidence: None,
+            });
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_make_docs_003_target_deprecation_policy_exists(ctx: &RunContext) -> TestResult {
+    let rel_path = "make/_internal/contracts/target-deprecation-policy.md";
+    let text = match read_text(&ctx.repo_root.join(rel_path)) {
+        Ok(text) => text,
+        Err(err) => {
+            return fail(
+                "MAKE-DOCS-003",
+                "make.docs.target_deprecation_policy",
+                rel_path,
+                err,
+            )
+        }
+    };
+    for required in [
+        "deprecate",
+        "replacement",
+        "removal",
+        "communicate",
+    ] {
+        if !text.to_lowercase().contains(required) {
+            return fail(
+                "MAKE-DOCS-003",
+                "make.docs.target_deprecation_policy",
+                rel_path,
+                format!("deprecation policy must include `{required}` guidance"),
+            );
+        }
+    }
+    TestResult::Pass
+}
+
 fn test_make_gates_001_curated_targets_mapped(ctx: &RunContext) -> TestResult {
     let curated = match curated_targets(&ctx.repo_root) {
         Ok(targets) => targets,
@@ -642,6 +771,36 @@ pub(super) fn contracts() -> Vec<Contract> {
             }],
         },
         Contract {
+            id: ContractId("MAKE-DOCS-002".to_string()),
+            title: "make help recipe budget",
+            tests: vec![TestCase {
+                id: TestId("make.docs.help_recipe_budget".to_string()),
+                title: "help target stays minimal and keeps docs pointers",
+                kind: TestKind::Pure,
+                run: test_make_docs_002_help_recipe_budget,
+            }],
+        },
+        Contract {
+            id: ContractId("MAKE-DOCS-003".to_string()),
+            title: "make target deprecation policy",
+            tests: vec![TestCase {
+                id: TestId("make.docs.target_deprecation_policy".to_string()),
+                title: "make target retirement policy is committed with required guidance",
+                kind: TestKind::Pure,
+                run: test_make_docs_003_target_deprecation_policy_exists,
+            }],
+        },
+        Contract {
+            id: ContractId("MAKE-PATH-001".to_string()),
+            title: "legacy makefiles forbidden refs",
+            tests: vec![TestCase {
+                id: TestId("make.paths.legacy_makefiles_forbidden_refs".to_string()),
+                title: "legacy makefiles do not reference scripts paths or docs node_modules",
+                kind: TestKind::Pure,
+                run: test_make_paths_001_legacy_makefiles_do_not_reference_forbidden_paths,
+            }],
+        },
+        Contract {
             id: ContractId("MAKE-GATES-001".to_string()),
             title: "make gate mapping coverage",
             tests: vec![TestCase {
@@ -689,6 +848,9 @@ pub(super) fn contract_explain(contract_id: &str) -> Option<&'static str> {
             Some("Make is a wrapper layer, not the owner of direct infra tool invocations.")
         }
         "MAKE-DOCS-001" => Some("Make docs must stay small enough to remain reviewer-readable."),
+        "MAKE-DOCS-002" => Some("make help must stay concise and include docs pointers."),
+        "MAKE-DOCS-003" => Some("target retirement needs a committed deprecation policy."),
+        "MAKE-PATH-001" => Some("legacy makefiles must not reference forbidden paths."),
         "MAKE-GATES-001" => Some("Every curated target must have a target registry mapping."),
         "MAKE-GATES-002" => {
             Some("Curated targets must be represented as public in the make target registry.")
