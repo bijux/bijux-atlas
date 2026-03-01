@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "top_nav": [
+    {
+      "label": "Home",
+      "target": "index.md"
+    },
+    {
+      "label": "Start Here",
+      "target": "start-here.md"
+    },
+    {
+      "label": "Product",
+      "target": "product/index.md"
+    },
+    {
+      "label": "Architecture",
+      "target": "architecture/index.md"
+    },
+    {
+      "label": "API",
+      "target": "api/index.md"
+    },
+    {
+      "label": "Operations",
+      "target": "operations/index.md"
+    },
+    {
+      "label": "Control-plane",
+      "target": "control-plane/index.md"
+    },
+    {
+      "label": "Development",
+      "target": null
+    },
+    {
+      "label": "Reference",
+      "target": "reference/index.md"
+    }
+  ]
+}

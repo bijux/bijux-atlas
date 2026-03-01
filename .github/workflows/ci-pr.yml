@@ -884,13 +884,255 @@ jobs:
           }
           (report_root / "docs-navigation-and-semantics-contracts.json").write_text(json.dumps(payload, indent=2) + "\\n")
           PY
+          python - <<'PY'
+          import datetime, json, os, pathlib, re, yaml
+          root = pathlib.Path(".")
+          report_root = pathlib.Path(os.environ["REPORT_ROOT"])
+          docs_root = root / "docs"
+          today = datetime.date.fromisoformat("2026-03-01")
+          spine_pages = [
+              "docs/index.md",
+              "docs/start-here.md",
+              "docs/product/what-is-bijux-atlas.md",
+              "docs/architecture/index.md",
+              "docs/operations/index.md",
+              "docs/control-plane/index.md",
+              "docs/api/index.md",
+              "docs/development/index.md",
+              "docs/reference/index.md",
+          ]
+          # Docs governance sources of truth.
+          registry = json.loads((root / "docs/_internal/registry/registry.json").read_text())
+          quality_policy = json.loads((root / "configs/docs/quality-policy.json").read_text())
+          stale_days = int(quality_policy.get("stale_days", 90))
+          external_allow = json.loads((root / "configs/docs/external-link-allowlist.json").read_text())
+          synonyms = json.loads((root / "docs/_internal/governance/metadata/search-synonyms.json").read_text())
+          taxonomy = json.loads((root / "docs/_internal/governance/metadata/tag-taxonomy.json").read_text())
+          nav_baseline_path = root / "docs/_internal/governance/metadata/nav-order.json"
+          nav_baseline = json.loads(nav_baseline_path.read_text())
+          mkdocs = yaml.safe_load((root / "mkdocs.yml").read_text())
+          top_nav = []
+          for row in mkdocs.get("nav", []):
+              if isinstance(row, dict):
+                  label, target = next(iter(row.items()))
+                  top_nav.append({"label": label, "target": target if isinstance(target, str) else None})
+          expected_nav = nav_baseline.get("top_nav", [])
+          if top_nav != expected_nav:
+              raise SystemExit("docs navigation drift detected; update docs/_internal/governance/metadata/nav-order.json with intentional migration evidence")
+          if synonyms.get("schema_version") != "v1" or not synonyms.get("synonyms"):
+              raise SystemExit("docs search synonyms SSOT invalid: docs/_internal/governance/metadata/search-synonyms.json")
+          if taxonomy.get("schema_version") != "v1" or not taxonomy.get("tags"):
+              raise SystemExit("docs taxonomy SSOT invalid: docs/_internal/governance/metadata/tag-taxonomy.json")
+          # Review freshness SLA on stable published pages.
+          stale_rows = []
+          stable_paths = set()
+          for row in registry.get("documents", []):
+              path = str(row.get("path", ""))
+              if not path.startswith("docs/") or path.startswith("docs/_internal/"):
+                  continue
+              if row.get("stability") != "stable":
+                  continue
+              stable_paths.add(path)
+              reviewed = str(row.get("last_reviewed", "")).strip()
+              try:
+                  reviewed_date = datetime.date.fromisoformat(reviewed)
+              except ValueError:
+                  stale_rows.append({"path": path, "reason": f"invalid last_reviewed `{reviewed}`"})
+                  continue
+              age_days = (today - reviewed_date).days
+              if age_days > stale_days:
+                  stale_rows.append({"path": path, "age_days": age_days, "stale_days": stale_days})
+          if stale_rows:
+              raise SystemExit("docs review SLA failed for stable pages: " + json.dumps(stale_rows[:20]))
+          # Reader-spine quality: readability, examples, no internal path leaks.
+          readability_budget = 240
+          spine_quality_violations = []
+          ext_re = re.compile(r"\[[^\]]+\]\((https?://[^)]+)\)")
+          md_link_re = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+          allow_rows = []
+          for entry in external_allow.get("entries", []):
+              exp = datetime.date.fromisoformat(entry["expires_on"])
+              if exp < today:
+                  raise SystemExit(f"expired external-link allowlist entry: {entry}")
+              allow_rows.append(entry["pattern"])
+          for rel in spine_pages:
+              text = (root / rel).read_text()
+              line_count = len(text.splitlines())
+              if line_count > readability_budget:
+                  spine_quality_violations.append(f"{rel}: readability budget exceeded ({line_count}>{readability_budget})")
+              has_example = ("## Example" in text) or ("```bash" in text) or ("```text" in text)
+              if not has_example:
+                  spine_quality_violations.append(f"{rel}: missing concrete example section or runnable code block")
+              for forbidden in ("docs/_internal/", "docs/_generated/", "ops/_generated/", "ops/_generated.example/"):
+                  if forbidden in text:
+                      spine_quality_violations.append(f"{rel}: reader page must not reference internal tooling path `{forbidden}`")
+              for url in ext_re.findall(text):
+                  if not any(url.startswith(pattern) for pattern in allow_rows):
+                      spine_quality_violations.append(f"{rel}: external URL not allowlisted `{url}`")
+          if spine_quality_violations:
+              raise SystemExit("spine quality contracts failed: " + "; ".join(spine_quality_violations[:20]))
+          # Diagram textual explanation contract.
+          diagram_violations = []
+          mermaid_re = re.compile(r"```mermaid")
+          image_re = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
+          for row in registry.get("documents", []):
+              rel = str(row.get("path", ""))
+              if rel.startswith("docs/_internal/") or not rel.endswith(".md"):
+                  continue
+              text = (root / rel).read_text()
+              has_diagram = bool(mermaid_re.search(text)) or bool(image_re.search(text))
+              if not has_diagram:
+                  continue
+              if "## Text explanation" not in text and "## How to read this graph" not in text:
+                  diagram_violations.append(rel)
+          if diagram_violations:
+              raise SystemExit("diagram contract failed; missing textual explanation section: " + ", ".join(diagram_violations[:20]))
+          # No TODO markers in stable published docs.
+          todo_violations = []
+          for rel in sorted(stable_paths):
+              text = (root / rel).read_text().lower()
+              if "todo" in text:
+                  todo_violations.append(rel)
+          if todo_violations:
+              raise SystemExit("stable docs must not contain TODO markers: " + ", ".join(todo_violations[:20]))
+          # Zero broken links for published pages.
+          all_docs = set()
+          for path in docs_root.rglob("*.md"):
+              rel = path.as_posix()
+              if rel.startswith("docs/_internal/") or rel.startswith("docs/_assets/") or rel.startswith("docs/_drafts/"):
+                  continue
+              all_docs.add(rel)
+          broken = []
+          for rel in sorted(all_docs):
+              src = root / rel
+              text = src.read_text()
+              for raw in md_link_re.findall(text):
+                  target = raw.split("#")[0].strip()
+                  if not target or target.startswith("http://") or target.startswith("https://") or target.startswith("mailto:"):
+                      continue
+                  resolved = (src.parent / target).resolve()
+                  try:
+                      rel_target = resolved.relative_to(root).as_posix()
+                  except ValueError:
+                      broken.append({"source": rel, "target": raw, "resolved": str(resolved)})
+                      continue
+                  if rel_target not in all_docs and not resolved.exists():
+                      broken.append({"source": rel, "target": raw, "resolved": rel_target})
+          if broken:
+              raise SystemExit("broken link zero goal failed for published docs: " + json.dumps(broken[:20]))
+          cleanup_doc = (root / "docs/_internal/governance/docs-quarterly-cleanup.md").read_text()
+          if "Run once per quarter." not in cleanup_doc or "docs shrink report" not in cleanup_doc:
+              raise SystemExit("docs quarterly prune gate contract failed: docs-quarterly-cleanup.md missing cadence or budget evidence requirements")
+          payload = {
+              "schema_version": 1,
+              "kind": "docs_quality_contracts",
+              "status": "ok",
+              "stale_days": stale_days,
+              "spine_readability_budget": readability_budget,
+              "stable_pages_checked": len(stable_paths),
+              "search_synonyms_terms": len(synonyms.get("synonyms", [])),
+              "taxonomy_tags": len(taxonomy.get("tags", [])),
+              "top_nav": top_nav,
+          }
+          (report_root / "docs-quality-contracts.json").write_text(json.dumps(payload, indent=2) + "\n")
+          PY
+          python - <<'PY'
+          import json, os, pathlib
+          root = pathlib.Path(".")
+          report_root = pathlib.Path(os.environ["REPORT_ROOT"])
+          configs_root = root / "configs"
+          groups = json.loads((root / "configs/inventory/groups.json").read_text())
+          index_payload = json.loads((root / "configs/_generated/configs-index.json").read_text())
+          allowed_groups = set(groups.get("allowed_groups", []))
+          root_file_allow = {
+              "CONSUMERS.json",
+              "CONTRACT.md",
+              "INDEX.md",
+              "OWNERS.json",
+              "README.md",
+              "SCHEMAS.json",
+              "configs.contracts.json",
+              "consumers-registry.json",
+              "inventory.json",
+              "owners-registry.json",
+              "schema-map.json",
+          }
+          exclusion_prefixes = [
+              "configs/docs/.vale/styles/",
+              "configs/ops/perf/baselines/",
+          ]
+          max_depth = 5
+          max_files_per_dir = 40
+          violations = []
+          file_depth = {}
+          for path in sorted(configs_root.rglob("*")):
+              rel = path.as_posix()
+              if path.is_file():
+                  if any(rel.startswith(prefix) for prefix in exclusion_prefixes):
+                      continue
+                  parts = path.relative_to(configs_root).parts
+                  file_depth[rel] = len(parts)
+                  if len(parts) == 1 and path.name not in root_file_allow:
+                      violations.append(f"unexpected root config file: {rel}")
+                  if len(parts) > max_depth:
+                      violations.append(f"config path exceeds depth budget {max_depth}: {rel}")
+                  if len(parts) >= 2 and parts[0] not in allowed_groups and parts[0] != "_generated":
+                      violations.append(f"config top-level group is not allowed: {rel}")
+          for directory in sorted(configs_root.rglob("*")):
+              if not directory.is_dir():
+                  continue
+              rel = directory.as_posix()
+              files = [p for p in directory.iterdir() if p.is_file() and not p.name.startswith(".")]
+              if len(files) > max_files_per_dir:
+                  violations.append(f"config directory exceeds file budget {max_files_per_dir}: {rel} ({len(files)})")
+          tail_to_groups = {}
+          for path in file_depth:
+              rel = pathlib.Path(path).relative_to("configs")
+              parts = rel.parts
+              if len(parts) < 3:
+                  continue
+              top = parts[0]
+              tail = "/".join(parts[1:])
+              tail_to_groups.setdefault(tail, set()).add(top)
+          duplicated_tails = [{"tail": tail, "groups": sorted(groups)} for tail, groups in sorted(tail_to_groups.items()) if len(groups) > 1]
+          if duplicated_tails:
+              violations.append("duplicated config tree tails across groups detected")
+          group_stability = {row["name"]: row.get("stability", "") for row in index_payload.get("groups", [])}
+          allowed_lifecycle = {"stable", "experimental", "deprecated"}
+          lifecycle_missing = []
+          for path in file_depth:
+              rel = pathlib.Path(path).relative_to("configs")
+              if rel.parts[0] == "_generated":
+                  continue
+              group = rel.parts[0] if len(rel.parts) > 1 else None
+              if group in allowed_groups:
+                  lifecycle = group_stability.get(group, "")
+                  if lifecycle not in allowed_lifecycle:
+                      lifecycle_missing.append(path)
+          if lifecycle_missing:
+              violations.append("config lifecycle metadata missing or invalid for: " + ", ".join(lifecycle_missing[:20]))
+          if violations:
+              raise SystemExit("configs taxonomy contracts failed: " + "; ".join(violations[:20]))
+          payload = {
+              "schema_version": 1,
+              "kind": "configs_taxonomy_contracts",
+              "status": "ok",
+              "max_depth": max_depth,
+              "max_files_per_dir": max_files_per_dir,
+              "allowed_groups": sorted(allowed_groups),
+              "checked_files": len(file_depth),
+              "duplicate_tree_tails": duplicated_tails,
+              "group_lifecycle": group_stability,
+          }
+          (report_root / "configs-taxonomy-contracts.json").write_text(json.dumps(payload, indent=2) + "\n")
+          PY
           cargo run -q -p bijux-dev-atlas -- docs shrink-report --strict --format json > "${report_root}/docs-shrink-report.json"
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-fast.json"
           printf "- lane: ci-fast\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
             "${report_root}/ci-fast.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
           printf "\n- contracts all: %s\n- docs required: %s\n- docs required membership: %s\n- configs required: %s\n- configs required membership: %s\n- make required: %s\n- make required membership: %s\n- repo required: %s\n- repo required membership: %s\n- repo integrity summary: %s\n- contracts runtime static: %s\n- contracts control-plane static: %s\n- contracts configs static: %s\n- contracts make static: %s\n- contracts ops static: %s\n- contracts docker static: %s\n- coverage: %s\n" \
             "${contracts_root}/all.json" "${contracts_root}/docs-required.json" "${report_root}/suite-membership-docs_required.json" "${contracts_root}/configs-required.json" "${report_root}/suite-membership-configs_required.json" "${contracts_root}/make-required.json" "${report_root}/suite-membership-make_required.json" "${contracts_root}/repo-required.json" "${report_root}/suite-membership-repo_required.json" "${report_root}/repo-integrity-summary.json" "${contracts_root}/runtime-static.json" "${contracts_root}/control-plane-static.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-static.json" "${contracts_root}/docker-static.json" "${contracts_root}/coverage-summary.json" >> "artifacts/${RUN_ID}/summary.md"
-          printf "- repo surface diff: %s\n- root change report: %s\n- governance validate: %s\n- governance coverage diff: %s\n- semantic drift summary: %s\n- make surface drift: %s\n- deterministic check order: %s\n- check metadata catalog: %s\n- artifact schema check: %s\n- artifact naming and size: %s\n- docs golden workflow verification: %s\n- docs link allowlist policy: %s\n- alert runbook slo load e2e mapping: %s\n- registry group coverage: %s\n- contract coverage heatmap: %s\n- missing proof report: %s\n- proof debt ledger: %s\n- contract flake detector: %s\n- contract performance budget: %s\n- docs entrypoint and budget contracts: %s\n- docs navigation and semantics contracts: %s\n- docs shrink report: %s\n" "${report_root}/repo-surface-diff.json" "${report_root}/root-change-report.json" "${report_root}/governance-validate.json" "${report_root}/governance-coverage-diff.json" "${report_root}/semantic-drift-summary.json" "${report_root}/make-surface-drift.json" "${report_root}/deterministic-check-order.json" "${report_root}/check-metadata-catalog.json" "${report_root}/artifact-schema-version-check.json" "${report_root}/artifact-naming-and-size.json" "${report_root}/docs-golden-workflow-verification.json" "${report_root}/docs-link-allowlist-policy.json" "${report_root}/ops-alert-runbook-slo-load-e2e-map.json" "${report_root}/registry-group-coverage.json" "${report_root}/contract-coverage-heatmap.json" "${report_root}/missing-proof-report.json" "${report_root}/proof-debt-ledger.json" "${report_root}/contract-flake-detector.json" "${report_root}/contract-performance-budget.json" "${report_root}/docs-entrypoint-and-budget-contracts.json" "${report_root}/docs-navigation-and-semantics-contracts.json" "${report_root}/docs-shrink-report.json" >> "artifacts/${RUN_ID}/summary.md"
+          printf "- repo surface diff: %s\n- root change report: %s\n- governance validate: %s\n- governance coverage diff: %s\n- semantic drift summary: %s\n- make surface drift: %s\n- deterministic check order: %s\n- check metadata catalog: %s\n- artifact schema check: %s\n- artifact naming and size: %s\n- docs golden workflow verification: %s\n- docs link allowlist policy: %s\n- alert runbook slo load e2e mapping: %s\n- registry group coverage: %s\n- contract coverage heatmap: %s\n- missing proof report: %s\n- proof debt ledger: %s\n- contract flake detector: %s\n- contract performance budget: %s\n- docs entrypoint and budget contracts: %s\n- docs navigation and semantics contracts: %s\n- docs quality contracts: %s\n- configs taxonomy contracts: %s\n- docs shrink report: %s\n" "${report_root}/repo-surface-diff.json" "${report_root}/root-change-report.json" "${report_root}/governance-validate.json" "${report_root}/governance-coverage-diff.json" "${report_root}/semantic-drift-summary.json" "${report_root}/make-surface-drift.json" "${report_root}/deterministic-check-order.json" "${report_root}/check-metadata-catalog.json" "${report_root}/artifact-schema-version-check.json" "${report_root}/artifact-naming-and-size.json" "${report_root}/docs-golden-workflow-verification.json" "${report_root}/docs-link-allowlist-policy.json" "${report_root}/ops-alert-runbook-slo-load-e2e-map.json" "${report_root}/registry-group-coverage.json" "${report_root}/contract-coverage-heatmap.json" "${report_root}/missing-proof-report.json" "${report_root}/proof-debt-ledger.json" "${report_root}/contract-flake-detector.json" "${report_root}/contract-performance-budget.json" "${report_root}/docs-entrypoint-and-budget-contracts.json" "${report_root}/docs-navigation-and-semantics-contracts.json" "${report_root}/docs-quality-contracts.json" "${report_root}/configs-taxonomy-contracts.json" "${report_root}/docs-shrink-report.json" >> "artifacts/${RUN_ID}/summary.md"
           if [ -f "${contracts_root}/root-strict.json" ]; then
             printf -- "- root strict: %s\n" "${contracts_root}/root-strict.json" >> "artifacts/${RUN_ID}/summary.md"
           fi
