@@ -46,7 +46,7 @@ Also review [Glossary](../glossary.md) for canonical terms.
 
 ## Diagram Guidance
 
-Diagram alt text and diagram-writing guidance: [Style Guide](../_internal/governance/style-guide.md).
+Diagram alt text and diagram-writing guidance: [Doc conventions](../development/doc-conventions.md).
 
 ## Document Taxonomy
 
