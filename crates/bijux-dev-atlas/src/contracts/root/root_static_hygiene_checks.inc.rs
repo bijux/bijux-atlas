@@ -269,7 +269,7 @@ fn test_root_035_make_contract_wrappers_delegate(ctx: &RunContext) -> TestResult
 fn test_root_036_docker_wrappers_delegate(ctx: &RunContext) -> TestResult {
     let contents = match read_root_text(
         ctx,
-        "make/makefiles/docker.mk",
+        "make/docker.mk",
         "ROOT-036",
         "root.make.docker_wrappers_delegate",
     ) {
@@ -282,7 +282,7 @@ fn test_root_036_docker_wrappers_delegate(ctx: &RunContext) -> TestResult {
             &mut violations,
             "ROOT-036",
             "root.make.docker_wrappers_delegate",
-            Some("make/makefiles/docker.mk".to_string()),
+            Some("make/docker.mk".to_string()),
             "docker make wrappers must delegate both static and effect lanes to `bijux dev atlas contracts docker`",
         );
     }
@@ -291,7 +291,7 @@ fn test_root_036_docker_wrappers_delegate(ctx: &RunContext) -> TestResult {
             &mut violations,
             "ROOT-036",
             "root.make.docker_wrappers_delegate",
-            Some("make/makefiles/docker.mk".to_string()),
+            Some("make/docker.mk".to_string()),
             "docker make wrappers must not invoke raw docker commands directly",
         );
     }

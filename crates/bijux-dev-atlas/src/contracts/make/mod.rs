@@ -51,11 +51,7 @@ fn top_level_make_files(repo_root: &Path) -> Vec<PathBuf> {
 
 pub(super) fn sorted_make_sources(repo_root: &Path) -> Vec<PathBuf> {
     let mut files = Vec::new();
-    let roots = [
-        repo_root.join("Makefile"),
-        repo_root.join("make"),
-        repo_root.join("make/makefiles"),
-    ];
+    let roots = [repo_root.join("Makefile"), repo_root.join("make")];
     for root in roots {
         if root.is_file() {
             files.push(root);
@@ -126,28 +122,37 @@ fn test_make_dir_001_allowed_root_docs_only(ctx: &RunContext) -> TestResult {
 fn test_make_dir_002_no_nested_markdown(ctx: &RunContext) -> TestResult {
     let contract_id = "MAKE-DIR-002";
     let test_id = "make.docs.no_nested_markdown";
-    let makefiles_root = ctx.repo_root.join("make/makefiles");
+    let make_root = ctx.repo_root.join("make");
     let mut violations = Vec::new();
-    let Ok(entries) = std::fs::read_dir(&makefiles_root) else {
+    let Ok(entries) = std::fs::read_dir(&make_root) else {
         return TestResult::Fail(vec![Violation {
             contract_id: contract_id.to_string(),
             test_id: test_id.to_string(),
-            file: Some("make/makefiles".to_string()),
+            file: Some("make".to_string()),
             line: Some(1),
-            message: "make/makefiles directory is missing".to_string(),
+            message: "make directory is missing".to_string(),
             evidence: None,
         }]);
     };
     for entry in entries.flatten() {
         let path = entry.path();
-        if path.extension().and_then(|value| value.to_str()) == Some("md") {
-            violations.push(violation(
-                contract_id,
-                test_id,
-                &path,
-                &ctx.repo_root,
-                "markdown files are forbidden under make/makefiles",
-            ));
+        if !path.is_dir() {
+            continue;
+        }
+        let Ok(children) = std::fs::read_dir(&path) else {
+            continue;
+        };
+        for child in children.flatten() {
+            let child_path = child.path();
+            if child_path.extension().and_then(|value| value.to_str()) == Some("md") {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    &child_path,
+                    &ctx.repo_root,
+                    "markdown files are forbidden under nested make directories; keep prose at make/README.md or make/CONTRACT.md only",
+                ));
+            }
         }
     }
     if violations.is_empty() {
@@ -164,12 +169,26 @@ fn test_make_dir_003_allowed_root_files(ctx: &RunContext) -> TestResult {
         "CONTRACT.md",
         "README.md",
         "_internal.mk",
+        "build.mk",
+        "cargo.mk",
         "checks.mk",
+        "ci.mk",
+        "configs.mk",
         "contracts.mk",
+        "dev.mk",
+        "docker.mk",
+        "docs.mk",
+        "gates.mk",
+        "k8s.mk",
         "macros.mk",
+        "ops.mk",
         "paths.mk",
+        "policies.mk",
         "public.mk",
+        "root.mk",
+        "runenv.mk",
         "target-list.json",
+        "verification.mk",
         "vars.mk",
     ]);
     let mut violations = Vec::new();
@@ -279,9 +298,12 @@ fn test_make_contracts_002_target_surface(ctx: &RunContext) -> TestResult {
         "contracts-ci",
         "contracts-root",
         "contracts-configs",
+        "contracts-configs-required",
         "contracts-docs",
+        "contracts-docs-required",
         "contracts-docker",
         "contracts-make",
+        "contracts-make-required",
         "contracts-ops",
         "contracts-help",
     ]);
@@ -351,14 +373,14 @@ fn test_make_contracts_003_delegate_only(ctx: &RunContext) -> TestResult {
         if !trimmed.starts_with("@$(DEV_ATLAS)") && !trimmed.starts_with("@CI=1 $(DEV_ATLAS)") {
             continue;
         }
-        if !trimmed.contains(" contracts ") {
+        if !(trimmed.contains(" contracts ") || trimmed.contains(" check run --suite ")) {
             violations.push(Violation {
                 contract_id: contract_id.to_string(),
                 test_id: test_id.to_string(),
                 file: Some(rel(&path, &ctx.repo_root)),
                 line: Some(index + 1),
                 message:
-                    "contracts targets must delegate only to bijux-dev-atlas contracts commands"
+                    "contracts targets must delegate only to bijux-dev-atlas contracts commands or required-suite check entrypoints"
                         .to_string(),
                 evidence: Some(trimmed.to_string()),
             });
@@ -390,7 +412,7 @@ fn test_make_env_001_single_macros_and_runenv(ctx: &RunContext) -> TestResult {
     macro_paths.sort();
     runenv_paths.sort();
     let expected_macros = vec!["make/macros.mk".to_string()];
-    let expected_runenv = vec!["make/makefiles/_runenv.mk".to_string()];
+    let expected_runenv = vec!["make/runenv.mk".to_string()];
     let mut violations = Vec::new();
     if macro_paths != expected_macros {
         violations.push(Violation {
@@ -408,7 +430,7 @@ fn test_make_env_001_single_macros_and_runenv(ctx: &RunContext) -> TestResult {
         violations.push(Violation {
             contract_id: contract_id.to_string(),
             test_id: test_id.to_string(),
-            file: Some("make/makefiles".to_string()),
+            file: Some("make".to_string()),
             line: Some(1),
             message: format!(
                 "expected exactly one runenv file: {expected_runenv:?}, found {runenv_paths:?}"
@@ -427,7 +449,7 @@ fn test_make_env_002_role_boundary(ctx: &RunContext) -> TestResult {
     let contract_id = "MAKE-ENV-002";
     let test_id = "make.env.role_boundary";
     let macros_path = ctx.repo_root.join("make/macros.mk");
-    let runenv_path = ctx.repo_root.join("make/makefiles/_runenv.mk");
+    let runenv_path = ctx.repo_root.join("make/runenv.mk");
     let macros_text = match std::fs::read_to_string(&macros_path) {
         Ok(text) => text,
         Err(err) => {
@@ -486,7 +508,7 @@ fn test_make_env_002_role_boundary(ctx: &RunContext) -> TestResult {
             test_id,
             &runenv_path,
             &ctx.repo_root,
-            "make/makefiles/_runenv.mk must export deterministic environment defaults",
+            "make/runenv.mk must export deterministic environment defaults",
         ));
     }
     for line in runenv_text.lines() {
@@ -506,7 +528,7 @@ fn test_make_env_002_role_boundary(ctx: &RunContext) -> TestResult {
                     test_id,
                     &runenv_path,
                     &ctx.repo_root,
-                    "make/makefiles/_runenv.mk must not define helper macros",
+                    "make/runenv.mk must not define helper macros",
                 ));
                 break;
             }
@@ -598,13 +620,13 @@ fn test_make_include_002_public_surface(ctx: &RunContext) -> TestResult {
             "make/public.mk must include only vars, paths, macros, _internal, and checks",
         ));
     }
-    if internal_includes != ["make/makefiles/root.mk".to_string()] {
+    if internal_includes != ["make/root.mk".to_string()] {
         violations.push(violation(
             contract_id,
             test_id,
             &internal_path,
             &ctx.repo_root,
-            "make/_internal.mk must include exactly one file: make/makefiles/root.mk",
+            "make/_internal.mk must include exactly one file: make/root.mk",
         ));
     }
     if violations.is_empty() {
@@ -700,7 +722,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             title: "make nested docs removal",
             tests: vec![TestCase {
                 id: TestId("make.docs.no_nested_markdown".to_string()),
-                title: "make/makefiles contains no markdown",
+                title: "make contains no nested markdown",
                 kind: TestKind::Pure,
                 run: test_make_dir_002_no_nested_markdown,
             }],
@@ -807,7 +829,8 @@ pub fn contract_explain(contract_id: &str) -> String {
             "Keep make markdown authority limited to make/README.md and make/CONTRACT.md.".to_string()
         }
         "MAKE-DIR-002" => {
-            "Remove make/makefiles markdown so implementation and policy do not drift.".to_string()
+            "Remove nested markdown from make/ so implementation and policy do not drift."
+                .to_string()
         }
         "MAKE-DIR-003" => {
             "Freeze the top-level make/ surface to curated wrapper files only.".to_string()

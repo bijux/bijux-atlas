@@ -5,19 +5,19 @@ JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
 ARTIFACT_ROOT ?= artifacts
 RUN_ID ?= local
 
-include make/makefiles/cargo.mk
-include make/makefiles/configs.mk
-include make/makefiles/docs.mk
-include make/makefiles/docker.mk
-include make/makefiles/ops.mk
-include make/makefiles/policies.mk
-include make/makefiles/build.mk
-include make/makefiles/ci.mk
-include make/makefiles/dev.mk
-include make/makefiles/_runenv.mk
-include make/makefiles/gates.mk
-include make/makefiles/k8s.mk
-include make/makefiles/verification.mk
+include make/cargo.mk
+include make/configs.mk
+include make/docs.mk
+include make/docker.mk
+include make/ops.mk
+include make/policies.mk
+include make/build.mk
+include make/ci.mk
+include make/dev.mk
+include make/runenv.mk
+include make/gates.mk
+include make/k8s.mk
+include make/verification.mk
 
 CURATED_TARGETS := \
 	help doctor fmt lint test test-all build contracts contracts-pr contracts-merge contracts-release contracts-all contracts-fast contracts-changed contracts-json contracts-ci contracts-root contracts-configs contracts-docs contracts-docker contracts-make contracts-ops contracts-help docker docker-contracts docker-contracts-effect docker-gate \
@@ -35,7 +35,7 @@ _internal-list: ## Print curated make target names
 _internal-explain: ## Explain curated target ownership (TARGET=<name>)
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make explain TARGET=<name>" >&2; exit 2; }
 	@case " $(CURATED_TARGETS) " in \
-	  *" $${TARGET} "*) echo "$${TARGET}: delegated via make/makefiles/*.mk wrappers to bijux dev atlas or cargo" ;; \
+	  *" $${TARGET} "*) echo "$${TARGET}: delegated via make/*.mk wrappers to bijux dev atlas or cargo" ;; \
 	  *) echo "$${TARGET}: not available (unsupported target removed during Rust control-plane cutover)"; exit 2 ;; \
 	esac
 

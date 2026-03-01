@@ -1,1 +1,1 @@
-include make/makefiles/root.mk
+include make/root.mk

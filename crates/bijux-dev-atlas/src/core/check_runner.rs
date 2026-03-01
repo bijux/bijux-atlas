@@ -391,14 +391,14 @@ fn check_docs_index_links(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Chec
 }
 
 fn check_make_wrapper_commands(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
-    let target = Path::new("make/makefiles/CONTRACT.md");
+    let target = Path::new("make/CONTRACT.md");
     if ctx.adapters.fs.exists(ctx.repo_root, target) {
         Ok(Vec::new())
     } else {
         Ok(vec![Violation {
             schema_version: crate::model::schema_version(),
             code: known_violation_id("make_contract_missing"),
-            message: "missing make/makefiles/CONTRACT.md".to_string(),
+            message: "missing make/CONTRACT.md".to_string(),
             hint: Some("restore make contract doc".to_string()),
             path: Some(known_artifact_path(target.display().to_string())),
             line: None,

@@ -46,7 +46,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "ROOT-033" => "Release process authority belongs under docs/ or ops/, not as ad hoc root release files.".to_string(),
         "ROOT-034" => "Root documentation must use `bijux dev atlas contracts` as the single contracts interface.".to_string(),
         "ROOT-035" => "make/checks.mk must stay a thin compatibility layer over the Rust make contracts runner.".to_string(),
-        "ROOT-036" => "make/makefiles/docker.mk must delegate docker governance to the Rust docker contracts runner.".to_string(),
+        "ROOT-036" => "make/docker.mk must delegate docker governance to the Rust docker contracts runner.".to_string(),
         "ROOT-037" => "Editor backup files and platform noise such as `.DS_Store` are forbidden anywhere in the repo tree.".to_string(),
         "ROOT-038" => "If .gitattributes is present, it must keep an explicit line-ending normalization policy.".to_string(),
         "ROOT-039" => "Workspace member declarations in Cargo.toml must exactly match the crate directories that exist.".to_string(),

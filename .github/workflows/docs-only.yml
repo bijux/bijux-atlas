@@ -5,7 +5,7 @@ on:
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
-      - 'make/makefiles/_docs.mk'
+      - 'make/docs.mk'
       - 'docs/contracts/**/*.json'
       - 'docs/_internal/generated/openapi/**'
       - 'configs/openapi/v1/openapi.generated.json'
@@ -99,7 +99,7 @@ jobs:
           set -euo pipefail
           report_root="artifacts/${RUN_ID}/reports"
           git fetch --depth=1 origin "${{ github.base_ref }}"
-          changed_docs="$(git diff --name-only "origin/${{ github.base_ref }}"...HEAD -- 'docs/**' 'configs/docs/**' 'ops/report/docs/**' 'docker/**' 'make/makefiles/**' || true)"
+          changed_docs="$(git diff --name-only "origin/${{ github.base_ref }}"...HEAD -- 'docs/**' 'configs/docs/**' 'ops/report/docs/**' 'docker/**' 'make/**' || true)"
           changed_count="$(printf '%s\n' "${changed_docs}" | sed '/^$/d' | wc -l | tr -d ' ')"
           printf '%s\n' "${changed_docs}" | sed '/^$/d' > "${report_root}/docs-diff.txt"
           jq -n \

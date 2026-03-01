@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source": "make/makefiles/root.mk:CURATED_TARGETS",
+  "source": "make/root.mk:CURATED_TARGETS",
   "public_targets": [
     "build",
     "contracts",

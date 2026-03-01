@@ -26,7 +26,7 @@ fn read_text(path: &Path) -> Result<String, String> {
 }
 
 fn curated_targets(repo_root: &Path) -> Result<Vec<String>, String> {
-    let text = read_text(&repo_root.join("make/makefiles/root.mk"))?;
+    let text = read_text(&repo_root.join("make/root.mk"))?;
     let mut inside = false;
     let mut targets = Vec::new();
     for line in text.lines() {
@@ -159,10 +159,10 @@ fn is_auxiliary_recipe(recipe: &str) -> bool {
 fn test_make_surface_001_single_source(ctx: &RunContext) -> TestResult {
     let path = ctx.repo_root.join("make/target-list.json");
     match read_text(&path) {
-        Ok(text) if text.contains("\"source\": \"make/makefiles/root.mk:CURATED_TARGETS\"") => {
+        Ok(text) if text.contains("\"source\": \"make/root.mk:CURATED_TARGETS\"") => {
             TestResult::Pass
         }
-        Ok(_) => failure("MAKE-SURFACE-001", "make.surface.single_source", "make/target-list.json", "make/target-list.json must declare make/makefiles/root.mk:CURATED_TARGETS as its single source"),
+        Ok(_) => failure("MAKE-SURFACE-001", "make.surface.single_source", "make/target-list.json", "make/target-list.json must declare make/root.mk:CURATED_TARGETS as its single source"),
         Err(err) => failure("MAKE-SURFACE-001", "make.surface.single_source", "make/target-list.json", err),
     }
 }
@@ -174,7 +174,7 @@ fn test_make_surface_002_count_budget(ctx: &RunContext) -> TestResult {
             return failure(
                 "MAKE-SURFACE-002",
                 "make.surface.count_budget",
-                "make/makefiles/root.mk",
+                "make/root.mk",
                 err,
             )
         }
@@ -197,7 +197,7 @@ fn test_make_surface_002_count_budget(ctx: &RunContext) -> TestResult {
         failure(
             "MAKE-SURFACE-002",
             "make.surface.count_budget",
-            "make/makefiles/root.mk",
+            "make/root.mk",
             format!(
                 "curated target count {} exceeds max_public_targets {}",
                 targets.len(),
@@ -214,7 +214,7 @@ fn test_make_surface_003_registry_sync(ctx: &RunContext) -> TestResult {
             return failure(
                 "MAKE-SURFACE-003",
                 "make.surface.registry_sync",
-                "make/makefiles/root.mk",
+                "make/root.mk",
                 err,
             )
         }
@@ -256,7 +256,7 @@ fn test_make_surface_005_delegate_only(ctx: &RunContext) -> TestResult {
             return failure(
                 "MAKE-SURFACE-005",
                 "make.surface.delegate_only",
-                "make/makefiles/root.mk",
+                "make/root.mk",
                 err,
             )
         }
@@ -318,7 +318,7 @@ fn test_make_internal_001_root_helpers_prefixed(ctx: &RunContext) -> TestResult 
             return failure(
                 "MAKE-INTERNAL-001",
                 "make.internal.root_helpers_prefixed",
-                "make/makefiles/root.mk",
+                "make/root.mk",
                 err,
             )
         }
@@ -335,7 +335,7 @@ fn test_make_internal_001_root_helpers_prefixed(ctx: &RunContext) -> TestResult 
         }
     };
     for (name, (file, _)) in declared {
-        if file == "make/makefiles/root.mk"
+        if file == "make/root.mk"
             && !curated.contains(&name)
             && !name.starts_with("_internal-")
         {
@@ -370,7 +370,7 @@ fn test_sources_forbid(
 }
 
 fn test_make_repro_001_runenv_exports(ctx: &RunContext) -> TestResult {
-    match read_text(&ctx.repo_root.join("make/makefiles/_runenv.mk")) {
+    match read_text(&ctx.repo_root.join("make/runenv.mk")) {
         Ok(text)
             if text.contains("export ")
                 && text.contains("RUN_ID")
@@ -381,13 +381,13 @@ fn test_make_repro_001_runenv_exports(ctx: &RunContext) -> TestResult {
         Ok(_) => failure(
             "MAKE-REPRO-001",
             "make.repro.runenv_exports",
-            "make/makefiles/_runenv.mk",
+            "make/runenv.mk",
             "run environment file must export deterministic run and tool cache variables",
         ),
         Err(err) => failure(
             "MAKE-REPRO-001",
             "make.repro.runenv_exports",
-            "make/makefiles/_runenv.mk",
+            "make/runenv.mk",
             err,
         ),
     }
@@ -400,7 +400,7 @@ fn test_make_ci_001_curated_workflow_usage(ctx: &RunContext) -> TestResult {
             return failure(
                 "MAKE-CI-001",
                 "make.ci.curated_workflow_usage",
-                "make/makefiles/root.mk",
+                "make/root.mk",
                 err,
             )
         }
@@ -440,6 +440,7 @@ fn test_make_ci_001_curated_workflow_usage(ctx: &RunContext) -> TestResult {
                 && tokens[index + 1]
                     .chars()
                     .all(|ch| ch.is_ascii_lowercase() || ch.is_ascii_digit() || ch == '-')
+                && tokens[index + 1] != "required"
                 && (index == 0 || tokens[index - 1] != "contracts")
                 && !curated.contains(tokens[index + 1])
             {
@@ -459,22 +460,27 @@ fn test_make_ci_001_curated_workflow_usage(ctx: &RunContext) -> TestResult {
 }
 
 fn test_make_struct_002_mk_only(ctx: &RunContext) -> TestResult {
-    let Ok(entries) = std::fs::read_dir(ctx.repo_root.join("make/makefiles")) else {
+    let Ok(entries) = std::fs::read_dir(ctx.repo_root.join("make")) else {
         return failure(
             "MAKE-STRUCT-002",
             "make.structure.mk_only",
-            "make/makefiles",
-            "make/makefiles directory is missing",
+            "make",
+            "make directory is missing",
         );
     };
     for entry in entries.flatten() {
         let path = entry.path();
-        if path.is_file() && path.extension().and_then(|value| value.to_str()) != Some("mk") {
+        let name = path.file_name().and_then(|value| value.to_str()).unwrap_or_default();
+        let allowed_non_mk = ["README.md", "CONTRACT.md", "target-list.json"];
+        if path.is_file()
+            && path.extension().and_then(|value| value.to_str()) != Some("mk")
+            && !allowed_non_mk.contains(&name)
+        {
             return failure(
                 "MAKE-STRUCT-002",
                 "make.structure.mk_only",
                 &rel(&path, &ctx.repo_root),
-                "make/makefiles may contain only .mk files",
+                "make may contain only .mk modules plus README.md, CONTRACT.md, and target-list.json",
             );
         }
     }
@@ -528,7 +534,7 @@ fn test_make_docker_001_docker_targets_use_contract_runner(ctx: &RunContext) -> 
             return failure(
                 "MAKE-DOCKER-001",
                 "make.docker.contract_runner_only",
-                "make/makefiles/docker.mk",
+                "make/docker.mk",
                 format!("missing target {name}"),
             );
         };
@@ -688,7 +694,7 @@ pub(super) fn contracts() -> Vec<Contract> {
             title: "make wrapper files only",
             tests: vec![TestCase {
                 id: TestId("make.structure.mk_only".to_string()),
-                title: "make/makefiles contains only .mk files",
+                title: "make contains only allowed modules and registry files",
                 kind: TestKind::Pure,
                 run: test_make_struct_002_mk_only,
             }],
@@ -738,7 +744,7 @@ pub(super) fn contracts() -> Vec<Contract> {
 
 pub(super) fn contract_explain(contract_id: &str) -> Option<&'static str> {
     match contract_id {
-        "MAKE-SURFACE-001" => Some("Use make/makefiles/root.mk:CURATED_TARGETS as the single curated target source."),
+        "MAKE-SURFACE-001" => Some("Use make/root.mk:CURATED_TARGETS as the single curated target source."),
         "MAKE-SURFACE-002" => Some("Keep the public make surface within the explicit target budget."),
         "MAKE-SURFACE-003" => Some("Keep the curated target source, target artifact, and config registry synchronized."),
         "MAKE-SURFACE-005" => Some("Curated make targets must stay thin delegates instead of becoming an execution engine."),
@@ -748,7 +754,7 @@ pub(super) fn contract_explain(contract_id: &str) -> Option<&'static str> {
         "MAKE-SHELL-001" => Some("Make wrappers must not depend on directory-changing shell chains."),
         "MAKE-REPRO-001" => Some("Public wrappers must route through exported deterministic run environment defaults."),
         "MAKE-CI-001" => Some("CI workflows may call only the curated make surface."),
-        "MAKE-STRUCT-002" => Some("The make/makefiles tree must contain only executable wrapper modules."),
+        "MAKE-STRUCT-002" => Some("The make/ directory must contain only executable wrapper modules plus its contract docs and target registry."),
         "MAKE-OPS-001" => Some("Ops-related make targets must route through `bijux dev atlas ops ...`."),
         "MAKE-DOCKER-001" => Some("Docker-related make targets must route through the docker contract runner."),
         "MAKE-DRIFT-001" => Some("The committed target list artifact must stay aligned with the curated target source."),

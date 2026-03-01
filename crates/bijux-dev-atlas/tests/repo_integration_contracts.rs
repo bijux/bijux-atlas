@@ -302,12 +302,12 @@ fn quickstart_command_is_backed_by_cli_help() {
 #[test]
 fn ci_wrappers_and_workflows_use_the_same_named_suites() {
     let root = repo_root();
-    let ci_make = read(&root.join("make/makefiles/ci.mk"));
+    let ci_make = read(&root.join("make/ci.mk"));
     let ci_workflow = read(&root.join(".github/workflows/ci-pr.yml"));
     for suite in ["ci_pr", "ci_fast"] {
         assert!(
             ci_make.contains(&format!("--suite {suite}")),
-            "make/makefiles/ci.mk must reference suite `{suite}`"
+            "make/ci.mk must reference suite `{suite}`"
         );
         assert!(
             ci_workflow.contains(suite),
@@ -333,14 +333,12 @@ fn public_make_targets_map_to_one_control_plane_entry_and_stay_thin() {
         .collect::<BTreeMap<_, _>>();
 
     let mut recipes_by_target = BTreeMap::<String, Vec<String>>::new();
-    let mut makefiles = fs::read_dir(root.join("make/makefiles"))
-        .expect("make/makefiles")
+    let makefiles = fs::read_dir(root.join("make"))
+        .expect("make")
         .flatten()
         .map(|entry| entry.path())
         .filter(|path| path.extension().and_then(|value| value.to_str()) == Some("mk"))
         .collect::<Vec<_>>();
-    makefiles.push(root.join("make/contracts.mk"));
-    makefiles.push(root.join("make/public.mk"));
     for path in makefiles {
         for (target, recipes) in extract_shell_recipe_commands(&path) {
             recipes_by_target.entry(target).or_default().extend(recipes);

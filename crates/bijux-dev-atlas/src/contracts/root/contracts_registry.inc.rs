@@ -321,7 +321,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             title: "docker make wrappers delegate to the contracts runner",
             tests: vec![TestCase {
                 id: TestId("root.make.docker_wrappers_delegate".to_string()),
-                title: "make/makefiles/docker.mk delegates to bijux dev atlas contracts docker",
+                title: "make/docker.mk delegates to bijux dev atlas contracts docker",
                 kind: TestKind::Pure,
                 run: test_root_036_docker_wrappers_delegate,
             }],

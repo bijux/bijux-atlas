@@ -26,7 +26,7 @@ fn read_text(path: &Path) -> Result<String, String> {
 }
 
 fn curated_targets(repo_root: &Path) -> Result<BTreeSet<String>, String> {
-    let text = read_text(&repo_root.join("make/makefiles/root.mk"))?;
+    let text = read_text(&repo_root.join("make/root.mk"))?;
     let mut inside = false;
     let mut targets = BTreeSet::new();
     for line in text.lines() {
@@ -179,39 +179,41 @@ fn test_make_targetlist_001_explicit_policy(ctx: &RunContext) -> TestResult {
     };
     if json.get("schema_version").and_then(Value::as_u64) == Some(1)
         && json.get("source").and_then(Value::as_str)
-            == Some("make/makefiles/root.mk:CURATED_TARGETS")
+            == Some("make/root.mk:CURATED_TARGETS")
     {
         TestResult::Pass
     } else {
-        fail("MAKE-TARGETLIST-001", "make.target_list.explicit_policy", "make/target-list.json", "make/target-list.json must be a committed schema_version=1 registry sourced from make/makefiles/root.mk:CURATED_TARGETS")
+        fail("MAKE-TARGETLIST-001", "make.target_list.explicit_policy", "make/target-list.json", "make/target-list.json must be a committed schema_version=1 registry sourced from make/root.mk:CURATED_TARGETS")
     }
 }
 
 fn test_make_name_001_helper_files_prefixed(ctx: &RunContext) -> TestResult {
+    let allowed_named_helpers =
+        BTreeSet::from(["_internal.mk", "macros.mk", "paths.mk", "runenv.mk", "vars.mk"]);
     let declared = match declared_targets(&ctx.repo_root) {
         Ok(targets) => targets,
         Err(err) => {
             return fail(
                 "MAKE-NAME-001",
                 "make.naming.helper_files_prefixed",
-                "make/makefiles",
+                "make",
                 err,
             )
         }
     };
     let mut files_with_targets = BTreeSet::new();
     for (_, (file, _)) in declared {
-        if file.starts_with("make/makefiles/") {
+        if file.starts_with("make/") {
             files_with_targets.insert(file);
         }
     }
-    let root = ctx.repo_root.join("make/makefiles");
+    let root = ctx.repo_root.join("make");
     let Ok(entries) = std::fs::read_dir(root) else {
         return fail(
             "MAKE-NAME-001",
             "make.naming.helper_files_prefixed",
-            "make/makefiles",
-            "make/makefiles directory is missing",
+            "make",
+            "make directory is missing",
         );
     };
     for entry in entries.flatten() {
@@ -219,17 +221,24 @@ fn test_make_name_001_helper_files_prefixed(ctx: &RunContext) -> TestResult {
         if !path.is_file() {
             continue;
         }
+        let ext = path.extension().and_then(|value| value.to_str());
+        if ext != Some("mk") {
+            continue;
+        }
         let file = rel(&path, &ctx.repo_root);
         let name = path
             .file_name()
             .and_then(|value| value.to_str())
             .unwrap_or_default();
-        if !files_with_targets.contains(&file) && !name.starts_with('_') {
+        if !files_with_targets.contains(&file)
+            && !name.starts_with('_')
+            && !allowed_named_helpers.contains(name)
+        {
             return fail(
                 "MAKE-NAME-001",
                 "make.naming.helper_files_prefixed",
                 &file,
-                "helper-only makefile includes must use the _*.mk naming pattern",
+                "helper-only makefile includes must use the _*.mk naming pattern unless they are one of the canonical root helper modules",
             );
         }
     }
@@ -243,7 +252,7 @@ fn test_make_name_002_public_files_not_prefixed(ctx: &RunContext) -> TestResult 
             return fail(
                 "MAKE-NAME-002",
                 "make.naming.public_files_clear",
-                "make/makefiles",
+                "make",
                 err,
             )
         }
@@ -254,7 +263,7 @@ fn test_make_name_002_public_files_not_prefixed(ctx: &RunContext) -> TestResult 
             return fail(
                 "MAKE-NAME-002",
                 "make.naming.public_files_clear",
-                "make/makefiles/root.mk",
+                "make/root.mk",
                 err,
             )
         }
@@ -290,7 +299,7 @@ fn test_make_art_001_run_scoped_artifacts(ctx: &RunContext) -> TestResult {
             return fail(
                 "MAKE-ART-001",
                 "make.artifacts.run_scoped",
-                "make/makefiles/root.mk",
+                "make/root.mk",
                 err,
             )
         }
@@ -324,7 +333,7 @@ fn test_make_shell_002_no_multi_hop_pipes(ctx: &RunContext) -> TestResult {
             return fail(
                 "MAKE-SHELL-002",
                 "make.shell.no_multi_hop_pipes",
-                "make/makefiles/root.mk",
+                "make/root.mk",
                 err,
             )
         }
@@ -437,7 +446,7 @@ fn test_make_gates_001_curated_targets_mapped(ctx: &RunContext) -> TestResult {
             return fail(
                 "MAKE-GATES-001",
                 "make.gates.curated_targets_mapped",
-                "make/makefiles/root.mk",
+                "make/root.mk",
                 err,
             )
         }
@@ -473,7 +482,7 @@ fn test_make_gates_002_curated_targets_public(ctx: &RunContext) -> TestResult {
             return fail(
                 "MAKE-GATES-002",
                 "make.gates.curated_targets_public",
-                "make/makefiles/root.mk",
+                "make/root.mk",
                 err,
             )
         }
@@ -514,7 +523,7 @@ fn test_make_gates_003_no_orphan_public_targets(ctx: &RunContext) -> TestResult 
             return fail(
                 "MAKE-GATES-003",
                 "make.gates.no_orphan_public_targets",
-                "make/makefiles/root.mk",
+                "make/root.mk",
                 err,
             )
         }
