@@ -5,10 +5,11 @@
   "max_group_depth": 2,
   "root_files": [
     "configs/README.md",
+    "configs/INDEX.md",
     "configs/CONTRACT.md",
-    "configs/CONSUMERS.json",
-    "configs/OWNERS.json",
-    "configs/SCHEMAS.json",
+    "configs/consumers-registry.json",
+    "configs/owners-registry.json",
+    "configs/schema-map.json",
     "configs/configs.contracts.json",
     "configs/inventory.json"
   ],

@@ -60,7 +60,7 @@
       "severity": "blocker",
       "title": "governed JSON config files have explicit schema coverage",
       "touched_paths": [
-        "configs/SCHEMAS.json",
+        "configs/schema-map.json",
         "configs/inventory/configs.json",
         "configs/**.json",
         "configs/**.jsonc"
@@ -161,7 +161,7 @@
       "severity": "blocker",
       "title": "governed config files declare file-level consumer coverage",
       "touched_paths": [
-        "configs/CONSUMERS.json",
+        "configs/consumers-registry.json",
         "configs/inventory/configs.json"
       ]
     },
@@ -490,7 +490,7 @@
       "severity": "blocker",
       "title": "root owner map stays aligned with the registry",
       "touched_paths": [
-        "configs/OWNERS.json",
+        "configs/owners-registry.json",
         "configs/inventory/configs.json"
       ]
     },
@@ -571,9 +571,9 @@
       "severity": "must",
       "title": "root configs authority json stays canonical",
       "touched_paths": [
-        "configs/OWNERS.json",
-        "configs/CONSUMERS.json",
-        "configs/SCHEMAS.json",
+        "configs/owners-registry.json",
+        "configs/consumers-registry.json",
+        "configs/schema-map.json",
         "configs/configs.contracts.json",
         "configs/inventory.json",
         "configs/_generated/configs-index.json"
@@ -591,7 +591,7 @@
       "severity": "must",
       "title": "committed configs schema index stays aligned",
       "touched_paths": [
-        "configs/SCHEMAS.json",
+        "configs/schema-map.json",
         "configs/schema/*.json",
         "configs/schema/generated/schema-index.json",
         "configs/contracts/*.json"
@@ -609,7 +609,7 @@
       "severity": "must",
       "title": "input schemas stay referenced by governed config mappings",
       "touched_paths": [
-        "configs/SCHEMAS.json",
+        "configs/schema-map.json",
         "configs/schema/*.json"
       ]
     },

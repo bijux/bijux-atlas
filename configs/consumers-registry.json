@@ -1,17 +1,5 @@
 {
   "files": {
-    "configs/CONSUMERS.json": [
-      "bijux-dev-atlas",
-      "ci"
-    ],
-    "configs/OWNERS.json": [
-      "bijux-dev-atlas",
-      "ci"
-    ],
-    "configs/SCHEMAS.json": [
-      "bijux-dev-atlas",
-      "ci"
-    ],
     "configs/_generated/configs-index.json": [
       "bijux-dev-atlas",
       "ci"
@@ -20,6 +8,10 @@
       "ci"
     ],
     "configs/configs.contracts.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/consumers-registry.json": [
       "bijux-dev-atlas",
       "ci"
     ],
@@ -101,6 +93,10 @@
       "runtime",
       "ci"
     ],
+    "configs/owners-registry.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
     "configs/owners/*.json": [
       "bijux-dev-atlas",
       "docs-build",
@@ -137,6 +133,10 @@
     "configs/rust/*.toml": [
       "ci",
       "bijux-dev-atlas"
+    ],
+    "configs/schema-map.json": [
+      "bijux-dev-atlas",
+      "ci"
     ],
     "configs/schema/*.json": [
       "bijux-dev-atlas",

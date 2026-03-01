@@ -22,13 +22,11 @@
   ],
   "kind": "configs-schema-index",
   "mapped_file_patterns": [
-    "configs/CONSUMERS.json",
-    "configs/OWNERS.json",
-    "configs/SCHEMAS.json",
     "configs/_generated/configs-index.json",
     "configs/ci/env-contract.json",
     "configs/ci/lanes.json",
     "configs/configs.contracts.json",
+    "configs/consumers-registry.json",
     "configs/docs/*.json",
     "configs/docs/*.jsonc",
     "configs/docs/.markdownlint-cli2.jsonc",
@@ -44,12 +42,14 @@
     "configs/openapi/**/*.json",
     "configs/ops/*.json",
     "configs/ops/*/*.json",
+    "configs/owners-registry.json",
     "configs/owners/*.json",
     "configs/perf/*.json",
     "configs/policy/*.json",
     "configs/product/*.json",
     "configs/repo/*.json",
     "configs/rust/*.json",
+    "configs/schema-map.json",
     "configs/schema/generated/*.json",
     "configs/schema/versioning-policy.json",
     "configs/slo/*.json"
@@ -109,6 +109,6 @@
     "configs/schema/public-surface.schema.json",
     "configs/schema/versioning-policy.schema.json"
   ],
-  "schema_map_path": "configs/SCHEMAS.json",
+  "schema_map_path": "configs/schema-map.json",
   "schema_version": 1
 }

@@ -40,10 +40,10 @@
     },
     {
       "counts": {
-        "covered": 10,
+        "covered": 11,
         "generated": 0,
         "internal": 0,
-        "public": 10,
+        "public": 11,
         "schemas": 3
       },
       "files": [
@@ -52,6 +52,7 @@
         "configs/docs/codespell-ignore-words.txt",
         "configs/docs/cspell.config.json",
         "configs/docs/depth-budget.json",
+        "configs/docs/external-link-allowlist.json",
         "configs/docs/package-lock.json",
         "configs/docs/package.json",
         "configs/docs/quality-policy.json",
@@ -516,10 +517,11 @@
   "registry_path": "configs/inventory/configs.json",
   "root_files": [
     "configs/README.md",
+    "configs/INDEX.md",
     "configs/CONTRACT.md",
-    "configs/CONSUMERS.json",
-    "configs/OWNERS.json",
-    "configs/SCHEMAS.json",
+    "configs/consumers-registry.json",
+    "configs/owners-registry.json",
+    "configs/schema-map.json",
     "configs/configs.contracts.json",
     "configs/inventory.json"
   ],

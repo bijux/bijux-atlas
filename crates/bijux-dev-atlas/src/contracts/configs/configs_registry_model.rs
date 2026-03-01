@@ -1,18 +1,19 @@
 const REGISTRY_PATH: &str = "configs/inventory/configs.json";
 const CONTRACT_SURFACE_PATH: &str = "configs/configs.contracts.json";
-const OWNERS_PATH: &str = "configs/OWNERS.json";
-const CONSUMERS_PATH: &str = "configs/CONSUMERS.json";
-const SCHEMAS_PATH: &str = "configs/SCHEMAS.json";
+const OWNERS_PATH: &str = "configs/owners-registry.json";
+const CONSUMERS_PATH: &str = "configs/consumers-registry.json";
+const SCHEMAS_PATH: &str = "configs/schema-map.json";
 const SCHEMA_VERSIONING_POLICY_PATH: &str = "configs/schema/versioning-policy.json";
 const ROOT_CANONICAL_JSON_FILES: [&str; 6] = [
-    "configs/OWNERS.json",
-    "configs/CONSUMERS.json",
-    "configs/SCHEMAS.json",
+    "configs/owners-registry.json",
+    "configs/consumers-registry.json",
+    "configs/schema-map.json",
     "configs/configs.contracts.json",
     "configs/inventory.json",
     "configs/_generated/configs-index.json",
 ];
-const ROOT_MARKDOWN_FILES: [&str; 2] = ["configs/README.md", "configs/CONTRACT.md"];
+const ROOT_MARKDOWN_FILES: [&str; 3] =
+    ["configs/README.md", "configs/INDEX.md", "configs/CONTRACT.md"];
 const DOCS_TOOLING_PATTERNS: [&str; 6] = [
     "configs/docs/.markdownlint-cli2.jsonc",
     "configs/docs/.vale.ini",
@@ -342,4 +343,3 @@ fn matched_schema_path(schemas: &ConfigsSchemas, candidate: &str) -> Option<Stri
         }
     })
 }
-
