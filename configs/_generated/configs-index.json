@@ -40,10 +40,10 @@
     },
     {
       "counts": {
-        "covered": 11,
+        "covered": 12,
         "generated": 0,
         "internal": 0,
-        "public": 11,
+        "public": 12,
         "schemas": 3
       },
       "files": [
@@ -53,6 +53,7 @@
         "configs/docs/cspell.config.json",
         "configs/docs/depth-budget.json",
         "configs/docs/external-link-allowlist.json",
+        "configs/docs/frontmatter.schema.json",
         "configs/docs/package-lock.json",
         "configs/docs/package.json",
         "configs/docs/quality-policy.json",
