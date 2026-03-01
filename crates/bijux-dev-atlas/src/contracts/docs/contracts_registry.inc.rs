@@ -499,5 +499,15 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_047_reader_spine_no_internal_links,
             }],
         },
+        Contract {
+            id: ContractId("DOC-048".to_string()),
+            title: "published docs titles stay unique",
+            tests: vec![TestCase {
+                id: TestId("docs.structure.unique_titles".to_string()),
+                title: "published markdown pages keep unique H1 titles",
+                kind: TestKind::Pure,
+                run: test_docs_048_published_titles_unique,
+            }],
+        },
     ])
 }

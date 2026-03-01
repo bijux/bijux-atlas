@@ -105,3 +105,46 @@ fn test_docs_004_sibling_budget(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
+
+fn test_docs_048_published_titles_unique(ctx: &RunContext) -> TestResult {
+    let mut titles = std::collections::BTreeMap::<String, Vec<String>>::new();
+    let mut violations = Vec::new();
+    for relative in docs_published_markdown_files(ctx) {
+        let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-048",
+                    "docs.structure.unique_titles",
+                    Some(relative),
+                    format!("read failed: {err}"),
+                );
+                continue;
+            }
+        };
+        let Some(title) = docs_first_h1(&contents) else {
+            continue;
+        };
+        titles.entry(title).or_default().push(relative);
+    }
+    for (title, files) in titles {
+        if files.len() > 1 {
+            for file in files {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-048",
+                    "docs.structure.unique_titles",
+                    Some(file),
+                    format!("published docs title `{title}` is duplicated"),
+                );
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}

@@ -152,6 +152,28 @@ fn docs_reader_utility_pages() -> Vec<String> {
     ]
 }
 
+fn docs_published_markdown_files(ctx: &RunContext) -> Vec<String> {
+    let mut files = Vec::new();
+    for path in docs_markdown_files(ctx) {
+        let Ok(relative) = path.strip_prefix(&ctx.repo_root) else {
+            continue;
+        };
+        let relative = relative.display().to_string();
+        if relative.starts_with("docs/_internal/") || relative.starts_with("docs/_drafts/") {
+            continue;
+        }
+        files.push(relative);
+    }
+    files.sort();
+    files
+}
+
+fn docs_first_h1(contents: &str) -> Option<String> {
+    contents
+        .lines()
+        .find_map(|line| line.strip_prefix("# ").map(|title| title.trim().to_string()))
+}
+
 fn docs_root_index_targets(ctx: &RunContext, contract_id: &str, test_id: &str) -> Result<Vec<String>, TestResult> {
     let path = ctx.repo_root.join("docs/index.md");
     let contents = match std::fs::read_to_string(&path) {
