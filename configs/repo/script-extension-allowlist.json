@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "allowed_paths": [
+    "ops/e2e/fixtures",
+    "ops/load/k6",
+    "ops/load/k6/suites",
+    "crates/bijux-dev-atlas/tests/fixtures"
+  ],
+  "extensions": [
+    ".js",
+    ".pl",
+    ".py",
+    ".rb",
+    ".sh"
+  ]
+}

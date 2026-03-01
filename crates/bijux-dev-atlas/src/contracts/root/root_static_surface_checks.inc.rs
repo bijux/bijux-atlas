@@ -50,7 +50,12 @@ fn test_root_001_surface_allowlist(ctx: &RunContext) -> TestResult {
     }
 }
 
-fn read_root_text(ctx: &RunContext, relative: &str, contract_id: &str, test_id: &str) -> Result<String, TestResult> {
+fn read_root_text(
+    ctx: &RunContext,
+    relative: &str,
+    contract_id: &str,
+    test_id: &str,
+) -> Result<String, TestResult> {
     std::fs::read_to_string(ctx.repo_root.join(relative)).map_err(|err| {
         TestResult::Fail(vec![Violation {
             contract_id: contract_id.to_string(),
@@ -63,7 +68,13 @@ fn read_root_text(ctx: &RunContext, relative: &str, contract_id: &str, test_id: 
     })
 }
 
-fn push_root_violation(violations: &mut Vec<Violation>, contract_id: &str, test_id: &str, file: impl Into<Option<String>>, message: impl Into<String>) {
+fn push_root_violation(
+    violations: &mut Vec<Violation>,
+    contract_id: &str,
+    test_id: &str,
+    file: impl Into<Option<String>>,
+    message: impl Into<String>,
+) {
     violations.push(Violation {
         contract_id: contract_id.to_string(),
         test_id: test_id.to_string(),
@@ -75,7 +86,14 @@ fn push_root_violation(violations: &mut Vec<Violation>, contract_id: &str, test_
 }
 
 fn test_root_002_allowed_markdown(ctx: &RunContext) -> TestResult {
-    let allowed = ["README.md", "CONTRIBUTING.md", "SECURITY.md", "CHANGELOG.md", "CONTRACT.md"];
+    let allowed = [
+        "README.md",
+        "CONTRIBUTING.md",
+        "SECURITY.md",
+        "CHANGELOG.md",
+        "CONTRACT.md",
+        "REPO_MAP.md",
+    ];
     let mut violations = Vec::new();
     let entries = match std::fs::read_dir(&ctx.repo_root) {
         Ok(entries) => entries,
@@ -220,7 +238,8 @@ fn test_root_005_dockerfile_policy(ctx: &RunContext) -> TestResult {
 }
 
 fn test_root_006_makefile_thin_delegator(ctx: &RunContext) -> TestResult {
-    let contents = match read_root_text(ctx, "Makefile", "ROOT-006", "root.makefile.thin_delegator") {
+    let contents = match read_root_text(ctx, "Makefile", "ROOT-006", "root.makefile.thin_delegator")
+    {
         Ok(contents) => contents,
         Err(result) => return result,
     };
@@ -296,7 +315,12 @@ fn collect_named_files(dir: &std::path::Path, filename: &str, found: &mut Vec<Pa
 }
 
 fn test_root_008_rust_toolchain_pinned(ctx: &RunContext) -> TestResult {
-    let contents = match read_root_text(ctx, "rust-toolchain.toml", "ROOT-008", "root.rust_toolchain.pinned") {
+    let contents = match read_root_text(
+        ctx,
+        "rust-toolchain.toml",
+        "ROOT-008",
+        "root.rust_toolchain.pinned",
+    ) {
         Ok(contents) => contents,
         Err(result) => return result,
     };
@@ -386,11 +410,16 @@ fn test_root_010_license_approved(ctx: &RunContext) -> TestResult {
 }
 
 fn test_root_011_security_report_path(ctx: &RunContext) -> TestResult {
-    let contents = match read_root_text(ctx, "SECURITY.md", "ROOT-011", "root.security.report_path") {
+    let contents = match read_root_text(ctx, "SECURITY.md", "ROOT-011", "root.security.report_path")
+    {
         Ok(contents) => contents,
         Err(result) => return result,
     };
-    let required = ["Reporting a Vulnerability", "private security advisory", "Triage and Fix"];
+    let required = [
+        "Reporting a Vulnerability",
+        "private security advisory",
+        "Triage and Fix",
+    ];
     let mut missing = Vec::new();
     for needle in required {
         if !contents.to_lowercase().contains(&needle.to_lowercase()) {
@@ -405,7 +434,10 @@ fn test_root_011_security_report_path(ctx: &RunContext) -> TestResult {
             test_id: "root.security.report_path".to_string(),
             file: Some("SECURITY.md".to_string()),
             line: None,
-            message: format!("SECURITY.md is missing required guidance: {}", missing.join(", ")),
+            message: format!(
+                "SECURITY.md is missing required guidance: {}",
+                missing.join(", ")
+            ),
             evidence: None,
         }])
     }
@@ -429,7 +461,8 @@ fn test_root_012_contributing_control_plane(ctx: &RunContext) -> TestResult {
             test_id: "root.contributing.control_plane".to_string(),
             file: Some("CONTRIBUTING.md".to_string()),
             line: None,
-            message: "CONTRIBUTING.md must name `bijux dev atlas` as the canonical control plane".to_string(),
+            message: "CONTRIBUTING.md must name `bijux dev atlas` as the canonical control plane"
+                .to_string(),
             evidence: None,
         }])
     }
@@ -445,9 +478,7 @@ fn test_root_013_changelog_version_header(ctx: &RunContext) -> TestResult {
         Ok(contents) => contents,
         Err(result) => return result,
     };
-    let has_version_header = contents
-        .lines()
-        .any(|line| line.trim().starts_with("## v"));
+    let has_version_header = contents.lines().any(|line| line.trim().starts_with("## v"));
     if has_version_header {
         TestResult::Pass
     } else {
@@ -463,12 +494,7 @@ fn test_root_013_changelog_version_header(ctx: &RunContext) -> TestResult {
 }
 
 fn test_root_014_artifacts_untracked(ctx: &RunContext) -> TestResult {
-    let contents = match read_root_text(
-        ctx,
-        ".gitignore",
-        "ROOT-014",
-        "root.artifacts.untracked",
-    ) {
+    let contents = match read_root_text(ctx, ".gitignore", "ROOT-014", "root.artifacts.untracked") {
         Ok(contents) => contents,
         Err(result) => return result,
     };
@@ -508,12 +534,12 @@ fn test_root_014_artifacts_untracked(ctx: &RunContext) -> TestResult {
                     "git ls-files artifacts failed",
                 );
             } else {
-    let tracked_output = String::from_utf8_lossy(&output.stdout).into_owned();
-    let tracked = tracked_output
-        .lines()
-        .map(str::trim)
-        .filter(|line| !line.is_empty())
-        .collect::<Vec<_>>();
+                let tracked_output = String::from_utf8_lossy(&output.stdout).into_owned();
+                let tracked = tracked_output
+                    .lines()
+                    .map(str::trim)
+                    .filter(|line| !line.is_empty())
+                    .collect::<Vec<_>>();
                 for path in tracked {
                     push_root_violation(
                         &mut violations,
@@ -542,7 +568,11 @@ fn test_root_014_artifacts_untracked(ctx: &RunContext) -> TestResult {
 
 fn test_root_015_no_duplicate_toolchain_authority(ctx: &RunContext) -> TestResult {
     let mut violations = Vec::new();
-    for duplicate in ["rust-toolchain", "rust-toolchain.yaml", "rust-toolchain.json"] {
+    for duplicate in [
+        "rust-toolchain",
+        "rust-toolchain.yaml",
+        "rust-toolchain.json",
+    ] {
         if ctx.repo_root.join(duplicate).exists() {
             push_root_violation(
                 &mut violations,
@@ -560,7 +590,11 @@ fn test_root_015_no_duplicate_toolchain_authority(ctx: &RunContext) -> TestResul
     }
 }
 
-fn root_surface_manifest(ctx: &RunContext, contract_id: &str, test_id: &str) -> Result<serde_json::Value, TestResult> {
+fn root_surface_manifest(
+    ctx: &RunContext,
+    contract_id: &str,
+    test_id: &str,
+) -> Result<serde_json::Value, TestResult> {
     let contents = read_root_text(ctx, "ops/inventory/root-surface.json", contract_id, test_id)?;
     serde_json::from_str(&contents).map_err(|err| {
         TestResult::Fail(vec![Violation {

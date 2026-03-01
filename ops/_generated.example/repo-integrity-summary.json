@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "kind": "repo_integrity_summary",
+  "generated_by": "bijux dev atlas check run --suite repo_required --include-internal --include-slow --format json",
+  "laws_source": "docs/_internal/contracts/repo-laws.json",
+  "required_suite": "repo_required",
+  "p0_checks": [
+    "checks_repo_artifacts_not_tracked",
+    "checks_repo_generated_content_stays_in_allowed_paths",
+    "checks_repo_law_metadata_complete_and_unique",
+    "checks_repo_root_directory_allowlist_contract",
+    "checks_repo_root_markdown_allowlist_contract",
+    "checks_repo_suite_includes_p0_checks"
+  ]
+}

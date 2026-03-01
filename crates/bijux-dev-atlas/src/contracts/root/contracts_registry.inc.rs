@@ -1,7 +1,8 @@
-const ROOT_ALLOWED_VISIBLE: [&str; 18] = [
+const ROOT_ALLOWED_VISIBLE: [&str; 20] = [
     ".cargo",
     ".dockerignore",
     ".editorconfig",
+    ".gitattributes",
     ".github",
     ".gitignore",
     "CHANGELOG.md",
@@ -13,13 +14,15 @@ const ROOT_ALLOWED_VISIBLE: [&str; 18] = [
     "LICENSE",
     "Makefile",
     "README.md",
+    "REPO_MAP.md",
     "SECURITY.md",
     "configs",
     "crates",
     "docker",
 ];
 
-const ROOT_ALLOWED_VISIBLE_TAIL: [&str; 5] = ["docs", "make", "mkdocs.yml", "ops", "rust-toolchain.toml"];
+const ROOT_ALLOWED_VISIBLE_TAIL: [&str; 5] =
+    ["docs", "make", "mkdocs.yml", "ops", "rust-toolchain.toml"];
 
 const ROOT_IGNORED_LOCAL: [&str; 3] = [".git", ".idea", "artifacts"];
 

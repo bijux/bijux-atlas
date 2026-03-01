@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "allowed_prefixes": [
+    "artifacts/",
+    "configs/_generated/",
+    "configs/schema/generated/",
+    "crates/",
+    "docs/_internal/generated/",
+    "ops/"
+  ]
+}

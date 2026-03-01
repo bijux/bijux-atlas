@@ -10,6 +10,9 @@
     ".editorconfig": {
       "kind": "file"
     },
+    ".gitattributes": {
+      "kind": "file"
+    },
     ".github": {
       "kind": "dir"
     },
@@ -41,6 +44,9 @@
       "kind": "file"
     },
     "README.md": {
+      "kind": "file"
+    },
+    "REPO_MAP.md": {
       "kind": "file"
     },
     "SECURITY.md": {

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "allowed_root_markdown": [
+    "CHANGELOG.md",
+    "CONTRACT.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "REPO_MAP.md",
+    "SECURITY.md"
+  ],
+  "allowed_root_directories": [
+    ".cargo",
+    ".github",
+    "artifacts",
+    "configs",
+    "crates",
+    "docker",
+    "docs",
+    "make",
+    "ops"
+  ]
+}
