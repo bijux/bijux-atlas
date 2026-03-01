@@ -9,8 +9,6 @@ site_dir: artifacts/docs/site
 
 exclude_docs: |
   _drafts/**
-  _nav/**
-  metadata/**
 
 theme:
   name: material
@@ -45,13 +43,11 @@ plugins:
 not_in_nav: |
   _assets/**
   _drafts/**
-  _generated/**
-  _meta/**
-  _nav/**
-  metadata/**
+  _internal/**
   contracts/**/*.json
 
 nav:
+  - Home: index.md
   - Start Here: start-here.md
   - Product: product/index.md
   - Architecture: architecture/index.md
@@ -60,6 +56,6 @@ nav:
   - Control-plane: control-plane/index.md
   - Development:
       - Overview: development/index.md
-      - Docs governance: governance/index.md
-      - Docs Dashboard: governance/docs-dashboard.md
+      - Docs governance: _internal/governance/index.md
+      - Docs Dashboard: _internal/governance/docs-dashboard.md
   - Reference: reference/index.md

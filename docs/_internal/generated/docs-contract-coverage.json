@@ -1,0 +1,24 @@
+{
+  "documents_total": 576,
+  "generated_artifacts": [
+    "docs/_internal/generated/docs-inventory.md",
+    "docs/_internal/generated/topic-index.json",
+    "docs/_internal/generated/search-index.json",
+    "docs/_internal/generated/sitemap.json",
+    "docs/_internal/generated/breadcrumbs.json",
+    "docs/_internal/generated/docs-dependency-graph.json",
+    "docs/_internal/generated/docs-quality-dashboard.json",
+    "docs/_internal/generated/docs-contract-coverage.json",
+    "docs/_internal/generated/concept-registry.json",
+    "docs/_internal/generated/concept-registry.md",
+    "docs/_internal/governance/metadata/front-matter.index.json"
+  ],
+  "kind": "docs_contract_coverage_v1",
+  "metadata_sources": {
+    "audiences": "docs/_internal/governance/metadata/audiences.json",
+    "owners": "docs/owners.json",
+    "sections": "docs/sections.json"
+  },
+  "schema_version": 1,
+  "section_count": 37
+}

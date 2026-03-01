@@ -99,7 +99,7 @@ pub(crate) fn run_check_tree_budgets(
                 .unwrap_or(&dir)
                 .display()
                 .to_string();
-            if rel_dir.contains("/_generated") || rel_dir.contains("/_drafts") {
+            if rel_dir.contains("/_internal/generated") || rel_dir.contains("/_drafts") {
                 continue;
             }
             let index_path = dir.join("INDEX.md");
@@ -232,7 +232,7 @@ pub(crate) fn run_check_tree_budgets(
         }
     }
 
-    let command_index_path = repo_root.join("docs/_generated/command-index.json");
+    let command_index_path = repo_root.join("docs/_internal/generated/command-index.json");
     let known_command_ids = if command_index_path.exists() {
         let value: serde_json::Value = serde_json::from_str(
             &fs::read_to_string(&command_index_path)
@@ -267,7 +267,7 @@ pub(crate) fn run_check_tree_budgets(
         std::collections::BTreeSet::new()
     };
 
-    let schema_index_path = repo_root.join("docs/_generated/schema-index.json");
+    let schema_index_path = repo_root.join("docs/_internal/generated/schema-index.json");
     let known_schema_paths = if schema_index_path.exists() {
         let value: serde_json::Value = serde_json::from_str(
             &fs::read_to_string(&schema_index_path)
@@ -552,4 +552,3 @@ pub(crate) fn run_check_registry_doctor(
     write_output_if_requested(out, &rendered)?;
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
-

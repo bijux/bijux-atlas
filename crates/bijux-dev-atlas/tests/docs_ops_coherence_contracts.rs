@@ -294,7 +294,7 @@ fn codeowners_matches_shared_docs_and_ops_owner_handles() {
 fn mkdocs_nav_matches_docs_nav_contract() {
     let root = repo_root();
     let nav = parse_mkdocs_top_level_nav(&root);
-    let nav_contract = read(&root.join("docs/_nav/index.md"));
+    let nav_contract = read(&root.join("docs/_internal/nav/index.md"));
     let declared_names = parse_nav_contract_list(
         &nav_contract,
         "- Top-level navigation labels are fixed: ",
@@ -309,11 +309,11 @@ fn mkdocs_nav_matches_docs_nav_contract() {
 
     assert_eq!(
         nav, declared_names,
-        "mkdocs top-level nav labels must match docs/_nav/index.md"
+        "mkdocs top-level nav labels must match docs/_internal/nav/index.md"
     );
     assert_eq!(
         nav, declared_order,
-        "mkdocs top-level nav order must match docs/_nav/index.md"
+        "mkdocs top-level nav order must match docs/_internal/nav/index.md"
     );
 }
 

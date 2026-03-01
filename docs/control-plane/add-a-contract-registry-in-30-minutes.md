@@ -32,4 +32,4 @@ cargo test -q -p bijux-dev-atlas --test docs_registry_contracts -- --nocapture
 
 - [Reports contract](reports-contract.md)
 - [Add a gate policy](add-a-gate-policy.md)
-- [Docs change process](../_meta/docs-change-process.md)
+- [Docs change process](../_internal/meta/docs-change-process.md)

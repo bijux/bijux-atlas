@@ -47,7 +47,7 @@
 
 SQLite provides deterministic local semantics, predictable deployment behavior, and strong compatibility control for immutable release reads.
 
-See: [ADR 0002](../governance/adrs/adr-0002-sqlite-serving-store.md).
+See: [ADR 0002](../_internal/governance/adrs/adr-0002-sqlite-serving-store.md).
 
 ## Operational Relevance
 

@@ -122,20 +122,20 @@ fn parse_mkdocs_top_level_nav(root: &Path) -> Vec<String> {
 fn generated_docs_surface_is_committed_and_non_empty() {
     let root = repo_root();
     for rel in [
-        "docs/_generated/docs-inventory.md",
-        "docs/_generated/topic-index.md",
-        "docs/_generated/topic-index.json",
-        "docs/_generated/search-index.json",
-        "docs/_generated/sitemap.json",
-        "docs/_generated/breadcrumbs.json",
-        "docs/_generated/docs-dependency-graph.json",
-        "docs/_generated/command-index.json",
-        "docs/_generated/schema-index.json",
-        "docs/_generated/docs-quality-dashboard.json",
-        "docs/_generated/docs-contract-coverage.json",
-        "docs/_generated/concept-registry.json",
-        "docs/_generated/concept-registry.md",
-        "docs/_generated/make-targets.md",
+        "docs/_internal/generated/docs-inventory.md",
+        "docs/_internal/generated/topic-index.md",
+        "docs/_internal/generated/topic-index.json",
+        "docs/_internal/generated/search-index.json",
+        "docs/_internal/generated/sitemap.json",
+        "docs/_internal/generated/breadcrumbs.json",
+        "docs/_internal/generated/docs-dependency-graph.json",
+        "docs/_internal/generated/command-index.json",
+        "docs/_internal/generated/schema-index.json",
+        "docs/_internal/generated/docs-quality-dashboard.json",
+        "docs/_internal/generated/docs-contract-coverage.json",
+        "docs/_internal/generated/concept-registry.json",
+        "docs/_internal/generated/concept-registry.md",
+        "docs/_internal/generated/make-targets.md",
     ] {
         let path = root.join(rel);
         assert!(path.is_file(), "missing committed generated docs artifact: {rel}");
@@ -350,10 +350,10 @@ fn docs_spine_pages_exist_and_index_links_every_node() {
 #[test]
 fn concept_registry_exists_and_points_to_a_canonical_map() {
     let root = repo_root();
-    let text = read(&root.join("docs/governance/style/concept-registry.md"));
+    let text = read(&root.join("docs/_internal/governance/style/concept-registry.md"));
     for required in [
         "Defines canonical concepts and their single source pages.",
-        "docs/governance/metadata/concepts.yml",
+        "docs/_internal/governance/metadata/concepts.yml",
         "Each concept has exactly one canonical page.",
     ] {
         assert!(
@@ -367,10 +367,10 @@ fn concept_registry_exists_and_points_to_a_canonical_map() {
 #[ignore = "legacy docs registry contract pending rewrite"]
 fn concept_registry_generated_outputs_match_the_canonical_yaml() {
     let root = repo_root();
-    let generated = load_json(&root.join("docs/_generated/concept-registry.json"));
+    let generated = load_json(&root.join("docs/_internal/generated/concept-registry.json"));
     let rows = generated["rows"].as_array().expect("rows array");
     assert!(!rows.is_empty(), "concept registry output must not be empty");
-    let markdown = read(&root.join("docs/_generated/concept-registry.md"));
+    let markdown = read(&root.join("docs/_internal/generated/concept-registry.md"));
     for row in rows {
         let id = row["id"].as_str().expect("concept id");
         let canonical = row["canonical"].as_str().expect("canonical");
@@ -390,7 +390,7 @@ fn concept_registry_generated_outputs_match_the_canonical_yaml() {
 #[ignore = "legacy docs registry contract pending rewrite"]
 fn docs_front_matter_index_matches_registry_metadata_contract() {
     let root = repo_root();
-    let index = load_json(&root.join("docs/governance/metadata/front-matter.index.json"));
+    let index = load_json(&root.join("docs/_internal/governance/metadata/front-matter.index.json"));
     let documents = index["documents"].as_array().expect("documents array");
     assert!(!documents.is_empty(), "front matter index must not be empty");
     for row in documents {
@@ -408,7 +408,7 @@ fn docs_front_matter_index_matches_registry_metadata_contract() {
 #[test]
 fn docs_audience_policy_is_curated_and_front_matter_uses_allowed_values() {
     let root = repo_root();
-    let policy = load_json(&root.join("docs/governance/metadata/audiences.json"));
+    let policy = load_json(&root.join("docs/_internal/governance/metadata/audiences.json"));
     let allowed = policy["allowed"]
         .as_array()
         .expect("allowed array")
@@ -428,7 +428,7 @@ fn docs_audience_policy_is_curated_and_front_matter_uses_allowed_values() {
             "contributor",
         ])
     );
-    let index = load_json(&root.join("docs/governance/metadata/front-matter.index.json"));
+    let index = load_json(&root.join("docs/_internal/governance/metadata/front-matter.index.json"));
     for row in index["documents"].as_array().expect("documents array") {
         let path = row["path"].as_str().expect("path");
         let audience = row["audience"].as_str().expect("audience");
@@ -442,7 +442,7 @@ fn docs_audience_policy_is_curated_and_front_matter_uses_allowed_values() {
 #[test]
 fn canonical_front_matter_index_covers_every_docs_page() {
     let root = repo_root();
-    let index = load_json(&root.join("docs/governance/metadata/front-matter.index.json"));
+    let index = load_json(&root.join("docs/_internal/governance/metadata/front-matter.index.json"));
     let indexed = index["documents"]
         .as_array()
         .expect("documents array")
@@ -452,10 +452,10 @@ fn canonical_front_matter_index_covers_every_docs_page() {
     let mut missing = Vec::new();
     for path in markdown_files(&root.join("docs")) {
         let rel = path.strip_prefix(&root).expect("repo relative").display().to_string();
-        if rel.starts_with("docs/_generated/") || rel.starts_with("docs/_drafts/") {
+        if rel.starts_with("docs/_internal/generated/") || rel.starts_with("docs/_drafts/") {
             continue;
         }
-        if rel.starts_with("docs/governance/style/")
+        if rel.starts_with("docs/_internal/governance/style/")
             || rel.starts_with("docs/reference/contracts/")
             || rel.starts_with("docs/reference/examples/")
         {
@@ -526,7 +526,7 @@ fn docs_ssot_files_have_single_authoritative_locations() {
 #[test]
 fn docs_schema_index_contract_coverage_points_to_registry_ssot() {
     let root = repo_root();
-    let coverage = load_json(&root.join("docs/_generated/docs-contract-coverage.json"));
+    let coverage = load_json(&root.join("docs/_internal/generated/docs-contract-coverage.json"));
     let sources = &coverage["metadata_sources"];
     assert_eq!(
         sources["sections"].as_str(),
@@ -544,11 +544,11 @@ fn docs_schema_index_contract_coverage_points_to_registry_ssot() {
             .expect("generated_artifacts")
             .iter()
             .filter_map(|v| v.as_str())
-            .any(|p| p == "docs/governance/metadata/front-matter.index.json"),
+            .any(|p| p == "docs/_internal/governance/metadata/front-matter.index.json"),
         true,
         "docs contract coverage must include generated front-matter inventory"
     );
-    let front_matter = load_json(&root.join("docs/governance/metadata/front-matter.index.json"));
+    let front_matter = load_json(&root.join("docs/_internal/governance/metadata/front-matter.index.json"));
     assert_eq!(
         front_matter["source"].as_str(),
         Some("docs/registry.json"),
@@ -570,7 +570,7 @@ fn drafts_stay_out_of_main_index_and_nav() {
 #[ignore = "legacy docs registry contract pending rewrite"]
 fn docs_growth_budget_and_removal_policy_are_committed() {
     let root = repo_root();
-    let policy = load_json(&root.join("docs/governance/metadata/growth-budget.json"));
+    let policy = load_json(&root.join("docs/_internal/governance/metadata/growth-budget.json"));
     let max = policy["max_markdown_files"]
         .as_u64()
         .expect("max_markdown_files") as usize;
@@ -581,7 +581,7 @@ fn docs_growth_budget_and_removal_policy_are_committed() {
         count,
         max
     );
-    let removal = read(&root.join("docs/governance/docs-removal-policy.md"));
+    let removal = read(&root.join("docs/_internal/governance/docs-removal-policy.md"));
     for required in [
         "Deleting docs is allowed",
         "Adding new stable docs requires explicit justification",
@@ -613,7 +613,7 @@ fn runbook_and_decision_templates_are_canonical_and_enforced() {
             "runbook template missing `{heading}`"
         );
     }
-    let decision_template = read(&root.join("docs/governance/decision-template.md"));
+    let decision_template = read(&root.join("docs/_internal/governance/decision-template.md"));
     for heading in ["## Context", "## Decision", "## Consequences"] {
         assert!(
             decision_template.contains(heading),
@@ -649,7 +649,7 @@ fn runbook_and_decision_templates_are_canonical_and_enforced() {
     );
 
     let mut adr_violations = Vec::new();
-    for path in markdown_files(&root.join("docs/governance/adrs")) {
+    for path in markdown_files(&root.join("docs/_internal/governance/adrs")) {
         let rel = path.strip_prefix(&root).expect("repo relative").display().to_string();
         if rel.ends_with("INDEX.md") {
             continue;
@@ -757,7 +757,7 @@ fn governance_docs_keep_tagged_code_blocks() {
     let root = repo_root();
     let mut violations = Vec::new();
     for rel in [
-        "docs/governance/docs-removal-policy.md",
+        "docs/_internal/governance/docs-removal-policy.md",
         "docs/operations/runbook-template.md",
         "docs/architecture/decision-template.md",
     ] {
@@ -807,7 +807,7 @@ fn docs_top_level_surface_matches_section_owner_and_audience_registries() {
     let owners = owners_json["section_owners"]
         .as_object()
         .expect("section owners");
-    let audiences_json = load_json(&root.join("docs/governance/metadata/audiences.json"));
+    let audiences_json = load_json(&root.join("docs/_internal/governance/metadata/audiences.json"));
     let audiences = audiences_json["section_defaults"]
         .as_object()
         .expect("section defaults");
@@ -829,7 +829,7 @@ fn docs_top_level_surface_matches_section_owner_and_audience_registries() {
         assert!(owners.contains_key(dir), "docs/owners.json missing section owner for `{dir}`");
         assert!(
             audiences.contains_key(dir),
-            "docs/governance/metadata/audiences.json missing section default for `{dir}`"
+            "docs/_internal/governance/metadata/audiences.json missing section default for `{dir}`"
         );
     }
 }
@@ -838,20 +838,20 @@ fn docs_top_level_surface_matches_section_owner_and_audience_registries() {
 #[ignore = "legacy docs registry contract pending rewrite"]
 fn docs_generated_artifacts_are_covered_by_contract_coverage_report() {
     let root = repo_root();
-    let payload = load_json(&root.join("docs/_generated/docs-contract-coverage.json"));
+    let payload = load_json(&root.join("docs/_internal/generated/docs-contract-coverage.json"));
     assert_eq!(payload["kind"].as_str(), Some("docs_contract_coverage_v1"));
     let artifacts = payload["generated_artifacts"]
         .as_array()
         .expect("generated artifacts");
     for rel in [
-        "docs/_generated/topic-index.json",
-        "docs/_generated/search-index.json",
-        "docs/_generated/sitemap.json",
-        "docs/_generated/breadcrumbs.json",
-        "docs/_generated/docs-dependency-graph.json",
-        "docs/_generated/docs-quality-dashboard.json",
-        "docs/_generated/docs-contract-coverage.json",
-        "docs/_generated/concept-registry.json",
+        "docs/_internal/generated/topic-index.json",
+        "docs/_internal/generated/search-index.json",
+        "docs/_internal/generated/sitemap.json",
+        "docs/_internal/generated/breadcrumbs.json",
+        "docs/_internal/generated/docs-dependency-graph.json",
+        "docs/_internal/generated/docs-quality-dashboard.json",
+        "docs/_internal/generated/docs-contract-coverage.json",
+        "docs/_internal/generated/concept-registry.json",
     ] {
         assert!(
             artifacts.iter().any(|row| row.as_str() == Some(rel)),
@@ -867,8 +867,8 @@ fn docs_navigation_policy_is_single_sourced_and_deterministic() {
     let top_level = parse_mkdocs_top_level_nav(&root);
     assert_eq!(
         top_level.first().map(String::as_str),
-        Some("Start Here"),
-        "mkdocs top-level navigation must start at Start Here"
+        Some("Home"),
+        "mkdocs top-level navigation must start at Home"
     );
     assert!(
         mkdocs.contains("strict: true"),

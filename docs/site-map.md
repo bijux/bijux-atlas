@@ -30,5 +30,5 @@ This documentation set is organized around three audience paths and a shared rea
 ## Next steps
 
 - Guided tracks: [What to read next](what-to-read-next.md)
-- Contributor docs governance: [Docs governance](governance/index.md)
+- Contributor docs governance: [Docs governance](_internal/governance/index.md)
 - Terms: [Glossary](glossary.md)

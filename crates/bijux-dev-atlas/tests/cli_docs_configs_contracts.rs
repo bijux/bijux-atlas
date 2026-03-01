@@ -405,7 +405,7 @@ fn configs_print_supports_json_format() {
 
 #[test]
 fn crate_doc_governance_snapshot_matches_golden() {
-    let governance_path = repo_root().join("docs/_generated/crate-doc-governance.json");
+    let governance_path = repo_root().join("docs/_internal/generated/crate-doc-governance.json");
     let governance_text = fs::read_to_string(governance_path).expect("governance json");
     let governance: serde_json::Value =
         serde_json::from_str(&governance_text).expect("valid governance json");

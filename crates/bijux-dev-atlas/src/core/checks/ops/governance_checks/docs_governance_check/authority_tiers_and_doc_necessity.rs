@@ -144,7 +144,7 @@ fn validate_ops_authority_tiers_and_doc_necessity(
         allowed_external_urls.insert(url.to_string());
     }
 
-    let docs_delete_sim_rel = Path::new("docs/_generated/docs-what-breaks-if-removed-report.json");
+    let docs_delete_sim_rel = Path::new("docs/_internal/generated/docs-what-breaks-if-removed-report.json");
     let docs_delete_sim_text = fs::read_to_string(ctx.repo_root.join(docs_delete_sim_rel))
         .map_err(|err| CheckError::Failed(format!("read {}: {err}", docs_delete_sim_rel.display())))?;
     let docs_delete_sim_json: serde_json::Value = serde_json::from_str(&docs_delete_sim_text)

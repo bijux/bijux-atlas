@@ -21,7 +21,7 @@
 
   <rect class="box" x="620" y="40" width="320" height="70"/>
   <text class="txt" x="636" y="70">Generated docs/code artifacts</text>
-  <text class="txt" x="636" y="92">docs/_generated + runtime constants</text>
+  <text class="txt" x="636" y="92">docs/_internal/generated + runtime constants</text>
 
   <rect class="box" x="160" y="190" width="260" height="70"/>
   <text class="txt" x="176" y="220">crates/* runtime services</text>

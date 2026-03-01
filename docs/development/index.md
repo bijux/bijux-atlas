@@ -20,9 +20,9 @@ Guide contributors through repository structure, CI behavior, control-plane oper
 - [Toolchain](toolchain.md)
 - [Add a check in 30 minutes](../control-plane/add-a-check-in-30-minutes.md)
 - [Add a contract registry in 30 minutes](../control-plane/add-a-contract-registry-in-30-minutes.md)
-- [Docs governance](../governance/index.md)
-- [Docs change process](../_meta/docs-change-process.md)
-- [Docs taxonomy quick reference](../_meta/docs-taxonomy-quick-reference.md)
+- [Docs governance](../_internal/governance/index.md)
+- [Docs change process](../_internal/meta/docs-change-process.md)
+- [Docs taxonomy quick reference](../_internal/meta/docs-taxonomy-quick-reference.md)
 - [Where truth lives](where-truth-lives.md)
 - [Site map](../site-map.md)
 

@@ -1,6 +1,6 @@
 # PUBLIC API: bijux-atlas-query
 
-Stability reference: [Stability Levels](../../../docs/_style/stability-levels.md)
+Stability reference: [Stability Levels](../../../docs/_internal/style/stability-levels.md)
 
 Stable exports:
 - `CRATE_NAME`

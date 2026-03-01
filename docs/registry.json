@@ -6678,7 +6678,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/_meta/docs-build-model.md",
+      "path": "docs/_internal/meta/docs-build-model.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -6701,7 +6701,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/_meta/docs-change-process.md",
+      "path": "docs/_internal/meta/docs-change-process.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -6724,7 +6724,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/_meta/docs-operating-model.md",
+      "path": "docs/_internal/meta/docs-operating-model.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -6747,7 +6747,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/_meta/docs-principles.md",
+      "path": "docs/_internal/meta/docs-principles.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -6770,7 +6770,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/_meta/docs-taxonomy-quick-reference.md",
+      "path": "docs/_internal/meta/docs-taxonomy-quick-reference.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -6793,7 +6793,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/_meta/generated-artifacts.md",
+      "path": "docs/_internal/meta/generated-artifacts.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -6816,7 +6816,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/_meta/index.md",
+      "path": "docs/_internal/meta/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -6840,7 +6840,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/_meta/internal/docs-rewrite-plan.md",
+      "path": "docs/_internal/meta/internal/docs-rewrite-plan.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -6865,7 +6865,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/_meta/internal/index.md",
+      "path": "docs/_internal/meta/internal/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -6890,7 +6890,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/_meta/internal/root-legacy-mapping.md",
+      "path": "docs/_internal/meta/internal/root-legacy-mapping.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -6914,7 +6914,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "internal",
       "owner": "docs-governance",
-      "path": "docs/_nav/index.md",
+      "path": "docs/_internal/nav/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9075,7 +9075,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/adrs/adr-0001-workspace-boundaries-and-effects.md",
+      "path": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9100,7 +9100,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/adrs/adr-0002-sqlite-serving-store.md",
+      "path": "docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9125,7 +9125,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/adrs/adr-0003-federated-registry-deterministic-merge.md",
+      "path": "docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9150,7 +9150,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md",
+      "path": "docs/_internal/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9175,7 +9175,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md",
+      "path": "docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9200,7 +9200,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/adrs/index.md",
+      "path": "docs/_internal/governance/adrs/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9225,7 +9225,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/checks/docs-checks.md",
+      "path": "docs/_internal/governance/checks/docs-checks.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9250,7 +9250,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/checks/index.md",
+      "path": "docs/_internal/governance/checks/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9274,7 +9274,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/contract-breaking-change-examples.md",
+      "path": "docs/_internal/governance/contract-breaking-change-examples.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9297,7 +9297,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/contract-change-checklist.md",
+      "path": "docs/_internal/governance/contract-change-checklist.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9320,7 +9320,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/contract-ssot-workflow.md",
+      "path": "docs/_internal/governance/contract-ssot-workflow.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9343,7 +9343,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/decision-template.md",
+      "path": "docs/_internal/governance/decision-template.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9366,7 +9366,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-build-publish-model.md",
+      "path": "docs/_internal/governance/docs-build-publish-model.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9389,7 +9389,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-docs",
-      "path": "docs/governance/docs-charter.md",
+      "path": "docs/_internal/governance/docs-charter.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9412,7 +9412,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-contract.md",
+      "path": "docs/_internal/governance/docs-contract.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9435,7 +9435,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-dashboard.md",
+      "path": "docs/_internal/governance/docs-dashboard.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9458,7 +9458,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-debt-backlog.md",
+      "path": "docs/_internal/governance/docs-debt-backlog.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9481,7 +9481,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-lint-rules.md",
+      "path": "docs/_internal/governance/docs-lint-rules.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9504,7 +9504,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-navigation-policy.md",
+      "path": "docs/_internal/governance/docs-navigation-policy.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9527,7 +9527,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-operating-model.md",
+      "path": "docs/_internal/governance/docs-operating-model.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9550,7 +9550,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-ownership.md",
+      "path": "docs/_internal/governance/docs-ownership.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9573,7 +9573,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-quality-policy.md",
+      "path": "docs/_internal/governance/docs-quality-policy.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9596,7 +9596,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-quarterly-cleanup.md",
+      "path": "docs/_internal/governance/docs-quarterly-cleanup.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9619,7 +9619,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-removal-policy.md",
+      "path": "docs/_internal/governance/docs-removal-policy.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9642,7 +9642,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-review-checklist.md",
+      "path": "docs/_internal/governance/docs-review-checklist.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9665,7 +9665,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-search-tips.md",
+      "path": "docs/_internal/governance/docs-search-tips.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9688,7 +9688,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-style.md",
+      "path": "docs/_internal/governance/docs-style.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9711,7 +9711,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/generated-content-policy.md",
+      "path": "docs/_internal/governance/generated-content-policy.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9734,7 +9734,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "platform",
-      "path": "docs/governance/index.md",
+      "path": "docs/_internal/governance/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9758,7 +9758,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/metadata/index.md",
+      "path": "docs/_internal/governance/metadata/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9783,7 +9783,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/metadata/taxonomy-map.md",
+      "path": "docs/_internal/governance/metadata/taxonomy-map.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9807,7 +9807,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/naming.md",
+      "path": "docs/_internal/governance/naming.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9831,7 +9831,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/policies/checks.md",
+      "path": "docs/_internal/governance/policies/checks.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9856,7 +9856,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/policies/index.md",
+      "path": "docs/_internal/governance/policies/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9880,7 +9880,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/policy-enforcement-mapping.md",
+      "path": "docs/_internal/governance/policy-enforcement-mapping.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9903,7 +9903,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/readers-guide.md",
+      "path": "docs/_internal/governance/readers-guide.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9926,7 +9926,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/redirects-policy.md",
+      "path": "docs/_internal/governance/redirects-policy.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9949,7 +9949,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/style-guide.md",
+      "path": "docs/_internal/governance/style-guide.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9973,7 +9973,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/style/concept-ids.md",
+      "path": "docs/_internal/governance/style/concept-ids.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -9998,7 +9998,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/style/concept-registry.md",
+      "path": "docs/_internal/governance/style/concept-registry.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -10023,7 +10023,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/style/crate-docs-depth-rubric.md",
+      "path": "docs/_internal/governance/style/crate-docs-depth-rubric.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -10048,7 +10048,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/style/depth-policy.md",
+      "path": "docs/_internal/governance/style/depth-policy.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -10073,7 +10073,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/style/depth-rubric.md",
+      "path": "docs/_internal/governance/style/depth-rubric.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -10098,7 +10098,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/style/index.md",
+      "path": "docs/_internal/governance/style/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -10123,7 +10123,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/style/placement.md",
+      "path": "docs/_internal/governance/style/placement.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -10148,7 +10148,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/style/stability-levels.md",
+      "path": "docs/_internal/governance/style/stability-levels.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -10173,7 +10173,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/style/structure-templates.md",
+      "path": "docs/_internal/governance/style/structure-templates.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [

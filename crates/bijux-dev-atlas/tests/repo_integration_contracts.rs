@@ -461,7 +461,7 @@ fn root_dockerfile_symlink_points_to_canonical_runtime_dockerfile() {
 fn contracts_makefile_is_the_only_public_contract_gate_entrypoint() {
     let root = repo_root();
     let registry = parse_make_registry();
-    let docs = read(&root.join("docs/_generated/make-targets.md"));
+    let docs = read(&root.join("docs/_internal/generated/make-targets.md"));
 
     for (name, defined_in, visibility) in registry {
         if !name.starts_with("contracts") || visibility != "public" {
@@ -570,7 +570,7 @@ fn quality_wall_doc_ties_required_contracts_lanes_and_repo_surfaces_together() {
         "artifacts/contracts/required.json",
         "make/contracts.mk",
         "docker/images/runtime/Dockerfile",
-        "docs/_generated/make-targets.md",
+        "docs/_internal/generated/make-targets.md",
         "configs/contracts/env.schema.json",
         "docs/reference/contracts/schemas/CONFIG_KEYS.json",
         "local",

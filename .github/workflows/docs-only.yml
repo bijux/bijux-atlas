@@ -7,7 +7,7 @@ on:
       - 'mkdocs.yml'
       - 'make/makefiles/_docs.mk'
       - 'docs/contracts/**/*.json'
-      - 'docs/_generated/openapi/**'
+      - 'docs/_internal/generated/openapi/**'
       - 'configs/openapi/v1/openapi.generated.json'
 
 permissions:
@@ -118,8 +118,8 @@ jobs:
         run: |
           set -euo pipefail
           report_root="artifacts/${RUN_ID}/reports"
-          test -f docs/_generated/docs-test-coverage.json
-          cp docs/_generated/docs-test-coverage.json "${report_root}/docs-test-coverage.json"
+          test -f docs/_internal/generated/docs-test-coverage.json
+          cp docs/_internal/generated/docs-test-coverage.json "${report_root}/docs-test-coverage.json"
       - name: Publish summary
         shell: bash
         run: |

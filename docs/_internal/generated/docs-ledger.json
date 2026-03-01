@@ -1,0 +1,2490 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas docs ledger --write-example",
+  "entries": [
+    {
+      "path": "docs/AUTHORS.md",
+      "title": "Authors",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/CONTRACT.md",
+      "title": "Docs Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/PROJECT_DESCRIPTION_SNIPPET.md",
+      "title": "Project Description Snippet",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/PROJECT_IDENTITY.md",
+      "title": "Project Identity",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/STYLE.md",
+      "title": "Documentation Style",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_assets/index.md",
+      "title": "Assets Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/_assets/diagrams/index.md",
+      "title": "Diagrams",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/_drafts/index.md",
+      "title": "Drafts Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/_drafts/transcripts-canonical-policy.md",
+      "title": "Canonical Transcript Policy (v2 Placeholder)",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/generated/crate-doc-api-table.md",
+      "title": "Crate Public API Table",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/generated/crate-doc-governance.md",
+      "title": "Crate Docs Governance",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/generated/docs-inventory.md",
+      "title": "Docs Inventory",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/generated/topic-index.md",
+      "title": "Topic Index",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_lint/index.md",
+      "title": "_Lint Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/_lint/duplicate-topics.md",
+      "title": "Duplicate Topics Checklist",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_lint/observability-docs.md",
+      "title": "Observability Docs Checklist",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_lint/renames.md",
+      "title": "Rename Ledger",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/_internal/nav/index.md",
+      "title": "Navigation Policy",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/_internal/style/CONCEPT_REGISTRY.md",
+      "title": "Concept Registry",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/style/DEPTH_POLICY.md",
+      "title": "Depth Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/style/DEPTH_RUBRIC.md",
+      "title": "Depth Rubric",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/_internal/style/index.md",
+      "title": "_Style Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/_internal/style/concept-ids.md",
+      "title": "Canonical Concept IDs",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/style/crate-docs-depth-rubric.md",
+      "title": "Crate Docs Depth Rubric",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/style/docs-review-checklist.md",
+      "title": "Docs Review Checklist",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/_internal/style/naming-standard.md",
+      "title": "Naming Standard",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/_internal/style/placement.md",
+      "title": "Placement Decision Tree",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/style/stability-levels.md",
+      "title": "Stability Levels",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/style/structure-templates.md",
+      "title": "Structure Templates",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/style/style-guide.md",
+      "title": "Style Guide",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/style/terms-glossary.md",
+      "title": "Terms Glossary",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/_internal/style/writing-rules.md",
+      "title": "Writing Rules",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/adrs/ADR-0001-workspace-boundaries-and-effects.md",
+      "title": "ADR-0001: Workspace Boundaries And Effects",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/adrs/ADR-0002-sqlite-serving-store.md",
+      "title": "ADR-0002: SQLite As Canonical Serving Store",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/adrs/ADR-0003-federated-registry-deterministic-merge.md",
+      "title": "ADR-0003: Federated Registry With Deterministic Merge",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/adrs/ADR-0004-plugin-contract-and-umbrella-dispatch.md",
+      "title": "ADR-0004: Plugin Contract And Umbrella Dispatch",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/adrs/ADR-0005-security-defaults-and-enterprise-controls.md",
+      "title": "ADR-0005: Security Defaults And Optional Enterprise Controls",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/adrs/index.md",
+      "title": "ADR Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/api/index.md",
+      "title": "API Surface Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/api/caching.md",
+      "title": "API Caching",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/api/compatibility.md",
+      "title": "API Compatibility",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/api/default-field-set.md",
+      "title": "Default Field Set (`/v1/genes`)",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/api/deprecation.md",
+      "title": "API Deprecation",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/api/errors.md",
+      "title": "API Errors",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/api/pagination.md",
+      "title": "API Pagination",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/api/v1-surface.md",
+      "title": "V1 API Surface",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/api/v2-plan.md",
+      "title": "API v2 Plan (Stub)",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/api/versioning.md",
+      "title": "API Versioning",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/index.md",
+      "title": "Architecture Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/architecture-map.md",
+      "title": "Architecture Map",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/architecture/backend-architecture.md",
+      "title": "Backend Architecture",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/boundaries.md",
+      "title": "Bijux Atlas Crate Boundaries",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/architecture/boundary-maps.md",
+      "title": "Effects Boundary Maps",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/architecture/build-serve-split.md",
+      "title": "Build/Serve Split",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/cache-manager.md",
+      "title": "Cache Manager Contract",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/component-responsibilities.md",
+      "title": "Component Responsibilities",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/crate-boundary-dependency-graph.md",
+      "title": "Crate Boundary Dependency Graph",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/architecture/crate-layout-contract.md",
+      "title": "Crate Layout Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/architecture/data-access-patterns.md",
+      "title": "Data Access Patterns",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/effects.md",
+      "title": "Effects And Boundaries",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/architecture/layering/index.md",
+      "title": "Layering Architecture",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/layering/boundary-rules.md",
+      "title": "Layer Boundary Rules",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/layering/no-layer-fixups.md",
+      "title": "Layer Rule: No Cross-Layer Fixups",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/architecture/layout-shell-migration.md",
+      "title": "Layout shell-to-python transition checklist",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/architecture/no-layer-fixups.md",
+      "title": "No Layer Fixups Addendum",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/no-serving-writes.md",
+      "title": "No Serving Writes Invariant",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/overload-and-degradation.md",
+      "title": "Overload And Degradation Contract",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/policy-enforcement-map.md",
+      "title": "Policy Enforcement Map",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/architecture/query-connection-strategy.md",
+      "title": "Query Connection Strategy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/removed-compatibility-paths.md",
+      "title": "Removed Compatibility Paths",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/repo-overview.md",
+      "title": "Repository Overview",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/architecture/scripting.md",
+      "title": "Scripting Architecture Contract (Historical Transition Note)",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/store-and-registry.md",
+      "title": "Store And Registry Contract",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/architecture/system-graph.md",
+      "title": "Architecture Diagram",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/index.md",
+      "title": "Contracts SSOT",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/contracts/README.md",
+      "title": "Contracts SSOT and Generation",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/contracts/artifacts/index.md",
+      "title": "Contracts Artifacts Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/contracts/artifacts/directory-contract.md",
+      "title": "Artifact Directory Contract (SSOT)",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/artifacts/manifest-contract.md",
+      "title": "Artifact Manifest Contract",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/contracts/artifacts/sqlite-schema-contract.md",
+      "title": "SQLite Schema Contract (Ingest)",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/contracts/artifacts/sqlite-schema-evolution-strategy.md",
+      "title": "SQLite Schema Evolution Strategy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/contracts/breaking-change-examples.md",
+      "title": "Breaking Change Examples",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/chart-values.md",
+      "title": "Chart Values Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/compatibility.md",
+      "title": "Compatibility Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/config-keys.md",
+      "title": "Config Keys Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/contract-change-checklist.md",
+      "title": "Contract Change Checklist",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/contract-diff.md",
+      "title": "Contract Diff Review",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/contracts-index.md",
+      "title": "Contracts Index",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/contracts/endpoints.md",
+      "title": "Endpoints Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/errors.md",
+      "title": "Error Codes Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/examples/index.md",
+      "title": "Contract JSON Examples",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/contracts/fasta-derived-metrics.md",
+      "title": "Fasta-Derived Metrics Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/gff3-acceptance.md",
+      "title": "GFF3 Acceptance Contract (v1)",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/contracts/metrics.md",
+      "title": "Metrics Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/normalized-format.md",
+      "title": "Normalized Ingest Format Contract",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/contracts/plugin/index.md",
+      "title": "Contracts Plugin Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/contracts/plugin/conformance-checklist.md",
+      "title": "Bijux Plugin Conformance Checklist",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/plugin/mode.md",
+      "title": "Bijux-Atlas Plugin Mode",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/plugin/spec.md",
+      "title": "Bijux Plugin Specification v1",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/plugin/umbrella-plugin-contract-v1.md",
+      "title": "Umbrella Plugin Contract v1",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/contracts/qc.md",
+      "title": "Ingest QC Contract",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/contracts/ssot-workflow.md",
+      "title": "SSOT Workflow",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/contracts/tracing.md",
+      "title": "Trace Spans Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/control-plane/ops-boundary.md",
+      "title": "Ops Boundary",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/dev/check-failures.md",
+      "title": "Check Failures Closure Guide",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/index.md",
+      "title": "Development Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/add-dataset-type.md",
+      "title": "Add a New Dataset Type",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/add-endpoint.md",
+      "title": "Add a New Endpoint",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/add-metric-span.md",
+      "title": "Add a New Metric or Span",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/cargo-profiles-ssot.md",
+      "title": "Cargo Profiles SSOT",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/cargo.md",
+      "title": "Cargo Execution Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/ci/index.md",
+      "title": "Development Ci Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/ci/cache-policy.md",
+      "title": "CI Cache Policy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/ci/ci.md",
+      "title": "CI Surface",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/ci/coverage.md",
+      "title": "Coverage Runner Notes",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/ci/dependency-update-policy.md",
+      "title": "Dependency Update Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/ci/reproducible-build-hints.md",
+      "title": "Reproducible Build Hints",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/ci/security-audit-policy.md",
+      "title": "Security Audit Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/ci/supply-chain-and-runtime-security.md",
+      "title": "Supply Chain and Runtime Security Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/config-versioning.md",
+      "title": "Config Versioning",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/configs-layout.md",
+      "title": "Configs Layout",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/contributing.md",
+      "title": "Contributing",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/crates-map.md",
+      "title": "Crates Map",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/dataset-identity.md",
+      "title": "Dataset Identity Contract",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/docs-depth-contract.md",
+      "title": "Docs Depth Contract",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/local-noise.md",
+      "title": "Local Noise Policy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/make-targets-inventory.md",
+      "title": "Make Targets Inventory",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/make-targets.md",
+      "title": "Make Targets Inventory",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/makefiles/index.md",
+      "title": "Development Makefiles Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/makefiles/surface.md",
+      "title": "Makefiles Public Surface",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/naming-and-wording-conventions.md",
+      "title": "Naming and Wording Conventions",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/normalized-format.md",
+      "title": "Normalized Format (Debug)",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/ops-canonical-layout.md",
+      "title": "Ops Canonical Layout",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/ops-intent-naming.md",
+      "title": "Ops Intent-Based Naming",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/reorg-plan.md",
+      "title": "Reorganization Invariants Plan",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/repo-layout.md",
+      "title": "Repository Layout",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/repo-surface.md",
+      "title": "Repository Surface",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/root-inventory.md",
+      "title": "Root Inventory",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/script-naming.md",
+      "title": "Script Naming Convention",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/scripts-graph.md",
+      "title": "Scripts Graph",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/snapshot-test-policy.md",
+      "title": "Snapshot Test Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/style/index.md",
+      "title": "Style Docs Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/style/why-this-layout.md",
+      "title": "Why This Layout",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/symlinks.md",
+      "title": "Symlink Index",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/task-runner-removal-map.md",
+      "title": "Xtask Removal Map",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/tool-config-shims.md",
+      "title": "Tool Config Shims",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/tooling/index.md",
+      "title": "Tooling",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/tooling/build-outputs.md",
+      "title": "Build Outputs",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/tooling/command-inventory.md",
+      "title": "Command Inventory",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/tooling/compat-matrix.md",
+      "title": "Scripts Compatibility Matrix",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/tooling/control-plane.md",
+      "title": "Control Plane: bijux-dev-atlas",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/tooling/dev-atlas-docs.md",
+      "title": "Dev Atlas Docs Commands",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/tooling/dev-atlas-ops.md",
+      "title": "Dev Atlas Ops Ownership",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/tooling/make-workflow-governance-entrypoints.md",
+      "title": "Make And Workflow Governance Entrypoints",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/development/tooling/naming-policy.md",
+      "title": "Tooling Naming Policy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/tooling/ops-command-inventory.md",
+      "title": "Ops Command Inventory",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/tooling/release-packaging-plan.md",
+      "title": "Release Packaging Plan",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/tooling/rust-toolchain.md",
+      "title": "Rust Toolchain Contract",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/tooling/scripts-compat-policy.md",
+      "title": "Scripts Compatibility Policy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/tooling/tools.md",
+      "title": "Tooling Directory Intent Map",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/development/tooling/versioning-alignment.md",
+      "title": "Versioning Alignment",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/_internal/governance/checks/docs-checks.md",
+      "title": "Docs Checks Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/examples/index.md",
+      "title": "Examples Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/examples/catalog-example.md",
+      "title": "Catalog Example",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/examples/curl-requests.md",
+      "title": "Curl Requests",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/governance/DOCS_FRONT_MATTER.md",
+      "title": "Docs Front Matter Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/governance/DOCS_OWNERSHIP.md",
+      "title": "Documentation Ownership Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/governance/DOCS_QUALITY_POLICY.md",
+      "title": "Docs Quality Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/index.md",
+      "title": "bijux-atlas",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/index.md",
+      "title": "Operations Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/air-gapped-install.md",
+      "title": "Air-Gapped Install and Artifact Mirroring",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/cache-topology.md",
+      "title": "Cache Topology: Per-Node vs Per-Pod",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/cached-only-slo.md",
+      "title": "Cached-Only Mode SLO",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/canonical-workflows.md",
+      "title": "Canonical Workflows",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/config.md",
+      "title": "Runtime Config Contract",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/container.md",
+      "title": "Container and Kubernetes",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/dataset-promotion-pipeline.md",
+      "title": "Dataset Promotion Pipeline",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/datasets.md",
+      "title": "Dataset Operations",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/e2e/index.md",
+      "title": "E2E Operations Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/e2e/fixtures.md",
+      "title": "E2E Fixtures",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/e2e/k8s-tests.md",
+      "title": "E2E Kubernetes Tests",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/e2e/realdata-drills.md",
+      "title": "E2E Realdata Drills",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/e2e/stack.md",
+      "title": "E2E Stack",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/e2e/what-e2e-is-not.md",
+      "title": "What E2E Is Not",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/evidence-policy.md",
+      "title": "Evidence Policy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/full-stack-local.md",
+      "title": "Full Stack Local",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/health-endpoint-semantics.md",
+      "title": "Health Endpoint Semantics",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/how-to-run-locally.md",
+      "title": "How To Run Locally",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/input-sources.md",
+      "title": "Input Sources",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/k8s/index.md",
+      "title": "Kubernetes Operations Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/k8s/autoscaling-contract.md",
+      "title": "Autoscaling Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/canary-progressive-delivery.md",
+      "title": "Canary Progressive Delivery Notes",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/chart.md",
+      "title": "Helm Chart Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/cluster-resource-profile.md",
+      "title": "Cluster Resource Profile",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/crd-dependency-policy.md",
+      "title": "CRD Dependency Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/dataset-locality-and-shard-scaling.md",
+      "title": "Dataset Locality And Shard-Aware Scaling",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/k8s-test-contract.md",
+      "title": "K8s Test Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/kustomize-policy.md",
+      "title": "Kustomize Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/network-policy-correctness.md",
+      "title": "Network Policy Correctness",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/node-local-shared-cache-profile.md",
+      "title": "Node-Local Shared Cache Profile",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/packaging-and-ops.md",
+      "title": "Kubernetes Packaging and Operational Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/plugin-mode-entrypoint.md",
+      "title": "Plugin-Mode Entrypoint (Kubernetes)",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/rbac-minimalism.md",
+      "title": "Role-Based Access Control Minimalism",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/release-install-matrix.md",
+      "title": "Release Install Matrix",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/values-schema.md",
+      "title": "Chart Values Schema Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/values.md",
+      "title": "Kubernetes Values",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/warm-on-rollout.md",
+      "title": "Warm-On-Rollout Hook",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/k8s/when-layer-drift-fails.md",
+      "title": "When Layer Drift Fails",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/kubernetes.md",
+      "title": "Kubernetes Operations",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/load/index.md",
+      "title": "Operations Load Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/load/baseline-update-policy.md",
+      "title": "Baseline Update Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/load/ci-policy.md",
+      "title": "Load CI Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/load/k6.md",
+      "title": "Atlas Load Harness (k6)",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/load/perf-acceptance-checklist.md",
+      "title": "Perf Acceptance Checklist",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/load/reproducibility.md",
+      "title": "Load Reproducibility",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/load/result-contract.md",
+      "title": "Load Result Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/load/runtime-policy.md",
+      "title": "Compose Vs Kind Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/load/suites.md",
+      "title": "Load Suites",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/local-stack.md",
+      "title": "Local Stack (Make Only)",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/no-direct-path-usage.md",
+      "title": "No Direct Path Usage",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/index.md",
+      "title": "Operations Observability Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/acceptance-checklist.md",
+      "title": "Observability Acceptance Checklist",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/acceptance-gates.md",
+      "title": "Observability Acceptance Gates",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/alerts.md",
+      "title": "Alerts Contract",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/compatibility.md",
+      "title": "Observability Compatibility",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/dashboard.md",
+      "title": "Dashboard Contract",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/debug-overload.md",
+      "title": "Debug Overload",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/debug-p99-latency.md",
+      "title": "Debug P99 Latency",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/drills.md",
+      "title": "Observability Drills",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/error-budget-policy.md",
+      "title": "Bijux Atlas Error Budget Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/observability/metric-cardinality-guardrails.md",
+      "title": "Metric Cardinality Guardrails",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/metric-ownership.md",
+      "title": "Metric Ownership",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/otel-outage-behavior.md",
+      "title": "OpenTelemetry Outage Behavior",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/perf-regression-policy.md",
+      "title": "Performance Regression Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/observability/performance-baseline.md",
+      "title": "Atlas Performance Baseline",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/observability/profiles.md",
+      "title": "Observability Profiles",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/runbook-dashboard-alert-map.md",
+      "title": "Runbook Dashboard Alert Map",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/slo-critical-metrics.md",
+      "title": "SLO-Critical Metrics",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/slo.md",
+      "title": "Bijux Atlas SLO",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/startup-warm-cache-strategy.md",
+      "title": "Startup Warm-Cache Strategy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/observability/telemetry-compatibility.md",
+      "title": "Telemetry Compatibility",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/trace-sampling-policy.md",
+      "title": "Trace Sampling Policy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/observability/tracing.md",
+      "title": "Tracing and Correlation",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/ops-acceptance-checklist.md",
+      "title": "Ops Acceptance Checklist",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/ops-layout.md",
+      "title": "Ops Layout",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/performance/index.md",
+      "title": "Operations Performance Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/performance/budgets.md",
+      "title": "Ops Budgets",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/platform-handover.md",
+      "title": "Platform Handover",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/policy-violation-triage.md",
+      "title": "Policy Violation Triage",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/production-readiness-checklist.md",
+      "title": "Production Readiness Checklist",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/release-workflows.md",
+      "title": "Release Workflows",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/retention-and-gc.md",
+      "title": "Retention And GC",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/runbooks/index.md",
+      "title": "Runbooks Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/runbooks/dataset-corruption.md",
+      "title": "Runbook: Dataset Corruption",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/high-memory.md",
+      "title": "Runbook: High Memory",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/incident-playbook.md",
+      "title": "Runbook: Incident Playbook",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/k8s-perf-chaos.md",
+      "title": "Runbook: K8s Perf Chaos",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/load-failure-triage.md",
+      "title": "Load Failure Triage",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/memory-profile-under-load.md",
+      "title": "Runbook: Memory Profile Under Load",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/pod-churn.md",
+      "title": "Pod Churn Runbook",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/profile-under-load.md",
+      "title": "Runbook: Profile Under Load",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/registry-federation.md",
+      "title": "Runbook: Registry Federation",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/rollback-playbook.md",
+      "title": "Runbook: Rollback Playbook",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/slo-cheap-burn.md",
+      "title": "SLO Cheap Burn",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/slo-overload-survival.md",
+      "title": "SLO Overload Survival",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/slo-registry-refresh-stale.md",
+      "title": "SLO Registry Refresh Stale",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/slo-standard-burn.md",
+      "title": "SLO Standard Burn",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/slo-store-backend-error-spike.md",
+      "title": "SLO Store Backend Error Spike",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/store-outage.md",
+      "title": "Runbook: Store Outage",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/runbooks/traffic-spike.md",
+      "title": "Traffic Spike Runbook",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/security/index.md",
+      "title": "Operations Security Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/security/advisories/index.md",
+      "title": "Security Advisories Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/security/advisory-process.md",
+      "title": "Security Advisory Publication Workflow",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/security/security-posture.md",
+      "title": "Atlas Security Posture",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/slo/BASELINE_UPDATE_POLICY.md",
+      "title": "SLO Baseline Update Policy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/slo/CHANGELOG.md",
+      "title": "SLO Changelog",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/operations/slo/CHANGE_POLICY.md",
+      "title": "SLO Change Policy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/slo/GLOSSARY.md",
+      "title": "SLI/SLO/SLA Glossary",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/slo/index.md",
+      "title": "SLO Contract Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/slo/NON_GOALS.md",
+      "title": "Non-goals",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/slo/RELEASE_GATE.md",
+      "title": "SLO Release Gate",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/slo/SCOPE.md",
+      "title": "SLO Scope",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/slo/SLA_DECISION_ADR_TEMPLATE.md",
+      "title": "ADR Template: SLA Decision",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/slo/SLA_EXCLUSIONS_PLANNED.md",
+      "title": "SLA Exclusions (Planned)",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/slo/SLA_POLICY.md",
+      "title": "SLA Policy (v1)",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/slo/SLIS.md",
+      "title": "SLIs (v1)",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/slo/SLOS.md",
+      "title": "SLO Targets (v1)",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/slo/WHAT_WE_DONT_MEASURE_YET.md",
+      "title": "What We Do Not Measure Yet",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/slo/WHY_THESE_SLIS.md",
+      "title": "Why These SLIs",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/operations/unified-report.md",
+      "title": "Unified Report",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/_internal/governance/policies/checks.md",
+      "title": "Policies Checks Contract",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/product/index.md",
+      "title": "Product Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/product/compatibility-promise.md",
+      "title": "Compatibility Promise",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/product/diffs-v1.md",
+      "title": "Diffs v1",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/product/immutability-and-aliases.md",
+      "title": "Immutability And Aliases",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/product/non-goals.md",
+      "title": "Non Goals",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/product/release-contract-checklist.md",
+      "title": "Release Contract Checklist",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/product/sequence-threat-model.md",
+      "title": "Sequence Endpoint Threat Model",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/product/sequence-v1.md",
+      "title": "Sequence v1",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/product/slo-targets.md",
+      "title": "SLO Targets",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/product/transcripts-v1.md",
+      "title": "Transcripts v1",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/product/user-stories.md",
+      "title": "Queries That Matter",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/product/what-is-bijux-atlas.md",
+      "title": "What Is Bijux Atlas",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/start-here.md",
+      "title": "Quickstart Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/quickstart/client-sdk-examples.md",
+      "title": "Client SDK Examples (Pinned OpenAPI v1)",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/quickstart/local-cluster-setup.md",
+      "title": "Local Cluster Setup",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/quickstart/ops-local-full.md",
+      "title": "Ops Local Full Quickstart",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/index.md",
+      "title": "Reference Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/compatibility/index.md",
+      "title": "Compatibility Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/compatibility/bijux-dna-atlas.md",
+      "title": "bijux-dna Atlas Compatibility",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/compatibility/cross-project-compatibility-policy.md",
+      "title": "Cross-Project Compatibility Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/compatibility/json-wire-compatibility.md",
+      "title": "JSON Compatibility Rules",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/compatibility/umbrella-atlas-matrix.md",
+      "title": "Compatibility Matrix: bijux Umbrella <-> bijux-atlas",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/datasets/index.md",
+      "title": "Datasets Reference Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/datasets/lifecycle.md",
+      "title": "Dataset Lifecycle",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/datasets/mirroring.md",
+      "title": "Dataset Mirroring",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/datasets/offline-mode.md",
+      "title": "Offline Mode",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/datasets/promotion.md",
+      "title": "Dataset Promotion",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/datasets/rollback.md",
+      "title": "Dataset Rollback",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/evolution/index.md",
+      "title": "Reference Evolution Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/evolution/api-versioning.md",
+      "title": "API Versioning",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/evolution/release-diffs.md",
+      "title": "Release Diffs",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/evolution/roadmap.md",
+      "title": "Evolution Roadmap",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/evolution/sharding.md",
+      "title": "Sharding Evolution: Monolith To Shards",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/fixtures/index.md",
+      "title": "Reference Fixtures Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/fixtures/medium-fixture.md",
+      "title": "Medium Fixture (Non-CI)",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/fixtures/real-datasets.md",
+      "title": "Realistic Public Sample Datasets",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/ingestion/index.md",
+      "title": "Ingestion Reference Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/ingestion/determinism.md",
+      "title": "Determinism",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/ingestion/parser-semantics.md",
+      "title": "Parser Semantics",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/ingestion/qc-report-schema.md",
+      "title": "QC Report Schema",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/ingestion/supported-layouts.md",
+      "title": "Supported Layouts",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/performance/index.md",
+      "title": "Performance Reference Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/performance/bulkheads.md",
+      "title": "Bulkheads",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/performance/caching-model.md",
+      "title": "Caching Model",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/performance/p99-strategy.md",
+      "title": "p99 Strategy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/performance/perf-regression-policy.md",
+      "title": "Perf Regression Policy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/performance/profiling.md",
+      "title": "Profiling",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/performance/query-benchmarks.md",
+      "title": "Query Benchmarks",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/performance/redis.md",
+      "title": "Redis Evaluation",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/querying/index.md",
+      "title": "Querying Reference Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/querying/cost-estimator.md",
+      "title": "Cost Estimator",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/querying/filters.md",
+      "title": "Filters",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/querying/ordering.md",
+      "title": "Ordering",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/querying/pagination.md",
+      "title": "Pagination",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/querying/sharding.md",
+      "title": "Sharding Behavior",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/registry/index.md",
+      "title": "Registry Reference Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/registry/config-schema-versioning.md",
+      "title": "Bijux Config Schema Versioning",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/registry/conflict-resolution.md",
+      "title": "Conflict Resolution",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/registry/deprecation-policy.md",
+      "title": "Bijux Deprecation Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/registry/deterministic-merge.md",
+      "title": "Deterministic Merge",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/registry/error-code-registry.md",
+      "title": "Error Code Registry",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/registry/federation-semantics.md",
+      "title": "Federation Semantics",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/registry/latest-release-alias-policy.md",
+      "title": "Latest Release Alias Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/registry/long-term-maintenance-policy.md",
+      "title": "Bijux Long-Term Maintenance Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/registry/no-dna-dependency-policy.md",
+      "title": "No DNA Dependency Policy For Atlas",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/registry/plugin-versioning-and-release-independence.md",
+      "title": "Plugin Versioning And Release Independence",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/registry/security-response-coordination.md",
+      "title": "Security Response Coordination",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/registry/shared-core-extraction.md",
+      "title": "Shared Core Extraction",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/science/index.md",
+      "title": "Reference Science Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/science/gene-summary-semantics.md",
+      "title": "Gene Summary Semantics",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/science/transcript-semantics.md",
+      "title": "Transcript Semantics",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/security/index.md",
+      "title": "Security Reference Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/security/auth-hmac.md",
+      "title": "Auth And HMAC Options",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/security/limits.md",
+      "title": "Limits",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/security/ssrf.md",
+      "title": "SSRF Controls",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/security/threat-model.md",
+      "title": "Threat Model",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/store/index.md",
+      "title": "Store Reference Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/store/backends.md",
+      "title": "Backends",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/store/dataset-lifecycle.md",
+      "title": "Dataset Lifecycle",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/store/etag-caching.md",
+      "title": "ETag Caching",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/store/fixtures-policy.md",
+      "title": "Fixture Policy",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/store/immutability-guarantee.md",
+      "title": "Immutability Guarantee",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/store/ingestion-purity-rule.md",
+      "title": "Ingestion Purity Rule",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/store/integrity-model.md",
+      "title": "Integrity Model",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/reference/store/logging-and-tracing.md",
+      "title": "Bijux Logging And Tracing Standard",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/store/metrics-conventions.md",
+      "title": "Bijux Metrics Naming Conventions",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/reference/store/no-implicit-default-dataset.md",
+      "title": "No Implicit Default Dataset",
+      "is_index": false,
+      "reachable_from_index": false
+    },
+    {
+      "path": "docs/root/ARCHITECTURE_OVERVIEW.md",
+      "title": "Architecture Overview",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/BUILD_OUTPUTS_REFERENCE.md",
+      "title": "Build Outputs Reference",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/CI_WORKFLOW_EXPLANATION.md",
+      "title": "CI Workflow Explanation",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/COMMANDS_REFERENCE.md",
+      "title": "Commands Reference",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/COMMAND_INDEX.md",
+      "title": "Command Index",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/COMPATIBILITY_POLICY.md",
+      "title": "Compatibility Policy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/CONFIGS_OVERVIEW.md",
+      "title": "Configs Overview",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/CONTRIBUTION_MODEL.md",
+      "title": "Contribution Model",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/CONTROL_PLANE_OVERVIEW.md",
+      "title": "Control Plane Overview",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/CRATE_INDEX.md",
+      "title": "Crate Index",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/DEVELOPER_WORKFLOW_QUICKSTART.md",
+      "title": "Developer Workflow Quickstart",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/DIAGRAM_ALT_TEXT_POLICY.md",
+      "title": "Diagram Alt Text Policy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/DOCKER_OVERVIEW.md",
+      "title": "Docker Overview",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/DOCS_PHILOSOPHY.md",
+      "title": "Documentation Philosophy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/faq.md",
+      "title": "FAQ",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/glossary.md",
+      "title": "Glossary",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/GLOSSARY_CROSSLINKS.md",
+      "title": "Glossary Crosslinks",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/index.md",
+      "title": "Root Documentation Map",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/LICENSE_EXPLANATION.md",
+      "title": "License Explanation",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/MAKEFILES_OVERVIEW.md",
+      "title": "Makefiles Overview",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/NAVIGATION_POLICY.md",
+      "title": "Navigation Policy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/OBSERVABILITY_OVERVIEW.md",
+      "title": "Observability Overview",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/OPS_OVERVIEW.md",
+      "title": "Ops Overview",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/PERFORMANCE_PHILOSOPHY.md",
+      "title": "Performance Philosophy",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/PERSONA_DEVELOPER.md",
+      "title": "Developer Entrypoint",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/PERSONA_OPERATOR.md",
+      "title": "Operator Entrypoint",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/RELEASE_PROCESS_OVERVIEW.md",
+      "title": "Release Process Overview",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/REPOSITORY_STRUCTURE.md",
+      "title": "Repository Structure",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/REPRODUCIBILITY_GUARANTEES.md",
+      "title": "Reproducibility Guarantees",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/SCHEMA_INDEX.md",
+      "title": "Schema Index",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/SECURITY_MODEL.md",
+      "title": "Security Model",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/STABILITY_GUARANTEES.md",
+      "title": "Stability Guarantees",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/start-here.md",
+      "title": "Start Here",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/root/TERMINOLOGY_RULES.md",
+      "title": "Terminology Consistency Rules",
+      "is_index": false,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/science/index.md",
+      "title": "Science Index",
+      "is_index": true,
+      "reachable_from_index": true
+    },
+    {
+      "path": "docs/_internal/governance/metadata/taxonomy-map.md",
+      "title": "Docs Taxonomy Map",
+      "is_index": false,
+      "reachable_from_index": false
+    }
+  ]
+}

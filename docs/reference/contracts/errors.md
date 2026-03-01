@@ -431,5 +431,5 @@ Expected output: both commands exit status 0 and print contract generation/check
 ## See also
 
 - [Contracts Index](index.md)
-- [SSOT Workflow](../../governance/contract-ssot-workflow.md)
+- [SSOT Workflow](../../_internal/governance/contract-ssot-workflow.md)
 - [Terms Glossary](../../glossary.md)

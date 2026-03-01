@@ -38,5 +38,5 @@ make docs-reference-check
 ## Next steps
 
 - [Update schema generators](update-schema-generators.md)
-- [Docs change process](../_meta/docs-change-process.md)
+- [Docs change process](../_internal/meta/docs-change-process.md)
 - [CLI reference](cli-reference.md)

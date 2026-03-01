@@ -69,7 +69,7 @@
     {
       "id": "artifact.make.generated_targets",
       "type": "artifact",
-      "path": "docs/_generated/make-targets.md",
+      "path": "docs/_internal/generated/make-targets.md",
       "producer": "bijux dev atlas make targets export",
       "consumer": "ops.checks.inventory_contract_integrity",
       "lifecycle": "authoritative"

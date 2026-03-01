@@ -1,6 +1,6 @@
 # PUBLIC API: bijux-atlas-core
 
-Stability reference: [Stability Levels](../../../docs/_style/stability-levels.md)
+Stability reference: [Stability Levels](../../../docs/_internal/style/stability-levels.md)
 
 Stable exported items (0.1.x contract):
 

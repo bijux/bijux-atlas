@@ -23,5 +23,5 @@ For core pages, include:
 
 ## Next
 
-- [Style Guide](../governance/style-guide.md)
-- [Docs Charter](../governance/docs-charter.md)
+- [Style Guide](../_internal/governance/style-guide.md)
+- [Docs Charter](../_internal/governance/docs-charter.md)

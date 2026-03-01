@@ -14,7 +14,7 @@ struct DocsConceptRow {
 }
 
 fn load_docs_concepts(repo_root: &std::path::Path) -> Result<Vec<DocsConceptRow>, String> {
-    let path = repo_root.join("docs/_style/concepts.yml");
+    let path = repo_root.join("docs/_internal/style/concepts.yml");
     let text =
         fs::read_to_string(&path).map_err(|e| format!("failed to read {}: {e}", path.display()))?;
     let payload: DocsConceptRegistry = serde_yaml::from_str(&text)
@@ -24,7 +24,7 @@ fn load_docs_concepts(repo_root: &std::path::Path) -> Result<Vec<DocsConceptRow>
 
 fn render_concept_registry_markdown(rows: &[DocsConceptRow]) -> String {
     let mut out = String::from("# Concept Registry\n\n");
-    out.push_str("Generated from `docs/_style/concepts.yml`.\n\n");
+    out.push_str("Generated from `docs/_internal/style/concepts.yml`.\n\n");
     out.push_str("| Concept ID | Canonical Page | Pointer Pages |\n|---|---|---|\n");
     for row in rows {
         let pointers = if row.pointers.is_empty() {
@@ -232,7 +232,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         })
                         .collect::<Vec<_>>();
                     if common.allow_write {
-                        let generated_dir = ctx.repo_root.join("docs/_generated");
+                        let generated_dir = ctx.repo_root.join("docs/_internal/generated");
                         fs::create_dir_all(&generated_dir).map_err(|e| {
                             format!("failed to create {}: {e}", generated_dir.display())
                         })?;
@@ -352,7 +352,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         });
                         fs::write(
                             ctx.repo_root
-                                .join("docs/governance/metadata/front-matter.index.json"),
+                                .join("docs/_internal/governance/metadata/front-matter.index.json"),
                             serde_json::to_string_pretty(&front_matter_index)
                                 .map_err(|e| format!("front matter index encode failed: {e}"))?,
                         )
@@ -499,7 +499,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                                 ));
                             }
                             fs::write(
-                                ctx.repo_root.join("docs/_generated/make-targets.md"),
+                                ctx.repo_root.join("docs/_internal/generated/make-targets.md"),
                                 generated_make,
                             )
                             .map_err(|e| format!("write generated make targets failed: {e}"))?;
@@ -557,21 +557,21 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "documents_total": docs_rows.len(),
                             "section_count": docs_rows.iter().filter_map(|row| row["area"].as_str()).collect::<BTreeSet<_>>().len(),
                             "generated_artifacts": [
-                                "docs/_generated/docs-inventory.md",
-                                "docs/_generated/topic-index.json",
-                                "docs/_generated/search-index.json",
-                                "docs/_generated/sitemap.json",
-                                "docs/_generated/breadcrumbs.json",
-                                "docs/_generated/docs-dependency-graph.json",
-                                "docs/_generated/docs-quality-dashboard.json",
-                                "docs/_generated/docs-contract-coverage.json",
-                                "docs/_generated/concept-registry.json",
-                                "docs/_generated/concept-registry.md",
-                                "docs/governance/metadata/front-matter.index.json"
+                                "docs/_internal/generated/docs-inventory.md",
+                                "docs/_internal/generated/topic-index.json",
+                                "docs/_internal/generated/search-index.json",
+                                "docs/_internal/generated/sitemap.json",
+                                "docs/_internal/generated/breadcrumbs.json",
+                                "docs/_internal/generated/docs-dependency-graph.json",
+                                "docs/_internal/generated/docs-quality-dashboard.json",
+                                "docs/_internal/generated/docs-contract-coverage.json",
+                                "docs/_internal/generated/concept-registry.json",
+                                "docs/_internal/generated/concept-registry.md",
+                                "docs/_internal/governance/metadata/front-matter.index.json"
                             ],
                             "metadata_sources": {
                                 "owners": "docs/owners.json",
-                                "audiences": "docs/governance/metadata/audiences.json",
+                                "audiences": "docs/_internal/governance/metadata/audiences.json",
                                 "sections": "docs/sections.json"
                             }
                         });
@@ -586,7 +586,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             generated_dir.join("concept-registry.json"),
                             serde_json::to_string_pretty(&serde_json::json!({
                                 "schema_version": 1,
-                                "source": "docs/_style/concepts.yml",
+                                "source": "docs/_internal/style/concepts.yml",
                                 "rows": concept_rows.iter().map(|row| serde_json::json!({
                                     "id": row.id,
                                     "canonical": row.canonical,
@@ -616,26 +616,26 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         },
                         "artifacts": {
                             "registry": "docs/registry.json",
-                            "inventory_page": "docs/_generated/docs-inventory.md",
-                            "search_index": "docs/_generated/search-index.json",
-                            "sitemap": "docs/_generated/sitemap.json",
-                            "topic_index": "docs/_generated/topic-index.json",
-                            "breadcrumbs": "docs/_generated/breadcrumbs.json",
-                            "dependency_graph": "docs/_generated/docs-dependency-graph.json",
-                            "crate_docs_slice": "docs/_generated/crate-docs-slice.json",
-                            "docs_test_coverage": "docs/_generated/docs-test-coverage.json",
-                            "crate_doc_coverage": "docs/_generated/crate-doc-coverage.json",
-                            "crate_doc_governance": "docs/_generated/crate-doc-governance.json",
-                            "crate_doc_api_table": "docs/_generated/crate-doc-api-table.md",
-                            "crate_doc_pruning": "docs/_generated/crate-doc-pruning.json",
-                            "front_matter_index": "docs/governance/metadata/front-matter.index.json",
-                            "command_index": "docs/_generated/command-index.json",
-                            "schema_index": "docs/_generated/schema-index.json",
-                            "docs_quality_dashboard": "docs/_generated/docs-quality-dashboard.json",
-                            "docs_contract_coverage": "docs/_generated/docs-contract-coverage.json",
-                            "concept_registry": "docs/_generated/concept-registry.json",
-                            "concept_registry_page": "docs/_generated/concept-registry.md",
-                            "generated_make_targets": "docs/_generated/make-targets.md"
+                            "inventory_page": "docs/_internal/generated/docs-inventory.md",
+                            "search_index": "docs/_internal/generated/search-index.json",
+                            "sitemap": "docs/_internal/generated/sitemap.json",
+                            "topic_index": "docs/_internal/generated/topic-index.json",
+                            "breadcrumbs": "docs/_internal/generated/breadcrumbs.json",
+                            "dependency_graph": "docs/_internal/generated/docs-dependency-graph.json",
+                            "crate_docs_slice": "docs/_internal/generated/crate-docs-slice.json",
+                            "docs_test_coverage": "docs/_internal/generated/docs-test-coverage.json",
+                            "crate_doc_coverage": "docs/_internal/generated/crate-doc-coverage.json",
+                            "crate_doc_governance": "docs/_internal/generated/crate-doc-governance.json",
+                            "crate_doc_api_table": "docs/_internal/generated/crate-doc-api-table.md",
+                            "crate_doc_pruning": "docs/_internal/generated/crate-doc-pruning.json",
+                            "front_matter_index": "docs/_internal/governance/metadata/front-matter.index.json",
+                            "command_index": "docs/_internal/generated/command-index.json",
+                            "schema_index": "docs/_internal/generated/schema-index.json",
+                            "docs_quality_dashboard": "docs/_internal/generated/docs-quality-dashboard.json",
+                            "docs_contract_coverage": "docs/_internal/generated/docs-contract-coverage.json",
+                            "concept_registry": "docs/_internal/generated/concept-registry.json",
+                            "concept_registry_page": "docs/_internal/generated/concept-registry.md",
+                            "generated_make_targets": "docs/_internal/generated/make-targets.md"
                         },
                         "changes_summary": {
                             "message": "docs registry updated",

@@ -1,45 +1,24 @@
-const DOCS_ALLOWED_ROOT_DIRS: [&str; 22] = [
+const DOCS_ALLOWED_ROOT_DIRS: [&str; 10] = [
     "_assets",
     "_drafts",
-    "_generated",
-    "_lint",
-    "_nav",
-    "_style",
-    "adrs",
+    "_internal",
     "api",
     "architecture",
-    "contracts",
     "control-plane",
-    "dev",
     "development",
-    "docs",
-    "engineering",
-    "examples",
-    "governance",
-    "metadata",
     "operations",
-    "policies",
     "product",
-    "quickstart",
-];
-
-const DOCS_ALLOWED_ROOT_DIRS_TAIL: [&str; 6] = [
     "reference",
-    "release",
-    "root",
-    "science",
-    "security",
-    "start",
 ];
 
-const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 8] = [
+const DOCS_ALLOWED_ROOT_DIRS_TAIL: [&str; 0] = [];
+
+const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 6] = [
     "glossary.md",
     "index.md",
-    "ownership.md",
     "start-here.md",
-    "style.md",
-    "changelog.md",
-    "docs-contract.md",
+    "site-map.md",
+    "what-to-read-next.md",
     "README.md",
 ];
 

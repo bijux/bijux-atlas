@@ -16,8 +16,8 @@
 
 ## Where the artifact lives
 
-- contributor-facing entrypoint: [Docs dashboard](../governance/docs-dashboard.md)
-- machine artifact: `docs/_generated/docs-contract-coverage.json`
+- contributor-facing entrypoint: [Docs dashboard](../_internal/governance/docs-dashboard.md)
+- machine artifact: `docs/_internal/generated/docs-contract-coverage.json`
 
 ## How to read it
 

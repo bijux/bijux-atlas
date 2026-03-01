@@ -43,7 +43,10 @@ pub(super) fn check_docs_no_orphan_markdown_pages(
             .strip_prefix(ctx.repo_root.join("docs"))
             .unwrap_or(&path);
         let rels = rel.display().to_string();
-        if rels.starts_with("_assets/") || rels.starts_with("_drafts/") {
+        if rels.starts_with("_assets/")
+            || rels.starts_with("_drafts/")
+            || rels.starts_with("_internal/")
+        {
             continue;
         }
         if !nav_set.contains(&rels) {
@@ -210,7 +213,8 @@ pub(super) fn check_docs_index_reachability_ledger(
         let text = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
         let title = markdown_h1_title(&text).unwrap_or_else(|| "(untitled)".to_string());
         let is_index = rel.ends_with("/INDEX.md") || rel == "docs/INDEX.md" || rel == "docs/index.md";
-        let is_reachable = is_index || reachable.contains(&rel);
+        let is_internal = rel.starts_with("docs/_internal/");
+        let is_reachable = is_index || is_internal || reachable.contains(&rel);
         if !is_reachable {
             violations.push(violation(
                 "DOCS_INDEX_REACHABILITY_MISSING",
@@ -236,12 +240,12 @@ pub(super) fn check_docs_index_reachability_ledger(
         "generated_by": "bijux dev atlas docs ledger --write-example",
         "entries": computed_entries
     });
-    let ledger_rel = Path::new("docs/_generated/docs-ledger.json");
+    let ledger_rel = Path::new("docs/_internal/generated/docs-ledger.json");
     if !ctx.adapters.fs.exists(ctx.repo_root, ledger_rel) {
         violations.push(violation(
             "DOCS_LEDGER_MISSING",
-            "missing docs ledger artifact `docs/_generated/docs-ledger.json`".to_string(),
-            "generate and commit docs/_generated/docs-ledger.json",
+            "missing docs ledger artifact `docs/_internal/generated/docs-ledger.json`".to_string(),
+            "generate and commit docs/_internal/generated/docs-ledger.json",
             Some(ledger_rel),
         ));
     } else {
@@ -252,9 +256,9 @@ pub(super) fn check_docs_index_reachability_ledger(
         if committed_json != computed_ledger {
             violations.push(violation(
                 "DOCS_LEDGER_STALE",
-                "docs/_generated/docs-ledger.json is stale against current docs index reachability"
+                "docs/_internal/generated/docs-ledger.json is stale against current docs index reachability"
                     .to_string(),
-                "regenerate and commit docs/_generated/docs-ledger.json",
+                "regenerate and commit docs/_internal/generated/docs-ledger.json",
                 Some(ledger_rel),
             ));
         }
@@ -501,7 +505,7 @@ pub(super) fn check_docs_command_surface_docs_exist(
 pub(super) fn check_crate_docs_governance_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let policy_path = Path::new("docs/governance/metadata/crate-doc-governance.json");
+    let policy_path = Path::new("docs/_internal/governance/metadata/crate-doc-governance.json");
     let policy_text = fs::read_to_string(ctx.repo_root.join(policy_path)).map_err(|err| {
         CheckError::Failed(format!("failed to read {}: {err}", policy_path.display()))
     })?;

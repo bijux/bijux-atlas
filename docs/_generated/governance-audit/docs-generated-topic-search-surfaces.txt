@@ -1,3 +1,0 @@
-docs/_generated/topic-index.md
-docs/_generated/search-index.json
-docs/_generated/topic-index.json

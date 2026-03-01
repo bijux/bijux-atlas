@@ -3,13 +3,13 @@
   "section_owners": {
     "_assets": "docs-governance",
     "_drafts": "docs-governance",
-    "_generated": "docs-governance",
+    "_internal": "docs-governance",
     "api": "api",
     "architecture": "docs-governance",
     "development": "platform",
-    "governance": "platform",
     "operations": "bijux-atlas-operations",
     "product": "docs-governance",
-    "reference": "docs-governance"
+    "reference": "docs-governance",
+    "control-plane": "platform"
   }
 }

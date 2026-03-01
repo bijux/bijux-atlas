@@ -56,7 +56,7 @@ make ops-clean
 
 - Control-plane artifacts: `artifacts/`
 - Runtime logs: container runtime logs for stack services
-- Generated docs diagnostics: `docs/_generated/` (contributor-only)
+- Generated docs diagnostics: `docs/_internal/generated/` (contributor-only)
 
 ## Common failures and fixes
 

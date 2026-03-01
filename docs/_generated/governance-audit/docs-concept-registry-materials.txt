@@ -1,3 +1,0 @@
-docs/_generated/concept-governance/metadata/registry.json
-docs/_generated/concept-registry.md
-docs/_style/CONCEPT_REGISTRY.md

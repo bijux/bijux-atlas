@@ -1,7 +1,7 @@
 # Public API
 
 - Owner: `bijux-atlas-ingest`
-- Stability reference: [Stability Levels](../../../docs/_style/stability-levels.md)
+- Stability reference: [Stability Levels](../../../docs/_internal/style/stability-levels.md)
 
 ## Purpose
 

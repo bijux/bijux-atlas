@@ -23,7 +23,7 @@ Choose one guided track based on your goal.
 2. [Development](development/index.md)
 3. [Control-plane](control-plane/index.md)
 4. [Architecture](architecture/index.md)
-5. [Docs governance](governance/index.md)
+5. [Docs governance](_internal/governance/index.md)
 
 ## Next steps
 

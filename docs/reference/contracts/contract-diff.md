@@ -47,6 +47,6 @@ Expected output: no breaking contract change unless intentionally approved.
 
 ## See also
 
-- [SSOT Workflow](../../governance/contract-ssot-workflow.md)
-- [Contract Change Checklist](../../governance/contract-change-checklist.md)
+- [SSOT Workflow](../../_internal/governance/contract-ssot-workflow.md)
+- [Contract Change Checklist](../../_internal/governance/contract-change-checklist.md)
 - [Terms Glossary](../../glossary.md)

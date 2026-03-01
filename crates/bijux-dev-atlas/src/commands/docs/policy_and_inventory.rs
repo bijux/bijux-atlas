@@ -298,13 +298,13 @@ fn scan_registry_markdown_files(repo_root: &Path) -> Vec<PathBuf> {
         if rels.starts_with("artifacts/") || rels.contains("/target/") {
             continue;
         }
-        if rels == "docs/_generated/make-targets.md" {
+        if rels == "docs/_internal/generated/make-targets.md" {
             continue;
         }
         if !is_allowed_doc_location(&rels) {
             continue;
         }
-        if rels.starts_with("docs/_generated/") || rels.starts_with("docs/_drafts/") {
+        if rels.starts_with("docs/_internal/generated/") || rels.starts_with("docs/_drafts/") {
             continue;
         }
         files.push(file);

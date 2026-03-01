@@ -96,7 +96,7 @@ fn docs_reference_target_contents(
 
 fn render_docs_reference_commands_registry(repo_root: &std::path::Path) -> Result<String, String> {
     let value: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(repo_root.join("docs/_generated/command-index.json"))
+        &std::fs::read_to_string(repo_root.join("docs/_internal/generated/command-index.json"))
             .map_err(|e| format!("read command-index.json failed: {e}"))?,
     )
     .map_err(|e| format!("parse command-index.json failed: {e}"))?;
@@ -120,7 +120,7 @@ fn render_docs_reference_commands_registry(repo_root: &std::path::Path) -> Resul
     out.push_str("- Owner: `bijux-atlas-operations`\n");
     out.push_str("- Tier: `generated`\n");
     out.push_str("- Audience: `operators`\n");
-    out.push_str("- Source-of-truth: `docs/_generated/command-index.json`\n\n");
+    out.push_str("- Source-of-truth: `docs/_internal/generated/command-index.json`\n\n");
     out.push_str("## Commands\n\n| Command ID | Domain | Summary |\n| --- | --- | --- |\n");
     for (id, domain, summary) in rows {
         out.push_str(&format!("| `{id}` | `{domain}` | {summary} |\n"));
@@ -130,7 +130,7 @@ fn render_docs_reference_commands_registry(repo_root: &std::path::Path) -> Resul
 
 fn render_docs_reference_schemas(repo_root: &std::path::Path) -> Result<String, String> {
     let value: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(repo_root.join("docs/_generated/schema-index.json"))
+        &std::fs::read_to_string(repo_root.join("docs/_internal/generated/schema-index.json"))
             .map_err(|e| format!("read schema-index.json failed: {e}"))?,
     )
     .map_err(|e| format!("parse schema-index.json failed: {e}"))?;
@@ -154,7 +154,7 @@ fn render_docs_reference_schemas(repo_root: &std::path::Path) -> Result<String, 
     out.push_str("- Owner: `bijux-atlas-operations`\n");
     out.push_str("- Tier: `generated`\n");
     out.push_str("- Audience: `operators`\n");
-    out.push_str("- Source-of-truth: `docs/_generated/schema-index.json`\n\n");
+    out.push_str("- Source-of-truth: `docs/_internal/generated/schema-index.json`\n\n");
     out.push_str("## Schemas\n\n| Path | Title | Kind |\n| --- | --- | --- |\n");
     for (path, title, kind) in rows {
         out.push_str(&format!("| `{path}` | {title} | `{kind}` |\n"));
@@ -302,7 +302,7 @@ fn render_docs_reference_commands(repo_root: &std::path::Path) -> Result<String,
     let root_help = trim_help_usage_and_commands(&run_bijux_dev_atlas_help(repo_root, &["--help"])?);
     let ops_help = trim_help_usage_and_commands(&run_bijux_dev_atlas_help(repo_root, &["ops", "--help"])?);
     Ok(format!(
-        "# Command Surface Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `bijux dev atlas --help`, `bijux dev atlas ops --help`, `docs/_generated/make-targets.md`\n\n## Purpose\n\nGenerated reference for the supported command surface. Narrative docs should link here instead of restating command lists.\n\n## bijux-dev-atlas\n\n```text\n{root_help}\n```\n\n## bijux-dev-atlas ops\n\n```text\n{ops_help}\n```\n\n## Make Wrapper Surface\n\nSee `docs/_generated/make-targets.md` and generated ops surface references. Narrative docs must not duplicate long `make ops-*` command lists.\n\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n"
+        "# Command Surface Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `bijux dev atlas --help`, `bijux dev atlas ops --help`, `docs/_internal/generated/make-targets.md`\n\n## Purpose\n\nGenerated reference for the supported command surface. Narrative docs should link here instead of restating command lists.\n\n## bijux-dev-atlas\n\n```text\n{root_help}\n```\n\n## bijux-dev-atlas ops\n\n```text\n{ops_help}\n```\n\n## Make Wrapper Surface\n\nSee `docs/_internal/generated/make-targets.md` and generated ops surface references. Narrative docs must not duplicate long `make ops-*` command lists.\n\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n"
     ))
 }
 

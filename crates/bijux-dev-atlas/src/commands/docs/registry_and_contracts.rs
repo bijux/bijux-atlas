@@ -273,7 +273,7 @@ fn tags_for_path(path: &str) -> Vec<String> {
 }
 
 pub(crate) fn search_synonyms(repo_root: &Path) -> Vec<serde_json::Value> {
-    let path = repo_root.join("docs/governance/metadata/search-synonyms.json");
+    let path = repo_root.join("docs/_internal/governance/metadata/search-synonyms.json");
     let Ok(text) = fs::read_to_string(path) else {
         return Vec::new();
     };
@@ -287,12 +287,12 @@ fn canonical_reference_checks(
     repo_root: &Path,
     docs: &[serde_json::Value],
 ) -> (Vec<String>, Vec<String>, serde_json::Value) {
-    let contract_path = repo_root.join("docs/governance/metadata/reference-canonicals.json");
+    let contract_path = repo_root.join("docs/_internal/governance/metadata/reference-canonicals.json");
     if !contract_path.exists() {
         return (
             Vec::new(),
             vec![
-                "DOCS_CANONICAL_CONTRACT_WARN: docs/governance/metadata/reference-canonicals.json is missing"
+                "DOCS_CANONICAL_CONTRACT_WARN: docs/_internal/governance/metadata/reference-canonicals.json is missing"
                     .to_string(),
             ],
             serde_json::json!({"categories": {}, "total_entries": 0}),
@@ -714,7 +714,7 @@ struct AudiencePolicy {
 }
 
 fn load_audience_policy(repo_root: &Path) -> AudiencePolicy {
-    let path = repo_root.join("docs/governance/metadata/audiences.json");
+    let path = repo_root.join("docs/_internal/governance/metadata/audiences.json");
     let Ok(text) = fs::read_to_string(&path) else {
         return AudiencePolicy {
             allowed: vec![

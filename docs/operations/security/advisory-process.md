@@ -10,4 +10,4 @@ Reason to exist: provide a canonical concept definition for advisory process.
 
 ## See also
 
-- \'docs/_style/CONCEPT_REGISTRY.md\'
+- \'docs/_internal/style/CONCEPT_REGISTRY.md\'
