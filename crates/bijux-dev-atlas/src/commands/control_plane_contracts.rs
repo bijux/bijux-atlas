@@ -161,6 +161,84 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             return Ok((render_registry_lints(&lints, format)?, 1));
         }
 
+        if let ContractsCommand::Doctor(args) = &command {
+            let repo_root = resolve_repo_root(args.repo_root.clone())?;
+            let format = common_format(args);
+            let domains = all_domains(&repo_root)?;
+            let coverage_by_domain = domains
+                .iter()
+                .map(|(descriptor, registry)| {
+                    let test_count = registry
+                        .iter()
+                        .map(|contract| contract.tests.len())
+                        .sum::<usize>();
+                    serde_json::json!({
+                        "domain": descriptor.name,
+                        "contracts": registry.len(),
+                        "tests": test_count,
+                    })
+                })
+                .collect::<Vec<_>>();
+            let registry_lints = registry_lints(&repo_root)?;
+            let constitution_drift = serde_json::json!({
+                "registry_lints": registry_lints.iter().map(|lint| serde_json::json!({
+                    "code": lint.code,
+                    "message": lint.message
+                })).collect::<Vec<_>>(),
+                "required_status_checks_doc": ".github/required-status-checks.md",
+                "root_surface": "root-surface.json",
+                "repo_laws": "docs/_internal/contracts/repo-laws.json",
+            });
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "contracts_doctor_report_v1",
+                "status": if registry_lints.is_empty() { "ok" } else { "failed" },
+                "coverage_by_domain": coverage_by_domain,
+                "constitution_drift": constitution_drift,
+            });
+            let rendered = match format {
+                ContractsFormatArg::Json => serde_json::to_string_pretty(&payload)
+                    .map_err(|e| format!("encode contracts doctor failed: {e}"))?,
+                ContractsFormatArg::Human
+                | ContractsFormatArg::Table
+                | ContractsFormatArg::Junit
+                | ContractsFormatArg::Github => {
+                    let mut out = String::new();
+                    out.push_str("contracts doctor\n\ncoverage by domain:\n");
+                    for row in &payload["coverage_by_domain"].as_array().cloned().unwrap_or_default() {
+                        out.push_str(&format!(
+                            "- {}: {} contracts, {} tests\n",
+                            row["domain"].as_str().unwrap_or("unknown"),
+                            row["contracts"].as_u64().unwrap_or(0),
+                            row["tests"].as_u64().unwrap_or(0)
+                        ));
+                    }
+                    if registry_lints.is_empty() {
+                        out.push_str("\nconstitution drift: none\n");
+                    } else {
+                        out.push_str("\nconstitution drift:\n");
+                        for lint in &registry_lints {
+                            out.push_str(&format!("- [{}] {}\n", lint.code, lint.message));
+                        }
+                    }
+                    out
+                }
+            };
+            if let Some(root) = &args.artifacts_root {
+                fs::create_dir_all(root)
+                    .map_err(|e| format!("create {} failed: {e}", root.display()))?;
+                let report_path = root.join("contracts-doctor.json");
+                fs::write(
+                    &report_path,
+                    serde_json::to_string_pretty(&payload)
+                        .map_err(|e| format!("encode contracts doctor artifact failed: {e}"))?,
+                )
+                .map_err(|e| format!("write {} failed: {e}", report_path.display()))?;
+            }
+            let code = if registry_lints.is_empty() { 0 } else { 1 };
+            return Ok((rendered, code));
+        }
+
         let (repo_root, mut common, domain_names, contract_filter_override) = match &command {
             ContractsCommand::All(args) => (
                 resolve_repo_root(args.repo_root.clone())?,
@@ -179,6 +257,27 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 ],
                 None,
             ),
+            ContractsCommand::Pr(args) => {
+                let mut prepared = args.clone();
+                prepared.changed_only = true;
+                (
+                    resolve_repo_root(prepared.repo_root.clone())?,
+                    prepared,
+                    vec![
+                        "root",
+                        "repo",
+                        "crates",
+                        "runtime",
+                        "control-plane",
+                        "docker",
+                        "make",
+                        "ops",
+                        "configs",
+                        "docs",
+                    ],
+                    None,
+                )
+            }
             ContractsCommand::Root(args) => (
                 resolve_repo_root(args.repo_root.clone())?,
                 args.clone(),
@@ -239,6 +338,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 vec!["ops"],
                 args.domain.map(ops_domain_filter),
             ),
+            ContractsCommand::Doctor(_) => unreachable!("handled above"),
             ContractsCommand::SelfCheck(_) => unreachable!("handled above"),
             ContractsCommand::Snapshot(_) => unreachable!("handled above"),
         };

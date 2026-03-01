@@ -313,6 +313,8 @@ pub struct ConfigsCommonArgs {
 #[derive(Subcommand, Debug)]
 pub enum ContractsCommand {
     All(ContractsCommonArgs),
+    Pr(ContractsCommonArgs),
+    Doctor(ContractsCommonArgs),
     Root(ContractsCommonArgs),
     Repo(ContractsCommonArgs),
     Crates(ContractsCommonArgs),
