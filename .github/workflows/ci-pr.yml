@@ -113,6 +113,9 @@ jobs:
           cargo run -q -p bijux-dev-atlas -- check run --suite docs_required --include-internal --include-slow --format json > "${contracts_root}/docs-required.json" 2> "${logs_root}/docs-required.stderr.log"
           cargo run -q -p bijux-dev-atlas -- check run --suite configs_required --include-internal --include-slow --format json > "${contracts_root}/configs-required.json" 2> "${logs_root}/configs-required.stderr.log"
           cargo run -q -p bijux-dev-atlas -- check run --suite make_required --include-internal --include-slow --format json > "${contracts_root}/make-required.json" 2> "${logs_root}/make-required.stderr.log"
+          cargo run -q -p bijux-dev-atlas -- check list --suite docs_required --include-internal --include-slow --format json > "${report_root}/suite-membership-docs_required.json"
+          cargo run -q -p bijux-dev-atlas -- check list --suite configs_required --include-internal --include-slow --format json > "${report_root}/suite-membership-configs_required.json"
+          cargo run -q -p bijux-dev-atlas -- check list --suite make_required --include-internal --include-slow --format json > "${report_root}/suite-membership-make_required.json"
           cargo run -q -p bijux-dev-atlas -- contracts configs --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/configs-static.json" 2> "${logs_root}/configs-contracts-static.stderr.log"
           cargo test --workspace --locked > "${logs_root}/workspace-test.stdout.log" 2> "${logs_root}/workspace-test.stderr.log"
           cargo test -q -p bijux-atlas-api openapi_snapshot_is_deterministic_and_matches_committed_contract -- --exact > "${logs_root}/openapi-snapshot.stdout.log" 2> "${logs_root}/openapi-snapshot.stderr.log"
@@ -185,8 +188,8 @@ jobs:
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-fast.json"
           printf "- lane: ci-fast\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
             "${report_root}/ci-fast.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
-          printf "\n- contracts all: %s\n- docs required: %s\n- configs required: %s\n- make required: %s\n- contracts configs static: %s\n- contracts make static: %s\n- contracts ops static: %s\n- contracts docker static: %s\n- coverage: %s\n" \
-            "${contracts_root}/all.json" "${contracts_root}/docs-required.json" "${contracts_root}/configs-required.json" "${contracts_root}/make-required.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-static.json" "${contracts_root}/docker-static.json" "${contracts_root}/coverage-summary.json" >> "artifacts/${RUN_ID}/summary.md"
+          printf "\n- contracts all: %s\n- docs required: %s\n- docs required membership: %s\n- configs required: %s\n- configs required membership: %s\n- make required: %s\n- make required membership: %s\n- contracts configs static: %s\n- contracts make static: %s\n- contracts ops static: %s\n- contracts docker static: %s\n- coverage: %s\n" \
+            "${contracts_root}/all.json" "${contracts_root}/docs-required.json" "${report_root}/suite-membership-docs_required.json" "${contracts_root}/configs-required.json" "${report_root}/suite-membership-configs_required.json" "${contracts_root}/make-required.json" "${report_root}/suite-membership-make_required.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-static.json" "${contracts_root}/docker-static.json" "${contracts_root}/coverage-summary.json" >> "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
