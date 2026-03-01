@@ -198,6 +198,7 @@
       "crates/bijux-atlas-server/docs/HOT_PATH_CHECKLIST.md"
     ],
     "INDEX": [
+      "configs/INDEX.md",
       "crates/bijux-atlas-api/docs/INDEX.md",
       "crates/bijux-atlas-cli/docs/INDEX.md",
       "crates/bijux-atlas-core/docs/INDEX.md",
@@ -696,8 +697,8 @@
       "docs/_internal/governance/docs-navigation-policy.md"
     ],
     "docs-operating-model": [
-      "docs/_internal/meta/docs-operating-model.md",
-      "docs/_internal/governance/docs-operating-model.md"
+      "docs/_internal/governance/docs-operating-model.md",
+      "docs/_internal/meta/docs-operating-model.md"
     ],
     "docs-ownership": [
       "docs/_internal/governance/docs-ownership.md"
@@ -840,6 +841,13 @@
     "index": [
       "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/index.md",
       "docs/_assets/index.md",
+      "docs/_internal/governance/adrs/index.md",
+      "docs/_internal/governance/checks/index.md",
+      "docs/_internal/governance/index.md",
+      "docs/_internal/governance/metadata/index.md",
+      "docs/_internal/governance/policies/index.md",
+      "docs/_internal/governance/style/index.md",
+      "docs/_internal/index.md",
       "docs/_internal/meta/index.md",
       "docs/_internal/meta/internal/index.md",
       "docs/_internal/nav/index.md",
@@ -847,12 +855,6 @@
       "docs/architecture/index.md",
       "docs/control-plane/index.md",
       "docs/development/index.md",
-      "docs/_internal/governance/adrs/index.md",
-      "docs/_internal/governance/checks/index.md",
-      "docs/_internal/governance/index.md",
-      "docs/_internal/governance/metadata/index.md",
-      "docs/_internal/governance/policies/index.md",
-      "docs/_internal/governance/style/index.md",
       "docs/index.md",
       "docs/operations/e2e/index.md",
       "docs/operations/index.md",

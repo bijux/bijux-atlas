@@ -61,6 +61,11 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-048" => "Published markdown pages must keep unique H1 titles so search and navigation stay unambiguous.".to_string(),
         "DOC-049" => "Published markdown pages must keep exactly one top-level heading outside fenced code blocks.".to_string(),
         "DOC-050" => "Operator golden path pages must stay on the published surface and may not reference internal or generated docs paths.".to_string(),
+        "DOC-051" => "Home stays concise so the docs root remains a product entrypoint instead of a dumping ground.".to_string(),
+        "DOC-052" => "The docs tree may expose only one onboarding funnel named start-here.md.".to_string(),
+        "DOC-053" => "The docs tree may expose only one glossary page so terminology stays canonical.".to_string(),
+        "DOC-054" => "MkDocs must exclude drafts from publish and keep internal docs off the reader nav surface.".to_string(),
+        "DOC-055" => "Section index pages stay curated and may not turn into long inventories.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }

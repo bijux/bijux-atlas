@@ -157,6 +157,18 @@
     {
       "keywords": [
         "configs",
+        "index"
+      ],
+      "path": "configs/INDEX.md",
+      "tags": [
+        "configs",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "keywords": [
+        "configs",
         "readme"
       ],
       "path": "configs/README.md",
@@ -3598,139 +3610,873 @@
     },
     {
       "keywords": [
-        "-meta",
-        "docs-build-model"
+        "-internal",
+        "adr-0001-workspace-boundaries-and-effects",
+        "adrs",
+        "governance"
       ],
-      "path": "docs/_internal/meta/docs-build-model.md",
+      "path": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md",
       "tags": [
-        "-meta",
-        "docs-build-model"
+        "-internal",
+        "adr-0001-workspace-boundaries-and-effects",
+        "adrs",
+        "governance"
       ],
-      "topic": "docs-build-model"
+      "topic": "adr-0001-workspace-boundaries-and-effects"
     },
     {
       "keywords": [
-        "-meta",
-        "docs-change-process"
+        "-internal",
+        "adr-0002-sqlite-serving-store",
+        "adrs",
+        "governance"
       ],
-      "path": "docs/_internal/meta/docs-change-process.md",
+      "path": "docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md",
       "tags": [
-        "-meta",
-        "docs-change-process"
+        "-internal",
+        "adr-0002-sqlite-serving-store",
+        "adrs",
+        "governance"
       ],
-      "topic": "docs-change-process"
+      "topic": "adr-0002-sqlite-serving-store"
     },
     {
       "keywords": [
-        "-meta",
-        "docs-operating-model"
+        "-internal",
+        "adr-0003-federated-registry-deterministic-merge",
+        "adrs",
+        "governance"
       ],
-      "path": "docs/_internal/meta/docs-operating-model.md",
+      "path": "docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md",
       "tags": [
-        "-meta",
-        "docs-operating-model"
+        "-internal",
+        "adr-0003-federated-registry-deterministic-merge",
+        "adrs",
+        "governance"
+      ],
+      "topic": "adr-0003-federated-registry-deterministic-merge"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "adr-0004-plugin-contract-and-umbrella-dispatch",
+        "adrs",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md",
+      "tags": [
+        "-internal",
+        "adr-0004-plugin-contract-and-umbrella-dispatch",
+        "adrs",
+        "governance"
+      ],
+      "topic": "adr-0004-plugin-contract-and-umbrella-dispatch"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "adr-0005-security-defaults-and-enterprise-controls",
+        "adrs",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md",
+      "tags": [
+        "-internal",
+        "adr-0005-security-defaults-and-enterprise-controls",
+        "adrs",
+        "governance"
+      ],
+      "topic": "adr-0005-security-defaults-and-enterprise-controls"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "adrs",
+        "governance",
+        "index"
+      ],
+      "path": "docs/_internal/governance/adrs/index.md",
+      "tags": [
+        "-internal",
+        "adrs",
+        "governance",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "checks",
+        "docs-checks",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/checks/docs-checks.md",
+      "tags": [
+        "-internal",
+        "checks",
+        "docs-checks",
+        "governance"
+      ],
+      "topic": "docs-checks"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "checks",
+        "governance",
+        "index"
+      ],
+      "path": "docs/_internal/governance/checks/index.md",
+      "tags": [
+        "-internal",
+        "checks",
+        "governance",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "contract-breaking-change-examples",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/contract-breaking-change-examples.md",
+      "tags": [
+        "-internal",
+        "contract-breaking-change-examples",
+        "governance"
+      ],
+      "topic": "contract-breaking-change-examples"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "contract-change-checklist",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/contract-change-checklist.md",
+      "tags": [
+        "-internal",
+        "contract-change-checklist",
+        "governance"
+      ],
+      "topic": "contract-change-checklist"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "contract-ssot-workflow",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/contract-ssot-workflow.md",
+      "tags": [
+        "-internal",
+        "contract-ssot-workflow",
+        "governance"
+      ],
+      "topic": "contract-ssot-workflow"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "decision-template",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/decision-template.md",
+      "tags": [
+        "-internal",
+        "decision-template",
+        "governance"
+      ],
+      "topic": "decision-template"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-build-publish-model",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-build-publish-model.md",
+      "tags": [
+        "-internal",
+        "docs-build-publish-model",
+        "governance"
+      ],
+      "topic": "docs-build-publish-model"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-charter",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-charter.md",
+      "tags": [
+        "-internal",
+        "docs-charter",
+        "governance"
+      ],
+      "topic": "docs-charter"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-contract",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-contract.md",
+      "tags": [
+        "-internal",
+        "docs-contract",
+        "governance"
+      ],
+      "topic": "docs-contract"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-dashboard",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-dashboard.md",
+      "tags": [
+        "-internal",
+        "docs-dashboard",
+        "governance"
+      ],
+      "topic": "docs-dashboard"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-debt-backlog",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-debt-backlog.md",
+      "tags": [
+        "-internal",
+        "docs-debt-backlog",
+        "governance"
+      ],
+      "topic": "docs-debt-backlog"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-lint-rules",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-lint-rules.md",
+      "tags": [
+        "-internal",
+        "docs-lint-rules",
+        "governance"
+      ],
+      "topic": "docs-lint-rules"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-navigation-policy",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-navigation-policy.md",
+      "tags": [
+        "-internal",
+        "docs-navigation-policy",
+        "governance"
+      ],
+      "topic": "docs-navigation-policy"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-operating-model",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-operating-model.md",
+      "tags": [
+        "-internal",
+        "docs-operating-model",
+        "governance"
       ],
       "topic": "docs-operating-model"
     },
     {
       "keywords": [
-        "-meta",
-        "docs-principles"
+        "-internal",
+        "docs-ownership",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-ownership.md",
+      "tags": [
+        "-internal",
+        "docs-ownership",
+        "governance"
+      ],
+      "topic": "docs-ownership"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-quality-policy",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-quality-policy.md",
+      "tags": [
+        "-internal",
+        "docs-quality-policy",
+        "governance"
+      ],
+      "topic": "docs-quality-policy"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-quarterly-cleanup",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-quarterly-cleanup.md",
+      "tags": [
+        "-internal",
+        "docs-quarterly-cleanup",
+        "governance"
+      ],
+      "topic": "docs-quarterly-cleanup"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-removal-policy",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-removal-policy.md",
+      "tags": [
+        "-internal",
+        "docs-removal-policy",
+        "governance"
+      ],
+      "topic": "docs-removal-policy"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-review-checklist",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-review-checklist.md",
+      "tags": [
+        "-internal",
+        "docs-review-checklist",
+        "governance"
+      ],
+      "topic": "docs-review-checklist"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-search-tips",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-search-tips.md",
+      "tags": [
+        "-internal",
+        "docs-search-tips",
+        "governance"
+      ],
+      "topic": "docs-search-tips"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-style",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-style.md",
+      "tags": [
+        "-internal",
+        "docs-style",
+        "governance"
+      ],
+      "topic": "docs-style"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "generated-content-policy",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/generated-content-policy.md",
+      "tags": [
+        "-internal",
+        "generated-content-policy",
+        "governance"
+      ],
+      "topic": "generated-content-policy"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "index"
+      ],
+      "path": "docs/_internal/governance/index.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "index",
+        "metadata"
+      ],
+      "path": "docs/_internal/governance/metadata/index.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "index",
+        "metadata"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "metadata",
+        "taxonomy-map"
+      ],
+      "path": "docs/_internal/governance/metadata/taxonomy-map.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "metadata",
+        "taxonomy-map"
+      ],
+      "topic": "taxonomy-map"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "naming"
+      ],
+      "path": "docs/_internal/governance/naming.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "naming"
+      ],
+      "topic": "naming"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "checks",
+        "governance",
+        "policies"
+      ],
+      "path": "docs/_internal/governance/policies/checks.md",
+      "tags": [
+        "-internal",
+        "checks",
+        "governance",
+        "policies"
+      ],
+      "topic": "checks"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "index",
+        "policies"
+      ],
+      "path": "docs/_internal/governance/policies/index.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "index",
+        "policies"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "policy-enforcement-mapping"
+      ],
+      "path": "docs/_internal/governance/policy-enforcement-mapping.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "policy-enforcement-mapping"
+      ],
+      "topic": "policy-enforcement-mapping"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "readers-guide"
+      ],
+      "path": "docs/_internal/governance/readers-guide.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "readers-guide"
+      ],
+      "topic": "readers-guide"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "redirects-policy"
+      ],
+      "path": "docs/_internal/governance/redirects-policy.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "redirects-policy"
+      ],
+      "topic": "redirects-policy"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "style-guide"
+      ],
+      "path": "docs/_internal/governance/style-guide.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "style-guide"
+      ],
+      "topic": "style-guide"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "concept-ids",
+        "governance",
+        "style"
+      ],
+      "path": "docs/_internal/governance/style/concept-ids.md",
+      "tags": [
+        "-internal",
+        "concept-ids",
+        "governance",
+        "style"
+      ],
+      "topic": "concept-ids"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "concept-registry",
+        "governance",
+        "style"
+      ],
+      "path": "docs/_internal/governance/style/concept-registry.md",
+      "tags": [
+        "-internal",
+        "concept-registry",
+        "governance",
+        "style"
+      ],
+      "topic": "concept-registry"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "crate-docs-depth-rubric",
+        "governance",
+        "style"
+      ],
+      "path": "docs/_internal/governance/style/crate-docs-depth-rubric.md",
+      "tags": [
+        "-internal",
+        "crate-docs-depth-rubric",
+        "governance",
+        "style"
+      ],
+      "topic": "crate-docs-depth-rubric"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "depth-policy",
+        "governance",
+        "style"
+      ],
+      "path": "docs/_internal/governance/style/depth-policy.md",
+      "tags": [
+        "-internal",
+        "depth-policy",
+        "governance",
+        "style"
+      ],
+      "topic": "depth-policy"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "depth-rubric",
+        "governance",
+        "style"
+      ],
+      "path": "docs/_internal/governance/style/depth-rubric.md",
+      "tags": [
+        "-internal",
+        "depth-rubric",
+        "governance",
+        "style"
+      ],
+      "topic": "depth-rubric"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "index",
+        "style"
+      ],
+      "path": "docs/_internal/governance/style/index.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "index",
+        "style"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "placement",
+        "style"
+      ],
+      "path": "docs/_internal/governance/style/placement.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "placement",
+        "style"
+      ],
+      "topic": "placement"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "stability-levels",
+        "style"
+      ],
+      "path": "docs/_internal/governance/style/stability-levels.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "stability-levels",
+        "style"
+      ],
+      "topic": "stability-levels"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "structure-templates",
+        "style"
+      ],
+      "path": "docs/_internal/governance/style/structure-templates.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "structure-templates",
+        "style"
+      ],
+      "topic": "structure-templates"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "index"
+      ],
+      "path": "docs/_internal/index.md",
+      "tags": [
+        "-internal",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-build-model",
+        "meta"
+      ],
+      "path": "docs/_internal/meta/docs-build-model.md",
+      "tags": [
+        "-internal",
+        "docs-build-model",
+        "meta"
+      ],
+      "topic": "docs-build-model"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-change-process",
+        "meta"
+      ],
+      "path": "docs/_internal/meta/docs-change-process.md",
+      "tags": [
+        "-internal",
+        "docs-change-process",
+        "meta"
+      ],
+      "topic": "docs-change-process"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-operating-model",
+        "meta"
+      ],
+      "path": "docs/_internal/meta/docs-operating-model.md",
+      "tags": [
+        "-internal",
+        "docs-operating-model",
+        "meta"
+      ],
+      "topic": "docs-operating-model"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-principles",
+        "meta"
       ],
       "path": "docs/_internal/meta/docs-principles.md",
       "tags": [
-        "-meta",
-        "docs-principles"
+        "-internal",
+        "docs-principles",
+        "meta"
       ],
       "topic": "docs-principles"
     },
     {
       "keywords": [
-        "-meta",
-        "docs-taxonomy-quick-reference"
+        "-internal",
+        "docs-taxonomy-quick-reference",
+        "meta"
       ],
       "path": "docs/_internal/meta/docs-taxonomy-quick-reference.md",
       "tags": [
-        "-meta",
-        "docs-taxonomy-quick-reference"
+        "-internal",
+        "docs-taxonomy-quick-reference",
+        "meta"
       ],
       "topic": "docs-taxonomy-quick-reference"
     },
     {
       "keywords": [
-        "-meta",
-        "generated-artifacts"
+        "-internal",
+        "generated-artifacts",
+        "meta"
       ],
       "path": "docs/_internal/meta/generated-artifacts.md",
       "tags": [
-        "-meta",
-        "generated-artifacts"
+        "-internal",
+        "generated-artifacts",
+        "meta"
       ],
       "topic": "generated-artifacts"
     },
     {
       "keywords": [
-        "-meta",
-        "index"
+        "-internal",
+        "index",
+        "meta"
       ],
       "path": "docs/_internal/meta/index.md",
       "tags": [
-        "-meta",
-        "index"
+        "-internal",
+        "index",
+        "meta"
       ],
       "topic": "index"
     },
     {
       "keywords": [
-        "-meta",
+        "-internal",
         "docs-rewrite-plan",
-        "internal"
+        "internal",
+        "meta"
       ],
       "path": "docs/_internal/meta/internal/docs-rewrite-plan.md",
       "tags": [
-        "-meta",
+        "-internal",
         "docs-rewrite-plan",
-        "internal"
+        "internal",
+        "meta"
       ],
       "topic": "docs-rewrite-plan"
     },
     {
       "keywords": [
-        "-meta",
+        "-internal",
         "index",
-        "internal"
+        "internal",
+        "meta"
       ],
       "path": "docs/_internal/meta/internal/index.md",
       "tags": [
-        "-meta",
+        "-internal",
         "index",
-        "internal"
+        "internal",
+        "meta"
       ],
       "topic": "index"
     },
     {
       "keywords": [
-        "-meta",
+        "-internal",
         "internal",
+        "meta",
         "root-legacy-mapping"
       ],
       "path": "docs/_internal/meta/internal/root-legacy-mapping.md",
       "tags": [
-        "-meta",
+        "-internal",
         "internal",
+        "meta",
         "root-legacy-mapping"
       ],
       "topic": "root-legacy-mapping"
     },
     {
       "keywords": [
-        "-nav",
-        "index"
+        "-internal",
+        "index",
+        "nav"
       ],
       "path": "docs/_internal/nav/index.md",
       "tags": [
-        "-nav",
-        "index"
+        "-internal",
+        "index",
+        "nav"
       ],
       "topic": "index"
     },
@@ -4847,612 +5593,6 @@
         "glossary"
       ],
       "topic": "glossary"
-    },
-    {
-      "keywords": [
-        "adr-0001-workspace-boundaries-and-effects",
-        "adrs",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md",
-      "tags": [
-        "adr-0001-workspace-boundaries-and-effects",
-        "adrs",
-        "governance"
-      ],
-      "topic": "adr-0001-workspace-boundaries-and-effects"
-    },
-    {
-      "keywords": [
-        "adr-0002-sqlite-serving-store",
-        "adrs",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md",
-      "tags": [
-        "adr-0002-sqlite-serving-store",
-        "adrs",
-        "governance"
-      ],
-      "topic": "adr-0002-sqlite-serving-store"
-    },
-    {
-      "keywords": [
-        "adr-0003-federated-registry-deterministic-merge",
-        "adrs",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md",
-      "tags": [
-        "adr-0003-federated-registry-deterministic-merge",
-        "adrs",
-        "governance"
-      ],
-      "topic": "adr-0003-federated-registry-deterministic-merge"
-    },
-    {
-      "keywords": [
-        "adr-0004-plugin-contract-and-umbrella-dispatch",
-        "adrs",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md",
-      "tags": [
-        "adr-0004-plugin-contract-and-umbrella-dispatch",
-        "adrs",
-        "governance"
-      ],
-      "topic": "adr-0004-plugin-contract-and-umbrella-dispatch"
-    },
-    {
-      "keywords": [
-        "adr-0005-security-defaults-and-enterprise-controls",
-        "adrs",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md",
-      "tags": [
-        "adr-0005-security-defaults-and-enterprise-controls",
-        "adrs",
-        "governance"
-      ],
-      "topic": "adr-0005-security-defaults-and-enterprise-controls"
-    },
-    {
-      "keywords": [
-        "adrs",
-        "governance",
-        "index"
-      ],
-      "path": "docs/_internal/governance/adrs/index.md",
-      "tags": [
-        "adrs",
-        "governance",
-        "index"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
-        "checks",
-        "docs-checks",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/checks/docs-checks.md",
-      "tags": [
-        "checks",
-        "docs-checks",
-        "governance"
-      ],
-      "topic": "docs-checks"
-    },
-    {
-      "keywords": [
-        "checks",
-        "governance",
-        "index"
-      ],
-      "path": "docs/_internal/governance/checks/index.md",
-      "tags": [
-        "checks",
-        "governance",
-        "index"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
-        "contract-breaking-change-examples",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/contract-breaking-change-examples.md",
-      "tags": [
-        "contract-breaking-change-examples",
-        "governance"
-      ],
-      "topic": "contract-breaking-change-examples"
-    },
-    {
-      "keywords": [
-        "contract-change-checklist",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/contract-change-checklist.md",
-      "tags": [
-        "contract-change-checklist",
-        "governance"
-      ],
-      "topic": "contract-change-checklist"
-    },
-    {
-      "keywords": [
-        "contract-ssot-workflow",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/contract-ssot-workflow.md",
-      "tags": [
-        "contract-ssot-workflow",
-        "governance"
-      ],
-      "topic": "contract-ssot-workflow"
-    },
-    {
-      "keywords": [
-        "decision-template",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/decision-template.md",
-      "tags": [
-        "decision-template",
-        "governance"
-      ],
-      "topic": "decision-template"
-    },
-    {
-      "keywords": [
-        "docs-build-publish-model",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/docs-build-publish-model.md",
-      "tags": [
-        "docs-build-publish-model",
-        "governance"
-      ],
-      "topic": "docs-build-publish-model"
-    },
-    {
-      "keywords": [
-        "docs-charter",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/docs-charter.md",
-      "tags": [
-        "docs-charter",
-        "governance"
-      ],
-      "topic": "docs-charter"
-    },
-    {
-      "keywords": [
-        "docs-contract",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/docs-contract.md",
-      "tags": [
-        "docs-contract",
-        "governance"
-      ],
-      "topic": "docs-contract"
-    },
-    {
-      "keywords": [
-        "docs-dashboard",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/docs-dashboard.md",
-      "tags": [
-        "docs-dashboard",
-        "governance"
-      ],
-      "topic": "docs-dashboard"
-    },
-    {
-      "keywords": [
-        "docs-debt-backlog",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/docs-debt-backlog.md",
-      "tags": [
-        "docs-debt-backlog",
-        "governance"
-      ],
-      "topic": "docs-debt-backlog"
-    },
-    {
-      "keywords": [
-        "docs-lint-rules",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/docs-lint-rules.md",
-      "tags": [
-        "docs-lint-rules",
-        "governance"
-      ],
-      "topic": "docs-lint-rules"
-    },
-    {
-      "keywords": [
-        "docs-navigation-policy",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/docs-navigation-policy.md",
-      "tags": [
-        "docs-navigation-policy",
-        "governance"
-      ],
-      "topic": "docs-navigation-policy"
-    },
-    {
-      "keywords": [
-        "docs-operating-model",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/docs-operating-model.md",
-      "tags": [
-        "docs-operating-model",
-        "governance"
-      ],
-      "topic": "docs-operating-model"
-    },
-    {
-      "keywords": [
-        "docs-ownership",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/docs-ownership.md",
-      "tags": [
-        "docs-ownership",
-        "governance"
-      ],
-      "topic": "docs-ownership"
-    },
-    {
-      "keywords": [
-        "docs-quality-policy",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/docs-quality-policy.md",
-      "tags": [
-        "docs-quality-policy",
-        "governance"
-      ],
-      "topic": "docs-quality-policy"
-    },
-    {
-      "keywords": [
-        "docs-quarterly-cleanup",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/docs-quarterly-cleanup.md",
-      "tags": [
-        "docs-quarterly-cleanup",
-        "governance"
-      ],
-      "topic": "docs-quarterly-cleanup"
-    },
-    {
-      "keywords": [
-        "docs-removal-policy",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/docs-removal-policy.md",
-      "tags": [
-        "docs-removal-policy",
-        "governance"
-      ],
-      "topic": "docs-removal-policy"
-    },
-    {
-      "keywords": [
-        "docs-review-checklist",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/docs-review-checklist.md",
-      "tags": [
-        "docs-review-checklist",
-        "governance"
-      ],
-      "topic": "docs-review-checklist"
-    },
-    {
-      "keywords": [
-        "docs-search-tips",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/docs-search-tips.md",
-      "tags": [
-        "docs-search-tips",
-        "governance"
-      ],
-      "topic": "docs-search-tips"
-    },
-    {
-      "keywords": [
-        "docs-style",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/docs-style.md",
-      "tags": [
-        "docs-style",
-        "governance"
-      ],
-      "topic": "docs-style"
-    },
-    {
-      "keywords": [
-        "generated-content-policy",
-        "governance"
-      ],
-      "path": "docs/_internal/governance/generated-content-policy.md",
-      "tags": [
-        "generated-content-policy",
-        "governance"
-      ],
-      "topic": "generated-content-policy"
-    },
-    {
-      "keywords": [
-        "governance",
-        "index"
-      ],
-      "path": "docs/_internal/governance/index.md",
-      "tags": [
-        "governance",
-        "index"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
-        "governance",
-        "index",
-        "metadata"
-      ],
-      "path": "docs/_internal/governance/metadata/index.md",
-      "tags": [
-        "governance",
-        "index",
-        "metadata"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
-        "governance",
-        "metadata",
-        "taxonomy-map"
-      ],
-      "path": "docs/_internal/governance/metadata/taxonomy-map.md",
-      "tags": [
-        "governance",
-        "metadata",
-        "taxonomy-map"
-      ],
-      "topic": "taxonomy-map"
-    },
-    {
-      "keywords": [
-        "governance",
-        "naming"
-      ],
-      "path": "docs/_internal/governance/naming.md",
-      "tags": [
-        "governance",
-        "naming"
-      ],
-      "topic": "naming"
-    },
-    {
-      "keywords": [
-        "checks",
-        "governance",
-        "policies"
-      ],
-      "path": "docs/_internal/governance/policies/checks.md",
-      "tags": [
-        "checks",
-        "governance",
-        "policies"
-      ],
-      "topic": "checks"
-    },
-    {
-      "keywords": [
-        "governance",
-        "index",
-        "policies"
-      ],
-      "path": "docs/_internal/governance/policies/index.md",
-      "tags": [
-        "governance",
-        "index",
-        "policies"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
-        "governance",
-        "policy-enforcement-mapping"
-      ],
-      "path": "docs/_internal/governance/policy-enforcement-mapping.md",
-      "tags": [
-        "governance",
-        "policy-enforcement-mapping"
-      ],
-      "topic": "policy-enforcement-mapping"
-    },
-    {
-      "keywords": [
-        "governance",
-        "readers-guide"
-      ],
-      "path": "docs/_internal/governance/readers-guide.md",
-      "tags": [
-        "governance",
-        "readers-guide"
-      ],
-      "topic": "readers-guide"
-    },
-    {
-      "keywords": [
-        "governance",
-        "redirects-policy"
-      ],
-      "path": "docs/_internal/governance/redirects-policy.md",
-      "tags": [
-        "governance",
-        "redirects-policy"
-      ],
-      "topic": "redirects-policy"
-    },
-    {
-      "keywords": [
-        "governance",
-        "style-guide"
-      ],
-      "path": "docs/_internal/governance/style-guide.md",
-      "tags": [
-        "governance",
-        "style-guide"
-      ],
-      "topic": "style-guide"
-    },
-    {
-      "keywords": [
-        "concept-ids",
-        "governance",
-        "style"
-      ],
-      "path": "docs/_internal/governance/style/concept-ids.md",
-      "tags": [
-        "concept-ids",
-        "governance",
-        "style"
-      ],
-      "topic": "concept-ids"
-    },
-    {
-      "keywords": [
-        "concept-registry",
-        "governance",
-        "style"
-      ],
-      "path": "docs/_internal/governance/style/concept-registry.md",
-      "tags": [
-        "concept-registry",
-        "governance",
-        "style"
-      ],
-      "topic": "concept-registry"
-    },
-    {
-      "keywords": [
-        "crate-docs-depth-rubric",
-        "governance",
-        "style"
-      ],
-      "path": "docs/_internal/governance/style/crate-docs-depth-rubric.md",
-      "tags": [
-        "crate-docs-depth-rubric",
-        "governance",
-        "style"
-      ],
-      "topic": "crate-docs-depth-rubric"
-    },
-    {
-      "keywords": [
-        "depth-policy",
-        "governance",
-        "style"
-      ],
-      "path": "docs/_internal/governance/style/depth-policy.md",
-      "tags": [
-        "depth-policy",
-        "governance",
-        "style"
-      ],
-      "topic": "depth-policy"
-    },
-    {
-      "keywords": [
-        "depth-rubric",
-        "governance",
-        "style"
-      ],
-      "path": "docs/_internal/governance/style/depth-rubric.md",
-      "tags": [
-        "depth-rubric",
-        "governance",
-        "style"
-      ],
-      "topic": "depth-rubric"
-    },
-    {
-      "keywords": [
-        "governance",
-        "index",
-        "style"
-      ],
-      "path": "docs/_internal/governance/style/index.md",
-      "tags": [
-        "governance",
-        "index",
-        "style"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
-        "governance",
-        "placement",
-        "style"
-      ],
-      "path": "docs/_internal/governance/style/placement.md",
-      "tags": [
-        "governance",
-        "placement",
-        "style"
-      ],
-      "topic": "placement"
-    },
-    {
-      "keywords": [
-        "governance",
-        "stability-levels",
-        "style"
-      ],
-      "path": "docs/_internal/governance/style/stability-levels.md",
-      "tags": [
-        "governance",
-        "stability-levels",
-        "style"
-      ],
-      "topic": "stability-levels"
-    },
-    {
-      "keywords": [
-        "governance",
-        "structure-templates",
-        "style"
-      ],
-      "path": "docs/_internal/governance/style/structure-templates.md",
-      "tags": [
-        "governance",
-        "structure-templates",
-        "style"
-      ],
-      "topic": "structure-templates"
     },
     {
       "keywords": [

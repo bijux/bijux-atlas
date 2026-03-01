@@ -1,5 +1,5 @@
 {
-  "documents_total": 576,
+  "documents_total": 578,
   "generated_artifacts": [
     "docs/_internal/generated/docs-inventory.md",
     "docs/_internal/generated/topic-index.json",
@@ -20,5 +20,5 @@
     "sections": "docs/sections.json"
   },
   "schema_version": 1,
-  "section_count": 37
+  "section_count": 35
 }

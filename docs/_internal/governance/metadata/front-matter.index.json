@@ -109,6 +109,14 @@
       "area": "configs",
       "audience": "contributors",
       "owner": "docs-governance",
+      "path": "configs/INDEX.md",
+      "stability": "stable",
+      "title": "Configs index"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
+      "owner": "docs-governance",
       "path": "configs/README.md",
       "stability": "stable",
       "title": "Configurations"
@@ -2234,7 +2242,391 @@
       "title": "Assets Index"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md",
+      "stability": "stable",
+      "title": "ADR-0001: Workspace Boundaries And Effects"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md",
+      "stability": "stable",
+      "title": "ADR-0002: SQLite As Canonical Serving Store"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md",
+      "stability": "stable",
+      "title": "ADR-0003: Federated Registry With Deterministic Merge"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md",
+      "stability": "stable",
+      "title": "ADR-0004: Plugin Contract And Umbrella Dispatch"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md",
+      "stability": "stable",
+      "title": "ADR-0005: Security Defaults And Optional Enterprise Controls"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/adrs/index.md",
+      "stability": "stable",
+      "title": "Architectural Decision Records"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/checks/docs-checks.md",
+      "stability": "stable",
+      "title": "Docs Checks Contract"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/checks/index.md",
+      "stability": "stable",
+      "title": "checks"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/contract-breaking-change-examples.md",
+      "stability": "stable",
+      "title": "Breaking Change Examples"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/contract-change-checklist.md",
+      "stability": "stable",
+      "title": "Contract Change Checklist"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/contract-ssot-workflow.md",
+      "stability": "stable",
+      "title": "SSOT Workflow"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/decision-template.md",
+      "stability": "stable",
+      "title": "Documentation Decision Template"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-build-publish-model.md",
+      "stability": "stable",
+      "title": "Docs Build Publish Model"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "bijux-atlas-docs",
+      "path": "docs/_internal/governance/docs-charter.md",
+      "stability": "stable",
+      "title": "Docs Charter"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-contract.md",
+      "stability": "stable",
+      "title": "Docs Contract"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-dashboard.md",
+      "stability": "stable",
+      "title": "Docs dashboard"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-debt-backlog.md",
+      "stability": "stable",
+      "title": "Docs debt backlog"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-lint-rules.md",
+      "stability": "stable",
+      "title": "Documentation lint rules"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-navigation-policy.md",
+      "stability": "stable",
+      "title": "Documentation Navigation Policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-operating-model.md",
+      "stability": "stable",
+      "title": "Documentation operating model"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-ownership.md",
+      "stability": "stable",
+      "title": "Documentation Ownership"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-quality-policy.md",
+      "stability": "stable",
+      "title": "Docs Quality Policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-quarterly-cleanup.md",
+      "stability": "stable",
+      "title": "Docs quarterly cleanup"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-removal-policy.md",
+      "stability": "stable",
+      "title": "Documentation Removal Policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-review-checklist.md",
+      "stability": "stable",
+      "title": "Documentation Review Checklist"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-search-tips.md",
+      "stability": "stable",
+      "title": "Docs Search Tips"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-style.md",
+      "stability": "stable",
+      "title": "Documentation Style"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/generated-content-policy.md",
+      "stability": "stable",
+      "title": "Generated Documentation Content Policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/_internal/governance/index.md",
+      "stability": "stable",
+      "title": "Governance"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/metadata/index.md",
+      "stability": "stable",
+      "title": "Metadata"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/metadata/taxonomy-map.md",
+      "stability": "stable",
+      "title": "Docs Taxonomy Map"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/naming.md",
+      "stability": "stable",
+      "title": "Naming Standard"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/policies/checks.md",
+      "stability": "stable",
+      "title": "Policies Checks Contract"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/policies/index.md",
+      "stability": "stable",
+      "title": "policies"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/policy-enforcement-mapping.md",
+      "stability": "stable",
+      "title": "Policy Enforcement Mapping"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/readers-guide.md",
+      "stability": "stable",
+      "title": "Governance Readers Guide"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/redirects-policy.md",
+      "stability": "stable",
+      "title": "Redirects Policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style-guide.md",
+      "stability": "stable",
+      "title": "Governance Style Guide"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/concept-ids.md",
+      "stability": "stable",
+      "title": "Canonical Concept IDs"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/concept-registry.md",
+      "stability": "stable",
+      "title": "Concept Registry"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/crate-docs-depth-rubric.md",
+      "stability": "stable",
+      "title": "Crate Docs Depth Rubric"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/depth-policy.md",
+      "stability": "stable",
+      "title": "Depth Policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/depth-rubric.md",
+      "stability": "stable",
+      "title": "Depth Rubric"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/index.md",
+      "stability": "stable",
+      "title": "Governance Style Archive"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/placement.md",
+      "stability": "stable",
+      "title": "Placement Decision Tree"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/stability-levels.md",
+      "stability": "stable",
+      "title": "Stability Levels"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/structure-templates.md",
+      "stability": "stable",
+      "title": "Structure Templates"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/index.md",
+      "stability": "stable",
+      "title": "Internal docs"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/meta/docs-build-model.md",
@@ -2242,7 +2634,7 @@
       "title": "Docs build model"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/meta/docs-change-process.md",
@@ -2250,7 +2642,7 @@
       "title": "Docs change process"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/meta/docs-operating-model.md",
@@ -2258,7 +2650,7 @@
       "title": "Docs operating model"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/meta/docs-principles.md",
@@ -2266,7 +2658,7 @@
       "title": "Docs principles"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/meta/docs-taxonomy-quick-reference.md",
@@ -2274,7 +2666,7 @@
       "title": "Docs taxonomy quick reference"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/meta/generated-artifacts.md",
@@ -2282,7 +2674,7 @@
       "title": "Generated artifacts"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/meta/index.md",
@@ -2290,7 +2682,7 @@
       "title": "Docs internal metadata"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/meta/internal/docs-rewrite-plan.md",
@@ -2298,7 +2690,7 @@
       "title": "Documentation Rewrite Plan"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/meta/internal/index.md",
@@ -2306,7 +2698,7 @@
       "title": "Internal planning materials"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/meta/internal/root-legacy-mapping.md",
@@ -2314,7 +2706,7 @@
       "title": "Root Legacy Mapping"
     },
     {
-      "area": "_nav",
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/nav/index.md",
@@ -3064,382 +3456,6 @@
       "path": "docs/glossary.md",
       "stability": "stable",
       "title": "Glossary"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md",
-      "stability": "stable",
-      "title": "ADR-0001: Workspace Boundaries And Effects"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md",
-      "stability": "stable",
-      "title": "ADR-0002: SQLite As Canonical Serving Store"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md",
-      "stability": "stable",
-      "title": "ADR-0003: Federated Registry With Deterministic Merge"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md",
-      "stability": "stable",
-      "title": "ADR-0004: Plugin Contract And Umbrella Dispatch"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md",
-      "stability": "stable",
-      "title": "ADR-0005: Security Defaults And Optional Enterprise Controls"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/adrs/index.md",
-      "stability": "stable",
-      "title": "Architectural Decision Records"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/checks/docs-checks.md",
-      "stability": "stable",
-      "title": "Docs Checks Contract"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/checks/index.md",
-      "stability": "stable",
-      "title": "checks"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/contract-breaking-change-examples.md",
-      "stability": "stable",
-      "title": "Breaking Change Examples"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/contract-change-checklist.md",
-      "stability": "stable",
-      "title": "Contract Change Checklist"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/contract-ssot-workflow.md",
-      "stability": "stable",
-      "title": "SSOT Workflow"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/decision-template.md",
-      "stability": "stable",
-      "title": "Documentation Decision Template"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-build-publish-model.md",
-      "stability": "stable",
-      "title": "Docs Build Publish Model"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "owner": "bijux-atlas-docs",
-      "path": "docs/_internal/governance/docs-charter.md",
-      "stability": "stable",
-      "title": "Docs Charter"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-contract.md",
-      "stability": "stable",
-      "title": "Docs Contract"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-dashboard.md",
-      "stability": "stable",
-      "title": "Docs dashboard"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-debt-backlog.md",
-      "stability": "stable",
-      "title": "Docs debt backlog"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-lint-rules.md",
-      "stability": "stable",
-      "title": "Documentation lint rules"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-navigation-policy.md",
-      "stability": "stable",
-      "title": "Documentation Navigation Policy"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-operating-model.md",
-      "stability": "stable",
-      "title": "Documentation operating model"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-ownership.md",
-      "stability": "stable",
-      "title": "Documentation Ownership"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-quality-policy.md",
-      "stability": "stable",
-      "title": "Docs Quality Policy"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-quarterly-cleanup.md",
-      "stability": "stable",
-      "title": "Docs quarterly cleanup"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-removal-policy.md",
-      "stability": "stable",
-      "title": "Documentation Removal Policy"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-review-checklist.md",
-      "stability": "stable",
-      "title": "Documentation Review Checklist"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-search-tips.md",
-      "stability": "stable",
-      "title": "Docs Search Tips"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-style.md",
-      "stability": "stable",
-      "title": "Documentation Style"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/generated-content-policy.md",
-      "stability": "stable",
-      "title": "Generated Documentation Content Policy"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "owner": "platform",
-      "path": "docs/_internal/governance/index.md",
-      "stability": "stable",
-      "title": "Governance"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/metadata/index.md",
-      "stability": "stable",
-      "title": "Metadata"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/metadata/taxonomy-map.md",
-      "stability": "stable",
-      "title": "Docs Taxonomy Map"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/naming.md",
-      "stability": "stable",
-      "title": "Naming Standard"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/policies/checks.md",
-      "stability": "stable",
-      "title": "Policies Checks Contract"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/policies/index.md",
-      "stability": "stable",
-      "title": "policies"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/policy-enforcement-mapping.md",
-      "stability": "stable",
-      "title": "Policy Enforcement Mapping"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/readers-guide.md",
-      "stability": "stable",
-      "title": "Governance Readers Guide"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/redirects-policy.md",
-      "stability": "stable",
-      "title": "Redirects Policy"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style-guide.md",
-      "stability": "stable",
-      "title": "Governance Style Guide"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/concept-ids.md",
-      "stability": "stable",
-      "title": "Canonical Concept IDs"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/concept-registry.md",
-      "stability": "stable",
-      "title": "Concept Registry"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/crate-docs-depth-rubric.md",
-      "stability": "stable",
-      "title": "Crate Docs Depth Rubric"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/depth-policy.md",
-      "stability": "stable",
-      "title": "Depth Policy"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/depth-rubric.md",
-      "stability": "stable",
-      "title": "Depth Rubric"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/index.md",
-      "stability": "stable",
-      "title": "Governance Style Archive"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/placement.md",
-      "stability": "stable",
-      "title": "Placement Decision Tree"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/stability-levels.md",
-      "stability": "stable",
-      "title": "Stability Levels"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/structure-templates.md",
-      "stability": "stable",
-      "title": "Structure Templates"
     },
     {
       "area": "index.md",
@@ -4263,7 +4279,7 @@
       "owner": "docs-governance",
       "path": "docs/reference/querying/pagination.md",
       "stability": "stable",
-      "title": "Pagination"
+      "title": "Pagination semantics"
     },
     {
       "area": "reference",

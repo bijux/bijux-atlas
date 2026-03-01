@@ -3,6 +3,8 @@ fn docs_root_path(ctx: &RunContext) -> std::path::PathBuf {
 }
 
 const DOCS_ENTRYPOINT_WORD_BUDGET: usize = 700;
+const DOCS_HOME_LINE_BUDGET: usize = 80;
+const DOCS_SECTION_INDEX_LINK_BUDGET: usize = 12;
 
 fn parse_docs_field(contents: &str, labels: &[&str]) -> Option<String> {
     for line in contents.lines().take(12) {
@@ -34,6 +36,21 @@ fn parse_docs_frontmatter(contents: &str) -> Option<serde_yaml::Value> {
         yaml.push('\n');
     }
     None
+}
+
+fn strip_docs_frontmatter(contents: &str) -> &str {
+    let mut lines = contents.lines();
+    if lines.next() != Some("---") {
+        return contents;
+    }
+    let mut offset = 4usize;
+    for line in lines {
+        offset += line.len() + 1;
+        if line == "---" {
+            return &contents[offset..];
+        }
+    }
+    contents
 }
 
 fn docs_frontmatter_string(contents: &str, key: &str) -> Option<String> {
@@ -150,6 +167,44 @@ fn docs_reader_utility_pages() -> Vec<String> {
         "docs/site-map.md".to_string(),
         "docs/what-to-read-next.md".to_string(),
     ]
+}
+
+fn docs_count_named_files(ctx: &RunContext, file_name: &str) -> usize {
+    docs_markdown_files(ctx)
+        .into_iter()
+        .filter(|path| path.file_name().and_then(|value| value.to_str()) == Some(file_name))
+        .count()
+}
+
+fn docs_required_section_indexes(ctx: &RunContext) -> Result<Vec<String>, TestResult> {
+    let mut indexes = Vec::new();
+    for (path, is_root_entrypoint) in docs_entrypoint_pages(ctx)? {
+        if !is_root_entrypoint && !path.starts_with("docs/_") {
+            indexes.push(path);
+        }
+    }
+    indexes.sort();
+    indexes.dedup();
+    Ok(indexes)
+}
+
+fn read_mkdocs_yaml(
+    ctx: &RunContext,
+    contract_id: &str,
+    test_id: &str,
+) -> Result<String, TestResult> {
+    let path = ctx.repo_root.join("mkdocs.yml");
+    match std::fs::read_to_string(&path) {
+        Ok(contents) => Ok(contents),
+        Err(err) => Err(TestResult::Fail(vec![Violation {
+            contract_id: contract_id.to_string(),
+            test_id: test_id.to_string(),
+            file: Some("mkdocs.yml".to_string()),
+            line: None,
+            message: format!("read failed: {err}"),
+            evidence: None,
+        }])),
+    }
 }
 
 fn docs_operator_golden_path_pages() -> Vec<String> {

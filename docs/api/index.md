@@ -32,19 +32,16 @@ Use this section to integrate clients with Atlas API surfaces safely and predict
 - [Pagination](pagination.md)
 - [Errors](errors.md)
 - [Compatibility](compatibility.md)
-- [Versioning](versioning.md)
-- [Troubleshooting](troubleshooting.md)
 
 ## Consumer policies
 
 - [Deprecation lifecycle](deprecation.md)
 - [Client retries and backoff](client-retries-and-backoff.md)
 - [Performance expectations](performance-expectations.md)
-- [SDK strategy](sdk-strategy.md)
 
 ## Where facts live
 
-Endpoint and schema facts live in [Reference](../reference/index.md), [Reference contracts](../reference/contracts/index.md), and [V1 surface](v1-surface.md).
+Endpoint and schema facts live in [Reference](../reference/index.md).
 
 ## Verification plans
 
@@ -54,5 +51,4 @@ Endpoint and schema facts live in [Reference](../reference/index.md), [Reference
 ## Next steps
 
 - [Reference](../reference/index.md)
-- [Start Here](../start-here.md)
 - [Glossary](../glossary.md)

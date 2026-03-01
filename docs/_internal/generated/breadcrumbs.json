@@ -93,6 +93,13 @@
     {
       "breadcrumbs": [
         "configs",
+        "configs/INDEX.md"
+      ],
+      "path": "configs/INDEX.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
         "configs/README.md"
       ],
       "path": "configs/README.md"
@@ -2499,6 +2506,459 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/adrs",
+        "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md"
+      ],
+      "path": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/adrs",
+        "docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md"
+      ],
+      "path": "docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/adrs",
+        "docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md"
+      ],
+      "path": "docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/adrs",
+        "docs/_internal/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md"
+      ],
+      "path": "docs/_internal/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/adrs",
+        "docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md"
+      ],
+      "path": "docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/adrs",
+        "docs/_internal/governance/adrs/index.md"
+      ],
+      "path": "docs/_internal/governance/adrs/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/checks",
+        "docs/_internal/governance/checks/docs-checks.md"
+      ],
+      "path": "docs/_internal/governance/checks/docs-checks.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/checks",
+        "docs/_internal/governance/checks/index.md"
+      ],
+      "path": "docs/_internal/governance/checks/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/contract-breaking-change-examples.md"
+      ],
+      "path": "docs/_internal/governance/contract-breaking-change-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/contract-change-checklist.md"
+      ],
+      "path": "docs/_internal/governance/contract-change-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/contract-ssot-workflow.md"
+      ],
+      "path": "docs/_internal/governance/contract-ssot-workflow.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/decision-template.md"
+      ],
+      "path": "docs/_internal/governance/decision-template.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-build-publish-model.md"
+      ],
+      "path": "docs/_internal/governance/docs-build-publish-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-charter.md"
+      ],
+      "path": "docs/_internal/governance/docs-charter.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-contract.md"
+      ],
+      "path": "docs/_internal/governance/docs-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-dashboard.md"
+      ],
+      "path": "docs/_internal/governance/docs-dashboard.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-debt-backlog.md"
+      ],
+      "path": "docs/_internal/governance/docs-debt-backlog.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-lint-rules.md"
+      ],
+      "path": "docs/_internal/governance/docs-lint-rules.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-navigation-policy.md"
+      ],
+      "path": "docs/_internal/governance/docs-navigation-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-operating-model.md"
+      ],
+      "path": "docs/_internal/governance/docs-operating-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-ownership.md"
+      ],
+      "path": "docs/_internal/governance/docs-ownership.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-quality-policy.md"
+      ],
+      "path": "docs/_internal/governance/docs-quality-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-quarterly-cleanup.md"
+      ],
+      "path": "docs/_internal/governance/docs-quarterly-cleanup.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-removal-policy.md"
+      ],
+      "path": "docs/_internal/governance/docs-removal-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-review-checklist.md"
+      ],
+      "path": "docs/_internal/governance/docs-review-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-search-tips.md"
+      ],
+      "path": "docs/_internal/governance/docs-search-tips.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-style.md"
+      ],
+      "path": "docs/_internal/governance/docs-style.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/generated-content-policy.md"
+      ],
+      "path": "docs/_internal/governance/generated-content-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/index.md"
+      ],
+      "path": "docs/_internal/governance/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/metadata",
+        "docs/_internal/governance/metadata/index.md"
+      ],
+      "path": "docs/_internal/governance/metadata/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/metadata",
+        "docs/_internal/governance/metadata/taxonomy-map.md"
+      ],
+      "path": "docs/_internal/governance/metadata/taxonomy-map.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/naming.md"
+      ],
+      "path": "docs/_internal/governance/naming.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/policies",
+        "docs/_internal/governance/policies/checks.md"
+      ],
+      "path": "docs/_internal/governance/policies/checks.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/policies",
+        "docs/_internal/governance/policies/index.md"
+      ],
+      "path": "docs/_internal/governance/policies/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/policy-enforcement-mapping.md"
+      ],
+      "path": "docs/_internal/governance/policy-enforcement-mapping.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/readers-guide.md"
+      ],
+      "path": "docs/_internal/governance/readers-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/redirects-policy.md"
+      ],
+      "path": "docs/_internal/governance/redirects-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/style-guide.md"
+      ],
+      "path": "docs/_internal/governance/style-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/style",
+        "docs/_internal/governance/style/concept-ids.md"
+      ],
+      "path": "docs/_internal/governance/style/concept-ids.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/style",
+        "docs/_internal/governance/style/concept-registry.md"
+      ],
+      "path": "docs/_internal/governance/style/concept-registry.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/style",
+        "docs/_internal/governance/style/crate-docs-depth-rubric.md"
+      ],
+      "path": "docs/_internal/governance/style/crate-docs-depth-rubric.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/style",
+        "docs/_internal/governance/style/depth-policy.md"
+      ],
+      "path": "docs/_internal/governance/style/depth-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/style",
+        "docs/_internal/governance/style/depth-rubric.md"
+      ],
+      "path": "docs/_internal/governance/style/depth-rubric.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/style",
+        "docs/_internal/governance/style/index.md"
+      ],
+      "path": "docs/_internal/governance/style/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/style",
+        "docs/_internal/governance/style/placement.md"
+      ],
+      "path": "docs/_internal/governance/style/placement.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/style",
+        "docs/_internal/governance/style/stability-levels.md"
+      ],
+      "path": "docs/_internal/governance/style/stability-levels.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/style",
+        "docs/_internal/governance/style/structure-templates.md"
+      ],
+      "path": "docs/_internal/governance/style/structure-templates.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/index.md"
+      ],
+      "path": "docs/_internal/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
         "docs/_internal/meta",
         "docs/_internal/meta/docs-build-model.md"
       ],
@@ -2507,6 +2967,7 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/_internal",
         "docs/_internal/meta",
         "docs/_internal/meta/docs-change-process.md"
       ],
@@ -2515,6 +2976,7 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/_internal",
         "docs/_internal/meta",
         "docs/_internal/meta/docs-operating-model.md"
       ],
@@ -2523,6 +2985,7 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/_internal",
         "docs/_internal/meta",
         "docs/_internal/meta/docs-principles.md"
       ],
@@ -2531,6 +2994,7 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/_internal",
         "docs/_internal/meta",
         "docs/_internal/meta/docs-taxonomy-quick-reference.md"
       ],
@@ -2539,6 +3003,7 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/_internal",
         "docs/_internal/meta",
         "docs/_internal/meta/generated-artifacts.md"
       ],
@@ -2547,6 +3012,7 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/_internal",
         "docs/_internal/meta",
         "docs/_internal/meta/index.md"
       ],
@@ -2555,6 +3021,7 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/_internal",
         "docs/_internal/meta",
         "docs/_internal/meta/internal",
         "docs/_internal/meta/internal/docs-rewrite-plan.md"
@@ -2564,6 +3031,7 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/_internal",
         "docs/_internal/meta",
         "docs/_internal/meta/internal",
         "docs/_internal/meta/internal/index.md"
@@ -2573,6 +3041,7 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/_internal",
         "docs/_internal/meta",
         "docs/_internal/meta/internal",
         "docs/_internal/meta/internal/root-legacy-mapping.md"
@@ -2582,6 +3051,7 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/_internal",
         "docs/_internal/nav",
         "docs/_internal/nav/index.md"
       ],
@@ -3329,403 +3799,6 @@
         "docs/glossary.md"
       ],
       "path": "docs/glossary.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/adrs",
-        "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md"
-      ],
-      "path": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/adrs",
-        "docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md"
-      ],
-      "path": "docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/adrs",
-        "docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md"
-      ],
-      "path": "docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/adrs",
-        "docs/_internal/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md"
-      ],
-      "path": "docs/_internal/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/adrs",
-        "docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md"
-      ],
-      "path": "docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/adrs",
-        "docs/_internal/governance/adrs/index.md"
-      ],
-      "path": "docs/_internal/governance/adrs/index.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/checks",
-        "docs/_internal/governance/checks/docs-checks.md"
-      ],
-      "path": "docs/_internal/governance/checks/docs-checks.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/checks",
-        "docs/_internal/governance/checks/index.md"
-      ],
-      "path": "docs/_internal/governance/checks/index.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/contract-breaking-change-examples.md"
-      ],
-      "path": "docs/_internal/governance/contract-breaking-change-examples.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/contract-change-checklist.md"
-      ],
-      "path": "docs/_internal/governance/contract-change-checklist.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/contract-ssot-workflow.md"
-      ],
-      "path": "docs/_internal/governance/contract-ssot-workflow.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/decision-template.md"
-      ],
-      "path": "docs/_internal/governance/decision-template.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/docs-build-publish-model.md"
-      ],
-      "path": "docs/_internal/governance/docs-build-publish-model.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/docs-charter.md"
-      ],
-      "path": "docs/_internal/governance/docs-charter.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/docs-contract.md"
-      ],
-      "path": "docs/_internal/governance/docs-contract.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/docs-dashboard.md"
-      ],
-      "path": "docs/_internal/governance/docs-dashboard.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/docs-debt-backlog.md"
-      ],
-      "path": "docs/_internal/governance/docs-debt-backlog.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/docs-lint-rules.md"
-      ],
-      "path": "docs/_internal/governance/docs-lint-rules.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/docs-navigation-policy.md"
-      ],
-      "path": "docs/_internal/governance/docs-navigation-policy.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/docs-operating-model.md"
-      ],
-      "path": "docs/_internal/governance/docs-operating-model.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/docs-ownership.md"
-      ],
-      "path": "docs/_internal/governance/docs-ownership.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/docs-quality-policy.md"
-      ],
-      "path": "docs/_internal/governance/docs-quality-policy.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/docs-quarterly-cleanup.md"
-      ],
-      "path": "docs/_internal/governance/docs-quarterly-cleanup.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/docs-removal-policy.md"
-      ],
-      "path": "docs/_internal/governance/docs-removal-policy.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/docs-review-checklist.md"
-      ],
-      "path": "docs/_internal/governance/docs-review-checklist.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/docs-search-tips.md"
-      ],
-      "path": "docs/_internal/governance/docs-search-tips.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/docs-style.md"
-      ],
-      "path": "docs/_internal/governance/docs-style.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/generated-content-policy.md"
-      ],
-      "path": "docs/_internal/governance/generated-content-policy.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/index.md"
-      ],
-      "path": "docs/_internal/governance/index.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/metadata",
-        "docs/_internal/governance/metadata/index.md"
-      ],
-      "path": "docs/_internal/governance/metadata/index.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/metadata",
-        "docs/_internal/governance/metadata/taxonomy-map.md"
-      ],
-      "path": "docs/_internal/governance/metadata/taxonomy-map.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/naming.md"
-      ],
-      "path": "docs/_internal/governance/naming.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/policies",
-        "docs/_internal/governance/policies/checks.md"
-      ],
-      "path": "docs/_internal/governance/policies/checks.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/policies",
-        "docs/_internal/governance/policies/index.md"
-      ],
-      "path": "docs/_internal/governance/policies/index.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/policy-enforcement-mapping.md"
-      ],
-      "path": "docs/_internal/governance/policy-enforcement-mapping.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/readers-guide.md"
-      ],
-      "path": "docs/_internal/governance/readers-guide.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/redirects-policy.md"
-      ],
-      "path": "docs/_internal/governance/redirects-policy.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/style-guide.md"
-      ],
-      "path": "docs/_internal/governance/style-guide.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/style",
-        "docs/_internal/governance/style/concept-ids.md"
-      ],
-      "path": "docs/_internal/governance/style/concept-ids.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/style",
-        "docs/_internal/governance/style/concept-registry.md"
-      ],
-      "path": "docs/_internal/governance/style/concept-registry.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/style",
-        "docs/_internal/governance/style/crate-docs-depth-rubric.md"
-      ],
-      "path": "docs/_internal/governance/style/crate-docs-depth-rubric.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/style",
-        "docs/_internal/governance/style/depth-policy.md"
-      ],
-      "path": "docs/_internal/governance/style/depth-policy.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/style",
-        "docs/_internal/governance/style/depth-rubric.md"
-      ],
-      "path": "docs/_internal/governance/style/depth-rubric.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/style",
-        "docs/_internal/governance/style/index.md"
-      ],
-      "path": "docs/_internal/governance/style/index.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/style",
-        "docs/_internal/governance/style/placement.md"
-      ],
-      "path": "docs/_internal/governance/style/placement.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/style",
-        "docs/_internal/governance/style/stability-levels.md"
-      ],
-      "path": "docs/_internal/governance/style/stability-levels.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/_internal/governance",
-        "docs/_internal/governance/style",
-        "docs/_internal/governance/style/structure-templates.md"
-      ],
-      "path": "docs/_internal/governance/style/structure-templates.md"
     },
     {
       "breadcrumbs": [

@@ -529,5 +529,55 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_050_operator_golden_paths_no_internal,
             }],
         },
+        Contract {
+            id: ContractId("DOC-051".to_string()),
+            title: "docs home stays within the line budget",
+            tests: vec![TestCase {
+                id: TestId("docs.index.home_line_budget".to_string()),
+                title: "docs/index.md stays within the home line budget",
+                kind: TestKind::Pure,
+                run: test_docs_051_home_line_budget,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-052".to_string()),
+            title: "docs keep a single start-here page",
+            tests: vec![TestCase {
+                id: TestId("docs.structure.single_start_here".to_string()),
+                title: "docs tree contains exactly one start-here.md at the root",
+                kind: TestKind::Pure,
+                run: test_docs_052_single_start_here,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-053".to_string()),
+            title: "docs keep a single glossary page",
+            tests: vec![TestCase {
+                id: TestId("docs.structure.single_glossary".to_string()),
+                title: "docs tree contains exactly one glossary.md at the root",
+                kind: TestKind::Pure,
+                run: test_docs_053_single_glossary,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-054".to_string()),
+            title: "mkdocs excludes drafts and internals from the reader build",
+            tests: vec![TestCase {
+                id: TestId("docs.build.mkdocs_excludes_internal_and_drafts".to_string()),
+                title: "mkdocs excludes drafts from publish and keeps internals out of nav",
+                kind: TestKind::Pure,
+                run: test_docs_054_mkdocs_excludes_internal_and_drafts,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-055".to_string()),
+            title: "section indexes stay curated",
+            tests: vec![TestCase {
+                id: TestId("docs.index.section_link_budget".to_string()),
+                title: "published section indexes keep at most twelve markdown links",
+                kind: TestKind::Pure,
+                run: test_docs_055_section_index_link_budget,
+            }],
+        },
     ])
 }

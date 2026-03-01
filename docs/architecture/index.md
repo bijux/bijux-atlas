@@ -36,17 +36,12 @@ Describe how Atlas is structured so contributors and operators share one durable
 - [Performance model](performance-model.md)
 - [Query model](query-model.md)
 - [Ingest and QC model](ingest-qc-model.md)
-- [Hot paths](hot-paths.md)
 - [System graph explained](system-graph-explained.md)
 
 ## Next steps
 
 Continue with [Operations](../operations/index.md) for runtime procedures or [Development](../development/index.md) for contributor workflows.
 Also review [Glossary](../glossary.md) for canonical terms.
-
-## Diagram Guidance
-
-Diagram alt text and diagram-writing guidance: [Doc conventions](../development/doc-conventions.md).
 
 ## Document Taxonomy
 

@@ -68,6 +68,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "configs/INDEX.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "configs/README.md"
     },
     {
@@ -1398,6 +1403,246 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/adrs/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/checks/docs-checks.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/checks/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/contract-breaking-change-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/contract-change-checklist.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/contract-ssot-workflow.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/decision-template.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-build-publish-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-charter.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-contract.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-dashboard.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-debt-backlog.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-lint-rules.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-navigation-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-operating-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-ownership.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-quality-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-quarterly-cleanup.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-removal-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-review-checklist.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-search-tips.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-style.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/generated-content-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/metadata/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/metadata/taxonomy-map.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/naming.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/policies/checks.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/policies/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/policy-enforcement-mapping.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/readers-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/redirects-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/style-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/style/concept-ids.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/style/concept-registry.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/style/crate-docs-depth-rubric.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/style/depth-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/style/depth-rubric.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/style/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/style/placement.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/style/stability-levels.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/style/structure-templates.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/meta/docs-build-model.md"
     },
     {
@@ -1914,241 +2159,6 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/glossary.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/adrs/index.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/checks/docs-checks.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/checks/index.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/contract-breaking-change-examples.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/contract-change-checklist.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/contract-ssot-workflow.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/decision-template.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/docs-build-publish-model.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/docs-charter.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/docs-contract.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/docs-dashboard.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/docs-debt-backlog.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/docs-lint-rules.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/docs-navigation-policy.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/docs-operating-model.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/docs-ownership.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/docs-quality-policy.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/docs-quarterly-cleanup.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/docs-removal-policy.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/docs-review-checklist.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/docs-search-tips.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/docs-style.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/generated-content-policy.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/index.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/metadata/index.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/metadata/taxonomy-map.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/naming.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/policies/checks.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/policies/index.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/policy-enforcement-mapping.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/readers-guide.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/redirects-policy.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/style-guide.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/style/concept-ids.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/style/concept-registry.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/style/crate-docs-depth-rubric.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/style/depth-policy.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/style/depth-rubric.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/style/index.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/style/placement.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/style/stability-levels.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/_internal/governance/style/structure-templates.md"
     },
     {
       "crate": null,

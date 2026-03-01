@@ -305,6 +305,29 @@
       "doc_version": "v1",
       "keywords": [
         "configs",
+        "index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "index"
+      ],
+      "title": "Configs index",
+      "topic": "INDEX"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "configs",
         "readme"
       ],
       "last_reviewed": "2026-02-25",
@@ -6666,14 +6689,1255 @@
       "topic": "index"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-meta",
-        "docs-build-model"
+        "-internal",
+        "adr-0001-workspace-boundaries-and-effects",
+        "adrs",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "adr-0001-workspace-boundaries-and-effects",
+        "adrs",
+        "governance"
+      ],
+      "title": "ADR-0001: Workspace Boundaries And Effects",
+      "topic": "adr-0001-workspace-boundaries-and-effects"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "adr-0002-sqlite-serving-store",
+        "adrs",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "adr-0002-sqlite-serving-store",
+        "adrs",
+        "governance"
+      ],
+      "title": "ADR-0002: SQLite As Canonical Serving Store",
+      "topic": "adr-0002-sqlite-serving-store"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "adr-0003-federated-registry-deterministic-merge",
+        "adrs",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "adr-0003-federated-registry-deterministic-merge",
+        "adrs",
+        "governance"
+      ],
+      "title": "ADR-0003: Federated Registry With Deterministic Merge",
+      "topic": "adr-0003-federated-registry-deterministic-merge"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "adr-0004-plugin-contract-and-umbrella-dispatch",
+        "adrs",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "adr-0004-plugin-contract-and-umbrella-dispatch",
+        "adrs",
+        "governance"
+      ],
+      "title": "ADR-0004: Plugin Contract And Umbrella Dispatch",
+      "topic": "adr-0004-plugin-contract-and-umbrella-dispatch"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "adr-0005-security-defaults-and-enterprise-controls",
+        "adrs",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "adr-0005-security-defaults-and-enterprise-controls",
+        "adrs",
+        "governance"
+      ],
+      "title": "ADR-0005: Security Defaults And Optional Enterprise Controls",
+      "topic": "adr-0005-security-defaults-and-enterprise-controls"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "adrs",
+        "governance",
+        "index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/adrs/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "adrs",
+        "governance",
+        "index"
+      ],
+      "title": "Architectural Decision Records",
+      "topic": "index"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "checks",
+        "docs-checks",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/checks/docs-checks.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "checks",
+        "docs-checks",
+        "governance"
+      ],
+      "title": "Docs Checks Contract",
+      "topic": "docs-checks"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "checks",
+        "governance",
+        "index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/checks/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "checks",
+        "governance",
+        "index"
+      ],
+      "title": "checks",
+      "topic": "index"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "contract-breaking-change-examples",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/contract-breaking-change-examples.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "contract-breaking-change-examples",
+        "governance"
+      ],
+      "title": "Breaking Change Examples",
+      "topic": "contract-breaking-change-examples"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "contract-change-checklist",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/contract-change-checklist.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "contract-change-checklist",
+        "governance"
+      ],
+      "title": "Contract Change Checklist",
+      "topic": "contract-change-checklist"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "contract-ssot-workflow",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/contract-ssot-workflow.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "contract-ssot-workflow",
+        "governance"
+      ],
+      "title": "SSOT Workflow",
+      "topic": "contract-ssot-workflow"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "decision-template",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/decision-template.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "decision-template",
+        "governance"
+      ],
+      "title": "Documentation Decision Template",
+      "topic": "decision-template"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-build-publish-model",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-build-publish-model.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-build-publish-model",
+        "governance"
+      ],
+      "title": "Docs Build Publish Model",
+      "topic": "docs-build-publish-model"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-charter",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-docs",
+      "path": "docs/_internal/governance/docs-charter.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-charter",
+        "governance"
+      ],
+      "title": "Docs Charter",
+      "topic": "docs-charter"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-contract",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-contract.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-contract",
+        "governance"
+      ],
+      "title": "Docs Contract",
+      "topic": "docs-contract"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-dashboard",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-dashboard.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-dashboard",
+        "governance"
+      ],
+      "title": "Docs dashboard",
+      "topic": "docs-dashboard"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-debt-backlog",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-debt-backlog.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-debt-backlog",
+        "governance"
+      ],
+      "title": "Docs debt backlog",
+      "topic": "docs-debt-backlog"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-lint-rules",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-lint-rules.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-lint-rules",
+        "governance"
+      ],
+      "title": "Documentation lint rules",
+      "topic": "docs-lint-rules"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-navigation-policy",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-navigation-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-navigation-policy",
+        "governance"
+      ],
+      "title": "Documentation Navigation Policy",
+      "topic": "docs-navigation-policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-operating-model",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-operating-model.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-operating-model",
+        "governance"
+      ],
+      "title": "Documentation operating model",
+      "topic": "docs-operating-model"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-ownership",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-ownership.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-ownership",
+        "governance"
+      ],
+      "title": "Documentation Ownership",
+      "topic": "docs-ownership"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-quality-policy",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-quality-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-quality-policy",
+        "governance"
+      ],
+      "title": "Docs Quality Policy",
+      "topic": "docs-quality-policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-quarterly-cleanup",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-quarterly-cleanup.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-quarterly-cleanup",
+        "governance"
+      ],
+      "title": "Docs quarterly cleanup",
+      "topic": "docs-quarterly-cleanup"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-removal-policy",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-removal-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-removal-policy",
+        "governance"
+      ],
+      "title": "Documentation Removal Policy",
+      "topic": "docs-removal-policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-review-checklist",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-review-checklist.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-review-checklist",
+        "governance"
+      ],
+      "title": "Documentation Review Checklist",
+      "topic": "docs-review-checklist"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-search-tips",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-search-tips.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-search-tips",
+        "governance"
+      ],
+      "title": "Docs Search Tips",
+      "topic": "docs-search-tips"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-style",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-style.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-style",
+        "governance"
+      ],
+      "title": "Documentation Style",
+      "topic": "docs-style"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "generated-content-policy",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/generated-content-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "generated-content-policy",
+        "governance"
+      ],
+      "title": "Generated Documentation Content Policy",
+      "topic": "generated-content-policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/_internal/governance/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "index"
+      ],
+      "title": "Governance",
+      "topic": "index"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "index",
+        "metadata"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/metadata/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "index",
+        "metadata"
+      ],
+      "title": "Metadata",
+      "topic": "index"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "metadata",
+        "taxonomy-map"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/metadata/taxonomy-map.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "metadata",
+        "taxonomy-map"
+      ],
+      "title": "Docs Taxonomy Map",
+      "topic": "taxonomy-map"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "naming"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/naming.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "naming"
+      ],
+      "title": "Naming Standard",
+      "topic": "naming"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "checks",
+        "governance",
+        "policies"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/policies/checks.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "checks",
+        "governance",
+        "policies"
+      ],
+      "title": "Policies Checks Contract",
+      "topic": "checks"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "index",
+        "policies"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/policies/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "index",
+        "policies"
+      ],
+      "title": "policies",
+      "topic": "index"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "policy-enforcement-mapping"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/policy-enforcement-mapping.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "policy-enforcement-mapping"
+      ],
+      "title": "Policy Enforcement Mapping",
+      "topic": "policy-enforcement-mapping"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "readers-guide"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/readers-guide.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "readers-guide"
+      ],
+      "title": "Governance Readers Guide",
+      "topic": "readers-guide"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "redirects-policy"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/redirects-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "redirects-policy"
+      ],
+      "title": "Redirects Policy",
+      "topic": "redirects-policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "style-guide"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style-guide.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "style-guide"
+      ],
+      "title": "Governance Style Guide",
+      "topic": "style-guide"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "concept-ids",
+        "governance",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/concept-ids.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "concept-ids",
+        "governance",
+        "style"
+      ],
+      "title": "Canonical Concept IDs",
+      "topic": "concept-ids"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "concept-registry",
+        "governance",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/concept-registry.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "concept-registry",
+        "governance",
+        "style"
+      ],
+      "title": "Concept Registry",
+      "topic": "concept-registry"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "crate-docs-depth-rubric",
+        "governance",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/crate-docs-depth-rubric.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "crate-docs-depth-rubric",
+        "governance",
+        "style"
+      ],
+      "title": "Crate Docs Depth Rubric",
+      "topic": "crate-docs-depth-rubric"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "depth-policy",
+        "governance",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/depth-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "depth-policy",
+        "governance",
+        "style"
+      ],
+      "title": "Depth Policy",
+      "topic": "depth-policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "depth-rubric",
+        "governance",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/depth-rubric.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "depth-rubric",
+        "governance",
+        "style"
+      ],
+      "title": "Depth Rubric",
+      "topic": "depth-rubric"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "index",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "index",
+        "style"
+      ],
+      "title": "Governance Style Archive",
+      "topic": "index"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "placement",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/placement.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "placement",
+        "style"
+      ],
+      "title": "Placement Decision Tree",
+      "topic": "placement"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "stability-levels",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/stability-levels.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "stability-levels",
+        "style"
+      ],
+      "title": "Stability Levels",
+      "topic": "stability-levels"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "structure-templates",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style/structure-templates.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "structure-templates",
+        "style"
+      ],
+      "title": "Structure Templates",
+      "topic": "structure-templates"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "index"
+      ],
+      "title": "Internal docs",
+      "topic": "index"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-build-model",
+        "meta"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
@@ -6682,21 +7946,23 @@
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-meta",
-        "docs-build-model"
+        "-internal",
+        "docs-build-model",
+        "meta"
       ],
       "title": "Docs build model",
       "topic": "docs-build-model"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-meta",
-        "docs-change-process"
+        "-internal",
+        "docs-change-process",
+        "meta"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
@@ -6705,21 +7971,23 @@
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-meta",
-        "docs-change-process"
+        "-internal",
+        "docs-change-process",
+        "meta"
       ],
       "title": "Docs change process",
       "topic": "docs-change-process"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-meta",
-        "docs-operating-model"
+        "-internal",
+        "docs-operating-model",
+        "meta"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
@@ -6728,21 +7996,23 @@
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-meta",
-        "docs-operating-model"
+        "-internal",
+        "docs-operating-model",
+        "meta"
       ],
       "title": "Docs operating model",
       "topic": "docs-operating-model"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-meta",
-        "docs-principles"
+        "-internal",
+        "docs-principles",
+        "meta"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
@@ -6751,21 +8021,23 @@
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-meta",
-        "docs-principles"
+        "-internal",
+        "docs-principles",
+        "meta"
       ],
       "title": "Docs principles",
       "topic": "docs-principles"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-meta",
-        "docs-taxonomy-quick-reference"
+        "-internal",
+        "docs-taxonomy-quick-reference",
+        "meta"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
@@ -6774,21 +8046,23 @@
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-meta",
-        "docs-taxonomy-quick-reference"
+        "-internal",
+        "docs-taxonomy-quick-reference",
+        "meta"
       ],
       "title": "Docs taxonomy quick reference",
       "topic": "docs-taxonomy-quick-reference"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-meta",
-        "generated-artifacts"
+        "-internal",
+        "generated-artifacts",
+        "meta"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
@@ -6797,21 +8071,23 @@
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-meta",
-        "generated-artifacts"
+        "-internal",
+        "generated-artifacts",
+        "meta"
       ],
       "title": "Generated artifacts",
       "topic": "generated-artifacts"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-meta",
-        "index"
+        "-internal",
+        "index",
+        "meta"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
@@ -6820,22 +8096,24 @@
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-meta",
-        "index"
+        "-internal",
+        "index",
+        "meta"
       ],
       "title": "Docs internal metadata",
       "topic": "index"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-meta",
+        "-internal",
         "docs-rewrite-plan",
-        "internal"
+        "internal",
+        "meta"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
@@ -6844,23 +8122,25 @@
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-meta",
+        "-internal",
         "docs-rewrite-plan",
-        "internal"
+        "internal",
+        "meta"
       ],
       "title": "Documentation Rewrite Plan",
       "topic": "docs-rewrite-plan"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-meta",
+        "-internal",
         "index",
-        "internal"
+        "internal",
+        "meta"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
@@ -6869,22 +8149,24 @@
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-meta",
+        "-internal",
         "index",
-        "internal"
+        "internal",
+        "meta"
       ],
       "title": "Internal planning materials",
       "topic": "index"
     },
     {
-      "area": "_meta",
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-meta",
+        "-internal",
         "internal",
+        "meta",
         "root-legacy-mapping"
       ],
       "last_reviewed": "2026-02-25",
@@ -6894,32 +8176,35 @@
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-meta",
+        "-internal",
         "internal",
+        "meta",
         "root-legacy-mapping"
       ],
       "title": "Root Legacy Mapping",
       "topic": "root-legacy-mapping"
     },
     {
-      "area": "_nav",
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-nav",
-        "index"
+        "-internal",
+        "index",
+        "nav"
       ],
       "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "docs/_internal/nav/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-nav",
-        "index"
+        "-internal",
+        "index",
+        "nav"
       ],
       "title": "Navigation Contract",
       "topic": "index"
@@ -9060,1129 +10345,6 @@
       ],
       "title": "Glossary",
       "topic": "glossary"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "adr-0001-workspace-boundaries-and-effects",
-        "adrs",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "adr-0001-workspace-boundaries-and-effects",
-        "adrs",
-        "governance"
-      ],
-      "title": "ADR-0001: Workspace Boundaries And Effects",
-      "topic": "adr-0001-workspace-boundaries-and-effects"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "adr-0002-sqlite-serving-store",
-        "adrs",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "adr-0002-sqlite-serving-store",
-        "adrs",
-        "governance"
-      ],
-      "title": "ADR-0002: SQLite As Canonical Serving Store",
-      "topic": "adr-0002-sqlite-serving-store"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "adr-0003-federated-registry-deterministic-merge",
-        "adrs",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "adr-0003-federated-registry-deterministic-merge",
-        "adrs",
-        "governance"
-      ],
-      "title": "ADR-0003: Federated Registry With Deterministic Merge",
-      "topic": "adr-0003-federated-registry-deterministic-merge"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "adr-0004-plugin-contract-and-umbrella-dispatch",
-        "adrs",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "adr-0004-plugin-contract-and-umbrella-dispatch",
-        "adrs",
-        "governance"
-      ],
-      "title": "ADR-0004: Plugin Contract And Umbrella Dispatch",
-      "topic": "adr-0004-plugin-contract-and-umbrella-dispatch"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "adr-0005-security-defaults-and-enterprise-controls",
-        "adrs",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "adr-0005-security-defaults-and-enterprise-controls",
-        "adrs",
-        "governance"
-      ],
-      "title": "ADR-0005: Security Defaults And Optional Enterprise Controls",
-      "topic": "adr-0005-security-defaults-and-enterprise-controls"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "adrs",
-        "governance",
-        "index"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/adrs/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "adrs",
-        "governance",
-        "index"
-      ],
-      "title": "Architectural Decision Records",
-      "topic": "index"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "checks",
-        "docs-checks",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/checks/docs-checks.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "checks",
-        "docs-checks",
-        "governance"
-      ],
-      "title": "Docs Checks Contract",
-      "topic": "docs-checks"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "checks",
-        "governance",
-        "index"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/checks/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "checks",
-        "governance",
-        "index"
-      ],
-      "title": "checks",
-      "topic": "index"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "contract-breaking-change-examples",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/contract-breaking-change-examples.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contract-breaking-change-examples",
-        "governance"
-      ],
-      "title": "Breaking Change Examples",
-      "topic": "contract-breaking-change-examples"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "contract-change-checklist",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/contract-change-checklist.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contract-change-checklist",
-        "governance"
-      ],
-      "title": "Contract Change Checklist",
-      "topic": "contract-change-checklist"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "contract-ssot-workflow",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/contract-ssot-workflow.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contract-ssot-workflow",
-        "governance"
-      ],
-      "title": "SSOT Workflow",
-      "topic": "contract-ssot-workflow"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "decision-template",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/decision-template.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "decision-template",
-        "governance"
-      ],
-      "title": "Documentation Decision Template",
-      "topic": "decision-template"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-build-publish-model",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-build-publish-model.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-build-publish-model",
-        "governance"
-      ],
-      "title": "Docs Build Publish Model",
-      "topic": "docs-build-publish-model"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-charter",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-docs",
-      "path": "docs/_internal/governance/docs-charter.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-charter",
-        "governance"
-      ],
-      "title": "Docs Charter",
-      "topic": "docs-charter"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-contract",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-contract.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-contract",
-        "governance"
-      ],
-      "title": "Docs Contract",
-      "topic": "docs-contract"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-dashboard",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-dashboard.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-dashboard",
-        "governance"
-      ],
-      "title": "Docs dashboard",
-      "topic": "docs-dashboard"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-debt-backlog",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-debt-backlog.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-debt-backlog",
-        "governance"
-      ],
-      "title": "Docs debt backlog",
-      "topic": "docs-debt-backlog"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-lint-rules",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-lint-rules.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-lint-rules",
-        "governance"
-      ],
-      "title": "Documentation lint rules",
-      "topic": "docs-lint-rules"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-navigation-policy",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-navigation-policy.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-navigation-policy",
-        "governance"
-      ],
-      "title": "Documentation Navigation Policy",
-      "topic": "docs-navigation-policy"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-operating-model",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-operating-model.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-operating-model",
-        "governance"
-      ],
-      "title": "Documentation operating model",
-      "topic": "docs-operating-model"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-ownership",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-ownership.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-ownership",
-        "governance"
-      ],
-      "title": "Documentation Ownership",
-      "topic": "docs-ownership"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-quality-policy",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-quality-policy.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-quality-policy",
-        "governance"
-      ],
-      "title": "Docs Quality Policy",
-      "topic": "docs-quality-policy"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-quarterly-cleanup",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-quarterly-cleanup.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-quarterly-cleanup",
-        "governance"
-      ],
-      "title": "Docs quarterly cleanup",
-      "topic": "docs-quarterly-cleanup"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-removal-policy",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-removal-policy.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-removal-policy",
-        "governance"
-      ],
-      "title": "Documentation Removal Policy",
-      "topic": "docs-removal-policy"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-review-checklist",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-review-checklist.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-review-checklist",
-        "governance"
-      ],
-      "title": "Documentation Review Checklist",
-      "topic": "docs-review-checklist"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-search-tips",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-search-tips.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-search-tips",
-        "governance"
-      ],
-      "title": "Docs Search Tips",
-      "topic": "docs-search-tips"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-style",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/docs-style.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-style",
-        "governance"
-      ],
-      "title": "Documentation Style",
-      "topic": "docs-style"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "generated-content-policy",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/generated-content-policy.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "generated-content-policy",
-        "governance"
-      ],
-      "title": "Generated Documentation Content Policy",
-      "topic": "generated-content-policy"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "governance",
-        "index"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "platform",
-      "path": "docs/_internal/governance/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "governance",
-        "index"
-      ],
-      "title": "Governance",
-      "topic": "index"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "governance",
-        "index",
-        "metadata"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/metadata/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "governance",
-        "index",
-        "metadata"
-      ],
-      "title": "Metadata",
-      "topic": "index"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "governance",
-        "metadata",
-        "taxonomy-map"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/metadata/taxonomy-map.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "governance",
-        "metadata",
-        "taxonomy-map"
-      ],
-      "title": "Docs Taxonomy Map",
-      "topic": "taxonomy-map"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "governance",
-        "naming"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/naming.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "governance",
-        "naming"
-      ],
-      "title": "Naming Standard",
-      "topic": "naming"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "checks",
-        "governance",
-        "policies"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/policies/checks.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "checks",
-        "governance",
-        "policies"
-      ],
-      "title": "Policies Checks Contract",
-      "topic": "checks"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "governance",
-        "index",
-        "policies"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/policies/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "governance",
-        "index",
-        "policies"
-      ],
-      "title": "policies",
-      "topic": "index"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "governance",
-        "policy-enforcement-mapping"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/policy-enforcement-mapping.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "governance",
-        "policy-enforcement-mapping"
-      ],
-      "title": "Policy Enforcement Mapping",
-      "topic": "policy-enforcement-mapping"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "governance",
-        "readers-guide"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/readers-guide.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "governance",
-        "readers-guide"
-      ],
-      "title": "Governance Readers Guide",
-      "topic": "readers-guide"
-    },
-    {
-      "area": "governance",
-      "audience": "contributor",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "governance",
-        "redirects-policy"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/redirects-policy.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "governance",
-        "redirects-policy"
-      ],
-      "title": "Redirects Policy",
-      "topic": "redirects-policy"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "governance",
-        "style-guide"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style-guide.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "governance",
-        "style-guide"
-      ],
-      "title": "Governance Style Guide",
-      "topic": "style-guide"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "concept-ids",
-        "governance",
-        "style"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/concept-ids.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "concept-ids",
-        "governance",
-        "style"
-      ],
-      "title": "Canonical Concept IDs",
-      "topic": "concept-ids"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "concept-registry",
-        "governance",
-        "style"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/concept-registry.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "concept-registry",
-        "governance",
-        "style"
-      ],
-      "title": "Concept Registry",
-      "topic": "concept-registry"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "crate-docs-depth-rubric",
-        "governance",
-        "style"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/crate-docs-depth-rubric.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "crate-docs-depth-rubric",
-        "governance",
-        "style"
-      ],
-      "title": "Crate Docs Depth Rubric",
-      "topic": "crate-docs-depth-rubric"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "depth-policy",
-        "governance",
-        "style"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/depth-policy.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "depth-policy",
-        "governance",
-        "style"
-      ],
-      "title": "Depth Policy",
-      "topic": "depth-policy"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "depth-rubric",
-        "governance",
-        "style"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/depth-rubric.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "depth-rubric",
-        "governance",
-        "style"
-      ],
-      "title": "Depth Rubric",
-      "topic": "depth-rubric"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "governance",
-        "index",
-        "style"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "governance",
-        "index",
-        "style"
-      ],
-      "title": "Governance Style Archive",
-      "topic": "index"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "governance",
-        "placement",
-        "style"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/placement.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "governance",
-        "placement",
-        "style"
-      ],
-      "title": "Placement Decision Tree",
-      "topic": "placement"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "governance",
-        "stability-levels",
-        "style"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/stability-levels.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "governance",
-        "stability-levels",
-        "style"
-      ],
-      "title": "Stability Levels",
-      "topic": "stability-levels"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "governance",
-        "structure-templates",
-        "style"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/_internal/governance/style/structure-templates.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "governance",
-        "structure-templates",
-        "style"
-      ],
-      "title": "Structure Templates",
-      "topic": "structure-templates"
     },
     {
       "area": "index.md",
@@ -12672,7 +12834,7 @@
         "querying",
         "reference"
       ],
-      "title": "Pagination",
+      "title": "Pagination semantics",
       "topic": "pagination"
     },
     {

@@ -36,10 +36,8 @@ The control-plane replaces ad-hoc scripts with explicit, contract-governed comma
 - [CI report consumption](ci-report-consumption.md)
 - [Add a check in 30 minutes](add-a-check-in-30-minutes.md)
 - [Add a contract registry in 30 minutes](add-a-contract-registry-in-30-minutes.md)
-- [Add a gate policy](add-a-gate-policy.md)
 - [Debug failing checks](debug-failing-checks.md)
 - [CLI reference](cli-reference.md)
-- [Lane matrix](lane-matrix.md)
 
 ## Stable entrypoints
 
@@ -56,6 +54,4 @@ A contributor can discover command surfaces, reproduce CI checks locally, and un
 ## Next steps
 
 - [Development](../development/index.md)
-- [Architecture boundaries](../architecture/boundaries.md)
-- [Operations release workflow](../operations/release-workflow.md)
 - [Glossary](../glossary.md)
