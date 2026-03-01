@@ -16,6 +16,13 @@
 
 Authoritative pins: `ops/inventory/pins.yaml`.
 
+## Safety rails
+
+- never delete the current promoted release
+- never delete the immediately previous rollback candidate
+- always review a dry-run plan before any destructive action
+- always confirm backup freshness before cleanup
+
 ## Garbage-collection procedure
 
 1. Generate plan:
@@ -48,5 +55,5 @@ If incorrect deletion is detected, restore from backup and republish catalog poi
 
 ## Next
 
-- [Backup and Restore](release-workflow.md)
+- [Backup and restore](release/backup-and-restore.md)
 - [Dataset Workflow](dataset-workflow.md)

@@ -1,4 +1,4 @@
-# Load Suite Catalog
+# Load suite catalog
 
 - Owner: `bijux-atlas-operations`
 - Type: `reference`
@@ -30,6 +30,10 @@ make ops-load-nightly
 ```
 
 Expected result: suite list resolves, each suite writes a result artifact, and gating suites pass.
+
+## Rollback
+
+If a suite change introduces false positives or hides a real regression, revert the suite definition change and rerun the affected suites.
 
 ## Next
 

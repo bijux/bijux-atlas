@@ -13,14 +13,17 @@ Use this section to ship, verify, and recover Atlas releases.
 
 ## Start here
 
+- [Release operations](../release-operations.md)
 - [Release Workflow](../release-workflow.md)
 - [Upgrade Procedure](upgrade-procedure.md)
 - [Rollback Procedure](rollback-procedure.md)
 - [Backup and Restore](backup-and-restore.md)
+- [Backup and Restore Validation](backup-and-restore-validation.md)
 
 ## Verify success
 
 ```bash
+make ops-prereqs
 make ops-release-update
 make ops-readiness-scorecard
 ```
@@ -30,4 +33,5 @@ Expected result: release checks pass and serving remains healthy.
 ## Next
 
 - [Capacity Planning](capacity-planning.md)
+- [Capacity planning worksheet](capacity-planning-worksheet.md)
 - [Security Posture](../security-posture.md)

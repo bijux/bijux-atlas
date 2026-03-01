@@ -30,6 +30,7 @@ make ops-release-update
 ```bash
 make ops-k8s-tests
 make ops-observability-verify
+make ops-e2e-smoke
 ```
 
 ## Verify success

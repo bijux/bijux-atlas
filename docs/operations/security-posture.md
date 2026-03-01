@@ -25,15 +25,21 @@ Use this page to validate the security baseline before and after deployment chan
 
 - Ingress and egress are deny-by-default except approved service flows.
 - Observability egress endpoints must be explicitly listed.
+- Minimal privileges apply to service accounts, secrets access, and chart-provided RBAC bindings.
 
 ## Verify success
 
 ```bash
 make ops-k8s-tests
 make ops-observability-verify
+make ops-tools-check
 ```
 
 Expected result: policy checks pass and no forbidden network paths are reported.
+
+## Rollback
+
+If a security baseline change widens privileges or breaks cluster safety, revert the change and rerun the policy checks before redeploy.
 
 ## Next
 

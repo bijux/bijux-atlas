@@ -36,4 +36,5 @@ Expected result: capacity headroom remains within target under expected load.
 ## Next
 
 - [Load Testing](../load/index.md)
+- [Capacity planning worksheet](capacity-planning-worksheet.md)
 - [Release Operations](index.md)

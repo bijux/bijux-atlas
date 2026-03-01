@@ -1,29 +1,56 @@
-# Kind Profile
+# Kind profile quickstart
 
 - Owner: `bijux-atlas-operations`
-- Tier: `tier2`
-- Audience: `operators`
-- Source-of-truth: `ops/stack/profiles.json`, `ops/stack/kind/cluster-dev.yaml`, `ops/stack/kind/cluster-perf.yaml`, `ops/stack/kind/cluster-small.yaml`
-- Contract references: `OPS-ROOT-023`, `OPS-STACK-005`, `OPS-K8S-003`
-
-## What
-
-Defines the canonical local kind profiles used by stack and k8s operations.
-
-## Why
-
-Kind profile names and file paths must stay stable so docs, smoke runs, and release checks all refer to the same cluster shapes.
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@2026-03-01`
+- Reason to exist: provide the fastest local Kubernetes path for validating install, readiness, and smoke checks.
 
 ## Profiles
 
-- `dev`: `ops/stack/kind/cluster-dev.yaml`
-- `perf`: `ops/stack/kind/cluster-perf.yaml`
-- `small`: `ops/stack/kind/cluster-small.yaml`
+- `dev`: small local cluster for smoke checks
+- `perf`: larger local cluster for capacity-style rehearsals
+- `small`: constrained profile for lower-resource laptops
 
-## How To Verify
+## Source of truth
+
+- `ops/stack/profiles.json`
+- `ops/stack/kind/cluster-dev.yaml`
+- `ops/stack/kind/cluster-perf.yaml`
+- `ops/stack/kind/cluster-small.yaml`
+
+## Quickstart
 
 ```bash
-cargo test -q -p bijux-dev-atlas --test ops_k8s_contracts -- --nocapture
+make ops-prereqs
+make kind-up
+make ops-deploy
+make ops-k8s-smoke
 ```
 
-Expected output: kind profile docs and stack profile manifests stay aligned.
+## Verify success
+
+```bash
+make ops-readiness-scorecard
+make ops-e2e-smoke
+```
+
+Expected outputs:
+
+- kind cluster starts successfully
+- deploy reaches readiness
+- smoke checks confirm the route is serving
+
+## Rollback
+
+```bash
+make stack-down
+make kind-down
+```
+
+## Next
+
+- [Deploy to kind (10 minutes)](deploy-kind.md)
+- [Kubernetes E2E guarantees](e2e/k8s-tests.md)
+- [Load testing](load/index.md)

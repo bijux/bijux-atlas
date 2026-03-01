@@ -1,4 +1,4 @@
-# Load Testing
+# Load testing
 
 - Owner: `bijux-atlas-operations`
 - Type: `runbook`
@@ -19,13 +19,24 @@
 - [Suite catalog](suites.md)
 - [Load Failure Triage](../runbooks/load-failure-triage.md)
 
+## Threshold interpretation
+
+- smoke failures block promotion until explained
+- nightly failures require triage even when they are not immediate release blockers
+- repeated latency regression without traffic growth is treated as a product or capacity regression, not test noise
+
 ## Verify success
 
 ```bash
 make ops-load-smoke
+make ops-load-nightly
 ```
 
 Expected result: smoke suite completes with no threshold failures.
+
+## Rollback
+
+If a rollout caused the regression, use [Rollback playbook](../runbooks/rollback-playbook.md) after capturing the failing evidence.
 
 ## Next
 

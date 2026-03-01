@@ -26,6 +26,7 @@ Use this procedure before risky release actions and during recovery from data lo
 
 ```bash
 make ops-readiness-scorecard
+make ops-observability-verify
 ```
 
 Expected result: restored pointers resolve and service reads valid artifacts.
@@ -36,5 +37,6 @@ If restore validation fails, reapply last known good snapshot and rerun readines
 
 ## Next
 
-- [Release Workflow](../release-workflow.md)
+- [Release operations](../release-operations.md)
+- [Backup and restore validation](backup-and-restore-validation.md)
 - [Retention and garbage collection](../retention-and-gc.md)

@@ -1,4 +1,4 @@
-# Kubernetes E2E Guarantees
+# Kubernetes E2E guarantees
 
 - Owner: `bijux-atlas-operations`
 - Type: `runbook`
@@ -29,6 +29,10 @@ make ops-k8s-tests
 ## Verify success
 
 Expected result: both commands pass and produce evidence in `artifacts/evidence/k8s/`.
+
+## Rollback
+
+If a k8s test change or rollout breaks guarantees, revert the change or roll back the release before rerunning the suite.
 
 ## Next
 

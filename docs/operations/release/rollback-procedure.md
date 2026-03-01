@@ -36,6 +36,10 @@ make ops-observability-verify
 
 Expected result: service health returns to baseline and paging alerts clear.
 
+## Rollback
+
+Do not attempt a second rollback action on top of an incomplete rollback. Stabilize on the last known good release before any further deploy.
+
 ## Next
 
 - [Backup and Restore](backup-and-restore.md)

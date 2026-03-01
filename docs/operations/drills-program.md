@@ -1,4 +1,4 @@
-# Drills Program
+# DR drills program
 
 - Owner: `bijux-atlas-operations`
 - Type: `runbook`
@@ -26,10 +26,19 @@
 - Drill date, participants, and scenario ID.
 - Time-to-detect and time-to-mitigate.
 - Follow-up actions with owners and due dates.
+- Evidence artifact links under `artifacts/` for notes, timelines, or drill outputs.
 
 ## Verify success
 
+```bash
+make ops-drill-suite
+```
+
 A drill is successful when the team completes mitigation and publishes evidence within one business day.
+
+## Rollback
+
+If a drill changes shared environments or releases, return the environment to the last known good state before closing the exercise.
 
 ## Next
 
