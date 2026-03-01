@@ -225,7 +225,10 @@ fn test_configs_016_visibility_classification(ctx: &RunContext) -> TestResult {
     };
     let mut violations = Vec::new();
     for group in &index.registry.groups {
-        if group.stability != "stable" && group.stability != "experimental" {
+        if group.stability != "stable"
+            && group.stability != "experimental"
+            && group.stability != "deprecated"
+        {
             violations.push(violation(
                 "CONFIGS-016",
                 "configs.registry.visibility_classification",
@@ -384,7 +387,10 @@ fn test_configs_019_lifecycle(ctx: &RunContext) -> TestResult {
     };
     let mut violations = Vec::new();
     for group in &index.registry.groups {
-        if group.stability != "stable" && group.stability != "experimental" {
+        if group.stability != "stable"
+            && group.stability != "experimental"
+            && group.stability != "deprecated"
+        {
             violations.push(violation(
                 "CONFIGS-019",
                 "configs.registry.lifecycle",
