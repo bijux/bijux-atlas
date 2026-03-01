@@ -21,7 +21,7 @@
     },
     "type": {
       "type": "string",
-      "enum": ["concept", "how-to", "reference", "runbook", "adr", "faq", "internal"]
+      "enum": ["concept", "how-to", "reference", "runbook", "adr", "internal"]
     },
     "stability": {
       "type": "string",

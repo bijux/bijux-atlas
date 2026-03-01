@@ -254,7 +254,7 @@ fn test_docs_038_spine_frontmatter_values(ctx: &RunContext) -> TestResult {
         Err(result) => return result,
     };
     let allowed_audiences = ["user", "operator", "contributor"];
-    let allowed_types = ["concept", "how-to", "reference", "runbook", "adr", "faq", "internal"];
+    let allowed_types = ["concept", "how-to", "reference", "runbook", "adr", "internal"];
     let allowed_stability = ["draft", "stable", "deprecated"];
     let mut violations = Vec::new();
     for relative in pages {
