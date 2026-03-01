@@ -50,6 +50,8 @@ pub fn to_pretty(report: &RunReport) -> String {
         .unwrap_or(0)
         + 10;
     let status_column_width = contract_label_width.max(case_label_width);
+    let case_indent_width = 2usize;
+    let case_status_column_width = status_column_width.saturating_sub(case_indent_width);
 
     out.push_str(&format!(
         "Contracts: {} (lane={}, mode={}, duration={}ms)\n",
@@ -91,7 +93,7 @@ pub fn to_pretty(report: &RunReport) -> String {
                         1_000,
                         report.metadata.color_enabled,
                     ),
-                    status_column_width,
+                    case_status_column_width,
                 )
             ));
             for violation in &case.violations {
