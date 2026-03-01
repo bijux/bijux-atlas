@@ -17,6 +17,8 @@ Provide governance rules that keep reader docs accurate, minimal, and stable.
 - [Docs Charter](docs-charter.md)
 - [Governance Readers Guide](readers-guide.md)
 - [Docs Dashboard](docs-dashboard.md)
+- [Docs debt backlog](docs-debt-backlog.md)
+- [Docs quarterly cleanup](docs-quarterly-cleanup.md)
 - [Docs build model](../_meta/docs-build-model.md)
 - [Docs operating model](../_meta/docs-operating-model.md)
 - [Docs principles](../_meta/docs-principles.md)

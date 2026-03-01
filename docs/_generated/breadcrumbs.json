@@ -2607,6 +2607,22 @@
       "breadcrumbs": [
         "docs",
         "docs/api",
+        "docs/api/client-retries-and-backoff.md"
+      ],
+      "path": "docs/api/client-retries-and-backoff.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/compatibility-test-plan.md"
+      ],
+      "path": "docs/api/compatibility-test-plan.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
         "docs/api/compatibility.md"
       ],
       "path": "docs/api/compatibility.md"
@@ -2647,6 +2663,14 @@
       "breadcrumbs": [
         "docs",
         "docs/api",
+        "docs/api/openapi-generation.md"
+      ],
+      "path": "docs/api/openapi-generation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
         "docs/api/pagination.md"
       ],
       "path": "docs/api/pagination.md"
@@ -2655,9 +2679,25 @@
       "breadcrumbs": [
         "docs",
         "docs/api",
+        "docs/api/performance-expectations.md"
+      ],
+      "path": "docs/api/performance-expectations.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
         "docs/api/quick-reference.md"
       ],
       "path": "docs/api/quick-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/sdk-strategy.md"
+      ],
+      "path": "docs/api/sdk-strategy.md"
     },
     {
       "breadcrumbs": [
@@ -2695,9 +2735,25 @@
       "breadcrumbs": [
         "docs",
         "docs/architecture",
+        "docs/architecture/artifact-model.md"
+      ],
+      "path": "docs/architecture/artifact-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
         "docs/architecture/boundaries.md"
       ],
       "path": "docs/architecture/boundaries.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/common-failure-catalog.md"
+      ],
+      "path": "docs/architecture/common-failure-catalog.md"
     },
     {
       "breadcrumbs": [
@@ -2719,9 +2775,25 @@
       "breadcrumbs": [
         "docs",
         "docs/architecture",
+        "docs/architecture/contracts-model.md"
+      ],
+      "path": "docs/architecture/contracts-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
         "docs/architecture/crates-map.md"
       ],
       "path": "docs/architecture/crates-map.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/crates-philosophy.md"
+      ],
+      "path": "docs/architecture/crates-philosophy.md"
     },
     {
       "breadcrumbs": [
@@ -2735,9 +2807,25 @@
       "breadcrumbs": [
         "docs",
         "docs/architecture",
+        "docs/architecture/design-principles.md"
+      ],
+      "path": "docs/architecture/design-principles.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
         "docs/architecture/effects.md"
       ],
       "path": "docs/architecture/effects.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/error-model.md"
+      ],
+      "path": "docs/architecture/error-model.md"
     },
     {
       "breadcrumbs": [
@@ -2751,9 +2839,33 @@
       "breadcrumbs": [
         "docs",
         "docs/architecture",
+        "docs/architecture/hot-paths.md"
+      ],
+      "path": "docs/architecture/hot-paths.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/how-to-add-a-new-crate.md"
+      ],
+      "path": "docs/architecture/how-to-add-a-new-crate.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
         "docs/architecture/index.md"
       ],
       "path": "docs/architecture/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/ingest-qc-model.md"
+      ],
+      "path": "docs/architecture/ingest-qc-model.md"
     },
     {
       "breadcrumbs": [
@@ -2775,6 +2887,22 @@
       "breadcrumbs": [
         "docs",
         "docs/architecture",
+        "docs/architecture/query-model.md"
+      ],
+      "path": "docs/architecture/query-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/registry-federation-model.md"
+      ],
+      "path": "docs/architecture/registry-federation-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
         "docs/architecture/runtime-data-model.md"
       ],
       "path": "docs/architecture/runtime-data-model.md"
@@ -2786,6 +2914,270 @@
         "docs/architecture/storage.md"
       ],
       "path": "docs/architecture/storage.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/store-integrity-model.md"
+      ],
+      "path": "docs/architecture/store-integrity-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/system-graph-explained.md"
+      ],
+      "path": "docs/architecture/system-graph-explained.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/telemetry-model.md"
+      ],
+      "path": "docs/architecture/telemetry-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/what-belongs-where.md"
+      ],
+      "path": "docs/architecture/what-belongs-where.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/why-effects-are-gated.md"
+      ],
+      "path": "docs/architecture/why-effects-are-gated.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/workspace-boundaries-rules.md"
+      ],
+      "path": "docs/architecture/workspace-boundaries-rules.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/add-a-check-in-30-minutes.md"
+      ],
+      "path": "docs/control-plane/add-a-check-in-30-minutes.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/add-a-contract-registry-in-30-minutes.md"
+      ],
+      "path": "docs/control-plane/add-a-contract-registry-in-30-minutes.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/add-a-gate-policy.md"
+      ],
+      "path": "docs/control-plane/add-a-gate-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/adding-external-tooling.md"
+      ],
+      "path": "docs/control-plane/adding-external-tooling.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/capabilities-model.md"
+      ],
+      "path": "docs/control-plane/capabilities-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/ci-report-consumption.md"
+      ],
+      "path": "docs/control-plane/ci-report-consumption.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/cli-reference.md"
+      ],
+      "path": "docs/control-plane/cli-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/common-failure-messages.md"
+      ],
+      "path": "docs/control-plane/common-failure-messages.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/contract-changes-and-versioning.md"
+      ],
+      "path": "docs/control-plane/contract-changes-and-versioning.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/contract-coverage-dashboard.md"
+      ],
+      "path": "docs/control-plane/contract-coverage-dashboard.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/control-plane-architecture.md"
+      ],
+      "path": "docs/control-plane/control-plane-architecture.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/debug-failing-checks.md"
+      ],
+      "path": "docs/control-plane/debug-failing-checks.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/evidence-writing-style.md"
+      ],
+      "path": "docs/control-plane/evidence-writing-style.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/extensibility-and-stability-levels.md"
+      ],
+      "path": "docs/control-plane/extensibility-and-stability-levels.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/how-suites-work.md"
+      ],
+      "path": "docs/control-plane/how-suites-work.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/index.md"
+      ],
+      "path": "docs/control-plane/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/known-limitations.md"
+      ],
+      "path": "docs/control-plane/known-limitations.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/lane-matrix.md"
+      ],
+      "path": "docs/control-plane/lane-matrix.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/performance-budget.md"
+      ],
+      "path": "docs/control-plane/performance-budget.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/reports-contract.md"
+      ],
+      "path": "docs/control-plane/reports-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/reproduce-ci-locally.md"
+      ],
+      "path": "docs/control-plane/reproduce-ci-locally.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/security-posture.md"
+      ],
+      "path": "docs/control-plane/security-posture.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/static-and-effect-mode.md"
+      ],
+      "path": "docs/control-plane/static-and-effect-mode.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/tooling-dependencies.md"
+      ],
+      "path": "docs/control-plane/tooling-dependencies.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/update-docs-generators.md"
+      ],
+      "path": "docs/control-plane/update-docs-generators.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/update-schema-generators.md"
+      ],
+      "path": "docs/control-plane/update-schema-generators.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
+        "docs/control-plane/why-a-control-plane.md"
+      ],
+      "path": "docs/control-plane/why-a-control-plane.md"
     },
     {
       "breadcrumbs": [
@@ -2831,9 +3223,9 @@
       "breadcrumbs": [
         "docs",
         "docs/development",
-        "docs/development/control-plane.md"
+        "docs/development/contributor-onboarding-rubric.md"
       ],
-      "path": "docs/development/control-plane.md"
+      "path": "docs/development/contributor-onboarding-rubric.md"
     },
     {
       "breadcrumbs": [
@@ -2855,14 +3247,6 @@
       "breadcrumbs": [
         "docs",
         "docs/development",
-        "docs/development/docs-site-map.md"
-      ],
-      "path": "docs/development/docs-site-map.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/development",
         "docs/development/error-handling-philosophy.md"
       ],
       "path": "docs/development/error-handling-philosophy.md"
@@ -2871,33 +3255,9 @@
       "breadcrumbs": [
         "docs",
         "docs/development",
-        "docs/development/how-to-add-check.md"
-      ],
-      "path": "docs/development/how-to-add-check.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/development",
         "docs/development/how-to-add-cli-command.md"
       ],
       "path": "docs/development/how-to-add-cli-command.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/development",
-        "docs/development/how-to-add-contract-registry.md"
-      ],
-      "path": "docs/development/how-to-add-contract-registry.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/development",
-        "docs/development/how-to-add-gate-policy.md"
-      ],
-      "path": "docs/development/how-to-add-gate-policy.md"
     },
     {
       "breadcrumbs": [
@@ -2927,25 +3287,9 @@
       "breadcrumbs": [
         "docs",
         "docs/development",
-        "docs/development/known-limitations.md"
-      ],
-      "path": "docs/development/known-limitations.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/development",
         "docs/development/repo-layout.md"
       ],
       "path": "docs/development/repo-layout.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/development",
-        "docs/development/reports-and-ci-consumption.md"
-      ],
-      "path": "docs/development/reports-and-ci-consumption.md"
     },
     {
       "breadcrumbs": [
@@ -3126,6 +3470,14 @@
       "breadcrumbs": [
         "docs",
         "docs/governance",
+        "docs/governance/docs-debt-backlog.md"
+      ],
+      "path": "docs/governance/docs-debt-backlog.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
         "docs/governance/docs-lint-rules.md"
       ],
       "path": "docs/governance/docs-lint-rules.md"
@@ -3161,6 +3513,14 @@
         "docs/governance/docs-quality-policy.md"
       ],
       "path": "docs/governance/docs-quality-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/docs-quarterly-cleanup.md"
+      ],
+      "path": "docs/governance/docs-quarterly-cleanup.md"
     },
     {
       "breadcrumbs": [
@@ -3477,6 +3837,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/install-verification-checklist.md"
+      ],
+      "path": "docs/operations/install-verification-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/k8s",
         "docs/operations/k8s/index.md"
       ],
@@ -3516,6 +3884,22 @@
         "docs/operations/load/suites.md"
       ],
       "path": "docs/operations/load/suites.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/minimal-production-overrides.md"
+      ],
+      "path": "docs/operations/minimal-production-overrides.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability-setup.md"
+      ],
+      "path": "docs/operations/observability-setup.md"
     },
     {
       "breadcrumbs": [
@@ -3582,9 +3966,25 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/overview.md"
+      ],
+      "path": "docs/operations/overview.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/promotion-record.md"
       ],
       "path": "docs/operations/promotion-record.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-operations.md"
+      ],
+      "path": "docs/operations/release-operations.md"
     },
     {
       "breadcrumbs": [
@@ -3599,9 +3999,27 @@
         "docs",
         "docs/operations",
         "docs/operations/release",
+        "docs/operations/release/backup-and-restore-validation.md"
+      ],
+      "path": "docs/operations/release/backup-and-restore-validation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release",
         "docs/operations/release/backup-and-restore.md"
       ],
       "path": "docs/operations/release/backup-and-restore.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release",
+        "docs/operations/release/capacity-planning-worksheet.md"
+      ],
+      "path": "docs/operations/release/capacity-planning-worksheet.md"
     },
     {
       "breadcrumbs": [
@@ -3662,6 +4080,14 @@
         "docs/operations/runbook-template.md"
       ],
       "path": "docs/operations/runbook-template.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbooks-to-alerts-mapping.md"
+      ],
+      "path": "docs/operations/runbooks-to-alerts-mapping.md"
     },
     {
       "breadcrumbs": [
@@ -3773,6 +4199,14 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/operations",
+        "docs/operations/values-mapping-to-config-keys.md"
+      ],
+      "path": "docs/operations/values-mapping-to-config-keys.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
         "docs/product",
         "docs/product/compatibility-promise.md"
       ],
@@ -3809,14 +4243,6 @@
         "docs/product/non-goals.md"
       ],
       "path": "docs/product/non-goals.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/product",
-        "docs/product/reading-tracks.md"
-      ],
-      "path": "docs/product/reading-tracks.md"
     },
     {
       "breadcrumbs": [
@@ -4333,9 +4759,23 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/site-map.md"
+      ],
+      "path": "docs/site-map.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
         "docs/start-here.md"
       ],
       "path": "docs/start-here.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/what-to-read-next.md"
+      ],
+      "path": "docs/what-to-read-next.md"
     },
     {
       "breadcrumbs": [

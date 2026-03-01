@@ -83,9 +83,13 @@
 | `TESTING` | `crates/bijux-atlas-api/TESTING.md, crates/bijux-atlas-cli/TESTING.md, crates/bijux-atlas-core/TESTING.md, crates/bijux-atlas-ingest/TESTING.md, crates/bijux-atlas-model/TESTING.md, crates/bijux-atlas-policies/TESTING.md, crates/bijux-atlas-query/TESTING.md, crates/bijux-atlas-server/TESTING.md, crates/bijux-atlas-store/TESTING.md, crates/bijux-dev-atlas/TESTING.md` |
 | `TRANSCRIPT_ORDERING` | `crates/bijux-atlas-query/docs/TRANSCRIPT_ORDERING.md` |
 | `VERSIONING` | `crates/bijux-atlas-api/VERSIONING.md, crates/bijux-atlas-api/docs/VERSIONING.md, crates/bijux-atlas-cli/VERSIONING.md, crates/bijux-atlas-core/VERSIONING.md, crates/bijux-atlas-ingest/VERSIONING.md, crates/bijux-atlas-model/VERSIONING.md, crates/bijux-atlas-policies/VERSIONING.md, crates/bijux-atlas-query/VERSIONING.md, crates/bijux-atlas-server/VERSIONING.md, crates/bijux-atlas-store/VERSIONING.md, crates/bijux-dev-atlas/VERSIONING.md` |
+| `add-a-check-in-30-minutes` | `docs/control-plane/add-a-check-in-30-minutes.md` |
+| `add-a-contract-registry-in-30-minutes` | `docs/control-plane/add-a-contract-registry-in-30-minutes.md` |
+| `add-a-gate-policy` | `docs/control-plane/add-a-gate-policy.md` |
 | `add-dataset-type` | `docs/development/add-dataset-type.md` |
 | `add-endpoint` | `docs/development/add-endpoint.md` |
 | `add-metric-span` | `docs/development/add-metric-span.md` |
+| `adding-external-tooling` | `docs/control-plane/adding-external-tooling.md` |
 | `adr-0001-workspace-boundaries-and-effects` | `docs/governance/adrs/adr-0001-workspace-boundaries-and-effects.md` |
 | `adr-0002-sqlite-serving-store` | `docs/governance/adrs/adr-0002-sqlite-serving-store.md` |
 | `adr-0003-federated-registry-deterministic-merge` | `docs/governance/adrs/adr-0003-federated-registry-deterministic-merge.md` |
@@ -95,20 +99,30 @@
 | `alerts` | `docs/operations/observability/alerts.md` |
 | `architecture` | `crates/bijux-atlas-api/docs/architecture.md, crates/bijux-atlas-cli/docs/architecture.md, crates/bijux-atlas-core/docs/architecture.md, crates/bijux-atlas-ingest/docs/architecture.md, crates/bijux-atlas-model/docs/architecture.md, crates/bijux-atlas-policies/docs/architecture.md, crates/bijux-atlas-query/docs/architecture.md, crates/bijux-atlas-server/docs/architecture.md, crates/bijux-atlas-store/docs/architecture.md` |
 | `architecture-map` | `docs/architecture/architecture-map.md` |
+| `artifact-model` | `docs/architecture/artifact-model.md` |
 | `backup-and-restore` | `docs/operations/release/backup-and-restore.md` |
+| `backup-and-restore-validation` | `docs/operations/release/backup-and-restore-validation.md` |
 | `bijux-dna-atlas` | `docs/reference/compatibility/bijux-dna-atlas.md` |
 | `boundaries` | `docs/architecture/boundaries.md` |
 | `caching` | `docs/api/caching.md` |
+| `capabilities-model` | `docs/control-plane/capabilities-model.md` |
 | `capacity-planning` | `docs/operations/release/capacity-planning.md` |
+| `capacity-planning-worksheet` | `docs/operations/release/capacity-planning-worksheet.md` |
 | `catalog-example` | `docs/reference/examples/catalog-example.md` |
 | `chart-values` | `docs/reference/contracts/chart-values.md` |
 | `checks` | `docs/governance/policies/checks.md` |
 | `ci-overview` | `docs/development/ci-overview.md` |
+| `ci-report-consumption` | `docs/control-plane/ci-report-consumption.md` |
+| `cli-reference` | `docs/control-plane/cli-reference.md` |
 | `client-behavior` | `docs/api/client-behavior.md` |
+| `client-retries-and-backoff` | `docs/api/client-retries-and-backoff.md` |
 | `command-inventory` | `docs/reference/command-inventory.md` |
 | `commands` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/commands.md, docs/reference/commands.md` |
+| `common-failure-catalog` | `docs/architecture/common-failure-catalog.md` |
+| `common-failure-messages` | `docs/control-plane/common-failure-messages.md` |
 | `compatibility` | `docs/api/compatibility.md, docs/reference/contracts/compatibility.md` |
 | `compatibility-promise` | `docs/product/compatibility-promise.md` |
+| `compatibility-test-plan` | `docs/api/compatibility-test-plan.md` |
 | `components` | `docs/architecture/components.md` |
 | `concept-ids` | `docs/governance/style/concept-ids.md` |
 | `concept-registry` | `docs/governance/style/concept-registry.md` |
@@ -122,20 +136,26 @@
 | `conformance-checklist` | `docs/reference/contracts/plugins/conformance-checklist.md` |
 | `contract-breaking-change-examples` | `docs/governance/contract-breaking-change-examples.md` |
 | `contract-change-checklist` | `docs/governance/contract-change-checklist.md` |
+| `contract-changes-and-versioning` | `docs/control-plane/contract-changes-and-versioning.md` |
+| `contract-coverage-dashboard` | `docs/control-plane/contract-coverage-dashboard.md` |
 | `contract-diff` | `docs/reference/contracts/contract-diff.md` |
 | `contract-runtime-mapping` | `docs/architecture/contract-runtime-mapping.md` |
 | `contract-ssot-workflow` | `docs/governance/contract-ssot-workflow.md` |
 | `contracts` | `crates/bijux-atlas-api/docs/contracts.md, crates/bijux-atlas-policies/docs/contracts.md, crates/bijux-atlas-server/docs/contracts.md, crates/bijux-atlas-store/docs/contracts.md` |
+| `contracts-model` | `docs/architecture/contracts-model.md` |
 | `contributing` | `docs/development/contributing.md` |
-| `control-plane` | `docs/development/control-plane.md` |
+| `contributor-onboarding-rubric` | `docs/development/contributor-onboarding-rubric.md` |
+| `control-plane-architecture` | `docs/control-plane/control-plane-architecture.md` |
 | `crate-docs-depth-rubric` | `docs/governance/style/crate-docs-depth-rubric.md` |
 | `crates-map` | `docs/architecture/crates-map.md` |
+| `crates-philosophy` | `docs/architecture/crates-philosophy.md` |
 | `cross-project-compatibility-policy` | `docs/reference/compatibility/cross-project-compatibility-policy.md` |
 | `dashboards` | `docs/operations/observability/dashboards.md` |
 | `dataflow` | `docs/architecture/dataflow.md` |
 | `dataset-corruption` | `docs/operations/runbooks/dataset-corruption.md` |
 | `dataset-operations` | `docs/reference/dataset-operations.md` |
 | `dataset-workflow` | `docs/operations/dataset-workflow.md` |
+| `debug-failing-checks` | `docs/control-plane/debug-failing-checks.md` |
 | `debugging-locally` | `docs/development/debugging-locally.md` |
 | `decision-template` | `docs/governance/decision-template.md` |
 | `default-field-set` | `docs/api/default-field-set.md` |
@@ -145,6 +165,7 @@
 | `deprecation` | `docs/api/deprecation.md` |
 | `depth-policy` | `docs/governance/style/depth-policy.md` |
 | `depth-rubric` | `docs/governance/style/depth-rubric.md` |
+| `design-principles` | `docs/architecture/design-principles.md` |
 | `deterministic-merge` | `docs/reference/registry/deterministic-merge.md` |
 | `diffs-v1` | `docs/product/diffs-v1.md` |
 | `doc-conventions` | `docs/development/doc-conventions.md` |
@@ -155,6 +176,7 @@
 | `docs-checks` | `docs/governance/checks/docs-checks.md` |
 | `docs-contract` | `docs/governance/docs-contract.md` |
 | `docs-dashboard` | `docs/governance/docs-dashboard.md` |
+| `docs-debt-backlog` | `docs/governance/docs-debt-backlog.md` |
 | `docs-governance` | `.github/PULL_REQUEST_TEMPLATE/docs-governance.md` |
 | `docs-lint-rules` | `docs/governance/docs-lint-rules.md` |
 | `docs-navigation-policy` | `docs/governance/docs-navigation-policy.md` |
@@ -162,11 +184,11 @@
 | `docs-ownership` | `docs/governance/docs-ownership.md` |
 | `docs-principles` | `docs/_meta/docs-principles.md` |
 | `docs-quality-policy` | `docs/governance/docs-quality-policy.md` |
+| `docs-quarterly-cleanup` | `docs/governance/docs-quarterly-cleanup.md` |
 | `docs-removal-policy` | `docs/governance/docs-removal-policy.md` |
 | `docs-review-checklist` | `docs/governance/docs-review-checklist.md` |
 | `docs-rewrite-plan` | `docs/_meta/internal/docs-rewrite-plan.md` |
 | `docs-search-tips` | `docs/governance/docs-search-tips.md` |
-| `docs-site-map` | `docs/development/docs-site-map.md` |
 | `docs-style` | `docs/governance/docs-style.md` |
 | `docs-taxonomy-quick-reference` | `docs/_meta/docs-taxonomy-quick-reference.md` |
 | `draft` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_drafts/draft.md` |
@@ -177,7 +199,10 @@
 | `environment-contract` | `crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/environment-contract.md` |
 | `error-code-registry` | `docs/reference/registry/error-code-registry.md` |
 | `error-handling-philosophy` | `docs/development/error-handling-philosophy.md` |
+| `error-model` | `docs/architecture/error-model.md` |
 | `errors` | `docs/api/errors.md, docs/reference/contracts/errors.md, docs/reference/errors.md` |
+| `evidence-writing-style` | `docs/control-plane/evidence-writing-style.md` |
+| `extensibility-and-stability-levels` | `docs/control-plane/extensibility-and-stability-levels.md` |
 | `failure-modes` | `crates/bijux-atlas-ingest/docs/failure-modes.md, crates/bijux-atlas-server/docs/failure-modes.md, crates/bijux-atlas-store/docs/failure-modes.md` |
 | `faq` | `docs/architecture/faq.md` |
 | `federation-semantics` | `docs/reference/registry/federation-semantics.md` |
@@ -186,39 +211,48 @@
 | `generated-artifacts` | `docs/_meta/generated-artifacts.md` |
 | `generated-content-policy` | `docs/governance/generated-content-policy.md` |
 | `glossary` | `docs/glossary.md` |
-| `how-to-add-check` | `docs/development/how-to-add-check.md` |
+| `hot-paths` | `docs/architecture/hot-paths.md` |
+| `how-suites-work` | `docs/control-plane/how-suites-work.md` |
+| `how-to-add-a-new-crate` | `docs/architecture/how-to-add-a-new-crate.md` |
 | `how-to-add-cli-command` | `docs/development/how-to-add-cli-command.md` |
-| `how-to-add-contract-registry` | `docs/development/how-to-add-contract-registry.md` |
-| `how-to-add-gate-policy` | `docs/development/how-to-add-gate-policy.md` |
 | `how-to-change-docs` | `docs/development/how-to-change-docs.md` |
 | `immutability-and-aliases` | `docs/product/immutability-and-aliases.md` |
 | `immutability-guarantee` | `docs/reference/store/immutability-guarantee.md` |
 | `incident-playbook` | `docs/operations/runbooks/incident-playbook.md` |
 | `incident-response` | `docs/operations/incident-response.md` |
-| `index` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/index.md, docs/_assets/index.md, docs/_meta/index.md, docs/_meta/internal/index.md, docs/_nav/index.md, docs/api/index.md, docs/architecture/index.md, docs/development/index.md, docs/governance/adrs/index.md, docs/governance/checks/index.md, docs/governance/index.md, docs/governance/metadata/index.md, docs/governance/policies/index.md, docs/governance/style/index.md, docs/index.md, docs/operations/e2e/index.md, docs/operations/index.md, docs/operations/k8s/index.md, docs/operations/load/index.md, docs/operations/observability/index.md, docs/operations/release/index.md, docs/operations/runbooks/index.md, docs/operations/security/index.md, docs/product/index.md, docs/reference/compatibility/index.md, docs/reference/contracts/artifacts/index.md, docs/reference/contracts/examples/index.md, docs/reference/contracts/index.md, docs/reference/contracts/plugins/index.md, docs/reference/contracts/schemas/index.md, docs/reference/examples/index.md, docs/reference/index.md, docs/reference/querying/index.md, docs/reference/registry/index.md, docs/reference/store/index.md` |
+| `index` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/index.md, docs/_assets/index.md, docs/_meta/index.md, docs/_meta/internal/index.md, docs/_nav/index.md, docs/api/index.md, docs/architecture/index.md, docs/control-plane/index.md, docs/development/index.md, docs/governance/adrs/index.md, docs/governance/checks/index.md, docs/governance/index.md, docs/governance/metadata/index.md, docs/governance/policies/index.md, docs/governance/style/index.md, docs/index.md, docs/operations/e2e/index.md, docs/operations/index.md, docs/operations/k8s/index.md, docs/operations/load/index.md, docs/operations/observability/index.md, docs/operations/release/index.md, docs/operations/runbooks/index.md, docs/operations/security/index.md, docs/product/index.md, docs/reference/compatibility/index.md, docs/reference/contracts/artifacts/index.md, docs/reference/contracts/examples/index.md, docs/reference/contracts/index.md, docs/reference/contracts/plugins/index.md, docs/reference/contracts/schemas/index.md, docs/reference/examples/index.md, docs/reference/index.md, docs/reference/querying/index.md, docs/reference/registry/index.md, docs/reference/store/index.md` |
 | `ingest-format-contracts` | `docs/development/ingest-format-contracts.md` |
+| `ingest-qc-model` | `docs/architecture/ingest-qc-model.md` |
+| `install-verification-checklist` | `docs/operations/install-verification-checklist.md` |
 | `integrity-model` | `docs/reference/store/integrity-model.md` |
 | `intro` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/sub/intro.md` |
 | `k6` | `docs/operations/load/k6.md` |
 | `k8s-tests` | `docs/operations/e2e/k8s-tests.md` |
 | `kind-profile` | `docs/operations/kind-profile.md` |
-| `known-limitations` | `docs/development/known-limitations.md` |
+| `known-limitations` | `docs/control-plane/known-limitations.md` |
+| `lane-matrix` | `docs/control-plane/lane-matrix.md` |
 | `latest-release-alias-policy` | `docs/reference/registry/latest-release-alias-policy.md` |
 | `layering-rules` | `docs/architecture/layering-rules.md` |
 | `load-failure-triage` | `docs/operations/runbooks/load-failure-triage.md` |
 | `make` | `docs/reference/make.md` |
 | `make-targets` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/make-targets.md` |
+| `minimal-production-overrides` | `docs/operations/minimal-production-overrides.md` |
 | `mode` | `docs/reference/contracts/plugins/mode.md` |
 | `naming` | `docs/governance/naming.md` |
 | `no-dna-dependency-policy` | `docs/reference/registry/no-dna-dependency-policy.md` |
 | `non-goals` | `docs/product/non-goals.md` |
 | `normalized-format` | `docs/reference/contracts/normalized-format.md` |
+| `observability-setup` | `docs/operations/observability-setup.md` |
+| `openapi-generation` | `docs/api/openapi-generation.md` |
 | `operator-faq` | `docs/operations/operator-faq.md` |
 | `ops-e2e-boundary` | `.github/PULL_REQUEST_TEMPLATE/ops-e2e-boundary.md` |
 | `ops-map` | `docs/operations/ops-map.md` |
 | `ops-surface` | `docs/reference/ops-surface.md` |
+| `overview` | `docs/operations/overview.md` |
 | `pagination` | `docs/api/pagination.md, docs/reference/querying/pagination.md` |
 | `perf-regression` | `.github/ISSUE_TEMPLATE/perf-regression.md` |
+| `performance-budget` | `docs/control-plane/performance-budget.md` |
+| `performance-expectations` | `docs/api/performance-expectations.md` |
 | `performance-model` | `docs/architecture/performance-model.md` |
 | `placement` | `docs/governance/style/placement.md` |
 | `plugin-versioning-and-release-independence` | `docs/reference/registry/plugin-versioning-and-release-independence.md` |
@@ -228,18 +262,21 @@
 | `public-api-checklist` | `crates/bijux-atlas-api/docs/public-api-checklist.md` |
 | `pull_request_template` | `.github/pull_request_template.md` |
 | `qc` | `docs/reference/contracts/qc.md` |
+| `query-model` | `docs/architecture/query-model.md` |
 | `quick-reference` | `docs/api/quick-reference.md` |
 | `readers-guide` | `docs/governance/readers-guide.md` |
-| `reading-tracks` | `docs/product/reading-tracks.md` |
 | `redirects-policy` | `docs/governance/redirects-policy.md` |
 | `registry-federation` | `docs/operations/runbooks/registry-federation.md` |
+| `registry-federation-model` | `docs/architecture/registry-federation-model.md` |
 | `release-contract-checklist` | `docs/product/release-contract-checklist.md` |
 | `release-model` | `docs/product/release-model.md` |
 | `release-notes-template` | `.github/release-notes-template.md` |
+| `release-operations` | `docs/operations/release-operations.md` |
 | `release-workflow` | `docs/operations/release-workflow.md` |
 | `repo-layout` | `docs/development/repo-layout.md` |
 | `repo-map` | `docs/reference/repo-map.md` |
-| `reports-and-ci-consumption` | `docs/development/reports-and-ci-consumption.md` |
+| `reports-contract` | `docs/control-plane/reports-contract.md` |
+| `reproduce-ci-locally` | `docs/control-plane/reproduce-ci-locally.md` |
 | `required-status-checks` | `.github/required-status-checks.md` |
 | `retention-and-gc` | `docs/operations/retention-and-gc.md` |
 | `rollback-playbook` | `docs/operations/runbooks/rollback-playbook.md` |
@@ -247,6 +284,7 @@
 | `root-legacy-mapping` | `docs/_meta/internal/root-legacy-mapping.md` |
 | `run-locally` | `docs/operations/run-locally.md` |
 | `runbook-template` | `docs/operations/runbook-template.md` |
+| `runbooks-to-alerts-mapping` | `docs/operations/runbooks-to-alerts-mapping.md` |
 | `runtime-data-model` | `docs/architecture/runtime-data-model.md` |
 | `runtime-model` | `crates/bijux-atlas-server/docs/runtime-model.md` |
 | `runtime-startup-config` | `crates/bijux-atlas-server/docs/generated/runtime-startup-config.md` |
@@ -255,37 +293,52 @@
 | `schema-validation` | `crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/schema-validation.md` |
 | `schemas` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/schemas.md, docs/reference/schemas.md` |
 | `scripts-migration-release-note` | `.github/templates/scripts-migration-release-note.md` |
-| `security-posture` | `docs/operations/security-posture.md` |
+| `sdk-strategy` | `docs/api/sdk-strategy.md` |
+| `security-posture` | `docs/control-plane/security-posture.md, docs/operations/security-posture.md` |
 | `security-response-coordination` | `docs/reference/registry/security-response-coordination.md` |
 | `sequence-threat-model` | `docs/product/sequence-threat-model.md` |
 | `sequence-v1` | `docs/product/sequence-v1.md` |
 | `shared-core-extraction` | `docs/reference/registry/shared-core-extraction.md` |
+| `site-map` | `docs/site-map.md` |
 | `slo-policy` | `docs/operations/observability/slo-policy.md` |
 | `slo-store-backend-error-spike` | `docs/operations/runbooks/slo-store-backend-error-spike.md` |
 | `slo-targets` | `docs/product/slo-targets.md` |
 | `spec` | `docs/reference/contracts/plugins/spec.md` |
 | `stability-levels` | `docs/governance/style/stability-levels.md` |
 | `start-here` | `docs/start-here.md` |
+| `static-and-effect-mode` | `docs/control-plane/static-and-effect-mode.md` |
 | `storage` | `docs/architecture/storage.md` |
+| `store-integrity-model` | `docs/architecture/store-integrity-model.md` |
 | `store-outage` | `docs/operations/runbooks/store-outage.md` |
 | `structure-templates` | `docs/governance/style/structure-templates.md` |
 | `style-guide` | `docs/governance/style-guide.md` |
 | `suites` | `docs/operations/load/suites.md` |
+| `system-graph-explained` | `docs/architecture/system-graph-explained.md` |
 | `taxonomy-map` | `docs/governance/metadata/taxonomy-map.md` |
 | `telemetry` | `docs/reference/contracts/telemetry.md` |
+| `telemetry-model` | `docs/architecture/telemetry-model.md` |
 | `testing` | `crates/bijux-atlas-api/docs/testing.md, crates/bijux-atlas-cli/docs/testing.md, crates/bijux-atlas-core/docs/testing.md, crates/bijux-atlas-ingest/docs/testing.md, crates/bijux-atlas-model/docs/testing.md, crates/bijux-atlas-policies/docs/testing.md, crates/bijux-atlas-query/docs/testing.md, crates/bijux-atlas-server/docs/testing.md, crates/bijux-atlas-store/docs/testing.md` |
 | `toolchain` | `docs/development/toolchain.md` |
+| `tooling-dependencies` | `docs/control-plane/tooling-dependencies.md` |
 | `tracing` | `docs/operations/observability/tracing.md` |
 | `traffic-spike` | `docs/operations/runbooks/traffic-spike.md` |
 | `transcripts-v1` | `docs/product/transcripts-v1.md` |
 | `troubleshooting` | `docs/api/troubleshooting.md` |
 | `umbrella-atlas-matrix` | `docs/reference/compatibility/umbrella-atlas-matrix.md` |
 | `umbrella-plugin-contract-v1` | `docs/reference/contracts/plugins/umbrella-plugin-contract-v1.md` |
+| `update-docs-generators` | `docs/control-plane/update-docs-generators.md` |
 | `update-pinned-dependencies` | `docs/development/update-pinned-dependencies.md` |
+| `update-schema-generators` | `docs/control-plane/update-schema-generators.md` |
 | `upgrade-procedure` | `docs/operations/release/upgrade-procedure.md` |
 | `user-stories` | `docs/product/user-stories.md` |
 | `v1-surface` | `docs/api/v1-surface.md` |
+| `values-mapping-to-config-keys` | `docs/operations/values-mapping-to-config-keys.md` |
 | `versioning` | `docs/api/versioning.md` |
+| `what-belongs-where` | `docs/architecture/what-belongs-where.md` |
 | `what-is-bijux-atlas` | `docs/product/what-is-bijux-atlas.md` |
+| `what-to-read-next` | `docs/what-to-read-next.md` |
 | `where-truth-lives` | `docs/development/where-truth-lives.md` |
+| `why-a-control-plane` | `docs/control-plane/why-a-control-plane.md` |
+| `why-effects-are-gated` | `docs/architecture/why-effects-are-gated.md` |
 | `wire-compatibility` | `crates/bijux-atlas-api/docs/wire-compatibility.md` |
+| `workspace-boundaries-rules` | `docs/architecture/workspace-boundaries-rules.md` |

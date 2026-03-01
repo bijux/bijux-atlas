@@ -1463,6 +1463,16 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/api/client-retries-and-backoff.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/api/compatibility-test-plan.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/api/compatibility.md"
     },
     {
@@ -1488,12 +1498,27 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/api/openapi-generation.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/api/pagination.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/api/performance-expectations.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/api/quick-reference.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/api/sdk-strategy.md"
     },
     {
       "crate": null,
@@ -1518,7 +1543,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/artifact-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/boundaries.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/common-failure-catalog.md"
     },
     {
       "crate": null,
@@ -1533,7 +1568,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/contracts-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/crates-map.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/crates-philosophy.md"
     },
     {
       "crate": null,
@@ -1543,7 +1588,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/design-principles.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/effects.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/error-model.md"
     },
     {
       "crate": null,
@@ -1553,7 +1608,22 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/hot-paths.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "how-to",
+      "from": "docs/architecture/how-to-add-a-new-crate.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/ingest-qc-model.md"
     },
     {
       "crate": null,
@@ -1568,12 +1638,187 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/query-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/registry-federation-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/runtime-data-model.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
       "from": "docs/architecture/storage.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/store-integrity-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/system-graph-explained.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/telemetry-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/what-belongs-where.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/why-effects-are-gated.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/workspace-boundaries-rules.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/add-a-check-in-30-minutes.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/add-a-contract-registry-in-30-minutes.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/add-a-gate-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/adding-external-tooling.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/capabilities-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/ci-report-consumption.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/cli-reference.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/common-failure-messages.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/contract-changes-and-versioning.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/contract-coverage-dashboard.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/control-plane-architecture.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/debug-failing-checks.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/evidence-writing-style.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/extensibility-and-stability-levels.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/how-suites-work.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/known-limitations.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/lane-matrix.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/performance-budget.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/reports-contract.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/reproduce-ci-locally.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/security-posture.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/static-and-effect-mode.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/tooling-dependencies.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/update-docs-generators.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/update-schema-generators.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/control-plane/why-a-control-plane.md"
     },
     {
       "crate": null,
@@ -1603,7 +1848,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "docs/development/control-plane.md"
+      "from": "docs/development/contributor-onboarding-rubric.md"
     },
     {
       "crate": null,
@@ -1618,32 +1863,12 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "docs/development/docs-site-map.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "docs/development/error-handling-philosophy.md"
     },
     {
       "crate": null,
       "doc_type": "how-to",
-      "from": "docs/development/how-to-add-check.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "how-to",
       "from": "docs/development/how-to-add-cli-command.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "how-to",
-      "from": "docs/development/how-to-add-contract-registry.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "how-to",
-      "from": "docs/development/how-to-add-gate-policy.md"
     },
     {
       "crate": null,
@@ -1663,17 +1888,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "docs/development/known-limitations.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "docs/development/repo-layout.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/development/reports-and-ci-consumption.md"
     },
     {
       "crate": null,
@@ -1783,6 +1998,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/governance/docs-debt-backlog.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/governance/docs-lint-rules.md"
     },
     {
@@ -1804,6 +2024,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/governance/docs-quality-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/governance/docs-quarterly-cleanup.md"
     },
     {
       "crate": null,
@@ -1993,6 +2218,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/install-verification-checklist.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/k8s/index.md"
     },
     {
@@ -2014,6 +2244,16 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/load/suites.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/minimal-production-overrides.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability-setup.md"
     },
     {
       "crate": null,
@@ -2053,7 +2293,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/overview.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/promotion-record.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/release-operations.md"
     },
     {
       "crate": null,
@@ -2063,7 +2313,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/release/backup-and-restore-validation.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/release/backup-and-restore.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/release/capacity-planning-worksheet.md"
     },
     {
       "crate": null,
@@ -2099,6 +2359,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/runbook-template.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/runbooks-to-alerts-mapping.md"
     },
     {
       "crate": null,
@@ -2163,6 +2428,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/values-mapping-to-config-keys.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/product/compatibility-promise.md"
     },
     {
@@ -2184,11 +2454,6 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/product/non-goals.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/product/reading-tracks.md"
     },
     {
       "crate": null,
@@ -2483,7 +2748,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/site-map.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/start-here.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/what-to-read-next.md"
     },
     {
       "crate": null,

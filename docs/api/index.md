@@ -34,6 +34,7 @@ Endpoint and schema facts live in [Reference](../reference/index.md), [Reference
 ## Verification plans
 
 - [Compatibility test plan](compatibility-test-plan.md)
+- [OpenAPI generation](openapi-generation.md)
 
 ## Next steps
 

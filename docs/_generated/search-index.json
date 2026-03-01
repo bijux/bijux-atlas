@@ -3761,6 +3761,30 @@
     {
       "keywords": [
         "api",
+        "client-retries-and-backoff"
+      ],
+      "path": "docs/api/client-retries-and-backoff.md",
+      "tags": [
+        "api",
+        "client-retries-and-backoff"
+      ],
+      "topic": "client-retries-and-backoff"
+    },
+    {
+      "keywords": [
+        "api",
+        "compatibility-test-plan"
+      ],
+      "path": "docs/api/compatibility-test-plan.md",
+      "tags": [
+        "api",
+        "compatibility-test-plan"
+      ],
+      "topic": "compatibility-test-plan"
+    },
+    {
+      "keywords": [
+        "api",
         "compatibility"
       ],
       "path": "docs/api/compatibility.md",
@@ -3821,6 +3845,18 @@
     {
       "keywords": [
         "api",
+        "openapi-generation"
+      ],
+      "path": "docs/api/openapi-generation.md",
+      "tags": [
+        "api",
+        "openapi-generation"
+      ],
+      "topic": "openapi-generation"
+    },
+    {
+      "keywords": [
+        "api",
         "pagination"
       ],
       "path": "docs/api/pagination.md",
@@ -3833,6 +3869,18 @@
     {
       "keywords": [
         "api",
+        "performance-expectations"
+      ],
+      "path": "docs/api/performance-expectations.md",
+      "tags": [
+        "api",
+        "performance-expectations"
+      ],
+      "topic": "performance-expectations"
+    },
+    {
+      "keywords": [
+        "api",
         "quick-reference"
       ],
       "path": "docs/api/quick-reference.md",
@@ -3841,6 +3889,18 @@
         "quick-reference"
       ],
       "topic": "quick-reference"
+    },
+    {
+      "keywords": [
+        "api",
+        "sdk-strategy"
+      ],
+      "path": "docs/api/sdk-strategy.md",
+      "tags": [
+        "api",
+        "sdk-strategy"
+      ],
+      "topic": "sdk-strategy"
     },
     {
       "keywords": [
@@ -3893,6 +3953,18 @@
     {
       "keywords": [
         "architecture",
+        "artifact-model"
+      ],
+      "path": "docs/architecture/artifact-model.md",
+      "tags": [
+        "architecture",
+        "artifact-model"
+      ],
+      "topic": "artifact-model"
+    },
+    {
+      "keywords": [
+        "architecture",
         "boundaries"
       ],
       "path": "docs/architecture/boundaries.md",
@@ -3901,6 +3973,18 @@
         "boundaries"
       ],
       "topic": "boundaries"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "common-failure-catalog"
+      ],
+      "path": "docs/architecture/common-failure-catalog.md",
+      "tags": [
+        "architecture",
+        "common-failure-catalog"
+      ],
+      "topic": "common-failure-catalog"
     },
     {
       "keywords": [
@@ -3929,6 +4013,18 @@
     {
       "keywords": [
         "architecture",
+        "contracts-model"
+      ],
+      "path": "docs/architecture/contracts-model.md",
+      "tags": [
+        "architecture",
+        "contracts-model"
+      ],
+      "topic": "contracts-model"
+    },
+    {
+      "keywords": [
+        "architecture",
         "crates-map"
       ],
       "path": "docs/architecture/crates-map.md",
@@ -3937,6 +4033,18 @@
         "crates-map"
       ],
       "topic": "crates-map"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "crates-philosophy"
+      ],
+      "path": "docs/architecture/crates-philosophy.md",
+      "tags": [
+        "architecture",
+        "crates-philosophy"
+      ],
+      "topic": "crates-philosophy"
     },
     {
       "keywords": [
@@ -3953,6 +4061,18 @@
     {
       "keywords": [
         "architecture",
+        "design-principles"
+      ],
+      "path": "docs/architecture/design-principles.md",
+      "tags": [
+        "architecture",
+        "design-principles"
+      ],
+      "topic": "design-principles"
+    },
+    {
+      "keywords": [
+        "architecture",
         "effects"
       ],
       "path": "docs/architecture/effects.md",
@@ -3961,6 +4081,18 @@
         "effects"
       ],
       "topic": "effects"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "error-model"
+      ],
+      "path": "docs/architecture/error-model.md",
+      "tags": [
+        "architecture",
+        "error-model"
+      ],
+      "topic": "error-model"
     },
     {
       "keywords": [
@@ -3977,6 +4109,30 @@
     {
       "keywords": [
         "architecture",
+        "hot-paths"
+      ],
+      "path": "docs/architecture/hot-paths.md",
+      "tags": [
+        "architecture",
+        "hot-paths"
+      ],
+      "topic": "hot-paths"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "how-to-add-a-new-crate"
+      ],
+      "path": "docs/architecture/how-to-add-a-new-crate.md",
+      "tags": [
+        "architecture",
+        "how-to-add-a-new-crate"
+      ],
+      "topic": "how-to-add-a-new-crate"
+    },
+    {
+      "keywords": [
+        "architecture",
         "index"
       ],
       "path": "docs/architecture/index.md",
@@ -3985,6 +4141,18 @@
         "index"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "ingest-qc-model"
+      ],
+      "path": "docs/architecture/ingest-qc-model.md",
+      "tags": [
+        "architecture",
+        "ingest-qc-model"
+      ],
+      "topic": "ingest-qc-model"
     },
     {
       "keywords": [
@@ -4013,6 +4181,30 @@
     {
       "keywords": [
         "architecture",
+        "query-model"
+      ],
+      "path": "docs/architecture/query-model.md",
+      "tags": [
+        "architecture",
+        "query-model"
+      ],
+      "topic": "query-model"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "registry-federation-model"
+      ],
+      "path": "docs/architecture/registry-federation-model.md",
+      "tags": [
+        "architecture",
+        "registry-federation-model"
+      ],
+      "topic": "registry-federation-model"
+    },
+    {
+      "keywords": [
+        "architecture",
         "runtime-data-model"
       ],
       "path": "docs/architecture/runtime-data-model.md",
@@ -4033,6 +4225,402 @@
         "storage"
       ],
       "topic": "storage"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "store-integrity-model"
+      ],
+      "path": "docs/architecture/store-integrity-model.md",
+      "tags": [
+        "architecture",
+        "store-integrity-model"
+      ],
+      "topic": "store-integrity-model"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "system-graph-explained"
+      ],
+      "path": "docs/architecture/system-graph-explained.md",
+      "tags": [
+        "architecture",
+        "system-graph-explained"
+      ],
+      "topic": "system-graph-explained"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "telemetry-model"
+      ],
+      "path": "docs/architecture/telemetry-model.md",
+      "tags": [
+        "architecture",
+        "telemetry-model"
+      ],
+      "topic": "telemetry-model"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "what-belongs-where"
+      ],
+      "path": "docs/architecture/what-belongs-where.md",
+      "tags": [
+        "architecture",
+        "what-belongs-where"
+      ],
+      "topic": "what-belongs-where"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "why-effects-are-gated"
+      ],
+      "path": "docs/architecture/why-effects-are-gated.md",
+      "tags": [
+        "architecture",
+        "why-effects-are-gated"
+      ],
+      "topic": "why-effects-are-gated"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "workspace-boundaries-rules"
+      ],
+      "path": "docs/architecture/workspace-boundaries-rules.md",
+      "tags": [
+        "architecture",
+        "workspace-boundaries-rules"
+      ],
+      "topic": "workspace-boundaries-rules"
+    },
+    {
+      "keywords": [
+        "add-a-check-in-30-minutes",
+        "control-plane"
+      ],
+      "path": "docs/control-plane/add-a-check-in-30-minutes.md",
+      "tags": [
+        "add-a-check-in-30-minutes",
+        "control-plane"
+      ],
+      "topic": "add-a-check-in-30-minutes"
+    },
+    {
+      "keywords": [
+        "add-a-contract-registry-in-30-minutes",
+        "control-plane"
+      ],
+      "path": "docs/control-plane/add-a-contract-registry-in-30-minutes.md",
+      "tags": [
+        "add-a-contract-registry-in-30-minutes",
+        "control-plane"
+      ],
+      "topic": "add-a-contract-registry-in-30-minutes"
+    },
+    {
+      "keywords": [
+        "add-a-gate-policy",
+        "control-plane"
+      ],
+      "path": "docs/control-plane/add-a-gate-policy.md",
+      "tags": [
+        "add-a-gate-policy",
+        "control-plane"
+      ],
+      "topic": "add-a-gate-policy"
+    },
+    {
+      "keywords": [
+        "adding-external-tooling",
+        "control-plane"
+      ],
+      "path": "docs/control-plane/adding-external-tooling.md",
+      "tags": [
+        "adding-external-tooling",
+        "control-plane"
+      ],
+      "topic": "adding-external-tooling"
+    },
+    {
+      "keywords": [
+        "capabilities-model",
+        "control-plane"
+      ],
+      "path": "docs/control-plane/capabilities-model.md",
+      "tags": [
+        "capabilities-model",
+        "control-plane"
+      ],
+      "topic": "capabilities-model"
+    },
+    {
+      "keywords": [
+        "ci-report-consumption",
+        "control-plane"
+      ],
+      "path": "docs/control-plane/ci-report-consumption.md",
+      "tags": [
+        "ci-report-consumption",
+        "control-plane"
+      ],
+      "topic": "ci-report-consumption"
+    },
+    {
+      "keywords": [
+        "cli-reference",
+        "control-plane"
+      ],
+      "path": "docs/control-plane/cli-reference.md",
+      "tags": [
+        "cli-reference",
+        "control-plane"
+      ],
+      "topic": "cli-reference"
+    },
+    {
+      "keywords": [
+        "common-failure-messages",
+        "control-plane"
+      ],
+      "path": "docs/control-plane/common-failure-messages.md",
+      "tags": [
+        "common-failure-messages",
+        "control-plane"
+      ],
+      "topic": "common-failure-messages"
+    },
+    {
+      "keywords": [
+        "contract-changes-and-versioning",
+        "control-plane"
+      ],
+      "path": "docs/control-plane/contract-changes-and-versioning.md",
+      "tags": [
+        "contract-changes-and-versioning",
+        "control-plane"
+      ],
+      "topic": "contract-changes-and-versioning"
+    },
+    {
+      "keywords": [
+        "contract-coverage-dashboard",
+        "control-plane"
+      ],
+      "path": "docs/control-plane/contract-coverage-dashboard.md",
+      "tags": [
+        "contract-coverage-dashboard",
+        "control-plane"
+      ],
+      "topic": "contract-coverage-dashboard"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "control-plane-architecture"
+      ],
+      "path": "docs/control-plane/control-plane-architecture.md",
+      "tags": [
+        "control-plane",
+        "control-plane-architecture"
+      ],
+      "topic": "control-plane-architecture"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "debug-failing-checks"
+      ],
+      "path": "docs/control-plane/debug-failing-checks.md",
+      "tags": [
+        "control-plane",
+        "debug-failing-checks"
+      ],
+      "topic": "debug-failing-checks"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "evidence-writing-style"
+      ],
+      "path": "docs/control-plane/evidence-writing-style.md",
+      "tags": [
+        "control-plane",
+        "evidence-writing-style"
+      ],
+      "topic": "evidence-writing-style"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "extensibility-and-stability-levels"
+      ],
+      "path": "docs/control-plane/extensibility-and-stability-levels.md",
+      "tags": [
+        "control-plane",
+        "extensibility-and-stability-levels"
+      ],
+      "topic": "extensibility-and-stability-levels"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "how-suites-work"
+      ],
+      "path": "docs/control-plane/how-suites-work.md",
+      "tags": [
+        "control-plane",
+        "how-suites-work"
+      ],
+      "topic": "how-suites-work"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "index"
+      ],
+      "path": "docs/control-plane/index.md",
+      "tags": [
+        "control-plane",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "known-limitations"
+      ],
+      "path": "docs/control-plane/known-limitations.md",
+      "tags": [
+        "control-plane",
+        "known-limitations"
+      ],
+      "topic": "known-limitations"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "lane-matrix"
+      ],
+      "path": "docs/control-plane/lane-matrix.md",
+      "tags": [
+        "control-plane",
+        "lane-matrix"
+      ],
+      "topic": "lane-matrix"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "performance-budget"
+      ],
+      "path": "docs/control-plane/performance-budget.md",
+      "tags": [
+        "control-plane",
+        "performance-budget"
+      ],
+      "topic": "performance-budget"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "reports-contract"
+      ],
+      "path": "docs/control-plane/reports-contract.md",
+      "tags": [
+        "control-plane",
+        "reports-contract"
+      ],
+      "topic": "reports-contract"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "reproduce-ci-locally"
+      ],
+      "path": "docs/control-plane/reproduce-ci-locally.md",
+      "tags": [
+        "control-plane",
+        "reproduce-ci-locally"
+      ],
+      "topic": "reproduce-ci-locally"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "security-posture"
+      ],
+      "path": "docs/control-plane/security-posture.md",
+      "tags": [
+        "control-plane",
+        "security-posture"
+      ],
+      "topic": "security-posture"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "static-and-effect-mode"
+      ],
+      "path": "docs/control-plane/static-and-effect-mode.md",
+      "tags": [
+        "control-plane",
+        "static-and-effect-mode"
+      ],
+      "topic": "static-and-effect-mode"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "tooling-dependencies"
+      ],
+      "path": "docs/control-plane/tooling-dependencies.md",
+      "tags": [
+        "control-plane",
+        "tooling-dependencies"
+      ],
+      "topic": "tooling-dependencies"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "update-docs-generators"
+      ],
+      "path": "docs/control-plane/update-docs-generators.md",
+      "tags": [
+        "control-plane",
+        "update-docs-generators"
+      ],
+      "topic": "update-docs-generators"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "update-schema-generators"
+      ],
+      "path": "docs/control-plane/update-schema-generators.md",
+      "tags": [
+        "control-plane",
+        "update-schema-generators"
+      ],
+      "topic": "update-schema-generators"
+    },
+    {
+      "keywords": [
+        "control-plane",
+        "why-a-control-plane"
+      ],
+      "path": "docs/control-plane/why-a-control-plane.md",
+      "tags": [
+        "control-plane",
+        "why-a-control-plane"
+      ],
+      "topic": "why-a-control-plane"
     },
     {
       "keywords": [
@@ -4096,15 +4684,15 @@
     },
     {
       "keywords": [
-        "control-plane",
+        "contributor-onboarding-rubric",
         "development"
       ],
-      "path": "docs/development/control-plane.md",
+      "path": "docs/development/contributor-onboarding-rubric.md",
       "tags": [
-        "control-plane",
+        "contributor-onboarding-rubric",
         "development"
       ],
-      "topic": "control-plane"
+      "topic": "contributor-onboarding-rubric"
     },
     {
       "keywords": [
@@ -4133,18 +4721,6 @@
     {
       "keywords": [
         "development",
-        "docs-site-map"
-      ],
-      "path": "docs/development/docs-site-map.md",
-      "tags": [
-        "development",
-        "docs-site-map"
-      ],
-      "topic": "docs-site-map"
-    },
-    {
-      "keywords": [
-        "development",
         "error-handling-philosophy"
       ],
       "path": "docs/development/error-handling-philosophy.md",
@@ -4157,18 +4733,6 @@
     {
       "keywords": [
         "development",
-        "how-to-add-check"
-      ],
-      "path": "docs/development/how-to-add-check.md",
-      "tags": [
-        "development",
-        "how-to-add-check"
-      ],
-      "topic": "how-to-add-check"
-    },
-    {
-      "keywords": [
-        "development",
         "how-to-add-cli-command"
       ],
       "path": "docs/development/how-to-add-cli-command.md",
@@ -4177,30 +4741,6 @@
         "how-to-add-cli-command"
       ],
       "topic": "how-to-add-cli-command"
-    },
-    {
-      "keywords": [
-        "development",
-        "how-to-add-contract-registry"
-      ],
-      "path": "docs/development/how-to-add-contract-registry.md",
-      "tags": [
-        "development",
-        "how-to-add-contract-registry"
-      ],
-      "topic": "how-to-add-contract-registry"
-    },
-    {
-      "keywords": [
-        "development",
-        "how-to-add-gate-policy"
-      ],
-      "path": "docs/development/how-to-add-gate-policy.md",
-      "tags": [
-        "development",
-        "how-to-add-gate-policy"
-      ],
-      "topic": "how-to-add-gate-policy"
     },
     {
       "keywords": [
@@ -4241,18 +4781,6 @@
     {
       "keywords": [
         "development",
-        "known-limitations"
-      ],
-      "path": "docs/development/known-limitations.md",
-      "tags": [
-        "development",
-        "known-limitations"
-      ],
-      "topic": "known-limitations"
-    },
-    {
-      "keywords": [
-        "development",
         "repo-layout"
       ],
       "path": "docs/development/repo-layout.md",
@@ -4261,18 +4789,6 @@
         "repo-layout"
       ],
       "topic": "repo-layout"
-    },
-    {
-      "keywords": [
-        "development",
-        "reports-and-ci-consumption"
-      ],
-      "path": "docs/development/reports-and-ci-consumption.md",
-      "tags": [
-        "development",
-        "reports-and-ci-consumption"
-      ],
-      "topic": "reports-and-ci-consumption"
     },
     {
       "keywords": [
@@ -4542,6 +5058,18 @@
     },
     {
       "keywords": [
+        "docs-debt-backlog",
+        "governance"
+      ],
+      "path": "docs/governance/docs-debt-backlog.md",
+      "tags": [
+        "docs-debt-backlog",
+        "governance"
+      ],
+      "topic": "docs-debt-backlog"
+    },
+    {
+      "keywords": [
         "docs-lint-rules",
         "governance"
       ],
@@ -4599,6 +5127,18 @@
         "governance"
       ],
       "topic": "docs-quality-policy"
+    },
+    {
+      "keywords": [
+        "docs-quarterly-cleanup",
+        "governance"
+      ],
+      "path": "docs/governance/docs-quarterly-cleanup.md",
+      "tags": [
+        "docs-quarterly-cleanup",
+        "governance"
+      ],
+      "topic": "docs-quarterly-cleanup"
     },
     {
       "keywords": [
@@ -5076,6 +5616,18 @@
     },
     {
       "keywords": [
+        "install-verification-checklist",
+        "operations"
+      ],
+      "path": "docs/operations/install-verification-checklist.md",
+      "tags": [
+        "install-verification-checklist",
+        "operations"
+      ],
+      "topic": "install-verification-checklist"
+    },
+    {
+      "keywords": [
         "index",
         "k8s",
         "operations"
@@ -5139,6 +5691,30 @@
         "suites"
       ],
       "topic": "suites"
+    },
+    {
+      "keywords": [
+        "minimal-production-overrides",
+        "operations"
+      ],
+      "path": "docs/operations/minimal-production-overrides.md",
+      "tags": [
+        "minimal-production-overrides",
+        "operations"
+      ],
+      "topic": "minimal-production-overrides"
+    },
+    {
+      "keywords": [
+        "observability-setup",
+        "operations"
+      ],
+      "path": "docs/operations/observability-setup.md",
+      "tags": [
+        "observability-setup",
+        "operations"
+      ],
+      "topic": "observability-setup"
     },
     {
       "keywords": [
@@ -5237,6 +5813,18 @@
     {
       "keywords": [
         "operations",
+        "overview"
+      ],
+      "path": "docs/operations/overview.md",
+      "tags": [
+        "operations",
+        "overview"
+      ],
+      "topic": "overview"
+    },
+    {
+      "keywords": [
+        "operations",
         "promotion-record"
       ],
       "path": "docs/operations/promotion-record.md",
@@ -5245,6 +5833,18 @@
         "promotion-record"
       ],
       "topic": "promotion-record"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release-operations"
+      ],
+      "path": "docs/operations/release-operations.md",
+      "tags": [
+        "operations",
+        "release-operations"
+      ],
+      "topic": "release-operations"
     },
     {
       "keywords": [
@@ -5260,6 +5860,20 @@
     },
     {
       "keywords": [
+        "backup-and-restore-validation",
+        "operations",
+        "release"
+      ],
+      "path": "docs/operations/release/backup-and-restore-validation.md",
+      "tags": [
+        "backup-and-restore-validation",
+        "operations",
+        "release"
+      ],
+      "topic": "backup-and-restore-validation"
+    },
+    {
+      "keywords": [
         "backup-and-restore",
         "operations",
         "release"
@@ -5271,6 +5885,20 @@
         "release"
       ],
       "topic": "backup-and-restore"
+    },
+    {
+      "keywords": [
+        "capacity-planning-worksheet",
+        "operations",
+        "release"
+      ],
+      "path": "docs/operations/release/capacity-planning-worksheet.md",
+      "tags": [
+        "capacity-planning-worksheet",
+        "operations",
+        "release"
+      ],
+      "topic": "capacity-planning-worksheet"
     },
     {
       "keywords": [
@@ -5363,6 +5991,18 @@
         "runbook-template"
       ],
       "topic": "runbook-template"
+    },
+    {
+      "keywords": [
+        "operations",
+        "runbooks-to-alerts-mapping"
+      ],
+      "path": "docs/operations/runbooks-to-alerts-mapping.md",
+      "tags": [
+        "operations",
+        "runbooks-to-alerts-mapping"
+      ],
+      "topic": "runbooks-to-alerts-mapping"
     },
     {
       "keywords": [
@@ -5532,6 +6172,18 @@
     },
     {
       "keywords": [
+        "operations",
+        "values-mapping-to-config-keys"
+      ],
+      "path": "docs/operations/values-mapping-to-config-keys.md",
+      "tags": [
+        "operations",
+        "values-mapping-to-config-keys"
+      ],
+      "topic": "values-mapping-to-config-keys"
+    },
+    {
+      "keywords": [
         "compatibility-promise",
         "product"
       ],
@@ -5589,18 +6241,6 @@
         "product"
       ],
       "topic": "non-goals"
-    },
-    {
-      "keywords": [
-        "product",
-        "reading-tracks"
-      ],
-      "path": "docs/product/reading-tracks.md",
-      "tags": [
-        "product",
-        "reading-tracks"
-      ],
-      "topic": "reading-tracks"
     },
     {
       "keywords": [
@@ -6394,6 +7034,16 @@
     },
     {
       "keywords": [
+        "site-map"
+      ],
+      "path": "docs/site-map.md",
+      "tags": [
+        "site-map"
+      ],
+      "topic": "site-map"
+    },
+    {
+      "keywords": [
         "start-here"
       ],
       "path": "docs/start-here.md",
@@ -6401,6 +7051,16 @@
         "start-here"
       ],
       "topic": "start-here"
+    },
+    {
+      "keywords": [
+        "what-to-read-next"
+      ],
+      "path": "docs/what-to-read-next.md",
+      "tags": [
+        "what-to-read-next"
+      ],
+      "topic": "what-to-read-next"
     },
     {
       "keywords": [

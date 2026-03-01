@@ -1,16 +1,13 @@
-# Documentation Operating Model
+# Documentation operating model
 
-Owner: `docs-governance`  
-Status: `active`  
-Effective date: `2026-02-28`
+- Owner: `docs-governance`
+- Type: `policy`
+- Audience: `contributor`
+- Stability: `stable`
+- Last verified against: `main@8641e5b0`
+- Reason to exist: define the operating rules that keep published docs reviewable, owned, and enforceable.
 
-## Change Freeze Window
-
-- Freeze starts: `2026-02-28`.
-- Freeze ends: `2026-03-31`.
-- During freeze, new pages are allowed only when they replace or consolidate existing content.
-
-## Reader Spine
+## Reader spine
 
 Mandatory entrypoints for all readers:
 
@@ -23,13 +20,15 @@ Mandatory entrypoints for all readers:
 - `docs/reference/index.md`
 - `docs/governance/index.md`
 
-## Hard Limits
+## Review and ownership rules
 
-- Top-level documentation directories: maximum `10`.
-- Total authored pages: maximum `200`.
-- Files directly under `docs/`: maximum `12`.
+- Stable pages require an explicit owner.
+- Stable pages require `Last reviewed` or `Last verified against` metadata.
+- Stable pages must be reviewed at least every `180` days.
+- How-to and runbook pages must include verification guidance.
+- Runbooks must include rollback and verify sections.
 
-## Naming and Structure Rules
+## Naming and structure rules
 
 - File and directory naming standard: `kebab-case` only.
 - Every top-level docs section must contain exactly one `index.md` entrypoint.
@@ -37,7 +36,7 @@ Mandatory entrypoints for all readers:
 - Every document must include a short `reason to exist` statement.
 - A page cannot mix tutorial and reference roles.
 
-## Audience Model
+## Audience model
 
 Only these audiences are valid:
 
@@ -45,7 +44,7 @@ Only these audiences are valid:
 - `operator`
 - `contributor`
 
-## Page Types
+## Page types
 
 Only these page types are valid:
 
@@ -55,43 +54,34 @@ Only these page types are valid:
 - `reference`
 - `policy`
 
-## Canonical Product Statement
+## Cleanup cadence
 
-Use this exact one-paragraph statement when introducing Atlas:
+- Quarterly cleanup is mandatory for the docs governance owner.
+- Cleanup must review broken links, dead ends, duplicate titles, orphan pages, and stale generated artifacts.
+- Cleanup output belongs in [Docs debt backlog](docs-debt-backlog.md).
 
-`Atlas is the stable platform surface for operating, evolving, and consuming the bijux ecosystem through explicit contracts, predictable workflows, and verifiable runtime behavior.`
-
-## Glossary Policy
+## Glossary policy
 
 - Canonical glossary location: `docs/glossary.md`.
 - Section-local glossaries are not allowed.
 
-## Redirect Policy
+## Redirect policy
 
 - Legacy paths are redirected through `docs/redirects.json`.
-- Redirect entries must include `from`, `to`, `added_on`, and `expires_on`.
+- Redirects are required when previously linked paths move or are deleted.
 
-## Deletion and Quarantine Policy
+## Deletion and quarantine policy
 
 - Removals go through `_drafts/` only when immediate deletion is unsafe.
 - Every quarantined file requires `moved_on`, `expiry_on`, and `owner` metadata.
 - Quarantined files are excluded from navigation.
 
-## Runtime Accuracy Rules
+## Runtime accuracy rules
 
 - Docs must not reference nonexistent CLI commands.
 - Docs must not reference nonexistent make targets.
+- Published nav must not expose `_generated/`, `_drafts/`, or `_nav/`.
 
-## Review Standard
+## Review standard
 
 A documentation change merges only if the updated state is clearer and more actionable than the prior state.
-
-## Ownership Model
-
-- Each top-level section has exactly one accountable owner.
-- Ownership must be listed in `docs/governance/docs-ownership.md`.
-
-## Service Levels
-
-- Urgent factual corrections: within `24h`.
-- Normal corrections: within `72h`.

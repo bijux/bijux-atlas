@@ -2331,11 +2331,27 @@
     },
     {
       "area": "api",
-      "audience": "mixed",
-      "owner": "docs-governance",
+      "audience": "user",
+      "owner": "api-contracts",
       "path": "docs/api/client-behavior.md",
       "stability": "stable",
-      "title": "Client Behavior Expectations"
+      "title": "Client behavior expectations"
+    },
+    {
+      "area": "api",
+      "audience": "user",
+      "owner": "api-contracts",
+      "path": "docs/api/client-retries-and-backoff.md",
+      "stability": "stable",
+      "title": "Client retries and backoff"
+    },
+    {
+      "area": "api",
+      "audience": "contributor",
+      "owner": "api-contracts",
+      "path": "docs/api/compatibility-test-plan.md",
+      "stability": "stable",
+      "title": "Compatibility test plan"
     },
     {
       "area": "api",
@@ -2343,7 +2359,7 @@
       "owner": "api-contracts",
       "path": "docs/api/compatibility.md",
       "stability": "stable",
-      "title": "API Compatibility"
+      "title": "API compatibility"
     },
     {
       "area": "api",
@@ -2355,11 +2371,11 @@
     },
     {
       "area": "api",
-      "audience": "mixed",
-      "owner": "docs-governance",
+      "audience": "user",
+      "owner": "api-contracts",
       "path": "docs/api/deprecation.md",
       "stability": "stable",
-      "title": "Deprecation Policy"
+      "title": "Deprecation lifecycle"
     },
     {
       "area": "api",
@@ -2379,6 +2395,14 @@
     },
     {
       "area": "api",
+      "audience": "contributor",
+      "owner": "api-contracts",
+      "path": "docs/api/openapi-generation.md",
+      "stability": "stable",
+      "title": "OpenAPI generation"
+    },
+    {
+      "area": "api",
       "audience": "user",
       "owner": "api-contracts",
       "path": "docs/api/pagination.md",
@@ -2389,22 +2413,38 @@
       "area": "api",
       "audience": "user",
       "owner": "api-contracts",
+      "path": "docs/api/performance-expectations.md",
+      "stability": "stable",
+      "title": "Performance expectations"
+    },
+    {
+      "area": "api",
+      "audience": "user",
+      "owner": "api-contracts",
       "path": "docs/api/quick-reference.md",
       "stability": "stable",
-      "title": "API Quick Reference"
+      "title": "API quick reference"
     },
     {
       "area": "api",
-      "audience": "mixed",
-      "owner": "docs-governance",
+      "audience": "user",
+      "owner": "api-contracts",
+      "path": "docs/api/sdk-strategy.md",
+      "stability": "stable",
+      "title": "SDK strategy"
+    },
+    {
+      "area": "api",
+      "audience": "user",
+      "owner": "api-contracts",
       "path": "docs/api/troubleshooting.md",
       "stability": "stable",
-      "title": "API Troubleshooting"
+      "title": "API troubleshooting"
     },
     {
       "area": "api",
-      "audience": "mixed",
-      "owner": "docs-governance",
+      "audience": "user",
+      "owner": "api-contracts",
       "path": "docs/api/v1-surface.md",
       "stability": "stable",
       "title": "V1 Surface"
@@ -2415,7 +2455,7 @@
       "owner": "api-contracts",
       "path": "docs/api/versioning.md",
       "stability": "stable",
-      "title": "API Versioning"
+      "title": "API versioning"
     },
     {
       "area": "architecture",
@@ -2429,9 +2469,25 @@
       "area": "architecture",
       "audience": "contributor",
       "owner": "architecture",
+      "path": "docs/architecture/artifact-model.md",
+      "stability": "stable",
+      "title": "Artifact model"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
       "path": "docs/architecture/boundaries.md",
       "stability": "stable",
       "title": "Boundaries"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
+      "path": "docs/architecture/common-failure-catalog.md",
+      "stability": "stable",
+      "title": "Common failure catalog"
     },
     {
       "area": "architecture",
@@ -2453,9 +2509,25 @@
       "area": "architecture",
       "audience": "contributor",
       "owner": "architecture",
+      "path": "docs/architecture/contracts-model.md",
+      "stability": "stable",
+      "title": "Contracts model"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
       "path": "docs/architecture/crates-map.md",
       "stability": "stable",
-      "title": "Crates Map"
+      "title": "Crates map"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
+      "path": "docs/architecture/crates-philosophy.md",
+      "stability": "stable",
+      "title": "Crates philosophy"
     },
     {
       "area": "architecture",
@@ -2469,9 +2541,25 @@
       "area": "architecture",
       "audience": "contributor",
       "owner": "architecture",
+      "path": "docs/architecture/design-principles.md",
+      "stability": "stable",
+      "title": "Design principles"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
       "path": "docs/architecture/effects.md",
       "stability": "stable",
       "title": "Effects"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
+      "path": "docs/architecture/error-model.md",
+      "stability": "stable",
+      "title": "Error model"
     },
     {
       "area": "architecture",
@@ -2485,9 +2573,33 @@
       "area": "architecture",
       "audience": "contributor",
       "owner": "architecture",
+      "path": "docs/architecture/hot-paths.md",
+      "stability": "stable",
+      "title": "Hot paths"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
+      "path": "docs/architecture/how-to-add-a-new-crate.md",
+      "stability": "stable",
+      "title": "How to add a new crate"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
       "path": "docs/architecture/index.md",
       "stability": "stable",
       "title": "Architecture"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
+      "path": "docs/architecture/ingest-qc-model.md",
+      "stability": "stable",
+      "title": "Ingest and QC model"
     },
     {
       "area": "architecture",
@@ -2503,7 +2615,23 @@
       "owner": "architecture",
       "path": "docs/architecture/performance-model.md",
       "stability": "stable",
-      "title": "Performance Model"
+      "title": "Performance model"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
+      "path": "docs/architecture/query-model.md",
+      "stability": "stable",
+      "title": "Query model"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
+      "path": "docs/architecture/registry-federation-model.md",
+      "stability": "stable",
+      "title": "Registry federation model"
     },
     {
       "area": "architecture",
@@ -2511,7 +2639,7 @@
       "owner": "architecture",
       "path": "docs/architecture/runtime-data-model.md",
       "stability": "stable",
-      "title": "Runtime Data Model"
+      "title": "Runtime data model"
     },
     {
       "area": "architecture",
@@ -2520,6 +2648,270 @@
       "path": "docs/architecture/storage.md",
       "stability": "stable",
       "title": "Storage"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
+      "path": "docs/architecture/store-integrity-model.md",
+      "stability": "stable",
+      "title": "Store integrity model"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
+      "path": "docs/architecture/system-graph-explained.md",
+      "stability": "stable",
+      "title": "System graph explained"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
+      "path": "docs/architecture/telemetry-model.md",
+      "stability": "stable",
+      "title": "Telemetry model"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
+      "path": "docs/architecture/what-belongs-where.md",
+      "stability": "stable",
+      "title": "What belongs where"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
+      "path": "docs/architecture/why-effects-are-gated.md",
+      "stability": "stable",
+      "title": "Why effects are gated"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "owner": "architecture",
+      "path": "docs/architecture/workspace-boundaries-rules.md",
+      "stability": "stable",
+      "title": "Workspace boundaries rules"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/add-a-check-in-30-minutes.md",
+      "stability": "stable",
+      "title": "Add a check in 30 minutes"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/add-a-contract-registry-in-30-minutes.md",
+      "stability": "stable",
+      "title": "Add a contract registry in 30 minutes"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/add-a-gate-policy.md",
+      "stability": "stable",
+      "title": "Add a gate policy"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/adding-external-tooling.md",
+      "stability": "stable",
+      "title": "Adding external tooling"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/capabilities-model.md",
+      "stability": "stable",
+      "title": "Capabilities model"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/ci-report-consumption.md",
+      "stability": "stable",
+      "title": "CI report consumption"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/cli-reference.md",
+      "stability": "stable",
+      "title": "CLI reference"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/common-failure-messages.md",
+      "stability": "stable",
+      "title": "Common failure messages"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/contract-changes-and-versioning.md",
+      "stability": "stable",
+      "title": "Contract changes and versioning"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/contract-coverage-dashboard.md",
+      "stability": "stable",
+      "title": "Contract coverage dashboard"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/control-plane-architecture.md",
+      "stability": "stable",
+      "title": "Control-plane architecture"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/debug-failing-checks.md",
+      "stability": "stable",
+      "title": "Debug failing checks"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/evidence-writing-style.md",
+      "stability": "stable",
+      "title": "Evidence writing style"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/extensibility-and-stability-levels.md",
+      "stability": "stable",
+      "title": "Extensibility and stability levels"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/how-suites-work.md",
+      "stability": "stable",
+      "title": "How suites work"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/index.md",
+      "stability": "stable",
+      "title": "Control-plane"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/known-limitations.md",
+      "stability": "stable",
+      "title": "Known limitations"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/lane-matrix.md",
+      "stability": "stable",
+      "title": "Lane matrix"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/performance-budget.md",
+      "stability": "stable",
+      "title": "Performance budget"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/reports-contract.md",
+      "stability": "stable",
+      "title": "Reports contract"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/reproduce-ci-locally.md",
+      "stability": "stable",
+      "title": "How to reproduce CI locally"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/security-posture.md",
+      "stability": "stable",
+      "title": "Security posture"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/static-and-effect-mode.md",
+      "stability": "stable",
+      "title": "Static and effect mode"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/tooling-dependencies.md",
+      "stability": "stable",
+      "title": "Tooling dependencies"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/update-docs-generators.md",
+      "stability": "stable",
+      "title": "Update docs generators"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/update-schema-generators.md",
+      "stability": "stable",
+      "title": "Update schema generators"
+    },
+    {
+      "area": "control-plane",
+      "audience": "contributor",
+      "owner": "platform",
+      "path": "docs/control-plane/why-a-control-plane.md",
+      "stability": "stable",
+      "title": "Why a control-plane"
     },
     {
       "area": "development",
@@ -2551,7 +2943,7 @@
       "owner": "platform",
       "path": "docs/development/ci-overview.md",
       "stability": "stable",
-      "title": "CI Overview"
+      "title": "CI overview"
     },
     {
       "area": "development",
@@ -2565,9 +2957,9 @@
       "area": "development",
       "audience": "contributor",
       "owner": "platform",
-      "path": "docs/development/control-plane.md",
+      "path": "docs/development/contributor-onboarding-rubric.md",
       "stability": "stable",
-      "title": "Control Plane"
+      "title": "Contributor onboarding rubric (30 minutes)"
     },
     {
       "area": "development",
@@ -2587,14 +2979,6 @@
     },
     {
       "area": "development",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "docs/development/docs-site-map.md",
-      "stability": "stable",
-      "title": "Docs site map"
-    },
-    {
-      "area": "development",
       "audience": "contributor",
       "owner": "platform",
       "path": "docs/development/error-handling-philosophy.md",
@@ -2605,33 +2989,9 @@
       "area": "development",
       "audience": "contributor",
       "owner": "platform",
-      "path": "docs/development/how-to-add-check.md",
-      "stability": "stable",
-      "title": "How to Add Check"
-    },
-    {
-      "area": "development",
-      "audience": "contributor",
-      "owner": "platform",
       "path": "docs/development/how-to-add-cli-command.md",
       "stability": "stable",
       "title": "How to Add CLI Command"
-    },
-    {
-      "area": "development",
-      "audience": "contributor",
-      "owner": "platform",
-      "path": "docs/development/how-to-add-contract-registry.md",
-      "stability": "stable",
-      "title": "How to Add Contract Registry"
-    },
-    {
-      "area": "development",
-      "audience": "contributor",
-      "owner": "platform",
-      "path": "docs/development/how-to-add-gate-policy.md",
-      "stability": "stable",
-      "title": "How to Add Gate Policy"
     },
     {
       "area": "development",
@@ -2661,14 +3021,6 @@
       "area": "development",
       "audience": "contributor",
       "owner": "platform",
-      "path": "docs/development/known-limitations.md",
-      "stability": "stable",
-      "title": "Known Limitations"
-    },
-    {
-      "area": "development",
-      "audience": "contributor",
-      "owner": "platform",
       "path": "docs/development/repo-layout.md",
       "stability": "stable",
       "title": "Repository Layout"
@@ -2677,17 +3029,9 @@
       "area": "development",
       "audience": "contributor",
       "owner": "platform",
-      "path": "docs/development/reports-and-ci-consumption.md",
-      "stability": "stable",
-      "title": "Reports and CI Consumption"
-    },
-    {
-      "area": "development",
-      "audience": "contributor",
-      "owner": "platform",
       "path": "docs/development/runtime-vs-control-plane-vs-ops.md",
       "stability": "stable",
-      "title": "Runtime vs Control Plane vs Ops"
+      "title": "Runtime vs control-plane vs ops"
     },
     {
       "area": "development",
@@ -2847,15 +3191,23 @@
       "owner": "docs-governance",
       "path": "docs/governance/docs-dashboard.md",
       "stability": "stable",
-      "title": "Docs Dashboard"
+      "title": "Docs dashboard"
     },
     {
       "area": "governance",
-      "audience": "reviewers",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/governance/docs-debt-backlog.md",
+      "stability": "stable",
+      "title": "Docs debt backlog"
+    },
+    {
+      "area": "governance",
+      "audience": "contributor",
       "owner": "docs-governance",
       "path": "docs/governance/docs-lint-rules.md",
       "stability": "stable",
-      "title": "Documentation Lint Rules"
+      "title": "Documentation lint rules"
     },
     {
       "area": "governance",
@@ -2867,11 +3219,11 @@
     },
     {
       "area": "governance",
-      "audience": "reviewers",
+      "audience": "contributor",
       "owner": "docs-governance",
       "path": "docs/governance/docs-operating-model.md",
       "stability": "stable",
-      "title": "Documentation Operating Model"
+      "title": "Documentation operating model"
     },
     {
       "area": "governance",
@@ -2888,6 +3240,14 @@
       "path": "docs/governance/docs-quality-policy.md",
       "stability": "stable",
       "title": "Docs Quality Policy"
+    },
+    {
+      "area": "governance",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/governance/docs-quarterly-cleanup.md",
+      "stability": "stable",
+      "title": "Docs quarterly cleanup"
     },
     {
       "area": "governance",
@@ -3135,7 +3495,7 @@
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/drills-program.md",
       "stability": "stable",
-      "title": "Drills Program"
+      "title": "DR drills program"
     },
     {
       "area": "operations",
@@ -3159,7 +3519,7 @@
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/e2e/k8s-tests.md",
       "stability": "stable",
-      "title": "Kubernetes E2E Guarantees"
+      "title": "Kubernetes E2E guarantees"
     },
     {
       "area": "operations",
@@ -3175,7 +3535,7 @@
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/incident-response.md",
       "stability": "stable",
-      "title": "Incident Response"
+      "title": "Incident response"
     },
     {
       "area": "operations",
@@ -3189,17 +3549,25 @@
       "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
+      "path": "docs/operations/install-verification-checklist.md",
+      "stability": "stable",
+      "title": "Install verification checklist"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/k8s/index.md",
       "stability": "stable",
       "title": "Kubernetes Operations"
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/kind-profile.md",
       "stability": "stable",
-      "title": "Kind Profile"
+      "title": "Kind profile quickstart"
     },
     {
       "area": "operations",
@@ -3207,7 +3575,7 @@
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/load/index.md",
       "stability": "stable",
-      "title": "Load Testing"
+      "title": "Load testing"
     },
     {
       "area": "operations",
@@ -3215,7 +3583,7 @@
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/load/k6.md",
       "stability": "stable",
-      "title": "k6 Execution"
+      "title": "k6 execution"
     },
     {
       "area": "operations",
@@ -3223,7 +3591,23 @@
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/load/suites.md",
       "stability": "stable",
-      "title": "Load Suite Catalog"
+      "title": "Load suite catalog"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/minimal-production-overrides.md",
+      "stability": "stable",
+      "title": "Minimal production overrides"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/observability-setup.md",
+      "stability": "stable",
+      "title": "Observability setup"
     },
     {
       "area": "operations",
@@ -3251,11 +3635,11 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "owner": "docs-governance",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/observability/slo-policy.md",
       "stability": "stable",
-      "title": "SLO Policy"
+      "title": "SLO policy"
     },
     {
       "area": "operations",
@@ -3285,9 +3669,25 @@
       "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
+      "path": "docs/operations/overview.md",
+      "stability": "stable",
+      "title": "Operations overview"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/promotion-record.md",
       "stability": "stable",
       "title": "Promotion Record"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release-operations.md",
+      "stability": "stable",
+      "title": "Release operations"
     },
     {
       "area": "operations",
@@ -3301,9 +3701,25 @@
       "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release/backup-and-restore-validation.md",
+      "stability": "stable",
+      "title": "Backup and restore validation"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/release/backup-and-restore.md",
       "stability": "stable",
       "title": "Backup and Restore"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release/capacity-planning-worksheet.md",
+      "stability": "stable",
+      "title": "Capacity planning worksheet"
     },
     {
       "area": "operations",
@@ -3355,27 +3771,35 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "owner": "docs-governance",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/runbook-template.md",
       "stability": "stable",
-      "title": "Runbook Template"
+      "title": "Runbook template"
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "owner": "docs-governance",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/runbooks-to-alerts-mapping.md",
+      "stability": "stable",
+      "title": "Runbooks to alerts mapping"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/runbooks/dataset-corruption.md",
       "stability": "stable",
-      "title": "Dataset Corruption"
+      "title": "Dataset corruption"
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "owner": "docs-governance",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/runbooks/incident-playbook.md",
       "stability": "stable",
-      "title": "Incident Playbook"
+      "title": "Incident playbook"
     },
     {
       "area": "operations",
@@ -3387,51 +3811,51 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "owner": "docs-governance",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/runbooks/load-failure-triage.md",
       "stability": "stable",
-      "title": "Load Failure Triage"
+      "title": "Load failure triage"
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "owner": "docs-governance",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/runbooks/registry-federation.md",
       "stability": "stable",
-      "title": "Registry Federation"
+      "title": "Registry federation"
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "owner": "docs-governance",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/runbooks/rollback-playbook.md",
       "stability": "stable",
-      "title": "Rollback Playbook"
+      "title": "Rollback playbook"
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "owner": "docs-governance",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/runbooks/slo-store-backend-error-spike.md",
       "stability": "stable",
-      "title": "Store Backend Error Spike"
+      "title": "Store backend error spike"
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "owner": "docs-governance",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/runbooks/store-outage.md",
       "stability": "stable",
-      "title": "Store Outage"
+      "title": "Store outage"
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "owner": "docs-governance",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/runbooks/traffic-spike.md",
       "stability": "stable",
-      "title": "Traffic Spike"
+      "title": "Traffic spike"
     },
     {
       "area": "operations",
@@ -3458,12 +3882,20 @@
       "title": "Security"
     },
     {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/values-mapping-to-config-keys.md",
+      "stability": "stable",
+      "title": "Values mapping to config keys"
+    },
+    {
       "area": "product",
       "audience": "mixed",
       "owner": "docs-governance",
       "path": "docs/product/compatibility-promise.md",
       "stability": "stable",
-      "title": "Compatibility Promise"
+      "title": "Compatibility promise"
     },
     {
       "area": "product",
@@ -3496,14 +3928,6 @@
       "path": "docs/product/non-goals.md",
       "stability": "stable",
       "title": "Non Goals"
-    },
-    {
-      "area": "product",
-      "audience": "mixed",
-      "owner": "docs-governance",
-      "path": "docs/product/reading-tracks.md",
-      "stability": "stable",
-      "title": "Reading tracks"
     },
     {
       "area": "product",
@@ -3567,7 +3991,7 @@
       "owner": "bijux-atlas-product",
       "path": "docs/product/what-is-bijux-atlas.md",
       "stability": "stable",
-      "title": "What Is Bijux Atlas"
+      "title": "What is Bijux Atlas"
     },
     {
       "area": "reference",
@@ -3575,7 +3999,7 @@
       "owner": "docs-governance",
       "path": "docs/reference/command-inventory.md",
       "stability": "stable",
-      "title": "Command Inventory"
+      "title": "Command inventory"
     },
     {
       "area": "reference",
@@ -3583,7 +4007,7 @@
       "owner": "bijux-atlas-operations",
       "path": "docs/reference/commands.md",
       "stability": "stable",
-      "title": "Commands Reference"
+      "title": "Commands reference"
     },
     {
       "area": "reference",
@@ -3623,7 +4047,7 @@
       "owner": "bijux-atlas-operations",
       "path": "docs/reference/configs.md",
       "stability": "stable",
-      "title": "Configs Reference"
+      "title": "Configs reference"
     },
     {
       "area": "reference",
@@ -3783,7 +4207,7 @@
       "owner": "bijux-atlas-operations",
       "path": "docs/reference/errors.md",
       "stability": "stable",
-      "title": "Errors Reference"
+      "title": "Errors reference"
     },
     {
       "area": "reference",
@@ -3815,7 +4239,7 @@
       "owner": "bijux-atlas-operations",
       "path": "docs/reference/make.md",
       "stability": "stable",
-      "title": "Make Reference"
+      "title": "Make reference"
     },
     {
       "area": "reference",
@@ -3970,12 +4394,28 @@
       "title": "integrity model"
     },
     {
+      "area": "site-map.md",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/site-map.md",
+      "stability": "stable",
+      "title": "Docs site map"
+    },
+    {
       "area": "start-here.md",
       "audience": "user",
       "owner": "docs-governance",
       "path": "docs/start-here.md",
       "stability": "stable",
       "title": "Start here"
+    },
+    {
+      "area": "what-to-read-next.md",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/what-to-read-next.md",
+      "stability": "stable",
+      "title": "What to read next"
     },
     {
       "area": "make",

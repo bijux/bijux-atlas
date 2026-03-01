@@ -1,9 +1,11 @@
-# Documentation Lint Rules
+# Documentation lint rules
 
-Owner: `docs-governance`  
-Type: `policy`  
-Audience: `contributor`  
-Reason to exist: keep duplicate-topic and observability documentation checks in one canonical lint policy.
+- Owner: `docs-governance`
+- Type: `policy`
+- Audience: `contributor`
+- Stability: `stable`
+- Last verified against: `main@8641e5b0`
+- Reason to exist: keep duplicate-topic, navigation, and markdown enforcement in one canonical lint policy.
 
 ## Duplicate Topic Rules
 
@@ -14,6 +16,13 @@ Reason to exist: keep duplicate-topic and observability documentation checks in 
   - `docs/reference/contracts/plugins/spec.md`
   - `docs/reference/contracts/plugins/mode.md`
   - `docs/reference/contracts/compatibility.md`
+
+## Navigation and structure rules
+
+- No orphan published pages: every published page must be reachable from a canonical index.
+- No duplicate nav titles for published pages.
+- No `_generated`, `_drafts`, or `_nav` content in reader navigation.
+- Keep generated JSON behind [Docs dashboard](docs-dashboard.md), not in reader guides.
 
 ## Observability Documentation Rules
 
@@ -26,6 +35,11 @@ Reason to exist: keep duplicate-topic and observability documentation checks in 
 ```bash
 make docs
 ```
+
+Additional CI coverage:
+
+- `mkdocs build --strict`
+- docs-only workflow markdown lint and link checks
 
 ## Repository Lint Baseline
 
