@@ -1,3 +1,18 @@
+---
+title: Control-plane
+audience: contributor
+type: concept
+stability: stable
+owner: platform
+last_reviewed: 2026-03-01
+tags:
+  - control-plane
+  - automation
+related:
+  - docs/development/index.md
+  - docs/operations/index.md
+---
+
 # Control-plane
 
 - Owner: `platform`

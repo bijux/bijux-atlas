@@ -1,3 +1,18 @@
+---
+title: Development
+audience: contributor
+type: concept
+stability: stable
+owner: platform
+last_reviewed: 2026-03-01
+tags:
+  - development
+  - contribution
+related:
+  - docs/control-plane/index.md
+  - docs/architecture/index.md
+---
+
 # Development
 
 - Owner: `platform`

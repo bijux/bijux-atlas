@@ -1,3 +1,18 @@
+---
+title: API
+audience: user
+type: concept
+stability: stable
+owner: api-contracts
+last_reviewed: 2026-03-01
+tags:
+  - api
+  - integration
+related:
+  - docs/reference/index.md
+  - docs/start-here.md
+---
+
 # API
 
 - Owner: `api-contracts`

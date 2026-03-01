@@ -1,3 +1,21 @@
+---
+title: Glossary
+audience: user
+type: reference
+stability: stable
+owner: docs-governance
+last_reviewed: 2026-03-01
+tags:
+  - glossary
+  - terminology
+related:
+  - docs/index.md
+  - docs/architecture/index.md
+source:
+  - docs/site-map.md
+  - docs/what-to-read-next.md
+---
+
 # Glossary
 
 - `Atlas`: Deterministic genomics serving platform with contract-governed interfaces.

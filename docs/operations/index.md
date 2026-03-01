@@ -1,3 +1,18 @@
+---
+title: Operations
+audience: operator
+type: concept
+stability: stable
+owner: bijux-atlas-operations
+last_reviewed: 2026-03-01
+tags:
+  - operations
+  - runtime
+related:
+  - docs/reference/index.md
+  - docs/architecture/index.md
+---
+
 # Operations
 
 - Owner: `bijux-atlas-operations`

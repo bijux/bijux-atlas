@@ -389,5 +389,55 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_036_coverage_report_generated,
             }],
         },
+        Contract {
+            id: ContractId("DOC-037".to_string()),
+            title: "spine pages require frontmatter",
+            tests: vec![TestCase {
+                id: TestId("docs.metadata.frontmatter_required".to_string()),
+                title: "spine pages declare required YAML frontmatter keys",
+                kind: TestKind::Pure,
+                run: test_docs_037_spine_frontmatter_required,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-038".to_string()),
+            title: "spine page frontmatter values stay normalized",
+            tests: vec![TestCase {
+                id: TestId("docs.metadata.frontmatter_values".to_string()),
+                title: "spine page frontmatter uses normalized audience, type, and stability values",
+                kind: TestKind::Pure,
+                run: test_docs_038_spine_frontmatter_values,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-039".to_string()),
+            title: "stable spine pages keep complete metadata",
+            tests: vec![TestCase {
+                id: TestId("docs.metadata.stable_spine_requirements".to_string()),
+                title: "stable spine pages include owner, last reviewed, tags, and related links",
+                kind: TestKind::Pure,
+                run: test_docs_039_stable_spine_metadata,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-040".to_string()),
+            title: "reference spine pages declare sources",
+            tests: vec![TestCase {
+                id: TestId("docs.metadata.reference_sources".to_string()),
+                title: "reference spine pages include source links in frontmatter",
+                kind: TestKind::Pure,
+                run: test_docs_040_reference_spine_sources,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-041".to_string()),
+            title: "internal docs keep frontmatter boundary",
+            tests: vec![TestCase {
+                id: TestId("docs.metadata.internal_boundary".to_string()),
+                title: "internal docs declare internal frontmatter and avoid user audience",
+                kind: TestKind::Pure,
+                run: test_docs_041_internal_frontmatter_boundary,
+            }],
+        },
     ])
 }

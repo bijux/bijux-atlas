@@ -1,3 +1,21 @@
+---
+title: Reference
+audience: user
+type: reference
+stability: stable
+owner: docs-governance
+last_reviewed: 2026-03-01
+tags:
+  - reference
+  - facts
+related:
+  - docs/api/index.md
+  - docs/operations/index.md
+source:
+  - docs/registry.json
+  - configs/schema-map.json
+---
+
 # Reference
 
 - Owner: `docs-governance`

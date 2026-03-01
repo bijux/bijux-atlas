@@ -1,3 +1,18 @@
+---
+title: Product
+audience: user
+type: concept
+stability: stable
+owner: product
+last_reviewed: 2026-03-01
+tags:
+  - product
+  - overview
+related:
+  - docs/index.md
+  - docs/api/index.md
+---
+
 # Product
 
 - Owner: `product`

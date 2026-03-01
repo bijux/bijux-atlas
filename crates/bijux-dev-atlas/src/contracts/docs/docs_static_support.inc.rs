@@ -20,6 +20,44 @@ fn parse_docs_field(contents: &str, labels: &[&str]) -> Option<String> {
     None
 }
 
+fn parse_docs_frontmatter(contents: &str) -> Option<serde_yaml::Value> {
+    let mut lines = contents.lines();
+    if lines.next()? != "---" {
+        return None;
+    }
+    let mut yaml = String::new();
+    for line in lines {
+        if line == "---" {
+            return serde_yaml::from_str(&yaml).ok();
+        }
+        yaml.push_str(line);
+        yaml.push('\n');
+    }
+    None
+}
+
+fn docs_frontmatter_string(contents: &str, key: &str) -> Option<String> {
+    let value = parse_docs_frontmatter(contents)?;
+    value.get(key)?.as_str().map(|value| value.to_string())
+}
+
+fn docs_frontmatter_bool(contents: &str, key: &str) -> Option<bool> {
+    let value = parse_docs_frontmatter(contents)?;
+    value.get(key)?.as_bool()
+}
+
+fn docs_frontmatter_list(contents: &str, key: &str) -> Option<Vec<String>> {
+    let value = parse_docs_frontmatter(contents)?;
+    Some(
+        value
+            .get(key)?
+            .as_sequence()?
+            .iter()
+            .filter_map(|item| item.as_str().map(|value| value.to_string()))
+            .collect(),
+    )
+}
+
 fn docs_section_owners_payload(
     ctx: &RunContext,
     contract_id: &str,
@@ -76,6 +114,23 @@ fn docs_entrypoint_pages(ctx: &RunContext) -> Result<Vec<(String, bool)>, TestRe
             pages.push((format!("docs/{name}/index.md"), false));
         }
     }
+    Ok(pages)
+}
+
+fn docs_spine_pages(ctx: &RunContext) -> Result<Vec<String>, TestResult> {
+    let mut pages = vec![
+        "docs/index.md".to_string(),
+        "docs/start-here.md".to_string(),
+        "docs/glossary.md".to_string(),
+    ];
+    let entrypoints = docs_entrypoint_pages(ctx)?;
+    for (path, is_root_entrypoint) in entrypoints {
+        if !is_root_entrypoint && !path.starts_with("docs/_") {
+            pages.push(path);
+        }
+    }
+    pages.sort();
+    pages.dedup();
     Ok(pages)
 }
 

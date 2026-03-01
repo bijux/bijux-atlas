@@ -1,3 +1,18 @@
+---
+title: Home
+audience: user
+type: concept
+stability: stable
+owner: docs-governance
+last_reviewed: 2026-03-01
+tags:
+  - onboarding
+  - navigation
+related:
+  - docs/start-here.md
+  - docs/site-map.md
+---
+
 # Home
 
 - Owner: `docs-governance`

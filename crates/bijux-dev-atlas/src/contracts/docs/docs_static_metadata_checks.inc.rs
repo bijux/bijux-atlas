@@ -18,7 +18,9 @@ fn test_docs_013_entrypoint_owner(ctx: &RunContext) -> TestResult {
                 continue;
             }
         };
-        if parse_docs_field(&contents, &["Owner"]).is_none() {
+        if parse_docs_field(&contents, &["Owner"]).is_none()
+            && docs_frontmatter_string(&contents, "owner").is_none()
+        {
             push_docs_violation(
                 &mut violations,
                 "DOC-013",
@@ -178,7 +180,8 @@ fn test_docs_016_section_owner_alignment(ctx: &RunContext) -> TestResult {
                 continue;
             }
         };
-        let actual = parse_docs_field(&contents, &["Owner"]);
+        let actual = parse_docs_field(&contents, &["Owner"])
+            .or_else(|| docs_frontmatter_string(&contents, "owner"));
         match actual.as_deref() {
             Some(value) if value == expected => {}
             Some(value) => push_docs_violation(
@@ -203,6 +206,170 @@ fn test_docs_016_section_owner_alignment(ctx: &RunContext) -> TestResult {
         violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
         TestResult::Fail(violations)
     }
+}
+
+fn test_docs_037_spine_frontmatter_required(ctx: &RunContext) -> TestResult {
+    let pages = match docs_spine_pages(ctx) {
+        Ok(pages) => pages,
+        Err(result) => return result,
+    };
+    let required = ["title", "audience", "type", "stability"];
+    let mut violations = Vec::new();
+    for relative in pages {
+        let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(&mut violations, "DOC-037", "docs.metadata.frontmatter_required", Some(relative), format!("read failed: {err}"));
+                continue;
+            }
+        };
+        let Some(frontmatter) = parse_docs_frontmatter(&contents) else {
+            push_docs_violation(
+                &mut violations,
+                "DOC-037",
+                "docs.metadata.frontmatter_required",
+                Some(relative),
+                "spine page must declare YAML frontmatter",
+            );
+            continue;
+        };
+        for key in required {
+            if frontmatter.get(key).is_none() {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-037",
+                    "docs.metadata.frontmatter_required",
+                    Some(relative.clone()),
+                    format!("spine page frontmatter is missing `{key}`"),
+                );
+            }
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_docs_038_spine_frontmatter_values(ctx: &RunContext) -> TestResult {
+    let pages = match docs_spine_pages(ctx) {
+        Ok(pages) => pages,
+        Err(result) => return result,
+    };
+    let allowed_audiences = ["user", "operator", "contributor"];
+    let allowed_types = ["concept", "how-to", "reference", "runbook", "adr", "faq", "internal"];
+    let allowed_stability = ["draft", "stable", "deprecated"];
+    let mut violations = Vec::new();
+    for relative in pages {
+        let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(&mut violations, "DOC-038", "docs.metadata.frontmatter_values", Some(relative), format!("read failed: {err}"));
+                continue;
+            }
+        };
+        if let Some(value) = docs_frontmatter_string(&contents, "audience") {
+            if !allowed_audiences.contains(&value.as_str()) {
+                push_docs_violation(&mut violations, "DOC-038", "docs.metadata.frontmatter_values", Some(relative.clone()), format!("unsupported audience `{value}`"));
+            }
+        }
+        if let Some(value) = docs_frontmatter_string(&contents, "type") {
+            if !allowed_types.contains(&value.as_str()) {
+                push_docs_violation(&mut violations, "DOC-038", "docs.metadata.frontmatter_values", Some(relative.clone()), format!("unsupported type `{value}`"));
+            }
+            if relative.ends_with("/index.md")
+                && !relative.starts_with("docs/_internal/")
+                && value != "concept"
+                && value != "reference"
+            {
+                push_docs_violation(&mut violations, "DOC-038", "docs.metadata.frontmatter_values", Some(relative.clone()), "section index pages must use `concept` or `reference` type");
+            }
+        }
+        if let Some(value) = docs_frontmatter_string(&contents, "stability") {
+            if !allowed_stability.contains(&value.as_str()) {
+                push_docs_violation(&mut violations, "DOC-038", "docs.metadata.frontmatter_values", Some(relative), format!("unsupported stability `{value}`"));
+            }
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_docs_039_stable_spine_metadata(ctx: &RunContext) -> TestResult {
+    let pages = match docs_spine_pages(ctx) {
+        Ok(pages) => pages,
+        Err(result) => return result,
+    };
+    let mut violations = Vec::new();
+    for relative in pages {
+        let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(&mut violations, "DOC-039", "docs.metadata.stable_spine_requirements", Some(relative), format!("read failed: {err}"));
+                continue;
+            }
+        };
+        if docs_frontmatter_string(&contents, "stability").as_deref() != Some("stable") {
+            continue;
+        }
+        for key in ["owner", "last_reviewed"] {
+            if docs_frontmatter_string(&contents, key).is_none() {
+                push_docs_violation(&mut violations, "DOC-039", "docs.metadata.stable_spine_requirements", Some(relative.clone()), format!("stable spine page is missing `{key}`"));
+            }
+        }
+        if docs_frontmatter_list(&contents, "tags").is_none_or(|items| items.is_empty()) {
+            push_docs_violation(&mut violations, "DOC-039", "docs.metadata.stable_spine_requirements", Some(relative.clone()), "stable spine page must include non-empty `tags`");
+        }
+        if docs_frontmatter_list(&contents, "related").is_none_or(|items| items.len() < 2) {
+            push_docs_violation(&mut violations, "DOC-039", "docs.metadata.stable_spine_requirements", Some(relative), "stable spine page must include at least two `related` links");
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_docs_040_reference_spine_sources(ctx: &RunContext) -> TestResult {
+    let pages = match docs_spine_pages(ctx) {
+        Ok(pages) => pages,
+        Err(result) => return result,
+    };
+    let mut violations = Vec::new();
+    for relative in pages {
+        let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(&mut violations, "DOC-040", "docs.metadata.reference_sources", Some(relative), format!("read failed: {err}"));
+                continue;
+            }
+        };
+        if docs_frontmatter_string(&contents, "type").as_deref() != Some("reference") {
+            continue;
+        }
+        if docs_frontmatter_list(&contents, "source").is_none_or(|items| items.is_empty()) {
+            push_docs_violation(&mut violations, "DOC-040", "docs.metadata.reference_sources", Some(relative), "reference spine page must include a non-empty `source` list");
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_docs_041_internal_frontmatter_boundary(ctx: &RunContext) -> TestResult {
+    let relative = "docs/_internal/index.md".to_string();
+    let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+        Ok(contents) => contents,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-041".to_string(),
+                test_id: "docs.metadata.internal_boundary".to_string(),
+                file: Some(relative),
+                line: None,
+                message: format!("read failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    let mut violations = Vec::new();
+    if docs_frontmatter_bool(&contents, "internal") != Some(true) {
+        push_docs_violation(&mut violations, "DOC-041", "docs.metadata.internal_boundary", Some("docs/_internal/index.md".to_string()), "docs/_internal/index.md must declare `internal: true` in frontmatter");
+    }
+    if docs_frontmatter_string(&contents, "audience").as_deref() == Some("user") {
+        push_docs_violation(&mut violations, "DOC-041", "docs.metadata.internal_boundary", Some("docs/_internal/index.md".to_string()), "internal docs may not use `audience: user`");
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
 }
 
 fn test_docs_017_root_entrypoint_flags(ctx: &RunContext) -> TestResult {
@@ -496,4 +663,3 @@ fn test_docs_023_single_h1(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
-

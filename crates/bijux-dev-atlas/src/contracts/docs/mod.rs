@@ -47,6 +47,11 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-034" => "Docs contracts must generate a deterministic metadata-coverage artifact report.".to_string(),
         "DOC-035" => "Docs contracts must generate a deterministic duplication artifact report.".to_string(),
         "DOC-036" => "Docs contracts must generate a deterministic contract coverage artifact report.".to_string(),
+        "DOC-037" => "Reader spine pages must use YAML frontmatter with the required shared metadata keys.".to_string(),
+        "DOC-038" => "Spine page frontmatter must use normalized audience, type, and stability values.".to_string(),
+        "DOC-039" => "Stable spine pages must carry owner, review date, tags, and related links in frontmatter.".to_string(),
+        "DOC-040" => "Reference spine pages must declare source links in frontmatter.".to_string(),
+        "DOC-041" => "Internal docs must declare internal frontmatter and stay off the user audience path.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }

@@ -1,3 +1,22 @@
+---
+title: Start here
+audience: user
+type: how-to
+stability: stable
+owner: docs-governance
+last_reviewed: 2026-03-01
+tags:
+  - onboarding
+  - quickstart
+related:
+  - docs/index.md
+  - docs/what-to-read-next.md
+verification: true
+prerequisites:
+  - make
+  - cargo
+---
+
 # Start here
 
 - Owner: `docs-governance`

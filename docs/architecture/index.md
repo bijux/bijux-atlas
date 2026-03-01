@@ -1,3 +1,18 @@
+---
+title: Architecture
+audience: contributor
+type: concept
+stability: stable
+owner: architecture
+last_reviewed: 2026-03-01
+tags:
+  - architecture
+  - runtime
+related:
+  - docs/product/index.md
+  - docs/operations/index.md
+---
+
 # Architecture
 
 - Owner: `architecture`

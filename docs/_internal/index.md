@@ -1,3 +1,19 @@
+---
+title: Internal docs
+audience: contributor
+type: internal
+stability: draft
+owner: docs-governance
+last_reviewed: 2026-03-01
+tags:
+  - governance
+  - internal
+related:
+  - docs/_internal/governance/index.md
+  - docs/_internal/meta/index.md
+internal: true
+---
+
 # Internal docs
 
 - Owner: `docs-governance`
