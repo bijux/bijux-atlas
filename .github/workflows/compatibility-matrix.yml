@@ -19,12 +19,12 @@ jobs:
       TMP: artifacts/isolates/compatibility-matrix/tmp
       TEMP: artifacts/isolates/compatibility-matrix/tmp
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: main
       - run: cargo run -q -p bijux-dev-atlas -- docs validate --format json
       - name: Create compatibility matrix PR
-        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
+        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0
         with:
           commit-message: "docs(compatibility): refresh umbrella-atlas matrix for ${GITHUB_REF_NAME}"
           title: "docs: refresh compatibility matrix for ${GITHUB_REF_NAME}"
