@@ -14,6 +14,8 @@ mod configs_commands;
 mod control_plane_commands;
 #[path = "commands/docs.rs"]
 mod docs_commands;
+#[path = "commands/make.rs"]
+mod make_commands;
 #[cfg(test)]
 #[path = "../tests/support/main_cli_parser_tests.rs"]
 mod main_tests;

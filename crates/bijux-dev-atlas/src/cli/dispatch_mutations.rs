@@ -2,7 +2,7 @@
 
 use crate::cli::{
     CheckCommand, CheckRegistryCommand, Command, ConfigsCommand, ContractsCommand, DocsCommand,
-    FormatArg, OpsCommand, PoliciesCommand, ReleaseCommand,
+    FormatArg, MakeCommand, PoliciesCommand, ReleaseCommand, OpsCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -11,6 +11,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Help { format, .. } => *format = FormatArg::Json,
         Command::Ops { command } => force_json_ops(command),
         Command::Docs { command } => force_json_docs(command),
+        Command::Make { command } => force_json_make(command),
         Command::Demo { command } => force_json_demo(command),
         Command::Contracts { command } => force_json_contracts(command),
         Command::Configs { command } => force_json_configs(command),
@@ -214,6 +215,15 @@ fn force_json_docs(command: &mut DocsCommand) {
     }
 }
 
+fn force_json_make(command: &mut MakeCommand) {
+    match command {
+        MakeCommand::VerifyModule(args) => args.common.format = FormatArg::Json,
+        MakeCommand::TargetList(common) | MakeCommand::LintPolicyReport(common) => {
+            common.format = FormatArg::Json
+        }
+    }
+}
+
 fn force_json_configs(command: &mut ConfigsCommand) {
     match command {
         ConfigsCommand::Print(common)
@@ -323,6 +333,7 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             ContractsCommand::SelfCheck(args) => args.fail_fast = true,
             ContractsCommand::Snapshot(_) => {}
         },
+        Command::Make { .. } => {}
         _ => {}
     }
 }
@@ -332,6 +343,12 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         return;
     };
     match command {
+        Command::Make { command } => match command {
+            MakeCommand::VerifyModule(args) => args.common.repo_root = Some(root.clone()),
+            MakeCommand::TargetList(common) | MakeCommand::LintPolicyReport(common) => {
+                common.repo_root = Some(root.clone())
+            }
+        },
         Command::Ops { command } => match command {
             OpsCommand::List(common)
             | OpsCommand::Doctor(common)

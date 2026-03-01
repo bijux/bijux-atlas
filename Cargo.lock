@@ -405,6 +405,7 @@ dependencies = [
  "clap",
  "criterion",
  "regex",
+ "reqwest",
  "serde",
  "serde_json",
  "serde_yaml",

@@ -156,6 +156,29 @@ fn is_auxiliary_recipe(recipe: &str) -> bool {
         || trimmed.starts_with("rm -f ")
 }
 
+fn recipe_invokes_dev_atlas(recipe: &str) -> bool {
+    recipe.contains("$(DEV_ATLAS)")
+        || recipe.contains("cargo run -q -p bijux-dev-atlas")
+        || recipe.contains("cargo run --quiet -p bijux-dev-atlas")
+        || recipe.contains("cargo run -p bijux-dev-atlas")
+}
+
+fn recipe_invokes_cargo(recipe: &str) -> bool {
+    let trimmed = recipe.trim_start_matches('@').trim();
+    trimmed.starts_with("cargo ")
+        || trimmed.contains(" cargo ")
+        || trimmed.starts_with("CARGO_")
+        || trimmed.contains(" CARGO_")
+        || trimmed.starts_with("CLIPPY_CONF_DIR=")
+}
+
+fn nontrivial_recipe_line_count(recipes: &[String]) -> usize {
+    recipes
+        .iter()
+        .filter(|recipe| !is_auxiliary_recipe(recipe))
+        .count()
+}
+
 fn test_make_surface_001_single_source(ctx: &RunContext) -> TestResult {
     let path = ctx.repo_root.join("make/target-list.json");
     match read_text(&path) {
@@ -285,17 +308,17 @@ fn test_make_surface_005_delegate_only(ctx: &RunContext) -> TestResult {
             continue;
         }
         if ["help", "make-target-list"].contains(&target.as_str())
-            && recipes
-                .iter()
-                .all(|recipe| is_auxiliary_recipe(recipe) || recipe.contains("python3 "))
+            && recipes.iter().all(|recipe| is_auxiliary_recipe(recipe))
         {
             continue;
         }
-        let has_delegate = recipes.iter().any(|recipe| {
-            recipe.contains("$(DEV_ATLAS)")
-                || recipe.contains("cargo ")
-                || recipe.contains("$(MAKE)")
-        });
+        let has_delegate = recipes
+            .iter()
+            .any(|recipe| {
+                recipe_invokes_dev_atlas(recipe)
+                    || recipe_invokes_cargo(recipe)
+                    || recipe.contains("$(MAKE)")
+            });
         if has_delegate {
             continue;
         }
@@ -304,7 +327,39 @@ fn test_make_surface_005_delegate_only(ctx: &RunContext) -> TestResult {
             "make.surface.delegate_only",
             file,
             format!(
-                "curated target {target} must delegate through $(DEV_ATLAS), cargo, or $(MAKE)"
+                "curated target {target} must delegate through $(DEV_ATLAS), cargo run -p bijux-dev-atlas, or $(MAKE)"
+            ),
+        );
+    }
+    TestResult::Pass
+}
+
+fn test_make_struct_010_complex_recipes_dispatch_to_atlas(ctx: &RunContext) -> TestResult {
+    let declared = match declared_targets(&ctx.repo_root) {
+        Ok(targets) => targets,
+        Err(err) => {
+            return failure(
+                "MAKE-STRUCT-010",
+                "make.structure.complex_recipes_dispatch_to_atlas",
+                "make",
+                err,
+            )
+        }
+    };
+    for (name, (file, recipes)) in declared {
+        let nontrivial = nontrivial_recipe_line_count(&recipes);
+        if nontrivial <= 10 {
+            continue;
+        }
+        if recipes.iter().any(|recipe| recipe_invokes_dev_atlas(recipe)) {
+            continue;
+        }
+        return failure(
+            "MAKE-STRUCT-010",
+            "make.structure.complex_recipes_dispatch_to_atlas",
+            &file,
+            format!(
+                "target {name} has {nontrivial} non-trivial recipe lines and must dispatch through $(DEV_ATLAS) or cargo run -p bijux-dev-atlas"
             ),
         );
     }
@@ -700,6 +755,16 @@ pub(super) fn contracts() -> Vec<Contract> {
             }],
         },
         Contract {
+            id: ContractId("MAKE-STRUCT-010".to_string()),
+            title: "make complex recipes dispatch to atlas",
+            tests: vec![TestCase {
+                id: TestId("make.structure.complex_recipes_dispatch_to_atlas".to_string()),
+                title: "recipe-heavy make targets dispatch through the control-plane instead of embedding shell orchestration",
+                kind: TestKind::Pure,
+                run: test_make_struct_010_complex_recipes_dispatch_to_atlas,
+            }],
+        },
+        Contract {
             id: ContractId("MAKE-OPS-001".to_string()),
             title: "make ops control plane boundary",
             tests: vec![TestCase {
@@ -755,6 +820,7 @@ pub(super) fn contract_explain(contract_id: &str) -> Option<&'static str> {
         "MAKE-REPRO-001" => Some("Public wrappers must route through exported deterministic run environment defaults."),
         "MAKE-CI-001" => Some("CI workflows may call only the curated make surface."),
         "MAKE-STRUCT-002" => Some("The make/ directory must contain only executable wrapper modules plus its contract docs and target registry."),
+        "MAKE-STRUCT-010" => Some("Recipe-heavy make targets must dispatch through `bijux-dev-atlas` instead of embedding orchestration shell logic."),
         "MAKE-OPS-001" => Some("Ops-related make targets must route through `bijux dev atlas ops ...`."),
         "MAKE-DOCKER-001" => Some("Docker-related make targets must route through the docker contract runner."),
         "MAKE-DRIFT-001" => Some("The committed target list artifact must stay aligned with the curated target source."),

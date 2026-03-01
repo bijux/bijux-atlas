@@ -36,6 +36,7 @@ pub(crate) use docs_commands::{
     docs_context, docs_links_payload, docs_validate_payload, walk_files_local,
 };
 pub(crate) use docs_commands::{docs_lint_payload, run_docs_command};
+pub(crate) use make_commands::run_make_command;
 pub(crate) use ops_commands::{emit_payload, normalize_tool_version_with_regex, run_ops_command};
 pub(crate) use ops_support::{
     OpsCommandError, OpsFs, OpsProcess, StackProfile, StackProfiles, SurfacesInventory,

@@ -90,19 +90,7 @@ lint: ## Run cargo clippy with warnings denied
 	@CLIPPY_CONF_DIR=configs/rust CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo clippy -q --workspace --all-targets --all-features --locked -- -D warnings
 
 lint-policy-report: ## Emit effective lint policy report artifact
-	@mkdir -p artifacts/lint
-	@{ \
-		echo "schema_version=1"; \
-		echo "workspace_lints_file=Cargo.toml"; \
-		echo "clippy_conf_dir=configs/rust"; \
-		echo "clippy_conf_file=configs/rust/clippy.toml"; \
-		echo "cargo_clippy_version=$$(cargo clippy --version 2>/dev/null || true)"; \
-		echo "workspace_lints:"; \
-		awk '/^\[workspace.lints.rust\]/{p=1} p{print} /^\[workspace.dependencies\]/{if(p){exit}}' Cargo.toml; \
-		echo "clippy_toml:"; \
-		cat configs/rust/clippy.toml; \
-	} > artifacts/lint/effective-clippy-policy.txt
-	@printf '%s\n' "artifacts/lint/effective-clippy-policy.txt"
+	@$(DEV_ATLAS) make lint-policy-report --allow-write --format text
 
 lint-policy-enforce: ## Enforce repository lint drift guards
 	@! rg -n '\btodo!\(' crates

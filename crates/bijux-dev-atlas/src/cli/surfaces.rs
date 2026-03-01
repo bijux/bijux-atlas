@@ -129,6 +129,34 @@ pub enum ConfigsCommand {
     Diff(ConfigsCommonArgs),
 }
 
+#[derive(Subcommand, Debug)]
+pub enum MakeCommand {
+    VerifyModule(MakeVerifyArgs),
+    TargetList(MakeCommonArgs),
+    LintPolicyReport(MakeCommonArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct MakeCommonArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    pub allow_subprocess: bool,
+    #[arg(long, default_value_t = false)]
+    pub allow_write: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct MakeVerifyArgs {
+    #[command(flatten)]
+    pub common: MakeCommonArgs,
+    pub module: String,
+}
+
 #[derive(Args, Debug, Clone)]
 pub struct ConfigsExplainArgs {
     #[command(flatten)]

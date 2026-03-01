@@ -76,6 +76,11 @@ pub enum Command {
         #[command(subcommand)]
         command: DocsCommand,
     },
+    #[command(hide = true)]
+    Make {
+        #[command(subcommand)]
+        command: MakeCommand,
+    },
     Contracts {
         #[command(subcommand)]
         command: ContractsCommand,

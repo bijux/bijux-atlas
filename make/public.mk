@@ -9,7 +9,6 @@ help-contract: ## Show make contract and public target documentation pointers
 	@printf '%s\n' "contract: $(MAKE_CONTRACT_PATH)" "readme: $(MAKE_HELP_PATH)" "target-list: make/target-list.json"
 
 make-target-list: ## Regenerate make public target list artifact
-	@targets="$$(sed -n '/^CURATED_TARGETS := \\/,/^$$/p' make/root.mk | tr '\t\\' '  ' | tr -s ' ' '\n' | grep -E '^[a-z0-9][a-z0-9-]*$$')"; \
-	TARGETS="$$targets" python3 -c "import json,os,pathlib; targets=sorted({t for t in os.environ.get('TARGETS','').splitlines() if t}); payload={'schema_version':1,'source':'make/root.mk:CURATED_TARGETS','public_targets':targets}; pathlib.Path('make/target-list.json').write_text(json.dumps(payload, indent=2)+'\\n')"
+	@$(DEV_ATLAS) make target-list --allow-write --format text
 
 .PHONY: help-contract make-target-list make-contract-check
