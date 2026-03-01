@@ -13,14 +13,13 @@ const DOCS_ALLOWED_ROOT_DIRS: [&str; 10] = [
 
 const DOCS_ALLOWED_ROOT_DIRS_TAIL: [&str; 0] = [];
 
-const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 7] = [
+const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 6] = [
     "contract.md",
     "glossary.md",
     "index.md",
     "start-here.md",
     "site-map.md",
     "what-to-read-next.md",
-    "README.md",
 ];
 
 const DOCS_ALLOWED_ROOT_FILES: [&str; 4] = ["owners.json", "registry.json", "sections.json", "redirects.json"];

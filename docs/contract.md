@@ -3,7 +3,7 @@
 ## Scope
 
 - Governed surface: `docs/` and `docs/contract.md`.
-- Contributor entrypoint: `docs/README.md`.
+- Contributor entrypoint: `docs/_internal/index.md`.
 - SSOT = bijux-dev-atlas contracts runner.
 - Effects boundary: this group runs static contracts only.
 - Tracked reader markdown stays under `docs/`.
