@@ -81,6 +81,7 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
         "src/contracts/control_plane/mod.rs",
         "src/contracts/runtime/mod.rs",
         "src/contracts/configs/configs_registry_indexing.rs",
+        "src/contracts/configs/configs_registry_contracts.rs",
         "src/contracts/configs/configs_authority_contracts.rs",
         "src/contracts/configs/configs_registry_model.rs",
         "src/contracts/configs/configs_surface_contracts.rs",
