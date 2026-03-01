@@ -401,3 +401,56 @@ fn test_docs_057_governance_nested_under_development(ctx: &RunContext) -> TestRe
         }])
     }
 }
+
+fn test_docs_063_site_map_covers_reader_spine(ctx: &RunContext) -> TestResult {
+    let relative = "docs/site-map.md";
+    let contents = match std::fs::read_to_string(ctx.repo_root.join(relative)) {
+        Ok(contents) => contents,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-063".to_string(),
+                test_id: "docs.navigation.site_map_reader_spine".to_string(),
+                file: Some(relative.to_string()),
+                line: None,
+                message: format!("read failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    let mut expected = match docs_spine_pages(ctx) {
+        Ok(pages) => pages,
+        Err(result) => return result,
+    };
+    expected.extend(docs_reader_utility_pages());
+    expected.retain(|path| path != relative);
+    expected.sort();
+    expected.dedup();
+
+    let links = markdown_links(strip_docs_frontmatter(&contents))
+        .into_iter()
+        .filter_map(|target| target.split('#').next().map(|value| value.to_string()))
+        .filter(|target| !target.is_empty() && !target.starts_with("http://") && !target.starts_with("https://"))
+        .collect::<std::collections::BTreeSet<_>>();
+
+    let mut violations = Vec::new();
+    for path in expected {
+        let local_target = path.trim_start_matches("docs/").to_string();
+        if !links.contains(&local_target) && !links.contains(&path) {
+            violations.push(Violation {
+                contract_id: "DOC-063".to_string(),
+                test_id: "docs.navigation.site_map_reader_spine".to_string(),
+                file: Some(relative.to_string()),
+                line: None,
+                message: format!("site map must link `{path}`"),
+                evidence: None,
+            });
+        }
+    }
+
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.message.cmp(&b.message));
+        TestResult::Fail(violations)
+    }
+}

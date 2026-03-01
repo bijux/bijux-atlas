@@ -79,6 +79,7 @@
 | `DOC-060` | docs redirects target real pages | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
 | `DOC-061` | docs registry validates against its schema | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
 | `DOC-062` | docs sections validate against their schema | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-063` | site map links the reader spine | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
 
 ## Enforcement mapping
 
@@ -146,6 +147,7 @@
 | `DOC-060` | `bijux dev atlas contracts docs --mode static` |
 | `DOC-061` | `bijux dev atlas contracts docs --mode static` |
 | `DOC-062` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-063` | `bijux dev atlas contracts docs --mode static` |
 
 ## Output artifacts
 

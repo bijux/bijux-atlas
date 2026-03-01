@@ -650,5 +650,15 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_062_sections_schema_validation,
             }],
         },
+        Contract {
+            id: ContractId("DOC-063".to_string()),
+            title: "site map links the reader spine",
+            tests: vec![TestCase {
+                id: TestId("docs.navigation.site_map_reader_spine".to_string()),
+                title: "docs/site-map.md links the canonical reader spine and utility pages",
+                kind: TestKind::Pure,
+                run: test_docs_063_site_map_covers_reader_spine,
+            }],
+        },
     ])
 }

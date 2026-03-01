@@ -73,6 +73,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-060" => "docs/redirects.json must keep in-tree redirects, avoid self-loops, and point to real docs targets.".to_string(),
         "DOC-061" => "docs/registry.json must validate against the declared docs registry schema.".to_string(),
         "DOC-062" => "docs/sections.json must validate against the declared docs sections schema.".to_string(),
+        "DOC-063" => "docs/site-map.md must link the canonical reader spine and published utility pages.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }
