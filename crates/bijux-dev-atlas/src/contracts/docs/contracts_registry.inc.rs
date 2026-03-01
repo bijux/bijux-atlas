@@ -579,5 +579,25 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_055_section_index_link_budget,
             }],
         },
+        Contract {
+            id: ContractId("DOC-056".to_string()),
+            title: "mkdocs nav starts with home and start here",
+            tests: vec![TestCase {
+                id: TestId("docs.nav.home_and_start_here_first".to_string()),
+                title: "mkdocs nav keeps Home and Start Here as the first reader entrypoints",
+                kind: TestKind::Pure,
+                run: test_docs_056_nav_starts_with_home_and_start_here,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-057".to_string()),
+            title: "governance stays nested under development",
+            tests: vec![TestCase {
+                id: TestId("docs.nav.governance_nested_under_development".to_string()),
+                title: "mkdocs nav keeps Docs governance and Docs Dashboard under Development",
+                kind: TestKind::Pure,
+                run: test_docs_057_governance_nested_under_development,
+            }],
+        },
     ])
 }

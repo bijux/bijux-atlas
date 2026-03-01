@@ -207,6 +207,24 @@ fn read_mkdocs_yaml(
     }
 }
 
+fn mkdocs_nav_lines(contents: &str) -> Vec<&str> {
+    let mut nav_lines = Vec::new();
+    let mut in_nav = false;
+    for line in contents.lines() {
+        if !in_nav {
+            if line.trim() == "nav:" {
+                in_nav = true;
+            }
+            continue;
+        }
+        if !line.starts_with(' ') && !line.trim().is_empty() {
+            break;
+        }
+        nav_lines.push(line);
+    }
+    nav_lines
+}
+
 fn docs_operator_golden_path_pages() -> Vec<String> {
     vec![
         "docs/operations/run-locally.md".to_string(),

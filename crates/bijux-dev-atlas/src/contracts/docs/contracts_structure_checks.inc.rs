@@ -323,3 +323,81 @@ fn test_docs_055_section_index_link_budget(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
+
+fn test_docs_056_nav_starts_with_home_and_start_here(ctx: &RunContext) -> TestResult {
+    let contents = match read_mkdocs_yaml(
+        ctx,
+        "DOC-056",
+        "docs.nav.home_and_start_here_first",
+    ) {
+        Ok(contents) => contents,
+        Err(result) => return result,
+    };
+    let top_level = mkdocs_nav_lines(&contents)
+        .into_iter()
+        .filter_map(|line| line.trim_start().strip_prefix("- "))
+        .filter(|line| !line.starts_with("- "))
+        .map(|line| line.split(':').next().unwrap_or(line).trim().to_string())
+        .collect::<Vec<_>>();
+    let expected = ["Home", "Start Here"];
+    if top_level.len() >= 2 && top_level[0] == expected[0] && top_level[1] == expected[1] {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![Violation {
+            contract_id: "DOC-056".to_string(),
+            test_id: "docs.nav.home_and_start_here_first".to_string(),
+            file: Some("mkdocs.yml".to_string()),
+            line: None,
+            message: "mkdocs nav must start with `Home` then `Start Here`".to_string(),
+            evidence: None,
+        }])
+    }
+}
+
+fn test_docs_057_governance_nested_under_development(ctx: &RunContext) -> TestResult {
+    let contents = match read_mkdocs_yaml(
+        ctx,
+        "DOC-057",
+        "docs.nav.governance_nested_under_development",
+    ) {
+        Ok(contents) => contents,
+        Err(result) => return result,
+    };
+    let nav_lines = mkdocs_nav_lines(&contents);
+    let mut in_development = false;
+    let mut saw_docs_governance = false;
+    let mut saw_docs_dashboard = false;
+    let mut top_level_governance = false;
+    for line in nav_lines {
+        let indent = line.chars().take_while(|ch| *ch == ' ').count();
+        let trimmed = line.trim();
+        if indent == 2 && trimmed.starts_with("- ") {
+            in_development = trimmed == "- Development:";
+            if trimmed.contains("Governance") {
+                top_level_governance = true;
+            }
+            continue;
+        }
+        if in_development && indent >= 6 && trimmed == "- Docs governance: _internal/governance/index.md" {
+            saw_docs_governance = true;
+        }
+        if in_development
+            && indent >= 6
+            && trimmed == "- Docs Dashboard: _internal/governance/docs-dashboard.md"
+        {
+            saw_docs_dashboard = true;
+        }
+    }
+    if !top_level_governance && saw_docs_governance && saw_docs_dashboard {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![Violation {
+            contract_id: "DOC-057".to_string(),
+            test_id: "docs.nav.governance_nested_under_development".to_string(),
+            file: Some("mkdocs.yml".to_string()),
+            line: None,
+            message: "mkdocs nav must keep Docs governance and Docs Dashboard nested under Development without a top-level governance entry".to_string(),
+            evidence: None,
+        }])
+    }
+}

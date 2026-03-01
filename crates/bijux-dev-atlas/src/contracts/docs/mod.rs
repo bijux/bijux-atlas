@@ -66,6 +66,8 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-053" => "The docs tree may expose only one glossary page so terminology stays canonical.".to_string(),
         "DOC-054" => "MkDocs must exclude drafts from publish and keep internal docs off the reader nav surface.".to_string(),
         "DOC-055" => "Section index pages stay curated and may not turn into long inventories.".to_string(),
+        "DOC-056" => "Home and Start Here must remain the first reader nav items.".to_string(),
+        "DOC-057" => "Governance reader entrypoints must stay nested under Development instead of surfacing as a top-level section.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }
