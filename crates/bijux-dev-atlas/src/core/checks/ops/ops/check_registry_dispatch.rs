@@ -200,6 +200,30 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_crates_plugin_conformance_binaries" => {
             Some(check_crates_plugin_conformance_binaries)
         }
+        "checks_repo_artifacts_not_tracked" => Some(check_repo_artifacts_not_tracked),
+        "checks_repo_defaults_work_surface_contract" => {
+            Some(check_repo_defaults_work_surface_contract)
+        }
+        "checks_repo_duplicate_ssot_registries_absent" => {
+            Some(check_repo_duplicate_ssot_registries_absent)
+        }
+        "checks_repo_generated_content_stays_in_allowed_paths" => {
+            Some(check_repo_generated_content_stays_in_allowed_paths)
+        }
+        "checks_repo_law_metadata_complete_and_unique" => {
+            Some(check_repo_law_metadata_complete_and_unique)
+        }
+        "checks_repo_no_executable_script_sources" => Some(check_repo_no_executable_script_sources),
+        "checks_repo_pr_required_suite_not_skippable" => {
+            Some(check_repo_pr_required_suite_not_skippable)
+        }
+        "checks_repo_root_directory_allowlist_contract" => {
+            Some(check_repo_root_directory_allowlist_contract)
+        }
+        "checks_repo_root_markdown_allowlist_contract" => {
+            Some(check_repo_root_markdown_allowlist_contract)
+        }
+        "checks_repo_suite_includes_p0_checks" => Some(check_repo_suite_includes_p0_checks),
         "checks_root_artifacts_bin_binaries_executable_and_version_printable" => {
             Some(check_artifacts_bin_binaries_executable_and_version_printable)
         }
@@ -298,6 +322,16 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_crates_bijux_dev_atlas_not_umbrella_binary",
         "checks_crates_command_namespace_ownership_unique",
         "checks_crates_plugin_conformance_binaries",
+        "checks_repo_artifacts_not_tracked",
+        "checks_repo_defaults_work_surface_contract",
+        "checks_repo_duplicate_ssot_registries_absent",
+        "checks_repo_generated_content_stays_in_allowed_paths",
+        "checks_repo_law_metadata_complete_and_unique",
+        "checks_repo_no_executable_script_sources",
+        "checks_repo_pr_required_suite_not_skippable",
+        "checks_repo_root_directory_allowlist_contract",
+        "checks_repo_root_markdown_allowlist_contract",
+        "checks_repo_suite_includes_p0_checks",
         "checks_root_artifacts_bin_binaries_executable_and_version_printable",
         "checks_root_forbidden_retired_directories_absent",
         "checks_root_makefile_single_include_entrypoint",

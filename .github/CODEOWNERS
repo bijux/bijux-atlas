@@ -13,6 +13,9 @@
 /configs/policy/ @bijan
 /ops/_lint/ @bijan
 /.github/workflows/ @bijan
+/crates/ @bijan
 /docs/ @bijan
+/docker/ @bijan
+/make/ @bijan
 /crates/*/docs/ @bijan
 /configs/ @bijan

@@ -4,6 +4,7 @@ fn normalize_suite_name(raw: &str) -> Result<&str, String> {
         "ci" => Ok("ci"),
         "local" => Ok("local"),
         "deep" => Ok("deep"),
+        "repo:required" => Ok("repo_required"),
         other => Ok(other),
     }
 }
@@ -291,7 +292,10 @@ pub(crate) fn run_workflows_command(quiet: bool, command: WorkflowsCommand) -> i
                 code
             }
             Err(err) => {
-                let _ = writeln!(io::stderr(), "bijux-dev-atlas workflows doctor failed: {err}");
+                let _ = writeln!(
+                    io::stderr(),
+                    "bijux-dev-atlas workflows doctor failed: {err}"
+                );
                 1
             }
         },
@@ -319,7 +323,10 @@ pub(crate) fn run_workflows_command(quiet: bool, command: WorkflowsCommand) -> i
                 code
             }
             Err(err) => {
-                let _ = writeln!(io::stderr(), "bijux-dev-atlas workflows surface failed: {err}");
+                let _ = writeln!(
+                    io::stderr(),
+                    "bijux-dev-atlas workflows surface failed: {err}"
+                );
                 1
             }
         },
@@ -574,4 +581,3 @@ pub(crate) fn run_check_doctor(
     let exit = if status == "ok" { 0 } else { 1 };
     Ok((rendered, exit))
 }
-

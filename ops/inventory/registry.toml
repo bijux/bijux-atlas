@@ -939,6 +939,50 @@ budget_ms = 1200
 visibility = "public"
 
 [[checks]]
+id = "checks_repo_artifacts_not_tracked"
+domain = "repo"
+title = "tracked files under artifacts are forbidden"
+docs = "docs/_internal/contracts/REPO_LAWS.md"
+tags = ["repo", "internal", "fast"]
+suites = ["repo_required"]
+effects_required = ["git"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_repo_defaults_work_surface_contract"
+domain = "repo"
+title = "default build docs and helm template surfaces exist"
+docs = "docs/_internal/contracts/REPO_LAWS.md"
+tags = ["repo", "internal", "fast"]
+suites = ["repo_required"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_repo_duplicate_ssot_registries_absent"
+domain = "repo"
+title = "duplicate ssot registry roots are forbidden"
+docs = "docs/_internal/contracts/REPO_LAWS.md"
+tags = ["repo", "internal", "fast"]
+suites = ["repo_required"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_repo_generated_content_stays_in_allowed_paths"
+domain = "repo"
+title = "generated content is tracked only under allowed output roots"
+docs = "docs/_internal/contracts/REPO_LAWS.md"
+tags = ["repo", "internal", "fast"]
+suites = ["repo_required"]
+effects_required = ["git"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
 id = "checks_repo_import_boundary"
 domain = "repo"
 title = "repo import boundary contracts"
@@ -948,6 +992,72 @@ suites = ["repo_fast", "all_fast"]
 effects_required = ["fs_read"]
 budget_ms = 1000
 visibility = "public"
+
+[[checks]]
+id = "checks_repo_law_metadata_complete_and_unique"
+domain = "repo"
+title = "repo law records have complete metadata and deterministic ordering"
+docs = "docs/_internal/contracts/repo-laws.json"
+tags = ["repo", "internal", "fast"]
+suites = ["repo_required"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_repo_no_executable_script_sources"
+domain = "repo"
+title = "executable script source extensions are restricted to allowlisted fixtures"
+docs = "docs/_internal/contracts/REPO_LAWS.md"
+tags = ["repo", "internal", "fast"]
+suites = ["repo_required"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
+id = "checks_repo_pr_required_suite_not_skippable"
+domain = "repo"
+title = "ci-pr workflow executes required repo suite without skip flags"
+docs = "docs/_internal/contracts/REPO_LAWS.md"
+tags = ["repo", "internal", "fast"]
+suites = ["repo_required"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_repo_root_directory_allowlist_contract"
+domain = "repo"
+title = "new root directories require explicit allowlist approval"
+docs = "configs/repo/root-file-allowlist.json"
+tags = ["repo", "internal", "fast"]
+suites = ["repo_required"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_repo_root_markdown_allowlist_contract"
+domain = "repo"
+title = "new root markdown files require explicit allowlist approval"
+docs = "configs/repo/root-file-allowlist.json"
+tags = ["repo", "internal", "fast"]
+suites = ["repo_required"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_repo_suite_includes_p0_checks"
+domain = "repo"
+title = "required repo suite contains all declared p0 checks"
+docs = "ops/_generated.example/repo-integrity-summary.json"
+tags = ["repo", "internal", "fast"]
+suites = ["repo_required"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
 
 [[checks]]
 id = "checks_root_artifacts_bin_binaries_executable_and_version_printable"
@@ -1200,7 +1310,14 @@ tags_any = []
 
 [[suites]]
 id = "ci_pr"
-checks = []
+checks = [
+  "checks_repo_artifacts_not_tracked",
+  "checks_repo_generated_content_stays_in_allowed_paths",
+  "checks_repo_law_metadata_complete_and_unique",
+  "checks_repo_root_directory_allowlist_contract",
+  "checks_repo_root_markdown_allowlist_contract",
+  "checks_repo_suite_includes_p0_checks",
+]
 domains = ["ops", "repo", "docs", "make", "configs", "workflows", "docker", "crates"]
 tags_any = ["fast"]
 
@@ -1351,3 +1468,20 @@ id = "repo_fast"
 checks = []
 domains = ["repo"]
 tags_any = ["fast"]
+
+[[suites]]
+id = "repo_required"
+checks = [
+  "checks_repo_artifacts_not_tracked",
+  "checks_repo_defaults_work_surface_contract",
+  "checks_repo_duplicate_ssot_registries_absent",
+  "checks_repo_generated_content_stays_in_allowed_paths",
+  "checks_repo_law_metadata_complete_and_unique",
+  "checks_repo_no_executable_script_sources",
+  "checks_repo_pr_required_suite_not_skippable",
+  "checks_repo_root_directory_allowlist_contract",
+  "checks_repo_root_markdown_allowlist_contract",
+  "checks_repo_suite_includes_p0_checks",
+]
+domains = []
+tags_any = []
