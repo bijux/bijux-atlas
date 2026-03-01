@@ -481,24 +481,6 @@
         "crates",
         "crates/bijux-atlas-cli",
         "crates/bijux-atlas-cli/docs",
-        "crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md"
-      ],
-      "path": "crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-atlas-cli",
-        "crates/bijux-atlas-cli/docs",
-        "crates/bijux-atlas-cli/docs/PLUGIN_CONTRACT.md"
-      ],
-      "path": "crates/bijux-atlas-cli/docs/PLUGIN_CONTRACT.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-atlas-cli",
-        "crates/bijux-atlas-cli/docs",
         "crates/bijux-atlas-cli/docs/architecture.md"
       ],
       "path": "crates/bijux-atlas-cli/docs/architecture.md"
@@ -2076,22 +2058,6 @@
       "breadcrumbs": [
         "crates",
         "crates/bijux-dev-atlas",
-        "crates/bijux-dev-atlas/ARCHITECTURE.md"
-      ],
-      "path": "crates/bijux-dev-atlas/ARCHITECTURE.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-dev-atlas",
-        "crates/bijux-dev-atlas/BENCHMARKS.md"
-      ],
-      "path": "crates/bijux-dev-atlas/BENCHMARKS.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-dev-atlas",
         "crates/bijux-dev-atlas/CONTRACT.md"
       ],
       "path": "crates/bijux-dev-atlas/CONTRACT.md"
@@ -2100,34 +2066,9 @@
       "breadcrumbs": [
         "crates",
         "crates/bijux-dev-atlas",
-        "crates/bijux-dev-atlas/ERRORS.md"
-      ],
-      "path": "crates/bijux-dev-atlas/ERRORS.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-dev-atlas",
         "crates/bijux-dev-atlas/README.md"
       ],
       "path": "crates/bijux-dev-atlas/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-dev-atlas",
-        "crates/bijux-dev-atlas/TESTING.md"
-      ],
-      "path": "crates/bijux-dev-atlas/TESTING.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-dev-atlas",
-        "crates/bijux-dev-atlas/docs",
-        "crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md"
-      ],
-      "path": "crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md"
     },
     {
       "breadcrumbs": [
@@ -2143,18 +2084,18 @@
         "crates",
         "crates/bijux-dev-atlas",
         "crates/bijux-dev-atlas/docs",
-        "crates/bijux-dev-atlas/docs/artifacts.md"
+        "crates/bijux-dev-atlas/docs/benchmarks.md"
       ],
-      "path": "crates/bijux-dev-atlas/docs/artifacts.md"
+      "path": "crates/bijux-dev-atlas/docs/benchmarks.md"
     },
     {
       "breadcrumbs": [
         "crates",
         "crates/bijux-dev-atlas",
         "crates/bijux-dev-atlas/docs",
-        "crates/bijux-dev-atlas/docs/benchmarks.md"
+        "crates/bijux-dev-atlas/docs/cli-command-list.md"
       ],
-      "path": "crates/bijux-dev-atlas/docs/benchmarks.md"
+      "path": "crates/bijux-dev-atlas/docs/cli-command-list.md"
     },
     {
       "breadcrumbs": [
@@ -2236,6 +2177,16 @@
         "crates/bijux-dev-atlas/docs/index.md"
       ],
       "path": "crates/bijux-dev-atlas/docs/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/docs",
+        "crates/bijux-dev-atlas/docs/internal",
+        "crates/bijux-dev-atlas/docs/internal/artifacts.md"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/internal/artifacts.md"
     },
     {
       "breadcrumbs": [
@@ -2529,18 +2480,6 @@
         "crates/bijux-dev-atlas/tests/fixtures",
         "crates/bijux-dev-atlas/tests/fixtures/docs-mini",
         "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs",
-        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/START_HERE.md"
-      ],
-      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/START_HERE.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-dev-atlas",
-        "crates/bijux-dev-atlas/tests",
-        "crates/bijux-dev-atlas/tests/fixtures",
-        "crates/bijux-dev-atlas/tests/fixtures/docs-mini",
-        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs",
         "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_drafts",
         "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_drafts/draft.md"
       ],
@@ -2609,6 +2548,18 @@
         "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/schemas.md"
       ],
       "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/schemas.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/start-here.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/start-here.md"
     },
     {
       "breadcrumbs": [
@@ -3412,6 +3363,14 @@
       "breadcrumbs": [
         "docs",
         "docs/architecture",
+        "docs/architecture/boundary-maps.md"
+      ],
+      "path": "docs/architecture/boundary-maps.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
         "docs/architecture/common-failure-catalog.md"
       ],
       "path": "docs/architecture/common-failure-catalog.md"
@@ -3463,6 +3422,14 @@
         "docs/architecture/dataflow.md"
       ],
       "path": "docs/architecture/dataflow.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/decision-template.md"
+      ],
+      "path": "docs/architecture/decision-template.md"
     },
     {
       "breadcrumbs": [
@@ -3715,6 +3682,14 @@
       "breadcrumbs": [
         "docs",
         "docs/control-plane",
+        "docs/control-plane/contracts.md"
+      ],
+      "path": "docs/control-plane/contracts.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
         "docs/control-plane/control-plane-architecture.md"
       ],
       "path": "docs/control-plane/control-plane-architecture.md"
@@ -3891,6 +3866,14 @@
       "breadcrumbs": [
         "docs",
         "docs/development",
+        "docs/development/config-versioning.md"
+      ],
+      "path": "docs/development/config-versioning.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
         "docs/development/contributing.md"
       ],
       "path": "docs/development/contributing.md"
@@ -4060,6 +4043,14 @@
         "docs/operations/deploy.md"
       ],
       "path": "docs/operations/deploy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/docs-convergence-policy.md"
+      ],
+      "path": "docs/operations/docs-convergence-policy.md"
     },
     {
       "breadcrumbs": [
@@ -4254,6 +4245,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/ops-docs-contract.md"
+      ],
+      "path": "docs/operations/ops-docs-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/ops-map.md"
       ],
       "path": "docs/operations/ops-map.md"
@@ -4334,6 +4333,15 @@
         "docs/operations/release/index.md"
       ],
       "path": "docs/operations/release/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release",
+        "docs/operations/release/quality-wall.md"
+      ],
+      "path": "docs/operations/release/quality-wall.md"
     },
     {
       "breadcrumbs": [
@@ -5163,6 +5171,13 @@
         "ops/CONTRACT.md"
       ],
       "path": "ops/CONTRACT.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/ERRORS.md"
+      ],
+      "path": "ops/ERRORS.md"
     },
     {
       "breadcrumbs": [

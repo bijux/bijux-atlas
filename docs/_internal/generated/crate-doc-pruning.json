@@ -1,10 +1,8 @@
 {
   "rows": [
-    "CRATE_DOC_ALLOWED_TYPE_WARN: `bijux-dev-atlas` has non-canonical root doc `ERRORS.md`",
     "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `benchmarks.md` appears across crates: bijux-atlas-api, bijux-atlas-cli, bijux-atlas-core, bijux-atlas-ingest, bijux-atlas-model, bijux-atlas-policies, bijux-atlas-query, bijux-atlas-server, bijux-atlas-store, bijux-dev-atlas",
     "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `caching.md` appears across crates: bijux-atlas-server, bijux-atlas-store",
     "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `cli-command-list.md` appears across crates: bijux-atlas-cli, bijux-dev-atlas",
-    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `cli_command_list.md` appears across crates: bijux-atlas-cli, bijux-dev-atlas",
     "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `command-surface.md` appears across crates: bijux-atlas-cli, bijux-dev-atlas",
     "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `contracts.md` appears across crates: bijux-atlas-api, bijux-atlas-policies, bijux-atlas-server, bijux-atlas-store",
     "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `errors.md` appears across crates: bijux-atlas-api, bijux-atlas-cli, bijux-atlas-core, bijux-atlas-ingest, bijux-atlas-model, bijux-atlas-policies, bijux-atlas-query, bijux-atlas-server, bijux-atlas-store, bijux-dev-atlas",

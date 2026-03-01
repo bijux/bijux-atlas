@@ -754,30 +754,6 @@
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
-        "cli-command-list"
-      ],
-      "path": "crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md",
-      "tags": [
-        "bijux-atlas-cli",
-        "cli-command-list"
-      ],
-      "topic": "CLI_COMMAND_LIST"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-cli",
-        "plugin-contract"
-      ],
-      "path": "crates/bijux-atlas-cli/docs/PLUGIN_CONTRACT.md",
-      "tags": [
-        "bijux-atlas-cli",
-        "plugin-contract"
-      ],
-      "topic": "PLUGIN_CONTRACT"
-    },
-    {
-      "keywords": [
         "architecture",
         "bijux-atlas-cli"
       ],
@@ -2948,30 +2924,6 @@
     },
     {
       "keywords": [
-        "architecture",
-        "bijux-dev-atlas"
-      ],
-      "path": "crates/bijux-dev-atlas/ARCHITECTURE.md",
-      "tags": [
-        "architecture",
-        "bijux-dev-atlas"
-      ],
-      "topic": "ARCHITECTURE"
-    },
-    {
-      "keywords": [
-        "benchmarks",
-        "bijux-dev-atlas"
-      ],
-      "path": "crates/bijux-dev-atlas/BENCHMARKS.md",
-      "tags": [
-        "benchmarks",
-        "bijux-dev-atlas"
-      ],
-      "topic": "BENCHMARKS"
-    },
-    {
-      "keywords": [
         "bijux-dev-atlas",
         "contract"
       ],
@@ -2981,18 +2933,6 @@
         "contract"
       ],
       "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "bijux-dev-atlas",
-        "errors"
-      ],
-      "path": "crates/bijux-dev-atlas/ERRORS.md",
-      "tags": [
-        "bijux-dev-atlas",
-        "errors"
-      ],
-      "topic": "ERRORS"
     },
     {
       "keywords": [
@@ -3008,30 +2948,6 @@
     },
     {
       "keywords": [
-        "bijux-dev-atlas",
-        "testing"
-      ],
-      "path": "crates/bijux-dev-atlas/TESTING.md",
-      "tags": [
-        "bijux-dev-atlas",
-        "testing"
-      ],
-      "topic": "TESTING"
-    },
-    {
-      "keywords": [
-        "bijux-dev-atlas",
-        "cli-command-list"
-      ],
-      "path": "crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md",
-      "tags": [
-        "bijux-dev-atlas",
-        "cli-command-list"
-      ],
-      "topic": "CLI_COMMAND_LIST"
-    },
-    {
-      "keywords": [
         "architecture",
         "bijux-dev-atlas"
       ],
@@ -3044,18 +2960,6 @@
     },
     {
       "keywords": [
-        "artifacts",
-        "bijux-dev-atlas"
-      ],
-      "path": "crates/bijux-dev-atlas/docs/artifacts.md",
-      "tags": [
-        "artifacts",
-        "bijux-dev-atlas"
-      ],
-      "topic": "artifacts"
-    },
-    {
-      "keywords": [
         "benchmarks",
         "bijux-dev-atlas"
       ],
@@ -3065,6 +2969,18 @@
         "bijux-dev-atlas"
       ],
       "topic": "benchmarks"
+    },
+    {
+      "keywords": [
+        "bijux-dev-atlas",
+        "cli-command-list"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/cli-command-list.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "cli-command-list"
+      ],
+      "topic": "cli-command-list"
     },
     {
       "keywords": [
@@ -3173,6 +3089,20 @@
         "index"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "artifacts",
+        "bijux-dev-atlas",
+        "internal"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/internal/artifacts.md",
+      "tags": [
+        "artifacts",
+        "bijux-dev-atlas",
+        "internal"
+      ],
+      "topic": "artifacts"
     },
     {
       "keywords": [
@@ -3616,24 +3546,6 @@
     },
     {
       "keywords": [
-        "bijux-dev-atlas",
-        "docs-mini",
-        "fixtures",
-        "start-here",
-        "tests"
-      ],
-      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/START_HERE.md",
-      "tags": [
-        "bijux-dev-atlas",
-        "docs-mini",
-        "fixtures",
-        "start-here",
-        "tests"
-      ],
-      "topic": "START_HERE"
-    },
-    {
-      "keywords": [
         "-drafts",
         "bijux-dev-atlas",
         "docs-mini",
@@ -3749,6 +3661,24 @@
         "tests"
       ],
       "topic": "schemas"
+    },
+    {
+      "keywords": [
+        "bijux-dev-atlas",
+        "docs-mini",
+        "fixtures",
+        "start-here",
+        "tests"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/start-here.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "docs-mini",
+        "fixtures",
+        "start-here",
+        "tests"
+      ],
+      "topic": "start-here"
     },
     {
       "keywords": [
@@ -4997,6 +4927,18 @@
     {
       "keywords": [
         "architecture",
+        "boundary-maps"
+      ],
+      "path": "docs/architecture/boundary-maps.md",
+      "tags": [
+        "architecture",
+        "boundary-maps"
+      ],
+      "topic": "boundary-maps"
+    },
+    {
+      "keywords": [
+        "architecture",
         "common-failure-catalog"
       ],
       "path": "docs/architecture/common-failure-catalog.md",
@@ -5077,6 +5019,18 @@
         "dataflow"
       ],
       "topic": "dataflow"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "decision-template"
+      ],
+      "path": "docs/architecture/decision-template.md",
+      "tags": [
+        "architecture",
+        "decision-template"
+      ],
+      "topic": "decision-template"
     },
     {
       "keywords": [
@@ -5450,6 +5404,18 @@
     },
     {
       "keywords": [
+        "contracts",
+        "control-plane"
+      ],
+      "path": "docs/control-plane/contracts.md",
+      "tags": [
+        "contracts",
+        "control-plane"
+      ],
+      "topic": "contracts"
+    },
+    {
+      "keywords": [
         "control-plane",
         "control-plane-architecture"
       ],
@@ -5714,6 +5680,18 @@
     },
     {
       "keywords": [
+        "config-versioning",
+        "development"
+      ],
+      "path": "docs/development/config-versioning.md",
+      "tags": [
+        "config-versioning",
+        "development"
+      ],
+      "topic": "config-versioning"
+    },
+    {
+      "keywords": [
         "contributing",
         "development"
       ],
@@ -5971,6 +5949,18 @@
         "operations"
       ],
       "topic": "deploy"
+    },
+    {
+      "keywords": [
+        "docs-convergence-policy",
+        "operations"
+      ],
+      "path": "docs/operations/docs-convergence-policy.md",
+      "tags": [
+        "docs-convergence-policy",
+        "operations"
+      ],
+      "topic": "docs-convergence-policy"
     },
     {
       "keywords": [
@@ -6263,6 +6253,18 @@
     {
       "keywords": [
         "operations",
+        "ops-docs-contract"
+      ],
+      "path": "docs/operations/ops-docs-contract.md",
+      "tags": [
+        "operations",
+        "ops-docs-contract"
+      ],
+      "topic": "ops-docs-contract"
+    },
+    {
+      "keywords": [
+        "operations",
         "ops-map"
       ],
       "path": "docs/operations/ops-map.md",
@@ -6389,6 +6391,20 @@
         "release"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "operations",
+        "quality-wall",
+        "release"
+      ],
+      "path": "docs/operations/release/quality-wall.md",
+      "tags": [
+        "operations",
+        "quality-wall",
+        "release"
+      ],
+      "topic": "quality-wall"
     },
     {
       "keywords": [
@@ -7671,6 +7687,18 @@
         "ops"
       ],
       "topic": "CONTRACT"
+    },
+    {
+      "keywords": [
+        "errors",
+        "ops"
+      ],
+      "path": "ops/ERRORS.md",
+      "tags": [
+        "errors",
+        "ops"
+      ],
+      "topic": "ERRORS"
     },
     {
       "keywords": [

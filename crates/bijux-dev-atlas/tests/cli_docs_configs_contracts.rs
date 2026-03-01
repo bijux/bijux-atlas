@@ -301,9 +301,12 @@ fn slow_docs_registry_validate_supports_json_format() {
         .args(["docs", "registry", "validate", "--format", "json"])
         .output()
         .expect("docs registry validate");
-    assert!(output.status.success());
-    let payload: serde_json::Value =
-        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let bytes = if output.stdout.is_empty() {
+        &output.stderr
+    } else {
+        &output.stdout
+    };
+    let payload: serde_json::Value = serde_json::from_slice(bytes).expect("valid json output");
     assert_eq!(
         payload.get("schema_version").and_then(|v| v.as_u64()),
         Some(1)

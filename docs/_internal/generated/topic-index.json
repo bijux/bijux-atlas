@@ -2,18 +2,10 @@
   "schema_version": 1,
   "topics": {
     "ARCHITECTURE": [
-      "crates/bijux-atlas-server/src/cache/ARCHITECTURE.md",
-      "crates/bijux-dev-atlas/ARCHITECTURE.md"
-    ],
-    "BENCHMARKS": [
-      "crates/bijux-dev-atlas/BENCHMARKS.md"
+      "crates/bijux-atlas-server/src/cache/ARCHITECTURE.md"
     ],
     "CHANGELOG": [
       "CHANGELOG.md"
-    ],
-    "CLI_COMMAND_LIST": [
-      "crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md",
-      "crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md"
     ],
     "CONTRACT": [
       "CONTRACT.md",
@@ -46,7 +38,7 @@
       "CONTRIBUTING.md"
     ],
     "ERRORS": [
-      "crates/bijux-dev-atlas/ERRORS.md"
+      "ops/ERRORS.md"
     ],
     "INDEX": [
       "configs/INDEX.md",
@@ -65,9 +57,6 @@
     ],
     "OWNERS": [
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/OWNERS.md"
-    ],
-    "PLUGIN_CONTRACT": [
-      "crates/bijux-atlas-cli/docs/PLUGIN_CONTRACT.md"
     ],
     "README": [
       "README.md",
@@ -145,12 +134,6 @@
     "SECURITY": [
       "SECURITY.md"
     ],
-    "START_HERE": [
-      "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/START_HERE.md"
-    ],
-    "TESTING": [
-      "crates/bijux-dev-atlas/TESTING.md"
-    ],
     "add-a-check-in-30-minutes": [
       "docs/control-plane/add-a-check-in-30-minutes.md"
     ],
@@ -227,7 +210,7 @@
       "crates/bijux-atlas-ingest/docs/artifact-output-contract.md"
     ],
     "artifacts": [
-      "crates/bijux-dev-atlas/docs/artifacts.md"
+      "crates/bijux-dev-atlas/docs/internal/artifacts.md"
     ],
     "attack-surface-budget": [
       "crates/bijux-atlas-store/docs/internal/attack-surface-budget.md"
@@ -261,6 +244,9 @@
     ],
     "boundaries": [
       "docs/architecture/boundaries.md"
+    ],
+    "boundary-maps": [
+      "docs/architecture/boundary-maps.md"
     ],
     "budget-exceptions": [
       "docs/reference/ops-schema/budget-exceptions.md"
@@ -308,6 +294,7 @@
     ],
     "cli-command-list": [
       "crates/bijux-atlas-cli/docs/cli-command-list.md",
+      "crates/bijux-dev-atlas/docs/cli-command-list.md",
       "crates/bijux-dev-atlas/docs/internal/cli-command-list.md"
     ],
     "cli-reference": [
@@ -386,6 +373,9 @@
     "config-schema-versioning": [
       "docs/reference/registry/config-schema-versioning.md"
     ],
+    "config-versioning": [
+      "docs/development/config-versioning.md"
+    ],
     "configs": [
       "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/configs.md",
       "docs/reference/configs.md"
@@ -434,7 +424,8 @@
       "crates/bijux-atlas-api/docs/contracts.md",
       "crates/bijux-atlas-policies/docs/contracts.md",
       "crates/bijux-atlas-server/docs/internal/contracts.md",
-      "crates/bijux-atlas-store/docs/contracts.md"
+      "crates/bijux-atlas-store/docs/contracts.md",
+      "docs/control-plane/contracts.md"
     ],
     "contracts-model": [
       "docs/architecture/contracts-model.md"
@@ -491,7 +482,8 @@
       "docs/development/debugging-locally.md"
     ],
     "decision-template": [
-      "docs/_internal/governance/decision-template.md"
+      "docs/_internal/governance/decision-template.md",
+      "docs/architecture/decision-template.md"
     ],
     "default-field-set": [
       "docs/api/default-field-set.md"
@@ -546,6 +538,9 @@
     ],
     "docs-contract": [
       "docs/_internal/governance/docs-contract.md"
+    ],
+    "docs-convergence-policy": [
+      "docs/operations/docs-convergence-policy.md"
     ],
     "docs-dashboard": [
       "docs/_internal/governance/docs-dashboard.md"
@@ -898,6 +893,9 @@
     "ops-command-list": [
       "crates/bijux-dev-atlas/docs/internal/ops-command-list.md"
     ],
+    "ops-docs-contract": [
+      "docs/operations/ops-docs-contract.md"
+    ],
     "ops-e2e-boundary": [
       ".github/PULL_REQUEST_TEMPLATE/ops-e2e-boundary.md"
     ],
@@ -991,6 +989,9 @@
     "qc": [
       "crates/bijux-atlas-ingest/docs/qc.md",
       "docs/reference/contracts/qc.md"
+    ],
+    "quality-wall": [
+      "docs/operations/release/quality-wall.md"
     ],
     "query-language-spec": [
       "crates/bijux-atlas-query/docs/query-language-spec.md"
@@ -1166,6 +1167,7 @@
       "docs/_internal/governance/style/stability-levels.md"
     ],
     "start-here": [
+      "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/start-here.md",
       "docs/start-here.md"
     ],
     "static-and-effect-mode": [

@@ -298,16 +298,6 @@
     {
       "crate": "bijux-atlas-cli",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md"
-    },
-    {
-      "crate": "bijux-atlas-cli",
-      "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/PLUGIN_CONTRACT.md"
-    },
-    {
-      "crate": "bijux-atlas-cli",
-      "doc_type": "concept",
       "from": "crates/bijux-atlas-cli/docs/architecture.md"
     },
     {
@@ -1173,37 +1163,12 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/ARCHITECTURE.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/BENCHMARKS.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "crates/bijux-dev-atlas/CONTRACT.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/ERRORS.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "crates/bijux-dev-atlas/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/TESTING.md"
-    },
-    {
-      "crate": "bijux-dev-atlas",
-      "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md"
     },
     {
       "crate": "bijux-dev-atlas",
@@ -1213,12 +1178,12 @@
     {
       "crate": "bijux-dev-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/docs/artifacts.md"
+      "from": "crates/bijux-dev-atlas/docs/benchmarks.md"
     },
     {
       "crate": "bijux-dev-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/docs/benchmarks.md"
+      "from": "crates/bijux-dev-atlas/docs/cli-command-list.md"
     },
     {
       "crate": "bijux-dev-atlas",
@@ -1264,6 +1229,11 @@
       "crate": "bijux-dev-atlas",
       "doc_type": "concept",
       "from": "crates/bijux-dev-atlas/docs/index.md"
+    },
+    {
+      "crate": "bijux-dev-atlas",
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/docs/internal/artifacts.md"
     },
     {
       "crate": "bijux-dev-atlas",
@@ -1388,11 +1358,6 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/START_HERE.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_drafts/draft.md"
     },
     {
@@ -1419,6 +1384,11 @@
       "crate": null,
       "doc_type": "reference",
       "from": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/schemas.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/start-here.md"
     },
     {
       "crate": null,
@@ -1863,6 +1833,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/boundary-maps.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/common-failure-catalog.md"
     },
     {
@@ -1894,6 +1869,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/architecture/dataflow.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/decision-template.md"
     },
     {
       "crate": null,
@@ -2053,6 +2033,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/control-plane/contracts.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/control-plane/control-plane-architecture.md"
     },
     {
@@ -2159,6 +2144,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/development/config-change-checklist.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/development/config-versioning.md"
     },
     {
       "crate": null,
@@ -2273,6 +2263,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/docs-convergence-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/drills-program.md"
     },
     {
@@ -2383,6 +2378,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/ops-docs-contract.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/ops-map.md"
     },
     {
@@ -2429,6 +2429,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/release/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/release/quality-wall.md"
     },
     {
       "crate": null,
@@ -2909,6 +2914,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/CONTRACT.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/ERRORS.md"
     },
     {
       "crate": null,

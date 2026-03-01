@@ -63,8 +63,6 @@ License: Apache-2.0
 | `crates/bijux-atlas-api/tests/README.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-atlas-cli/CONTRACT.md` | `concept` | `bijux-atlas-cli` | `stable` |
 | `crates/bijux-atlas-cli/README.md` | `concept` | `docs-governance` | `stable` |
-| `crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md` | `concept` | `docs-governance` | `stable` |
-| `crates/bijux-atlas-cli/docs/PLUGIN_CONTRACT.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-atlas-cli/docs/architecture.md` | `concept` | `bijux-atlas-cli` | `stable` |
 | `crates/bijux-atlas-cli/docs/benchmarks.md` | `concept` | `bijux-atlas-cli` | `stable` |
 | `crates/bijux-atlas-cli/docs/cli-command-list.md` | `concept` | `docs-governance` | `stable` |
@@ -238,16 +236,11 @@ License: Apache-2.0
 | `crates/bijux-atlas-store/docs/testing.md` | `concept` | `bijux-atlas-store` | `stable` |
 | `crates/bijux-atlas-store/docs/versioning.md` | `concept` | `bijux-atlas-store` | `stable` |
 | `crates/bijux-atlas-store/tests/README.md` | `concept` | `docs-governance` | `stable` |
-| `crates/bijux-dev-atlas/ARCHITECTURE.md` | `concept` | `docs-governance` | `stable` |
-| `crates/bijux-dev-atlas/BENCHMARKS.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/CONTRACT.md` | `concept` | `bijux-dev-atlas` | `stable` |
-| `crates/bijux-dev-atlas/ERRORS.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/README.md` | `concept` | `docs-governance` | `stable` |
-| `crates/bijux-dev-atlas/TESTING.md` | `concept` | `docs-governance` | `stable` |
-| `crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/architecture.md` | `concept` | `bijux-dev-atlas` | `stable` |
-| `crates/bijux-dev-atlas/docs/artifacts.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/benchmarks.md` | `concept` | `bijux-dev-atlas` | `stable` |
+| `crates/bijux-dev-atlas/docs/cli-command-list.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/command-surface.md` | `concept` | `bijux-dev-atlas` | `stable` |
 | `crates/bijux-dev-atlas/docs/commands.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/contract.md` | `concept` | `docs-governance` | `stable` |
@@ -257,6 +250,7 @@ License: Apache-2.0
 | `crates/bijux-dev-atlas/docs/exit-codes.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/failure-modes.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/index.md` | `concept` | `bijux-dev-atlas` | `stable` |
+| `crates/bijux-dev-atlas/docs/internal/artifacts.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/internal/cli-command-list.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/internal/configs-command-list.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/internal/engine-contract.md` | `concept` | `bijux-dev-atlas` | `evolving` |
@@ -281,13 +275,13 @@ License: Apache-2.0
 | `crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_latest/docker/README.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_patterns/docker/README.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/tests/fixtures/docker_contracts/pass/docker/README.md` | `concept` | `docs-governance` | `stable` |
-| `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/START_HERE.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_drafts/draft.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/index.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/commands.md` | `reference` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/configs.md` | `reference` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/make-targets.md` | `reference` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/schemas.md` | `reference` | `docs-governance` | `stable` |
+| `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/start-here.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/sub/intro.md` | `concept` | `docs-governance` | `stable` |
 | `docker/CONTRACT.md` | `concept` | `bijux-atlas-platform` | `stable` |
 | `docker/README.md` | `concept` | `docs-governance` | `stable` |
@@ -376,6 +370,7 @@ License: Apache-2.0
 | `docs/architecture/architecture-map.md` | `concept` | `architecture` | `stable` |
 | `docs/architecture/artifact-model.md` | `concept` | `architecture` | `stable` |
 | `docs/architecture/boundaries.md` | `concept` | `architecture` | `stable` |
+| `docs/architecture/boundary-maps.md` | `concept` | `platform` | `stable` |
 | `docs/architecture/common-failure-catalog.md` | `concept` | `architecture` | `stable` |
 | `docs/architecture/components.md` | `concept` | `architecture` | `stable` |
 | `docs/architecture/contract-runtime-mapping.md` | `concept` | `architecture` | `stable` |
@@ -383,6 +378,7 @@ License: Apache-2.0
 | `docs/architecture/crates-map.md` | `concept` | `architecture` | `stable` |
 | `docs/architecture/crates-philosophy.md` | `concept` | `architecture` | `stable` |
 | `docs/architecture/dataflow.md` | `concept` | `architecture` | `stable` |
+| `docs/architecture/decision-template.md` | `concept` | `platform` | `stable` |
 | `docs/architecture/design-principles.md` | `concept` | `architecture` | `stable` |
 | `docs/architecture/effects.md` | `concept` | `architecture` | `stable` |
 | `docs/architecture/error-model.md` | `concept` | `architecture` | `stable` |
@@ -414,6 +410,7 @@ License: Apache-2.0
 | `docs/control-plane/common-failure-messages.md` | `concept` | `platform` | `stable` |
 | `docs/control-plane/contract-changes-and-versioning.md` | `concept` | `platform` | `stable` |
 | `docs/control-plane/contract-coverage-dashboard.md` | `concept` | `platform` | `stable` |
+| `docs/control-plane/contracts.md` | `concept` | `platform` | `stable` |
 | `docs/control-plane/control-plane-architecture.md` | `concept` | `platform` | `stable` |
 | `docs/control-plane/debug-failing-checks.md` | `concept` | `platform` | `stable` |
 | `docs/control-plane/evidence-writing-style.md` | `concept` | `platform` | `stable` |
@@ -436,6 +433,7 @@ License: Apache-2.0
 | `docs/development/add-metric-span.md` | `concept` | `docs-governance` | `stable` |
 | `docs/development/ci-overview.md` | `concept` | `platform` | `stable` |
 | `docs/development/config-change-checklist.md` | `concept` | `docs-governance` | `stable` |
+| `docs/development/config-versioning.md` | `concept` | `platform` | `stable` |
 | `docs/development/contributing.md` | `concept` | `platform` | `stable` |
 | `docs/development/contributor-onboarding-rubric.md` | `concept` | `platform` | `stable` |
 | `docs/development/control-plane.md` | `concept` | `platform` | `stable` |
@@ -458,6 +456,7 @@ License: Apache-2.0
 | `docs/operations/deploy-kind.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/deploy-kubernetes-minimal.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/deploy.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/docs-convergence-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/drills-program.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/e2e/fixtures.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/e2e/index.md` | `concept` | `bijux-atlas-operations` | `stable` |
@@ -480,6 +479,7 @@ License: Apache-2.0
 | `docs/operations/observability/slos-with-promql.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/observability/tracing.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/operator-faq.md` | `concept` | `docs-governance` | `stable` |
+| `docs/operations/ops-docs-contract.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/ops-map.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/overview.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/promotion-record.md` | `concept` | `bijux-atlas-operations` | `stable` |
@@ -490,6 +490,7 @@ License: Apache-2.0
 | `docs/operations/release/capacity-planning-worksheet.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release/capacity-planning.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release/index.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/release/quality-wall.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release/rollback-procedure.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release/upgrade-procedure.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/retention-and-gc.md` | `concept` | `bijux-atlas-operations` | `stable` |
@@ -586,6 +587,7 @@ License: Apache-2.0
 | `make/_internal/contracts/MAKE_LAWS.md` | `spec` | `docs-governance` | `stable` |
 | `make/_internal/contracts/README.md` | `spec` | `docs-governance` | `stable` |
 | `ops/CONTRACT.md` | `concept` | `docs-governance` | `stable` |
+| `ops/ERRORS.md` | `concept` | `docs-governance` | `stable` |
 | `ops/README.md` | `concept` | `docs-governance` | `stable` |
 | `ops/datasets/CONTRACT.md` | `concept` | `bijux-atlas-data` | `stable` |
 | `ops/datasets/README.md` | `concept` | `bijux-atlas-data` | `stable` |

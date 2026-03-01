@@ -1408,52 +1408,6 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "bijux-atlas-cli",
-        "cli-command-list"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-cli/docs/cli-command-list.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "bijux-atlas-cli",
-        "cli-command-list"
-      ],
-      "title": "CLI_COMMAND_LIST",
-      "topic": "CLI_COMMAND_LIST"
-    },
-    {
-      "area": "bijux-atlas-cli",
-      "audience": "contributors",
-      "crate": "bijux-atlas-cli",
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "bijux-atlas-cli",
-        "plugin-contract"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-cli/docs/plugin-contract.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "bijux-atlas-cli",
-        "plugin-contract"
-      ],
-      "title": "Plugin Contract",
-      "topic": "PLUGIN_CONTRACT"
-    },
-    {
-      "area": "bijux-atlas-cli",
-      "audience": "contributors",
-      "crate": "bijux-atlas-cli",
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
         "architecture",
         "bijux-atlas-cli"
       ],
@@ -5527,52 +5481,6 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "architecture",
-        "bijux-dev-atlas"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/docs/architecture.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "architecture",
-        "bijux-dev-atlas"
-      ],
-      "title": "bijux-dev-atlas Architecture",
-      "topic": "ARCHITECTURE"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "benchmarks",
-        "bijux-dev-atlas"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/docs/benchmarks.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "benchmarks",
-        "bijux-dev-atlas"
-      ],
-      "title": "Benchmark Policy",
-      "topic": "BENCHMARKS"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
         "bijux-dev-atlas",
         "contract"
       ],
@@ -5597,29 +5505,6 @@
       "doc_version": "v1",
       "keywords": [
         "bijux-dev-atlas",
-        "errors"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/docs/errors.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "bijux-dev-atlas",
-        "errors"
-      ],
-      "title": "Error Policy",
-      "topic": "ERRORS"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "bijux-dev-atlas",
         "readme"
       ],
       "last_reviewed": "2026-02-25",
@@ -5634,52 +5519,6 @@
       ],
       "title": "bijux-dev-atlas",
       "topic": "README"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "bijux-dev-atlas",
-        "testing"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/docs/testing.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "bijux-dev-atlas",
-        "testing"
-      ],
-      "title": "Testing Policy",
-      "topic": "TESTING"
-    },
-    {
-      "area": "bijux-dev-atlas",
-      "audience": "contributors",
-      "crate": "bijux-dev-atlas",
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "bijux-dev-atlas",
-        "cli-command-list"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/docs/cli-command-list.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "bijux-dev-atlas",
-        "cli-command-list"
-      ],
-      "title": "CLI_COMMAND_LIST",
-      "topic": "CLI_COMMAND_LIST"
     },
     {
       "area": "bijux-dev-atlas",
@@ -5711,29 +5550,6 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "artifacts",
-        "bijux-dev-atlas"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/docs/artifacts.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "artifacts",
-        "bijux-dev-atlas"
-      ],
-      "title": "Dev Control Plane Artifacts",
-      "topic": "artifacts"
-    },
-    {
-      "area": "bijux-dev-atlas",
-      "audience": "contributors",
-      "crate": "bijux-dev-atlas",
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
         "benchmarks",
         "bijux-dev-atlas"
       ],
@@ -5749,6 +5565,29 @@
       ],
       "title": "BENCHMARKS (bijux-dev-atlas)",
       "topic": "benchmarks"
+    },
+    {
+      "area": "bijux-dev-atlas",
+      "audience": "contributors",
+      "crate": "bijux-dev-atlas",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "cli-command-list"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/docs/cli-command-list.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "cli-command-list"
+      ],
+      "title": "cli command list",
+      "topic": "cli-command-list"
     },
     {
       "area": "bijux-dev-atlas",
@@ -5956,6 +5795,31 @@
       ],
       "title": "bijux-dev-atlas Docs Index",
       "topic": "index"
+    },
+    {
+      "area": "bijux-dev-atlas",
+      "audience": "contributors",
+      "crate": "bijux-dev-atlas",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "artifacts",
+        "bijux-dev-atlas",
+        "internal"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/docs/internal/artifacts.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "artifacts",
+        "bijux-dev-atlas",
+        "internal"
+      ],
+      "title": "Dev Control Plane Artifacts",
+      "topic": "artifacts"
     },
     {
       "area": "bijux-dev-atlas",
@@ -6668,35 +6532,6 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "bijux-dev-atlas",
-        "docs-mini",
-        "fixtures",
-        "start-here",
-        "tests"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/START_HERE.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "bijux-dev-atlas",
-        "docs-mini",
-        "fixtures",
-        "start-here",
-        "tests"
-      ],
-      "title": "Start Here",
-      "topic": "START_HERE"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
         "-drafts",
         "bijux-dev-atlas",
         "docs-mini",
@@ -6873,6 +6708,35 @@
       ],
       "title": "Schemas Reference",
       "topic": "schemas"
+    },
+    {
+      "area": "crates",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "docs-mini",
+        "fixtures",
+        "start-here",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/start-here.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "docs-mini",
+        "fixtures",
+        "start-here",
+        "tests"
+      ],
+      "title": "Start Here",
+      "topic": "start-here"
     },
     {
       "area": "crates",
@@ -9088,6 +8952,29 @@
     },
     {
       "area": "architecture",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "architecture",
+        "boundary-maps"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/architecture/boundary-maps.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "boundary-maps"
+      ],
+      "title": "Boundary maps",
+      "topic": "boundary-maps"
+    },
+    {
+      "area": "architecture",
       "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
@@ -9246,6 +9133,29 @@
       ],
       "title": "Dataflow",
       "topic": "dataflow"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "architecture",
+        "decision-template"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/architecture/decision-template.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "decision-template"
+      ],
+      "title": "Architecture decision template",
+      "topic": "decision-template"
     },
     {
       "area": "architecture",
@@ -9960,6 +9870,29 @@
     },
     {
       "area": "control-plane",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "control-plane"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/control-plane/contracts.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "control-plane"
+      ],
+      "title": "Contracts runtime behavior",
+      "topic": "contracts"
+    },
+    {
+      "area": "control-plane",
       "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
@@ -10466,6 +10399,29 @@
     },
     {
       "area": "development",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "config-versioning",
+        "development"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/development/config-versioning.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "config-versioning",
+        "development"
+      ],
+      "title": "Config versioning",
+      "topic": "config-versioning"
+    },
+    {
+      "area": "development",
       "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
@@ -10965,6 +10921,29 @@
       ],
       "title": "Deploy",
       "topic": "deploy"
+    },
+    {
+      "area": "operations",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "docs-convergence-policy",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/docs-convergence-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "docs-convergence-policy",
+        "operations"
+      ],
+      "title": "Docs convergence policy",
+      "topic": "docs-convergence-policy"
     },
     {
       "area": "operations",
@@ -11498,6 +11477,29 @@
     },
     {
       "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-docs-contract"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/ops-docs-contract.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-docs-contract"
+      ],
+      "title": "Ops docs contract",
+      "topic": "ops-docs-contract"
+    },
+    {
+      "area": "operations",
       "audience": "operators",
       "crate": null,
       "doc_type": "concept",
@@ -11735,6 +11737,31 @@
       ],
       "title": "Release Operations",
       "topic": "index"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "quality-wall",
+        "release"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release/quality-wall.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "quality-wall",
+        "release"
+      ],
+      "title": "Quality wall",
+      "topic": "quality-wall"
     },
     {
       "area": "operations",
@@ -14073,6 +14100,29 @@
       ],
       "title": "Ops Contract",
       "topic": "CONTRACT"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "errors",
+        "ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/ERRORS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "errors",
+        "ops"
+      ],
+      "title": "Ops Error Catalog",
+      "topic": "ERRORS"
     },
     {
       "area": "ops",

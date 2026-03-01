@@ -405,52 +405,6 @@
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-cli",
-          "cli-command-list"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-cli",
-          "cli-command-list"
-        ],
-        "title": "CLI_COMMAND_LIST",
-        "topic": "CLI_COMMAND_LIST"
-      },
-      {
-        "area": "bijux-atlas-cli",
-        "audience": "contributors",
-        "crate": "bijux-atlas-cli",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-cli",
-          "plugin-contract"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/PLUGIN_CONTRACT.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-cli",
-          "plugin-contract"
-        ],
-        "title": "Plugin Contract",
-        "topic": "PLUGIN_CONTRACT"
-      },
-      {
-        "area": "bijux-atlas-cli",
-        "audience": "contributors",
-        "crate": "bijux-atlas-cli",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
           "architecture",
           "bijux-atlas-cli"
         ],
@@ -3875,29 +3829,6 @@
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-dev-atlas",
-          "cli-command-list"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-dev-atlas",
-          "cli-command-list"
-        ],
-        "title": "CLI_COMMAND_LIST",
-        "topic": "CLI_COMMAND_LIST"
-      },
-      {
-        "area": "bijux-dev-atlas",
-        "audience": "contributors",
-        "crate": "bijux-dev-atlas",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
           "architecture",
           "bijux-dev-atlas"
         ],
@@ -3921,29 +3852,6 @@
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "artifacts",
-          "bijux-dev-atlas"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-dev-atlas/docs/artifacts.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "artifacts",
-          "bijux-dev-atlas"
-        ],
-        "title": "Dev Control Plane Artifacts",
-        "topic": "artifacts"
-      },
-      {
-        "area": "bijux-dev-atlas",
-        "audience": "contributors",
-        "crate": "bijux-dev-atlas",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
           "benchmarks",
           "bijux-dev-atlas"
         ],
@@ -3959,6 +3867,29 @@
         ],
         "title": "BENCHMARKS (bijux-dev-atlas)",
         "topic": "benchmarks"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
+          "cli-command-list"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/cli-command-list.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "cli-command-list"
+        ],
+        "title": "cli command list",
+        "topic": "cli-command-list"
       },
       {
         "area": "bijux-dev-atlas",
@@ -4166,6 +4097,31 @@
         ],
         "title": "bijux-dev-atlas Docs Index",
         "topic": "index"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "artifacts",
+          "bijux-dev-atlas",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/internal/artifacts.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "artifacts",
+          "bijux-dev-atlas",
+          "internal"
+        ],
+        "title": "Dev Control Plane Artifacts",
+        "topic": "artifacts"
       },
       {
         "area": "bijux-dev-atlas",

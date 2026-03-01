@@ -273,9 +273,11 @@ fn contracts_ops_effect_mode_requires_explicit_allow_flags() {
 #[test]
 #[ignore = "legacy docs contracts topology"]
 fn contracts_ops_ci_uses_default_artifacts_root() {
-    let out = repo_root().join("artifacts/contracts/ops/local/static/local/ops.json");
-    let inventory = repo_root().join("artifacts/contracts/ops/local/static/local/ops.inventory.json");
-    let maturity = repo_root().join("artifacts/contracts/ops/local/static/local/ops.maturity.json");
+    let out = repo_root().join("artifacts/run/local/gates/contracts/ops/local/static/ops.json");
+    let inventory =
+        repo_root().join("artifacts/run/local/gates/contracts/ops/local/static/ops.inventory.json");
+    let maturity =
+        repo_root().join("artifacts/run/local/gates/contracts/ops/local/static/ops.maturity.json");
     if out.exists() {
         fs::remove_file(&out).expect("remove prior report");
     }

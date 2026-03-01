@@ -3,62 +3,62 @@
   "rows": [
     {
       "crate": "bijux-atlas-api",
-      "root_doc_count": 8,
-      "docs_dir_count": 15,
+      "root_doc_count": 2,
+      "docs_dir_count": 17,
       "diagram_count": 3
     },
     {
       "crate": "bijux-atlas-cli",
-      "root_doc_count": 9,
-      "docs_dir_count": 11,
-      "diagram_count": 3
-    },
-    {
-      "crate": "bijux-atlas-core",
-      "root_doc_count": 8,
-      "docs_dir_count": 14,
-      "diagram_count": 3
-    },
-    {
-      "crate": "bijux-atlas-ingest",
-      "root_doc_count": 8,
-      "docs_dir_count": 12,
-      "diagram_count": 3
-    },
-    {
-      "crate": "bijux-atlas-model",
-      "root_doc_count": 9,
-      "docs_dir_count": 14,
-      "diagram_count": 3
-    },
-    {
-      "crate": "bijux-atlas-policies",
-      "root_doc_count": 9,
-      "docs_dir_count": 13,
-      "diagram_count": 3
-    },
-    {
-      "crate": "bijux-atlas-query",
-      "root_doc_count": 8,
-      "docs_dir_count": 13,
-      "diagram_count": 3
-    },
-    {
-      "crate": "bijux-atlas-server",
-      "root_doc_count": 8,
-      "docs_dir_count": 19,
-      "diagram_count": 3
-    },
-    {
-      "crate": "bijux-atlas-store",
-      "root_doc_count": 8,
+      "root_doc_count": 2,
       "docs_dir_count": 16,
       "diagram_count": 3
     },
     {
+      "crate": "bijux-atlas-core",
+      "root_doc_count": 2,
+      "docs_dir_count": 17,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-atlas-ingest",
+      "root_doc_count": 2,
+      "docs_dir_count": 16,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-atlas-model",
+      "root_doc_count": 2,
+      "docs_dir_count": 19,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-atlas-policies",
+      "root_doc_count": 2,
+      "docs_dir_count": 18,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-atlas-query",
+      "root_doc_count": 2,
+      "docs_dir_count": 17,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-atlas-server",
+      "root_doc_count": 2,
+      "docs_dir_count": 23,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-atlas-store",
+      "root_doc_count": 2,
+      "docs_dir_count": 20,
+      "diagram_count": 3
+    },
+    {
       "crate": "bijux-dev-atlas",
-      "root_doc_count": 10,
-      "docs_dir_count": 11,
+      "root_doc_count": 2,
+      "docs_dir_count": 20,
       "diagram_count": 3
     }
   ]
