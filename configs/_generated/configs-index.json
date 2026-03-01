@@ -529,16 +529,17 @@
   "max_groups": 15,
   "registry_path": "configs/inventory/configs.json",
   "root_files": [
-    "configs/README.md",
-    "configs/INDEX.md",
-    "configs/CONTRACT.md",
-    "configs/OWNERS.json",
     "configs/CONSUMERS.json",
-    "configs/consumers-registry.json",
-    "configs/owners-registry.json",
-    "configs/schema-map.json",
+    "configs/CONTRACT.md",
+    "configs/INDEX.md",
+    "configs/OWNERS.json",
+    "configs/README.md",
+    "configs/SCHEMAS.json",
     "configs/configs.contracts.json",
-    "configs/inventory.json"
+    "configs/consumers-registry.json",
+    "configs/inventory.json",
+    "configs/owners-registry.json",
+    "configs/schema-map.json"
   ],
   "schema_version": 1
 }

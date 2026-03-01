@@ -2,6 +2,7 @@
   "files": {
     "configs/CONSUMERS.json": "platform",
     "configs/OWNERS.json": "platform",
+    "configs/SCHEMAS.json": "platform",
     "configs/_generated/configs-index.json": "platform",
     "configs/configs.contracts.json": "platform",
     "configs/consumers-registry.json": "platform",

@@ -533,23 +533,53 @@ fn test_configs_030_file_consumer_coverage(ctx: &RunContext) -> TestResult {
             )
         }
     };
+    let owners = match read_owners(&ctx.repo_root) {
+        Ok(owners) => owners,
+        Err(err) => {
+            return fail(
+                "CONFIGS-030",
+                "configs.consumers.file_coverage",
+                OWNERS_PATH,
+                err,
+            )
+        }
+    };
     let mut violations = Vec::new();
-    for group in &index.registry.groups {
-        let files = index
-            .group_files
-            .get(&group.name)
-            .cloned()
-            .unwrap_or_default();
-        for file in files.public.iter().chain(files.generated.iter()) {
-            let matched = matching_file_consumers(&consumers, file);
-            if matched.is_empty() {
-                violations.push(violation(
-                    "CONFIGS-030",
-                    "configs.consumers.file_coverage",
-                    file,
-                    "public or generated config file is missing a per-file consumer declaration",
-                ));
-            }
+    for file in config_files_without_exclusions(&index) {
+        if file.ends_with(".md") {
+            continue;
+        }
+        if schema_like(&file) || file.starts_with("configs/contracts/") {
+            continue;
+        }
+        let matched_consumers = matching_file_consumers(&consumers, &file);
+        if matched_consumers.is_empty() {
+            violations.push(violation(
+                "CONFIGS-030",
+                "configs.consumers.file_coverage",
+                &file,
+                "governed config file is missing a per-file consumer declaration",
+            ));
+        }
+        let has_owner = if index.root_files.contains(&file) {
+            !matching_file_owners(&owners, &file).is_empty()
+        } else {
+            index.registry.groups.iter().any(|group| {
+                let files = index
+                    .group_files
+                    .get(&group.name)
+                    .cloned()
+                    .unwrap_or_default();
+                files.all().contains(&file) && !group.owner.trim().is_empty()
+            })
+        };
+        if !has_owner {
+            violations.push(violation(
+                "CONFIGS-030",
+                "configs.consumers.file_coverage",
+                &file,
+                "governed config file is missing a per-file owner declaration",
+            ));
         }
     }
     if violations.is_empty() {
@@ -582,6 +612,51 @@ fn test_configs_031_schema_map_coverage(ctx: &RunContext) -> TestResult {
             )
         }
     };
+    let schema_alias_path = ctx.repo_root.join(SCHEMAS_ALIAS_PATH);
+    let schema_alias = match read_text(&schema_alias_path) {
+        Ok(text) => text,
+        Err(err) => {
+            return fail(
+                "CONFIGS-031",
+                "configs.schemas.file_coverage",
+                SCHEMAS_ALIAS_PATH,
+                err,
+            )
+        }
+    };
+    let schema_alias_json = match serde_json::from_str::<serde_json::Value>(&schema_alias) {
+        Ok(value) => value,
+        Err(err) => {
+            return fail(
+                "CONFIGS-031",
+                "configs.schemas.file_coverage",
+                SCHEMAS_ALIAS_PATH,
+                format!("parse {SCHEMAS_ALIAS_PATH} failed: {err}"),
+            )
+        }
+    };
+    let schema_map_text = match read_text(&ctx.repo_root.join(SCHEMAS_PATH)) {
+        Ok(text) => text,
+        Err(err) => {
+            return fail(
+                "CONFIGS-031",
+                "configs.schemas.file_coverage",
+                SCHEMAS_PATH,
+                err,
+            )
+        }
+    };
+    let schema_map_json = match serde_json::from_str::<serde_json::Value>(&schema_map_text) {
+        Ok(value) => value,
+        Err(err) => {
+            return fail(
+                "CONFIGS-031",
+                "configs.schemas.file_coverage",
+                SCHEMAS_PATH,
+                format!("parse {SCHEMAS_PATH} failed: {err}"),
+            )
+        }
+    };
     if schemas.schema_version != 1 {
         return fail(
             "CONFIGS-031",
@@ -594,6 +669,14 @@ fn test_configs_031_schema_map_coverage(ctx: &RunContext) -> TestResult {
         );
     }
     let mut violations = Vec::new();
+    if schema_alias_json != schema_map_json {
+        violations.push(violation(
+            "CONFIGS-031",
+            "configs.schemas.file_coverage",
+            SCHEMAS_ALIAS_PATH,
+            format!("{SCHEMAS_ALIAS_PATH} must stay byte-for-byte aligned with {SCHEMAS_PATH}"),
+        ));
+    }
     for (pattern, schema) in &schemas.files {
         let matches_file = index.registry.groups.iter().any(|group| {
             let files = index
@@ -628,6 +711,27 @@ fn test_configs_031_schema_map_coverage(ctx: &RunContext) -> TestResult {
                 "configs.schemas.file_coverage",
                 schema,
                 format!("declared schema map target for `{pattern}` does not exist"),
+            ));
+            continue;
+        }
+        let schema_text = match read_text(&ctx.repo_root.join(schema)) {
+            Ok(text) => text,
+            Err(err) => {
+                violations.push(violation(
+                    "CONFIGS-031",
+                    "configs.schemas.file_coverage",
+                    schema,
+                    err,
+                ));
+                continue;
+            }
+        };
+        if let Err(err) = serde_json::from_str::<serde_json::Value>(&schema_text) {
+            violations.push(violation(
+                "CONFIGS-031",
+                "configs.schemas.file_coverage",
+                schema,
+                format!("declared schema map target for `{pattern}` is not valid json: {err}"),
             ));
         }
     }

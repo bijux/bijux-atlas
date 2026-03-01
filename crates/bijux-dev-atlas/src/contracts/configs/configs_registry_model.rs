@@ -3,10 +3,12 @@ const CONTRACT_SURFACE_PATH: &str = "configs/configs.contracts.json";
 const OWNERS_PATH: &str = "configs/owners-registry.json";
 const CONSUMERS_PATH: &str = "configs/consumers-registry.json";
 const SCHEMAS_PATH: &str = "configs/schema-map.json";
+const SCHEMAS_ALIAS_PATH: &str = "configs/SCHEMAS.json";
 const SCHEMA_VERSIONING_POLICY_PATH: &str = "configs/schema/versioning-policy.json";
-const ROOT_CANONICAL_JSON_FILES: [&str; 8] = [
+const ROOT_CANONICAL_JSON_FILES: [&str; 9] = [
     "configs/OWNERS.json",
     "configs/CONSUMERS.json",
+    "configs/SCHEMAS.json",
     "configs/owners-registry.json",
     "configs/consumers-registry.json",
     "configs/schema-map.json",
@@ -379,6 +381,16 @@ fn matching_file_consumers(consumers: &ConfigsConsumers, candidate: &str) -> Vec
     for (pattern, entries) in &consumers.files {
         if wildcard_match(pattern, candidate) {
             out.extend(entries.iter().cloned());
+        }
+    }
+    out.into_iter().collect()
+}
+
+fn matching_file_owners(owners: &ConfigsOwners, candidate: &str) -> Vec<String> {
+    let mut out = BTreeSet::new();
+    for (pattern, owner) in &owners.files {
+        if wildcard_match(pattern, candidate) {
+            out.insert(owner.clone());
         }
     }
     out.into_iter().collect()

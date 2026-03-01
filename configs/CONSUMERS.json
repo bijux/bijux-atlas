@@ -8,6 +8,10 @@
       "bijux-dev-atlas",
       "ci"
     ],
+    "configs/SCHEMAS.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
     "configs/_generated/configs-index.json": [
       "bijux-dev-atlas",
       "ci"

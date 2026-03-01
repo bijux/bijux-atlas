@@ -26,6 +26,7 @@
   "mapped_file_patterns": [
     "configs/CONSUMERS.json",
     "configs/OWNERS.json",
+    "configs/SCHEMAS.json",
     "configs/_generated/configs-index.json",
     "configs/ci/env-contract.json",
     "configs/ci/lanes.json",
