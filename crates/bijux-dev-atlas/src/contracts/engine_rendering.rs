@@ -49,6 +49,7 @@ pub fn to_pretty(report: &RunReport) -> String {
         .max()
         .unwrap_or(0)
         + 10;
+    let status_column_width = contract_label_width.max(case_label_width);
 
     out.push_str(&format!(
         "Contracts: {} (lane={}, mode={}, duration={}ms)\n",
@@ -76,7 +77,7 @@ pub fn to_pretty(report: &RunReport) -> String {
                     1_000,
                     report.metadata.color_enabled,
                 ),
-                contract_label_width,
+                status_column_width,
             )
         ));
         for case in report.cases.iter().filter(|c| c.contract_id == contract.id) {
@@ -90,7 +91,7 @@ pub fn to_pretty(report: &RunReport) -> String {
                         1_000,
                         report.metadata.color_enabled,
                     ),
-                    case_label_width,
+                    status_column_width,
                 )
             ));
             for violation in &case.violations {
