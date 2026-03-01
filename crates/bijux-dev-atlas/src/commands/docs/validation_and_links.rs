@@ -1,3 +1,13 @@
+#[derive(Debug, serde::Deserialize)]
+struct ExternalLinkAllowlistEntry {
+    pattern: String,
+}
+
+#[derive(Debug, serde::Deserialize)]
+struct ExternalLinkAllowlist {
+    entries: Vec<ExternalLinkAllowlistEntry>,
+}
+
 pub(crate) fn docs_validate_payload(
     ctx: &DocsContext,
     common: &DocsCommonArgs,
@@ -386,5 +396,121 @@ pub(crate) fn docs_links_payload(
         "capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},
         "options": {"strict": common.strict, "include_drafts": common.include_drafts},
         "external_link_check": {"enabled": common.allow_network, "mode": "disabled_best_effort"}
+    }))
+}
+
+fn docs_external_targets(
+    docs_root: &std::path::Path,
+    include_drafts: bool,
+) -> Result<BTreeMap<String, Vec<String>>, String> {
+    let link_re = Regex::new(r"\[[^\]]+\]\(([^)]+)\)").map_err(|e| e.to_string())?;
+    let image_re = Regex::new(r"!\[[^\]]*\]\(([^)]+)\)").map_err(|e| e.to_string())?;
+    let mut seen = BTreeMap::<String, Vec<String>>::new();
+    for file in docs_markdown_files(docs_root, include_drafts) {
+        let rel = file
+            .strip_prefix(docs_root)
+            .unwrap_or(&file)
+            .display()
+            .to_string();
+        let text = fs::read_to_string(&file).map_err(|e| format!("failed to read {rel}: {e}"))?;
+        for regex in [&link_re, &image_re] {
+            for cap in regex.captures_iter(&text) {
+                let target = cap.get(1).map(|m| m.as_str()).unwrap_or("").trim();
+                let cleaned = target.split('#').next().unwrap_or("").trim();
+                if cleaned.starts_with("http://") || cleaned.starts_with("https://") {
+                    seen.entry(cleaned.to_string()).or_default().push(rel.clone());
+                }
+            }
+        }
+    }
+    for refs in seen.values_mut() {
+        refs.sort();
+        refs.dedup();
+    }
+    Ok(seen)
+}
+
+fn docs_external_link_allowlist(
+    repo_root: &std::path::Path,
+    path: &std::path::Path,
+) -> Result<Vec<String>, String> {
+    let allowlist_path = if path.is_absolute() {
+        path.to_path_buf()
+    } else {
+        repo_root.join(path)
+    };
+    let text = fs::read_to_string(&allowlist_path)
+        .map_err(|e| format!("failed to read {}: {e}", allowlist_path.display()))?;
+    let payload: ExternalLinkAllowlist =
+        serde_json::from_str(&text).map_err(|e| format!("invalid allowlist json: {e}"))?;
+    Ok(payload.entries.into_iter().map(|entry| entry.pattern).collect())
+}
+
+fn docs_probe_external_link(url: &str) -> Result<(bool, String), String> {
+    let client = reqwest::blocking::Client::builder()
+        .timeout(std::time::Duration::from_secs(10))
+        .redirect(reqwest::redirect::Policy::limited(10))
+        .build()
+        .map_err(|e| format!("client build failed: {e}"))?;
+    match client.head(url).send() {
+        Ok(response) => Ok((
+            response.status().is_success(),
+            format!("status {}", response.status().as_u16()),
+        )),
+        Err(head_err) => {
+            let response = client
+                .get(url)
+                .send()
+                .map_err(|get_err| format!("HEAD failed: {head_err}; GET failed: {get_err}"))?;
+            Ok((
+                response.status().is_success(),
+                format!("status {}", response.status().as_u16()),
+            ))
+        }
+    }
+}
+
+pub(crate) fn docs_external_links_payload(
+    ctx: &DocsContext,
+    common: &DocsCommonArgs,
+    allowlist_path: &std::path::Path,
+) -> Result<serde_json::Value, String> {
+    if !common.allow_network {
+        return Err("docs external-links requires --allow-network".to_string());
+    }
+    let allowlist = docs_external_link_allowlist(&ctx.repo_root, allowlist_path)?;
+    let seen = docs_external_targets(&ctx.docs_root, common.include_drafts)?;
+    let mut rows = Vec::<serde_json::Value>::new();
+    let mut errors = Vec::<String>::new();
+    for (target, refs) in seen {
+        let allowlisted = allowlist.iter().any(|pattern| target.starts_with(pattern));
+        let (ok, detail) = if allowlisted {
+            (true, "allowlisted".to_string())
+        } else {
+            docs_probe_external_link(&target)?
+        };
+        if !ok {
+            let refs_text = refs.iter().take(3).cloned().collect::<Vec<_>>().join(", ");
+            errors.push(format!(
+                "DOCS_EXTERNAL_LINK_ERROR: {target} failed external link check ({detail}); referenced from {refs_text}"
+            ));
+        }
+        rows.push(serde_json::json!({
+            "target": target,
+            "allowlisted": allowlisted,
+            "ok": ok,
+            "detail": detail,
+            "references": refs
+        }));
+    }
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "run_id": ctx.run_id.as_str(),
+        "text": if errors.is_empty() { "docs external links passed" } else { "docs external links failed" },
+        "rows": rows,
+        "errors": errors,
+        "warnings": [],
+        "capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},
+        "options": {"strict": common.strict, "include_drafts": common.include_drafts, "allowlist": allowlist_path.display().to_string()}
     }))
 }

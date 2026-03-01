@@ -672,6 +672,21 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 }
                 Ok((emit_payload(common.format, common.out, &payload)?, code))
             }
+            DocsCommand::ExternalLinks(args) => {
+                let ctx = docs_context(&args.common)?;
+                let mut payload =
+                    docs_external_links_payload(&ctx, &args.common, &args.allowlist)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
+                    1
+                } else {
+                    0
+                };
+                if code != 0 {
+                    payload["error_code"] = serde_json::json!("DOCS_EXTERNAL_LINK_ERROR");
+                }
+                Ok((emit_payload(args.common.format, args.common.out, &payload)?, code))
+            }
             DocsCommand::Lint(common) => {
                 let ctx = docs_context(&common)?;
                 let mut payload = docs_lint_payload(&ctx, &common)?;

@@ -70,7 +70,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          npm --prefix configs/docs run -s link-check
+          cargo run -q -p bijux-dev-atlas -- docs external-links --allow-network --format json
       - name: Run docs spelling checks
         shell: bash
         run: |

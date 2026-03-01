@@ -285,7 +285,7 @@ jobs:
           cargo test -q -p bijux-atlas-api openapi_hash_matches_pinned_contract -- --exact > "${logs_root}/openapi-hash.stdout.log" 2> "${logs_root}/openapi-hash.stderr.log"
           cargo test -q -p bijux-atlas-server runtime_startup_config_contract_artifacts_match_generated > "${logs_root}/runtime-startup-config-contract.stdout.log" 2> "${logs_root}/runtime-startup-config-contract.stderr.log"
           mkdocs build --strict > "${report_root}/mkdocs-build.json" 2> "${logs_root}/mkdocs-build.stderr.log"
-          python3 scripts/docs/check_external_links.py --docs-root docs --allowlist configs/docs/external-link-allowlist.json > "${report_root}/docs-linkcheck.json" 2> "${logs_root}/docs-linkcheck.stderr.log"
+          cargo run -q -p bijux-dev-atlas -- docs external-links --allow-network --format json > "${report_root}/docs-linkcheck.json" 2> "${logs_root}/docs-linkcheck.stderr.log"
           ARTIFACT_ROOT="${report_root}" RUN_ID="${RUN_ID}" make docker-contracts > "${logs_root}/docker-contracts-static.stdout.log" 2> "${logs_root}/docker-contracts-static.stderr.log"
           make ops-contracts > "${logs_root}/ops-contracts-static.stdout.log" 2> "${logs_root}/ops-contracts-static.stderr.log"
           make ops-pr > "${report_root}/ci-pr.json" 2> "${logs_root}/ci-pr.stderr.log"

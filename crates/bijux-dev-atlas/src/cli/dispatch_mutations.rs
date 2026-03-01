@@ -198,6 +198,7 @@ fn force_json_docs(command: &mut DocsCommand) {
         | DocsCommand::Clean(common)
         | DocsCommand::Lint(common)
         | DocsCommand::Links(common)
+        | DocsCommand::ExternalLinks(crate::cli::DocsExternalLinksArgs { common, .. })
         | DocsCommand::Inventory(common)
         | DocsCommand::ShrinkReport(common) => common.format = FormatArg::Json,
         DocsCommand::Serve(args) => args.common.format = FormatArg::Json,
@@ -281,6 +282,7 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | DocsCommand::Validate(common)
             | DocsCommand::Lint(common)
             | DocsCommand::Links(common)
+            | DocsCommand::ExternalLinks(crate::cli::DocsExternalLinksArgs { common, .. })
             | DocsCommand::VerifyContracts(common) => common.strict = true,
             DocsCommand::Build(_)
             | DocsCommand::Serve(_)
@@ -527,6 +529,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | DocsCommand::Clean(common)
             | DocsCommand::Lint(common)
             | DocsCommand::Links(common)
+            | DocsCommand::ExternalLinks(crate::cli::DocsExternalLinksArgs { common, .. })
             | DocsCommand::Inventory(common)
             | DocsCommand::ShrinkReport(common) => common.repo_root = Some(root.clone()),
             DocsCommand::Serve(args) => args.common.repo_root = Some(root.clone()),

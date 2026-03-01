@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "markdownlint": "markdownlint-cli2 \"../../docs/**/*.md\" \"../../ops/**/*.md\"",
-    "link-check": "python3 ../../scripts/docs/check_external_links.py --docs-root ../../docs --allowlist external-link-allowlist.json",
+    "link-check": "cargo run -q -p bijux-dev-atlas -- docs external-links --repo-root ../.. --allow-network --allowlist configs/docs/external-link-allowlist.json --format json",
     "cspell": "cspell lint --config cspell.config.json \"../../docs/operations/*.md\" \"../../docs/operations/reference/*.md\" \"../../ops/*.md\""
   },
   "devDependencies": {

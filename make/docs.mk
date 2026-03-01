@@ -9,6 +9,9 @@ docs-doctor: ## Run docs doctor checks
 docs-validate: ## Run docs validation checks
 	@$(DEV_ATLAS) docs validate --format json
 
+docs-external-links: ## Run docs external link checks
+	@$(DEV_ATLAS) docs external-links --allow-network --format json
+
 docs-registry: ## Build docs registry and generated docs indexes
 	@$(DEV_ATLAS) docs registry build --allow-write --format json
 
@@ -33,4 +36,4 @@ docs-reference-regenerate: ## Regenerate docs operations reference pages from SS
 docs-reference-check: ## Check docs operations reference pages are regenerated
 	@$(DEV_ATLAS) docs reference check --allow-subprocess --format json
 
-.PHONY: docs docs-doctor docs-validate docs-registry docs-registry-validate docs-build docs-serve docs-clean docs-lock docs-reference-regenerate docs-reference-check
+.PHONY: docs docs-doctor docs-validate docs-external-links docs-registry docs-registry-validate docs-build docs-serve docs-clean docs-lock docs-reference-regenerate docs-reference-check

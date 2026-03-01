@@ -32,6 +32,7 @@ pub enum DocsCommand {
     Clean(DocsCommonArgs),
     Lint(DocsCommonArgs),
     Links(DocsCommonArgs),
+    ExternalLinks(DocsExternalLinksArgs),
     Inventory(DocsCommonArgs),
     ShrinkReport(DocsCommonArgs),
     Grep(DocsGrepArgs),
@@ -98,6 +99,14 @@ pub struct DocsGrepArgs {
     #[command(flatten)]
     pub common: DocsCommonArgs,
     pub pattern: String,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct DocsExternalLinksArgs {
+    #[command(flatten)]
+    pub common: DocsCommonArgs,
+    #[arg(long, default_value = "configs/docs/external-link-allowlist.json")]
+    pub allowlist: PathBuf,
 }
 
 #[derive(Subcommand, Debug)]
