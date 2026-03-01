@@ -359,6 +359,13 @@ pub enum ContractsLaneArg {
     Release,
 }
 
+#[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ContractsColorArg {
+    Auto,
+    Always,
+    Never,
+}
+
 #[derive(Args, Debug, Clone)]
 pub struct ContractsCommonArgs {
     #[arg(long)]
@@ -377,6 +384,8 @@ pub struct ContractsCommonArgs {
     pub profile: ContractsProfileArg,
     #[arg(long, value_enum, default_value_t = ContractsLaneArg::Local)]
     pub lane: ContractsLaneArg,
+    #[arg(long, value_enum, default_value_t = ContractsColorArg::Auto)]
+    pub color: ContractsColorArg,
     #[arg(long, default_value_t = false)]
     pub required: bool,
     #[arg(long, default_value_t = false)]

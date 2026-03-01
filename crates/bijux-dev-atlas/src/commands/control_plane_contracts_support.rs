@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ContractsCommonArgs, ContractsFormatArg, ContractsLaneArg, ContractsModeArg,
+    ContractsColorArg, ContractsCommonArgs, ContractsFormatArg, ContractsLaneArg, ContractsModeArg,
     ContractsOpsDomainArg, ContractsProfileArg,
 };
 use bijux_dev_atlas::contracts;
@@ -581,13 +581,36 @@ pub(super) fn run_one(
     let previous_profile = std::env::var_os("BIJUX_CONTRACTS_PROFILE");
     std::env::set_var("BIJUX_CONTRACTS_PROFILE", profile);
     let ci_mode = common.ci || std::env::var_os("CI").is_some();
+    let no_color = std::env::var_os("NO_COLOR").is_some();
+    let force_color = std::env::var("FORCE_COLOR")
+        .ok()
+        .is_some_and(|value| value != "0" && !value.trim().is_empty())
+        || std::env::var("CLICOLOR_FORCE")
+            .ok()
+            .is_some_and(|value| value != "0" && !value.trim().is_empty())
+        || std::env::var("CARGO_TERM_COLOR")
+            .ok()
+            .is_some_and(|value| value.eq_ignore_ascii_case("always"));
+    let color_enabled = match common.color {
+        ContractsColorArg::Always => true,
+        ContractsColorArg::Never => false,
+        ContractsColorArg::Auto => {
+            if force_color {
+                true
+            } else if no_color {
+                false
+            } else {
+                !ci_mode
+            }
+        }
+    };
     let options = contracts::RunOptions {
         lane: cli_lane(common.lane),
         mode,
         run_id: Some(run_id.clone()),
         required_only: common.required,
         ci: ci_mode,
-        color_enabled: !ci_mode,
+        color_enabled,
         allow_subprocess: common.allow_subprocess,
         allow_network: common.allow_network,
         allow_k8s: common.allow_k8s,
