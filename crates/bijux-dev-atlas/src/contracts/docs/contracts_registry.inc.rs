@@ -489,5 +489,15 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_046_reader_utility_no_internal_links,
             }],
         },
+        Contract {
+            id: ContractId("DOC-047".to_string()),
+            title: "reader spine pages do not link into internal docs",
+            tests: vec![TestCase {
+                id: TestId("docs.links.reader_spine_no_internal_links".to_string()),
+                title: "reader spine pages stay on the published surface",
+                kind: TestKind::Pure,
+                run: test_docs_047_reader_spine_no_internal_links,
+            }],
+        },
     ])
 }
