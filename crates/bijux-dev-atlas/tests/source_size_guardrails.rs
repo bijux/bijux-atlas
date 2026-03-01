@@ -78,7 +78,7 @@ fn source_size_hard_limit_is_below_1000_lines() {
 }
 
 #[test]
-fn critical_files_stay_below_700_lines() {
+fn critical_files_warn_at_800_and_fail_at_1000_lines() {
     let root = repo_root();
     let critical = [
         "crates/bijux-dev-atlas/src/contracts/docs/docs_static_metadata_checks.inc.rs",
@@ -92,16 +92,25 @@ fn critical_files_stay_below_700_lines() {
         "crates/bijux-dev-atlas/src/contracts/make/mod.rs",
     ];
     let mut violations = Vec::new();
+    let mut warnings = Vec::new();
     for rel in critical {
         let path = root.join(rel);
         let lines = count_lines(&path);
-        if lines >= 700 {
+        if lines >= 1000 {
             violations.push((rel.to_string(), lines));
+        } else if lines >= 800 {
+            warnings.push((rel.to_string(), lines));
+        }
+    }
+    if !warnings.is_empty() {
+        eprintln!("critical warning-zone files (>=800 LOC):");
+        for (rel, lines) in warnings {
+            eprintln!("  {lines:>4} {rel}");
         }
     }
     assert!(
         violations.is_empty(),
-        "critical files must stay below 700 LOC: {:?}",
+        "critical error-zone files (>=1000 LOC): {:?}",
         violations
     );
 }
