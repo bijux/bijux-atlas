@@ -48,10 +48,10 @@ Ops Pillars And Docs Entrypoints:
   inventory -> docs/operations/reference/ops-surface.md
   schema -> docs/operations/reference/schema-index.md
   datasets -> docs/operations/datasets.md
-  e2e -> docs/operations/e2e/INDEX.md
+  e2e -> docs/operations/e2e/index.md
   env -> docs/operations/config.md
   stack -> docs/operations/local-stack.md
-  k8s -> docs/operations/k8s/INDEX.md
-  load -> docs/operations/load/INDEX.md
-  observe -> docs/operations/observability/INDEX.md
+  k8s -> docs/operations/k8s/index.md
+  load -> docs/operations/load/index.md
+  observe -> docs/operations/observability/index.md
   report -> docs/operations/unified-report.md

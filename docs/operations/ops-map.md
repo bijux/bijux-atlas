@@ -9,6 +9,7 @@
 ## What
 
 This page maps each ops pillar to its single docs entry page.
+The `Stack` pillar name follows the glossary term and remains a first-class operator surface.
 
 ## Why
 

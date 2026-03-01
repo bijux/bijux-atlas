@@ -25,6 +25,7 @@ related:
 ## Why this section exists
 
 The control-plane replaces ad-hoc scripts with explicit, contract-governed commands, reports, and gates.
+In this documentation set, the `Control plane` is the `bijux dev atlas` surface that enforces those rules consistently.
 
 ## Curated guide map
 

@@ -26,6 +26,38 @@ See [Runbooks to alerts mapping](../runbooks-to-alerts-mapping.md) for the expli
 
 See [Observability Alerts](../observability/alerts.md) for alert-to-runbook routing.
 
+## Symptoms
+
+This index aggregates recurring incident symptoms and routes to a specific runbook.
+
+## Metrics
+
+Primary SLO and alert metrics are defined in the linked runbooks and observability pages.
+
+## Commands
+
+```bash
+make ops-readiness-scorecard
+```
+
+## Expected outputs
+
+Readiness scorecard output should summarize lane health and artifact evidence.
+
+## Mitigations
+
+Select the runbook that matches the active alert and follow its mitigation flow.
+
+## Rollback
+
+Use [Rollback Playbook](rollback-playbook.md) when mitigations require controlled rollback.
+
+## Postmortem checklist
+
+- Capture timeline and impacted surfaces.
+- Link incident to the executed runbook.
+- Record follow-up actions in release planning.
+
 ## Next
 
 - [Incident Response](../incident-response.md)
