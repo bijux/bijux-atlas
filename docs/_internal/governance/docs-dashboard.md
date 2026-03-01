@@ -16,9 +16,11 @@
 - [Delete candidates](../generated/governance-audit/docs-top-delete-pages.md)
 - [Merge candidates](../generated/governance-audit/docs-top-merge-clusters.md)
 - [Uppercase index cleanup](../generated/governance-audit/docs-uppercase-index-pages.txt)
+- [Docs inventory](../generated/governance-audit/docs-inventory.csv)
 - [Docs Quality Dashboard](../generated/docs-quality-dashboard.json)
 - [Docs Dependency Graph](../generated/docs-dependency-graph.json)
 - [Docs Contract Coverage](../generated/docs-contract-coverage.json)
+- [Sitemap](../generated/sitemap.json)
 - [Search Index](../generated/search-index.json)
 
 ## Usage Rules

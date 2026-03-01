@@ -68,6 +68,8 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-055" => "Section index pages stay curated and may not turn into long inventories.".to_string(),
         "DOC-056" => "Home and Start Here must remain the first reader nav items.".to_string(),
         "DOC-057" => "Governance reader entrypoints must stay nested under Development instead of surfacing as a top-level section.".to_string(),
+        "DOC-058" => "Generated docs artifacts must live under the single internal generated sink.".to_string(),
+        "DOC-059" => "Docs Dashboard must expose the required generated audit outputs from one contributor entrypoint.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }

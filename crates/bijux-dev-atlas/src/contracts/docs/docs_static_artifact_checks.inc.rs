@@ -374,3 +374,75 @@ fn test_docs_036_coverage_report_generated(ctx: &RunContext) -> TestResult {
         &payload,
     )
 }
+
+fn test_docs_058_generated_docs_live_under_internal(ctx: &RunContext) -> TestResult {
+    let generated_dirs = docs_relative_directories_named(ctx, "_generated");
+    let violations = generated_dirs
+        .into_iter()
+        .filter(|path| path != "docs/_internal/generated")
+        .map(|path| Violation {
+            contract_id: "DOC-058".to_string(),
+            test_id: "docs.artifacts.generated_under_internal_only".to_string(),
+            file: Some(path),
+            line: None,
+            message: "generated docs directories must live under docs/_internal/generated only"
+                .to_string(),
+            evidence: None,
+        })
+        .collect::<Vec<_>>();
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_docs_059_dashboard_links_required_artifacts(ctx: &RunContext) -> TestResult {
+    let relative = "docs/_internal/governance/docs-dashboard.md";
+    let contents = match std::fs::read_to_string(ctx.repo_root.join(relative)) {
+        Ok(contents) => contents,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-059".to_string(),
+                test_id: "docs.artifacts.dashboard_links_required_outputs".to_string(),
+                file: Some(relative.to_string()),
+                line: None,
+                message: format!("read failed: {err}"),
+                evidence: None,
+            }]);
+        }
+    };
+    let required_targets = [
+        "../generated/governance-audit/index.md",
+        "../generated/governance-audit/docs-broken-links.csv",
+        "../generated/governance-audit/docs-dead-end-pages.txt",
+        "../generated/governance-audit/docs-top-delete-pages.md",
+        "../generated/governance-audit/docs-top-merge-clusters.md",
+        "../generated/governance-audit/docs-uppercase-index-pages.txt",
+        "../generated/governance-audit/docs-inventory.csv",
+        "../generated/docs-quality-dashboard.json",
+        "../generated/docs-dependency-graph.json",
+        "../generated/docs-contract-coverage.json",
+        "../generated/sitemap.json",
+        "../generated/search-index.json",
+    ];
+    let links = markdown_links_for_reports(&contents);
+    let mut violations = Vec::new();
+    for target in required_targets {
+        if !links.iter().any(|link| link == target) {
+            violations.push(Violation {
+                contract_id: "DOC-059".to_string(),
+                test_id: "docs.artifacts.dashboard_links_required_outputs".to_string(),
+                file: Some(relative.to_string()),
+                line: None,
+                message: format!("Docs Dashboard must link `{target}`"),
+                evidence: None,
+            });
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}

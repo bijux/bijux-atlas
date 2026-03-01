@@ -599,5 +599,25 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_057_governance_nested_under_development,
             }],
         },
+        Contract {
+            id: ContractId("DOC-058".to_string()),
+            title: "generated docs stay under the internal sink",
+            tests: vec![TestCase {
+                id: TestId("docs.artifacts.generated_under_internal_only".to_string()),
+                title: "docs use docs/_internal/generated as the only generated directory sink",
+                kind: TestKind::Pure,
+                run: test_docs_058_generated_docs_live_under_internal,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-059".to_string()),
+            title: "docs dashboard links required generated artifacts",
+            tests: vec![TestCase {
+                id: TestId("docs.artifacts.dashboard_links_required_outputs".to_string()),
+                title: "Docs Dashboard links the required generated audit outputs",
+                kind: TestKind::Pure,
+                run: test_docs_059_dashboard_links_required_artifacts,
+            }],
+        },
     ])
 }

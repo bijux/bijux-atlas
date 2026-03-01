@@ -249,6 +249,34 @@ fn docs_published_markdown_files(ctx: &RunContext) -> Vec<String> {
     files
 }
 
+fn docs_relative_directories_named(ctx: &RunContext, dir_name: &str) -> Vec<String> {
+    let mut matches = Vec::new();
+    let docs_root = docs_root_path(ctx);
+    let mut stack = vec![docs_root.clone()];
+    while let Some(dir) = stack.pop() {
+        let entries = match std::fs::read_dir(&dir) {
+            Ok(entries) => entries,
+            Err(_) => continue,
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if !path.is_dir() {
+                continue;
+            }
+            stack.push(path.clone());
+            if path.file_name().and_then(|value| value.to_str()) != Some(dir_name) {
+                continue;
+            }
+            let Ok(relative) = path.strip_prefix(&ctx.repo_root) else {
+                continue;
+            };
+            matches.push(relative.display().to_string());
+        }
+    }
+    matches.sort();
+    matches
+}
+
 fn docs_first_h1(contents: &str) -> Option<String> {
     let mut in_fence = false;
     for line in contents.lines() {
