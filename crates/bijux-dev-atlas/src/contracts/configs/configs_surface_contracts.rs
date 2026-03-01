@@ -335,6 +335,13 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             "root authority config files carry explicit file-level owner coverage",
             test_configs_044_root_owner_file_coverage,
         ),
+        contract(
+            "CONFIGS-045",
+            "configs root authority files declare consumers",
+            "configs.consumers.root_file_coverage",
+            "root authority config files carry explicit file-level consumer coverage",
+            test_configs_045_root_consumer_file_coverage,
+        ),
     ])
 }
 
@@ -403,6 +410,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "CONFIGS-042" => "The consumer registry must validate against its declared schema, not just parse successfully.".to_string(),
         "CONFIGS-043" => "The schema map must validate against its declared schema and keep the authority surface strict.".to_string(),
         "CONFIGS-044" => "Root authority config files must carry explicit file-level owner coverage in configs/owners-registry.json.".to_string(),
+        "CONFIGS-045" => "Root authority config files must carry explicit file-level consumer coverage in configs/consumers-registry.json.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts configs`.".to_string(),
     }
 }

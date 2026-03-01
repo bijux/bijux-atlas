@@ -647,3 +647,57 @@ fn test_configs_044_root_owner_file_coverage(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
+
+fn test_configs_045_root_consumer_file_coverage(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => {
+            return fail(
+                "CONFIGS-045",
+                "configs.consumers.root_file_coverage",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let consumers = match read_consumers(&ctx.repo_root) {
+        Ok(consumers) => consumers,
+        Err(err) => {
+            return fail(
+                "CONFIGS-045",
+                "configs.consumers.root_file_coverage",
+                CONSUMERS_PATH,
+                err,
+            )
+        }
+    };
+    let mut violations = Vec::new();
+    for file in index
+        .root_files
+        .iter()
+        .filter(|file| file.ends_with(".json") || file.ends_with(".jsonc"))
+    {
+        let Some(entries) = consumers.files.get(file) else {
+            violations.push(violation(
+                "CONFIGS-045",
+                "configs.consumers.root_file_coverage",
+                file,
+                "root authority config file is missing explicit file-level consumer coverage",
+            ));
+            continue;
+        };
+        if entries.is_empty() {
+            violations.push(violation(
+                "CONFIGS-045",
+                "configs.consumers.root_file_coverage",
+                file,
+                "root authority config file must list at least one explicit consumer",
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}

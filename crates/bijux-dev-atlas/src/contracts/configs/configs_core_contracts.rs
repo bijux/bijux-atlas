@@ -398,7 +398,7 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
             ),
         );
     }
-    let expected = (1..=48)
+    let expected = (1..=49)
         .map(|n| format!("CFG-{n:03}"))
         .collect::<BTreeSet<_>>();
     let actual = surface
