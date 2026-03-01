@@ -27,6 +27,7 @@ CURATED_TARGETS := \
 	k8s-render k8s-validate \
 	lint lint-make make-target-list \
 	ops-contracts ops-contracts-effect ops-fast ops-nightly ops-pr \
+	root-surface-explain \
 	stack-down stack-up \
 	test test-all
 
@@ -55,6 +56,9 @@ doctor: ## Run Rust control-plane doctor suite as JSON
 	@printf '{\n  "schema_version": 1,\n  "text": "repo touched paths report",\n  "touched_paths": [\n' > $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/touched-paths-report.json
 	@git status --porcelain | awk '{print $$2}' | LC_ALL=C sort -u | awk 'BEGIN{first=1} { if (!first) printf(",\\n"); first=0; printf("    \"%s\"", $$0)} END{printf("\\n") }' >> $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/touched-paths-report.json
 	@printf '  ]\n}\n' >> $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/touched-paths-report.json
+
+root-surface-explain: ## Explain why each root file and directory exists
+	@$(DEV_ATLAS) check root-surface-explain --format text
 
 clean: ## Clean ephemeral artifacts through the control plane
 	@$(DEV_ATLAS) artifacts clean --allow-write --format text
@@ -107,4 +111,4 @@ ops-nightly: ## Run nightly ops check suite through dev-atlas
 	@mkdir -p $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)
 	@$(DEV_ATLAS) check run --suite ci_nightly --include-internal --include-slow --format json --out $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)/report.json >/dev/null
 
-.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean clean doctor k8s-render k8s-validate lint-make stack-up stack-down ops-fast ops-pr ops-nightly
+.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean clean doctor root-surface-explain k8s-render k8s-validate lint-make stack-up stack-down ops-fast ops-pr ops-nightly

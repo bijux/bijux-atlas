@@ -294,7 +294,8 @@ fn force_json_check(command: &mut CheckCommand) {
         | CheckCommand::Doctor { format, .. }
         | CheckCommand::Run { format, .. }
         | CheckCommand::TreeBudgets { format, .. }
-        | CheckCommand::RepoDoctor { format, .. } => *format = FormatArg::Json,
+        | CheckCommand::RepoDoctor { format, .. }
+        | CheckCommand::RootSurfaceExplain { format, .. } => *format = FormatArg::Json,
     }
 }
 
@@ -622,7 +623,8 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | CheckCommand::Doctor { repo_root, .. }
             | CheckCommand::Run { repo_root, .. }
             | CheckCommand::TreeBudgets { repo_root, .. }
-            | CheckCommand::RepoDoctor { repo_root, .. } => *repo_root = Some(root.clone()),
+            | CheckCommand::RepoDoctor { repo_root, .. }
+            | CheckCommand::RootSurfaceExplain { repo_root, .. } => *repo_root = Some(root.clone()),
         },
         Command::Demo { command } => match command {
             crate::cli::DemoCommand::Quickstart(args) => args.repo_root = Some(root.clone()),

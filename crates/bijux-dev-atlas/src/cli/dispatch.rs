@@ -4,7 +4,7 @@ use crate::cli::{CheckCommand, CheckRegistryCommand, Cli, Command, FormatArg, Re
 use crate::{
     plugin_metadata_json, run_artifacts_command, run_build_command, run_capabilities_command,
     run_check_doctor, run_check_explain, run_check_list, run_check_registry_doctor,
-    run_check_repo_doctor, run_check_run, run_check_tree_budgets, run_configs_command,
+    run_check_repo_doctor, run_check_root_surface_explain, run_check_run, run_check_tree_budgets, run_configs_command,
     run_contracts_command, run_demo_command, run_docker_command, run_docs_command,
     run_gates_command, run_help_inventory_command, run_make_command, run_ops_command,
     run_policies_command, run_print_boundaries_command, run_version_command, run_workflows_command,
@@ -413,6 +413,11 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                     format,
                     out,
                 } => run_check_repo_doctor(repo_root, format, out),
+                CheckCommand::RootSurfaceExplain {
+                    repo_root,
+                    format,
+                    out,
+                } => run_check_root_surface_explain(repo_root, format, out),
             };
             match result {
                 Ok((rendered, code)) => {

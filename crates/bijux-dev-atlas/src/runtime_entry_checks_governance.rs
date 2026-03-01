@@ -523,6 +523,58 @@ pub(crate) fn run_check_repo_doctor(
     Ok((rendered, code))
 }
 
+pub(crate) fn run_check_root_surface_explain(
+    repo_root: Option<PathBuf>,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let manifest_rel = Path::new("ops/inventory/root-surface.json");
+    let allowlist_rel = Path::new("configs/repo/root-file-allowlist.json");
+    let rationale_rel = Path::new("docs/_internal/root-surface.md");
+
+    let manifest: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(root.join(manifest_rel))
+            .map_err(|e| format!("read {} failed: {e}", manifest_rel.display()))?,
+    )
+    .map_err(|e| format!("parse {} failed: {e}", manifest_rel.display()))?;
+    let allowlist: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(root.join(allowlist_rel))
+            .map_err(|e| format!("read {} failed: {e}", allowlist_rel.display()))?,
+    )
+    .map_err(|e| format!("parse {} failed: {e}", allowlist_rel.display()))?;
+
+    let mut root_entries = manifest["entries"]
+        .as_object()
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|(name, meta)| {
+            serde_json::json!({
+                "name": name,
+                "kind": meta["kind"].as_str().unwrap_or("unknown"),
+                "reason": "declared in ops/inventory/root-surface.json as canonical root surface"
+            })
+        })
+        .collect::<Vec<_>>();
+    root_entries.sort_by_key(|row| row["name"].as_str().unwrap_or_default().to_string());
+
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "root_surface_explain",
+        "text": "root surface authority and rationale",
+        "paths": {
+            "manifest": manifest_rel.display().to_string(),
+            "allowlist": allowlist_rel.display().to_string(),
+            "rationale": rationale_rel.display().to_string()
+        },
+        "allowlist": allowlist,
+        "entries": root_entries
+    });
+    let rendered = emit_payload(format, out, &payload)?;
+    Ok((rendered, 0))
+}
+
 pub(crate) fn run_check_registry_doctor(
     repo_root: Option<PathBuf>,
     format: FormatArg,

@@ -126,6 +126,43 @@ jobs:
             --slurpfile run_report "${contracts_root}/repo-required.json" \
             '{schema_version:1,kind:"repo_integrity_summary",run_id:$run_id,laws_source:$source,required_suite:$suite,checks_total:($suite_members[0].checks|length),counts:$run_report[0].counts,p0_checks:$suite_members[0].checks|map(.id)}' \
             > "${report_root}/repo-integrity-summary.json"
+          base_ref="${GITHUB_BASE_REF:-main}"
+          base_sha="$(git merge-base HEAD "origin/${base_ref}" || true)"
+          if [ -z "${base_sha}" ]; then
+            base_sha="$(git rev-parse HEAD~1)"
+          fi
+          git diff --name-status "${base_sha}...HEAD" > "${report_root}/repo-surface-diff.txt"
+          export REPORT_ROOT="${report_root}"
+          export BASE_SHA="${base_sha}"
+          python - <<'PY'
+          import json, pathlib, os
+          root = pathlib.Path(os.environ["REPORT_ROOT"])
+          lines = [ln.strip() for ln in (root / "repo-surface-diff.txt").read_text().splitlines() if ln.strip()]
+          rows = []
+          root_rows = []
+          for line in lines:
+            parts = line.split("\t")
+            status = parts[0]
+            paths = [p for p in parts[1:] if p]
+            rows.append({"status": status, "paths": paths})
+            for p in paths:
+              if "/" not in p:
+                root_rows.append({"status": status, "path": p})
+          (root / "repo-surface-diff.json").write_text(json.dumps({
+              "schema_version": 1,
+              "kind": "repo_surface_diff",
+              "base": os.environ.get("BASE_SHA", ""),
+              "head": os.environ.get("GITHUB_SHA", ""),
+              "changes": rows,
+          }, indent=2) + "\n")
+          (root / "root-change-report.json").write_text(json.dumps({
+              "schema_version": 1,
+              "kind": "root_change_report",
+              "base": os.environ.get("BASE_SHA", ""),
+              "head": os.environ.get("GITHUB_SHA", ""),
+              "root_changes": root_rows,
+          }, indent=2) + "\n")
+          PY
           cargo run -q -p bijux-dev-atlas -- contracts runtime --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/runtime-static.json" 2> "${logs_root}/runtime-contracts-static.stderr.log"
           cargo run -q -p bijux-dev-atlas -- contracts control-plane --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/control-plane-static.json" 2> "${logs_root}/control-plane-contracts-static.stderr.log"
           cargo run -q -p bijux-dev-atlas -- contracts configs --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/configs-static.json" 2> "${logs_root}/configs-contracts-static.stderr.log"
@@ -202,6 +239,7 @@ jobs:
             "${report_root}/ci-fast.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
           printf "\n- contracts all: %s\n- docs required: %s\n- docs required membership: %s\n- configs required: %s\n- configs required membership: %s\n- make required: %s\n- make required membership: %s\n- repo required: %s\n- repo required membership: %s\n- repo integrity summary: %s\n- contracts runtime static: %s\n- contracts control-plane static: %s\n- contracts configs static: %s\n- contracts make static: %s\n- contracts ops static: %s\n- contracts docker static: %s\n- coverage: %s\n" \
             "${contracts_root}/all.json" "${contracts_root}/docs-required.json" "${report_root}/suite-membership-docs_required.json" "${contracts_root}/configs-required.json" "${report_root}/suite-membership-configs_required.json" "${contracts_root}/make-required.json" "${report_root}/suite-membership-make_required.json" "${contracts_root}/repo-required.json" "${report_root}/suite-membership-repo_required.json" "${report_root}/repo-integrity-summary.json" "${contracts_root}/runtime-static.json" "${contracts_root}/control-plane-static.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-static.json" "${contracts_root}/docker-static.json" "${contracts_root}/coverage-summary.json" >> "artifacts/${RUN_ID}/summary.md"
+          printf "- repo surface diff: %s\n- root change report: %s\n" "${report_root}/repo-surface-diff.json" "${report_root}/root-change-report.json" >> "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()

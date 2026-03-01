@@ -10,6 +10,7 @@ Canonical repo law source lives in `docs/_internal/contracts/repo-laws.md`.
 Do not restate law text in root docs.
 
 ## Local Validation
+- `bijux dev atlas check doctor --format text`
 - `make fmt`
 - `make lint`
 - `make test`
