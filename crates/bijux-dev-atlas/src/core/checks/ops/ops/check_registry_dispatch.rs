@@ -223,6 +223,7 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_repo_root_markdown_allowlist_contract" => {
             Some(check_repo_root_markdown_allowlist_contract)
         }
+        "checks_repo_registry_order_deterministic" => Some(check_repo_registry_order_deterministic),
         "checks_repo_suite_includes_p0_checks" => Some(check_repo_suite_includes_p0_checks),
         "checks_root_artifacts_bin_binaries_executable_and_version_printable" => {
             Some(check_artifacts_bin_binaries_executable_and_version_printable)
@@ -331,6 +332,7 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_repo_pr_required_suite_not_skippable",
         "checks_repo_root_directory_allowlist_contract",
         "checks_repo_root_markdown_allowlist_contract",
+        "checks_repo_registry_order_deterministic",
         "checks_repo_suite_includes_p0_checks",
         "checks_root_artifacts_bin_binaries_executable_and_version_printable",
         "checks_root_forbidden_retired_directories_absent",

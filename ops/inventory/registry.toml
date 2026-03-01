@@ -1027,6 +1027,17 @@ budget_ms = 1000
 visibility = "internal"
 
 [[checks]]
+id = "checks_repo_registry_order_deterministic"
+domain = "repo"
+title = "check and suite registries are ordered deterministically"
+docs = "ops/inventory/registry.toml"
+tags = ["repo", "internal", "fast"]
+suites = ["repo_required"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
 id = "checks_repo_root_directory_allowlist_contract"
 domain = "repo"
 title = "new root directories require explicit allowlist approval"
@@ -1481,6 +1492,7 @@ checks = [
   "checks_repo_pr_required_suite_not_skippable",
   "checks_repo_root_directory_allowlist_contract",
   "checks_repo_root_markdown_allowlist_contract",
+  "checks_repo_registry_order_deterministic",
   "checks_repo_suite_includes_p0_checks",
 ]
 domains = []

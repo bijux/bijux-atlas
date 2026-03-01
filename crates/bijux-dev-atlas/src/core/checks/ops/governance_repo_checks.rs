@@ -868,6 +868,58 @@ pub(super) fn check_repo_suite_includes_p0_checks(
     Ok(violations)
 }
 
+pub(super) fn check_repo_registry_order_deterministic(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("ops/inventory/registry.toml");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut check_ids = Vec::new();
+    let mut suite_ids = Vec::new();
+    let mut mode = "";
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if trimmed == "[[checks]]" {
+            mode = "checks";
+            continue;
+        }
+        if trimmed == "[[suites]]" {
+            mode = "suites";
+            continue;
+        }
+        if let Some(raw_id) = trimmed.strip_prefix("id = ") {
+            let id = raw_id.trim().trim_matches('"').to_string();
+            if mode == "checks" {
+                check_ids.push(id);
+            } else if mode == "suites" {
+                suite_ids.push(id);
+            }
+        }
+    }
+    let mut violations = Vec::new();
+    let mut sorted_checks = check_ids.clone();
+    sorted_checks.sort();
+    if check_ids != sorted_checks {
+        violations.push(violation(
+            "REPO_CHECK_REGISTRY_ORDER_NOT_DETERMINISTIC",
+            "ops/inventory/registry.toml checks must be sorted by id".to_string(),
+            "sort [[checks]] blocks lexicographically by id",
+            Some(rel),
+        ));
+    }
+    let mut sorted_suites = suite_ids.clone();
+    sorted_suites.sort();
+    if suite_ids != sorted_suites {
+        violations.push(violation(
+            "REPO_SUITE_REGISTRY_ORDER_NOT_DETERMINISTIC",
+            "ops/inventory/registry.toml suites must be sorted by id".to_string(),
+            "sort [[suites]] blocks lexicographically by id",
+            Some(rel),
+        ));
+    }
+    Ok(violations)
+}
+
 pub(super) fn check_repo_defaults_work_surface_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {

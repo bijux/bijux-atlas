@@ -10,6 +10,7 @@
     "checks_repo_law_metadata_complete_and_unique",
     "checks_repo_root_directory_allowlist_contract",
     "checks_repo_root_markdown_allowlist_contract",
+    "checks_repo_registry_order_deterministic",
     "checks_repo_suite_includes_p0_checks"
   ]
 }
