@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{MakeCommand, MakeVerifyArgs};
+use crate::cli::{MakeCommand, MakeExplainArgs, MakeVerifyArgs};
 use crate::{emit_payload, resolve_repo_root};
 use std::fs::{self, File};
 use std::io::{self, Write};
@@ -15,6 +15,8 @@ pub(crate) fn run_make_command(quiet: bool, command: MakeCommand) -> i32 {
         match command {
             MakeCommand::VerifyModule(args) => run_verify_module(args, started),
             MakeCommand::Surface(common) => run_surface(common, started),
+            MakeCommand::List(common) => run_list(common, started),
+            MakeCommand::Explain(args) => run_explain(args, started),
             MakeCommand::TargetList(common) => run_target_list(common, started),
             MakeCommand::LintPolicyReport(common) => run_lint_policy_report(common, started),
         }
@@ -47,6 +49,59 @@ fn run_surface(
     });
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))
+}
+
+fn run_list(
+    common: crate::cli::MakeCommonArgs,
+    started: Instant,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let targets = load_curated_targets(&repo_root)?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "action": "list",
+        "source": "make/root.mk:CURATED_TARGETS",
+        "public_targets": targets,
+        "target_count": targets.len(),
+        "duration_ms": started.elapsed().as_millis() as u64,
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_explain(args: MakeExplainArgs, started: Instant) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let target = args.target.trim();
+    if target.is_empty() {
+        return Err("make explain requires a target name".to_string());
+    }
+    let targets = load_curated_targets(&repo_root)?;
+    let known = targets.iter().any(|row| row == target);
+    let payload = if known {
+        serde_json::json!({
+            "schema_version": 1,
+            "action": "explain",
+            "target": target,
+            "known": true,
+            "text": format!("{target} is a curated make wrapper target"),
+            "guidance": "This target is a thin dispatcher. Keep orchestration in bijux dev atlas commands.",
+            "source": "make/root.mk:CURATED_TARGETS",
+            "duration_ms": started.elapsed().as_millis() as u64,
+        })
+    } else {
+        serde_json::json!({
+            "schema_version": 1,
+            "action": "explain",
+            "target": target,
+            "known": false,
+            "text": format!("{target} is not part of the curated make surface"),
+            "hint": "Use `bijux dev atlas make list --format json` to inspect supported targets.",
+            "source": "make/root.mk:CURATED_TARGETS",
+            "duration_ms": started.elapsed().as_millis() as u64,
+        })
+    };
+    let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
+    Ok((rendered, if known { 0 } else { 2 }))
 }
 
 fn run_target_list(
@@ -405,4 +460,62 @@ fn run_serve_target(
         },
         log_path: Some(log_path),
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{run_explain, run_list};
+    use crate::cli::{FormatArg, MakeCommonArgs, MakeExplainArgs};
+    use serde_json::Value;
+    use std::fs;
+    use std::time::Instant;
+
+    fn write_minimal_root_mk(root: &std::path::Path) {
+        fs::create_dir_all(root.join("make")).expect("create make dir");
+        fs::write(
+            root.join("make/root.mk"),
+            "CURATED_TARGETS := \\\n\tfmt help test\n",
+        )
+        .expect("write root.mk");
+    }
+
+    fn common(repo_root: &std::path::Path) -> MakeCommonArgs {
+        MakeCommonArgs {
+            repo_root: Some(repo_root.to_path_buf()),
+            format: FormatArg::Json,
+            out: None,
+            allow_subprocess: false,
+            allow_write: false,
+        }
+    }
+
+    #[test]
+    fn make_list_is_sorted_and_stable() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        write_minimal_root_mk(temp.path());
+        let (rendered, code) = run_list(common(temp.path()), Instant::now()).expect("run list");
+        assert_eq!(code, 0);
+        let payload: Value = serde_json::from_str(&rendered).expect("parse payload");
+        assert_eq!(payload["action"], "list");
+        assert_eq!(payload["public_targets"], serde_json::json!(["fmt", "help", "test"]));
+    }
+
+    #[test]
+    fn make_explain_unknown_target_is_stable() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        write_minimal_root_mk(temp.path());
+        let args = MakeExplainArgs {
+            common: common(temp.path()),
+            target: "unknown-target".to_string(),
+        };
+        let (rendered, code) = run_explain(args, Instant::now()).expect("run explain");
+        assert_eq!(code, 2);
+        let payload: Value = serde_json::from_str(&rendered).expect("parse payload");
+        assert_eq!(payload["action"], "explain");
+        assert_eq!(payload["known"], false);
+        assert_eq!(
+            payload["hint"],
+            "Use `bijux dev atlas make list --format json` to inspect supported targets."
+        );
+    }
 }

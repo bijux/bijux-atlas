@@ -159,6 +159,8 @@ pub enum ConfigsCommand {
 pub enum MakeCommand {
     VerifyModule(MakeVerifyArgs),
     Surface(MakeCommonArgs),
+    List(MakeCommonArgs),
+    Explain(MakeExplainArgs),
     TargetList(MakeCommonArgs),
     LintPolicyReport(MakeCommonArgs),
 }
@@ -182,6 +184,13 @@ pub struct MakeVerifyArgs {
     #[command(flatten)]
     pub common: MakeCommonArgs,
     pub module: String,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct MakeExplainArgs {
+    #[command(flatten)]
+    pub common: MakeCommonArgs,
+    pub target: String,
 }
 
 #[derive(Args, Debug, Clone)]
