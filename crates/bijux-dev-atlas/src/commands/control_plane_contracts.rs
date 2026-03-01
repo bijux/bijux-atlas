@@ -26,6 +26,24 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     )?,
                     PathBuf::from("artifacts/contracts/root/registry-snapshot.json"),
                 ),
+                ContractsSnapshotDomainArg::Repo => (
+                    "repo",
+                    contracts::registry_snapshot_with_policy(
+                        &repo_root,
+                        "repo",
+                        domain_registry(&domains, "repo")?,
+                    )?,
+                    PathBuf::from("artifacts/contracts/repo/registry-snapshot.json"),
+                ),
+                ContractsSnapshotDomainArg::Crates => (
+                    "crates",
+                    contracts::registry_snapshot_with_policy(
+                        &repo_root,
+                        "crates",
+                        domain_registry(&domains, "crates")?,
+                    )?,
+                    PathBuf::from("artifacts/contracts/crates/registry-snapshot.json"),
+                ),
                 ContractsSnapshotDomainArg::Runtime => (
                     "runtime",
                     contracts::registry_snapshot_with_policy(
@@ -149,6 +167,8 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 args.clone(),
                 vec![
                     "root",
+                    "repo",
+                    "crates",
                     "runtime",
                     "control-plane",
                     "docker",
@@ -163,6 +183,18 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 resolve_repo_root(args.repo_root.clone())?,
                 args.clone(),
                 vec!["root"],
+                None,
+            ),
+            ContractsCommand::Repo(args) => (
+                resolve_repo_root(args.repo_root.clone())?,
+                args.clone(),
+                vec!["repo"],
+                None,
+            ),
+            ContractsCommand::Crates(args) => (
+                resolve_repo_root(args.repo_root.clone())?,
+                args.clone(),
+                vec!["crates"],
                 None,
             ),
             ContractsCommand::Runtime(args) => (

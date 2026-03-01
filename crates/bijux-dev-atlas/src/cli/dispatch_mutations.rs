@@ -255,6 +255,8 @@ fn force_json_contracts(command: &mut ContractsCommand) {
     match command {
         ContractsCommand::All(args) => args.json = true,
         ContractsCommand::Root(args) => args.json = true,
+        ContractsCommand::Repo(args) => args.json = true,
+        ContractsCommand::Crates(args) => args.json = true,
         ContractsCommand::Runtime(args) => args.json = true,
         ContractsCommand::ControlPlane(args) => args.json = true,
         ContractsCommand::Configs(args) => args.json = true,
@@ -338,6 +340,8 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
         Command::Contracts { command } => match command {
             ContractsCommand::All(args) => args.fail_fast = true,
             ContractsCommand::Root(args) => args.fail_fast = true,
+            ContractsCommand::Repo(args) => args.fail_fast = true,
+            ContractsCommand::Crates(args) => args.fail_fast = true,
             ContractsCommand::Runtime(args) => args.fail_fast = true,
             ContractsCommand::ControlPlane(args) => args.fail_fast = true,
             ContractsCommand::Configs(args) => args.fail_fast = true,
@@ -622,6 +626,8 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         Command::Contracts { command } => match command {
             ContractsCommand::All(args) => args.repo_root = Some(root.clone()),
             ContractsCommand::Root(args) => args.repo_root = Some(root.clone()),
+            ContractsCommand::Repo(args) => args.repo_root = Some(root.clone()),
+            ContractsCommand::Crates(args) => args.repo_root = Some(root.clone()),
             ContractsCommand::Runtime(args) => args.repo_root = Some(root.clone()),
             ContractsCommand::ControlPlane(args) => args.repo_root = Some(root.clone()),
             ContractsCommand::Configs(args) => args.repo_root = Some(root.clone()),

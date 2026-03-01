@@ -240,6 +240,18 @@ pub(super) fn domain_descriptor(name: &str) -> Option<DomainDescriptor> {
             explain_fn: contracts::root::contract_explain,
             gate_fn: contracts::root::contract_gate_command,
         }),
+        "repo" => Some(DomainDescriptor {
+            name: "repo",
+            contracts_fn: contracts::repo::contracts,
+            explain_fn: contracts::repo::contract_explain,
+            gate_fn: contracts::repo::contract_gate_command,
+        }),
+        "crates" => Some(DomainDescriptor {
+            name: "crates",
+            contracts_fn: contracts::crates::contracts,
+            explain_fn: contracts::crates::contract_explain,
+            gate_fn: contracts::crates::contract_gate_command,
+        }),
         "runtime" => Some(DomainDescriptor {
             name: "runtime",
             contracts_fn: contracts::runtime::contracts,
@@ -292,6 +304,8 @@ pub(super) fn all_domains(
     let mut out = Vec::new();
     for name in [
         "root",
+        "repo",
+        "crates",
         "runtime",
         "control-plane",
         "docker",

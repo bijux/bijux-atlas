@@ -305,6 +305,8 @@ pub struct ConfigsCommonArgs {
 pub enum ContractsCommand {
     All(ContractsCommonArgs),
     Root(ContractsCommonArgs),
+    Repo(ContractsCommonArgs),
+    Crates(ContractsCommonArgs),
     Runtime(ContractsCommonArgs),
     ControlPlane(ContractsCommonArgs),
     Configs(ContractsCommonArgs),
@@ -458,6 +460,8 @@ pub struct ContractsMakeArgs {
 pub enum ContractsSnapshotDomainArg {
     All,
     Root,
+    Repo,
+    Crates,
     Runtime,
     ControlPlane,
     Configs,
