@@ -70,6 +70,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-057" => "Governance reader entrypoints must stay nested under Development instead of surfacing as a top-level section.".to_string(),
         "DOC-058" => "Generated docs artifacts must live under the single internal generated sink.".to_string(),
         "DOC-059" => "Docs Dashboard must expose the required generated audit outputs from one contributor entrypoint.".to_string(),
+        "DOC-060" => "docs/redirects.json must keep in-tree redirects, avoid self-loops, and point to real docs targets.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }

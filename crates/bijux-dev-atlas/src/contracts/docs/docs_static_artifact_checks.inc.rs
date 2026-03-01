@@ -446,3 +446,83 @@ fn test_docs_059_dashboard_links_required_artifacts(ctx: &RunContext) -> TestRes
         TestResult::Fail(violations)
     }
 }
+
+fn test_docs_060_redirects_target_real_pages(ctx: &RunContext) -> TestResult {
+    let relative = "docs/redirects.json";
+    let contents = match std::fs::read_to_string(ctx.repo_root.join(relative)) {
+        Ok(contents) => contents,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-060".to_string(),
+                test_id: "docs.artifacts.redirects_integrity".to_string(),
+                file: Some(relative.to_string()),
+                line: None,
+                message: format!("read failed: {err}"),
+                evidence: None,
+            }]);
+        }
+    };
+    let redirects = match serde_json::from_str::<std::collections::BTreeMap<String, String>>(&contents)
+    {
+        Ok(value) => value,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-060".to_string(),
+                test_id: "docs.artifacts.redirects_integrity".to_string(),
+                file: Some(relative.to_string()),
+                line: None,
+                message: format!("invalid json: {err}"),
+                evidence: None,
+            }]);
+        }
+    };
+    let mut violations = Vec::new();
+    for (source, target) in redirects {
+        if !source.starts_with("docs/") {
+            violations.push(Violation {
+                contract_id: "DOC-060".to_string(),
+                test_id: "docs.artifacts.redirects_integrity".to_string(),
+                file: Some(relative.to_string()),
+                line: None,
+                message: format!("redirect source `{source}` must stay under docs/"),
+                evidence: None,
+            });
+        }
+        if !target.starts_with("docs/") {
+            violations.push(Violation {
+                contract_id: "DOC-060".to_string(),
+                test_id: "docs.artifacts.redirects_integrity".to_string(),
+                file: Some(relative.to_string()),
+                line: None,
+                message: format!("redirect target `{target}` must stay under docs/"),
+                evidence: None,
+            });
+        }
+        if source == target {
+            violations.push(Violation {
+                contract_id: "DOC-060".to_string(),
+                test_id: "docs.artifacts.redirects_integrity".to_string(),
+                file: Some(relative.to_string()),
+                line: None,
+                message: format!("redirect `{source}` may not point to itself"),
+                evidence: None,
+            });
+        }
+        if !ctx.repo_root.join(&target).exists() {
+            violations.push(Violation {
+                contract_id: "DOC-060".to_string(),
+                test_id: "docs.artifacts.redirects_integrity".to_string(),
+                file: Some(relative.to_string()),
+                line: None,
+                message: format!("redirect target `{target}` does not exist"),
+                evidence: None,
+            });
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.message.cmp(&b.message));
+        TestResult::Fail(violations)
+    }
+}

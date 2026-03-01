@@ -619,5 +619,15 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_059_dashboard_links_required_artifacts,
             }],
         },
+        Contract {
+            id: ContractId("DOC-060".to_string()),
+            title: "docs redirects target real pages",
+            tests: vec![TestCase {
+                id: TestId("docs.artifacts.redirects_integrity".to_string()),
+                title: "docs/redirects.json keeps only in-tree redirects with real targets",
+                kind: TestKind::Pure,
+                run: test_docs_060_redirects_target_real_pages,
+            }],
+        },
     ])
 }
