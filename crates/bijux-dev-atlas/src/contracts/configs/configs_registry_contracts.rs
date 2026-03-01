@@ -560,6 +560,92 @@ fn test_configs_025_text_hygiene(ctx: &RunContext) -> TestResult {
     };
     let text_exts = ["md", "txt", "toml", "json", "jsonc", "yml", "yaml", "ini"];
     let mut violations = Vec::new();
+    let root = ctx.repo_root.join("configs");
+    let mut stack = vec![root.clone()];
+    while let Some(dir) = stack.pop() {
+        let entries = match std::fs::read_dir(&dir) {
+            Ok(entries) => entries,
+            Err(err) => {
+                violations.push(violation(
+                    "CONFIGS-025",
+                    "configs.text.hygiene",
+                    &dir
+                        .strip_prefix(&ctx.repo_root)
+                        .unwrap_or(&dir)
+                        .display()
+                        .to_string()
+                        .replace('\\', "/"),
+                    format!("read {} failed: {err}", dir.display()),
+                ));
+                continue;
+            }
+        };
+        let mut file_count = 0usize;
+        for entry in entries.flatten() {
+            let path = entry.path();
+            let rel = path
+                .strip_prefix(&ctx.repo_root)
+                .unwrap_or(&path)
+                .display()
+                .to_string()
+                .replace('\\', "/");
+            let meta = match std::fs::symlink_metadata(&path) {
+                Ok(meta) => meta,
+                Err(err) => {
+                    violations.push(violation(
+                        "CONFIGS-025",
+                        "configs.text.hygiene",
+                        &rel,
+                        format!("read metadata failed: {err}"),
+                    ));
+                    continue;
+                }
+            };
+            if meta.file_type().is_symlink() {
+                violations.push(violation(
+                    "CONFIGS-025",
+                    "configs.text.hygiene",
+                    &rel,
+                    "symlinks are forbidden under configs/",
+                ));
+                continue;
+            }
+            if meta.is_dir() {
+                stack.push(path);
+                continue;
+            }
+            if !meta.is_file() {
+                continue;
+            }
+            file_count += 1;
+            if is_binary_file(&path) {
+                violations.push(violation(
+                    "CONFIGS-025",
+                    "configs.text.hygiene",
+                    &rel,
+                    "binary files are forbidden under configs/",
+                ));
+            }
+        }
+        let rel_dir = dir
+            .strip_prefix(&ctx.repo_root)
+            .unwrap_or(&dir)
+            .display()
+            .to_string()
+            .replace('\\', "/");
+        let max_files = directory_file_budget(&rel_dir);
+        if file_count > max_files {
+            violations.push(violation(
+                "CONFIGS-025",
+                "configs.text.hygiene",
+                &rel_dir,
+                format!(
+                    "directory has {} direct files and exceeds budget {}",
+                    file_count, max_files
+                ),
+            ));
+        }
+    }
     for file in config_files_without_exclusions(&index) {
         let ext = Path::new(&file)
             .extension()
@@ -593,5 +679,24 @@ fn test_configs_025_text_hygiene(ctx: &RunContext) -> TestResult {
         TestResult::Pass
     } else {
         TestResult::Fail(violations)
+    }
+}
+
+fn is_binary_file(path: &Path) -> bool {
+    let Ok(bytes) = std::fs::read(path) else {
+        return false;
+    };
+    bytes.iter().take(4096).any(|byte| *byte == 0)
+}
+
+fn directory_file_budget(rel_dir: &str) -> usize {
+    match rel_dir {
+        "configs" => 16,
+        "configs/contracts" => 30,
+        "configs/docs" => 16,
+        "configs/ops" => 40,
+        "configs/policy" => 40,
+        "configs/schema" => 30,
+        _ => 10,
     }
 }

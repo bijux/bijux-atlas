@@ -5,6 +5,7 @@
     "contracts",
     "coverage",
     "docs",
+    "examples",
     "gates",
     "inventory",
     "layout",
@@ -24,6 +25,6 @@
     "shellcheck",
     "slo"
   ],
-  "max_top_level_dirs": 23,
+  "max_top_level_dirs": 24,
   "schema_version": 1
 }

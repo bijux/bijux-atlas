@@ -9,4 +9,6 @@ Common commands:
 - `bijux dev atlas contracts configs --format table`
 - `bijux dev atlas configs list --format json`
 
+Example config files are allowed only under `configs/examples/`.
+
 Narrative docs belong under `docs/`, not under `configs/`.

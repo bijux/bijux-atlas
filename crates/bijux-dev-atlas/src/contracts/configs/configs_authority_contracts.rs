@@ -10,7 +10,7 @@ fn test_configs_026_docs_markdown_removed(ctx: &RunContext) -> TestResult {
             )
         }
     };
-    let violations = config_files_without_exclusions(&index)
+    let mut violations = config_files_without_exclusions(&index)
         .into_iter()
         .filter(|file| file.ends_with(".md"))
         .filter(|file| !ROOT_MARKDOWN_FILES.contains(&file.as_str()))
@@ -24,6 +24,39 @@ fn test_configs_026_docs_markdown_removed(ctx: &RunContext) -> TestResult {
             )
         })
         .collect::<Vec<_>>();
+    let examples_readme = "configs/examples/README.md";
+    if !ctx.repo_root.join(examples_readme).is_file() {
+        violations.push(violation(
+            "CONFIGS-026",
+            "configs.docs.no_nested_markdown",
+            "configs/examples",
+            "configs/examples/README.md is required as the canonical examples landing page",
+        ));
+    }
+    let root_readme = read_text(&ctx.repo_root.join("configs/README.md")).unwrap_or_default();
+    if !root_readme.contains("configs/examples/") {
+        violations.push(violation(
+            "CONFIGS-026",
+            "configs.docs.no_nested_markdown",
+            "configs/README.md",
+            "configs/README.md must reference the canonical configs/examples/ directory",
+        ));
+    }
+    for file in config_files_without_exclusions(&index) {
+        let lower = file.to_ascii_lowercase();
+        let file_name = Path::new(&lower)
+            .file_name()
+            .and_then(|value| value.to_str())
+            .unwrap_or_default();
+        if file_name.contains("example") && !lower.starts_with("configs/examples/") {
+            violations.push(violation(
+                "CONFIGS-026",
+                "configs.docs.no_nested_markdown",
+                &file,
+                "example config files must live under configs/examples/",
+            ));
+        }
+    }
     if violations.is_empty() {
         TestResult::Pass
     } else {
