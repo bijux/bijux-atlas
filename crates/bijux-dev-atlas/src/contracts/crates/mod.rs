@@ -308,6 +308,8 @@ fn test_crates_007_contract_required_sections(ctx: &RunContext) -> TestResult {
         "## Error policy",
         "## Versioning/stability",
         "## Tests expectations",
+        "## Dependencies allowed",
+        "## Anti-patterns",
     ];
     let mut violations = Vec::new();
     for crate_dir in collect_crate_dirs(&ctx.repo_root) {
@@ -333,6 +335,26 @@ fn test_crates_007_contract_required_sections(ctx: &RunContext) -> TestResult {
                     format!("crate `{crate_name}` CONTRACT.md missing required section `{required}`"),
                 ));
             }
+        }
+        if crate_dir.join("benches").is_dir() && !text.contains("## Bench expectations") {
+            violations.push(violation(
+                "CRATES-007",
+                "crates.contract.required_sections",
+                Some(rel.clone()),
+                format!(
+                    "crate `{crate_name}` has benches/ and CONTRACT.md must include `## Bench expectations`"
+                ),
+            ));
+        }
+        if crate_dir.join("src/lib.rs").is_file() && !text.contains("## Public API surface") {
+            violations.push(violation(
+                "CRATES-007",
+                "crates.contract.required_sections",
+                Some(rel.clone()),
+                format!(
+                    "library crate `{crate_name}` must include `## Public API surface` in CONTRACT.md"
+                ),
+            ));
         }
     }
     if violations.is_empty() {

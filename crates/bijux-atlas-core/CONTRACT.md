@@ -52,3 +52,13 @@
 - Hidden side effects.
 - Undocumented interface changes.
 - Non-deterministic output generation.
+
+## Bench expectations
+
+- Benchmarks must be deterministic and runnable from a clean checkout.
+- Performance expectations are tracked in crate docs where benches exist.
+
+## Public API surface
+
+- Public API is defined by exported interfaces and documented contract behavior.
+- Breaking public API changes require explicit compatibility and release notes.
