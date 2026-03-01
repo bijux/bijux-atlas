@@ -59,9 +59,17 @@ contracts-configs: _contracts_guard ## Run configs contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts configs --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
 	@$(DEV_ATLAS) contracts configs --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
+contracts-configs-required: _contracts_guard ## Run PR-required configs suite in static mode
+	@printf '%s\n' "run: $(DEV_ATLAS) check run --suite configs_required --include-internal --include-slow --format json"
+	@$(DEV_ATLAS) check run --suite configs_required --include-internal --include-slow --format json
+
 contracts-docs: _contracts_guard ## Run docs contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts docs --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
 	@$(DEV_ATLAS) contracts docs --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+
+contracts-docs-required: _contracts_guard ## Run PR-required docs suite in static mode
+	@printf '%s\n' "run: $(DEV_ATLAS) check run --suite docs_required --include-internal --include-slow --format json"
+	@$(DEV_ATLAS) check run --suite docs_required --include-internal --include-slow --format json
 
 contracts-docker: _contracts_guard ## Run docker contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts docker --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
@@ -71,8 +79,12 @@ contracts-make: _contracts_guard ## Run make contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts make --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
 	@$(DEV_ATLAS) contracts make --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
+contracts-make-required: _contracts_guard ## Run PR-required make suite in static mode
+	@printf '%s\n' "run: $(DEV_ATLAS) check run --suite make_required --include-internal --include-slow --format json"
+	@$(DEV_ATLAS) check run --suite make_required --include-internal --include-slow --format json
+
 contracts-ops: _contracts_guard ## Run ops contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts ops --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
 	@$(DEV_ATLAS) contracts ops --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
-.PHONY: _contracts_guard contracts-help contracts contracts-pr contracts-merge contracts-release contracts-all contracts-fast contracts-changed contracts-json contracts-ci contracts-root contracts-configs contracts-docs contracts-docker contracts-make contracts-ops
+.PHONY: _contracts_guard contracts-help contracts contracts-pr contracts-merge contracts-release contracts-all contracts-fast contracts-changed contracts-json contracts-ci contracts-root contracts-configs contracts-configs-required contracts-docs contracts-docs-required contracts-docker contracts-make contracts-make-required contracts-ops

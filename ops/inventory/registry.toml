@@ -1211,6 +1211,17 @@ domains = ["configs"]
 tags_any = []
 
 [[suites]]
+id = "configs_required"
+checks = [
+  "checks_configs_nextest_toml_present",
+  "checks_configs_required_surface_paths",
+  "checks_configs_schema_paths_present",
+  "checks_configs_security_deny_toml_present",
+]
+domains = []
+tags_any = []
+
+[[suites]]
 id = "deep"
 checks = []
 domains = ["ops", "repo", "docs", "make"]
@@ -1227,6 +1238,27 @@ id = "docs_fast"
 checks = []
 domains = ["docs"]
 tags_any = ["fast"]
+
+[[suites]]
+id = "docs_required"
+checks = [
+  "checks_docs_command_surface_docs_exist",
+  "checks_docs_configs_command_list_matches_snapshot",
+  "checks_docs_control_plane_naming_contract",
+  "checks_docs_file_naming_conventions",
+  "checks_docs_index_links",
+  "checks_docs_markdown_directory_budgets",
+  "checks_docs_markdown_link_targets_exist",
+  "checks_docs_mkdocs_nav_files_exist",
+  "checks_docs_mkdocs_yaml_parseable",
+  "checks_docs_near_duplicate_filenames",
+  "checks_docs_no_duplicate_nav_titles",
+  "checks_docs_operations_canonical_concept_paths",
+  "checks_docs_operations_verify_command_quality",
+  "checks_docs_removed_system_references_absent",
+]
+domains = []
+tags_any = []
 
 [[suites]]
 id = "doctor"
@@ -1249,6 +1281,19 @@ id = "make_fast"
 checks = []
 domains = ["make"]
 tags_any = ["fast"]
+
+[[suites]]
+id = "make_required"
+checks = [
+  "checks_make_governance_wrappers_bijux_only",
+  "checks_make_governance_wrappers_no_direct_cargo",
+  "checks_make_no_direct_ops_script_execution",
+  "checks_makefiles_no_cd_invocations",
+  "checks_makefiles_no_direct_fetch_commands",
+  "checks_makefiles_no_direct_tool_invocations",
+]
+domains = []
+tags_any = []
 
 [[suites]]
 id = "ops"
