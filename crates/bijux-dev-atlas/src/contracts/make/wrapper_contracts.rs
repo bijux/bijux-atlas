@@ -353,7 +353,15 @@ fn test_make_shell_002_no_pipes_or_loops(ctx: &RunContext) -> TestResult {
             )
         }
     };
-    let shell_allowlist = ["help", "make-target-list", "fmt", "lint", "test", "test-all", "doctor"];
+    let shell_allowlist = [
+        "help",
+        "make-target-list",
+        "fmt",
+        "lint",
+        "test",
+        "test-all",
+        "doctor",
+    ];
     for (target, (file, recipes)) in declared {
         if !curated.contains(&target) {
             continue;
@@ -481,7 +489,10 @@ fn test_make_docs_002_help_recipe_budget(ctx: &RunContext) -> TestResult {
             "MAKE-DOCS-002",
             "make.docs.help_recipe_budget",
             file,
-            format!("help target has {} recipe lines and exceeds budget 3", recipes.len()),
+            format!(
+                "help target has {} recipe lines and exceeds budget 3",
+                recipes.len()
+            ),
         );
     }
     if !recipes.iter().any(|line| line.contains("docs/")) {
@@ -495,7 +506,9 @@ fn test_make_docs_002_help_recipe_budget(ctx: &RunContext) -> TestResult {
     TestResult::Pass
 }
 
-fn test_make_paths_001_legacy_makefiles_do_not_reference_forbidden_paths(ctx: &RunContext) -> TestResult {
+fn test_make_paths_001_legacy_makefiles_do_not_reference_forbidden_paths(
+    ctx: &RunContext,
+) -> TestResult {
     let dir = ctx.repo_root.join("make/makefiles");
     if !dir.is_dir() {
         return TestResult::Pass;
@@ -542,7 +555,8 @@ fn test_make_paths_001_legacy_makefiles_do_not_reference_forbidden_paths(ctx: &R
                 test_id: "make.paths.legacy_makefiles_forbidden_refs".to_string(),
                 file: Some(rel_path),
                 line: Some(1),
-                message: "legacy makefiles must not reference configs/docs/node_modules".to_string(),
+                message: "legacy makefiles must not reference configs/docs/node_modules"
+                    .to_string(),
                 evidence: None,
             });
         }
@@ -567,12 +581,7 @@ fn test_make_docs_003_target_deprecation_policy_exists(ctx: &RunContext) -> Test
             )
         }
     };
-    for required in [
-        "deprecate",
-        "replacement",
-        "removal",
-        "communicate",
-    ] {
+    for required in ["deprecate", "replacement", "removal", "communicate"] {
         if !text.to_lowercase().contains(required) {
             return fail(
                 "MAKE-DOCS-003",

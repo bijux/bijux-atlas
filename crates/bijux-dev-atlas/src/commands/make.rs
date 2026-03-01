@@ -51,10 +51,7 @@ fn run_surface(
     Ok((rendered, 0))
 }
 
-fn run_list(
-    common: crate::cli::MakeCommonArgs,
-    started: Instant,
-) -> Result<(String, i32), String> {
+fn run_list(common: crate::cli::MakeCommonArgs, started: Instant) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let targets = load_curated_targets(&repo_root)?;
     let payload = serde_json::json!({
@@ -497,7 +494,10 @@ mod tests {
         assert_eq!(code, 0);
         let payload: Value = serde_json::from_str(&rendered).expect("parse payload");
         assert_eq!(payload["action"], "list");
-        assert_eq!(payload["public_targets"], serde_json::json!(["fmt", "help", "test"]));
+        assert_eq!(
+            payload["public_targets"],
+            serde_json::json!(["fmt", "help", "test"])
+        );
     }
 
     #[test]

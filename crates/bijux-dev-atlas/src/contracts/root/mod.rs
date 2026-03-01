@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use std::path::Path;
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
+use std::path::Path;
 
 use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestResult, Violation};
 
