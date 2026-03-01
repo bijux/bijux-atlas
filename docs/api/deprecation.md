@@ -1,23 +1,28 @@
-# Deprecation Policy
+# Deprecation lifecycle
 
-Owner: `api-contracts`  
-Type: `policy`  
-Surface version: `v1`  
-Reason to exist: define endpoint deprecation rules for stable API consumers.
+- Owner: `api-contracts`
+- Type: `policy`
+- Audience: `user`
+- Stability: `stable`
+- Last verified against: `main@8641e5b0`
+- Reason to exist: define how stable API surfaces are deprecated and how consumers should react.
 
-## Policy
+## Lifecycle
 
-- Deprecation is announced in docs and contract metadata.
-- Deprecated endpoints are marked before any removal in future major versions.
-- Existing v1 compatibility guarantees remain active during deprecation windows.
+1. A stable endpoint is marked deprecated in published API docs and contract metadata.
+2. The replacement path or behavior is documented before the deprecated surface is removed.
+3. The deprecated surface remains available for the rest of the current major version unless an explicit security exception is announced.
+4. Removal happens only in a future major API version.
 
-## Example
+## Current example
 
-```bash
-curl -i -fsS 'http://127.0.0.1:8080/v1/datasets'
-```
+`GET /v1/genes/count` and `GET /v1/releases/{release}/species/{species}/assemblies/{assembly}` are documented as deprecated and point to their canonical replacements in the `v1` surface.
 
-## Related References
+## Verification
 
-- [Schemas Reference](../reference/schemas.md)
-- [Errors Reference](../reference/errors.md)
+Check the current deprecation markers in [V1 surface](v1-surface.md) and [Reference contracts endpoints](../reference/contracts/endpoints.md).
+
+## Next steps
+
+- [Versioning](versioning.md)
+- [Compatibility](compatibility.md)

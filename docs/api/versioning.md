@@ -1,4 +1,4 @@
-# API Versioning
+# API versioning
 
 - Owner: `api-contracts`
 - Type: `policy`
@@ -18,7 +18,8 @@
 - Deprecations must include a replacement path.
 - Removal occurs only in a future major API version.
 
-## Next
+## Next steps
 
 - [Compatibility](compatibility.md)
-- [Reference Contracts](../reference/contracts/index.md)
+- [Deprecation lifecycle](deprecation.md)
+- [Reference contracts](../reference/contracts/index.md)

@@ -11,23 +11,33 @@
 
 Responses return a stable `error` object with `code`, `message`, optional `details`, and `request_id`.
 
-## What to do when a request fails
+## How to interpret failures
 
-1. Inspect `error.code` and request parameters.
-2. Retry only when the code is retryable by policy.
-3. Escalate persistent service errors using [Operations Incident Response](../operations/incident-response.md).
+1. Inspect `error.code` first.
+2. Check whether the failure is caller-owned, retryable, or service-owned.
+3. Only retry when the error is transient and your request is safe to replay.
+4. Escalate persistent service-owned failures with [Operations incident response](../operations/incident-response.md).
 
-## Examples
+## Common interpretations
 
 ```bash
 curl -i -fsS 'http://127.0.0.1:8080/v1/genes?limit=0'
 ```
 
+- `InvalidQueryParameter` or `ValidationFailed`: the request shape is wrong. Fix inputs before retrying.
+- `MissingDatasetDimension`: add the missing `release`, `species`, or `assembly`.
+- `InvalidCursor`: restart from the first page or use the matching cursor/query pair.
+- `RateLimited`, `Timeout`, or `UpstreamStoreUnavailable`: follow [Client retries and backoff](client-retries-and-backoff.md).
+- `NotReady` or repeated `Internal`: treat as a service issue and involve operators.
+
+Expected output: the server returns a non-`200` response containing an `error` object with a stable `code`.
+
 ## Canonical code list
 
-See [Reference Errors](../reference/errors.md).
+The taxonomy and status map live in [Reference errors](../reference/errors.md).
 
-## Next
+## Next steps
 
 - [Compatibility](compatibility.md)
-- [Reference Errors](../reference/errors.md)
+- [Troubleshooting](troubleshooting.md)
+- [Reference errors](../reference/errors.md)

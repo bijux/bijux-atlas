@@ -1,9 +1,11 @@
 # V1 Surface
 
-Owner: `api-contracts`  
-Type: `reference`  
-Surface version: `v1`  
-Reason to exist: define the stable endpoint surface for v1 clients.
+- Owner: `api-contracts`
+- Type: `reference`
+- Audience: `user`
+- Stability: `stable`
+- Last verified against: `main@8641e5b0`
+- Reason to exist: define the stable endpoint surface for v1 clients.
 
 ## Endpoints
 
@@ -23,13 +25,15 @@ Reason to exist: define the stable endpoint surface for v1 clients.
 - `GET /v1/version`
 - `GET /v1/openapi.json`
 
-## Example
+## Verification
 
 ```bash
 curl -fsS 'http://127.0.0.1:8080/v1/version'
 ```
 
-## Related References
+Expected output: HTTP `200` with version metadata for the running service and published plugin set.
 
-- [Schemas Reference](../reference/schemas.md)
-- [Errors Reference](../reference/errors.md)
+## Next steps
+
+- [Reference schemas](../reference/schemas.md)
+- [Errors](errors.md)
