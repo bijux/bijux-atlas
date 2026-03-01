@@ -14,7 +14,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-api/docs/API_CONTRACT.md",
+        "path": "crates/bijux-atlas-api/docs/api-contract.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -22,7 +22,7 @@
           "bijux-atlas-api"
         ],
         "title": "API Contract (v1)",
-        "topic": "API_CONTRACT"
+        "topic": "api-contract"
       },
       {
         "area": "bijux-atlas-api",
@@ -37,7 +37,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-api/docs/API_STABILITY.md",
+        "path": "crates/bijux-atlas-api/docs/api-stability.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -45,122 +45,7 @@
           "bijux-atlas-api"
         ],
         "title": "API Stability and Versioning",
-        "topic": "API_STABILITY"
-      },
-      {
-        "area": "bijux-atlas-api",
-        "audience": "contributors",
-        "crate": "bijux-atlas-api",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-api",
-          "errors"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-api/docs/ERRORS.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-api",
-          "errors"
-        ],
-        "title": "API Errors",
-        "topic": "ERRORS"
-      },
-      {
-        "area": "bijux-atlas-api",
-        "audience": "contributors",
-        "crate": "bijux-atlas-api",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-api",
-          "index"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-api/docs/index.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-api",
-          "index"
-        ],
-        "title": "Docs Index",
-        "topic": "INDEX"
-      },
-      {
-        "area": "bijux-atlas-api",
-        "audience": "contributors",
-        "crate": "bijux-atlas-api",
-        "doc_type": "spec",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-api",
-          "openapi"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-api/docs/openapi.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-api",
-          "openapi"
-        ],
-        "title": "OpenAPI",
-        "topic": "OPENAPI"
-      },
-      {
-        "area": "bijux-atlas-api",
-        "audience": "contributors",
-        "crate": "bijux-atlas-api",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-api",
-          "patterns"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-api/docs/patterns.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-api",
-          "patterns"
-        ],
-        "title": "Patterns",
-        "topic": "PATTERNS"
-      },
-      {
-        "area": "bijux-atlas-api",
-        "audience": "contributors",
-        "crate": "bijux-atlas-api",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-api",
-          "versioning"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-api/docs/VERSIONING.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-api",
-          "versioning"
-        ],
-        "title": "Versioning",
-        "topic": "VERSIONING"
+        "topic": "api-stability"
       },
       {
         "area": "bijux-atlas-api",
@@ -174,7 +59,7 @@
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "docs-governance",
+        "owner": "bijux-atlas-api",
         "path": "crates/bijux-atlas-api/docs/architecture.md",
         "review_due": "2026-08-24",
         "stability": "stable",
@@ -182,8 +67,31 @@
           "architecture",
           "bijux-atlas-api"
         ],
-        "title": "Architecture",
+        "title": "ARCHITECTURE (bijux-atlas-api)",
         "topic": "architecture"
+      },
+      {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
+        "crate": "bijux-atlas-api",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmarks",
+          "bijux-atlas-api"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-api",
+        "path": "crates/bijux-atlas-api/docs/benchmarks.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmarks",
+          "bijux-atlas-api"
+        ],
+        "title": "BENCHMARKS (bijux-atlas-api)",
+        "topic": "benchmarks"
       },
       {
         "area": "bijux-atlas-api",
@@ -262,20 +170,162 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-api",
+          "errors"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-api",
+        "path": "crates/bijux-atlas-api/docs/errors.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-api",
+          "errors"
+        ],
+        "title": "ERROR_TAXONOMY (bijux-atlas-api)",
+        "topic": "errors"
+      },
+      {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
+        "crate": "bijux-atlas-api",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-api",
+          "examples"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-api",
+        "path": "crates/bijux-atlas-api/docs/examples.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-api",
+          "examples"
+        ],
+        "title": "EXAMPLES (bijux-atlas-api)",
+        "topic": "examples"
+      },
+      {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
+        "crate": "bijux-atlas-api",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-api",
+          "index"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-api/docs/index.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-api",
+          "index"
+        ],
+        "title": "Docs Index",
+        "topic": "index"
+      },
+      {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
+        "crate": "bijux-atlas-api",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-api",
+          "internal",
           "public-api-checklist"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-api/docs/public-api-checklist.md",
+        "path": "crates/bijux-atlas-api/docs/internal/public-api-checklist.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
           "bijux-atlas-api",
+          "internal",
           "public-api-checklist"
         ],
         "title": "Public Surface Checklist",
         "topic": "public-api-checklist"
+      },
+      {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
+        "crate": "bijux-atlas-api",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-api",
+          "internal",
+          "wire-compatibility"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-api/docs/internal/wire-compatibility.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-api",
+          "internal",
+          "wire-compatibility"
+        ],
+        "title": "Human vs Machine Contracts",
+        "topic": "wire-compatibility"
+      },
+      {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
+        "crate": "bijux-atlas-api",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-api",
+          "openapi"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-api/docs/openapi.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-api",
+          "openapi"
+        ],
+        "title": "OpenAPI",
+        "topic": "openapi"
+      },
+      {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
+        "crate": "bijux-atlas-api",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-api",
+          "patterns"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-api/docs/patterns.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-api",
+          "patterns"
+        ],
+        "title": "Patterns",
+        "topic": "patterns"
       },
       {
         "area": "bijux-atlas-api",
@@ -320,7 +370,7 @@
           "bijux-atlas-api",
           "testing"
         ],
-        "title": "Testing",
+        "title": "TESTING (bijux-atlas-api)",
         "topic": "testing"
       },
       {
@@ -331,20 +381,20 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-api",
-          "wire-compatibility"
+          "versioning"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-api/docs/wire-compatibility.md",
+        "owner": "bijux-atlas-api",
+        "path": "crates/bijux-atlas-api/docs/versioning.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
           "bijux-atlas-api",
-          "wire-compatibility"
+          "versioning"
         ],
-        "title": "Human vs Machine Contracts",
-        "topic": "wire-compatibility"
+        "title": "VERSIONING (bijux-atlas-api)",
+        "topic": "versioning"
       }
     ],
     "bijux-atlas-cli": [
@@ -370,98 +420,6 @@
         ],
         "title": "CLI_COMMAND_LIST",
         "topic": "CLI_COMMAND_LIST"
-      },
-      {
-        "area": "bijux-atlas-cli",
-        "audience": "contributors",
-        "crate": "bijux-atlas-cli",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-cli",
-          "cli-ux-contract"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/CLI_UX_CONTRACT.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-cli",
-          "cli-ux-contract"
-        ],
-        "title": "CLI UX Contract",
-        "topic": "CLI_UX_CONTRACT"
-      },
-      {
-        "area": "bijux-atlas-cli",
-        "audience": "contributors",
-        "crate": "bijux-atlas-cli",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-cli",
-          "config-discovery"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/CONFIG_DISCOVERY.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-cli",
-          "config-discovery"
-        ],
-        "title": "Config Discovery",
-        "topic": "CONFIG_DISCOVERY"
-      },
-      {
-        "area": "bijux-atlas-cli",
-        "audience": "contributors",
-        "crate": "bijux-atlas-cli",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-cli",
-          "exit-codes"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/EXIT_CODES.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-cli",
-          "exit-codes"
-        ],
-        "title": "Exit Codes",
-        "topic": "EXIT_CODES"
-      },
-      {
-        "area": "bijux-atlas-cli",
-        "audience": "contributors",
-        "crate": "bijux-atlas-cli",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-cli",
-          "index"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/index.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-cli",
-          "index"
-        ],
-        "title": "Docs Index",
-        "topic": "INDEX"
       },
       {
         "area": "bijux-atlas-cli",
@@ -498,7 +456,7 @@
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "docs-governance",
+        "owner": "bijux-atlas-cli",
         "path": "crates/bijux-atlas-cli/docs/architecture.md",
         "review_due": "2026-08-24",
         "stability": "stable",
@@ -506,7 +464,7 @@
           "architecture",
           "bijux-atlas-cli"
         ],
-        "title": "Architecture",
+        "title": "ARCHITECTURE (bijux-atlas-cli)",
         "topic": "architecture"
       },
       {
@@ -516,21 +474,113 @@
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
+          "benchmarks",
+          "bijux-atlas-cli"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-cli",
+        "path": "crates/bijux-atlas-cli/docs/benchmarks.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmarks",
+          "bijux-atlas-cli"
+        ],
+        "title": "BENCHMARKS (bijux-atlas-cli)",
+        "topic": "benchmarks"
+      },
+      {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
+        "crate": "bijux-atlas-cli",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
           "bijux-atlas-cli",
-          "effect-boundary-map"
+          "cli-command-list"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/effect-boundary-map.md",
+        "path": "crates/bijux-atlas-cli/docs/cli-command-list.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
           "bijux-atlas-cli",
-          "effect-boundary-map"
+          "cli-command-list"
         ],
-        "title": "Effect Boundary Map",
-        "topic": "effect-boundary-map"
+        "title": "cli command list",
+        "topic": "cli-command-list"
+      },
+      {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
+        "crate": "bijux-atlas-cli",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-cli",
+          "cli-ux-contract"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-cli/docs/cli-ux-contract.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-cli",
+          "cli-ux-contract"
+        ],
+        "title": "CLI UX Contract",
+        "topic": "cli-ux-contract"
+      },
+      {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
+        "crate": "bijux-atlas-cli",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-cli",
+          "command-surface"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-cli",
+        "path": "crates/bijux-atlas-cli/docs/command-surface.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-cli",
+          "command-surface"
+        ],
+        "title": "COMMAND_SURFACE (bijux-atlas-cli)",
+        "topic": "command-surface"
+      },
+      {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
+        "crate": "bijux-atlas-cli",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-cli",
+          "config-discovery"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-cli/docs/config-discovery.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-cli",
+          "config-discovery"
+        ],
+        "title": "Config Discovery",
+        "topic": "config-discovery"
       },
       {
         "area": "bijux-atlas-cli",
@@ -554,6 +604,146 @@
         ],
         "title": "Effects",
         "topic": "effects"
+      },
+      {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
+        "crate": "bijux-atlas-cli",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-cli",
+          "errors"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-cli",
+        "path": "crates/bijux-atlas-cli/docs/errors.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-cli",
+          "errors"
+        ],
+        "title": "ERROR_TAXONOMY (bijux-atlas-cli)",
+        "topic": "errors"
+      },
+      {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
+        "crate": "bijux-atlas-cli",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-cli",
+          "examples"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-cli",
+        "path": "crates/bijux-atlas-cli/docs/examples.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-cli",
+          "examples"
+        ],
+        "title": "EXAMPLES (bijux-atlas-cli)",
+        "topic": "examples"
+      },
+      {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
+        "crate": "bijux-atlas-cli",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-cli",
+          "exit-codes"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-cli/docs/exit-codes.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-cli",
+          "exit-codes"
+        ],
+        "title": "Exit Codes",
+        "topic": "exit-codes"
+      },
+      {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
+        "crate": "bijux-atlas-cli",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-cli",
+          "index"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-cli/docs/index.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-cli",
+          "index"
+        ],
+        "title": "Docs Index",
+        "topic": "index"
+      },
+      {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
+        "crate": "bijux-atlas-cli",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-cli",
+          "effect-boundary-map",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-cli/docs/internal/effect-boundary-map.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-cli",
+          "effect-boundary-map",
+          "internal"
+        ],
+        "title": "Effect Boundary Map",
+        "topic": "effect-boundary-map"
+      },
+      {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
+        "crate": "bijux-atlas-cli",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-cli",
+          "plugin-contract"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-cli/docs/plugin-contract.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-cli",
+          "plugin-contract"
+        ],
+        "title": "Plugin Contract",
+        "topic": "plugin-contract"
       },
       {
         "area": "bijux-atlas-cli",
@@ -598,11 +788,80 @@
           "bijux-atlas-cli",
           "testing"
         ],
-        "title": "Testing",
+        "title": "TESTING (bijux-atlas-cli)",
         "topic": "testing"
+      },
+      {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
+        "crate": "bijux-atlas-cli",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-cli",
+          "versioning"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-cli",
+        "path": "crates/bijux-atlas-cli/docs/versioning.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-cli",
+          "versioning"
+        ],
+        "title": "VERSIONING (bijux-atlas-cli)",
+        "topic": "versioning"
       }
     ],
     "bijux-atlas-core": [
+      {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
+        "crate": "bijux-atlas-core",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "architecture",
+          "bijux-atlas-core"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-core",
+        "path": "crates/bijux-atlas-core/docs/architecture.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "architecture",
+          "bijux-atlas-core"
+        ],
+        "title": "ARCHITECTURE (bijux-atlas-core)",
+        "topic": "architecture"
+      },
+      {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
+        "crate": "bijux-atlas-core",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmarks",
+          "bijux-atlas-core"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-core",
+        "path": "crates/bijux-atlas-core/docs/benchmarks.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmarks",
+          "bijux-atlas-core"
+        ],
+        "title": "BENCHMARKS (bijux-atlas-core)",
+        "topic": "benchmarks"
+      },
       {
         "area": "bijux-atlas-core",
         "audience": "contributors",
@@ -624,214 +883,7 @@
           "canonicalization"
         ],
         "title": "Canonicalization Rules",
-        "topic": "CANONICALIZATION"
-      },
-      {
-        "area": "bijux-atlas-core",
-        "audience": "contributors",
-        "crate": "bijux-atlas-core",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-core",
-          "cargo-deny-notes"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-core/docs/CARGO_DENY_NOTES.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-core",
-          "cargo-deny-notes"
-        ],
-        "title": "Cargo Deny Notes (Core)",
-        "topic": "CARGO_DENY_NOTES"
-      },
-      {
-        "area": "bijux-atlas-core",
-        "audience": "contributors",
-        "crate": "bijux-atlas-core",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-core",
-          "errors"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-core/docs/ERRORS.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-core",
-          "errors"
-        ],
-        "title": "Error Contract",
-        "topic": "ERRORS"
-      },
-      {
-        "area": "bijux-atlas-core",
-        "audience": "contributors",
-        "crate": "bijux-atlas-core",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-core",
-          "features"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-core/docs/features.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-core",
-          "features"
-        ],
-        "title": "Feature Flags Policy",
-        "topic": "FEATURES"
-      },
-      {
-        "area": "bijux-atlas-core",
-        "audience": "contributors",
-        "crate": "bijux-atlas-core",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-core",
-          "formatting"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-core/docs/formatting.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-core",
-          "formatting"
-        ],
-        "title": "Debug and Display Policy",
-        "topic": "FORMATTING"
-      },
-      {
-        "area": "bijux-atlas-core",
-        "audience": "contributors",
-        "crate": "bijux-atlas-core",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-core",
-          "index"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-core/docs/index.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-core",
-          "index"
-        ],
-        "title": "Core Docs Index",
-        "topic": "INDEX"
-      },
-      {
-        "area": "bijux-atlas-core",
-        "audience": "contributors",
-        "crate": "bijux-atlas-core",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-core",
-          "patterns"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-core/docs/patterns.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-core",
-          "patterns"
-        ],
-        "title": "Design Patterns Used",
-        "topic": "PATTERNS"
-      },
-      {
-        "area": "bijux-atlas-core",
-        "audience": "contributors",
-        "crate": "bijux-atlas-core",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-core",
-          "purity"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-core/docs/purity.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-core",
-          "purity"
-        ],
-        "title": "Purity Contract",
-        "topic": "PURITY"
-      },
-      {
-        "area": "bijux-atlas-core",
-        "audience": "contributors",
-        "crate": "bijux-atlas-core",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-core",
-          "serde-policy"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-core/docs/SERDE_POLICY.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-core",
-          "serde-policy"
-        ],
-        "title": "Serialization Policy",
-        "topic": "SERDE_POLICY"
-      },
-      {
-        "area": "bijux-atlas-core",
-        "audience": "contributors",
-        "crate": "bijux-atlas-core",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "architecture",
-          "bijux-atlas-core"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-core/docs/architecture.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "architecture",
-          "bijux-atlas-core"
-        ],
-        "title": "bijux-atlas-core Architecture",
-        "topic": "architecture"
+        "topic": "canonicalization"
       },
       {
         "area": "bijux-atlas-core",
@@ -887,6 +939,194 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-core",
+          "errors"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-core",
+        "path": "crates/bijux-atlas-core/docs/errors.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-core",
+          "errors"
+        ],
+        "title": "ERROR_TAXONOMY (bijux-atlas-core)",
+        "topic": "errors"
+      },
+      {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
+        "crate": "bijux-atlas-core",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-core",
+          "examples"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-core",
+        "path": "crates/bijux-atlas-core/docs/examples.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-core",
+          "examples"
+        ],
+        "title": "EXAMPLES (bijux-atlas-core)",
+        "topic": "examples"
+      },
+      {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
+        "crate": "bijux-atlas-core",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-core",
+          "features"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-core/docs/features.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-core",
+          "features"
+        ],
+        "title": "Feature Flags Policy",
+        "topic": "features"
+      },
+      {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
+        "crate": "bijux-atlas-core",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-core",
+          "formatting"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-core/docs/formatting.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-core",
+          "formatting"
+        ],
+        "title": "Debug and Display Policy",
+        "topic": "formatting"
+      },
+      {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
+        "crate": "bijux-atlas-core",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-core",
+          "index"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-core/docs/index.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-core",
+          "index"
+        ],
+        "title": "Core Docs Index",
+        "topic": "index"
+      },
+      {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
+        "crate": "bijux-atlas-core",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-core",
+          "cargo-deny-notes",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-core/docs/internal/cargo-deny-notes.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-core",
+          "cargo-deny-notes",
+          "internal"
+        ],
+        "title": "Cargo Deny Notes (Core)",
+        "topic": "cargo-deny-notes"
+      },
+      {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
+        "crate": "bijux-atlas-core",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-core",
+          "internal",
+          "serde-policy"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-core/docs/internal/serde-policy.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-core",
+          "internal",
+          "serde-policy"
+        ],
+        "title": "Serialization Policy",
+        "topic": "serde-policy"
+      },
+      {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
+        "crate": "bijux-atlas-core",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-core",
+          "patterns"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-core/docs/patterns.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-core",
+          "patterns"
+        ],
+        "title": "Design Patterns Used",
+        "topic": "patterns"
+      },
+      {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
+        "crate": "bijux-atlas-core",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-core",
           "public-api"
         ],
         "last_reviewed": "2026-02-25",
@@ -910,6 +1150,29 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-core",
+          "purity"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-core/docs/purity.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-core",
+          "purity"
+        ],
+        "title": "Purity Contract",
+        "topic": "purity"
+      },
+      {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
+        "crate": "bijux-atlas-core",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-core",
           "testing"
         ],
         "last_reviewed": "2026-02-25",
@@ -922,11 +1185,57 @@
           "bijux-atlas-core",
           "testing"
         ],
-        "title": "Testing",
+        "title": "TESTING (bijux-atlas-core)",
         "topic": "testing"
+      },
+      {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
+        "crate": "bijux-atlas-core",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-core",
+          "versioning"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-core",
+        "path": "crates/bijux-atlas-core/docs/versioning.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-core",
+          "versioning"
+        ],
+        "title": "VERSIONING (bijux-atlas-core)",
+        "topic": "versioning"
       }
     ],
     "bijux-atlas-ingest": [
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "architecture",
+          "bijux-atlas-ingest"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-ingest",
+        "path": "crates/bijux-atlas-ingest/docs/architecture.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "architecture",
+          "bijux-atlas-ingest"
+        ],
+        "title": "ARCHITECTURE (bijux-atlas-ingest)",
+        "topic": "architecture"
+      },
       {
         "area": "bijux-atlas-ingest",
         "audience": "contributors",
@@ -940,7 +1249,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-ingest/docs/ARTIFACT_OUTPUT_CONTRACT.md",
+        "path": "crates/bijux-atlas-ingest/docs/artifact-output-contract.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -948,7 +1257,30 @@
           "bijux-atlas-ingest"
         ],
         "title": "Artifact Output Contract",
-        "topic": "ARTIFACT_OUTPUT_CONTRACT"
+        "topic": "artifact-output-contract"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmarks",
+          "bijux-atlas-ingest"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-ingest",
+        "path": "crates/bijux-atlas-ingest/docs/benchmarks.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmarks",
+          "bijux-atlas-ingest"
+        ],
+        "title": "BENCHMARKS (bijux-atlas-ingest)",
+        "topic": "benchmarks"
       },
       {
         "area": "bijux-atlas-ingest",
@@ -971,143 +1303,7 @@
           "determinism"
         ],
         "title": "Determinism Policy",
-        "topic": "DETERMINISM"
-      },
-      {
-        "area": "bijux-atlas-ingest",
-        "audience": "contributors",
-        "crate": "bijux-atlas-ingest",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-ingest",
-          "ensembl-layout"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-ingest/docs/ENSEMBL_LAYOUT.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-ingest",
-          "ensembl-layout"
-        ],
-        "title": "Ensembl Layout Ingest Workflow",
-        "topic": "ENSEMBL_LAYOUT"
-      },
-      {
-        "area": "bijux-atlas-ingest",
-        "audience": "contributors",
-        "crate": "bijux-atlas-ingest",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-ingest",
-          "index"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-ingest/docs/index.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-ingest",
-          "index"
-        ],
-        "title": "Ingest Docs Index",
-        "topic": "INDEX"
-      },
-      {
-        "area": "bijux-atlas-ingest",
-        "audience": "contributors",
-        "crate": "bijux-atlas-ingest",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-ingest",
-          "ingest-contract"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-ingest/docs/INGEST_CONTRACT.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-ingest",
-          "ingest-contract"
-        ],
-        "title": "Ingest Contract",
-        "topic": "INGEST_CONTRACT"
-      },
-      {
-        "area": "bijux-atlas-ingest",
-        "audience": "contributors",
-        "crate": "bijux-atlas-ingest",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-ingest"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-ingest/docs/qc.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-ingest"
-        ],
-        "title": "QC Policy",
-        "topic": "QC"
-      },
-      {
-        "area": "bijux-atlas-ingest",
-        "audience": "contributors",
-        "crate": "bijux-atlas-ingest",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "architecture",
-          "bijux-atlas-ingest"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-ingest/docs/architecture.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "architecture",
-          "bijux-atlas-ingest"
-        ],
-        "title": "Architecture",
-        "topic": "architecture"
-      },
-      {
-        "area": "bijux-atlas-ingest",
-        "audience": "contributors",
-        "crate": "bijux-atlas-ingest",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-ingest",
-          "effect-boundary-map"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-ingest/docs/effect-boundary-map.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-ingest",
-          "effect-boundary-map"
-        ],
-        "title": "Effect Boundary Map",
-        "topic": "effect-boundary-map"
+        "topic": "determinism"
       },
       {
         "area": "bijux-atlas-ingest",
@@ -1140,6 +1336,75 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-ingest",
+          "ensembl-layout"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/ensembl-layout.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "ensembl-layout"
+        ],
+        "title": "Ensembl Layout Ingest Workflow",
+        "topic": "ensembl-layout"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "errors"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-ingest",
+        "path": "crates/bijux-atlas-ingest/docs/errors.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "errors"
+        ],
+        "title": "ERROR_TAXONOMY (bijux-atlas-ingest)",
+        "topic": "errors"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "examples"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-ingest",
+        "path": "crates/bijux-atlas-ingest/docs/examples.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "examples"
+        ],
+        "title": "EXAMPLES (bijux-atlas-ingest)",
+        "topic": "examples"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
           "failure-modes"
         ],
         "last_reviewed": "2026-02-25",
@@ -1154,6 +1419,77 @@
         ],
         "title": "Failure Modes",
         "topic": "failure-modes"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "index"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/index.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "index"
+        ],
+        "title": "Ingest Docs Index",
+        "topic": "index"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "ingest-contract"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/ingest-contract.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "ingest-contract"
+        ],
+        "title": "Ingest Contract",
+        "topic": "ingest-contract"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "effect-boundary-map",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/internal/effect-boundary-map.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "effect-boundary-map",
+          "internal"
+        ],
+        "title": "Effect Boundary Map",
+        "topic": "effect-boundary-map"
       },
       {
         "area": "bijux-atlas-ingest",
@@ -1185,6 +1521,27 @@
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
+          "bijux-atlas-ingest"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/qc.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest"
+        ],
+        "title": "QC Policy",
+        "topic": "qc"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
           "bijux-atlas-ingest",
           "testing"
         ],
@@ -1198,8 +1555,31 @@
           "bijux-atlas-ingest",
           "testing"
         ],
-        "title": "Testing",
+        "title": "TESTING (bijux-atlas-ingest)",
         "topic": "testing"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "versioning"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-ingest",
+        "path": "crates/bijux-atlas-ingest/docs/versioning.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "versioning"
+        ],
+        "title": "VERSIONING (bijux-atlas-ingest)",
+        "topic": "versioning"
       }
     ],
     "bijux-atlas-model": [
@@ -1210,219 +1590,12 @@
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-model",
-          "compat-bijux-dna"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-model/docs/COMPAT_BIJUX_DNA.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-model",
-          "compat-bijux-dna"
-        ],
-        "title": "Compatibility With bijux-dna",
-        "topic": "COMPAT_BIJUX_DNA"
-      },
-      {
-        "area": "bijux-atlas-model",
-        "audience": "contributors",
-        "crate": "bijux-atlas-model",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-model",
-          "contract-compatibility"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-model/docs/CONTRACT_COMPATIBILITY.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-model",
-          "contract-compatibility"
-        ],
-        "title": "Contract Compatibility",
-        "topic": "CONTRACT_COMPATIBILITY"
-      },
-      {
-        "area": "bijux-atlas-model",
-        "audience": "contributors",
-        "crate": "bijux-atlas-model",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-model",
-          "index"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-model/docs/index.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-model",
-          "index"
-        ],
-        "title": "Model Docs Index",
-        "topic": "INDEX"
-      },
-      {
-        "area": "bijux-atlas-model",
-        "audience": "contributors",
-        "crate": "bijux-atlas-model",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-model",
-          "not-in-model"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-model/docs/NOT_IN_MODEL.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-model",
-          "not-in-model"
-        ],
-        "title": "What Is Not In Model",
-        "topic": "NOT_IN_MODEL"
-      },
-      {
-        "area": "bijux-atlas-model",
-        "audience": "contributors",
-        "crate": "bijux-atlas-model",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-model",
-          "optional-fields"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-model/docs/OPTIONAL_FIELDS.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-model",
-          "optional-fields"
-        ],
-        "title": "Optional Fields Rules",
-        "topic": "OPTIONAL_FIELDS"
-      },
-      {
-        "area": "bijux-atlas-model",
-        "audience": "contributors",
-        "crate": "bijux-atlas-model",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-model",
-          "ordering-rules"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-model/docs/ORDERING_RULES.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-model",
-          "ordering-rules"
-        ],
-        "title": "Strict Ordering Rules",
-        "topic": "ORDERING_RULES"
-      },
-      {
-        "area": "bijux-atlas-model",
-        "audience": "contributors",
-        "crate": "bijux-atlas-model",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-model",
-          "purity"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-model/docs/purity.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-model",
-          "purity"
-        ],
-        "title": "Purity Policy",
-        "topic": "PURITY"
-      },
-      {
-        "area": "bijux-atlas-model",
-        "audience": "contributors",
-        "crate": "bijux-atlas-model",
-        "doc_type": "spec",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-model",
-          "schema-evolution-notes"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-model/docs/SCHEMA_EVOLUTION_NOTES.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-model",
-          "schema-evolution-notes"
-        ],
-        "title": "Schema Evolution Notes",
-        "topic": "SCHEMA_EVOLUTION_NOTES"
-      },
-      {
-        "area": "bijux-atlas-model",
-        "audience": "contributors",
-        "crate": "bijux-atlas-model",
-        "doc_type": "spec",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-model",
-          "schema-stability"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-model/docs/SCHEMA_STABILITY.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-model",
-          "schema-stability"
-        ],
-        "title": "Schema Stability (v1)",
-        "topic": "SCHEMA_STABILITY"
-      },
-      {
-        "area": "bijux-atlas-model",
-        "audience": "contributors",
-        "crate": "bijux-atlas-model",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
           "architecture",
           "bijux-atlas-model"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "docs-governance",
+        "owner": "bijux-atlas-model",
         "path": "crates/bijux-atlas-model/docs/architecture.md",
         "review_due": "2026-08-24",
         "stability": "stable",
@@ -1430,8 +1603,77 @@
           "architecture",
           "bijux-atlas-model"
         ],
-        "title": "Architecture",
+        "title": "ARCHITECTURE (bijux-atlas-model)",
         "topic": "architecture"
+      },
+      {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
+        "crate": "bijux-atlas-model",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmarks",
+          "bijux-atlas-model"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-model",
+        "path": "crates/bijux-atlas-model/docs/benchmarks.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmarks",
+          "bijux-atlas-model"
+        ],
+        "title": "BENCHMARKS (bijux-atlas-model)",
+        "topic": "benchmarks"
+      },
+      {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
+        "crate": "bijux-atlas-model",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-model",
+          "contract-compatibility"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-model/docs/contract-compatibility.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-model",
+          "contract-compatibility"
+        ],
+        "title": "Contract Compatibility",
+        "topic": "contract-compatibility"
+      },
+      {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
+        "crate": "bijux-atlas-model",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-model",
+          "data-model"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-model",
+        "path": "crates/bijux-atlas-model/docs/data-model.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-model",
+          "data-model"
+        ],
+        "title": "DATA_MODEL (bijux-atlas-model)",
+        "topic": "data-model"
       },
       {
         "area": "bijux-atlas-model",
@@ -1487,6 +1729,198 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-model",
+          "errors"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-model",
+        "path": "crates/bijux-atlas-model/docs/errors.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-model",
+          "errors"
+        ],
+        "title": "ERROR_TAXONOMY (bijux-atlas-model)",
+        "topic": "errors"
+      },
+      {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
+        "crate": "bijux-atlas-model",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-model",
+          "examples"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-model",
+        "path": "crates/bijux-atlas-model/docs/examples.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-model",
+          "examples"
+        ],
+        "title": "EXAMPLES (bijux-atlas-model)",
+        "topic": "examples"
+      },
+      {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
+        "crate": "bijux-atlas-model",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-model",
+          "index"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-model/docs/index.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-model",
+          "index"
+        ],
+        "title": "Model Docs Index",
+        "topic": "index"
+      },
+      {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
+        "crate": "bijux-atlas-model",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-model",
+          "compat-bijux-dna",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-model/docs/internal/compat-bijux-dna.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-model",
+          "compat-bijux-dna",
+          "internal"
+        ],
+        "title": "Compatibility With bijux-dna",
+        "topic": "compat-bijux-dna"
+      },
+      {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
+        "crate": "bijux-atlas-model",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-model",
+          "internal",
+          "optional-fields"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-model/docs/internal/optional-fields.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-model",
+          "internal",
+          "optional-fields"
+        ],
+        "title": "Optional Fields Rules",
+        "topic": "optional-fields"
+      },
+      {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
+        "crate": "bijux-atlas-model",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-model",
+          "internal",
+          "ordering-rules"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-model/docs/internal/ordering-rules.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-model",
+          "internal",
+          "ordering-rules"
+        ],
+        "title": "Strict Ordering Rules",
+        "topic": "ordering-rules"
+      },
+      {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
+        "crate": "bijux-atlas-model",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-model",
+          "internal",
+          "schema-evolution-notes"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-model/docs/internal/schema-evolution-notes.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-model",
+          "internal",
+          "schema-evolution-notes"
+        ],
+        "title": "Schema Evolution Notes",
+        "topic": "schema-evolution-notes"
+      },
+      {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
+        "crate": "bijux-atlas-model",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-model",
+          "not-in-model"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-model/docs/not-in-model.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-model",
+          "not-in-model"
+        ],
+        "title": "What Is Not In Model",
+        "topic": "not-in-model"
+      },
+      {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
+        "crate": "bijux-atlas-model",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-model",
           "public-api"
         ],
         "last_reviewed": "2026-02-25",
@@ -1510,6 +1944,52 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-model",
+          "purity"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-model/docs/purity.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-model",
+          "purity"
+        ],
+        "title": "Purity Policy",
+        "topic": "purity"
+      },
+      {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
+        "crate": "bijux-atlas-model",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-model",
+          "schema-stability"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-model/docs/schema-stability.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-model",
+          "schema-stability"
+        ],
+        "title": "Schema Stability (v1)",
+        "topic": "schema-stability"
+      },
+      {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
+        "crate": "bijux-atlas-model",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-model",
           "testing"
         ],
         "last_reviewed": "2026-02-25",
@@ -1522,8 +2002,31 @@
           "bijux-atlas-model",
           "testing"
         ],
-        "title": "Testing",
+        "title": "TESTING (bijux-atlas-model)",
         "topic": "testing"
+      },
+      {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
+        "crate": "bijux-atlas-model",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-model",
+          "versioning"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-model",
+        "path": "crates/bijux-atlas-model/docs/versioning.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-model",
+          "versioning"
+        ],
+        "title": "VERSIONING (bijux-atlas-model)",
+        "topic": "versioning"
       }
     ],
     "bijux-atlas-policies": [
@@ -1534,173 +2037,12 @@
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-policies",
-          "change-checklist"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-policies/docs/CHANGE_CHECKLIST.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-policies",
-          "change-checklist"
-        ],
-        "title": "Policy Change Checklist",
-        "topic": "CHANGE_CHECKLIST"
-      },
-      {
-        "area": "bijux-atlas-policies",
-        "audience": "contributors",
-        "crate": "bijux-atlas-policies",
-        "doc_type": "spec",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-policies",
-          "config-schema"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-policies/docs/CONFIG_SCHEMA.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-policies",
-          "config-schema"
-        ],
-        "title": "Config Schema Contract",
-        "topic": "CONFIG_SCHEMA"
-      },
-      {
-        "area": "bijux-atlas-policies",
-        "audience": "contributors",
-        "crate": "bijux-atlas-policies",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-policies",
-          "evolution"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-policies/docs/evolution.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-policies",
-          "evolution"
-        ],
-        "title": "Policy Evolution",
-        "topic": "EVOLUTION"
-      },
-      {
-        "area": "bijux-atlas-policies",
-        "audience": "contributors",
-        "crate": "bijux-atlas-policies",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-policies",
-          "index"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-policies/docs/index.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-policies",
-          "index"
-        ],
-        "title": "Policies Docs Index",
-        "topic": "INDEX"
-      },
-      {
-        "area": "bijux-atlas-policies",
-        "audience": "contributors",
-        "crate": "bijux-atlas-policies",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-policies",
-          "policy-authoring-guide"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-policies/docs/POLICY_AUTHORING_GUIDE.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-policies",
-          "policy-authoring-guide"
-        ],
-        "title": "Policy Authoring Guide",
-        "topic": "POLICY_AUTHORING_GUIDE"
-      },
-      {
-        "area": "bijux-atlas-policies",
-        "audience": "contributors",
-        "crate": "bijux-atlas-policies",
-        "doc_type": "spec",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-policies",
-          "schema"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-policies/docs/SCHEMA.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-policies",
-          "schema"
-        ],
-        "title": "Policy Schema",
-        "topic": "SCHEMA"
-      },
-      {
-        "area": "bijux-atlas-policies",
-        "audience": "contributors",
-        "crate": "bijux-atlas-policies",
-        "doc_type": "spec",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-policies",
-          "schema-evolution"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-policies/docs/SCHEMA_EVOLUTION.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-policies",
-          "schema-evolution"
-        ],
-        "title": "Evolving Policy Schema Safely",
-        "topic": "SCHEMA_EVOLUTION"
-      },
-      {
-        "area": "bijux-atlas-policies",
-        "audience": "contributors",
-        "crate": "bijux-atlas-policies",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
           "architecture",
           "bijux-atlas-policies"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "docs-governance",
+        "owner": "bijux-atlas-policies",
         "path": "crates/bijux-atlas-policies/docs/architecture.md",
         "review_due": "2026-08-24",
         "stability": "stable",
@@ -1708,8 +2050,54 @@
           "architecture",
           "bijux-atlas-policies"
         ],
-        "title": "Architecture",
+        "title": "ARCHITECTURE (bijux-atlas-policies)",
         "topic": "architecture"
+      },
+      {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
+        "crate": "bijux-atlas-policies",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmarks",
+          "bijux-atlas-policies"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-policies",
+        "path": "crates/bijux-atlas-policies/docs/benchmarks.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmarks",
+          "bijux-atlas-policies"
+        ],
+        "title": "BENCHMARKS (bijux-atlas-policies)",
+        "topic": "benchmarks"
+      },
+      {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
+        "crate": "bijux-atlas-policies",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-policies",
+          "config-schema"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-policies/docs/config-schema.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-policies",
+          "config-schema"
+        ],
+        "title": "Config Schema Contract",
+        "topic": "config-schema"
       },
       {
         "area": "bijux-atlas-policies",
@@ -1788,6 +2176,196 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-policies",
+          "errors"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-policies",
+        "path": "crates/bijux-atlas-policies/docs/errors.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-policies",
+          "errors"
+        ],
+        "title": "ERROR_TAXONOMY (bijux-atlas-policies)",
+        "topic": "errors"
+      },
+      {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
+        "crate": "bijux-atlas-policies",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-policies",
+          "examples"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-policies",
+        "path": "crates/bijux-atlas-policies/docs/examples.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-policies",
+          "examples"
+        ],
+        "title": "EXAMPLES (bijux-atlas-policies)",
+        "topic": "examples"
+      },
+      {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
+        "crate": "bijux-atlas-policies",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-policies",
+          "extension-guide"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-policies",
+        "path": "crates/bijux-atlas-policies/docs/extension-guide.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-policies",
+          "extension-guide"
+        ],
+        "title": "EXTENSION_GUIDE (bijux-atlas-policies)",
+        "topic": "extension-guide"
+      },
+      {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
+        "crate": "bijux-atlas-policies",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-policies",
+          "index"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-policies/docs/index.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-policies",
+          "index"
+        ],
+        "title": "Policies Docs Index",
+        "topic": "index"
+      },
+      {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
+        "crate": "bijux-atlas-policies",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-policies",
+          "change-checklist",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-policies/docs/internal/change-checklist.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-policies",
+          "change-checklist",
+          "internal"
+        ],
+        "title": "Policy Change Checklist",
+        "topic": "change-checklist"
+      },
+      {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
+        "crate": "bijux-atlas-policies",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-policies",
+          "evolution",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-policies/docs/internal/evolution.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-policies",
+          "evolution",
+          "internal"
+        ],
+        "title": "Policy Evolution",
+        "topic": "evolution"
+      },
+      {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
+        "crate": "bijux-atlas-policies",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-policies",
+          "internal",
+          "schema-evolution"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-policies/docs/internal/schema-evolution.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-policies",
+          "internal",
+          "schema-evolution"
+        ],
+        "title": "Evolving Policy Schema Safely",
+        "topic": "schema-evolution"
+      },
+      {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
+        "crate": "bijux-atlas-policies",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-policies",
+          "policy-authoring-guide"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-policies/docs/policy-authoring-guide.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-policies",
+          "policy-authoring-guide"
+        ],
+        "title": "Policy Authoring Guide",
+        "topic": "policy-authoring-guide"
+      },
+      {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
+        "crate": "bijux-atlas-policies",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-policies",
           "public-api"
         ],
         "last_reviewed": "2026-02-25",
@@ -1811,6 +2389,29 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-policies",
+          "schema"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-policies/docs/schema.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-policies",
+          "schema"
+        ],
+        "title": "Policy Schema",
+        "topic": "schema"
+      },
+      {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
+        "crate": "bijux-atlas-policies",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-policies",
           "testing"
         ],
         "last_reviewed": "2026-02-25",
@@ -1823,195 +2424,34 @@
           "bijux-atlas-policies",
           "testing"
         ],
-        "title": "Testing",
+        "title": "TESTING (bijux-atlas-policies)",
         "topic": "testing"
+      },
+      {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
+        "crate": "bijux-atlas-policies",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-policies",
+          "versioning"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-policies",
+        "path": "crates/bijux-atlas-policies/docs/versioning.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-policies",
+          "versioning"
+        ],
+        "title": "VERSIONING (bijux-atlas-policies)",
+        "topic": "versioning"
       }
     ],
     "bijux-atlas-query": [
-      {
-        "area": "bijux-atlas-query",
-        "audience": "contributors",
-        "crate": "bijux-atlas-query",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "adding-filters",
-          "bijux-atlas-query"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-query/docs/ADDING_FILTERS.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "adding-filters",
-          "bijux-atlas-query"
-        ],
-        "title": "Adding New Filters Safely",
-        "topic": "ADDING_FILTERS"
-      },
-      {
-        "area": "bijux-atlas-query",
-        "audience": "contributors",
-        "crate": "bijux-atlas-query",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-query",
-          "cost-estimator"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-query/docs/COST_ESTIMATOR.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-query",
-          "cost-estimator"
-        ],
-        "title": "Cost Estimator Calibration",
-        "topic": "COST_ESTIMATOR"
-      },
-      {
-        "area": "bijux-atlas-query",
-        "audience": "contributors",
-        "crate": "bijux-atlas-query",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-query",
-          "index"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-query/docs/index.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-query",
-          "index"
-        ],
-        "title": "Query Docs Index",
-        "topic": "INDEX"
-      },
-      {
-        "area": "bijux-atlas-query",
-        "audience": "contributors",
-        "crate": "bijux-atlas-query",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-query",
-          "ordering"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-query/docs/ordering.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-query",
-          "ordering"
-        ],
-        "title": "Ordering Rules",
-        "topic": "ORDERING"
-      },
-      {
-        "area": "bijux-atlas-query",
-        "audience": "contributors",
-        "crate": "bijux-atlas-query",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-query",
-          "pagination"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-query/docs/pagination.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-query",
-          "pagination"
-        ],
-        "title": "Pagination Contract",
-        "topic": "PAGINATION"
-      },
-      {
-        "area": "bijux-atlas-query",
-        "audience": "contributors",
-        "crate": "bijux-atlas-query",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-query",
-          "perf"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-query/docs/perf.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-query",
-          "perf"
-        ],
-        "title": "Performance Contract",
-        "topic": "PERF"
-      },
-      {
-        "area": "bijux-atlas-query",
-        "audience": "contributors",
-        "crate": "bijux-atlas-query",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-query",
-          "query-language-spec"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-query/docs/QUERY_LANGUAGE_SPEC.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-query",
-          "query-language-spec"
-        ],
-        "title": "Query Language Spec",
-        "topic": "QUERY_LANGUAGE_SPEC"
-      },
-      {
-        "area": "bijux-atlas-query",
-        "audience": "contributors",
-        "crate": "bijux-atlas-query",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-query",
-          "transcript-ordering"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-query/docs/TRANSCRIPT_ORDERING.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-query",
-          "transcript-ordering"
-        ],
-        "title": "Transcript Ordering Rules",
-        "topic": "TRANSCRIPT_ORDERING"
-      },
       {
         "area": "bijux-atlas-query",
         "audience": "contributors",
@@ -2032,8 +2472,54 @@
           "architecture",
           "bijux-atlas-query"
         ],
-        "title": "Architecture",
+        "title": "bijux-atlas-query Architecture",
         "topic": "architecture"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmarks",
+          "bijux-atlas-query"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-query",
+        "path": "crates/bijux-atlas-query/docs/benchmarks.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmarks",
+          "bijux-atlas-query"
+        ],
+        "title": "BENCHMARKS (bijux-atlas-query)",
+        "topic": "benchmarks"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-query",
+          "cost-estimator"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-query/docs/cost-estimator.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-query",
+          "cost-estimator"
+        ],
+        "title": "Cost Estimator Calibration",
+        "topic": "cost-estimator"
       },
       {
         "area": "bijux-atlas-query",
@@ -2089,6 +2575,194 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-query",
+          "errors"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-query",
+        "path": "crates/bijux-atlas-query/docs/errors.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-query",
+          "errors"
+        ],
+        "title": "ERROR_TAXONOMY (bijux-atlas-query)",
+        "topic": "errors"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-query",
+          "examples"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-query",
+        "path": "crates/bijux-atlas-query/docs/examples.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-query",
+          "examples"
+        ],
+        "title": "EXAMPLES (bijux-atlas-query)",
+        "topic": "examples"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-query",
+          "index"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-query/docs/index.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-query",
+          "index"
+        ],
+        "title": "Query Docs Index",
+        "topic": "index"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "adding-filters",
+          "bijux-atlas-query",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-query/docs/internal/adding-filters.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "adding-filters",
+          "bijux-atlas-query",
+          "internal"
+        ],
+        "title": "Adding New Filters Safely",
+        "topic": "adding-filters"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-query",
+          "internal",
+          "transcript-ordering"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-query/docs/internal/transcript-ordering.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-query",
+          "internal",
+          "transcript-ordering"
+        ],
+        "title": "Transcript Ordering Rules",
+        "topic": "transcript-ordering"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-query",
+          "ordering"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-query/docs/ordering.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-query",
+          "ordering"
+        ],
+        "title": "Ordering Rules",
+        "topic": "ordering"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-query",
+          "pagination"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-query/docs/pagination.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-query",
+          "pagination"
+        ],
+        "title": "Pagination Contract",
+        "topic": "pagination"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-query",
+          "perf"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-query/docs/perf.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-query",
+          "perf"
+        ],
+        "title": "Performance Contract",
+        "topic": "perf"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-query",
           "public-api"
         ],
         "last_reviewed": "2026-02-25",
@@ -2112,6 +2786,29 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-query",
+          "query-language-spec"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-query/docs/query-language-spec.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-query",
+          "query-language-spec"
+        ],
+        "title": "Query Language Spec",
+        "topic": "query-language-spec"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-query",
           "testing"
         ],
         "last_reviewed": "2026-02-25",
@@ -2124,11 +2821,80 @@
           "bijux-atlas-query",
           "testing"
         ],
-        "title": "Testing",
+        "title": "TESTING (bijux-atlas-query)",
         "topic": "testing"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-query",
+          "versioning"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-query",
+        "path": "crates/bijux-atlas-query/docs/versioning.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-query",
+          "versioning"
+        ],
+        "title": "VERSIONING (bijux-atlas-query)",
+        "topic": "versioning"
       }
     ],
     "bijux-atlas-server": [
+      {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "architecture",
+          "bijux-atlas-server"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-server/docs/architecture.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "architecture",
+          "bijux-atlas-server"
+        ],
+        "title": "bijux-atlas-server Architecture",
+        "topic": "architecture"
+      },
+      {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmarks",
+          "bijux-atlas-server"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-server",
+        "path": "crates/bijux-atlas-server/docs/benchmarks.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmarks",
+          "bijux-atlas-server"
+        ],
+        "title": "BENCHMARKS (bijux-atlas-server)",
+        "topic": "benchmarks"
+      },
       {
         "area": "bijux-atlas-server",
         "audience": "contributors",
@@ -2150,260 +2916,7 @@
           "caching"
         ],
         "title": "Caching",
-        "topic": "CACHING"
-      },
-      {
-        "area": "bijux-atlas-server",
-        "audience": "contributors",
-        "crate": "bijux-atlas-server",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-server",
-          "failure-modes"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/FAILURE_MODES.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-server",
-          "failure-modes"
-        ],
-        "title": "Failure Modes",
-        "topic": "FAILURE_MODES"
-      },
-      {
-        "area": "bijux-atlas-server",
-        "audience": "contributors",
-        "crate": "bijux-atlas-server",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-server",
-          "hot-path-checklist"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/HOT_PATH_CHECKLIST.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-server",
-          "hot-path-checklist"
-        ],
-        "title": "Hot Path Checklist",
-        "topic": "HOT_PATH_CHECKLIST"
-      },
-      {
-        "area": "bijux-atlas-server",
-        "audience": "contributors",
-        "crate": "bijux-atlas-server",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-server",
-          "index"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/index.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-server",
-          "index"
-        ],
-        "title": "Docs Index",
-        "topic": "INDEX"
-      },
-      {
-        "area": "bijux-atlas-server",
-        "audience": "contributors",
-        "crate": "bijux-atlas-server",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-server",
-          "kubernetes"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/kubernetes.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-server",
-          "kubernetes"
-        ],
-        "title": "Kubernetes Ops",
-        "topic": "KUBERNETES"
-      },
-      {
-        "area": "bijux-atlas-server",
-        "audience": "contributors",
-        "crate": "bijux-atlas-server",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-server",
-          "operations-runbook"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/OPERATIONS_RUNBOOK.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-server",
-          "operations-runbook"
-        ],
-        "title": "Operations Runbook",
-        "topic": "OPERATIONS_RUNBOOK"
-      },
-      {
-        "area": "bijux-atlas-server",
-        "audience": "contributors",
-        "crate": "bijux-atlas-server",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-server",
-          "perf-baseline"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/PERF_BASELINE.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-server",
-          "perf-baseline"
-        ],
-        "title": "Perf Baseline",
-        "topic": "PERF_BASELINE"
-      },
-      {
-        "area": "bijux-atlas-server",
-        "audience": "contributors",
-        "crate": "bijux-atlas-server",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-server",
-          "perf-profiling"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/PERF_PROFILING.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-server",
-          "perf-profiling"
-        ],
-        "title": "Perf Profiling",
-        "topic": "PERF_PROFILING"
-      },
-      {
-        "area": "bijux-atlas-server",
-        "audience": "contributors",
-        "crate": "bijux-atlas-server",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-server",
-          "runtime"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/runtime.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-server",
-          "runtime"
-        ],
-        "title": "Runtime",
-        "topic": "RUNTIME"
-      },
-      {
-        "area": "bijux-atlas-server",
-        "audience": "contributors",
-        "crate": "bijux-atlas-server",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-server",
-          "telemetry"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/telemetry.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-server",
-          "telemetry"
-        ],
-        "title": "Telemetry",
-        "topic": "TELEMETRY"
-      },
-      {
-        "area": "bijux-atlas-server",
-        "audience": "contributors",
-        "crate": "bijux-atlas-server",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "architecture",
-          "bijux-atlas-server"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/architecture.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "architecture",
-          "bijux-atlas-server"
-        ],
-        "title": "Architecture",
-        "topic": "architecture"
-      },
-      {
-        "area": "bijux-atlas-server",
-        "audience": "contributors",
-        "crate": "bijux-atlas-server",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-server",
-          "contracts"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "bijux-atlas-server",
-        "path": "crates/bijux-atlas-server/docs/contracts.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-server",
-          "contracts"
-        ],
-        "title": "Contracts",
-        "topic": "contracts"
+        "topic": "caching"
       },
       {
         "area": "bijux-atlas-server",
@@ -2450,6 +2963,52 @@
         ],
         "title": "Effects",
         "topic": "effects"
+      },
+      {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-server",
+          "errors"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-server",
+        "path": "crates/bijux-atlas-server/docs/errors.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-server",
+          "errors"
+        ],
+        "title": "ERROR_TAXONOMY (bijux-atlas-server)",
+        "topic": "errors"
+      },
+      {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-server",
+          "examples"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-server",
+        "path": "crates/bijux-atlas-server/docs/examples.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-server",
+          "examples"
+        ],
+        "title": "EXAMPLES (bijux-atlas-server)",
+        "topic": "examples"
       },
       {
         "area": "bijux-atlas-server",
@@ -2507,6 +3066,250 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-server",
+          "index"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-server/docs/index.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-server",
+          "index"
+        ],
+        "title": "Docs Index",
+        "topic": "index"
+      },
+      {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-server",
+          "contracts",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-server",
+        "path": "crates/bijux-atlas-server/docs/internal/contracts.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-server",
+          "contracts",
+          "internal"
+        ],
+        "title": "Contracts",
+        "topic": "contracts"
+      },
+      {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-server",
+          "failure-modes-reference",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-server/docs/internal/failure-modes-reference.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-server",
+          "failure-modes-reference",
+          "internal"
+        ],
+        "title": "Failure Modes",
+        "topic": "failure-modes-reference"
+      },
+      {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-server",
+          "hot-path-checklist",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-server/docs/internal/hot-path-checklist.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-server",
+          "hot-path-checklist",
+          "internal"
+        ],
+        "title": "Hot Path Checklist",
+        "topic": "hot-path-checklist"
+      },
+      {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-server",
+          "internal",
+          "perf-baseline"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-server/docs/internal/perf-baseline.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-server",
+          "internal",
+          "perf-baseline"
+        ],
+        "title": "Perf Baseline",
+        "topic": "perf-baseline"
+      },
+      {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-server",
+          "internal",
+          "perf-profiling"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-server/docs/internal/perf-profiling.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-server",
+          "internal",
+          "perf-profiling"
+        ],
+        "title": "Perf Profiling",
+        "topic": "perf-profiling"
+      },
+      {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-server",
+          "internal",
+          "runtime-model"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-server/docs/internal/runtime-model.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-server",
+          "internal",
+          "runtime-model"
+        ],
+        "title": "Runtime Model",
+        "topic": "runtime-model"
+      },
+      {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-server",
+          "internal",
+          "telemetry"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-server/docs/internal/telemetry.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-server",
+          "internal",
+          "telemetry"
+        ],
+        "title": "Telemetry",
+        "topic": "telemetry"
+      },
+      {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-server",
+          "kubernetes"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-server/docs/kubernetes.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-server",
+          "kubernetes"
+        ],
+        "title": "Kubernetes Ops",
+        "topic": "kubernetes"
+      },
+      {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-server",
+          "operations-runbook"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-server/docs/operations-runbook.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-server",
+          "operations-runbook"
+        ],
+        "title": "Operations Runbook",
+        "topic": "operations-runbook"
+      },
+      {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-server",
           "public-api"
         ],
         "last_reviewed": "2026-02-25",
@@ -2530,20 +3333,20 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-server",
-          "runtime-model"
+          "runtime"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/runtime-model.md",
+        "path": "crates/bijux-atlas-server/docs/runtime.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
           "bijux-atlas-server",
-          "runtime-model"
+          "runtime"
         ],
-        "title": "Runtime Model",
-        "topic": "runtime-model"
+        "title": "Runtime",
+        "topic": "runtime"
       },
       {
         "area": "bijux-atlas-server",
@@ -2565,8 +3368,31 @@
           "bijux-atlas-server",
           "testing"
         ],
-        "title": "Testing",
+        "title": "TESTING (bijux-atlas-server)",
         "topic": "testing"
+      },
+      {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-server",
+          "versioning"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-server",
+        "path": "crates/bijux-atlas-server/docs/versioning.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-server",
+          "versioning"
+        ],
+        "title": "VERSIONING (bijux-atlas-server)",
+        "topic": "versioning"
       }
     ],
     "bijux-atlas-store": [
@@ -2577,13 +3403,36 @@
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
+          "architecture",
+          "bijux-atlas-store"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-store/docs/architecture.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "architecture",
+          "bijux-atlas-store"
+        ],
+        "title": "bijux-atlas-store Architecture",
+        "topic": "architecture"
+      },
+      {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
+        "crate": "bijux-atlas-store",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
           "artifact-contract",
           "bijux-atlas-store"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-store/docs/ARTIFACT_CONTRACT.md",
+        "path": "crates/bijux-atlas-store/docs/artifact-contract.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -2591,30 +3440,7 @@
           "bijux-atlas-store"
         ],
         "title": "Artifact Contract at Store Boundary",
-        "topic": "ARTIFACT_CONTRACT"
-      },
-      {
-        "area": "bijux-atlas-store",
-        "audience": "contributors",
-        "crate": "bijux-atlas-store",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "attack-surface-budget",
-          "bijux-atlas-store"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-store/docs/ATTACK_SURFACE_BUDGET.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "attack-surface-budget",
-          "bijux-atlas-store"
-        ],
-        "title": "Attack Surface Budget",
-        "topic": "ATTACK_SURFACE_BUDGET"
+        "topic": "artifact-contract"
       },
       {
         "area": "bijux-atlas-store",
@@ -2629,7 +3455,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-store/docs/BACKENDS_AND_GUARANTEES.md",
+        "path": "crates/bijux-atlas-store/docs/backends-and-guarantees.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -2637,7 +3463,7 @@
           "bijux-atlas-store"
         ],
         "title": "Backends And Guarantees",
-        "topic": "BACKENDS_AND_GUARANTEES"
+        "topic": "backends-and-guarantees"
       },
       {
         "area": "bijux-atlas-store",
@@ -2646,21 +3472,21 @@
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "backend-feature-matrix",
+          "benchmarks",
           "bijux-atlas-store"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-store/docs/BACKEND_FEATURE_MATRIX.md",
+        "owner": "bijux-atlas-store",
+        "path": "crates/bijux-atlas-store/docs/benchmarks.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "backend-feature-matrix",
+          "benchmarks",
           "bijux-atlas-store"
         ],
-        "title": "Backend Feature Matrix",
-        "topic": "BACKEND_FEATURE_MATRIX"
+        "title": "BENCHMARKS (bijux-atlas-store)",
+        "topic": "benchmarks"
       },
       {
         "area": "bijux-atlas-store",
@@ -2683,122 +3509,7 @@
           "caching"
         ],
         "title": "Caching Semantics",
-        "topic": "CACHING"
-      },
-      {
-        "area": "bijux-atlas-store",
-        "audience": "contributors",
-        "crate": "bijux-atlas-store",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-store",
-          "failure-modes"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-store/docs/FAILURE_MODES.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-store",
-          "failure-modes"
-        ],
-        "title": "Failure Modes",
-        "topic": "FAILURE_MODES"
-      },
-      {
-        "area": "bijux-atlas-store",
-        "audience": "contributors",
-        "crate": "bijux-atlas-store",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-store",
-          "index"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-store/docs/index.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-store",
-          "index"
-        ],
-        "title": "Store Docs Index",
-        "topic": "INDEX"
-      },
-      {
-        "area": "bijux-atlas-store",
-        "audience": "contributors",
-        "crate": "bijux-atlas-store",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-store",
-          "rollback"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-store/docs/rollback.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-store",
-          "rollback"
-        ],
-        "title": "Rollback Workflow",
-        "topic": "ROLLBACK"
-      },
-      {
-        "area": "bijux-atlas-store",
-        "audience": "contributors",
-        "crate": "bijux-atlas-store",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-store",
-          "runbook-snippet"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-store/docs/RUNBOOK_SNIPPET.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-store",
-          "runbook-snippet"
-        ],
-        "title": "Store Outage Behavior (Snippet)",
-        "topic": "RUNBOOK_SNIPPET"
-      },
-      {
-        "area": "bijux-atlas-store",
-        "audience": "contributors",
-        "crate": "bijux-atlas-store",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "architecture",
-          "bijux-atlas-store"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-store/docs/architecture.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "architecture",
-          "bijux-atlas-store"
-        ],
-        "title": "Architecture",
-        "topic": "architecture"
+        "topic": "caching"
       },
       {
         "area": "bijux-atlas-store",
@@ -2877,6 +3588,52 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-store",
+          "errors"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-store",
+        "path": "crates/bijux-atlas-store/docs/errors.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-store",
+          "errors"
+        ],
+        "title": "ERROR_TAXONOMY (bijux-atlas-store)",
+        "topic": "errors"
+      },
+      {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
+        "crate": "bijux-atlas-store",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-store",
+          "examples"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-store",
+        "path": "crates/bijux-atlas-store/docs/examples.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-store",
+          "examples"
+        ],
+        "title": "EXAMPLES (bijux-atlas-store)",
+        "topic": "examples"
+      },
+      {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
+        "crate": "bijux-atlas-store",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-store",
           "failure-modes"
         ],
         "last_reviewed": "2026-02-25",
@@ -2891,6 +3648,154 @@
         ],
         "title": "Failure Modes",
         "topic": "failure-modes"
+      },
+      {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
+        "crate": "bijux-atlas-store",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-store",
+          "index"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-store/docs/index.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-store",
+          "index"
+        ],
+        "title": "Store Docs Index",
+        "topic": "index"
+      },
+      {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
+        "crate": "bijux-atlas-store",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "attack-surface-budget",
+          "bijux-atlas-store",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-store/docs/internal/attack-surface-budget.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "attack-surface-budget",
+          "bijux-atlas-store",
+          "internal"
+        ],
+        "title": "Attack Surface Budget",
+        "topic": "attack-surface-budget"
+      },
+      {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
+        "crate": "bijux-atlas-store",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "backend-feature-matrix",
+          "bijux-atlas-store",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-store/docs/internal/backend-feature-matrix.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "backend-feature-matrix",
+          "bijux-atlas-store",
+          "internal"
+        ],
+        "title": "Backend Feature Matrix",
+        "topic": "backend-feature-matrix"
+      },
+      {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
+        "crate": "bijux-atlas-store",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-store",
+          "failure-modes-reference",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-store/docs/internal/failure-modes-reference.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-store",
+          "failure-modes-reference",
+          "internal"
+        ],
+        "title": "Failure Modes",
+        "topic": "failure-modes-reference"
+      },
+      {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
+        "crate": "bijux-atlas-store",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-store",
+          "internal",
+          "rollback"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-store/docs/internal/rollback.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-store",
+          "internal",
+          "rollback"
+        ],
+        "title": "Rollback Workflow",
+        "topic": "rollback"
+      },
+      {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
+        "crate": "bijux-atlas-store",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-store",
+          "internal",
+          "runbook-snippet"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-store/docs/internal/runbook-snippet.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-store",
+          "internal",
+          "runbook-snippet"
+        ],
+        "title": "Store Outage Behavior (Snippet)",
+        "topic": "runbook-snippet"
       },
       {
         "area": "bijux-atlas-store",
@@ -2935,34 +3840,34 @@
           "bijux-atlas-store",
           "testing"
         ],
-        "title": "Testing",
+        "title": "TESTING (bijux-atlas-store)",
         "topic": "testing"
-      }
-    ],
-    "bijux-dev-atlas": [
+      },
       {
-        "area": "bijux-dev-atlas",
+        "area": "bijux-atlas-store",
         "audience": "contributors",
-        "crate": "bijux-dev-atlas",
+        "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "artifacts",
-          "bijux-dev-atlas"
+          "bijux-atlas-store",
+          "versioning"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-dev-atlas/docs/artifacts.md",
+        "owner": "bijux-atlas-store",
+        "path": "crates/bijux-atlas-store/docs/versioning.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "artifacts",
-          "bijux-dev-atlas"
+          "bijux-atlas-store",
+          "versioning"
         ],
-        "title": "Dev Control Plane Artifacts",
-        "topic": "ARTIFACTS"
-      },
+        "title": "VERSIONING (bijux-atlas-store)",
+        "topic": "versioning"
+      }
+    ],
+    "bijux-dev-atlas": [
       {
         "area": "bijux-dev-atlas",
         "audience": "contributors",
@@ -2993,6 +3898,98 @@
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
+          "architecture",
+          "bijux-dev-atlas"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-dev-atlas",
+        "path": "crates/bijux-dev-atlas/docs/architecture.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "architecture",
+          "bijux-dev-atlas"
+        ],
+        "title": "ARCHITECTURE (bijux-dev-atlas)",
+        "topic": "architecture"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "artifacts",
+          "bijux-dev-atlas"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/artifacts.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "artifacts",
+          "bijux-dev-atlas"
+        ],
+        "title": "Dev Control Plane Artifacts",
+        "topic": "artifacts"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmarks",
+          "bijux-dev-atlas"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-dev-atlas",
+        "path": "crates/bijux-dev-atlas/docs/benchmarks.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmarks",
+          "bijux-dev-atlas"
+        ],
+        "title": "BENCHMARKS (bijux-dev-atlas)",
+        "topic": "benchmarks"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
+          "command-surface"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-dev-atlas",
+        "path": "crates/bijux-dev-atlas/docs/command-surface.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "command-surface"
+        ],
+        "title": "COMMAND_SURFACE (bijux-dev-atlas)",
+        "topic": "command-surface"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
           "bijux-dev-atlas",
           "commands"
         ],
@@ -3007,30 +4004,7 @@
           "commands"
         ],
         "title": "Commands",
-        "topic": "COMMANDS"
-      },
-      {
-        "area": "bijux-dev-atlas",
-        "audience": "contributors",
-        "crate": "bijux-dev-atlas",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-dev-atlas",
-          "configs-command-list"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-dev-atlas",
-          "configs-command-list"
-        ],
-        "title": "CONFIGS_COMMAND_LIST",
-        "topic": "CONFIGS_COMMAND_LIST"
+        "topic": "commands"
       },
       {
         "area": "bijux-dev-atlas",
@@ -3053,7 +4027,7 @@
           "contract"
         ],
         "title": "Dev Control Plane Contract",
-        "topic": "CONTRACT"
+        "topic": "contract"
       },
       {
         "area": "bijux-dev-atlas",
@@ -3063,20 +4037,66 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-dev-atlas",
-          "engine-contract"
+          "error-codes"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "bijux-dev-atlas",
-        "path": "crates/bijux-dev-atlas/docs/ENGINE_CONTRACT.md",
+        "path": "crates/bijux-dev-atlas/docs/error-codes.md",
         "review_due": "2026-08-24",
-        "stability": "evolving",
+        "stability": "stable",
         "tags": [
           "bijux-dev-atlas",
-          "engine-contract"
+          "error-codes"
         ],
-        "title": "Dev Control Plane Engine Contract",
-        "topic": "ENGINE_CONTRACT"
+        "title": "ERRORS (bijux-dev-atlas)",
+        "topic": "error-codes"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
+          "errors"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-dev-atlas",
+        "path": "crates/bijux-dev-atlas/docs/errors.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "errors"
+        ],
+        "title": "ERROR_TAXONOMY (bijux-dev-atlas)",
+        "topic": "errors"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
+          "examples"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-dev-atlas",
+        "path": "crates/bijux-dev-atlas/docs/examples.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "examples"
+        ],
+        "title": "EXAMPLES (bijux-dev-atlas)",
+        "topic": "examples"
       },
       {
         "area": "bijux-dev-atlas",
@@ -3091,7 +4111,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-dev-atlas/docs/EXIT_CODES.md",
+        "path": "crates/bijux-dev-atlas/docs/exit-codes.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -3099,7 +4119,7 @@
           "exit-codes"
         ],
         "title": "Dev Control Plane Exit Codes",
-        "topic": "EXIT_CODES"
+        "topic": "exit-codes"
       },
       {
         "area": "bijux-dev-atlas",
@@ -3114,7 +4134,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-dev-atlas/docs/FAILURE_MODES.md",
+        "path": "crates/bijux-dev-atlas/docs/failure-modes.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -3122,7 +4142,7 @@
           "failure-modes"
         ],
         "title": "Dev Control Plane Failure Modes",
-        "topic": "FAILURE_MODES"
+        "topic": "failure-modes"
       },
       {
         "area": "bijux-dev-atlas",
@@ -3145,7 +4165,7 @@
           "index"
         ],
         "title": "bijux-dev-atlas Docs Index",
-        "topic": "INDEX"
+        "topic": "index"
       },
       {
         "area": "bijux-dev-atlas",
@@ -3155,20 +4175,97 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-dev-atlas",
+          "cli-command-list",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/internal/cli-command-list.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "cli-command-list",
+          "internal"
+        ],
+        "title": "cli command list",
+        "topic": "cli-command-list"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
+          "configs-command-list",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/internal/configs-command-list.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "configs-command-list",
+          "internal"
+        ],
+        "title": "configs command list",
+        "topic": "configs-command-list"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
+          "engine-contract",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-dev-atlas",
+        "path": "crates/bijux-dev-atlas/docs/internal/engine-contract.md",
+        "review_due": "2026-08-24",
+        "stability": "evolving",
+        "tags": [
+          "bijux-dev-atlas",
+          "engine-contract",
+          "internal"
+        ],
+        "title": "Dev Control Plane Engine Contract",
+        "topic": "engine-contract"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
+          "internal",
           "ops-command-list"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md",
+        "path": "crates/bijux-dev-atlas/docs/internal/ops-command-list.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
           "bijux-dev-atlas",
+          "internal",
           "ops-command-list"
         ],
-        "title": "OPS_COMMAND_LIST",
-        "topic": "OPS_COMMAND_LIST"
+        "title": "ops command list",
+        "topic": "ops-command-list"
       },
       {
         "area": "bijux-dev-atlas",
@@ -3183,7 +4280,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "bijux-dev-atlas",
-        "path": "crates/bijux-dev-atlas/docs/REGISTRY_CONTRACT.md",
+        "path": "crates/bijux-dev-atlas/docs/registry-contract.md",
         "review_due": "2026-08-24",
         "stability": "evolving",
         "tags": [
@@ -3191,7 +4288,53 @@
           "registry-contract"
         ],
         "title": "Dev Control Plane Registry Contract",
-        "topic": "REGISTRY_CONTRACT"
+        "topic": "registry-contract"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
+          "testing"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-dev-atlas",
+        "path": "crates/bijux-dev-atlas/docs/testing.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "testing"
+        ],
+        "title": "TESTING (bijux-dev-atlas)",
+        "topic": "testing"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
+          "versioning"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-dev-atlas",
+        "path": "crates/bijux-dev-atlas/docs/versioning.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "versioning"
+        ],
+        "title": "VERSIONING (bijux-dev-atlas)",
+        "topic": "versioning"
       }
     ]
   },

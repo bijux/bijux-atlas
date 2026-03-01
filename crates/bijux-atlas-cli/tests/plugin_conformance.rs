@@ -52,7 +52,7 @@ fn plugin_metadata_matches_snapshot_contract() {
 #[test]
 fn plugin_contract_doc_includes_required_sections() {
     let text = std::fs::read_to_string(
-        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("docs/PLUGIN_CONTRACT.md"),
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("docs/plugin-contract.md"),
     )
     .expect("read plugin contract doc");
     for needle in [

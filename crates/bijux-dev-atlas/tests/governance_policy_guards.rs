@@ -69,15 +69,15 @@ fn benchmark_groups_are_unique_and_named_for_files() {
 #[test]
 fn architecture_contract_is_single_source_and_records_execution_policy() {
     let root = workspace_root();
-    let architecture =
-        fs::read_to_string(crate_root().join("ARCHITECTURE.md")).expect("ARCHITECTURE.md");
+    let architecture = fs::read_to_string(crate_root().join("docs/architecture.md"))
+        .expect("docs/architecture.md");
     assert!(
         architecture.contains("artifacts/target"),
-        "ARCHITECTURE.md must document target-dir policy"
+        "docs/architecture.md must document target-dir policy"
     );
     assert!(
         architecture.contains("Benchmark groups and output names remain unique"),
-        "ARCHITECTURE.md must document bench isolation policy"
+        "docs/architecture.md must document bench isolation policy"
     );
 
     let docs_contract = fs::read_to_string(root.join("crates/bijux-dev-atlas/docs/contract.md"))

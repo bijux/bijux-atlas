@@ -29,7 +29,7 @@ fn command_surface_ssot_matches_doc() {
     .join("\n");
 
     let path =
-        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("docs/CLI_COMMAND_LIST.md");
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("docs/cli-command-list.md");
     let current = std::fs::read_to_string(path).expect("read CLI command list");
     assert_eq!(current.trim(), expected.trim());
 }
@@ -53,7 +53,7 @@ fn command_surface_contract_json_matches_doc() {
         .map(|v| v.as_str().expect("string command").to_string())
         .collect::<Vec<_>>();
     let doc = std::fs::read_to_string(
-        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("docs/CLI_COMMAND_LIST.md"),
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("docs/cli-command-list.md"),
     )
     .expect("read command list")
     .lines()
@@ -120,7 +120,7 @@ fn help_output_command_surface_matches_doc_exactly() {
     observed.sort();
 
     let path =
-        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("docs/CLI_COMMAND_LIST.md");
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("docs/cli-command-list.md");
     let mut expected = std::fs::read_to_string(path)
         .expect("read command list")
         .lines()

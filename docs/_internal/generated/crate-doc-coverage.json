@@ -2,43 +2,43 @@
   "rows": [
     {
       "crate": "bijux-atlas-api",
-      "doc_count": 15
+      "doc_count": 17
     },
     {
       "crate": "bijux-atlas-cli",
-      "doc_count": 11
+      "doc_count": 18
     },
     {
       "crate": "bijux-atlas-core",
-      "doc_count": 14
+      "doc_count": 17
     },
     {
       "crate": "bijux-atlas-ingest",
-      "doc_count": 12
-    },
-    {
-      "crate": "bijux-atlas-model",
-      "doc_count": 14
-    },
-    {
-      "crate": "bijux-atlas-policies",
-      "doc_count": 13
-    },
-    {
-      "crate": "bijux-atlas-query",
-      "doc_count": 13
-    },
-    {
-      "crate": "bijux-atlas-server",
-      "doc_count": 19
-    },
-    {
-      "crate": "bijux-atlas-store",
       "doc_count": 16
     },
     {
+      "crate": "bijux-atlas-model",
+      "doc_count": 19
+    },
+    {
+      "crate": "bijux-atlas-policies",
+      "doc_count": 18
+    },
+    {
+      "crate": "bijux-atlas-query",
+      "doc_count": 17
+    },
+    {
+      "crate": "bijux-atlas-server",
+      "doc_count": 23
+    },
+    {
+      "crate": "bijux-atlas-store",
+      "doc_count": 20
+    },
+    {
       "crate": "bijux-dev-atlas",
-      "doc_count": 11
+      "doc_count": 20
     }
   ],
   "schema_version": 1

@@ -13,9 +13,9 @@ fn crate_hygiene_docs_exist_and_are_not_placeholder_stubs() {
     let required = [
         "README.md",
         "CONTRACT.md",
-        "ERRORS.md",
-        "TESTING.md",
-        "BENCHMARKS.md",
+        "docs/architecture.md",
+        "docs/testing.md",
+        "docs/benchmarks.md",
     ];
 
     for rel in required {

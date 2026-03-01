@@ -117,7 +117,7 @@ fn dev_atlas_help_command_list_matches_doc() {
     observed.sort();
 
     let mut expected =
-        fs::read_to_string(repo_root().join("crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md"))
+        fs::read_to_string(repo_root().join("crates/bijux-dev-atlas/docs/cli-command-list.md"))
             .expect("dev command list")
             .lines()
             .map(ToString::to_string)
@@ -164,7 +164,7 @@ fn dev_atlas_help_command_list_order_matches_doc_snapshot() {
     let observed = parse_commands_from_help(&help);
 
     let expected =
-        fs::read_to_string(repo_root().join("crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md"))
+        fs::read_to_string(repo_root().join("crates/bijux-dev-atlas/docs/cli-command-list.md"))
             .expect("dev command list")
             .lines()
             .map(ToString::to_string)

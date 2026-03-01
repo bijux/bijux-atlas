@@ -1,29 +1,6 @@
 {
   "rows": [
     {
-      "area": "crates",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "bijux-atlas-cli",
-        "command-surface"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-cli",
-      "path": "crates/bijux-atlas-cli/COMMAND_SURFACE.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "bijux-atlas-cli",
-        "command-surface"
-      ],
-      "title": "COMMAND_SURFACE (bijux-atlas-cli)",
-      "topic": "COMMAND_SURFACE"
-    },
-    {
       "area": "bijux-atlas-cli",
       "audience": "contributors",
       "crate": "bijux-atlas-cli",
@@ -47,29 +24,6 @@
       "topic": "CLI_COMMAND_LIST"
     },
     {
-      "area": "crates",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "bijux-dev-atlas",
-        "command-surface"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-dev-atlas",
-      "path": "crates/bijux-dev-atlas/COMMAND_SURFACE.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "bijux-dev-atlas",
-        "command-surface"
-      ],
-      "title": "COMMAND_SURFACE (bijux-dev-atlas)",
-      "topic": "COMMAND_SURFACE"
-    },
-    {
       "area": "bijux-dev-atlas",
       "audience": "contributors",
       "crate": "bijux-dev-atlas",
@@ -91,75 +45,6 @@
       ],
       "title": "CLI_COMMAND_LIST",
       "topic": "CLI_COMMAND_LIST"
-    },
-    {
-      "area": "bijux-dev-atlas",
-      "audience": "contributors",
-      "crate": "bijux-dev-atlas",
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "bijux-dev-atlas",
-        "commands"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/docs/commands.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "bijux-dev-atlas",
-        "commands"
-      ],
-      "title": "Commands",
-      "topic": "COMMANDS"
-    },
-    {
-      "area": "bijux-dev-atlas",
-      "audience": "contributors",
-      "crate": "bijux-dev-atlas",
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "bijux-dev-atlas",
-        "configs-command-list"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "bijux-dev-atlas",
-        "configs-command-list"
-      ],
-      "title": "CONFIGS_COMMAND_LIST",
-      "topic": "CONFIGS_COMMAND_LIST"
-    },
-    {
-      "area": "bijux-dev-atlas",
-      "audience": "contributors",
-      "crate": "bijux-dev-atlas",
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "bijux-dev-atlas",
-        "ops-command-list"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "bijux-dev-atlas",
-        "ops-command-list"
-      ],
-      "title": "OPS_COMMAND_LIST",
-      "topic": "OPS_COMMAND_LIST"
     }
   ],
   "schema_version": 1

@@ -1,77 +1,76 @@
 {
-  "errors": [],
+  "errors": [
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-api` missing `ARCHITECTURE.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-api` missing `BENCHMARKS.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-api` missing `ERROR_TAXONOMY.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-api` missing `EXAMPLES.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-api` missing `TESTING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-api` missing `VERSIONING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-cli` missing `ARCHITECTURE.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-cli` missing `BENCHMARKS.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-cli` missing `COMMAND_SURFACE.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-cli` missing `ERROR_TAXONOMY.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-cli` missing `EXAMPLES.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-cli` missing `TESTING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-cli` missing `VERSIONING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-core` missing `ARCHITECTURE.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-core` missing `BENCHMARKS.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-core` missing `ERROR_TAXONOMY.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-core` missing `EXAMPLES.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-core` missing `TESTING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-core` missing `VERSIONING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-ingest` missing `ARCHITECTURE.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-ingest` missing `BENCHMARKS.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-ingest` missing `ERROR_TAXONOMY.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-ingest` missing `EXAMPLES.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-ingest` missing `TESTING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-ingest` missing `VERSIONING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-model` missing `ARCHITECTURE.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-model` missing `BENCHMARKS.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-model` missing `DATA_MODEL.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-model` missing `ERROR_TAXONOMY.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-model` missing `EXAMPLES.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-model` missing `TESTING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-model` missing `VERSIONING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-policies` missing `ARCHITECTURE.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-policies` missing `BENCHMARKS.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-policies` missing `ERROR_TAXONOMY.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-policies` missing `EXAMPLES.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-policies` missing `EXTENSION_GUIDE.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-policies` missing `TESTING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-policies` missing `VERSIONING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-query` missing `ARCHITECTURE.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-query` missing `BENCHMARKS.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-query` missing `ERROR_TAXONOMY.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-query` missing `EXAMPLES.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-query` missing `TESTING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-query` missing `VERSIONING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-server` missing `ARCHITECTURE.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-server` missing `BENCHMARKS.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-server` missing `ERROR_TAXONOMY.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-server` missing `EXAMPLES.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-server` missing `TESTING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-server` missing `VERSIONING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-store` missing `ARCHITECTURE.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-store` missing `BENCHMARKS.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-store` missing `ERROR_TAXONOMY.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-store` missing `EXAMPLES.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-store` missing `TESTING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-store` missing `VERSIONING.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-dev-atlas` missing `COMMAND_SURFACE.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-dev-atlas` missing `ERROR_TAXONOMY.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-dev-atlas` missing `EXAMPLES.md`",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-dev-atlas` missing `VERSIONING.md`"
+  ],
   "rows": [
     {
       "crate": "bijux-atlas-api",
       "diagram_count": 3,
-      "docs_dir_count": 15,
+      "docs_dir_count": 17,
       "freshness_docs": 0,
       "has": [
-        "ARCHITECTURE.md",
-        "BENCHMARKS.md",
         "CONTRACT.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
-        "README.md",
-        "TESTING.md",
-        "VERSIONING.md"
-      ],
-      "owner_metadata_docs": 9,
-      "required": [
-        "README.md",
-        "ARCHITECTURE.md",
-        "CONTRACT.md",
-        "TESTING.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
-        "BENCHMARKS.md",
-        "VERSIONING.md"
-      ],
-      "root_doc_count": 8
-    },
-    {
-      "crate": "bijux-atlas-cli",
-      "diagram_count": 3,
-      "docs_dir_count": 11,
-      "freshness_docs": 0,
-      "has": [
-        "ARCHITECTURE.md",
-        "BENCHMARKS.md",
-        "COMMAND_SURFACE.md",
-        "CONTRACT.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
-        "README.md",
-        "TESTING.md",
-        "VERSIONING.md"
-      ],
-      "owner_metadata_docs": 9,
-      "required": [
-        "README.md",
-        "ARCHITECTURE.md",
-        "CONTRACT.md",
-        "TESTING.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
-        "BENCHMARKS.md",
-        "VERSIONING.md"
-      ],
-      "root_doc_count": 9
-    },
-    {
-      "crate": "bijux-atlas-core",
-      "diagram_count": 3,
-      "docs_dir_count": 14,
-      "freshness_docs": 0,
-      "has": [
-        "ARCHITECTURE.md",
-        "BENCHMARKS.md",
-        "CONTRACT.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
-        "README.md",
-        "TESTING.md",
-        "VERSIONING.md"
+        "README.md"
       ],
       "owner_metadata_docs": 8,
       "required": [
@@ -84,24 +83,18 @@
         "BENCHMARKS.md",
         "VERSIONING.md"
       ],
-      "root_doc_count": 8
+      "root_doc_count": 2
     },
     {
-      "crate": "bijux-atlas-ingest",
+      "crate": "bijux-atlas-cli",
       "diagram_count": 3,
-      "docs_dir_count": 12,
+      "docs_dir_count": 18,
       "freshness_docs": 0,
       "has": [
-        "ARCHITECTURE.md",
-        "BENCHMARKS.md",
         "CONTRACT.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
-        "README.md",
-        "TESTING.md",
-        "VERSIONING.md"
+        "README.md"
       ],
-      "owner_metadata_docs": 10,
+      "owner_metadata_docs": 8,
       "required": [
         "README.md",
         "ARCHITECTURE.md",
@@ -112,80 +105,16 @@
         "BENCHMARKS.md",
         "VERSIONING.md"
       ],
-      "root_doc_count": 8
+      "root_doc_count": 2
     },
     {
-      "crate": "bijux-atlas-model",
+      "crate": "bijux-atlas-core",
       "diagram_count": 3,
-      "docs_dir_count": 14,
+      "docs_dir_count": 17,
       "freshness_docs": 0,
       "has": [
-        "ARCHITECTURE.md",
-        "BENCHMARKS.md",
         "CONTRACT.md",
-        "DATA_MODEL.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
-        "README.md",
-        "TESTING.md",
-        "VERSIONING.md"
-      ],
-      "owner_metadata_docs": 9,
-      "required": [
-        "README.md",
-        "ARCHITECTURE.md",
-        "CONTRACT.md",
-        "TESTING.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
-        "BENCHMARKS.md",
-        "VERSIONING.md"
-      ],
-      "root_doc_count": 9
-    },
-    {
-      "crate": "bijux-atlas-policies",
-      "diagram_count": 3,
-      "docs_dir_count": 13,
-      "freshness_docs": 0,
-      "has": [
-        "ARCHITECTURE.md",
-        "BENCHMARKS.md",
-        "CONTRACT.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
-        "EXTENSION_GUIDE.md",
-        "README.md",
-        "TESTING.md",
-        "VERSIONING.md"
-      ],
-      "owner_metadata_docs": 10,
-      "required": [
-        "README.md",
-        "ARCHITECTURE.md",
-        "CONTRACT.md",
-        "TESTING.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
-        "BENCHMARKS.md",
-        "VERSIONING.md"
-      ],
-      "root_doc_count": 9
-    },
-    {
-      "crate": "bijux-atlas-query",
-      "diagram_count": 3,
-      "docs_dir_count": 13,
-      "freshness_docs": 0,
-      "has": [
-        "ARCHITECTURE.md",
-        "BENCHMARKS.md",
-        "CONTRACT.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
-        "README.md",
-        "TESTING.md",
-        "VERSIONING.md"
+        "README.md"
       ],
       "owner_metadata_docs": 7,
       "required": [
@@ -198,50 +127,16 @@
         "BENCHMARKS.md",
         "VERSIONING.md"
       ],
-      "root_doc_count": 8
+      "root_doc_count": 2
     },
     {
-      "crate": "bijux-atlas-server",
-      "diagram_count": 3,
-      "docs_dir_count": 19,
-      "freshness_docs": 0,
-      "has": [
-        "ARCHITECTURE.md",
-        "BENCHMARKS.md",
-        "CONTRACT.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
-        "README.md",
-        "TESTING.md",
-        "VERSIONING.md"
-      ],
-      "owner_metadata_docs": 9,
-      "required": [
-        "README.md",
-        "ARCHITECTURE.md",
-        "CONTRACT.md",
-        "TESTING.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
-        "BENCHMARKS.md",
-        "VERSIONING.md"
-      ],
-      "root_doc_count": 8
-    },
-    {
-      "crate": "bijux-atlas-store",
+      "crate": "bijux-atlas-ingest",
       "diagram_count": 3,
       "docs_dir_count": 16,
       "freshness_docs": 0,
       "has": [
-        "ARCHITECTURE.md",
-        "BENCHMARKS.md",
         "CONTRACT.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
-        "README.md",
-        "TESTING.md",
-        "VERSIONING.md"
+        "README.md"
       ],
       "owner_metadata_docs": 9,
       "required": [
@@ -254,24 +149,130 @@
         "BENCHMARKS.md",
         "VERSIONING.md"
       ],
-      "root_doc_count": 8
+      "root_doc_count": 2
+    },
+    {
+      "crate": "bijux-atlas-model",
+      "diagram_count": 3,
+      "docs_dir_count": 19,
+      "freshness_docs": 0,
+      "has": [
+        "CONTRACT.md",
+        "README.md"
+      ],
+      "owner_metadata_docs": 8,
+      "required": [
+        "README.md",
+        "ARCHITECTURE.md",
+        "CONTRACT.md",
+        "TESTING.md",
+        "ERROR_TAXONOMY.md",
+        "EXAMPLES.md",
+        "BENCHMARKS.md",
+        "VERSIONING.md"
+      ],
+      "root_doc_count": 2
+    },
+    {
+      "crate": "bijux-atlas-policies",
+      "diagram_count": 3,
+      "docs_dir_count": 18,
+      "freshness_docs": 0,
+      "has": [
+        "CONTRACT.md",
+        "README.md"
+      ],
+      "owner_metadata_docs": 9,
+      "required": [
+        "README.md",
+        "ARCHITECTURE.md",
+        "CONTRACT.md",
+        "TESTING.md",
+        "ERROR_TAXONOMY.md",
+        "EXAMPLES.md",
+        "BENCHMARKS.md",
+        "VERSIONING.md"
+      ],
+      "root_doc_count": 2
+    },
+    {
+      "crate": "bijux-atlas-query",
+      "diagram_count": 3,
+      "docs_dir_count": 17,
+      "freshness_docs": 0,
+      "has": [
+        "CONTRACT.md",
+        "README.md"
+      ],
+      "owner_metadata_docs": 6,
+      "required": [
+        "README.md",
+        "ARCHITECTURE.md",
+        "CONTRACT.md",
+        "TESTING.md",
+        "ERROR_TAXONOMY.md",
+        "EXAMPLES.md",
+        "BENCHMARKS.md",
+        "VERSIONING.md"
+      ],
+      "root_doc_count": 2
+    },
+    {
+      "crate": "bijux-atlas-server",
+      "diagram_count": 3,
+      "docs_dir_count": 23,
+      "freshness_docs": 0,
+      "has": [
+        "CONTRACT.md",
+        "README.md"
+      ],
+      "owner_metadata_docs": 8,
+      "required": [
+        "README.md",
+        "ARCHITECTURE.md",
+        "CONTRACT.md",
+        "TESTING.md",
+        "ERROR_TAXONOMY.md",
+        "EXAMPLES.md",
+        "BENCHMARKS.md",
+        "VERSIONING.md"
+      ],
+      "root_doc_count": 2
+    },
+    {
+      "crate": "bijux-atlas-store",
+      "diagram_count": 3,
+      "docs_dir_count": 20,
+      "freshness_docs": 0,
+      "has": [
+        "CONTRACT.md",
+        "README.md"
+      ],
+      "owner_metadata_docs": 8,
+      "required": [
+        "README.md",
+        "ARCHITECTURE.md",
+        "CONTRACT.md",
+        "TESTING.md",
+        "ERROR_TAXONOMY.md",
+        "EXAMPLES.md",
+        "BENCHMARKS.md",
+        "VERSIONING.md"
+      ],
+      "root_doc_count": 2
     },
     {
       "crate": "bijux-dev-atlas",
       "diagram_count": 3,
-      "docs_dir_count": 11,
+      "docs_dir_count": 20,
       "freshness_docs": 0,
       "has": [
         "ARCHITECTURE.md",
         "BENCHMARKS.md",
-        "COMMAND_SURFACE.md",
         "CONTRACT.md",
         "ERRORS.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
         "README.md",
-        "TESTING.md",
-        "VERSIONING.md"
+        "TESTING.md"
       ],
       "owner_metadata_docs": 12,
       "required": [
@@ -284,42 +285,42 @@
         "BENCHMARKS.md",
         "VERSIONING.md"
       ],
-      "root_doc_count": 10
+      "root_doc_count": 6
     }
   ],
   "schema_version": 1,
   "warnings": [
-    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-api` has 15 docs under crate/docs (budget=10)",
-    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-cli` has 11 docs under crate/docs (budget=10)",
-    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-core` has 14 docs under crate/docs (budget=10)",
-    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-ingest` has 12 docs under crate/docs (budget=10)",
-    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-model` has 14 docs under crate/docs (budget=10)",
-    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-policies` has 13 docs under crate/docs (budget=10)",
-    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-query` has 13 docs under crate/docs (budget=10)",
-    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-server` has 19 docs under crate/docs (budget=10)",
-    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-store` has 16 docs under crate/docs (budget=10)",
-    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-dev-atlas` has 11 docs under crate/docs (budget=10)",
+    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-api` has 17 docs under crate/docs (budget=10)",
+    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-cli` has 18 docs under crate/docs (budget=10)",
+    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-core` has 17 docs under crate/docs (budget=10)",
+    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-ingest` has 16 docs under crate/docs (budget=10)",
+    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-model` has 19 docs under crate/docs (budget=10)",
+    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-policies` has 18 docs under crate/docs (budget=10)",
+    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-query` has 17 docs under crate/docs (budget=10)",
+    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-server` has 23 docs under crate/docs (budget=10)",
+    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-store` has 20 docs under crate/docs (budget=10)",
+    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-dev-atlas` has 20 docs under crate/docs (budget=10)",
     "CRATE_DOC_ALLOWED_TYPE_WARN: `bijux-dev-atlas` has non-canonical root doc `ERRORS.md`",
-    "CRATE_DOC_CROSSLINK_WARN: `bijux-atlas-core` docs/INDEX.md should reference `architecture.md`",
     "CRATE_DOC_CROSSLINK_WARN: `bijux-dev-atlas` docs/INDEX.md should reference `architecture.md`",
     "CRATE_DOC_CROSSLINK_WARN: `bijux-dev-atlas` docs/INDEX.md should reference `public-api.md`",
     "CRATE_DOC_CROSSLINK_WARN: `bijux-dev-atlas` docs/INDEX.md should reference `testing.md`",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `benchmarks.md` appears across crates: bijux-atlas-api, bijux-atlas-cli, bijux-atlas-core, bijux-atlas-ingest, bijux-atlas-model, bijux-atlas-policies, bijux-atlas-query, bijux-atlas-server, bijux-atlas-store, bijux-dev-atlas",
     "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `caching.md` appears across crates: bijux-atlas-server, bijux-atlas-store",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `cli-command-list.md` appears across crates: bijux-atlas-cli, bijux-dev-atlas",
     "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `cli_command_list.md` appears across crates: bijux-atlas-cli, bijux-dev-atlas",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `command-surface.md` appears across crates: bijux-atlas-cli, bijux-dev-atlas",
     "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `contracts.md` appears across crates: bijux-atlas-api, bijux-atlas-policies, bijux-atlas-server, bijux-atlas-store",
-    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `errors.md` appears across crates: bijux-atlas-api, bijux-atlas-core",
-    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `exit_codes.md` appears across crates: bijux-atlas-cli, bijux-dev-atlas",
-    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `failure-modes.md` appears across crates: bijux-atlas-ingest, bijux-atlas-server, bijux-atlas-store",
-    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `failure_modes.md` appears across crates: bijux-atlas-server, bijux-atlas-store, bijux-dev-atlas",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `errors.md` appears across crates: bijux-atlas-api, bijux-atlas-cli, bijux-atlas-core, bijux-atlas-ingest, bijux-atlas-model, bijux-atlas-policies, bijux-atlas-query, bijux-atlas-server, bijux-atlas-store, bijux-dev-atlas",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `examples.md` appears across crates: bijux-atlas-api, bijux-atlas-cli, bijux-atlas-core, bijux-atlas-ingest, bijux-atlas-model, bijux-atlas-policies, bijux-atlas-query, bijux-atlas-server, bijux-atlas-store, bijux-dev-atlas",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `exit-codes.md` appears across crates: bijux-atlas-cli, bijux-dev-atlas",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `failure-modes-reference.md` appears across crates: bijux-atlas-server, bijux-atlas-store",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `failure-modes.md` appears across crates: bijux-atlas-ingest, bijux-atlas-server, bijux-atlas-store, bijux-dev-atlas",
     "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `patterns.md` appears across crates: bijux-atlas-api, bijux-atlas-core",
     "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `purity.md` appears across crates: bijux-atlas-core, bijux-atlas-model",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `versioning.md` appears across crates: bijux-atlas-api, bijux-atlas-cli, bijux-atlas-core, bijux-atlas-ingest, bijux-atlas-model, bijux-atlas-policies, bijux-atlas-query, bijux-atlas-server, bijux-atlas-store, bijux-dev-atlas",
     "CRATE_DOC_EXAMPLE_TAG_WARN: `bijux-atlas-api` has untagged code fences; prefer ```rust for examples",
-    "CRATE_DOC_EXAMPLE_TAG_WARN: `bijux-atlas-cli` has untagged code fences; prefer ```rust for examples",
-    "CRATE_DOC_EXAMPLE_TAG_WARN: `bijux-atlas-core` has untagged code fences; prefer ```rust for examples",
     "CRATE_DOC_EXAMPLE_TAG_WARN: `bijux-atlas-ingest` has untagged code fences; prefer ```rust for examples",
-    "CRATE_DOC_EXAMPLE_TAG_WARN: `bijux-atlas-model` has untagged code fences; prefer ```rust for examples",
     "CRATE_DOC_EXAMPLE_TAG_WARN: `bijux-atlas-policies` has untagged code fences; prefer ```rust for examples",
-    "CRATE_DOC_EXAMPLE_TAG_WARN: `bijux-atlas-query` has untagged code fences; prefer ```rust for examples",
     "CRATE_DOC_EXAMPLE_TAG_WARN: `bijux-atlas-server` has untagged code fences; prefer ```rust for examples",
     "CRATE_DOC_EXAMPLE_TAG_WARN: `bijux-atlas-store` has untagged code fences; prefer ```rust for examples",
     "CRATE_DOC_FRESHNESS_WARN: `bijux-atlas-api` has no `Last Reviewed:` metadata in crate docs",
@@ -332,15 +333,16 @@
     "CRATE_DOC_FRESHNESS_WARN: `bijux-atlas-server` has no `Last Reviewed:` metadata in crate docs",
     "CRATE_DOC_FRESHNESS_WARN: `bijux-atlas-store` has no `Last Reviewed:` metadata in crate docs",
     "CRATE_DOC_FRESHNESS_WARN: `bijux-dev-atlas` has no `Last Reviewed:` metadata in crate docs",
-    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-api` owner metadata present in 9/23 docs",
-    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-cli` owner metadata present in 9/20 docs",
-    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-core` owner metadata present in 8/22 docs",
-    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-ingest` owner metadata present in 10/20 docs",
-    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-model` owner metadata present in 9/23 docs",
-    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-policies` owner metadata present in 10/22 docs",
-    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-query` owner metadata present in 7/21 docs",
-    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-server` owner metadata present in 9/27 docs",
-    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-store` owner metadata present in 9/24 docs",
-    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-dev-atlas` owner metadata present in 12/21 docs"
+    "CRATE_DOC_INVARIANTS_WARN: `bijux-atlas-core` ARCHITECTURE.md should include `## Invariants`",
+    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-api` owner metadata present in 8/19 docs",
+    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-cli` owner metadata present in 8/20 docs",
+    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-core` owner metadata present in 7/19 docs",
+    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-ingest` owner metadata present in 9/18 docs",
+    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-model` owner metadata present in 8/21 docs",
+    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-policies` owner metadata present in 9/20 docs",
+    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-query` owner metadata present in 6/19 docs",
+    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-server` owner metadata present in 8/25 docs",
+    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-store` owner metadata present in 8/22 docs",
+    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-dev-atlas` owner metadata present in 12/26 docs"
   ]
 }

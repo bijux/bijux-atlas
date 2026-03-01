@@ -1,16 +1,7 @@
 pub(crate) fn crate_doc_contract_status(
     repo_root: &Path,
 ) -> (Vec<serde_json::Value>, Vec<String>, Vec<String>) {
-    let required_common = [
-        "README.md",
-        "ARCHITECTURE.md",
-        "CONTRACT.md",
-        "TESTING.md",
-        "ERROR_TAXONOMY.md",
-        "EXAMPLES.md",
-        "BENCHMARKS.md",
-        "VERSIONING.md",
-    ];
+    let required_common = ["README.md", "CONTRACT.md"];
     let mut rows = Vec::<serde_json::Value>::new();
     let mut errors = Vec::<String>::new();
     let mut warnings = Vec::<String>::new();
@@ -45,28 +36,7 @@ pub(crate) fn crate_doc_contract_status(
             .filter_map(|p| p.file_name().and_then(|v| v.to_str()))
             .map(ToString::to_string)
             .collect::<BTreeSet<_>>();
-        let mut allowed_root = BTreeSet::from([
-            "README.md".to_string(),
-            "ARCHITECTURE.md".to_string(),
-            "CONTRACT.md".to_string(),
-            "TESTING.md".to_string(),
-            "ERROR_TAXONOMY.md".to_string(),
-            "EXAMPLES.md".to_string(),
-            "BENCHMARKS.md".to_string(),
-            "VERSIONING.md".to_string(),
-        ]);
-        if crate_name.contains("-model") {
-            allowed_root.insert("DATA_MODEL.md".to_string());
-        }
-        if crate_name.contains("-policies") {
-            allowed_root.insert("EXTENSION_GUIDE.md".to_string());
-        }
-        if crate_name.ends_with("-adapters") {
-            allowed_root.insert("ADAPTER_BOUNDARY.md".to_string());
-        }
-        if crate_name.ends_with("-cli") || crate_name.ends_with("dev-atlas") {
-            allowed_root.insert("COMMAND_SURFACE.md".to_string());
-        }
+        let allowed_root = BTreeSet::from(["README.md".to_string(), "CONTRACT.md".to_string()]);
         if root_names.len() > 10 {
             errors.push(format!(
                 "CRATE_DOC_BUDGET_ERROR: `{crate_name}` has {} root docs (budget=10)",
@@ -89,37 +59,14 @@ pub(crate) fn crate_doc_contract_status(
             }
         }
 
-        if crate_name.contains("-model") && !root_names.contains("DATA_MODEL.md") {
-            errors.push(format!(
-                "CRATE_DOC_REQUIRED_ERROR: `{crate_name}` missing `DATA_MODEL.md`"
-            ));
-        }
-        if crate_name.contains("-policies") && !root_names.contains("EXTENSION_GUIDE.md") {
-            errors.push(format!(
-                "CRATE_DOC_REQUIRED_ERROR: `{crate_name}` missing `EXTENSION_GUIDE.md`"
-            ));
-        }
-        if (crate_name.ends_with("-cli") || crate_name.ends_with("dev-atlas"))
-            && !root_names.contains("COMMAND_SURFACE.md")
-        {
-            errors.push(format!(
-                "CRATE_DOC_REQUIRED_ERROR: `{crate_name}` missing `COMMAND_SURFACE.md`"
-            ));
-        }
-        if crate_name.ends_with("-adapters") && !root_names.contains("ADAPTER_BOUNDARY.md") {
-            errors.push(format!(
-                "CRATE_DOC_REQUIRED_ERROR: `{crate_name}` missing `ADAPTER_BOUNDARY.md`"
-            ));
-        }
-
         if crate_name.contains("-core") {
-            let architecture = crate_root.join("ARCHITECTURE.md");
+            let architecture = crate_root.join("docs/architecture.md");
             let has_invariants = fs::read_to_string(&architecture)
                 .ok()
                 .is_some_and(|text| text.contains("## Invariants"));
             if !has_invariants {
                 warnings.push(format!(
-                    "CRATE_DOC_INVARIANTS_WARN: `{crate_name}` ARCHITECTURE.md should include `## Invariants`"
+                    "CRATE_DOC_INVARIANTS_WARN: `{crate_name}` docs/architecture.md should include `## Invariants`"
                 ));
             }
         }

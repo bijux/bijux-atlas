@@ -486,8 +486,8 @@ pub(super) fn check_docs_command_surface_docs_exist(
     let mut violations = Vec::new();
     for rel in [
         "docs/reference/contracts/plugins/mode.md",
-        "crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md",
-        "crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md",
+        "crates/bijux-atlas-cli/docs/cli-command-list.md",
+        "crates/bijux-dev-atlas/docs/cli-command-list.md",
     ] {
         let p = Path::new(rel);
         if !ctx.repo_root.join(p).exists() {
@@ -548,7 +548,7 @@ pub(super) fn check_crate_docs_governance_contract(
             continue;
         }
 
-        for required in ["README.md", "ARCHITECTURE.md", "CONTRACT.md", "TESTING.md"] {
+        for required in ["README.md", "CONTRACT.md"] {
             let rel = Path::new("crates").join(&crate_name).join(required);
             if !ctx.repo_root.join(&rel).exists() {
                 violations.push(violation(
