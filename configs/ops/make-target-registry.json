@@ -1105,6 +1105,14 @@
       "used_in": []
     },
     {
+      "name": "root-surface-explain",
+      "defined_in": [
+        "makefiles/root.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "stack-down",
       "defined_in": [
         "makefiles/root.mk"
