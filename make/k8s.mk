@@ -1,4 +1,5 @@
 # Scope: k8s wrapper targets delegated to bijux dev atlas ops k8s surfaces.
+# Public targets: ops-k8s-tests, ops-k8s-suite, ops-k8s-template-tests, ops-k8s-contracts, ops-k8s-smoke
 SHELL := /bin/sh
 PROFILE ?= kind
 

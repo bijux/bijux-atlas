@@ -1,4 +1,5 @@
 # Scope: thin build wrappers delegating to the Rust control plane.
+# Public targets: build, build-release, build-ci, build-meta, dist, dist-verify
 
 build: ## Build required binaries into artifacts/dist/bin
 	@printf '%s\n' "run: $(DEV_ATLAS) build bin --allow-subprocess --allow-write --format json"

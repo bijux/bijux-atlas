@@ -1,3 +1,5 @@
+# Scope: docs wrapper targets delegated to bijux-dev-atlas docs surfaces.
+# Public targets: docs, docs-doctor
 SHELL := /bin/sh
 
 docs: ## Canonical docs gate

@@ -1,5 +1,5 @@
 # Scope: canonical CI wrappers delegated to stable command entrypoints.
-# Public targets are surfaced via root help/catalog.
+# Public targets: ci, ci-fast, ci-pr, ci-nightly, ci-docs, ci-dependency-lock-refresh
 SHELL := /bin/sh
 
 ci: ## Canonical CI entrypoint

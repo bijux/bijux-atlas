@@ -1,4 +1,5 @@
 # Scope: progressive aggregate gates that orchestrate existing make targets only.
+# Public targets: gate-10, gate-20
 SHELL := /bin/sh
 
 gate-10: ## Run the first 10 high-signal gates in parallel via make

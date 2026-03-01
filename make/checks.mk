@@ -1,3 +1,5 @@
+# Scope: compatibility check wrappers delegated to the Rust control plane.
+# Public targets: make-contract-check, make-target-governance-check
 make-contract-check: ## Enforce make contract constraints through the Rust contracts runner
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts make --mode static --format text"
 	@$(DEV_ATLAS) contracts make --mode static --format text

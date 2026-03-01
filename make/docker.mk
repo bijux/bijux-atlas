@@ -1,3 +1,5 @@
+# Scope: docker wrapper targets delegated to bijux-dev-atlas docker surfaces.
+# Public targets: docker, docker-contracts
 DOCKER_RUN_ID ?= $(RUN_ID)
 DOCKER_CONTRACTS_ARTIFACT_ROOT ?= $(ARTIFACT_ROOT)/docker-contracts/$(DOCKER_RUN_ID)
 

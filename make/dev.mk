@@ -1,5 +1,5 @@
 # Scope: canonical developer wrappers and invocation SSOT for the Rust control plane.
-# Keep one target per gate with deterministic control-plane commands.
+# Public targets: dev-doctor, dev-check-ci, dev-ci
 SHELL := /bin/sh
 
 BIJUX ?= bijux

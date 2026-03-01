@@ -1,3 +1,5 @@
+# Scope: public include surface for the repository make entrypoint.
+# Public targets: help-contract, make-target-list
 include make/vars.mk
 include make/paths.mk
 include make/macros.mk

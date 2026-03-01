@@ -1,3 +1,5 @@
+# Scope: contracts wrapper targets delegated to bijux-dev-atlas suites and contract runners.
+# Public targets: contracts, contracts-pr, contracts-merge, contracts-release, contracts-all, contracts-fast, contracts-changed, contracts-json, contracts-ci, contracts-root, contracts-configs, contracts-configs-required, contracts-docs, contracts-docs-required, contracts-docker, contracts-make, contracts-make-required, contracts-ops, contracts-help
 CONTRACTS_ARTIFACT_ROOT ?= $(ARTIFACT_ROOT)/contracts/$(RUN_ID)
 CONTRACTS_DEV_ATLAS_TARGET_DIR ?= $(WORKSPACE_ROOT)/artifacts/target
 CONTRACTS_DEV_ATLAS_BIN ?= $(CONTRACTS_DEV_ATLAS_TARGET_DIR)/debug/bijux-dev-atlas

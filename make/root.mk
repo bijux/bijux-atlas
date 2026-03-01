@@ -1,4 +1,5 @@
 # Scope: top-level make entrypoints delegated to Rust control-plane wrappers.
+# Public targets: help and curated includes from child modules
 SHELL := /bin/sh
 .DEFAULT_GOAL := help
 JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)

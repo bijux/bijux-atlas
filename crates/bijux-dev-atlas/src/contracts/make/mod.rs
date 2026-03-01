@@ -49,6 +49,13 @@ fn top_level_make_files(repo_root: &Path) -> Vec<PathBuf> {
     files
 }
 
+fn top_level_make_module_files(repo_root: &Path) -> Vec<PathBuf> {
+    top_level_make_files(repo_root)
+        .into_iter()
+        .filter(|path| path.extension().and_then(|value| value.to_str()) == Some("mk"))
+        .collect()
+}
+
 pub(super) fn sorted_make_sources(repo_root: &Path) -> Vec<PathBuf> {
     let mut files = Vec::new();
     let roots = [repo_root.join("Makefile"), repo_root.join("make")];
@@ -203,6 +210,130 @@ fn test_make_dir_003_allowed_root_files(ctx: &RunContext) -> TestResult {
                 &path,
                 &ctx.repo_root,
                 "unexpected top-level file under make/",
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_make_struct_001_root_makefile_minimal(ctx: &RunContext) -> TestResult {
+    let contract_id = "MAKE-STRUCT-001";
+    let test_id = "make.structure.root_makefile_minimal";
+    let makefile = ctx.repo_root.join("Makefile");
+    let text = match std::fs::read_to_string(&makefile) {
+        Ok(text) => text,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some("Makefile".to_string()),
+                line: Some(1),
+                message: format!("read Makefile failed: {err}"),
+                evidence: None,
+            }]);
+        }
+    };
+    let line_count = text.lines().count();
+    let non_empty = text
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .collect::<Vec<_>>();
+    if line_count <= 200 && non_empty == vec!["include make/public.mk"] {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            &makefile,
+            &ctx.repo_root,
+            "Makefile must stay <=200 lines and contain only `include make/public.mk`",
+        )])
+    }
+}
+
+fn test_make_struct_003_allowed_modules(ctx: &RunContext) -> TestResult {
+    let contract_id = "MAKE-STRUCT-003";
+    let test_id = "make.structure.allowed_modules";
+    let allowed = BTreeSet::from([
+        "_internal.mk",
+        "build.mk",
+        "cargo.mk",
+        "checks.mk",
+        "ci.mk",
+        "configs.mk",
+        "contracts.mk",
+        "dev.mk",
+        "docker.mk",
+        "docs.mk",
+        "gates.mk",
+        "k8s.mk",
+        "macros.mk",
+        "ops.mk",
+        "paths.mk",
+        "policies.mk",
+        "public.mk",
+        "root.mk",
+        "runenv.mk",
+        "vars.mk",
+        "verification.mk",
+    ]);
+    let mut violations = Vec::new();
+    for path in top_level_make_module_files(&ctx.repo_root) {
+        let Some(name) = path.file_name().and_then(|value| value.to_str()) else {
+            continue;
+        };
+        if !allowed.contains(name) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                &path,
+                &ctx.repo_root,
+                "make module file is outside the approved top-level whitelist",
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_make_struct_004_module_headers(ctx: &RunContext) -> TestResult {
+    let contract_id = "MAKE-STRUCT-004";
+    let test_id = "make.structure.module_headers";
+    let mut violations = Vec::new();
+    for path in top_level_make_module_files(&ctx.repo_root) {
+        let text = match std::fs::read_to_string(&path) {
+            Ok(text) => text,
+            Err(err) => {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    &path,
+                    &ctx.repo_root,
+                    &format!("read failed: {err}"),
+                ));
+                continue;
+            }
+        };
+        let lines = text.lines().take(3).collect::<Vec<_>>();
+        let has_scope = lines.iter().any(|line| line.starts_with("# Scope:"));
+        let has_public_targets = lines
+            .iter()
+            .any(|line| line.starts_with("# Public targets:"));
+        if !has_scope || !has_public_targets {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                &path,
+                &ctx.repo_root,
+                "make module must start with `# Scope:` and `# Public targets:` header lines",
             ));
         }
     }
@@ -738,6 +869,36 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("MAKE-STRUCT-001".to_string()),
+            title: "root Makefile stays minimal",
+            tests: vec![TestCase {
+                id: TestId("make.structure.root_makefile_minimal".to_string()),
+                title: "Makefile stays <=200 lines and includes only make/public.mk",
+                kind: TestKind::Pure,
+                run: test_make_struct_001_root_makefile_minimal,
+            }],
+        },
+        Contract {
+            id: ContractId("MAKE-STRUCT-003".to_string()),
+            title: "make modules stay on the approved whitelist",
+            tests: vec![TestCase {
+                id: TestId("make.structure.allowed_modules".to_string()),
+                title: "top-level make modules stay within the approved whitelist",
+                kind: TestKind::Pure,
+                run: test_make_struct_003_allowed_modules,
+            }],
+        },
+        Contract {
+            id: ContractId("MAKE-STRUCT-004".to_string()),
+            title: "make modules declare headers",
+            tests: vec![TestCase {
+                id: TestId("make.structure.module_headers".to_string()),
+                title: "top-level make modules declare scope and public-target headers",
+                kind: TestKind::Pure,
+                run: test_make_struct_004_module_headers,
+            }],
+        },
+        Contract {
             id: ContractId("MAKE-ENV-001".to_string()),
             title: "make env file singularity",
             tests: vec![TestCase {
@@ -834,6 +995,15 @@ pub fn contract_explain(contract_id: &str) -> String {
         }
         "MAKE-DIR-003" => {
             "Freeze the top-level make/ surface to curated wrapper files only.".to_string()
+        }
+        "MAKE-STRUCT-001" => {
+            "Keep the root Makefile minimal so all logic stays in reviewed make modules.".to_string()
+        }
+        "MAKE-STRUCT-003" => {
+            "Restrict top-level make modules to the approved whitelist so the wrapper surface does not sprawl.".to_string()
+        }
+        "MAKE-STRUCT-004" => {
+            "Every make module must declare its scope and public-target surface near the top.".to_string()
         }
         "MAKE-ENV-001" => {
             "Keep one macros source and one run-environment source to avoid env drift.".to_string()
