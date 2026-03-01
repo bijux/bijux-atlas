@@ -59,6 +59,8 @@ struct ConfigsExclusion {
 #[derive(Clone, Deserialize)]
 struct ConfigsOwners {
     schema_version: u64,
+    #[serde(default)]
+    files: BTreeMap<String, String>,
     groups: BTreeMap<String, String>,
 }
 

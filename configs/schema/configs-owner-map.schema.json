@@ -11,6 +11,14 @@
       "type": "integer",
       "minimum": 1
     },
+    "files": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
     "groups": {
       "type": "object",
       "minProperties": 1,

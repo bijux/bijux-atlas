@@ -755,6 +755,26 @@
         "configs/schema-map.json",
         "configs/schema/configs-schema-map.schema.json"
       ]
+    },
+    {
+      "contract_type": "drift",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.owners.root_file_coverage"
+      },
+      "evidence_artifact": null,
+      "id": "CFG-048",
+      "rationale": "root authority config files need explicit file-level owner coverage so ownership is executable rather than implied.",
+      "severity": "must",
+      "title": "root authority config files declare owners",
+      "touched_paths": [
+        "configs/owners-registry.json",
+        "configs/_generated/configs-index.json",
+        "configs/configs.contracts.json",
+        "configs/consumers-registry.json",
+        "configs/inventory.json",
+        "configs/schema-map.json"
+      ]
     }
   ],
   "domain": "configs",

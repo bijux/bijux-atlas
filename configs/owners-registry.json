@@ -1,4 +1,12 @@
 {
+  "files": {
+    "configs/_generated/configs-index.json": "platform",
+    "configs/configs.contracts.json": "platform",
+    "configs/consumers-registry.json": "platform",
+    "configs/inventory.json": "platform",
+    "configs/owners-registry.json": "platform",
+    "configs/schema-map.json": "platform"
+  },
   "groups": {
     "ci": "platform",
     "docs": "docs-governance",

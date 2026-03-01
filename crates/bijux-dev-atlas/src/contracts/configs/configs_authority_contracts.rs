@@ -601,3 +601,49 @@ fn test_configs_031_schema_map_coverage(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
+
+fn test_configs_044_root_owner_file_coverage(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => {
+            return fail(
+                "CONFIGS-044",
+                "configs.owners.root_file_coverage",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let owners = match read_owners(&ctx.repo_root) {
+        Ok(owners) => owners,
+        Err(err) => {
+            return fail(
+                "CONFIGS-044",
+                "configs.owners.root_file_coverage",
+                OWNERS_PATH,
+                err,
+            )
+        }
+    };
+    let mut violations = Vec::new();
+    for file in index
+        .root_files
+        .iter()
+        .filter(|file| file.ends_with(".json") || file.ends_with(".jsonc"))
+    {
+        match owners.files.get(file) {
+            Some(owner) if !owner.trim().is_empty() => {}
+            _ => violations.push(violation(
+                "CONFIGS-044",
+                "configs.owners.root_file_coverage",
+                file,
+                "root authority config file is missing explicit file-level owner coverage",
+            )),
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
