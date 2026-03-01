@@ -125,6 +125,14 @@
       "area": "configs",
       "audience": "contributors",
       "owner": "platform",
+      "path": "configs/_internal/README.md",
+      "stability": "stable",
+      "title": "Internal configs"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
+      "owner": "platform",
       "path": "configs/ci/README.md",
       "stability": "stable",
       "title": "CI configs"
@@ -152,6 +160,14 @@
       "path": "configs/docs/README.md",
       "stability": "stable",
       "title": "Docs tooling configs"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "configs/examples/README.md",
+      "stability": "stable",
+      "title": "Config examples"
     },
     {
       "area": "configs",
@@ -2365,6 +2381,14 @@
       "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
+      "path": "docs/_internal/governance/configs-refactor-ledger.md",
+      "stability": "stable",
+      "title": "Configs refactor ledger"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
       "path": "docs/_internal/governance/contract-breaking-change-examples.md",
       "stability": "stable",
       "title": "Breaking Change Examples"
@@ -3339,6 +3363,14 @@
     },
     {
       "area": "control-plane",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/control-plane/reports-schema.md",
+      "stability": "stable",
+      "title": "Reports schema"
+    },
+    {
+      "area": "control-plane",
       "audience": "contributor",
       "owner": "platform",
       "path": "docs/control-plane/reproduce-ci-locally.md",
@@ -3544,6 +3576,22 @@
       "path": "docs/development/toolchain.md",
       "stability": "stable",
       "title": "Toolchain"
+    },
+    {
+      "area": "development",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/development/tooling/index.md",
+      "stability": "stable",
+      "title": "Tooling"
+    },
+    {
+      "area": "development",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/development/tooling/make.md",
+      "stability": "stable",
+      "title": "Make wrapper surface"
     },
     {
       "area": "development",
@@ -4658,6 +4706,14 @@
       "title": "Make Internal Contracts"
     },
     {
+      "area": "make",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "make/_internal/contracts/target-deprecation-policy.md",
+      "stability": "stable",
+      "title": "Make target deprecation policy"
+    },
+    {
       "area": "ops",
       "audience": "contributors",
       "owner": "docs-governance",
@@ -4843,5 +4899,5 @@
     }
   ],
   "schema_version": "v1",
-  "source": "docs/registry.json"
+  "source": "docs/_internal/registry/registry.json"
 }

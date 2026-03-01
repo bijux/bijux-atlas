@@ -19,10 +19,12 @@ License: Apache-2.0
 | `configs/CONTRACT.md` | `concept` | `docs-governance` | `stable` |
 | `configs/INDEX.md` | `concept` | `docs-governance` | `stable` |
 | `configs/README.md` | `concept` | `docs-governance` | `stable` |
+| `configs/_internal/README.md` | `concept` | `platform` | `stable` |
 | `configs/ci/README.md` | `concept` | `platform` | `stable` |
 | `configs/contracts/README.md` | `spec` | `docs-governance` | `stable` |
 | `configs/coverage/README.md` | `concept` | `platform` | `stable` |
 | `configs/docs/README.md` | `concept` | `docs-governance` | `stable` |
+| `configs/examples/README.md` | `concept` | `docs-governance` | `stable` |
 | `configs/gates/README.md` | `concept` | `platform` | `stable` |
 | `configs/inventory/README.md` | `concept` | `platform` | `stable` |
 | `configs/layout/README.md` | `concept` | `platform` | `stable` |
@@ -299,6 +301,7 @@ License: Apache-2.0
 | `docs/_internal/governance/adrs/index.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/checks/docs-checks.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/checks/index.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/configs-refactor-ledger.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/contract-breaking-change-examples.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/contract-change-checklist.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/contract-ssot-workflow.md` | `concept` | `docs-governance` | `stable` |
@@ -421,6 +424,7 @@ License: Apache-2.0
 | `docs/control-plane/lane-matrix.md` | `concept` | `platform` | `stable` |
 | `docs/control-plane/performance-budget.md` | `concept` | `platform` | `stable` |
 | `docs/control-plane/reports-contract.md` | `concept` | `platform` | `stable` |
+| `docs/control-plane/reports-schema.md` | `concept` | `docs-governance` | `stable` |
 | `docs/control-plane/reproduce-ci-locally.md` | `concept` | `platform` | `stable` |
 | `docs/control-plane/security-posture.md` | `concept` | `platform` | `stable` |
 | `docs/control-plane/static-and-effect-mode.md` | `concept` | `platform` | `stable` |
@@ -447,6 +451,8 @@ License: Apache-2.0
 | `docs/development/repo-layout.md` | `concept` | `platform` | `stable` |
 | `docs/development/runtime-vs-control-plane-vs-ops.md` | `concept` | `platform` | `stable` |
 | `docs/development/toolchain.md` | `concept` | `platform` | `stable` |
+| `docs/development/tooling/index.md` | `concept` | `docs-governance` | `stable` |
+| `docs/development/tooling/make.md` | `concept` | `docs-governance` | `stable` |
 | `docs/development/update-pinned-dependencies.md` | `concept` | `platform` | `stable` |
 | `docs/development/where-truth-lives.md` | `concept` | `docs-governance` | `stable` |
 | `docs/glossary.md` | `concept` | `docs-governance` | `stable` |
@@ -586,6 +592,7 @@ License: Apache-2.0
 | `make/README.md` | `concept` | `docs-governance` | `stable` |
 | `make/_internal/contracts/MAKE_LAWS.md` | `spec` | `docs-governance` | `stable` |
 | `make/_internal/contracts/README.md` | `spec` | `docs-governance` | `stable` |
+| `make/_internal/contracts/target-deprecation-policy.md` | `spec` | `docs-governance` | `stable` |
 | `ops/CONTRACT.md` | `concept` | `docs-governance` | `stable` |
 | `ops/ERRORS.md` | `concept` | `docs-governance` | `stable` |
 | `ops/README.md` | `concept` | `docs-governance` | `stable` |

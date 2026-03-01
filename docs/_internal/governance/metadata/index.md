@@ -11,6 +11,6 @@ Reason to exist: store governance metadata consumed by documentation validation 
 - `taxonomy-map.md`
 - `front-matter.index.json`
 - `reference-canonicals.json`
-- Canonical docs registry: `docs/registry.json`
-- Canonical docs owners map: `docs/owners.json`
-- Canonical section map: `docs/sections.json`
+- Canonical docs registry: `docs/_internal/registry/registry.json`
+- Canonical docs owners map: `docs/_internal/registry/owners.json`
+- Canonical section map: `docs/_internal/registry/sections.json`

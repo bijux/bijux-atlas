@@ -75,7 +75,7 @@ fn validate_ops_markdown_governance_budgets(
         }
     }
 
-    let docs_registry_rel = Path::new("docs/registry.json");
+    let docs_registry_rel = Path::new("docs/_internal/registry/registry.json");
     if ctx.adapters.fs.exists(ctx.repo_root, docs_registry_rel) {
         let docs_registry_text = fs::read_to_string(ctx.repo_root.join(docs_registry_rel))
             .map_err(|err| CheckError::Failed(err.to_string()))?;
@@ -404,4 +404,3 @@ fn validate_ops_markdown_governance_budgets(
 
     Ok(())
 }
-

@@ -235,7 +235,7 @@ fn docs_top_level_surface_matches_section_owner_and_audience_registries() {
     let root = repo_root();
     let sections = section_manifest(&root);
     let section_map = sections["sections"].as_object().expect("sections object");
-    let owners_json = load_json(&root.join("docs/owners.json"));
+    let owners_json = load_json(&root.join("docs/_internal/registry/owners.json"));
     let owners = owners_json["section_owners"]
         .as_object()
         .expect("section owners");
@@ -255,10 +255,10 @@ fn docs_top_level_surface_matches_section_owner_and_audience_registries() {
     let allowed = section_map.keys().cloned().collect::<BTreeSet<_>>();
     assert_eq!(
         dirs, allowed,
-        "docs top-level directories must match docs/sections.json exactly"
+        "docs top-level directories must match docs/_internal/registry/sections.json exactly"
     );
     for dir in &dirs {
-        assert!(owners.contains_key(dir), "docs/owners.json missing section owner for `{dir}`");
+        assert!(owners.contains_key(dir), "docs/_internal/registry/owners.json missing section owner for `{dir}`");
         assert!(
             audiences.contains_key(dir),
             "docs/_internal/governance/metadata/audiences.json missing section default for `{dir}`"

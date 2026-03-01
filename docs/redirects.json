@@ -22,7 +22,6 @@
   "docs/root/navigation-policy.md": "docs/_internal/governance/docs-navigation-policy.md",
   "docs/root/index.md": "docs/index.md",
   "docs/contracts/index.md": "docs/reference/contracts/index.md",
-  "docs/contracts/index.md": "docs/reference/contracts/index.md",
   "docs/contracts/errors.md": "docs/reference/contracts/errors.md",
   "docs/contracts/endpoints.md": "docs/reference/contracts/endpoints.md",
   "docs/contracts/compatibility.md": "docs/reference/contracts/compatibility.md",
@@ -69,7 +68,6 @@
   "docs/style.md": "docs/_internal/governance/docs-style.md",
   "docs/development/docs-site-map.md": "docs/site-map.md",
   "docs/development/contributor-onboarding-checklist.md": "docs/development/contributor-onboarding-rubric.md",
-  "docs/development/control-plane.md": "docs/control-plane/index.md",
   "docs/development/how-to-add-check.md": "docs/control-plane/add-a-check-in-30-minutes.md",
   "docs/development/how-to-add-contract-registry.md": "docs/control-plane/add-a-contract-registry-in-30-minutes.md",
   "docs/development/how-to-add-gate-policy.md": "docs/control-plane/add-a-gate-policy.md",
@@ -87,7 +85,7 @@
   "docs/metadata/front-matter.index.json": "docs/_internal/governance/metadata/front-matter.index.json",
   "docs/metadata/growth-budget.json": "docs/_internal/governance/metadata/growth-budget.json",
   "docs/metadata/reference-canonicals.json": "docs/_internal/governance/metadata/reference-canonicals.json",
-  "docs/metadata/registry.json": "docs/registry.json",
-  "docs/_internal/governance/metadata/owners.json": "docs/owners.json",
-  "docs/_internal/governance/metadata/registry.json": "docs/registry.json"
+  "docs/metadata/registry.json": "docs/_internal/registry/registry.json",
+  "docs/_internal/governance/metadata/owners.json": "docs/_internal/registry/owners.json",
+  "docs/_internal/governance/metadata/registry.json": "docs/_internal/registry/registry.json"
 }

@@ -84,7 +84,7 @@ fn test_docs_011_section_index_links_resolve(ctx: &RunContext) -> TestResult {
             return TestResult::Fail(vec![Violation {
                 contract_id: "DOC-011".to_string(),
                 test_id: "docs.links.section_indexes_resolve".to_string(),
-                file: Some("docs/sections.json".to_string()),
+                file: Some("docs/_internal/registry/sections.json".to_string()),
                 line: None,
                 message: "`sections` object is required".to_string(),
                 evidence: None,
@@ -223,7 +223,7 @@ fn test_docs_028_section_indexes_unique_local_pages(ctx: &RunContext) -> TestRes
             return TestResult::Fail(vec![Violation {
                 contract_id: "DOC-028".to_string(),
                 test_id: "docs.index.section_indexes_unique_local_pages".to_string(),
-                file: Some("docs/sections.json".to_string()),
+                file: Some("docs/_internal/registry/sections.json".to_string()),
                 line: None,
                 message: "`sections` object is required".to_string(),
                 evidence: None,

@@ -240,7 +240,7 @@ fn test_docs_008_section_owner_coverage(ctx: &RunContext) -> TestResult {
             return TestResult::Fail(vec![Violation {
                 contract_id: "DOC-008".to_string(),
                 test_id: "docs.owners.section_coverage".to_string(),
-                file: Some("docs/owners.json".to_string()),
+                file: Some("docs/_internal/registry/owners.json".to_string()),
                 line: None,
                 message: "`section_owners` object is required".to_string(),
                 evidence: None,
@@ -302,14 +302,14 @@ fn docs_sections_payload(
     contract_id: &str,
     test_id: &str,
 ) -> Result<serde_json::Value, TestResult> {
-    let sections_path = docs_root_path(ctx).join("sections.json");
+    let sections_path = docs_root_path(ctx).join("_internal/registry/sections.json");
     let contents = match std::fs::read_to_string(&sections_path) {
         Ok(contents) => contents,
         Err(err) => {
             return Err(TestResult::Fail(vec![Violation {
                 contract_id: contract_id.to_string(),
                 test_id: test_id.to_string(),
-                file: Some("docs/sections.json".to_string()),
+                file: Some("docs/_internal/registry/sections.json".to_string()),
                 line: None,
                 message: format!("read failed: {err}"),
                 evidence: None,
@@ -321,7 +321,7 @@ fn docs_sections_payload(
         Err(err) => Err(TestResult::Fail(vec![Violation {
             contract_id: contract_id.to_string(),
             test_id: test_id.to_string(),
-            file: Some("docs/sections.json".to_string()),
+            file: Some("docs/_internal/registry/sections.json".to_string()),
             line: None,
             message: format!("invalid json: {err}"),
             evidence: None,
@@ -340,7 +340,7 @@ fn test_docs_009_section_manifest_complete(ctx: &RunContext) -> TestResult {
             return TestResult::Fail(vec![Violation {
                 contract_id: "DOC-009".to_string(),
                 test_id: "docs.sections.manifest_complete".to_string(),
-                file: Some("docs/sections.json".to_string()),
+                file: Some("docs/_internal/registry/sections.json".to_string()),
                 line: None,
                 message: "`sections` object is required".to_string(),
                 evidence: None,
@@ -374,7 +374,7 @@ fn test_docs_009_section_manifest_complete(ctx: &RunContext) -> TestResult {
                 "DOC-009",
                 "docs.sections.manifest_complete",
                 Some(format!("docs/{name}")),
-                "top-level docs section is missing from docs/sections.json",
+                "top-level docs section is missing from docs/_internal/registry/sections.json",
             );
         }
     }
@@ -385,7 +385,7 @@ fn test_docs_009_section_manifest_complete(ctx: &RunContext) -> TestResult {
                 "DOC-009",
                 "docs.sections.manifest_complete",
                 Some(format!("docs/{name}")),
-                "docs/sections.json references a missing top-level docs section",
+                "docs/_internal/registry/sections.json references a missing top-level docs section",
             );
         }
     }
@@ -408,7 +408,7 @@ fn test_docs_010_section_index_policy(ctx: &RunContext) -> TestResult {
             return TestResult::Fail(vec![Violation {
                 contract_id: "DOC-010".to_string(),
                 test_id: "docs.sections.index_policy".to_string(),
-                file: Some("docs/sections.json".to_string()),
+                file: Some("docs/_internal/registry/sections.json".to_string()),
                 line: None,
                 message: "`sections` object is required".to_string(),
                 evidence: None,

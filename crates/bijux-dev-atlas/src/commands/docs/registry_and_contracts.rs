@@ -408,12 +408,14 @@ pub(crate) fn has_required_section(text: &str, section: &str) -> bool {
 }
 
 pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json::Value, String> {
-    let registry_path = ctx.repo_root.join("docs/registry.json");
+    let registry_path = ctx
+        .repo_root
+        .join("docs/_internal/registry/registry.json");
     if !registry_path.exists() {
         return Ok(serde_json::json!({
             "schema_version": 1,
             "errors": [],
-            "warnings": ["DOCS_REGISTRY_MISSING: docs/registry.json is missing"],
+            "warnings": ["DOCS_REGISTRY_MISSING: docs/_internal/registry/registry.json is missing"],
             "summary": {"errors": 0, "warnings": 1}
         }));
     }

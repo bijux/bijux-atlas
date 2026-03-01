@@ -4,10 +4,10 @@ Use one source of truth per docs governance artifact.
 
 ## Authoritative files
 
-- Section ownership: `docs/owners.json`
-- Documentation registry: `docs/registry.json`
-- Top-level section map: `docs/sections.json`
-- Front matter inventory: `docs/_internal/governance/metadata/front-matter.index.json` (generated from `docs/registry.json`)
+- Section ownership: `docs/_internal/registry/owners.json`
+- Documentation registry: `docs/_internal/registry/registry.json`
+- Top-level section map: `docs/_internal/registry/sections.json`
+- Front matter inventory: `docs/_internal/governance/metadata/front-matter.index.json` (generated from `docs/_internal/registry/registry.json`)
 
 ## Rules
 

@@ -1,5 +1,5 @@
 {
-  "documents_total": 605,
+  "documents_total": 612,
   "generated_artifacts": [
     "docs/_internal/generated/docs-inventory.md",
     "docs/_internal/generated/topic-index.json",
@@ -16,8 +16,8 @@
   "kind": "docs_contract_coverage_v1",
   "metadata_sources": {
     "audiences": "docs/_internal/governance/metadata/audiences.json",
-    "owners": "docs/owners.json",
-    "sections": "docs/sections.json"
+    "owners": "docs/_internal/registry/owners.json",
+    "sections": "docs/_internal/registry/sections.json"
   },
   "schema_version": 1,
   "section_count": 36

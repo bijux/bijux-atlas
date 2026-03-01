@@ -36,7 +36,7 @@ fn schema_required_properties(schema: &serde_json::Value) -> std::collections::B
 fn validate_docs_registry_schema(ctx: &RunContext) -> TestResult {
     const CONTRACT_ID: &str = "DOC-061";
     const TEST_ID: &str = "docs.schema.registry_validation";
-    const FILE: &str = "docs/registry.json";
+    const FILE: &str = "docs/_internal/registry/registry.json";
     const SCHEMA_FILE: &str = "configs/schema/docs-registry.schema.json";
 
     let value = match std::fs::read_to_string(ctx.repo_root.join(FILE))
@@ -212,7 +212,7 @@ fn validate_docs_registry_schema(ctx: &RunContext) -> TestResult {
 fn validate_docs_sections_schema(ctx: &RunContext) -> TestResult {
     const CONTRACT_ID: &str = "DOC-062";
     const TEST_ID: &str = "docs.schema.sections_validation";
-    const FILE: &str = "docs/sections.json";
+    const FILE: &str = "docs/_internal/registry/sections.json";
     const SCHEMA_FILE: &str = "configs/schema/docs-sections.schema.json";
 
     let value = match std::fs::read_to_string(ctx.repo_root.join(FILE))

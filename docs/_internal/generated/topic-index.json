@@ -61,10 +61,12 @@
     "README": [
       "README.md",
       "configs/README.md",
+      "configs/_internal/README.md",
       "configs/ci/README.md",
       "configs/contracts/README.md",
       "configs/coverage/README.md",
       "configs/docs/README.md",
+      "configs/examples/README.md",
       "configs/gates/README.md",
       "configs/inventory/README.md",
       "configs/layout/README.md",
@@ -385,6 +387,9 @@
     ],
     "configs-lifecycle": [
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/configs-lifecycle.md"
+    ],
+    "configs-refactor-ledger": [
+      "docs/_internal/governance/configs-refactor-ledger.md"
     ],
     "conflict-resolution": [
       "docs/reference/registry/conflict-resolution.md"
@@ -781,6 +786,7 @@
       "docs/architecture/index.md",
       "docs/control-plane/index.md",
       "docs/development/index.md",
+      "docs/development/tooling/index.md",
       "docs/index.md",
       "docs/operations/e2e/index.md",
       "docs/operations/index.md",
@@ -849,6 +855,7 @@
       "docs/operations/runbooks/load-failure-triage.md"
     ],
     "make": [
+      "docs/development/tooling/make.md",
       "docs/reference/make.md"
     ],
     "make-targets": [
@@ -1044,6 +1051,9 @@
     "reports-contract": [
       "docs/control-plane/reports-contract.md"
     ],
+    "reports-schema": [
+      "docs/control-plane/reports-schema.md"
+    ],
     "reproduce-ci-locally": [
       "docs/control-plane/reproduce-ci-locally.md"
     ],
@@ -1193,6 +1203,9 @@
     ],
     "system-graph-explained": [
       "docs/architecture/system-graph-explained.md"
+    ],
+    "target-deprecation-policy": [
+      "make/_internal/contracts/target-deprecation-policy.md"
     ],
     "taxonomy-map": [
       "docs/_internal/governance/metadata/taxonomy-map.md"

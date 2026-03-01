@@ -107,6 +107,14 @@
     {
       "breadcrumbs": [
         "configs",
+        "configs/_internal",
+        "configs/_internal/README.md"
+      ],
+      "path": "configs/_internal/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
         "configs/ci",
         "configs/ci/README.md"
       ],
@@ -135,6 +143,14 @@
         "configs/docs/README.md"
       ],
       "path": "configs/docs/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
+        "configs/examples",
+        "configs/examples/README.md"
+      ],
+      "path": "configs/examples/README.md"
     },
     {
       "breadcrumbs": [
@@ -2730,6 +2746,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/configs-refactor-ledger.md"
+      ],
+      "path": "docs/_internal/governance/configs-refactor-ledger.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/contract-breaking-change-examples.md"
       ],
       "path": "docs/_internal/governance/contract-breaking-change-examples.md"
@@ -3770,6 +3795,14 @@
       "breadcrumbs": [
         "docs",
         "docs/control-plane",
+        "docs/control-plane/reports-schema.md"
+      ],
+      "path": "docs/control-plane/reports-schema.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
         "docs/control-plane/reproduce-ci-locally.md"
       ],
       "path": "docs/control-plane/reproduce-ci-locally.md"
@@ -3973,6 +4006,24 @@
         "docs/development/toolchain.md"
       ],
       "path": "docs/development/toolchain.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/tooling",
+        "docs/development/tooling/index.md"
+      ],
+      "path": "docs/development/tooling/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/tooling",
+        "docs/development/tooling/make.md"
+      ],
+      "path": "docs/development/tooling/make.md"
     },
     {
       "breadcrumbs": [
@@ -5164,6 +5215,15 @@
         "make/_internal/contracts/README.md"
       ],
       "path": "make/_internal/contracts/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "make",
+        "make/_internal",
+        "make/_internal/contracts",
+        "make/_internal/contracts/target-deprecation-policy.md"
+      ],
+      "path": "make/_internal/contracts/target-deprecation-policy.md"
     },
     {
       "breadcrumbs": [

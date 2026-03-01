@@ -180,6 +180,20 @@
     },
     {
       "keywords": [
+        "-internal",
+        "configs",
+        "readme"
+      ],
+      "path": "configs/_internal/README.md",
+      "tags": [
+        "-internal",
+        "configs",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
         "configs",
         "readme"
       ],
@@ -226,6 +240,20 @@
       "path": "configs/docs/README.md",
       "tags": [
         "configs",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "examples",
+        "readme"
+      ],
+      "path": "configs/examples/README.md",
+      "tags": [
+        "configs",
+        "examples",
         "readme"
       ],
       "topic": "README"
@@ -3943,6 +3971,20 @@
     {
       "keywords": [
         "-internal",
+        "configs-refactor-ledger",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/configs-refactor-ledger.md",
+      "tags": [
+        "-internal",
+        "configs-refactor-ledger",
+        "governance"
+      ],
+      "topic": "configs-refactor-ledger"
+    },
+    {
+      "keywords": [
+        "-internal",
         "contract-breaking-change-examples",
         "governance"
       ],
@@ -5537,6 +5579,18 @@
     {
       "keywords": [
         "control-plane",
+        "reports-schema"
+      ],
+      "path": "docs/control-plane/reports-schema.md",
+      "tags": [
+        "control-plane",
+        "reports-schema"
+      ],
+      "topic": "reports-schema"
+    },
+    {
+      "keywords": [
+        "control-plane",
         "reproduce-ci-locally"
       ],
       "path": "docs/control-plane/reproduce-ci-locally.md",
@@ -5845,6 +5899,34 @@
         "toolchain"
       ],
       "topic": "toolchain"
+    },
+    {
+      "keywords": [
+        "development",
+        "index",
+        "tooling"
+      ],
+      "path": "docs/development/tooling/index.md",
+      "tags": [
+        "development",
+        "index",
+        "tooling"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "development",
+        "make",
+        "tooling"
+      ],
+      "path": "docs/development/tooling/make.md",
+      "tags": [
+        "development",
+        "make",
+        "tooling"
+      ],
+      "topic": "make"
     },
     {
       "keywords": [
@@ -7675,6 +7757,22 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "contracts",
+        "make",
+        "target-deprecation-policy"
+      ],
+      "path": "make/_internal/contracts/target-deprecation-policy.md",
+      "tags": [
+        "-internal",
+        "contracts",
+        "make",
+        "target-deprecation-policy"
+      ],
+      "topic": "target-deprecation-policy"
     },
     {
       "keywords": [

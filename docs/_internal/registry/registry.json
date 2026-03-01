@@ -350,6 +350,31 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "-internal",
+        "configs",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "configs/_internal/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "configs",
+        "readme"
+      ],
+      "title": "Internal configs",
+      "topic": "README"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "configs",
         "readme"
       ],
@@ -437,6 +462,31 @@
         "readme"
       ],
       "title": "Docs tooling configs",
+      "topic": "README"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "configs",
+        "examples",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/examples/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "examples",
+        "readme"
+      ],
+      "title": "Config examples",
       "topic": "README"
     },
     {
@@ -7193,6 +7243,31 @@
       "doc_version": "v1",
       "keywords": [
         "-internal",
+        "configs-refactor-ledger",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/configs-refactor-ledger.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "configs-refactor-ledger",
+        "governance"
+      ],
+      "title": "Configs refactor ledger",
+      "topic": "configs-refactor-ledger"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
         "contract-breaking-change-examples",
         "governance"
       ],
@@ -10123,6 +10198,29 @@
     },
     {
       "area": "control-plane",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "control-plane",
+        "reports-schema"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/control-plane/reports-schema.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "control-plane",
+        "reports-schema"
+      ],
+      "title": "Reports schema",
+      "topic": "reports-schema"
+    },
+    {
+      "area": "control-plane",
       "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
@@ -10718,6 +10816,56 @@
       ],
       "title": "Toolchain",
       "topic": "toolchain"
+    },
+    {
+      "area": "development",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "index",
+        "tooling"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/development/tooling/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "index",
+        "tooling"
+      ],
+      "title": "Tooling",
+      "topic": "index"
+    },
+    {
+      "area": "development",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "make",
+        "tooling"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/development/tooling/make.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "make",
+        "tooling"
+      ],
+      "title": "Make wrapper surface",
+      "topic": "make"
     },
     {
       "area": "development",
@@ -14077,6 +14225,33 @@
       ],
       "title": "Make Internal Contracts",
       "topic": "README"
+    },
+    {
+      "area": "make",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "contracts",
+        "make",
+        "target-deprecation-policy"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "make/_internal/contracts/target-deprecation-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "contracts",
+        "make",
+        "target-deprecation-policy"
+      ],
+      "title": "Make target deprecation policy",
+      "topic": "target-deprecation-policy"
     },
     {
       "area": "ops",

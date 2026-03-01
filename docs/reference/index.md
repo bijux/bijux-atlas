@@ -12,7 +12,7 @@ related:
   - docs/api/index.md
   - docs/operations/index.md
 source:
-  - docs/registry.json
+  - docs/_internal/registry/registry.json
   - configs/schema-map.json
 ---
 

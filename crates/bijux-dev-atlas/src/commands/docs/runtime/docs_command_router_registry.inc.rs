@@ -7,7 +7,9 @@ fn run_docs_registry_command(
                     let ctx = docs_context(&common)?;
                     let payload = docs_registry_payload(&ctx);
                     if common.allow_write {
-                        let path = ctx.repo_root.join("docs/registry.json");
+                        let path = ctx
+                            .repo_root
+                            .join("docs/_internal/registry/registry.json");
                         fs::write(
                             &path,
                             serde_json::to_string_pretty(&payload)
@@ -170,7 +172,7 @@ fn run_docs_registry_command(
                         let front_matter_index = serde_json::json!({
                             "schema_version": "v1",
                             "description": "Canonical ownership, stability, title, and audience metadata registry for documentation pages",
-                            "source": "docs/registry.json",
+                            "source": "docs/_internal/registry/registry.json",
                             "documents": docs_rows.iter().map(|row| serde_json::json!({
                                 "path": row["path"],
                                 "title": row["title"],
@@ -400,9 +402,9 @@ fn run_docs_registry_command(
                                 "docs/_internal/governance/metadata/front-matter.index.json"
                             ],
                             "metadata_sources": {
-                                "owners": "docs/owners.json",
+                                "owners": "docs/_internal/registry/owners.json",
                                 "audiences": "docs/_internal/governance/metadata/audiences.json",
-                                "sections": "docs/sections.json"
+                                "sections": "docs/_internal/registry/sections.json"
                             }
                         });
                         fs::write(
@@ -445,7 +447,7 @@ fn run_docs_registry_command(
                             "areas_covered": docs_rows.iter().filter_map(|v| v["path"].as_str()).map(|v| v.split('/').nth(1).unwrap_or("root")).collect::<BTreeSet<_>>().len()
                         },
                         "artifacts": {
-                            "registry": "docs/registry.json",
+                            "registry": "docs/_internal/registry/registry.json",
                             "inventory_page": "docs/_internal/generated/docs-inventory.md",
                             "search_index": "docs/_internal/generated/search-index.json",
                             "sitemap": "docs/_internal/generated/sitemap.json",

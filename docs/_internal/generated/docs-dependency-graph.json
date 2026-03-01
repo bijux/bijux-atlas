@@ -78,6 +78,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "configs/_internal/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "configs/ci/README.md"
     },
     {
@@ -94,6 +99,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "configs/docs/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "configs/examples/README.md"
     },
     {
       "crate": null,
@@ -1478,6 +1488,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/configs-refactor-ledger.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/contract-breaking-change-examples.md"
     },
     {
@@ -2088,6 +2103,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/control-plane/reports-schema.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/control-plane/reproduce-ci-locally.md"
     },
     {
@@ -2214,6 +2234,16 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/development/toolchain.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/development/tooling/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/development/tooling/make.md"
     },
     {
       "crate": null,
@@ -2909,6 +2939,11 @@
       "crate": null,
       "doc_type": "spec",
       "from": "make/_internal/contracts/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "spec",
+      "from": "make/_internal/contracts/target-deprecation-policy.md"
     },
     {
       "crate": null,

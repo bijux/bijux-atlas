@@ -37,7 +37,7 @@ fn test_docs_027_section_indexes_list_local_pages(ctx: &RunContext) -> TestResul
             return TestResult::Fail(vec![Violation {
                 contract_id: "DOC-027".to_string(),
                 test_id: "docs.index.section_indexes_list_local_pages".to_string(),
-                file: Some("docs/sections.json".to_string()),
+                file: Some("docs/_internal/registry/sections.json".to_string()),
                 line: None,
                 message: "`sections` object is required".to_string(),
                 evidence: None,

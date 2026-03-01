@@ -26,7 +26,7 @@ fn load_json(path: &Path) -> Value {
 }
 
 fn section_manifest(root: &Path) -> Value {
-    load_json(&root.join("docs/sections.json"))
+    load_json(&root.join("docs/_internal/registry/sections.json"))
 }
 
 fn markdown_files(root: &Path) -> Vec<PathBuf> {
@@ -155,7 +155,7 @@ fn generated_docs_surface_is_committed_and_non_empty() {
 #[ignore = "legacy docs registry contract pending rewrite"]
 fn docs_registry_points_to_real_files_and_stability_matches_metadata() {
     let root = repo_root();
-    let registry = load_json(&root.join("docs/registry.json"));
+    let registry = load_json(&root.join("docs/_internal/registry/registry.json"));
     let documents = registry["documents"].as_array().expect("documents array");
     assert!(!documents.is_empty(), "docs registry must not be empty");
 
@@ -186,7 +186,7 @@ fn docs_registry_points_to_real_files_and_stability_matches_metadata() {
 #[test]
 fn deprecated_docs_entries_name_existing_replacements() {
     let root = repo_root();
-    let registry = load_json(&root.join("docs/registry.json"));
+    let registry = load_json(&root.join("docs/_internal/registry/registry.json"));
     let documents = registry["documents"].as_array().expect("documents array");
     for row in documents {
         if row["stability"].as_str() != Some("deprecated") {
@@ -546,18 +546,18 @@ fn docs_ssot_files_have_single_authoritative_locations() {
 
     assert_eq!(
         owners_paths,
-        vec!["docs/owners.json".to_string()],
-        "owners.json must exist only at docs/owners.json"
+        vec!["docs/_internal/registry/owners.json".to_string()],
+        "owners.json must exist only at docs/_internal/registry/owners.json"
     );
     assert_eq!(
         registry_paths,
-        vec!["docs/registry.json".to_string()],
-        "registry.json must exist only at docs/registry.json"
+        vec!["docs/_internal/registry/registry.json".to_string()],
+        "registry.json must exist only at docs/_internal/registry/registry.json"
     );
     assert_eq!(
         sections_paths,
-        vec!["docs/sections.json".to_string()],
-        "sections.json must exist only at docs/sections.json"
+        vec!["docs/_internal/registry/sections.json".to_string()],
+        "sections.json must exist only at docs/_internal/registry/sections.json"
     );
 }
 
@@ -568,13 +568,13 @@ fn docs_schema_index_contract_coverage_points_to_registry_ssot() {
     let sources = &coverage["metadata_sources"];
     assert_eq!(
         sources["sections"].as_str(),
-        Some("docs/sections.json"),
-        "docs contract coverage must reference docs/sections.json as sections ssot"
+        Some("docs/_internal/registry/sections.json"),
+        "docs contract coverage must reference docs/_internal/registry/sections.json as sections ssot"
     );
     assert_eq!(
         sources["owners"].as_str(),
-        Some("docs/owners.json"),
-        "docs contract coverage must reference docs/owners.json as owners ssot"
+        Some("docs/_internal/registry/owners.json"),
+        "docs contract coverage must reference docs/_internal/registry/owners.json as owners ssot"
     );
     assert!(
         coverage["generated_artifacts"]
@@ -589,8 +589,8 @@ fn docs_schema_index_contract_coverage_points_to_registry_ssot() {
         load_json(&root.join("docs/_internal/governance/metadata/front-matter.index.json"));
     assert_eq!(
         front_matter["source"].as_str(),
-        Some("docs/registry.json"),
-        "front matter inventory must be generated from docs/registry.json"
+        Some("docs/_internal/registry/registry.json"),
+        "front matter inventory must be generated from docs/_internal/registry/registry.json"
     );
 }
 

@@ -22,7 +22,7 @@ const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 6] = [
     "what-to-read-next.md",
 ];
 
-const DOCS_ALLOWED_ROOT_FILES: [&str; 4] = ["owners.json", "registry.json", "sections.json", "redirects.json"];
+const DOCS_ALLOWED_ROOT_FILES: [&str; 1] = ["redirects.json"];
 
 const DOCS_MAX_DEPTH: usize = 4;
 const DOCS_MAX_SIBLINGS: usize = 49;
@@ -184,7 +184,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             title: "docs section entrypoint owners align with the owner registry",
             tests: vec![TestCase {
                 id: TestId("docs.metadata.section_owner_alignment".to_string()),
-                title: "required section index pages use the owner declared in docs/owners.json",
+                title: "required section index pages use the owner declared in docs/_internal/registry/owners.json",
                 kind: TestKind::Pure,
                 run: test_docs_016_section_owner_alignment,
             }],
@@ -634,7 +634,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             title: "docs registry validates against its schema",
             tests: vec![TestCase {
                 id: TestId("docs.schema.registry_validation".to_string()),
-                title: "docs/registry.json validates against the declared docs registry schema",
+                title: "docs/_internal/registry/registry.json validates against the declared docs registry schema",
                 kind: TestKind::Pure,
                 run: test_docs_061_registry_schema_validation,
             }],
@@ -644,7 +644,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             title: "docs sections validate against their schema",
             tests: vec![TestCase {
                 id: TestId("docs.schema.sections_validation".to_string()),
-                title: "docs/sections.json validates against the declared docs sections schema",
+                title: "docs/_internal/registry/sections.json validates against the declared docs sections schema",
                 kind: TestKind::Pure,
                 run: test_docs_062_sections_schema_validation,
             }],

@@ -91,14 +91,14 @@ fn docs_section_owners_payload(
     contract_id: &str,
     test_id: &str,
 ) -> Result<serde_json::Value, TestResult> {
-    let owners_path = docs_root_path(ctx).join("owners.json");
+    let owners_path = docs_root_path(ctx).join("_internal/registry/owners.json");
     let contents = match std::fs::read_to_string(&owners_path) {
         Ok(contents) => contents,
         Err(err) => {
             return Err(TestResult::Fail(vec![Violation {
                 contract_id: contract_id.to_string(),
                 test_id: test_id.to_string(),
-                file: Some("docs/owners.json".to_string()),
+                file: Some("docs/_internal/registry/owners.json".to_string()),
                 line: None,
                 message: format!("read failed: {err}"),
                 evidence: None,
@@ -110,7 +110,7 @@ fn docs_section_owners_payload(
         Err(err) => Err(TestResult::Fail(vec![Violation {
             contract_id: contract_id.to_string(),
             test_id: test_id.to_string(),
-            file: Some("docs/owners.json".to_string()),
+            file: Some("docs/_internal/registry/owners.json".to_string()),
             line: None,
             message: format!("invalid json: {err}"),
             evidence: None,
@@ -127,7 +127,7 @@ fn docs_entrypoint_pages(ctx: &RunContext) -> Result<Vec<(String, bool)>, TestRe
             return Err(TestResult::Fail(vec![Violation {
                 contract_id: "DOC-013".to_string(),
                 test_id: "docs.metadata.entrypoint_owner".to_string(),
-                file: Some("docs/sections.json".to_string()),
+                file: Some("docs/_internal/registry/sections.json".to_string()),
                 line: None,
                 message: "`sections` object is required".to_string(),
                 evidence: None,

@@ -132,7 +132,7 @@ fn test_docs_016_section_owner_alignment(ctx: &RunContext) -> TestResult {
             return TestResult::Fail(vec![Violation {
                 contract_id: "DOC-016".to_string(),
                 test_id: "docs.metadata.section_owner_alignment".to_string(),
-                file: Some("docs/owners.json".to_string()),
+                file: Some("docs/_internal/registry/owners.json".to_string()),
                 line: None,
                 message: "`section_owners` object is required".to_string(),
                 evidence: None,
@@ -161,7 +161,7 @@ fn test_docs_016_section_owner_alignment(ctx: &RunContext) -> TestResult {
                     &mut violations,
                     "DOC-016",
                     "docs.metadata.section_owner_alignment",
-                    Some("docs/owners.json".to_string()),
+                    Some("docs/_internal/registry/owners.json".to_string()),
                     format!("missing section owner mapping for {section}"),
                 );
                 continue;
@@ -189,7 +189,7 @@ fn test_docs_016_section_owner_alignment(ctx: &RunContext) -> TestResult {
                 "DOC-016",
                 "docs.metadata.section_owner_alignment",
                 Some(relative),
-                format!("entrypoint owner `{value}` does not match docs/owners.json `{expected}`"),
+                format!("entrypoint owner `{value}` does not match docs/_internal/registry/owners.json `{expected}`"),
             ),
             None => push_docs_violation(
                 &mut violations,
@@ -544,7 +544,7 @@ fn test_docs_017_root_entrypoint_flags(ctx: &RunContext) -> TestResult {
             return TestResult::Fail(vec![Violation {
                 contract_id: "DOC-017".to_string(),
                 test_id: "docs.sections.root_entrypoint_flags".to_string(),
-                file: Some("docs/sections.json".to_string()),
+                file: Some("docs/_internal/registry/sections.json".to_string()),
                 line: None,
                 message: "`sections` object is required".to_string(),
                 evidence: None,
@@ -561,7 +561,7 @@ fn test_docs_017_root_entrypoint_flags(ctx: &RunContext) -> TestResult {
                 &mut violations,
                 "DOC-017",
                 "docs.sections.root_entrypoint_flags",
-                Some("docs/sections.json".to_string()),
+                Some("docs/_internal/registry/sections.json".to_string()),
                 format!("indexed section `{name}` must declare boolean `root_entrypoint`"),
             );
         }
@@ -585,7 +585,7 @@ fn test_docs_018_root_section_coverage(ctx: &RunContext) -> TestResult {
             return TestResult::Fail(vec![Violation {
                 contract_id: "DOC-018".to_string(),
                 test_id: "docs.index.root_section_coverage".to_string(),
-                file: Some("docs/sections.json".to_string()),
+                file: Some("docs/_internal/registry/sections.json".to_string()),
                 line: None,
                 message: "`sections` object is required".to_string(),
                 evidence: None,

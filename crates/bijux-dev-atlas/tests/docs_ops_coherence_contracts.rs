@@ -201,13 +201,13 @@ fn docs_sections_and_ops_pillars_have_one_shared_owner_identity() {
         .cloned()
         .collect::<BTreeSet<_>>();
 
-    let docs_owners_json = load_json(&root.join("docs/owners.json"));
+    let docs_owners_json = load_json(&root.join("docs/_internal/registry/owners.json"));
     let docs_owners = docs_owners_json["section_owners"]
         .as_object()
         .expect("docs section owners");
     assert!(
         !docs_owners.is_empty(),
-        "docs/owners.json must declare section owners"
+        "docs/_internal/registry/owners.json must declare section owners"
     );
     for (section, owner) in docs_owners {
         let owner = owner
