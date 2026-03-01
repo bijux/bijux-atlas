@@ -23,6 +23,340 @@ fn markdown_links_for_reports(text: &str) -> Vec<String> {
     links
 }
 
+fn schema_required_properties(schema: &serde_json::Value) -> std::collections::BTreeSet<String> {
+    schema
+        .get("required")
+        .and_then(|value| value.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(|value| value.as_str().map(ToOwned::to_owned))
+        .collect()
+}
+
+fn validate_docs_registry_schema(ctx: &RunContext) -> TestResult {
+    const CONTRACT_ID: &str = "DOC-061";
+    const TEST_ID: &str = "docs.schema.registry_validation";
+    const FILE: &str = "docs/registry.json";
+    const SCHEMA_FILE: &str = "configs/schema/docs-registry.schema.json";
+
+    let value = match std::fs::read_to_string(ctx.repo_root.join(FILE))
+        .map_err(|err| err.to_string())
+        .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).map_err(|err| err.to_string()))
+    {
+        Ok(value) => value,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: CONTRACT_ID.to_string(),
+                test_id: TEST_ID.to_string(),
+                file: Some(FILE.to_string()),
+                line: None,
+                message: format!("parse failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    let schema = match std::fs::read_to_string(ctx.repo_root.join(SCHEMA_FILE))
+        .map_err(|err| err.to_string())
+        .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).map_err(|err| err.to_string()))
+    {
+        Ok(value) => value,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: CONTRACT_ID.to_string(),
+                test_id: TEST_ID.to_string(),
+                file: Some(SCHEMA_FILE.to_string()),
+                line: None,
+                message: format!("schema parse failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+
+    let Some(object) = value.as_object() else {
+        return TestResult::Fail(vec![Violation {
+            contract_id: CONTRACT_ID.to_string(),
+            test_id: TEST_ID.to_string(),
+            file: Some(FILE.to_string()),
+            line: None,
+            message: "docs registry must be a JSON object".to_string(),
+            evidence: None,
+        }]);
+    };
+    let allowed_properties = schema
+        .get("properties")
+        .and_then(|value| value.as_object())
+        .map(|props| props.keys().cloned().collect::<std::collections::BTreeSet<_>>())
+        .unwrap_or_default();
+    let mut violations = Vec::new();
+    for required in schema_required_properties(&schema) {
+        if !object.contains_key(&required) {
+            violations.push(Violation {
+                contract_id: CONTRACT_ID.to_string(),
+                test_id: TEST_ID.to_string(),
+                file: Some(FILE.to_string()),
+                line: None,
+                message: format!("missing required property `{required}`"),
+                evidence: None,
+            });
+        }
+    }
+    for key in object.keys() {
+        if !allowed_properties.contains(key) {
+            violations.push(Violation {
+                contract_id: CONTRACT_ID.to_string(),
+                test_id: TEST_ID.to_string(),
+                file: Some(FILE.to_string()),
+                line: None,
+                message: format!("unexpected property `{key}`"),
+                evidence: None,
+            });
+        }
+    }
+    if object
+        .get("schema_version")
+        .and_then(|value| value.as_u64())
+        .filter(|version| *version >= 1)
+        .is_none()
+    {
+        violations.push(Violation {
+            contract_id: CONTRACT_ID.to_string(),
+            test_id: TEST_ID.to_string(),
+            file: Some(FILE.to_string()),
+            line: None,
+            message: "schema_version must be an integer >= 1".to_string(),
+            evidence: None,
+        });
+    }
+
+    let Some(documents) = object.get("documents").and_then(|value| value.as_array()) else {
+        violations.push(Violation {
+            contract_id: CONTRACT_ID.to_string(),
+            test_id: TEST_ID.to_string(),
+            file: Some(FILE.to_string()),
+            line: None,
+            message: "property `documents` must be an array".to_string(),
+            evidence: None,
+        });
+        return TestResult::Fail(violations);
+    };
+    if documents.is_empty() {
+        violations.push(Violation {
+            contract_id: CONTRACT_ID.to_string(),
+            test_id: TEST_ID.to_string(),
+            file: Some(FILE.to_string()),
+            line: None,
+            message: "property `documents` must not be empty".to_string(),
+            evidence: None,
+        });
+    }
+    for (index, document) in documents.iter().enumerate() {
+        let Some(row) = document.as_object() else {
+            violations.push(Violation {
+                contract_id: CONTRACT_ID.to_string(),
+                test_id: TEST_ID.to_string(),
+                file: Some(FILE.to_string()),
+                line: None,
+                message: format!("documents[{index}] must be an object"),
+                evidence: None,
+            });
+            continue;
+        };
+        for field in [
+            "area",
+            "audience",
+            "doc_type",
+            "last_reviewed",
+            "owner",
+            "path",
+            "stability",
+            "title",
+            "topic",
+        ] {
+            if row
+                .get(field)
+                .and_then(|value| value.as_str())
+                .map(|value| !value.trim().is_empty())
+                != Some(true)
+            {
+                violations.push(Violation {
+                    contract_id: CONTRACT_ID.to_string(),
+                    test_id: TEST_ID.to_string(),
+                    file: Some(FILE.to_string()),
+                    line: None,
+                    message: format!("documents[{index}].{field} must be a non-empty string"),
+                    evidence: None,
+                });
+            }
+        }
+        if let Some(last_reviewed) = row.get("last_reviewed").and_then(|value| value.as_str()) {
+            if !looks_like_iso_date(last_reviewed) {
+                violations.push(Violation {
+                    contract_id: CONTRACT_ID.to_string(),
+                    test_id: TEST_ID.to_string(),
+                    file: Some(FILE.to_string()),
+                    line: None,
+                    message: format!("documents[{index}].last_reviewed must be an ISO date"),
+                    evidence: None,
+                });
+            }
+        }
+    }
+
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn validate_docs_sections_schema(ctx: &RunContext) -> TestResult {
+    const CONTRACT_ID: &str = "DOC-062";
+    const TEST_ID: &str = "docs.schema.sections_validation";
+    const FILE: &str = "docs/sections.json";
+    const SCHEMA_FILE: &str = "configs/schema/docs-sections.schema.json";
+
+    let value = match std::fs::read_to_string(ctx.repo_root.join(FILE))
+        .map_err(|err| err.to_string())
+        .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).map_err(|err| err.to_string()))
+    {
+        Ok(value) => value,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: CONTRACT_ID.to_string(),
+                test_id: TEST_ID.to_string(),
+                file: Some(FILE.to_string()),
+                line: None,
+                message: format!("parse failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    let schema = match std::fs::read_to_string(ctx.repo_root.join(SCHEMA_FILE))
+        .map_err(|err| err.to_string())
+        .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).map_err(|err| err.to_string()))
+    {
+        Ok(value) => value,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: CONTRACT_ID.to_string(),
+                test_id: TEST_ID.to_string(),
+                file: Some(SCHEMA_FILE.to_string()),
+                line: None,
+                message: format!("schema parse failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+
+    let Some(object) = value.as_object() else {
+        return TestResult::Fail(vec![Violation {
+            contract_id: CONTRACT_ID.to_string(),
+            test_id: TEST_ID.to_string(),
+            file: Some(FILE.to_string()),
+            line: None,
+            message: "docs sections file must be a JSON object".to_string(),
+            evidence: None,
+        }]);
+    };
+    let allowed_properties = schema
+        .get("properties")
+        .and_then(|value| value.as_object())
+        .map(|props| props.keys().cloned().collect::<std::collections::BTreeSet<_>>())
+        .unwrap_or_default();
+    let mut violations = Vec::new();
+    for required in schema_required_properties(&schema) {
+        if !object.contains_key(&required) {
+            violations.push(Violation {
+                contract_id: CONTRACT_ID.to_string(),
+                test_id: TEST_ID.to_string(),
+                file: Some(FILE.to_string()),
+                line: None,
+                message: format!("missing required property `{required}`"),
+                evidence: None,
+            });
+        }
+    }
+    for key in object.keys() {
+        if !allowed_properties.contains(key) {
+            violations.push(Violation {
+                contract_id: CONTRACT_ID.to_string(),
+                test_id: TEST_ID.to_string(),
+                file: Some(FILE.to_string()),
+                line: None,
+                message: format!("unexpected property `{key}`"),
+                evidence: None,
+            });
+        }
+    }
+    if object
+        .get("schema_version")
+        .and_then(|value| value.as_u64())
+        .filter(|version| *version >= 1)
+        .is_none()
+    {
+        violations.push(Violation {
+            contract_id: CONTRACT_ID.to_string(),
+            test_id: TEST_ID.to_string(),
+            file: Some(FILE.to_string()),
+            line: None,
+            message: "schema_version must be an integer >= 1".to_string(),
+            evidence: None,
+        });
+    }
+    let Some(sections) = object.get("sections").and_then(|value| value.as_object()) else {
+        violations.push(Violation {
+            contract_id: CONTRACT_ID.to_string(),
+            test_id: TEST_ID.to_string(),
+            file: Some(FILE.to_string()),
+            line: None,
+            message: "property `sections` must be an object".to_string(),
+            evidence: None,
+        });
+        return TestResult::Fail(violations);
+    };
+    if sections.is_empty() {
+        violations.push(Violation {
+            contract_id: CONTRACT_ID.to_string(),
+            test_id: TEST_ID.to_string(),
+            file: Some(FILE.to_string()),
+            line: None,
+            message: "property `sections` must not be empty".to_string(),
+            evidence: None,
+        });
+    }
+    for (name, section) in sections {
+        let Some(row) = section.as_object() else {
+            violations.push(Violation {
+                contract_id: CONTRACT_ID.to_string(),
+                test_id: TEST_ID.to_string(),
+                file: Some(FILE.to_string()),
+                line: None,
+                message: format!("section `{name}` must be an object"),
+                evidence: None,
+            });
+            continue;
+        };
+        for field in ["requires_index", "root_entrypoint"] {
+            if row.get(field).and_then(|value| value.as_bool()).is_none() {
+                violations.push(Violation {
+                    contract_id: CONTRACT_ID.to_string(),
+                    test_id: TEST_ID.to_string(),
+                    file: Some(FILE.to_string()),
+                    line: None,
+                    message: format!("section `{name}` field `{field}` must be a boolean"),
+                    evidence: None,
+                });
+            }
+        }
+    }
+
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn markdown_targets_in_docs(
     ctx: &RunContext,
     source: &std::path::Path,
@@ -525,4 +859,12 @@ fn test_docs_060_redirects_target_real_pages(ctx: &RunContext) -> TestResult {
         violations.sort_by(|a, b| a.message.cmp(&b.message));
         TestResult::Fail(violations)
     }
+}
+
+fn test_docs_061_registry_schema_validation(ctx: &RunContext) -> TestResult {
+    validate_docs_registry_schema(ctx)
+}
+
+fn test_docs_062_sections_schema_validation(ctx: &RunContext) -> TestResult {
+    validate_docs_sections_schema(ctx)
 }

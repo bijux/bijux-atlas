@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/docs-sections.schema.json",
+  "title": "Docs sections",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "sections"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "sections": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "requires_index",
+          "root_entrypoint"
+        ],
+        "properties": {
+          "requires_index": { "type": "boolean" },
+          "root_entrypoint": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

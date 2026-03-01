@@ -630,5 +630,25 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_060_redirects_target_real_pages,
             }],
         },
+        Contract {
+            id: ContractId("DOC-061".to_string()),
+            title: "docs registry validates against its schema",
+            tests: vec![TestCase {
+                id: TestId("docs.schema.registry_validation".to_string()),
+                title: "docs/registry.json validates against the declared docs registry schema",
+                kind: TestKind::Pure,
+                run: test_docs_061_registry_schema_validation,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-062".to_string()),
+            title: "docs sections validate against their schema",
+            tests: vec![TestCase {
+                id: TestId("docs.schema.sections_validation".to_string()),
+                title: "docs/sections.json validates against the declared docs sections schema",
+                kind: TestKind::Pure,
+                run: test_docs_062_sections_schema_validation,
+            }],
+        },
     ])
 }
