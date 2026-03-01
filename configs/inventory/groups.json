@@ -1,7 +1,6 @@
 {
-  "schema_version": 1,
-  "max_top_level_dirs": 22,
   "allowed_groups": [
+    "_internal",
     "ci",
     "contracts",
     "coverage",
@@ -24,5 +23,7 @@
     "security",
     "shellcheck",
     "slo"
-  ]
+  ],
+  "max_top_level_dirs": 23,
+  "schema_version": 1
 }

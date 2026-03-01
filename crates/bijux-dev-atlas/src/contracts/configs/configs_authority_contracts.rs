@@ -279,6 +279,41 @@ fn test_configs_028_owner_map_alignment(ctx: &RunContext) -> TestResult {
         );
     }
     let mut violations = Vec::new();
+    let owners_alias_path = "configs/OWNERS.json";
+    match (
+        read_text(&ctx.repo_root.join(OWNERS_PATH)),
+        read_text(&ctx.repo_root.join(owners_alias_path)),
+    ) {
+        (Ok(primary), Ok(alias)) => {
+            let primary_json = serde_json::from_str::<serde_json::Value>(&primary);
+            let alias_json = serde_json::from_str::<serde_json::Value>(&alias);
+            match (primary_json, alias_json) {
+                (Ok(primary_json), Ok(alias_json)) => {
+                    if primary_json != alias_json {
+                        violations.push(violation(
+                            "CONFIGS-028",
+                            "configs.owners.group_alignment",
+                            owners_alias_path,
+                            "configs/OWNERS.json must match configs/owners-registry.json",
+                        ));
+                    }
+                }
+                _ => violations.push(violation(
+                    "CONFIGS-028",
+                    "configs.owners.group_alignment",
+                    owners_alias_path,
+                    "configs/OWNERS.json must be valid json and match the owners registry",
+                )),
+            }
+        }
+        (Ok(_), Err(err)) => violations.push(violation(
+            "CONFIGS-028",
+            "configs.owners.group_alignment",
+            owners_alias_path,
+            format!("missing owner alias: {err}"),
+        )),
+        _ => {}
+    }
     let expected_groups = index
         .registry
         .groups
@@ -359,6 +394,41 @@ fn test_configs_029_consumer_map_alignment(ctx: &RunContext) -> TestResult {
         );
     }
     let mut violations = Vec::new();
+    let consumers_alias_path = "configs/CONSUMERS.json";
+    match (
+        read_text(&ctx.repo_root.join(CONSUMERS_PATH)),
+        read_text(&ctx.repo_root.join(consumers_alias_path)),
+    ) {
+        (Ok(primary), Ok(alias)) => {
+            let primary_json = serde_json::from_str::<serde_json::Value>(&primary);
+            let alias_json = serde_json::from_str::<serde_json::Value>(&alias);
+            match (primary_json, alias_json) {
+                (Ok(primary_json), Ok(alias_json)) => {
+                    if primary_json != alias_json {
+                        violations.push(violation(
+                            "CONFIGS-029",
+                            "configs.consumers.group_alignment",
+                            consumers_alias_path,
+                            "configs/CONSUMERS.json must match configs/consumers-registry.json",
+                        ));
+                    }
+                }
+                _ => violations.push(violation(
+                    "CONFIGS-029",
+                    "configs.consumers.group_alignment",
+                    consumers_alias_path,
+                    "configs/CONSUMERS.json must be valid json and match the consumer registry",
+                )),
+            }
+        }
+        (Ok(_), Err(err)) => violations.push(violation(
+            "CONFIGS-029",
+            "configs.consumers.group_alignment",
+            consumers_alias_path,
+            format!("missing consumer alias: {err}"),
+        )),
+        _ => {}
+    }
     let expected_groups = index
         .registry
         .groups

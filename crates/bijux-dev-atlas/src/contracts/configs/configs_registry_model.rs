@@ -4,7 +4,9 @@ const OWNERS_PATH: &str = "configs/owners-registry.json";
 const CONSUMERS_PATH: &str = "configs/consumers-registry.json";
 const SCHEMAS_PATH: &str = "configs/schema-map.json";
 const SCHEMA_VERSIONING_POLICY_PATH: &str = "configs/schema/versioning-policy.json";
-const ROOT_CANONICAL_JSON_FILES: [&str; 6] = [
+const ROOT_CANONICAL_JSON_FILES: [&str; 8] = [
+    "configs/OWNERS.json",
+    "configs/CONSUMERS.json",
     "configs/owners-registry.json",
     "configs/consumers-registry.json",
     "configs/schema-map.json",
@@ -269,7 +271,7 @@ fn is_allowed_domain_markdown(path: &str) -> bool {
     if parts.len() != 3 || parts[0] != "configs" {
         return false;
     }
-    if parts[1].starts_with('_') {
+    if parts[1].starts_with('_') && parts[1] != "_internal" {
         return false;
     }
     matches!(parts[2], "README.md" | "INDEX.md" | "index.md")

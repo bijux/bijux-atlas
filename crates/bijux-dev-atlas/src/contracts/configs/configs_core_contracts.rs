@@ -40,27 +40,36 @@ fn test_configs_002_no_undocumented_files(ctx: &RunContext) -> TestResult {
     for files in index.group_files.values() {
         covered.extend(files.all());
     }
-    let missing = config_files_without_exclusions(&index)
+    let files = config_files_without_exclusions(&index);
+    let mut violations = files
+        .iter()
+        .filter(|file| file.contains("/node_modules/"))
+        .map(|file| {
+            violation(
+                "CONFIGS-002",
+                "configs.registry.no_undocumented_files",
+                file,
+                "configs tree must not contain node_modules directories",
+            )
+        })
+        .collect::<Vec<_>>();
+    let missing = files
         .into_iter()
         .filter(|file| !covered.contains(file))
         .filter(|file| !is_allowed_domain_markdown(file))
         .collect::<Vec<_>>();
-    if missing.is_empty() {
+    violations.extend(missing.into_iter().map(|file| {
+        violation(
+            "CONFIGS-002",
+            "configs.registry.no_undocumented_files",
+            &file,
+            "config file is not covered by configs/inventory/configs.json",
+        )
+    }));
+    if violations.is_empty() {
         TestResult::Pass
     } else {
-        TestResult::Fail(
-            missing
-                .into_iter()
-                .map(|file| {
-                    violation(
-                        "CONFIGS-002",
-                        "configs.registry.no_undocumented_files",
-                        &file,
-                        "config file is not covered by configs/inventory/configs.json",
-                    )
-                })
-                .collect(),
-        )
+        TestResult::Fail(violations)
     }
 }
 

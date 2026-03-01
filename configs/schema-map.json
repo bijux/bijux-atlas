@@ -1,5 +1,7 @@
 {
   "files": {
+    "configs/CONSUMERS.json": "configs/schema/configs-consumer-map.schema.json",
+    "configs/OWNERS.json": "configs/schema/configs-owner-map.schema.json",
     "configs/_generated/configs-index.json": "configs/schema/configs-index.schema.json",
     "configs/ci/env-contract.json": "configs/contracts/env.schema.json",
     "configs/ci/lanes.json": "configs/contracts/inventory-commands.schema.json",

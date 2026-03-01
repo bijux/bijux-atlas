@@ -532,6 +532,8 @@
     "configs/README.md",
     "configs/INDEX.md",
     "configs/CONTRACT.md",
+    "configs/OWNERS.json",
+    "configs/CONSUMERS.json",
     "configs/consumers-registry.json",
     "configs/owners-registry.json",
     "configs/schema-map.json",
