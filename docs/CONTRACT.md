@@ -3,8 +3,12 @@
 ## Scope
 
 - Governed surface: `docs/` and `docs/CONTRACT.md`.
+- Contributor entrypoint: `docs/README.md`.
 - SSOT = bijux-dev-atlas contracts runner.
 - Effects boundary: this group runs static contracts only.
+- Tracked reader markdown stays under `docs/`.
+- Generated docs evidence stays under `docs/_internal/generated/`.
+- Runtime command output stays under `artifacts/run/<run_id>/`.
 - Non-goals:
 - This document does not replace executable contract checks.
 - This document does not grant manual exception authority.

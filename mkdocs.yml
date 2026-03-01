@@ -9,6 +9,7 @@ site_dir: artifacts/docs/site
 
 exclude_docs: |
   _drafts/**
+  README.md
 
 theme:
   name: material
