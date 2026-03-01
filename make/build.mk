@@ -4,7 +4,7 @@
 build: ## Build required binaries into artifacts/dist/bin
 	@printf '%s\n' "run: $(DEV_ATLAS) build bin --allow-subprocess --allow-write --format json"
 	@mkdir -p $(ARTIFACT_ROOT)/build/$(RUN_ID)
-	@$(DEV_ATLAS) build bin --allow-subprocess --allow-write --format json | tee $(ARTIFACT_ROOT)/build/$(RUN_ID)/report.json >/dev/null
+	@$(DEV_ATLAS) build bin --allow-subprocess --allow-write --format json --out $(ARTIFACT_ROOT)/build/$(RUN_ID)/report.json >/dev/null
 
 build-release: ## Build release bundle inputs (delegates to build bin contract)
 	@$(DEV_ATLAS) build bin --allow-subprocess --allow-write --format json

@@ -330,7 +330,7 @@ fn test_make_art_001_run_scoped_artifacts(ctx: &RunContext) -> TestResult {
     TestResult::Pass
 }
 
-fn test_make_shell_002_no_multi_hop_pipes(ctx: &RunContext) -> TestResult {
+fn test_make_shell_002_no_pipes_or_loops(ctx: &RunContext) -> TestResult {
     let curated = match curated_targets(&ctx.repo_root) {
         Ok(targets) => targets,
         Err(err) => {
@@ -353,20 +353,20 @@ fn test_make_shell_002_no_multi_hop_pipes(ctx: &RunContext) -> TestResult {
             )
         }
     };
-    let pipe_loop_allowlist = ["help", "make-target-list", "test", "test-all", "doctor"];
+    let shell_allowlist = ["help", "make-target-list", "fmt", "lint", "test", "test-all", "doctor"];
     for (target, (file, recipes)) in declared {
         if !curated.contains(&target) {
             continue;
         }
-        if pipe_loop_allowlist.contains(&target.as_str()) {
+        if shell_allowlist.contains(&target.as_str()) {
             continue;
         }
-        if recipes.iter().any(|recipe| count_recipe_pipes(recipe) > 1) {
+        if recipes.iter().any(|recipe| count_recipe_pipes(recipe) > 0) {
             return fail(
                 "MAKE-SHELL-002",
                 "make.shell.no_multi_hop_pipes",
                 &file,
-                format!("target {target} must not use multi-hop shell pipelines"),
+                format!("target {target} must not use shell pipelines"),
             );
         }
         if recipes
@@ -618,7 +618,7 @@ pub(super) fn contracts() -> Vec<Contract> {
                 id: TestId("make.shell.no_multi_hop_pipes".to_string()),
                 title: "curated targets avoid multi-hop shell pipelines",
                 kind: TestKind::Pure,
-                run: test_make_shell_002_no_multi_hop_pipes,
+                run: test_make_shell_002_no_pipes_or_loops,
             }],
         },
         Contract {
@@ -684,7 +684,7 @@ pub(super) fn contract_explain(contract_id: &str) -> Option<&'static str> {
         "MAKE-ART-001" => {
             Some("Curated wrappers must keep artifact output paths scoped by run id.")
         }
-        "MAKE-SHELL-002" => Some("Curated wrappers must avoid multi-hop shell pipelines."),
+        "MAKE-SHELL-002" => Some("Curated wrappers must avoid shell pipelines and loops."),
         "MAKE-ENGINE-001" => {
             Some("Make is a wrapper layer, not the owner of direct infra tool invocations.")
         }

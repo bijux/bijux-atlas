@@ -35,14 +35,11 @@ help: ## Show curated make targets owned by Rust control-plane wrappers
 	@printf '%s\n' "docs: docs/development/tooling/make.md" "contracts: make/CONTRACT.md"
 
 _internal-list: ## Print curated make target names
-	@$(DEV_ATLAS) make surface --format text
+	@$(DEV_ATLAS) make list --format text
 
 _internal-explain: ## Explain curated target ownership (TARGET=<name>)
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make explain TARGET=<name>" >&2; exit 2; }
-	@case " $(CURATED_TARGETS) " in \
-	  *" $${TARGET} "*) echo "$${TARGET}: delegated via make/*.mk wrappers to bijux dev atlas or cargo" ;; \
-	  *) echo "$${TARGET}: not available (unsupported target removed during Rust control-plane cutover)"; exit 2 ;; \
-	esac
+	@$(DEV_ATLAS) make explain "$${TARGET}" --format text
 
 _internal-surface: ## Print make surface and docs pointers for Rust control plane
 	@$(MAKE) -s help
@@ -73,41 +70,41 @@ _internal-lint-make: ## Run make domain checks via control-plane registry
 
 _internal-make-drift-report: ## Generate make drift report artifact from make-domain checks
 	@mkdir -p $(ARTIFACT_ROOT)/make-drift/$(RUN_ID)
-	@$(DEV_ATLAS) check run --domain make --format json | tee $(ARTIFACT_ROOT)/make-drift/$(RUN_ID)/report.json >/dev/null
+	@$(DEV_ATLAS) check run --domain make --format json --out $(ARTIFACT_ROOT)/make-drift/$(RUN_ID)/report.json >/dev/null
 
 k8s-render: ## Render Kubernetes manifests through dev-atlas
 	@printf '%s\n' "run: $(DEV_ATLAS) ops k8s render --profile $(PROFILE) --format json"
 	@mkdir -p $(ARTIFACT_ROOT)/k8s-render/$(RUN_ID)
-	@$(DEV_ATLAS) ops k8s render --profile $(PROFILE) --format json | tee $(ARTIFACT_ROOT)/k8s-render/$(RUN_ID)/report.json >/dev/null
+	@$(DEV_ATLAS) ops k8s render --profile $(PROFILE) --format json --out $(ARTIFACT_ROOT)/k8s-render/$(RUN_ID)/report.json >/dev/null
 
 k8s-validate: ## Validate Kubernetes manifests through dev-atlas
 	@printf '%s\n' "run: $(DEV_ATLAS) ops k8s validate --profile $(PROFILE) --format json"
 	@mkdir -p $(ARTIFACT_ROOT)/k8s-validate/$(RUN_ID)
-	@$(DEV_ATLAS) ops k8s validate --profile $(PROFILE) --format json | tee $(ARTIFACT_ROOT)/k8s-validate/$(RUN_ID)/report.json >/dev/null
+	@$(DEV_ATLAS) ops k8s validate --profile $(PROFILE) --format json --out $(ARTIFACT_ROOT)/k8s-validate/$(RUN_ID)/report.json >/dev/null
 
 stack-up: ## Start local ops stack through dev-atlas
 	@printf '%s\n' "run: $(DEV_ATLAS) ops stack up --profile $(PROFILE) --allow-subprocess --allow-write --format text"
 	@mkdir -p $(ARTIFACT_ROOT)/stack-up/$(RUN_ID)
-	@$(DEV_ATLAS) ops stack up --profile $(PROFILE) --allow-subprocess --allow-write --format text | tee $(ARTIFACT_ROOT)/stack-up/$(RUN_ID)/report.txt >/dev/null
+	@$(DEV_ATLAS) ops stack up --profile $(PROFILE) --allow-subprocess --allow-write --format text --out $(ARTIFACT_ROOT)/stack-up/$(RUN_ID)/report.txt >/dev/null
 
 stack-down: ## Stop local ops stack through dev-atlas
 	@printf '%s\n' "run: $(DEV_ATLAS) ops stack down --profile $(PROFILE) --allow-subprocess --format text"
 	@mkdir -p $(ARTIFACT_ROOT)/stack-down/$(RUN_ID)
-	@$(DEV_ATLAS) ops stack down --profile $(PROFILE) --allow-subprocess --format text | tee $(ARTIFACT_ROOT)/stack-down/$(RUN_ID)/report.txt >/dev/null
+	@$(DEV_ATLAS) ops stack down --profile $(PROFILE) --allow-subprocess --format text --out $(ARTIFACT_ROOT)/stack-down/$(RUN_ID)/report.txt >/dev/null
 
 ops-fast: ## Run fast ops check suite through dev-atlas
 	@printf '%s\n' "run: $(DEV_ATLAS) check run --suite ci_fast --format json"
 	@mkdir -p $(ARTIFACT_ROOT)/ops-fast/$(RUN_ID)
-	@$(DEV_ATLAS) check run --suite ci_fast --format json | tee $(ARTIFACT_ROOT)/ops-fast/$(RUN_ID)/report.json >/dev/null
+	@$(DEV_ATLAS) check run --suite ci_fast --format json --out $(ARTIFACT_ROOT)/ops-fast/$(RUN_ID)/report.json >/dev/null
 
 ops-pr: ## Run PR ops check suite through dev-atlas
 	@printf '%s\n' "run: $(DEV_ATLAS) check run --suite ci_pr --format json"
 	@mkdir -p $(ARTIFACT_ROOT)/ops-pr/$(RUN_ID)
-	@$(DEV_ATLAS) check run --suite ci_pr --format json | tee $(ARTIFACT_ROOT)/ops-pr/$(RUN_ID)/report.json >/dev/null
+	@$(DEV_ATLAS) check run --suite ci_pr --format json --out $(ARTIFACT_ROOT)/ops-pr/$(RUN_ID)/report.json >/dev/null
 
 ops-nightly: ## Run nightly ops check suite through dev-atlas
 	@printf '%s\n' "run: $(DEV_ATLAS) check run --suite ci_nightly --include-internal --include-slow --format json"
 	@mkdir -p $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)
-	@$(DEV_ATLAS) check run --suite ci_nightly --include-internal --include-slow --format json | tee $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)/report.json >/dev/null
+	@$(DEV_ATLAS) check run --suite ci_nightly --include-internal --include-slow --format json --out $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)/report.json >/dev/null
 
 .PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean clean doctor k8s-render k8s-validate lint-make stack-up stack-down ops-fast ops-pr ops-nightly
