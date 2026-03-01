@@ -351,12 +351,20 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
         Contract {
             id: ContractId("ROOT-039".to_string()),
             title: "workspace members match the actual crate surface",
-            tests: vec![TestCase {
-                id: TestId("root.cargo.workspace_members_match".to_string()),
-                title: "workspace member declarations match crate directories and manifests",
-                kind: TestKind::Pure,
-                run: test_root_039_workspace_members_match,
-            }],
+            tests: vec![
+                TestCase {
+                    id: TestId("root.cargo.workspace_members_match".to_string()),
+                    title: "workspace member declarations match crate directories and manifests",
+                    kind: TestKind::Pure,
+                    run: test_root_039_workspace_members_match,
+                },
+                TestCase {
+                    id: TestId("root.cargo.no_unpinned_git_deps".to_string()),
+                    title: "workspace cargo metadata keeps git dependencies pinned by rev or tag",
+                    kind: TestKind::Pure,
+                    run: test_root_039_no_unpinned_git_dependencies,
+                },
+            ],
         },
         Contract {
             id: ContractId("ROOT-040".to_string()),

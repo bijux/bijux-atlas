@@ -63,6 +63,47 @@ fn test_root_039_workspace_members_match(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_root_039_no_unpinned_git_dependencies(ctx: &RunContext) -> TestResult {
+    let cargo = match read_root_text(
+        ctx,
+        "Cargo.toml",
+        "ROOT-039",
+        "root.cargo.no_unpinned_git_deps",
+    ) {
+        Ok(contents) => contents,
+        Err(result) => return result,
+    };
+    let mut violations = Vec::new();
+    for (index, line) in cargo.lines().enumerate() {
+        let trimmed = line.trim();
+        if !trimmed.contains("git = ") {
+            continue;
+        }
+        let pinned = trimmed.contains("rev = ")
+            || trimmed.contains("tag = ")
+            || trimmed.contains("?rev=")
+            || trimmed.contains("?tag=");
+        if pinned {
+            continue;
+        }
+        push_root_violation(
+            &mut violations,
+            "ROOT-039",
+            "root.cargo.no_unpinned_git_deps",
+            Some("Cargo.toml".to_string()),
+            format!(
+                "git dependency must be pinned with `rev` or `tag` (line {})",
+                index + 1
+            ),
+        );
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_root_040_crate_naming(ctx: &RunContext) -> TestResult {
     let mut violations = Vec::new();
     let crates_dir = ctx.repo_root.join("crates");
