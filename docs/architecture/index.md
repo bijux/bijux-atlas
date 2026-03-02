@@ -41,7 +41,7 @@ Describe how Atlas is structured so contributors and operators share one durable
 ## Next steps
 
 Continue with [Operations](../operations/index.md) for runtime procedures or [Development](../development/index.md) for contributor workflows.
-Also review [Glossary](../glossary.md) for canonical terms.
+Also review the glossary for canonical terms.
 Anchor the product model in [What is Bijux Atlas](../product/what-is-bijux-atlas.md).
 
 ## Document Taxonomy
