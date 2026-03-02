@@ -2,7 +2,7 @@
 
 use crate::cli::{
     ArtifactsCommand, ArtifactsCommonArgs, ArtifactsGcArgs, ArtifactsReportCommand,
-    ArtifactsReportDiffArgs, ArtifactsReportScanArgs,
+    ArtifactsReportDiffArgs, ArtifactsReportReadArgs, ArtifactsReportScanArgs,
 };
 use crate::resolve_repo_root;
 use sha2::{Digest, Sha256};
@@ -17,6 +17,9 @@ const RUNS_DIR_NAME: &str = "run";
 const RUN_PIN_FILE: &str = ".pin";
 const REPORT_SCHEMAS_DIR: &str = "configs/contracts/reports";
 const REPORT_BUDGET_PATH: &str = "configs/contracts/report-budget.json";
+const REPORT_SCHEMA_REGISTRY_PATH: &str = "configs/reports/schema-registry.json";
+const REPORT_OWNERSHIP_PATH: &str = "configs/reports/ownership.json";
+const REPORT_CHECK_MAP_PATH: &str = "configs/reports/check-report-map.json";
 
 pub(crate) fn run_artifacts_command(quiet: bool, command: ArtifactsCommand) -> i32 {
     let result: Result<(String, i32), String> = match command {
@@ -93,6 +96,7 @@ fn run_artifacts_report(command: ArtifactsReportCommand) -> Result<(String, i32)
         ArtifactsReportCommand::Inventory(common) => run_artifacts_report_inventory(common),
         ArtifactsReportCommand::Manifest(args) => run_artifacts_report_manifest(args),
         ArtifactsReportCommand::Index(args) => run_artifacts_report_index(args),
+        ArtifactsReportCommand::Read(args) => run_artifacts_report_read(args),
         ArtifactsReportCommand::Diff(args) => run_artifacts_report_diff(args),
         ArtifactsReportCommand::Validate(args) => run_artifacts_report_validate(args),
     }
@@ -101,13 +105,14 @@ fn run_artifacts_report(command: ArtifactsReportCommand) -> Result<(String, i32)
 fn run_artifacts_report_inventory(common: ArtifactsCommonArgs) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let rows = load_report_schema_inventory(&repo_root)?;
+    let owners = load_report_ownership(&repo_root)?;
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "report_schema_inventory",
         "summary": {
             "schema_count": rows.len()
         },
-        "rows": rows.iter().map(report_schema_row_json).collect::<Vec<_>>()
+        "rows": rows.iter().map(|row| report_schema_row_json(row, owners.get(&row.report_id).map(String::as_str))).collect::<Vec<_>>()
     });
     let rendered = crate::emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))
@@ -133,6 +138,43 @@ fn run_artifacts_report_manifest(args: ArtifactsReportScanArgs) -> Result<(Strin
             "inventory_source": REPORT_SCHEMAS_DIR
         },
         "reports": rows.iter().map(report_artifact_row_json).collect::<Vec<_>>()
+    });
+    let rendered = crate::emit_payload(args.common.format, args.common.out.clone(), &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_artifacts_report_read(args: ArtifactsReportReadArgs) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let target = if let Some(path) = args.report_path {
+        path
+    } else {
+        let reports_root = resolve_reports_root(&repo_root, args.reports_root.as_deref());
+        let rows = scan_report_artifacts(&reports_root, &repo_root)?;
+        let Some(first) = rows.first() else {
+            return Err("artifacts report read found no reports".to_string());
+        };
+        repo_root.join(&first.path)
+    };
+    let text = fs::read_to_string(&target)
+        .map_err(|err| format!("read {} failed: {err}", target.display()))?;
+    let value: serde_json::Value = serde_json::from_str(&text)
+        .map_err(|err| format!("parse {} failed: {err}", target.display()))?;
+    let payload = serde_json::json!({
+        "report_id": "artifact-report-reader",
+        "version": 1,
+        "run_id": stable_run_id_for_root(target.parent().unwrap_or(&repo_root)),
+        "inputs": {
+            "report_path": relative_or_absolute(&repo_root, &target)
+        },
+        "summary": {
+            "payload_report_id": value.get("report_id").and_then(serde_json::Value::as_str).unwrap_or("unknown"),
+            "payload_version": value.get("version").and_then(serde_json::Value::as_u64).unwrap_or(0)
+        },
+        "evidence": {
+            "has_summary": value.get("summary").is_some(),
+            "has_evidence": value.get("evidence").is_some()
+        },
+        "report": value
     });
     let rendered = crate::emit_payload(args.common.format, args.common.out.clone(), &payload)?;
     Ok((rendered, 0))
@@ -233,6 +275,9 @@ fn run_artifacts_report_validate(args: ArtifactsReportScanArgs) -> Result<(Strin
     let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
     let reports_root = resolve_reports_root(&repo_root, args.reports_root.as_deref());
     let schema_inventory = load_report_schema_inventory(&repo_root)?;
+    let ownership = load_report_ownership(&repo_root)?;
+    let check_map = load_report_check_map(&repo_root)?;
+    let evidence_levels = load_evidence_levels(&repo_root)?;
     let rows = scan_report_artifacts(&reports_root, &repo_root)?;
     let budget = load_report_budget(&repo_root)?;
     let known_reports = schema_inventory
@@ -245,7 +290,19 @@ fn run_artifacts_report_validate(args: ArtifactsReportScanArgs) -> Result<(Strin
         if !known_reports.contains(row.report_id.as_str()) {
             errors.push(format!(
                 "report `{}` at `{}` is not registered in {}",
-                row.report_id, row.path, REPORT_SCHEMAS_DIR
+                row.report_id, row.path, REPORT_SCHEMA_REGISTRY_PATH
+            ));
+        }
+        if !ownership.contains_key(&row.report_id) {
+            errors.push(format!(
+                "report `{}` at `{}` is missing ownership in {}",
+                row.report_id, row.path, REPORT_OWNERSHIP_PATH
+            ));
+        }
+        if !check_map.contains_key(&row.report_id) {
+            errors.push(format!(
+                "report `{}` at `{}` is not referenced by any check in {}",
+                row.report_id, row.path, REPORT_CHECK_MAP_PATH
             ));
         }
         if !row.has_summary {
@@ -265,6 +322,22 @@ fn run_artifacts_report_validate(args: ArtifactsReportScanArgs) -> Result<(Strin
                 "report `{}` at `{}` exceeds single-report budget {} > {} bytes",
                 row.report_id, row.path, row.size_bytes, budget.max_single_report_bytes
             ));
+        }
+    }
+    for (report_id, levels) in &check_map {
+        if !ownership.contains_key(report_id) {
+            errors.push(format!(
+                "check map references unknown report `{}` not present in {}",
+                report_id, REPORT_OWNERSHIP_PATH
+            ));
+        }
+        for level in levels {
+            if !evidence_levels.contains(level) {
+                errors.push(format!(
+                    "report `{}` uses unknown evidence level `{}` in {}",
+                    report_id, level, REPORT_CHECK_MAP_PATH
+                ));
+            }
         }
     }
     if rows.len() > budget.max_report_count {
@@ -295,7 +368,9 @@ fn run_artifacts_report_validate(args: ArtifactsReportScanArgs) -> Result<(Strin
             "error_count": errors.len()
         },
         "evidence": {
-            "known_report_schemas": schema_inventory.len()
+            "known_report_schemas": schema_inventory.len(),
+            "ownership_entries": ownership.len(),
+            "check_map_reports": check_map.len()
         },
         "errors": errors,
         "reports": rows.iter().map(report_artifact_row_json).collect::<Vec<_>>()
@@ -423,6 +498,43 @@ fn gc_artifact_runs(runs_root: &Path, keep_last: usize) -> Result<ArtifactGcSumm
 }
 
 fn load_report_schema_inventory(repo_root: &Path) -> Result<Vec<ReportSchemaRow>, String> {
+    let registry_path = repo_root.join(REPORT_SCHEMA_REGISTRY_PATH);
+    if registry_path.exists() {
+        let value: serde_json::Value = serde_json::from_str(
+            &fs::read_to_string(&registry_path)
+                .map_err(|err| format!("read {} failed: {err}", registry_path.display()))?,
+        )
+        .map_err(|err| format!("parse {} failed: {err}", registry_path.display()))?;
+        let mut rows = value
+            .get("reports")
+            .and_then(serde_json::Value::as_array)
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .map(|row| ReportSchemaRow {
+                schema_path: row
+                    .get("schema_path")
+                    .and_then(serde_json::Value::as_str)
+                    .unwrap_or_default()
+                    .to_string(),
+                report_id: row
+                    .get("report_id")
+                    .and_then(serde_json::Value::as_str)
+                    .unwrap_or_default()
+                    .to_string(),
+                version: row
+                    .get("version")
+                    .and_then(serde_json::Value::as_u64)
+                    .unwrap_or(0),
+            })
+            .collect::<Vec<_>>();
+        rows.sort_by(|a, b| {
+            a.report_id
+                .cmp(&b.report_id)
+                .then_with(|| a.schema_path.cmp(&b.schema_path))
+        });
+        return Ok(rows);
+    }
     let mut rows = Vec::new();
     for path in walk_json_files(&repo_root.join(REPORT_SCHEMAS_DIR))? {
         let value: serde_json::Value = serde_json::from_str(
@@ -454,6 +566,80 @@ fn load_report_schema_inventory(repo_root: &Path) -> Result<Vec<ReportSchemaRow>
             .then_with(|| a.schema_path.cmp(&b.schema_path))
     });
     Ok(rows)
+}
+
+fn load_report_ownership(repo_root: &Path) -> Result<BTreeMap<String, String>, String> {
+    let value = load_json(repo_root, REPORT_OWNERSHIP_PATH)?;
+    let mut rows = BTreeMap::new();
+    for report in value
+        .get("reports")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+    {
+        let Some(report_id) = report.get("report_id").and_then(serde_json::Value::as_str) else {
+            continue;
+        };
+        let Some(owner) = report.get("owner").and_then(serde_json::Value::as_str) else {
+            continue;
+        };
+        rows.insert(report_id.to_string(), owner.to_string());
+    }
+    Ok(rows)
+}
+
+fn load_report_check_map(repo_root: &Path) -> Result<BTreeMap<String, Vec<String>>, String> {
+    let value = load_json(repo_root, REPORT_CHECK_MAP_PATH)?;
+    let mut rows = BTreeMap::<String, Vec<String>>::new();
+    for mapping in value
+        .get("mappings")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+    {
+        let Some(report_id) = mapping.get("report_id").and_then(serde_json::Value::as_str) else {
+            continue;
+        };
+        let Some(level) = mapping
+            .get("evidence_level")
+            .and_then(serde_json::Value::as_str)
+        else {
+            continue;
+        };
+        rows.entry(report_id.to_string())
+            .or_default()
+            .push(level.to_string());
+    }
+    for levels in rows.values_mut() {
+        levels.sort();
+        levels.dedup();
+    }
+    Ok(rows)
+}
+
+fn load_evidence_levels(repo_root: &Path) -> Result<BTreeSet<String>, String> {
+    let value = load_json(repo_root, "ops/report/evidence-levels.json")?;
+    Ok(value
+        .get("levels")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|row| {
+            row.get("id")
+                .and_then(serde_json::Value::as_str)
+                .map(ToString::to_string)
+        })
+        .collect())
+}
+
+fn load_json(repo_root: &Path, rel: &str) -> Result<serde_json::Value, String> {
+    let path = repo_root.join(rel);
+    serde_json::from_str(
+        &fs::read_to_string(&path)
+            .map_err(|err| format!("read {} failed: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("parse {} failed: {err}", path.display()))
 }
 
 fn scan_report_artifacts(
@@ -570,11 +756,12 @@ fn load_report_budget(repo_root: &Path) -> Result<ReportBudget, String> {
     })
 }
 
-fn report_schema_row_json(row: &ReportSchemaRow) -> serde_json::Value {
+fn report_schema_row_json(row: &ReportSchemaRow, owner: Option<&str>) -> serde_json::Value {
     serde_json::json!({
         "schema_path": row.schema_path,
         "report_id": row.report_id,
-        "version": row.version
+        "version": row.version,
+        "owner": owner.unwrap_or("")
     })
 }
 

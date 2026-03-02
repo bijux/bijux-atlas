@@ -1313,6 +1313,39 @@ budget_ms = 1000
 visibility = "internal"
 
 [[checks]]
+id = "checks_reports_schema_registry_ssot"
+domain = "ops"
+title = "report schema registry matches the governed schema surface"
+docs = "docs/reference/reports/index.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_reports_ownership_registry_valid"
+domain = "ops"
+title = "report ownership registry points to valid schemas and docs"
+docs = "docs/reference/reports/index.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_reports_check_map_valid"
+domain = "ops"
+title = "check to report mappings use known reports and evidence levels"
+docs = "docs/reference/reports/index.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
 id = "checks_workflows_rust_toolchain_matches_repo_pin"
 domain = "workflows"
 title = "rust workflow pin matches rust-toolchain.toml"

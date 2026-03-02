@@ -41,6 +41,7 @@ pub enum ArtifactsReportCommand {
     Inventory(ArtifactsCommonArgs),
     Manifest(ArtifactsReportScanArgs),
     Index(ArtifactsReportScanArgs),
+    Read(ArtifactsReportReadArgs),
     Diff(ArtifactsReportDiffArgs),
     Validate(ArtifactsReportScanArgs),
 }
@@ -61,6 +62,16 @@ pub struct ArtifactsReportDiffArgs {
     pub baseline_root: PathBuf,
     #[arg(long)]
     pub candidate_root: PathBuf,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ArtifactsReportReadArgs {
+    #[command(flatten)]
+    pub common: ArtifactsCommonArgs,
+    #[arg(long)]
+    pub report_path: Option<PathBuf>,
+    #[arg(long)]
+    pub reports_root: Option<PathBuf>,
 }
 
 #[derive(Subcommand, Debug)]

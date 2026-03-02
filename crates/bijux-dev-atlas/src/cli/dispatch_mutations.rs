@@ -46,6 +46,7 @@ fn force_json_artifacts(command: &mut ArtifactsCommand) {
             | crate::cli::ArtifactsReportCommand::Validate(args) => {
                 args.common.format = FormatArg::Json
             }
+            crate::cli::ArtifactsReportCommand::Read(args) => args.common.format = FormatArg::Json,
             crate::cli::ArtifactsReportCommand::Diff(args) => args.common.format = FormatArg::Json,
         },
     }
@@ -421,6 +422,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 crate::cli::ArtifactsReportCommand::Manifest(args)
                 | crate::cli::ArtifactsReportCommand::Index(args)
                 | crate::cli::ArtifactsReportCommand::Validate(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+                crate::cli::ArtifactsReportCommand::Read(args) => {
                     args.common.repo_root = Some(root.clone())
                 }
                 crate::cli::ArtifactsReportCommand::Diff(args) => {

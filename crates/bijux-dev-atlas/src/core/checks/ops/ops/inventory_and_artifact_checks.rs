@@ -249,3 +249,189 @@ fn checks_ops_runtime_output_roots_under_ops_absent(
     }
     Ok(violations)
 }
+
+fn checks_reports_schema_registry_ssot(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let registry_rel = Path::new("configs/reports/schema-registry.json");
+    let registry_path = ctx.repo_root.join(registry_rel);
+    let text = fs::read_to_string(&registry_path)
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", registry_path.display())))?;
+    let value: serde_json::Value = serde_json::from_str(&text)
+        .map_err(|err| CheckError::Failed(format!("parse {}: {err}", registry_path.display())))?;
+    let expected = value
+        .get("reports")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|row| {
+            (
+                row.get("report_id")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default()
+                    .to_string(),
+                row.get("schema_path")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default()
+                    .to_string(),
+            )
+        })
+        .collect::<Vec<_>>();
+    let mut actual = walk_files(&ctx.repo_root.join("configs/contracts/reports"))
+        .into_iter()
+        .filter_map(|path| {
+            let rel = path.strip_prefix(ctx.repo_root).ok()?.to_path_buf();
+            if rel.extension().and_then(|v| v.to_str()) != Some("json") {
+                return None;
+            }
+            let text = fs::read_to_string(&path).ok()?;
+            let value: serde_json::Value = serde_json::from_str(&text).ok()?;
+            Some((
+                value.get("properties")
+                    .and_then(|v| v.get("report_id"))
+                    .and_then(|v| v.get("const"))
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default()
+                    .to_string(),
+                rel.display().to_string(),
+            ))
+        })
+        .collect::<Vec<_>>();
+    actual.sort();
+    let mut expected_sorted = expected;
+    expected_sorted.sort();
+    if actual == expected_sorted {
+        return Ok(Vec::new());
+    }
+    Ok(vec![violation(
+        "REPORT_SCHEMA_REGISTRY_DRIFT",
+        format!(
+            "report schema registry drift detected: expected={expected_sorted:?} actual={actual:?}"
+        ),
+        "update configs/reports/schema-registry.json to match configs/contracts/reports/*.schema.json",
+        Some(registry_rel),
+    )])
+}
+
+fn checks_reports_ownership_registry_valid(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let registry_rel = Path::new("configs/reports/ownership.json");
+    let registry_path = ctx.repo_root.join(registry_rel);
+    let text = fs::read_to_string(&registry_path)
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", registry_path.display())))?;
+    let value: serde_json::Value = serde_json::from_str(&text)
+        .map_err(|err| CheckError::Failed(format!("parse {}: {err}", registry_path.display())))?;
+    let mut violations = Vec::new();
+    let mut report_ids = BTreeSet::new();
+    for row in value
+        .get("reports")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+    {
+        let report_id = row
+            .get("report_id")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        let schema_path = row
+            .get("schema_path")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        let docs_path = row
+            .get("docs_path")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        if !report_ids.insert(report_id.to_string()) {
+            violations.push(violation(
+                "REPORT_OWNERSHIP_DUPLICATE_REPORT_ID",
+                format!("duplicate report ownership entry for `{report_id}`"),
+                "keep exactly one ownership entry per report_id",
+                Some(registry_rel),
+            ));
+        }
+        for path in [schema_path, docs_path] {
+            let rel = Path::new(path);
+            if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
+                violations.push(violation(
+                    "REPORT_OWNERSHIP_PATH_MISSING",
+                    format!("report ownership path does not exist: `{}`", rel.display()),
+                    "fix schema_path/docs_path in configs/reports/ownership.json",
+                    Some(registry_rel),
+                ));
+            }
+        }
+    }
+    Ok(violations)
+}
+
+fn checks_reports_check_map_valid(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let map_rel = Path::new("configs/reports/check-report-map.json");
+    let ownership_rel = Path::new("configs/reports/ownership.json");
+    let levels_rel = Path::new("ops/report/evidence-levels.json");
+    let map_json: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(ctx.repo_root.join(map_rel))
+            .map_err(|err| CheckError::Failed(format!("read {}: {err}", map_rel.display())))?,
+    )
+    .map_err(|err| CheckError::Failed(format!("parse {} failed: {err}", map_rel.display())))?;
+    let ownership_json: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(ctx.repo_root.join(ownership_rel))
+            .map_err(|err| CheckError::Failed(format!("read {}: {err}", ownership_rel.display())))?,
+    )
+    .map_err(|err| CheckError::Failed(format!("parse {} failed: {err}", ownership_rel.display())))?;
+    let levels_json: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(ctx.repo_root.join(levels_rel))
+            .map_err(|err| CheckError::Failed(format!("read {}: {err}", levels_rel.display())))?,
+    )
+    .map_err(|err| CheckError::Failed(format!("parse {} failed: {err}", levels_rel.display())))?;
+    let report_ids = ownership_json
+        .get("reports")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|row| row.get("report_id").and_then(|v| v.as_str()).map(ToString::to_string))
+        .collect::<BTreeSet<_>>();
+    let known_levels = levels_json
+        .get("levels")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|row| row.get("id").and_then(|v| v.as_str()).map(ToString::to_string))
+        .collect::<BTreeSet<_>>();
+    let mut violations = Vec::new();
+    for row in map_json
+        .get("mappings")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+    {
+        let report_id = row
+            .get("report_id")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        let evidence_level = row
+            .get("evidence_level")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        if !report_ids.contains(report_id) {
+            violations.push(violation(
+                "REPORT_CHECK_MAP_UNKNOWN_REPORT_ID",
+                format!("check-report mapping references unknown report_id `{report_id}`"),
+                "add the report to configs/reports/ownership.json or fix the mapping",
+                Some(map_rel),
+            ));
+        }
+        if !known_levels.contains(evidence_level) {
+            violations.push(violation(
+                "REPORT_CHECK_MAP_UNKNOWN_EVIDENCE_LEVEL",
+                format!("unknown evidence level `{evidence_level}` in check-report mapping"),
+                "use an evidence level declared in ops/report/evidence-levels.json",
+                Some(map_rel),
+            ));
+        }
+    }
+    Ok(violations)
+}

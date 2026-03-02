@@ -243,6 +243,11 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_root_artifacts_bin_binaries_executable_and_version_printable" => {
             Some(check_artifacts_bin_binaries_executable_and_version_printable)
         }
+        "checks_reports_schema_registry_ssot" => Some(checks_reports_schema_registry_ssot),
+        "checks_reports_ownership_registry_valid" => {
+            Some(checks_reports_ownership_registry_valid)
+        }
+        "checks_reports_check_map_valid" => Some(checks_reports_check_map_valid),
         _ => None,
     }
 }
@@ -355,6 +360,9 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_repo_registry_order_deterministic",
         "checks_repo_suite_includes_p0_checks",
         "checks_root_artifacts_bin_binaries_executable_and_version_printable",
+        "checks_reports_schema_registry_ssot",
+        "checks_reports_ownership_registry_valid",
+        "checks_reports_check_map_valid",
         "checks_root_forbidden_retired_directories_absent",
         "checks_root_makefile_single_include_entrypoint",
         "checks_makefiles_root_includes_sorted",
