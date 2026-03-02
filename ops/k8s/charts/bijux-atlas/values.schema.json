@@ -26,7 +26,36 @@
       "description": "Chart values key `cache` from SSOT contract."
     },
     "catalog": {
-      "description": "Chart values key `catalog` from SSOT contract."
+      "additionalProperties": false,
+      "properties": {
+        "endpoint": {
+          "pattern": "^(|https?://.+)$",
+          "type": "string"
+        },
+        "etagEnabled": {
+          "type": "boolean"
+        },
+        "backoffBaseMs": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "breakerFailureThreshold": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "breakerOpenMs": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "endpoint",
+        "etagEnabled",
+        "backoffBaseMs",
+        "breakerFailureThreshold",
+        "breakerOpenMs"
+      ],
+      "type": "object"
     },
     "catalogPublishJob": {
       "description": "Chart values key `catalogPublishJob` from SSOT contract."
@@ -141,7 +170,30 @@
       "description": "Chart values key `serviceMonitor` from SSOT contract."
     },
     "store": {
-      "description": "Chart values key `store` from SSOT contract."
+      "additionalProperties": false,
+      "properties": {
+        "endpoint": {
+          "pattern": "^(|https?://.+)$",
+          "type": "string"
+        },
+        "s3PresignedBaseUrl": {
+          "pattern": "^(|https?://.+)$",
+          "type": "string"
+        },
+        "credentialsSecretName": {
+          "type": "string"
+        },
+        "manageCredentialsSecret": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "endpoint",
+        "s3PresignedBaseUrl",
+        "credentialsSecretName",
+        "manageCredentialsSecret"
+      ],
+      "type": "object"
     },
     "terminationGracePeriodSeconds": {
       "description": "Chart values key `terminationGracePeriodSeconds` from SSOT contract."
