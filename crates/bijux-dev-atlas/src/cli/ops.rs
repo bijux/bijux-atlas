@@ -453,12 +453,18 @@ pub struct OpsHelmEnvArgs {
     pub chart: PathBuf,
     #[arg(long = "values")]
     pub values_files: Vec<PathBuf>,
+    #[arg(long = "set")]
+    pub set_overrides: Vec<String>,
     #[arg(long)]
     pub release_name: Option<String>,
     #[arg(long, default_value_t = false)]
     pub fail_on_empty: bool,
     #[arg(long, default_value_t = false)]
     pub include_names: bool,
+    #[arg(long, default_value_t = 30)]
+    pub timeout_seconds: u64,
+    #[arg(long, default_value_t = false)]
+    pub verbose: bool,
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]

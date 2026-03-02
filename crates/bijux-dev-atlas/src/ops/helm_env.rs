@@ -2,7 +2,8 @@
 
 use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
-use std::process::Command;
+use std::process::{Command, Stdio};
+use std::time::{Duration, Instant};
 
 use serde::{Deserialize, Serialize};
 
@@ -26,6 +27,7 @@ pub struct HelmEnvReport {
     pub inputs: HelmEnvInputs,
     pub env_keys: Vec<String>,
     pub config_maps: Vec<ConfigMapEnvRow>,
+    pub helm: HelmInvocationReport,
 }
 
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
@@ -34,6 +36,29 @@ pub struct HelmEnvInputs {
     pub values_files: Vec<String>,
     pub release_name: String,
     pub helm_binary: String,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+pub struct HelmInvocationReport {
+    pub status: String,
+    pub debug_enabled: bool,
+    pub timeout_seconds: u64,
+    pub stderr: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct RenderChartOptions {
+    pub set_overrides: Vec<String>,
+    pub timeout_seconds: u64,
+    pub debug: bool,
+}
+
+#[derive(Debug, Clone)]
+pub struct RenderedChart {
+    pub yaml_docs: Vec<YamlDoc>,
+    pub stderr: String,
+    pub debug_enabled: bool,
+    pub timeout_seconds: u64,
 }
 
 #[derive(Debug, Deserialize)]
@@ -84,13 +109,74 @@ pub fn parse_yaml_stream(text: &str, source: &str) -> Result<Vec<YamlDoc>, Strin
     Ok(docs)
 }
 
+fn run_helm_with_timeout(
+    command: &mut Command,
+    timeout_seconds: u64,
+) -> Result<std::process::Output, String> {
+    let binary = command.get_program().to_string_lossy().to_string();
+    let mut child = command
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .map_err(|err| format!("failed to start `{binary}`: {err}"))?;
+    let timeout = Duration::from_secs(timeout_seconds.max(1));
+    let started = Instant::now();
+    loop {
+        match child.try_wait() {
+            Ok(Some(_)) => {
+                return child
+                    .wait_with_output()
+                    .map_err(|err| format!("failed to collect helm output: {err}"));
+            }
+            Ok(None) => {
+                if started.elapsed() >= timeout {
+                    let _ = child.kill();
+                    let _ = child.wait();
+                    return Err(format!(
+                        "helm template timed out after {}s",
+                        timeout_seconds.max(1)
+                    ));
+                }
+                std::thread::sleep(Duration::from_millis(50));
+            }
+            Err(err) => {
+                let _ = child.kill();
+                let _ = child.wait();
+                return Err(format!("failed to poll helm process: {err}"));
+            }
+        }
+    }
+}
+
 pub fn render_chart(
     repo_root: &Path,
     helm_binary: &str,
     chart_dir: &Path,
     values_files: &[PathBuf],
     release_name: &str,
-) -> Result<Vec<YamlDoc>, String> {
+) -> Result<RenderedChart, String> {
+    render_chart_with_options(
+        repo_root,
+        helm_binary,
+        chart_dir,
+        values_files,
+        release_name,
+        &RenderChartOptions {
+            set_overrides: Vec::new(),
+            timeout_seconds: 30,
+            debug: false,
+        },
+    )
+}
+
+pub fn render_chart_with_options(
+    repo_root: &Path,
+    helm_binary: &str,
+    chart_dir: &Path,
+    values_files: &[PathBuf],
+    release_name: &str,
+    options: &RenderChartOptions,
+) -> Result<RenderedChart, String> {
     if !chart_dir.exists() {
         return Err(format!(
             "chart path does not exist: {}",
@@ -112,8 +198,14 @@ pub fn render_chart(
         .arg("template")
         .arg(release_name)
         .arg(chart_dir);
+    if options.debug {
+        command.arg("--debug");
+    }
     for values_file in values_files {
         command.arg("-f").arg(values_file);
+    }
+    for override_value in &options.set_overrides {
+        command.arg("--set").arg(override_value);
     }
     command.env_clear();
     for key in [
@@ -123,9 +215,7 @@ pub fn render_chart(
             command.env(key, value);
         }
     }
-    let output = command
-        .output()
-        .map_err(|err| format!("failed to start `{helm_binary}`: {err}"))?;
+    let output = run_helm_with_timeout(&mut command, options.timeout_seconds)?;
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
         return Err(format!(
@@ -135,7 +225,13 @@ pub fn render_chart(
         ));
     }
     let stdout = String::from_utf8_lossy(&output.stdout);
-    parse_yaml_stream(&stdout, &format!("{} stdout", helm_binary))
+    let yaml_docs = parse_yaml_stream(&stdout, &format!("{} stdout", helm_binary))?;
+    Ok(RenderedChart {
+        yaml_docs,
+        stderr: String::from_utf8_lossy(&output.stderr).trim().to_string(),
+        debug_enabled: options.debug,
+        timeout_seconds: options.timeout_seconds.max(1),
+    })
 }
 
 fn config_map_name(doc: &YamlDoc) -> Option<String> {
@@ -216,6 +312,7 @@ pub fn build_report(
     env_keys: &BTreeSet<String>,
     config_maps: &[ConfigMapEnvRow],
     include_names: bool,
+    helm: HelmInvocationReport,
 ) -> HelmEnvReport {
     let mut config_maps = config_maps.to_vec();
     if !include_names {
@@ -235,6 +332,154 @@ pub fn build_report(
         },
         env_keys: env_keys.iter().cloned().collect(),
         config_maps,
+        helm,
+    }
+}
+
+pub fn validate_report_schema_file(schema_path: &Path) -> Result<(), String> {
+    let schema_text = std::fs::read_to_string(schema_path)
+        .map_err(|err| format!("failed to read {}: {err}", schema_path.display()))?;
+    let schema_json: serde_json::Value = serde_json::from_str(&schema_text)
+        .map_err(|err| format!("failed to parse {}: {err}", schema_path.display()))?;
+    let required = schema_json
+        .get("required")
+        .and_then(|value| value.as_array())
+        .ok_or_else(|| format!("{} must declare required array", schema_path.display()))?;
+    for field in ["schema_version", "kind", "inputs", "env_keys", "config_maps", "helm"] {
+        if !required.iter().any(|value| value.as_str() == Some(field)) {
+            return Err(format!("{} must require `{field}`", schema_path.display()));
+        }
+    }
+    Ok(())
+}
+
+pub fn validate_report_value(report: &serde_json::Value, schema_path: &Path) -> Result<(), String> {
+    validate_report_schema_file(schema_path)?;
+    let obj = report
+        .as_object()
+        .ok_or_else(|| "helm-env report must be a JSON object".to_string())?;
+    if obj.get("schema_version").and_then(|value| value.as_u64()) != Some(1) {
+        return Err("helm-env report must declare schema_version=1".to_string());
+    }
+    if obj.get("kind").and_then(|value| value.as_str()) != Some("ops_helm_env") {
+        return Err("helm-env report must declare kind=ops_helm_env".to_string());
+    }
+    let inputs = obj
+        .get("inputs")
+        .and_then(|value| value.as_object())
+        .ok_or_else(|| "helm-env report must include object inputs".to_string())?;
+    for field in ["chart_dir", "release_name", "helm_binary"] {
+        if inputs
+            .get(field)
+            .and_then(|value| value.as_str())
+            .is_none_or(|value| value.is_empty())
+        {
+            return Err(format!("helm-env report inputs.{field} must be a non-empty string"));
+        }
+    }
+    if inputs
+        .get("values_files")
+        .and_then(|value| value.as_array())
+        .is_none()
+    {
+        return Err("helm-env report inputs.values_files must be an array".to_string());
+    }
+    if obj.get("env_keys").and_then(|value| value.as_array()).is_none() {
+        return Err("helm-env report env_keys must be an array".to_string());
+    }
+    if obj
+        .get("config_maps")
+        .and_then(|value| value.as_array())
+        .is_none()
+    {
+        return Err("helm-env report config_maps must be an array".to_string());
+    }
+    let helm = obj
+        .get("helm")
+        .and_then(|value| value.as_object())
+        .ok_or_else(|| "helm-env report must include object helm".to_string())?;
+    if helm
+        .get("status")
+        .and_then(|value| value.as_str())
+        .is_none_or(|value| value != "ok")
+    {
+        return Err("helm-env report helm.status must be `ok`".to_string());
+    }
+    if helm
+        .get("timeout_seconds")
+        .and_then(|value| value.as_u64())
+        .is_none()
+    {
+        return Err("helm-env report helm.timeout_seconds must be an integer".to_string());
+    }
+    if helm
+        .get("debug_enabled")
+        .and_then(|value| value.as_bool())
+        .is_none()
+    {
+        return Err("helm-env report helm.debug_enabled must be a boolean".to_string());
+    }
+    Ok(())
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+pub struct HelmEnvSubsetReport {
+    pub schema_version: u64,
+    pub kind: String,
+    pub inputs: HelmEnvInputs,
+    pub extra: Vec<String>,
+    pub missing: Vec<String>,
+    pub counts: HelmEnvSubsetCounts,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+pub struct HelmEnvSubsetCounts {
+    pub emitted: usize,
+    pub allowed: usize,
+    pub extra: usize,
+    pub missing: usize,
+}
+
+pub fn load_allowlist(path: &Path) -> Result<BTreeSet<String>, String> {
+    let text = std::fs::read_to_string(path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let json: serde_json::Value = serde_json::from_str(&text)
+        .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    let Some(values) = json.get("allowed_env").and_then(|value| value.as_array()) else {
+        return Err(format!("{} must declare allowed_env array", path.display()));
+    };
+    Ok(values
+        .iter()
+        .filter_map(|value| value.as_str())
+        .map(str::to_string)
+        .collect())
+}
+
+pub fn build_subset_report(
+    env_keys: &BTreeSet<String>,
+    allowed_env: &BTreeSet<String>,
+    inputs: HelmEnvInputs,
+) -> HelmEnvSubsetReport {
+    let extra = env_keys
+        .difference(allowed_env)
+        .cloned()
+        .collect::<Vec<_>>();
+    let missing = allowed_env
+        .difference(env_keys)
+        .cloned()
+        .collect::<Vec<_>>();
+    HelmEnvSubsetReport {
+        schema_version: 1,
+        kind: "ops_helm_env_subset".to_string(),
+        inputs,
+        counts: HelmEnvSubsetCounts {
+            emitted: env_keys.len(),
+            allowed: allowed_env.len(),
+            extra: extra.len(),
+            missing: missing.len(),
+        },
+        extra,
+        missing,
     }
 }
 
@@ -359,8 +604,100 @@ mod tests {
             &keys,
             &rows,
             false,
+            HelmInvocationReport {
+                status: "ok".to_string(),
+                debug_enabled: false,
+                timeout_seconds: 30,
+                stderr: String::new(),
+            },
         );
         assert!(report.config_maps.is_empty());
         assert_eq!(report.env_keys, vec!["ATLAS_ONE".to_string()]);
+    }
+
+    #[test]
+    fn load_allowlist_reports_missing_file_clearly() {
+        let error = load_allowlist(Path::new("missing-allowlist.json")).expect_err("missing file");
+        assert!(error.contains("failed to read"));
+        assert!(error.contains("missing-allowlist.json"));
+    }
+
+    #[test]
+    fn render_chart_reports_missing_binary_clearly() {
+        let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .expect("workspace")
+            .parent()
+            .expect("repo")
+            .to_path_buf();
+        let error = render_chart(
+            &repo_root,
+            "definitely-missing-helm-binary",
+            &repo_root.join("ops/k8s/charts/bijux-atlas"),
+            &[repo_root.join("ops/k8s/charts/bijux-atlas/values.yaml")],
+            "bijux-atlas",
+        )
+        .expect_err("missing helm");
+        assert!(error.contains("failed to start"));
+    }
+
+    #[test]
+    fn render_chart_reports_missing_chart_path_clearly() {
+        let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .expect("workspace")
+            .parent()
+            .expect("repo")
+            .to_path_buf();
+        let error = render_chart(
+            &repo_root,
+            "helm",
+            Path::new("missing-chart"),
+            &[repo_root.join("ops/k8s/charts/bijux-atlas/values.yaml")],
+            "bijux-atlas",
+        )
+        .expect_err("missing chart");
+        assert!(error.contains("chart path does not exist"));
+    }
+
+    #[test]
+    fn load_allowlist_reports_invalid_json_clearly() {
+        let fixture = std::env::temp_dir().join("bijux-helm-env-invalid-allowlist.json");
+        std::fs::write(&fixture, "{not-json").expect("write fixture");
+        let error = load_allowlist(&fixture).expect_err("invalid json");
+        assert!(error.contains("failed to parse"));
+        let _ = std::fs::remove_file(&fixture);
+    }
+
+    #[test]
+    fn validates_report_against_schema_shape() {
+        let docs = parse_fixture(
+            "apiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: bijux-atlas-config\ndata:\n  ATLAS_ONE: \"1\"\n",
+        );
+        let rows = extract_configmap_rows(&docs, "bijux-atlas");
+        let keys = extract_configmap_env_keys(&docs, "bijux-atlas");
+        let report = build_report(
+            Path::new("ops/k8s/charts/bijux-atlas"),
+            &[PathBuf::from("ops/k8s/charts/bijux-atlas/values.yaml")],
+            "bijux-atlas",
+            "helm",
+            &keys,
+            &rows,
+            true,
+            HelmInvocationReport {
+                status: "ok".to_string(),
+                debug_enabled: false,
+                timeout_seconds: 30,
+                stderr: String::new(),
+            },
+        );
+        let report_value = serde_json::to_value(report).expect("report json");
+        let schema_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .expect("workspace")
+            .parent()
+            .expect("repo")
+            .join("configs/contracts/reports/helm-env.schema.json");
+        validate_report_value(&report_value, &schema_path).expect("schema validation");
     }
 }

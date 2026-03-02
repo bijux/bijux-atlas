@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/contracts/reports/helm-env.schema.json",
+  "title": "helm-env report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "inputs",
+    "env_keys",
+    "config_maps",
+    "helm"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "kind": {
+      "type": "string",
+      "const": "ops_helm_env"
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "chart_dir",
+        "values_files",
+        "release_name",
+        "helm_binary"
+      ],
+      "properties": {
+        "chart_dir": {
+          "type": "string",
+          "minLength": 1
+        },
+        "values_files": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "release_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "helm_binary": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "env_keys": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(ATLAS|BIJUX)_[A-Z0-9_]+$"
+      }
+    },
+    "config_maps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "config_map_name",
+          "env_keys"
+        ],
+        "properties": {
+          "config_map_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "env_keys": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^(ATLAS|BIJUX)_[A-Z0-9_]+$"
+            }
+          }
+        }
+      }
+    },
+    "helm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "debug_enabled",
+        "timeout_seconds",
+        "stderr"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "const": "ok"
+        },
+        "debug_enabled": {
+          "type": "boolean"
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "stderr": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
