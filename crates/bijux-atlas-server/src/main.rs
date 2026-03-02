@@ -9,7 +9,6 @@ use bijux_atlas_server::{
 };
 use clap::Parser;
 use opentelemetry::trace::TracerProvider as _;
-use redis::AsyncCommands;
 use std::path::PathBuf;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
@@ -72,11 +71,8 @@ async fn coordinated_startup_warmup_datasets(
     for ds in datasets {
         let key = format!("atlas:warmup:{}", ds.canonical_string());
         let lock_val = format!("{pod_id}:{}", chrono_like_millis());
-        let set_res: Result<bool, redis::RedisError> = conn.set_nx(&key, lock_val).await;
-        match set_res {
+        match try_claim_startup_warmup_lock(&mut conn, &key, &lock_val, lock_ttl_secs).await {
             Ok(true) => {
-                let _: Result<(), redis::RedisError> =
-                    conn.expire(&key, lock_ttl_secs as i64).await;
                 claimed.push(ds);
             }
             Ok(false) => {}
@@ -88,11 +84,45 @@ async fn coordinated_startup_warmup_datasets(
     claimed
 }
 
+async fn try_claim_startup_warmup_lock(
+    conn: &mut redis::aio::MultiplexedConnection,
+    key: &str,
+    lock_val: &str,
+    lock_ttl_secs: u64,
+) -> Result<bool, redis::RedisError> {
+    let response: Option<String> = redis::cmd("SET")
+        .arg(key)
+        .arg(lock_val)
+        .arg("NX")
+        .arg("EX")
+        .arg(lock_ttl_secs)
+        .query_async(conn)
+        .await?;
+    Ok(response.as_deref() == Some("OK"))
+}
+
 fn chrono_like_millis() -> u128 {
     use std::time::{SystemTime, UNIX_EPOCH};
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map_or(0, |d| d.as_millis())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::try_claim_startup_warmup_lock;
+
+    #[test]
+    fn startup_lock_uses_atomic_set_command_shape() {
+        let _ = try_claim_startup_warmup_lock;
+        let source = std::fs::read_to_string(
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src/main.rs"),
+        )
+        .expect("read main.rs");
+        assert!(source.contains("redis::cmd(\"SET\")"));
+        assert!(source.contains(".arg(\"NX\")"));
+        assert!(source.contains(".arg(\"EX\")"));
+    }
 }
 
 async fn wait_for_shutdown_signal() -> Result<(), String> {

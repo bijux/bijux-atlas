@@ -378,6 +378,52 @@ fn test_runtime_005_api_surface_snapshot(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_runtime_006_redis_lock_acquisition_is_atomic(ctx: &RunContext) -> TestResult {
+    let runtime_root = ctx.repo_root.join("crates/bijux-atlas-server/src");
+    let files = match collect_rs_files(&runtime_root) {
+        Ok(files) => files,
+        Err(err) => {
+            return TestResult::Fail(vec![push_violation(
+                "RUNTIME-006",
+                "runtime.redis_locks.atomic_set",
+                Some(relative_to_repo(&ctx.repo_root, &runtime_root)),
+                err,
+            )]);
+        }
+    };
+    let mut violations = Vec::new();
+    for file in files {
+        let rel = relative_to_repo(&ctx.repo_root, &file);
+        let hits = match file_contains_any(&file, &["set_nx(", ".expire(&key", ".expire (&key"]) {
+            Ok(hits) => hits,
+            Err(err) => {
+                violations.push(push_violation(
+                    "RUNTIME-006",
+                    "runtime.redis_locks.atomic_set",
+                    Some(rel.clone()),
+                    err,
+                ));
+                continue;
+            }
+        };
+        for hit in hits {
+            violations.push(push_violation(
+                "RUNTIME-006",
+                "runtime.redis_locks.atomic_set",
+                Some(rel.clone()),
+                format!(
+                    "runtime redis lock flow must use atomic SET NX EX instead of forbidden marker `{hit}`"
+                ),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
     if !repo_root
         .join("crates/bijux-atlas-core/Cargo.toml")
@@ -436,6 +482,16 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_runtime_005_api_surface_snapshot,
             }],
         },
+        Contract {
+            id: ContractId("RUNTIME-006".to_string()),
+            title: "runtime redis locks use atomic acquisition",
+            tests: vec![TestCase {
+                id: TestId("runtime.redis_locks.atomic_set".to_string()),
+                title: "runtime redis lock code avoids split setnx and expire flows",
+                kind: TestKind::Pure,
+                run: test_runtime_006_redis_lock_acquisition_is_atomic,
+            }],
+        },
     ])
 }
 
@@ -457,6 +513,9 @@ pub fn contract_explain(contract_id: &str) -> String {
         "RUNTIME-005" => {
             "The public bijux-atlas-api surface is snapshot-governed and must move intentionally."
                 .to_string()
+        }
+        "RUNTIME-006" => {
+            "Runtime Redis lock acquisition must use atomic SET NX EX semantics instead of split setnx and expire calls.".to_string()
         }
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts runtime`.".to_string(),
     }

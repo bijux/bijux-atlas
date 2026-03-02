@@ -227,6 +227,7 @@ fn contracts_runtime_list_exposes_runtime_registry() {
         .collect::<std::collections::BTreeSet<_>>();
     assert!(ids.contains("RUNTIME-001"));
     assert!(ids.contains("RUNTIME-005"));
+    assert!(ids.contains("RUNTIME-006"));
 }
 
 #[test]
