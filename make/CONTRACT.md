@@ -59,7 +59,10 @@
 | `MAKE-SURFACE-003` | make curated registry sync | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-SURFACE-004` | make control-plane surface parity | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-SURFACE-005` | make delegate only wrappers | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-SURFACE-006` | make curated target count budget | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-SURFACE-007` | make explain payload contract | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-TARGETLIST-001` | make target list policy | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-WRAP-001` | make curated dispatch boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 
 ## Enforcement mapping
 
@@ -109,7 +112,10 @@
 | `MAKE-SURFACE-003` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-SURFACE-004` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-SURFACE-005` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-SURFACE-006` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-SURFACE-007` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-TARGETLIST-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-WRAP-001` | `bijux dev atlas contracts make --mode static` |
 
 ## Output artifacts
 
