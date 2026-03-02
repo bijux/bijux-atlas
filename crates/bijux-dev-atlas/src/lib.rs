@@ -13,6 +13,7 @@ pub(crate) mod commands;
 pub mod contracts;
 pub mod core;
 pub mod model;
+pub mod ops;
 pub mod policies;
 pub(crate) mod ports;
 pub(crate) mod schema_support;

@@ -88,6 +88,52 @@ fn render_helm_env_surface(common: &OpsCommonArgs) -> Result<(String, i32), Stri
     Ok((rendered, ops_exit::PASS))
 }
 
+fn render_helm_configmap_env_report(
+    args: &crate::cli::OpsHelmEnvArgs,
+) -> Result<(String, i32), String> {
+    if !args.common.allow_subprocess {
+        return Err("ops helm-env requires --allow-subprocess".to_string());
+    }
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let helm_binary =
+        bijux_dev_atlas::ops::helm_env::resolve_helm_binary_from_inventory(&repo_root)?;
+    let release_name = args.release_name.clone().unwrap_or_else(|| {
+        args.chart
+            .file_name()
+            .and_then(|value| value.to_str())
+            .unwrap_or("bijux-atlas")
+            .to_string()
+    });
+    let yaml_docs = bijux_dev_atlas::ops::helm_env::render_chart(
+        &repo_root,
+        &helm_binary,
+        &args.chart,
+        &args.values_files,
+        &release_name,
+    )?;
+    let config_maps =
+        bijux_dev_atlas::ops::helm_env::extract_configmap_rows(&yaml_docs, &release_name);
+    let env_keys =
+        bijux_dev_atlas::ops::helm_env::extract_configmap_env_keys(&yaml_docs, &release_name);
+    if args.fail_on_empty && env_keys.is_empty() {
+        return Err(format!(
+            "no ATLAS_ or BIJUX_ ConfigMap data keys extracted for release `{release_name}`"
+        ));
+    }
+    let report = bijux_dev_atlas::ops::helm_env::build_report(
+        &args.chart,
+        &args.values_files,
+        &release_name,
+        &helm_binary,
+        &env_keys,
+        &config_maps,
+        args.include_names,
+    );
+    let payload = serde_json::to_value(&report).map_err(|err| err.to_string())?;
+    let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
+    Ok((rendered, ops_exit::PASS))
+}
+
 fn validate_helm_profile_matrix(common: &OpsCommonArgs) -> Result<(String, i32), String> {
     if !common.allow_subprocess {
         return Err("ops k8s validate-profiles requires --allow-subprocess".to_string());
@@ -355,6 +401,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
             Ok((rendered, ops_exit::PASS))
         }
+        OpsCommand::HelmEnv(args) => render_helm_configmap_env_report(&args),
         OpsCommand::K8sEnvSurface(common) => render_helm_env_surface(&common),
         OpsCommand::K8sValidateProfiles(common) => validate_helm_profile_matrix(&common),
         OpsCommand::Doctor(common) => {

@@ -57,6 +57,7 @@ fn force_json_ops(command: &mut OpsCommand) {
         | OpsCommand::DocsVerify(common)
         | OpsCommand::Conformance(common)
         | OpsCommand::Report(common)
+        | OpsCommand::HelmEnv(crate::cli::OpsHelmEnvArgs { common, .. })
         | OpsCommand::Readiness(common)
         | OpsCommand::ListProfiles(common)
         | OpsCommand::ListTools(common)
@@ -427,6 +428,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             OpsCommand::Render(args) => args.common.repo_root = Some(root.clone()),
             OpsCommand::Install(args) => args.common.repo_root = Some(root.clone()),
             OpsCommand::Status(args) => args.common.repo_root = Some(root.clone()),
+            OpsCommand::HelmEnv(args) => args.common.repo_root = Some(root.clone()),
             OpsCommand::ExplainProfile { common, .. } => common.repo_root = Some(root.clone()),
             OpsCommand::Reset(args) => args.common.repo_root = Some(root.clone()),
             OpsCommand::K8sApply(args) => args.common.repo_root = Some(root.clone()),

@@ -70,6 +70,7 @@ pub enum OpsCommand {
     DocsVerify(OpsCommonArgs),
     Conformance(OpsCommonArgs),
     Report(OpsCommonArgs),
+    HelmEnv(OpsHelmEnvArgs),
     Readiness(OpsCommonArgs),
     Render(OpsRenderArgs),
     Install(OpsInstallArgs),
@@ -442,6 +443,22 @@ pub struct OpsStatusArgs {
     pub common: OpsCommonArgs,
     #[arg(long, value_enum, default_value_t = OpsStatusTarget::Local)]
     pub target: OpsStatusTarget,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsHelmEnvArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long)]
+    pub chart: PathBuf,
+    #[arg(long = "values")]
+    pub values_files: Vec<PathBuf>,
+    #[arg(long)]
+    pub release_name: Option<String>,
+    #[arg(long, default_value_t = false)]
+    pub fail_on_empty: bool,
+    #[arg(long, default_value_t = false)]
+    pub include_names: bool,
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]

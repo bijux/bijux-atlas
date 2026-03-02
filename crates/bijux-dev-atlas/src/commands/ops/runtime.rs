@@ -3,9 +3,9 @@
 use crate::cli::OpsInstallArgs;
 use crate::cli::{
     OpsCommonArgs, OpsDatasetsCommand, OpsE2eCommand, OpsEvidenceCommand, OpsGenerateCommand,
-    OpsInventoryCommand, OpsK8sCommand, OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand,
-    OpsObsDrillCommand, OpsPinsCommand, OpsRenderArgs, OpsRenderTarget, OpsReportCommand,
-    OpsSchemaCommand, OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
+    OpsHelmEnvArgs, OpsInventoryCommand, OpsK8sCommand, OpsLoadBaselineCommand, OpsLoadCommand,
+    OpsObsCommand, OpsObsDrillCommand, OpsPinsCommand, OpsRenderArgs, OpsRenderTarget,
+    OpsReportCommand, OpsSchemaCommand, OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
 };
 use crate::ops_support::{
     build_ops_run_report, load_load_manifest, load_stack_manifest, load_stack_pins,
@@ -38,6 +38,7 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
         | OpsCommand::DocsVerify(common)
         | OpsCommand::Conformance(common)
         | OpsCommand::Report(common)
+        | OpsCommand::HelmEnv(OpsHelmEnvArgs { common, .. })
         | OpsCommand::Readiness(common)
         | OpsCommand::ListProfiles(common)
         | OpsCommand::ListTools(common)
