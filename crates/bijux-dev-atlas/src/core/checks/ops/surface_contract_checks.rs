@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use std::collections::BTreeMap;
+
 use super::*;
 
 pub(super) fn checks_ops_makefile_routes_dev_atlas(
@@ -113,6 +115,165 @@ pub(super) fn check_workflows_ops_entrypoints_bijux_only(
 ) -> Result<Vec<Violation>, CheckError> {
     let _ = ctx;
     Ok(Vec::new())
+}
+
+pub(super) fn check_workflows_policy_registry_has_no_unplanned_entries(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("configs/ci/policy-outside-control-plane.json");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let value: serde_json::Value =
+        serde_json::from_str(&text).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    for entry in value["entries"].as_array().into_iter().flatten() {
+        let policy_id = entry["policy_id"].as_str().unwrap_or("unknown");
+        let status = entry["status"].as_str().unwrap_or_default();
+        let replacement_plan = entry["replacement_plan"].as_str().unwrap_or_default();
+        let command = entry["control_plane_command"].as_str().unwrap_or_default();
+        if !matches!(status, "atlas" | "planned" | "exception") {
+            violations.push(violation(
+                "WORKFLOW_POLICY_UNPLANNED_ENTRY_FOUND",
+                format!(
+                    "workflow policy registry entry `{policy_id}` must be atlas, planned, or exception"
+                ),
+                "record a concrete atlas replacement or explicit temporary exception",
+                Some(rel),
+            ));
+        }
+        if replacement_plan.trim().is_empty() {
+            violations.push(violation(
+                "WORKFLOW_POLICY_REPLACEMENT_PLAN_MISSING",
+                format!("workflow policy registry entry `{policy_id}` is missing replacement_plan"),
+                "document the atlas replacement plan for every workflow-local policy step",
+                Some(rel),
+            ));
+        }
+        if status == "atlas" && command.trim().is_empty() {
+            violations.push(violation(
+                "WORKFLOW_POLICY_ATLAS_COMMAND_MISSING",
+                format!(
+                    "workflow policy registry entry `{policy_id}` is missing control_plane_command"
+                ),
+                "link every atlas-owned workflow policy entry to its executable command",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_workflows_policy_registry_unique_and_documented(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("configs/ci/policy-outside-control-plane.json");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let value: serde_json::Value =
+        serde_json::from_str(&text).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut seen = BTreeMap::<String, String>::new();
+    let mut violations = Vec::new();
+    for entry in value["entries"].as_array().into_iter().flatten() {
+        let policy_id = entry["policy_id"].as_str().unwrap_or("unknown");
+        let implementation = entry["authoritative_implementation"]
+            .as_str()
+            .unwrap_or_default();
+        let docs = entry["docs"].as_str().unwrap_or_default();
+        if seen
+            .insert(policy_id.to_string(), implementation.to_string())
+            .is_some()
+        {
+            violations.push(violation(
+                "WORKFLOW_POLICY_ID_NOT_UNIQUE",
+                format!("workflow policy registry contains duplicate policy_id `{policy_id}`"),
+                "keep workflow policy ids unique",
+                Some(rel),
+            ));
+        }
+        if implementation.trim().is_empty() {
+            violations.push(violation(
+                "WORKFLOW_POLICY_AUTHORITY_MISSING",
+                format!("workflow policy registry entry `{policy_id}` is missing authoritative_implementation"),
+                "declare one authoritative implementation for every workflow policy entry",
+                Some(rel),
+            ));
+        }
+        if docs.trim().is_empty() || !ctx.repo_root.join(docs).exists() {
+            violations.push(violation(
+                "WORKFLOW_POLICY_DOC_LINK_MISSING",
+                format!("workflow policy registry entry `{policy_id}` references missing docs `{docs}`"),
+                "link workflow policy entries to a committed docs page that explains the executable check",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_workflows_policy_exceptions_expiry(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("configs/ci/policy-exceptions.json");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let value: serde_json::Value =
+        serde_json::from_str(&text).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let today = {
+        let duration = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let days = (duration.as_secs() / 86_400) as i64;
+        let z = days + 719_468;
+        let era = if z >= 0 { z } else { z - 146_096 } / 146_097;
+        let doe = z - era * 146_097;
+        let yoe = (doe - doe / 1_460 + doe / 36_524 - doe / 146_096) / 365;
+        let mut year = yoe + era * 400;
+        let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+        let mp = (5 * doy + 2) / 153;
+        let day = doy - (153 * mp + 2) / 5 + 1;
+        let month = mp + if mp < 10 { 3 } else { -9 };
+        year += if month <= 2 { 1 } else { 0 };
+        format!("{year:04}-{month:02}-{day:02}")
+    };
+    let mut violations = Vec::new();
+    for entry in value["exceptions"].as_array().into_iter().flatten() {
+        let policy_id = entry["policy_id"].as_str().unwrap_or("unknown");
+        let expires_on = entry["expires_on"].as_str().unwrap_or_default();
+        let governance_tier = entry["governance_tier"].as_str().unwrap_or_default();
+        let renewal_reference = entry["renewal_reference"].as_str().unwrap_or_default();
+        if expires_on.len() != 10 {
+            violations.push(violation(
+                "WORKFLOW_POLICY_EXCEPTION_DATE_INVALID",
+                format!("workflow policy exception `{policy_id}` must use YYYY-MM-DD expiry"),
+                "set expires_on with an ISO date",
+                Some(rel),
+            ));
+        } else if expires_on < today.as_str() {
+            violations.push(violation(
+                "WORKFLOW_POLICY_EXCEPTION_EXPIRED",
+                format!("workflow policy exception `{policy_id}` expired on `{expires_on}`"),
+                "renew or remove expired workflow policy exceptions",
+                Some(rel),
+            ));
+        }
+        if governance_tier != "governance-approved" && expires_on == "9999-12-31" {
+            violations.push(violation(
+                "WORKFLOW_POLICY_EXCEPTION_PERMANENT_FORBIDDEN",
+                format!("workflow policy exception `{policy_id}` is permanent without governance approval"),
+                "use bounded expiry for temporary exceptions or mark governance-approved",
+                Some(rel),
+            ));
+        }
+        if renewal_reference.trim().is_empty() {
+            violations.push(violation(
+                "WORKFLOW_POLICY_EXCEPTION_RENEWAL_MISSING",
+                format!("workflow policy exception `{policy_id}` is missing renewal_reference"),
+                "record the renewal workflow reference for each workflow policy exception",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
 }
 
 pub(super) fn check_make_governance_wrappers_no_direct_cargo(

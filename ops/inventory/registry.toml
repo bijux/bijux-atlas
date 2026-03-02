@@ -1258,6 +1258,39 @@ budget_ms = 1500
 visibility = "internal"
 
 [[checks]]
+id = "checks_workflows_policy_exceptions_expiry"
+domain = "workflows"
+title = "workflow policy exceptions stay expiry bound and renewal linked"
+docs = "docs/development/ci-overview.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_workflows_policy_registry_has_no_unplanned_entries"
+domain = "workflows"
+title = "workflow policy registry contains only atlas or planned entries"
+docs = "docs/development/ci-overview.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_workflows_policy_registry_unique_and_documented"
+domain = "workflows"
+title = "workflow policy registry stays unique and linked to docs"
+docs = "docs/development/ci-overview.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
 id = "checks_workflows_rust_toolchain_matches_repo_pin"
 domain = "workflows"
 title = "rust workflow pin matches rust-toolchain.toml"

@@ -695,7 +695,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         Command::Ci { command } | Command::Workflows { command } => match command {
             crate::cli::WorkflowsCommand::Validate { repo_root, .. }
             | crate::cli::WorkflowsCommand::Doctor { repo_root, .. }
-            | crate::cli::WorkflowsCommand::Surface { repo_root, .. } => {
+            | crate::cli::WorkflowsCommand::Surface { repo_root, .. }
+            | crate::cli::WorkflowsCommand::Explain { repo_root, .. }
+            | crate::cli::WorkflowsCommand::Report { repo_root, .. }
+            | crate::cli::WorkflowsCommand::Verify { repo_root, .. } => {
                 *repo_root = Some(root.clone())
             }
         },

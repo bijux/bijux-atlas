@@ -171,6 +171,42 @@ pub enum WorkflowsCommand {
         #[arg(long, default_value_t = false)]
         include_slow: bool,
     },
+    Explain {
+        lane: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Json)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Report {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, default_value = "lane-parity")]
+        kind: String,
+        #[arg(long, value_enum, default_value_t = FormatArg::Json)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Verify {
+        gate: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Json)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+        #[arg(long, default_value_t = false)]
+        allow_subprocess: bool,
+        #[arg(long, default_value_t = false)]
+        allow_git: bool,
+        #[arg(long, default_value_t = false)]
+        allow_write: bool,
+        #[arg(long, default_value_t = false)]
+        allow_network: bool,
+    },
 }
 
 #[derive(Subcommand, Debug)]

@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["schema_version", "lanes"],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "lanes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["lane", "workflow", "commands", "reports"],
+        "properties": {
+          "lane": {
+            "type": "string"
+          },
+          "workflow": {
+            "type": "string"
+          },
+          "commands": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "command", "kind"],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": ["suite", "command", "workflow-policy"]
+                },
+                "command": {
+                  "type": "string"
+                },
+                "suite": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "reports": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

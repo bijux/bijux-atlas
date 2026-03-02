@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["schema_version", "entries"],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "policy_id",
+          "workflow",
+          "job",
+          "step",
+          "classification",
+          "owner",
+          "status",
+          "replacement_plan",
+          "docs"
+        ],
+        "properties": {
+          "policy_id": {
+            "type": "string",
+            "pattern": "^ci-policy-[a-z0-9-]+$"
+          },
+          "workflow": {
+            "type": "string"
+          },
+          "job": {
+            "type": "string"
+          },
+          "step": {
+            "type": "string"
+          },
+          "classification": {
+            "enum": ["policy", "orchestration", "artifact-upload"]
+          },
+          "owner": {
+            "type": "string"
+          },
+          "status": {
+            "enum": ["atlas", "planned", "exception"]
+          },
+          "control_plane_command": {
+            "type": "string"
+          },
+          "authoritative_implementation": {
+            "type": "string"
+          },
+          "replacement_plan": {
+            "type": "string"
+          },
+          "docs": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

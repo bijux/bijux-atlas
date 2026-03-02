@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "lanes": [
+    {
+      "lane": "ci-pr-fast",
+      "workflow": ".github/workflows/ci-pr.yml",
+      "commands": [
+        {
+          "id": "contracts-pr",
+          "kind": "command",
+          "command": "make contracts-pr"
+        },
+        {
+          "id": "repo-required",
+          "kind": "suite",
+          "command": "cargo run --locked -q -p bijux-dev-atlas -- check run --suite repo_required --include-internal --include-slow --allow-git --format json",
+          "suite": "repo_required"
+        }
+      ],
+      "reports": [
+        "contracts/all.json",
+        "contracts/repo-required.json",
+        "reports/governance-validate.json",
+        "reports/governance-coverage-diff.json"
+      ]
+    },
+    {
+      "lane": "ci-pr-full",
+      "workflow": ".github/workflows/ci-pr.yml",
+      "commands": [
+        {
+          "id": "ci-pr",
+          "kind": "command",
+          "command": "make ci-pr"
+        },
+        {
+          "id": "workflow-policy",
+          "kind": "workflow-policy",
+          "command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify workflow-policy --format json"
+        }
+      ],
+      "reports": [
+        "reports/ci-pr.json",
+        "reports/docs-ssot-reference-drift.json",
+        "reports/repo-write-drift.json"
+      ]
+    },
+    {
+      "lane": "ci-nightly",
+      "workflow": ".github/workflows/ci-nightly.yml",
+      "commands": [
+        {
+          "id": "ci-nightly",
+          "kind": "command",
+          "command": "make ops-nightly"
+        }
+      ],
+      "reports": [
+        "reports/ci-nightly.json",
+        "reports/docs-reference-generate.json"
+      ]
+    },
+    {
+      "lane": "docs-only",
+      "workflow": ".github/workflows/docs-only.yml",
+      "commands": [
+        {
+          "id": "docs-lint",
+          "kind": "command",
+          "command": "cargo run --locked -q -p bijux-dev-atlas -- docs lint --format json"
+        },
+        {
+          "id": "docs-preview",
+          "kind": "command",
+          "command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-preview --allow-subprocess --allow-write --format json"
+        },
+        {
+          "id": "docs-validate",
+          "kind": "command",
+          "command": "cargo run --locked -q -p bijux-dev-atlas -- docs validate --format json"
+        }
+      ],
+      "reports": [
+        "reports/docs.json",
+        "reports/docs-diff-summary.json",
+        "reports/docs-test-coverage.json"
+      ]
+    },
+    {
+      "lane": "docs-audit",
+      "workflow": ".github/workflows/docs-audit.yml",
+      "commands": [
+        {
+          "id": "docs-lint",
+          "kind": "command",
+          "command": "cargo run --locked -q -p bijux-dev-atlas -- docs lint --format json"
+        },
+        {
+          "id": "docs-preview",
+          "kind": "command",
+          "command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-preview --allow-subprocess --allow-write --format json"
+        },
+        {
+          "id": "docs-validate",
+          "kind": "command",
+          "command": "cargo run --locked -q -p bijux-dev-atlas -- docs validate --format json"
+        }
+      ],
+      "reports": [
+        "reports/docs.json",
+        "reports/docs-audit.json",
+        "reports/docs-test-coverage.json"
+      ]
+    },
+    {
+      "lane": "ops-validate",
+      "workflow": ".github/workflows/ops-validate.yml",
+      "commands": [
+        {
+          "id": "ops-validate",
+          "kind": "command",
+          "command": "make k8s-validate"
+        }
+      ],
+      "reports": [
+        "reports/ops-validate.json",
+        "reports/ops-k8s-render.json",
+        "reports/ops-inventory-validate.json"
+      ]
+    },
+    {
+      "lane": "ops-kind-integration",
+      "workflow": ".github/workflows/ops-integration-kind.yml",
+      "commands": [
+        {
+          "id": "stack-up",
+          "kind": "command",
+          "command": "make stack-up"
+        },
+        {
+          "id": "ops-k8s-smoke",
+          "kind": "command",
+          "command": "cargo run --locked -q -p bijux-dev-atlas -- ops k8s smoke --profile kind --allow-subprocess --format json"
+        }
+      ],
+      "reports": [
+        "reports/ops-kind-up.json",
+        "reports/ops-k8s-smoke.json",
+        "reports/ops-kind-down.json"
+      ]
+    },
+    {
+      "lane": "release-candidate",
+      "workflow": ".github/workflows/release-candidate.yml",
+      "commands": [
+        {
+          "id": "release-candidate-preflight",
+          "kind": "command",
+          "command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify release-candidate --allow-git --format json"
+        },
+        {
+          "id": "release-check",
+          "kind": "command",
+          "command": "cargo run --locked -q -p bijux-dev-atlas -- release check --format json"
+        }
+      ],
+      "reports": [
+        "reports/release-check.json",
+        "reports/release-candidate.json",
+        "reports/ops-readiness.json"
+      ]
+    },
+    {
+      "lane": "dependency-lock",
+      "workflow": ".github/workflows/dependency-lock.yml",
+      "commands": [
+        {
+          "id": "dependency-lock-verify",
+          "kind": "command",
+          "command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify dependency-lock --allow-git --format json"
+        }
+      ],
+      "reports": [
+        "reports/dependency-lock-verify.json"
+      ]
+    }
+  ]
+}
