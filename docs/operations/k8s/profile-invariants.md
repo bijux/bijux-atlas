@@ -26,4 +26,25 @@
 
 - Shared defaults stay in `ops/k8s/charts/bijux-atlas/values.yaml`; profile files override only the minimum deltas for their target environment.
 - The canonical render matrix is `ops/k8s/install-matrix.json`.
-- Reproduce locally with `bijux dev atlas ops k8s validate-profiles --allow-subprocess --format json`.
+- Reproduce locally with `bijux dev atlas ops profiles validate --allow-subprocess --format json`.
+
+## Failure example
+
+```json
+{
+  "profile": "ci",
+  "helm_template": {
+    "status": "fail",
+    "note": "helm guard failure",
+    "errors": [
+      "cached-only mode cannot require catalog readiness"
+    ]
+  }
+}
+```
+
+## Safe schema changes
+
+- Change `ops/k8s/charts/bijux-atlas/values.schema.json` and the chart defaults together.
+- Re-run `bijux dev atlas ops profiles validate --allow-subprocess --format json` after every schema edit.
+- If a profile now depends on inherited defaults, keep the defaults in `values.yaml` and only override the profile-specific delta.

@@ -1,0 +1,7 @@
+{
+  "check_id": "OPS-PROFILES-004",
+  "failing_profiles": [
+    "offline"
+  ],
+  "status": "fail"
+}

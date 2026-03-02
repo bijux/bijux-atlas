@@ -1,0 +1,3 @@
+server:
+  cachedOnlyMode: true
+  readinessRequiresCatalog: true
