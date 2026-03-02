@@ -38,6 +38,7 @@
         "chart_dir",
         "values_root",
         "schema_path",
+        "dataset_manifest_path",
         "profile_selector"
       ],
       "properties": {
@@ -50,6 +51,10 @@
           "minLength": 1
         },
         "schema_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dataset_manifest_path": {
           "type": "string",
           "minLength": 1
         },
@@ -96,6 +101,7 @@
           "values_file",
           "helm_template",
           "values_schema",
+          "dataset_validation",
           "kubeconform",
           "rendered_resources"
         ],
@@ -112,6 +118,9 @@
             "$ref": "#/$defs/statusReport"
           },
           "values_schema": {
+            "$ref": "#/$defs/statusReport"
+          },
+          "dataset_validation": {
             "$ref": "#/$defs/statusReport"
           },
           "kubeconform": {
@@ -131,6 +140,7 @@
         "total",
         "helm_failures",
         "schema_failures",
+        "dataset_failures",
         "kubeconform_failures"
       ],
       "properties": {
@@ -143,6 +153,10 @@
           "minimum": 0
         },
         "schema_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "dataset_failures": {
           "type": "integer",
           "minimum": 0
         },

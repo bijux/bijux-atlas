@@ -131,6 +131,7 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-PROFILES-002" => "Effect lane contract for keeping every install profile inside the merged values schema.",
         "OPS-PROFILES-003" => "Effect lane contract for keeping rendered install profiles valid under kubeconform.",
         "OPS-PROFILES-004" => "Effect lane contract for keeping rollout-safety profiles present and valid as a named subset.",
+        "OPS-DATASET-001" => "Effect lane contract for keeping install profile pinned dataset ids inside the canonical dataset manifest.",
         "OPS-LOAD-001" => "Ensures load scenarios are parseable and keep required fields.",
         "OPS-LOAD-002" => "Ensures each load suite has a matching thresholds artifact.",
         "OPS-LOAD-003" => "Ensures pinned query lock digests match source query payload.",

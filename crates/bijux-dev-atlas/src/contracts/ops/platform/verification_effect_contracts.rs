@@ -838,6 +838,7 @@ fn load_profiles_matrix_report(
         schema_path: ctx
             .repo_root
             .join("ops/k8s/charts/bijux-atlas/values.schema.json"),
+        dataset_manifest_path: ctx.repo_root.join("ops/datasets/manifest.json"),
         install_matrix_path: ctx.repo_root.join("ops/k8s/install-matrix.json"),
         rollout_safety_path: ctx.repo_root.join("ops/k8s/rollout-safety-contract.json"),
         profile: profile.map(str::to_string),
@@ -846,6 +847,48 @@ fn load_profiles_matrix_report(
         run_kubeconform: true,
     };
     profiles_matrix::validate_profiles(&ctx.repo_root, &options)
+}
+
+fn test_ops_dataset_001_pinned_datasets_subset_of_manifest_ids(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-DATASET-001";
+    let test_id = "ops.k8s.pinned_datasets_subset_of_manifest_ids";
+    let report = match load_profiles_matrix_report(ctx, None, None) {
+        Ok(report) => report,
+        Err(message) => {
+            return TestResult::Fail(vec![effect_violation(
+                contract_id,
+                test_id,
+                &message,
+                "ops/datasets/manifest.json",
+            )]);
+        }
+    };
+    let mut violations = report
+        .rows
+        .iter()
+        .filter(|row| row.dataset_validation.status == "fail")
+        .flat_map(|row| {
+            row.dataset_validation.errors.iter().map(|message| {
+                effect_violation(
+                    contract_id,
+                    test_id,
+                    &format!("install profile uses pinned dataset id outside the dataset manifest: {message}"),
+                    &row.values_file,
+                )
+            })
+        })
+        .collect::<Vec<_>>();
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.push(effect_violation(
+            contract_id,
+            test_id,
+            "inspect artifacts/contracts/ops/profiles/full-matrix.json for dataset validation evidence",
+            "artifacts/contracts/ops/profiles/full-matrix.json",
+        ));
+        TestResult::Fail(violations)
+    }
 }
 
 fn write_profiles_matrix_report(

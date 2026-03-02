@@ -33,6 +33,7 @@ pub struct ProfileMatrixRow {
     pub values_file: String,
     pub helm_template: StatusReport,
     pub values_schema: StatusReport,
+    pub dataset_validation: StatusReport,
     pub kubeconform: StatusReport,
     pub rendered_resources: usize,
 }
@@ -42,6 +43,7 @@ pub struct ProfileMatrixSummary {
     pub total: usize,
     pub helm_failures: usize,
     pub schema_failures: usize,
+    pub dataset_failures: usize,
     pub kubeconform_failures: usize,
 }
 
@@ -57,6 +59,7 @@ pub struct ProfilesMatrixInputs {
     pub chart_dir: String,
     pub values_root: String,
     pub schema_path: String,
+    pub dataset_manifest_path: String,
     pub profile_selector: String,
 }
 
@@ -108,6 +111,7 @@ pub struct ValidateProfilesOptions {
     pub chart_dir: PathBuf,
     pub values_root: PathBuf,
     pub schema_path: PathBuf,
+    pub dataset_manifest_path: PathBuf,
     pub install_matrix_path: PathBuf,
     pub rollout_safety_path: PathBuf,
     pub profile: Option<String>,
@@ -266,6 +270,40 @@ fn compile_values_schema(schema_path: &Path) -> Result<serde_json::Value, String
         .map_err(|err| format!("failed to read {}: {err}", schema_path.display()))?;
     serde_json::from_str(&text)
         .map_err(|err| format!("failed to parse {}: {err}", schema_path.display()))
+}
+
+fn load_dataset_manifest_ids(manifest_path: &Path) -> Result<BTreeMap<String, String>, String> {
+    let text = std::fs::read_to_string(manifest_path)
+        .map_err(|err| format!("failed to read {}: {err}", manifest_path.display()))?;
+    let json: serde_json::Value = serde_json::from_str(&text)
+        .map_err(|err| format!("failed to parse {}: {err}", manifest_path.display()))?;
+    if json
+        .get("schema_version")
+        .and_then(|value| value.as_u64())
+        != Some(1)
+    {
+        return Err(format!(
+            "{} must declare schema_version=1",
+            manifest_path.display()
+        ));
+    }
+    let datasets = json
+        .get("datasets")
+        .and_then(|value| value.as_array())
+        .ok_or_else(|| format!("{} must declare datasets array", manifest_path.display()))?;
+    let mut rows = BTreeMap::new();
+    for dataset in datasets {
+        let dataset_id = dataset
+            .get("id")
+            .and_then(|value| value.as_str())
+            .ok_or_else(|| format!("{} datasets entries must include string id", manifest_path.display()))?;
+        let dataset_name = dataset
+            .get("name")
+            .and_then(|value| value.as_str())
+            .unwrap_or(dataset_id);
+        rows.insert(dataset_id.to_string(), dataset_name.to_string());
+    }
+    Ok(rows)
 }
 
 fn values_yaml_to_json(path: &Path) -> Result<serde_json::Value, String> {
@@ -452,6 +490,51 @@ fn validate_values_file(
     merged_values: &serde_json::Value,
 ) -> Result<Vec<String>, String> {
     Ok(schema_violations(validator, merged_values, "$"))
+}
+
+fn dataset_validation_status(
+    repo_root: &Path,
+    manifest_path: &Path,
+    manifest_ids: &BTreeMap<String, String>,
+    merged_values: &serde_json::Value,
+) -> StatusReport {
+    let pinned_datasets = merged_values
+        .get("cache")
+        .and_then(|value| value.as_object())
+        .and_then(|value| value.get("pinnedDatasets"))
+        .and_then(|value| value.as_array())
+        .cloned()
+        .unwrap_or_default();
+    let mut errors = Vec::new();
+    for entry in pinned_datasets {
+        let Some(dataset_id) = entry.as_str() else {
+            errors.push("pinned dataset ids must be strings".to_string());
+            continue;
+        };
+        if !manifest_ids.contains_key(dataset_id) {
+            errors.push(format!(
+                "pinned dataset id `{dataset_id}` is not declared in {}",
+                manifest_path.display()
+            ));
+        }
+    }
+    let status = if errors.is_empty() { "pass" } else { "fail" };
+    StatusReport {
+        status: status.to_string(),
+        note: if errors.is_empty() {
+            "pinned datasets subset of dataset manifest".to_string()
+        } else {
+            "pinned dataset id validation failed".to_string()
+        },
+        errors,
+        event: ToolInvocationReport {
+            binary: "ops/datasets/manifest.json".to_string(),
+            args: vec![manifest_path.display().to_string()],
+            cwd: repo_root.display().to_string(),
+            status: status.to_string(),
+            stderr: String::new(),
+        },
+    }
 }
 
 fn template_profile(
@@ -668,6 +751,10 @@ pub fn build_report(
             .iter()
             .filter(|row| row.values_schema.status == "fail")
             .count(),
+        dataset_failures: rows
+            .iter()
+            .filter(|row| row.dataset_validation.status == "fail")
+            .count(),
         kubeconform_failures: rows
             .iter()
             .filter(|row| row.kubeconform.status == "fail")
@@ -750,6 +837,7 @@ pub fn validate_profiles(
     let matrix = load_install_matrix(&options.install_matrix_path)?;
     let rollout_safety = load_rollout_safety(&options.rollout_safety_path)?;
     let validator = compile_values_schema(&options.schema_path)?;
+    let dataset_manifest_ids = load_dataset_manifest_ids(&options.dataset_manifest_path)?;
     let base_values = values_yaml_to_json(&options.chart_dir.join("values.yaml"))?;
     let selector_label = if let Some(name) = &options.profile {
         format!("single:{name}")
@@ -803,6 +891,12 @@ pub fn validate_profiles(
                 },
             }
         };
+        let dataset_validation = dataset_validation_status(
+            repo_root,
+            &options.dataset_manifest_path,
+            &dataset_manifest_ids,
+            &merged_values,
+        );
 
         let helm_template = template_profile(
             repo_root,
@@ -879,6 +973,7 @@ pub fn validate_profiles(
             values_file: profile.values_file,
             helm_template,
             values_schema,
+            dataset_validation,
             kubeconform,
             rendered_resources,
         });
@@ -890,6 +985,7 @@ pub fn validate_profiles(
             chart_dir: options.chart_dir.display().to_string(),
             values_root: options.values_root.display().to_string(),
             schema_path: options.schema_path.display().to_string(),
+            dataset_manifest_path: options.dataset_manifest_path.display().to_string(),
             profile_selector: selector_label,
         },
         tooling,
@@ -948,6 +1044,18 @@ mod tests {
                         stderr: String::new(),
                     },
                 },
+                dataset_validation: StatusReport {
+                    status: "pass".to_string(),
+                    note: String::new(),
+                    errors: Vec::new(),
+                    event: ToolInvocationReport {
+                        binary: "ops/datasets/manifest.json".to_string(),
+                        args: vec!["ops/datasets/manifest.json".to_string()],
+                        cwd: ".".to_string(),
+                        status: "pass".to_string(),
+                        stderr: String::new(),
+                    },
+                },
                 kubeconform: StatusReport {
                     status: "skipped".to_string(),
                     note: String::new(),
@@ -966,6 +1074,7 @@ mod tests {
                 chart_dir: "ops/k8s/charts/bijux-atlas".to_string(),
                 values_root: "ops/k8s/values".to_string(),
                 schema_path: "ops/k8s/charts/bijux-atlas/values.schema.json".to_string(),
+                dataset_manifest_path: "ops/datasets/manifest.json".to_string(),
                 profile_selector: "all".to_string(),
             },
             vec![ToolVersionRow {
@@ -982,5 +1091,50 @@ mod tests {
             .expect("repo")
             .join("configs/contracts/reports/ops-profiles.schema.json");
         validate_report_value(&report_value, &schema_path).expect("report schema");
+    }
+
+    #[test]
+    fn detects_invalid_pinned_dataset_ids() {
+        let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .expect("workspace")
+            .parent()
+            .expect("repo")
+            .to_path_buf();
+        let manifest_path = repo_root.join("ops/datasets/manifest.json");
+        let manifest_ids = load_dataset_manifest_ids(&manifest_path).expect("manifest ids");
+        let merged_values = serde_json::json!({
+            "cache": {
+                "pinnedDatasets": ["missing/dataset/id"]
+            }
+        });
+        let status =
+            dataset_validation_status(&repo_root, &manifest_path, &manifest_ids, &merged_values);
+        assert_eq!(status.status, "fail");
+        assert!(
+            status.errors[0].contains("missing/dataset/id"),
+            "dataset validation must identify the missing dataset id"
+        );
+    }
+
+    #[test]
+    fn accepts_valid_pinned_dataset_ids() {
+        let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .expect("workspace")
+            .parent()
+            .expect("repo")
+            .to_path_buf();
+        let manifest_path = repo_root.join("ops/datasets/manifest.json");
+        let manifest_ids = load_dataset_manifest_ids(&manifest_path).expect("manifest ids");
+        let merged_values = serde_json::json!({
+            "cache": {
+                "pinnedDatasets": ["110/homo_sapiens/GRCh38"]
+            }
+        });
+        let status =
+            dataset_validation_status(&repo_root, &manifest_path, &manifest_ids, &merged_values);
+        assert_eq!(status.status, "pass");
+        assert!(status.errors.is_empty());
     }
 }

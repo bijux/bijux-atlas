@@ -187,6 +187,7 @@ fn validate_helm_profile_matrix(
             chart_dir: ops_root.join("k8s/charts/bijux-atlas"),
             values_root: ops_root.join("k8s/values"),
             schema_path: ops_root.join("k8s/charts/bijux-atlas/values.schema.json"),
+            dataset_manifest_path: ops_root.join("datasets/manifest.json"),
             install_matrix_path: ops_root.join("k8s/install-matrix.json"),
             rollout_safety_path: ops_root.join("k8s/rollout-safety-contract.json"),
             profile: args.common.profile.clone(),

@@ -59,8 +59,8 @@
     },
     {
       "pillar": "k8s",
-      "target": 21,
-      "max": 21,
+      "target": 22,
+      "max": 22,
       "required_classes": [
         "effect"
       ]

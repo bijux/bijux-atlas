@@ -125,6 +125,16 @@
       "required": true
     },
     {
+      "contract_id": "OPS-DATASET-001",
+      "domain": "ops",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
       "contract_id": "OPS-HELM-ENV-001",
       "domain": "ops",
       "lanes": [

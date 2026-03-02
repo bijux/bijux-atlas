@@ -220,7 +220,21 @@
       "type": "object"
     },
     "cache": {
-      "description": "Chart values key `cache` from SSOT contract."
+      "additionalProperties": true,
+      "properties": {
+        "initPrewarm": {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        "pinnedDatasets": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
     },
     "catalog": {
       "additionalProperties": false,

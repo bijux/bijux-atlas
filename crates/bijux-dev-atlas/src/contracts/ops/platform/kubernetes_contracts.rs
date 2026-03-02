@@ -122,5 +122,15 @@ fn k8s_contracts() -> Vec<Contract> {
                 run: test_ops_profiles_004_rollout_safety_profiles_exist_and_validate,
             }],
         },
+        Contract {
+            id: ContractId("OPS-DATASET-001".to_string()),
+            title: "pinned datasets manifest subset contract",
+            tests: vec![TestCase {
+                id: TestId("ops.k8s.pinned_datasets_subset_of_manifest_ids".to_string()),
+                title: "effect lane requires install profile pinned datasets to stay inside the canonical dataset manifest",
+                kind: TestKind::Subprocess,
+                run: test_ops_dataset_001_pinned_datasets_subset_of_manifest_ids,
+            }],
+        },
     ]
 }

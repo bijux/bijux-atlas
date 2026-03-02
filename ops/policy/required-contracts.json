@@ -129,6 +129,13 @@
     },
     {
       "domain": "ops",
+      "contract_id": "OPS-DATASET-001",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Every blocking lane must prove install profile pinned datasets stay inside the canonical dataset manifest."
+    },
+    {
+      "domain": "ops",
       "contract_id": "OPS-HELM-ENV-001",
       "lanes": ["pr", "merge", "release"],
       "owner": "atlas-maintainers",
