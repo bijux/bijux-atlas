@@ -1,0 +1,29 @@
+{
+  "entries": [
+    {
+      "check_id": "REPO-003",
+      "docs_path": "docs/reference/contracts/ops/helm-env-subset.md",
+      "title": "Helm env subset"
+    },
+    {
+      "check_id": "REPO-004",
+      "docs_path": "docs/reference/contracts/ops/profile-matrix.md",
+      "title": "Ops profile matrix"
+    },
+    {
+      "check_id": "REPO-005",
+      "docs_path": "docs/reference/contracts/docs/site-output.md",
+      "title": "Docs site output"
+    },
+    {
+      "check_id": "runtime-env-allowlist",
+      "docs_path": "docs/reference/runtime/config.md",
+      "title": "Runtime env allowlist enforcement"
+    }
+  ],
+  "inputs": {
+    "source": "docs/_internal/governance/closure-checks.md"
+  },
+  "report_id": "closure-index",
+  "version": 1
+}

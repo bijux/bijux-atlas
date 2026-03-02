@@ -1,0 +1,10 @@
+# Closure Index
+
+Generated from the boundary closure map.
+
+| Check ID | Meaning | Docs |
+|---|---|---|
+| `REPO-003` | Helm env subset | `docs/reference/contracts/ops/helm-env-subset.md` |
+| `REPO-004` | Ops profile matrix | `docs/reference/contracts/ops/profile-matrix.md` |
+| `REPO-005` | Docs site output | `docs/reference/contracts/docs/site-output.md` |
+| `runtime-env-allowlist` | Runtime env allowlist enforcement | `docs/reference/runtime/config.md` |

@@ -60,3 +60,15 @@ Reports are written under `artifacts/contracts/repo/boundary-closure/`.
 
 The closure checks are marked as blocking for `pr`, `merge`, and `release` in `ops/policy/required-contracts.json`.
 CI must call the control-plane contract runner; it must not reimplement these checks with ad hoc workflow scripts.
+
+## How to evolve invariants
+
+- Prefer renaming a drifting key to the canonical surface instead of adding a second alias.
+- Update the executable contract first, then the allowlist or schema, then the reader docs.
+- If a boundary rule becomes less strict, document the rollback reason in the contract history before changing the check.
+
+## Anti-patterns
+
+- Adding a second env name for the same runtime behavior.
+- Reintroducing workflow-local copies of closure checks instead of calling the control-plane runner.
+- Publishing reports with timestamps or minified JSON that make drift reviews noisy.
