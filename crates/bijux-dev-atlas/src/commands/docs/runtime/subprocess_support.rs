@@ -10,23 +10,14 @@ fn docs_build_or_serve_subprocess(
         return Err("docs build requires --allow-write".to_string());
     }
     let ctx = docs_context(common)?;
-    let output_dir = ctx
-        .artifacts_root
-        .join("dist")
-        .join("docs-site")
-        .join(ctx.run_id.as_str());
+    let site_paths = bijux_dev_atlas::docs::site_output::parse_mkdocs_site_paths(&ctx.repo_root)?;
+    let output_dir = ctx.repo_root.join(&site_paths.site_dir);
     if label == "docs build" {
         fs::create_dir_all(&output_dir)
             .map_err(|e| format!("failed to create {}: {e}", output_dir.display()))?;
     }
     let mut cmd = ProcessCommand::new("mkdocs");
     cmd.args(args).current_dir(&ctx.repo_root);
-    if label == "docs build" {
-        cmd.args([
-            "--site-dir",
-            output_dir.to_str().unwrap_or("artifacts/dist/docs-site"),
-        ]);
-    }
     let out = cmd
         .output()
         .map_err(|e| format!("failed to run mkdocs: {e}"))?;
@@ -78,7 +69,7 @@ fn docs_build_or_serve_subprocess(
             "run_id": ctx.run_id.as_str(),
             "error_code": if code == 0 { serde_json::Value::Null } else { serde_json::Value::String("DOCS_BUILD_ERROR".to_string()) },
             "text": format!("{label} {}", if code==0 {"ok"} else {"failed"}),
-            "rows":[{"command": args, "exit_code": code, "stdout": stdout, "stderr": stderr, "site_dir": output_dir.display().to_string()}],
+            "rows":[{"command": args, "exit_code": code, "stdout": stdout, "stderr": stderr, "site_dir": output_dir.display().to_string(), "docs_dir": site_paths.docs_dir.display().to_string()}],
             "artifacts": {"site_dir": output_dir.display().to_string(), "build_index": ctx.artifacts_root.join("dist").join("docs-site").join(ctx.run_id.as_str()).join("build.index.json").display().to_string(), "files": files},
             "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
             "options": {"strict": common.strict, "include_drafts": common.include_drafts}
@@ -86,4 +77,3 @@ fn docs_build_or_serve_subprocess(
         code,
     ))
 }
-

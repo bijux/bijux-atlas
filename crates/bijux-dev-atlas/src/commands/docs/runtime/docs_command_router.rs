@@ -301,6 +301,13 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     0,
                 ))
             }
+            DocsCommand::SiteDir(common) => {
+                let ctx = docs_context(&common)?;
+                let mut payload = bijux_dev_atlas::docs::site_output::site_output_report(&ctx.repo_root)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                let code = if payload["status"].as_str() == Some("pass") { 0 } else { 1 };
+                Ok((emit_payload(common.format, common.out, &payload)?, code))
+            }
             DocsCommand::Build(common) => {
                 let (mut payload, code) =
                     docs_build_or_serve_subprocess(&["build".to_string()], &common, "docs build")?;
@@ -357,6 +364,11 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 rows.push(serde_json::json!({"name":"links","errors":links["errors"].as_array().map(|v| v.len()).unwrap_or(0)}));
                 rows.push(serde_json::json!({"name":"lint","errors":lint["errors"].as_array().map(|v| v.len()).unwrap_or(0)}));
                 let mut build_status = "skipped";
+                let mut site_output = serde_json::json!({
+                    "status": "skipped",
+                    "counts": {"file_count": 0, "minimum_file_count": 0},
+                    "checks": []
+                });
                 if common.allow_subprocess && common.allow_write {
                     let (_payload, code) = docs_build_or_serve_subprocess(
                         &["build".to_string()],
@@ -364,22 +376,51 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         "docs build",
                     )?;
                     build_status = if code == 0 { "ok" } else { "failed" };
+                    site_output = bijux_dev_atlas::docs::site_output::site_output_report(&ctx.repo_root)?;
                 }
                 rows.push(serde_json::json!({"name":"build","status":build_status}));
+                rows.push(serde_json::json!({
+                    "name":"site_output",
+                    "status": site_output["status"].as_str().unwrap_or("unknown"),
+                    "file_count": site_output["counts"]["file_count"].as_u64().unwrap_or(0),
+                    "minimum_file_count": site_output["counts"]["minimum_file_count"].as_u64().unwrap_or(0)
+                }));
                 let errors = validate["errors"].as_array().map(|v| v.len()).unwrap_or(0)
                     + links["errors"].as_array().map(|v| v.len()).unwrap_or(0)
                     + lint["errors"].as_array().map(|v| v.len()).unwrap_or(0)
-                    + usize::from(build_status == "failed");
+                    + usize::from(build_status == "failed")
+                    + usize::from(site_output["status"].as_str() == Some("fail"));
+                let closure_summary = serde_json::json!({
+                    "report_id": "docs-build-closure-summary",
+                    "version": 1,
+                    "checks": [
+                        {"name": "links", "status": if links["errors"].as_array().is_some_and(|v| v.is_empty()) { "pass" } else { "fail" }},
+                        {"name": "site_output", "status": site_output["status"].as_str().unwrap_or("skipped")}
+                    ],
+                    "status": if links["errors"].as_array().is_some_and(|v| v.is_empty())
+                        && site_output["status"].as_str() != Some("fail")
+                    {
+                        "pass"
+                    } else {
+                        "fail"
+                    }
+                });
+                if common.allow_write {
+                    let artifact_path = docs_gate_artifact_dir(&ctx).join("docs-build-closure-summary.json");
+                    let _ = write_docs_gate_artifact(&artifact_path, &closure_summary);
+                }
                 let payload = serde_json::json!({
                     "schema_version":1,
                     "run_id":ctx.run_id.as_str(),
                     "text": if errors==0 {
-                        format!("docs: 4 checks collected, 0 failed, build={build_status}")
+                        format!("docs: 5 checks collected, 0 failed, build={build_status}")
                     } else {
-                        format!("docs: 4 checks collected, {errors} failed, build={build_status}")
+                        format!("docs: 5 checks collected, {errors} failed, build={build_status}")
                     },
                     "rows":rows,
                     "counts":{"errors":errors},
+                    "site_output": site_output,
+                    "artifacts": {"closure_summary": docs_gate_artifact_dir(&ctx).join("docs-build-closure-summary.json").display().to_string()},
                     "capabilities":{"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
                     "options":{"strict": common.strict, "include_drafts": common.include_drafts},
                     "duration_ms": started.elapsed().as_millis() as u64,

@@ -12,6 +12,7 @@
 - Helm env surface closure: rendered Helm env keys must stay inside `configs/contracts/env.schema.json`.
 - Install profile closure: every profile in `ops/k8s/install-matrix.json` must pass `helm lint`, `helm template`, and `kubeconform`.
 - Docs output closure: `mkdocs build --strict` must publish to the configured `site_dir`, and that output must contain `index.html` plus assets.
+- If this closure fails, reproduce with `bijux dev atlas docs site-dir --format json` before changing the workflow or `mkdocs.yml`.
 
 ## Why this exists
 

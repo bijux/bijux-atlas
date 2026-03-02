@@ -52,6 +52,7 @@ pub enum DocsCommand {
     Check(DocsCommonArgs),
     VerifyContracts(DocsCommonArgs),
     Doctor(DocsCommonArgs),
+    SiteDir(DocsCommonArgs),
     Validate(DocsCommonArgs),
     Build(DocsCommonArgs),
     Serve(DocsServeArgs),

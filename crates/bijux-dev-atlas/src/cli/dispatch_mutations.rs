@@ -72,10 +72,11 @@ fn force_json_ops(command: &mut OpsCommand) {
         | OpsCommand::K8sEnvSurface(common)
         | OpsCommand::K8sValidateProfiles(common)
         | OpsCommand::Profiles {
-            command: crate::cli::OpsProfilesCommand::Validate(crate::cli::OpsProfilesValidateArgs {
-                common,
-                ..
-            }),
+            command:
+                crate::cli::OpsProfilesCommand::Validate(crate::cli::OpsProfilesValidateArgs {
+                    common,
+                    ..
+                }),
         }
         | OpsCommand::K8sDryRun(common)
         | OpsCommand::K8sPorts(common)
@@ -215,6 +216,7 @@ fn force_json_docs(command: &mut DocsCommand) {
         DocsCommand::Check(common)
         | DocsCommand::VerifyContracts(common)
         | DocsCommand::Doctor(common)
+        | DocsCommand::SiteDir(common)
         | DocsCommand::Validate(common)
         | DocsCommand::Build(common)
         | DocsCommand::Clean(common)
@@ -328,6 +330,7 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
         Command::Docs { command } => match command {
             DocsCommand::Check(common)
             | DocsCommand::Doctor(common)
+            | DocsCommand::SiteDir(common)
             | DocsCommand::Validate(common)
             | DocsCommand::Lint(common)
             | DocsCommand::Links(common)
@@ -426,9 +429,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | OpsCommand::K8sValidateProfiles(common)
             | OpsCommand::Profiles {
                 command:
-                    crate::cli::OpsProfilesCommand::Validate(
-                        crate::cli::OpsProfilesValidateArgs { common, .. },
-                    ),
+                    crate::cli::OpsProfilesCommand::Validate(crate::cli::OpsProfilesValidateArgs {
+                        common,
+                        ..
+                    }),
             }
             | OpsCommand::K8sDryRun(common)
             | OpsCommand::K8sPorts(common)
@@ -604,6 +608,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             DocsCommand::Check(common)
             | DocsCommand::VerifyContracts(common)
             | DocsCommand::Doctor(common)
+            | DocsCommand::SiteDir(common)
             | DocsCommand::Validate(common)
             | DocsCommand::Build(common)
             | DocsCommand::Clean(common)

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/contracts/docs-site-output.schema.json",
+  "title": "Docs Site Output Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "minimum_file_count",
+    "assets_directory"
+  ],
+  "properties": {
+    "minimum_file_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "assets_directory": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
