@@ -1,7 +1,7 @@
 # Root Surface Rationale
 
 - Owner: `bijux-atlas-operations`
-- Audience: `maintainers`
+- Audience: `reviewers`
 - Stability: `stable`
 
 ## Why Root Is Small
@@ -25,4 +25,3 @@ Authority documents and generated references live under `docs/`, `ops/`, or `con
 
 - Root contracts: `bijux dev atlas contracts root --mode static`
 - Repo required suite: `bijux dev atlas check run --suite repo_required --include-internal --include-slow --allow-git`
-

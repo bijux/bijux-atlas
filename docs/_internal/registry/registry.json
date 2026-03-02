@@ -8613,7 +8613,7 @@
     },
     {
       "area": "_internal",
-      "audience": "maintainers",
+      "audience": "reviewers",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -8636,7 +8636,7 @@
     },
     {
       "area": "_internal",
-      "audience": "maintainers",
+      "audience": "reviewers",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",

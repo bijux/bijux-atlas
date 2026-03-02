@@ -2811,7 +2811,7 @@
     },
     {
       "area": "_internal",
-      "audience": "maintainers",
+      "audience": "reviewers",
       "owner": "bijux-atlas-operations",
       "path": "docs/_internal/repo-constitution.md",
       "stability": "stable",
@@ -2819,7 +2819,7 @@
     },
     {
       "area": "_internal",
-      "audience": "maintainers",
+      "audience": "reviewers",
       "owner": "bijux-atlas-operations",
       "path": "docs/_internal/root-surface.md",
       "stability": "stable",

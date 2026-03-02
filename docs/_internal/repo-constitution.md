@@ -1,7 +1,7 @@
 # Repository Constitution
 
 - Owner: `bijux-atlas-operations`
-- Audience: `maintainers`
+- Audience: `reviewers`
 - Stability: `stable`
 
 ## Purpose
@@ -28,4 +28,3 @@ Any root surface expansion requires:
 1. allowlist and manifest updates
 2. contract check pass
 3. constitution rationale update in `docs/_internal/root-surface.md`
-
