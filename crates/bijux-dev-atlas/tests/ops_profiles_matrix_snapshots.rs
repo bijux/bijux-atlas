@@ -27,7 +27,8 @@ fn render_failure_snapshot_matches_golden() {
     }))
     .expect("json")
         + "\n";
-    let expected = read("crates/bijux-dev-atlas/tests/goldens/ops_profiles_matrix_render_fail.json");
+    let expected =
+        read("crates/bijux-dev-atlas/tests/goldens/ops_profiles_matrix_render_fail.json");
     assert_eq!(actual, expected);
 }
 
@@ -40,7 +41,8 @@ fn schema_failure_snapshot_matches_golden() {
     }))
     .expect("json")
         + "\n";
-    let expected = read("crates/bijux-dev-atlas/tests/goldens/ops_profiles_matrix_schema_fail.json");
+    let expected =
+        read("crates/bijux-dev-atlas/tests/goldens/ops_profiles_matrix_schema_fail.json");
     assert_eq!(actual, expected);
 }
 
@@ -88,8 +90,16 @@ fn pass_snapshot_matches_golden() {
 #[test]
 fn profile_matrix_regression_fixtures_exist() {
     let root = Path::new("crates/bijux-dev-atlas/tests/fixtures/ops_profiles_matrix");
-    let guard = read(root.join("guard-failure-profile.yaml").to_str().expect("path"));
-    let schema = read(root.join("schema-failure-profile.yaml").to_str().expect("path"));
+    let guard = read(
+        root.join("guard-failure-profile.yaml")
+            .to_str()
+            .expect("path"),
+    );
+    let schema = read(
+        root.join("schema-failure-profile.yaml")
+            .to_str()
+            .expect("path"),
+    );
     let invalid = read(
         root.join("invalid-resource-manifest.yaml")
             .to_str()

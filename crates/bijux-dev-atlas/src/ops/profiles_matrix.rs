@@ -234,7 +234,9 @@ fn selected_profiles(
             .filter(|row| row.name == name)
             .collect::<Vec<_>>();
         if selected.is_empty() {
-            return Err(format!("profile `{name}` is not declared in install matrix"));
+            return Err(format!(
+                "profile `{name}` is not declared in install matrix"
+            ));
         }
         return Ok(selected);
     }
@@ -269,7 +271,8 @@ fn values_yaml_to_json(path: &Path) -> Result<serde_json::Value, String> {
         .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     let yaml: serde_yaml::Value = serde_yaml::from_str(&text)
         .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
-    serde_json::to_value(yaml).map_err(|err| format!("failed to convert {} to json: {err}", path.display()))
+    serde_json::to_value(yaml)
+        .map_err(|err| format!("failed to convert {} to json: {err}", path.display()))
 }
 
 fn merge_values(base: &mut serde_json::Value, overlay: serde_json::Value) {
@@ -370,7 +373,10 @@ fn schema_violations(
         }
     }
 
-    if let Some(required) = schema_obj.get("required").and_then(|value| value.as_array()) {
+    if let Some(required) = schema_obj
+        .get("required")
+        .and_then(|value| value.as_array())
+    {
         if let Some(obj) = instance.as_object() {
             for field in required.iter().filter_map(|value| value.as_str()) {
                 if !obj.contains_key(field) {
@@ -380,7 +386,10 @@ fn schema_violations(
         }
     }
 
-    if let Some(properties) = schema_obj.get("properties").and_then(|value| value.as_object()) {
+    if let Some(properties) = schema_obj
+        .get("properties")
+        .and_then(|value| value.as_object())
+    {
         if let Some(obj) = instance.as_object() {
             for (key, child_schema) in properties {
                 if let Some(child_value) = obj.get(key) {
@@ -582,7 +591,10 @@ fn kubeconform_profile(
         return StatusReport {
             status: "fail".to_string(),
             note: "kubeconform staging failure".to_string(),
-            errors: vec![format!("failed to write {}: {err}", rendered_path.display())],
+            errors: vec![format!(
+                "failed to write {}: {err}",
+                rendered_path.display()
+            )],
             event: ToolInvocationReport {
                 status: "fail".to_string(),
                 stderr: format!("failed to write {}: {err}", rendered_path.display()),
@@ -610,7 +622,11 @@ fn kubeconform_profile(
         Ok(output) => {
             let stdout = String::from_utf8_lossy(&output.stdout).trim().to_string();
             let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
-            let message = if stdout.is_empty() { stderr.clone() } else { stdout.clone() };
+            let message = if stdout.is_empty() {
+                stderr.clone()
+            } else {
+                stdout.clone()
+            };
             StatusReport {
                 status: "fail".to_string(),
                 note: "kubeconform resource failure".to_string(),
@@ -642,9 +658,18 @@ pub fn build_report(
 ) -> ProfilesMatrixReport {
     let summary = ProfileMatrixSummary {
         total: rows.len(),
-        helm_failures: rows.iter().filter(|row| row.helm_template.status == "fail").count(),
-        schema_failures: rows.iter().filter(|row| row.values_schema.status == "fail").count(),
-        kubeconform_failures: rows.iter().filter(|row| row.kubeconform.status == "fail").count(),
+        helm_failures: rows
+            .iter()
+            .filter(|row| row.helm_template.status == "fail")
+            .count(),
+        schema_failures: rows
+            .iter()
+            .filter(|row| row.values_schema.status == "fail")
+            .count(),
+        kubeconform_failures: rows
+            .iter()
+            .filter(|row| row.kubeconform.status == "fail")
+            .count(),
     };
     ProfilesMatrixReport {
         schema_version: 1,
@@ -665,7 +690,14 @@ pub fn validate_report_schema_file(schema_path: &Path) -> Result<(), String> {
         .get("required")
         .and_then(|value| value.as_array())
         .ok_or_else(|| format!("{} must declare required array", schema_path.display()))?;
-    for field in ["schema_version", "kind", "inputs", "tooling", "rows", "summary"] {
+    for field in [
+        "schema_version",
+        "kind",
+        "inputs",
+        "tooling",
+        "rows",
+        "summary",
+    ] {
         if !required.iter().any(|value| value.as_str() == Some(field)) {
             return Err(format!("{} must require `{field}`", schema_path.display()));
         }
@@ -687,7 +719,11 @@ pub fn validate_report_value(report: &serde_json::Value, schema_path: &Path) -> 
     if obj.get("rows").and_then(|value| value.as_array()).is_none() {
         return Err("ops-profiles report rows must be an array".to_string());
     }
-    if obj.get("tooling").and_then(|value| value.as_array()).is_none() {
+    if obj
+        .get("tooling")
+        .and_then(|value| value.as_array())
+        .is_none()
+    {
         return Err("ops-profiles report tooling must be an array".to_string());
     }
     Ok(())
@@ -861,7 +897,11 @@ mod tests {
         let rows = discover_profiles(temp.path()).expect("discover");
         let names = rows
             .iter()
-            .map(|path| path.file_name().and_then(|value| value.to_str()).unwrap_or_default())
+            .map(|path| {
+                path.file_name()
+                    .and_then(|value| value.to_str())
+                    .unwrap_or_default()
+            })
             .collect::<Vec<_>>();
         assert_eq!(names, vec!["a.yaml", "z.yaml"]);
     }
