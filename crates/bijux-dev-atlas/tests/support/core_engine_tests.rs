@@ -118,6 +118,9 @@ fn suite_expansion_is_stable() {
             "checks_ops_tree_contract".to_string(),
             "checks_ops_workflow_routes_dev_atlas".to_string(),
             "checks_ops_workflows_github_actions_pinned".to_string(),
+            "checks_reports_check_map_valid".to_string(),
+            "checks_reports_ownership_registry_valid".to_string(),
+            "checks_reports_schema_registry_ssot".to_string(),
         ]
     );
 }
