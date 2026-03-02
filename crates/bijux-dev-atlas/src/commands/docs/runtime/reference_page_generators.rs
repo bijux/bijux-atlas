@@ -108,8 +108,8 @@ fn render_docs_reference_commands_registry(repo_root: &std::path::Path) -> Resul
         .map(|row| {
             (
                 row["id"].as_str().unwrap_or_default().to_string(),
-                row["domain"].as_str().unwrap_or_default().to_string(),
-                row["summary"].as_str().unwrap_or_default().to_string(),
+                row["kind"].as_str().unwrap_or_default().to_string(),
+                row["purpose"].as_str().unwrap_or_default().to_string(),
             )
         })
         .collect::<Vec<_>>();
@@ -121,9 +121,9 @@ fn render_docs_reference_commands_registry(repo_root: &std::path::Path) -> Resul
     out.push_str("- Tier: `generated`\n");
     out.push_str("- Audience: `operators`\n");
     out.push_str("- Source-of-truth: `docs/_internal/generated/command-index.json`\n\n");
-    out.push_str("## Commands\n\n| Command ID | Domain | Summary |\n| --- | --- | --- |\n");
-    for (id, domain, summary) in rows {
-        out.push_str(&format!("| `{id}` | `{domain}` | {summary} |\n"));
+    out.push_str("## Commands\n\n| Command ID | Kind | Purpose |\n| --- | --- | --- |\n");
+    for (id, kind, purpose) in rows {
+        out.push_str(&format!("| `{id}` | `{kind}` | {purpose} |\n"));
     }
     Ok(out)
 }

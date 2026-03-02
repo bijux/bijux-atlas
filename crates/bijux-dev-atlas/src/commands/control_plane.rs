@@ -198,25 +198,7 @@ pub(crate) fn run_help_inventory_command(
     format: FormatArg,
     out: Option<PathBuf>,
 ) -> Result<(String, i32), String> {
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "name": "bijux-dev-atlas",
-        "commands": [
-            {"name": "version", "kind": "leaf"},
-            {"name": "help", "kind": "leaf"},
-            {"name": "check", "kind": "group", "subcommands": ["registry", "list", "explain", "doctor", "run"]},
-            {"name": "ops", "kind": "group"},
-            {"name": "docs", "kind": "group"},
-            {"name": "contracts", "kind": "group"},
-            {"name": "configs", "kind": "group"},
-            {"name": "build", "kind": "group"},
-            {"name": "policies", "kind": "group"},
-            {"name": "docker", "kind": "group"},
-            {"name": "workflows", "kind": "group"},
-            {"name": "gates", "kind": "group"},
-            {"name": "capabilities", "kind": "leaf"}
-        ]
-    });
+    let payload = help_inventory_payload();
     let rendered = match format {
         FormatArg::Text => payload["commands"]
             .as_array()
@@ -231,4 +213,209 @@ pub(crate) fn run_help_inventory_command(
         write_output_if_requested(out, &rendered)?;
     }
     Ok((rendered, 0))
+}
+
+pub(crate) fn help_inventory_payload() -> serde_json::Value {
+    let commands = vec![
+        serde_json::json!({
+            "id": "build",
+            "kind": "group",
+            "purpose": "build binaries, plans, and local install artifacts",
+            "effects": ["fs_read", "fs_write", "subprocess"],
+            "inputs": ["repo_root", "artifacts_root", "build profile"],
+            "outputs": ["build metadata", "dist artifacts", "local install output"],
+            "report_ids": [],
+            "hidden": true,
+            "subcommands": ["bin", "plan", "verify", "meta", "dist", "clean", "doctor", "install-local"]
+        }),
+        serde_json::json!({
+            "id": "capabilities",
+            "kind": "leaf",
+            "purpose": "describe the default-deny effect model and required flags",
+            "effects": [],
+            "inputs": [],
+            "outputs": ["capabilities report"],
+            "report_ids": [],
+            "hidden": true
+        }),
+        serde_json::json!({
+            "id": "check",
+            "kind": "group",
+            "purpose": "discover, explain, and execute governed checks",
+            "effects": ["fs_read", "fs_write", "subprocess", "git", "network"],
+            "inputs": ["suite selector", "check selector", "capability flags"],
+            "outputs": ["check execution report"],
+            "report_ids": ["artifact-report-validation"],
+            "hidden": false,
+            "subcommands": ["registry", "list", "explain", "doctor", "run"]
+        }),
+        serde_json::json!({
+            "id": "ci",
+            "kind": "group",
+            "purpose": "run CI-oriented lane, explain, report, and verification surfaces",
+            "effects": ["fs_read", "fs_write", "subprocess", "git", "network"],
+            "inputs": ["lane", "gate", "format"],
+            "outputs": ["ci reports", "lane explanations", "verification artifacts"],
+            "report_ids": ["ci_workflow_lint"],
+            "hidden": false
+        }),
+        serde_json::json!({
+            "id": "configs",
+            "kind": "group",
+            "purpose": "inspect, validate, lint, and compile repository configuration inputs",
+            "effects": ["fs_read", "fs_write", "subprocess", "network"],
+            "inputs": ["repo_root", "artifacts_root", "config file"],
+            "outputs": ["config validation reports", "compiled config output"],
+            "report_ids": [],
+            "hidden": false
+        }),
+        serde_json::json!({
+            "id": "contracts",
+            "kind": "group",
+            "purpose": "run contract registries, snapshots, doctors, and effect-mode reports",
+            "effects": ["fs_read", "fs_write", "subprocess", "network"],
+            "inputs": ["domain", "mode", "run_id"],
+            "outputs": ["contract reports", "registry snapshots"],
+            "report_ids": ["ops-profiles", "helm-env"],
+            "hidden": false
+        }),
+        serde_json::json!({
+            "id": "demo",
+            "kind": "group",
+            "purpose": "execute curated local demonstration flows",
+            "effects": ["fs_read"],
+            "inputs": ["repo_root"],
+            "outputs": ["demo guidance output"],
+            "report_ids": [],
+            "hidden": false,
+            "subcommands": ["quickstart"]
+        }),
+        serde_json::json!({
+            "id": "docker",
+            "kind": "group",
+            "purpose": "run docker policy, contract, and release-oriented validations",
+            "effects": ["fs_read", "fs_write", "subprocess", "network"],
+            "inputs": ["repo_root", "artifacts_root", "policy selection"],
+            "outputs": ["docker validation reports"],
+            "report_ids": [],
+            "hidden": true
+        }),
+        serde_json::json!({
+            "id": "docs",
+            "kind": "group",
+            "purpose": "build, lint, validate, and regenerate governed documentation artifacts",
+            "effects": ["fs_read", "fs_write", "subprocess", "network"],
+            "inputs": ["repo_root", "artifacts_root", "run_id"],
+            "outputs": ["docs reports", "generated references", "site output artifacts"],
+            "report_ids": ["docs-site-output", "docs-build-closure-summary", "closure-index"],
+            "hidden": false
+        }),
+        serde_json::json!({
+            "id": "gates",
+            "kind": "group",
+            "purpose": "list and run curated gate suites",
+            "effects": ["fs_read", "fs_write", "subprocess", "git", "network"],
+            "inputs": ["suite", "capability flags"],
+            "outputs": ["gate run reports"],
+            "report_ids": [],
+            "hidden": true
+        }),
+        serde_json::json!({
+            "id": "governance",
+            "kind": "group",
+            "purpose": "inspect and validate governed repository objects and coverage artifacts",
+            "effects": ["fs_read", "fs_write"],
+            "inputs": ["repo_root", "governance object id"],
+            "outputs": ["governance graph", "coverage", "orphan reports"],
+            "report_ids": [],
+            "hidden": false
+        }),
+        serde_json::json!({
+            "id": "help",
+            "kind": "leaf",
+            "purpose": "emit the machine-readable command inventory and text summary",
+            "effects": [],
+            "inputs": [],
+            "outputs": ["command inventory"],
+            "report_ids": [],
+            "hidden": true
+        }),
+        serde_json::json!({
+            "id": "make",
+            "kind": "group",
+            "purpose": "inspect and validate thin make wrapper surfaces",
+            "effects": ["fs_read", "subprocess"],
+            "inputs": ["target", "repo_root"],
+            "outputs": ["make surface reports"],
+            "report_ids": [],
+            "hidden": true
+        }),
+        serde_json::json!({
+            "id": "ops",
+            "kind": "group",
+            "purpose": "validate, render, plan, and execute governed ops workflows",
+            "effects": ["fs_read", "fs_write", "subprocess", "network"],
+            "inputs": ["profile", "ops_root", "artifacts_root", "run_id"],
+            "outputs": ["ops run reports", "rendered manifests", "inventory summaries"],
+            "report_ids": ["ops-profiles", "helm-env"],
+            "hidden": false
+        }),
+        serde_json::json!({
+            "id": "policies",
+            "kind": "group",
+            "purpose": "inspect, explain, validate, and print control-plane policy sets",
+            "effects": ["fs_read"],
+            "inputs": ["policy id", "repo_root"],
+            "outputs": ["policy reports"],
+            "report_ids": [],
+            "hidden": false
+        }),
+        serde_json::json!({
+            "id": "release",
+            "kind": "group",
+            "purpose": "run release-specific verification entrypoints",
+            "effects": ["fs_read"],
+            "inputs": ["profile", "repo_root"],
+            "outputs": ["release check reports"],
+            "report_ids": [],
+            "hidden": true
+        }),
+        serde_json::json!({
+            "id": "validate",
+            "kind": "leaf",
+            "purpose": "run the curated top-level validation entrypoint across checks and ops",
+            "effects": ["fs_read", "subprocess"],
+            "inputs": ["profile", "repo_root"],
+            "outputs": ["aggregate validation report"],
+            "report_ids": [],
+            "hidden": false
+        }),
+        serde_json::json!({
+            "id": "version",
+            "kind": "leaf",
+            "purpose": "print control-plane version and compatibility metadata",
+            "effects": [],
+            "inputs": [],
+            "outputs": ["version report"],
+            "report_ids": [],
+            "hidden": true
+        }),
+        serde_json::json!({
+            "id": "workflows",
+            "kind": "group",
+            "purpose": "run workflow-oriented control-plane surfaces that back CI lanes",
+            "effects": ["fs_read", "fs_write", "subprocess", "git", "network"],
+            "inputs": ["lane", "gate", "format"],
+            "outputs": ["workflow reports", "doctor output"],
+            "report_ids": ["ci_workflow_lint"],
+            "hidden": true
+        }),
+    ];
+    serde_json::json!({
+        "schema_version": 1,
+        "kind": "command_inventory",
+        "name": "bijux-dev-atlas",
+        "count": commands.len(),
+        "commands": commands
+    })
 }

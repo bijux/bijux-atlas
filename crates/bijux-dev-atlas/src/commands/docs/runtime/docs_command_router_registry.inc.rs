@@ -336,21 +336,9 @@ fn run_docs_registry_command(
                             )
                             .map_err(|e| format!("write generated make targets failed: {e}"))?;
                         }
-                        let command_rows = docs_rows
-                            .iter()
-                            .filter(|row| {
-                                row["path"].as_str().is_some_and(|p| {
-                                    p.contains("COMMAND") || p.contains("CLI_COMMAND")
-                                })
-                            })
-                            .cloned()
-                            .collect::<Vec<_>>();
                         fs::write(
                             generated_dir.join("command-index.json"),
-                            serde_json::to_string_pretty(&serde_json::json!({
-                                "schema_version": 1,
-                                "rows": command_rows
-                            }))
+                            serde_json::to_string_pretty(&crate::help_inventory_payload())
                             .map_err(|e| format!("command index encode failed: {e}"))?,
                         )
                         .map_err(|e| format!("write command index failed: {e}"))?;

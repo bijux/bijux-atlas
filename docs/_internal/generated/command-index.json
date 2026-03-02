@@ -1,4 +1,410 @@
 {
-  "rows": [],
+  "commands": [
+    {
+      "effects": [
+        "fs_read",
+        "fs_write",
+        "subprocess"
+      ],
+      "hidden": true,
+      "id": "build",
+      "inputs": [
+        "repo_root",
+        "artifacts_root",
+        "build profile"
+      ],
+      "kind": "group",
+      "outputs": [
+        "build metadata",
+        "dist artifacts",
+        "local install output"
+      ],
+      "purpose": "build binaries, plans, and local install artifacts",
+      "report_ids": [],
+      "subcommands": [
+        "bin",
+        "plan",
+        "verify",
+        "meta",
+        "dist",
+        "clean",
+        "doctor",
+        "install-local"
+      ]
+    },
+    {
+      "effects": [],
+      "hidden": true,
+      "id": "capabilities",
+      "inputs": [],
+      "kind": "leaf",
+      "outputs": [
+        "capabilities report"
+      ],
+      "purpose": "describe the default-deny effect model and required flags",
+      "report_ids": []
+    },
+    {
+      "effects": [
+        "fs_read",
+        "fs_write",
+        "subprocess",
+        "git",
+        "network"
+      ],
+      "hidden": false,
+      "id": "check",
+      "inputs": [
+        "suite selector",
+        "check selector",
+        "capability flags"
+      ],
+      "kind": "group",
+      "outputs": [
+        "check execution report"
+      ],
+      "purpose": "discover, explain, and execute governed checks",
+      "report_ids": [
+        "artifact-report-validation"
+      ],
+      "subcommands": [
+        "registry",
+        "list",
+        "explain",
+        "doctor",
+        "run"
+      ]
+    },
+    {
+      "effects": [
+        "fs_read",
+        "fs_write",
+        "subprocess",
+        "git",
+        "network"
+      ],
+      "hidden": false,
+      "id": "ci",
+      "inputs": [
+        "lane",
+        "gate",
+        "format"
+      ],
+      "kind": "group",
+      "outputs": [
+        "ci reports",
+        "lane explanations",
+        "verification artifacts"
+      ],
+      "purpose": "run CI-oriented lane, explain, report, and verification surfaces",
+      "report_ids": [
+        "ci_workflow_lint"
+      ]
+    },
+    {
+      "effects": [
+        "fs_read",
+        "fs_write",
+        "subprocess",
+        "network"
+      ],
+      "hidden": false,
+      "id": "configs",
+      "inputs": [
+        "repo_root",
+        "artifacts_root",
+        "config file"
+      ],
+      "kind": "group",
+      "outputs": [
+        "config validation reports",
+        "compiled config output"
+      ],
+      "purpose": "inspect, validate, lint, and compile repository configuration inputs",
+      "report_ids": []
+    },
+    {
+      "effects": [
+        "fs_read",
+        "fs_write",
+        "subprocess",
+        "network"
+      ],
+      "hidden": false,
+      "id": "contracts",
+      "inputs": [
+        "domain",
+        "mode",
+        "run_id"
+      ],
+      "kind": "group",
+      "outputs": [
+        "contract reports",
+        "registry snapshots"
+      ],
+      "purpose": "run contract registries, snapshots, doctors, and effect-mode reports",
+      "report_ids": [
+        "ops-profiles",
+        "helm-env"
+      ]
+    },
+    {
+      "effects": [
+        "fs_read"
+      ],
+      "hidden": false,
+      "id": "demo",
+      "inputs": [
+        "repo_root"
+      ],
+      "kind": "group",
+      "outputs": [
+        "demo guidance output"
+      ],
+      "purpose": "execute curated local demonstration flows",
+      "report_ids": [],
+      "subcommands": [
+        "quickstart"
+      ]
+    },
+    {
+      "effects": [
+        "fs_read",
+        "fs_write",
+        "subprocess",
+        "network"
+      ],
+      "hidden": true,
+      "id": "docker",
+      "inputs": [
+        "repo_root",
+        "artifacts_root",
+        "policy selection"
+      ],
+      "kind": "group",
+      "outputs": [
+        "docker validation reports"
+      ],
+      "purpose": "run docker policy, contract, and release-oriented validations",
+      "report_ids": []
+    },
+    {
+      "effects": [
+        "fs_read",
+        "fs_write",
+        "subprocess",
+        "network"
+      ],
+      "hidden": false,
+      "id": "docs",
+      "inputs": [
+        "repo_root",
+        "artifacts_root",
+        "run_id"
+      ],
+      "kind": "group",
+      "outputs": [
+        "docs reports",
+        "generated references",
+        "site output artifacts"
+      ],
+      "purpose": "build, lint, validate, and regenerate governed documentation artifacts",
+      "report_ids": [
+        "docs-site-output",
+        "docs-build-closure-summary",
+        "closure-index"
+      ]
+    },
+    {
+      "effects": [
+        "fs_read",
+        "fs_write",
+        "subprocess",
+        "git",
+        "network"
+      ],
+      "hidden": true,
+      "id": "gates",
+      "inputs": [
+        "suite",
+        "capability flags"
+      ],
+      "kind": "group",
+      "outputs": [
+        "gate run reports"
+      ],
+      "purpose": "list and run curated gate suites",
+      "report_ids": []
+    },
+    {
+      "effects": [
+        "fs_read",
+        "fs_write"
+      ],
+      "hidden": false,
+      "id": "governance",
+      "inputs": [
+        "repo_root",
+        "governance object id"
+      ],
+      "kind": "group",
+      "outputs": [
+        "governance graph",
+        "coverage",
+        "orphan reports"
+      ],
+      "purpose": "inspect and validate governed repository objects and coverage artifacts",
+      "report_ids": []
+    },
+    {
+      "effects": [],
+      "hidden": true,
+      "id": "help",
+      "inputs": [],
+      "kind": "leaf",
+      "outputs": [
+        "command inventory"
+      ],
+      "purpose": "emit the machine-readable command inventory and text summary",
+      "report_ids": []
+    },
+    {
+      "effects": [
+        "fs_read",
+        "subprocess"
+      ],
+      "hidden": true,
+      "id": "make",
+      "inputs": [
+        "target",
+        "repo_root"
+      ],
+      "kind": "group",
+      "outputs": [
+        "make surface reports"
+      ],
+      "purpose": "inspect and validate thin make wrapper surfaces",
+      "report_ids": []
+    },
+    {
+      "effects": [
+        "fs_read",
+        "fs_write",
+        "subprocess",
+        "network"
+      ],
+      "hidden": false,
+      "id": "ops",
+      "inputs": [
+        "profile",
+        "ops_root",
+        "artifacts_root",
+        "run_id"
+      ],
+      "kind": "group",
+      "outputs": [
+        "ops run reports",
+        "rendered manifests",
+        "inventory summaries"
+      ],
+      "purpose": "validate, render, plan, and execute governed ops workflows",
+      "report_ids": [
+        "ops-profiles",
+        "helm-env"
+      ]
+    },
+    {
+      "effects": [
+        "fs_read"
+      ],
+      "hidden": false,
+      "id": "policies",
+      "inputs": [
+        "policy id",
+        "repo_root"
+      ],
+      "kind": "group",
+      "outputs": [
+        "policy reports"
+      ],
+      "purpose": "inspect, explain, validate, and print control-plane policy sets",
+      "report_ids": []
+    },
+    {
+      "effects": [
+        "fs_read"
+      ],
+      "hidden": true,
+      "id": "release",
+      "inputs": [
+        "profile",
+        "repo_root"
+      ],
+      "kind": "group",
+      "outputs": [
+        "release check reports"
+      ],
+      "purpose": "run release-specific verification entrypoints",
+      "report_ids": []
+    },
+    {
+      "effects": [
+        "fs_read",
+        "subprocess"
+      ],
+      "hidden": false,
+      "id": "validate",
+      "inputs": [
+        "profile",
+        "repo_root"
+      ],
+      "kind": "leaf",
+      "outputs": [
+        "aggregate validation report"
+      ],
+      "purpose": "run the curated top-level validation entrypoint across checks and ops",
+      "report_ids": []
+    },
+    {
+      "effects": [],
+      "hidden": true,
+      "id": "version",
+      "inputs": [],
+      "kind": "leaf",
+      "outputs": [
+        "version report"
+      ],
+      "purpose": "print control-plane version and compatibility metadata",
+      "report_ids": []
+    },
+    {
+      "effects": [
+        "fs_read",
+        "fs_write",
+        "subprocess",
+        "git",
+        "network"
+      ],
+      "hidden": true,
+      "id": "workflows",
+      "inputs": [
+        "lane",
+        "gate",
+        "format"
+      ],
+      "kind": "group",
+      "outputs": [
+        "workflow reports",
+        "doctor output"
+      ],
+      "purpose": "run workflow-oriented control-plane surfaces that back CI lanes",
+      "report_ids": [
+        "ci_workflow_lint"
+      ]
+    }
+  ],
+  "count": 19,
+  "kind": "command_inventory",
+  "name": "bijux-dev-atlas",
   "schema_version": 1
 }
