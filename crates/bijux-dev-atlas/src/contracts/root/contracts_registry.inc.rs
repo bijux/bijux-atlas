@@ -24,7 +24,7 @@ const ROOT_ALLOWED_VISIBLE: [&str; 20] = [
 const ROOT_ALLOWED_VISIBLE_TAIL: [&str; 5] =
     ["docs", "make", "mkdocs.yml", "ops", "rust-toolchain.toml"];
 
-const ROOT_IGNORED_LOCAL: [&str; 3] = [".git", ".idea", "artifacts"];
+const ROOT_IGNORED_LOCAL: [&str; 4] = [".git", ".idea", "artifacts", "target"];
 
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![
