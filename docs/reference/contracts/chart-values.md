@@ -25,7 +25,6 @@ Does not define implementation internals outside this contract surface.
 - `cache`
 - `catalog`
 - `catalogPublishJob`
-- `concurrency`
 - `datasetWarmupJob`
 - `extraEnv`
 - `hpa`
@@ -38,7 +37,6 @@ Does not define implementation internals outside this contract surface.
 - `pdb`
 - `podSecurityContext`
 - `priorityClassName`
-- `rateLimits`
 - `replicaCount`
 - `resources`
 - `rollout`
@@ -64,10 +62,12 @@ server:
   logJson: true
 
 # offline profile
-offline:
-  enabled: true
+cache:
+  initPrewarm:
+    enabled: false
 server:
   cachedOnlyMode: true
+  readinessRequiresCatalog: false
 ```
 
 Expected output: values keys validate against `CHART_VALUES.json`.

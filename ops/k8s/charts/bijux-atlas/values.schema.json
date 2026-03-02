@@ -1,6 +1,103 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "image": {
+            "properties": {
+              "digest": {
+                "minLength": 1
+              },
+              "tag": {
+                "minLength": 1
+              }
+            },
+            "required": [
+              "digest",
+              "tag"
+            ],
+            "type": "object"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "image": {
+            "properties": {
+              "tag": {
+                "maxLength": 0
+              }
+            },
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "cache": {
+            "properties": {
+              "initPrewarm": {
+                "properties": {
+                  "enabled": {
+                    "const": true
+                  }
+                },
+                "type": "object"
+              }
+            },
+            "type": "object"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "cache": {
+            "properties": {
+              "pinnedDatasets": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array"
+              }
+            },
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "server": {
+            "properties": {
+              "cachedOnlyMode": {
+                "const": true
+              }
+            },
+            "type": "object"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "server": {
+            "properties": {
+              "readinessRequiresCatalog": {
+                "const": false
+              }
+            },
+            "type": "object"
+          }
+        }
+      }
+    }
+  ],
   "properties": {
     "affinity": {
       "description": "Chart values key `affinity` from SSOT contract."
@@ -71,24 +168,6 @@
     },
     "image": {
       "additionalProperties": false,
-      "allOf": [
-        {
-          "if": {
-            "properties": {
-              "digest": {
-                "minLength": 1
-              }
-            }
-          },
-          "then": {
-            "properties": {
-              "tag": {
-                "maxLength": 0
-              }
-            }
-          }
-        }
-      ],
       "properties": {
         "digest": {
           "pattern": "^(|sha256:[a-f0-9]{64})$",
