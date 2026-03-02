@@ -8,10 +8,6 @@ metadata:
 {{- fail "server.cachedOnlyMode=true requires server.readinessRequiresCatalog=false" }}
 {{- end }}
 data:
-  ATLAS_CONFIG_RELEASE_ID: {{ printf "%s:%d" .Release.Name .Release.Revision | quote }}
-  ATLAS_CONFIG_SCHEMA_VERSION: {{ .Values.server.configSchemaVersion | quote }}
-  ATLAS_CATALOG_ENDPOINT: {{ .Values.catalog.endpoint | quote }}
-  ATLAS_STORE_ENDPOINT: {{ .Values.store.endpoint | quote }}
   ATLAS_STORE_S3_ENABLED: {{ if .Values.store.endpoint }}"true"{{ else }}"false"{{ end }}
   ATLAS_STORE_S3_BASE_URL: {{ .Values.store.endpoint | quote }}
   ATLAS_STORE_S3_PRESIGNED_BASE_URL: {{ .Values.store.s3PresignedBaseUrl | quote }}
@@ -20,14 +16,6 @@ data:
   ATLAS_PINNED_DATASETS: {{ join "," .Values.cache.pinnedDatasets | quote }}
   ATLAS_MAX_CONCURRENT_DOWNLOADS: {{ .Values.cache.maxConcurrentDownloads | quote }}
   ATLAS_STARTUP_WARMUP_JITTER_MAX_MS: {{ .Values.cache.startupWarmupJitterMaxMs | quote }}
-  ATLAS_RATE_LIMIT_IP_CAPACITY: {{ .Values.rateLimits.perIp.capacity | quote }}
-  ATLAS_RATE_LIMIT_IP_REFILL_PER_SEC: {{ .Values.rateLimits.perIp.refillPerSec | quote }}
-  ATLAS_RATE_LIMIT_API_KEY_ENABLED: {{ .Values.rateLimits.perApiKey.enabled | quote }}
-  ATLAS_RATE_LIMIT_API_KEY_CAPACITY: {{ .Values.rateLimits.perApiKey.capacity | quote }}
-  ATLAS_RATE_LIMIT_API_KEY_REFILL_PER_SEC: {{ .Values.rateLimits.perApiKey.refillPerSec | quote }}
-  ATLAS_CONCURRENCY_CHEAP: {{ .Values.concurrency.cheap | quote }}
-  ATLAS_CONCURRENCY_MEDIUM: {{ .Values.concurrency.medium | quote }}
-  ATLAS_CONCURRENCY_HEAVY: {{ .Values.concurrency.heavy | quote }}
   ATLAS_REQUEST_TIMEOUT_MS: {{ .Values.server.requestTimeoutMs | quote }}
   ATLAS_SQL_TIMEOUT_MS: {{ .Values.server.sqlTimeoutMs | quote }}
   ATLAS_RESPONSE_MAX_BYTES: {{ .Values.server.responseMaxBytes | quote }}

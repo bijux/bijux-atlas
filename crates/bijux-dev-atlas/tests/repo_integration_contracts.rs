@@ -46,6 +46,53 @@ fn load_json(path: &Path) -> Value {
         .unwrap_or_else(|err| panic!("failed to parse {}: {err}", path.display()))
 }
 
+fn collect_prefixed_env_tokens(text: &str) -> BTreeSet<String> {
+    text.split(|ch: char| !(ch.is_ascii_uppercase() || ch.is_ascii_digit() || ch == '_'))
+        .filter(|token| {
+            (token.starts_with("ATLAS_") && token.len() > "ATLAS_".len())
+                || (token.starts_with("BIJUX_") && token.len() > "BIJUX_".len())
+        })
+        .map(str::to_string)
+        .collect()
+}
+
+fn render_chart_env_keys(root: &Path) -> BTreeSet<String> {
+    let output = Command::new("helm")
+        .current_dir(root)
+        .args([
+            "template",
+            "atlas-default",
+            "ops/k8s/charts/bijux-atlas",
+            "-f",
+            "ops/k8s/charts/bijux-atlas/values.yaml",
+        ])
+        .output()
+        .expect("helm template");
+    assert!(
+        output.status.success(),
+        "helm template must succeed:\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let rendered = String::from_utf8(output.stdout).expect("helm template utf8");
+    let mut env_names = BTreeSet::new();
+    for line in rendered.lines() {
+        let trimmed = line.trim();
+        if let Some(name) = trimmed.strip_suffix(':') {
+            if name.starts_with("ATLAS_") || name.starts_with("BIJUX_") {
+                env_names.insert(name.to_string());
+            }
+        }
+        if let Some(name) = trimmed.strip_prefix("- name: ") {
+            if name.starts_with("ATLAS_") || name.starts_with("BIJUX_") {
+                env_names.insert(name.to_string());
+            }
+        }
+    }
+    env_names
+}
+
 fn assert_pretty_json_file(path: &Path) {
     let text = read(path);
     let parsed: Value = serde_json::from_str(&text)
@@ -247,17 +294,7 @@ fn runtime_config_docs_and_helm_env_surface_match_declared_config_keys() {
         .map(str::to_string)
         .collect::<BTreeSet<_>>();
 
-    let deployment = read(&root.join("ops/k8s/charts/bijux-atlas/templates/deployment.yaml"));
-    let mut env_names = BTreeSet::new();
-    for line in deployment.lines() {
-        let trimmed = line.trim();
-        if let Some(name) = trimmed.strip_prefix("- name: ") {
-            let name = name.trim();
-            if name.starts_with("ATLAS_") || name.starts_with("BIJUX_") {
-                env_names.insert(name.to_string());
-            }
-        }
-    }
+    let env_names = render_chart_env_keys(&root);
     for env_name in &env_names {
         assert!(
             declared.contains(env_name),
@@ -279,6 +316,38 @@ fn runtime_config_docs_and_helm_env_surface_match_declared_config_keys() {
             "helm deployment env var must exist in configs/contracts/env.schema.json: {env_name}"
         );
     }
+}
+
+#[test]
+fn server_runtime_prefixed_env_reads_stay_inside_the_env_contract() {
+    let root = repo_root();
+    let config_schema = load_json(&root.join("configs/contracts/env.schema.json"));
+    let schema_keys = config_schema["allowed_env"]
+        .as_array()
+        .expect("allowed_env array")
+        .iter()
+        .filter_map(Value::as_str)
+        .map(str::to_string)
+        .collect::<BTreeSet<_>>();
+
+    let mut runtime_keys = BTreeSet::new();
+    for relative_path in [
+        "crates/bijux-atlas-server/src/main.rs",
+        "crates/bijux-atlas-server/src/config/mod.rs",
+    ] {
+        let text = read(&root.join(relative_path));
+        runtime_keys.extend(collect_prefixed_env_tokens(&text));
+    }
+
+    let missing = runtime_keys
+        .difference(&schema_keys)
+        .cloned()
+        .collect::<Vec<_>>();
+    assert!(
+        missing.is_empty(),
+        "runtime-prefixed env keys must be declared in configs/contracts/env.schema.json:\n{}",
+        missing.join("\n")
+    );
 }
 
 #[test]
