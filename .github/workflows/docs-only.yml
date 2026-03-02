@@ -55,22 +55,16 @@ jobs:
           set -euo pipefail
           python3 -m pip install --upgrade pip
           python3 -m pip install -r configs/docs/requirements.lock.txt
-          npm ci --prefix configs/docs
       - name: Run docs markdown lint
         shell: bash
         run: |
           set -euo pipefail
-          npm --prefix configs/docs run -s markdownlint
+          cargo run --locked -q -p bijux-dev-atlas -- docs lint --format json
       - name: Run docs external link check
         shell: bash
         run: |
           set -euo pipefail
           cargo run --locked -q -p bijux-dev-atlas -- docs external-links --allow-network --format json
-      - name: Run docs spelling checks
-        shell: bash
-        run: |
-          set -euo pipefail
-          npm --prefix configs/docs run -s cspell
       - name: Check generated docs references
         shell: bash
         run: |
@@ -83,24 +77,8 @@ jobs:
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/docs-only"
           mkdir -p "${report_root}" "${logs_root}"
-          site_dir="$(python3 - <<'PY'
-from pathlib import Path
-
-for line in Path("mkdocs.yml").read_text(encoding="utf-8").splitlines():
-    stripped = line.strip()
-    if stripped.startswith("site_dir:"):
-        print(stripped.split(":", 1)[1].strip())
-        break
-else:
-    raise SystemExit("mkdocs.yml must declare site_dir")
-PY
-)"
-          mkdocs build --strict > "${report_root}/mkdocs-build.json" 2> "${logs_root}/mkdocs-build.stderr.log"
-          test -f "${site_dir}/index.html"
-          test -d "${site_dir}/assets"
-          file_count="$(find "${site_dir}" -type f | wc -l | tr -d ' ')"
-          test "${file_count}" -gt 10
-          cp -R "${site_dir}" "artifacts/${RUN_ID}/site-preview"
+          cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-preview --allow-subprocess --allow-write --format json > "${report_root}/mkdocs-build.json" 2> "${logs_root}/mkdocs-build.stderr.log"
+          cp -R "artifacts/docs/site" "artifacts/${RUN_ID}/site-preview"
           rm -rf "artifacts/${RUN_ID}/site-preview/_internal"
       - name: Run docs lane
         shell: bash
@@ -115,28 +93,13 @@ PY
         run: |
           set -euo pipefail
           report_root="artifacts/${RUN_ID}/reports"
-          git fetch --depth=1 origin "${{ github.base_ref }}"
-          changed_docs="$(git diff --name-only "origin/${{ github.base_ref }}"...HEAD -- 'docs/**' 'configs/docs/**' 'ops/report/docs/**' 'docker/**' 'make/**' || true)"
-          changed_count="$(printf '%s\n' "${changed_docs}" | sed '/^$/d' | wc -l | tr -d ' ')"
-          printf '%s\n' "${changed_docs}" | sed '/^$/d' > "${report_root}/docs-diff.txt"
-          jq -n \
-            --arg run_id "${RUN_ID}" \
-            --argjson changed_count "${changed_count:-0}" \
-            --rawfile changed "${report_root}/docs-diff.txt" \
-            '{
-              schema_version: 1,
-              kind: "docs_diff_summary_v1",
-              run_id: $run_id,
-              changed_count: $changed_count,
-              changed_paths: ($changed | split("\n") | map(select(length > 0)))
-            }' > "${report_root}/docs-diff-summary.json"
+          cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-diff --allow-git --allow-write --format json > "${report_root}/docs-diff-summary.json"
       - name: Build docs quality summary
         shell: bash
         run: |
           set -euo pipefail
           report_root="artifacts/${RUN_ID}/reports"
-          test -f docs/_internal/generated/docs-test-coverage.json
-          cp docs/_internal/generated/docs-test-coverage.json "${report_root}/docs-test-coverage.json"
+          cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-quality --allow-write --format json > "${report_root}/docs-test-coverage.json"
       - name: Publish summary
         shell: bash
         run: |

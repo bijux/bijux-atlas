@@ -34,12 +34,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          changed="$(git diff --name-only | grep -v '^Cargo.lock$' || true)"
-          if [ -n "$changed" ]; then
-            echo "unexpected changed paths:"
-            echo "$changed"
-            exit 1
-          fi
+          cargo run --locked -q -p bijux-dev-atlas -- ci verify dependency-lock --allow-git --format json
       - name: Open lockfile PR
         uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
         with:

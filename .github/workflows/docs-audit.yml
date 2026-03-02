@@ -60,22 +60,16 @@ jobs:
           set -euo pipefail
           python3 -m pip install --upgrade pip
           python3 -m pip install -r configs/docs/requirements.lock.txt
-          npm ci --prefix configs/docs
       - name: Run docs markdown lint
         shell: bash
         run: |
           set -euo pipefail
-          npm --prefix configs/docs run -s markdownlint
+          cargo run --locked -q -p bijux-dev-atlas -- docs lint --format json
       - name: Run docs external link check
         shell: bash
         run: |
           set -euo pipefail
           cargo run --locked -q -p bijux-dev-atlas -- docs external-links --allow-network --format json
-      - name: Run docs spelling checks
-        shell: bash
-        run: |
-          set -euo pipefail
-          npm --prefix configs/docs run -s cspell
       - name: Check generated docs references
         shell: bash
         run: |
@@ -88,7 +82,7 @@ jobs:
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/docs-audit"
           mkdir -p "${report_root}" "${logs_root}"
-          mkdocs build --strict > "${report_root}/mkdocs-build.json" 2> "${logs_root}/mkdocs-build.stderr.log"
+          cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-preview --allow-subprocess --allow-write --format json > "${report_root}/mkdocs-build.json" 2> "${logs_root}/mkdocs-build.stderr.log"
           cp -R artifacts/docs/site "artifacts/${RUN_ID}/site-preview"
       - name: Run docs audit
         shell: bash

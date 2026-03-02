@@ -1584,49 +1584,11 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
-      - name: Check action pinning policy
+      - name: Run workflow policy verifier
         shell: bash
         run: |
           set -euo pipefail
-          violations="$(rg -n "uses:\s+[^@\s]+@(main|master|HEAD|latest)$" .github/workflows || true)"
-          if [ -n "${violations}" ]; then
-            echo "unacceptable floating action references found"
-            echo "${violations}"
-            exit 1
-          fi
-      - name: Enforce no direct script execution in workflows
-        shell: bash
-        run: |
-          set -euo pipefail
-          ! rg -n "bash +scripts/|python(3)? +scripts/" .github/workflows
-      - name: Enforce no direct external tool invocations
-        shell: bash
-        run: |
-          set -euo pipefail
-          ! rg -n "(^|\s)(helm|kubectl|k6|kind)(\s|$)" .github/workflows \
-            -g '!ops-integration-kind.yml' -g '!ci-pr.yml'
-      - name: Enforce dependabot config contract
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -f .github/dependabot.yml
-          rg -n 'package-ecosystem:\s+"cargo"' .github/dependabot.yml
-          rg -n 'package-ecosystem:\s+"github-actions"' .github/dependabot.yml
-      - name: Enforce docs ownership contract
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -f .github/CODEOWNERS
-          rg -n '^/docs/ +@bijan' .github/CODEOWNERS
-          rg -n '^/crates/\*/docs/ +@bijan' .github/CODEOWNERS
-      - name: Enforce cache size cap
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ -d .cache/cargo/target ]; then
-            size_kb="$(du -sk .cache/cargo/target | awk '{print $1}')"
-            [ "${size_kb}" -le 4194304 ]
-          fi
+          cargo run --locked -q -p bijux-dev-atlas -- ci verify workflow-policy --format json
 
   docker-runtime-image:
     if: needs.route-changes.outputs.docs_only != 'true'
