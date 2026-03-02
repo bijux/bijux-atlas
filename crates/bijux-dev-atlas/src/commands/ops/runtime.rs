@@ -4,8 +4,9 @@ use crate::cli::OpsInstallArgs;
 use crate::cli::{
     OpsCommonArgs, OpsDatasetsCommand, OpsE2eCommand, OpsEvidenceCommand, OpsGenerateCommand,
     OpsHelmEnvArgs, OpsInventoryCommand, OpsK8sCommand, OpsLoadBaselineCommand, OpsLoadCommand,
-    OpsObsCommand, OpsObsDrillCommand, OpsPinsCommand, OpsRenderArgs, OpsRenderTarget,
-    OpsReportCommand, OpsSchemaCommand, OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
+    OpsObsCommand, OpsObsDrillCommand, OpsPinsCommand, OpsProfilesCommand,
+    OpsProfilesValidateArgs, OpsRenderArgs, OpsRenderTarget, OpsReportCommand, OpsSchemaCommand,
+    OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
 };
 use crate::ops_support::{
     build_ops_run_report, load_load_manifest, load_stack_manifest, load_stack_pins,
@@ -52,6 +53,9 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
         | OpsCommand::K8sPlan(common)
         | OpsCommand::K8sEnvSurface(common)
         | OpsCommand::K8sValidateProfiles(common)
+        | OpsCommand::Profiles {
+            command: OpsProfilesCommand::Validate(OpsProfilesValidateArgs { common, .. }),
+        }
         | OpsCommand::K8sDryRun(common)
         | OpsCommand::K8sPorts(common)
         | OpsCommand::K8sConformance(common) => Some(common),
@@ -158,6 +162,11 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             OpsK8sCommand::Test(common) => OpsCommand::K8sConformance(common),
             OpsK8sCommand::Smoke(common) => OpsCommand::K8sConformance(common),
             OpsK8sCommand::Status(args) => OpsCommand::Status(args),
+        },
+        OpsCommand::Profiles { command } => match command {
+            OpsProfilesCommand::Validate(args) => OpsCommand::Profiles {
+                command: OpsProfilesCommand::Validate(args),
+            },
         },
         OpsCommand::Load { command } => match command {
             OpsLoadCommand::Plan { suite, common } => OpsCommand::LoadPlan { suite, common },

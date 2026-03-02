@@ -172,189 +172,35 @@ fn render_helm_configmap_env_report(
     Ok((rendered, exit_code))
 }
 
-fn validate_helm_profile_matrix(common: &OpsCommonArgs) -> Result<(String, i32), String> {
-    if !common.allow_subprocess {
+fn validate_helm_profile_matrix(
+    args: &crate::cli::OpsProfilesValidateArgs,
+) -> Result<(String, i32), String> {
+    if !args.common.allow_subprocess {
         return Err("ops k8s validate-profiles requires --allow-subprocess".to_string());
     }
-    let repo_root = resolve_repo_root(common.repo_root.clone())?;
-    let ops_root =
-        resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
-    let process = OpsProcess::new(common.allow_subprocess);
-    let chart_path = ops_root.join("k8s/charts/bijux-atlas");
-    let values_root = ops_root.join("k8s/values");
-    let matrix_path = ops_root.join("k8s/install-matrix.json");
-    let matrix_text = std::fs::read_to_string(&matrix_path).map_err(|err| {
-        format!(
-            "failed to read install matrix {}: {err}",
-            matrix_path.display()
-        )
-    })?;
-    let matrix_json: serde_json::Value = serde_json::from_str(&matrix_text)
-        .map_err(|err| format!("invalid install matrix: {err}"))?;
-    let Some(profiles) = matrix_json
-        .get("profiles")
-        .and_then(|value| value.as_array())
-    else {
-        return Err("install matrix must declare a profiles array".to_string());
-    };
-
-    let mut rows = Vec::new();
-    let mut errors = 0usize;
-    let mut warnings = 0usize;
-    for profile in profiles {
-        let Some(name) = profile.get("name").and_then(|value| value.as_str()) else {
-            return Err("install matrix profile is missing name".to_string());
-        };
-        let Some(values_rel) = profile.get("values_file").and_then(|value| value.as_str()) else {
-            return Err(format!(
-                "install matrix profile `{name}` is missing values_file"
-            ));
-        };
-        let values_path = repo_root.join(values_rel);
-        if !values_path.is_file() {
-            return Err(format!(
-                "install matrix profile `{name}` references missing values file `{values_rel}`"
-            ));
-        }
-
-        let lint_args = vec![
-            "lint".to_string(),
-            chart_path.display().to_string(),
-            "-f".to_string(),
-            values_path.display().to_string(),
-        ];
-        let lint_result = process.run_subprocess("helm", &lint_args, &repo_root);
-        let (lint_status, lint_event, lint_note) = match lint_result {
-            Ok((stdout, event)) => (
-                "pass",
-                event,
-                stdout.lines().next().unwrap_or_default().to_string(),
-            ),
-            Err(err) => {
-                errors += 1;
-                (
-                    "fail",
-                    serde_json::json!({
-                        "binary": "helm",
-                        "args": ["lint", chart_path.display().to_string(), "-f", values_path.display().to_string()],
-                        "cwd": repo_root.display().to_string(),
-                        "status": serde_json::Value::Null,
-                    }),
-                    err.to_stable_message(),
-                )
-            }
-        };
-
-        let template_args = vec![
-            "template".to_string(),
-            format!("atlas-{name}"),
-            chart_path.display().to_string(),
-            "--namespace".to_string(),
-            "bijux-atlas".to_string(),
-            "-f".to_string(),
-            values_path.display().to_string(),
-        ];
-        let template_result = process.run_subprocess("helm", &template_args, &repo_root);
-        let (template_status, template_event, rendered_yaml, template_note) = match template_result
-        {
-            Ok((stdout, event)) => ("pass", event, stdout, String::new()),
-            Err(err) => {
-                errors += 1;
-                (
-                    "fail",
-                    serde_json::json!({
-                        "binary": "helm",
-                        "args": ["template", format!("atlas-{name}"), chart_path.display().to_string(), "--namespace", "bijux-atlas", "-f", values_path.display().to_string()],
-                        "cwd": repo_root.display().to_string(),
-                        "status": serde_json::Value::Null,
-                    }),
-                    String::new(),
-                    err.to_stable_message(),
-                )
-            }
-        };
-
-        let mut kubeconform_status = "skipped";
-        let mut kubeconform_note = "kubeconform skipped because helm template failed".to_string();
-        let mut kubeconform_event = serde_json::json!({
-            "binary": "kubeconform",
-            "args": ["-strict", "-summary", "-ignore-missing-schemas", "<rendered-manifest>"],
-            "cwd": repo_root.display().to_string(),
-            "status": serde_json::Value::Null,
-        });
-        let mut rendered_resources = 0usize;
-        if template_status == "pass" {
-            let yaml_documents = serde_yaml::Deserializer::from_str(&rendered_yaml).count();
-            rendered_resources = yaml_documents;
-            let temp_dir = repo_root.join("artifacts/ops/profile-render-matrix/tmp");
-            std::fs::create_dir_all(&temp_dir).map_err(|err| {
-                format!(
-                    "failed to create temp dir {} for `{name}`: {err}",
-                    temp_dir.display()
-                )
-            })?;
-            let rendered_path = temp_dir.join(format!("{name}.rendered.yaml"));
-            std::fs::write(&rendered_path, &rendered_yaml).map_err(|err| {
-                format!(
-                    "failed to write rendered manifest {}: {err}",
-                    rendered_path.display()
-                )
-            })?;
-            let kubeconform_args = vec![
-                "-strict".to_string(),
-                "-summary".to_string(),
-                "-ignore-missing-schemas".to_string(),
-                rendered_path.display().to_string(),
-            ];
-            match process.run_subprocess("kubeconform", &kubeconform_args, &repo_root) {
-                Ok((stdout, event)) => {
-                    kubeconform_status = "pass";
-                    kubeconform_note = stdout.lines().next().unwrap_or_default().to_string();
-                    kubeconform_event = event;
-                }
-                Err(err) => {
-                    errors += 1;
-                    kubeconform_status = "fail";
-                    kubeconform_note = err.to_stable_message();
-                    kubeconform_event = serde_json::json!({
-                        "binary": "kubeconform",
-                        "args": ["-strict", "-summary", "-ignore-missing-schemas", rendered_path.display().to_string()],
-                        "cwd": repo_root.display().to_string(),
-                        "status": serde_json::Value::Null,
-                    });
-                }
-            }
-        }
-
-        if template_status == "pass" && rendered_resources == 0 {
-            warnings += 1;
-        }
-
-        rows.push(serde_json::json!({
-            "profile": name,
-            "values_file": values_rel,
-            "values_root": values_root.display().to_string(),
-            "helm_lint": {"status": lint_status, "note": lint_note, "event": lint_event},
-            "helm_template": {"status": template_status, "note": template_note, "event": template_event},
-            "kubeconform": {"status": kubeconform_status, "note": kubeconform_note, "event": kubeconform_event},
-            "rendered_resources": rendered_resources,
-        }));
-    }
-
-    rows.sort_by(|a, b| {
-        a.get("profile")
-            .and_then(|value| value.as_str())
-            .cmp(&b.get("profile").and_then(|value| value.as_str()))
-    });
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "kind": "ops_k8s_profile_render_matrix",
-        "text": format!("validated {} install profiles", rows.len()),
-        "rows": rows,
-        "summary": {"total": profiles.len(), "errors": errors, "warnings": warnings}
-    });
-    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-    let exit = if errors == 0 {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let ops_root = resolve_ops_root(&repo_root, args.common.ops_root.clone())
+        .map_err(|e| e.to_stable_message())?;
+    let report = bijux_dev_atlas::ops::profiles_matrix::validate_profiles(
+        &repo_root,
+        &bijux_dev_atlas::ops::profiles_matrix::ValidateProfilesOptions {
+            chart_dir: ops_root.join("k8s/charts/bijux-atlas"),
+            values_root: ops_root.join("k8s/values"),
+            schema_path: ops_root.join("k8s/charts/bijux-atlas/values.schema.json"),
+            install_matrix_path: ops_root.join("k8s/install-matrix.json"),
+            profile: args.common.profile.clone(),
+            timeout_seconds: args.timeout_seconds,
+            run_kubeconform: args.kubeconform,
+        },
+    )?;
+    let payload = serde_json::to_value(&report).map_err(|err| err.to_string())?;
+    let schema_path = repo_root.join("configs/contracts/reports/ops-profiles.schema.json");
+    bijux_dev_atlas::ops::profiles_matrix::validate_report_value(&payload, &schema_path)?;
+    let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
+    let exit = if report.summary.helm_failures == 0
+        && report.summary.schema_failures == 0
+        && report.summary.kubeconform_failures == 0
+    {
         ops_exit::PASS
     } else {
         ops_exit::FAIL
@@ -441,7 +287,16 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
         }
         OpsCommand::HelmEnv(args) => render_helm_configmap_env_report(&args),
         OpsCommand::K8sEnvSurface(common) => render_helm_env_surface(&common),
-        OpsCommand::K8sValidateProfiles(common) => validate_helm_profile_matrix(&common),
+        OpsCommand::K8sValidateProfiles(common) => {
+            validate_helm_profile_matrix(&crate::cli::OpsProfilesValidateArgs {
+                common,
+                timeout_seconds: 30,
+                kubeconform: true,
+            })
+        }
+        OpsCommand::Profiles { command } => match command {
+            crate::cli::OpsProfilesCommand::Validate(args) => validate_helm_profile_matrix(&args),
+        },
         OpsCommand::Doctor(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())

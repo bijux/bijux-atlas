@@ -22,6 +22,10 @@ pub enum OpsCommand {
         #[command(subcommand)]
         command: OpsK8sCommand,
     },
+    Profiles {
+        #[command(subcommand)]
+        command: OpsProfilesCommand,
+    },
     Load {
         #[command(subcommand)]
         command: OpsLoadCommand,
@@ -174,6 +178,21 @@ pub enum OpsK8sCommand {
     Test(OpsCommonArgs),
     Smoke(OpsCommonArgs),
     Status(OpsStatusArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsProfilesCommand {
+    Validate(OpsProfilesValidateArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsProfilesValidateArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long, default_value_t = 30)]
+    pub timeout_seconds: u64,
+    #[arg(long, default_value_t = true)]
+    pub kubeconform: bool,
 }
 
 #[derive(Args, Debug, Clone)]

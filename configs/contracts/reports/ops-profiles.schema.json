@@ -1,0 +1,218 @@
+{
+  "$id": "https://bijux.dev/contracts/reports/ops-profiles.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Ops Profiles Matrix Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "inputs",
+    "tooling",
+    "rows",
+    "summary"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "kind": {
+      "type": "string",
+      "const": "ops_profiles_matrix"
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "chart_dir",
+        "values_root",
+        "schema_path",
+        "profile_selector"
+      ],
+      "properties": {
+        "chart_dir": {
+          "type": "string",
+          "minLength": 1
+        },
+        "values_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schema_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profile_selector": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "tooling": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "binary",
+          "probe_argv",
+          "declared"
+        ],
+        "properties": {
+          "binary": {
+            "type": "string",
+            "minLength": 1
+          },
+          "probe_argv": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "declared": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "profile",
+          "values_file",
+          "helm_template",
+          "values_schema",
+          "kubeconform",
+          "rendered_resources"
+        ],
+        "properties": {
+          "profile": {
+            "type": "string",
+            "minLength": 1
+          },
+          "values_file": {
+            "type": "string",
+            "minLength": 1
+          },
+          "helm_template": {
+            "$ref": "#/$defs/statusReport"
+          },
+          "values_schema": {
+            "$ref": "#/$defs/statusReport"
+          },
+          "kubeconform": {
+            "$ref": "#/$defs/statusReport"
+          },
+          "rendered_resources": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total",
+        "helm_failures",
+        "schema_failures",
+        "kubeconform_failures"
+      ],
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "helm_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "schema_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "kubeconform_failures": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "$defs": {
+    "toolEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "binary",
+        "args",
+        "cwd",
+        "status",
+        "stderr"
+      ],
+      "properties": {
+        "binary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cwd": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail",
+            "skipped"
+          ]
+        },
+        "stderr": {
+          "type": "string"
+        }
+      }
+    },
+    "statusReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "note",
+        "errors",
+        "event"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail",
+            "skipped"
+          ]
+        },
+        "note": {
+          "type": "string"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "event": {
+          "$ref": "#/$defs/toolEvent"
+        }
+      }
+    }
+  }
+}

@@ -71,6 +71,12 @@ fn force_json_ops(command: &mut OpsCommand) {
         | OpsCommand::K8sPlan(common)
         | OpsCommand::K8sEnvSurface(common)
         | OpsCommand::K8sValidateProfiles(common)
+        | OpsCommand::Profiles {
+            command: crate::cli::OpsProfilesCommand::Validate(crate::cli::OpsProfilesValidateArgs {
+                common,
+                ..
+            }),
+        }
         | OpsCommand::K8sDryRun(common)
         | OpsCommand::K8sPorts(common)
         | OpsCommand::K8sConformance(common)
@@ -418,6 +424,12 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | OpsCommand::K8sPlan(common)
             | OpsCommand::K8sEnvSurface(common)
             | OpsCommand::K8sValidateProfiles(common)
+            | OpsCommand::Profiles {
+                command:
+                    crate::cli::OpsProfilesCommand::Validate(
+                        crate::cli::OpsProfilesValidateArgs { common, .. },
+                    ),
+            }
             | OpsCommand::K8sDryRun(common)
             | OpsCommand::K8sPorts(common)
             | OpsCommand::K8sConformance(common) => common.repo_root = Some(root.clone()),
