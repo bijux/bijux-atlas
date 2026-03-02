@@ -1,0 +1,72 @@
+{
+  "$id": "docker/schema/push-policy.schema.json",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "policy_id",
+    "owner",
+    "description",
+    "allowed_registries",
+    "promotion_order",
+    "required_signing",
+    "require_digest_only_promotions",
+    "require_provenance_bundle"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "policy_id": {
+      "type": "string",
+      "const": "docker-registry-promotion"
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "allowed_registries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9./-]+$"
+      }
+    },
+    "promotion_order": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9./-]+$"
+      }
+    },
+    "required_signing": {
+      "type": "object",
+      "required": [
+        "cosign",
+        "keyless"
+      ],
+      "properties": {
+        "cosign": {
+          "type": "boolean"
+        },
+        "keyless": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "require_digest_only_promotions": {
+      "type": "boolean"
+    },
+    "require_provenance_bundle": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

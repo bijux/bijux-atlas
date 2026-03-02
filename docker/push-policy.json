@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "policy_id": "docker-registry-promotion",
+  "owner": "bijux-atlas-platform",
+  "description": "Define the governed registries, signing, and promotion order for Docker release publication.",
+  "allowed_registries": [
+    "ghcr.io/bijux",
+    "registry.bijux.local"
+  ],
+  "promotion_order": [
+    "registry.bijux.local",
+    "ghcr.io/bijux"
+  ],
+  "required_signing": {
+    "cosign": true,
+    "keyless": true
+  },
+  "require_digest_only_promotions": true,
+  "require_provenance_bundle": true
+}

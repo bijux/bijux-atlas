@@ -29,14 +29,8 @@
     }
   },
   "runtime_engine": "docker",
-  "airgap_build": {
-    "declared": false,
-    "policy": "stub"
-  },
-  "multi_registry_push": {
-    "declared": false,
-    "registries": []
-  },
+  "airgap_policy_path": "docker/airgap-policy.json",
+  "push_policy_path": "docker/push-policy.json",
   "downloaded_assets": {
     "require_digest_pins": true
   },
@@ -58,6 +52,15 @@
       "spdx-json",
       "cyclonedx-json"
     ]
+  },
+  "release_provenance": {
+    "required_bundle_paths": [
+      "sbom.spdx.json",
+      "sbom.cyclonedx.json",
+      "scan.trivy.json",
+      "image-digests.json"
+    ],
+    "required_before_release": true
   },
   "build_network_policy": {
     "allowed_tokens": [
