@@ -18,6 +18,12 @@ pub struct GovernanceObject {
     pub reviewed_on: String,
 }
 
+#[derive(Debug, Clone)]
+pub struct GovernanceValidationReport {
+    pub errors: Vec<String>,
+    pub orphan_rows: Vec<serde_json::Value>,
+}
+
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
     serde_json::from_str(
         &fs::read_to_string(path).map_err(|e| format!("read {} failed: {e}", path.display()))?,
@@ -286,7 +292,10 @@ pub fn governance_summary(objects: &[GovernanceObject]) -> BTreeMap<String, usiz
     by_domain
 }
 
-pub fn validate_governance_objects(repo_root: &Path, objects: &[GovernanceObject]) -> Vec<String> {
+pub fn validate_governance_objects(
+    repo_root: &Path,
+    objects: &[GovernanceObject],
+) -> GovernanceValidationReport {
     let allowed_lifecycle = ["stable", "experimental", "deprecated"]
         .into_iter()
         .collect::<BTreeSet<_>>();
@@ -425,14 +434,13 @@ pub fn validate_governance_objects(repo_root: &Path, objects: &[GovernanceObject
         }
     }
 
-    write_governance_orphan_report(repo_root, &orphan_rows);
     let registry_coverage_errors = validate_registry_map(repo_root, objects, &registry_map);
     errors.extend(registry_coverage_errors);
     let ssot_drift = detect_ssot_drift(&registry_map);
     errors.extend(ssot_drift);
 
     errors.sort();
-    errors
+    GovernanceValidationReport { errors, orphan_rows }
 }
 
 pub fn find_governance_object<'a>(
@@ -558,19 +566,16 @@ fn owner_is_valid(owner_ids: &BTreeSet<String>, owner: &str) -> bool {
         .all(|part| owner_ids.contains(part))
 }
 
-fn write_governance_orphan_report(repo_root: &Path, rows: &[serde_json::Value]) {
-    let path = repo_root.join("artifacts/governance/governance-orphans.json");
-    if let Some(parent) = path.parent() {
-        let _ = fs::create_dir_all(parent);
-    }
-    let payload = serde_json::json!({
+pub fn governance_orphan_report_path(repo_root: &Path) -> PathBuf {
+    repo_root.join("artifacts/governance/governance-orphans.json")
+}
+
+pub fn governance_orphan_report_payload(rows: &[serde_json::Value]) -> serde_json::Value {
+    serde_json::json!({
         "schema_version": 1,
         "kind": "governance_orphans",
         "orphans": rows,
-    });
-    if let Ok(raw) = serde_json::to_string_pretty(&payload) {
-        let _ = fs::write(path, raw);
-    }
+    })
 }
 
 fn load_domain_registry_map(repo_root: &Path) -> BTreeMap<String, Vec<String>> {

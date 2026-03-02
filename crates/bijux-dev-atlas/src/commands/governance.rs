@@ -4,8 +4,9 @@ use crate::cli::GovernanceCommand;
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::governance_objects::{
     collect_governance_objects, find_governance_object, governance_coverage_path,
-    governance_coverage_score, governance_object_schema, governance_summary_markdown,
-    governance_summary_paths, validate_governance_objects,
+    governance_coverage_score, governance_object_schema, governance_orphan_report_path,
+    governance_orphan_report_payload, governance_summary_markdown, governance_summary_paths,
+    validate_governance_objects,
 };
 use std::fs;
 
@@ -65,9 +66,10 @@ pub(crate) fn run_governance_command(
         } => {
             let root = resolve_repo_root(repo_root)?;
             let objects = collect_governance_objects(&root)?;
-            let errors = validate_governance_objects(&root, &objects);
+            let validation = validate_governance_objects(&root, &objects);
             let (graph_path, summary_path) = governance_summary_paths(&root);
             let coverage_path = governance_coverage_path(&root);
+            let orphan_path = governance_orphan_report_path(&root);
             if let Some(parent) = graph_path.parent() {
                 fs::create_dir_all(parent)
                     .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
@@ -94,18 +96,24 @@ pub(crate) fn run_governance_command(
                     .map_err(|e| format!("encode governance coverage failed: {e}"))?,
             )
             .map_err(|e| format!("write {} failed: {e}", coverage_path.display()))?;
+            fs::write(
+                &orphan_path,
+                serde_json::to_string_pretty(&governance_orphan_report_payload(&validation.orphan_rows))
+                    .map_err(|e| format!("encode governance orphan report failed: {e}"))?,
+            )
+            .map_err(|e| format!("write {} failed: {e}", orphan_path.display()))?;
 
             let payload = serde_json::json!({
                 "schema_version": 1,
                 "kind": "governance_validate",
-                "status": if errors.is_empty() {"ok"} else {"failed"},
+                "status": if validation.errors.is_empty() {"ok"} else {"failed"},
                 "objects": collect_governance_objects(&root)?,
-                "errors": errors,
+                "errors": validation.errors,
                 "artifacts": {
                     "governance_graph": graph_path.strip_prefix(&root).unwrap_or(&graph_path).display().to_string(),
                     "governance_summary": summary_path.strip_prefix(&root).unwrap_or(&summary_path).display().to_string(),
                     "governance_coverage": coverage_path.strip_prefix(&root).unwrap_or(&coverage_path).display().to_string(),
-                    "governance_orphans": "artifacts/governance/governance-orphans.json",
+                    "governance_orphans": orphan_path.strip_prefix(&root).unwrap_or(&orphan_path).display().to_string(),
                 }
             });
             let rendered = emit_payload(format, out, &payload)?;
