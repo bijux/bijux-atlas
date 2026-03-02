@@ -76,10 +76,50 @@ fn k8s_contracts() -> Vec<Contract> {
             id: ContractId("OPS-HELM-ENV-001".to_string()),
             title: "helm env allowlist subset contract",
             tests: vec![TestCase {
-                id: TestId("ops.helm_env.runtime_allowlist_subset".to_string()),
+                id: TestId("ops.k8s.helm_env_runtime_allowlist_subset".to_string()),
                 title: "effect lane requires Helm-emitted ConfigMap env keys to stay inside the runtime allowlist",
                 kind: TestKind::Subprocess,
                 run: test_ops_helm_env_001_runtime_allowlist_subset,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-PROFILES-001".to_string()),
+            title: "profiles render success contract",
+            tests: vec![TestCase {
+                id: TestId("ops.k8s.profiles_render_success".to_string()),
+                title: "effect lane requires every install profile to render with helm template",
+                kind: TestKind::Subprocess,
+                run: test_ops_profiles_001_all_profiles_render,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-PROFILES-002".to_string()),
+            title: "profiles values schema contract",
+            tests: vec![TestCase {
+                id: TestId("ops.k8s.profiles_values_schema_valid".to_string()),
+                title: "effect lane requires every install profile to satisfy merged values schema",
+                kind: TestKind::Subprocess,
+                run: test_ops_profiles_002_all_profiles_satisfy_values_schema,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-PROFILES-003".to_string()),
+            title: "profiles kubeconform contract",
+            tests: vec![TestCase {
+                id: TestId("ops.k8s.profiles_kubeconform_valid".to_string()),
+                title: "effect lane requires every install profile to pass kubeconform when kubeconform is available",
+                kind: TestKind::Subprocess,
+                run: test_ops_profiles_003_all_profiles_kubeconform_validate,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-PROFILES-004".to_string()),
+            title: "rollout safety profile set contract",
+            tests: vec![TestCase {
+                id: TestId("ops.k8s.rollout_safety_profiles_exist_and_validate".to_string()),
+                title: "effect lane requires rollout-safety profiles to exist and validate",
+                kind: TestKind::Subprocess,
+                run: test_ops_profiles_004_rollout_safety_profiles_exist_and_validate,
             }],
         },
     ]

@@ -189,6 +189,44 @@
       "required": true
     },
     {
+      "contract_id": "OPS-PROFILES-001",
+      "domain": "ops",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "OPS-PROFILES-002",
+      "domain": "ops",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "OPS-PROFILES-003",
+      "domain": "ops",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "OPS-PROFILES-004",
+      "domain": "ops",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
       "contract_id": "OPS-ROOT-001",
       "domain": "ops",
       "lanes": [

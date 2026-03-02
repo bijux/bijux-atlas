@@ -91,13 +91,25 @@ struct InstallMatrixProfile {
     values_file: String,
 }
 
+#[derive(Debug, Deserialize)]
+struct RolloutSafetyDoc {
+    profiles: Vec<RolloutSafetyProfile>,
+}
+
+#[derive(Debug, Deserialize)]
+struct RolloutSafetyProfile {
+    name: String,
+}
+
 #[derive(Debug, Clone)]
 pub struct ValidateProfilesOptions {
     pub chart_dir: PathBuf,
     pub values_root: PathBuf,
     pub schema_path: PathBuf,
     pub install_matrix_path: PathBuf,
+    pub rollout_safety_path: PathBuf,
     pub profile: Option<String>,
+    pub profile_set: Option<String>,
     pub timeout_seconds: u64,
     pub run_kubeconform: bool,
 }
@@ -200,10 +212,18 @@ fn load_install_matrix(path: &Path) -> Result<InstallMatrixDoc, String> {
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
+fn load_rollout_safety(path: &Path) -> Result<RolloutSafetyDoc, String> {
+    let text = std::fs::read_to_string(path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
+}
+
 fn selected_profiles(
     values_root: &Path,
     matrix: &InstallMatrixDoc,
+    rollout_safety: &RolloutSafetyDoc,
     profile: Option<&str>,
+    profile_set: Option<&str>,
 ) -> Result<Vec<InstallMatrixProfile>, String> {
     let _ = discover_profiles(values_root)?;
     let mut rows = matrix.profiles.clone();
@@ -216,6 +236,22 @@ fn selected_profiles(
         if selected.is_empty() {
             return Err(format!("profile `{name}` is not declared in install matrix"));
         }
+        return Ok(selected);
+    }
+    if let Some(name) = profile_set {
+        if name != "rollout-safety" {
+            return Err(format!("unknown profile set `{name}`"));
+        }
+        let mut selected = Vec::new();
+        for required_name in rollout_safety.profiles.iter().map(|row| row.name.as_str()) {
+            let Some(row) = rows.iter().find(|row| row.name == required_name).cloned() else {
+                return Err(format!(
+                    "rollout safety contract references missing install-matrix profile `{required_name}`"
+                ));
+            };
+            selected.push(row);
+        }
+        selected.sort_by(|left, right| left.name.cmp(&right.name));
         return Ok(selected);
     }
     Ok(rows)
@@ -664,10 +700,13 @@ pub fn validate_profiles(
     let helm_binary = helm_env::resolve_helm_binary_from_inventory(repo_root)?;
     let tooling = load_tooling(repo_root)?;
     let matrix = load_install_matrix(&options.install_matrix_path)?;
+    let rollout_safety = load_rollout_safety(&options.rollout_safety_path)?;
     let validator = compile_values_schema(&options.schema_path)?;
     let base_values = values_yaml_to_json(&options.chart_dir.join("values.yaml"))?;
     let selector_label = if let Some(name) = &options.profile {
         format!("single:{name}")
+    } else if let Some(name) = &options.profile_set {
+        format!("set:{name}")
     } else {
         "all".to_string()
     };
@@ -675,7 +714,9 @@ pub fn validate_profiles(
     for profile in selected_profiles(
         &options.values_root,
         &matrix,
+        &rollout_safety,
         options.profile.as_deref(),
+        options.profile_set.as_deref(),
     )? {
         let values_path = repo_root.join(&profile.values_file);
         if !values_path.is_file() {

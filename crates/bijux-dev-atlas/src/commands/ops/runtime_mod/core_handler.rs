@@ -188,7 +188,9 @@ fn validate_helm_profile_matrix(
             values_root: ops_root.join("k8s/values"),
             schema_path: ops_root.join("k8s/charts/bijux-atlas/values.schema.json"),
             install_matrix_path: ops_root.join("k8s/install-matrix.json"),
+            rollout_safety_path: ops_root.join("k8s/rollout-safety-contract.json"),
             profile: args.common.profile.clone(),
+            profile_set: args.profile_set.clone(),
             timeout_seconds: args.timeout_seconds,
             run_kubeconform: args.kubeconform,
         },
@@ -290,6 +292,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
         OpsCommand::K8sValidateProfiles(common) => {
             validate_helm_profile_matrix(&crate::cli::OpsProfilesValidateArgs {
                 common,
+                profile_set: None,
                 timeout_seconds: 30,
                 kubeconform: true,
             })

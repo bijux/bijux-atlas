@@ -7,6 +7,7 @@ use std::process::{Command, Stdio};
 use std::time::Instant;
 
 use crate::ops::helm_env;
+use crate::ops::profiles_matrix;
 use serde::Deserialize;
 use serde_json::Value;
 use sha2::{Digest, Sha256};

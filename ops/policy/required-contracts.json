@@ -136,6 +136,34 @@
     },
     {
       "domain": "ops",
+      "contract_id": "OPS-PROFILES-001",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Every blocking lane must prove install profiles still render under Helm."
+    },
+    {
+      "domain": "ops",
+      "contract_id": "OPS-PROFILES-002",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Every blocking lane must prove install profiles still satisfy the merged values schema."
+    },
+    {
+      "domain": "ops",
+      "contract_id": "OPS-PROFILES-003",
+      "lanes": ["merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Merge and release lanes must prove rendered install profiles still pass kubeconform."
+    },
+    {
+      "domain": "ops",
+      "contract_id": "OPS-PROFILES-004",
+      "lanes": ["merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Merge and release lanes must prove the rollout-safety profile subset still exists and validates."
+    },
+    {
+      "domain": "ops",
       "contract_id": "OPS-STACK-E-005",
       "lanes": ["release"],
       "owner": "atlas-maintainers",

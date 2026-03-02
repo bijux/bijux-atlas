@@ -827,6 +827,244 @@ fn test_ops_helm_env_001_runtime_allowlist_subset(ctx: &RunContext) -> TestResul
     }
 }
 
+fn load_profiles_matrix_report(
+    ctx: &RunContext,
+    profile: Option<&str>,
+    profile_set: Option<&str>,
+) -> Result<profiles_matrix::ProfilesMatrixReport, String> {
+    let options = profiles_matrix::ValidateProfilesOptions {
+        chart_dir: ctx.repo_root.join("ops/k8s/charts/bijux-atlas"),
+        values_root: ctx.repo_root.join("ops/k8s/values"),
+        schema_path: ctx
+            .repo_root
+            .join("ops/k8s/charts/bijux-atlas/values.schema.json"),
+        install_matrix_path: ctx.repo_root.join("ops/k8s/install-matrix.json"),
+        rollout_safety_path: ctx.repo_root.join("ops/k8s/rollout-safety-contract.json"),
+        profile: profile.map(str::to_string),
+        profile_set: profile_set.map(str::to_string),
+        timeout_seconds: 30,
+        run_kubeconform: true,
+    };
+    profiles_matrix::validate_profiles(&ctx.repo_root, &options)
+}
+
+fn write_profiles_matrix_report(
+    ctx: &RunContext,
+    rel: &str,
+    report: &profiles_matrix::ProfilesMatrixReport,
+) -> Option<Violation> {
+    let value = match serde_json::to_value(report) {
+        Ok(value) => value,
+        Err(err) => {
+            return Some(effect_violation(
+                "OPS-PROFILES-001",
+                "ops.k8s.profiles_render_success",
+                &format!("failed to encode profiles matrix report: {err}"),
+                rel,
+            ));
+        }
+    };
+    let _ = write_ops_effect_json(ctx, rel, &value);
+    None
+}
+
+fn test_ops_profiles_001_all_profiles_render(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-PROFILES-001";
+    let test_id = "ops.k8s.profiles_render_success";
+    let report = match load_profiles_matrix_report(ctx, None, None) {
+        Ok(report) => report,
+        Err(message) => {
+            return TestResult::Fail(vec![effect_violation(
+                contract_id,
+                test_id,
+                &message,
+                "ops/k8s/install-matrix.json",
+            )]);
+        }
+    };
+    if let Some(mut violation) =
+        write_profiles_matrix_report(ctx, "profiles/full-matrix.json", &report)
+    {
+        violation.contract_id = contract_id.to_string();
+        violation.test_id = test_id.to_string();
+        return TestResult::Fail(vec![violation]);
+    }
+    let mut violations = report
+        .rows
+        .iter()
+        .filter(|row| row.helm_template.status == "fail")
+        .map(|row| {
+            effect_violation(
+                contract_id,
+                test_id,
+                "install profile failed helm template render",
+                &row.values_file,
+            )
+        })
+        .collect::<Vec<_>>();
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.push(effect_violation(
+            contract_id,
+            test_id,
+            "inspect artifacts/contracts/ops/profiles/full-matrix.json for the full render matrix",
+            "artifacts/contracts/ops/profiles/full-matrix.json",
+        ));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_profiles_002_all_profiles_satisfy_values_schema(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-PROFILES-002";
+    let test_id = "ops.k8s.profiles_values_schema_valid";
+    let report = match load_profiles_matrix_report(ctx, None, None) {
+        Ok(report) => report,
+        Err(message) => {
+            return TestResult::Fail(vec![effect_violation(
+                contract_id,
+                test_id,
+                &message,
+                "ops/k8s/charts/bijux-atlas/values.schema.json",
+            )]);
+        }
+    };
+    let mut violations = report
+        .rows
+        .iter()
+        .filter(|row| row.values_schema.status == "fail")
+        .flat_map(|row| {
+            row.values_schema.errors.iter().map(|message| {
+                effect_violation(
+                    contract_id,
+                    test_id,
+                    &format!("install profile violates merged values schema: {message}"),
+                    &row.values_file,
+                )
+            })
+        })
+        .collect::<Vec<_>>();
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.push(effect_violation(
+            contract_id,
+            test_id,
+            "inspect artifacts/contracts/ops/profiles/full-matrix.json for the full schema diff",
+            "artifacts/contracts/ops/profiles/full-matrix.json",
+        ));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_profiles_003_all_profiles_kubeconform_validate(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-PROFILES-003";
+    let test_id = "ops.k8s.profiles_kubeconform_valid";
+    let report = match load_profiles_matrix_report(ctx, None, None) {
+        Ok(report) => report,
+        Err(message) => {
+            return TestResult::Fail(vec![effect_violation(
+                contract_id,
+                test_id,
+                &message,
+                "ops/k8s/install-matrix.json",
+            )]);
+        }
+    };
+    let mut violations = report
+        .rows
+        .iter()
+        .filter(|row| row.kubeconform.status == "fail")
+        .flat_map(|row| {
+            row.kubeconform.errors.iter().map(|message| {
+                effect_violation(
+                    contract_id,
+                    test_id,
+                    &format!("install profile failed kubeconform validation: {message}"),
+                    &row.values_file,
+                )
+            })
+        })
+        .collect::<Vec<_>>();
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.push(effect_violation(
+            contract_id,
+            test_id,
+            "inspect artifacts/contracts/ops/profiles/full-matrix.json for kubeconform evidence",
+            "artifacts/contracts/ops/profiles/full-matrix.json",
+        ));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_profiles_004_rollout_safety_profiles_exist_and_validate(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-PROFILES-004";
+    let test_id = "ops.k8s.rollout_safety_profiles_exist_and_validate";
+    let report = match load_profiles_matrix_report(ctx, None, Some("rollout-safety")) {
+        Ok(report) => report,
+        Err(message) => {
+            return TestResult::Fail(vec![effect_violation(
+                contract_id,
+                test_id,
+                &message,
+                "ops/k8s/rollout-safety-contract.json",
+            )]);
+        }
+    };
+    let value = match serde_json::to_value(&report) {
+        Ok(value) => value,
+        Err(err) => {
+            return TestResult::Fail(vec![effect_violation(
+                contract_id,
+                test_id,
+                &format!("failed to encode rollout-safety matrix report: {err}"),
+                "artifacts/contracts/ops/profiles/rollout-safety-matrix.json",
+            )]);
+        }
+    };
+    let _ = write_ops_effect_json(ctx, "profiles/rollout-safety-matrix.json", &value);
+    let mut violations = Vec::new();
+    for row in &report.rows {
+        if row.helm_template.status == "fail" {
+            violations.push(effect_violation(
+                contract_id,
+                test_id,
+                "rollout-safety profile failed helm template render",
+                &row.values_file,
+            ));
+        }
+        if row.values_schema.status == "fail" {
+            violations.push(effect_violation(
+                contract_id,
+                test_id,
+                "rollout-safety profile failed merged values schema validation",
+                &row.values_file,
+            ));
+        }
+        if row.kubeconform.status == "fail" {
+            violations.push(effect_violation(
+                contract_id,
+                test_id,
+                "rollout-safety profile failed kubeconform validation",
+                &row.values_file,
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.push(effect_violation(
+            contract_id,
+            test_id,
+            "inspect artifacts/contracts/ops/profiles/rollout-safety-matrix.json for the selected profile set",
+            "artifacts/contracts/ops/profiles/rollout-safety-matrix.json",
+        ));
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_ops_stack_e_005_kind_install_smoke(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-STACK-E-005";
     let test_id = "ops.stack.effect.kind_install_smoke";

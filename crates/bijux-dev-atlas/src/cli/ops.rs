@@ -189,6 +189,8 @@ pub enum OpsProfilesCommand {
 pub struct OpsProfilesValidateArgs {
     #[command(flatten)]
     pub common: OpsCommonArgs,
+    #[arg(long = "profile-set")]
+    pub profile_set: Option<String>,
     #[arg(long, default_value_t = 30)]
     pub timeout_seconds: u64,
     #[arg(long, default_value_t = true)]
