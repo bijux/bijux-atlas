@@ -81,10 +81,19 @@
                     "ci": {"allow_scan_skip": false}
                 },
                 "runtime_engine": "docker",
-                "airgap_build": {"declared": false, "policy": "stub"},
-                "multi_registry_push": {"declared": false, "registries": []},
+                "airgap_policy_path": "docker/airgap-policy.json",
+                "push_policy_path": "docker/push-policy.json",
                 "downloaded_assets": {"require_digest_pins": true},
                 "vendored_binaries": {"allow": []},
+                "release_provenance": {
+                    "required_bundle_paths": [
+                        "sbom.spdx.json",
+                        "sbom.cyclonedx.json",
+                        "scan.trivy.json",
+                        "image-digests.json"
+                    ],
+                    "required_before_release": true
+                },
                 "required_oci_labels": [
                     "org.opencontainers.image.source",
                     "org.opencontainers.image.version",
@@ -97,6 +106,44 @@
             .to_string(),
         )
         .expect("write policy");
+        std::fs::create_dir_all(base.join("docker/schema")).expect("mkdir docker schema");
+        std::fs::write(
+            base.join("docker/airgap-policy.json"),
+            serde_json::json!({
+                "schema_version": 1,
+                "policy_id": "docker-airgap-build",
+                "owner": "bijux-atlas-platform",
+                "description": "fixture airgap policy",
+                "allowed_base_sources": ["docker/bases.lock"],
+                "required_artifacts": [
+                    "docker/bases.lock",
+                    "docker/images.manifest.json",
+                    "docker/build-matrix.json"
+                ],
+                "forbid_network_fetch_tools": ["curl", "wget", "git"],
+                "allowed_build_network_tokens": ["apt-get update", "cargo build --locked"],
+                "require_digest_pins": true,
+                "require_vendored_or_locked_inputs": true
+            })
+            .to_string(),
+        )
+        .expect("write airgap policy");
+        std::fs::write(
+            base.join("docker/push-policy.json"),
+            serde_json::json!({
+                "schema_version": 1,
+                "policy_id": "docker-registry-promotion",
+                "owner": "bijux-atlas-platform",
+                "description": "fixture push policy",
+                "allowed_registries": ["ghcr.io/bijux", "registry.bijux.local"],
+                "promotion_order": ["registry.bijux.local", "ghcr.io/bijux"],
+                "required_signing": {"cosign": true, "keyless": true},
+                "require_digest_only_promotions": true,
+                "require_provenance_bundle": true
+            })
+            .to_string(),
+        )
+        .expect("write push policy");
         std::fs::write(
             base.join("ops/policy/required-contracts.json"),
             serde_json::json!({
@@ -189,6 +236,55 @@
             contracts,
             tmp.path(),
             &run_options(None, None),
+        )
+        .expect("run contracts");
+        assert_eq!(report.fail_count(), 0, "report had failures");
+    }
+
+    #[test]
+    fn airgap_policy_contract_passes_with_real_policy_files() {
+        let tmp = tempfile::tempdir().expect("tempdir");
+        mk_repo(
+            tmp.path(),
+            "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1970-01-01T00:00:00Z\nARG SOURCE_DATE_EPOCH=0\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa AS builder\nWORKDIR /workspace\nCOPY Cargo.toml /workspace/Cargo.toml\nRUN cargo build --locked\nFROM gcr.io/distroless/cc-debian12:nonroot@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb AS runtime\nWORKDIR /app\nCOPY --from=builder /workspace/Cargo.toml /app/Cargo.toml\nUSER nonroot:nonroot\nLABEL org.opencontainers.image.source=\"x\"\nLABEL org.opencontainers.image.version=\"x\"\nLABEL org.opencontainers.image.revision=\"x\"\nLABEL org.opencontainers.image.created=\"1970-01-01T00:00:00Z\"\nLABEL org.opencontainers.image.ref.name=\"x\"\nLABEL org.opencontainers.image.licenses=\"Apache-2.0\"\nENTRYPOINT [\"/app/bijux-atlas\", \"version\"]\n",
+        );
+        std::fs::write(tmp.path().join("Cargo.toml"), "[workspace]\n").expect("write cargo toml");
+        std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile"))
+            .expect("symlink");
+        sync_contract_markdown(tmp.path()).expect("sync contract doc");
+        sync_contract_registry_json(tmp.path()).expect("sync contract registry");
+        sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");
+        let report = crate::contracts::run(
+            "docker",
+            contracts,
+            tmp.path(),
+            &run_options(Some("DOCKER-055"), Some("docker.build.airgap_policy_defined")),
+        )
+        .expect("run contracts");
+        assert_eq!(report.fail_count(), 0, "report had failures");
+    }
+
+    #[test]
+    fn push_policy_contract_passes_with_real_policy_files() {
+        let tmp = tempfile::tempdir().expect("tempdir");
+        mk_repo(
+            tmp.path(),
+            "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1970-01-01T00:00:00Z\nARG SOURCE_DATE_EPOCH=0\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa AS builder\nWORKDIR /workspace\nCOPY Cargo.toml /workspace/Cargo.toml\nRUN cargo build --locked\nFROM gcr.io/distroless/cc-debian12:nonroot@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb AS runtime\nWORKDIR /app\nCOPY --from=builder /workspace/Cargo.toml /app/Cargo.toml\nUSER nonroot:nonroot\nLABEL org.opencontainers.image.source=\"x\"\nLABEL org.opencontainers.image.version=\"x\"\nLABEL org.opencontainers.image.revision=\"x\"\nLABEL org.opencontainers.image.created=\"1970-01-01T00:00:00Z\"\nLABEL org.opencontainers.image.ref.name=\"x\"\nLABEL org.opencontainers.image.licenses=\"Apache-2.0\"\nENTRYPOINT [\"/app/bijux-atlas\", \"version\"]\n",
+        );
+        std::fs::write(tmp.path().join("Cargo.toml"), "[workspace]\n").expect("write cargo toml");
+        std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile"))
+            .expect("symlink");
+        sync_contract_markdown(tmp.path()).expect("sync contract doc");
+        sync_contract_registry_json(tmp.path()).expect("sync contract registry");
+        sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");
+        let report = crate::contracts::run(
+            "docker",
+            contracts,
+            tmp.path(),
+            &run_options(
+                Some("DOCKER-056"),
+                Some("docker.push.multi_registry_policy_defined"),
+            ),
         )
         .expect("run contracts");
         assert_eq!(report.fail_count(), 0, "report had failures");

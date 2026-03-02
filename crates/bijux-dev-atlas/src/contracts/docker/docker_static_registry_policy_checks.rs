@@ -177,33 +177,199 @@ fn test_runtime_engine_policy(ctx: &RunContext) -> TestResult {
     }
 }
 
-fn test_airgap_build_policy_stub(ctx: &RunContext) -> TestResult {
+fn test_airgap_build_policy(ctx: &RunContext) -> TestResult {
     let dctx = match load_ctx(&ctx.repo_root) {
         Ok(v) => v,
         Err(e) => return TestResult::Error(e),
     };
-    let airgap = dctx.policy.get("airgap_build");
-    let declared = airgap.and_then(|v| v.get("declared")).and_then(|v| v.as_bool());
-    let policy = airgap.and_then(|v| v.get("policy")).and_then(|v| v.as_str());
-    if declared == Some(false) && policy == Some("stub") {
+    let policy_path = dctx
+        .policy
+        .get("airgap_policy_path")
+        .and_then(|v| v.as_str())
+        .unwrap_or("");
+    let path = ctx.repo_root.join(policy_path);
+    let payload = match load_json(&path) {
+        Ok(v) => v,
+        Err(e) => {
+            return TestResult::Fail(vec![violation(
+                "DOCKER-055",
+                "docker.build.airgap_policy_defined",
+                Some("docker/policy.json".to_string()),
+                Some(1),
+                &e,
+                None,
+            )])
+        }
+    };
+    let mut violations = Vec::new();
+    if policy_path != "docker/airgap-policy.json" {
+        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/policy.json".to_string()), Some(1), "docker policy must reference docker/airgap-policy.json", Some(policy_path.to_string())));
+    }
+    if payload.get("schema_version").and_then(|v| v.as_u64()) != Some(1) {
+        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/airgap-policy.json".to_string()), Some(1), "airgap policy must set schema_version=1", None));
+    }
+    if payload.get("policy_id").and_then(|v| v.as_str()) != Some("docker-airgap-build") {
+        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/airgap-policy.json".to_string()), Some(1), "airgap policy must declare policy_id=docker-airgap-build", None));
+    }
+    if !payload
+        .get("require_digest_pins")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(false)
+    {
+        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/airgap-policy.json".to_string()), Some(1), "airgap policy must require digest pins", None));
+    }
+    if !payload
+        .get("require_vendored_or_locked_inputs")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(false)
+    {
+        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/airgap-policy.json".to_string()), Some(1), "airgap policy must require vendored or locked inputs", None));
+    }
+    let required_sources = payload
+        .get("allowed_base_sources")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(ToString::to_string))
+        .collect::<BTreeSet<_>>();
+    if !required_sources.contains("docker/bases.lock") {
+        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/airgap-policy.json".to_string()), Some(1), "airgap policy must allow docker/bases.lock as the canonical base source", None));
+    }
+    let required_artifacts = payload
+        .get("required_artifacts")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(ToString::to_string))
+        .collect::<BTreeSet<_>>();
+    for required in ["docker/bases.lock", "docker/images.manifest.json", "docker/build-matrix.json"] {
+        if !required_artifacts.contains(required) {
+            violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/airgap-policy.json".to_string()), Some(1), "airgap policy must declare required artifact coverage", Some(required.to_string())));
+        }
+    }
+    let forbidden_tools = payload
+        .get("forbid_network_fetch_tools")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(ToString::to_string))
+        .collect::<BTreeSet<_>>();
+    for required in ["curl", "wget", "git"] {
+        if !forbidden_tools.contains(required) {
+            violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/airgap-policy.json".to_string()), Some(1), "airgap policy must forbid ad-hoc network fetch tools", Some(required.to_string())));
+        }
+    }
+    if violations.is_empty() {
         TestResult::Pass
     } else {
-        TestResult::Fail(vec![violation("DOCKER-055", "docker.build.airgap_policy_stub", Some("docker/policy.json".to_string()), Some(1), "docker policy must carry an explicit airgap build stub with declared=false and policy=stub", None)])
+        TestResult::Fail(violations)
     }
 }
 
-fn test_multi_registry_push_policy_stub(ctx: &RunContext) -> TestResult {
+fn test_multi_registry_push_policy(ctx: &RunContext) -> TestResult {
     let dctx = match load_ctx(&ctx.repo_root) {
         Ok(v) => v,
         Err(e) => return TestResult::Error(e),
     };
-    let policy = dctx.policy.get("multi_registry_push");
-    let declared = policy.and_then(|v| v.get("declared")).and_then(|v| v.as_bool());
-    let registries = policy.and_then(|v| v.get("registries")).and_then(|v| v.as_array());
-    if declared == Some(false) && registries.is_some() {
+    let policy_path = dctx
+        .policy
+        .get("push_policy_path")
+        .and_then(|v| v.as_str())
+        .unwrap_or("");
+    let path = ctx.repo_root.join(policy_path);
+    let payload = match load_json(&path) {
+        Ok(v) => v,
+        Err(e) => {
+            return TestResult::Fail(vec![violation(
+                "DOCKER-056",
+                "docker.push.multi_registry_policy_defined",
+                Some("docker/policy.json".to_string()),
+                Some(1),
+                &e,
+                None,
+            )])
+        }
+    };
+    let mut violations = Vec::new();
+    if policy_path != "docker/push-policy.json" {
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/policy.json".to_string()), Some(1), "docker policy must reference docker/push-policy.json", Some(policy_path.to_string())));
+    }
+    if payload.get("schema_version").and_then(|v| v.as_u64()) != Some(1) {
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/push-policy.json".to_string()), Some(1), "push policy must set schema_version=1", None));
+    }
+    if payload.get("policy_id").and_then(|v| v.as_str()) != Some("docker-registry-promotion") {
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/push-policy.json".to_string()), Some(1), "push policy must declare policy_id=docker-registry-promotion", None));
+    }
+    let allowed_registries = payload
+        .get("allowed_registries")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(ToString::to_string))
+        .collect::<Vec<_>>();
+    if allowed_registries.is_empty() {
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/push-policy.json".to_string()), Some(1), "push policy must declare at least one allowed registry", None));
+    }
+    let promotion_order = payload
+        .get("promotion_order")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(ToString::to_string))
+        .collect::<Vec<_>>();
+    if promotion_order != vec!["registry.bijux.local".to_string(), "ghcr.io/bijux".to_string()] {
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/push-policy.json".to_string()), Some(1), "push policy must promote through registry.bijux.local then ghcr.io/bijux", None));
+    }
+    let signing = payload.get("required_signing").cloned().unwrap_or(Value::Null);
+    if !signing.get("cosign").and_then(|v| v.as_bool()).unwrap_or(false)
+        || !signing.get("keyless").and_then(|v| v.as_bool()).unwrap_or(false)
+    {
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/push-policy.json".to_string()), Some(1), "push policy must require keyless cosign signing", None));
+    }
+    if !payload
+        .get("require_digest_only_promotions")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(false)
+    {
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/push-policy.json".to_string()), Some(1), "push policy must require digest-only promotions", None));
+    }
+    if !payload
+        .get("require_provenance_bundle")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(false)
+    {
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/push-policy.json".to_string()), Some(1), "push policy must require a provenance bundle before release publication", None));
+    }
+    let provenance = dctx.policy.get("release_provenance").cloned().unwrap_or(Value::Null);
+    if !provenance
+        .get("required_before_release")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(false)
+    {
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/policy.json".to_string()), Some(1), "docker policy must require release provenance before publication", None));
+    }
+    let bundle_paths = provenance
+        .get("required_bundle_paths")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(ToString::to_string))
+        .collect::<BTreeSet<_>>();
+    for required in ["sbom.spdx.json", "sbom.cyclonedx.json", "scan.trivy.json", "image-digests.json"] {
+        if !bundle_paths.contains(required) {
+            violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/policy.json".to_string()), Some(1), "docker policy must enumerate required provenance bundle artifacts", Some(required.to_string())));
+        }
+    }
+    if violations.is_empty() {
         TestResult::Pass
     } else {
-        TestResult::Fail(vec![violation("DOCKER-056", "docker.push.multi_registry_policy_stub", Some("docker/policy.json".to_string()), Some(1), "docker policy must carry an explicit multi-registry push stub", None)])
+        TestResult::Fail(violations)
     }
 }
 
@@ -316,4 +482,3 @@ fn test_dockerfiles_canonical_whitespace(ctx: &RunContext) -> TestResult {
     }
     if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
 }
-

@@ -876,8 +876,8 @@
       "mode": "static",
       "tests": [
         {
-          "id": "docker.build.airgap_policy_stub",
-          "title": "docker policy carries an explicit airgap build stub"
+          "id": "docker.build.airgap_policy_defined",
+          "title": "docker policy defines a real airgap build policy"
         }
       ],
       "title": "airgap build policy"
@@ -890,8 +890,8 @@
       "mode": "static",
       "tests": [
         {
-          "id": "docker.push.multi_registry_policy_stub",
-          "title": "docker policy carries an explicit multi-registry push stub"
+          "id": "docker.push.multi_registry_policy_defined",
+          "title": "docker policy defines a governed multi-registry push policy"
         }
       ],
       "title": "multi-registry push policy"

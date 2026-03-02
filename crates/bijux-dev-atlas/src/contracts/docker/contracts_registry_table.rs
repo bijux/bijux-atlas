@@ -656,20 +656,20 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             id: ContractId("DOCKER-055".to_string()),
             title: "airgap build policy",
             tests: vec![TestCase {
-                id: TestId("docker.build.airgap_policy_stub".to_string()),
-                title: "docker policy carries an explicit airgap build stub",
+                id: TestId("docker.build.airgap_policy_defined".to_string()),
+                title: "docker policy defines a real airgap build policy",
                 kind: TestKind::Pure,
-                run: test_airgap_build_policy_stub,
+                run: test_airgap_build_policy,
             }],
         },
         Contract {
             id: ContractId("DOCKER-056".to_string()),
             title: "multi-registry push policy",
             tests: vec![TestCase {
-                id: TestId("docker.push.multi_registry_policy_stub".to_string()),
-                title: "docker policy carries an explicit multi-registry push stub",
+                id: TestId("docker.push.multi_registry_policy_defined".to_string()),
+                title: "docker policy defines a governed multi-registry push policy",
                 kind: TestKind::Pure,
-                run: test_multi_registry_push_policy_stub,
+                run: test_multi_registry_push_policy,
             }],
         },
         Contract {

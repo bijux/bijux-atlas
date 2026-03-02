@@ -300,12 +300,12 @@ Tests:
 ### DOCKER-055 airgap build policy
 
 Tests:
-- `docker.build.airgap_policy_stub` (static, Pure): docker policy carries an explicit airgap build stub
+- `docker.build.airgap_policy_defined` (static, Pure): docker policy defines a real airgap build policy
 
 ### DOCKER-056 multi-registry push policy
 
 Tests:
-- `docker.push.multi_registry_policy_stub` (static, Pure): docker policy carries an explicit multi-registry push stub
+- `docker.push.multi_registry_policy_defined` (static, Pure): docker policy defines a governed multi-registry push policy
 
 ### DOCKER-057 downloaded asset digest pinning
 
