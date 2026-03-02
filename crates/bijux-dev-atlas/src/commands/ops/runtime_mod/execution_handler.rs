@@ -1,6 +1,174 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
+
+fn ops_runbook_source_rel() -> &'static str {
+    "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
+}
+
+fn load_ops_runbook_rows(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
+    let install_matrix_path = repo_root.join("ops/k8s/install-matrix.json");
+    let install_matrix: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(&install_matrix_path)
+            .map_err(|err| format!("failed to read {}: {err}", install_matrix_path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", install_matrix_path.display()))?;
+
+    let mut profiles = std::collections::BTreeMap::<String, serde_json::Value>::new();
+    for profile in install_matrix
+        .get("profiles")
+        .and_then(|value| value.as_array())
+        .into_iter()
+        .flatten()
+    {
+        let Some(name) = profile.get("name").and_then(|value| value.as_str()) else {
+            continue;
+        };
+        profiles.insert(name.to_string(), profile.clone());
+    }
+
+    let profile_intent_path = repo_root.join("ops/stack/profile-intent.json");
+    let mut profile_intents = std::collections::BTreeMap::<String, serde_json::Value>::new();
+    if profile_intent_path.exists() {
+        let value: serde_json::Value =
+            serde_json::from_str(&std::fs::read_to_string(&profile_intent_path).map_err(
+                |err| format!("failed to read {}: {err}", profile_intent_path.display()),
+            )?)
+            .map_err(|err| format!("failed to parse {}: {err}", profile_intent_path.display()))?;
+        for profile in value
+            .get("profiles")
+            .and_then(|value| value.as_array())
+            .into_iter()
+            .flatten()
+        {
+            let Some(name) = profile.get("name").and_then(|value| value.as_str()) else {
+                continue;
+            };
+            profile_intents.insert(name.to_string(), profile.clone());
+        }
+    }
+
+    let toolchain_path = repo_root.join("ops/inventory/toolchain.json");
+    let toolchain: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(&toolchain_path)
+            .map_err(|err| format!("failed to read {}: {err}", toolchain_path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", toolchain_path.display()))?;
+    let tool_versions = toolchain
+        .get("tools")
+        .and_then(|value| value.as_object())
+        .map(|tools| {
+            tools.iter()
+                .map(|(binary, detail)| {
+                    serde_json::json!({
+                        "binary": binary,
+                        "probe_argv": detail.get("probe_argv").cloned().unwrap_or_else(|| serde_json::json!([])),
+                        "required": detail.get("required").and_then(|value| value.as_bool()).unwrap_or(false),
+                    })
+                })
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+
+    let failure_modes = vec![
+        serde_json::json!({"code": "OPS_MANIFEST_ERROR", "meaning": "required ops manifest or generated input is missing or unreadable"}),
+        serde_json::json!({"code": "OPS_SCHEMA_ERROR", "meaning": "authored inputs drifted outside their governed schema"}),
+        serde_json::json!({"code": "OPS_TOOL_ERROR", "meaning": "required tool invocation failed or a required tool is unavailable"}),
+        serde_json::json!({"code": "OPS_PROFILE_ERROR", "meaning": "selected profile is unknown or not declared in the governed registries"}),
+        serde_json::json!({"code": "OPS_EFFECT_ERROR", "meaning": "effectful install action was requested without the required capability flags"}),
+    ];
+
+    let mut scenarios = install_matrix
+        .get("scenarios")
+        .and_then(|value| value.as_array())
+        .cloned()
+        .unwrap_or_default();
+    scenarios.sort_by(|left, right| {
+        left.get("name")
+            .and_then(|value| value.as_str())
+            .cmp(&right.get("name").and_then(|value| value.as_str()))
+    });
+
+    let mut rows = Vec::new();
+    for scenario in scenarios {
+        let Some(name) = scenario.get("name").and_then(|value| value.as_str()) else {
+            continue;
+        };
+        let Some(kind) = scenario.get("kind").and_then(|value| value.as_str()) else {
+            continue;
+        };
+        let Some(profile) = scenario.get("profile").and_then(|value| value.as_str()) else {
+            continue;
+        };
+        let suite = scenario
+            .get("suite")
+            .and_then(|value| value.as_str())
+            .unwrap_or_default();
+        let values_file = profiles
+            .get(profile)
+            .and_then(|value| value.get("values_file"))
+            .and_then(|value| value.as_str())
+            .unwrap_or_default();
+        let steps = match kind {
+            "install" => vec![
+                format!(
+                    "bijux dev atlas ops render --profile {profile} --target helm --allow-subprocess --allow-write --format json"
+                ),
+                format!("bijux dev atlas ops install --profile {profile} --plan --format json"),
+                format!(
+                    "bijux dev atlas ops install --profile {profile} --kind --apply --allow-subprocess --allow-write --allow-network --format json"
+                ),
+            ],
+            "upgrade" => vec![
+                format!(
+                    "bijux dev atlas ops render --profile {profile} --target helm --allow-subprocess --allow-write --format json"
+                ),
+                format!(
+                    "bijux dev atlas ops install --profile {profile} --kind --apply --allow-subprocess --allow-write --allow-network --format json"
+                ),
+            ],
+            "rollback" => vec![
+                format!(
+                    "bijux dev atlas ops install --profile {profile} --kind --apply --allow-subprocess --allow-write --allow-network --format json"
+                ),
+                format!(
+                    "bijux dev atlas ops stack down --profile {profile} --allow-subprocess --allow-write --allow-network --force --format json"
+                ),
+            ],
+            _ => Vec::new(),
+        };
+        let verification_commands = vec![
+            format!("bijux dev atlas ops install --profile {profile} --plan --format json"),
+            "kubectl get pods -n bijux-atlas".to_string(),
+            "kubectl get svc -n bijux-atlas".to_string(),
+            "curl -fsS http://127.0.0.1:8080/health".to_string(),
+        ];
+        let rollback_commands = vec![
+            format!(
+                "bijux dev atlas ops stack down --profile {profile} --allow-subprocess --allow-write --allow-network --force --format json"
+            ),
+            "kubectl delete namespace bijux-atlas --ignore-not-found".to_string(),
+        ];
+        rows.push(serde_json::json!({
+            "scenario": name,
+            "scenario_kind": kind,
+            "profile": profile,
+            "suite": suite,
+            "values_file": values_file,
+            "baseline_ref": scenario.get("baseline_ref").cloned(),
+            "target_ref": scenario.get("target_ref").cloned(),
+            "profile_intent": profile_intents.get(profile).cloned(),
+            "steps": steps,
+            "verification_commands": verification_commands,
+            "rollback_commands": rollback_commands,
+            "failure_modes": failure_modes,
+            "tool_versions": tool_versions,
+        }));
+    }
+
+    Ok(rows)
+}
+
 pub(super) fn dispatch_execution(
     command: OpsCommand,
     debug: bool,
@@ -515,16 +683,19 @@ pub(super) fn dispatch_execution(
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
                 let run_id = run_id_or_default(common.run_id.clone())?;
                 let fs_adapter = OpsFs::new(repo_root.clone(), repo_root.join("ops"));
-                let source_rel = "ops/RUNBOOK_GENERATION_FROM_GRAPH.md";
+                let source_rel = ops_runbook_source_rel();
                 let source_text = std::fs::read_to_string(repo_root.join(source_rel))
                     .map_err(|err| format!("failed to read {source_rel}: {err}"))?;
+                let rows = load_ops_runbook_rows(&repo_root)?;
                 let payload = serde_json::json!({
                     "schema_version": 1,
                     "run_id": run_id.as_str(),
                     "generator": "ops generate runbook",
                     "source": source_rel,
                     "source_sha256": sha256_hex(&source_text),
-                    "status": "pass"
+                    "status": "pass",
+                    "rows": rows,
+                    "summary": {"total": rows.len(), "errors": 0, "warnings": 0}
                 });
                 if check {
                     let rendered = emit_payload(
@@ -532,7 +703,7 @@ pub(super) fn dispatch_execution(
                         common.out.clone(),
                         &serde_json::json!({
                             "schema_version": 1,
-                            "text": "runbook generation contract is present",
+                            "text": "runbook generation contract is present and loadable",
                             "rows": [payload],
                             "summary": {"total": 1, "errors": 0, "warnings": 0}
                         }),

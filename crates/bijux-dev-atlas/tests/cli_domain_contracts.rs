@@ -48,6 +48,52 @@ fn ops_inventory_supports_json_format() {
 }
 
 #[test]
+fn ops_generate_runbook_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "generate", "runbook", "--format", "json"])
+        .output()
+        .expect("ops generate runbook");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let rows = payload
+        .get("rows")
+        .and_then(|v| v.as_array())
+        .expect("rows array");
+    assert_eq!(rows.len(), 1);
+    let runbook = rows[0].as_object().expect("runbook object");
+    assert_eq!(
+        runbook.get("source").and_then(|v| v.as_str()),
+        Some("ops/RUNBOOK_GENERATION_FROM_GRAPH.md")
+    );
+    let scenario_rows = runbook
+        .get("rows")
+        .and_then(|v| v.as_array())
+        .expect("scenario rows");
+    assert!(!scenario_rows.is_empty());
+    assert!(scenario_rows.iter().all(|row| {
+        row.get("steps").and_then(|v| v.as_array()).is_some()
+            && row
+                .get("verification_commands")
+                .and_then(|v| v.as_array())
+                .is_some()
+            && row
+                .get("rollback_commands")
+                .and_then(|v| v.as_array())
+                .is_some()
+            && row
+                .get("failure_modes")
+                .and_then(|v| v.as_array())
+                .is_some()
+            && row
+                .get("tool_versions")
+                .and_then(|v| v.as_array())
+                .is_some()
+    }));
+}
+
+#[test]
 fn ops_list_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
