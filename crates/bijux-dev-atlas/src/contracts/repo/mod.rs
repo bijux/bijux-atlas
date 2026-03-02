@@ -147,17 +147,8 @@ fn count_files(root: &Path) -> usize {
 }
 
 fn parse_mkdocs_site_dir(root: &Path) -> Result<String, String> {
-    let mkdocs = fs::read_to_string(root.join("mkdocs.yml"))
-        .map_err(|err| format!("read mkdocs.yml failed: {err}"))?;
-    mkdocs
-        .lines()
-        .find_map(|line| {
-            let trimmed = line.trim();
-            trimmed
-                .strip_prefix("site_dir:")
-                .map(|value| value.trim().to_string())
-        })
-        .ok_or_else(|| "mkdocs.yml must declare site_dir".to_string())
+    crate::docs::site_output::parse_mkdocs_site_paths(root)
+        .map(|paths| paths.site_dir.display().to_string())
 }
 
 fn run_sanitized_output(
@@ -521,13 +512,34 @@ fn run_boundary_docs_output_dir_check(ctx: &RunContext) -> (serde_json::Value, V
     }
 
     let site_root = ctx.repo_root.join(&site_dir);
-    let index_exists = site_root.join("index.html").is_file();
-    let assets_exists = site_root.join("assets").is_dir();
+    let site_output = match crate::docs::site_output::collect_site_output_status(&ctx.repo_root) {
+        Ok(value) => value,
+        Err(err) => {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                Some("configs/docs/site-output-contract.json".to_string()),
+                err,
+            ));
+            crate::docs::site_output::SiteOutputStatus {
+                docs_dir: std::path::PathBuf::from("docs"),
+                site_dir: std::path::PathBuf::from(&site_dir),
+                site_dir_exists: site_root.is_dir(),
+                index_exists: site_root.join("index.html").is_file(),
+                assets_exists: site_root.join("assets").is_dir(),
+                file_count: count_files(&site_root),
+                minimum_file_count: 10,
+                assets_directory: "assets".to_string(),
+            }
+        }
+    };
+    let index_exists = site_output.index_exists;
+    let assets_exists = site_output.assets_exists;
     let internal_dir_exists = site_root.join("_internal").exists();
     let redirect_output_exists = site_root
         .join("root/architecture-overview/index.html")
         .is_file();
-    let file_count = count_files(&site_root);
+    let file_count = site_output.file_count;
     if !index_exists {
         violations.push(violation(
             contract_id,
@@ -544,7 +556,7 @@ fn run_boundary_docs_output_dir_check(ctx: &RunContext) -> (serde_json::Value, V
             "docs build output must include assets directory",
         ));
     }
-    if file_count < 10 {
+    if file_count < site_output.minimum_file_count {
         violations.push(violation(
             contract_id,
             test_id,
@@ -566,11 +578,17 @@ fn run_boundary_docs_output_dir_check(ctx: &RunContext) -> (serde_json::Value, V
         "check": "docs_output_dir",
         "status": if violations.is_empty() { "pass" } else { "fail" },
         "site_dir": site_dir,
+        "checks": [
+            {"id": "DOCS-SITE-001", "pass": site_output.site_dir_exists},
+            {"id": "DOCS-SITE-002", "pass": index_exists},
+            {"id": "DOCS-SITE-003", "pass": assets_exists},
+        ],
         "index_exists": index_exists,
         "assets_exists": assets_exists,
         "internal_dir_exists": internal_dir_exists,
         "redirect_output_exists": redirect_output_exists,
         "file_count": file_count,
+        "minimum_file_count": site_output.minimum_file_count,
     });
     if let Err(err) = write_boundary_report(ctx, "docs-output-dir.json", &payload) {
         violations.push(violation(
