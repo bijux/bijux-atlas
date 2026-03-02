@@ -40,6 +40,7 @@
     "configs/inventory/configs.json",
     "configs/inventory/consumers.json",
     "configs/inventory/groups.json",
+    "configs/inventory/no-schema-justifications.json",
     "configs/inventory/owners.json",
     "configs/layout/*.json",
     "configs/make/*.json",

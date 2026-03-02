@@ -76,10 +76,10 @@
     },
     {
       "counts": {
-        "covered": 5,
+        "covered": 6,
         "generated": 1,
         "internal": 0,
-        "public": 4,
+        "public": 5,
         "schemas": 3
       },
       "files": [
@@ -87,6 +87,7 @@
         "configs/inventory/configs.json",
         "configs/inventory/consumers.json",
         "configs/inventory/groups.json",
+        "configs/inventory/no-schema-justifications.json",
         "configs/inventory/owners.json"
       ],
       "name": "inventory",
@@ -331,10 +332,10 @@
     },
     {
       "counts": {
-        "covered": 31,
+        "covered": 32,
         "generated": 0,
         "internal": 0,
-        "public": 31,
+        "public": 32,
         "schemas": 2
       },
       "files": [
@@ -352,6 +353,7 @@
         "configs/policy/check-id-migration.json",
         "configs/policy/check_speed_approvals.json",
         "configs/policy/checks-registry-transition.json",
+        "configs/policy/config-key-renames.json",
         "configs/policy/dependency-exceptions.json",
         "configs/policy/forbidden-adjectives-allowlist.txt",
         "configs/policy/forbidden-adjectives-approvals.json",
