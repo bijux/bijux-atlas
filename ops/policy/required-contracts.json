@@ -133,6 +133,13 @@
       "lanes": ["release"],
       "owner": "atlas-maintainers",
       "rationale": "Release gating must verify kind-backed install smoke prerequisites."
+    },
+    {
+      "domain": "repo",
+      "contract_id": "REPO-003",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Keep the rendered Helm env surface closed over the runtime env allowlist."
     }
   ]
 }

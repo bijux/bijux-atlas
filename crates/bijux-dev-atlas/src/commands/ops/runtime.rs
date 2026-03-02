@@ -49,6 +49,7 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
         | OpsCommand::Clean(common)
         | OpsCommand::Cleanup(common)
         | OpsCommand::K8sPlan(common)
+        | OpsCommand::K8sEnvSurface(common)
         | OpsCommand::K8sDryRun(common)
         | OpsCommand::K8sPorts(common)
         | OpsCommand::K8sConformance(common) => Some(common),
@@ -132,6 +133,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 diff: false,
                 helm_binary: None,
             }),
+            OpsK8sCommand::EnvSurface(common) => OpsCommand::K8sEnvSurface(common),
             OpsK8sCommand::Install(args) => OpsCommand::Install(args),
             OpsK8sCommand::Uninstall(common) => OpsCommand::Down(common),
             OpsK8sCommand::Ports(common) => OpsCommand::K8sPorts(common),
