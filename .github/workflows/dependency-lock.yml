@@ -29,7 +29,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cargo update --workspace
+          cargo generate-lockfile
       - name: Verify only Cargo.lock changed
         shell: bash
         run: |
