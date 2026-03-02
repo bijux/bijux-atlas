@@ -72,5 +72,15 @@ fn k8s_contracts() -> Vec<Contract> {
                 run: test_ops_k8s_e_006_tool_versions_recorded,
             }],
         },
+        Contract {
+            id: ContractId("OPS-HELM-ENV-001".to_string()),
+            title: "helm env allowlist subset contract",
+            tests: vec![TestCase {
+                id: TestId("ops.helm_env.runtime_allowlist_subset".to_string()),
+                title: "effect lane requires Helm-emitted ConfigMap env keys to stay inside the runtime allowlist",
+                kind: TestKind::Subprocess,
+                run: test_ops_helm_env_001_runtime_allowlist_subset,
+            }],
+        },
     ]
 }

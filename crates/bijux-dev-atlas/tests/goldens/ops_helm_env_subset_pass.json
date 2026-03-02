@@ -1,0 +1,20 @@
+{
+  "counts": {
+    "allowed": 1,
+    "emitted": 1,
+    "extra": 0,
+    "missing": 0
+  },
+  "extra": [],
+  "inputs": {
+    "chart_dir": "ops/k8s/charts/bijux-atlas",
+    "helm_binary": "helm",
+    "release_name": "bijux-atlas",
+    "values_files": [
+      "ops/k8s/charts/bijux-atlas/values.yaml"
+    ]
+  },
+  "kind": "ops_helm_env_subset",
+  "missing": [],
+  "schema_version": 1
+}

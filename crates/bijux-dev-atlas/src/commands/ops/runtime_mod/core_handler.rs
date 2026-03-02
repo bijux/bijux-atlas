@@ -104,7 +104,7 @@ fn render_helm_configmap_env_report(
             .unwrap_or("bijux-atlas")
             .to_string()
     });
-    let rendered_chart = bijux_dev_atlas::ops::helm_env::render_chart_with_options(
+    let render_result = bijux_dev_atlas::ops::helm_env::render_chart_with_options(
         &repo_root,
         &helm_binary,
         &args.chart,
@@ -115,16 +115,42 @@ fn render_helm_configmap_env_report(
             timeout_seconds: args.timeout_seconds,
             debug: args.verbose,
         },
-    )?;
-    let config_maps = bijux_dev_atlas::ops::helm_env::extract_configmap_rows(
-        &rendered_chart.yaml_docs,
-        &release_name,
     );
-    let env_keys = bijux_dev_atlas::ops::helm_env::extract_configmap_env_keys(
-        &rendered_chart.yaml_docs,
-        &release_name,
-    );
-    if args.fail_on_empty && env_keys.is_empty() {
+    let (config_maps, env_keys, helm_report, exit_code) = match render_result {
+        Ok(rendered_chart) => {
+            let config_maps = bijux_dev_atlas::ops::helm_env::extract_configmap_rows(
+                &rendered_chart.yaml_docs,
+                &release_name,
+            );
+            let env_keys = bijux_dev_atlas::ops::helm_env::extract_configmap_env_keys(
+                &rendered_chart.yaml_docs,
+                &release_name,
+            );
+            (
+                config_maps,
+                env_keys,
+                bijux_dev_atlas::ops::helm_env::HelmInvocationReport {
+                    status: "ok".to_string(),
+                    debug_enabled: rendered_chart.debug_enabled,
+                    timeout_seconds: rendered_chart.timeout_seconds,
+                    stderr: rendered_chart.stderr,
+                },
+                ops_exit::PASS,
+            )
+        }
+        Err(message) => (
+            Vec::new(),
+            std::collections::BTreeSet::new(),
+            bijux_dev_atlas::ops::helm_env::HelmInvocationReport {
+                status: "error".to_string(),
+                debug_enabled: args.verbose,
+                timeout_seconds: args.timeout_seconds.max(1),
+                stderr: message,
+            },
+            ops_exit::FAIL,
+        ),
+    };
+    if exit_code == ops_exit::PASS && args.fail_on_empty && env_keys.is_empty() {
         return Err(format!(
             "no ATLAS_ or BIJUX_ ConfigMap data keys extracted for release `{release_name}`"
         ));
@@ -137,18 +163,13 @@ fn render_helm_configmap_env_report(
         &env_keys,
         &config_maps,
         args.include_names,
-        bijux_dev_atlas::ops::helm_env::HelmInvocationReport {
-            status: "ok".to_string(),
-            debug_enabled: rendered_chart.debug_enabled,
-            timeout_seconds: rendered_chart.timeout_seconds,
-            stderr: rendered_chart.stderr,
-        },
+        helm_report,
     );
     let payload = serde_json::to_value(&report).map_err(|err| err.to_string())?;
     let schema_path = repo_root.join("configs/contracts/reports/helm-env.schema.json");
     bijux_dev_atlas::ops::helm_env::validate_report_value(&payload, &schema_path)?;
     let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
-    Ok((rendered, ops_exit::PASS))
+    Ok((rendered, exit_code))
 }
 
 fn validate_helm_profile_matrix(common: &OpsCommonArgs) -> Result<(String, i32), String> {

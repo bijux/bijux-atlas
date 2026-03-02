@@ -24,6 +24,9 @@ fn normalize_title_for_compare(title: &str) -> String {
 }
 
 fn classify_contract_pillar(contract_id: &str) -> Option<&'static str> {
+    if contract_id == "OPS-HELM-ENV-001" {
+        return Some("k8s");
+    }
     if contract_id.starts_with("OPS-META-") {
         return Some("inventory");
     }
@@ -64,6 +67,9 @@ fn classify_contract_pillar(contract_id: &str) -> Option<&'static str> {
 }
 
 fn contract_source_path_for_id(contract_id: &str) -> Option<&'static str> {
+    if contract_id == "OPS-HELM-ENV-001" {
+        return Some("crates/bijux-dev-atlas/src/contracts/ops/platform/mod.rs");
+    }
     if contract_id.starts_with("OPS-META-") {
         return Some("crates/bijux-dev-atlas/src/contracts/ops/governance/registry_contracts.rs");
     }

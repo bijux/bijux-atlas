@@ -345,7 +345,14 @@ pub fn validate_report_schema_file(schema_path: &Path) -> Result<(), String> {
         .get("required")
         .and_then(|value| value.as_array())
         .ok_or_else(|| format!("{} must declare required array", schema_path.display()))?;
-    for field in ["schema_version", "kind", "inputs", "env_keys", "config_maps", "helm"] {
+    for field in [
+        "schema_version",
+        "kind",
+        "inputs",
+        "env_keys",
+        "config_maps",
+        "helm",
+    ] {
         if !required.iter().any(|value| value.as_str() == Some(field)) {
             return Err(format!("{} must require `{field}`", schema_path.display()));
         }
@@ -374,7 +381,9 @@ pub fn validate_report_value(report: &serde_json::Value, schema_path: &Path) -> 
             .and_then(|value| value.as_str())
             .is_none_or(|value| value.is_empty())
         {
-            return Err(format!("helm-env report inputs.{field} must be a non-empty string"));
+            return Err(format!(
+                "helm-env report inputs.{field} must be a non-empty string"
+            ));
         }
     }
     if inputs
@@ -384,7 +393,11 @@ pub fn validate_report_value(report: &serde_json::Value, schema_path: &Path) -> 
     {
         return Err("helm-env report inputs.values_files must be an array".to_string());
     }
-    if obj.get("env_keys").and_then(|value| value.as_array()).is_none() {
+    if obj
+        .get("env_keys")
+        .and_then(|value| value.as_array())
+        .is_none()
+    {
         return Err("helm-env report env_keys must be an array".to_string());
     }
     if obj
@@ -401,9 +414,9 @@ pub fn validate_report_value(report: &serde_json::Value, schema_path: &Path) -> 
     if helm
         .get("status")
         .and_then(|value| value.as_str())
-        .is_none_or(|value| value != "ok")
+        .is_none_or(|value| value != "ok" && value != "error")
     {
-        return Err("helm-env report helm.status must be `ok`".to_string());
+        return Err("helm-env report helm.status must be `ok` or `error`".to_string());
     }
     if helm
         .get("timeout_seconds")

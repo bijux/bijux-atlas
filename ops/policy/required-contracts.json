@@ -129,6 +129,13 @@
     },
     {
       "domain": "ops",
+      "contract_id": "OPS-HELM-ENV-001",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Every blocking lane must prove Helm-emitted ConfigMap env keys stay inside the runtime allowlist."
+    },
+    {
+      "domain": "ops",
       "contract_id": "OPS-STACK-E-005",
       "lanes": ["release"],
       "owner": "atlas-maintainers",

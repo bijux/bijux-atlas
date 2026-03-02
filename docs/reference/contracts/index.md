@@ -11,6 +11,7 @@
 
 - API surfaces: [Endpoints](endpoints.md), [Errors](errors.md)
 - Runtime configuration: [Config Keys](config-keys.md), [Chart Values](chart-values.md)
+- Ops governance: [Helm Env Allowlist Subset](ops/helm-env-subset.md)
 - Data and quality: [Artifact contracts](artifacts/index.md), [QC](qc.md)
 - Telemetry: [Telemetry](telemetry.md)
 - Plugin contracts: [Plugins](plugins/index.md)

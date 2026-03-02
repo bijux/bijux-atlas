@@ -95,7 +95,10 @@
       "properties": {
         "status": {
           "type": "string",
-          "const": "ok"
+          "enum": [
+            "ok",
+            "error"
+          ]
         },
         "debug_enabled": {
           "type": "boolean"

@@ -693,6 +693,140 @@ fn test_ops_k8s_e_006_tool_versions_recorded(ctx: &RunContext) -> TestResult {
     verify_declared_tool_versions(ctx, &["helm", "kubeconform"])
 }
 
+fn test_ops_helm_env_001_runtime_allowlist_subset(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-HELM-ENV-001";
+    let test_id = "ops.k8s.helm_env_runtime_allowlist_subset";
+    let chart_rel = "ops/k8s/charts/bijux-atlas";
+    let values_rel = "ops/k8s/charts/bijux-atlas/values.yaml";
+    let schema_rel = "configs/contracts/reports/helm-env.schema.json";
+    let allowlist_rel = "configs/contracts/env.schema.json";
+
+    let helm_binary = match helm_env::resolve_helm_binary_from_inventory(&ctx.repo_root) {
+        Ok(value) => value,
+        Err(message) => {
+            return TestResult::Fail(vec![effect_violation(
+                contract_id,
+                test_id,
+                &message,
+                "ops/inventory/toolchain.json",
+            )]);
+        }
+    };
+    let rendered = match helm_env::render_chart_with_options(
+        &ctx.repo_root,
+        &helm_binary,
+        &ctx.repo_root.join(chart_rel),
+        &[ctx.repo_root.join(values_rel)],
+        "bijux-atlas",
+        &helm_env::RenderChartOptions {
+            set_overrides: Vec::new(),
+            timeout_seconds: 30,
+            debug: false,
+        },
+    ) {
+        Ok(rendered) => rendered,
+        Err(message) => {
+            return TestResult::Fail(vec![effect_violation(
+                contract_id,
+                test_id,
+                &message,
+                chart_rel,
+            )]);
+        }
+    };
+
+    let config_maps = helm_env::extract_configmap_rows(&rendered.yaml_docs, "bijux-atlas");
+    let env_keys = helm_env::extract_configmap_env_keys(&rendered.yaml_docs, "bijux-atlas");
+    let report = helm_env::build_report(
+        &ctx.repo_root.join(chart_rel),
+        &[ctx.repo_root.join(values_rel)],
+        "bijux-atlas",
+        &helm_binary,
+        &env_keys,
+        &config_maps,
+        true,
+        helm_env::HelmInvocationReport {
+            status: "ok".to_string(),
+            debug_enabled: rendered.debug_enabled,
+            timeout_seconds: rendered.timeout_seconds,
+            stderr: rendered.stderr,
+        },
+    );
+    let report_value = match serde_json::to_value(&report) {
+        Ok(value) => value,
+        Err(err) => {
+            return TestResult::Fail(vec![effect_violation(
+                contract_id,
+                test_id,
+                &format!("failed to encode helm-env report: {err}"),
+                "artifacts/contracts/ops/helm/helm-env-report.json",
+            )]);
+        }
+    };
+    if let Err(message) = helm_env::validate_report_value(&report_value, &ctx.repo_root.join(schema_rel))
+    {
+        return TestResult::Fail(vec![effect_violation(
+            contract_id,
+            test_id,
+            &message,
+            schema_rel,
+        )]);
+    }
+    let _ = write_ops_effect_json(ctx, "helm/helm-env-report.json", &report_value);
+
+    let allowlist = match helm_env::load_allowlist(&ctx.repo_root.join(allowlist_rel)) {
+        Ok(value) => value,
+        Err(message) => {
+            return TestResult::Fail(vec![effect_violation(
+                contract_id,
+                test_id,
+                &message,
+                allowlist_rel,
+            )]);
+        }
+    };
+    let subset_report = helm_env::build_subset_report(
+        &env_keys,
+        &allowlist,
+        report.inputs.clone(),
+    );
+    let subset_value = match serde_json::to_value(&subset_report) {
+        Ok(value) => value,
+        Err(err) => {
+            return TestResult::Fail(vec![effect_violation(
+                contract_id,
+                test_id,
+                &format!("failed to encode helm-env subset report: {err}"),
+                "artifacts/contracts/ops/helm/helm-env-subset.json",
+            )]);
+        }
+    };
+    let _ = write_ops_effect_json(ctx, "helm/helm-env-subset.json", &subset_value);
+    if subset_report.extra.is_empty() {
+        TestResult::Pass
+    } else {
+        let mut violations = subset_report
+            .extra
+            .iter()
+            .map(|env_key| {
+                effect_violation(
+                    contract_id,
+                    test_id,
+                    "helm-emitted env key is outside the runtime allowlist",
+                    env_key,
+                )
+            })
+            .collect::<Vec<_>>();
+        violations.push(effect_violation(
+            contract_id,
+            test_id,
+            "inspect artifacts/contracts/ops/helm/helm-env-subset.json for the full subset diff",
+            "artifacts/contracts/ops/helm/helm-env-subset.json",
+        ));
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_ops_stack_e_005_kind_install_smoke(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-STACK-E-005";
     let test_id = "ops.stack.effect.kind_install_smoke";
