@@ -5,6 +5,7 @@ Commands:
   explain           
   stack             
   k8s               
+  profiles          
   load              
   datasets          
   e2e               
@@ -23,6 +24,7 @@ Commands:
   docs-verify       
   conformance       
   report            
+  helm-env          
   readiness         
   render            
   install           

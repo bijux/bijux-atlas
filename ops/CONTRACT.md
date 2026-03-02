@@ -13,6 +13,7 @@
 
 | ID | Title | Severity | Type(static/effect) | Enforced by | Artifacts |
 | --- | --- | --- | --- | --- | --- |
+| `OPS-DATASET-001` | pinned datasets manifest subset contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-DATASETS-001` | datasets manifest lock contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-DATASETS-002` | datasets fixture inventory contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-DATASETS-003` | datasets fixture drift promotion contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
@@ -47,6 +48,7 @@
 | `OPS-ENV-007` | environment base defaults contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-ENV-008` | environment overlay key stability contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-ENV-009` | environment overlays directory boundary contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
+| `OPS-HELM-ENV-001` | helm env allowlist subset contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-INV-001` | inventory completeness contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-INV-002` | inventory orphan files contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-INV-003` | inventory duplicate source contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
@@ -117,6 +119,10 @@
 | `OPS-OBS-E-001` | observe effect metrics scrape contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-OBS-E-002` | observe effect trace structure contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-OBS-E-003` | observe effect alerts load contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
+| `OPS-PROFILES-001` | profiles render success contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
+| `OPS-PROFILES-002` | profiles values schema contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
+| `OPS-PROFILES-003` | profiles kubeconform contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
+| `OPS-PROFILES-004` | rollout safety profile set contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-REPORT-001` | report schema ssot contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-REPORT-002` | report generated payload contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-REPORT-003` | report evidence levels contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
@@ -189,6 +195,7 @@
 
 | Contract | Command(s) |
 | --- | --- |
+| `OPS-DATASET-001` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-DATASETS-001` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-DATASETS-002` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-DATASETS-003` | `bijux dev atlas contracts ops --mode static` |
@@ -223,6 +230,7 @@
 | `OPS-ENV-007` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-ENV-008` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-ENV-009` | `bijux dev atlas contracts ops --mode static` |
+| `OPS-HELM-ENV-001` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-INV-001` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-INV-002` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-INV-003` | `bijux dev atlas contracts ops --mode static` |
@@ -293,6 +301,10 @@
 | `OPS-OBS-E-001` | `bijux dev atlas contracts ops --mode effect` |
 | `OPS-OBS-E-002` | `bijux dev atlas contracts ops --mode effect` |
 | `OPS-OBS-E-003` | `bijux dev atlas contracts ops --mode effect` |
+| `OPS-PROFILES-001` | `bijux dev atlas contracts ops --mode static` |
+| `OPS-PROFILES-002` | `bijux dev atlas contracts ops --mode static` |
+| `OPS-PROFILES-003` | `bijux dev atlas contracts ops --mode static` |
+| `OPS-PROFILES-004` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-REPORT-001` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-REPORT-002` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-REPORT-003` | `bijux dev atlas contracts ops --mode static` |

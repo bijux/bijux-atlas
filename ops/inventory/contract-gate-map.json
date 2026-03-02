@@ -2,6 +2,25 @@
   "schema_version": 1,
   "mappings": [
     {
+      "command": "bijux dev atlas ops profiles validate",
+      "contract_id": "OPS-DATASET-001",
+      "effects_required": [
+        "subprocess"
+      ],
+      "external_tools": [
+        "helm",
+        "kubeconform"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/profiles/full-matrix.json"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-DATASET-001",
+      "gate_ids": [
+        "ops.gate.k8s-determinism"
+      ],
+      "static_only": false
+    },
+    {
       "command": "bijux dev atlas ops check",
       "contract_id": "OPS-DATASETS-001",
       "effects_required": [],
@@ -324,6 +343,25 @@
         "ops.validate"
       ],
       "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops helm-env",
+      "contract_id": "OPS-HELM-ENV-001",
+      "effects_required": [
+        "subprocess"
+      ],
+      "external_tools": [
+        "helm"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/helm/helm-env-report.json",
+        "artifacts/contracts/ops/helm/helm-env-subset.json"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-HELM-ENV-001",
+      "gate_ids": [
+        "ops.gate.k8s-determinism"
+      ],
+      "static_only": false
     },
     {
       "command": "bijux dev atlas ops check",
@@ -792,44 +830,6 @@
         "artifacts/contracts/ops/tools.json"
       ],
       "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-K8S-E-006",
-      "gate_ids": [
-        "ops.gate.k8s-determinism"
-      ],
-      "static_only": false
-    },
-    {
-      "command": "bijux dev atlas ops profiles validate",
-      "contract_id": "OPS-DATASET-001",
-      "effects_required": [
-        "subprocess"
-      ],
-      "external_tools": [
-        "helm",
-        "kubeconform"
-      ],
-      "artifacts": [
-        "artifacts/contracts/ops/profiles/full-matrix.json"
-      ],
-      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-DATASET-001",
-      "gate_ids": [
-        "ops.gate.k8s-determinism"
-      ],
-      "static_only": false
-    },
-    {
-      "command": "bijux dev atlas ops helm-env",
-      "contract_id": "OPS-HELM-ENV-001",
-      "effects_required": [
-        "subprocess"
-      ],
-      "external_tools": [
-        "helm"
-      ],
-      "artifacts": [
-        "artifacts/contracts/ops/helm/helm-env-report.json",
-        "artifacts/contracts/ops/helm/helm-env-subset.json"
-      ],
-      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-HELM-ENV-001",
       "gate_ids": [
         "ops.gate.k8s-determinism"
       ],

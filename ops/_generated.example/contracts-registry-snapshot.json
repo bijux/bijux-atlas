@@ -1,6 +1,16 @@
 {
   "contracts": [
     {
+      "id": "OPS-DATASET-001",
+      "tests": [
+        {
+          "test_id": "ops.k8s.pinned_datasets_subset_of_manifest_ids",
+          "title": "effect lane requires install profile pinned datasets to stay inside the canonical dataset manifest"
+        }
+      ],
+      "title": "pinned datasets manifest subset contract"
+    },
+    {
       "id": "OPS-DATASETS-001",
       "tests": [
         {
@@ -339,6 +349,16 @@
         }
       ],
       "title": "environment overlays directory boundary contract"
+    },
+    {
+      "id": "OPS-HELM-ENV-001",
+      "tests": [
+        {
+          "test_id": "ops.k8s.helm_env_runtime_allowlist_subset",
+          "title": "effect lane requires Helm-emitted ConfigMap env keys to stay inside the runtime allowlist"
+        }
+      ],
+      "title": "helm env allowlist subset contract"
     },
     {
       "id": "OPS-INV-001",
@@ -1039,6 +1059,46 @@
         }
       ],
       "title": "observe effect alerts load contract"
+    },
+    {
+      "id": "OPS-PROFILES-001",
+      "tests": [
+        {
+          "test_id": "ops.k8s.profiles_render_success",
+          "title": "effect lane requires every install profile to render with helm template"
+        }
+      ],
+      "title": "profiles render success contract"
+    },
+    {
+      "id": "OPS-PROFILES-002",
+      "tests": [
+        {
+          "test_id": "ops.k8s.profiles_values_schema_valid",
+          "title": "effect lane requires every install profile to satisfy merged values schema"
+        }
+      ],
+      "title": "profiles values schema contract"
+    },
+    {
+      "id": "OPS-PROFILES-003",
+      "tests": [
+        {
+          "test_id": "ops.k8s.profiles_kubeconform_valid",
+          "title": "effect lane requires every install profile to pass kubeconform when kubeconform is available"
+        }
+      ],
+      "title": "profiles kubeconform contract"
+    },
+    {
+      "id": "OPS-PROFILES-004",
+      "tests": [
+        {
+          "test_id": "ops.k8s.rollout_safety_profiles_exist_and_validate",
+          "title": "effect lane requires rollout-safety profiles to exist and validate"
+        }
+      ],
+      "title": "rollout safety profile set contract"
     },
     {
       "id": "OPS-REPORT-001",

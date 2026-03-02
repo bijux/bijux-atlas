@@ -83,6 +83,7 @@
     "configs/contracts/crate-docs-publish-allowlist.json",
     "configs/contracts/crate-docs-readme-allowlist.json",
     "configs/contracts/dev-atlas-output.schema.json",
+    "configs/contracts/docs-site-output.schema.json",
     "configs/contracts/env.schema.json",
     "configs/contracts/inventory-budgets.schema.json",
     "configs/contracts/inventory-commands.schema.json",
@@ -96,6 +97,10 @@
     "configs/contracts/make-contracts-check-output.schema.json",
     "configs/contracts/ops-lint-output.schema.json",
     "configs/contracts/reporting-ci-summary-output.schema.json",
+    "configs/contracts/reports/closure-summary.schema.json",
+    "configs/contracts/reports/docs-site-output.schema.json",
+    "configs/contracts/reports/helm-env.schema.json",
+    "configs/contracts/reports/ops-profiles.schema.json",
     "configs/contracts/tooling-doctor-output.schema.json",
     "configs/contracts/tooling-surface-output.schema.json",
     "configs/contracts/tooling-tool-output.schema.json"

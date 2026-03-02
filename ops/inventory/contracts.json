@@ -1,5 +1,6 @@
 {
   "contract_ids": [
+    "OPS-DATASET-001",
     "OPS-DATASETS-001",
     "OPS-DATASETS-002",
     "OPS-DATASETS-003",
@@ -34,6 +35,7 @@
     "OPS-ENV-007",
     "OPS-ENV-008",
     "OPS-ENV-009",
+    "OPS-HELM-ENV-001",
     "OPS-INV-001",
     "OPS-INV-002",
     "OPS-INV-003",
@@ -76,8 +78,6 @@
     "OPS-K8S-E-004",
     "OPS-K8S-E-005",
     "OPS-K8S-E-006",
-    "OPS-DATASET-001",
-    "OPS-HELM-ENV-001",
     "OPS-LOAD-001",
     "OPS-LOAD-002",
     "OPS-LOAD-003",

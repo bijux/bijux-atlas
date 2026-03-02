@@ -140,7 +140,8 @@
         "properties": {
           "hpa": {
             "properties": {
-              "minReplicas": {
+              "cpuUtilization": {
+                "maximum": 100,
                 "minimum": 1,
                 "type": "integer"
               },
@@ -148,8 +149,7 @@
                 "minimum": 1,
                 "type": "integer"
               },
-              "cpuUtilization": {
-                "maximum": 100,
+              "minReplicas": {
                 "minimum": 1,
                 "type": "integer"
               }
@@ -239,13 +239,6 @@
     "catalog": {
       "additionalProperties": false,
       "properties": {
-        "endpoint": {
-          "pattern": "^(|https?://.+)$",
-          "type": "string"
-        },
-        "etagEnabled": {
-          "type": "boolean"
-        },
         "backoffBaseMs": {
           "minimum": 0,
           "type": "integer"
@@ -257,6 +250,13 @@
         "breakerOpenMs": {
           "minimum": 0,
           "type": "integer"
+        },
+        "endpoint": {
+          "pattern": "^(|https?://.+)$",
+          "type": "string"
+        },
+        "etagEnabled": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -280,32 +280,32 @@
     "hpa": {
       "additionalProperties": false,
       "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
-        "minReplicas": {
-          "minimum": 1,
-          "type": "integer"
-        },
-        "maxReplicas": {
-          "minimum": 1,
-          "type": "integer"
+        "behavior": {
+          "type": "object"
         },
         "cpuUtilization": {
           "maximum": 100,
           "minimum": 1,
           "type": "integer"
         },
-        "p95LatencySeconds": {
-          "minLength": 1,
-          "type": "string"
+        "enabled": {
+          "type": "boolean"
         },
         "heavyInflightAverageValue": {
           "minLength": 1,
           "type": "string"
         },
-        "behavior": {
-          "type": "object"
+        "maxReplicas": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "minReplicas": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "p95LatencySeconds": {
+          "minLength": 1,
+          "type": "string"
         }
       },
       "required": [
@@ -401,9 +401,6 @@
     "networkPolicy": {
       "additionalProperties": false,
       "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
         "allowDns": {
           "type": "boolean"
         },
@@ -413,6 +410,9 @@
             "type": "string"
           },
           "type": "array"
+        },
+        "enabled": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -468,12 +468,12 @@
           "minLength": 1,
           "type": "string"
         },
+        "labels": {
+          "type": "object"
+        },
         "scrapeTimeout": {
           "minLength": 1,
           "type": "string"
-        },
-        "labels": {
-          "type": "object"
         }
       },
       "required": [
@@ -487,19 +487,19 @@
     "store": {
       "additionalProperties": false,
       "properties": {
+        "credentialsSecretName": {
+          "type": "string"
+        },
         "endpoint": {
           "pattern": "^(|https?://.+)$",
           "type": "string"
         },
+        "manageCredentialsSecret": {
+          "type": "boolean"
+        },
         "s3PresignedBaseUrl": {
           "pattern": "^(|https?://.+)$",
           "type": "string"
-        },
-        "credentialsSecretName": {
-          "type": "string"
-        },
-        "manageCredentialsSecret": {
-          "type": "boolean"
         }
       },
       "required": [

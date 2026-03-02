@@ -270,7 +270,8 @@
         "configs/schema/target-renames.schema.json",
         "configs/schema/tool-versions.schema.json",
         "configs/schema/versioning-policy.schema.json",
-        "configs/contracts/*.json"
+        "configs/contracts/*.json",
+        "configs/contracts/reports/*.json"
       ],
       "name": "schema",
       "owner": "platform",

@@ -136,6 +136,7 @@
     "bijux dev atlas ops explain",
     "bijux dev atlas ops gen check",
     "bijux dev atlas ops gen run",
+    "bijux dev atlas ops helm-env",
     "bijux dev atlas ops help",
     "bijux dev atlas ops k8s apply-config",
     "bijux dev atlas ops k8s check",
@@ -173,6 +174,7 @@
     "bijux dev atlas ops pins update",
     "bijux dev atlas ops policy-audit",
     "bijux dev atlas ops prereqs",
+    "bijux dev atlas ops profiles validate",
     "bijux dev atlas ops restart",
     "bijux dev atlas ops root-lanes",
     "bijux dev atlas ops root-local",
@@ -1731,6 +1733,40 @@
       "supports_json": true,
       "dry_run": "not_applicable",
       "artifacts_policy": "none"
+    },
+    {
+      "id": "ops.helm-env",
+      "domain": "helm-env",
+      "command": [
+        "bijux-dev-atlas",
+        "ops",
+        "helm-env"
+      ],
+      "argv": [
+        "helm-env"
+      ],
+      "purpose": "ops helm-env command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
+    },
+    {
+      "id": "ops.profiles.validate",
+      "domain": "profiles",
+      "command": [
+        "bijux-dev-atlas",
+        "ops",
+        "profiles",
+        "validate"
+      ],
+      "argv": [
+        "profiles",
+        "validate"
+      ],
+      "purpose": "ops profiles validate command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     }
   ]
 }

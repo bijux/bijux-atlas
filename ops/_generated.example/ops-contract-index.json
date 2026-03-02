@@ -1,6 +1,23 @@
 {
   "contracts": [
     {
+      "command": "bijux dev atlas ops profiles validate",
+      "effects_required": [
+        "subprocess"
+      ],
+      "gate_ids": [
+        "ops.gate.k8s-determinism"
+      ],
+      "id": "OPS-DATASET-001",
+      "mode": "static",
+      "pillar": "k8s",
+      "static_only": false,
+      "test_ids": [
+        "ops.k8s.pinned_datasets_subset_of_manifest_ids"
+      ],
+      "title": "pinned datasets manifest subset contract"
+    },
+    {
       "command": "bijux dev atlas ops check",
       "effects_required": [],
       "gate_ids": [
@@ -513,6 +530,23 @@
         "ops.env.overlays_dir_no_stray_files"
       ],
       "title": "environment overlays directory boundary contract"
+    },
+    {
+      "command": "bijux dev atlas ops helm-env",
+      "effects_required": [
+        "subprocess"
+      ],
+      "gate_ids": [
+        "ops.gate.k8s-determinism"
+      ],
+      "id": "OPS-HELM-ENV-001",
+      "mode": "static",
+      "pillar": "k8s",
+      "static_only": false,
+      "test_ids": [
+        "ops.k8s.helm_env_runtime_allowlist_subset"
+      ],
+      "title": "helm env allowlist subset contract"
     },
     {
       "command": "bijux dev atlas ops check",
@@ -1625,6 +1659,74 @@
         "ops.observe.effect.alerts_load_contract"
       ],
       "title": "observe effect alerts load contract"
+    },
+    {
+      "command": "bijux dev atlas ops profiles validate",
+      "effects_required": [
+        "subprocess"
+      ],
+      "gate_ids": [
+        "ops.gate.k8s-determinism"
+      ],
+      "id": "OPS-PROFILES-001",
+      "mode": "static",
+      "pillar": "k8s",
+      "static_only": false,
+      "test_ids": [
+        "ops.k8s.profiles_render_success"
+      ],
+      "title": "profiles render success contract"
+    },
+    {
+      "command": "bijux dev atlas ops profiles validate",
+      "effects_required": [
+        "subprocess"
+      ],
+      "gate_ids": [
+        "ops.gate.k8s-determinism"
+      ],
+      "id": "OPS-PROFILES-002",
+      "mode": "static",
+      "pillar": "k8s",
+      "static_only": false,
+      "test_ids": [
+        "ops.k8s.profiles_values_schema_valid"
+      ],
+      "title": "profiles values schema contract"
+    },
+    {
+      "command": "bijux dev atlas ops profiles validate",
+      "effects_required": [
+        "subprocess"
+      ],
+      "gate_ids": [
+        "ops.gate.k8s-determinism"
+      ],
+      "id": "OPS-PROFILES-003",
+      "mode": "static",
+      "pillar": "k8s",
+      "static_only": false,
+      "test_ids": [
+        "ops.k8s.profiles_kubeconform_valid"
+      ],
+      "title": "profiles kubeconform contract"
+    },
+    {
+      "command": "bijux dev atlas ops profiles validate",
+      "effects_required": [
+        "subprocess"
+      ],
+      "gate_ids": [
+        "ops.gate.k8s-determinism"
+      ],
+      "id": "OPS-PROFILES-004",
+      "mode": "static",
+      "pillar": "k8s",
+      "static_only": false,
+      "test_ids": [
+        "ops.k8s.rollout_safety_profiles_exist_and_validate"
+      ],
+      "title": "rollout safety profile set contract"
     },
     {
       "command": "bijux dev atlas ops check",

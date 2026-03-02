@@ -40,10 +40,10 @@
     },
     {
       "counts": {
-        "covered": 12,
+        "covered": 13,
         "generated": 0,
         "internal": 0,
-        "public": 12,
+        "public": 13,
         "schemas": 3
       },
       "files": [
@@ -58,7 +58,8 @@
         "configs/docs/package.json",
         "configs/docs/quality-policy.json",
         "configs/docs/requirements.lock.txt",
-        "configs/docs/requirements.txt"
+        "configs/docs/requirements.txt",
+        "configs/docs/site-output-contract.json"
       ],
       "name": "docs",
       "owner": "docs-governance",
@@ -412,9 +413,9 @@
     },
     {
       "counts": {
-        "covered": 47,
+        "covered": 52,
         "generated": 1,
-        "internal": 37,
+        "internal": 42,
         "public": 9,
         "schemas": 2
       },
@@ -427,6 +428,7 @@
         "configs/contracts/crate-docs-publish-allowlist.json",
         "configs/contracts/crate-docs-readme-allowlist.json",
         "configs/contracts/dev-atlas-output.schema.json",
+        "configs/contracts/docs-site-output.schema.json",
         "configs/contracts/env.schema.json",
         "configs/contracts/inventory-budgets.schema.json",
         "configs/contracts/inventory-commands.schema.json",
@@ -440,6 +442,10 @@
         "configs/contracts/make-contracts-check-output.schema.json",
         "configs/contracts/ops-lint-output.schema.json",
         "configs/contracts/reporting-ci-summary-output.schema.json",
+        "configs/contracts/reports/closure-summary.schema.json",
+        "configs/contracts/reports/docs-site-output.schema.json",
+        "configs/contracts/reports/helm-env.schema.json",
+        "configs/contracts/reports/ops-profiles.schema.json",
         "configs/contracts/tooling-doctor-output.schema.json",
         "configs/contracts/tooling-surface-output.schema.json",
         "configs/contracts/tooling-tool-output.schema.json",

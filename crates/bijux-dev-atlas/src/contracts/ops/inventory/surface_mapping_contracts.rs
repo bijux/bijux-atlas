@@ -203,11 +203,13 @@ fn test_ops_root_surface_005_commands_grouped_by_pillar(ctx: &RunContext) -> Tes
         "e2e",
         "env",
         "gen",
+        "helm-env",
         "k8s",
         "kind",
         "load",
         "observe",
         "pins",
+        "profiles",
         "stack",
         "root",
     ]);
@@ -509,4 +511,3 @@ fn test_ops_root_surface_010_artifacts_root_policy(ctx: &RunContext) -> TestResu
         TestResult::Fail(violations)
     }
 }
-

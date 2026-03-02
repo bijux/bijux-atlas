@@ -18,5 +18,7 @@
   },
   "kind": "ops_helm_env_subset",
   "missing": [],
-  "schema_version": 1
+  "report_id": "helm-env-subset",
+  "schema_version": 1,
+  "version": 1
 }

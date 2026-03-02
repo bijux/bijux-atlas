@@ -26,6 +26,7 @@ fn ignored_test_files() -> BTreeSet<&'static str> {
         "src/main_tests.rs",
         "src/core/lib_tests.rs",
         "src/commands/ops/execution_runtime_mod/tests.rs",
+        "src/ops/profiles_matrix/tests.rs",
     ]
     .into_iter()
     .collect()
@@ -71,6 +72,7 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
         "src/contracts/ops/platform/kubernetes_support_contracts.rs",
         "src/contracts/ops/platform/shared_static_contracts.rs",
         "src/contracts/ops/platform/verification_effect_contracts.rs",
+        "src/contracts/repo/mod.rs",
         "src/contracts/ops/governance/registry_catalog.rs",
         "src/contracts/docker/contracts_static_checks.rs",
         "src/contracts/docker/contracts_tests.rs",
@@ -117,6 +119,9 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
         "src/core/checks/ops/ops/inventory_and_artifact_checks.rs",
         "src/core/ops_inventory/types_and_manifests.rs",
         "src/core/ops_inventory/summary_and_fs_scan.rs",
+        "src/ops/helm_env.rs",
+        "src/ops/profiles_matrix.rs",
+        "src/ops/profiles_matrix/tests.rs",
         "src/policies/validate.rs",
     ]
     .into_iter()
@@ -146,6 +151,7 @@ fn staged_time_random_exceptions() -> BTreeSet<&'static str> {
         "src/contracts/docker/mod.rs",
         "src/commands/artifacts.rs",
         "src/commands/docs/runtime/docs_command_router.rs",
+        "src/docs/site_output.rs",
     ]
     .into_iter()
     .collect()

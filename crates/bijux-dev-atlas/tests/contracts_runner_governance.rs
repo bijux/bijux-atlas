@@ -12,6 +12,38 @@ fn repo_root() -> PathBuf {
         .to_path_buf()
 }
 
+fn strip_cfg_test_modules(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    let mut lines = text.lines();
+    while let Some(line) = lines.next() {
+        if line.trim() == "#[cfg(test)]" {
+            let Some(next_line) = lines.next() else {
+                break;
+            };
+            if next_line.contains("mod tests") {
+                let mut brace_depth = next_line.matches('{').count();
+                brace_depth = brace_depth.saturating_sub(next_line.matches('}').count());
+                while brace_depth > 0 {
+                    let Some(test_line) = lines.next() else {
+                        break;
+                    };
+                    brace_depth += test_line.matches('{').count();
+                    brace_depth = brace_depth.saturating_sub(test_line.matches('}').count());
+                }
+                continue;
+            }
+            out.push_str(line);
+            out.push('\n');
+            out.push_str(next_line);
+            out.push('\n');
+            continue;
+        }
+        out.push_str(line);
+        out.push('\n');
+    }
+    out
+}
+
 #[test]
 #[ignore = "docs runtime contract pending topology rewrite"]
 fn contracts_runtime_docs_define_stable_exit_codes() {
@@ -49,7 +81,8 @@ fn contracts_production_sources_avoid_unwrap_and_expect() {
             if !name.ends_with(".rs") || name.ends_with("tests.rs") || name == "engine_tests.rs" {
                 continue;
             }
-            let text = fs::read_to_string(&path).expect("read source file");
+            let text =
+                strip_cfg_test_modules(&fs::read_to_string(&path).expect("read source file"));
             if text.contains(".unwrap(") || text.contains(".expect(") {
                 offenders.push(
                     path.strip_prefix(repo_root())

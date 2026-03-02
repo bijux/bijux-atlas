@@ -169,6 +169,7 @@ fn test_ops_root_005_filename_policy(ctx: &RunContext) -> TestResult {
             "ERRORS.md",
             "Chart.yaml",
             "ALLOWLIST.json",
+            "NOTES.txt",
         ]);
     let mut violations = Vec::new();
     for path in files {

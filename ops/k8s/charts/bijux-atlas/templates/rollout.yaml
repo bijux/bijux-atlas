@@ -1,4 +1,7 @@
 {{- if .Values.rollout.enabled }}
+{{- if contains "@" .Values.image.repository }}
+{{- fail "image.repository must not include '@'; use image.digest for digests" }}
+{{- end }}
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:

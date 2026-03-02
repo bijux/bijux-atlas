@@ -1,4 +1,10 @@
 {
+  "artifacts": {
+    "closure_index": "/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_internal/generated/closure-index.json",
+    "closure_summary": "/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/tests/fixtures/docs-mini/artifacts/run/docs_fixture/gates/docs/docs-build-closure-summary.json",
+    "report_manifest": "/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/tests/fixtures/docs-mini/artifacts/run/docs_fixture/gates/docs/report-manifest.json",
+    "site_output": "/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/tests/fixtures/docs-mini/artifacts/run/docs_fixture/gates/docs/site-output.json"
+  },
   "capabilities": {
     "fs_write": false,
     "network": false,
@@ -29,9 +35,23 @@
     {
       "name": "build",
       "status": "skipped"
+    },
+    {
+      "file_count": 0,
+      "minimum_file_count": 0,
+      "name": "site_output",
+      "status": "skipped"
     }
   ],
   "run_id": "docs_fixture",
   "schema_version": 1,
-  "text": "docs: 4 checks collected, 0 failed, build=skipped"
+  "site_output": {
+    "checks": [],
+    "counts": {
+      "file_count": 0,
+      "minimum_file_count": 0
+    },
+    "status": "skipped"
+  },
+  "text": "docs: 5 checks collected, 0 failed, build=skipped"
 }
