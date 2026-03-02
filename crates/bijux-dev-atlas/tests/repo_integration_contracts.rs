@@ -578,6 +578,19 @@ fn mkdocs_config_enables_redirects_plugin_for_legacy_markdown_paths() {
 }
 
 #[test]
+fn governed_json_configuration_surfaces_stay_pretty_printed() {
+    let root = repo_root();
+    for relative_path in [
+        "configs/contracts/env.schema.json",
+        "ops/k8s/charts/bijux-atlas/values.schema.json",
+        "configs/rust/toolchain.json",
+        "ops/inventory/toolchain.json",
+    ] {
+        assert_pretty_json_file(&root.join(relative_path));
+    }
+}
+
+#[test]
 fn quickstart_command_is_backed_by_cli_help() {
     let root = repo_root();
     let start_here = read(&root.join("docs/start-here.md"));

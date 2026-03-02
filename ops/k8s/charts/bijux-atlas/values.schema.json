@@ -6,18 +6,21 @@
       "description": "Chart values key `affinity` from SSOT contract."
     },
     "alertRules": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
         "enabled": {
           "type": "boolean"
         },
         "runbookUrlBase": {
-          "type": "string",
-          "pattern": "^https?://.+"
+          "pattern": "^https?://.+",
+          "type": "string"
         }
       },
-      "required": ["enabled", "runbookUrlBase"]
+      "required": [
+        "enabled",
+        "runbookUrlBase"
+      ],
+      "type": "object"
     },
     "cache": {
       "description": "Chart values key `cache` from SSOT contract."
@@ -41,29 +44,7 @@
       "description": "Chart values key `hpa` from SSOT contract."
     },
     "image": {
-      "type": "object",
       "additionalProperties": false,
-      "properties": {
-        "repository": {
-          "type": "string",
-          "minLength": 1,
-          "not": {
-            "pattern": "@"
-          }
-        },
-        "tag": {
-          "type": "string"
-        },
-        "digest": {
-          "type": "string",
-          "pattern": "^(|sha256:[a-f0-9]{64})$"
-        },
-        "pullPolicy": {
-          "type": "string",
-          "enum": ["Always", "IfNotPresent", "Never"]
-        }
-      },
-      "required": ["repository", "tag", "digest", "pullPolicy"],
       "allOf": [
         {
           "if": {
@@ -81,7 +62,38 @@
             }
           }
         }
-      ]
+      ],
+      "properties": {
+        "digest": {
+          "pattern": "^(|sha256:[a-f0-9]{64})$",
+          "type": "string"
+        },
+        "pullPolicy": {
+          "enum": [
+            "Always",
+            "IfNotPresent",
+            "Never"
+          ],
+          "type": "string"
+        },
+        "repository": {
+          "minLength": 1,
+          "not": {
+            "pattern": "@"
+          },
+          "type": "string"
+        },
+        "tag": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository",
+        "tag",
+        "digest",
+        "pullPolicy"
+      ],
+      "type": "object"
     },
     "ingress": {
       "description": "Chart values key `ingress` from SSOT contract."
