@@ -205,6 +205,18 @@ pub(super) fn check_workflows_policy_registry_unique_and_documented(
                 "link workflow policy entries to a committed docs page that explains the executable check",
                 Some(rel),
             ));
+        } else if let Ok(doc_text) = fs::read_to_string(ctx.repo_root.join(docs)) {
+            if !doc_text.contains("bijux-dev-atlas --")
+                && !doc_text.contains("cargo run -q -p bijux-dev-atlas --")
+                && !doc_text.contains("cargo run --locked -q -p bijux-dev-atlas --")
+            {
+                violations.push(violation(
+                    "WORKFLOW_POLICY_DOC_EXECUTABLE_LINK_MISSING",
+                    format!("workflow policy docs `{docs}` do not reference an executable atlas command for `{policy_id}`"),
+                    "link policy docs to the executable atlas command instead of prose-only policy descriptions",
+                    Some(rel),
+                ));
+            }
         }
     }
     Ok(violations)
@@ -269,6 +281,145 @@ pub(super) fn check_workflows_policy_exceptions_expiry(
                 "WORKFLOW_POLICY_EXCEPTION_RENEWAL_MISSING",
                 format!("workflow policy exception `{policy_id}` is missing renewal_reference"),
                 "record the renewal workflow reference for each workflow policy exception",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_workflows_step_patterns_cover_surface(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("configs/ci/workflow-step-patterns.json");
+    let allowlist_rel = Path::new("configs/ci/workflow-allowlist.json");
+    let root = ctx.repo_root;
+    let patterns_value: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(root.join(rel)).map_err(|err| CheckError::Failed(err.to_string()))?,
+    )
+    .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let allowlist_value: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(root.join(allowlist_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?,
+    )
+    .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let patterns = patterns_value["patterns"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
+    let allowlist = allowlist_value["entries"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
+    let mut violations = Vec::new();
+    for workflow in walk_files(&root.join(".github/workflows")) {
+        if workflow.extension().and_then(|ext| ext.to_str()) != Some("yml") {
+            continue;
+        }
+        let workflow_rel = workflow
+            .strip_prefix(root)
+            .unwrap_or(&workflow)
+            .display()
+            .to_string();
+        let yaml: serde_yaml::Value = serde_yaml::from_str(
+            &fs::read_to_string(&workflow).map_err(|err| CheckError::Failed(err.to_string()))?,
+        )
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let jobs = yaml
+            .get("jobs")
+            .and_then(serde_yaml::Value::as_mapping)
+            .cloned()
+            .unwrap_or_default();
+        for (job_key, job_value) in jobs {
+            let Some(job) = job_key.as_str() else {
+                continue;
+            };
+            let steps = job_value
+                .get("steps")
+                .and_then(serde_yaml::Value::as_sequence)
+                .cloned()
+                .unwrap_or_default();
+            for step in steps {
+                let step_name = step
+                    .get("name")
+                    .and_then(serde_yaml::Value::as_str)
+                    .or_else(|| step.get("id").and_then(serde_yaml::Value::as_str))
+                    .or_else(|| step.get("uses").and_then(serde_yaml::Value::as_str))
+                    .unwrap_or("unnamed-step");
+                let (step_kind, content) =
+                    if let Some(uses) = step.get("uses").and_then(serde_yaml::Value::as_str) {
+                        ("uses", uses.to_string())
+                    } else if let Some(run) = step.get("run").and_then(serde_yaml::Value::as_str) {
+                        let normalized = run
+                            .lines()
+                            .map(str::trim)
+                            .filter(|line| !line.is_empty() && *line != "set -euo pipefail")
+                            .collect::<Vec<_>>()
+                            .join("\n");
+                        ("run", normalized)
+                    } else {
+                        ("unknown", String::new())
+                    };
+                let matched = patterns.iter().any(|pattern| {
+                    pattern["step_kind"].as_str() == Some(step_kind)
+                        && match pattern["match_mode"].as_str().unwrap_or_default() {
+                            "contains" => {
+                                content.contains(pattern["needle"].as_str().unwrap_or_default())
+                            }
+                            "starts_with" => {
+                                content.starts_with(pattern["needle"].as_str().unwrap_or_default())
+                            }
+                            "equals" => content == pattern["needle"].as_str().unwrap_or_default(),
+                            _ => false,
+                        }
+                });
+                let allowed = allowlist.iter().any(|entry| {
+                    entry["workflow"].as_str() == Some(&workflow_rel)
+                        && entry["job"].as_str() == Some(job)
+                        && entry["step"].as_str() == Some(step_name)
+                });
+                if !matched && !allowed {
+                    violations.push(violation(
+                        "WORKFLOW_STEP_PATTERN_MISSING",
+                        format!(
+                            "workflow step `{step_name}` in `{workflow_rel}` job `{job}` is not covered by configs/ci/workflow-step-patterns.json or workflow-allowlist.json"
+                        ),
+                        "register the step pattern or add an expiry-bound allowlist entry with justification",
+                        Some(rel),
+                    ));
+                }
+            }
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_workflows_allowlist_expiry_bound(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("configs/ci/workflow-allowlist.json");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let value: serde_json::Value =
+        serde_json::from_str(&text).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    for entry in value["entries"].as_array().into_iter().flatten() {
+        let step = entry["step"].as_str().unwrap_or("unknown");
+        let expires_on = entry["expires_on"].as_str().unwrap_or_default();
+        let renewal_reference = entry["renewal_reference"].as_str().unwrap_or_default();
+        if expires_on.len() != 10 {
+            violations.push(violation(
+                "WORKFLOW_ALLOWLIST_EXPIRY_INVALID",
+                format!("workflow allowlist entry `{step}` must use YYYY-MM-DD expiry"),
+                "set an ISO expiry date for every workflow allowlist entry",
+                Some(rel),
+            ));
+        }
+        if renewal_reference.trim().is_empty() {
+            violations.push(violation(
+                "WORKFLOW_ALLOWLIST_RENEWAL_MISSING",
+                format!("workflow allowlist entry `{step}` is missing renewal_reference"),
+                "record the renewal reference for every allowlist entry",
                 Some(rel),
             ));
         }

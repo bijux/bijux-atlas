@@ -1291,6 +1291,28 @@ budget_ms = 1000
 visibility = "internal"
 
 [[checks]]
+id = "checks_workflows_step_patterns_cover_surface"
+domain = "workflows"
+title = "workflow step patterns and allowlists cover the current workflow surface"
+docs = "docs/development/ci-thin-shell.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
+id = "checks_workflows_allowlist_expiry_bound"
+domain = "workflows"
+title = "workflow allowlist entries remain expiry bound and renewable"
+docs = "docs/development/ci-thin-shell.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
 id = "checks_workflows_rust_toolchain_matches_repo_pin"
 domain = "workflows"
 title = "rust workflow pin matches rust-toolchain.toml"

@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "patterns": [
+    {
+      "pattern_id": "ci-workflow-pattern-actions-checkout",
+      "step_kind": "uses",
+      "classification": "orchestration",
+      "match_mode": "starts_with",
+      "needle": "actions/checkout@",
+      "allowed": true
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-rust-toolchain",
+      "step_kind": "uses",
+      "classification": "orchestration",
+      "match_mode": "starts_with",
+      "needle": "dtolnay/rust-toolchain@",
+      "allowed": true
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-cache-restore",
+      "step_kind": "uses",
+      "classification": "orchestration",
+      "match_mode": "starts_with",
+      "needle": "actions/cache/restore@",
+      "allowed": true
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-cache-save",
+      "step_kind": "uses",
+      "classification": "orchestration",
+      "match_mode": "starts_with",
+      "needle": "actions/cache/save@",
+      "allowed": true
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-upload-artifact",
+      "step_kind": "uses",
+      "classification": "artifact-upload",
+      "match_mode": "starts_with",
+      "needle": "actions/upload-artifact@",
+      "allowed": true
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-paths-filter",
+      "step_kind": "uses",
+      "classification": "orchestration",
+      "match_mode": "starts_with",
+      "needle": "dorny/paths-filter@",
+      "allowed": true
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-kind-action",
+      "step_kind": "uses",
+      "classification": "orchestration",
+      "match_mode": "starts_with",
+      "needle": "helm/kind-action@",
+      "allowed": true
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-create-pull-request",
+      "step_kind": "uses",
+      "classification": "orchestration",
+      "match_mode": "starts_with",
+      "needle": "peter-evans/create-pull-request@",
+      "allowed": true
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-dependency-review",
+      "step_kind": "uses",
+      "classification": "policy",
+      "match_mode": "starts_with",
+      "needle": "actions/dependency-review-action@",
+      "allowed": true
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-atlas-run",
+      "step_kind": "run",
+      "classification": "orchestration",
+      "match_mode": "contains",
+      "needle": "cargo run --locked -q -p bijux-dev-atlas --",
+      "allowed": true
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-make-run",
+      "step_kind": "run",
+      "classification": "orchestration",
+      "match_mode": "contains",
+      "needle": "make ",
+      "allowed": true,
+      "notes": "Thin wrappers remain orchestration when they delegate to atlas-owned surfaces."
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-artifact-setup",
+      "step_kind": "run",
+      "classification": "orchestration",
+      "match_mode": "contains",
+      "needle": "mkdir -p \"artifacts/${RUN_ID}\"",
+      "allowed": true
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-python-pip-setup",
+      "step_kind": "run",
+      "classification": "orchestration",
+      "match_mode": "contains",
+      "needle": "python3 -m pip install",
+      "allowed": true
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-git-fetch-base",
+      "step_kind": "run",
+      "classification": "orchestration",
+      "match_mode": "contains",
+      "needle": "git fetch --depth=1 origin",
+      "allowed": true
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-lockfile-refresh",
+      "step_kind": "run",
+      "classification": "orchestration",
+      "match_mode": "contains",
+      "needle": "cargo generate-lockfile",
+      "allowed": true
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-summary-publish",
+      "step_kind": "run",
+      "classification": "artifact-upload",
+      "match_mode": "contains",
+      "needle": "GITHUB_STEP_SUMMARY",
+      "allowed": true,
+      "notes": "Publishing a run summary is allowed when the summary content is derived from atlas-produced reports."
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-report-checksums",
+      "step_kind": "run",
+      "classification": "artifact-upload",
+      "match_mode": "contains",
+      "needle": "sha256sum",
+      "allowed": true,
+      "notes": "Checksum emission is allowed for atlas-generated artifacts and reports."
+    }
+  ]
+}

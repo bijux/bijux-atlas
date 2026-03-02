@@ -115,6 +115,12 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_workflows_policy_exceptions_expiry" => {
             Some(check_workflows_policy_exceptions_expiry)
         }
+        "checks_workflows_step_patterns_cover_surface" => {
+            Some(check_workflows_step_patterns_cover_surface)
+        }
+        "checks_workflows_allowlist_expiry_bound" => {
+            Some(check_workflows_allowlist_expiry_bound)
+        }
         "checks_make_governance_wrappers_no_direct_cargo" => {
             Some(check_make_governance_wrappers_no_direct_cargo)
         }
@@ -289,6 +295,8 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_workflows_policy_registry_has_no_unplanned_entries",
         "checks_workflows_policy_registry_unique_and_documented",
         "checks_workflows_policy_exceptions_expiry",
+        "checks_workflows_step_patterns_cover_surface",
+        "checks_workflows_allowlist_expiry_bound",
         "checks_make_governance_wrappers_no_direct_cargo",
         "checks_docs_command_list_matches_contract",
         "checks_docs_dev_command_list_matches_contract",

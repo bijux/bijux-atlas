@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["schema_version", "patterns"],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "pattern_id",
+          "step_kind",
+          "classification",
+          "match_mode",
+          "needle",
+          "allowed"
+        ],
+        "properties": {
+          "pattern_id": {
+            "type": "string",
+            "pattern": "^ci-workflow-pattern-[a-z0-9-]+$"
+          },
+          "step_kind": {
+            "enum": ["uses", "run"]
+          },
+          "classification": {
+            "enum": ["policy", "orchestration", "artifact-upload"]
+          },
+          "match_mode": {
+            "enum": ["contains", "starts_with", "equals"]
+          },
+          "needle": {
+            "type": "string",
+            "minLength": 1
+          },
+          "allowed": {
+            "type": "boolean"
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

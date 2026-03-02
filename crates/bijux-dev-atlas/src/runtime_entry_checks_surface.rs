@@ -255,6 +255,54 @@ struct CiLaneCommandEntry {
     suite: String,
 }
 
+#[derive(Debug, Deserialize, Serialize, Clone)]
+struct WorkflowStepPatterns {
+    schema_version: u64,
+    patterns: Vec<WorkflowStepPattern>,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+struct WorkflowStepPattern {
+    pattern_id: String,
+    step_kind: String,
+    classification: String,
+    match_mode: String,
+    needle: String,
+    allowed: bool,
+    #[serde(default)]
+    notes: String,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+struct WorkflowAllowlist {
+    schema_version: u64,
+    entries: Vec<WorkflowAllowlistEntry>,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+struct WorkflowAllowlistEntry {
+    workflow: String,
+    job: String,
+    step: String,
+    owner: String,
+    reason: String,
+    expires_on: String,
+    renewal_reference: String,
+}
+
+#[derive(Debug, Serialize)]
+struct WorkflowLintRow {
+    workflow: String,
+    job: String,
+    step: String,
+    step_kind: String,
+    classification: String,
+    allowed: bool,
+    matched_pattern: String,
+    registry_policy_id: String,
+    allowlist_expires_on: String,
+}
+
 fn load_ci_policy_registry(repo_root: &Path) -> Result<CiPolicyRegistry, String> {
     let path = repo_root.join("configs/ci/policy-outside-control-plane.json");
     let text = fs::read_to_string(&path)
@@ -274,6 +322,146 @@ fn load_ci_lane_surface(repo_root: &Path) -> Result<CiLaneSurfaceRegistry, Strin
     let text = fs::read_to_string(&path)
         .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
+}
+
+fn load_workflow_step_patterns(repo_root: &Path) -> Result<WorkflowStepPatterns, String> {
+    let path = repo_root.join("configs/ci/workflow-step-patterns.json");
+    let text = fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
+}
+
+fn load_workflow_allowlist(repo_root: &Path) -> Result<WorkflowAllowlist, String> {
+    let path = repo_root.join("configs/ci/workflow-allowlist.json");
+    let text = fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
+}
+
+fn workflow_pattern_matches(pattern: &WorkflowStepPattern, value: &str) -> bool {
+    match pattern.match_mode.as_str() {
+        "contains" => value.contains(&pattern.needle),
+        "starts_with" => value.starts_with(&pattern.needle),
+        "equals" => value == pattern.needle,
+        _ => false,
+    }
+}
+
+fn normalized_run_body(run: &str) -> String {
+    run.lines()
+        .map(str::trim)
+        .filter(|line| {
+            !line.is_empty()
+                && *line != "set -euo pipefail"
+                && !line.starts_with('#')
+                && *line != "then"
+                && *line != "else"
+                && *line != "fi"
+                && *line != "do"
+                && *line != "done"
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+fn workflow_step_rows(repo_root: &Path) -> Result<Vec<WorkflowLintRow>, String> {
+    let patterns = load_workflow_step_patterns(repo_root)?;
+    let allowlist = load_workflow_allowlist(repo_root)?;
+    let registry = load_ci_policy_registry(repo_root)?;
+    let mut rows = Vec::<WorkflowLintRow>::new();
+    for workflow in walk_files_local(&repo_root.join(".github/workflows"))
+        .into_iter()
+        .filter(|path| path.extension().and_then(|ext| ext.to_str()) == Some("yml"))
+    {
+        let workflow_rel = workflow
+            .strip_prefix(repo_root)
+            .unwrap_or(&workflow)
+            .display()
+            .to_string();
+        let value: serde_yaml::Value = serde_yaml::from_str(
+            &fs::read_to_string(&workflow)
+                .map_err(|err| format!("read {} failed: {err}", workflow.display()))?,
+        )
+        .map_err(|err| format!("parse {} failed: {err}", workflow.display()))?;
+        let jobs = value
+            .get("jobs")
+            .and_then(serde_yaml::Value::as_mapping)
+            .cloned()
+            .unwrap_or_default();
+        for (job_key, job_value) in jobs {
+            let Some(job_name) = job_key.as_str() else {
+                continue;
+            };
+            let steps = job_value
+                .get("steps")
+                .and_then(serde_yaml::Value::as_sequence)
+                .cloned()
+                .unwrap_or_default();
+            for step in steps {
+                let step_name = step
+                    .get("name")
+                    .and_then(serde_yaml::Value::as_str)
+                    .or_else(|| step.get("id").and_then(serde_yaml::Value::as_str))
+                    .or_else(|| step.get("uses").and_then(serde_yaml::Value::as_str))
+                    .unwrap_or("unnamed-step")
+                    .to_string();
+                let (step_kind, step_value) = if let Some(uses) =
+                    step.get("uses").and_then(serde_yaml::Value::as_str)
+                {
+                    ("uses".to_string(), uses.to_string())
+                } else if let Some(run) = step.get("run").and_then(serde_yaml::Value::as_str) {
+                    ("run".to_string(), normalized_run_body(run))
+                } else {
+                    ("unknown".to_string(), String::new())
+                };
+                let matched_pattern = patterns
+                    .patterns
+                    .iter()
+                    .find(|pattern| {
+                        pattern.step_kind == step_kind
+                            && workflow_pattern_matches(pattern, &step_value)
+                    })
+                    .cloned();
+                let allowlist_entry = allowlist.entries.iter().find(|entry| {
+                    entry.workflow == workflow_rel && entry.job == job_name && entry.step == step_name
+                });
+                let registry_entry = registry.entries.iter().find(|entry| {
+                    entry.workflow == workflow_rel && entry.job == job_name && entry.step == step_name
+                });
+                let classification = matched_pattern
+                    .as_ref()
+                    .map(|pattern| pattern.classification.clone())
+                    .or_else(|| registry_entry.map(|entry| entry.classification.clone()))
+                    .unwrap_or_else(|| "unknown".to_string());
+                let allowed = matched_pattern.as_ref().is_some_and(|pattern| pattern.allowed)
+                    || allowlist_entry.is_some();
+                rows.push(WorkflowLintRow {
+                    workflow: workflow_rel.clone(),
+                    job: job_name.to_string(),
+                    step: step_name,
+                    step_kind,
+                    classification,
+                    allowed,
+                    matched_pattern: matched_pattern
+                        .map(|pattern| pattern.pattern_id)
+                        .unwrap_or_default(),
+                    registry_policy_id: registry_entry
+                        .map(|entry| entry.policy_id.clone())
+                        .unwrap_or_default(),
+                    allowlist_expires_on: allowlist_entry
+                        .map(|entry| entry.expires_on.clone())
+                        .unwrap_or_default(),
+                });
+            }
+        }
+    }
+    rows.sort_by(|a, b| {
+        a.workflow
+            .cmp(&b.workflow)
+            .then_with(|| a.job.cmp(&b.job))
+            .then_with(|| a.step.cmp(&b.step))
+    });
+    Ok(rows)
 }
 
 fn current_utc_date_string() -> Result<String, String> {
@@ -500,6 +688,32 @@ fn render_ci_report(
                 "atlas_entries": atlas
             })
         }
+        "workflow-lint" => {
+            let rows = workflow_step_rows(repo_root)?;
+            let violations = rows
+                .iter()
+                .filter(|row| !row.allowed)
+                .map(|row| {
+                    serde_json::json!({
+                        "workflow": row.workflow,
+                        "job": row.job,
+                        "step": row.step,
+                        "classification": row.classification,
+                        "registry_policy_id": row.registry_policy_id
+                    })
+                })
+                .collect::<Vec<_>>();
+            serde_json::json!({
+                "schema_version": 1,
+                "kind": "ci_workflow_lint",
+                "summary": {
+                    "steps": rows.len(),
+                    "violations": violations.len()
+                },
+                "rows": rows,
+                "violations": violations
+            })
+        }
         other => {
             let payload = serde_json::json!({
                 "schema_version": 1,
@@ -554,10 +768,37 @@ fn run_ci_verify_gate(
             errors.extend(uniqueness_errors);
             errors.extend(docs_errors);
             errors.extend(exception_errors);
+            let lint_rows = workflow_step_rows(repo_root)?;
+            errors.extend(lint_rows.into_iter().filter(|row| !row.allowed).map(|row| {
+                format!(
+                    "workflow step `{}` in {}/{} is not matched by an allowed pattern or active allowlist",
+                    row.step, row.workflow, row.job
+                )
+            }));
             serde_json::json!({
                 "schema_version": 1,
                 "kind": "ci_verify_workflow_policy",
                 "status": if errors.is_empty() { "ok" } else { "failed" },
+                "errors": errors
+            })
+        }
+        "workflow-lint" => {
+            let rows = workflow_step_rows(repo_root)?;
+            let errors = rows
+                .iter()
+                .filter(|row| !row.allowed)
+                .map(|row| {
+                    format!(
+                        "workflow step `{}` in {}/{} is not allowed by workflow-step-patterns or workflow-allowlist",
+                        row.step, row.workflow, row.job
+                    )
+                })
+                .collect::<Vec<_>>();
+            serde_json::json!({
+                "schema_version": 1,
+                "kind": "ci_verify_workflow_lint",
+                "status": if errors.is_empty() { "ok" } else { "failed" },
+                "rows": rows,
                 "errors": errors
             })
         }
