@@ -7260,6 +7260,31 @@
     },
     {
       "area": "_internal",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "closure-checks",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/closure-checks.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "closure-checks",
+        "governance"
+      ],
+      "title": "Boundary Closure Checks",
+      "topic": "closure-checks"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
@@ -11407,6 +11432,31 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "chart-contracts",
+        "k8s",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/k8s/chart-contracts.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "chart-contracts",
+        "k8s",
+        "operations"
+      ],
+      "title": "Chart Contracts",
+      "topic": "chart-contracts"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "index",
         "k8s",
         "operations"
@@ -11424,6 +11474,31 @@
       ],
       "title": "Kubernetes Operations",
       "topic": "index"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "k8s",
+        "operations",
+        "profile-invariants"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/k8s/profile-invariants.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "k8s",
+        "operations",
+        "profile-invariants"
+      ],
+      "title": "Kubernetes Install Profile Invariants",
+      "topic": "profile-invariants"
     },
     {
       "area": "operations",
@@ -13136,6 +13211,31 @@
     },
     {
       "area": "reference",
+      "audience": "user",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "reference",
+        "site-output"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/docs/site-output.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "reference",
+        "site-output"
+      ],
+      "title": "Docs Site Output",
+      "topic": "site-output"
+    },
+    {
+      "area": "reference",
       "audience": "mixed",
       "crate": null,
       "doc_type": "spec",
@@ -13260,6 +13360,60 @@
       ],
       "title": "Normalized Ingest Format Contract",
       "topic": "normalized-format"
+    },
+    {
+      "area": "reference",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "helm-env-subset",
+        "ops",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/contracts/ops/helm-env-subset.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "helm-env-subset",
+        "ops",
+        "reference"
+      ],
+      "title": "Helm Env Allowlist Subset",
+      "topic": "helm-env-subset"
+    },
+    {
+      "area": "reference",
+      "audience": "user",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "ops",
+        "profile-matrix",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/ops/profile-matrix.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "ops",
+        "profile-matrix",
+        "reference"
+      ],
+      "title": "Profile Matrix Contracts",
+      "topic": "profile-matrix"
     },
     {
       "area": "reference",
@@ -14108,6 +14262,56 @@
       ],
       "title": "Repository Map",
       "topic": "repo-map"
+    },
+    {
+      "area": "reference",
+      "audience": "user",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "index",
+        "reference",
+        "reports"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/reports/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "index",
+        "reference",
+        "reports"
+      ],
+      "title": "Reports Reference",
+      "topic": "index"
+    },
+    {
+      "area": "reference",
+      "audience": "user",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "config",
+        "reference",
+        "runtime"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-server",
+      "path": "docs/reference/runtime/config.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "config",
+        "reference",
+        "runtime"
+      ],
+      "title": "Runtime Config",
+      "topic": "config"
     },
     {
       "area": "reference",

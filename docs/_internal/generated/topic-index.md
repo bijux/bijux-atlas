@@ -57,6 +57,7 @@
 | `cargo-deny-notes` | `crates/bijux-atlas-core/docs/internal/cargo-deny-notes.md` |
 | `catalog-example` | `docs/reference/examples/catalog-example.md` |
 | `change-checklist` | `crates/bijux-atlas-policies/docs/internal/change-checklist.md` |
+| `chart-contracts` | `docs/operations/k8s/chart-contracts.md` |
 | `chart-values` | `docs/reference/contracts/chart-values.md` |
 | `checks` | `docs/_internal/governance/policies/checks.md` |
 | `ci-overview` | `docs/development/ci-overview.md` |
@@ -66,6 +67,7 @@
 | `cli-ux-contract` | `crates/bijux-atlas-cli/docs/cli-ux-contract.md` |
 | `client-behavior` | `docs/api/client-behavior.md` |
 | `client-retries-and-backoff` | `docs/api/client-retries-and-backoff.md` |
+| `closure-checks` | `docs/_internal/governance/closure-checks.md` |
 | `command-inventory` | `docs/reference/command-inventory.md` |
 | `command-surface` | `crates/bijux-atlas-cli/docs/command-surface.md, crates/bijux-dev-atlas/docs/command-surface.md` |
 | `commands` | `crates/bijux-dev-atlas/docs/commands.md, crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/commands.md, docs/reference/commands.md` |
@@ -78,7 +80,7 @@
 | `components` | `docs/architecture/components.md` |
 | `concept-ids` | `docs/_internal/governance/style/concept-ids.md` |
 | `concept-registry` | `docs/_internal/governance/style/concept-registry.md` |
-| `config` | `docs/operations/config.md` |
+| `config` | `docs/operations/config.md, docs/reference/runtime/config.md` |
 | `config-change-checklist` | `docs/development/config-change-checklist.md` |
 | `config-diff` | `crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/config-diff.md` |
 | `config-discovery` | `crates/bijux-atlas-cli/docs/config-discovery.md` |
@@ -187,6 +189,7 @@
 | `generated-artifacts` | `docs/_internal/generated-artifacts.md, docs/_internal/meta/generated-artifacts.md` |
 | `generated-content-policy` | `docs/_internal/governance/generated-content-policy.md` |
 | `glossary` | `docs/glossary.md` |
+| `helm-env-subset` | `docs/reference/contracts/ops/helm-env-subset.md` |
 | `hot-path-checklist` | `crates/bijux-atlas-server/docs/internal/hot-path-checklist.md` |
 | `hot-paths` | `docs/architecture/hot-paths.md` |
 | `how-suites-work` | `docs/control-plane/how-suites-work.md` |
@@ -197,7 +200,7 @@
 | `immutability-guarantee` | `docs/reference/store/immutability-guarantee.md` |
 | `incident-playbook` | `docs/operations/runbooks/incident-playbook.md` |
 | `incident-response` | `docs/operations/incident-response.md` |
-| `index` | `crates/bijux-atlas-api/docs/index.md, crates/bijux-atlas-cli/docs/index.md, crates/bijux-atlas-core/docs/index.md, crates/bijux-atlas-ingest/docs/index.md, crates/bijux-atlas-model/docs/index.md, crates/bijux-atlas-policies/docs/index.md, crates/bijux-atlas-query/docs/index.md, crates/bijux-atlas-server/docs/index.md, crates/bijux-atlas-store/docs/index.md, crates/bijux-dev-atlas/docs/index.md, crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/index.md, docs/_assets/index.md, docs/_internal/governance/adrs/index.md, docs/_internal/governance/checks/index.md, docs/_internal/governance/index.md, docs/_internal/governance/metadata/index.md, docs/_internal/governance/policies/index.md, docs/_internal/governance/style/index.md, docs/_internal/index.md, docs/_internal/meta/index.md, docs/_internal/meta/internal/index.md, docs/_internal/nav/index.md, docs/api/index.md, docs/architecture/index.md, docs/control-plane/index.md, docs/development/index.md, docs/development/tooling/index.md, docs/index.md, docs/operations/e2e/index.md, docs/operations/index.md, docs/operations/k8s/index.md, docs/operations/load/index.md, docs/operations/observability/index.md, docs/operations/release/index.md, docs/operations/runbooks/index.md, docs/operations/security/index.md, docs/product/index.md, docs/reference/compatibility/index.md, docs/reference/contracts/artifacts/index.md, docs/reference/contracts/examples/index.md, docs/reference/contracts/index.md, docs/reference/contracts/plugins/index.md, docs/reference/contracts/schemas/index.md, docs/reference/examples/index.md, docs/reference/index.md, docs/reference/ops-schema/index.md, docs/reference/querying/index.md, docs/reference/registry/index.md, docs/reference/store/index.md` |
+| `index` | `crates/bijux-atlas-api/docs/index.md, crates/bijux-atlas-cli/docs/index.md, crates/bijux-atlas-core/docs/index.md, crates/bijux-atlas-ingest/docs/index.md, crates/bijux-atlas-model/docs/index.md, crates/bijux-atlas-policies/docs/index.md, crates/bijux-atlas-query/docs/index.md, crates/bijux-atlas-server/docs/index.md, crates/bijux-atlas-store/docs/index.md, crates/bijux-dev-atlas/docs/index.md, crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/index.md, docs/_assets/index.md, docs/_internal/governance/adrs/index.md, docs/_internal/governance/checks/index.md, docs/_internal/governance/index.md, docs/_internal/governance/metadata/index.md, docs/_internal/governance/policies/index.md, docs/_internal/governance/style/index.md, docs/_internal/index.md, docs/_internal/meta/index.md, docs/_internal/meta/internal/index.md, docs/_internal/nav/index.md, docs/api/index.md, docs/architecture/index.md, docs/control-plane/index.md, docs/development/index.md, docs/development/tooling/index.md, docs/index.md, docs/operations/e2e/index.md, docs/operations/index.md, docs/operations/k8s/index.md, docs/operations/load/index.md, docs/operations/observability/index.md, docs/operations/release/index.md, docs/operations/runbooks/index.md, docs/operations/security/index.md, docs/product/index.md, docs/reference/compatibility/index.md, docs/reference/contracts/artifacts/index.md, docs/reference/contracts/examples/index.md, docs/reference/contracts/index.md, docs/reference/contracts/plugins/index.md, docs/reference/contracts/schemas/index.md, docs/reference/examples/index.md, docs/reference/index.md, docs/reference/ops-schema/index.md, docs/reference/querying/index.md, docs/reference/registry/index.md, docs/reference/reports/index.md, docs/reference/store/index.md` |
 | `ingest-contract` | `crates/bijux-atlas-ingest/docs/ingest-contract.md` |
 | `ingest-format-contracts` | `docs/development/ingest-format-contracts.md` |
 | `ingest-qc-model` | `docs/architecture/ingest-qc-model.md` |
@@ -251,6 +254,8 @@
 | `plugin-versioning-and-release-independence` | `docs/reference/registry/plugin-versioning-and-release-independence.md` |
 | `policy-authoring-guide` | `crates/bijux-atlas-policies/docs/policy-authoring-guide.md` |
 | `policy-enforcement-mapping` | `docs/_internal/governance/policy-enforcement-mapping.md` |
+| `profile-invariants` | `docs/operations/k8s/profile-invariants.md` |
+| `profile-matrix` | `docs/reference/contracts/ops/profile-matrix.md` |
 | `promotion-record` | `docs/operations/promotion-record.md` |
 | `public-api` | `crates/bijux-atlas-api/docs/public-api.md, crates/bijux-atlas-cli/docs/public-api.md, crates/bijux-atlas-core/docs/public-api.md, crates/bijux-atlas-ingest/docs/public-api.md, crates/bijux-atlas-model/docs/public-api.md, crates/bijux-atlas-policies/docs/public-api.md, crates/bijux-atlas-query/docs/public-api.md, crates/bijux-atlas-server/docs/public-api.md, crates/bijux-atlas-store/docs/public-api.md` |
 | `public-api-checklist` | `crates/bijux-atlas-api/docs/internal/public-api-checklist.md` |
@@ -313,6 +318,7 @@
 | `serde-policy` | `crates/bijux-atlas-core/docs/internal/serde-policy.md` |
 | `shared-core-extraction` | `docs/reference/registry/shared-core-extraction.md` |
 | `site-map` | `docs/site-map.md` |
+| `site-output` | `docs/reference/contracts/docs/site-output.md` |
 | `slo-policy` | `docs/operations/observability/slo-policy.md` |
 | `slo-store-backend-error-spike` | `docs/operations/runbooks/slo-store-backend-error-spike.md` |
 | `slo-targets` | `docs/product/slo-targets.md` |

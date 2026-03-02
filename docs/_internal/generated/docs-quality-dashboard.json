@@ -20,6 +20,7 @@
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `command-surface` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `commands` appears 3 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `compatibility` appears 2 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `config` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `configs` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `contract` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `contracts` appears 5 times",
@@ -33,7 +34,7 @@
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `failure-modes-reference` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `failure-modes` appears 4 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `generated-artifacts` appears 2 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `index` appears 49 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `index` appears 50 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `make` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `pagination` appears 3 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `patterns` appears 2 times",
@@ -160,6 +161,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/checks/docs-checks.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/checks/index.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/closure-checks.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/configs-refactor-ledger.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/contract-breaking-change-examples.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/decision-template.md` has no inbound doc links",
@@ -266,7 +268,7 @@
   "schema_version": 1,
   "summary": {
     "errors": 41,
-    "registered": 619,
-    "warnings": 303
+    "registered": 627,
+    "warnings": 305
   }
 }

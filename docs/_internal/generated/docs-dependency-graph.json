@@ -1493,6 +1493,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/closure-checks.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/configs-refactor-ledger.md"
     },
     {
@@ -2363,7 +2368,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/k8s/chart-contracts.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/k8s/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/k8s/profile-invariants.md"
     },
     {
       "crate": null,
@@ -2723,6 +2738,11 @@
     {
       "crate": null,
       "doc_type": "spec",
+      "from": "docs/reference/contracts/docs/site-output.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "spec",
       "from": "docs/reference/contracts/endpoints.md"
     },
     {
@@ -2744,6 +2764,16 @@
       "crate": null,
       "doc_type": "spec",
       "from": "docs/reference/contracts/normalized-format.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "spec",
+      "from": "docs/reference/contracts/ops/helm-env-subset.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "spec",
+      "from": "docs/reference/contracts/ops/profile-matrix.md"
     },
     {
       "crate": null,
@@ -2914,6 +2944,16 @@
       "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/repo-map.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/reports/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/runtime/config.md"
     },
     {
       "crate": null,

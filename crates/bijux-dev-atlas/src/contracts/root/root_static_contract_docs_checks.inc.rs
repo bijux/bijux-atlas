@@ -40,6 +40,7 @@ const CONTRACT_DOC_DOMAINS: [ContractDocDomain; 6] = [
 fn contracts_for_domain(repo_root: &std::path::Path, name: &str) -> Result<Vec<Contract>, String> {
     match name {
         "root" => super::root::contracts(repo_root),
+        "repo" => super::repo::contracts(repo_root),
         "runtime" => super::runtime::contracts(repo_root),
         "control-plane" => super::control_plane::contracts(repo_root),
         "configs" => super::configs::contracts(repo_root),

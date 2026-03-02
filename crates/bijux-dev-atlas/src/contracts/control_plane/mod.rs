@@ -90,6 +90,8 @@ fn test_control_plane_002_process_boundary(ctx: &RunContext) -> TestResult {
         "crates/bijux-dev-atlas/src/contracts/",
         "crates/bijux-dev-atlas/src/core/checks/",
         "crates/bijux-dev-atlas/src/cli/dispatch.rs",
+        "crates/bijux-dev-atlas/src/ops/helm_env.rs",
+        "crates/bijux-dev-atlas/src/ops/profiles_matrix.rs",
         "crates/bijux-dev-atlas/src/runtime_entry.rs",
     ];
     let needles = [
@@ -153,6 +155,10 @@ fn test_control_plane_003_fs_mutation_boundary(ctx: &RunContext) -> TestResult {
         "crates/bijux-dev-atlas/src/contracts/",
         "crates/bijux-dev-atlas/src/core/checks/",
         "crates/bijux-dev-atlas/src/core/ops_inventory/",
+        "crates/bijux-dev-atlas/src/docs/site_output.rs",
+        "crates/bijux-dev-atlas/src/ops/helm_env.rs",
+        "crates/bijux-dev-atlas/src/ops/profiles_matrix.rs",
+        "crates/bijux-dev-atlas/src/ops/profiles_matrix/tests.rs",
         "crates/bijux-dev-atlas/src/runtime_entry_checks_surface.rs",
         "crates/bijux-dev-atlas/src/schema_support.rs",
     ];

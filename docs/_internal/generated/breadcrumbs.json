@@ -2754,6 +2754,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/closure-checks.md"
+      ],
+      "path": "docs/_internal/governance/closure-checks.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/configs-refactor-ledger.md"
       ],
       "path": "docs/_internal/governance/configs-refactor-ledger.md"
@@ -4216,9 +4225,27 @@
         "docs",
         "docs/operations",
         "docs/operations/k8s",
+        "docs/operations/k8s/chart-contracts.md"
+      ],
+      "path": "docs/operations/k8s/chart-contracts.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/k8s",
         "docs/operations/k8s/index.md"
       ],
       "path": "docs/operations/k8s/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/k8s",
+        "docs/operations/k8s/profile-invariants.md"
+      ],
+      "path": "docs/operations/k8s/profile-invariants.md"
     },
     {
       "breadcrumbs": [
@@ -4832,6 +4859,16 @@
         "docs",
         "docs/reference",
         "docs/reference/contracts",
+        "docs/reference/contracts/docs",
+        "docs/reference/contracts/docs/site-output.md"
+      ],
+      "path": "docs/reference/contracts/docs/site-output.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/contracts",
         "docs/reference/contracts/endpoints.md"
       ],
       "path": "docs/reference/contracts/endpoints.md"
@@ -4872,6 +4909,26 @@
         "docs/reference/contracts/normalized-format.md"
       ],
       "path": "docs/reference/contracts/normalized-format.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/contracts",
+        "docs/reference/contracts/ops",
+        "docs/reference/contracts/ops/helm-env-subset.md"
+      ],
+      "path": "docs/reference/contracts/ops/helm-env-subset.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/contracts",
+        "docs/reference/contracts/ops",
+        "docs/reference/contracts/ops/profile-matrix.md"
+      ],
+      "path": "docs/reference/contracts/ops/profile-matrix.md"
     },
     {
       "breadcrumbs": [
@@ -5178,6 +5235,24 @@
         "docs/reference/repo-map.md"
       ],
       "path": "docs/reference/repo-map.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/reports",
+        "docs/reference/reports/index.md"
+      ],
+      "path": "docs/reference/reports/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/runtime",
+        "docs/reference/runtime/config.md"
+      ],
+      "path": "docs/reference/runtime/config.md"
     },
     {
       "breadcrumbs": [

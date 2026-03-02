@@ -302,6 +302,7 @@ License: Apache-2.0
 | `docs/_internal/governance/adrs/index.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/checks/docs-checks.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/checks/index.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/closure-checks.md` | `concept` | `bijux-atlas-governance` | `stable` |
 | `docs/_internal/governance/configs-refactor-ledger.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/contract-breaking-change-examples.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/contract-change-checklist.md` | `concept` | `docs-governance` | `stable` |
@@ -476,7 +477,9 @@ License: Apache-2.0
 | `docs/operations/incident-response.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/index.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/install-verification-checklist.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/k8s/chart-contracts.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/k8s/index.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/k8s/profile-invariants.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/kind-profile.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/load/index.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/load/k6.md` | `concept` | `bijux-atlas-operations` | `stable` |
@@ -548,11 +551,14 @@ License: Apache-2.0
 | `docs/reference/contracts/compatibility.md` | `spec` | `bijux-atlas-api` | `stable` |
 | `docs/reference/contracts/config-keys.md` | `spec` | `docs-governance` | `stable` |
 | `docs/reference/contracts/contract-diff.md` | `spec` | `docs-governance` | `stable` |
+| `docs/reference/contracts/docs/site-output.md` | `spec` | `docs-governance` | `stable` |
 | `docs/reference/contracts/endpoints.md` | `spec` | `docs-governance` | `stable` |
 | `docs/reference/contracts/errors.md` | `spec` | `docs-governance` | `stable` |
 | `docs/reference/contracts/examples/index.md` | `spec` | `docs-governance` | `stable` |
 | `docs/reference/contracts/index.md` | `spec` | `docs-governance` | `stable` |
 | `docs/reference/contracts/normalized-format.md` | `spec` | `bijux-atlas-ingest` | `evolving` |
+| `docs/reference/contracts/ops/helm-env-subset.md` | `spec` | `bijux-atlas-operations` | `stable` |
+| `docs/reference/contracts/ops/profile-matrix.md` | `spec` | `docs-governance` | `stable` |
 | `docs/reference/contracts/plugins/conformance-checklist.md` | `spec` | `docs-governance` | `stable` |
 | `docs/reference/contracts/plugins/index.md` | `spec` | `docs-governance` | `stable` |
 | `docs/reference/contracts/plugins/mode.md` | `spec` | `bijux-atlas-cli` | `stable` |
@@ -587,6 +593,8 @@ License: Apache-2.0
 | `docs/reference/registry/security-response-coordination.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/registry/shared-core-extraction.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/repo-map.md` | `reference` | `bijux-atlas-operations` | `stable` |
+| `docs/reference/reports/index.md` | `reference` | `docs-governance` | `stable` |
+| `docs/reference/runtime/config.md` | `reference` | `bijux-atlas-server` | `stable` |
 | `docs/reference/schema-versioning-policy.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/schemas.md` | `reference` | `bijux-atlas-operations` | `stable` |
 | `docs/reference/store/immutability-guarantee.md` | `reference` | `docs-governance` | `stable` |

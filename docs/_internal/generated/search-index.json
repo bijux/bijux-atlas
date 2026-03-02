@@ -3983,6 +3983,20 @@
     {
       "keywords": [
         "-internal",
+        "closure-checks",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/closure-checks.md",
+      "tags": [
+        "-internal",
+        "closure-checks",
+        "governance"
+      ],
+      "topic": "closure-checks"
+    },
+    {
+      "keywords": [
+        "-internal",
         "configs-refactor-ledger",
         "governance"
       ],
@@ -6210,6 +6224,20 @@
     },
     {
       "keywords": [
+        "chart-contracts",
+        "k8s",
+        "operations"
+      ],
+      "path": "docs/operations/k8s/chart-contracts.md",
+      "tags": [
+        "chart-contracts",
+        "k8s",
+        "operations"
+      ],
+      "topic": "chart-contracts"
+    },
+    {
+      "keywords": [
         "index",
         "k8s",
         "operations"
@@ -6221,6 +6249,20 @@
         "operations"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "k8s",
+        "operations",
+        "profile-invariants"
+      ],
+      "path": "docs/operations/k8s/profile-invariants.md",
+      "tags": [
+        "k8s",
+        "operations",
+        "profile-invariants"
+      ],
+      "topic": "profile-invariants"
     },
     {
       "keywords": [
@@ -7153,6 +7195,20 @@
     {
       "keywords": [
         "contracts",
+        "reference",
+        "site-output"
+      ],
+      "path": "docs/reference/contracts/docs/site-output.md",
+      "tags": [
+        "contracts",
+        "reference",
+        "site-output"
+      ],
+      "topic": "site-output"
+    },
+    {
+      "keywords": [
+        "contracts",
         "endpoints",
         "reference"
       ],
@@ -7221,6 +7277,38 @@
         "reference"
       ],
       "topic": "normalized-format"
+    },
+    {
+      "keywords": [
+        "contracts",
+        "helm-env-subset",
+        "ops",
+        "reference"
+      ],
+      "path": "docs/reference/contracts/ops/helm-env-subset.md",
+      "tags": [
+        "contracts",
+        "helm-env-subset",
+        "ops",
+        "reference"
+      ],
+      "topic": "helm-env-subset"
+    },
+    {
+      "keywords": [
+        "contracts",
+        "ops",
+        "profile-matrix",
+        "reference"
+      ],
+      "path": "docs/reference/contracts/ops/profile-matrix.md",
+      "tags": [
+        "contracts",
+        "ops",
+        "profile-matrix",
+        "reference"
+      ],
+      "topic": "profile-matrix"
     },
     {
       "keywords": [
@@ -7695,6 +7783,34 @@
         "repo-map"
       ],
       "topic": "repo-map"
+    },
+    {
+      "keywords": [
+        "index",
+        "reference",
+        "reports"
+      ],
+      "path": "docs/reference/reports/index.md",
+      "tags": [
+        "index",
+        "reference",
+        "reports"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "config",
+        "reference",
+        "runtime"
+      ],
+      "path": "docs/reference/runtime/config.md",
+      "tags": [
+        "config",
+        "reference",
+        "runtime"
+      ],
+      "topic": "config"
     },
     {
       "keywords": [

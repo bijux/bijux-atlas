@@ -38,7 +38,7 @@ Facts live here. Procedures do not. Use this section for stable names, keys, sch
 
 ## Reading rule
 
-- If you need a procedure, use [API](../api/index.md) or [Operations](../operations/index.md).
+- If you need a procedure, use the API or Operations sections instead of this reference portal.
 - If you need a stable definition, link here instead of duplicating prose.
 - Machine-readable JSON stays in contract registries and generated artifacts, not in narrative guides.
 

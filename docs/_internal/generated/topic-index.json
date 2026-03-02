@@ -285,6 +285,9 @@
     "change-checklist": [
       "crates/bijux-atlas-policies/docs/internal/change-checklist.md"
     ],
+    "chart-contracts": [
+      "docs/operations/k8s/chart-contracts.md"
+    ],
     "chart-values": [
       "docs/reference/contracts/chart-values.md"
     ],
@@ -313,6 +316,9 @@
     ],
     "client-retries-and-backoff": [
       "docs/api/client-retries-and-backoff.md"
+    ],
+    "closure-checks": [
+      "docs/_internal/governance/closure-checks.md"
     ],
     "command-inventory": [
       "docs/reference/command-inventory.md"
@@ -355,7 +361,8 @@
       "docs/_internal/governance/style/concept-registry.md"
     ],
     "config": [
-      "docs/operations/config.md"
+      "docs/operations/config.md",
+      "docs/reference/runtime/config.md"
     ],
     "config-change-checklist": [
       "docs/development/config-change-checklist.md"
@@ -733,6 +740,9 @@
     "glossary": [
       "docs/glossary.md"
     ],
+    "helm-env-subset": [
+      "docs/reference/contracts/ops/helm-env-subset.md"
+    ],
     "hot-path-checklist": [
       "crates/bijux-atlas-server/docs/internal/hot-path-checklist.md"
     ],
@@ -812,6 +822,7 @@
       "docs/reference/ops-schema/index.md",
       "docs/reference/querying/index.md",
       "docs/reference/registry/index.md",
+      "docs/reference/reports/index.md",
       "docs/reference/store/index.md"
     ],
     "ingest-contract": [
@@ -976,6 +987,12 @@
     ],
     "policy-enforcement-mapping": [
       "docs/_internal/governance/policy-enforcement-mapping.md"
+    ],
+    "profile-invariants": [
+      "docs/operations/k8s/profile-invariants.md"
+    ],
+    "profile-matrix": [
+      "docs/reference/contracts/ops/profile-matrix.md"
     ],
     "promotion-record": [
       "docs/operations/promotion-record.md"
@@ -1174,6 +1191,9 @@
     ],
     "site-map": [
       "docs/site-map.md"
+    ],
+    "site-output": [
+      "docs/reference/contracts/docs/site-output.md"
     ],
     "slo-policy": [
       "docs/operations/observability/slo-policy.md"

@@ -2387,6 +2387,14 @@
     },
     {
       "area": "_internal",
+      "audience": "reviewers",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/closure-checks.md",
+      "stability": "stable",
+      "title": "Boundary Closure Checks"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/governance/configs-refactor-ledger.md",
@@ -3781,9 +3789,25 @@
       "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
+      "path": "docs/operations/k8s/chart-contracts.md",
+      "stability": "stable",
+      "title": "Chart Contracts"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/k8s/index.md",
       "stability": "stable",
       "title": "Kubernetes Operations"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/k8s/profile-invariants.md",
+      "stability": "stable",
+      "title": "Kubernetes Install Profile Invariants"
     },
     {
       "area": "operations",
@@ -4355,6 +4379,14 @@
     },
     {
       "area": "reference",
+      "audience": "user",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/docs/site-output.md",
+      "stability": "stable",
+      "title": "Docs Site Output"
+    },
+    {
+      "area": "reference",
       "audience": "mixed",
       "owner": "docs-governance",
       "path": "docs/reference/contracts/endpoints.md",
@@ -4392,6 +4424,22 @@
       "path": "docs/reference/contracts/normalized-format.md",
       "stability": "evolving",
       "title": "Normalized Ingest Format Contract"
+    },
+    {
+      "area": "reference",
+      "audience": "reviewers",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/contracts/ops/helm-env-subset.md",
+      "stability": "stable",
+      "title": "Helm Env Allowlist Subset"
+    },
+    {
+      "area": "reference",
+      "audience": "user",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/ops/profile-matrix.md",
+      "stability": "stable",
+      "title": "Profile Matrix Contracts"
     },
     {
       "area": "reference",
@@ -4664,6 +4712,22 @@
       "path": "docs/reference/repo-map.md",
       "stability": "stable",
       "title": "Repository Map"
+    },
+    {
+      "area": "reference",
+      "audience": "user",
+      "owner": "docs-governance",
+      "path": "docs/reference/reports/index.md",
+      "stability": "stable",
+      "title": "Reports Reference"
+    },
+    {
+      "area": "reference",
+      "audience": "user",
+      "owner": "bijux-atlas-server",
+      "path": "docs/reference/runtime/config.md",
+      "stability": "stable",
+      "title": "Runtime Config"
     },
     {
       "area": "reference",
