@@ -19,6 +19,7 @@ Use this section to ship, verify, and recover Atlas releases.
 - [Rollback Procedure](rollback-procedure.md)
 - [Backup and Restore](backup-and-restore.md)
 - [Backup and Restore Validation](backup-and-restore-validation.md)
+- [Lane Guarantees](lane-guarantees.md)
 
 ## Verify success
 

@@ -560,6 +560,24 @@ fn docs_workflows_copy_the_built_site_from_mkdocs_site_dir() {
 }
 
 #[test]
+fn mkdocs_config_enables_redirects_plugin_for_legacy_markdown_paths() {
+    let root = repo_root();
+    let mkdocs = read(&root.join("mkdocs.yml"));
+    assert!(
+        mkdocs.contains("- redirects:"),
+        "mkdocs.yml must enable the redirects plugin"
+    );
+    assert!(
+        mkdocs.contains("redirect_maps:"),
+        "mkdocs.yml must declare redirect_maps for legacy markdown paths"
+    );
+    assert!(
+        mkdocs.contains("_generated/topic-index.md: _internal/generated/topic-index.md"),
+        "mkdocs.yml must redirect legacy _generated topic index pages"
+    );
+}
+
+#[test]
 fn quickstart_command_is_backed_by_cli_help() {
     let root = repo_root();
     let start_here = read(&root.join("docs/start-here.md"));

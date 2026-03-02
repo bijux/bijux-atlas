@@ -18,3 +18,4 @@ related:
 This section defines contributor tooling surfaces that are enforced by contracts.
 
 - [Make wrapper surface](make.md)
+- [`bijux-dev-atlas` control-plane tooling](bijux-dev-atlas.md)
