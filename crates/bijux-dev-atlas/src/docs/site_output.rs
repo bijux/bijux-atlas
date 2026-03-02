@@ -470,7 +470,8 @@ mod tests {
             "version": 1,
             "inputs": {"mkdocs": "mkdocs.yml"}
         });
-        validate_named_report(&root, "docs-site-output.schema.json", &report).expect("report schema");
+        validate_named_report(&root, "docs-site-output.schema.json", &report)
+            .expect("report schema");
     }
 
     #[test]
@@ -497,17 +498,14 @@ mod tests {
             "version": 1,
             "inputs": {}
         });
-        let error =
-            validate_named_report(&root, "closure-summary.schema.json", &report).expect_err("invalid");
+        let error = validate_named_report(&root, "closure-summary.schema.json", &report)
+            .expect_err("invalid");
         assert!(error.contains("report field `report_id` must equal"));
     }
 
     #[test]
     fn report_manifest_keeps_stable_order() {
-        let manifest = report_manifest(&[
-            ("zeta", "zeta.json"),
-            ("alpha", "alpha.json"),
-        ]);
+        let manifest = report_manifest(&[("zeta", "zeta.json"), ("alpha", "alpha.json")]);
         let rows = manifest["reports"].as_array().expect("reports array");
         assert_eq!(rows[0]["report_id"], json!("alpha"));
         assert_eq!(rows[1]["report_id"], json!("zeta"));

@@ -98,8 +98,10 @@ pub(crate) fn run_governance_command(
             .map_err(|e| format!("write {} failed: {e}", coverage_path.display()))?;
             fs::write(
                 &orphan_path,
-                serde_json::to_string_pretty(&governance_orphan_report_payload(&validation.orphan_rows))
-                    .map_err(|e| format!("encode governance orphan report failed: {e}"))?,
+                serde_json::to_string_pretty(&governance_orphan_report_payload(
+                    &validation.orphan_rows,
+                ))
+                .map_err(|e| format!("encode governance orphan report failed: {e}"))?,
             )
             .map_err(|e| format!("write {} failed: {e}", orphan_path.display()))?;
 

@@ -440,7 +440,10 @@ pub fn validate_governance_objects(
     errors.extend(ssot_drift);
 
     errors.sort();
-    GovernanceValidationReport { errors, orphan_rows }
+    GovernanceValidationReport {
+        errors,
+        orphan_rows,
+    }
 }
 
 pub fn find_governance_object<'a>(

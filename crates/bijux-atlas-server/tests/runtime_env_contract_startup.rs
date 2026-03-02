@@ -90,7 +90,10 @@ fn startup_accepts_the_runtime_env_surface_emitted_by_the_helm_chart() {
         .env("ATLAS_CACHE_ROOT", cache_root.path())
         .env("ATLAS_STORE_S3_ENABLED", "true")
         .env("ATLAS_STORE_S3_BASE_URL", "https://example.invalid/store")
-        .env("ATLAS_STORE_S3_PRESIGNED_BASE_URL", "https://example.invalid/presigned")
+        .env(
+            "ATLAS_STORE_S3_PRESIGNED_BASE_URL",
+            "https://example.invalid/presigned",
+        )
         .env("ATLAS_MAX_DATASET_COUNT", "64")
         .env("ATLAS_MAX_DISK_BYTES", "1073741824")
         .env("ATLAS_PINNED_DATASETS", "")
