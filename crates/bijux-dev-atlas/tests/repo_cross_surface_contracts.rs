@@ -91,9 +91,12 @@ fn ci_workflows_keep_dependency_inputs_and_action_refs_deterministic() {
                 default_cluster_assumptions.push(format!("{rel}:{line_number}: {line}"));
             }
 
-            if let Some((_, value)) = line.split_once("path:") {
-                let normalized = value.trim().trim_matches('"').trim_matches('\'');
-                if !normalized.starts_with("artifacts/") && !normalized.starts_with(".cache/") {
+            if let Some(path_value) = line.strip_prefix("path: ") {
+                let normalized = path_value.trim_matches('"').trim();
+                if normalized != "|"
+                    && !normalized.starts_with("artifacts/")
+                    && !normalized.starts_with(".cache/")
+                {
                     artifact_paths_outside_root.push(format!("{rel}:{line_number}: {normalized}"));
                 }
             }
