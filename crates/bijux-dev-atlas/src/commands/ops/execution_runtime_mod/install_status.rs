@@ -1,5 +1,101 @@
 // SPDX-License-Identifier: Apache-2.0
 
+fn install_render_path(repo_root: &std::path::Path, run_id: &str, profile: &str) -> std::path::PathBuf {
+    repo_root
+        .join("artifacts/ops")
+        .join(run_id)
+        .join(format!("render/{profile}/helm/render.yaml"))
+}
+
+fn install_plan_inventory(rendered_manifest: &str) -> serde_json::Value {
+    let mut resources = Vec::<serde_json::Value>::new();
+    let mut namespaces = std::collections::BTreeSet::<String>::new();
+    let mut kinds = std::collections::BTreeMap::<String, u64>::new();
+    let mut forbidden = Vec::<String>::new();
+    let mut has_rbac = false;
+    let mut has_crds = false;
+
+    for document in serde_yaml::Deserializer::from_str(rendered_manifest) {
+        let value: serde_yaml::Value = match serde::Deserialize::deserialize(document) {
+            Ok(value) => value,
+            Err(_) => continue,
+        };
+        let kind = value
+            .get("kind")
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or_default()
+            .to_string();
+        if kind.is_empty() {
+            continue;
+        }
+        let metadata = value.get("metadata");
+        let name = metadata
+            .and_then(|meta| meta.get("name"))
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or_default()
+            .to_string();
+        let namespace = metadata
+            .and_then(|meta| meta.get("namespace"))
+            .and_then(serde_yaml::Value::as_str)
+            .map(str::to_string);
+        if let Some(namespace) = &namespace {
+            namespaces.insert(namespace.clone());
+        }
+        *kinds.entry(kind.clone()).or_insert(0) += 1;
+        if matches!(kind.as_str(), "Role" | "RoleBinding" | "ClusterRole" | "ClusterRoleBinding" | "ServiceAccount") {
+            has_rbac = true;
+        }
+        if kind == "CustomResourceDefinition" {
+            has_crds = true;
+        }
+        if matches!(kind.as_str(), "ClusterRole" | "ClusterRoleBinding") {
+            forbidden.push(format!("forbidden cluster-scoped RBAC object `{kind}`"));
+        }
+        if kind == "Service" {
+            let service_type = value
+                .get("spec")
+                .and_then(|spec| spec.get("type"))
+                .and_then(serde_yaml::Value::as_str)
+                .unwrap_or_default();
+            if service_type == "NodePort" {
+                forbidden.push("forbidden service type `NodePort`".to_string());
+            }
+        }
+        resources.push(serde_json::json!({
+            "kind": kind,
+            "name": name,
+            "namespace": namespace,
+        }));
+    }
+
+    resources.sort_by(|a, b| {
+        a.get("kind")
+            .and_then(serde_json::Value::as_str)
+            .cmp(&b.get("kind").and_then(serde_json::Value::as_str))
+            .then_with(|| {
+                a.get("namespace")
+                    .and_then(serde_json::Value::as_str)
+                    .cmp(&b.get("namespace").and_then(serde_json::Value::as_str))
+            })
+            .then_with(|| {
+                a.get("name")
+                    .and_then(serde_json::Value::as_str)
+                    .cmp(&b.get("name").and_then(serde_json::Value::as_str))
+            })
+    });
+    forbidden.sort();
+    forbidden.dedup();
+
+    serde_json::json!({
+        "resources": resources,
+        "resource_kinds": kinds,
+        "namespaces": namespaces.into_iter().collect::<Vec<_>>(),
+        "has_crds": has_crds,
+        "has_rbac": has_rbac,
+        "forbidden_objects": forbidden,
+    })
+}
+
 pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32), String> {
     let common = &args.common;
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
@@ -80,6 +176,22 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
     if !args.kind && !args.apply {
         steps.push("validate-only".to_string());
     }
+    let render_path = install_render_path(&repo_root, run_id.as_str(), &profile.name);
+    let render_inventory = if render_path.exists() {
+        let rendered_manifest = std::fs::read_to_string(&render_path)
+            .map_err(|err| format!("failed to read {}: {err}", render_path.display()))?;
+        install_plan_inventory(&rendered_manifest)
+    } else {
+        serde_json::json!({
+            "resources": [],
+            "resource_kinds": {},
+            "namespaces": [],
+            "has_crds": false,
+            "has_rbac": false,
+            "forbidden_objects": [],
+            "missing_render_path": render_path.display().to_string(),
+        })
+    };
     let payload = serde_json::json!({
         "schema_version": 1,
         "profile": profile.name,
@@ -88,6 +200,7 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
         "dry_run": args.dry_run,
         "steps": steps,
         "kind_context_expected": expected_kind_context(&profile),
+        "install_plan": render_inventory,
     });
     let text = if args.plan {
         format!("install plan generated for profile `{}`", profile.name)
@@ -97,6 +210,81 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
     let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": [payload], "summary": {"total": 1, "errors": 0, "warnings": 0}});
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
     Ok((rendered, 0))
+}
+
+#[cfg(test)]
+mod install_status_tests {
+    use super::{install_plan_inventory, install_render_path};
+
+    #[test]
+    fn install_plan_inventory_summarizes_resources_deterministically() {
+        let manifest = r#"
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bijux-atlas
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: atlas
+  namespace: bijux-atlas
+spec:
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atlas
+  namespace: bijux-atlas
+"#;
+        let payload = install_plan_inventory(manifest);
+        assert_eq!(
+            payload["namespaces"].as_array().expect("namespaces").len(),
+            1
+        );
+        assert_eq!(payload["has_rbac"].as_bool(), Some(false));
+        assert_eq!(payload["has_crds"].as_bool(), Some(false));
+        assert!(payload["forbidden_objects"]
+            .as_array()
+            .is_some_and(|rows| rows.is_empty()));
+        assert_eq!(
+            payload["resource_kinds"]["Deployment"].as_u64(),
+            Some(1)
+        );
+    }
+
+    #[test]
+    fn install_plan_inventory_flags_forbidden_objects() {
+        let manifest = r#"
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: atlas-admin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: atlas
+spec:
+  type: NodePort
+"#;
+        let payload = install_plan_inventory(manifest);
+        let forbidden = payload["forbidden_objects"].as_array().expect("forbidden");
+        assert!(forbidden.iter().any(|row| row.as_str().is_some_and(|value| value.contains("ClusterRole"))));
+        assert!(forbidden.iter().any(|row| row.as_str().is_some_and(|value| value.contains("NodePort"))));
+        assert_eq!(payload["has_rbac"].as_bool(), Some(true));
+    }
+
+    #[test]
+    fn install_render_path_is_stable() {
+        let repo_root = std::path::Path::new("/repo");
+        let path = install_render_path(repo_root, "ops_run", "kind");
+        assert_eq!(
+            path,
+            std::path::PathBuf::from("/repo/artifacts/ops/ops_run/render/kind/helm/render.yaml")
+        );
+    }
 }
 
 pub(crate) fn run_ops_status(args: &cli::OpsStatusArgs) -> Result<(String, i32), String> {
@@ -260,4 +448,3 @@ pub(crate) fn run_ops_status(args: &cli::OpsStatusArgs) -> Result<(String, i32),
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
     Ok((rendered, 0))
 }
-

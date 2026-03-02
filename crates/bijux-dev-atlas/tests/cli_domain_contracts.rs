@@ -702,6 +702,26 @@ fn ops_install_apply_requires_allow_write() {
 }
 
 #[test]
+fn ops_install_plan_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "install", "--plan", "--format", "json"])
+        .output()
+        .expect("ops install plan");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let row = payload["rows"]
+        .as_array()
+        .and_then(|rows| rows.first())
+        .expect("row");
+    assert_eq!(row["plan_mode"].as_bool(), Some(true));
+    assert!(row.get("install_plan").is_some());
+    assert!(row["install_plan"]["resources"].as_array().is_some());
+    assert!(row["install_plan"]["namespaces"].as_array().is_some());
+}
+
+#[test]
 fn ops_status_pods_requires_allow_subprocess() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
