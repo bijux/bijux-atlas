@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/report-check-map.schema.json",
+  "title": "report check map",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "mappings"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "mappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["check_id", "report_id", "report_path", "evidence_level"],
+        "properties": {
+          "check_id": { "type": "string", "minLength": 1 },
+          "report_id": { "type": "string", "minLength": 1 },
+          "report_path": { "type": "string", "minLength": 1 },
+          "evidence_level": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

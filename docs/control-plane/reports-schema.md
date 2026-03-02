@@ -25,14 +25,21 @@ This page defines the stable report payload shape emitted by the control-plane a
 
 ## Canonical fields
 
-All check reports use this shared envelope:
+Governed machine-readable report payloads use this header:
 
-- `schema_version`: integer schema marker
+- `report_id`: stable report identifier
+- `version`: schema version for that report family
+- `inputs`: declared inputs used to produce the report
+- `summary`: stable aggregate counters or top-level state
+- `evidence`: supporting metadata needed to interpret the report deterministically
+
+Execution reports may still include runtime-specific fields such as:
+
+- `schema_version`: integer schema marker for the broader execution envelope
 - `kind`: report kind identifier
 - `status`: pass or fail summary
-- `summary`: aggregate counters
 - `violations`: array of violation entries
-- `generated_at` or deterministic run metadata when required by the lane
+- deterministic `run_id` metadata when the report belongs to a specific run
 
 Violation entries must include:
 
@@ -55,6 +62,7 @@ Violation entries must include:
 - Required CI gates consume structured fields, not terminal formatting.
 - Historical artifacts remain readable by version-aware tooling.
 - Schema changes must include fixture updates and contract coverage for deterministic output.
+- The schema registry and ownership registries under `configs/reports/` are the SSOT for governed report families.
 
 ## See also
 

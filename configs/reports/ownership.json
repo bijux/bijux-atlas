@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "reports": [
+    {
+      "report_id": "closure-index",
+      "owner": "docs-governance",
+      "schema_path": "configs/contracts/reports/closure-index.schema.json",
+      "docs_path": "docs/reference/reports/index.md"
+    },
+    {
+      "report_id": "docs-build-closure-summary",
+      "owner": "docs-governance",
+      "schema_path": "configs/contracts/reports/closure-summary.schema.json",
+      "docs_path": "docs/reference/reports/index.md"
+    },
+    {
+      "report_id": "docs-site-output",
+      "owner": "docs-governance",
+      "schema_path": "configs/contracts/reports/docs-site-output.schema.json",
+      "docs_path": "docs/reference/reports/index.md"
+    },
+    {
+      "report_id": "helm-env",
+      "owner": "ops-governance",
+      "schema_path": "configs/contracts/reports/helm-env.schema.json",
+      "docs_path": "docs/reference/reports/index.md"
+    },
+    {
+      "report_id": "ops-profiles",
+      "owner": "ops-governance",
+      "schema_path": "configs/contracts/reports/ops-profiles.schema.json",
+      "docs_path": "docs/reference/reports/index.md"
+    }
+  ]
+}

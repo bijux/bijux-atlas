@@ -25,6 +25,9 @@
 ## Where to find them
 
 - Schemas: `configs/contracts/reports/*.schema.json`
+- Schema registry: `configs/reports/schema-registry.json`
+- Ownership registry: `configs/reports/ownership.json`
+- Check to report mapping: `configs/reports/check-report-map.json`
 - Runtime docs artifacts:
   - `docs/_internal/generated/closure-index.json`
   - `docs/_internal/generated/closure-index.md`
@@ -53,6 +56,9 @@
 - `bijux dev atlas docs doctor --allow-subprocess --allow-write --format json`
 - `bijux dev atlas docs site-dir --format json`
 - `bijux dev atlas contracts ops --mode effect --allow-subprocess --filter-contract OPS-DATASET-001`
+- `bijux dev atlas artifacts report inventory --format json`
+- `bijux dev atlas artifacts report read --report-path docs/_internal/generated/closure-index.json --format json`
+- `bijux dev atlas artifacts report validate --reports-root docs/_internal/generated --format json`
 
 ## Consumption contract
 
@@ -60,6 +66,8 @@
 - Treat `status: "fail"` plus the paired `errors[]` list as the contract result, not stderr formatting.
 - Use `report-manifest.json` as the index for a single docs doctor run instead of globbing ad hoc paths.
 - Preserve the stable pretty JSON formatting when reviewing or copying report payloads so diffs stay meaningful.
+- Prefer the registry files under `configs/reports/` over hand-maintained docs tables when automation needs ownership or check linkage.
+- Use `artifacts report read` for a deterministic machine summary of one report and `artifacts report diff` for run-to-run drift.
 
 ## Failure triage guide
 

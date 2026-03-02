@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "mappings": [
+    {
+      "check_id": "DOCS-SITE-001",
+      "report_id": "docs-site-output",
+      "report_path": "artifacts/run/<run_id>/gates/docs/site-output.json",
+      "evidence_level": "standard"
+    },
+    {
+      "check_id": "DOCS-SITE-002",
+      "report_id": "docs-site-output",
+      "report_path": "artifacts/run/<run_id>/gates/docs/site-output.json",
+      "evidence_level": "standard"
+    },
+    {
+      "check_id": "DOCS-SITE-003",
+      "report_id": "docs-site-output",
+      "report_path": "artifacts/run/<run_id>/gates/docs/site-output.json",
+      "evidence_level": "standard"
+    },
+    {
+      "check_id": "OPS-DATASET-001",
+      "report_id": "ops-profiles",
+      "report_path": "artifacts/contracts/ops/profiles/full-matrix.json",
+      "evidence_level": "forensic"
+    },
+    {
+      "check_id": "OPS-HELM-ENV-001",
+      "report_id": "helm-env",
+      "report_path": "artifacts/contracts/ops/helm/helm-env-subset.json",
+      "evidence_level": "standard"
+    },
+    {
+      "check_id": "OPS-PROFILES-001",
+      "report_id": "ops-profiles",
+      "report_path": "artifacts/contracts/ops/profiles/full-matrix.json",
+      "evidence_level": "forensic"
+    },
+    {
+      "check_id": "OPS-PROFILES-002",
+      "report_id": "ops-profiles",
+      "report_path": "artifacts/contracts/ops/profiles/full-matrix.json",
+      "evidence_level": "forensic"
+    },
+    {
+      "check_id": "OPS-PROFILES-003",
+      "report_id": "ops-profiles",
+      "report_path": "artifacts/contracts/ops/profiles/full-matrix.json",
+      "evidence_level": "forensic"
+    },
+    {
+      "check_id": "OPS-PROFILES-004",
+      "report_id": "ops-profiles",
+      "report_path": "artifacts/contracts/ops/profiles/full-matrix.json",
+      "evidence_level": "forensic"
+    },
+    {
+      "check_id": "REPO-006",
+      "report_id": "closure-index",
+      "report_path": "docs/_internal/generated/closure-index.json",
+      "evidence_level": "minimal"
+    }
+  ]
+}
