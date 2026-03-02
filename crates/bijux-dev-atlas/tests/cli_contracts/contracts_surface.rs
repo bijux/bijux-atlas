@@ -371,6 +371,10 @@ fn contracts_invalid_test_filter_pattern_is_usage_error() {
 fn contracts_ci_human_output_disables_ansi_color() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
+        .env("NO_COLOR", "1")
+        .env_remove("FORCE_COLOR")
+        .env_remove("CLICOLOR_FORCE")
+        .env_remove("CARGO_TERM_COLOR")
         .args(["contracts", "docs", "--ci"])
         .output()
         .expect("contracts docs ci");
