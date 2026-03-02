@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "hidden_command_ids": [
+    "build",
+    "capabilities",
+    "docker",
+    "gates",
+    "help",
+    "make",
+    "release",
+    "version",
+    "workflows"
+  ]
+}

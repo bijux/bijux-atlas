@@ -8,8 +8,10 @@ use crate::*;
 use bijux_dev_atlas::contracts;
 use bijux_dev_atlas::model::CONTRACT_SCHEMA_VERSION;
 use bijux_dev_atlas::policies::{canonical_policy_json, DevAtlasPolicySet};
+use std::collections::BTreeSet;
 use std::fs;
 use std::io::{self, Write};
+use std::path::Path;
 
 pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32 {
     let result = match command {
@@ -199,12 +201,13 @@ pub(crate) fn run_help_inventory_command(
     out: Option<PathBuf>,
 ) -> Result<(String, i32), String> {
     let payload = help_inventory_payload();
+    validate_help_inventory_payload(&payload)?;
     let rendered = match format {
         FormatArg::Text => payload["commands"]
             .as_array()
             .unwrap_or(&Vec::new())
             .iter()
-            .filter_map(|row| row.get("name").and_then(|v| v.as_str()))
+            .filter_map(|row| row.get("id").and_then(|v| v.as_str()))
             .collect::<Vec<_>>()
             .join("\n"),
         _ => emit_payload(format, out.clone(), &payload)?,
@@ -418,4 +421,82 @@ pub(crate) fn help_inventory_payload() -> serde_json::Value {
         "count": commands.len(),
         "commands": commands
     })
+}
+
+fn validate_help_inventory_payload(payload: &serde_json::Value) -> Result<(), String> {
+    let commands = payload
+        .get("commands")
+        .and_then(|value| value.as_array())
+        .ok_or_else(|| "command inventory must define commands array".to_string())?;
+    let mut ids = BTreeSet::new();
+    let mut hidden_ids = BTreeSet::new();
+    for row in commands {
+        let id = row
+            .get("id")
+            .and_then(|value| value.as_str())
+            .ok_or_else(|| "command inventory entry missing id".to_string())?;
+        if !ids.insert(id.to_string()) {
+            return Err(format!("command inventory contains duplicate id `{id}`"));
+        }
+        for field in [
+            "kind",
+            "purpose",
+            "effects",
+            "inputs",
+            "outputs",
+            "report_ids",
+            "hidden",
+        ] {
+            if row.get(field).is_none() {
+                return Err(format!("command inventory entry `{id}` missing `{field}`"));
+            }
+        }
+        if row.get("hidden").and_then(|value| value.as_bool()) == Some(true) {
+            hidden_ids.insert(id.to_string());
+        }
+    }
+    let allowlisted_hidden_ids = load_hidden_command_allowlist()?;
+    if hidden_ids != allowlisted_hidden_ids {
+        let missing = hidden_ids
+            .difference(&allowlisted_hidden_ids)
+            .cloned()
+            .collect::<Vec<_>>();
+        let stale = allowlisted_hidden_ids
+            .difference(&hidden_ids)
+            .cloned()
+            .collect::<Vec<_>>();
+        return Err(format!(
+            "hidden command allowlist mismatch: missing={missing:?} stale={stale:?}"
+        ));
+    }
+    Ok(())
+}
+
+fn load_hidden_command_allowlist() -> Result<BTreeSet<String>, String> {
+    let path = resolve_hidden_command_allowlist_path();
+    let text = fs::read_to_string(&path)
+        .map_err(|err| format!("read {} failed: {err}", path.display()))?;
+    let value: serde_json::Value = serde_json::from_str(&text)
+        .map_err(|err| format!("parse {} failed: {err}", path.display()))?;
+    value
+        .get("hidden_command_ids")
+        .and_then(|value| value.as_array())
+        .ok_or_else(|| format!("{} must define hidden_command_ids", path.display()))
+        .map(|rows| {
+            rows.iter()
+                .filter_map(|value| value.as_str().map(str::to_string))
+                .collect()
+        })
+}
+
+fn resolve_hidden_command_allowlist_path() -> PathBuf {
+    let cwd_path = Path::new("configs/cli/hidden-command-allowlist.json");
+    if cwd_path.exists() {
+        return cwd_path.to_path_buf();
+    }
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|path| path.parent())
+        .unwrap_or_else(|| Path::new("."))
+        .join("configs/cli/hidden-command-allowlist.json")
 }

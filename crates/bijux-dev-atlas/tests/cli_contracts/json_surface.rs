@@ -77,15 +77,40 @@ fn help_inventory_supports_json_format() {
         .get("commands")
         .and_then(|v| v.as_array())
         .expect("commands array");
+    assert_eq!(payload.get("kind").and_then(|v| v.as_str()), Some("command_inventory"));
+    assert_eq!(payload.get("count").and_then(|v| v.as_u64()), Some(commands.len() as u64));
     assert!(commands
         .iter()
-        .any(|row| row.get("name").and_then(|v| v.as_str()) == Some("check")));
+        .any(|row| row.get("id").and_then(|v| v.as_str()) == Some("check")));
     assert!(commands
         .iter()
-        .any(|row| row.get("name").and_then(|v| v.as_str()) == Some("ops")));
+        .any(|row| row.get("id").and_then(|v| v.as_str()) == Some("ops")));
     assert!(commands
         .iter()
-        .any(|row| row.get("name").and_then(|v| v.as_str()) == Some("policies")));
+        .any(|row| row.get("id").and_then(|v| v.as_str()) == Some("policies")));
+    for row in commands {
+        assert!(row.get("id").and_then(|v| v.as_str()).is_some());
+        assert!(row.get("kind").and_then(|v| v.as_str()).is_some());
+        assert!(row.get("purpose").and_then(|v| v.as_str()).is_some());
+        assert!(row.get("effects").and_then(|v| v.as_array()).is_some());
+        assert!(row.get("inputs").and_then(|v| v.as_array()).is_some());
+        assert!(row.get("outputs").and_then(|v| v.as_array()).is_some());
+        assert!(row.get("report_ids").and_then(|v| v.as_array()).is_some());
+        assert!(row.get("hidden").and_then(|v| v.as_bool()).is_some());
+    }
+}
+
+#[test]
+fn help_inventory_text_output_uses_command_ids() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .arg("help")
+        .output()
+        .expect("help inventory text");
+    assert!(output.status.success());
+    let text = String::from_utf8(output.stdout).expect("utf8 stdout");
+    assert!(text.lines().any(|line| line == "check"));
+    assert!(text.lines().any(|line| line == "ops"));
+    assert!(!text.lines().any(|line| line == "name"));
 }
 
 #[test]
