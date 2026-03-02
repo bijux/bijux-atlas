@@ -241,6 +241,9 @@
       "crates/bijux-atlas-store/docs/benchmarks.md",
       "crates/bijux-dev-atlas/docs/benchmarks.md"
     ],
+    "bijux-dev-atlas": [
+      "docs/development/tooling/bijux-dev-atlas.md"
+    ],
     "bijux-dna-atlas": [
       "docs/reference/compatibility/bijux-dna-atlas.md"
     ],
@@ -806,6 +809,7 @@
       "docs/reference/contracts/schemas/index.md",
       "docs/reference/examples/index.md",
       "docs/reference/index.md",
+      "docs/reference/ops-schema/index.md",
       "docs/reference/querying/index.md",
       "docs/reference/registry/index.md",
       "docs/reference/store/index.md"
@@ -842,6 +846,9 @@
     ],
     "kubernetes": [
       "crates/bijux-atlas-server/docs/kubernetes.md"
+    ],
+    "lane-guarantees": [
+      "docs/operations/release/lane-guarantees.md"
     ],
     "lane-matrix": [
       "docs/control-plane/lane-matrix.md"
@@ -1019,6 +1026,9 @@
     "registry-contract": [
       "crates/bijux-dev-atlas/docs/registry-contract.md"
     ],
+    "registry-deprecation-plan": [
+      "docs/_internal/registry-deprecation-plan.md"
+    ],
     "registry-federation": [
       "docs/operations/runbooks/registry-federation.md"
     ],
@@ -1039,6 +1049,9 @@
     ],
     "release-workflow": [
       "docs/operations/release-workflow.md"
+    ],
+    "repo-constitution": [
+      "docs/_internal/repo-constitution.md"
     ],
     "repo-laws": [
       "docs/_internal/contracts/repo-laws.md"
@@ -1075,6 +1088,9 @@
     ],
     "root-legacy-mapping": [
       "docs/_internal/meta/internal/root-legacy-mapping.md"
+    ],
+    "root-surface": [
+      "docs/_internal/root-surface.md"
     ],
     "run-locally": [
       "docs/operations/run-locally.md"

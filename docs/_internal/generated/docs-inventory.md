@@ -354,6 +354,9 @@ License: Apache-2.0
 | `docs/_internal/meta/internal/index.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/meta/internal/root-legacy-mapping.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/nav/index.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/registry-deprecation-plan.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/repo-constitution.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/_internal/root-surface.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/api/caching.md` | `concept` | `docs-governance` | `stable` |
 | `docs/api/client-behavior.md` | `concept` | `api-contracts` | `stable` |
 | `docs/api/client-retries-and-backoff.md` | `concept` | `api-contracts` | `stable` |
@@ -452,6 +455,7 @@ License: Apache-2.0
 | `docs/development/repo-layout.md` | `concept` | `platform` | `stable` |
 | `docs/development/runtime-vs-control-plane-vs-ops.md` | `concept` | `platform` | `stable` |
 | `docs/development/toolchain.md` | `concept` | `platform` | `stable` |
+| `docs/development/tooling/bijux-dev-atlas.md` | `concept` | `docs-governance` | `stable` |
 | `docs/development/tooling/index.md` | `concept` | `docs-governance` | `stable` |
 | `docs/development/tooling/make.md` | `concept` | `docs-governance` | `stable` |
 | `docs/development/update-pinned-dependencies.md` | `concept` | `platform` | `stable` |
@@ -497,6 +501,7 @@ License: Apache-2.0
 | `docs/operations/release/capacity-planning-worksheet.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release/capacity-planning.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release/index.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/release/lane-guarantees.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release/quality-wall.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release/rollback-procedure.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release/upgrade-procedure.md` | `concept` | `bijux-atlas-operations` | `stable` |
@@ -564,6 +569,7 @@ License: Apache-2.0
 | `docs/reference/make.md` | `reference` | `bijux-atlas-operations` | `stable` |
 | `docs/reference/ops-schema/budget-exceptions.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/ops-schema/budget-policy.md` | `reference` | `docs-governance` | `stable` |
+| `docs/reference/ops-schema/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/ops-schema/schema-reference-allowlist.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/ops-schema/versioning-policy.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/ops-surface.md` | `reference` | `docs-governance` | `stable` |

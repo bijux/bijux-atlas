@@ -2802,6 +2802,30 @@
       "title": "Navigation Contract"
     },
     {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/registry-deprecation-plan.md",
+      "stability": "stable",
+      "title": "Registry Deprecation Plan"
+    },
+    {
+      "area": "_internal",
+      "audience": "maintainers",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/_internal/repo-constitution.md",
+      "stability": "stable",
+      "title": "Repository Constitution"
+    },
+    {
+      "area": "_internal",
+      "audience": "maintainers",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/_internal/root-surface.md",
+      "stability": "stable",
+      "title": "Root Surface Rationale"
+    },
+    {
       "area": "api",
       "audience": "mixed",
       "owner": "docs-governance",
@@ -3589,6 +3613,14 @@
       "area": "development",
       "audience": "contributors",
       "owner": "docs-governance",
+      "path": "docs/development/tooling/bijux-dev-atlas.md",
+      "stability": "stable",
+      "title": "`bijux-dev-atlas`"
+    },
+    {
+      "area": "development",
+      "audience": "contributors",
+      "owner": "docs-governance",
       "path": "docs/development/tooling/index.md",
       "stability": "stable",
       "title": "Tooling"
@@ -3944,6 +3976,14 @@
       "path": "docs/operations/release/index.md",
       "stability": "stable",
       "title": "Release Operations"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release/lane-guarantees.md",
+      "stability": "stable",
+      "title": "Release Lane Guarantees"
     },
     {
       "area": "operations",
@@ -4480,6 +4520,14 @@
       "path": "docs/reference/ops-schema/budget-policy.md",
       "stability": "stable",
       "title": "Schema Budget Policy"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/ops-schema/index.md",
+      "stability": "stable",
+      "title": "Operations Schema"
     },
     {
       "area": "reference",

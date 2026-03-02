@@ -4740,6 +4740,42 @@
     },
     {
       "keywords": [
+        "-internal",
+        "registry-deprecation-plan"
+      ],
+      "path": "docs/_internal/registry-deprecation-plan.md",
+      "tags": [
+        "-internal",
+        "registry-deprecation-plan"
+      ],
+      "topic": "registry-deprecation-plan"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "repo-constitution"
+      ],
+      "path": "docs/_internal/repo-constitution.md",
+      "tags": [
+        "-internal",
+        "repo-constitution"
+      ],
+      "topic": "repo-constitution"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "root-surface"
+      ],
+      "path": "docs/_internal/root-surface.md",
+      "tags": [
+        "-internal",
+        "root-surface"
+      ],
+      "topic": "root-surface"
+    },
+    {
+      "keywords": [
         "api",
         "caching"
       ],
@@ -5914,6 +5950,20 @@
     },
     {
       "keywords": [
+        "bijux-dev-atlas",
+        "development",
+        "tooling"
+      ],
+      "path": "docs/development/tooling/bijux-dev-atlas.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "development",
+        "tooling"
+      ],
+      "topic": "bijux-dev-atlas"
+    },
+    {
+      "keywords": [
         "development",
         "index",
         "tooling"
@@ -6485,6 +6535,20 @@
         "release"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "lane-guarantees",
+        "operations",
+        "release"
+      ],
+      "path": "docs/operations/release/lane-guarantees.md",
+      "tags": [
+        "lane-guarantees",
+        "operations",
+        "release"
+      ],
+      "topic": "lane-guarantees"
     },
     {
       "keywords": [
@@ -7383,6 +7447,20 @@
         "reference"
       ],
       "topic": "budget-policy"
+    },
+    {
+      "keywords": [
+        "index",
+        "ops-schema",
+        "reference"
+      ],
+      "path": "docs/reference/ops-schema/index.md",
+      "tags": [
+        "index",
+        "ops-schema",
+        "reference"
+      ],
+      "topic": "index"
     },
     {
       "keywords": [

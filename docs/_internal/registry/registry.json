@@ -8589,6 +8589,75 @@
       "topic": "index"
     },
     {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "registry-deprecation-plan"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/registry-deprecation-plan.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "registry-deprecation-plan"
+      ],
+      "title": "Registry Deprecation Plan",
+      "topic": "registry-deprecation-plan"
+    },
+    {
+      "area": "_internal",
+      "audience": "maintainers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "repo-constitution"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/_internal/repo-constitution.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "repo-constitution"
+      ],
+      "title": "Repository Constitution",
+      "topic": "repo-constitution"
+    },
+    {
+      "area": "_internal",
+      "audience": "maintainers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "root-surface"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/_internal/root-surface.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "root-surface"
+      ],
+      "title": "Root Surface Rationale",
+      "topic": "root-surface"
+    },
+    {
       "area": "api",
       "audience": "mixed",
       "crate": null,
@@ -10847,6 +10916,31 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "bijux-dev-atlas",
+        "development",
+        "tooling"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/development/tooling/bijux-dev-atlas.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "development",
+        "tooling"
+      ],
+      "title": "`bijux-dev-atlas`",
+      "topic": "bijux-dev-atlas"
+    },
+    {
+      "area": "development",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "development",
         "index",
         "tooling"
@@ -11908,6 +12002,31 @@
       ],
       "title": "Release Operations",
       "topic": "index"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "lane-guarantees",
+        "operations",
+        "release"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release/lane-guarantees.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "lane-guarantees",
+        "operations",
+        "release"
+      ],
+      "title": "Release Lane Guarantees",
+      "topic": "lane-guarantees"
     },
     {
       "area": "operations",
@@ -13543,6 +13662,31 @@
       ],
       "title": "Schema Budget Policy",
       "topic": "budget-policy"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "index",
+        "ops-schema",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/ops-schema/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "index",
+        "ops-schema",
+        "reference"
+      ],
+      "title": "Operations Schema",
+      "topic": "index"
     },
     {
       "area": "reference",

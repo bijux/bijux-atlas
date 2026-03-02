@@ -33,7 +33,7 @@
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `failure-modes-reference` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `failure-modes` appears 4 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `generated-artifacts` appears 2 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `index` appears 48 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `index` appears 49 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `make` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `pagination` appears 3 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `patterns` appears 2 times",
@@ -182,6 +182,9 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/style/placement.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/style/stability-levels.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/index.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/registry-deprecation-plan.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/repo-constitution.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/root-surface.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/api/caching.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/api/default-field-set.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/api/sdk-strategy.md` has no inbound doc links",
@@ -216,7 +219,6 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/ops-docs-contract.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/ops-map.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/release-operations.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/release/quality-wall.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/runbook-template.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/runbooks-to-alerts-mapping.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/product/diffs-v1.md` has no inbound doc links",
@@ -232,10 +234,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/contracts/plugins/mode.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/examples/catalog-example.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/examples/index.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/ops-schema/budget-exceptions.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/ops-schema/budget-policy.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/ops-schema/schema-reference-allowlist.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/ops-schema/versioning-policy.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/ops-schema/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/querying/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/querying/pagination.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/registry/config-schema-versioning.md` has no inbound doc links",
@@ -266,8 +265,8 @@
   ],
   "schema_version": 1,
   "summary": {
-    "errors": 42,
-    "registered": 613,
-    "warnings": 304
+    "errors": 43,
+    "registered": 619,
+    "warnings": 303
   }
 }

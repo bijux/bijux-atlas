@@ -1753,6 +1753,21 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/registry-deprecation-plan.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/repo-constitution.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/root-surface.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/api/caching.md"
     },
     {
@@ -2243,6 +2258,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/development/tooling/bijux-dev-atlas.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/development/tooling/index.md"
     },
     {
@@ -2464,6 +2484,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/release/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/release/lane-guarantees.md"
     },
     {
       "crate": null,
@@ -2799,6 +2824,11 @@
       "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/ops-schema/budget-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/ops-schema/index.md"
     },
     {
       "crate": null,

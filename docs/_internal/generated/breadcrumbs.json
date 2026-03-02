@@ -3235,6 +3235,30 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/_internal",
+        "docs/_internal/registry-deprecation-plan.md"
+      ],
+      "path": "docs/_internal/registry-deprecation-plan.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/repo-constitution.md"
+      ],
+      "path": "docs/_internal/repo-constitution.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/root-surface.md"
+      ],
+      "path": "docs/_internal/root-surface.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
         "docs/api",
         "docs/api/caching.md"
       ],
@@ -4020,6 +4044,15 @@
         "docs",
         "docs/development",
         "docs/development/tooling",
+        "docs/development/tooling/bijux-dev-atlas.md"
+      ],
+      "path": "docs/development/tooling/bijux-dev-atlas.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/tooling",
         "docs/development/tooling/index.md"
       ],
       "path": "docs/development/tooling/index.md"
@@ -4392,6 +4425,15 @@
         "docs/operations/release/index.md"
       ],
       "path": "docs/operations/release/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release",
+        "docs/operations/release/lane-guarantees.md"
+      ],
+      "path": "docs/operations/release/lane-guarantees.md"
     },
     {
       "breadcrumbs": [
@@ -4976,6 +5018,15 @@
         "docs/reference/ops-schema/budget-policy.md"
       ],
       "path": "docs/reference/ops-schema/budget-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/ops-schema",
+        "docs/reference/ops-schema/index.md"
+      ],
+      "path": "docs/reference/ops-schema/index.md"
     },
     {
       "breadcrumbs": [
