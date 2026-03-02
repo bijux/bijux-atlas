@@ -4,9 +4,6 @@ metadata:
   name: {{ include "bijux-atlas.fullname" . }}-config
   labels:
     {{- include "bijux-atlas.labels" . | nindent 4 }}
-{{- if and .Values.server.cachedOnlyMode .Values.server.readinessRequiresCatalog }}
-{{- fail "server.cachedOnlyMode=true requires server.readinessRequiresCatalog=false" }}
-{{- end }}
 data:
   ATLAS_STORE_S3_ENABLED: {{ if .Values.store.endpoint }}"true"{{ else }}"false"{{ end }}
   ATLAS_STORE_S3_BASE_URL: {{ .Values.store.endpoint | quote }}

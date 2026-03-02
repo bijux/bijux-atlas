@@ -74,6 +74,32 @@
     {
       "if": {
         "properties": {
+          "alertRules": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            },
+            "type": "object"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "serviceMonitor": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            },
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
           "server": {
             "properties": {
               "cachedOnlyMode": {
@@ -90,6 +116,80 @@
             "properties": {
               "readinessRequiresCatalog": {
                 "const": false
+              }
+            },
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "hpa": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            },
+            "type": "object"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "hpa": {
+            "properties": {
+              "minReplicas": {
+                "minimum": 1,
+                "type": "integer"
+              },
+              "maxReplicas": {
+                "minimum": 1,
+                "type": "integer"
+              },
+              "cpuUtilization": {
+                "maximum": 100,
+                "minimum": 1,
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "metrics": {
+            "properties": {
+              "customMetrics": {
+                "properties": {
+                  "enabled": {
+                    "const": true
+                  },
+                  "requiredPodAnnotations": {
+                    "properties": {
+                      "prometheus.io/path": {
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "prometheus.io/scrape": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "prometheus.io/scrape",
+                      "prometheus.io/path"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            "type": "object"
+          },
+          "serviceMonitor": {
+            "properties": {
+              "enabled": {
+                "const": true
               }
             },
             "type": "object"
@@ -164,7 +264,46 @@
       "description": "Chart values key `extraEnv` from SSOT contract."
     },
     "hpa": {
-      "description": "Chart values key `hpa` from SSOT contract."
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "minReplicas": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "maxReplicas": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "cpuUtilization": {
+          "maximum": 100,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "p95LatencySeconds": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "heavyInflightAverageValue": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "behavior": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "enabled",
+        "minReplicas",
+        "maxReplicas",
+        "cpuUtilization",
+        "p95LatencySeconds",
+        "heavyInflightAverageValue",
+        "behavior"
+      ],
+      "type": "object"
     },
     "image": {
       "additionalProperties": false,
@@ -204,10 +343,70 @@
       "description": "Chart values key `ingress` from SSOT contract."
     },
     "metrics": {
-      "description": "Chart values key `metrics` from SSOT contract."
+      "additionalProperties": false,
+      "properties": {
+        "customMetrics": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "requiredPodAnnotations": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "properties": {
+                "prometheus.io/path": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "prometheus.io/scrape": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "prometheus.io/scrape",
+                "prometheus.io/path"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "enabled",
+            "requiredPodAnnotations"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "customMetrics"
+      ],
+      "type": "object"
     },
     "networkPolicy": {
-      "description": "Chart values key `networkPolicy` from SSOT contract."
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "allowDns": {
+          "type": "boolean"
+        },
+        "allowedEgressCIDRs": {
+          "items": {
+            "pattern": "^[^\\s]+$",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "enabled",
+        "allowDns",
+        "allowedEgressCIDRs"
+      ],
+      "type": "object"
     },
     "nodeLocalSsdProfile": {
       "description": "Chart values key `nodeLocalSsdProfile` from SSOT contract."
@@ -246,7 +445,30 @@
       "description": "Chart values key `service` from SSOT contract."
     },
     "serviceMonitor": {
-      "description": "Chart values key `serviceMonitor` from SSOT contract."
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "interval": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "scrapeTimeout": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "labels": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "enabled",
+        "interval",
+        "scrapeTimeout",
+        "labels"
+      ],
+      "type": "object"
     },
     "store": {
       "additionalProperties": false,

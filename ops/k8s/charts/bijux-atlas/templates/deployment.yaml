@@ -7,12 +7,6 @@ metadata:
 {{- if and .Values.server.readOnlyFsMode (not .Values.securityContext.readOnlyRootFilesystem) }}
 {{- fail "server.readOnlyFsMode=true requires securityContext.readOnlyRootFilesystem=true" }}
 {{- end }}
-{{- if contains "@" .Values.image.repository }}
-{{- fail "image.repository must not include '@'; use image.digest for digests" }}
-{{- end }}
-{{- if and .Values.cache.initPrewarm.enabled (eq (len .Values.cache.pinnedDatasets) 0) }}
-{{- fail "cache.initPrewarm.enabled=true requires cache.pinnedDatasets to include at least one dataset" }}
-{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:

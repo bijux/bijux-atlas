@@ -1,0 +1,14 @@
+Canonical Atlas runtime configuration for this release:
+
+- Catalog endpoint: {{ default "<disabled>" .Values.catalog.endpoint }}
+- Store endpoint: {{ default "<local>" .Values.store.endpoint }}
+- Store presigned endpoint: {{ default "<disabled>" .Values.store.s3PresignedBaseUrl }}
+- Cached-only mode: {{ .Values.server.cachedOnlyMode }}
+- Readiness requires catalog: {{ .Values.server.readinessRequiresCatalog }}
+- Prewarm enabled: {{ .Values.cache.initPrewarm.enabled }}
+
+Before promoting this release:
+
+- Keep `server.cachedOnlyMode=true` paired with `server.readinessRequiresCatalog=false`.
+- Keep `cache.initPrewarm.enabled=true` paired with at least one `cache.pinnedDatasets` entry.
+- Keep `image.digest` paired with an empty `image.tag`.
