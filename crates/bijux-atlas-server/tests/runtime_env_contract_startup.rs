@@ -146,6 +146,34 @@ fn startup_rejects_missing_required_store_s3_configuration() {
 }
 
 #[test]
+fn startup_rejects_loopback_bind_addresses_when_atlas_env_is_prod() {
+    let store_root = tempdir().expect("store root tempdir");
+    let cache_root = tempdir().expect("cache root tempdir");
+    let output = sanitized_server_command()
+        .arg("--validate-config")
+        .env("ATLAS_ENV", "prod")
+        .env("ATLAS_BIND", "127.0.0.1:8080")
+        .env("ATLAS_STORE_ROOT", store_root.path())
+        .env("ATLAS_CACHE_ROOT", cache_root.path())
+        .output()
+        .expect("run atlas-server");
+
+    assert!(
+        !output.status.success(),
+        "prod startup must reject loopback bind addresses"
+    );
+    let stderr = String::from_utf8(output.stderr).expect("stderr utf8");
+    assert!(
+        stderr.contains("ATLAS_ENV=prod forbids localhost/loopback bind addresses"),
+        "prod bind guard must fail explicitly:\n{stderr}"
+    );
+    assert!(
+        !stderr.contains("atlas-server listening on"),
+        "prod bind guard must fail before binding a port:\n{stderr}"
+    );
+}
+
+#[test]
 fn startup_logs_the_redacted_effective_config_during_validation() {
     let store_root = tempdir().expect("store root tempdir");
     let cache_root = tempdir().expect("cache root tempdir");
