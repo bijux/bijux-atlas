@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/contracts/reports/closure-summary.schema.json",
-  "title": "closure-summary report",
+  "$id": "https://bijux.dev/contracts/reports/closure-index.schema.json",
+  "title": "closure-index report",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -10,13 +10,12 @@
     "inputs",
     "summary",
     "evidence",
-    "checks",
-    "status"
+    "entries"
   ],
   "properties": {
     "report_id": {
       "type": "string",
-      "const": "docs-build-closure-summary"
+      "const": "closure-index"
     },
     "version": {
       "type": "integer",
@@ -31,15 +30,8 @@
     "evidence": {
       "type": "object"
     },
-    "checks": {
+    "entries": {
       "type": "array"
-    },
-    "status": {
-      "type": "string",
-      "enum": [
-        "pass",
-        "fail"
-      ]
     }
   }
 }

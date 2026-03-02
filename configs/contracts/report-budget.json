@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "max_report_count": 64,
+  "max_total_bytes": 5242880,
+  "max_single_report_bytes": 1048576
+}

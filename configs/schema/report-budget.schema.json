@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/report-budget.schema.json",
+  "title": "report budget",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "max_report_count",
+    "max_total_bytes",
+    "max_single_report_bytes"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "max_report_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "max_total_bytes": {
+      "type": "integer",
+      "minimum": 1024
+    },
+    "max_single_report_bytes": {
+      "type": "integer",
+      "minimum": 256
+    }
+  }
+}

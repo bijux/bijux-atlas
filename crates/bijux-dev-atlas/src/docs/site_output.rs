@@ -129,8 +129,15 @@ pub fn closure_index_report() -> serde_json::Value {
     json!({
         "report_id": "closure-index",
         "version": 1,
+        "run_id": "docs-internal-generated",
         "inputs": {
             "source": "docs/_internal/governance/closure-checks.md"
+        },
+        "summary": {
+            "entry_count": 4
+        },
+        "evidence": {
+            "docs_source": "docs/_internal/governance/closure-checks.md"
         },
         "entries": [
             {
@@ -202,8 +209,15 @@ pub fn report_manifest(entries: &[(&str, &str)]) -> serde_json::Value {
     json!({
         "report_id": "report-manifest",
         "version": 1,
+        "run_id": "docs-gate-artifacts",
         "inputs": {
             "generator": "bijux dev atlas docs doctor"
+        },
+        "summary": {
+            "report_count": rows.len()
+        },
+        "evidence": {
+            "deterministic_sort": "report_id"
         },
         "reports": rows
     })
@@ -318,6 +332,7 @@ pub fn site_output_report(repo_root: &Path) -> Result<serde_json::Value, String>
     Ok(json!({
         "report_id": "docs-site-output",
         "version": 1,
+        "run_id": "docs-site-output",
         "inputs": {
             "mkdocs": "mkdocs.yml",
             "contract": "configs/docs/site-output-contract.json"
@@ -349,6 +364,18 @@ pub fn site_output_report(repo_root: &Path) -> Result<serde_json::Value, String>
         "counts": {
             "file_count": status.file_count,
             "minimum_file_count": status.minimum_file_count
+        },
+        "summary": {
+            "passed_checks": usize::from(status.site_dir_exists)
+                + usize::from(status.index_exists)
+                + usize::from(status.assets_exists)
+                + usize::from(status.file_count >= status.minimum_file_count),
+            "total_checks": 4
+        },
+        "evidence": {
+            "site_dir_exists": status.site_dir_exists,
+            "index_exists": status.index_exists,
+            "assets_exists": status.assets_exists
         },
         "assets_directory": status.assets_directory,
         "status": if status.site_dir_exists

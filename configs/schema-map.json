@@ -12,6 +12,7 @@
     "configs/ci/workflow-allowlist.json": "configs/schema/ci-workflow-allowlist.schema.json",
     "configs/ci/workflow-step-patterns.json": "configs/schema/ci-workflow-step-patterns.schema.json",
     "configs/configs.contracts.json": "configs/schema/configs-contracts.schema.json",
+    "configs/contracts/report-budget.json": "configs/schema/report-budget.schema.json",
     "configs/consumers-registry.json": "configs/schema/configs-consumer-map.schema.json",
     "configs/docs/*.json": "configs/contracts/inventory-configs.schema.json",
     "configs/docs/*.jsonc": "configs/contracts/inventory-configs.schema.json",

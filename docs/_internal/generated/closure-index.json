@@ -24,6 +24,12 @@
   "inputs": {
     "source": "docs/_internal/governance/closure-checks.md"
   },
+  "summary": {
+    "entry_count": 4
+  },
+  "evidence": {
+    "docs_source": "docs/_internal/governance/closure-checks.md"
+  },
   "report_id": "closure-index",
   "version": 1
 }

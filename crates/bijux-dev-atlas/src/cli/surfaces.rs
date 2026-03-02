@@ -10,6 +10,10 @@ use super::FormatArg;
 pub enum ArtifactsCommand {
     Clean(ArtifactsCommonArgs),
     Gc(ArtifactsGcArgs),
+    Report {
+        #[command(subcommand)]
+        command: ArtifactsReportCommand,
+    },
 }
 
 #[derive(Args, Debug, Clone)]
@@ -30,6 +34,33 @@ pub struct ArtifactsGcArgs {
     pub common: ArtifactsCommonArgs,
     #[arg(long, default_value_t = 5)]
     pub keep_last: usize,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ArtifactsReportCommand {
+    Inventory(ArtifactsCommonArgs),
+    Manifest(ArtifactsReportScanArgs),
+    Index(ArtifactsReportScanArgs),
+    Diff(ArtifactsReportDiffArgs),
+    Validate(ArtifactsReportScanArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ArtifactsReportScanArgs {
+    #[command(flatten)]
+    pub common: ArtifactsCommonArgs,
+    #[arg(long)]
+    pub reports_root: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ArtifactsReportDiffArgs {
+    #[command(flatten)]
+    pub common: ArtifactsCommonArgs,
+    #[arg(long)]
+    pub baseline_root: PathBuf,
+    #[arg(long)]
+    pub candidate_root: PathBuf,
 }
 
 #[derive(Subcommand, Debug)]

@@ -397,6 +397,14 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         "links_report": "docs links",
                         "site_output_report": "docs-site-output"
                     },
+                    "summary": {
+                        "error_count": errors,
+                        "build_status": build_status
+                    },
+                    "evidence": {
+                        "links_errors": links["errors"].as_array().map(|v| v.len()).unwrap_or(0),
+                        "site_output_status": site_output["status"].as_str().unwrap_or("unknown")
+                    },
                     "checks": [
                         {"name": "links", "status": if links["errors"].as_array().is_some_and(|v| v.is_empty()) { "pass" } else { "fail" }},
                         {"name": "site_output", "status": site_output["status"].as_str().unwrap_or("skipped")}

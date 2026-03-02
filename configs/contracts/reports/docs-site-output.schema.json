@@ -8,6 +8,8 @@
     "report_id",
     "version",
     "inputs",
+    "summary",
+    "evidence",
     "docs_dir",
     "site_dir",
     "checks",
@@ -25,6 +27,12 @@
       "const": 1
     },
     "inputs": {
+      "type": "object"
+    },
+    "summary": {
+      "type": "object"
+    },
+    "evidence": {
       "type": "object"
     },
     "docs_dir": {

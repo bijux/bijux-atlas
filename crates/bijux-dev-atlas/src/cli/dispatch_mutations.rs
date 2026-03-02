@@ -37,6 +37,17 @@ fn force_json_artifacts(command: &mut ArtifactsCommand) {
     match command {
         ArtifactsCommand::Clean(common) => common.format = FormatArg::Json,
         ArtifactsCommand::Gc(args) => args.common.format = FormatArg::Json,
+        ArtifactsCommand::Report { command } => match command {
+            crate::cli::ArtifactsReportCommand::Inventory(common) => {
+                common.format = FormatArg::Json
+            }
+            crate::cli::ArtifactsReportCommand::Manifest(args)
+            | crate::cli::ArtifactsReportCommand::Index(args)
+            | crate::cli::ArtifactsReportCommand::Validate(args) => {
+                args.common.format = FormatArg::Json
+            }
+            crate::cli::ArtifactsReportCommand::Diff(args) => args.common.format = FormatArg::Json,
+        },
     }
 }
 
@@ -403,6 +414,19 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         Command::Artifacts { command } => match command {
             ArtifactsCommand::Clean(common) => common.repo_root = Some(root.clone()),
             ArtifactsCommand::Gc(args) => args.common.repo_root = Some(root.clone()),
+            ArtifactsCommand::Report { command } => match command {
+                crate::cli::ArtifactsReportCommand::Inventory(common) => {
+                    common.repo_root = Some(root.clone())
+                }
+                crate::cli::ArtifactsReportCommand::Manifest(args)
+                | crate::cli::ArtifactsReportCommand::Index(args)
+                | crate::cli::ArtifactsReportCommand::Validate(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+                crate::cli::ArtifactsReportCommand::Diff(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+            },
         },
         Command::Ops { command } => match command {
             OpsCommand::List(common)
