@@ -3,9 +3,13 @@
 use crate::cli::GovernanceCommand;
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::governance_objects::{
-    collect_governance_objects, find_governance_object, governance_coverage_path,
-    governance_coverage_score, governance_object_schema, governance_orphan_report_path,
-    governance_orphan_report_payload, governance_summary_markdown, governance_summary_paths,
+    collect_governance_objects, find_governance_object, governance_contract_coverage_path,
+    governance_contract_coverage_payload, governance_coverage_path, governance_coverage_score,
+    governance_drift_path, governance_drift_payload, governance_index_path,
+    governance_index_payload, governance_lane_coverage_path, governance_lane_coverage_payload,
+    governance_object_schema, governance_orphan_checks_path, governance_orphan_checks_payload,
+    governance_orphan_report_path, governance_orphan_report_payload, governance_policy_surface_path,
+    governance_policy_surface_payload, governance_summary_markdown, governance_summary_paths,
     validate_governance_objects,
 };
 use std::fs;
@@ -70,6 +74,12 @@ pub(crate) fn run_governance_command(
             let (graph_path, summary_path) = governance_summary_paths(&root);
             let coverage_path = governance_coverage_path(&root);
             let orphan_path = governance_orphan_report_path(&root);
+            let index_path = governance_index_path(&root);
+            let contract_coverage_path = governance_contract_coverage_path(&root);
+            let lane_coverage_path = governance_lane_coverage_path(&root);
+            let orphan_checks_path = governance_orphan_checks_path(&root);
+            let policy_surface_path = governance_policy_surface_path(&root);
+            let drift_path = governance_drift_path(&root);
             if let Some(parent) = graph_path.parent() {
                 fs::create_dir_all(parent)
                     .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
@@ -96,6 +106,49 @@ pub(crate) fn run_governance_command(
                     .map_err(|e| format!("encode governance coverage failed: {e}"))?,
             )
             .map_err(|e| format!("write {} failed: {e}", coverage_path.display()))?;
+            let previous_index = fs::read_to_string(&index_path)
+                .ok()
+                .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok());
+            let index_payload = governance_index_payload(&root, &objects);
+            fs::write(
+                &index_path,
+                serde_json::to_string_pretty(&index_payload)
+                    .map_err(|e| format!("encode governance index failed: {e}"))?,
+            )
+            .map_err(|e| format!("write {} failed: {e}", index_path.display()))?;
+            fs::write(
+                &contract_coverage_path,
+                serde_json::to_string_pretty(&governance_contract_coverage_payload(&root))
+                    .map_err(|e| format!("encode contract coverage failed: {e}"))?,
+            )
+            .map_err(|e| format!("write {} failed: {e}", contract_coverage_path.display()))?;
+            fs::write(
+                &lane_coverage_path,
+                serde_json::to_string_pretty(&governance_lane_coverage_payload(&root))
+                    .map_err(|e| format!("encode lane coverage failed: {e}"))?,
+            )
+            .map_err(|e| format!("write {} failed: {e}", lane_coverage_path.display()))?;
+            fs::write(
+                &orphan_checks_path,
+                serde_json::to_string_pretty(&governance_orphan_checks_payload(&root))
+                    .map_err(|e| format!("encode orphan checks failed: {e}"))?,
+            )
+            .map_err(|e| format!("write {} failed: {e}", orphan_checks_path.display()))?;
+            fs::write(
+                &policy_surface_path,
+                serde_json::to_string_pretty(&governance_policy_surface_payload(&root))
+                    .map_err(|e| format!("encode policy surface failed: {e}"))?,
+            )
+            .map_err(|e| format!("write {} failed: {e}", policy_surface_path.display()))?;
+            fs::write(
+                &drift_path,
+                serde_json::to_string_pretty(&governance_drift_payload(
+                    &index_payload,
+                    previous_index.as_ref(),
+                ))
+                .map_err(|e| format!("encode governance drift failed: {e}"))?,
+            )
+            .map_err(|e| format!("write {} failed: {e}", drift_path.display()))?;
             fs::write(
                 &orphan_path,
                 serde_json::to_string_pretty(&governance_orphan_report_payload(
@@ -114,8 +167,14 @@ pub(crate) fn run_governance_command(
                 "artifacts": {
                     "governance_graph": graph_path.strip_prefix(&root).unwrap_or(&graph_path).display().to_string(),
                     "governance_summary": summary_path.strip_prefix(&root).unwrap_or(&summary_path).display().to_string(),
+                    "governance_index": index_path.strip_prefix(&root).unwrap_or(&index_path).display().to_string(),
                     "governance_coverage": coverage_path.strip_prefix(&root).unwrap_or(&coverage_path).display().to_string(),
+                    "contract_coverage_map": contract_coverage_path.strip_prefix(&root).unwrap_or(&contract_coverage_path).display().to_string(),
+                    "lane_coverage_map": lane_coverage_path.strip_prefix(&root).unwrap_or(&lane_coverage_path).display().to_string(),
+                    "orphan_checks": orphan_checks_path.strip_prefix(&root).unwrap_or(&orphan_checks_path).display().to_string(),
                     "governance_orphans": orphan_path.strip_prefix(&root).unwrap_or(&orphan_path).display().to_string(),
+                    "policy_surface_map": policy_surface_path.strip_prefix(&root).unwrap_or(&policy_surface_path).display().to_string(),
+                    "governance_drift": drift_path.strip_prefix(&root).unwrap_or(&drift_path).display().to_string(),
                 }
             });
             let rendered = emit_payload(format, out, &payload)?;

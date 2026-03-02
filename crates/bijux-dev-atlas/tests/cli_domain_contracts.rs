@@ -94,6 +94,36 @@ fn ops_generate_runbook_supports_json_format() {
 }
 
 #[test]
+fn governance_validate_emits_index_and_coverage_artifacts() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["governance", "validate", "--format", "json"])
+        .output()
+        .expect("governance validate");
+    let bytes = if output.stdout.is_empty() {
+        &output.stderr
+    } else {
+        &output.stdout
+    };
+    let payload: serde_json::Value =
+        serde_json::from_slice(bytes).expect("valid json output");
+    let artifacts = payload
+        .get("artifacts")
+        .and_then(|v| v.as_object())
+        .expect("artifacts object");
+    for key in [
+        "governance_index",
+        "contract_coverage_map",
+        "lane_coverage_map",
+        "orphan_checks",
+        "policy_surface_map",
+        "governance_drift",
+    ] {
+        assert!(artifacts.contains_key(key), "missing artifact key {key}");
+    }
+}
+
+#[test]
 fn ops_list_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
