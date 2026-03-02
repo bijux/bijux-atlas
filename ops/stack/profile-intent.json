@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "profiles": [
+    {
+      "name": "ci",
+      "intended_usage": "minimal deterministic validation in CI",
+      "allowed_effects": ["subprocess", "fs_write"],
+      "required_dependencies": ["kind-cluster", "rendered-manifests"]
+    },
+    {
+      "name": "dev",
+      "intended_usage": "local development stack with iterative verification",
+      "allowed_effects": ["subprocess", "fs_write", "network"],
+      "required_dependencies": ["kind-cluster", "rendered-manifests", "health-endpoint"]
+    },
+    {
+      "name": "developer",
+      "intended_usage": "developer workstation cluster with standard local ergonomics",
+      "allowed_effects": ["subprocess", "fs_write", "network"],
+      "required_dependencies": ["kind-cluster", "rendered-manifests", "health-endpoint"]
+    },
+    {
+      "name": "kind",
+      "intended_usage": "baseline local cluster installation and smoke checks",
+      "allowed_effects": ["subprocess", "fs_write", "network"],
+      "required_dependencies": ["kind-cluster", "rendered-manifests", "health-endpoint"]
+    },
+    {
+      "name": "minimal",
+      "intended_usage": "smallest supported stack footprint for contract coverage",
+      "allowed_effects": ["subprocess", "fs_write"],
+      "required_dependencies": ["kind-cluster", "rendered-manifests"]
+    },
+    {
+      "name": "perf",
+      "intended_usage": "performance baseline with autoscaling and metrics prerequisites",
+      "allowed_effects": ["subprocess", "fs_write", "network"],
+      "required_dependencies": ["kind-cluster", "rendered-manifests", "metrics-server", "health-endpoint"]
+    },
+    {
+      "name": "small",
+      "intended_usage": "reduced local stack for quick validation",
+      "allowed_effects": ["subprocess", "fs_write"],
+      "required_dependencies": ["kind-cluster", "rendered-manifests"]
+    }
+  ]
+}

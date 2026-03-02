@@ -257,3 +257,131 @@ fn test_ops_stack_007_health_report_generator_contract(ctx: &RunContext) -> Test
         TestResult::Fail(violations)
     }
 }
+
+fn test_ops_stack_010_profile_intent_registry_valid(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-STACK-010";
+    let test_id = "ops.stack.profile_intent_registry_valid";
+    let profiles_rel = "ops/stack/profiles.json";
+    let intent_rel = "ops/stack/profile-intent.json";
+    let Some(profiles_doc) = read_json(&ctx.repo_root.join(profiles_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "stack profiles manifest must be parseable",
+            Some(profiles_rel.to_string()),
+        )]);
+    };
+    let Some(intent_doc) = read_json(&ctx.repo_root.join(intent_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "profile intent registry must be parseable",
+            Some(intent_rel.to_string()),
+        )]);
+    };
+    let profile_names: BTreeSet<String> = profiles_doc
+        .get("profiles")
+        .and_then(|v| v.as_array())
+        .map(|rows| {
+            rows.iter()
+                .filter_map(|row| row.get("name").and_then(|v| v.as_str()))
+                .map(str::to_string)
+                .collect()
+        })
+        .unwrap_or_default();
+    let Some(intent_rows) = intent_doc.get("profiles").and_then(|v| v.as_array()) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "profile intent registry must include profiles array",
+            Some(intent_rel.to_string()),
+        )]);
+    };
+    let mut seen_intents = BTreeSet::new();
+    let mut violations = Vec::new();
+    for row in intent_rows {
+        let name = row.get("name").and_then(|v| v.as_str()).unwrap_or_default();
+        if name.is_empty() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "profile intent entry must include non-empty name",
+                Some(intent_rel.to_string()),
+            ));
+            continue;
+        }
+        if !seen_intents.insert(name.to_string()) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "profile intent names must be unique",
+                Some(intent_rel.to_string()),
+            ));
+        }
+        if row
+            .get("intended_usage")
+            .and_then(|v| v.as_str())
+            .is_none_or(|v| v.trim().is_empty())
+        {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "profile intent entry must include intended_usage",
+                Some(intent_rel.to_string()),
+            ));
+        }
+        for field in ["allowed_effects", "required_dependencies"] {
+            if row
+                .get(field)
+                .and_then(|v| v.as_array())
+                .is_none_or(|rows| rows.is_empty())
+            {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    "profile intent entry must include non-empty arrays for effects and dependencies",
+                    Some(intent_rel.to_string()),
+                ));
+            }
+        }
+        if name == "perf"
+            && !row
+                .get("required_dependencies")
+                .and_then(|v| v.as_array())
+                .is_some_and(|rows| rows.iter().any(|value| value.as_str() == Some("metrics-server")))
+        {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "perf profile intent must require metrics-server",
+                Some(intent_rel.to_string()),
+            ));
+        }
+        if name == "ci"
+            && row
+                .get("required_dependencies")
+                .and_then(|v| v.as_array())
+                .is_some_and(|rows| rows.iter().any(|value| value.as_str() == Some("external-network")))
+        {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "ci profile intent must not require external-network",
+                Some(intent_rel.to_string()),
+            ));
+        }
+    }
+    if seen_intents != profile_names {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "profile intent registry must cover exactly the declared stack profiles",
+            Some(intent_rel.to_string()),
+        ));
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}

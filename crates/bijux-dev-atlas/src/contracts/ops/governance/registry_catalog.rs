@@ -177,6 +177,7 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-STACK-007" => "Ensures stack health report evidence carries schema envelope and generator provenance.",
         "OPS-STACK-008" => "Ensures stack up/down verbs remain present in control-plane command surface snapshot.",
         "OPS-STACK-009" => "Ensures offline or airgap claims are backed by explicit stack profile entries.",
+        "OPS-STACK-010" => "Ensures stack profile intent registry covers every declared stack profile with explicit dependency intent.",
         "OPS-STACK-E-001" => "Effect lane contract for kind dev cluster bring-up inputs.",
         "OPS-STACK-E-002" => "Effect lane contract for core stack component rollout manifests.",
         "OPS-STACK-E-003" => "Effect lane contract for stack ports inventory mapping evidence.",

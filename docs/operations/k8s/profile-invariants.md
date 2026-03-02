@@ -19,6 +19,9 @@
 
 ## Current profile intent
 
+- Source of truth: `ops/stack/profile-intent.json`
+- Schema: `ops/schema/stack/profile-intent.schema.json`
+
 - `ci`: cached-only smoke, catalog-independent, no autoscaling dependency.
 - `offline`: air-gapped cached-only without init prewarm, no autoscaling dependency, no DNS egress.
 - `perf`: digest-pinned performance baseline with HPA and custom metrics enabled.

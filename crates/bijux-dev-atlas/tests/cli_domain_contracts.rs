@@ -717,8 +717,12 @@ fn ops_install_plan_supports_json_format() {
         .expect("row");
     assert_eq!(row["plan_mode"].as_bool(), Some(true));
     assert!(row.get("install_plan").is_some());
+    assert!(row.get("profile_intent").is_some());
     assert!(row["install_plan"]["resources"].as_array().is_some());
     assert!(row["install_plan"]["namespaces"].as_array().is_some());
+    assert!(row["install_plan"]["namespace_isolated"]
+        .as_bool()
+        .is_some());
 }
 
 #[test]

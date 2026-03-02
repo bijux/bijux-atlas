@@ -86,14 +86,41 @@ fn install_plan_inventory(rendered_manifest: &str) -> serde_json::Value {
     forbidden.sort();
     forbidden.dedup();
 
+    let namespace_isolated = namespaces
+        .iter()
+        .all(|namespace| namespace == "bijux-atlas");
     serde_json::json!({
         "resources": resources,
         "resource_kinds": kinds,
         "namespaces": namespaces.into_iter().collect::<Vec<_>>(),
+        "namespace_isolated": namespace_isolated,
         "has_crds": has_crds,
         "has_rbac": has_rbac,
         "forbidden_objects": forbidden,
     })
+}
+
+fn load_profile_intent(
+    repo_root: &std::path::Path,
+    profile: &str,
+) -> Result<Option<serde_json::Value>, String> {
+    let path = repo_root.join("ops/stack/profile-intent.json");
+    if !path.exists() {
+        return Ok(None);
+    }
+    let value: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    Ok(value
+        .get("profiles")
+        .and_then(|v| v.as_array())
+        .and_then(|rows| {
+            rows.iter()
+                .find(|row| row.get("name").and_then(|v| v.as_str()) == Some(profile))
+                .cloned()
+        }))
 }
 
 pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32), String> {
@@ -186,12 +213,14 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
             "resources": [],
             "resource_kinds": {},
             "namespaces": [],
+            "namespace_isolated": true,
             "has_crds": false,
             "has_rbac": false,
             "forbidden_objects": [],
             "missing_render_path": render_path.display().to_string(),
         })
     };
+    let profile_intent = load_profile_intent(&repo_root, &profile.name)?;
     let payload = serde_json::json!({
         "schema_version": 1,
         "profile": profile.name,
@@ -200,6 +229,7 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
         "dry_run": args.dry_run,
         "steps": steps,
         "kind_context_expected": expected_kind_context(&profile),
+        "profile_intent": profile_intent,
         "install_plan": render_inventory,
     });
     let text = if args.plan {
@@ -214,7 +244,7 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
 
 #[cfg(test)]
 mod install_status_tests {
-    use super::{install_plan_inventory, install_render_path};
+    use super::{install_plan_inventory, install_render_path, load_profile_intent};
 
     #[test]
     fn install_plan_inventory_summarizes_resources_deterministically() {
@@ -245,6 +275,7 @@ metadata:
         );
         assert_eq!(payload["has_rbac"].as_bool(), Some(false));
         assert_eq!(payload["has_crds"].as_bool(), Some(false));
+        assert_eq!(payload["namespace_isolated"].as_bool(), Some(true));
         assert!(payload["forbidden_objects"]
             .as_array()
             .is_some_and(|rows| rows.is_empty()));
@@ -274,6 +305,7 @@ spec:
         assert!(forbidden.iter().any(|row| row.as_str().is_some_and(|value| value.contains("ClusterRole"))));
         assert!(forbidden.iter().any(|row| row.as_str().is_some_and(|value| value.contains("NodePort"))));
         assert_eq!(payload["has_rbac"].as_bool(), Some(true));
+        assert_eq!(payload["namespace_isolated"].as_bool(), Some(true));
     }
 
     #[test]
@@ -284,6 +316,21 @@ spec:
             path,
             std::path::PathBuf::from("/repo/artifacts/ops/ops_run/render/kind/helm/render.yaml")
         );
+    }
+
+    #[test]
+    fn load_profile_intent_returns_selected_profile() {
+        let root = tempfile::tempdir().expect("tempdir");
+        std::fs::create_dir_all(root.path().join("ops/stack")).expect("mkdir");
+        std::fs::write(
+            root.path().join("ops/stack/profile-intent.json"),
+            r#"{"schema_version":1,"profiles":[{"name":"ci","intended_usage":"ci","allowed_effects":["subprocess"],"required_dependencies":["kind-cluster"]}]}"#,
+        )
+        .expect("intent");
+        let intent = load_profile_intent(root.path(), "ci")
+            .expect("load")
+            .expect("profile");
+        assert_eq!(intent["name"].as_str(), Some("ci"));
     }
 }
 
