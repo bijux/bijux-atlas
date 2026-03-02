@@ -2,6 +2,7 @@ replicaCount: 2
 
 server:
   cachedOnlyMode: true
+  readinessRequiresCatalog: false
 
 networkPolicy:
   enabled: true
@@ -14,4 +15,7 @@ store:
 cache:
   warmupEnabled: true
   initPrewarm:
-    enabled: true
+    enabled: false
+
+hpa:
+  enabled: false
