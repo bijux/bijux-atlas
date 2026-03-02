@@ -51,6 +51,16 @@ pub(super) fn contracts() -> Vec<Contract> {
             }],
         },
         Contract {
+            id: ContractId("MAKE-SURFACE-007".to_string()),
+            title: "make explain payload contract",
+            tests: vec![TestCase {
+                id: TestId("make.surface.explain_payload_contract".to_string()),
+                title: "make explain emits the documented payload fields",
+                kind: TestKind::Pure,
+                run: test_make_surface_007_explain_payload_contract,
+            }],
+        },
+        Contract {
             id: ContractId("MAKE-INTERNAL-001".to_string()),
             title: "make internal target prefix",
             tests: vec![TestCase {

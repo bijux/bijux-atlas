@@ -444,6 +444,41 @@ fn test_make_surface_005_delegate_only(ctx: &RunContext) -> TestResult {
     TestResult::Pass
 }
 
+fn test_make_surface_007_explain_payload_contract(ctx: &RunContext) -> TestResult {
+    let commands_path = ctx
+        .repo_root
+        .join("crates/bijux-dev-atlas/src/commands/make.rs");
+    let commands_text = match read_text(&commands_path) {
+        Ok(text) => text,
+        Err(err) => {
+            return failure(
+                "MAKE-SURFACE-007",
+                "make.surface.explain_payload_contract",
+                "crates/bijux-dev-atlas/src/commands/make.rs",
+                err,
+            )
+        }
+    };
+    for required in [
+        "\"action\": \"explain\"",
+        "\"what_it_runs\": recipe_lines",
+        "\"artifacts\": artifact_paths",
+        "\"where_to_read\": [",
+        "\"defined_in\": metadata.get(\"defined_in\")",
+        "\"visibility\": metadata.get(\"visibility\")",
+    ] {
+        if !commands_text.contains(required) {
+            return failure(
+                "MAKE-SURFACE-007",
+                "make.surface.explain_payload_contract",
+                "crates/bijux-dev-atlas/src/commands/make.rs",
+                format!("make explain payload must include {required}"),
+            );
+        }
+    }
+    TestResult::Pass
+}
+
 fn test_make_struct_010_complex_recipes_dispatch_to_atlas(ctx: &RunContext) -> TestResult {
     let declared = match declared_targets(&ctx.repo_root) {
         Ok(targets) => targets,
