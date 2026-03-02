@@ -32,6 +32,36 @@ fn load_yaml(path: &Path) -> YamlValue {
         .unwrap_or_else(|err| panic!("failed to parse {}: {err}", path.display()))
 }
 
+fn install_matrix_values_files(root: &Path) -> Vec<String> {
+    let matrix = load_json(&root.join("ops/k8s/install-matrix.json"));
+    matrix["profiles"]
+        .as_array()
+        .expect("profiles")
+        .iter()
+        .map(|profile| {
+            profile["values_file"]
+                .as_str()
+                .expect("values file")
+                .to_string()
+        })
+        .collect()
+}
+
+fn render_chart_with_values_file(root: &Path, values_file: &str) -> String {
+    let output = Command::new("helm")
+        .current_dir(root)
+        .args(["template", "atlas-contract", "ops/k8s/charts/bijux-atlas", "-f", values_file])
+        .output()
+        .expect("helm template");
+    assert!(
+        output.status.success(),
+        "helm template must pass for {values_file}:\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    String::from_utf8(output.stdout).expect("helm template utf8")
+}
+
 #[test]
 fn chart_values_profiles_use_only_schema_declared_top_level_keys() {
     let root = repo_root();
@@ -200,4 +230,78 @@ fn helm_lint_passes_for_the_canonical_chart() {
         String::from_utf8_lossy(&output.stdout),
         String::from_utf8_lossy(&output.stderr)
     );
+}
+
+#[test]
+fn install_matrix_profiles_render_lint_and_parse_as_valid_yaml() {
+    let root = repo_root();
+    for values_file in install_matrix_values_files(&root) {
+        let rendered = render_chart_with_values_file(&root, &values_file);
+        for document in rendered
+            .split("\n---\n")
+            .map(str::trim)
+            .filter(|doc| !doc.is_empty())
+        {
+            serde_yaml::from_str::<YamlValue>(document).unwrap_or_else(|err| {
+                panic!("rendered YAML from {values_file} must parse cleanly: {err}")
+            });
+        }
+
+        let output = Command::new("helm")
+            .current_dir(&root)
+            .args(["lint", "ops/k8s/charts/bijux-atlas", "-f", &values_file])
+            .output()
+            .expect("helm lint");
+        assert!(
+            output.status.success(),
+            "helm lint must pass for {values_file}:\nstdout:\n{}\nstderr:\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+    }
+}
+
+#[test]
+fn install_matrix_profiles_keep_monitoring_scaling_and_network_policy_contracts_sound() {
+    let root = repo_root();
+    for values_file in install_matrix_values_files(&root) {
+        let values = load_yaml(&root.join(&values_file));
+        let rendered = render_chart_with_values_file(&root, &values_file);
+
+        let service_monitor_enabled = values["serviceMonitor"]["enabled"].as_bool().unwrap_or(true);
+        if service_monitor_enabled {
+            assert!(
+                rendered.contains("kind: ServiceMonitor"),
+                "{values_file} must render a ServiceMonitor when enabled"
+            );
+            assert!(
+                rendered.contains("port: http"),
+                "{values_file} ServiceMonitor must scrape the named http port"
+            );
+        }
+
+        let hpa_enabled = values["hpa"]["enabled"].as_bool().unwrap_or(false);
+        if hpa_enabled {
+            assert!(
+                rendered.contains("kind: HorizontalPodAutoscaler"),
+                "{values_file} must render an HPA when enabled"
+            );
+            assert!(
+                rendered.contains("kind: Deployment"),
+                "{values_file} HPA must target a deployment-backed workload"
+            );
+        }
+
+        let network_policy_enabled = values["networkPolicy"]["enabled"].as_bool().unwrap_or(true);
+        if network_policy_enabled {
+            assert!(
+                rendered.contains("kind: NetworkPolicy"),
+                "{values_file} must render a NetworkPolicy when enabled"
+            );
+            assert!(
+                !rendered.contains("cidr: \"0.0.0.0/0\"") && !rendered.contains("cidr: \"::/0\""),
+                "{values_file} must not render a wide-open egress CIDR"
+            );
+        }
+    }
 }

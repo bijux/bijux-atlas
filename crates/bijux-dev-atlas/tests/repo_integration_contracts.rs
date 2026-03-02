@@ -351,6 +351,53 @@ fn server_runtime_prefixed_env_reads_stay_inside_the_env_contract() {
 }
 
 #[test]
+fn workspace_members_exactly_match_the_crate_directories_on_disk() {
+    let root = repo_root();
+    let output = Command::new("cargo")
+        .current_dir(&root)
+        .args(["metadata", "--format-version", "1", "--no-deps"])
+        .output()
+        .expect("cargo metadata");
+    assert!(
+        output.status.success(),
+        "cargo metadata must succeed:\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let metadata: Value = serde_json::from_slice(&output.stdout).expect("cargo metadata json");
+
+    let declared = metadata["packages"]
+        .as_array()
+        .expect("metadata packages")
+        .iter()
+        .filter_map(|package| package["manifest_path"].as_str())
+        .filter_map(|manifest_path| {
+            let path = Path::new(manifest_path);
+            let parent = path.parent()?;
+            let rel = parent.strip_prefix(&root).ok()?;
+            rel.starts_with("crates/").then(|| rel.to_string_lossy().to_string())
+        })
+        .collect::<BTreeSet<_>>();
+
+    let actual = fs::read_dir(root.join("crates"))
+        .expect("read crates dir")
+        .flatten()
+        .map(|entry| entry.path())
+        .filter(|path| path.is_dir())
+        .filter_map(|path| {
+            path.strip_prefix(&root)
+                .ok()
+                .map(|rel| rel.to_string_lossy().to_string())
+        })
+        .collect::<BTreeSet<_>>();
+
+    assert_eq!(
+        declared, actual,
+        "workspace members must match the crate directories on disk"
+    );
+}
+
+#[test]
 fn quickstart_command_is_backed_by_cli_help() {
     let root = repo_root();
     let start_here = read(&root.join("docs/start-here.md"));
