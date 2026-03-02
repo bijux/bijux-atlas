@@ -138,4 +138,5 @@ nav:
       - Overview: development/index.md
       - Docs governance: _internal/governance/index.md
       - Docs Dashboard: _internal/governance/docs-dashboard.md
+      - Boundary Closure Checks: _internal/governance/closure-checks.md
   - Reference: reference/index.md

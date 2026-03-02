@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fixture
+data:
+  ATLAS_DECLARED: "1"
+  ATLAS_UNDECLARED: "1"

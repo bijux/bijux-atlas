@@ -1,0 +1,5 @@
+{
+  "allowed_env": [
+    "ATLAS_DECLARED"
+  ]
+}

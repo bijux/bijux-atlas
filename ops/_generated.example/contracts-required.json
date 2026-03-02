@@ -21,6 +21,36 @@
       "required": true
     },
     {
+      "contract_id": "REPO-004",
+      "domain": "repo",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "REPO-005",
+      "domain": "repo",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "REPO-006",
+      "domain": "repo",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
       "contract_id": "RUNTIME-001",
       "domain": "runtime",
       "lanes": [

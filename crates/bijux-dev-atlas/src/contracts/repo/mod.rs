@@ -72,6 +72,546 @@ fn violation(
     }
 }
 
+fn write_boundary_report(
+    ctx: &RunContext,
+    file_name: &str,
+    payload: &serde_json::Value,
+) -> Result<String, String> {
+    let out_dir = ctx
+        .artifacts_root
+        .clone()
+        .unwrap_or_else(|| ctx.repo_root.join("artifacts/contracts/repo"))
+        .join("boundary-closure");
+    fs::create_dir_all(&out_dir)
+        .map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
+    let path = out_dir.join(file_name);
+    fs::write(
+        &path,
+        serde_json::to_string_pretty(payload).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
+    Ok(path
+        .strip_prefix(&ctx.repo_root)
+        .unwrap_or(path.as_path())
+        .display()
+        .to_string())
+}
+
+fn read_env_allowlist(root: &Path) -> Result<std::collections::BTreeSet<String>, String> {
+    let schema_path = root.join("configs/contracts/env.schema.json");
+    let schema_text = fs::read_to_string(&schema_path)
+        .map_err(|err| format!("read {} failed: {err}", schema_path.display()))?;
+    let schema_json: serde_json::Value =
+        serde_json::from_str(&schema_text).map_err(|err| format!("invalid json: {err}"))?;
+    Ok(schema_json["allowed_env"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(|value| value.as_str())
+        .map(str::to_string)
+        .collect())
+}
+
+fn verify_declared_ops_tools(root: &Path, required_tools: &[&str]) -> Result<Vec<String>, String> {
+    let toolchain_path = root.join("ops/inventory/toolchain.json");
+    let toolchain_text = fs::read_to_string(&toolchain_path)
+        .map_err(|err| format!("read {} failed: {err}", toolchain_path.display()))?;
+    let toolchain_json: serde_json::Value =
+        serde_json::from_str(&toolchain_text).map_err(|err| format!("invalid json: {err}"))?;
+    let tools = toolchain_json
+        .get("tools")
+        .and_then(|value| value.as_object())
+        .ok_or_else(|| "ops toolchain inventory must declare a tools object".to_string())?;
+    let mut missing = Vec::new();
+    for tool in required_tools {
+        if !tools.contains_key(*tool) {
+            missing.push((*tool).to_string());
+        }
+    }
+    Ok(missing)
+}
+
+fn count_files(root: &Path) -> usize {
+    let mut total = 0usize;
+    if let Ok(entries) = fs::read_dir(root) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_dir() {
+                total += count_files(&path);
+            } else if path.is_file() {
+                total += 1;
+            }
+        }
+    }
+    total
+}
+
+fn parse_mkdocs_site_dir(root: &Path) -> Result<String, String> {
+    let mkdocs = fs::read_to_string(root.join("mkdocs.yml"))
+        .map_err(|err| format!("read mkdocs.yml failed: {err}"))?;
+    mkdocs
+        .lines()
+        .find_map(|line| {
+            let trimmed = line.trim();
+            trimmed
+                .strip_prefix("site_dir:")
+                .map(|value| value.trim().to_string())
+        })
+        .ok_or_else(|| "mkdocs.yml must declare site_dir".to_string())
+}
+
+fn run_sanitized_output(
+    root: &Path,
+    binary: &str,
+    args: &[&str],
+) -> Result<std::process::Output, String> {
+    let mut command = Command::new(binary);
+    command.current_dir(root).args(args).env_clear();
+    for key in [
+        "HOME", "PATH", "TMPDIR", "TEMP", "TMP", "USER", "LOGNAME", "SHELL",
+    ] {
+        if let Ok(value) = std::env::var(key) {
+            command.env(key, value);
+        }
+    }
+    command
+        .output()
+        .map_err(|err| format!("failed to start `{binary}`: {err}"))
+}
+
+fn run_boundary_helm_env_surface_check(ctx: &RunContext) -> (serde_json::Value, Vec<Violation>) {
+    let contract_id = "REPO-003";
+    let test_id = "repo.helm_env_surface.subset_of_runtime_allowlist";
+    let mut violations = Vec::new();
+
+    let output = match run_sanitized_output(
+        &ctx.repo_root,
+        "helm",
+        &[
+            "template",
+            "atlas-default",
+            "ops/k8s/charts/bijux-atlas",
+            "-f",
+            "ops/k8s/charts/bijux-atlas/values.yaml",
+        ],
+    ) {
+        Ok(output) => output,
+        Err(err) => {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                Some("ops/k8s/charts/bijux-atlas".to_string()),
+                err,
+            ));
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "check": "helm_env_surface",
+                "status": "fail",
+                "missing_env_keys": [],
+                "emitted_env_keys": [],
+            });
+            return (payload, violations);
+        }
+    };
+    if !output.status.success() {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            Some("ops/k8s/charts/bijux-atlas".to_string()),
+            format!(
+                "helm template failed: {}",
+                String::from_utf8_lossy(&output.stderr).trim()
+            ),
+        ));
+    }
+
+    let rendered = String::from_utf8_lossy(&output.stdout);
+    let emitted = collect_rendered_env_keys(&rendered);
+    let allowed = match read_env_allowlist(&ctx.repo_root) {
+        Ok(allowed) => allowed,
+        Err(err) => {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                Some("configs/contracts/env.schema.json".to_string()),
+                err,
+            ));
+            std::collections::BTreeSet::new()
+        }
+    };
+    let missing = emitted.difference(&allowed).cloned().collect::<Vec<_>>();
+    for env_key in &missing {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            Some(env_key.clone()),
+            "helm-emitted env key is missing from configs/contracts/env.schema.json",
+        ));
+    }
+
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "check": "helm_env_surface",
+        "status": if violations.is_empty() { "pass" } else { "fail" },
+        "emitted_env_keys": emitted,
+        "allowed_env_count": allowed.len(),
+        "missing_env_keys": missing,
+    });
+    if let Err(err) = write_boundary_report(ctx, "helm-env-surface.json", &payload) {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            Some("artifacts/contracts/repo/boundary-closure/helm-env-surface.json".to_string()),
+            err,
+        ));
+    }
+    (payload, violations)
+}
+
+fn run_boundary_profile_render_matrix_check(
+    ctx: &RunContext,
+) -> (serde_json::Value, Vec<Violation>) {
+    let contract_id = "REPO-004";
+    let test_id = "repo.k8s_profile_render_matrix.installable_by_construction";
+    let mut violations = Vec::new();
+    if let Ok(missing_tools) = verify_declared_ops_tools(&ctx.repo_root, &["helm", "kubeconform"]) {
+        for tool in missing_tools {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                Some("ops/inventory/toolchain.json".to_string()),
+                format!("ops toolchain inventory must declare `{tool}`"),
+            ));
+        }
+    }
+
+    let matrix_path = ctx.repo_root.join("ops/k8s/install-matrix.json");
+    let matrix_text = match fs::read_to_string(&matrix_path) {
+        Ok(text) => text,
+        Err(err) => {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                Some("ops/k8s/install-matrix.json".to_string()),
+                format!("read failed: {err}"),
+            ));
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "check": "k8s_profile_render_matrix",
+                "status": "fail",
+                "profiles": [],
+            });
+            return (payload, violations);
+        }
+    };
+    let matrix_json: serde_json::Value = match serde_json::from_str(&matrix_text) {
+        Ok(json) => json,
+        Err(err) => {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                Some("ops/k8s/install-matrix.json".to_string()),
+                format!("invalid json: {err}"),
+            ));
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "check": "k8s_profile_render_matrix",
+                "status": "fail",
+                "profiles": [],
+            });
+            return (payload, violations);
+        }
+    };
+
+    let mut profile_rows = Vec::new();
+    if let Some(profiles) = matrix_json
+        .get("profiles")
+        .and_then(|value| value.as_array())
+    {
+        for profile in profiles {
+            let name = profile
+                .get("name")
+                .and_then(|value| value.as_str())
+                .unwrap_or("unknown");
+            let values_rel = profile
+                .get("values_file")
+                .and_then(|value| value.as_str())
+                .unwrap_or("");
+            let values_path = ctx.repo_root.join(values_rel);
+            if !values_path.is_file() {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    Some(values_rel.to_string()),
+                    "install profile values file is missing",
+                ));
+                continue;
+            }
+
+            let lint = run_sanitized_output(
+                &ctx.repo_root,
+                "helm",
+                &["lint", "ops/k8s/charts/bijux-atlas", "-f", values_rel],
+            );
+            let lint_ok = lint.as_ref().is_ok_and(|output| output.status.success());
+            if !lint_ok {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    Some(values_rel.to_string()),
+                    "helm lint must pass for install profile",
+                ));
+            }
+
+            let render = run_sanitized_output(
+                &ctx.repo_root,
+                "helm",
+                &[
+                    "template",
+                    &format!("atlas-{name}"),
+                    "ops/k8s/charts/bijux-atlas",
+                    "--namespace",
+                    "bijux-atlas",
+                    "-f",
+                    values_rel,
+                ],
+            );
+            let render_ok = render.as_ref().is_ok_and(|output| output.status.success());
+            let mut rendered_resources = 0usize;
+            let mut kubeconform_ok = false;
+            let mut kubeconform_note = String::new();
+            if let Ok(render_output) = &render {
+                if render_output.status.success() {
+                    let rendered_manifest = String::from_utf8_lossy(&render_output.stdout);
+                    rendered_resources =
+                        serde_yaml::Deserializer::from_str(&rendered_manifest).count();
+                    let temp_dir = ctx
+                        .repo_root
+                        .join("artifacts/contracts/repo/boundary-closure/tmp");
+                    match fs::create_dir_all(&temp_dir) {
+                        Ok(()) => {
+                            let rendered_path = temp_dir.join(format!("{name}.yaml"));
+                            match fs::write(&rendered_path, rendered_manifest.as_bytes()) {
+                                Ok(()) => match run_sanitized_output(
+                                    &ctx.repo_root,
+                                    "kubeconform",
+                                    &[
+                                        "-strict",
+                                        "-summary",
+                                        "-ignore-missing-schemas",
+                                        rendered_path.to_string_lossy().as_ref(),
+                                    ],
+                                ) {
+                                    Ok(output) => {
+                                        kubeconform_ok = output.status.success();
+                                        if !kubeconform_ok {
+                                            kubeconform_note =
+                                                String::from_utf8_lossy(&output.stderr)
+                                                    .trim()
+                                                    .to_string();
+                                        }
+                                    }
+                                    Err(err) => {
+                                        kubeconform_note =
+                                            format!("kubeconform failed to start: {err}");
+                                    }
+                                },
+                                Err(err) => {
+                                    kubeconform_note = format!(
+                                        "failed to write rendered manifest {}: {err}",
+                                        rendered_path.display()
+                                    );
+                                }
+                            }
+                        }
+                        Err(err) => {
+                            kubeconform_note = format!(
+                                "failed to create temp render directory {}: {err}",
+                                temp_dir.display()
+                            );
+                        }
+                    }
+                }
+            }
+            if !render_ok {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    Some(values_rel.to_string()),
+                    "helm template must pass for install profile",
+                ));
+            }
+            if render_ok && !kubeconform_ok {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    Some(values_rel.to_string()),
+                    if kubeconform_note.is_empty() {
+                        "kubeconform must pass for rendered install profile".to_string()
+                    } else {
+                        format!("kubeconform must pass for rendered install profile: {kubeconform_note}")
+                    },
+                ));
+            }
+
+            profile_rows.push(serde_json::json!({
+                "profile": name,
+                "values_file": values_rel,
+                "helm_lint": lint_ok,
+                "helm_template": render_ok,
+                "kubeconform": kubeconform_ok,
+                "rendered_resources": rendered_resources,
+            }));
+        }
+    } else {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            Some("ops/k8s/install-matrix.json".to_string()),
+            "install-matrix must declare a profiles array",
+        ));
+    }
+
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "check": "k8s_profile_render_matrix",
+        "status": if violations.is_empty() { "pass" } else { "fail" },
+        "profiles": profile_rows,
+    });
+    if let Err(err) = write_boundary_report(ctx, "k8s-profile-render-matrix.json", &payload) {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            Some(
+                "artifacts/contracts/repo/boundary-closure/k8s-profile-render-matrix.json"
+                    .to_string(),
+            ),
+            err,
+        ));
+    }
+    (payload, violations)
+}
+
+fn run_boundary_docs_output_dir_check(ctx: &RunContext) -> (serde_json::Value, Vec<Violation>) {
+    let contract_id = "REPO-005";
+    let test_id = "repo.docs_output_dir.preview_contains_site_payload";
+    let mut violations = Vec::new();
+    let site_dir = match parse_mkdocs_site_dir(&ctx.repo_root) {
+        Ok(site_dir) => site_dir,
+        Err(err) => {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                Some("mkdocs.yml".to_string()),
+                err,
+            ));
+            "artifacts/docs/site".to_string()
+        }
+    };
+
+    let build = run_sanitized_output(&ctx.repo_root, "mkdocs", &["build", "--strict"]);
+    let build_ok = build.as_ref().is_ok_and(|output| output.status.success());
+    if !build_ok {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            Some("mkdocs.yml".to_string()),
+            "mkdocs build --strict must succeed",
+        ));
+    }
+
+    let site_root = ctx.repo_root.join(&site_dir);
+    let index_exists = site_root.join("index.html").is_file();
+    let assets_exists = site_root.join("assets").is_dir();
+    let internal_dir_exists = site_root.join("_internal").exists();
+    let redirect_output_exists = site_root
+        .join("root/architecture-overview/index.html")
+        .is_file();
+    let file_count = count_files(&site_root);
+    if !index_exists {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            Some(format!("{site_dir}/index.html")),
+            "docs build output must include index.html",
+        ));
+    }
+    if !assets_exists {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            Some(format!("{site_dir}/assets")),
+            "docs build output must include assets directory",
+        ));
+    }
+    if file_count < 10 {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            Some(site_dir.clone()),
+            "docs build output must contain a non-trivial file count",
+        ));
+    }
+    if !redirect_output_exists {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            Some(format!("{site_dir}/root/architecture-overview/index.html")),
+            "docs build output must keep the known legacy redirect target materialized",
+        ));
+    }
+
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "check": "docs_output_dir",
+        "status": if violations.is_empty() { "pass" } else { "fail" },
+        "site_dir": site_dir,
+        "index_exists": index_exists,
+        "assets_exists": assets_exists,
+        "internal_dir_exists": internal_dir_exists,
+        "redirect_output_exists": redirect_output_exists,
+        "file_count": file_count,
+    });
+    if let Err(err) = write_boundary_report(ctx, "docs-output-dir.json", &payload) {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            Some("artifacts/contracts/repo/boundary-closure/docs-output-dir.json".to_string()),
+            err,
+        ));
+    }
+    (payload, violations)
+}
+
+fn run_boundary_closure_summary(ctx: &RunContext) -> (serde_json::Value, Vec<Violation>) {
+    let (env_payload, mut violations) = run_boundary_helm_env_surface_check(ctx);
+    let (profiles_payload, mut profile_violations) = run_boundary_profile_render_matrix_check(ctx);
+    let (docs_payload, mut docs_violations) = run_boundary_docs_output_dir_check(ctx);
+    violations.append(&mut profile_violations);
+    violations.append(&mut docs_violations);
+
+    let summary = serde_json::json!({
+        "schema_version": 1,
+        "kind": "boundary_closure_summary",
+        "status": if violations.is_empty() { "pass" } else { "fail" },
+        "checks": [
+            {"name": "helm_env_surface", "status": env_payload["status"]},
+            {"name": "k8s_profile_render_matrix", "status": profiles_payload["status"]},
+            {"name": "docs_output_dir", "status": docs_payload["status"]},
+        ],
+        "why_this_exists": "These closure checks prevent the Helm env drift, install-profile drift, and docs output drift found in the audits."
+    });
+    if let Err(err) = write_boundary_report(ctx, "summary.json", &summary) {
+        violations.push(violation(
+            "REPO-006",
+            "repo.boundary_closure.summary_report_generated",
+            Some("artifacts/contracts/repo/boundary-closure/summary.json".to_string()),
+            err,
+        ));
+    }
+    (summary, violations)
+}
+
 fn test_repo_001_law_registry_exists_and_is_valid(ctx: &RunContext) -> TestResult {
     let rel = "docs/_internal/contracts/repo-laws.json";
     let path = ctx.repo_root.join(rel);
@@ -139,84 +679,52 @@ fn test_repo_003_helm_env_surface_subset_of_runtime_contract(ctx: &RunContext) -
     if !ctx.allow_subprocess {
         return TestResult::Skip("helm env surface check requires --allow-subprocess".to_string());
     }
-
-    let output = match Command::new("helm")
-        .current_dir(&ctx.repo_root)
-        .args([
-            "template",
-            "atlas-default",
-            "ops/k8s/charts/bijux-atlas",
-            "-f",
-            "ops/k8s/charts/bijux-atlas/values.yaml",
-        ])
-        .output()
-    {
-        Ok(output) => output,
-        Err(err) => {
-            return TestResult::Fail(vec![violation(
-                "REPO-003",
-                "repo.helm_env_surface.subset_of_runtime_allowlist",
-                Some("ops/k8s/charts/bijux-atlas".to_string()),
-                format!("helm template failed to start: {err}"),
-            )]);
-        }
-    };
-    if !output.status.success() {
-        return TestResult::Fail(vec![violation(
-            "REPO-003",
-            "repo.helm_env_surface.subset_of_runtime_allowlist",
-            Some("ops/k8s/charts/bijux-atlas".to_string()),
-            format!(
-                "helm template failed: {}",
-                String::from_utf8_lossy(&output.stderr).trim()
-            ),
-        )]);
+    let (_, mut violations) = run_boundary_helm_env_surface_check(ctx);
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
     }
+}
 
-    let rendered = String::from_utf8_lossy(&output.stdout);
-    let emitted = collect_rendered_env_keys(&rendered);
-    let schema_path = ctx.repo_root.join("configs/contracts/env.schema.json");
-    let schema_text = match fs::read_to_string(&schema_path) {
-        Ok(text) => text,
-        Err(err) => {
-            return TestResult::Fail(vec![violation(
-                "REPO-003",
-                "repo.helm_env_surface.subset_of_runtime_allowlist",
-                Some("configs/contracts/env.schema.json".to_string()),
-                format!("read failed: {err}"),
-            )]);
-        }
-    };
-    let schema_json: serde_json::Value = match serde_json::from_str(&schema_text) {
-        Ok(json) => json,
-        Err(err) => {
-            return TestResult::Fail(vec![violation(
-                "REPO-003",
-                "repo.helm_env_surface.subset_of_runtime_allowlist",
-                Some("configs/contracts/env.schema.json".to_string()),
-                format!("invalid json: {err}"),
-            )]);
-        }
-    };
-    let allowed = schema_json["allowed_env"]
-        .as_array()
-        .into_iter()
-        .flatten()
-        .filter_map(|value| value.as_str())
-        .map(str::to_string)
-        .collect::<std::collections::BTreeSet<_>>();
+fn test_repo_004_k8s_profile_render_matrix_is_installable_by_construction(
+    ctx: &RunContext,
+) -> TestResult {
+    if !ctx.allow_subprocess {
+        return TestResult::Skip(
+            "k8s profile render matrix requires --allow-subprocess".to_string(),
+        );
+    }
+    let (_, mut violations) = run_boundary_profile_render_matrix_check(ctx);
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
 
-    let mut violations = emitted
-        .difference(&allowed)
-        .map(|env_key| {
-            violation(
-                "REPO-003",
-                "repo.helm_env_surface.subset_of_runtime_allowlist",
-                Some(env_key.clone()),
-                "helm-emitted env key is missing from configs/contracts/env.schema.json",
-            )
-        })
-        .collect::<Vec<_>>();
+fn test_repo_005_docs_output_dir_contains_preview_payload(ctx: &RunContext) -> TestResult {
+    if !ctx.allow_subprocess {
+        return TestResult::Skip("docs output dir check requires --allow-subprocess".to_string());
+    }
+    let (_, mut violations) = run_boundary_docs_output_dir_check(ctx);
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_repo_006_boundary_closure_summary_is_generated(ctx: &RunContext) -> TestResult {
+    if !ctx.allow_subprocess {
+        return TestResult::Skip(
+            "boundary closure summary requires --allow-subprocess".to_string(),
+        );
+    }
+    let (_, mut violations) = run_boundary_closure_summary(ctx);
     if violations.is_empty() {
         TestResult::Pass
     } else {
@@ -257,6 +765,39 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_repo_003_helm_env_surface_subset_of_runtime_contract,
             }],
         },
+        Contract {
+            id: ContractId("REPO-004".to_string()),
+            title: "k8s install profiles render cleanly by construction",
+            tests: vec![TestCase {
+                id: TestId(
+                    "repo.k8s_profile_render_matrix.installable_by_construction".to_string(),
+                ),
+                title: "install-matrix profiles pass helm lint, helm template, and kubeconform",
+                kind: TestKind::Subprocess,
+                run: test_repo_004_k8s_profile_render_matrix_is_installable_by_construction,
+            }],
+        },
+        Contract {
+            id: ContractId("REPO-005".to_string()),
+            title: "docs build output stays aligned with mkdocs site_dir",
+            tests: vec![TestCase {
+                id: TestId("repo.docs_output_dir.preview_contains_site_payload".to_string()),
+                title: "mkdocs site_dir build output contains index and assets",
+                kind: TestKind::Subprocess,
+                run: test_repo_005_docs_output_dir_contains_preview_payload,
+            }],
+        },
+        Contract {
+            id: ContractId("REPO-006".to_string()),
+            title: "boundary closure summary is generated from effect checks",
+            tests: vec![TestCase {
+                id: TestId("repo.boundary_closure.summary_report_generated".to_string()),
+                title:
+                    "boundary closure summary report records pass or fail for each closure check",
+                kind: TestKind::Subprocess,
+                run: test_repo_006_boundary_closure_summary_is_generated,
+            }],
+        },
     ])
 }
 
@@ -270,13 +811,83 @@ pub fn contract_explain(contract_id: &str) -> String {
             .to_string(),
         "REPO-003" => "Ensures the rendered Helm env surface cannot drift outside the runtime env allowlist contract."
             .to_string(),
+        "REPO-004" => "Ensures every install-matrix profile remains renderable, schema-valid, and kubeconform-clean without cluster access."
+            .to_string(),
+        "REPO-005" => "Ensures mkdocs strict builds to the configured site_dir and the preview payload contains real site content."
+            .to_string(),
+        "REPO-006" => "Ensures the boundary closure summary report records the three audit-driven closure checks and their pass or fail state."
+            .to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts repo`.".to_string(),
     }
 }
 
 pub fn contract_gate_command(contract_id: &str) -> &'static str {
     match contract_id {
-        "REPO-003" => "bijux dev atlas contracts repo --mode effect --allow-subprocess",
+        "REPO-003" | "REPO-004" | "REPO-005" | "REPO-006" => {
+            "bijux dev atlas contracts repo --mode effect --allow-subprocess"
+        }
         _ => "bijux dev atlas contracts repo --mode static",
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn crate_root() -> std::path::PathBuf {
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+    }
+
+    #[test]
+    fn env_surface_fixture_keeps_the_allowlist_mismatch_detectable() {
+        let root = crate_root();
+        let rendered = fs::read_to_string(
+            root.join("tests/fixtures/repo_boundary_closure/env-surface-mismatch.yaml"),
+        )
+        .expect("read env surface fixture");
+        let allowlist_text = fs::read_to_string(
+            root.join("tests/fixtures/repo_boundary_closure/env-allowlist.json"),
+        )
+        .expect("read env allowlist fixture");
+        let allowlist_json: serde_json::Value =
+            serde_json::from_str(&allowlist_text).expect("parse env allowlist fixture");
+        let allowed = allowlist_json["allowed_env"]
+            .as_array()
+            .expect("allowed_env array")
+            .iter()
+            .filter_map(|value| value.as_str())
+            .map(str::to_string)
+            .collect::<std::collections::BTreeSet<_>>();
+
+        let emitted = collect_rendered_env_keys(&rendered);
+        let missing = emitted.difference(&allowed).cloned().collect::<Vec<_>>();
+        assert_eq!(
+            missing,
+            vec!["ATLAS_UNDECLARED".to_string()],
+            "fixture must keep the undeclared env mismatch visible"
+        );
+    }
+
+    #[test]
+    fn install_matrix_fixture_keeps_the_missing_values_file_detectable() {
+        let root = crate_root();
+        let matrix_text = fs::read_to_string(
+            root.join("tests/fixtures/repo_boundary_closure/install-matrix-mismatch.json"),
+        )
+        .expect("read install matrix fixture");
+        let matrix_json: serde_json::Value =
+            serde_json::from_str(&matrix_text).expect("parse install matrix fixture");
+        let profiles = matrix_json["profiles"].as_array().expect("profiles array");
+        let missing = profiles
+            .iter()
+            .filter_map(|profile| profile.get("values_file").and_then(|value| value.as_str()))
+            .filter(|values_file| !root.join(values_file).is_file())
+            .map(str::to_string)
+            .collect::<Vec<_>>();
+        assert_eq!(
+            missing,
+            vec!["tests/fixtures/repo_boundary_closure/missing-values.yaml".to_string()],
+            "fixture must keep the missing profile values reference visible"
+        );
     }
 }

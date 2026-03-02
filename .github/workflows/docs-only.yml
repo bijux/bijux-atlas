@@ -83,8 +83,25 @@ jobs:
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/docs-only"
           mkdir -p "${report_root}" "${logs_root}"
+          site_dir="$(python3 - <<'PY'
+from pathlib import Path
+
+for line in Path("mkdocs.yml").read_text(encoding="utf-8").splitlines():
+    stripped = line.strip()
+    if stripped.startswith("site_dir:"):
+        print(stripped.split(":", 1)[1].strip())
+        break
+else:
+    raise SystemExit("mkdocs.yml must declare site_dir")
+PY
+)"
           mkdocs build --strict > "${report_root}/mkdocs-build.json" 2> "${logs_root}/mkdocs-build.stderr.log"
-          cp -R artifacts/docs/site "artifacts/${RUN_ID}/site-preview"
+          test -f "${site_dir}/index.html"
+          test -d "${site_dir}/assets"
+          file_count="$(find "${site_dir}" -type f | wc -l | tr -d ' ')"
+          test "${file_count}" -gt 10
+          cp -R "${site_dir}" "artifacts/${RUN_ID}/site-preview"
+          rm -rf "artifacts/${RUN_ID}/site-preview/_internal"
       - name: Run docs lane
         shell: bash
         run: |

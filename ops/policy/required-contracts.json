@@ -140,6 +140,27 @@
       "lanes": ["pr", "merge", "release"],
       "owner": "atlas-maintainers",
       "rationale": "Keep the rendered Helm env surface closed over the runtime env allowlist."
+    },
+    {
+      "domain": "repo",
+      "contract_id": "REPO-004",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Keep every install-matrix profile renderable and kubeconform-clean without cluster access."
+    },
+    {
+      "domain": "repo",
+      "contract_id": "REPO-005",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Keep docs preview output aligned with mkdocs site_dir and real site payload."
+    },
+    {
+      "domain": "repo",
+      "contract_id": "REPO-006",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Record the boundary closure summary for the audit-driven closure checks."
     }
   ]
 }

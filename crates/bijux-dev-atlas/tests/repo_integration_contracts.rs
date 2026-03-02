@@ -551,10 +551,33 @@ fn docs_workflows_copy_the_built_site_from_mkdocs_site_dir() {
         ".github/workflows/ci-pr.yml",
     ] {
         let text = read(&root.join(workflow));
-        assert!(
-            text.contains("cp -R artifacts/docs/site \"artifacts/${RUN_ID}/site-preview\""),
-            "{workflow} must copy the built docs preview from mkdocs site_dir"
-        );
+        if workflow == ".github/workflows/docs-only.yml" {
+            assert!(
+                text.contains("site_dir=\"$(python3 - <<'PY'"),
+                "{workflow} must derive the docs preview source from mkdocs.yml"
+            );
+            assert!(
+                text.contains("cp -R \"${site_dir}\" \"artifacts/${RUN_ID}/site-preview\""),
+                "{workflow} must copy the built docs preview from the resolved mkdocs site_dir"
+            );
+            assert!(
+                text.contains("test -f \"${site_dir}/index.html\""),
+                "{workflow} must verify the built preview contains index.html"
+            );
+            assert!(
+                text.contains("test -d \"${site_dir}/assets\""),
+                "{workflow} must verify the built preview contains assets"
+            );
+            assert!(
+                text.contains("rm -rf \"artifacts/${RUN_ID}/site-preview/_internal\""),
+                "{workflow} must remove the raw _internal subtree from the published preview artifact"
+            );
+        } else {
+            assert!(
+                text.contains("cp -R artifacts/docs/site \"artifacts/${RUN_ID}/site-preview\""),
+                "{workflow} must copy the built docs preview from mkdocs site_dir"
+            );
+        }
         assert!(
             !text.contains("cp -R site \"artifacts/${RUN_ID}/site-preview\""),
             "{workflow} must not rely on the obsolete default MkDocs output directory"
