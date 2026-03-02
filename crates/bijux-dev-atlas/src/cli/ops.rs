@@ -102,6 +102,8 @@ pub enum OpsCommand {
     #[command(hide = true)]
     K8sEnvSurface(OpsCommonArgs),
     #[command(hide = true)]
+    K8sValidateProfiles(OpsCommonArgs),
+    #[command(hide = true)]
     K8sApply(OpsK8sApplyArgs),
     #[command(hide = true)]
     K8sDryRun(OpsCommonArgs),
@@ -154,6 +156,8 @@ pub enum OpsK8sCommand {
     Validate(OpsCommonArgs),
     #[command(hide = true)]
     EnvSurface(OpsCommonArgs),
+    #[command(hide = true)]
+    ValidateProfiles(OpsCommonArgs),
     Install(OpsInstallArgs),
     Uninstall(OpsCommonArgs),
     Ports(OpsCommonArgs),

@@ -16,6 +16,7 @@ Run Atlas reliably on Kubernetes with one path for deploy, health checks, and fa
 - Cluster deployment path in [Deploy](../deploy.md)
 - Release controls in [Release Workflow](../release-workflow.md)
 - K8s validation in [E2E Kubernetes Tests](../e2e/k8s-tests.md)
+- Install profile guardrails in [Profile Invariants](profile-invariants.md)
 - Incident actions in [Incident Response](../incident-response.md)
 
 ## Verify success
