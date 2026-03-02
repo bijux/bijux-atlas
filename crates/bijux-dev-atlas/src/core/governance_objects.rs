@@ -81,19 +81,29 @@ pub fn collect_governance_objects(repo_root: &Path) -> Result<Vec<GovernanceObje
             GovernanceObject {
                 id: format!("docs:page:{}", slug_from_path(path)),
                 domain: "docs".to_string(),
-                owner: row["owner"].as_str().unwrap_or("docs-governance").to_string(),
+                owner: row["owner"]
+                    .as_str()
+                    .unwrap_or("docs-governance")
+                    .to_string(),
                 consumers: vec!["docs/index.md".to_string()],
                 lifecycle: lifecycle.to_string(),
                 evidence: vec!["artifacts/governance/docs/pages.json".to_string()],
                 links: vec![path.to_string()],
                 authority_source: "docs/_internal/registry/registry.json".to_string(),
-                reviewed_on: row["last_reviewed"].as_str().unwrap_or_default().to_string(),
+                reviewed_on: row["last_reviewed"]
+                    .as_str()
+                    .unwrap_or_default()
+                    .to_string(),
             },
         );
     }
 
     let configs_inventory = read_json(&repo_root.join("configs/inventory/configs.json"))?;
-    for row in configs_inventory["groups"].as_array().cloned().unwrap_or_default() {
+    for row in configs_inventory["groups"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default()
+    {
         let Some(name) = row["name"].as_str() else {
             continue;
         };
@@ -176,7 +186,11 @@ pub fn collect_governance_objects(repo_root: &Path) -> Result<Vec<GovernanceObje
     }
 
     let make_targets = read_json(&repo_root.join("configs/ops/make-target-registry.json"))?;
-    for row in make_targets["targets"].as_array().cloned().unwrap_or_default() {
+    for row in make_targets["targets"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default()
+    {
         let Some(name) = row["name"].as_str() else {
             continue;
         };
@@ -227,7 +241,11 @@ pub fn collect_governance_objects(repo_root: &Path) -> Result<Vec<GovernanceObje
     }
 
     let docker_manifest = read_json(&repo_root.join("docker/images.manifest.json"))?;
-    for row in docker_manifest["images"].as_array().cloned().unwrap_or_default() {
+    for row in docker_manifest["images"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default()
+    {
         let Some(name) = row["name"].as_str() else {
             continue;
         };
@@ -268,10 +286,7 @@ pub fn governance_summary(objects: &[GovernanceObject]) -> BTreeMap<String, usiz
     by_domain
 }
 
-pub fn validate_governance_objects(
-    repo_root: &Path,
-    objects: &[GovernanceObject],
-) -> Vec<String> {
+pub fn validate_governance_objects(repo_root: &Path, objects: &[GovernanceObject]) -> Vec<String> {
     let allowed_lifecycle = ["stable", "experimental", "deprecated"]
         .into_iter()
         .collect::<BTreeSet<_>>();
@@ -375,7 +390,11 @@ pub fn validate_governance_objects(
                 errors.push(format!("object {} has missing link: {}", object.id, link));
             }
         }
-        if object.domain == "docs" && !object.authority_source.starts_with("docs/_internal/registry/") {
+        if object.domain == "docs"
+            && !object
+                .authority_source
+                .starts_with("docs/_internal/registry/")
+        {
             errors.push(format!(
                 "docs authority source must be docs registry for {}",
                 object.id
@@ -392,7 +411,9 @@ pub fn validate_governance_objects(
     let required_domains = ["docs", "configs", "ops", "make", "docker"];
     for domain in required_domains {
         if !objects.iter().any(|obj| obj.domain == domain) {
-            errors.push(format!("governance objects missing required domain: {domain}"));
+            errors.push(format!(
+                "governance objects missing required domain: {domain}"
+            ));
         }
     }
     let mapped_domains = registry_map.keys().cloned().collect::<BTreeSet<_>>();
@@ -584,9 +605,7 @@ fn validate_registry_map(
     for (domain, registries) in map {
         for rel in registries {
             if !repo_root.join(rel).exists() {
-                errors.push(format!(
-                    "domain registry path missing for {domain}: {rel}"
-                ));
+                errors.push(format!("domain registry path missing for {domain}: {rel}"));
             }
         }
         if !objects.iter().any(|obj| &obj.domain == domain) {
@@ -659,7 +678,10 @@ fn walk_files(root: &Path) -> Vec<PathBuf> {
         };
         for entry in entries.flatten() {
             let path = entry.path();
-            let name = path.file_name().and_then(|v| v.to_str()).unwrap_or_default();
+            let name = path
+                .file_name()
+                .and_then(|v| v.to_str())
+                .unwrap_or_default();
             if name.starts_with(".git") || name == "artifacts" || name == "target" {
                 continue;
             }
