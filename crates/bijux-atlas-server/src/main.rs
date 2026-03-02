@@ -91,7 +91,11 @@ fn env_dataset_list(name: &str) -> Result<Vec<bijux_atlas_model::DatasetId>, Str
         return Ok(Vec::new());
     };
     let mut datasets = Vec::new();
-    for item in value.split(',').map(str::trim).filter(|item| !item.is_empty()) {
+    for item in value
+        .split(',')
+        .map(str::trim)
+        .filter(|item| !item.is_empty())
+    {
         let parts: Vec<_> = item.split('/').collect();
         if parts.len() != 3 {
             return Err(format!(
@@ -110,10 +114,14 @@ fn env_map(name: &str) -> Result<std::collections::HashMap<String, String>, Stri
         return Ok(std::collections::HashMap::new());
     };
     let mut entries = std::collections::HashMap::new();
-    for item in raw.split(',').map(str::trim).filter(|item| !item.is_empty()) {
-        let (key, value) = item.split_once('=').ok_or_else(|| {
-            format!("invalid key=value entry for {name}: {item}")
-        })?;
+    for item in raw
+        .split(',')
+        .map(str::trim)
+        .filter(|item| !item.is_empty())
+    {
+        let (key, value) = item
+            .split_once('=')
+            .ok_or_else(|| format!("invalid key=value entry for {name}: {item}"))?;
         let key = key.trim();
         let value = value.trim();
         if key.is_empty() || value.is_empty() {
@@ -441,7 +449,8 @@ async fn main() -> Result<(), String> {
         read_only_fs: env_bool("ATLAS_READ_ONLY_FS_MODE", false)?,
         cached_only_mode: env_bool("ATLAS_CACHED_ONLY_MODE", false)?,
         dataset_open_timeout: env_duration_ms("ATLAS_DATASET_OPEN_TIMEOUT_MS", 3000)?,
-        store_breaker_failure_threshold: env_u64("ATLAS_STORE_BREAKER_FAILURE_THRESHOLD", 5)? as u32,
+        store_breaker_failure_threshold: env_u64("ATLAS_STORE_BREAKER_FAILURE_THRESHOLD", 5)?
+            as u32,
         store_breaker_open_duration: env_duration_ms("ATLAS_STORE_BREAKER_OPEN_MS", 20_000)?,
         store_retry_budget: env_u64("ATLAS_STORE_RETRY_BUDGET", 20)? as u32,
         max_concurrent_downloads: env_usize("ATLAS_MAX_CONCURRENT_DOWNLOADS", 3)?,
@@ -490,7 +499,8 @@ async fn main() -> Result<(), String> {
         enable_redis_rate_limit: env_bool("ATLAS_ENABLE_REDIS_RATE_LIMIT", false)?,
         redis_timeout_ms: env_u64("ATLAS_REDIS_TIMEOUT_MS", 50)?,
         redis_retry_attempts: env_usize("ATLAS_REDIS_RETRY_ATTEMPTS", 2)?,
-        redis_breaker_failure_threshold: env_u64("ATLAS_REDIS_BREAKER_FAILURE_THRESHOLD", 8)? as u32,
+        redis_breaker_failure_threshold: env_u64("ATLAS_REDIS_BREAKER_FAILURE_THRESHOLD", 8)?
+            as u32,
         redis_breaker_open_ms: env_u64("ATLAS_REDIS_BREAKER_OPEN_MS", 3000)?,
         redis_cache_max_key_bytes: env_usize("ATLAS_REDIS_CACHE_MAX_KEY_BYTES", 256)?,
         redis_cache_max_cardinality: env_usize("ATLAS_REDIS_CACHE_MAX_CARDINALITY", 100_000)?,

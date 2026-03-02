@@ -315,12 +315,15 @@ fn load_curated_targets(repo_root: &Path) -> Result<Vec<String>, String> {
     Ok(targets)
 }
 
-fn load_target_metadata(repo_root: &Path, target: &str) -> Result<BTreeMap<String, Vec<String>>, String> {
+fn load_target_metadata(
+    repo_root: &Path,
+    target: &str,
+) -> Result<BTreeMap<String, Vec<String>>, String> {
     let registry_path = repo_root.join("configs/ops/make-target-registry.json");
     let text = fs::read_to_string(&registry_path)
         .map_err(|err| format!("read {} failed: {err}", registry_path.display()))?;
-    let value: serde_json::Value =
-        serde_json::from_str(&text).map_err(|err| format!("parse {} failed: {err}", registry_path.display()))?;
+    let value: serde_json::Value = serde_json::from_str(&text)
+        .map_err(|err| format!("parse {} failed: {err}", registry_path.display()))?;
     let mut output = BTreeMap::new();
     let Some(rows) = value.get("targets").and_then(|v| v.as_array()) else {
         return Ok(output);
@@ -352,8 +355,8 @@ fn load_target_metadata(repo_root: &Path, target: &str) -> Result<BTreeMap<Strin
 
 fn load_target_recipe_lines(repo_root: &Path, target: &str) -> Result<Vec<String>, String> {
     let root_mk = repo_root.join("make/root.mk");
-    let text =
-        fs::read_to_string(&root_mk).map_err(|err| format!("read {} failed: {err}", root_mk.display()))?;
+    let text = fs::read_to_string(&root_mk)
+        .map_err(|err| format!("read {} failed: {err}", root_mk.display()))?;
     let mut recipes: BTreeMap<String, Vec<String>> = BTreeMap::new();
     let mut current: Option<String> = None;
     for line in text.lines() {
@@ -383,9 +386,7 @@ fn load_target_recipe_lines(repo_root: &Path, target: &str) -> Result<Vec<String
 fn extract_artifact_path(recipe_line: &str) -> Option<String> {
     if let Some(start) = recipe_line.find("$(ARTIFACT_ROOT)/") {
         let rest = &recipe_line[start..];
-        let end = rest
-            .find(char::is_whitespace)
-            .unwrap_or(rest.len());
+        let end = rest.find(char::is_whitespace).unwrap_or(rest.len());
         return Some(rest[..end].trim_matches('"').to_string());
     }
     None

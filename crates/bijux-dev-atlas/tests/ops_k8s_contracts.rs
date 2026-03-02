@@ -50,7 +50,13 @@ fn install_matrix_values_files(root: &Path) -> Vec<String> {
 fn render_chart_with_values_file(root: &Path, values_file: &str) -> String {
     let output = Command::new("helm")
         .current_dir(root)
-        .args(["template", "atlas-contract", "ops/k8s/charts/bijux-atlas", "-f", values_file])
+        .args([
+            "template",
+            "atlas-contract",
+            "ops/k8s/charts/bijux-atlas",
+            "-f",
+            values_file,
+        ])
         .output()
         .expect("helm template");
     assert!(
@@ -268,7 +274,9 @@ fn install_matrix_profiles_keep_monitoring_scaling_and_network_policy_contracts_
         let values = load_yaml(&root.join(&values_file));
         let rendered = render_chart_with_values_file(&root, &values_file);
 
-        let service_monitor_enabled = values["serviceMonitor"]["enabled"].as_bool().unwrap_or(true);
+        let service_monitor_enabled = values["serviceMonitor"]["enabled"]
+            .as_bool()
+            .unwrap_or(true);
         if service_monitor_enabled {
             assert!(
                 rendered.contains("kind: ServiceMonitor"),

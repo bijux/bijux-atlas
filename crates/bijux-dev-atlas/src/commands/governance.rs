@@ -3,8 +3,8 @@
 use crate::cli::GovernanceCommand;
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::governance_objects::{
-    collect_governance_objects, find_governance_object, governance_object_schema,
-    governance_coverage_path, governance_coverage_score, governance_summary_markdown,
+    collect_governance_objects, find_governance_object, governance_coverage_path,
+    governance_coverage_score, governance_object_schema, governance_summary_markdown,
     governance_summary_paths, validate_governance_objects,
 };
 use std::fs;
@@ -82,8 +82,11 @@ pub(crate) fn run_governance_command(
                 .map_err(|e| format!("encode governance graph failed: {e}"))?,
             )
             .map_err(|e| format!("write {} failed: {e}", graph_path.display()))?;
-            fs::write(&summary_path, governance_summary_markdown(&collect_governance_objects(&root)?))
-                .map_err(|e| format!("write {} failed: {e}", summary_path.display()))?;
+            fs::write(
+                &summary_path,
+                governance_summary_markdown(&collect_governance_objects(&root)?),
+            )
+            .map_err(|e| format!("write {} failed: {e}", summary_path.display()))?;
             let coverage_payload = governance_coverage_score(&objects);
             fs::write(
                 &coverage_path,
