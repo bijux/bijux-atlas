@@ -740,6 +740,29 @@ fn helm_values_do_not_expose_dead_runtime_tuning_branches() {
 }
 
 #[test]
+fn root_contract_documents_the_cross_surface_invariants() {
+    let root = repo_root();
+    let contract = read(&root.join("CONTRACT.md"));
+
+    for invariant in [
+        "Invariant: Helm env emitted by the chart must stay a subset of the runtime allowlist declared in `configs/contracts/env.schema.json`.",
+        "Invariant: Every rollout profile under `ops/k8s/values/` must render successfully.",
+        "Invariant: Every crate directory under `crates/` must be declared as a workspace member in the root `Cargo.toml`.",
+        "Invariant: `mkdocs build --strict` must publish into the configured `site_dir`.",
+        "Invariant: Docs must not contain references to missing pages.",
+        "Invariant: No rollout profile may violate Helm chart fail guards.",
+        "Invariant: Policy-surface configuration files must not be committed in minified form.",
+        "Invariant: Unknown runtime `ATLAS_*` or `BIJUX_*` environment variables must fail startup unless the explicit local-dev override is enabled.",
+        "Invariant: No single runtime behavior may be controlled through duplicate semantic environment variable names.",
+    ] {
+        assert!(
+            contract.contains(invariant),
+            "CONTRACT.md must document cross-surface invariant `{invariant}`"
+        );
+    }
+}
+
+#[test]
 fn quickstart_command_is_backed_by_cli_help() {
     let root = repo_root();
     let start_here = read(&root.join("docs/start-here.md"));
