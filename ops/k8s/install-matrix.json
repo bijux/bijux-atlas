@@ -10,5 +10,16 @@
     {"name": "offline", "values_file": "ops/k8s/values/offline.yaml", "suite": "k8s-suite"},
     {"name": "perf", "values_file": "ops/k8s/values/perf.yaml", "suite": "nightly"},
     {"name": "prod", "values_file": "ops/k8s/values/prod.yaml", "suite": "nightly"}
+  ],
+  "scenarios": [
+    {"name": "install-kind", "kind": "install", "profile": "kind", "suite": "k8s-suite"},
+    {"name": "upgrade-kind", "kind": "upgrade", "profile": "kind", "suite": "k8s-suite", "baseline_ref": "chart-previous", "target_ref": "workspace-head"},
+    {"name": "rollback-kind", "kind": "rollback", "profile": "kind", "suite": "k8s-suite", "baseline_ref": "workspace-head", "target_ref": "chart-previous"},
+    {"name": "install-offline", "kind": "install", "profile": "offline", "suite": "k8s-suite"},
+    {"name": "upgrade-offline", "kind": "upgrade", "profile": "offline", "suite": "k8s-suite", "baseline_ref": "chart-previous", "target_ref": "workspace-head"},
+    {"name": "rollback-offline", "kind": "rollback", "profile": "offline", "suite": "k8s-suite", "baseline_ref": "workspace-head", "target_ref": "chart-previous"},
+    {"name": "install-perf", "kind": "install", "profile": "perf", "suite": "nightly"},
+    {"name": "upgrade-perf", "kind": "upgrade", "profile": "perf", "suite": "nightly", "baseline_ref": "chart-previous", "target_ref": "workspace-head"},
+    {"name": "rollback-perf", "kind": "rollback", "profile": "perf", "suite": "nightly", "baseline_ref": "workspace-head", "target_ref": "chart-previous"}
   ]
 }

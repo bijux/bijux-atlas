@@ -2,7 +2,8 @@
   "type": "object",
   "required": [
     "schema_version",
-    "profiles"
+    "profiles",
+    "scenarios"
   ],
   "properties": {
     "schema_version": {
@@ -37,6 +38,74 @@
             ]
           }
         },
+        "additionalProperties": false
+      }
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "kind",
+          "profile",
+          "suite"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "install",
+              "upgrade",
+              "rollback"
+            ]
+          },
+          "profile": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "suite": {
+            "type": "string",
+            "enum": [
+              "install-gate",
+              "k8s-suite",
+              "nightly"
+            ]
+          },
+          "baseline_ref": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "target_ref": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "upgrade",
+                    "rollback"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "baseline_ref",
+                "target_ref"
+              ]
+            }
+          }
+        ],
         "additionalProperties": false
       }
     }

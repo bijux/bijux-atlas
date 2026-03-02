@@ -15,7 +15,7 @@
 | --- | --- |
 | `ops/k8s/charts/bijux-atlas/Chart.yaml` | Authored chart metadata |
 | `ops/k8s/charts/bijux-atlas/values.yaml` | Authored chart defaults |
-| `ops/k8s/install-matrix.json` | Authored install profile matrix |
+| `ops/k8s/install-matrix.json` | Authored install, upgrade, and rollback scenario matrix |
 | `ops/k8s/rollout-safety-contract.json` | Authored rollout and warmup safety policy |
 | `ops/k8s/values/kind.yaml` | Authored kind profile overrides |
 | `ops/k8s/values/dev.yaml` | Authored dev profile overrides |
@@ -38,7 +38,7 @@
 
 ## Contract Taxonomy
 
-- Structural contract: chart metadata, values overlays, and install matrix define stable delivery inputs.
+- Structural contract: chart metadata, values overlays, and install matrix define stable install, upgrade, and rollback inputs.
 - Behavioral contract: render determinism and release snapshot outputs define rollout/runtime behavior expectations.
 
 ## Invariants

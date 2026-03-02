@@ -4,7 +4,7 @@
 - Type: `reference`
 - Audience: `user`
 - Stability: `stable`
-- Reason to exist: document the executable checks that keep the Kubernetes install profile matrix renderable and schema-valid.
+- Reason to exist: document the executable checks that keep the Kubernetes install profile matrix and governed release scenarios renderable and schema-valid.
 
 ## Check IDs
 
@@ -46,3 +46,4 @@ bijux dev atlas contracts ops --mode effect --allow-subprocess --filter-contract
 - Keep profile files focused on environment-specific overrides.
 - Keep `cache.pinnedDatasets` entries inside `ops/datasets/manifest.json` before updating any profile.
 - If `rollout-safety-contract.json` adds a profile, add the same profile to `ops/k8s/install-matrix.json` before merging.
+- Keep `ops/k8s/install-matrix.json` release scenarios aligned with real install, upgrade, and rollback coverage for kind-backed and nightly profiles.
