@@ -615,10 +615,26 @@ pub fn governance_index_payload(repo_root: &Path, objects: &[GovernanceObject]) 
     });
     serde_json::json!({
         "schema_version": 1,
+        "report_id": "governance-index",
+        "version": 1,
         "kind": "governance_index",
         "governance_version": version,
+        "inputs": {
+            "domain_registry_map": "governance/domain-registry-map.json",
+            "required_contracts": "ops/policy/required-contracts.json",
+            "lane_surface": "configs/ci/lane-surface.json",
+            "check_report_map": "configs/reports/check-report-map.json"
+        },
         "domains": governance_summary(objects),
         "contracts": rows,
+        "summary": {
+            "domain_count": governance_summary(objects).len(),
+            "contract_count": rows.len()
+        },
+        "evidence": {
+            "authority_objects": objects.len(),
+            "artifacts_root": "artifacts/governance"
+        }
     })
 }
 
@@ -642,8 +658,20 @@ pub fn governance_contract_coverage_payload(repo_root: &Path) -> serde_json::Val
         .collect::<Vec<_>>();
     serde_json::json!({
         "schema_version": 1,
+        "report_id": "contract-coverage-map",
+        "version": 1,
         "kind": "contract_coverage_map",
         "rows": rows,
+        "inputs": {
+            "required_contracts": "ops/policy/required-contracts.json"
+        },
+        "summary": {
+            "total": rows.len(),
+            "covered": rows.iter().filter(|row| row.get("covered").and_then(|v| v.as_bool()) == Some(true)).count()
+        },
+        "evidence": {
+            "lane_source": "configs/ci/lane-surface.json"
+        }
     })
 }
 
@@ -673,8 +701,20 @@ pub fn governance_lane_coverage_payload(repo_root: &Path) -> serde_json::Value {
     }
     serde_json::json!({
         "schema_version": 1,
+        "report_id": "lane-coverage-map",
+        "version": 1,
         "kind": "lane_coverage_map",
         "rows": rows,
+        "inputs": {
+            "lane_surface": "configs/ci/lane-surface.json",
+            "required_contracts": "ops/policy/required-contracts.json"
+        },
+        "summary": {
+            "total": rows.len()
+        },
+        "evidence": {
+            "workflow_registry": "configs/ci/lane-surface.json"
+        }
     })
 }
 
@@ -717,8 +757,20 @@ pub fn governance_orphan_checks_payload(repo_root: &Path) -> serde_json::Value {
     }
     serde_json::json!({
         "schema_version": 1,
+        "report_id": "orphan-checks",
+        "version": 1,
         "kind": "orphan_checks",
         "rows": rows,
+        "inputs": {
+            "lane_surface": "configs/ci/lane-surface.json",
+            "required_contracts": "ops/policy/required-contracts.json"
+        },
+        "summary": {
+            "total": rows.len()
+        },
+        "evidence": {
+            "coverage_model": "lane-to-required-contract cross-check"
+        }
     })
 }
 
@@ -748,8 +800,19 @@ pub fn governance_policy_surface_payload(repo_root: &Path) -> serde_json::Value 
     });
     serde_json::json!({
         "schema_version": 1,
+        "report_id": "policy-surface-map",
+        "version": 1,
         "kind": "policy_surface_map",
         "rows": rows,
+        "inputs": {
+            "policy_registry": "configs/ci/policy-outside-control-plane.json"
+        },
+        "summary": {
+            "total": rows.len()
+        },
+        "evidence": {
+            "replacement_source": "configs/ci/policy-outside-control-plane.json"
+        }
     })
 }
 
@@ -776,10 +839,23 @@ pub fn governance_drift_payload(current_index: &serde_json::Value, previous_inde
     let removed = previous_ids.difference(&current_ids).cloned().collect::<Vec<_>>();
     serde_json::json!({
         "schema_version": 1,
+        "report_id": "governance-drift",
+        "version": 1,
         "kind": "governance_drift",
         "added_contracts": added,
         "removed_contracts": removed,
         "changed": !added.is_empty() || !removed.is_empty(),
+        "inputs": {
+            "baseline": "artifacts/governance/governance-index.json",
+            "candidate": "artifacts/governance/governance-index.json"
+        },
+        "summary": {
+            "added": added.len(),
+            "removed": removed.len()
+        },
+        "evidence": {
+            "comparison_scope": "contract ids"
+        }
     })
 }
 

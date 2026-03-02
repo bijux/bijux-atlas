@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::GovernanceCommand;
+use bijux_dev_atlas::docs::site_output::validate_named_report;
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::governance_objects::{
     collect_governance_objects, find_governance_object, governance_contract_coverage_path,
@@ -110,6 +111,7 @@ pub(crate) fn run_governance_command(
                 .ok()
                 .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok());
             let index_payload = governance_index_payload(&root, &objects);
+            validate_named_report(&root, "governance-index.schema.json", &index_payload)?;
             fs::write(
                 &index_path,
                 serde_json::to_string_pretty(&index_payload)
