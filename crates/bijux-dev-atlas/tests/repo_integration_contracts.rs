@@ -560,6 +560,130 @@ fn docs_workflows_copy_the_built_site_from_mkdocs_site_dir() {
 }
 
 #[test]
+fn ci_workflows_keep_dependency_inputs_and_action_refs_deterministic() {
+    let root = repo_root();
+    let workflows_dir = root.join(".github/workflows");
+    let mut workflow_files = fs::read_dir(&workflows_dir)
+        .expect("workflows dir")
+        .flatten()
+        .map(|entry| entry.path())
+        .filter(|path| {
+            matches!(
+                path.extension().and_then(|value| value.to_str()),
+                Some("yml" | "yaml")
+            )
+        })
+        .collect::<Vec<_>>();
+    workflow_files.sort();
+
+    let sha_ref_len = 40;
+    let mut cargo_without_locked = Vec::<String>::new();
+    let mut uses_not_pinned = Vec::<String>::new();
+    let mut cargo_update_calls = Vec::<String>::new();
+    let mut artifact_paths_outside_root = Vec::<String>::new();
+    let mut default_cluster_assumptions = Vec::<String>::new();
+
+    for workflow in workflow_files {
+        let text = read(&workflow);
+        let rel = workflow
+            .strip_prefix(&root)
+            .expect("workflow relative path")
+            .display()
+            .to_string();
+
+        for (line_index, raw_line) in text.lines().enumerate() {
+            let line = raw_line.trim();
+            let line_number = line_index + 1;
+            if line.contains("cargo update") {
+                cargo_update_calls.push(format!("{rel}:{line_number}"));
+            }
+            if line.contains("kubectl config use-context")
+                || line.contains("kubectl config current-context")
+                || line.contains("default cluster")
+            {
+                default_cluster_assumptions.push(format!("{rel}:{line_number}: {line}"));
+            }
+            if let Some(action_ref) = line.strip_prefix("uses: ") {
+                let Some((_, pinned_ref)) = action_ref.rsplit_once('@') else {
+                    uses_not_pinned.push(format!("{rel}:{line_number}"));
+                    continue;
+                };
+                if pinned_ref.len() != sha_ref_len
+                    || !pinned_ref.chars().all(|ch| ch.is_ascii_hexdigit())
+                {
+                    uses_not_pinned.push(format!("{rel}:{line_number}"));
+                }
+            }
+            if let Some(path_value) = line.strip_prefix("path: ") {
+                let normalized = path_value.trim_matches('"').trim();
+                if normalized != "|"
+                    && !normalized.starts_with("artifacts/")
+                    && !normalized.starts_with(".cache/")
+                {
+                    artifact_paths_outside_root.push(format!("{rel}:{line_number}: {normalized}"));
+                }
+            }
+            if line.starts_with("- name:")
+                || line.starts_with("uses:")
+                || line.starts_with("printf ")
+                || !line.contains("cargo ")
+            {
+                continue;
+            }
+            let cargo_index = line.find("cargo ").expect("cargo command index");
+            let cargo_command = &line[cargo_index..];
+            if cargo_command.starts_with("cargo install --locked")
+                || cargo_command.starts_with("cargo deny ")
+                || cargo_command.starts_with("cargo audit")
+            {
+                continue;
+            }
+            let allows_unlock = cargo_command.starts_with("cargo generate-lockfile");
+            if !allows_unlock && !cargo_command.contains("--locked") {
+                cargo_without_locked.push(format!("{rel}:{line_number}: {cargo_command}"));
+            }
+        }
+
+        if rel == ".github/workflows/docs-audit.yml" || rel == ".github/workflows/docs-only.yml" {
+            assert!(
+                text.contains("python3 -m pip install -r configs/docs/requirements.lock.txt"),
+                "{rel} must install Python docs dependencies from requirements.lock.txt"
+            );
+            assert!(
+                text.contains("npm ci --prefix configs/docs"),
+                "{rel} must install Node docs dependencies with npm ci"
+            );
+        }
+    }
+
+    assert!(
+        cargo_update_calls.is_empty(),
+        "workflows must not run cargo update:\n{}",
+        cargo_update_calls.join("\n")
+    );
+    assert!(
+        cargo_without_locked.is_empty(),
+        "workflow cargo commands must use --locked (except cargo generate-lockfile):\n{}",
+        cargo_without_locked.join("\n")
+    );
+    assert!(
+        uses_not_pinned.is_empty(),
+        "workflow action refs must be pinned to full commit SHAs:\n{}",
+        uses_not_pinned.join("\n")
+    );
+    assert!(
+        artifact_paths_outside_root.is_empty(),
+        "workflow artifact paths must stay inside the canonical artifacts/ root:\n{}",
+        artifact_paths_outside_root.join("\n")
+    );
+    assert!(
+        default_cluster_assumptions.is_empty(),
+        "workflows must not assume an ambient default Kubernetes context:\n{}",
+        default_cluster_assumptions.join("\n")
+    );
+}
+
+#[test]
 fn mkdocs_config_enables_redirects_plugin_for_legacy_markdown_paths() {
     let root = repo_root();
     let mkdocs = read(&root.join("mkdocs.yml"));
@@ -588,6 +712,31 @@ fn governed_json_configuration_surfaces_stay_pretty_printed() {
     ] {
         assert_pretty_json_file(&root.join(relative_path));
     }
+}
+
+#[test]
+fn helm_values_do_not_expose_dead_runtime_tuning_branches() {
+    let root = repo_root();
+    let chart_values = read(&root.join("ops/k8s/charts/bijux-atlas/values.yaml"));
+    let chart_schema = read(&root.join("ops/k8s/charts/bijux-atlas/values.schema.json"));
+    let perf_profile = read(&root.join("ops/k8s/values/perf.yaml"));
+
+    for forbidden in ["\nrateLimits:\n", "\nconcurrency:\n"] {
+        assert!(
+            !chart_values.contains(forbidden),
+            "chart values must not expose dead runtime tuning branch `{forbidden}`"
+        );
+    }
+    for forbidden in ["\"rateLimits\"", "\"concurrency\""] {
+        assert!(
+            !chart_schema.contains(forbidden),
+            "chart values schema must not expose dead runtime tuning branch {forbidden}"
+        );
+    }
+    assert!(
+        !perf_profile.contains("\nconcurrency:\n"),
+        "perf profile must not override dead runtime tuning branches"
+    );
 }
 
 #[test]
