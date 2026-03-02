@@ -3,6 +3,7 @@ docs
 contracts
 demo
 configs
+governance
 policies
 ci
 check
