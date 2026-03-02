@@ -10,6 +10,8 @@ Defines the `Config Keys Contract` registry contract.
 
 Prevents drift between SSOT JSON, generated code, and operational consumers.
 
+Canonical runtime-facing usage is documented in [Runtime Config](../runtime/config.md). This contract page remains the allowlist surface of truth.
+
 ## Scope
 
 Applies to producers and consumers of this registry.

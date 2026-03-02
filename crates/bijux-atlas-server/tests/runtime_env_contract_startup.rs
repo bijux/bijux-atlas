@@ -83,6 +83,50 @@ fn startup_accepts_an_allowlisted_env_surface() {
 }
 
 #[test]
+fn startup_accepts_the_runtime_env_surface_emitted_by_the_helm_chart() {
+    let cache_root = tempdir().expect("cache root tempdir");
+    let output = sanitized_server_command()
+        .arg("--validate-config")
+        .env("ATLAS_CACHE_ROOT", cache_root.path())
+        .env("ATLAS_STORE_S3_ENABLED", "true")
+        .env("ATLAS_STORE_S3_BASE_URL", "https://example.invalid/store")
+        .env("ATLAS_STORE_S3_PRESIGNED_BASE_URL", "https://example.invalid/presigned")
+        .env("ATLAS_MAX_DATASET_COUNT", "64")
+        .env("ATLAS_MAX_DISK_BYTES", "1073741824")
+        .env("ATLAS_PINNED_DATASETS", "")
+        .env("ATLAS_MAX_CONCURRENT_DOWNLOADS", "4")
+        .env("ATLAS_STARTUP_WARMUP_JITTER_MAX_MS", "1000")
+        .env("ATLAS_REQUEST_TIMEOUT_MS", "5000")
+        .env("ATLAS_SQL_TIMEOUT_MS", "2500")
+        .env("ATLAS_RESPONSE_MAX_BYTES", "1048576")
+        .env("ATLAS_MAX_BODY_BYTES", "1048576")
+        .env("ATLAS_SLOW_QUERY_THRESHOLD_MS", "500")
+        .env("ATLAS_ENABLE_DEBUG_DATASETS", "false")
+        .env("ATLAS_ENABLE_EXEMPLARS", "false")
+        .env("ATLAS_CACHED_ONLY_MODE", "false")
+        .env("ATLAS_READ_ONLY_FS_MODE", "false")
+        .env("ATLAS_SHUTDOWN_DRAIN_MS", "10000")
+        .env("ATLAS_READINESS_REQUIRES_CATALOG", "true")
+        .env("ATLAS_MAX_SEQUENCE_BASES", "20000")
+        .env("ATLAS_SEQUENCE_API_KEY_REQUIRED_BASES", "5000")
+        .env("ATLAS_SEQUENCE_TTL_MS", "300000")
+        .env("ATLAS_SEQUENCE_RATE_LIMIT_CAPACITY", "15")
+        .env("ATLAS_SEQUENCE_RATE_LIMIT_REFILL_PER_SEC", "5")
+        .env("ATLAS_CATALOG_BACKOFF_BASE_MS", "250")
+        .env("ATLAS_CATALOG_BREAKER_FAILURE_THRESHOLD", "5")
+        .env("ATLAS_CATALOG_BREAKER_OPEN_MS", "10000")
+        .output()
+        .expect("run atlas-server");
+
+    assert!(
+        output.status.success(),
+        "the Helm-emitted runtime env surface must pass startup validation:\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
+
+#[test]
 fn startup_only_allows_unknown_prefixed_env_when_the_dev_override_is_explicitly_enabled() {
     let store_root = tempdir().expect("store root tempdir");
     let cache_root = tempdir().expect("cache root tempdir");

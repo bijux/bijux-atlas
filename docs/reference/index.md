@@ -32,7 +32,7 @@ Facts live here. Procedures do not. Use this section for stable names, keys, sch
 ## Categories
 
 - Commands and automation: [Commands](commands.md), [Command inventory](command-inventory.md)
-- Runtime definitions: [Configs reference](configs.md), [Errors reference](errors.md), [Schemas reference](schemas.md)
+- Runtime definitions: [Configs reference](configs.md), [Runtime config](runtime/config.md), [Errors reference](errors.md), [Schemas reference](schemas.md)
 - Config governance facts: [Schema versioning policy](schema-versioning-policy.md), [Config keys reference](config-keys-reference.md)
 - Contracts and registries: [Contracts](contracts/index.md), [Dataset operations](dataset-operations.md)
 

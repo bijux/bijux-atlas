@@ -665,13 +665,14 @@ fn redact_known_secrets(config_json: &mut serde_json::Value) {
     let Some(obj) = config_json.as_object_mut() else {
         return;
     };
-    for key in [
+    const SECRET_FIELD_DENYLIST: &[&str] = &[
         "redis_url",
         "allowed_api_keys",
         "hmac_secret",
         "s3_bearer",
         "http_bearer",
-    ] {
+    ];
+    for &key in SECRET_FIELD_DENYLIST {
         if obj.contains_key(key) {
             let value = if key == "allowed_api_keys" {
                 serde_json::json!(["<redacted>"])
@@ -713,6 +714,41 @@ pub fn effective_runtime_config_payload(
         redact_known_secrets(store_json);
     }
     Ok(payload)
+}
+
+pub fn runtime_config_contract_snapshot() -> Result<serde_json::Value, String> {
+    let repo_root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let env_schema_path = repo_root.join("configs/contracts/env.schema.json");
+    let env_schema_text = std::fs::read_to_string(&env_schema_path)
+        .map_err(|err| format!("read {}: {err}", env_schema_path.display()))?;
+    let env_schema_json: serde_json::Value = serde_json::from_str(&env_schema_text)
+        .map_err(|err| format!("parse {}: {err}", env_schema_path.display()))?;
+    let mut allowlisted_env = env_schema_json
+        .get("allowed_env")
+        .and_then(serde_json::Value::as_array)
+        .ok_or_else(|| {
+            format!(
+                "{} must contain an allowed_env array",
+                env_schema_path.display()
+            )
+        })?
+        .iter()
+        .map(|value| {
+            value
+                .as_str()
+                .map(str::to_owned)
+                .ok_or_else(|| "allowed_env entries must be strings".to_string())
+        })
+        .collect::<Result<Vec<_>, _>>()?;
+    allowlisted_env.sort();
+    allowlisted_env.dedup();
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "kind": "atlas_runtime_config_contract_snapshot_v1",
+        "env_schema_path": "configs/contracts/env.schema.json",
+        "docs_path": "docs/reference/runtime/config.md",
+        "allowlisted_env": allowlisted_env
+    }))
 }
 
 fn resolve_runtime_startup_config(
@@ -1305,6 +1341,28 @@ mod tests {
                     serde_json::json!("<redacted>")
                 );
             },
+        );
+    }
+
+    #[test]
+    fn runtime_config_contract_snapshot_points_to_the_allowlist_source() {
+        let snapshot = runtime_config_contract_snapshot().expect("contract snapshot");
+        assert_eq!(
+            snapshot["env_schema_path"],
+            serde_json::json!("configs/contracts/env.schema.json")
+        );
+        assert_eq!(
+            snapshot["docs_path"],
+            serde_json::json!("docs/reference/runtime/config.md")
+        );
+        let allowlisted_env = snapshot["allowlisted_env"]
+            .as_array()
+            .expect("allowlisted_env array");
+        assert!(
+            allowlisted_env
+                .iter()
+                .any(|value| value == "ATLAS_STORE_S3_BASE_URL"),
+            "snapshot must include canonical runtime env keys"
         );
     }
 }
