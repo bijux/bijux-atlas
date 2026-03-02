@@ -84,7 +84,7 @@ jobs:
           logs_root="artifacts/${RUN_ID}/logs/docs-only"
           mkdir -p "${report_root}" "${logs_root}"
           mkdocs build --strict > "${report_root}/mkdocs-build.json" 2> "${logs_root}/mkdocs-build.stderr.log"
-          cp -R site "artifacts/${RUN_ID}/site-preview"
+          cp -R artifacts/docs/site "artifacts/${RUN_ID}/site-preview"
       - name: Run docs lane
         shell: bash
         run: |

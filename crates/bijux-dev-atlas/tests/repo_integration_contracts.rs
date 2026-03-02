@@ -398,6 +398,168 @@ fn workspace_members_exactly_match_the_crate_directories_on_disk() {
 }
 
 #[test]
+fn workspace_package_metadata_stays_acyclic_and_consistent() {
+    let root = repo_root();
+    let output = Command::new("cargo")
+        .current_dir(&root)
+        .args(["metadata", "--format-version", "1", "--no-deps"])
+        .output()
+        .expect("cargo metadata");
+    assert!(
+        output.status.success(),
+        "cargo metadata must succeed:\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let metadata: Value = serde_json::from_slice(&output.stdout).expect("cargo metadata json");
+    let packages = metadata["packages"].as_array().expect("metadata packages");
+
+    let mut packages_by_name = BTreeMap::new();
+    for package in packages {
+        let name = package["name"].as_str().expect("package name").to_string();
+        let previous = packages_by_name.insert(name.clone(), package);
+        assert!(previous.is_none(), "duplicate crate name detected: {name}");
+    }
+
+    let expected_version = "0.1.0";
+    let expected_rust_version = "1.84.1";
+    let expected_license = "Apache-2.0";
+    let mut adjacency = BTreeMap::<String, Vec<String>>::new();
+
+    for (name, package) in &packages_by_name {
+        assert_eq!(
+            package["version"].as_str(),
+            Some(expected_version),
+            "workspace crate version drift for {name}"
+        );
+        assert_eq!(
+            package["rust_version"].as_str(),
+            Some(expected_rust_version),
+            "workspace crate rust-version drift for {name}"
+        );
+        assert_eq!(
+            package["license"].as_str(),
+            Some(expected_license),
+            "workspace crate license drift for {name}"
+        );
+
+        let package_features = package["features"]
+            .as_object()
+            .expect("package features");
+        let package_manifest_path = Path::new(package["manifest_path"].as_str().expect("manifest path"));
+        let package_dir = package_manifest_path.parent().expect("package dir");
+        let mut local_dependencies = Vec::new();
+
+        for dependency in package["dependencies"].as_array().expect("dependencies") {
+            let Some(dep_path) = dependency["path"].as_str() else {
+                continue;
+            };
+            let dep_name = dependency["name"].as_str().expect("dependency name").to_string();
+            let dep_path = Path::new(dep_path);
+            assert!(
+                dep_path.starts_with(root.join("crates")),
+                "path dependency for {name} must point into the workspace crates directory: {dep_name}"
+            );
+            assert!(
+                packages_by_name.contains_key(&dep_name),
+                "path dependency for {name} references missing workspace crate: {dep_name}"
+            );
+            assert!(
+                dep_path.join("Cargo.toml").is_file(),
+                "path dependency for {name} must point to a crate directory with Cargo.toml: {dep_name}"
+            );
+            assert_ne!(
+                dep_path, package_dir,
+                "crate {name} must not depend on itself"
+            );
+
+            if let Some(requested_features) = dependency["features"].as_array() {
+                let dependency_package = packages_by_name
+                    .get(&dep_name)
+                    .expect("dependency package present");
+                let dependency_features = dependency_package["features"]
+                    .as_object()
+                    .expect("dependency features");
+                for feature in requested_features.iter().filter_map(Value::as_str) {
+                    assert!(
+                        feature == "default"
+                            || dependency_features.contains_key(feature)
+                            || package_features.contains_key(feature),
+                        "crate {name} requests missing feature `{feature}` from dependency {dep_name}"
+                    );
+                }
+            }
+
+            local_dependencies.push(dep_name);
+        }
+
+        if name == "bijux-atlas-server" {
+            assert!(
+                !local_dependencies
+                    .iter()
+                    .any(|dep_name| dep_name == "bijux-dev-atlas"),
+                "bijux-atlas-server must not depend on dev-only crate bijux-dev-atlas"
+            );
+        }
+        adjacency.insert(name.clone(), local_dependencies);
+    }
+
+    fn visit(
+        node: &str,
+        adjacency: &BTreeMap<String, Vec<String>>,
+        visiting: &mut BTreeSet<String>,
+        visited: &mut BTreeSet<String>,
+    ) {
+        if visited.contains(node) {
+            return;
+        }
+        assert!(
+            visiting.insert(node.to_string()),
+            "cyclic workspace dependency detected at {node}"
+        );
+        if let Some(children) = adjacency.get(node) {
+            for child in children {
+                visit(child, adjacency, visiting, visited);
+            }
+        }
+        visiting.remove(node);
+        visited.insert(node.to_string());
+    }
+
+    let mut visiting = BTreeSet::new();
+    let mut visited = BTreeSet::new();
+    for name in adjacency.keys() {
+        visit(name, &adjacency, &mut visiting, &mut visited);
+    }
+}
+
+#[test]
+fn docs_workflows_copy_the_built_site_from_mkdocs_site_dir() {
+    let root = repo_root();
+    let mkdocs = read(&root.join("mkdocs.yml"));
+    assert!(
+        mkdocs.contains("site_dir: artifacts/docs/site"),
+        "mkdocs.yml must keep the authoritative docs site_dir"
+    );
+
+    for workflow in [
+        ".github/workflows/docs-audit.yml",
+        ".github/workflows/docs-only.yml",
+        ".github/workflows/ci-pr.yml",
+    ] {
+        let text = read(&root.join(workflow));
+        assert!(
+            text.contains("cp -R artifacts/docs/site \"artifacts/${RUN_ID}/site-preview\""),
+            "{workflow} must copy the built docs preview from mkdocs site_dir"
+        );
+        assert!(
+            !text.contains("cp -R site \"artifacts/${RUN_ID}/site-preview\""),
+            "{workflow} must not rely on the obsolete default MkDocs output directory"
+        );
+    }
+}
+
+#[test]
 fn quickstart_command_is_backed_by_cli_help() {
     let root = repo_root();
     let start_here = read(&root.join("docs/start-here.md"));
