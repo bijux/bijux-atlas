@@ -31,9 +31,6 @@
     "catalogPublishJob": {
       "description": "Chart values key `catalogPublishJob` from SSOT contract."
     },
-    "concurrency": {
-      "description": "Chart values key `concurrency` from SSOT contract."
-    },
     "datasetWarmupJob": {
       "description": "Chart values key `datasetWarmupJob` from SSOT contract."
     },
@@ -118,9 +115,6 @@
     },
     "priorityClassName": {
       "description": "Chart values key `priorityClassName` from SSOT contract."
-    },
-    "rateLimits": {
-      "description": "Chart values key `rateLimits` from SSOT contract."
     },
     "replicaCount": {
       "description": "Chart values key `replicaCount` from SSOT contract."

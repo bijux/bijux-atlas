@@ -17,11 +17,6 @@ cache:
   maxDiskBytes: 17179869184
   maxConcurrentDownloads: 4
 
-concurrency:
-  cheap: 192
-  medium: 96
-  heavy: 24
-
 server:
   configSchemaVersion: v1
   readinessProbePath: /healthz/overload

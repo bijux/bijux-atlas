@@ -58,20 +58,6 @@ cache:
     enabled: false
     image: ghcr.io/bijux/bijux-atlas:0.1.0
 
-rateLimits:
-  perIp:
-    capacity: 30
-    refillPerSec: 10
-  perApiKey:
-    enabled: false
-    capacity: 100
-    refillPerSec: 30
-
-concurrency:
-  cheap: 128
-  medium: 64
-  heavy: 16
-
 server:
   command:
     - /app/bijux-atlas
