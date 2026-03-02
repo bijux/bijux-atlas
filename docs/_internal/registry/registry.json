@@ -10591,6 +10591,29 @@
     },
     {
       "area": "development",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "ci-thin-shell",
+        "development"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/development/ci-thin-shell.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ci-thin-shell",
+        "development"
+      ],
+      "title": "Why CI Is A Thin Shell",
+      "topic": "ci-thin-shell"
+    },
+    {
+      "area": "development",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
