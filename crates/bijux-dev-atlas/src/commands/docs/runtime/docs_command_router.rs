@@ -393,6 +393,10 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 let closure_summary = serde_json::json!({
                     "report_id": "docs-build-closure-summary",
                     "version": 1,
+                    "inputs": {
+                        "links_report": "docs links",
+                        "site_output_report": "docs-site-output"
+                    },
                     "checks": [
                         {"name": "links", "status": if links["errors"].as_array().is_some_and(|v| v.is_empty()) { "pass" } else { "fail" }},
                         {"name": "site_output", "status": site_output["status"].as_str().unwrap_or("skipped")}
@@ -406,8 +410,42 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     }
                 });
                 if common.allow_write {
-                    let artifact_path = docs_gate_artifact_dir(&ctx).join("docs-build-closure-summary.json");
-                    let _ = write_docs_gate_artifact(&artifact_path, &closure_summary);
+                    let out_dir = docs_gate_artifact_dir(&ctx);
+                    let closure_summary_path = out_dir.join("docs-build-closure-summary.json");
+                    let site_output_path = out_dir.join("site-output.json");
+                    let manifest_path = out_dir.join("report-manifest.json");
+                    let closure_index_json_path =
+                        ctx.repo_root.join("docs/_internal/generated/closure-index.json");
+                    let closure_index_md_path =
+                        ctx.repo_root.join("docs/_internal/generated/closure-index.md");
+                    let closure_index = bijux_dev_atlas::docs::site_output::closure_index_report();
+                    let closure_index_markdown =
+                        bijux_dev_atlas::docs::site_output::closure_index_markdown(&closure_index)?;
+                    bijux_dev_atlas::docs::site_output::validate_named_report(
+                        &ctx.repo_root,
+                        "docs-site-output.schema.json",
+                        &site_output,
+                    )?;
+                    bijux_dev_atlas::docs::site_output::validate_named_report(
+                        &ctx.repo_root,
+                        "closure-summary.schema.json",
+                        &closure_summary,
+                    )?;
+                    let manifest = bijux_dev_atlas::docs::site_output::report_manifest(&[
+                        ("closure-index", "docs/_internal/generated/closure-index.json"),
+                        ("docs-build-closure-summary", "docs-build-closure-summary.json"),
+                        ("docs-site-output", "site-output.json"),
+                    ]);
+                    write_docs_gate_artifact(&site_output_path, &site_output)?;
+                    write_docs_gate_artifact(&closure_summary_path, &closure_summary)?;
+                    write_docs_gate_artifact(&manifest_path, &manifest)?;
+                    write_docs_gate_artifact(&closure_index_json_path, &closure_index)?;
+                    if let Some(parent) = closure_index_md_path.parent() {
+                        fs::create_dir_all(parent)
+                            .map_err(|e| format!("failed to create {}: {e}", parent.display()))?;
+                    }
+                    fs::write(&closure_index_md_path, closure_index_markdown)
+                        .map_err(|e| format!("write {} failed: {e}", closure_index_md_path.display()))?;
                 }
                 let payload = serde_json::json!({
                     "schema_version":1,
@@ -420,7 +458,12 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     "rows":rows,
                     "counts":{"errors":errors},
                     "site_output": site_output,
-                    "artifacts": {"closure_summary": docs_gate_artifact_dir(&ctx).join("docs-build-closure-summary.json").display().to_string()},
+                    "artifacts": {
+                        "closure_summary": docs_gate_artifact_dir(&ctx).join("docs-build-closure-summary.json").display().to_string(),
+                        "site_output": docs_gate_artifact_dir(&ctx).join("site-output.json").display().to_string(),
+                        "report_manifest": docs_gate_artifact_dir(&ctx).join("report-manifest.json").display().to_string(),
+                        "closure_index": ctx.repo_root.join("docs/_internal/generated/closure-index.json").display().to_string()
+                    },
                     "capabilities":{"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
                     "options":{"strict": common.strict, "include_drafts": common.include_drafts},
                     "duration_ms": started.elapsed().as_millis() as u64,

@@ -5,6 +5,8 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
+    "report_id",
+    "version",
     "schema_version",
     "kind",
     "inputs",
@@ -13,6 +15,14 @@
     "summary"
   ],
   "properties": {
+    "report_id": {
+      "type": "string",
+      "const": "ops-profiles"
+    },
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
     "schema_version": {
       "type": "integer",
       "const": 1

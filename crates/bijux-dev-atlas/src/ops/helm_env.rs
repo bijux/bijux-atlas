@@ -22,6 +22,8 @@ pub struct ConfigMapEnvRow {
 
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
 pub struct HelmEnvReport {
+    pub report_id: String,
+    pub version: u64,
     pub schema_version: u64,
     pub kind: String,
     pub inputs: HelmEnvInputs,
@@ -319,6 +321,8 @@ pub fn build_report(
         config_maps.clear();
     }
     HelmEnvReport {
+        report_id: "helm-env".to_string(),
+        version: 1,
         schema_version: 1,
         kind: "ops_helm_env".to_string(),
         inputs: HelmEnvInputs {
@@ -346,6 +350,8 @@ pub fn validate_report_schema_file(schema_path: &Path) -> Result<(), String> {
         .and_then(|value| value.as_array())
         .ok_or_else(|| format!("{} must declare required array", schema_path.display()))?;
     for field in [
+        "report_id",
+        "version",
         "schema_version",
         "kind",
         "inputs",
@@ -365,6 +371,12 @@ pub fn validate_report_value(report: &serde_json::Value, schema_path: &Path) -> 
     let obj = report
         .as_object()
         .ok_or_else(|| "helm-env report must be a JSON object".to_string())?;
+    if obj.get("report_id").and_then(|value| value.as_str()) != Some("helm-env") {
+        return Err("helm-env report must declare report_id=helm-env".to_string());
+    }
+    if obj.get("version").and_then(|value| value.as_u64()) != Some(1) {
+        return Err("helm-env report must declare version=1".to_string());
+    }
     if obj.get("schema_version").and_then(|value| value.as_u64()) != Some(1) {
         return Err("helm-env report must declare schema_version=1".to_string());
     }
@@ -437,6 +449,8 @@ pub fn validate_report_value(report: &serde_json::Value, schema_path: &Path) -> 
 
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
 pub struct HelmEnvSubsetReport {
+    pub report_id: String,
+    pub version: u64,
     pub schema_version: u64,
     pub kind: String,
     pub inputs: HelmEnvInputs,
@@ -482,6 +496,8 @@ pub fn build_subset_report(
         .cloned()
         .collect::<Vec<_>>();
     HelmEnvSubsetReport {
+        report_id: "helm-env-subset".to_string(),
+        version: 1,
         schema_version: 1,
         kind: "ops_helm_env_subset".to_string(),
         inputs,

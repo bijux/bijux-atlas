@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/contracts/reports/docs-site-output.schema.json",
+  "title": "docs-site-output report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_id",
+    "version",
+    "inputs",
+    "docs_dir",
+    "site_dir",
+    "checks",
+    "counts",
+    "assets_directory",
+    "status"
+  ],
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "const": "docs-site-output"
+    },
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "inputs": {
+      "type": "object"
+    },
+    "docs_dir": {
+      "type": "string",
+      "minLength": 1
+    },
+    "site_dir": {
+      "type": "string",
+      "minLength": 1
+    },
+    "checks": {
+      "type": "array"
+    },
+    "counts": {
+      "type": "object"
+    },
+    "assets_directory": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    }
+  }
+}

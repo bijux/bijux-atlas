@@ -62,6 +62,8 @@ pub struct ProfilesMatrixInputs {
 
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
 pub struct ProfilesMatrixReport {
+    pub report_id: String,
+    pub version: u64,
     pub schema_version: u64,
     pub kind: String,
     pub inputs: ProfilesMatrixInputs,
@@ -672,6 +674,8 @@ pub fn build_report(
             .count(),
     };
     ProfilesMatrixReport {
+        report_id: "ops-profiles".to_string(),
+        version: 1,
         schema_version: 1,
         kind: "ops_profiles_matrix".to_string(),
         inputs,
@@ -691,6 +695,8 @@ pub fn validate_report_schema_file(schema_path: &Path) -> Result<(), String> {
         .and_then(|value| value.as_array())
         .ok_or_else(|| format!("{} must declare required array", schema_path.display()))?;
     for field in [
+        "report_id",
+        "version",
         "schema_version",
         "kind",
         "inputs",
@@ -710,6 +716,12 @@ pub fn validate_report_value(report: &serde_json::Value, schema_path: &Path) -> 
     let obj = report
         .as_object()
         .ok_or_else(|| "ops-profiles report must be a JSON object".to_string())?;
+    if obj.get("report_id").and_then(|value| value.as_str()) != Some("ops-profiles") {
+        return Err("ops-profiles report must declare report_id=ops-profiles".to_string());
+    }
+    if obj.get("version").and_then(|value| value.as_u64()) != Some(1) {
+        return Err("ops-profiles report must declare version=1".to_string());
+    }
     if obj.get("schema_version").and_then(|value| value.as_u64()) != Some(1) {
         return Err("ops-profiles report must declare schema_version=1".to_string());
     }
