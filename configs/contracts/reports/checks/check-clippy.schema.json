@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/reports/checks/check-clippy.schema.json",
+  "title": "Clippy Check Report",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["report_id", "version", "inputs"],
+  "properties": {
+    "report_id": { "type": "string", "const": "check-clippy" },
+    "version": { "type": "integer", "const": 1 },
+    "inputs": { "type": "object" }
+  }
+}

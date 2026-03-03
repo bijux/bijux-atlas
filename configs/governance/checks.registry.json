@@ -18,8 +18,11 @@
       "commands": [
         "make fmt"
       ],
+      "report_ids": [
+        "check-rustfmt"
+      ],
       "reports": [
-        "artifacts/lint/rustfmt-check.json"
+        "CHECK-RUSTFMT-001.check-rustfmt.json"
       ],
       "retries": 0,
       "requires_tools": [
@@ -56,9 +59,11 @@
       "commands": [
         "make lint"
       ],
+      "report_ids": [
+        "check-clippy"
+      ],
       "reports": [
-        "artifacts/lint/clippy.json",
-        "artifacts/lint/report.json"
+        "CHECK-RUST-CLIPPY-001.check-clippy.json"
       ],
       "retries": 0,
       "requires_tools": [
@@ -94,8 +99,11 @@
       "commands": [
         "make lint-policy-enforce"
       ],
+      "report_ids": [
+        "check-config-format"
+      ],
       "reports": [
-        "artifacts/lint-policy/report.json"
+        "CHECK-LINT-POLICY-001.check-config-format.json"
       ],
       "retries": 0,
       "requires_tools": [
@@ -133,8 +141,11 @@
       "commands": [
         "make configs-lint"
       ],
+      "report_ids": [
+        "check-config-format"
+      ],
       "reports": [
-        "artifacts/configs-lint/report.json"
+        "CHECK-CONFIGS-LINT-001.check-config-format.json"
       ],
       "retries": 0,
       "requires_tools": [
@@ -170,8 +181,11 @@
       "commands": [
         "make docs-validate"
       ],
+      "report_ids": [
+        "check-docs-links"
+      ],
       "reports": [
-        "artifacts/docs-validate/report.json"
+        "CHECK-DOCS-VALIDATE-001.check-docs-links.json"
       ],
       "retries": 0,
       "requires_tools": [
@@ -208,8 +222,13 @@
       "commands": [
         "make k8s-validate"
       ],
+      "report_ids": [
+        "check-helm-lint",
+        "check-kubeconform"
+      ],
       "reports": [
-        "artifacts/k8s-validate/report.json"
+        "CHECK-K8S-VALIDATE-001.check-helm-lint.json",
+        "CHECK-K8S-VALIDATE-001.check-kubeconform.json"
       ],
       "retries": 0,
       "requires_tools": [
@@ -246,8 +265,11 @@
       "commands": [
         "make audit"
       ],
+      "report_ids": [
+        "check-deps"
+      ],
       "reports": [
-        "artifacts/supply-chain/supply-chain.json"
+        "CHECK-SUPPLY-CHAIN-DENY-001.check-deps.json"
       ],
       "retries": 0,
       "requires_tools": [
@@ -284,8 +306,11 @@
       "commands": [
         "make audit"
       ],
+      "report_ids": [
+        "check-deps"
+      ],
       "reports": [
-        "artifacts/supply-chain/supply-chain.json"
+        "CHECK-SUPPLY-CHAIN-AUDIT-001.check-deps.json"
       ],
       "retries": 0,
       "requires_tools": [
@@ -321,8 +346,11 @@
       "commands": [
         "make ops-fast"
       ],
+      "report_ids": [
+        "check-suite-summary"
+      ],
       "reports": [
-        "artifacts/ops-fast/report.json"
+        "CHECK-SUITE-CI-FAST-001.check-suite-summary.json"
       ],
       "retries": 0,
       "requires_tools": [
@@ -359,8 +387,11 @@
       "commands": [
         "make ops-pr"
       ],
+      "report_ids": [
+        "check-suite-summary"
+      ],
       "reports": [
-        "artifacts/ops-pr/report.json"
+        "CHECK-SUITE-CI-PR-001.check-suite-summary.json"
       ],
       "retries": 0,
       "requires_tools": [
@@ -397,8 +428,11 @@
       "commands": [
         "make ops-nightly"
       ],
+      "report_ids": [
+        "check-suite-summary"
+      ],
       "reports": [
-        "artifacts/ops-nightly/report.json"
+        "CHECK-SUITE-CI-NIGHTLY-001.check-suite-summary.json"
       ],
       "retries": 0,
       "requires_tools": [
@@ -436,8 +470,11 @@
       "commands": [
         "make contracts-docs-required"
       ],
+      "report_ids": [
+        "check-suite-summary"
+      ],
       "reports": [
-        "artifacts/contracts/docs-required.json"
+        "CHECK-CONTRACTS-DOCS-REQUIRED-001.check-suite-summary.json"
       ],
       "retries": 0,
       "requires_tools": [
@@ -473,8 +510,11 @@
       "commands": [
         "make contracts-configs-required"
       ],
+      "report_ids": [
+        "check-suite-summary"
+      ],
       "reports": [
-        "artifacts/contracts/configs-required.json"
+        "CHECK-CONTRACTS-CONFIGS-REQUIRED-001.check-suite-summary.json"
       ],
       "retries": 0,
       "requires_tools": [
@@ -510,8 +550,11 @@
       "commands": [
         "make contracts-make-required"
       ],
+      "report_ids": [
+        "check-suite-summary"
+      ],
       "reports": [
-        "artifacts/contracts/make-required.json"
+        "CHECK-CONTRACTS-MAKE-REQUIRED-001.check-suite-summary.json"
       ],
       "retries": 0,
       "requires_tools": [
@@ -548,8 +591,11 @@
       "commands": [
         "bijux dev atlas check run --suite repo_required --include-internal --include-slow --allow-git --format json"
       ],
+      "report_ids": [
+        "check-suite-summary"
+      ],
       "reports": [
-        "artifacts/contracts/repo-required.json"
+        "CHECK-CONTRACTS-REPO-REQUIRED-001.check-suite-summary.json"
       ],
       "retries": 0,
       "requires_tools": [

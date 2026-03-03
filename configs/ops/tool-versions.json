@@ -2,7 +2,10 @@
   "kind": "v0.31.0",
   "k6": "v1.6.1",
   "helm": "v3.18.3",
+  "kubeconform": "v0.7.0",
   "kubectl": "v1.35.1",
+  "cargo-audit": "0.22.0",
+  "cargo-deny": "0.19.0",
   "python3": "3.10.11",
   "jq": "v1.7.1",
   "yq": "v4.52.4"

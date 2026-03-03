@@ -163,6 +163,7 @@ struct ChecksRegistryEntry {
     inputs: Vec<String>,
     outputs: Vec<String>,
     commands: Vec<String>,
+    report_ids: Vec<String>,
     reports: Vec<String>,
     depends_on: Option<Vec<String>>,
     replaces: Option<Vec<String>>,
@@ -240,6 +241,19 @@ struct RegistryCompletenessPolicy {
     required_rules: Vec<String>,
 }
 
+#[derive(Debug, Deserialize)]
+struct CheckReportSchemaIndex {
+    schema_version: u64,
+    index_id: String,
+    schemas: Vec<CheckReportSchemaEntry>,
+}
+
+#[derive(Debug, Deserialize)]
+struct CheckReportSchemaEntry {
+    report_id: String,
+    schema_path: String,
+}
+
 fn exceptions_registry_path(root: &Path) -> PathBuf {
     root.join("configs/governance/exceptions.yaml")
 }
@@ -258,6 +272,10 @@ fn tests_suite_path(root: &Path) -> PathBuf {
 
 fn suites_readme_path(root: &Path) -> PathBuf {
     root.join("configs/governance/suites/README.md")
+}
+
+fn checks_schema_index_path(root: &Path) -> PathBuf {
+    root.join("configs/contracts/reports/checks/schema-index.json")
 }
 
 fn suite_schema_path(root: &Path) -> PathBuf {
@@ -918,6 +936,8 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     let tests_suite: GovernanceSuiteRegistry = read_json_file(&tests_suite_path(root))?;
     let suites_index: GovernanceSuitesIndex = read_json_file(&suites_index_path(root))?;
     let checks_registry: ChecksRegistryCatalog = read_json_file(&checks_registry_path(root))?;
+    let checks_schema_index: CheckReportSchemaIndex =
+        read_json_file(&checks_schema_index_path(root))?;
     let contracts_registry: ContractsRegistryCatalog =
         read_json_file(&contracts_registry_path(root))?;
     let tags_taxonomy: GovernanceTagsTaxonomy = read_json_file(&tags_taxonomy_path(root))?;
@@ -933,6 +953,7 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     let mut check_ids = BTreeSet::new();
     let mut contract_ids = BTreeSet::new();
     let mut missing_rows = Vec::<serde_json::Value>::new();
+    let mut referenced_check_schema_ids = BTreeSet::<String>::new();
     let allowed_tags = tags_taxonomy.tags.iter().cloned().collect::<BTreeSet<_>>();
     let known_check_groups = check_groups
         .groups
@@ -953,6 +974,11 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     .into_iter()
     .collect::<BTreeSet<_>>();
     let indexed_suite_files = suites_index.suites.iter().cloned().collect::<BTreeSet<_>>();
+    let check_schema_ids = checks_schema_index
+        .schemas
+        .iter()
+        .map(|entry| entry.report_id.as_str())
+        .collect::<BTreeSet<_>>();
 
     for suite in [&checks_suite, &contracts_suite, &tests_suite] {
         if suite.schema_version != 1 {
@@ -1084,6 +1110,28 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             completeness_policy.owner
         ));
     }
+    if checks_schema_index.schema_version != 1 || checks_schema_index.index_id != "checks-schema-index" {
+        errors.push(
+            "check schema index must declare schema_version=1 and index_id=checks-schema-index"
+                .to_string(),
+        );
+    }
+    for entry in &checks_schema_index.schemas {
+        if entry.report_id.trim().is_empty() {
+            errors.push("check schema index report_id must not be blank".to_string());
+        }
+        if entry.schema_path.trim().is_empty() {
+            errors.push(format!(
+                "check schema index entry `{}` missing schema_path",
+                entry.report_id
+            ));
+        } else if !root.join(&entry.schema_path).is_file() {
+            errors.push(format!(
+                "check schema index entry `{}` points to missing schema `{}`",
+                entry.report_id, entry.schema_path
+            ));
+        }
+    }
 
     if checks_registry.schema_version != 1 || checks_registry.registry_id != "checks-registry" {
         errors.push(
@@ -1160,6 +1208,38 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             missing_rows.push(
                 serde_json::json!({"kind":"check","id":check.check_id,"missing":["reports"]}),
             );
+        }
+        if check.report_ids.is_empty() {
+            errors.push(format!(
+                "{} must declare at least one report id",
+                check.check_id
+            ));
+            missing_rows.push(
+                serde_json::json!({"kind":"check","id":check.check_id,"missing":["report_ids"]}),
+            );
+        }
+        if check.report_ids.len() != check.reports.len() {
+            errors.push(format!(
+                "{} report_ids count must match reports count",
+                check.check_id
+            ));
+        }
+        for report_id in &check.report_ids {
+            referenced_check_schema_ids.insert(report_id.clone());
+            if !check_schema_ids.contains(report_id.as_str()) {
+                errors.push(format!(
+                    "{} references unknown check report id `{}`",
+                    check.check_id, report_id
+                ));
+            }
+        }
+        for report in &check.reports {
+            if !report.contains(&check.check_id) {
+                errors.push(format!(
+                    "{} report path `{}` must include the check id",
+                    check.check_id, report
+                ));
+            }
         }
         if check.suite_membership.is_empty() {
             errors.push(format!("{} must declare suite_membership", check.check_id));
@@ -1265,6 +1345,14 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             errors.push(format!(
                 "{} suite_membership must include `checks`",
                 check.check_id
+            ));
+        }
+    }
+    for entry in &checks_schema_index.schemas {
+        if !referenced_check_schema_ids.contains(&entry.report_id) {
+            errors.push(format!(
+                "check schema `{}` is not referenced by any governed check",
+                entry.report_id
             ));
         }
     }

@@ -19,6 +19,12 @@
       "pinned_at": "2026-02-19",
       "owner": "ops-platform"
     },
+    "kubeconform": {
+      "version": "v0.7.0",
+      "source_url": "https://github.com/yannh/kubeconform/releases",
+      "pinned_at": "2026-03-03",
+      "owner": "ops-platform"
+    },
     "kubectl": {
       "version": "v1.35.1",
       "source_url": "https://kubernetes.io/releases/",
@@ -65,6 +71,18 @@
       "version": "v4.52.4",
       "source_url": "https://github.com/mikefarah/yq/releases",
       "pinned_at": "2026-02-19",
+      "owner": "ops-platform"
+    },
+    "cargo-audit": {
+      "version": "0.22.0",
+      "source_url": "https://github.com/RustSec/rustsec/tree/main/cargo-audit",
+      "pinned_at": "2026-03-03",
+      "owner": "ops-platform"
+    },
+    "cargo-deny": {
+      "version": "0.19.0",
+      "source_url": "https://github.com/EmbarkStudios/cargo-deny/releases",
+      "pinned_at": "2026-03-03",
       "owner": "ops-platform"
     }
   }

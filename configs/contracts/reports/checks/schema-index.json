@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "index_id": "checks-schema-index",
+  "schemas": [
+    {
+      "report_id": "check-clippy",
+      "schema_path": "configs/contracts/reports/checks/check-clippy.schema.json"
+    },
+    {
+      "report_id": "check-config-format",
+      "schema_path": "configs/contracts/reports/checks/check-config-format.schema.json"
+    },
+    {
+      "report_id": "check-deps",
+      "schema_path": "configs/contracts/reports/checks/check-deps.schema.json"
+    },
+    {
+      "report_id": "check-docs-links",
+      "schema_path": "configs/contracts/reports/checks/check-docs-links.schema.json"
+    },
+    {
+      "report_id": "check-helm-lint",
+      "schema_path": "configs/contracts/reports/checks/check-helm-lint.schema.json"
+    },
+    {
+      "report_id": "check-kubeconform",
+      "schema_path": "configs/contracts/reports/checks/check-kubeconform.schema.json"
+    },
+    {
+      "report_id": "check-rustfmt",
+      "schema_path": "configs/contracts/reports/checks/check-rustfmt.schema.json"
+    },
+    {
+      "report_id": "check-suite-summary",
+      "schema_path": "configs/contracts/reports/checks/check-suite-summary.schema.json"
+    }
+  ]
+}
