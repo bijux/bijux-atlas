@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/ops/k8s/ops-cleanup.schema.json",
+  "title": "Ops Cleanup Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "cluster",
+    "namespace",
+    "status",
+    "leftovers"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "cluster": {
+      "type": "string",
+      "const": "kind"
+    },
+    "namespace": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "failed"
+      ]
+    },
+    "leftovers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

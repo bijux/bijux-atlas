@@ -3,6 +3,29 @@
   "schema_version": 1,
   "profiles": [
     {
+      "id": "profile-baseline",
+      "name": "Profile Baseline",
+      "purpose": "Minimal shared install baseline used to verify the chart starts with the common default contract.",
+      "risk_level": "low",
+      "intendedUse": "kind",
+      "forbiddenToggles": [],
+      "requiredToggles": [
+        "readOnlyRootFilesystem=true"
+      ],
+      "expectedResourcesClass": "tiny",
+      "networkPolicyModeRequired": "disabled",
+      "hpaPolicyRequired": "disabled",
+      "imageDigestRequired": false,
+      "readOnlyRootFilesystemRequired": true,
+      "debugEndpointsDisabled": true,
+      "storage": {
+        "enabled": false,
+        "mode": "ephemeral"
+      },
+      "owner": "bijux-atlas-operations",
+      "values_file": "ops/k8s/values/profile-baseline.yaml"
+    },
+    {
       "id": "ci",
       "name": "CI",
       "purpose": "Fast validation lane with cached-only startup and no external dependency egress.",
