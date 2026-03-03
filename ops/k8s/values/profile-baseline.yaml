@@ -1,19 +1,24 @@
+# Shared operator baseline for profile overlays.
+# Helm still merges each profile with chart defaults in `ops/k8s/charts/bijux-atlas/values.yaml`;
+# this file records the common operating intent so profile files only keep deliberate differences.
 server:
-  cachedOnlyMode: true
-  readinessRequiresCatalog: false
+  configSchemaVersion: v1
 
 networkPolicy:
   enabled: true
-  allowDns: false
+  allowDns: true
+  allowMonitoringNamespace: observability
   allowedEgressCIDRs: []
   ingress:
     mode: same-namespace
     allowNamespaces: []
+    customRules: []
   egress:
-    mode: disabled
-    allowDns: false
+    mode: internet-only
+    allowDns: true
     allowCidrs: []
     allowNamespaces: []
+    customRules: []
   dependencies:
     redis:
       enabled: false
@@ -27,6 +32,3 @@ networkPolicy:
     otelCollector:
       enabled: false
       ports: [4317, 4318]
-
-hpa:
-  enabled: false

@@ -18,7 +18,6 @@ cache:
   maxConcurrentDownloads: 4
 
 server:
-  configSchemaVersion: v1
   readinessProbePath: /healthz/overload
   responseMaxBytes: 786432
   sqlTimeoutMs: 1200
@@ -31,6 +30,12 @@ hpa:
   cpuUtilization: 65
 
 metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 15s
+    scrapeTimeout: 5s
+    labels: {}
   customMetrics:
     enabled: true
     requiredPodAnnotations:
