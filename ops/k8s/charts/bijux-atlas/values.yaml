@@ -25,6 +25,10 @@ ingress:
   className: ""
   host: ""
   path: /
+  authProxy:
+    enabled: false
+    annotations: {}
+    passThroughHeaders: []
 
 resources:
   requests:
@@ -90,6 +94,8 @@ server:
   log:
     level: info
     format: json
+  adminEndpoints:
+    enabled: false
   timeouts:
     readMs: 5000
     writeMs: 5000

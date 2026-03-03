@@ -541,6 +541,39 @@ fn networkpolicy_budget_and_prod_exception_rules_are_governed() {
 }
 
 #[test]
+fn prod_profiles_keep_admin_endpoints_disabled_without_registered_exception() {
+    let root = repo_root();
+    let exceptions = load_json(&root.join("ops/k8s/admin-endpoints-exceptions.json"));
+    let exception_profiles = exceptions["exceptions"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(|row| row["profile"].as_str())
+        .collect::<BTreeSet<_>>();
+    for values_file in [
+        "ops/k8s/values/prod.yaml",
+        "ops/k8s/values/prod-minimal.yaml",
+        "ops/k8s/values/prod-ha.yaml",
+        "ops/k8s/values/prod-airgap.yaml",
+    ] {
+        let values = load_yaml(&root.join(values_file));
+        let admin_enabled = values["server"]["adminEndpoints"]["enabled"]
+            .as_bool()
+            .unwrap_or(false);
+        if admin_enabled {
+            let profile_name = Path::new(values_file)
+                .file_stem()
+                .and_then(|value| value.to_str())
+                .expect("profile stem");
+            assert!(
+                exception_profiles.contains(profile_name),
+                "{values_file} enables admin endpoints without a registered owner/expiry exception"
+            );
+        }
+    }
+}
+
+#[test]
 fn networkpolicy_render_contains_expected_policy_shape() {
     let root = repo_root();
     let internet_only =

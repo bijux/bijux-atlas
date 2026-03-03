@@ -5,6 +5,17 @@ metadata:
   name: {{ include "bijux-atlas.fullname" . }}
   labels:
     {{- include "bijux-atlas.labels" . | nindent 4 }}
+  {{- $authProxyEnabled := .Values.ingress.authProxy.enabled | default false }}
+  {{- $passThroughHeaders := .Values.ingress.authProxy.passThroughHeaders | default (list) }}
+  {{- if or (and $authProxyEnabled .Values.ingress.authProxy.annotations) (and $authProxyEnabled (gt (len $passThroughHeaders) 0)) }}
+  annotations:
+    {{- with .Values.ingress.authProxy.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- if and $authProxyEnabled (gt (len $passThroughHeaders) 0) }}
+    nginx.ingress.kubernetes.io/auth-response-headers: {{ join "," $passThroughHeaders | quote }}
+    {{- end }}
+  {{- end }}
 spec:
   {{- if .Values.ingress.className }}
   ingressClassName: {{ .Values.ingress.className | quote }}
