@@ -22,6 +22,7 @@ last_reviewed: 2026-03-03
 - Create or reuse the kind simulation cluster with `bijux dev atlas ops kind up`.
 - Keep the previous chart package at `artifacts/ops/chart-sources/previous/bijux-atlas.tgz`.
 - Use a governed profile such as `profile-baseline`, `ci`, `offline`, or `perf`.
+- Treat the simulation environment as offline by default; do not rely on external network unless a command explicitly requires it.
 
 ## Install
 
@@ -36,6 +37,16 @@ bijux dev atlas ops helm rollback --profile profile-baseline --cluster kind --to
 - `ops-upgrade.json` must record a successful readiness wait, successful smoke checks, rollout history, pod restart count, and passing compatibility checks.
 - `ops-rollback.json` must record a successful readiness wait, successful smoke checks, and `service_healthy_after_rollback=true`.
 - `ops-lifecycle-summary.json` must contain the profile entry with stable report paths for the upgrade and rollback evidence.
+- `artifacts/ops/history/readiness-baselines.json` must capture the current readiness baseline after a successful lifecycle run.
+- `artifacts/ops/<run_id>/evidence/ops-lifecycle-evidence.tar` must exist when lifecycle evidence is packaged.
+
+## Render Summary Table
+
+```bash
+python3 scripts/docs/generate_lifecycle_summary_table.py \
+  --input artifacts/ops/<run_id>/reports/ops-lifecycle-summary.json \
+  --output artifacts/docs/generated/ops-lifecycle-summary-table.md
+```
 
 ## Rollback
 
