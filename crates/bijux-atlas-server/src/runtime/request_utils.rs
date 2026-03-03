@@ -185,6 +185,22 @@ fn redacted_audit_field(key: &str, value: &str) -> Option<String> {
     Some(value.to_string())
 }
 
+fn audit_dynamic_field_allowed(key: &str) -> bool {
+    matches!(
+        key,
+        "status"
+            | "decision"
+            | "reason"
+            | "route"
+            | "source"
+            | "outcome"
+            | "auth_mode"
+            | "admin_endpoints_enabled"
+            | "audit_enabled"
+            | "catalog_configured"
+    )
+}
+
 fn build_audit_event(
     event_name: &str,
     principal: Option<&str>,
@@ -232,6 +248,9 @@ fn build_audit_event(
         object.insert("resource_id".to_string(), serde_json::Value::String(redacted));
     }
     for (key, value) in fields {
+        if !audit_dynamic_field_allowed(key) {
+            continue;
+        }
         if let Some(redacted) = redacted_audit_field(key, value) {
             object.insert(
                 (*key).to_string(),
@@ -778,6 +797,26 @@ mod tests {
         let _ = std::fs::remove_file(root.join("audit.log.1"));
         let _ = std::fs::remove_file(&log_path);
         let _ = std::fs::remove_dir(&root);
+    }
+
+    #[test]
+    fn audit_event_drops_unknown_or_sensitive_dynamic_fields() {
+        let event = build_audit_event(
+            "query_executed",
+            Some("service-account"),
+            "dataset.read",
+            "dataset-id",
+            "/v1/datasets",
+            crate::config::AuditSink::Stdout,
+            &[
+                ("status", "200"),
+                ("authorization", "Bearer topsecret"),
+                ("unknown_field", "should-not-appear"),
+            ],
+        );
+        assert_eq!(event["status"].as_str(), Some("200"));
+        assert!(event.get("authorization").is_none());
+        assert!(event.get("unknown_field").is_none());
     }
 }
 

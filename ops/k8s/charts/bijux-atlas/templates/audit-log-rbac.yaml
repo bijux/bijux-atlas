@@ -1,0 +1,35 @@
+{{- if and .Values.rbac.create .Values.audit.persistence.enabled .Values.rbac.auditLogReader.enabled }}
+{{- if not .Values.rbac.auditLogReader.serviceAccountName }}
+{{- fail "rbac.auditLogReader.serviceAccountName must be set when audit log reader RBAC is enabled" }}
+{{- end }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "bijux-atlas.fullname" . }}-audit-reader
+  labels:
+    {{- include "bijux-atlas.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "bijux-atlas.fullname" . }}-audit-reader
+  labels:
+    {{- include "bijux-atlas.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.rbac.auditLogReader.serviceAccountName }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "bijux-atlas.fullname" . }}-audit-reader
+{{- end }}

@@ -286,6 +286,9 @@ serviceAccount:
 
 rbac:
   create: true
+  auditLogReader:
+    enabled: false
+    serviceAccountName: ""
 
 priorityClassName: ""
 

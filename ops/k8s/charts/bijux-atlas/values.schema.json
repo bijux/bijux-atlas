@@ -2041,6 +2041,18 @@
     "rbac": {
       "additionalProperties": false,
       "properties": {
+        "auditLogReader": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "serviceAccountName": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
         "create": {
           "type": "boolean"
         }
