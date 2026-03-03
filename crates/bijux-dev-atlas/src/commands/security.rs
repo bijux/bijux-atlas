@@ -5,9 +5,18 @@ use crate::{emit_payload, resolve_repo_root};
 use std::fs;
 use std::path::{Path, PathBuf};
 
+fn read_json(path: &Path) -> Result<serde_json::Value, String> {
+    serde_json::from_str(
+        &fs::read_to_string(path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", path.display()))
+}
+
 fn read_yaml(path: &Path) -> Result<serde_yaml::Value, String> {
     serde_yaml::from_str(
-        &fs::read_to_string(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+        &fs::read_to_string(path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
@@ -15,7 +24,8 @@ fn read_yaml(path: &Path) -> Result<serde_yaml::Value, String> {
 fn report_path(root: &Path) -> Result<PathBuf, String> {
     let path = root.join("artifacts/security/security-threat-model.json");
     if let Some(parent) = path.parent() {
-        fs::create_dir_all(parent).map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
     }
     Ok(path)
 }
@@ -23,17 +33,73 @@ fn report_path(root: &Path) -> Result<PathBuf, String> {
 fn named_report_path(root: &Path, name: &str) -> Result<PathBuf, String> {
     let path = root.join("artifacts/security").join(name);
     if let Some(parent) = path.parent() {
-        fs::create_dir_all(parent).map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
     }
     Ok(path)
 }
 
 fn ensure_json(path: &Path) -> Result<(), String> {
-    let _: serde_json::Value = serde_json::from_str(
-        &fs::read_to_string(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
-    )
-    .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    let _: serde_json::Value = read_json(path)?;
     Ok(())
+}
+
+fn collect_json_key_strings(value: &serde_json::Value, key: &str, out: &mut Vec<String>) {
+    match value {
+        serde_json::Value::Object(map) => {
+            for (name, inner) in map {
+                if name == key {
+                    if let Some(text) = inner.as_str() {
+                        out.push(text.to_string());
+                    }
+                }
+                collect_json_key_strings(inner, key, out);
+            }
+        }
+        serde_json::Value::Array(items) => {
+            for item in items {
+                collect_json_key_strings(item, key, out);
+            }
+        }
+        _ => {}
+    }
+}
+
+fn parse_requirement_indexes(text: &str) -> Vec<String> {
+    text.lines()
+        .filter_map(|line| {
+            let trimmed = line.trim();
+            if trimmed.is_empty() || trimmed.starts_with('#') {
+                return None;
+            }
+            for prefix in ["--index-url", "--extra-index-url"] {
+                if trimmed.starts_with(prefix) {
+                    let remainder = trimmed.trim_start_matches(prefix).trim();
+                    if !remainder.is_empty() {
+                        return Some(
+                            remainder
+                                .split_whitespace()
+                                .next()
+                                .unwrap_or_default()
+                                .to_string(),
+                        );
+                    }
+                }
+            }
+            None
+        })
+        .collect()
+}
+
+fn is_full_sha(value: &str) -> bool {
+    value.len() == 40 && value.chars().all(|ch| ch.is_ascii_hexdigit())
+}
+
+fn is_sha256_digest(value: &str) -> bool {
+    let Some(hex) = value.strip_prefix("sha256:") else {
+        return false;
+    };
+    hex.len() == 64 && hex.chars().all(|ch| ch.is_ascii_hexdigit())
 }
 
 pub(crate) fn run_security_command(
@@ -43,7 +109,9 @@ pub(crate) fn run_security_command(
     match command {
         SecurityCommand::Validate(args) => run_security_validate(args),
         SecurityCommand::Compliance { command } => match command {
-            crate::cli::SecurityComplianceCommand::Validate(args) => run_security_compliance_validate(args),
+            crate::cli::SecurityComplianceCommand::Validate(args) => {
+                run_security_compliance_validate(args)
+            }
         },
         SecurityCommand::ScanArtifacts(args) => run_security_scan_artifacts(args),
     }
@@ -107,10 +175,17 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let controls_schema_path = root.join("configs/contracts/security/controls.schema.json");
     let secrets_schema_path = root.join("configs/contracts/security/secrets.schema.json");
     let redaction_schema_path = root.join("configs/contracts/security/redaction.schema.json");
-    let forbidden_patterns_schema_path = root.join("configs/contracts/security/forbidden-patterns.schema.json");
+    let forbidden_patterns_schema_path =
+        root.join("configs/contracts/security/forbidden-patterns.schema.json");
+    let dependency_policy_schema_path =
+        root.join("configs/contracts/security/dependency-source-policy.schema.json");
+    let signing_policy_schema_path =
+        root.join("configs/contracts/release/signing-policy.schema.json");
     let secrets_path = root.join("configs/security/secrets.json");
     let redaction_path = root.join("configs/security/redaction.json");
     let forbidden_patterns_path = root.join("configs/security/forbidden-patterns.json");
+    let dependency_policy_path = root.join("configs/security/dependency-source-policy.json");
+    let signing_policy_path = root.join("release/signing/policy.yaml");
 
     ensure_json(&asset_schema_path)?;
     ensure_json(&threats_schema_path)?;
@@ -119,24 +194,18 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     ensure_json(&secrets_schema_path)?;
     ensure_json(&redaction_schema_path)?;
     ensure_json(&forbidden_patterns_schema_path)?;
+    ensure_json(&dependency_policy_schema_path)?;
+    ensure_json(&signing_policy_schema_path)?;
 
     let assets = read_yaml(&assets_path)?;
     let threats = read_yaml(&threats_path)?;
     let mitigations = read_yaml(&mitigations_path)?;
     let controls = read_yaml(&controls_path)?;
-    let secrets: serde_json::Value = serde_json::from_str(
-        &fs::read_to_string(&secrets_path).map_err(|err| format!("failed to read {}: {err}", secrets_path.display()))?,
-    )
-    .map_err(|err| format!("failed to parse {}: {err}", secrets_path.display()))?;
-    let redaction: serde_json::Value = serde_json::from_str(
-        &fs::read_to_string(&redaction_path).map_err(|err| format!("failed to read {}: {err}", redaction_path.display()))?,
-    )
-    .map_err(|err| format!("failed to parse {}: {err}", redaction_path.display()))?;
-    let forbidden_patterns: serde_json::Value = serde_json::from_str(
-        &fs::read_to_string(&forbidden_patterns_path)
-            .map_err(|err| format!("failed to read {}: {err}", forbidden_patterns_path.display()))?,
-    )
-    .map_err(|err| format!("failed to parse {}: {err}", forbidden_patterns_path.display()))?;
+    let secrets = read_json(&secrets_path)?;
+    let redaction = read_json(&redaction_path)?;
+    let forbidden_patterns = read_json(&forbidden_patterns_path)?;
+    let dependency_policy = read_json(&dependency_policy_path)?;
+    let signing_policy = read_yaml(&signing_policy_path)?;
 
     let asset_rows = assets
         .get("assets")
@@ -167,8 +236,14 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let mut missing_control_or_reason = Vec::new();
     let mut high_severity_gaps = Vec::new();
     for row in &threat_rows {
-        let id = row.get("id").and_then(serde_yaml::Value::as_str).unwrap_or_default();
-        let severity = row.get("severity").and_then(serde_yaml::Value::as_str).unwrap_or_default();
+        let id = row
+            .get("id")
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or_default();
+        let severity = row
+            .get("severity")
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or_default();
         let mapped = row
             .get("mitigations")
             .and_then(serde_yaml::Value::as_sequence)
@@ -186,10 +261,19 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         }
         if severity == "high" {
             let has_executable_or_runbook = mitigation_rows.iter().any(|mitigation| {
-                let mitigation_id = mitigation.get("id").and_then(serde_yaml::Value::as_str).unwrap_or_default();
+                let mitigation_id = mitigation
+                    .get("id")
+                    .and_then(serde_yaml::Value::as_str)
+                    .unwrap_or_default();
                 mapped_ids.contains(&mitigation_id)
-                    && (mitigation.get("control_check_id").and_then(serde_yaml::Value::as_str).is_some()
-                        || mitigation.get("runbook_page").and_then(serde_yaml::Value::as_str).is_some())
+                    && (mitigation
+                        .get("control_check_id")
+                        .and_then(serde_yaml::Value::as_str)
+                        .is_some()
+                        || mitigation
+                            .get("runbook_page")
+                            .and_then(serde_yaml::Value::as_str)
+                            .is_some())
             });
             if !has_executable_or_runbook {
                 high_severity_gaps.push(id.to_string());
@@ -199,13 +283,25 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
 
     let mut missing_docs_links = Vec::new();
     for row in &mitigation_rows {
-        let id = row.get("id").and_then(serde_yaml::Value::as_str).unwrap_or_default();
-        let has_control = row.get("control_check_id").and_then(serde_yaml::Value::as_str).is_some();
-        let has_reason = row.get("documented_reason").and_then(serde_yaml::Value::as_str).is_some();
+        let id = row
+            .get("id")
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or_default();
+        let has_control = row
+            .get("control_check_id")
+            .and_then(serde_yaml::Value::as_str)
+            .is_some();
+        let has_reason = row
+            .get("documented_reason")
+            .and_then(serde_yaml::Value::as_str)
+            .is_some();
         if !has_control && !has_reason {
             missing_control_or_reason.push(id.to_string());
         }
-        let docs_page = row.get("docs_page").and_then(serde_yaml::Value::as_str).unwrap_or_default();
+        let docs_page = row
+            .get("docs_page")
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or_default();
         if docs_page.is_empty() || !root.join(docs_page).exists() {
             missing_docs_links.push(id.to_string());
         }
@@ -217,10 +313,22 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     }
     for row in &asset_rows {
         if row.get("id").and_then(serde_yaml::Value::as_str).is_none()
-            || row.get("type").and_then(serde_yaml::Value::as_str).is_none()
-            || row.get("description").and_then(serde_yaml::Value::as_str).is_none()
-            || row.get("sensitivity").and_then(serde_yaml::Value::as_str).is_none()
-            || row.get("owner").and_then(serde_yaml::Value::as_str).is_none()
+            || row
+                .get("type")
+                .and_then(serde_yaml::Value::as_str)
+                .is_none()
+            || row
+                .get("description")
+                .and_then(serde_yaml::Value::as_str)
+                .is_none()
+            || row
+                .get("sensitivity")
+                .and_then(serde_yaml::Value::as_str)
+                .is_none()
+            || row
+                .get("owner")
+                .and_then(serde_yaml::Value::as_str)
+                .is_none()
         {
             shape_errors.push("assets.yaml contains an asset missing required fields".to_string());
             break;
@@ -231,12 +339,30 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     }
     for row in &threat_rows {
         if row.get("id").and_then(serde_yaml::Value::as_str).is_none()
-            || row.get("category").and_then(serde_yaml::Value::as_str).is_none()
-            || row.get("title").and_then(serde_yaml::Value::as_str).is_none()
-            || row.get("severity").and_then(serde_yaml::Value::as_str).is_none()
-            || row.get("likelihood").and_then(serde_yaml::Value::as_str).is_none()
-            || row.get("affected_component").and_then(serde_yaml::Value::as_str).is_none()
-            || row.get("residual_risk").and_then(serde_yaml::Value::as_str).is_none()
+            || row
+                .get("category")
+                .and_then(serde_yaml::Value::as_str)
+                .is_none()
+            || row
+                .get("title")
+                .and_then(serde_yaml::Value::as_str)
+                .is_none()
+            || row
+                .get("severity")
+                .and_then(serde_yaml::Value::as_str)
+                .is_none()
+            || row
+                .get("likelihood")
+                .and_then(serde_yaml::Value::as_str)
+                .is_none()
+            || row
+                .get("affected_component")
+                .and_then(serde_yaml::Value::as_str)
+                .is_none()
+            || row
+                .get("residual_risk")
+                .and_then(serde_yaml::Value::as_str)
+                .is_none()
         {
             shape_errors.push("threats.yaml contains a threat missing required fields".to_string());
             break;
@@ -247,10 +373,17 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     }
     for row in &mitigation_rows {
         if row.get("id").and_then(serde_yaml::Value::as_str).is_none()
-            || row.get("title").and_then(serde_yaml::Value::as_str).is_none()
-            || row.get("docs_page").and_then(serde_yaml::Value::as_str).is_none()
+            || row
+                .get("title")
+                .and_then(serde_yaml::Value::as_str)
+                .is_none()
+            || row
+                .get("docs_page")
+                .and_then(serde_yaml::Value::as_str)
+                .is_none()
         {
-            shape_errors.push("mitigations.yaml contains a mitigation missing required fields".to_string());
+            shape_errors
+                .push("mitigations.yaml contains a mitigation missing required fields".to_string());
             break;
         }
     }
@@ -294,15 +427,335 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let sec_red_001 = missing_redaction_keys.is_empty();
     let sec_red_002 = evidence_matches.is_empty();
 
+    let npm_allowed_registries = dependency_policy
+        .get("npm")
+        .and_then(|value| value.get("allowed_registries"))
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .collect::<Vec<_>>();
+    let npm_lockfiles = dependency_policy
+        .get("npm")
+        .and_then(|value| value.get("lockfile_paths"))
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .collect::<Vec<_>>();
+    let mut disallowed_npm_sources = Vec::new();
+    for lockfile in npm_lockfiles {
+        let lockfile_path = root.join(lockfile);
+        let lockfile_json = read_json(&lockfile_path)?;
+        let mut resolved_urls = Vec::new();
+        collect_json_key_strings(&lockfile_json, "resolved", &mut resolved_urls);
+        for url in resolved_urls {
+            if !npm_allowed_registries
+                .iter()
+                .any(|prefix| url.starts_with(prefix))
+            {
+                disallowed_npm_sources.push(format!("{lockfile}:{url}"));
+            }
+        }
+    }
+
+    let python_allowed_indexes = dependency_policy
+        .get("python")
+        .and_then(|value| value.get("allowed_indexes"))
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .collect::<Vec<_>>();
+    let python_requirement_paths = dependency_policy
+        .get("python")
+        .and_then(|value| value.get("requirements_paths"))
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .collect::<Vec<_>>();
+    let mut explicit_python_indexes = Vec::new();
+    let mut disallowed_python_indexes = Vec::new();
+    for requirement_path in python_requirement_paths {
+        let abs_path = root.join(requirement_path);
+        let text = fs::read_to_string(&abs_path)
+            .map_err(|err| format!("failed to read {}: {err}", abs_path.display()))?;
+        for index in parse_requirement_indexes(&text) {
+            explicit_python_indexes.push(format!("{requirement_path}:{index}"));
+            if !python_allowed_indexes
+                .iter()
+                .any(|allowed| allowed == &index)
+            {
+                disallowed_python_indexes.push(format!("{requirement_path}:{index}"));
+            }
+        }
+    }
+    let python_default_allowed = python_allowed_indexes
+        .iter()
+        .any(|index| *index == "https://pypi.org/simple" || *index == "https://pypi.org/simple/");
+    if explicit_python_indexes.is_empty() && !python_default_allowed {
+        disallowed_python_indexes.push("python-default-index:not-allowlisted".to_string());
+    }
+
+    let workflow_dir = dependency_policy
+        .get("github_actions")
+        .and_then(|value| value.get("workflow_dir"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or(".github/workflows");
+    let action_inventory_path = dependency_policy
+        .get("github_actions")
+        .and_then(|value| value.get("toolchain_inventory"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("ops/inventory/toolchain.json");
+    let action_inventory = read_json(&root.join(action_inventory_path))?;
+    let allowed_actions = action_inventory
+        .get("github_actions")
+        .and_then(serde_json::Value::as_object)
+        .cloned()
+        .unwrap_or_default();
+    let mut workflow_pin_gaps = Vec::new();
+    for file in list_files_recursive(&root.join(workflow_dir))? {
+        if file.extension().and_then(|ext| ext.to_str()) != Some("yml") {
+            continue;
+        }
+        let rel = file
+            .strip_prefix(&root)
+            .unwrap_or(&file)
+            .display()
+            .to_string();
+        let text = fs::read_to_string(&file)
+            .map_err(|err| format!("failed to read {}: {err}", file.display()))?;
+        for (line_idx, line) in text.lines().enumerate() {
+            let trimmed = line.trim();
+            if !trimmed.starts_with("- uses:") && !trimmed.starts_with("uses:") {
+                continue;
+            }
+            let Some((_, spec_raw)) = trimmed.split_once(':') else {
+                continue;
+            };
+            let spec = spec_raw.trim();
+            if spec.starts_with("docker://") {
+                continue;
+            }
+            let Some((action_name, reference)) = spec.rsplit_once('@') else {
+                workflow_pin_gaps.push(format!("{rel}:{}:{spec}:missing-ref", line_idx + 1));
+                continue;
+            };
+            if !is_full_sha(reference) {
+                workflow_pin_gaps.push(format!("{rel}:{}:{action_name}:{reference}", line_idx + 1));
+                continue;
+            }
+            let Some(entry) = allowed_actions.get(action_name) else {
+                workflow_pin_gaps.push(format!(
+                    "{rel}:{}:{action_name}:not-allowlisted",
+                    line_idx + 1
+                ));
+                continue;
+            };
+            let expected_sha = entry
+                .get("sha")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
+            if expected_sha != reference {
+                workflow_pin_gaps.push(format!(
+                    "{rel}:{}:{action_name}:expected-{expected_sha}-got-{reference}",
+                    line_idx + 1
+                ));
+            }
+        }
+    }
+
+    let image_policy = dependency_policy
+        .get("images")
+        .cloned()
+        .unwrap_or_else(|| serde_json::json!({}));
+    let image_inventory_path = image_policy
+        .get("toolchain_inventory")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("ops/inventory/toolchain.json");
+    let bases_lock_path = image_policy
+        .get("bases_lock")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("docker/bases.lock");
+    let evidence_manifest_path = image_policy
+        .get("evidence_manifest")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("release/evidence/manifest.json");
+    let image_inventory = read_json(&root.join(image_inventory_path))?;
+    let bases_lock = read_json(&root.join(bases_lock_path))?;
+    let evidence_manifest = read_json(&root.join(evidence_manifest_path))?;
+    let mut image_evidence_gaps = Vec::new();
+    if let Some(images) = image_inventory
+        .get("images")
+        .and_then(serde_json::Value::as_object)
+    {
+        for (name, image_ref) in images {
+            if name == "generated_by" {
+                continue;
+            }
+            let image_ref = image_ref.as_str().unwrap_or_default();
+            if !image_ref.contains("@sha256:") {
+                image_evidence_gaps.push(format!("toolchain:{name}"));
+            }
+        }
+    }
+    if let Some(images) = bases_lock
+        .get("images")
+        .and_then(serde_json::Value::as_array)
+    {
+        for image in images {
+            let name = image
+                .get("name")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or("unknown");
+            let digest = image
+                .get("digest")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
+            if !is_sha256_digest(digest) {
+                image_evidence_gaps.push(format!("bases-lock:{name}"));
+            }
+        }
+    } else {
+        image_evidence_gaps.push("bases-lock:missing-images".to_string());
+    }
+    let manifest_bases_path = evidence_manifest
+        .get("docker_bases_lock")
+        .and_then(|value| value.get("path"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    if manifest_bases_path != bases_lock_path {
+        image_evidence_gaps.push(format!(
+            "evidence-manifest:bases-lock:{manifest_bases_path}"
+        ));
+    }
+    let sec_images_001 = image_evidence_gaps.is_empty();
+
+    let sbom_policy = dependency_policy
+        .get("sbom")
+        .cloned()
+        .unwrap_or_else(|| serde_json::json!({}));
+    let required_sbom_formats = sbom_policy
+        .get("required_formats")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .collect::<Vec<_>>();
+    let sbom_rows = evidence_manifest
+        .get("sboms")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let image_rows = evidence_manifest
+        .get("image_artifacts")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let prod_digests = image_rows
+        .iter()
+        .filter(|row| {
+            row.get("profile")
+                .and_then(serde_json::Value::as_str)
+                .is_some_and(|profile| profile.starts_with("prod"))
+        })
+        .filter_map(|row| row.get("digest").and_then(serde_json::Value::as_str))
+        .filter(|digest| !digest.is_empty())
+        .collect::<Vec<_>>();
+    let mut sbom_gaps = Vec::new();
+    if sbom_rows.is_empty() {
+        sbom_gaps.push("sboms:missing".to_string());
+    }
+    for row in &sbom_rows {
+        let format = row
+            .get("format")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        if !required_sbom_formats
+            .iter()
+            .any(|allowed| allowed == &format)
+        {
+            sbom_gaps.push(format!("format:{format}"));
+        }
+    }
+    for digest in &prod_digests {
+        let has_match = sbom_rows.iter().any(|row| {
+            row.get("image_ref")
+                .and_then(serde_json::Value::as_str)
+                .is_some_and(|image_ref| image_ref == *digest || image_ref.ends_with(digest))
+        });
+        if !has_match {
+            sbom_gaps.push(format!("prod-digest:{digest}"));
+        }
+    }
+    let sec_sbom_001 = sbom_gaps.is_empty();
+
+    let signing_items = signing_policy
+        .get("signed_items")
+        .and_then(serde_yaml::Value::as_sequence)
+        .cloned()
+        .unwrap_or_default();
+    let mut signing_policy_gaps = Vec::new();
+    if signing_items.is_empty() {
+        signing_policy_gaps.push("signed_items".to_string());
+    }
+    if signing_policy
+        .get("key_custody_model")
+        .and_then(|value| value.get("owner"))
+        .and_then(serde_yaml::Value::as_str)
+        .unwrap_or_default()
+        .is_empty()
+    {
+        signing_policy_gaps.push("key_custody_model.owner".to_string());
+    }
+    if signing_policy
+        .get("verification")
+        .and_then(|value| value.get("command"))
+        .and_then(serde_yaml::Value::as_str)
+        .unwrap_or_default()
+        .is_empty()
+    {
+        signing_policy_gaps.push("verification.command".to_string());
+    }
+    for item in &signing_items {
+        let path = item
+            .get("path")
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or_default();
+        if path.is_empty() || !root.join(path).exists() {
+            signing_policy_gaps.push(format!("missing-signed-item:{path}"));
+        }
+    }
+    let signing_policy_valid = signing_policy_gaps.is_empty();
+    let sec_deps_001 = disallowed_npm_sources.is_empty();
+    let sec_deps_002 = disallowed_python_indexes.is_empty();
+    let sec_actions_001 = workflow_pin_gaps.is_empty();
+
     let payload = serde_json::json!({
         "schema_version": 1,
-        "status": if sec_threat_001 && sec_threat_002 && sec_threat_003 && sec_threat_004 && sec_red_001 && sec_red_002 { "ok" } else { "failed" },
+        "status": if sec_threat_001
+            && sec_threat_002
+            && sec_threat_003
+            && sec_threat_004
+            && sec_red_001
+            && sec_red_002
+            && sec_deps_001
+            && sec_deps_002
+            && sec_images_001
+            && sec_actions_001
+            && sec_sbom_001
+            && signing_policy_valid
+        { "ok" } else { "failed" },
         "counts": {
             "assets": asset_rows.len(),
             "threats": threat_rows.len(),
             "mitigations": mitigation_rows.len(),
             "controls": control_rows.len(),
-            "declared_secrets": declared_secret_keys.len()
+            "declared_secrets": declared_secret_keys.len(),
+            "prod_image_digests": prod_digests.len(),
+            "sboms": sbom_rows.len(),
+            "signed_items": signing_items.len()
         },
         "contracts": {
             "SEC-THREAT-001": sec_threat_001,
@@ -310,7 +763,16 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "SEC-THREAT-003": sec_threat_003,
             "SEC-THREAT-004": sec_threat_004,
             "SEC-RED-001": sec_red_001,
-            "SEC-RED-002": sec_red_002
+            "SEC-RED-002": sec_red_002,
+            "SEC-DEPS-001": sec_deps_001,
+            "SEC-DEPS-002": sec_deps_002,
+            "SEC-IMAGES-001": sec_images_001,
+            "SEC-ACTIONS-001": sec_actions_001,
+            "SEC-SBOM-001": sec_sbom_001
+        },
+        "policy_validation": {
+            "dependency_source_policy": sec_deps_001 && sec_deps_002 && sec_images_001 && sec_actions_001 && sec_sbom_001,
+            "signing_policy": signing_policy_valid
         },
         "gaps": {
             "shape_errors": shape_errors,
@@ -319,14 +781,21 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "missing_docs_links": missing_docs_links,
             "high_severity_gaps": high_severity_gaps,
             "missing_redaction_keys": missing_redaction_keys,
-            "evidence_secret_matches": evidence_matches
+            "evidence_secret_matches": evidence_matches,
+            "disallowed_npm_sources": disallowed_npm_sources,
+            "disallowed_python_indexes": disallowed_python_indexes,
+            "workflow_pin_gaps": workflow_pin_gaps,
+            "image_evidence_gaps": image_evidence_gaps,
+            "sbom_gaps": sbom_gaps,
+            "signing_policy_gaps": signing_policy_gaps
         }
     });
 
     let path = report_path(&root)?;
     fs::write(
         &path,
-        serde_json::to_string_pretty(&payload).map_err(|err| format!("encode security report failed: {err}"))?,
+        serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode security report failed: {err}"))?,
     )
     .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
     let rendered = emit_payload(
@@ -368,10 +837,13 @@ fn run_security_compliance_validate(args: SecurityValidateArgs) -> Result<(Strin
     let mut evidence_gaps = Vec::new();
     let mut missing_files = Vec::new();
     for control in &control_rows {
-        let id = control.get("id").and_then(serde_yaml::Value::as_str).unwrap_or_default();
-        let mapping = matrix_rows.iter().find(|row| {
-            row.get("control_id").and_then(serde_yaml::Value::as_str) == Some(id)
-        });
+        let id = control
+            .get("id")
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or_default();
+        let mapping = matrix_rows
+            .iter()
+            .find(|row| row.get("control_id").and_then(serde_yaml::Value::as_str) == Some(id));
         let Some(mapping) = mapping else {
             evidence_gaps.push(id.to_string());
             continue;
@@ -412,7 +884,8 @@ fn run_security_compliance_validate(args: SecurityValidateArgs) -> Result<(Strin
     let path = named_report_path(&root, "security-compliance.json")?;
     fs::write(
         &path,
-        serde_json::to_string_pretty(&payload).map_err(|err| format!("encode security compliance report failed: {err}"))?,
+        serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode security compliance report failed: {err}"))?,
     )
     .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
     let rendered = emit_payload(
@@ -439,7 +912,8 @@ fn run_security_scan_artifacts(args: SecurityScanArtifactsArgs) -> Result<(Strin
     let policy_path = root.join("configs/security/forbidden-patterns.json");
     ensure_json(&schema_path)?;
     let policy: serde_json::Value = serde_json::from_str(
-        &fs::read_to_string(&policy_path).map_err(|err| format!("failed to read {}: {err}", policy_path.display()))?,
+        &fs::read_to_string(&policy_path)
+            .map_err(|err| format!("failed to read {}: {err}", policy_path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", policy_path.display()))?;
     let patterns = policy
@@ -468,7 +942,8 @@ fn run_security_scan_artifacts(args: SecurityScanArtifactsArgs) -> Result<(Strin
     let path = named_report_path(&root, "security-artifact-scan.json")?;
     fs::write(
         &path,
-        serde_json::to_string_pretty(&payload).map_err(|err| format!("encode artifact scan report failed: {err}"))?,
+        serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode artifact scan report failed: {err}"))?,
     )
     .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
     let rendered = emit_payload(
