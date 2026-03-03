@@ -3340,6 +3340,14 @@
     {
       "area": "architecture",
       "audience": "contributor",
+      "owner": "bijux-atlas-security",
+      "path": "docs/architecture/security/auth-model.md",
+      "stability": "stable",
+      "title": "Security Auth Model"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
       "owner": "architecture",
       "path": "docs/architecture/storage.md",
       "stability": "stable",
@@ -4757,6 +4765,14 @@
       "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/deploy-behind-auth-proxy.md",
+      "stability": "stable",
+      "title": "Deploy Behind Auth Proxy"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-security",
       "path": "docs/operations/security/incident-response.md",
       "stability": "stable",
       "title": "Security Incident Response"
@@ -5484,7 +5500,7 @@
     {
       "area": "reference",
       "audience": "operator",
-      "owner": "bijux-atlas-docs",
+      "owner": "bijux-atlas-operations",
       "path": "docs/reference/repo-map.md",
       "stability": "stable",
       "title": "Repository Map"

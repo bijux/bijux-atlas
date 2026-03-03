@@ -1,0 +1,10 @@
+schema_version: 1
+actions:
+  - id: catalog.read
+    description: Read catalog metadata and discovery information.
+  - id: dataset.read
+    description: Read dataset-backed query content.
+  - id: dataset.ingest
+    description: Ingest or refresh dataset content into governed storage.
+  - id: ops.admin
+    description: Perform operational administration or runtime control actions.

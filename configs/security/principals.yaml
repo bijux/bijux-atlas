@@ -1,0 +1,14 @@
+schema_version: 1
+principals:
+  - id: user
+    audience: human
+    expectation: Authenticated end user operating through an approved boundary.
+  - id: service-account
+    audience: workload
+    expectation: Non-human caller with scoped machine credentials.
+  - id: operator
+    audience: admin
+    expectation: Platform operator responsible for deployment and evidence review.
+  - id: ci
+    audience: automation
+    expectation: Controlled automation identity used for validation and release workflows.

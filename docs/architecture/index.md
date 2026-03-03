@@ -33,6 +33,7 @@ Describe how Atlas is structured so contributors and operators share one durable
 - [Crates map](crates-map.md)
 - [Runtime data model](runtime-data-model.md)
 - [Storage](storage.md)
+- [Security auth model](security/auth-model.md)
 - [Performance model](performance-model.md)
 - [Query model](query-model.md)
 - [Ingest and QC model](ingest-qc-model.md)

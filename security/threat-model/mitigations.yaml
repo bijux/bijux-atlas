@@ -5,6 +5,11 @@ mitigations:
     control_check_id: OBS-004
     docs_page: docs/reference/contracts/health-endpoints.md
     runbook_page: docs/operations/upgrade.md
+  - id: MIT-AUTH-MODEL
+    title: Explicit auth model stance and ingress auth boundary guidance.
+    control_check_id: SEC-AUTH-001
+    docs_page: docs/architecture/security/auth-model.md
+    runbook_page: docs/operations/security/deploy-behind-auth-proxy.md
   - id: MIT-OBS-EVIDENCE
     title: Observability verification and governed evidence artifacts.
     control_check_id: OBS-001

@@ -5589,6 +5589,20 @@
     {
       "keywords": [
         "architecture",
+        "auth-model",
+        "security"
+      ],
+      "path": "docs/architecture/security/auth-model.md",
+      "tags": [
+        "architecture",
+        "auth-model",
+        "security"
+      ],
+      "topic": "auth-model"
+    },
+    {
+      "keywords": [
+        "architecture",
         "storage"
       ],
       "path": "docs/architecture/storage.md",
@@ -7797,6 +7811,20 @@
         "security"
       ],
       "topic": "compliance"
+    },
+    {
+      "keywords": [
+        "deploy-behind-auth-proxy",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/deploy-behind-auth-proxy.md",
+      "tags": [
+        "deploy-behind-auth-proxy",
+        "operations",
+        "security"
+      ],
+      "topic": "deploy-behind-auth-proxy"
     },
     {
       "keywords": [

@@ -230,6 +230,9 @@
     "attack-surface-budget": [
       "crates/bijux-atlas-store/docs/internal/attack-surface-budget.md"
     ],
+    "auth-model": [
+      "docs/architecture/security/auth-model.md"
+    ],
     "backend-feature-matrix": [
       "crates/bijux-atlas-store/docs/internal/backend-feature-matrix.md"
     ],
@@ -543,6 +546,9 @@
     ],
     "deploy": [
       "docs/operations/deploy.md"
+    ],
+    "deploy-behind-auth-proxy": [
+      "docs/operations/security/deploy-behind-auth-proxy.md"
     ],
     "deploy-kind": [
       "docs/operations/deploy-kind.md"

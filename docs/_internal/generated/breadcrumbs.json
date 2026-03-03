@@ -3791,6 +3791,15 @@
       "breadcrumbs": [
         "docs",
         "docs/architecture",
+        "docs/architecture/security",
+        "docs/architecture/security/auth-model.md"
+      ],
+      "path": "docs/architecture/security/auth-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
         "docs/architecture/storage.md"
       ],
       "path": "docs/architecture/storage.md"
@@ -5247,6 +5256,15 @@
         "docs/operations/security/compliance.md"
       ],
       "path": "docs/operations/security/compliance.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/deploy-behind-auth-proxy.md"
+      ],
+      "path": "docs/operations/security/deploy-behind-auth-proxy.md"
     },
     {
       "breadcrumbs": [

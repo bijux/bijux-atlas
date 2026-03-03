@@ -1,0 +1,16 @@
+schema_version: 1
+default_stance: internal
+auth_support: supported
+supported_methods:
+  - disabled
+  - api-key
+  - hmac
+runtime_auth_mode_env: ATLAS_AUTH_MODE
+recommended_auth_placement:
+  - ingress-proxy
+  - service-mesh
+  - built-in
+deployment_boundary_requirement: Atlas must remain behind an ingress auth proxy or equivalent institutional boundary when exposed beyond a private trusted network.
+docs:
+  model: docs/architecture/security/auth-model.md
+  runbook: docs/operations/security/deploy-behind-auth-proxy.md

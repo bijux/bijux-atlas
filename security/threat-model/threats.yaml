@@ -9,7 +9,17 @@ threats:
     mitigations:
       - MIT-HTTP-BOUNDARY
       - MIT-OBS-EVIDENCE
+      - MIT-AUTH-MODEL
     residual_risk: Public endpoints still receive malformed traffic and depend on layered controls.
+  - id: SEC-THREAT-UNAUTHENTICATED-ACCESS
+    category: elevation-of-privilege
+    title: Atlas is exposed beyond a trusted boundary without an enforced authentication layer.
+    severity: high
+    likelihood: medium
+    affected_component: runtime_api
+    mitigations:
+      - MIT-AUTH-MODEL
+    residual_risk: Misconfigured perimeter controls can still expose Atlas until deployment review catches the drift.
   - id: SEC-THREAT-SECRETS-LEAK
     category: information-disclosure
     title: Secrets leak through logs, reports, or release evidence.

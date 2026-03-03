@@ -182,10 +182,18 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let threats_path = root.join("security/threat-model/threats.yaml");
     let mitigations_path = root.join("security/threat-model/mitigations.yaml");
     let controls_path = root.join("security/compliance/controls.yaml");
+    let auth_model_path = root.join("configs/security/auth-model.yaml");
+    let principals_path = root.join("configs/security/principals.yaml");
+    let actions_path = root.join("configs/security/actions.yaml");
+    let resources_path = root.join("configs/security/resources.yaml");
     let asset_schema_path = root.join("configs/contracts/security/assets.schema.json");
     let threats_schema_path = root.join("configs/contracts/security/threats.schema.json");
     let mitigations_schema_path = root.join("configs/contracts/security/mitigations.schema.json");
     let controls_schema_path = root.join("configs/contracts/security/controls.schema.json");
+    let auth_model_schema_path = root.join("configs/contracts/security/auth-model.schema.json");
+    let principals_schema_path = root.join("configs/contracts/security/principals.schema.json");
+    let actions_schema_path = root.join("configs/contracts/security/actions.schema.json");
+    let resources_schema_path = root.join("configs/contracts/security/resources.schema.json");
     let secrets_schema_path = root.join("configs/contracts/security/secrets.schema.json");
     let redaction_schema_path = root.join("configs/contracts/security/redaction.schema.json");
     let forbidden_patterns_schema_path =
@@ -206,6 +214,10 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     ensure_json(&threats_schema_path)?;
     ensure_json(&mitigations_schema_path)?;
     ensure_json(&controls_schema_path)?;
+    ensure_json(&auth_model_schema_path)?;
+    ensure_json(&principals_schema_path)?;
+    ensure_json(&actions_schema_path)?;
+    ensure_json(&resources_schema_path)?;
     ensure_json(&secrets_schema_path)?;
     ensure_json(&redaction_schema_path)?;
     ensure_json(&forbidden_patterns_schema_path)?;
@@ -217,6 +229,10 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let threats = read_yaml(&threats_path)?;
     let mitigations = read_yaml(&mitigations_path)?;
     let controls = read_yaml(&controls_path)?;
+    let auth_model = read_yaml(&auth_model_path)?;
+    let principals = read_yaml(&principals_path)?;
+    let actions = read_yaml(&actions_path)?;
+    let resources = read_yaml(&resources_path)?;
     let secrets = read_json(&secrets_path)?;
     let redaction = read_json(&redaction_path)?;
     let forbidden_patterns = read_json(&forbidden_patterns_path)?;
@@ -243,6 +259,59 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         .and_then(serde_yaml::Value::as_sequence)
         .cloned()
         .unwrap_or_default();
+    let principal_rows = principals
+        .get("principals")
+        .and_then(serde_yaml::Value::as_sequence)
+        .cloned()
+        .unwrap_or_default();
+    let action_rows = actions
+        .get("actions")
+        .and_then(serde_yaml::Value::as_sequence)
+        .cloned()
+        .unwrap_or_default();
+    let resource_rows = resources
+        .get("resources")
+        .and_then(serde_yaml::Value::as_sequence)
+        .cloned()
+        .unwrap_or_default();
+
+    let auth_default_stance = auth_model
+        .get("default_stance")
+        .and_then(serde_yaml::Value::as_str)
+        .unwrap_or_default();
+    let auth_support = auth_model
+        .get("auth_support")
+        .and_then(serde_yaml::Value::as_str)
+        .unwrap_or_default();
+    let auth_methods = auth_model
+        .get("supported_methods")
+        .and_then(serde_yaml::Value::as_sequence)
+        .cloned()
+        .unwrap_or_default();
+    let auth_env = auth_model
+        .get("runtime_auth_mode_env")
+        .and_then(serde_yaml::Value::as_str)
+        .unwrap_or_default();
+    let auth_docs_model = auth_model
+        .get("docs")
+        .and_then(|value| value.get("model"))
+        .and_then(serde_yaml::Value::as_str)
+        .unwrap_or_default();
+    let auth_docs_runbook = auth_model
+        .get("docs")
+        .and_then(|value| value.get("runbook"))
+        .and_then(serde_yaml::Value::as_str)
+        .unwrap_or_default();
+    let sec_auth_001 = matches!(auth_default_stance, "public" | "internal" | "zero-trust")
+        && matches!(auth_support, "no-auth" | "supported")
+        && !auth_methods.is_empty()
+        && !auth_env.is_empty()
+        && auth_env == "ATLAS_AUTH_MODE"
+        && root.join(auth_docs_model).exists()
+        && root.join(auth_docs_runbook).exists()
+        && !principal_rows.is_empty()
+        && !action_rows.is_empty()
+        && !resource_rows.is_empty();
 
     let mitigation_ids = mitigation_rows
         .iter()
@@ -898,6 +967,9 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "threats": threat_rows.len(),
             "mitigations": mitigation_rows.len(),
             "controls": control_rows.len(),
+            "principals": principal_rows.len(),
+            "actions": action_rows.len(),
+            "resources": resource_rows.len(),
             "declared_secrets": declared_secret_keys.len(),
             "prod_image_digests": prod_digests.len(),
             "sboms": sbom_rows.len(),
@@ -915,6 +987,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "SEC-THREAT-002": sec_threat_002,
             "SEC-THREAT-003": sec_threat_003,
             "SEC-THREAT-004": sec_threat_004,
+            "SEC-AUTH-001": sec_auth_001,
             "SEC-RED-001": sec_red_001,
             "SEC-RED-002": sec_red_002,
             "SEC-DEPS-001": sec_deps_001,
@@ -929,6 +1002,11 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         },
         "gaps": {
             "shape_errors": shape_errors,
+            "auth_model_gaps": if sec_auth_001 {
+                Vec::<String>::new()
+            } else {
+                vec!["auth model, supporting registries, or linked docs are incomplete".to_string()]
+            },
             "missing_mitigations": missing_mitigations,
             "missing_control_or_reason": missing_control_or_reason,
             "missing_docs_links": missing_docs_links,

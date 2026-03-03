@@ -10181,6 +10181,31 @@
       "doc_version": "v1",
       "keywords": [
         "architecture",
+        "auth-model",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-security",
+      "path": "docs/architecture/security/auth-model.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "auth-model",
+        "security"
+      ],
+      "title": "Security Auth Model",
+      "topic": "auth-model"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "architecture",
         "storage"
       ],
       "last_reviewed": "2026-02-25",
@@ -14339,6 +14364,31 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "deploy-behind-auth-proxy",
+        "operations",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/deploy-behind-auth-proxy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "deploy-behind-auth-proxy",
+        "operations",
+        "security"
+      ],
+      "title": "Deploy Behind Auth Proxy",
+      "topic": "deploy-behind-auth-proxy"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "incident-response",
         "operations",
         "security"
@@ -16585,7 +16635,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "bijux-atlas-docs",
+      "owner": "bijux-atlas-operations",
       "path": "docs/reference/repo-map.md",
       "review_due": "2026-08-24",
       "stability": "stable",

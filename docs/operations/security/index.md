@@ -10,6 +10,7 @@
 ## Start here
 
 - [Security Model Scope](model-scope.md)
+- [Deploy Behind Auth Proxy](deploy-behind-auth-proxy.md)
 - [Security Posture](../security-posture.md)
 - [Security Compliance](compliance.md)
 - [Security Incident Response](incident-response.md)

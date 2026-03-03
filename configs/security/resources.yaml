@@ -1,0 +1,10 @@
+schema_version: 1
+resources:
+  - id: dataset-id
+    description: A governed dataset identifier in source/version form.
+  - id: namespace
+    description: A Kubernetes namespace or equivalent deployment boundary.
+  - id: tenant
+    description: A logical tenant boundary if multi-tenant deployment is adopted.
+  - id: project
+    description: A project-scoped ownership boundary for institutional operation.

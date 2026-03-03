@@ -13,6 +13,7 @@
 - `SEC-THREAT-002`: every threat has at least one mitigation.
 - `SEC-THREAT-003`: every mitigation maps to a concrete control or documented reason.
 - `SEC-THREAT-004`: high severity threats map to an executable check or explicit runbook.
+- `SEC-AUTH-001`: auth model policy validates and points to the canonical boundary docs.
 
 ## Compliance checks
 
