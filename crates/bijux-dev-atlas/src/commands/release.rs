@@ -149,6 +149,17 @@ fn collect_tarball_members(
             files.push(rel.to_string());
         }
     }
+    for rel in manifest
+        .get("dataset_assets")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+    {
+        if root.join(rel).exists() {
+            files.push(rel.to_string());
+        }
+    }
     files.sort();
     files.dedup();
     Ok(files)
@@ -839,6 +850,17 @@ fn run_release_packet(args: ReleasePacketArgs) -> Result<(String, i32), String> 
         .into_iter()
         .flatten()
         .filter_map(|value| value.get("path"))
+        .filter_map(serde_json::Value::as_str)
+    {
+        if root.join(path).exists() {
+            selected.insert(path.to_string());
+        }
+    }
+    for path in manifest
+        .get("dataset_assets")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
         .filter_map(serde_json::Value::as_str)
     {
         if root.join(path).exists() {

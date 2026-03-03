@@ -1395,6 +1395,38 @@ fn collect_perf_assets(repo_root: &std::path::Path) -> Result<Vec<String>, Strin
     Ok(paths)
 }
 
+fn collect_dataset_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
+    let mut paths = Vec::new();
+    for rel in [
+        "configs/datasets/manifest.yaml",
+        "configs/datasets/pinned-policy.yaml",
+        "configs/contracts/datasets/manifest.schema.json",
+        "configs/contracts/datasets/pinned-policy.schema.json",
+        "configs/contracts/datasets/ingest-plan.schema.json",
+        "configs/contracts/datasets/ingest-run.schema.json",
+        "configs/contracts/datasets/endtoend.schema.json",
+    ] {
+        let path = repo_root.join(rel);
+        if path.exists() {
+            paths.push(rel.to_string());
+        } else {
+            return Err(format!("required dataset asset missing: {rel}"));
+        }
+    }
+    for rel in [
+        "artifacts/datasets/datasets-manifest.json",
+        "artifacts/ingest/ingest-plan.json",
+        "artifacts/ingest/ingest-run.json",
+        "artifacts/ingest/endtoend-ingest-query.json",
+    ] {
+        let path = repo_root.join(rel);
+        if path.exists() {
+            paths.push(rel.to_string());
+        }
+    }
+    Ok(paths)
+}
+
 fn load_required_metric_names(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
     let contract_path = repo_root.join("configs/contracts/observability/metrics.schema.json");
     let contract: serde_json::Value = serde_json::from_str(
@@ -1974,7 +2006,8 @@ pub(crate) fn run_ops_evidence_collect(
         "drill_summaries": collect_drill_summary_paths(&repo_root, &run_id),
         "redacted_logs": redacted_logs,
         "observability_assets": collect_observability_assets(&repo_root)?,
-        "perf_assets": collect_perf_assets(&repo_root)?
+        "perf_assets": collect_perf_assets(&repo_root)?,
+        "dataset_assets": collect_dataset_assets(&repo_root)?
     });
     let index_html = render_evidence_index_html(&repo_root, &manifest)?;
     std::fs::write(
@@ -2116,6 +2149,22 @@ pub(crate) fn run_ops_evidence_verify(
         }
         if tarball_path.exists() && !tarball_contains_entry(&tarball_path, rel)? {
             errors.push(format!("evidence tarball missing perf asset: {rel}"));
+        }
+    }
+    for rel in manifest
+        .get("dataset_assets")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+    {
+        let path = repo_root.join(rel);
+        if !path.exists() {
+            errors.push(format!("referenced dataset asset does not exist: {rel}"));
+            continue;
+        }
+        if tarball_path.exists() && !tarball_contains_entry(&tarball_path, rel)? {
+            errors.push(format!("evidence tarball missing dataset asset: {rel}"));
         }
     }
     if let Some(path) = manifest

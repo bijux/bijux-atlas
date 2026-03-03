@@ -6,20 +6,64 @@
   "generated_by": "bijux-dev-atlas release packet",
   "items": [
     {
+      "path": "artifacts/datasets/datasets-manifest.json",
+      "sha256": "100f4f48cb2d93a7191052ee8ec30fa30c9e8154028ae4a03e8073b9d987d261"
+    },
+    {
+      "path": "artifacts/ingest/endtoend-ingest-query.json",
+      "sha256": "618faa27ba886c8b20788fde16f2213f85f9c5bd137b5e52d362b22c38996a4a"
+    },
+    {
+      "path": "artifacts/ingest/ingest-plan.json",
+      "sha256": "6242285738ab47555ee7168b67bb7d6d3f744ecfc3d927ab5b2b417439257b09"
+    },
+    {
+      "path": "artifacts/ingest/ingest-run.json",
+      "sha256": "ccc35a3ebab76692be7afefbaf18608c21724f3ed3b06ffe6cee3016abccf78f"
+    },
+    {
+      "path": "configs/contracts/datasets/endtoend.schema.json",
+      "sha256": "def02bdef08317eb3568ed1ac634b55c5b2c2559867106983e2c6d341f65108c"
+    },
+    {
+      "path": "configs/contracts/datasets/ingest-plan.schema.json",
+      "sha256": "5328c432ec90911e84aa2175f4f0bff6a93a9d1cbcca645bb8feb7167d39ef0d"
+    },
+    {
+      "path": "configs/contracts/datasets/ingest-run.schema.json",
+      "sha256": "3b39aa46844dac0e0690cf02387bad786893405a11a9fd273a0d7620a4118d56"
+    },
+    {
+      "path": "configs/contracts/datasets/manifest.schema.json",
+      "sha256": "b3cb658503ff5a1ab2842f5483cdb14558714f7bdfbabed4edb36b63266583a3"
+    },
+    {
+      "path": "configs/contracts/datasets/pinned-policy.schema.json",
+      "sha256": "7c8b24abb4fe57c1e6dab0a7dd29d866c9ed3ab6b7b801ef7ac0f2d7e574f4ed"
+    },
+    {
+      "path": "configs/datasets/manifest.yaml",
+      "sha256": "a9cc1599261349e3b9c435dce290c8ba4d85989824203693145b815641b555cb"
+    },
+    {
+      "path": "configs/datasets/pinned-policy.yaml",
+      "sha256": "197a72014d2ebe58648f076ed3300b6393d444d296e5c5a3a02af450cc52ee74"
+    },
+    {
       "path": "release/evidence/bundle.tar",
-      "sha256": "38aae21e031a339c428baae62d7bcf6e92f7bb7def9f085be2759a3025c7fd93"
+      "sha256": "6e517b80b6546927e0e65dbecd485e15333cf4a8175f20503e345fd23bfa40ea"
     },
     {
       "path": "release/evidence/identity.json",
-      "sha256": "a3e7225c25f4b2f08e156f4bf29bd2ffc57c4f5068d0bbfee6925ce90420163b"
+      "sha256": "9d7a736bfc1f103d9d8517e69f5430e4afcd0c050463d1a05386bd64c764fc98"
     },
     {
       "path": "release/evidence/manifest.json",
-      "sha256": "7db1d270f0d4e6f5f5b6eb7cd201b6812efab9ab4c301ccbe603661678f96129"
+      "sha256": "1c69eeb3de6c9acad8680f866a80f9becf9f0794666ba14232453d2b064711f7"
     },
     {
       "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-      "sha256": "e3e44e46c6adbccb19e458ccf5bf88c3fc2592d7813c8c8c2b3d426fe7fc3e5a"
+      "sha256": "4cdec04db7cd010f7377093d03775814c5d3e61345ba2de9b3c8451d9dfa2252"
     },
     {
       "path": "release/evidence/sboms/perf.spdx.json",
@@ -39,15 +83,15 @@
     },
     {
       "path": "release/provenance.json",
-      "sha256": "edd60fa5f7b309c67bec8b8a8a9173b03c7ff6461ba7242c103ceb97c81c9248"
+      "sha256": "bb29ac12f9271d82f570152055f65405b5849e386d7db54e1ce2079bc2688b9b"
     },
     {
       "path": "release/signing/checksums.json",
-      "sha256": "6a4b6351f9ef15e5eaaa70c92bd4bafd2389d1c528e3dcf37f0ad08e181c847b"
+      "sha256": "5a3a7030ef9797b9fd321932b1b01793d1f358f794b243666b52d4a2815780cd"
     },
     {
       "path": "release/signing/release-sign.json",
-      "sha256": "a0a9b6792890ca23556ab2e12ec86d6062d559945818fe038886d2bd2bea31fa"
+      "sha256": "31007494ccad2d7d0727c65f74496192ddda2b172639c1bb5fb2f35d7c1bdc7b"
     },
     {
       "path": "release/signing/release-verify.json",
