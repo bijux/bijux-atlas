@@ -317,22 +317,6 @@
     {
       "keywords": [
         "configs",
-        "governance",
-        "readme",
-        "suites"
-      ],
-      "path": "configs/governance/suites/README.md",
-      "tags": [
-        "configs",
-        "governance",
-        "readme",
-        "suites"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "configs",
         "inventory",
         "readme"
       ],
@@ -3853,6 +3837,46 @@
     {
       "keywords": [
         "-internal",
+        "architecture",
+        "layers"
+      ],
+      "path": "docs/_internal/architecture/layers.md",
+      "tags": [
+        "-internal",
+        "architecture",
+        "layers"
+      ],
+      "topic": "layers"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "architecture",
+        "modules"
+      ],
+      "path": "docs/_internal/architecture/modules.md",
+      "tags": [
+        "-internal",
+        "architecture",
+        "modules"
+      ],
+      "topic": "modules"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "cli-command-list"
+      ],
+      "path": "docs/_internal/cli-command-list.md",
+      "tags": [
+        "-internal",
+        "cli-command-list"
+      ],
+      "topic": "cli-command-list"
+    },
+    {
+      "keywords": [
+        "-internal",
         "configs",
         "contracts",
         "readme"
@@ -4918,6 +4942,34 @@
       "keywords": [
         "-internal",
         "governance",
+        "report-index"
+      ],
+      "path": "docs/_internal/governance/report-index.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "report-index"
+      ],
+      "topic": "report-index"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "report-work-remaining"
+      ],
+      "path": "docs/_internal/governance/report-work-remaining.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "report-work-remaining"
+      ],
+      "topic": "report-work-remaining"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
         "style-guide"
       ],
       "path": "docs/_internal/governance/style-guide.md",
@@ -5951,6 +6003,16 @@
         "workspace-boundaries-rules"
       ],
       "topic": "workspace-boundaries-rules"
+    },
+    {
+      "keywords": [
+        "cli-command-list"
+      ],
+      "path": "docs/cli-command-list.md",
+      "tags": [
+        "cli-command-list"
+      ],
+      "topic": "cli-command-list"
     },
     {
       "keywords": [
@@ -8713,6 +8775,18 @@
         "reference"
       ],
       "topic": "configs"
+    },
+    {
+      "keywords": [
+        "contract-runner",
+        "reference"
+      ],
+      "path": "docs/reference/contract-runner.md",
+      "tags": [
+        "contract-runner",
+        "reference"
+      ],
+      "topic": "contract-runner"
     },
     {
       "keywords": [

@@ -128,11 +128,6 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "configs/governance/suites/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "configs/inventory/README.md"
     },
     {
@@ -1452,6 +1447,21 @@
     },
     {
       "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/architecture/layers.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/architecture/modules.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/cli-command-list.md"
+    },
+    {
+      "crate": null,
       "doc_type": "spec",
       "from": "docs/_internal/contracts/configs/README.md"
     },
@@ -1819,6 +1829,16 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/_internal/governance/rename-env-keys-safely.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/report-index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/report-work-remaining.md"
     },
     {
       "crate": null,
@@ -2219,6 +2239,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/architecture/workspace-boundaries-rules.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/cli-command-list.md"
     },
     {
       "crate": null,
@@ -3314,6 +3339,11 @@
       "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/configs.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/contract-runner.md"
     },
     {
       "crate": null,

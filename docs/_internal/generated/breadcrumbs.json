@@ -187,15 +187,6 @@
     {
       "breadcrumbs": [
         "configs",
-        "configs/governance",
-        "configs/governance/suites",
-        "configs/governance/suites/README.md"
-      ],
-      "path": "configs/governance/suites/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
         "configs/inventory",
         "configs/inventory/README.md"
       ],
@@ -2665,6 +2656,32 @@
       "breadcrumbs": [
         "docs",
         "docs/_internal",
+        "docs/_internal/architecture",
+        "docs/_internal/architecture/layers.md"
+      ],
+      "path": "docs/_internal/architecture/layers.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/architecture",
+        "docs/_internal/architecture/modules.md"
+      ],
+      "path": "docs/_internal/architecture/modules.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/cli-command-list.md"
+      ],
+      "path": "docs/_internal/cli-command-list.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
         "docs/_internal/contracts",
         "docs/_internal/contracts/configs",
         "docs/_internal/contracts/configs/README.md"
@@ -3347,6 +3364,24 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/report-index.md"
+      ],
+      "path": "docs/_internal/governance/report-index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/report-work-remaining.md"
+      ],
+      "path": "docs/_internal/governance/report-work-remaining.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/style-guide.md"
       ],
       "path": "docs/_internal/governance/style-guide.md"
@@ -4020,6 +4055,13 @@
         "docs/architecture/workspace-boundaries-rules.md"
       ],
       "path": "docs/architecture/workspace-boundaries-rules.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli-command-list.md"
+      ],
+      "path": "docs/cli-command-list.md"
     },
     {
       "breadcrumbs": [
@@ -5840,6 +5882,14 @@
         "docs/reference/configs.md"
       ],
       "path": "docs/reference/configs.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/contract-runner.md"
+      ],
+      "path": "docs/reference/contract-runner.md"
     },
     {
       "breadcrumbs": [

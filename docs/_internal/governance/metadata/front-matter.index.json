@@ -204,14 +204,6 @@
     {
       "area": "configs",
       "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "configs/governance/suites/README.md",
-      "stability": "stable",
-      "title": "Governance Suites"
-    },
-    {
-      "area": "configs",
-      "audience": "contributors",
       "owner": "platform",
       "path": "configs/inventory/README.md",
       "stability": "stable",
@@ -2325,6 +2317,30 @@
       "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
+      "path": "docs/_internal/architecture/layers.md",
+      "stability": "stable",
+      "title": "Layering Rules"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/architecture/modules.md",
+      "stability": "stable",
+      "title": "Module Map"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/cli-command-list.md",
+      "stability": "stable",
+      "title": "CLI Command List"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
       "path": "docs/_internal/contracts/configs/README.md",
       "stability": "stable",
       "title": "Configs contracts"
@@ -2912,6 +2928,22 @@
       "path": "docs/_internal/governance/rename-env-keys-safely.md",
       "stability": "stable",
       "title": "Rename Env Keys Safely"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/report-index.md",
+      "stability": "stable",
+      "title": "Report Index"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/report-work-remaining.md",
+      "stability": "stable",
+      "title": "Report Work Remaining"
     },
     {
       "area": "_internal",
@@ -3552,6 +3584,14 @@
       "path": "docs/architecture/workspace-boundaries-rules.md",
       "stability": "stable",
       "title": "Workspace boundaries rules"
+    },
+    {
+      "area": "cli-command-list.md",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/cli-command-list.md",
+      "stability": "stable",
+      "title": "CLI Command List"
     },
     {
       "area": "contract.md",
@@ -5304,6 +5344,14 @@
       "path": "docs/reference/configs.md",
       "stability": "stable",
       "title": "Configs Reference"
+    },
+    {
+      "area": "reference",
+      "audience": "contributors",
+      "owner": "platform",
+      "path": "docs/reference/contract-runner.md",
+      "stability": "stable",
+      "title": "Contract Runner"
     },
     {
       "area": "reference",

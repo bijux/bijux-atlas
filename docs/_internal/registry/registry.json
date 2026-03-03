@@ -597,33 +597,6 @@
       "doc_version": "v1",
       "keywords": [
         "configs",
-        "governance",
-        "readme",
-        "suites"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/governance/suites/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "governance",
-        "readme",
-        "suites"
-      ],
-      "title": "Governance Suites",
-      "topic": "README"
-    },
-    {
-      "area": "configs",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
         "inventory",
         "readme"
       ],
@@ -7044,6 +7017,79 @@
       "area": "_internal",
       "audience": "contributors",
       "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "architecture",
+        "layers"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/architecture/layers.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "architecture",
+        "layers"
+      ],
+      "title": "Layering Rules",
+      "topic": "layers"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "architecture",
+        "modules"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/architecture/modules.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "architecture",
+        "modules"
+      ],
+      "title": "Module Map",
+      "topic": "modules"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "cli-command-list"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/cli-command-list.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "cli-command-list"
+      ],
+      "title": "CLI Command List",
+      "topic": "cli-command-list"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
       "doc_type": "spec",
       "doc_version": "v1",
       "keywords": [
@@ -8917,6 +8963,56 @@
       ],
       "title": "Rename Env Keys Safely",
       "topic": "rename-env-keys-safely"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "report-index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/report-index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "report-index"
+      ],
+      "title": "Report Index",
+      "topic": "report-index"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "report-work-remaining"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/report-work-remaining.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "report-work-remaining"
+      ],
+      "title": "Report Work Remaining",
+      "topic": "report-work-remaining"
     },
     {
       "area": "_internal",
@@ -10835,6 +10931,27 @@
       ],
       "title": "Workspace boundaries rules",
       "topic": "workspace-boundaries-rules"
+    },
+    {
+      "area": "cli-command-list.md",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "cli-command-list"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/cli-command-list.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "cli-command-list"
+      ],
+      "title": "CLI Command List",
+      "topic": "cli-command-list"
     },
     {
       "area": "contract.md",
@@ -16006,6 +16123,29 @@
       ],
       "title": "Configs Reference",
       "topic": "configs"
+    },
+    {
+      "area": "reference",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "contract-runner",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/reference/contract-runner.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contract-runner",
+        "reference"
+      ],
+      "title": "Contract Runner",
+      "topic": "contract-runner"
     },
     {
       "area": "reference",

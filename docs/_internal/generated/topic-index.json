@@ -71,7 +71,6 @@
       "configs/examples/README.md",
       "configs/gates/README.md",
       "configs/governance/README.md",
-      "configs/governance/suites/README.md",
       "configs/inventory/README.md",
       "configs/layout/README.md",
       "configs/make/README.md",
@@ -355,7 +354,9 @@
     "cli-command-list": [
       "crates/bijux-atlas-cli/docs/cli-command-list.md",
       "crates/bijux-dev-atlas/docs/cli-command-list.md",
-      "crates/bijux-dev-atlas/docs/internal/cli-command-list.md"
+      "crates/bijux-dev-atlas/docs/internal/cli-command-list.md",
+      "docs/_internal/cli-command-list.md",
+      "docs/cli-command-list.md"
     ],
     "cli-reference": [
       "docs/control-plane/cli-reference.md"
@@ -496,6 +497,9 @@
     ],
     "contract-diff": [
       "docs/reference/contracts/contract-diff.md"
+    ],
+    "contract-runner": [
+      "docs/reference/contract-runner.md"
     ],
     "contract-runtime-mapping": [
       "docs/architecture/contract-runtime-mapping.md"
@@ -1050,6 +1054,9 @@
     "layering-rules": [
       "docs/architecture/layering-rules.md"
     ],
+    "layers": [
+      "docs/_internal/architecture/layers.md"
+    ],
     "lifecycle": [
       "docs/reference/contracts/ops/lifecycle.md"
     ],
@@ -1084,6 +1091,9 @@
     ],
     "model-scope": [
       "docs/operations/security/model-scope.md"
+    ],
+    "modules": [
+      "docs/_internal/architecture/modules.md"
     ],
     "naming": [
       "docs/_internal/governance/naming.md"
@@ -1386,6 +1396,12 @@
     ],
     "repo-map": [
       "docs/reference/repo-map.md"
+    ],
+    "report-index": [
+      "docs/_internal/governance/report-index.md"
+    ],
+    "report-work-remaining": [
+      "docs/_internal/governance/report-work-remaining.md"
     ],
     "reports-contract": [
       "docs/control-plane/reports-contract.md"
