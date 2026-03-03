@@ -115,6 +115,77 @@ fn is_iso_date(value: &str) -> bool {
             .all(|(idx, byte)| matches!(idx, 4 | 7) || byte.is_ascii_digit())
 }
 
+fn validate_audit_record_shape(
+    record: &serde_json::Value,
+    allowed_events: &[&str],
+) -> Result<(), String> {
+    let Some(object) = record.as_object() else {
+        return Err("audit record must be a JSON object".to_string());
+    };
+    let event_id = object
+        .get("event_id")
+        .and_then(serde_json::Value::as_str)
+        .ok_or_else(|| "audit record missing event_id".to_string())?;
+    if !event_id.starts_with("audit_") {
+        return Err("audit record event_id must start with audit_".to_string());
+    }
+    let event_name = object
+        .get("event_name")
+        .and_then(serde_json::Value::as_str)
+        .ok_or_else(|| "audit record missing event_name".to_string())?;
+    if !allowed_events.contains(&event_name) {
+        return Err(format!("audit record event_name is not allowed: {event_name}"));
+    }
+    if object
+        .get("timestamp_policy")
+        .and_then(serde_json::Value::as_str)
+        != Some("runtime-unix-seconds")
+    {
+        return Err("audit record timestamp_policy must be runtime-unix-seconds".to_string());
+    }
+    if object
+        .get("timestamp_unix_s")
+        .and_then(serde_json::Value::as_u64)
+        .is_none()
+    {
+        return Err("audit record missing timestamp_unix_s".to_string());
+    }
+    let sink = object
+        .get("sink")
+        .and_then(serde_json::Value::as_str)
+        .ok_or_else(|| "audit record missing sink".to_string())?;
+    if !matches!(sink, "stdout" | "file" | "otel") {
+        return Err(format!("audit record sink is invalid: {sink}"));
+    }
+    for field in ["action", "resource_kind", "resource_id"] {
+        if object
+            .get(field)
+            .and_then(serde_json::Value::as_str)
+            .is_none_or(str::is_empty)
+        {
+            return Err(format!("audit record missing {field}"));
+        }
+    }
+    let encoded = serde_json::to_string(record).map_err(|err| err.to_string())?;
+    for forbidden in ["Bearer ", "topsecret", "@", "127.0.0.1"] {
+        if encoded.contains(forbidden) {
+            return Err(format!("audit record contains forbidden marker: {forbidden}"));
+        }
+    }
+    Ok(())
+}
+
+fn write_json_lines(path: &Path, rows: &[serde_json::Value]) -> Result<(), String> {
+    let mut buffer = String::new();
+    for row in rows {
+        buffer.push_str(
+            &serde_json::to_string(row).map_err(|err| format!("encode jsonl row failed: {err}"))?,
+        );
+        buffer.push('\n');
+    }
+    fs::write(path, buffer).map_err(|err| format!("failed to write {}: {err}", path.display()))
+}
+
 pub(crate) fn run_security_command(
     _quiet: bool,
     command: SecurityCommand,
@@ -187,6 +258,9 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let actions_path = root.join("configs/security/actions.yaml");
     let resources_path = root.join("configs/security/resources.yaml");
     let policy_path = root.join("configs/security/policy.yaml");
+    let data_classification_path = root.join("configs/security/data-classification.yaml");
+    let audit_schema_path = root.join("configs/observability/audit-log.schema.json");
+    let retention_path = root.join("configs/observability/retention.yaml");
     let asset_schema_path = root.join("configs/contracts/security/assets.schema.json");
     let threats_schema_path = root.join("configs/contracts/security/threats.schema.json");
     let mitigations_schema_path = root.join("configs/contracts/security/mitigations.schema.json");
@@ -196,6 +270,8 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let actions_schema_path = root.join("configs/contracts/security/actions.schema.json");
     let resources_schema_path = root.join("configs/contracts/security/resources.schema.json");
     let policy_schema_path = root.join("configs/contracts/security/policy.schema.json");
+    let data_classification_schema_path =
+        root.join("configs/contracts/security/data-classification.schema.json");
     let secrets_schema_path = root.join("configs/contracts/security/secrets.schema.json");
     let redaction_schema_path = root.join("configs/contracts/security/redaction.schema.json");
     let forbidden_patterns_schema_path =
@@ -206,6 +282,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         root.join("configs/contracts/security/github-actions-exceptions.schema.json");
     let signing_policy_schema_path =
         root.join("configs/contracts/release/signing-policy.schema.json");
+    let retention_schema_path = root.join("configs/observability/retention.schema.json");
     let secrets_path = root.join("configs/security/secrets.json");
     let redaction_path = root.join("configs/security/redaction.json");
     let forbidden_patterns_path = root.join("configs/security/forbidden-patterns.json");
@@ -221,12 +298,15 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     ensure_json(&actions_schema_path)?;
     ensure_json(&resources_schema_path)?;
     ensure_json(&policy_schema_path)?;
+    ensure_json(&data_classification_schema_path)?;
     ensure_json(&secrets_schema_path)?;
     ensure_json(&redaction_schema_path)?;
     ensure_json(&forbidden_patterns_schema_path)?;
     ensure_json(&dependency_policy_schema_path)?;
     ensure_json(&github_actions_exceptions_schema_path)?;
     ensure_json(&signing_policy_schema_path)?;
+    ensure_json(&audit_schema_path)?;
+    ensure_json(&retention_schema_path)?;
 
     let assets = read_yaml(&assets_path)?;
     let threats = read_yaml(&threats_path)?;
@@ -237,11 +317,13 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let actions = read_yaml(&actions_path)?;
     let resources = read_yaml(&resources_path)?;
     let policy = read_yaml(&policy_path)?;
+    let data_classification = read_yaml(&data_classification_path)?;
     let secrets = read_json(&secrets_path)?;
     let redaction = read_json(&redaction_path)?;
     let forbidden_patterns = read_json(&forbidden_patterns_path)?;
     let dependency_policy = read_json(&dependency_policy_path)?;
     let signing_policy = read_yaml(&signing_policy_path)?;
+    let retention = read_yaml(&retention_path)?;
 
     let asset_rows = assets
         .get("assets")
@@ -279,6 +361,16 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         .cloned()
         .unwrap_or_default();
     let policy_rows = policy
+        .get("rules")
+        .and_then(serde_yaml::Value::as_sequence)
+        .cloned()
+        .unwrap_or_default();
+    let data_class_rows = data_classification
+        .get("classes")
+        .and_then(serde_yaml::Value::as_sequence)
+        .cloned()
+        .unwrap_or_default();
+    let retention_rows = retention
         .get("rules")
         .and_then(serde_yaml::Value::as_sequence)
         .cloned()
@@ -389,6 +481,147 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let sec_auth_004 = !auth_supports_disabled
         || runbook_text_lower.contains("reverse proxy")
         || runbook_text_lower.contains("ingress auth proxy");
+    let data_class_ids = data_class_rows
+        .iter()
+        .filter_map(|row| row.get("id").and_then(serde_yaml::Value::as_str))
+        .collect::<std::collections::BTreeSet<_>>();
+    let redaction_class_refs = redaction
+        .get("classification_refs")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|row| row.as_str().map(std::string::ToString::to_string))
+        .collect::<Vec<_>>();
+    let sec_priv_001 = !data_class_rows.is_empty()
+        && !redaction_class_refs.is_empty()
+        && redaction_class_refs
+            .iter()
+            .all(|id| data_class_ids.contains(id.as_str()));
+
+    let request_utils_source = fs::read_to_string(root.join(
+        "crates/bijux-atlas-server/src/runtime/request_utils.rs",
+    ))
+    .map_err(|err| format!("failed to read request utils source: {err}"))?;
+    let data_command_source = fs::read_to_string(root.join("crates/bijux-dev-atlas/src/commands/data.rs"))
+        .map_err(|err| format!("failed to read data command source: {err}"))?;
+    let audit_event_names = [
+        "config_loaded",
+        "startup",
+        "ingest_started",
+        "ingest_completed",
+        "query_executed",
+        "admin_action",
+    ];
+    let runtime_audit_sources_present = request_utils_source.contains("query_executed")
+        && request_utils_source.contains("admin_action")
+        && main_source.contains("audit_config_loaded")
+        && main_source.contains("audit_startup")
+        && data_command_source.contains("audit_ingest_started")
+        && data_command_source.contains("audit_ingest_completed");
+    let audit_smoke_rows = vec![
+        serde_json::json!({
+            "event_id": "audit_config_loaded",
+            "event_name": "config_loaded",
+            "timestamp_policy": "runtime-unix-seconds",
+            "timestamp_unix_s": 1,
+            "sink": "stdout",
+            "action": "runtime.config.read",
+            "resource_kind": "namespace",
+            "resource_id": "atlas"
+        }),
+        serde_json::json!({
+            "event_id": "audit_startup",
+            "event_name": "startup",
+            "timestamp_policy": "runtime-unix-seconds",
+            "timestamp_unix_s": 2,
+            "sink": "stdout",
+            "principal": "operator",
+            "action": "runtime.startup",
+            "resource_kind": "namespace",
+            "resource_id": "atlas"
+        }),
+        serde_json::json!({
+            "event_id": "audit_query_executed",
+            "event_name": "query_executed",
+            "timestamp_policy": "runtime-unix-seconds",
+            "timestamp_unix_s": 3,
+            "sink": "stdout",
+            "principal": "service-account",
+            "action": "dataset.read",
+            "resource_kind": "dataset-id",
+            "resource_id": "/v1/datasets"
+        }),
+        serde_json::json!({
+            "event_id": "audit_admin_action",
+            "event_name": "admin_action",
+            "timestamp_policy": "runtime-unix-seconds",
+            "timestamp_unix_s": 4,
+            "sink": "stdout",
+            "principal": "operator",
+            "action": "ops.admin",
+            "resource_kind": "namespace",
+            "resource_id": "/debug/datasets"
+        }),
+        serde_json::json!({
+            "event_id": "audit_ingest_started",
+            "event_name": "ingest_started",
+            "timestamp_policy": "runtime-unix-seconds",
+            "timestamp_unix_s": 5,
+            "sink": "stdout",
+            "principal": "ci",
+            "action": "dataset.ingest",
+            "resource_kind": "dataset-id",
+            "resource_id": "110/homo_sapiens/GRCh38"
+        }),
+        serde_json::json!({
+            "event_id": "audit_ingest_completed",
+            "event_name": "ingest_completed",
+            "timestamp_policy": "runtime-unix-seconds",
+            "timestamp_unix_s": 6,
+            "sink": "stdout",
+            "principal": "ci",
+            "action": "dataset.ingest",
+            "resource_kind": "dataset-id",
+            "resource_id": "110/homo_sapiens/GRCh38"
+        }),
+    ];
+    let audit_smoke_path = named_report_path(&root, "audit-smoke.jsonl")?;
+    write_json_lines(&audit_smoke_path, &audit_smoke_rows)?;
+    let mut audit_verify_errors = Vec::new();
+    for row in &audit_smoke_rows {
+        if let Err(err) = validate_audit_record_shape(row, &audit_event_names) {
+            audit_verify_errors.push(err);
+        }
+    }
+    let obs_audit_001 = runtime_audit_sources_present && audit_verify_errors.is_empty();
+    let audit_verify_report = serde_json::json!({
+        "schema_version": 1,
+        "status": if obs_audit_001 { "ok" } else { "failed" },
+        "log_path": audit_smoke_path
+            .strip_prefix(&root)
+            .unwrap_or(&audit_smoke_path)
+            .display()
+            .to_string(),
+        "summary": {
+            "total": audit_smoke_rows.len(),
+            "errors": audit_verify_errors.len()
+        },
+        "rows": audit_smoke_rows
+    });
+    let audit_verify_report_path = named_report_path(&root, "audit-verify.json")?;
+    fs::write(
+        &audit_verify_report_path,
+        serde_json::to_string_pretty(&audit_verify_report)
+            .map_err(|err| format!("encode audit verify report failed: {err}"))?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", audit_verify_report_path.display()))?;
+    let obs_audit_002 = audit_verify_errors.is_empty();
+    let obs_ret_001 = !retention_rows.is_empty()
+        && retention
+            .get("schema_version")
+            .and_then(serde_yaml::Value::as_i64)
+            == Some(1);
 
     let mitigation_ids = mitigation_rows
         .iter()
@@ -1035,6 +1268,10 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             && sec_auth_002
             && sec_auth_003
             && sec_auth_004
+            && sec_priv_001
+            && obs_audit_001
+            && obs_audit_002
+            && obs_ret_001
             && sec_deps_001
             && sec_deps_002
             && sec_images_001
@@ -1061,6 +1298,11 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
                 .strip_prefix(&root)
                 .unwrap_or(&github_actions_report_path)
                 .display()
+                .to_string(),
+            "audit_verify": audit_verify_report_path
+                .strip_prefix(&root)
+                .unwrap_or(&audit_verify_report_path)
+                .display()
                 .to_string()
         },
         "contracts": {
@@ -1072,6 +1314,10 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "SEC-AUTH-002": sec_auth_002,
             "SEC-AUTH-003": sec_auth_003,
             "SEC-AUTH-004": sec_auth_004,
+            "SEC-PRIV-001": sec_priv_001,
+            "OBS-AUDIT-001": obs_audit_001,
+            "OBS-AUDIT-002": obs_audit_002,
+            "OBS-RET-001": obs_ret_001,
             "SEC-RED-001": sec_red_001,
             "SEC-RED-002": sec_red_002,
             "SEC-DEPS-001": sec_deps_001,
@@ -1097,6 +1343,8 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "missing_docs_links": missing_docs_links,
             "high_severity_gaps": high_severity_gaps,
             "missing_redaction_keys": missing_redaction_keys,
+            "redaction_class_refs": redaction_class_refs,
+            "audit_verify_errors": audit_verify_errors,
             "evidence_secret_matches": evidence_matches,
             "disallowed_npm_sources": disallowed_npm_sources,
             "disallowed_python_indexes": disallowed_python_indexes,

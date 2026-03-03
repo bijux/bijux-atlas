@@ -1,5 +1,9 @@
 {
   "schema_version": 1,
+  "classification_refs": [
+    "secrets",
+    "pii"
+  ],
   "rules": [
     {
       "key": "ATLAS_REDIS_URL",

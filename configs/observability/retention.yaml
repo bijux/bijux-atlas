@@ -1,0 +1,8 @@
+schema_version: 1
+rules:
+  - id: audit-log-default
+    target: audit-log
+    retention_days: 30
+    max_size_bytes: 1048576
+    rotation_count: 1
+    access_model: operator-only
