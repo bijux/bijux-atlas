@@ -102,14 +102,18 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             crate::cli::OpsProfilesCommand::Validate(args) => validate_helm_profile_matrix(&args),
         },
         OpsCommand::Obs { command } => match command {
-            crate::cli::OpsObsCommand::Verify(common) => crate::ops_execution_runtime::run_ops_obs_verify(&common),
-            crate::cli::OpsObsCommand::Validate(common) => crate::ops_execution_runtime::run_ops_obs_verify(&common),
-            crate::cli::OpsObsCommand::Drill { command: crate::cli::OpsObsDrillCommand::Run(common) } => {
-                crate::ops_execution_runtime::run_ops_drill(&crate::cli::OpsDrillRunArgs {
-                    common,
-                    name: "warmup-pod-restart".to_string(),
-                })
+            crate::cli::OpsObsCommand::Verify(common) => {
+                crate::ops_execution_runtime::run_ops_obs_verify(&common)
             }
+            crate::cli::OpsObsCommand::Validate(common) => {
+                crate::ops_execution_runtime::run_ops_obs_verify(&common)
+            }
+            crate::cli::OpsObsCommand::Drill {
+                command: crate::cli::OpsObsDrillCommand::Run(common),
+            } => crate::ops_execution_runtime::run_ops_drill(&crate::cli::OpsDrillRunArgs {
+                common,
+                name: "warmup-pod-restart".to_string(),
+            }),
             other => {
                 let payload = serde_json::json!({
                     "schema_version": 1,
@@ -125,7 +129,9 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                     | crate::cli::OpsObsCommand::Down(common)
                     | crate::cli::OpsObsCommand::Snapshot(common)
                     | crate::cli::OpsObsCommand::Dashboards(common) => common,
-                    crate::cli::OpsObsCommand::Drill { command: crate::cli::OpsObsDrillCommand::Run(common) } => common,
+                    crate::cli::OpsObsCommand::Drill {
+                        command: crate::cli::OpsObsDrillCommand::Run(common),
+                    } => common,
                     crate::cli::OpsObsCommand::Validate(common)
                     | crate::cli::OpsObsCommand::Verify(common) => common,
                 };
@@ -134,7 +140,9 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             }
         },
         OpsCommand::Drills { command } => match command {
-            crate::cli::OpsDrillsCommand::Run(args) => crate::ops_execution_runtime::run_ops_drill(&args),
+            crate::cli::OpsDrillsCommand::Run(args) => {
+                crate::ops_execution_runtime::run_ops_drill(&args)
+            }
         },
         OpsCommand::Doctor(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
@@ -479,16 +487,32 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             }
         },
         OpsCommand::Kind { command } => match command {
-            crate::cli::OpsKindCommand::Up(common) => crate::ops_execution_runtime::run_ops_kind_up(&common),
-            crate::cli::OpsKindCommand::Down(common) => crate::ops_execution_runtime::run_ops_kind_down(&common),
-            crate::cli::OpsKindCommand::Status(common) => crate::ops_execution_runtime::run_ops_kind_status(&common),
-            crate::cli::OpsKindCommand::PreloadImage(args) => crate::ops_execution_runtime::run_ops_kind_preload(&args),
+            crate::cli::OpsKindCommand::Up(common) => {
+                crate::ops_execution_runtime::run_ops_kind_up(&common)
+            }
+            crate::cli::OpsKindCommand::Down(common) => {
+                crate::ops_execution_runtime::run_ops_kind_down(&common)
+            }
+            crate::cli::OpsKindCommand::Status(common) => {
+                crate::ops_execution_runtime::run_ops_kind_status(&common)
+            }
+            crate::cli::OpsKindCommand::PreloadImage(args) => {
+                crate::ops_execution_runtime::run_ops_kind_preload(&args)
+            }
         },
         OpsCommand::Helm { command } => match command {
-            crate::cli::OpsHelmCommand::Install(args) => crate::ops_execution_runtime::run_ops_helm_install(&args),
-            crate::cli::OpsHelmCommand::Uninstall(args) => crate::ops_execution_runtime::run_ops_helm_uninstall(&args),
-            crate::cli::OpsHelmCommand::Upgrade(args) => crate::ops_execution_runtime::run_ops_helm_upgrade(&args),
-            crate::cli::OpsHelmCommand::Rollback(args) => crate::ops_execution_runtime::run_ops_helm_rollback(&args),
+            crate::cli::OpsHelmCommand::Install(args) => {
+                crate::ops_execution_runtime::run_ops_helm_install(&args)
+            }
+            crate::cli::OpsHelmCommand::Uninstall(args) => {
+                crate::ops_execution_runtime::run_ops_helm_uninstall(&args)
+            }
+            crate::cli::OpsHelmCommand::Upgrade(args) => {
+                crate::ops_execution_runtime::run_ops_helm_upgrade(&args)
+            }
+            crate::cli::OpsHelmCommand::Rollback(args) => {
+                crate::ops_execution_runtime::run_ops_helm_rollback(&args)
+            }
         },
         OpsCommand::Evidence { command } => match command {
             crate::cli::OpsEvidenceCommand::Collect(common) => {

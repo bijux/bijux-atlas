@@ -2,14 +2,14 @@
 
 use crate::cli::OpsInstallArgs;
 use crate::cli::{
-    OpsCollectArgs, OpsCollectCommand, OpsCommonArgs, OpsDatasetsCommand, OpsE2eCommand,
-    OpsDrillRunArgs, OpsDrillsCommand, OpsEvidenceCommand, OpsEvidenceDiffArgs, OpsEvidenceVerifyArgs, OpsGenerateCommand,
-    OpsHelmCommand, OpsHelmEnvArgs, OpsHelmInstallArgs, OpsHelmReleaseArgs,
-    OpsHelmRollbackArgs, OpsHelmUpgradeArgs, OpsInventoryCommand, OpsK8sCommand,
-    OpsKindCommand, OpsKindPreloadArgs, OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand,
-    OpsObsDrillCommand, OpsPinsCommand, OpsProfilesCommand, OpsProfilesValidateArgs,
-    OpsRenderArgs, OpsRenderTarget, OpsReportCommand, OpsResourcesCommand, OpsSchemaCommand, OpsStackCommand,
-    OpsSuiteCommand, OpsToolsCommand,
+    OpsCollectArgs, OpsCollectCommand, OpsCommonArgs, OpsDatasetsCommand, OpsDrillRunArgs,
+    OpsDrillsCommand, OpsE2eCommand, OpsEvidenceCommand, OpsEvidenceDiffArgs,
+    OpsEvidenceVerifyArgs, OpsGenerateCommand, OpsHelmCommand, OpsHelmEnvArgs, OpsHelmInstallArgs,
+    OpsHelmReleaseArgs, OpsHelmRollbackArgs, OpsHelmUpgradeArgs, OpsInventoryCommand,
+    OpsK8sCommand, OpsKindCommand, OpsKindPreloadArgs, OpsLoadBaselineCommand, OpsLoadCommand,
+    OpsObsCommand, OpsObsDrillCommand, OpsPinsCommand, OpsProfilesCommand, OpsProfilesValidateArgs,
+    OpsRenderArgs, OpsRenderTarget, OpsReportCommand, OpsResourcesCommand, OpsSchemaCommand,
+    OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
 };
 use crate::ops_support::{
     build_ops_run_report, load_load_manifest, load_stack_manifest, load_stack_pins,
@@ -50,7 +50,9 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
         OpsCommand::Helm { command } => match command {
             OpsHelmCommand::Install(OpsHelmInstallArgs { release, .. })
             | OpsHelmCommand::Upgrade(OpsHelmUpgradeArgs { release, .. })
-            | OpsHelmCommand::Rollback(OpsHelmRollbackArgs { release, .. }) => Some(&release.common),
+            | OpsHelmCommand::Rollback(OpsHelmRollbackArgs { release, .. }) => {
+                Some(&release.common)
+            }
             OpsHelmCommand::Uninstall(OpsHelmReleaseArgs { common, .. }) => Some(common),
         },
         OpsCommand::List(common)
