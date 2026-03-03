@@ -96,6 +96,14 @@ fn render_networkpolicy_with_values_file(root: &Path, values_file: &str) -> Stri
     String::from_utf8(output.stdout).expect("helm template utf8")
 }
 
+fn yaml_bool(value: &YamlValue) -> Option<bool> {
+    value.as_bool()
+}
+
+fn yaml_str<'a>(value: &'a YamlValue) -> Option<&'a str> {
+    value.as_str()
+}
+
 #[test]
 fn chart_values_profiles_use_only_schema_declared_top_level_keys() {
     let root = repo_root();
@@ -380,5 +388,100 @@ fn networkpolicy_disabled_profile_renders_no_manifest() {
     assert!(
         !rendered.contains("kind: NetworkPolicy"),
         "dev profile must not render a NetworkPolicy when disabled"
+    );
+}
+
+#[test]
+fn networkpolicy_profile_semantics_match_selected_modes() {
+    let root = repo_root();
+    let profiles = [
+        "ops/k8s/values/ci.yaml",
+        "ops/k8s/values/kind.yaml",
+        "ops/k8s/values/prod.yaml",
+        "ops/k8s/values/perf.yaml",
+        "ops/k8s/values/offline.yaml",
+    ];
+
+    for values_file in profiles {
+        let values = load_yaml(&root.join(values_file));
+        let rendered = render_networkpolicy_with_values_file(&root, values_file);
+        let network_policy = &values["networkPolicy"];
+
+        let egress_mode = yaml_str(&network_policy["mode"])
+            .or_else(|| yaml_str(&network_policy["egress"]["mode"]))
+            .unwrap_or("internet-only");
+        let ingress_mode = yaml_str(&network_policy["ingressMode"])
+            .or_else(|| yaml_str(&network_policy["ingress"]["mode"]))
+            .unwrap_or("same-namespace");
+        let allow_dns = yaml_bool(&network_policy["allowDns"])
+            .or_else(|| yaml_bool(&network_policy["egress"]["allowDns"]))
+            .unwrap_or(false);
+        let metrics_enabled = yaml_bool(&values["metrics"]["enabled"]).unwrap_or(false);
+        let monitoring_namespace = yaml_str(&network_policy["monitoring"]["allowNamespace"])
+            .or_else(|| yaml_str(&network_policy["allowMonitoringNamespace"]))
+            .unwrap_or("");
+
+        assert!(
+            !rendered.contains("\n    - from:\n        - podSelector: {}"),
+            "{values_file} must not render ingress allow-all when network policy is enabled"
+        );
+
+        if ingress_mode == "same-namespace" {
+            assert!(
+                rendered.contains("kubernetes.io/metadata.name: \"default\"")
+                    || rendered.contains("kubernetes.io/metadata.name: default"),
+                "{values_file} same-namespace mode must scope ingress by release namespace"
+            );
+        }
+
+        if egress_mode == "cluster-aware" {
+            assert!(
+                rendered.contains("namespaceSelector:"),
+                "{values_file} cluster-aware mode must render namespaceSelector-based egress"
+            );
+            assert!(
+                rendered.contains("podSelector: {}"),
+                "{values_file} cluster-aware mode must render explicit podSelector for in-cluster deps"
+            );
+            assert!(
+                !rendered.contains("ipBlock:"),
+                "{values_file} cluster-aware mode must not rely on CIDR-only egress rules"
+            );
+        }
+
+        if egress_mode == "internet-only" {
+            assert!(
+                rendered.contains("port: 443") && rendered.contains("port: 80"),
+                "{values_file} internet-only mode must restrict egress to HTTP/HTTPS"
+            );
+        }
+
+        if allow_dns {
+            assert!(
+                rendered.contains("port: 53") && rendered.contains("protocol: UDP"),
+                "{values_file} allowDns=true must render DNS egress rules"
+            );
+        }
+
+        if metrics_enabled && !monitoring_namespace.is_empty() {
+            assert!(
+                rendered.contains(&format!("- \"{monitoring_namespace}\"")),
+                "{values_file} metrics-enabled policy must allow monitoring namespace ingress"
+            );
+        }
+    }
+}
+
+#[test]
+fn kind_profile_networkpolicy_remains_reachable_shape_for_simulation() {
+    let root = repo_root();
+    let rendered = render_networkpolicy_with_values_file(&root, "ops/k8s/values/kind.yaml");
+    assert!(
+        rendered.contains("kind: NetworkPolicy"),
+        "kind profile must render a NetworkPolicy for simulation coverage"
+    );
+    assert!(
+        rendered.contains("port: 8080"),
+        "kind profile NetworkPolicy must keep the service port reachable"
     );
 }
