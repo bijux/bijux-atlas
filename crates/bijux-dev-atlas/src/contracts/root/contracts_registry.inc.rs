@@ -21,14 +21,13 @@ const ROOT_ALLOWED_VISIBLE: [&str; 20] = [
     "governance",
 ];
 
-const ROOT_ALLOWED_VISIBLE_TAIL: [&str; 9] = [
+const ROOT_ALLOWED_VISIBLE_TAIL: [&str; 8] = [
     "docs",
     "make",
     "mkdocs.yml",
     "ops",
     "release",
     "rust-toolchain.toml",
-    "scripts",
     "security",
     "tools",
 ];

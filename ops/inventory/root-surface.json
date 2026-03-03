@@ -79,9 +79,6 @@
     "rust-toolchain.toml": {
       "kind": "file"
     },
-    "scripts": {
-      "kind": "dir"
-    },
     "security": {
       "kind": "dir"
     },
