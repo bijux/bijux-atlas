@@ -46,12 +46,9 @@
           "additionalProperties": false,
           "properties": {
             "drop": {
-              "type": "array",
-              "items": {
-                "const": "ALL"
-              },
-              "minItems": 1,
-              "maxItems": 1
+              "const": [
+                "ALL"
+              ]
             }
           },
           "required": [
