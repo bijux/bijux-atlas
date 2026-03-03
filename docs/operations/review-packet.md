@@ -43,3 +43,10 @@
 - Include `configs/governance/exceptions-archive.yaml`.
 - Include `artifacts/governance/exceptions-summary.json`.
 - Include `artifacts/governance/exceptions-expiry-warning.json`.
+
+## Compatibility evidence
+
+- Include `artifacts/governance/deprecations-summary.json`.
+- Include `artifacts/governance/breaking-changes.json`.
+- Include `artifacts/governance/governance-doctor.json`.
+- Include `artifacts/governance/institutional-delta.md`.

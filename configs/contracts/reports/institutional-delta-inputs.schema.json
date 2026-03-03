@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/reports/institutional-delta-inputs.schema.json",
+  "title": "Institutional Delta Inputs",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_from", "breaking_changes", "deprecations"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "generated_from": {
+      "type": "object"
+    },
+    "breaking_changes": {
+      "type": "array"
+    },
+    "deprecations": {
+      "type": "array"
+    }
+  }
+}

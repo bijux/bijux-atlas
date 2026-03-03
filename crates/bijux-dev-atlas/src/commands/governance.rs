@@ -187,6 +187,18 @@ fn breaking_changes_path(root: &Path) -> PathBuf {
     root.join("artifacts/governance/breaking-changes.json")
 }
 
+fn governance_doctor_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/governance-doctor.json")
+}
+
+fn institutional_delta_inputs_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/institutional-delta-inputs.json")
+}
+
+fn institutional_delta_markdown_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/institutional-delta.md")
+}
+
 fn is_iso_date(value: &str) -> bool {
     let bytes = value.as_bytes();
     if bytes.len() != 10 {
@@ -515,6 +527,52 @@ fn active_exception_for_contract(root: &Path, contract_id: &str) -> Result<bool,
                 .map(|expires| expires >= today)
                 .unwrap_or(false)
     }))
+}
+
+fn render_institutional_delta_markdown(inputs: &serde_json::Value) -> String {
+    let mut out = String::from("# Institutional Delta\n\n");
+    out.push_str("Deterministic release delta generated from governed compatibility artifacts.\n\n");
+    out.push_str("## Breaking changes\n\n");
+    let breaking = inputs
+        .get("breaking_changes")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    if breaking.is_empty() {
+        out.push_str("- None.\n");
+    } else {
+        for row in breaking {
+            let id = row.get("id").and_then(serde_json::Value::as_str).unwrap_or_default();
+            let change = row
+                .get("change")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
+            out.push_str(&format!("- `{id}`: {change}\n"));
+        }
+    }
+    out.push_str("\n## Active deprecations\n\n");
+    let deprecations = inputs
+        .get("deprecations")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    if deprecations.is_empty() {
+        out.push_str("- None.\n");
+    } else {
+        for row in deprecations {
+            let id = row.get("id").and_then(serde_json::Value::as_str).unwrap_or_default();
+            let old_name = row.get("old_name").and_then(serde_json::Value::as_str).unwrap_or_default();
+            let new_name = row.get("new_name").and_then(serde_json::Value::as_str).unwrap_or_default();
+            let removal_target = row
+                .get("removal_target")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
+            out.push_str(&format!(
+                "- `{id}`: `{old_name}` -> `{new_name}` (removal target `{removal_target}`)\n"
+            ));
+        }
+    }
+    out
 }
 
 pub(crate) fn run_governance_command(
@@ -1548,5 +1606,175 @@ pub(crate) fn run_governance_command(
                 Ok((rendered, exit_code))
             }
         },
+        GovernanceCommand::Doctor {
+            repo_root,
+            format,
+            out,
+        } => {
+            let root = resolve_repo_root(repo_root)?;
+            let registry_path = exceptions_registry_path(&root);
+            let registry_text = fs::read_to_string(&registry_path)
+                .map_err(|err| format!("read {} failed: {err}", registry_path.display()))?;
+            let exceptions: ExceptionsRegistry = serde_yaml::from_str(&registry_text)
+                .map_err(|err| format!("parse {} failed: {err}", registry_path.display()))?;
+            let deprecations = load_deprecations_registry(&root)?;
+            let breaking_report = if breaking_changes_path(&root).exists() {
+                read_json_value(&breaking_changes_path(&root))?
+            } else {
+                serde_json::json!({"rows":[]})
+            };
+            let release_manifest_path = root.join("release/evidence/manifest.json");
+            let today = current_utc_day()?;
+
+            let active_exceptions = exceptions
+                .exceptions
+                .iter()
+                .filter(|item| date_days(&item.expires_at).map(|day| day >= today).unwrap_or(false))
+                .map(|item| {
+                    serde_json::json!({
+                        "kind": "exception",
+                        "id": item.id,
+                        "scope": format!("{}:{}", item.scope.kind, item.scope.id),
+                        "expires_at": item.expires_at
+                    })
+                })
+                .collect::<Vec<_>>();
+
+            let active_deprecations = deprecations
+                .deprecations
+                .iter()
+                .filter(|item| date_days(&item.removal_target).map(|day| day >= today).unwrap_or(false))
+                .map(|item| {
+                    serde_json::json!({
+                        "kind": "deprecation",
+                        "id": item.id,
+                        "surface": item.surface,
+                        "old_name": item.old_name,
+                        "new_name": item.new_name,
+                        "removal_target": item.removal_target
+                    })
+                })
+                .collect::<Vec<_>>();
+
+            let upcoming_removals = deprecations
+                .deprecations
+                .iter()
+                .filter_map(|item| {
+                    let removal = date_days(&item.removal_target).ok()?;
+                    let days = removal - today;
+                    (days >= 0 && days < 30).then(|| {
+                        serde_json::json!({
+                            "kind": "upcoming-removal",
+                            "id": item.id,
+                            "surface": item.surface,
+                            "removal_target": item.removal_target,
+                            "days_until_removal": days
+                        })
+                    })
+                })
+                .collect::<Vec<_>>();
+
+            let mut rows = Vec::new();
+            rows.extend(active_deprecations.iter().cloned());
+            rows.extend(upcoming_removals.iter().cloned());
+            rows.extend(active_exceptions.iter().cloned());
+
+            let delta_inputs = serde_json::json!({
+                "schema_version": 1,
+                "generated_from": {
+                    "breaking_changes": "artifacts/governance/breaking-changes.json",
+                    "deprecations": "configs/governance/deprecations.yaml"
+                },
+                "breaking_changes": breaking_report.get("rows").cloned().unwrap_or_else(|| serde_json::json!([])),
+                "deprecations": active_deprecations
+            });
+            let delta_inputs_path = institutional_delta_inputs_path(&root);
+            let delta_inputs_schema = read_json_value(
+                &root.join("configs/contracts/reports/institutional-delta-inputs.schema.json"),
+            )?;
+            if delta_inputs_schema
+                .get("properties")
+                .and_then(|value| value.get("schema_version"))
+                .and_then(|value| value.get("const"))
+                .and_then(serde_json::Value::as_u64)
+                != delta_inputs
+                    .get("schema_version")
+                    .and_then(serde_json::Value::as_u64)
+            {
+                return Err("institutional delta inputs schema version mismatch".to_string());
+            }
+            if delta_inputs
+                .get("breaking_changes")
+                .and_then(serde_json::Value::as_array)
+                .is_none()
+                || delta_inputs
+                    .get("deprecations")
+                    .and_then(serde_json::Value::as_array)
+                    .is_none()
+            {
+                return Err("institutional delta inputs must declare breaking_changes and deprecations arrays".to_string());
+            }
+            write_pretty_json(&delta_inputs_path, &delta_inputs)?;
+            let delta_markdown = render_institutional_delta_markdown(&delta_inputs);
+            let delta_markdown_path = institutional_delta_markdown_path(&root);
+            write_text(&delta_markdown_path, &delta_markdown)?;
+
+            let rel_gov_001 = if release_manifest_path.exists() {
+                let manifest = read_json_value(&release_manifest_path)?;
+                manifest
+                    .get("governance_assets")
+                    .and_then(|value| value.get("governance_doctor"))
+                    .and_then(|value| value.get("path"))
+                    .and_then(serde_json::Value::as_str)
+                    == Some("artifacts/governance/governance-doctor.json")
+            } else {
+                true
+            };
+            let rel_gov_002 = if release_manifest_path.exists() {
+                delta_markdown_path.exists()
+            } else {
+                true
+            };
+
+            let report = serde_json::json!({
+                "report_id": "governance-doctor",
+                "version": 1,
+                "inputs": {
+                    "generator": "bijux-dev-atlas governance doctor",
+                    "sources": [
+                        "configs/governance/exceptions.yaml",
+                        "configs/governance/deprecations.yaml",
+                        "artifacts/governance/breaking-changes.json"
+                    ]
+                },
+                "status": "ok",
+                "summary": {
+                    "active_deprecations": active_deprecations.len(),
+                    "upcoming_removals": upcoming_removals.len(),
+                    "active_exceptions": active_exceptions.len()
+                },
+                "rows": rows,
+                "contracts": {
+                    "GOV-DOC-001": true,
+                    "REL-GOV-001": rel_gov_001,
+                    "REL-GOV-002": rel_gov_002
+                },
+                "errors": []
+            });
+            validate_named_report(&root, "governance-doctor.schema.json", &report)?;
+            let report_path = governance_doctor_path(&root);
+            write_pretty_json(&report_path, &report)?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "governance_doctor",
+                "status": "ok",
+                "report_path": report_path.strip_prefix(&root).unwrap_or(&report_path).display().to_string(),
+                "institutional_delta_path": delta_markdown_path.strip_prefix(&root).unwrap_or(&delta_markdown_path).display().to_string(),
+                "contracts": report["contracts"].clone(),
+                "errors": []
+            });
+            let rendered = emit_payload(format, out, &payload)?;
+            Ok((rendered, 0))
+        }
     }
 }

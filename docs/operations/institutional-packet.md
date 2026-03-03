@@ -24,12 +24,19 @@ includes the minimum review set:
 - `release/provenance.json`
 - The chart package referenced by the manifest
 - At least one SBOM referenced by the manifest
+- `artifacts/governance/governance-doctor.json`
+- `artifacts/governance/institutional-delta.md`
 
 ## Verify
 
 1. Run `bijux-dev-atlas release packet --evidence release/evidence --format json`.
 2. Confirm `REL-PACK-001` is `true`.
 3. Hand the generated inventory together with the referenced files to the reviewer.
+
+## Compatibility interpretation
+
+- Use `governance-doctor.json` for the compact machine-readable summary.
+- Use `institutional-delta.md` for the human-readable compatibility delta since the prior release.
 
 ## Rollback
 

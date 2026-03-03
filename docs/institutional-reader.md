@@ -16,8 +16,16 @@
 - Generated documentation diagnostics: [Docs health dashboard](_internal/generated/docs-health-dashboard.md)
 - Supply-chain and release controls: [Operations supply-chain policies](operations/supply-chain-policies.md)
 - Exception posture and inventory: [Governance exceptions](operations/governance-exceptions.md)
+- Compatibility posture: [_internal governance compatibility process](_internal/governance/compatibility-and-deprecation-process.md)
 
 ## What This Page Is For
 
 Use this page when you need a review packet starting point for traceability, contract coverage, and
 operator posture.
+
+## How To Read Compatibility Artifacts
+
+- `artifacts/governance/deprecations-summary.json` lists the governed overlap windows.
+- `artifacts/governance/breaking-changes.json` lists active governed breaking changes.
+- `artifacts/governance/governance-doctor.json` is the quick deterministic summary for reviewers.
+- `artifacts/governance/institutional-delta.md` is the human-readable release delta.
