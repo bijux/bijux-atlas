@@ -15,10 +15,42 @@
 {{- if and .Values.networkPolicy.egress (hasKey .Values.networkPolicy.egress "allowNamespaces") }}
 {{- $allowNamespaces = .Values.networkPolicy.egress.allowNamespaces }}
 {{- end }}
+{{- $ingressMode := "same-namespace" }}
+{{- if and .Values.networkPolicy.ingress (hasKey .Values.networkPolicy.ingress "mode") }}
+{{- $ingressMode = .Values.networkPolicy.ingress.mode }}
+{{- end }}
+{{- $ingressAllowNamespaces := list }}
+{{- if and .Values.networkPolicy.ingress (hasKey .Values.networkPolicy.ingress "allowNamespaces") }}
+{{- $ingressAllowNamespaces = .Values.networkPolicy.ingress.allowNamespaces }}
+{{- end }}
 {{- $enableEgress := ne $egressMode "disabled" }}
+{{- $enableIngress := ne $ingressMode "disabled" }}
 {{- $hasInternetCidrs := and (eq $egressMode "internet-only") (gt (len $allowCidrs) 0) }}
-{{- $hasClusterRules := and (eq $egressMode "cluster-aware") (gt (len $allowNamespaces) 0) }}
+{{- $clusterPorts := list }}
+{{- if .Values.networkPolicy.dependencies.redis.enabled }}
+{{- range .Values.networkPolicy.dependencies.redis.ports }}
+{{- $clusterPorts = append $clusterPorts . }}
+{{- end }}
+{{- end }}
+{{- if .Values.networkPolicy.dependencies.minio.enabled }}
+{{- range .Values.networkPolicy.dependencies.minio.ports }}
+{{- $clusterPorts = append $clusterPorts . }}
+{{- end }}
+{{- end }}
+{{- if .Values.networkPolicy.dependencies.catalog.enabled }}
+{{- range .Values.networkPolicy.dependencies.catalog.ports }}
+{{- $clusterPorts = append $clusterPorts . }}
+{{- end }}
+{{- end }}
+{{- if .Values.networkPolicy.dependencies.otelCollector.enabled }}
+{{- range .Values.networkPolicy.dependencies.otelCollector.ports }}
+{{- $clusterPorts = append $clusterPorts . }}
+{{- end }}
+{{- end }}
+{{- $hasClusterRules := and (eq $egressMode "cluster-aware") (and (gt (len $allowNamespaces) 0) (gt (len $clusterPorts) 0)) }}
 {{- $hasAutoRules := or $allowDns (or $hasInternetCidrs $hasClusterRules) }}
+{{- $hasSelectedIngress := and (eq $ingressMode "selected") (gt (len $ingressAllowNamespaces) 0) }}
+{{- $hasIngressRules := or (eq $ingressMode "same-namespace") $hasSelectedIngress }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -31,16 +63,43 @@ spec:
       app.kubernetes.io/name: {{ include "bijux-atlas.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   policyTypes:
+    {{- if $enableIngress }}
     - Ingress
+    {{- end }}
     {{- if $enableEgress }}
     - Egress
     {{- end }}
+  {{- if $enableIngress }}
+  {{- if not $hasIngressRules }}
+  ingress: []
+  {{- else }}
   ingress:
+    {{- if eq $ingressMode "same-namespace" }}
+    # same-namespace: permit only in-namespace clients, deny cross-namespace ingress by default.
     - from:
         - podSelector: {}
       ports:
         - protocol: TCP
           port: {{ .Values.service.port }}
+    {{- else if eq $ingressMode "selected" }}
+    # selected: allow ingress only from explicitly named namespaces.
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values:
+                  {{- range $ingressAllowNamespaces }}
+                  - {{ . | quote }}
+                  {{- end }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.service.port }}
+    {{- else if eq $ingressMode "custom" }}
+    # custom: no automatic ingress rules are emitted; operators must supply custom policy overlays.
+    {{- end }}
+  {{- end }}
+  {{- end }}
   {{- if $enableEgress }}
   {{- if not $hasAutoRules }}
   egress: []
@@ -86,14 +145,10 @@ spec:
                   - {{ . | quote }}
                   {{- end }}
       ports:
+        {{- range $clusterPorts }}
         - protocol: TCP
-          port: 6379
-        - protocol: TCP
-          port: 9000
-        - protocol: TCP
-          port: 80
-        - protocol: TCP
-          port: 443
+          port: {{ . }}
+        {{- end }}
     {{- end }}
     {{- else if eq $egressMode "custom" }}
     # custom: no automatic egress rules are emitted; operators must supply custom policy overlays.
