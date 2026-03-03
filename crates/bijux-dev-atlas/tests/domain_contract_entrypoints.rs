@@ -30,4 +30,20 @@ fn canonical_domain_contract_entrypoints_resolve_for_primary_domains() {
     assert!(!bijux_dev_atlas::domains::governance::contracts(&root)
         .expect("governance contracts")
         .is_empty());
+
+    assert!(!bijux_dev_atlas::domains::configs::contracts::contracts(&root)
+        .expect("configs contracts module")
+        .is_empty());
+    assert!(!bijux_dev_atlas::domains::docs::contracts::contracts(&root)
+        .expect("docs contracts module")
+        .is_empty());
+    assert!(!bijux_dev_atlas::domains::docker::contracts::contracts(&root)
+        .expect("docker contracts module")
+        .is_empty());
+    assert!(!bijux_dev_atlas::domains::ops::contracts::contracts(&root)
+        .expect("ops contracts module")
+        .is_empty());
+    assert!(!bijux_dev_atlas::domains::governance::contracts::contracts(&root)
+        .expect("governance contracts module")
+        .is_empty());
 }
