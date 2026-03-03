@@ -132,8 +132,8 @@ checks: ## Run the fast non-test quality gate lane
 	@$(MAKE) -s lint-policy-enforce
 	@$(MAKE) -s configs-lint
 
-checks-all: ## Run the deterministic non-test quality gates
-	@$(DEV_ATLAS) check run --suite ci $(CHECK_FAIL_FAST_FLAG) --format text
+checks-all: ## Run the full non-test quality gates
+	@$(DEV_ATLAS) check run --suite deep --include-internal --include-slow --allow-subprocess --allow-git --allow-write --allow-network $(CHECK_FAIL_FAST_FLAG) --format text
 
 checks-group: ## Run one checks suite group (GROUP=<name>)
 	@[ -n "$${GROUP:-}" ] || { echo "usage: make checks-group GROUP=<name>" >&2; exit 2; }

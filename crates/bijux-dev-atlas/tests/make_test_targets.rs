@@ -49,7 +49,7 @@ fn checks_all_runs_one_human_facing_check_command() {
     let root_mk =
         fs::read_to_string(workspace_root().join("make/root.mk")).expect("read make/root.mk");
     let start = root_mk
-        .find("checks-all: ## Run the deterministic non-test quality gates")
+        .find("checks-all: ## Run the full non-test quality gates")
         .expect("checks-all target");
     let tail = &root_mk[start..];
     let end = tail.find("\n\n").unwrap_or(tail.len());
@@ -69,8 +69,16 @@ fn checks_all_runs_one_human_facing_check_command() {
         "checks-all should default to human-readable nextest-style output"
     );
     assert!(
-        target_block.contains("--suite ci"),
-        "checks-all should target the canonical public ci checks suite"
+        target_block.contains("--suite deep"),
+        "checks-all should target the full deep checks suite"
+    );
+    assert!(
+        target_block.contains("--include-internal --include-slow"),
+        "checks-all should include internal and slow checks"
+    );
+    assert!(
+        target_block.contains("--allow-subprocess --allow-git --allow-write --allow-network"),
+        "checks-all should grant the full effects envelope needed for all checks"
     );
     assert!(
         !target_block.contains("--format json"),
