@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ArtifactsCommand, CheckCommand, CheckRegistryCommand, Command, ConfigsCommand, ContractCommand,
-    ContractsCommand, DatasetsCommand, DocsCommand, FormatArg, IngestCommand, MakeCommand,
-    OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand, ReleaseCommand, ReportsCommand,
-    SecurityCommand,
+    ArtifactsCommand, CheckCommand, CheckRegistryCommand, ChecksCommand, Command, ConfigsCommand,
+    ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, FormatArg, IngestCommand,
+    MakeCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand, ReleaseCommand,
+    ReportsCommand, SecurityCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -52,6 +52,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Perf { command } => force_json_perf(command),
         Command::Policies { command } => force_json_policies(command),
         Command::Check { command } => force_json_check(command),
+        Command::Checks { command } => force_json_checks(command),
         Command::Validate { format, .. } => *format = FormatArg::Json,
         Command::Release { command } => match command {
             ReleaseCommand::Check(args) => args.format = FormatArg::Json,
@@ -469,11 +470,20 @@ fn force_json_check(command: &mut CheckCommand) {
     }
 }
 
+fn force_json_checks(command: &mut ChecksCommand) {
+    match command {
+        ChecksCommand::List { format, .. } | ChecksCommand::Explain { format, .. } => {
+            *format = FormatArg::Json
+        }
+    }
+}
+
 pub(super) fn apply_fail_fast(command: &mut Command) {
     match command {
         Command::Check {
             command: CheckCommand::Run { fail_fast, .. },
         } => *fail_fast = true,
+        Command::Checks { .. } => {}
         Command::Contract { command } => match command {
             ContractCommand::List(_) | ContractCommand::Describe(_) | ContractCommand::Report(_) => {}
             ContractCommand::Run(args) => {
@@ -964,6 +974,11 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | CheckCommand::TreeBudgets { repo_root, .. }
             | CheckCommand::RepoDoctor { repo_root, .. }
             | CheckCommand::RootSurfaceExplain { repo_root, .. } => *repo_root = Some(root.clone()),
+        },
+        Command::Checks { command } => match command {
+            ChecksCommand::List { repo_root, .. } | ChecksCommand::Explain { repo_root, .. } => {
+                *repo_root = Some(root.clone())
+            }
         },
         Command::Suites { command } => match command {
             crate::cli::SuitesCommand::Run { repo_root, .. }

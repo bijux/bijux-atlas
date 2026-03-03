@@ -123,6 +123,31 @@ pub enum CheckCommand {
 }
 
 #[derive(Subcommand, Debug)]
+pub enum ChecksCommand {
+    List {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long)]
+        domain: Option<String>,
+        #[arg(long)]
+        tag: Option<String>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Explain {
+        check_id: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+}
+
+#[derive(Subcommand, Debug)]
 pub enum CheckRegistryCommand {
     Doctor {
         #[arg(long)]

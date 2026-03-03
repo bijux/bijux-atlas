@@ -96,6 +96,74 @@ fn render_explain_output(explain_text: String, format: FormatArg) -> Result<Stri
     }
 }
 
+fn render_catalog_list_output(
+    checks: &[CheckCatalogEntry],
+    format: FormatArg,
+) -> Result<String, String> {
+    match format {
+        FormatArg::Text => {
+            let mut lines = Vec::new();
+            let mut current_domain = String::new();
+            for check in checks {
+                if check.domain != current_domain {
+                    if !current_domain.is_empty() {
+                        lines.push(String::new());
+                    }
+                    lines.push(format!("[{}]", check.domain));
+                    current_domain = check.domain.to_string();
+                }
+                let tags = check.tags.join(",");
+                lines.push(format!(
+                    "{}\ttags={}\tgroup={}\t{}",
+                    check.check_id, tags, check.group, check.summary
+                ));
+            }
+            Ok(lines.join("\n"))
+        }
+        FormatArg::Json => {
+            let rows = checks
+                .iter()
+                .map(|check| {
+                    serde_json::json!({
+                        "id": check.check_id,
+                        "domain": check.domain,
+                        "group": check.group,
+                        "tags": check.tags,
+                        "commands": check.commands,
+                        "summary": check.summary,
+                        "doc_ref": {
+                            "path": check.doc_ref.path,
+                            "anchor": check.doc_ref.anchor,
+                            "title": check.doc_ref.title,
+                        }
+                    })
+                })
+                .collect::<Vec<_>>();
+            serde_json::to_string_pretty(&serde_json::json!({ "checks": rows }))
+                .map_err(|err| err.to_string())
+        }
+        FormatArg::Jsonl => Err("jsonl output is not supported for list".to_string()),
+    }
+}
+
+fn render_catalog_explain_output(
+    check: &CheckCatalogEntry,
+    format: FormatArg,
+) -> Result<String, String> {
+    let explain_text = format!(
+        "id: {}\ndomain: {}\ngroup: {}\nsummary: {}\ntags: {}\ncommands: {}\ndocs: {}\ndoc_title: {}",
+        check.check_id,
+        check.domain,
+        check.group,
+        check.summary,
+        check.tags.join(","),
+        check.commands.join(","),
+        check.doc_ref.path,
+        check.doc_ref.title,
+    );
+    render_explain_output(explain_text, format)
+}
+
 pub(crate) struct CheckListOptions {
     repo_root: Option<PathBuf>,
     suite: Option<String>,
@@ -106,6 +174,42 @@ pub(crate) struct CheckListOptions {
     include_slow: bool,
     format: FormatArg,
     out: Option<PathBuf>,
+}
+
+pub(crate) struct ChecksCatalogListOptions {
+    repo_root: Option<PathBuf>,
+    domain: Option<String>,
+    tag: Option<String>,
+    format: FormatArg,
+    out: Option<PathBuf>,
+}
+
+pub(crate) fn run_checks_catalog_list(
+    options: ChecksCatalogListOptions,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(options.repo_root)?;
+    let catalog = CheckCatalog::load(&root)?;
+    let mut checks = catalog
+        .entries()
+        .iter()
+        .filter(|entry| {
+            options
+                .domain
+                .as_deref()
+                .is_none_or(|domain| entry.domain == domain)
+        })
+        .filter(|entry| {
+            options
+                .tag
+                .as_deref()
+                .is_none_or(|tag| entry.tags.iter().any(|value| value == tag))
+        })
+        .cloned()
+        .collect::<Vec<_>>();
+    checks.sort_by(|a, b| a.domain.cmp(b.domain).then_with(|| a.check_id.cmp(&b.check_id)));
+    let rendered = render_catalog_list_output(&checks, options.format)?;
+    write_output_if_requested(options.out, &rendered)?;
+    Ok((rendered, 0))
 }
 
 pub(crate) fn run_check_list(options: CheckListOptions) -> Result<(String, i32), String> {
@@ -135,6 +239,24 @@ pub(crate) fn run_check_explain(
     let registry = load_registry(&root)?;
     let id = CheckId::parse(&check_id)?;
     let rendered = render_explain_output(explain_output(&registry, &id)?, format)?;
+    write_output_if_requested(out, &rendered)?;
+    Ok((rendered, 0))
+}
+
+pub(crate) fn run_checks_catalog_explain(
+    check_id: String,
+    repo_root: Option<PathBuf>,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let catalog = CheckCatalog::load(&root)?;
+    let check = catalog
+        .entries()
+        .iter()
+        .find(|entry| entry.check_id == check_id)
+        .ok_or_else(|| format!("unknown check id `{check_id}`"))?;
+    let rendered = render_catalog_explain_output(check, format)?;
     write_output_if_requested(out, &rendered)?;
     Ok((rendered, 0))
 }

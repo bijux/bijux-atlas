@@ -51,6 +51,11 @@ pub fn command_inventory() -> Vec<CommandDescriptor> {
             purpose: "Run governed contract lanes and introspection surfaces",
         },
         CommandDescriptor {
+            name: "checks",
+            domain: "engine",
+            purpose: "List and explain registry-backed checks surfaces",
+        },
+        CommandDescriptor {
             name: "reports",
             domain: "engine",
             purpose: "List governed reports and validate report artifacts",

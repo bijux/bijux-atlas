@@ -1,21 +1,23 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    CheckCommand, CheckRegistryCommand, Cli, Command, ContractCommand, ContractEffectsPolicyArg,
-    ContractRunModeArg, ContractsColorArg, FormatArg, GlobalFormatArg, ReportsCommand,
+    CheckCommand, CheckRegistryCommand, ChecksCommand, Cli, Command, ContractCommand,
+    ContractEffectsPolicyArg, ContractRunModeArg, ContractsColorArg, FormatArg, GlobalFormatArg,
+    ReportsCommand,
 };
 use crate::{
     plugin_metadata_json, run_artifacts_command, run_build_command, run_capabilities_command,
     run_check_doctor, run_check_explain, run_check_list, run_check_registry_doctor,
     run_check_repo_doctor, run_check_root_surface_explain, run_check_run, run_check_tree_budgets,
-    run_configs_command, run_contracts_command, run_data_command, run_demo_command,
+    run_checks_catalog_explain, run_checks_catalog_list, run_configs_command,
+    run_contracts_command, run_data_command, run_demo_command,
     run_docker_command, run_docs_command, run_gates_command, run_governance_command,
     run_help_inventory_command, run_make_command, run_ops_command, run_perf_command,
     run_policies_command, run_print_boundaries_command, run_registry_check_by_id,
     run_registry_command, run_registry_contract_by_id, run_release_command, run_security_command,
     run_suites_command, run_version_command, run_workflows_command,
 };
-use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
+use crate::{run_print_policies, CheckListOptions, CheckRunOptions, ChecksCatalogListOptions};
 use bijux_dev_atlas::runtime::cli_adapter::{
     command_inventory_markdown, command_inventory_payload, route_name,
 };
@@ -484,6 +486,41 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                 }
                 Err(err) => {
                     let _ = writeln!(io::stderr(), "bijux-dev-atlas check failed: {err}");
+                    1
+                }
+            }
+        }
+        Command::Checks { command } => {
+            let result = match command {
+                ChecksCommand::List {
+                    repo_root,
+                    domain,
+                    tag,
+                    format,
+                    out,
+                } => run_checks_catalog_list(ChecksCatalogListOptions {
+                    repo_root,
+                    domain,
+                    tag,
+                    format,
+                    out,
+                }),
+                ChecksCommand::Explain {
+                    check_id,
+                    repo_root,
+                    format,
+                    out,
+                } => run_checks_catalog_explain(check_id, repo_root, format, out),
+            };
+            match result {
+                Ok((rendered, code)) => {
+                    if !cli.quiet && !rendered.is_empty() {
+                        let _ = writeln!(io::stdout(), "{rendered}");
+                    }
+                    code
+                }
+                Err(err) => {
+                    let _ = writeln!(io::stderr(), "bijux-dev-atlas checks failed: {err}");
                     1
                 }
             }

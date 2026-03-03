@@ -18,6 +18,7 @@ use bijux_dev_atlas::core::{
     Selectors,
 };
 use bijux_dev_atlas::model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
+use bijux_dev_atlas::registry::{CheckCatalog, CheckCatalogEntry};
 pub(crate) use build_commands::run_build_command;
 pub(crate) use artifacts_commands::run_artifacts_command;
 #[cfg(test)]
