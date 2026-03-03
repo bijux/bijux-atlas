@@ -706,7 +706,7 @@ impl RuntimeConfig {
         };
 
         let api = ApiConfig {
-            auth_mode: auth_mode.clone(),
+            auth_mode,
             enable_admin_endpoints: env_bool("ATLAS_ENABLE_ADMIN_ENDPOINTS", false)?,
             max_body_bytes: env_usize("ATLAS_MAX_BODY_BYTES", 16 * 1024)?,
             max_uri_bytes: env_usize("ATLAS_MAX_URI_BYTES", 2048)?,
