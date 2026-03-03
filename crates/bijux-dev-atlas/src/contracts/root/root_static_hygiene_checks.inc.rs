@@ -298,13 +298,13 @@ fn test_root_035_make_contract_wrappers_delegate(ctx: &RunContext) -> TestResult
         Err(result) => return result,
     };
     let mut violations = Vec::new();
-    if !contents.contains("contracts make") {
+    if !contents.contains("contract run --mode static --domain make") {
         push_root_violation(
             &mut violations,
             "ROOT-035",
             "root.make.contract_wrappers_delegate",
             Some("make/checks.mk".to_string()),
-            "make/checks.mk must delegate through `bijux dev atlas contracts make`",
+            "make/checks.mk must delegate through `bijux dev atlas contract run --mode static --domain make`",
         );
     }
     if contents.contains("grep ") || contents.contains("rg ") {
