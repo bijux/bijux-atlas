@@ -67,6 +67,35 @@
   },
   "allOf": [
     {
+      "if": {
+        "properties": {
+          "cache": {
+            "type": "object",
+            "properties": {
+              "cachedOnlyMode": {
+                "const": true
+              }
+            },
+            "required": [
+              "cachedOnlyMode"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "cache": {
+            "type": "object",
+            "properties": {
+              "readinessRequiresCatalog": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    },
+    {
       "description": "Exactly one image selector must be set: use a digest for immutable deploys or a tag for mutable/dev flows, never both.",
       "oneOf": [
         {
@@ -135,6 +164,9 @@
       "type": "object",
       "additionalProperties": true,
       "properties": {
+        "cachedOnlyMode": {
+          "type": "boolean"
+        },
         "initPrewarm": {
           "type": "object",
           "additionalProperties": true
@@ -145,6 +177,9 @@
             "type": "string",
             "minLength": 1
           }
+        },
+        "readinessRequiresCatalog": {
+          "type": "boolean"
         }
       }
     },
@@ -182,6 +217,26 @@
     },
     "catalogPublishJob": {
       "type": "object"
+    },
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "baseUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "logLevel": {
+          "type": "string",
+          "enum": [
+            "trace",
+            "debug",
+            "info",
+            "warn",
+            "error"
+          ]
+        }
+      }
     },
     "containerSecurityContext": {
       "$ref": "#/$defs/containerSecurityContext"
@@ -389,6 +444,9 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
         "customMetrics": {
           "type": "object",
           "additionalProperties": false,
@@ -421,10 +479,36 @@
             "enabled",
             "requiredPodAnnotations"
           ]
+        },
+        "serviceMonitor": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "interval": {
+              "$ref": "#/$defs/duration"
+            },
+            "labels": {
+              "type": "object"
+            },
+            "scrapeTimeout": {
+              "$ref": "#/$defs/duration"
+            }
+          },
+          "required": [
+            "enabled",
+            "interval",
+            "scrapeTimeout",
+            "labels"
+          ]
         }
       },
       "required": [
-        "customMetrics"
+        "enabled",
+        "customMetrics",
+        "serviceMonitor"
       ]
     },
     "networkPolicy": {
@@ -537,6 +621,52 @@
     },
     "priorityClassName": {
       "type": "string"
+    },
+    "probes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "liveness": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "initialDelaySeconds": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "periodSeconds": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "initialDelaySeconds",
+            "periodSeconds"
+          ]
+        },
+        "readiness": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "initialDelaySeconds": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "periodSeconds": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "initialDelaySeconds",
+            "periodSeconds"
+          ]
+        }
+      },
+      "required": [
+        "liveness",
+        "readiness"
+      ]
     },
     "replicaCount": {
       "type": "integer",
@@ -763,6 +893,7 @@
     "serviceMonitor": {
       "type": "object",
       "additionalProperties": false,
+      "description": "Deprecated alias for metrics.serviceMonitor. Prefer metrics.serviceMonitor for new values files.",
       "properties": {
         "enabled": {
           "type": "boolean"

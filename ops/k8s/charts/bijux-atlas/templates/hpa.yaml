@@ -1,15 +1,23 @@
 {{- if .Values.hpa.enabled }}
+{{- $serviceMonitor := (.Values.metrics.serviceMonitor | default .Values.serviceMonitor) }}
+{{- $cpuTarget := .Values.hpa.cpuUtilization }}
+{{- if and .Values.hpa.cpu (hasKey .Values.hpa.cpu "targetAverageUtilization") }}
+{{- $cpuTarget = .Values.hpa.cpu.targetAverageUtilization }}
+{{- end }}
+{{- if not .Values.metrics.enabled }}
+{{- fail "hpa.enabled=true requires metrics.enabled=true" }}
+{{- end }}
 {{- if not .Values.metrics.customMetrics.enabled }}
 {{- fail "hpa.enabled=true requires metrics.customMetrics.enabled=true" }}
 {{- end }}
 {{- if gt (int .Values.hpa.minReplicas) (int .Values.hpa.maxReplicas) }}
 {{- fail "hpa.minReplicas must be <= hpa.maxReplicas" }}
 {{- end }}
-{{- if or (lt (int .Values.hpa.cpuUtilization) 1) (gt (int .Values.hpa.cpuUtilization) 100) }}
-{{- fail "hpa.cpuUtilization must be within 1..100" }}
+{{- if or (lt (int $cpuTarget) 1) (gt (int $cpuTarget) 100) }}
+{{- fail "hpa cpu targetAverageUtilization must be within 1..100" }}
 {{- end }}
-{{- if not .Values.serviceMonitor.enabled }}
-{{- fail "hpa.enabled=true requires serviceMonitor.enabled=true for metrics pipeline" }}
+{{- if not $serviceMonitor.enabled }}
+{{- fail "hpa.enabled=true requires metrics.serviceMonitor.enabled=true for metrics pipeline" }}
 {{- end }}
 {{- if not (hasKey .Values.metrics.customMetrics.requiredPodAnnotations "prometheus.io/scrape") }}
 {{- fail "hpa.enabled=true requires metrics.customMetrics.requiredPodAnnotations[\"prometheus.io/scrape\"]" }}
@@ -36,7 +44,15 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.hpa.cpuUtilization }}
+          averageUtilization: {{ $cpuTarget }}
+    {{- if and .Values.hpa.memory (hasKey .Values.hpa.memory "targetAverageUtilization") }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.hpa.memory.targetAverageUtilization }}
+    {{- end }}
     - type: Pods
       pods:
         metric:
