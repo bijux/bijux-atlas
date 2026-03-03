@@ -33,7 +33,7 @@ podSecurityContext:
   runAsGroup: 65532
   fsGroup: 65532
 
-securityContext:
+containerSecurityContext:
   readOnlyRootFilesystem: true
   allowPrivilegeEscalation: false
   capabilities:

@@ -4,8 +4,9 @@ metadata:
   name: {{ include "bijux-atlas.fullname" . }}
   labels:
     {{- include "bijux-atlas.labels" . | nindent 4 }}
-{{- if and .Values.server.readOnlyFsMode (not .Values.securityContext.readOnlyRootFilesystem) }}
-{{- fail "server.readOnlyFsMode=true requires securityContext.readOnlyRootFilesystem=true" }}
+{{- $containerSecurityContext := (.Values.containerSecurityContext | default .Values.securityContext) }}
+{{- if and .Values.server.readOnlyFsMode (not $containerSecurityContext.readOnlyRootFilesystem) }}
+{{- fail "server.readOnlyFsMode=true requires containerSecurityContext.readOnlyRootFilesystem=true" }}
 {{- end }}
 {{- if contains "@" .Values.image.repository }}
 {{- fail "image.repository must not include '@'; use image.digest for digests" }}
@@ -58,7 +59,7 @@ spec:
           command:
             {{- toYaml .Values.server.command | nindent 12 }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml $containerSecurityContext | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
