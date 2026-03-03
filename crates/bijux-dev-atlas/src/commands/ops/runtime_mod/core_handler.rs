@@ -46,6 +46,9 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
         OpsCommand::Explain { action, common } => {
             let action_lc = action.trim().to_ascii_lowercase();
             let row = match action_lc.as_str() {
+                "kind-up" => serde_json::json!({"action":"kind-up","purpose":"create the deterministic kind simulation cluster","effects_required":["subprocess","fs_write"]}),
+                "kind-down" => serde_json::json!({"action":"kind-down","purpose":"delete the deterministic kind simulation cluster","effects_required":["subprocess"]}),
+                "kind-status" => serde_json::json!({"action":"kind-status","purpose":"report whether the deterministic kind simulation cluster is reachable and ready","effects_required":["subprocess"]}),
                 "inventory" => serde_json::json!({"action":"inventory","purpose":"list ops manifests and inventory validity","effects_required":[]}),
                 "validate" => serde_json::json!({"action":"validate","purpose":"validate ops SSOT inputs and checks","effects_required":[]}),
                 "render" | "k8s-render" => serde_json::json!({"action":"render","purpose":"render deterministic ops manifests","effects_required":["subprocess"],"flags":["--allow-subprocess","--allow-write"]}),
@@ -57,6 +60,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                 "stack-versions" => serde_json::json!({"action":"stack-versions","purpose":"emit deterministic stack component version inventory","effects_required":["fs_read"],"output":"versions.json"}),
                 "conformance" | "k8s-test" => serde_json::json!({"action":"conformance","purpose":"run ops conformance status checks","effects_required":["subprocess"],"flags":["--allow-subprocess"]}),
                 "k8s-smoke" => serde_json::json!({"action":"k8s-smoke","purpose":"run cluster smoke checks against health/query paths","effects_required":["subprocess","network"],"flags":["--allow-subprocess","--allow-network"]}),
+                "smoke" => serde_json::json!({"action":"smoke","purpose":"run simulation smoke checks against /healthz, /readyz, and /v1/version","effects_required":["subprocess","network"],"flags":["--allow-subprocess","--allow-network"]}),
                 "k8s-ports" => serde_json::json!({"action":"k8s-ports","purpose":"discover service and endpoint ports for evidence collection","effects_required":["subprocess"],"flags":["--allow-subprocess"]}),
                 "load-plan" => serde_json::json!({"action":"load-plan","purpose":"resolve load suite to script env and thresholds","effects_required":[]}),
                 "load-run" => serde_json::json!({"action":"load-run","purpose":"run k6 load suite and collect summary","effects_required":["subprocess","network","fs_write"]}),
@@ -419,7 +423,18 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             Ok((rendered, code))
         }
         OpsCommand::Render(args) => crate::ops_execution_runtime::run_ops_render(&args),
+        OpsCommand::Kind { command } => match command {
+            crate::cli::OpsKindCommand::Up(common) => crate::ops_execution_runtime::run_ops_kind_up(&common),
+            crate::cli::OpsKindCommand::Down(common) => crate::ops_execution_runtime::run_ops_kind_down(&common),
+            crate::cli::OpsKindCommand::Status(common) => crate::ops_execution_runtime::run_ops_kind_status(&common),
+            crate::cli::OpsKindCommand::PreloadImage(args) => crate::ops_execution_runtime::run_ops_kind_preload(&args),
+        },
+        OpsCommand::Helm { command } => match command {
+            crate::cli::OpsHelmCommand::Install(args) => crate::ops_execution_runtime::run_ops_helm_install(&args),
+            crate::cli::OpsHelmCommand::Uninstall(args) => crate::ops_execution_runtime::run_ops_helm_uninstall(&args),
+        },
         OpsCommand::Install(args) => crate::ops_execution_runtime::run_ops_install(&args),
+        OpsCommand::Smoke(args) => crate::ops_execution_runtime::run_ops_smoke(&args),
         OpsCommand::Status(args) => crate::ops_execution_runtime::run_ops_status(&args),
         OpsCommand::K8sPlan(common) => crate::ops_execution_runtime::run_ops_k8s_plan(&common),
         OpsCommand::K8sApply(args) => crate::ops_execution_runtime::run_ops_k8s_apply(&args, false),

@@ -8,6 +8,14 @@ use super::FormatArg;
 
 #[derive(Subcommand, Debug, Clone)]
 pub enum OpsCommand {
+    Kind {
+        #[command(subcommand)]
+        command: OpsKindCommand,
+    },
+    Helm {
+        #[command(subcommand)]
+        command: OpsHelmCommand,
+    },
     List(OpsCommonArgs),
     Explain {
         action: String,
@@ -78,6 +86,7 @@ pub enum OpsCommand {
     Readiness(OpsCommonArgs),
     Render(OpsRenderArgs),
     Install(OpsInstallArgs),
+    Smoke(OpsSmokeArgs),
     Status(OpsStatusArgs),
     ListProfiles(OpsCommonArgs),
     ExplainProfile {
@@ -176,8 +185,22 @@ pub enum OpsK8sCommand {
     Logs(OpsK8sLogsArgs),
     PortForward(OpsK8sPortForwardArgs),
     Test(OpsCommonArgs),
-    Smoke(OpsCommonArgs),
+    Smoke(OpsSmokeArgs),
     Status(OpsStatusArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsKindCommand {
+    Up(OpsCommonArgs),
+    Down(OpsCommonArgs),
+    Status(OpsCommonArgs),
+    PreloadImage(OpsKindPreloadArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsHelmCommand {
+    Install(OpsHelmReleaseArgs),
+    Uninstall(OpsHelmReleaseArgs),
 }
 
 #[derive(Subcommand, Debug, Clone)]
@@ -459,6 +482,36 @@ pub struct OpsInstallArgs {
 }
 
 #[derive(Args, Debug, Clone)]
+pub struct OpsSmokeArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long, value_enum, default_value_t = OpsClusterTarget::Kind)]
+    pub cluster: OpsClusterTarget,
+    #[arg(long, default_value_t = 8080)]
+    pub local_port: u16,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsKindPreloadArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long, default_value = "bijux-atlas:dev")]
+    pub image: String,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsHelmReleaseArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long, value_enum, default_value_t = OpsClusterTarget::Kind)]
+    pub cluster: OpsClusterTarget,
+    #[arg(long, default_value = "bijux-atlas")]
+    pub namespace: String,
+    #[arg(long, default_value_t = 120)]
+    pub timeout_seconds: u64,
+}
+
+#[derive(Args, Debug, Clone)]
 pub struct OpsStatusArgs {
     #[command(flatten)]
     pub common: OpsCommonArgs,
@@ -494,6 +547,11 @@ pub enum OpsStatusTarget {
     K8s,
     Pods,
     Endpoints,
+}
+
+#[derive(Clone, Copy, Debug, ValueEnum)]
+pub enum OpsClusterTarget {
+    Kind,
 }
 
 #[derive(Args, Debug, Clone)]

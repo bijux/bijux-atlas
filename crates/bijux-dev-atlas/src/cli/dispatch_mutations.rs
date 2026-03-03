@@ -60,6 +60,16 @@ fn force_json_demo(command: &mut crate::cli::DemoCommand) {
 
 fn force_json_ops(command: &mut OpsCommand) {
     match command {
+        OpsCommand::Kind { command } => match command {
+            crate::cli::OpsKindCommand::Up(common)
+            | crate::cli::OpsKindCommand::Down(common)
+            | crate::cli::OpsKindCommand::Status(common) => common.format = FormatArg::Json,
+            crate::cli::OpsKindCommand::PreloadImage(args) => args.common.format = FormatArg::Json,
+        },
+        OpsCommand::Helm { command } => match command {
+            crate::cli::OpsHelmCommand::Install(args)
+            | crate::cli::OpsHelmCommand::Uninstall(args) => args.common.format = FormatArg::Json,
+        },
         OpsCommand::List(common)
         | OpsCommand::Doctor(common)
         | OpsCommand::Validate(common)
@@ -99,6 +109,7 @@ fn force_json_ops(command: &mut OpsCommand) {
         OpsCommand::Explain { common, .. } => common.format = FormatArg::Json,
         OpsCommand::Render(args) => args.common.format = FormatArg::Json,
         OpsCommand::Install(args) => args.common.format = FormatArg::Json,
+        OpsCommand::Smoke(args) => args.common.format = FormatArg::Json,
         OpsCommand::Status(args) => args.common.format = FormatArg::Json,
         OpsCommand::ExplainProfile { common, .. } => common.format = FormatArg::Json,
         OpsCommand::Reset(args) => args.common.format = FormatArg::Json,
@@ -182,8 +193,8 @@ fn force_json_ops(command: &mut OpsCommand) {
             | crate::cli::OpsK8sCommand::Rollout(common)
             | crate::cli::OpsK8sCommand::DryRun(common)
             | crate::cli::OpsK8sCommand::Conformance(common)
-            | crate::cli::OpsK8sCommand::Test(common)
-            | crate::cli::OpsK8sCommand::Smoke(common) => common.format = FormatArg::Json,
+            | crate::cli::OpsK8sCommand::Test(common) => common.format = FormatArg::Json,
+            crate::cli::OpsK8sCommand::Smoke(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsK8sCommand::Install(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsK8sCommand::Apply(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsK8sCommand::Wait(args) => args.common.format = FormatArg::Json,
@@ -433,6 +444,22 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             },
         },
         Command::Ops { command } => match command {
+            OpsCommand::Kind { command } => match command {
+                crate::cli::OpsKindCommand::Up(common)
+                | crate::cli::OpsKindCommand::Down(common)
+                | crate::cli::OpsKindCommand::Status(common) => {
+                    common.repo_root = Some(root.clone())
+                }
+                crate::cli::OpsKindCommand::PreloadImage(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+            },
+            OpsCommand::Helm { command } => match command {
+                crate::cli::OpsHelmCommand::Install(args)
+                | crate::cli::OpsHelmCommand::Uninstall(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+            },
             OpsCommand::List(common)
             | OpsCommand::Doctor(common)
             | OpsCommand::Validate(common)
@@ -471,6 +498,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             OpsCommand::Explain { common, .. } => common.repo_root = Some(root.clone()),
             OpsCommand::Render(args) => args.common.repo_root = Some(root.clone()),
             OpsCommand::Install(args) => args.common.repo_root = Some(root.clone()),
+            OpsCommand::Smoke(args) => args.common.repo_root = Some(root.clone()),
             OpsCommand::Status(args) => args.common.repo_root = Some(root.clone()),
             OpsCommand::HelmEnv(args) => args.common.repo_root = Some(root.clone()),
             OpsCommand::ExplainProfile { common, .. } => common.repo_root = Some(root.clone()),
@@ -577,8 +605,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 | crate::cli::OpsK8sCommand::Rollout(common)
                 | crate::cli::OpsK8sCommand::DryRun(common)
                 | crate::cli::OpsK8sCommand::Conformance(common)
-                | crate::cli::OpsK8sCommand::Test(common)
-                | crate::cli::OpsK8sCommand::Smoke(common) => common.repo_root = Some(root.clone()),
+                | crate::cli::OpsK8sCommand::Test(common) => common.repo_root = Some(root.clone()),
+                crate::cli::OpsK8sCommand::Smoke(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
                 crate::cli::OpsK8sCommand::Install(args) => {
                     args.common.repo_root = Some(root.clone())
                 }

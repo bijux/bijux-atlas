@@ -3,9 +3,10 @@
 use crate::cli::OpsInstallArgs;
 use crate::cli::{
     OpsCommonArgs, OpsDatasetsCommand, OpsE2eCommand, OpsEvidenceCommand, OpsGenerateCommand,
-    OpsHelmEnvArgs, OpsInventoryCommand, OpsK8sCommand, OpsLoadBaselineCommand, OpsLoadCommand,
-    OpsObsCommand, OpsObsDrillCommand, OpsPinsCommand, OpsProfilesCommand, OpsProfilesValidateArgs,
-    OpsRenderArgs, OpsRenderTarget, OpsReportCommand, OpsSchemaCommand, OpsStackCommand,
+    OpsHelmCommand, OpsHelmEnvArgs, OpsHelmReleaseArgs, OpsInventoryCommand, OpsK8sCommand,
+    OpsKindCommand, OpsKindPreloadArgs, OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand,
+    OpsObsDrillCommand, OpsPinsCommand, OpsProfilesCommand, OpsProfilesValidateArgs, OpsRenderArgs,
+    OpsRenderTarget, OpsReportCommand, OpsSchemaCommand, OpsStackCommand,
     OpsSuiteCommand, OpsToolsCommand,
 };
 use crate::ops_support::{
@@ -30,6 +31,16 @@ mod profile_handler;
 
 fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
     match command {
+        OpsCommand::Kind { command } => match command {
+            OpsKindCommand::Up(common)
+            | OpsKindCommand::Down(common)
+            | OpsKindCommand::Status(common) => Some(common),
+            OpsKindCommand::PreloadImage(OpsKindPreloadArgs { common, .. }) => Some(common),
+        },
+        OpsCommand::Helm { command } => match command {
+            OpsHelmCommand::Install(OpsHelmReleaseArgs { common, .. })
+            | OpsHelmCommand::Uninstall(OpsHelmReleaseArgs { common, .. }) => Some(common),
+        },
         OpsCommand::List(common)
         | OpsCommand::Doctor(common)
         | OpsCommand::Validate(common)
@@ -67,6 +78,7 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
         | OpsCommand::LoadReport { common, .. } => Some(common),
         OpsCommand::Render(args) => Some(&args.common),
         OpsCommand::Install(args) => Some(&args.common),
+        OpsCommand::Smoke(args) => Some(&args.common),
         OpsCommand::Status(args) => Some(&args.common),
         OpsCommand::Reset(args) => Some(&args.common),
         OpsCommand::K8sApply(args) => Some(&args.common),
@@ -108,6 +120,8 @@ fn command_run_id(command: &OpsCommand) -> String {
 
 pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
     let command = match command {
+        OpsCommand::Kind { command } => OpsCommand::Kind { command },
+        OpsCommand::Helm { command } => OpsCommand::Helm { command },
         OpsCommand::Stack { command } => match command {
             OpsStackCommand::Plan(common) => OpsCommand::Plan(common),
             OpsStackCommand::Up(common) => OpsCommand::Up(common),
@@ -160,7 +174,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             OpsK8sCommand::Logs(args) => OpsCommand::K8sLogs(args),
             OpsK8sCommand::PortForward(args) => OpsCommand::K8sPortForward(args),
             OpsK8sCommand::Test(common) => OpsCommand::K8sConformance(common),
-            OpsK8sCommand::Smoke(common) => OpsCommand::K8sConformance(common),
+            OpsK8sCommand::Smoke(args) => OpsCommand::Smoke(args),
             OpsK8sCommand::Status(args) => OpsCommand::Status(args),
         },
         OpsCommand::Profiles { command } => match command {

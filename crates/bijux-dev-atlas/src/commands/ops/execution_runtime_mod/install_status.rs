@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use std::io::Read;
+use std::net::{Shutdown, TcpStream};
+use std::time::Duration;
+
 fn install_render_path(repo_root: &std::path::Path, run_id: &str, profile: &str) -> std::path::PathBuf {
     repo_root
         .join("artifacts/ops")
@@ -121,6 +125,711 @@ fn load_profile_intent(
                 .find(|row| row.get("name").and_then(|v| v.as_str()) == Some(profile))
                 .cloned()
         }))
+}
+
+fn simulation_cluster_name() -> &'static str {
+    "bijux-atlas-sim"
+}
+
+fn simulation_cluster_context() -> String {
+    format!("kind-{}", simulation_cluster_name())
+}
+
+fn simulation_cluster_config(repo_root: &std::path::Path) -> std::path::PathBuf {
+    repo_root.join("ops/k8s/kind/cluster.yaml")
+}
+
+fn simulation_report_path(
+    repo_root: &std::path::Path,
+    run_id: &RunId,
+    file_name: &str,
+) -> Result<std::path::PathBuf, String> {
+    let path = repo_root
+        .join("artifacts/ops")
+        .join(run_id.as_str())
+        .join("reports")
+        .join(file_name);
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
+    Ok(path)
+}
+
+fn write_simulation_report(
+    repo_root: &std::path::Path,
+    run_id: &RunId,
+    file_name: &str,
+    payload: &serde_json::Value,
+) -> Result<std::path::PathBuf, String> {
+    let path = simulation_report_path(repo_root, run_id, file_name)?;
+    std::fs::write(
+        &path,
+        serde_json::to_string_pretty(payload).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
+    Ok(path)
+}
+
+fn ensure_simulation_context(process: &OpsProcess, force: bool) -> Result<(), String> {
+    let args = vec!["config".to_string(), "current-context".to_string()];
+    let (stdout, _) = process
+        .run_subprocess("kubectl", &args, std::path::Path::new("."))
+        .map_err(|err| err.to_stable_message())?;
+    let current = stdout.trim();
+    let expected = simulation_cluster_context();
+    if current == expected || force {
+        Ok(())
+    } else {
+        Err(format!(
+            "kubectl context guard failed: expected `{expected}` got `{current}`; pass --force to override"
+        ))
+    }
+}
+
+fn resolve_profile_values_file(
+    repo_root: &std::path::Path,
+    profile: &str,
+) -> Result<std::path::PathBuf, String> {
+    let path = repo_root.join("ops/k8s/values").join(format!("{profile}.yaml"));
+    if path.exists() {
+        Ok(path)
+    } else {
+        Err(format!(
+            "missing values file {}; expected profile values at ops/k8s/values/{profile}.yaml",
+            path.display()
+        ))
+    }
+}
+
+fn run_simulation_wait(
+    process: &OpsProcess,
+    repo_root: &std::path::Path,
+    namespace: &str,
+    timeout_seconds: u64,
+) -> (Vec<serde_json::Value>, Vec<String>, u128) {
+    let start = Instant::now();
+    let timeout = format!("{timeout_seconds}s");
+    let checks = vec![
+        vec![
+            "wait".to_string(),
+            "deployment/bijux-atlas".to_string(),
+            "-n".to_string(),
+            namespace.to_string(),
+            "--for=condition=Available".to_string(),
+            format!("--timeout={timeout}"),
+        ],
+        vec![
+            "wait".to_string(),
+            "pod".to_string(),
+            "--all".to_string(),
+            "-n".to_string(),
+            namespace.to_string(),
+            "--for=condition=Ready".to_string(),
+            format!("--timeout={timeout}"),
+        ],
+    ];
+    let mut rows = Vec::new();
+    let mut errors = Vec::new();
+    for argv in checks {
+        match process.run_subprocess("kubectl", &argv, repo_root) {
+            Ok((stdout, event)) => rows.push(serde_json::json!({
+                "argv": argv,
+                "stdout": stdout,
+                "event": event,
+                "status": "ok"
+            })),
+            Err(err) => {
+                errors.push(err.to_stable_message());
+                rows.push(serde_json::json!({
+                    "argv": argv,
+                    "status": "failed"
+                }));
+            }
+        }
+    }
+    (rows, errors, start.elapsed().as_millis())
+}
+
+fn wait_for_local_port(port: u16, timeout: Duration) -> Result<(), String> {
+    let start = Instant::now();
+    while start.elapsed() < timeout {
+        if TcpStream::connect(("127.0.0.1", port)).is_ok() {
+            return Ok(());
+        }
+        std::thread::sleep(Duration::from_millis(100));
+    }
+    Err(format!("timed out waiting for localhost:{port}"))
+}
+
+fn perform_http_check(local_port: u16, path: &str) -> Result<serde_json::Value, String> {
+    let started = Instant::now();
+    let mut stream =
+        TcpStream::connect(("127.0.0.1", local_port)).map_err(|err| format!("connect failed: {err}"))?;
+    stream
+        .set_read_timeout(Some(Duration::from_secs(5)))
+        .map_err(|err| format!("set read timeout failed: {err}"))?;
+    stream
+        .set_write_timeout(Some(Duration::from_secs(5)))
+        .map_err(|err| format!("set write timeout failed: {err}"))?;
+    let request = format!(
+        "GET {path} HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n"
+    );
+    stream
+        .write_all(request.as_bytes())
+        .map_err(|err| format!("write failed: {err}"))?;
+    let _ = stream.shutdown(Shutdown::Write);
+    let mut response = Vec::new();
+    stream
+        .read_to_end(&mut response)
+        .map_err(|err| format!("read failed: {err}"))?;
+    let response_text = String::from_utf8_lossy(&response);
+    let mut lines = response_text.lines();
+    let status_line = lines.next().unwrap_or_default().to_string();
+    let status_code = status_line
+        .split_whitespace()
+        .nth(1)
+        .and_then(|value| value.parse::<u16>().ok())
+        .unwrap_or(0);
+    let body = response
+        .windows(4)
+        .position(|window| window == b"\r\n\r\n")
+        .map(|offset| &response[offset + 4..])
+        .unwrap_or_default();
+    Ok(serde_json::json!({
+        "path": path,
+        "status": status_code,
+        "latency_ms": started.elapsed().as_millis(),
+        "body_sha256": sha256_hex(&String::from_utf8_lossy(body))
+    }))
+}
+
+fn run_smoke_checks(
+    repo_root: &std::path::Path,
+    namespace: &str,
+    local_port: u16,
+) -> Result<Vec<serde_json::Value>, String> {
+    let mut child = std::process::Command::new("kubectl")
+        .args([
+            "port-forward",
+            "-n",
+            namespace,
+            "--address",
+            "127.0.0.1",
+            "service/bijux-atlas",
+            &format!("{local_port}:8080"),
+        ])
+        .current_dir(repo_root)
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+        .map_err(|err| format!("failed to start kubectl port-forward: {err}"))?;
+    let checks = (|| -> Result<Vec<serde_json::Value>, String> {
+        wait_for_local_port(local_port, Duration::from_secs(10))?;
+        let mut rows = Vec::new();
+        for path in ["/healthz", "/readyz", "/v1/version"] {
+            rows.push(perform_http_check(local_port, path)?);
+        }
+        Ok(rows)
+    })();
+    let _ = child.kill();
+    let _ = child.wait();
+    checks
+}
+
+pub(crate) fn run_ops_kind_up(common: &OpsCommonArgs) -> Result<(String, i32), String> {
+    if !common.allow_subprocess {
+        return Err("kind up requires --allow-subprocess".to_string());
+    }
+    if !common.allow_write {
+        return Err("kind up requires --allow-write".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let process = OpsProcess::new(true);
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let config_path = simulation_cluster_config(&repo_root);
+    let args = vec![
+        "create".to_string(),
+        "cluster".to_string(),
+        "--name".to_string(),
+        simulation_cluster_name().to_string(),
+        "--config".to_string(),
+        config_path.display().to_string(),
+    ];
+    let result = process.run_subprocess("kind", &args, &repo_root);
+    let (status, detail) = match result {
+        Ok((stdout, event)) => ("ok", serde_json::json!({"stdout": stdout, "event": event})),
+        Err(err) => {
+            let stable = err.to_stable_message();
+            if stable.contains("already exists") {
+                ("ok", serde_json::json!({"detail": "cluster already exists"}))
+            } else {
+                ("failed", serde_json::json!({"error": stable}))
+            }
+        }
+    };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "cluster": "kind",
+        "action": "up",
+        "status": status,
+        "details": {
+            "cluster_name": simulation_cluster_name(),
+            "cluster_config": config_path.display().to_string(),
+            "context": simulation_cluster_context(),
+            "result": detail
+        }
+    });
+    let report_path = write_simulation_report(&repo_root, &run_id, "ops-kind.json", &payload)?;
+    let envelope = serde_json::json!({
+        "schema_version": 1,
+        "text": if status == "ok" { "kind cluster ready" } else { "kind cluster failed" },
+        "rows": [{
+            "schema_version": 1,
+            "cluster": "kind",
+            "action": "up",
+            "status": status,
+            "report_path": report_path.display().to_string(),
+            "details": payload["details"].clone()
+        }],
+        "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+pub(crate) fn run_ops_kind_down(common: &OpsCommonArgs) -> Result<(String, i32), String> {
+    if !common.allow_subprocess {
+        return Err("kind down requires --allow-subprocess".to_string());
+    }
+    if !common.allow_write {
+        return Err("kind down requires --allow-write".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let process = OpsProcess::new(true);
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let args = vec![
+        "delete".to_string(),
+        "cluster".to_string(),
+        "--name".to_string(),
+        simulation_cluster_name().to_string(),
+    ];
+    let result = process.run_subprocess("kind", &args, &repo_root);
+    let (status, detail) = match result {
+        Ok((stdout, event)) => ("ok", serde_json::json!({"stdout": stdout, "event": event})),
+        Err(err) => ("failed", serde_json::json!({"error": err.to_stable_message()})),
+    };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "cluster": "kind",
+        "action": "down",
+        "status": status,
+        "details": {
+            "cluster_name": simulation_cluster_name(),
+            "result": detail
+        }
+    });
+    let report_path = write_simulation_report(&repo_root, &run_id, "ops-kind.json", &payload)?;
+    let envelope = serde_json::json!({
+        "schema_version": 1,
+        "text": if status == "ok" { "kind cluster deleted" } else { "kind cluster delete failed" },
+        "rows": [{
+            "schema_version": 1,
+            "cluster": "kind",
+            "action": "down",
+            "status": status,
+            "report_path": report_path.display().to_string(),
+            "details": payload["details"].clone()
+        }],
+        "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+pub(crate) fn run_ops_kind_status(common: &OpsCommonArgs) -> Result<(String, i32), String> {
+    if !common.allow_subprocess {
+        return Err("kind status requires --allow-subprocess".to_string());
+    }
+    if !common.allow_write {
+        return Err("kind status requires --allow-write".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let process = OpsProcess::new(true);
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let args = vec![
+        "--context".to_string(),
+        simulation_cluster_context(),
+        "get".to_string(),
+        "nodes".to_string(),
+        "-o".to_string(),
+        "json".to_string(),
+    ];
+    let result = process.run_subprocess("kubectl", &args, &repo_root);
+    let (status, details) = match result {
+        Ok((stdout, event)) => {
+            let json: serde_json::Value = serde_json::from_str(&stdout)
+                .map_err(|err| format!("failed to parse kubectl nodes json: {err}"))?;
+            let rows = json
+                .get("items")
+                .and_then(|value| value.as_array())
+                .cloned()
+                .unwrap_or_default()
+                .into_iter()
+                .map(|item| {
+                    let name = item["metadata"]["name"].as_str().unwrap_or("unknown");
+                    let ready = item["status"]["conditions"]
+                        .as_array()
+                        .is_some_and(|conditions| {
+                            conditions.iter().any(|condition| {
+                                condition["type"].as_str() == Some("Ready")
+                                    && condition["status"].as_str() == Some("True")
+                            })
+                        });
+                    serde_json::json!({"name": name, "ready": ready})
+                })
+                .collect::<Vec<_>>();
+            ("ok", serde_json::json!({"event": event, "nodes": rows}))
+        }
+        Err(err) => ("failed", serde_json::json!({"error": err.to_stable_message()})),
+    };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "cluster": "kind",
+        "action": "status",
+        "status": status,
+        "details": details
+    });
+    let report_path = write_simulation_report(&repo_root, &run_id, "ops-kind.json", &payload)?;
+    let envelope = serde_json::json!({
+        "schema_version": 1,
+        "text": if status == "ok" { "kind cluster status collected" } else { "kind cluster status failed" },
+        "rows": [{
+            "schema_version": 1,
+            "cluster": "kind",
+            "action": "status",
+            "status": status,
+            "report_path": report_path.display().to_string(),
+            "details": payload["details"].clone()
+        }],
+        "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+pub(crate) fn run_ops_kind_preload(
+    args: &crate::cli::OpsKindPreloadArgs,
+) -> Result<(String, i32), String> {
+    let common = &args.common;
+    if !common.allow_subprocess {
+        return Err("kind preload-image requires --allow-subprocess".to_string());
+    }
+    if !common.allow_write {
+        return Err("kind preload-image requires --allow-write".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let process = OpsProcess::new(true);
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let argv = vec![
+        "load".to_string(),
+        "docker-image".to_string(),
+        args.image.clone(),
+        "--name".to_string(),
+        simulation_cluster_name().to_string(),
+    ];
+    let result = process.run_subprocess("kind", &argv, &repo_root);
+    let (status, details) = match result {
+        Ok((stdout, event)) => ("ok", serde_json::json!({"stdout": stdout, "event": event})),
+        Err(err) => ("failed", serde_json::json!({"error": err.to_stable_message()})),
+    };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "cluster": "kind",
+        "action": "preload-image",
+        "status": status,
+        "details": {
+            "image": args.image,
+            "result": details
+        }
+    });
+    let report_path = write_simulation_report(&repo_root, &run_id, "ops-kind.json", &payload)?;
+    let envelope = serde_json::json!({
+        "schema_version": 1,
+        "text": if status == "ok" { "kind image preload complete" } else { "kind image preload failed" },
+        "rows": [{
+            "schema_version": 1,
+            "cluster": "kind",
+            "action": "preload-image",
+            "status": status,
+            "report_path": report_path.display().to_string(),
+            "details": payload["details"].clone()
+        }],
+        "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+pub(crate) fn run_ops_helm_install(
+    args: &crate::cli::OpsHelmReleaseArgs,
+) -> Result<(String, i32), String> {
+    let common = &args.common;
+    match args.cluster {
+        crate::cli::OpsClusterTarget::Kind => {}
+    }
+    if !common.allow_subprocess {
+        return Err("helm install requires --allow-subprocess".to_string());
+    }
+    if !common.allow_write {
+        return Err("helm install requires --allow-write".to_string());
+    }
+    if !common.allow_network {
+        return Err("helm install requires --allow-network".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let process = OpsProcess::new(true);
+    ensure_simulation_context(&process, common.force)?;
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let profile = common
+        .profile
+        .clone()
+        .unwrap_or_else(|| "kind".to_string());
+    let values_file = resolve_profile_values_file(&repo_root, &profile)?;
+    let chart_path = repo_root.join("ops/k8s/charts/bijux-atlas");
+    let helm_args = vec![
+        "upgrade".to_string(),
+        "--install".to_string(),
+        "bijux-atlas".to_string(),
+        chart_path.display().to_string(),
+        "--namespace".to_string(),
+        args.namespace.clone(),
+        "--create-namespace".to_string(),
+        "--values".to_string(),
+        values_file.display().to_string(),
+    ];
+    let (helm_stdout, helm_event) = process
+        .run_subprocess("helm", &helm_args, &repo_root)
+        .map_err(|err| err.to_stable_message())?;
+    let (wait_rows, wait_errors, wait_ms) =
+        run_simulation_wait(&process, &repo_root, &args.namespace, args.timeout_seconds);
+    let smoke_rows = if wait_errors.is_empty() {
+        run_smoke_checks(&repo_root, &args.namespace, 18080)?
+    } else {
+        Vec::new()
+    };
+    let smoke_errors = smoke_rows
+        .iter()
+        .filter(|row| row["status"].as_u64().unwrap_or(0) != 200)
+        .map(|row| {
+            format!(
+                "{} returned status {}",
+                row["path"].as_str().unwrap_or("unknown"),
+                row["status"].as_u64().unwrap_or(0)
+            )
+        })
+        .collect::<Vec<_>>();
+    let errors = wait_errors
+        .iter()
+        .cloned()
+        .chain(smoke_errors.iter().cloned())
+        .collect::<Vec<_>>();
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let smoke_payload = serde_json::json!({
+        "schema_version": 1,
+        "cluster": "kind",
+        "namespace": args.namespace,
+        "status": if wait_errors.is_empty() && smoke_errors.is_empty() { "ok" } else { "failed" },
+        "checks": smoke_rows
+    });
+    let smoke_report_path =
+        write_simulation_report(&repo_root, &run_id, "ops-smoke.json", &smoke_payload)?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "profile": profile,
+        "cluster": "kind",
+        "namespace": args.namespace,
+        "status": status,
+        "details": {
+            "helm": {
+                "stdout": helm_stdout,
+                "event": helm_event,
+                "values_file": values_file.display().to_string(),
+                "chart_path": chart_path.display().to_string()
+            },
+            "readiness_wait": {
+                "elapsed_ms": wait_ms,
+                "rows": wait_rows,
+                "errors": wait_errors
+            },
+            "smoke": {
+                "report_path": smoke_report_path.display().to_string(),
+                "checks": smoke_payload["checks"].clone()
+            },
+            "profile_intent": load_profile_intent(&repo_root, &profile)?
+        }
+    });
+    let report_path = write_simulation_report(&repo_root, &run_id, "ops-install.json", &payload)?;
+    let envelope = serde_json::json!({
+        "schema_version": 1,
+        "text": if status == "ok" { "helm install completed" } else { "helm install failed" },
+        "rows": [{
+            "schema_version": 1,
+            "profile": payload["profile"].clone(),
+            "cluster": "kind",
+            "namespace": payload["namespace"].clone(),
+            "status": status,
+            "report_path": report_path.display().to_string(),
+            "details": payload["details"].clone()
+        }],
+        "summary": {"total": 1, "errors": errors.len(), "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
+    Ok((rendered, if errors.is_empty() { 0 } else { 1 }))
+}
+
+pub(crate) fn run_ops_helm_uninstall(
+    args: &crate::cli::OpsHelmReleaseArgs,
+) -> Result<(String, i32), String> {
+    let common = &args.common;
+    match args.cluster {
+        crate::cli::OpsClusterTarget::Kind => {}
+    }
+    if !common.allow_subprocess {
+        return Err("helm uninstall requires --allow-subprocess".to_string());
+    }
+    if !common.allow_write {
+        return Err("helm uninstall requires --allow-write".to_string());
+    }
+    if !common.allow_network {
+        return Err("helm uninstall requires --allow-network".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let process = OpsProcess::new(true);
+    ensure_simulation_context(&process, common.force)?;
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let profile = common
+        .profile
+        .clone()
+        .unwrap_or_else(|| "kind".to_string());
+    let helm_args = vec![
+        "uninstall".to_string(),
+        "bijux-atlas".to_string(),
+        "--namespace".to_string(),
+        args.namespace.clone(),
+    ];
+    let (helm_stdout, helm_event) = process
+        .run_subprocess("helm", &helm_args, &repo_root)
+        .map_err(|err| err.to_stable_message())?;
+    let cleanup_args = vec![
+        "get".to_string(),
+        "all".to_string(),
+        "-n".to_string(),
+        args.namespace.clone(),
+        "-o".to_string(),
+        "name".to_string(),
+    ];
+    let (cleanup_stdout, cleanup_event) = process
+        .run_subprocess("kubectl", &cleanup_args, &repo_root)
+        .map_err(|err| err.to_stable_message())?;
+    let leftovers = cleanup_stdout
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .map(str::to_string)
+        .collect::<Vec<_>>();
+    let status = if leftovers.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "profile": profile,
+        "cluster": "kind",
+        "namespace": args.namespace,
+        "status": status,
+        "details": {
+            "helm": {
+                "stdout": helm_stdout,
+                "event": helm_event
+            },
+            "cleanup_check": {
+                "leftovers": leftovers,
+                "event": cleanup_event
+            }
+        }
+    });
+    let report_path =
+        write_simulation_report(&repo_root, &run_id, "ops-uninstall.json", &payload)?;
+    let envelope = serde_json::json!({
+        "schema_version": 1,
+        "text": if status == "ok" { "helm uninstall completed" } else { "helm uninstall left resources" },
+        "rows": [{
+            "schema_version": 1,
+            "profile": payload["profile"].clone(),
+            "cluster": "kind",
+            "namespace": payload["namespace"].clone(),
+            "status": status,
+            "report_path": report_path.display().to_string(),
+            "details": payload["details"].clone()
+        }],
+        "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+pub(crate) fn run_ops_smoke(args: &crate::cli::OpsSmokeArgs) -> Result<(String, i32), String> {
+    let common = &args.common;
+    match args.cluster {
+        crate::cli::OpsClusterTarget::Kind => {}
+    }
+    if !common.allow_subprocess {
+        return Err("smoke requires --allow-subprocess".to_string());
+    }
+    if !common.allow_write {
+        return Err("smoke requires --allow-write".to_string());
+    }
+    if !common.allow_network {
+        return Err("smoke requires --allow-network".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let process = OpsProcess::new(true);
+    ensure_simulation_context(&process, common.force)?;
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let checks = run_smoke_checks(&repo_root, "bijux-atlas", args.local_port)?;
+    let errors = checks
+        .iter()
+        .filter(|row| row["status"].as_u64().unwrap_or(0) != 200)
+        .map(|row| {
+            format!(
+                "{} returned status {}",
+                row["path"].as_str().unwrap_or("unknown"),
+                row["status"].as_u64().unwrap_or(0)
+            )
+        })
+        .collect::<Vec<_>>();
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "cluster": "kind",
+        "namespace": "bijux-atlas",
+        "status": status,
+        "checks": checks
+    });
+    let report_path = write_simulation_report(&repo_root, &run_id, "ops-smoke.json", &payload)?;
+    let envelope = serde_json::json!({
+        "schema_version": 1,
+        "text": if status == "ok" { "smoke checks passed" } else { "smoke checks failed" },
+        "rows": [{
+            "schema_version": 1,
+            "cluster": "kind",
+            "namespace": "bijux-atlas",
+            "status": status,
+            "checks": payload["checks"].clone(),
+            "report_path": report_path.display().to_string()
+        }],
+        "summary": {"total": 1, "errors": errors.len(), "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
+    Ok((rendered, if errors.is_empty() { 0 } else { 1 }))
 }
 
 pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32), String> {

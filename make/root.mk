@@ -24,6 +24,7 @@ CURATED_TARGETS := \
 	artifacts-clean build checks-all clean contracts contracts-all contracts-changed contracts-ci contracts-configs contracts-crates contracts-docker contracts-docs contracts-fast contracts-help contracts-json contracts-make contracts-merge contracts-ops contracts-pr contracts-release contracts-repo contracts-root contracts-runtime \
 	docker docker-contracts docker-contracts-effect docker-gate doctor \
 	help \
+	kind-down kind-reset kind-status kind-up \
 	k8s-render k8s-validate \
 	lint-make make-fast make-target-list \
 	ops-contracts ops-contracts-effect ops-fast ops-nightly ops-pr \
@@ -115,6 +116,19 @@ ops-nightly: ## Run nightly ops check suite through dev-atlas
 	@mkdir -p $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)
 	@$(DEV_ATLAS) check run --suite ci_nightly --include-internal --include-slow --format json --out $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)/report.json >/dev/null
 
+kind-up: ## Create or verify the deterministic kind simulation cluster
+	@$(DEV_ATLAS) ops kind up --allow-subprocess --allow-write --format json
+
+kind-down: ## Delete the deterministic kind simulation cluster
+	@$(DEV_ATLAS) ops kind down --allow-subprocess --allow-write --format json
+
+kind-reset: ## Recreate the deterministic kind simulation cluster
+	-@$(MAKE) -s kind-down
+	@$(MAKE) -s kind-up
+
+kind-status: ## Report kind simulation cluster node readiness
+	@$(DEV_ATLAS) ops kind status --allow-subprocess --allow-write --format json
+
 checks-all: ## Run the deterministic non-test quality gates
 	@mkdir -p $(ARTIFACT_ROOT)/checks-all/$(RUN_ID)
 	@printf '%s\n' "checks-all runs: fmt lint lint-policy-enforce configs-lint docs-validate k8s-validate"
@@ -132,4 +146,4 @@ tests-all: ## Run the deterministic test suite without external network
 	@printf '%s\n' "effects-boundary: no effectful operations" "test" > $(ARTIFACT_ROOT)/tests-all/$(RUN_ID)/manifest.txt
 	@$(MAKE) -s test
 
-.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean checks-all clean doctor root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly tests-all
+.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean checks-all clean doctor kind-down kind-reset kind-status kind-up root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly tests-all
