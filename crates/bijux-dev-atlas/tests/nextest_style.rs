@@ -4,6 +4,7 @@ use bijux_dev_atlas::model::engine::{
     CaseReport, CaseStatus, ContractLane, ContractMode, ContractSummary, EffectKind, RunMetadata,
     RunReport, TestKind,
 };
+use bijux_dev_atlas::ui::terminal::report::{render_status_line, LineStyle};
 use bijux_dev_atlas::ui::terminal::nextest_style::{render, PreflightSummary, RenderOptions};
 use std::fs;
 use std::path::PathBuf;
@@ -296,6 +297,20 @@ fn renders_nextest_style_contract_lines() {
     assert!(rendered.contains("contract-summary: total=2 passed=1 failed=1 skipped=0"));
     assert!(rendered.contains("failed-tests:"));
     assert!(!rendered.contains("\u{1b}["));
+}
+
+#[test]
+fn shared_line_style_renders_canonical_contract_line() {
+    let line = render_status_line(
+        LineStyle::Pass,
+        false,
+        16,
+        2,
+        12,
+        "docs::DOC-001",
+        "docs.root.surface",
+    );
+    assert_eq!(line, "PASS [  0.016s] ( 2/12) docs::DOC-001 docs.root.surface");
 }
 
 #[test]
