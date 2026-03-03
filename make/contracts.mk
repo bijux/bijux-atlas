@@ -1,9 +1,13 @@
-# Scope: contracts wrapper targets delegated to bijux-dev-atlas suites and contract runners.
-# Public targets: contracts, contracts-pr, contracts-merge, contracts-release, contracts-all, contracts-fast, contracts-changed, contracts-json, contracts-ci, contracts-root, contracts-repo, contracts-crates, contracts-runtime, contracts-configs, contracts-configs-required, contracts-docs, contracts-docs-required, contracts-docker, contracts-make, contracts-make-required, contracts-ops, contracts-help, contracts-group, contracts-tag, contracts-pure, contracts-effect
+# Scope: contracts wrapper targets delegated to bijux-dev-atlas contract and suite runners.
+# Public targets: contract, contract-effect, contract-all, contract-list, contracts, contracts-pr, contracts-merge, contracts-release, contracts-all, contracts-fast, contracts-changed, contracts-json, contracts-ci, contracts-root, contracts-repo, contracts-crates, contracts-runtime, contracts-configs, contracts-configs-required, contracts-docs, contracts-docs-required, contracts-docker, contracts-make, contracts-make-required, contracts-ops, contracts-help, contracts-group, contracts-tag, contracts-pure, contracts-effect
 CONTRACTS_ARTIFACT_ROOT ?= $(ARTIFACT_ROOT)/contracts/$(RUN_ID)
 CONTRACTS_DEV_ATLAS_TARGET_DIR ?= $(WORKSPACE_ROOT)/artifacts/target
 CONTRACTS_DEV_ATLAS_BIN ?= $(CONTRACTS_DEV_ATLAS_TARGET_DIR)/debug/bijux-dev-atlas
 CONTRACTS_EFFECT_FLAGS := --mode effect --allow-subprocess --allow-network --allow-k8s --allow-fs-write --allow-docker-daemon
+FORMAT ?= human
+NO_ANSI ?= 0
+CONTRACT_FAIL_FAST_FLAG := $(if $(filter 1 true yes,$(FAIL_FAST)),--fail-fast,--no-fail-fast)
+CONTRACT_NO_ANSI_FLAG := $(if $(filter 1 true yes,$(NO_ANSI)),--no-ansi,)
 
 _contracts_guard:
 	@if [ ! -x "$(CONTRACTS_DEV_ATLAS_BIN)" ]; then \
@@ -18,9 +22,21 @@ _contracts_guard:
 contracts-help: ## Show contracts gate targets
 	@$(MAKE) -s help-contract
 
-contracts: _contracts_guard ## Run the fast static contract lane
-	@printf '%s\n' "run: $(DEV_ATLAS) contracts all --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(DEV_ATLAS) contracts all --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+contract: _contracts_guard ## Run static contract execution through the canonical contract runner
+	@$(DEV_ATLAS) --output-format $(FORMAT) contract run --mode static --jobs $(JOBS) $(CONTRACT_FAIL_FAST_FLAG) $(CONTRACT_NO_ANSI_FLAG) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+
+contract-effect: _contracts_guard ## Run effect contract execution through the canonical contract runner
+	@$(DEV_ATLAS) --output-format $(FORMAT) contract run --mode effect --effects-policy allow --jobs $(JOBS) $(CONTRACT_FAIL_FAST_FLAG) $(CONTRACT_NO_ANSI_FLAG) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+
+contract-all: _contracts_guard ## Run the complete contract execution set through the canonical contract runner
+	@$(DEV_ATLAS) --output-format $(FORMAT) contract run --mode all --effects-policy allow --jobs $(JOBS) $(CONTRACT_FAIL_FAST_FLAG) $(CONTRACT_NO_ANSI_FLAG) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+
+contract-list: _contracts_guard ## List canonical contracts exposed by the contract runner
+	@$(DEV_ATLAS) --output-format $(FORMAT) contract list
+
+contracts: ## Deprecated alias for make contract
+	@printf '%s\n' "deprecated: use \`make contract\`"
+	@$(MAKE) -s contract JOBS="$(JOBS)" FAIL_FAST="$(FAIL_FAST)" NO_ANSI="$(NO_ANSI)" FORMAT="$(FORMAT)"
 
 contracts-pr: _contracts_guard ## Run required and static contracts for pull requests
 	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) contracts all --lane pr --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
@@ -34,9 +50,9 @@ contracts-release: _contracts_guard ## Run full release contracts matrix
 	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) contracts all --lane release --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
 	@CI=1 $(DEV_ATLAS) contracts all --lane release --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
-contracts-all: _contracts_guard ## Run the full contract suite without static skips
-	@$(DEV_ATLAS) registry doctor --format json >/dev/null
-	@$(DEV_ATLAS) suites run --suite contracts --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+contracts-all: ## Deprecated alias for make contract-all
+	@printf '%s\n' "deprecated: use \`make contract-all\`"
+	@$(MAKE) -s contract-all JOBS="$(JOBS)" FAIL_FAST="$(FAIL_FAST)" NO_ANSI="$(NO_ANSI)" FORMAT="$(FORMAT)"
 
 contracts-group: _contracts_guard ## Run one contracts suite group (GROUP=<name>)
 	@[ -n "$${GROUP:-}" ] || { echo "usage: make contracts-group GROUP=<name>" >&2; exit 2; }
@@ -49,12 +65,13 @@ contracts-tag: _contracts_guard ## Run contracts suite entries with a shared tag
 contracts-pure: _contracts_guard ## Run only pure contracts suite entries
 	@$(DEV_ATLAS) suites run --suite contracts --mode pure --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
 
-contracts-effect: _contracts_guard ## Run only effectful contracts suite entries
-	@$(DEV_ATLAS) suites run --suite contracts --mode effect --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+contracts-effect: ## Deprecated alias for make contract-effect
+	@printf '%s\n' "deprecated: use \`make contract-effect\`"
+	@$(MAKE) -s contract-effect JOBS="$(JOBS)" FAIL_FAST="$(FAIL_FAST)" NO_ANSI="$(NO_ANSI)" FORMAT="$(FORMAT)"
 
-contracts-fast: _contracts_guard ## Run static-only contracts
-	@printf '%s\n' "run: $(DEV_ATLAS) contracts all --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(DEV_ATLAS) contracts all --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+contracts-fast: ## Deprecated alias for make contract
+	@printf '%s\n' "deprecated: use \`make contract\`"
+	@$(MAKE) -s contract JOBS="$(JOBS)" FAIL_FAST="$(FAIL_FAST)" NO_ANSI="$(NO_ANSI)" FORMAT="$(FORMAT)"
 
 contracts-changed: _contracts_guard ## Run changed-only contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts all --mode static --changed-only --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
@@ -116,4 +133,4 @@ contracts-ops: _contracts_guard ## Run ops contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts ops --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
 	@$(DEV_ATLAS) contracts ops --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
-.PHONY: _contracts_guard contracts-help contracts contracts-pr contracts-merge contracts-release contracts-all contracts-changed contracts-ci contracts-configs contracts-crates contracts-docker contracts-docs contracts-effect contracts-fast contracts-group contracts-json contracts-make contracts-make-required contracts-merge contracts-ops contracts-pr contracts-pure contracts-release contracts-repo contracts-root contracts-runtime contracts-tag
+.PHONY: _contracts_guard contract contract-effect contract-all contract-list contracts-help contracts contracts-pr contracts-merge contracts-release contracts-all contracts-changed contracts-ci contracts-configs contracts-crates contracts-docker contracts-docs contracts-effect contracts-fast contracts-group contracts-json contracts-make contracts-make-required contracts-merge contracts-ops contracts-pr contracts-pure contracts-release contracts-repo contracts-root contracts-runtime contracts-tag
