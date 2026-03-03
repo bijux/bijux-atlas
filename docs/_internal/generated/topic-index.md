@@ -381,7 +381,7 @@
 | `profile-invariants` | `docs/operations/k8s/profile-invariants.md` |
 | `profile-matrix` | `docs/reference/contracts/ops/profile-matrix.md` |
 | `profile-ownership` | `docs/operations/profile-ownership.md` |
-| `profile-readme` | `ops/k8s/values/profile-readme.md` |
+| `profile-readme` | `ops/k8s/values/PROFILE_README.md` |
 | `profile-rollback` | `docs/operations/profile-rollback.md` |
 | `profile-upgrade` | `docs/operations/profile-upgrade.md` |
 | `profile-upgrade-policy` | `docs/operations/profile-upgrade-policy.md` |

@@ -4133,7 +4133,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/k8s/values/profile-readme.md"
+      "from": "ops/k8s/values/PROFILE_README.md"
     },
     {
       "crate": null,

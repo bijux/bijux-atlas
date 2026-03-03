@@ -830,7 +830,7 @@ License: Apache-2.0
 | `ops/k8s/REQUIRED_FILES.md` | `concept` | `docs-governance` | `stable` |
 | `ops/k8s/generated/README.md` | `concept` | `docs-governance` | `stable` |
 | `ops/k8s/kind/README.md` | `concept` | `bijux-atlas-operations` | `stable` |
-| `ops/k8s/values/profile-readme.md` | `concept` | `docs-governance` | `stable` |
+| `ops/k8s/values/PROFILE_README.md` | `concept` | `docs-governance` | `stable` |
 | `ops/load/CONTRACT.md` | `concept` | `bijux-atlas-performance` | `stable` |
 | `ops/load/OWNER.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `ops/load/README.md` | `concept` | `bijux-atlas-performance` | `stable` |

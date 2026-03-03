@@ -7201,9 +7201,9 @@
         "ops",
         "ops/k8s",
         "ops/k8s/values",
-        "ops/k8s/values/profile-readme.md"
+        "ops/k8s/values/PROFILE_README.md"
       ],
-      "path": "ops/k8s/values/profile-readme.md"
+      "path": "ops/k8s/values/PROFILE_README.md"
     },
     {
       "breadcrumbs": [

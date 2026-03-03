@@ -6613,7 +6613,7 @@
       "area": "ops",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "ops/k8s/values/profile-readme.md",
+      "path": "ops/k8s/values/PROFILE_README.md",
       "stability": "stable",
       "title": "Profile Intent"
     },

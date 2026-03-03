@@ -60,7 +60,7 @@
     "ops/k8s/README.md",
     "ops/k8s/REQUIRED_FILES.md",
     "ops/k8s/kind/README.md",
-    "ops/k8s/values/profile-readme.md",
+    "ops/k8s/values/PROFILE_README.md",
     "ops/load/CONTRACT.md",
     "ops/load/OWNER.md",
     "ops/load/README.md",

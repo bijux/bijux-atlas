@@ -10913,7 +10913,7 @@
         "profile-readme",
         "values"
       ],
-      "path": "ops/k8s/values/profile-readme.md",
+      "path": "ops/k8s/values/PROFILE_README.md",
       "tags": [
         "k8s",
         "ops",
