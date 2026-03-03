@@ -23,7 +23,7 @@
 - `ops/k8s/charts/bijux-atlas/templates/networkpolicy.yaml`
 - `ops/k8s/charts/bijux-atlas/values.schema.json`
 - `ops/k8s/values/*.yaml`
-- `ops/_examples/networkpolicy/*.yaml`
+- `ops/k8s/examples/networkpolicy/*.yaml`
 
 ## Verification
 

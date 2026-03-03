@@ -358,15 +358,15 @@ fn networkpolicy_rendered_goldens_match_canonical_modes() {
     let examples = [
         (
             "ops/k8s/values/networkpolicy-internet-only.yaml",
-            "ops/_examples/networkpolicy/internet-only.yaml",
+            "ops/k8s/examples/networkpolicy/internet-only.yaml",
         ),
         (
             "ops/k8s/values/kind.yaml",
-            "ops/_examples/networkpolicy/cluster-aware.yaml",
+            "ops/k8s/examples/networkpolicy/cluster-aware.yaml",
         ),
         (
             "ops/k8s/values/networkpolicy-custom.yaml",
-            "ops/_examples/networkpolicy/custom.yaml",
+            "ops/k8s/examples/networkpolicy/custom.yaml",
         ),
     ];
 

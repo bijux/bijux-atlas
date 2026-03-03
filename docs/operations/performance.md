@@ -17,7 +17,7 @@ Related ops contracts: `OPS-ROOT-023`, `PERF-KIND-001`.
 - `configs/perf/budgets.yaml`
 - `configs/perf/benches.json`
 - `configs/perf/exceptions.json`
-- `ops/_benchmarks/gene-lookup-baseline.json`
+- `ops/report/gene-lookup-baseline.json`
 - `the built-in gene-lookup scenario embedded in bijux-dev-atlas`
 
 ## Reproducibility Rules
@@ -31,7 +31,7 @@ Related ops contracts: `OPS-ROOT-023`, `PERF-KIND-001`.
 
 1. `bijux-dev-atlas perf validate --format json`
 2. `bijux-dev-atlas perf run --scenario gene-lookup --format json`
-3. `bijux-dev-atlas perf diff ops/_benchmarks/gene-lookup-baseline.json artifacts/perf/gene-lookup-load.json --format json`
+3. `bijux-dev-atlas perf diff ops/report/gene-lookup-baseline.json artifacts/perf/gene-lookup-load.json --format json`
 4. `bijux-dev-atlas perf cold-start --format json`
 5. `bijux-dev-atlas perf kind --profile perf --format json`
 6. `bijux-dev-atlas perf benches list --format json`

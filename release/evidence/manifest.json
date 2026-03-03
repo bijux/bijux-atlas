@@ -181,7 +181,7 @@
     "configs/contracts/perf/load-report.schema.json",
     "configs/contracts/perf/exceptions.schema.json",
     "configs/contracts/perf/cold-start-report.schema.json",
-    "ops/_benchmarks/gene-lookup-baseline.json",
+    "ops/report/gene-lookup-baseline.json",
     "ops/schema/k8s/perf-on-kind.schema.json",
     "artifacts/perf/perf-slo.json",
     "artifacts/perf/gene-lookup-load.json",

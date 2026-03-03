@@ -447,7 +447,7 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
 
     let report_path = root.join(format!("artifacts/perf/{}-load.json", args.scenario));
     write_json(&report_path, &report)?;
-    let baseline_path = root.join(format!("ops/_benchmarks/{}-baseline.json", args.scenario));
+    let baseline_path = root.join(format!("ops/report/{}-baseline.json", args.scenario));
     let history_runs = budgets
         .get("regression_window")
         .and_then(|value| value.get("history_runs"))
@@ -463,7 +463,7 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
             "rows": [{
                 "report_path": format!("artifacts/perf/{}-load.json", args.scenario),
                 "scenario": args.scenario,
-                "baseline_path": format!("ops/_benchmarks/{}-baseline.json", args.scenario),
+                "baseline_path": format!("ops/report/{}-baseline.json", args.scenario),
                 "regression_window_runs": history_runs,
                 "contracts": report["contracts"].clone(),
                 "latency_ms": report["latency_ms"].clone(),

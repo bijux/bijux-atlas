@@ -461,7 +461,7 @@ pub(super) fn collect_perf_assets(repo_root: &std::path::Path) -> Result<Vec<Str
         "configs/contracts/perf/load-report.schema.json",
         "configs/contracts/perf/exceptions.schema.json",
         "configs/contracts/perf/cold-start-report.schema.json",
-        "ops/_benchmarks/gene-lookup-baseline.json",
+        "ops/report/gene-lookup-baseline.json",
         "ops/schema/k8s/perf-on-kind.schema.json",
     ] {
         let path = repo_root.join(rel);

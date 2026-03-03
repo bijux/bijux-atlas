@@ -9,13 +9,13 @@
 
 ## Prereqs
 
-- The governed drill registry is `ops/drills/drills.json`.
+- The governed drill registry is `ops/observe/drills.json`.
 - The drill registry schema is `ops/schema/drills/drills.schema.json`.
 - Drill reports are written under `artifacts/ops/<run_id>/reports/`.
 
 ## Install
 
-- Choose a drill name from `ops/drills/drills.json`.
+- Choose a drill name from `ops/observe/drills.json`.
 - Run `cargo run -q -p bijux-dev-atlas -- ops drills run --name <drill> --allow-write --format json`.
 
 ## Verify

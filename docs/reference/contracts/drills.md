@@ -14,7 +14,7 @@
 
 ## Sources
 
-- Drill registry: `ops/drills/drills.json`
+- Drill registry: `ops/observe/drills.json`
 - Drill registry schema: `ops/schema/drills/drills.schema.json`
 - Drill report schema: `ops/schema/k8s/ops-drill.schema.json`
 

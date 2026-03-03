@@ -188,7 +188,7 @@ pub(super) fn write_simulation_report(
 }
 
 pub(super) fn load_drill_registry(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
-    let path = repo_root.join("ops/drills/drills.json");
+    let path = repo_root.join("ops/observe/drills.json");
     let payload: serde_json::Value = serde_json::from_str(
         &std::fs::read_to_string(&path)
             .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
