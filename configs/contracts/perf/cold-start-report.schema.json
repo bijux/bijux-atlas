@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cold Start Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "ready_ms",
+    "profile_reference",
+    "contracts"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "ready_ms": {
+      "type": "number",
+      "minimum": 0
+    },
+    "profile_reference": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contracts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "PERF-COLD-001"
+      ],
+      "properties": {
+        "PERF-COLD-001": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

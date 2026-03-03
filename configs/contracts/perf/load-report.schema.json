@@ -10,6 +10,7 @@
     "configuration",
     "latency_ms",
     "memory_mb",
+    "cpu_percent",
     "error_rate_percent",
     "throughput_rps",
     "contracts"
@@ -96,6 +97,19 @@
         }
       }
     },
+    "cpu_percent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current"
+      ],
+      "properties": {
+        "current": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
     "error_rate_percent": {
       "type": "number",
       "minimum": 0
@@ -112,7 +126,8 @@
         "PERF-LOAD-002",
         "PERF-LOAD-003",
         "PERF-LOAD-004",
-        "PERF-MEM-001"
+        "PERF-MEM-001",
+        "PERF-CPU-001"
       ],
       "properties": {
         "PERF-LOAD-001": {
@@ -128,6 +143,9 @@
           "type": "boolean"
         },
         "PERF-MEM-001": {
+          "type": "boolean"
+        },
+        "PERF-CPU-001": {
           "type": "boolean"
         }
       }

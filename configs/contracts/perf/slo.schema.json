@@ -28,6 +28,8 @@
       "required": [
         "latency",
         "memory",
+        "cpu",
+        "cold_start",
         "error_rate",
         "throughput",
         "availability"
@@ -67,6 +69,32 @@
           ],
           "properties": {
             "max_rss_mb": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        "cpu": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "max_percent"
+          ],
+          "properties": {
+            "max_percent": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        "cold_start": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "max_ready_ms"
+          ],
+          "properties": {
+            "max_ready_ms": {
               "type": "number",
               "exclusiveMinimum": 0
             }

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{PerfBenchesCommand, PerfCommand, PerfDiffArgs, PerfRunArgs, PerfValidateArgs};
+use crate::cli::{
+    PerfBenchesCommand, PerfCommand, PerfDiffArgs, PerfKindArgs, PerfRunArgs, PerfValidateArgs,
+};
 use crate::{emit_payload, resolve_repo_root};
 use reqwest::blocking::Client;
 use std::collections::BTreeSet;
@@ -67,6 +69,24 @@ fn current_rss_mb() -> Result<f64, String> {
     Ok(rss_kb / 1024.0)
 }
 
+fn current_cpu_percent() -> Result<f64, String> {
+    let pid = std::process::id().to_string();
+    let output = ProcessCommand::new("ps")
+        .args(["-o", "%cpu=", "-p", &pid])
+        .output()
+        .map_err(|err| format!("failed to sample process cpu: {err}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "failed to sample process cpu: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        ));
+    }
+    String::from_utf8_lossy(&output.stdout)
+        .trim()
+        .parse::<f64>()
+        .map_err(|err| format!("failed to parse process cpu: {err}"))
+}
+
 fn percentile_ms(samples: &[f64], quantile: f64) -> f64 {
     if samples.is_empty() {
         return 0.0;
@@ -115,10 +135,23 @@ fn run_perf_validate(args: PerfValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     ensure_json(&root.join("configs/contracts/perf/slo.schema.json"))?;
     ensure_json(&root.join("configs/contracts/perf/budgets.schema.json"))?;
+    ensure_json(&root.join("configs/contracts/perf/exceptions.schema.json"))?;
     let slo_path = root.join("configs/perf/slo.yaml");
     let budgets_path = root.join("configs/perf/budgets.yaml");
+    let exceptions_path = root.join("configs/perf/exceptions.json");
     let slo = read_yaml(&slo_path)?;
     let budgets = read_yaml(&budgets_path)?;
+    let exceptions = read_json(&exceptions_path)?;
+    let today = "2026-03-03";
+    let expired = exceptions
+        .get("exceptions")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(|value| value.get("expires_on"))
+        .filter_map(serde_json::Value::as_str)
+        .filter(|expires_on| *expires_on < today)
+        .count();
     let validate_ok = slo
         .get("schema_version")
         .and_then(serde_yaml::Value::as_i64)
@@ -134,6 +167,18 @@ fn run_perf_validate(args: PerfValidateArgs) -> Result<(String, i32), String> {
             .and_then(|value| value.get("max_rss_mb"))
             .and_then(serde_yaml::Value::as_f64)
             .is_some()
+        && slo
+            .get("targets")
+            .and_then(|value| value.get("cpu"))
+            .and_then(|value| value.get("max_percent"))
+            .and_then(serde_yaml::Value::as_f64)
+            .is_some()
+        && slo
+            .get("targets")
+            .and_then(|value| value.get("cold_start"))
+            .and_then(|value| value.get("max_ready_ms"))
+            .and_then(serde_yaml::Value::as_f64)
+            .is_some()
         && budgets
             .get("throughput")
             .and_then(|value| value.get("min_requests_per_second"))
@@ -143,7 +188,8 @@ fn run_perf_validate(args: PerfValidateArgs) -> Result<(String, i32), String> {
             .get("regression_window")
             .and_then(|value| value.get("history_runs"))
             .and_then(serde_yaml::Value::as_i64)
-            .is_some();
+            .is_some()
+        && expired == 0;
 
     let report_path = root.join("artifacts/perf/perf-slo.json");
     let report = serde_json::json!({
@@ -151,8 +197,10 @@ fn run_perf_validate(args: PerfValidateArgs) -> Result<(String, i32), String> {
         "status": if validate_ok { "ok" } else { "failed" },
         "slo_path": "configs/perf/slo.yaml",
         "budgets_path": "configs/perf/budgets.yaml",
+        "exceptions_path": "configs/perf/exceptions.json",
         "contracts": {
-            "PERF-SLO-001": validate_ok
+            "PERF-SLO-001": validate_ok,
+            "PERF-EXC-001": expired == 0
         }
     });
     write_json(&report_path, &report)?;
@@ -166,6 +214,7 @@ fn run_perf_validate(args: PerfValidateArgs) -> Result<(String, i32), String> {
             "rows": [{
                 "report_path": "artifacts/perf/perf-slo.json",
                 "budgets_path": "configs/perf/budgets.yaml",
+                "exceptions_path": "configs/perf/exceptions.json",
                 "contracts": report["contracts"].clone()
             }],
             "summary": {
@@ -331,6 +380,14 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
             .and_then(|value| value.get("max_rss_mb"))
             .and_then(serde_yaml::Value::as_f64)
             .ok_or_else(|| "SLO file is missing targets.memory.max_rss_mb".to_string())?;
+    let cpu_percent = current_cpu_percent()?;
+    let perf_cpu_001 = cpu_percent
+        <= slo
+            .get("targets")
+            .and_then(|value| value.get("cpu"))
+            .and_then(|value| value.get("max_percent"))
+            .and_then(serde_yaml::Value::as_f64)
+            .ok_or_else(|| "SLO file is missing targets.cpu.max_percent".to_string())?;
 
     let report = serde_json::json!({
         "schema_version": 1,
@@ -351,6 +408,9 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
         "memory_mb": {
             "rss": rss_mb
         },
+        "cpu_percent": {
+            "current": cpu_percent
+        },
         "error_rate_percent": error_rate_percent,
         "throughput_rps": throughput_rps,
         "contracts": {
@@ -358,7 +418,8 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
             "PERF-LOAD-002": perf_load_002,
             "PERF-LOAD-003": perf_load_003,
             "PERF-LOAD-004": perf_load_004,
-            "PERF-MEM-001": perf_mem_001
+            "PERF-MEM-001": perf_mem_001,
+            "PERF-CPU-001": perf_cpu_001
         }
     });
 
@@ -375,8 +436,8 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
         args.out,
         &serde_json::json!({
             "schema_version": 1,
-            "status": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 { "ok" } else { "failed" },
-            "text": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 { "perf run passed" } else { "perf run failed" },
+            "status": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 && perf_cpu_001 { "ok" } else { "failed" },
+            "text": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 && perf_cpu_001 { "perf run passed" } else { "perf run failed" },
             "rows": [{
                 "report_path": format!("artifacts/perf/{}-load.json", args.scenario),
                 "scenario_path": format!("tools/perf/{}.json", args.scenario),
@@ -385,12 +446,13 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
                 "contracts": report["contracts"].clone(),
                 "latency_ms": report["latency_ms"].clone(),
                 "memory_mb": report["memory_mb"].clone(),
+                "cpu_percent": report["cpu_percent"].clone(),
                 "throughput_rps": report["throughput_rps"].clone(),
                 "error_rate_percent": report["error_rate_percent"].clone()
             }],
             "summary": {
                 "total": 1,
-                "errors": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 { 0 } else { 1 },
+                "errors": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 && perf_cpu_001 { 0 } else { 1 },
                 "warnings": 0
             }
         }),
@@ -398,7 +460,145 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
     let _ = baseline_path;
     Ok((
         rendered,
-        if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 {
+        if report_valid
+            && perf_load_002
+            && perf_load_003
+            && perf_load_004
+            && perf_mem_001
+            && perf_cpu_001
+        {
+            0
+        } else {
+            1
+        },
+    ))
+}
+
+fn run_perf_cold_start(args: PerfValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    ensure_json(&root.join("configs/contracts/perf/cold-start-report.schema.json"))?;
+    let slo = read_yaml(&root.join("configs/perf/slo.yaml"))?;
+    let started = Instant::now();
+    let _base = start_fixture_server("/readyz".to_string(), "{\"ready\":true}".to_string())?;
+    let ready_ms = started.elapsed().as_secs_f64() * 1000.0;
+    let max_ready_ms = slo
+        .get("targets")
+        .and_then(|value| value.get("cold_start"))
+        .and_then(|value| value.get("max_ready_ms"))
+        .and_then(serde_yaml::Value::as_f64)
+        .ok_or_else(|| "SLO file is missing targets.cold_start.max_ready_ms".to_string())?;
+    let passed = ready_ms <= max_ready_ms;
+    let report_path = root.join("artifacts/perf/cold-start.json");
+    let report = serde_json::json!({
+        "schema_version": 1,
+        "ready_ms": ready_ms,
+        "profile_reference": "ops/k8s/values/perf.yaml",
+        "contracts": {
+            "PERF-COLD-001": passed
+        }
+    });
+    write_json(&report_path, &report)?;
+    let rendered = emit_payload(
+        args.format,
+        args.out,
+        &serde_json::json!({
+            "schema_version": 1,
+            "status": if passed { "ok" } else { "failed" },
+            "text": if passed { "cold start meets readiness threshold" } else { "cold start exceeds readiness threshold" },
+            "rows": [{
+                "report_path": "artifacts/perf/cold-start.json",
+                "profile_reference": "ops/k8s/values/perf.yaml",
+                "contracts": report["contracts"].clone(),
+                "ready_ms": ready_ms
+            }],
+            "summary": {
+                "total": 1,
+                "errors": if passed { 0 } else { 1 },
+                "warnings": 0
+            }
+        }),
+    )?;
+    Ok((rendered, if passed { 0 } else { 1 }))
+}
+
+fn run_perf_kind(args: PerfKindArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    ensure_json(&root.join("ops/schema/k8s/perf-on-kind.schema.json"))?;
+    let exe = std::env::current_exe().map_err(|err| format!("perf kind failed: {err}"))?;
+
+    let mut kind_args = vec![
+        "ops".to_string(),
+        "kind".to_string(),
+        "status".to_string(),
+        "--format".to_string(),
+        "json".to_string(),
+    ];
+    if let Some(repo_root) = &args.repo_root {
+        kind_args.push("--repo-root".to_string());
+        kind_args.push(repo_root.display().to_string());
+    }
+    let kind_out = ProcessCommand::new(&exe)
+        .args(&kind_args)
+        .output()
+        .map_err(|err| format!("perf kind failed: {err}"))?;
+    let kind_status = if kind_out.status.success() {
+        "reachable"
+    } else {
+        "unreachable"
+    };
+
+    let mut perf_args = vec![
+        "perf".to_string(),
+        "run".to_string(),
+        "--scenario".to_string(),
+        "gene-lookup".to_string(),
+        "--format".to_string(),
+        "json".to_string(),
+    ];
+    if let Some(repo_root) = &args.repo_root {
+        perf_args.push("--repo-root".to_string());
+        perf_args.push(repo_root.display().to_string());
+    }
+    let perf_out = ProcessCommand::new(&exe)
+        .args(&perf_args)
+        .output()
+        .map_err(|err| format!("perf kind failed: {err}"))?;
+    let perf_ok = perf_out.status.success();
+
+    let report_path = root.join("artifacts/perf/perf-on-kind.json");
+    let report = serde_json::json!({
+        "schema_version": 1,
+        "profile": args.profile,
+        "kind_status": kind_status,
+        "load_report_path": "artifacts/perf/gene-lookup-load.json",
+        "contracts": {
+            "PERF-KIND-001": kind_status == "reachable" && perf_ok
+        }
+    });
+    write_json(&report_path, &report)?;
+    let rendered = emit_payload(
+        args.format,
+        args.out,
+        &serde_json::json!({
+            "schema_version": 1,
+            "status": if report["contracts"]["PERF-KIND-001"] == serde_json::json!(true) { "ok" } else { "failed" },
+            "text": if report["contracts"]["PERF-KIND-001"] == serde_json::json!(true) { "perf kind validation passed" } else { "perf kind validation failed" },
+            "rows": [{
+                "report_path": "artifacts/perf/perf-on-kind.json",
+                "contracts": report["contracts"].clone(),
+                "kind_status": kind_status,
+                "load_report_path": "artifacts/perf/gene-lookup-load.json"
+            }],
+            "summary": {
+                "total": 1,
+                "errors": if report["contracts"]["PERF-KIND-001"] == serde_json::json!(true) { 0 } else { 1 },
+                "warnings": 0
+            }
+        }),
+    )?;
+    Ok((
+        rendered,
+        if report["contracts"]["PERF-KIND-001"] == serde_json::json!(true) {
             0
         } else {
             1
@@ -542,6 +742,8 @@ pub(crate) fn run_perf_command(
         PerfCommand::Validate(args) => run_perf_validate(args),
         PerfCommand::Run(args) => run_perf(args),
         PerfCommand::Diff(args) => run_perf_diff(args),
+        PerfCommand::ColdStart(args) => run_perf_cold_start(args),
+        PerfCommand::Kind(args) => run_perf_kind(args),
         PerfCommand::Benches { command } => match command {
             PerfBenchesCommand::List(args) => run_perf_benches_list(args),
         },

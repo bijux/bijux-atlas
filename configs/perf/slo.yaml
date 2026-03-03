@@ -6,6 +6,10 @@ targets:
     p99_ms: 75
   memory:
     max_rss_mb: 256
+  cpu:
+    max_percent: 85.0
+  cold_start:
+    max_ready_ms: 500
   error_rate:
     max_percent: 0.0
   throughput:
