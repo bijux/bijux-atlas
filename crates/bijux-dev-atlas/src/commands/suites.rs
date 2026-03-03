@@ -12,7 +12,9 @@ use std::time::{Instant, SystemTime, UNIX_EPOCH};
 
 use crate::cli::{FormatArg, SuiteColorArg, SuiteModeArg, SuiteOutputFormatArg, SuitesCommand};
 use crate::resolve_repo_root;
-use bijux_dev_atlas::docs::site_output::validate_named_report;
+use bijux_dev_atlas::docs::site_output::{
+    validate_named_report, validate_report_value_against_schema,
+};
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
 
@@ -63,6 +65,7 @@ struct CheckRegistryEntry {
     summary: String,
     group: String,
     commands: Vec<String>,
+    report_ids: Vec<String>,
     reports: Vec<String>,
     tags: Option<Vec<String>>,
     retries: Option<u64>,
@@ -98,6 +101,7 @@ struct SuiteTask {
     group: String,
     tags: Vec<String>,
     commands: Vec<String>,
+    report_ids: Vec<String>,
     reports: Vec<String>,
     retries: u64,
     requires_tools: Vec<String>,
@@ -296,6 +300,7 @@ fn load_suite_tasks(root: &Path, suite_id: &str) -> Result<Vec<SuiteTask>, Strin
                         group: entry.group,
                         tags: entry.tags.unwrap_or_else(|| suite_entry.tags.clone()),
                         commands: entry.commands,
+                        report_ids: entry.report_ids,
                         reports: entry.reports,
                         retries: entry.retries.unwrap_or(0),
                         requires_tools: entry.requires_tools.unwrap_or_default(),
@@ -328,6 +333,7 @@ fn load_suite_tasks(root: &Path, suite_id: &str) -> Result<Vec<SuiteTask>, Strin
                                 &suite_entry.mode,
                                 &entry.contract_id,
                             )],
+                            report_ids: Vec::new(),
                             reports: entry.reports,
                             retries: entry.retries.unwrap_or(0),
                             requires_tools: entry.requires_tools.unwrap_or_default(),
@@ -942,6 +948,342 @@ fn task_report_paths(task: &SuiteTask, task_root: &Path) -> Vec<String> {
         .collect()
 }
 
+fn check_report_schema_path(repo_root: &Path, report_id: &str) -> PathBuf {
+    repo_root
+        .join("configs/contracts/reports/checks")
+        .join(format!("{report_id}.schema.json"))
+}
+
+fn source_artifact_root(task_root: &Path) -> PathBuf {
+    task_root.join("_source_artifacts")
+}
+
+fn source_report_path(task_root: &Path, rel: &str) -> PathBuf {
+    source_artifact_root(task_root).join(rel)
+}
+
+fn extract_json_from_text(text: &str) -> Option<serde_json::Value> {
+    let trimmed = text.trim();
+    if trimmed.is_empty() {
+        return None;
+    }
+    if let Ok(value) = serde_json::from_str(trimmed) {
+        return Some(value);
+    }
+    let start = trimmed.find('{')?;
+    let end = trimmed.rfind('}')?;
+    if end < start {
+        return None;
+    }
+    serde_json::from_str(&trimmed[start..=end]).ok()
+}
+
+fn read_optional_json(path: &Path) -> Option<serde_json::Value> {
+    let text = fs::read_to_string(path).ok()?;
+    extract_json_from_text(&text)
+}
+
+fn read_optional_text(path: &Path) -> Option<String> {
+    fs::read_to_string(path).ok()
+}
+
+fn pinned_tool_version(repo_root: &Path, tool: &str) -> Option<String> {
+    if matches!(tool, "rustfmt" | "clippy" | "cargo") {
+        let toolchain = fs::read_to_string(repo_root.join("rust-toolchain.toml")).ok()?;
+        return toolchain
+            .lines()
+            .find_map(|line| line.trim().strip_prefix("channel = "))
+            .map(|value| value.trim_matches('"').to_string());
+    }
+    if tool == "bijux-dev-atlas" {
+        return Some(git_sha(repo_root));
+    }
+    let payload: serde_json::Value =
+        serde_json::from_str(&fs::read_to_string(repo_root.join("configs/ops/pins/tools.json")).ok()?)
+            .ok()?;
+    payload
+        .get("tools")
+        .and_then(|value| value.get(tool))
+        .and_then(|value| value.get("version"))
+        .and_then(serde_json::Value::as_str)
+        .map(ToString::to_string)
+}
+
+fn actual_tool_version(repo_root: &Path, tool: &str) -> Option<String> {
+    let command = match tool {
+        "rustfmt" => ("rustfmt", vec!["--version"]),
+        "clippy" => ("cargo", vec!["clippy", "--version"]),
+        "cargo" => ("cargo", vec!["--version"]),
+        "cargo-audit" => ("cargo", vec!["audit", "--version"]),
+        "cargo-deny" => ("cargo", vec!["deny", "--version"]),
+        "helm" => ("helm", vec!["version", "--short"]),
+        "kubeconform" => ("kubeconform", vec!["-v"]),
+        _ => return None,
+    };
+    Command::new(command.0)
+        .args(&command.1)
+        .current_dir(repo_root)
+        .output()
+        .ok()
+        .and_then(|output| {
+            if output.status.success() {
+                Some(
+                    String::from_utf8_lossy(&output.stdout)
+                        .trim()
+                        .to_string(),
+                )
+            } else {
+                None
+            }
+        })
+}
+
+fn tool_version_rows(repo_root: &Path, tools: &[&str]) -> Vec<serde_json::Value> {
+    tools.iter()
+        .map(|tool| {
+            let expected = pinned_tool_version(repo_root, tool);
+            let actual = actual_tool_version(repo_root, tool).or_else(|| expected.clone());
+            serde_json::json!({
+                "tool": tool,
+                "expected_version": expected,
+                "actual_version": actual,
+                "pinned": expected.is_some(),
+            })
+        })
+        .collect()
+}
+
+fn report_payload_for_check(
+    repo_root: &Path,
+    task_root: &Path,
+    task: &SuiteTask,
+    report_id: &str,
+    stdout: &str,
+    stderr: &str,
+    status: &str,
+) -> serde_json::Value {
+    let source_root = source_artifact_root(task_root);
+    let base = serde_json::json!({
+        "version": 1,
+        "inputs": {
+            "check_id": task.id,
+            "commands": task.commands,
+            "source_artifact_root": source_root.display().to_string(),
+        },
+        "check_id": task.id,
+        "summary": task.summary,
+        "status": status,
+        "artifacts": {
+            "stdout": task_root.join("stdout.log").display().to_string(),
+            "stderr": task_root.join("stderr.log").display().to_string(),
+        },
+    });
+    match report_id {
+        "check-rustfmt" => {
+            let source = read_optional_text(&source_report_path(task_root, "fmt/suite-run/report.txt"))
+                .and_then(|text| extract_json_from_text(&text));
+            serde_json::json!({
+                "report_id": report_id,
+                "version": 1,
+                "inputs": base["inputs"],
+                "check_id": task.id,
+                "summary": task.summary,
+                "status": status,
+                "tool_versions": tool_version_rows(repo_root, &["cargo", "rustfmt"]),
+                "files": source
+                    .as_ref()
+                    .and_then(|value| value.get("stderr"))
+                    .and_then(serde_json::Value::as_str)
+                    .map(|text| text.lines().filter(|line| line.contains(".rs")).map(ToString::to_string).collect::<Vec<_>>())
+                    .unwrap_or_default(),
+                "source_report": source,
+                "artifacts": base["artifacts"],
+            })
+        }
+        "check-clippy" => {
+            let source = read_optional_json(&source_report_path(task_root, "lint/suite-run/report.json"));
+            let stderr_text = source
+                .as_ref()
+                .and_then(|value| value.get("stderr"))
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or(stderr);
+            let top_messages = stderr_text
+                .lines()
+                .filter(|line| !line.trim().is_empty())
+                .take(5)
+                .map(ToString::to_string)
+                .collect::<Vec<_>>();
+            serde_json::json!({
+                "report_id": report_id,
+                "version": 1,
+                "inputs": base["inputs"],
+                "check_id": task.id,
+                "summary": task.summary,
+                "status": status,
+                "tool_versions": tool_version_rows(repo_root, &["cargo", "clippy"]),
+                "diagnostics": {
+                    "error_lines": stderr_text.lines().filter(|line| line.contains("error")).count(),
+                    "warning_lines": stderr_text.lines().filter(|line| line.contains("warning")).count(),
+                    "top_messages": top_messages,
+                },
+                "source_report": source,
+                "artifacts": base["artifacts"],
+            })
+        }
+        "check-config-format" => {
+            let source = if task.id == "CHECK-CONFIGS-LINT-001" {
+                read_optional_json(&source_report_path(task_root, "configs-lint/suite-run/report.json"))
+            } else {
+                None
+            };
+            let combined = format!("{stdout}\n{stderr}");
+            serde_json::json!({
+                "report_id": report_id,
+                "version": 1,
+                "inputs": base["inputs"],
+                "check_id": task.id,
+                "summary": task.summary,
+                "status": status,
+                "tool_versions": tool_version_rows(repo_root, &["bijux-dev-atlas"]),
+                "violations": combined.lines().filter(|line| line.contains("ERROR") || line.contains("WARN")).map(ToString::to_string).take(20).collect::<Vec<_>>(),
+                "source_report": source,
+                "artifacts": base["artifacts"],
+            })
+        }
+        "check-docs-links" => {
+            let source = read_optional_json(&source_report_path(task_root, "docs-validate/suite-run/report.json"));
+            let links = source
+                .as_ref()
+                .and_then(|value| value.get("checks"))
+                .and_then(|value| value.get("links"))
+                .cloned();
+            serde_json::json!({
+                "report_id": report_id,
+                "version": 1,
+                "inputs": base["inputs"],
+                "check_id": task.id,
+                "summary": task.summary,
+                "status": status,
+                "tool_versions": tool_version_rows(repo_root, &["bijux-dev-atlas"]),
+                "links": links,
+                "source_report": source,
+                "artifacts": base["artifacts"],
+            })
+        }
+        "check-helm-lint" | "check-kubeconform" => {
+            let source = read_optional_json(&source_report_path(task_root, "k8s-validate/suite-run/report.json"));
+            let summary = source.as_ref().and_then(|value| value.get("summary")).cloned();
+            serde_json::json!({
+                "report_id": report_id,
+                "version": 1,
+                "inputs": base["inputs"],
+                "check_id": task.id,
+                "summary": task.summary,
+                "status": status,
+                "tool_versions": tool_version_rows(repo_root, &["helm", "kubeconform"]),
+                "k8s_summary": summary,
+                "source_report": source,
+                "artifacts": base["artifacts"],
+            })
+        }
+        "check-deps" => {
+            let tool = if task.id.contains("DENY") {
+                "cargo-deny"
+            } else {
+                "cargo-audit"
+            };
+            serde_json::json!({
+                "report_id": report_id,
+                "version": 1,
+                "inputs": base["inputs"],
+                "check_id": task.id,
+                "summary": task.summary,
+                "status": status,
+                "tool_versions": tool_version_rows(repo_root, &[tool]),
+                "stderr_excerpt": stderr.lines().take(20).collect::<Vec<_>>(),
+                "stdout_excerpt": stdout.lines().take(20).collect::<Vec<_>>(),
+                "artifacts": base["artifacts"],
+            })
+        }
+        "check-suite-summary" => {
+            let source = [
+                "ops-fast/suite-run/report.json",
+                "ops-pr/suite-run/report.json",
+                "ops-nightly/suite-run/report.json",
+            ]
+            .into_iter()
+            .find_map(|rel| read_optional_json(&source_report_path(task_root, rel)))
+            .or_else(|| extract_json_from_text(stdout))
+            .or_else(|| extract_json_from_text(stderr));
+            serde_json::json!({
+                "report_id": report_id,
+                "version": 1,
+                "inputs": base["inputs"],
+                "check_id": task.id,
+                "summary": task.summary,
+                "status": status,
+                "tool_versions": tool_version_rows(repo_root, &["bijux-dev-atlas"]),
+                "source_report": source,
+                "artifacts": base["artifacts"],
+            })
+        }
+        _ => serde_json::json!({
+            "report_id": report_id,
+            "version": 1,
+            "inputs": base["inputs"],
+            "check_id": task.id,
+            "summary": task.summary,
+            "status": status,
+            "artifacts": base["artifacts"],
+        }),
+    }
+}
+
+fn write_governed_check_reports(
+    repo_root: &Path,
+    task_root: &Path,
+    task: &SuiteTask,
+    stdout: &str,
+    stderr: &str,
+    status: &str,
+) -> Result<Vec<String>, String> {
+    let mut report_paths = Vec::new();
+    for (report_id, report_rel) in task.report_ids.iter().zip(task.reports.iter()) {
+        let payload =
+            report_payload_for_check(repo_root, task_root, task, report_id, stdout, stderr, status);
+        let unpinned_tools = payload
+            .get("tool_versions")
+            .and_then(serde_json::Value::as_array)
+            .into_iter()
+            .flatten()
+            .filter(|row| row.get("pinned").and_then(serde_json::Value::as_bool) == Some(false))
+            .filter_map(|row| row.get("tool").and_then(serde_json::Value::as_str))
+            .map(ToString::to_string)
+            .collect::<Vec<_>>();
+        if !unpinned_tools.is_empty() {
+            return Err(format!(
+                "{} uses unpinned tools in report `{}`: {}",
+                task.id,
+                report_id,
+                unpinned_tools.join(", ")
+            ));
+        }
+        let schema_path = check_report_schema_path(repo_root, report_id);
+        validate_report_value_against_schema(&payload, &schema_path)?;
+        let report_path = task_root.join(report_rel);
+        if let Some(parent) = report_path.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|err| format!("create {} failed: {err}", parent.display()))?;
+        }
+        let rendered = serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode {report_id} failed: {err}"))?;
+        fs::write(&report_path, format!("{rendered}\n"))
+            .map_err(|err| format!("write {} failed: {err}", report_path.display()))?;
+        report_paths.push(report_path.display().to_string());
+    }
+    Ok(report_paths)
+}
+
 fn tool_in_path(tool: &str) -> bool {
     if tool == "bijux-dev-atlas" {
         return true;
@@ -1034,6 +1376,9 @@ fn run_task(repo_root: &Path, task_root: &Path, task: &SuiteTask) -> Result<Task
         .map_err(|err| format!("create {} failed: {err}", temp_root.display()))?;
     let stdout_path = task_root.join("stdout.log");
     let stderr_path = task_root.join("stderr.log");
+    let source_root = source_artifact_root(task_root);
+    fs::create_dir_all(&source_root)
+        .map_err(|err| format!("create {} failed: {err}", source_root.display()))?;
     let start = Instant::now();
     let mut combined_stdout = String::new();
     let mut combined_stderr = String::new();
@@ -1054,6 +1399,8 @@ fn run_task(repo_root: &Path, task_root: &Path, task: &SuiteTask) -> Result<Task
                 .env("TMPDIR", &temp_root)
                 .env("TMP", &temp_root)
                 .env("TEMP", &temp_root)
+                .env("ARTIFACT_ROOT", &source_root)
+                .env("RUN_ID", "suite-run")
                 .env("ATLAS_SUITE_TASK_ARTIFACT_ROOT", task_root)
                 .output()
                 .map_err(|err| format!("run `{command}` failed: {err}"))?;
@@ -1088,11 +1435,31 @@ fn run_task(repo_root: &Path, task_root: &Path, task: &SuiteTask) -> Result<Task
     fs::write(&stderr_path, &combined_stderr)
         .map_err(|err| format!("write {} failed: {err}", stderr_path.display()))?;
 
+    let mut report_paths = task_report_paths(task, task_root);
+    if task.kind == "check" && !task.report_ids.is_empty() {
+        match write_governed_check_reports(
+            repo_root,
+            task_root,
+            task,
+            &combined_stdout,
+            &combined_stderr,
+            &status,
+        ) {
+            Ok(paths) => {
+                report_paths = paths;
+            }
+            Err(err) => {
+                status = "fail".to_string();
+                error_summary = Some(format!("governed report generation failed: {err}"));
+            }
+        }
+    }
+
     Ok(TaskOutput {
         task: task.clone(),
         status,
         duration_ms: start.elapsed().as_millis() as u64,
-        report_paths: task_report_paths(task, task_root),
+        report_paths,
         error_summary,
         stdout_path: stdout_path.display().to_string(),
         stderr_path: stderr_path.display().to_string(),
@@ -2229,6 +2596,12 @@ mod tests {
             }),
         );
         write_json(
+            &dir.path().join("make/target-list.json"),
+            &serde_json::json!({
+                "public_targets": ["fmt"]
+            }),
+        );
+        write_json(
             &dir.path().join("configs/governance/checks.registry.json"),
             &serde_json::json!({
                 "checks": [{
@@ -2238,6 +2611,7 @@ mod tests {
                     "mode":"pure",
                     "group":"rust",
                     "commands":["git --version"],
+                    "report_ids":["check-suite-summary"],
                     "reports":["check-git-version.json"],
                     "tags":["rust"]
                 }]
@@ -2257,6 +2631,30 @@ mod tests {
                     "reports":["contract-git-version.json"],
                     "tags":["ops"]
                 }]
+            }),
+        );
+        write_json(
+            &dir.path()
+                .join("configs/contracts/reports/checks/schema-index.json"),
+            &serde_json::json!({
+                "schema_version": 1,
+                "index_id": "checks-schema-index",
+                "schemas": [{
+                    "report_id":"check-suite-summary",
+                    "schema_path":"configs/contracts/reports/checks/check-suite-summary.schema.json"
+                }]
+            }),
+        );
+        write_json(
+            &dir.path()
+                .join("configs/contracts/reports/checks/check-suite-summary.schema.json"),
+            &serde_json::json!({
+                "required":["report_id","version","inputs"],
+                "properties":{
+                    "report_id":{"const":"check-suite-summary"},
+                    "version":{"const":1},
+                    "inputs":{"type":"object"}
+                }
             }),
         );
         write_json(
