@@ -21,6 +21,7 @@
 | `check` | `` |  |
 | `check-gates` | `` |  |
 | `check-list` | `` |  |
+| `checks` | `` |  |
 | `checks-all` | `` |  |
 | `ci` | `` |  |
 | `ci-dependency-lock-refresh` | `` |  |

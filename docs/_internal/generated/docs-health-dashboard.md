@@ -14,7 +14,7 @@
 - Unique external domains: `0`
 - Allowlist-covered external domains: `0/0`
 - Orphan pages: `83`
-- Pages missing `Last verified against`: `194`
+- Pages missing `Last verified against`: `195`
 
 ## Longest Pages
 
@@ -25,7 +25,7 @@
 - `docs/reference/contracts/plugins/spec.md`: `191` lines
 - `docs/reference/contracts/config-keys.md`: `167` lines
 - `docs/contract.md`: `162` lines
-- `docs/reference/make-targets.md`: `160` lines
+- `docs/reference/make-targets.md`: `161` lines
 - `docs/_internal/generated/make-targets.md`: `156` lines
 - `docs/_internal/generated/governance-audit/docs-inventory-triage-report.md`: `145` lines
 
@@ -56,6 +56,7 @@
 - `docs/_internal/generated/crate-doc-api-table.md`
 - `docs/_internal/generated/crate-doc-governance.md`
 - `docs/_internal/generated/crate-docs-migration.md`
+- `docs/_internal/generated/docs-health-dashboard.md`
 - `docs/_internal/generated/docs-inventory.md`
 - `docs/_internal/generated/governance-audit/docs-baseline-checklist.md`
 - `docs/_internal/generated/governance-audit/docs-front-matter.md`
@@ -63,7 +64,6 @@
 - `docs/_internal/generated/governance-audit/docs-top-delete-pages.md`
 - `docs/_internal/generated/governance-audit/docs-top-keep-pages.md`
 - `docs/_internal/generated/governance-audit/docs-top-merge-clusters.md`
-- `docs/_internal/generated/governance-audit/index.md`
 
 ## Orphan Pages
 
