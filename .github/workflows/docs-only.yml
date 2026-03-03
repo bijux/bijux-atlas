@@ -84,7 +84,8 @@ jobs:
           PY
           )"
           mkdir -p "${report_root}" "${logs_root}"
-          cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-preview --allow-subprocess --allow-write --format json > "${report_root}/mkdocs-build.json" 2> "${logs_root}/mkdocs-build.stderr.log"
+          python3 -m mkdocs build --strict > "${logs_root}/mkdocs-build.stdout.log" 2> "${logs_root}/mkdocs-build.stderr.log"
+          cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-preview --allow-subprocess --allow-write --format json > "${report_root}/mkdocs-build.json" 2>> "${logs_root}/mkdocs-build.stderr.log"
           test -f "${site_dir}/index.html"
           test -d "${site_dir}/assets"
           cp -R "${site_dir}" "artifacts/${RUN_ID}/site-preview"
