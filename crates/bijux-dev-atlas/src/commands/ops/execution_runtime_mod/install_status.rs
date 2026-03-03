@@ -840,6 +840,12 @@ fn evidence_root(repo_root: &std::path::Path) -> Result<std::path::PathBuf, Stri
     Ok(path)
 }
 
+fn sha256_file(path: &std::path::Path) -> Result<String, String> {
+    let bytes = std::fs::read(path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    Ok(sha256_hex(&String::from_utf8_lossy(&bytes)))
+}
+
 fn package_chart_for_evidence(
     process: &OpsProcess,
     repo_root: &std::path::Path,
@@ -997,6 +1003,129 @@ fn collect_simulation_summary_paths(repo_root: &std::path::Path, run_id: &RunId)
         .collect::<Vec<_>>()
 }
 
+fn collect_docs_site_summary(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
+    let site_dir = repo_root.join("artifacts/docs/site");
+    let mut file_count = 0usize;
+    let mut stack = if site_dir.exists() {
+        vec![site_dir.clone()]
+    } else {
+        Vec::new()
+    };
+    while let Some(path) = stack.pop() {
+        for entry in std::fs::read_dir(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?
+        {
+            let entry = entry.map_err(|err| format!("failed to read directory entry: {err}"))?;
+            let entry_path = entry.path();
+            if entry_path.is_dir() {
+                stack.push(entry_path);
+            } else {
+                file_count += 1;
+            }
+        }
+    }
+    let index_path = site_dir.join("index.html");
+    Ok(serde_json::json!({
+        "site_dir": site_dir.strip_prefix(repo_root).unwrap_or(&site_dir).display().to_string(),
+        "file_count": file_count,
+        "sha256": if index_path.exists() {
+            Some(sha256_file(&index_path)?)
+        } else {
+            None
+        }
+    }))
+}
+
+fn build_release_evidence_tarball(
+    repo_root: &std::path::Path,
+) -> Result<std::path::PathBuf, String> {
+    let evidence_root = evidence_root(repo_root)?;
+    let tarball_path = evidence_root.join("bundle.tar");
+    let list_path = evidence_root.join("bundle.list");
+    let mut files = std::fs::read_dir(&evidence_root)
+        .map_err(|err| format!("failed to read {}: {err}", evidence_root.display()))?
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| path.is_file())
+        .filter(|path| path.file_name().and_then(|v| v.to_str()) != Some("bundle.tar"))
+        .filter(|path| path.file_name().and_then(|v| v.to_str()) != Some("bundle.list"))
+        .map(|path| path.strip_prefix(repo_root).unwrap_or(&path).display().to_string())
+        .collect::<Vec<_>>();
+    let packages_dir = evidence_root.join("packages");
+    if packages_dir.exists() {
+        let mut package_paths = std::fs::read_dir(&packages_dir)
+            .map_err(|err| format!("failed to read {}: {err}", packages_dir.display()))?
+            .filter_map(Result::ok)
+            .map(|entry| entry.path())
+            .filter(|path| path.is_file())
+            .map(|path| path.strip_prefix(repo_root).unwrap_or(&path).display().to_string())
+            .collect::<Vec<_>>();
+        files.append(&mut package_paths);
+    }
+    files.sort();
+    std::fs::write(&list_path, files.join("\n"))
+        .map_err(|err| format!("failed to write {}: {err}", list_path.display()))?;
+    let python = r#"import io, pathlib, tarfile
+repo_root = pathlib.Path.cwd()
+tarball_path = pathlib.Path(__import__("sys").argv[1])
+list_path = pathlib.Path(__import__("sys").argv[2])
+names = [line.strip() for line in list_path.read_text().splitlines() if line.strip()]
+with tarfile.open(tarball_path, "w") as archive:
+    for name in names:
+        path = repo_root / name
+        data = path.read_bytes()
+        info = tarfile.TarInfo(name)
+        info.size = len(data)
+        info.mtime = 0
+        info.uid = 0
+        info.gid = 0
+        info.uname = ""
+        info.gname = ""
+        info.mode = 0o644
+        archive.addfile(info, io.BytesIO(data))
+"#;
+    let output = std::process::Command::new("python3")
+        .current_dir(repo_root)
+        .args([
+            "-c",
+            python,
+            &tarball_path.display().to_string(),
+            &list_path.display().to_string(),
+        ])
+        .output()
+        .map_err(|err| format!("failed to execute tar for release evidence bundle: {err}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "failed to build release evidence tarball: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        ));
+    }
+    Ok(tarball_path)
+}
+
+fn tarball_contains_entry(
+    tarball: &std::path::Path,
+    entry_name: &str,
+) -> Result<bool, String> {
+    let output = std::process::Command::new("tar")
+        .args(["-tf", &tarball.display().to_string()])
+        .output()
+        .map_err(|err| format!("failed to list {}: {err}", tarball.display()))?;
+    if !output.status.success() {
+        return Err(format!(
+            "failed to list tarball {}: {}",
+            tarball.display(),
+            String::from_utf8_lossy(&output.stderr).trim()
+        ));
+    }
+    let listing = String::from_utf8_lossy(&output.stdout);
+    let prefix = format!("{}/", entry_name.trim_end_matches('/'));
+    Ok(listing.lines().any(|line| {
+        let line = line.trim();
+        line == entry_name || line.starts_with(&prefix)
+    }))
+}
+
 fn git_head_sha(process: &OpsProcess, repo_root: &std::path::Path) -> Result<String, String> {
     let argv = vec!["rev-parse".to_string(), "HEAD".to_string()];
     let (stdout, _) = process
@@ -1027,6 +1156,7 @@ pub(crate) fn run_ops_evidence_collect(
     let governance_version = format!("main@{git_sha}");
     let evidence_root = evidence_root(&repo_root)?;
     let chart_package = package_chart_for_evidence(&process, &repo_root)?;
+    let policy_path = repo_root.join("release/evidence/policy.json");
     let identity_path = evidence_root.join("identity.json");
     let manifest_path = evidence_root.join("manifest.json");
     let identity = serde_json::json!({
@@ -1040,18 +1170,33 @@ pub(crate) fn run_ops_evidence_collect(
         serde_json::to_string_pretty(&identity).map_err(|err| err.to_string())?,
     )
     .map_err(|err| format!("failed to write {}: {err}", identity_path.display()))?;
+    let docker_bases = repo_root.join("docker/bases.lock");
+    let toolchain_inventory = repo_root.join("configs/rust/toolchain.json");
+    let runtime_env_allowlist = repo_root.join("configs/contracts/env.schema.json");
+    let docs_site_summary = collect_docs_site_summary(&repo_root)?;
     let manifest = serde_json::json!({
         "schema_version": 1,
         "generated_by": "bijux dev atlas ops evidence collect",
         "identity_path": identity_path.strip_prefix(&repo_root).unwrap_or(&identity_path).display().to_string(),
+        "policy_path": policy_path.strip_prefix(&repo_root).unwrap_or(&policy_path).display().to_string(),
         "chart_package": {
             "path": chart_package.strip_prefix(&repo_root).unwrap_or(&chart_package).display().to_string(),
-            "sha256": sha256_hex(&String::from_utf8_lossy(
-                &std::fs::read(&chart_package)
-                    .map_err(|err| format!("failed to read {}: {err}", chart_package.display()))?
-            ))
+            "sha256": sha256_file(&chart_package)?
         },
         "image_artifacts": collect_image_artifacts(&repo_root)?,
+        "docker_bases_lock": {
+            "path": docker_bases.strip_prefix(&repo_root).unwrap_or(&docker_bases).display().to_string(),
+            "sha256": sha256_file(&docker_bases)?
+        },
+        "toolchain_inventory": {
+            "path": toolchain_inventory.strip_prefix(&repo_root).unwrap_or(&toolchain_inventory).display().to_string(),
+            "sha256": sha256_file(&toolchain_inventory)?
+        },
+        "docs_site_summary": docs_site_summary,
+        "runtime_env_allowlist": {
+            "path": runtime_env_allowlist.strip_prefix(&repo_root).unwrap_or(&runtime_env_allowlist).display().to_string(),
+            "sha256": sha256_file(&runtime_env_allowlist)?
+        },
         "sboms": collect_sboms(&repo_root)?,
         "reports": collect_report_paths(&repo_root, &run_id)?,
         "simulation_summaries": collect_simulation_summary_paths(&repo_root, &run_id)
@@ -1061,13 +1206,25 @@ pub(crate) fn run_ops_evidence_collect(
         serde_json::to_string_pretty(&manifest).map_err(|err| err.to_string())?,
     )
     .map_err(|err| format!("failed to write {}: {err}", manifest_path.display()))?;
+    let tarball_path = build_release_evidence_tarball(&repo_root)?;
+    let mut manifest_with_tarball = manifest;
+    manifest_with_tarball["evidence_tarball"] = serde_json::json!({
+        "path": tarball_path.strip_prefix(&repo_root).unwrap_or(&tarball_path).display().to_string(),
+        "sha256": sha256_file(&tarball_path)?
+    });
+    std::fs::write(
+        &manifest_path,
+        serde_json::to_string_pretty(&manifest_with_tarball).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", manifest_path.display()))?;
     let payload = serde_json::json!({
         "schema_version": 1,
         "status": "ok",
         "text": format!("wrote release evidence {}", manifest_path.display()),
         "rows": [{
             "manifest_path": manifest_path.display().to_string(),
-            "identity_path": identity_path.display().to_string()
+            "identity_path": identity_path.display().to_string(),
+            "tarball_path": tarball_path.display().to_string()
         }],
         "summary": {"total": 1, "errors": 0, "warnings": 0}
     });
@@ -1076,8 +1233,9 @@ pub(crate) fn run_ops_evidence_collect(
 }
 
 pub(crate) fn run_ops_evidence_verify(
-    common: &OpsCommonArgs,
+    args: &crate::cli::OpsEvidenceVerifyArgs,
 ) -> Result<(String, i32), String> {
+    let common = &args.common;
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let evidence_root = evidence_root(&repo_root)?;
     let manifest_path = evidence_root.join("manifest.json");
@@ -1093,6 +1251,10 @@ pub(crate) fn run_ops_evidence_verify(
     )
     .map_err(|err| format!("failed to parse {}: {err}", identity_path.display()))?;
     let mut errors = Vec::new();
+    let tarball_path = args
+        .tarball
+        .clone()
+        .unwrap_or_else(|| evidence_root.join("bundle.tar"));
     if manifest.get("schema_version").and_then(|v| v.as_i64()) != Some(1) {
         errors.push("manifest schema_version must be 1".to_string());
     }
@@ -1129,6 +1291,66 @@ pub(crate) fn run_ops_evidence_verify(
     } else {
         errors.push("manifest chart_package.path must exist".to_string());
     }
+    let policy: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(repo_root.join("release/evidence/policy.json"))
+            .map_err(|err| format!("failed to read release/evidence/policy.json: {err}"))?,
+    )
+    .map_err(|err| format!("failed to parse release/evidence/policy.json: {err}"))?;
+    for required in policy
+        .get("required_paths")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+    {
+        if !repo_root.join(required).exists() {
+            errors.push(format!("required evidence path does not exist: {required}"));
+        }
+        if tarball_path.exists()
+            && !tarball_contains_entry(&tarball_path, required)?
+        {
+            errors.push(format!("evidence tarball missing required path: {required}"));
+        }
+    }
+    let prod_profiles = ["prod-minimal", "prod-ha", "prod-airgap"];
+    let prod_count = manifest
+        .get("image_artifacts")
+        .and_then(|v| v.as_array())
+        .map(|rows| {
+            rows.iter()
+                .filter(|row| {
+                    row.get("profile")
+                        .and_then(serde_json::Value::as_str)
+                        .is_some_and(|profile| prod_profiles.contains(&profile))
+                })
+                .count()
+        })
+        .unwrap_or(0);
+    if policy
+        .get("require_prod_image_artifacts")
+        .and_then(serde_json::Value::as_bool)
+        == Some(true)
+        && prod_count == 0
+    {
+        errors.push("manifest must include prod profile image artifacts".to_string());
+    }
+    if let Some(evidence_tarball) = manifest.get("evidence_tarball") {
+        let tar_rel = evidence_tarball
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let tar_abs = repo_root.join(tar_rel);
+        if !tar_abs.exists() {
+            errors.push(format!("evidence tarball does not exist: {tar_rel}"));
+        } else if let Some(expected) = evidence_tarball.get("sha256").and_then(serde_json::Value::as_str) {
+            let actual = sha256_file(&tar_abs)?;
+            if actual != expected {
+                errors.push("evidence tarball checksum does not match manifest".to_string());
+            }
+        }
+    } else {
+        errors.push("manifest must include evidence_tarball".to_string());
+    }
     let status = if errors.is_empty() { "ok" } else { "failed" };
     let payload = serde_json::json!({
         "schema_version": 1,
@@ -1137,6 +1359,7 @@ pub(crate) fn run_ops_evidence_verify(
         "rows": [{
             "manifest_path": manifest_path.display().to_string(),
             "identity_path": identity_path.display().to_string(),
+            "tarball_path": tarball_path.display().to_string(),
             "errors": errors
         }],
         "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}

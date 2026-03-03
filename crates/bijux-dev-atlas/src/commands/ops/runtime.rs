@@ -3,9 +3,9 @@
 use crate::cli::OpsInstallArgs;
 use crate::cli::{
     OpsCollectArgs, OpsCollectCommand, OpsCommonArgs, OpsDatasetsCommand, OpsE2eCommand,
-    OpsEvidenceCommand, OpsGenerateCommand, OpsHelmCommand, OpsHelmEnvArgs, OpsHelmInstallArgs,
-    OpsHelmReleaseArgs, OpsHelmRollbackArgs, OpsHelmUpgradeArgs, OpsInventoryCommand,
-    OpsK8sCommand, OpsKindCommand, OpsKindPreloadArgs,
+    OpsEvidenceCommand, OpsEvidenceVerifyArgs, OpsGenerateCommand, OpsHelmCommand,
+    OpsHelmEnvArgs, OpsHelmInstallArgs, OpsHelmReleaseArgs, OpsHelmRollbackArgs,
+    OpsHelmUpgradeArgs, OpsInventoryCommand, OpsK8sCommand, OpsKindCommand, OpsKindPreloadArgs,
     OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand, OpsObsDrillCommand, OpsPinsCommand,
     OpsProfilesCommand, OpsProfilesValidateArgs, OpsRenderArgs, OpsRenderTarget,
     OpsReportCommand, OpsResourcesCommand, OpsSchemaCommand, OpsStackCommand,
@@ -106,9 +106,8 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
             | OpsGenerateCommand::Runbook { common, .. } => Some(common),
         },
         OpsCommand::Evidence { command } => match command {
-            OpsEvidenceCommand::Collect(common) | OpsEvidenceCommand::Verify(common) => {
-                Some(common)
-            }
+            OpsEvidenceCommand::Collect(common) => Some(common),
+            OpsEvidenceCommand::Verify(OpsEvidenceVerifyArgs { common, .. }) => Some(common),
         },
         OpsCommand::Schema { .. }
         | OpsCommand::InventoryDomain { .. }

@@ -459,8 +459,8 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             crate::cli::OpsEvidenceCommand::Collect(common) => {
                 crate::ops_execution_runtime::run_ops_evidence_collect(&common)
             }
-            crate::cli::OpsEvidenceCommand::Verify(common) => {
-                crate::ops_execution_runtime::run_ops_evidence_verify(&common)
+            crate::cli::OpsEvidenceCommand::Verify(args) => {
+                crate::ops_execution_runtime::run_ops_evidence_verify(&args)
             }
         },
         OpsCommand::Install(args) => crate::ops_execution_runtime::run_ops_install(&args),

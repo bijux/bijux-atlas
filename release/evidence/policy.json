@@ -1,0 +1,13 @@
+{
+  "accepted_sbom_formats": [
+    "spdx-json",
+    "cyclonedx-json"
+  ],
+  "require_prod_image_artifacts": true,
+  "required_paths": [
+    "release/evidence/identity.json",
+    "release/evidence/manifest.json",
+    "release/evidence/packages"
+  ],
+  "schema_version": 1
+}

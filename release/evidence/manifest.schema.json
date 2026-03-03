@@ -8,11 +8,17 @@
     "schema_version",
     "generated_by",
     "identity_path",
+    "policy_path",
     "chart_package",
     "image_artifacts",
+    "docker_bases_lock",
+    "toolchain_inventory",
+    "docs_site_summary",
+    "runtime_env_allowlist",
     "sboms",
     "reports",
-    "simulation_summaries"
+    "simulation_summaries",
+    "evidence_tarball"
   ],
   "properties": {
     "schema_version": {
@@ -24,6 +30,10 @@
       "minLength": 1
     },
     "identity_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_path": {
       "type": "string",
       "minLength": 1
     },
@@ -75,6 +85,82 @@
         }
       }
     },
+    "docker_bases_lock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "toolchain_inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "docs_site_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "site_dir",
+        "file_count"
+      ],
+      "properties": {
+        "site_dir": {
+          "type": "string",
+          "minLength": 1
+        },
+        "file_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "runtime_env_allowlist": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
     "sboms": {
       "type": "array",
       "items": {
@@ -108,6 +194,24 @@
       "items": {
         "type": "string",
         "minLength": 1
+      }
+    },
+    "evidence_tarball": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
       }
     }
   }
