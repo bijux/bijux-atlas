@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "owner": "bijux-atlas-platform",
+  "policy": "Root markdown surface allowlist",
+  "files": [
+    "CHANGELOG.md",
+    "CONTRACT.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "SECURITY.md"
+  ],
+  "change_rule": "Any new root markdown file requires same-change allowlist and contract updates."
+}
