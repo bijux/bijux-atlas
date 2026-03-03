@@ -55,5 +55,5 @@
 
 ## See also
 
-- [Check Reports](/Users/bijan/bijux/bijux-atlas/docs/reference/reports/checks/index.md)
-- [Reports Reference](/Users/bijan/bijux/bijux-atlas/docs/reference/reports/index.md)
+- [Check Reports](../reports/checks/index.md)
+- [Reports Reference](../reports/index.md)

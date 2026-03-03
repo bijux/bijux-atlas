@@ -7,10 +7,10 @@
 
 ## Generated Status
 
-- [Registry status JSON](../../../artifacts/governance/registry-status.json)
-- [Registry status Markdown](../../../artifacts/governance/registry-status.md)
-- [Registry work remaining](../../../artifacts/governance/registry-work-remaining.json)
-- [Registry missing fields](../../../artifacts/governance/registry-missing-fields.json)
+- Registry status JSON: `artifacts/governance/registry-status.json`
+- Registry status Markdown: `artifacts/governance/registry-status.md`
+- Registry work remaining: `artifacts/governance/registry-work-remaining.json`
+- Registry missing fields: `artifacts/governance/registry-missing-fields.json`
 
 ## Related Guides
 

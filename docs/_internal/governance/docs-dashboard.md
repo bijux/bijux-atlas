@@ -20,16 +20,16 @@
 - [Docs Quality Dashboard](../generated/docs-quality-dashboard.json)
 - [Docs Dependency Graph](../generated/docs-dependency-graph.json)
 - [Docs Contract Coverage](../generated/docs-contract-coverage.json)
-- [Governance exception summary](../../../artifacts/governance/exceptions-summary.json)
-- [Governance exception table](../../../artifacts/governance/exceptions-table.md)
+- Governance exception summary: `artifacts/governance/exceptions-summary.json`
+- Governance exception table: `artifacts/governance/exceptions-table.md`
 - [Compatibility policy](compatibility-policy.md)
-- [Deprecations summary](../../../artifacts/governance/deprecations-summary.json)
-- [Compatibility warnings](../../../artifacts/governance/compat-warnings.json)
-- [Breaking changes](../../../artifacts/governance/breaking-changes.json)
-- [Governance doctor](../../../artifacts/governance/governance-doctor.json)
-- [Institutional delta](../../../artifacts/governance/institutional-delta.md)
+- Deprecations summary: `artifacts/governance/deprecations-summary.json`
+- Compatibility warnings: `artifacts/governance/compat-warnings.json`
+- Breaking changes: `artifacts/governance/breaking-changes.json`
+- Governance doctor: `artifacts/governance/governance-doctor.json`
+- Institutional delta: `artifacts/governance/institutional-delta.md`
 - [Registry status](registry-status-index.md)
-- [Registry status markdown](../../../artifacts/governance/registry-status.md)
+- Registry status markdown: `artifacts/governance/registry-status.md`
 - [Suite membership policy](suite-membership-policy.md)
 - [Crate docs budgets and violations](../generated/crate-docs-slice.json)
 - [Sitemap](../generated/sitemap.json)
