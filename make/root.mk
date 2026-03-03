@@ -2,9 +2,11 @@
 # Public targets: help and curated includes from child modules
 SHELL := /bin/sh
 .DEFAULT_GOAL := help
-JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
+JOBS ?= auto
+FAIL_FAST ?= 0
 ARTIFACT_ROOT ?= artifacts
 RUN_ID ?= local
+SUITE_FAIL_FAST_FLAG := $(if $(filter 1 true yes,$(FAIL_FAST)),--fail-fast,--no-fail-fast)
 
 include make/cargo.mk
 include make/configs.mk
@@ -21,7 +23,7 @@ include make/k8s.mk
 include make/verification.mk
 
 CURATED_TARGETS := \
-	artifacts-clean build checks checks-all clean contracts contracts-all contracts-changed contracts-ci contracts-configs contracts-crates contracts-docker contracts-docs contracts-fast contracts-help contracts-json contracts-make contracts-merge contracts-ops contracts-pr contracts-release contracts-repo contracts-root contracts-runtime \
+	artifacts-clean build checks checks-all checks-effect checks-group checks-pure checks-tag clean contracts contracts-all contracts-changed contracts-ci contracts-configs contracts-crates contracts-docker contracts-docs contracts-effect contracts-fast contracts-group contracts-help contracts-json contracts-make contracts-merge contracts-ops contracts-pr contracts-pure contracts-release contracts-repo contracts-root contracts-runtime contracts-tag \
 	docker docker-contracts docker-contracts-effect docker-gate doctor \
 	help \
 	k8s-render k8s-validate \
@@ -29,7 +31,7 @@ CURATED_TARGETS := \
 	lint-make make-fast make-target-list \
 	ops-contracts ops-contracts-effect ops-fast ops-nightly ops-pr \
 	root-surface-explain \
-	stack-down stack-up tests-all
+	stack-down stack-up suites-all suites-list tests-all
 
 help: ## Show curated make targets owned by Rust control-plane wrappers
 	@$(DEV_ATLAS) make surface --format text
@@ -139,12 +141,28 @@ checks: ## Run the fast non-test quality gate lane
 	@$(MAKE) -s configs-lint
 
 checks-all: ## Run the deterministic non-test quality gates
-	@mkdir -p $(ARTIFACT_ROOT)/checks-all/$(RUN_ID)
-	@printf '%s\n' "checks-all runs: checks docs-validate k8s-validate"
-	@printf '%s\n' "full-suite: checks-all" "checks" "docs-validate" "k8s-validate" > $(ARTIFACT_ROOT)/checks-all/$(RUN_ID)/manifest.txt
-	@$(MAKE) -s checks
-	@$(MAKE) -s docs-validate
-	@$(MAKE) -s k8s-validate
+	@$(DEV_ATLAS) suites run --suite checks --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+
+checks-group: ## Run one checks suite group (GROUP=<name>)
+	@[ -n "$${GROUP:-}" ] || { echo "usage: make checks-group GROUP=<name>" >&2; exit 2; }
+	@$(DEV_ATLAS) suites run --suite checks --group "$${GROUP}" --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+
+checks-tag: ## Run checks suite entries with a shared tag (TAG=<name>)
+	@[ -n "$${TAG:-}" ] || { echo "usage: make checks-tag TAG=<name>" >&2; exit 2; }
+	@$(DEV_ATLAS) suites run --suite checks --tag "$${TAG}" --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+
+checks-pure: ## Run only pure checks suite entries
+	@$(DEV_ATLAS) suites run --suite checks --mode pure --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+
+checks-effect: ## Run only effectful checks suite entries
+	@$(DEV_ATLAS) suites run --suite checks --mode effect --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+
+suites-list: ## List suite ids exposed through the control plane
+	@$(DEV_ATLAS) suites list --format text
+
+suites-all: ## Run checks and contracts suite aggregators sequentially
+	@$(MAKE) -s checks-all JOBS="$(JOBS)" FAIL_FAST="$(FAIL_FAST)"
+	@$(MAKE) -s contracts-all JOBS="$(JOBS)" FAIL_FAST="$(FAIL_FAST)"
 
 tests-all: ## Run the deterministic test suite without external network
 	@mkdir -p $(ARTIFACT_ROOT)/tests-all/$(RUN_ID)
@@ -152,4 +170,4 @@ tests-all: ## Run the deterministic test suite without external network
 	@printf '%s\n' "effects-boundary: no effectful operations" "test" > $(ARTIFACT_ROOT)/tests-all/$(RUN_ID)/manifest.txt
 	@$(MAKE) -s test
 
-.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean checks checks-all clean doctor kind-down kind-reset kind-status kind-up root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly tests-all
+.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean checks checks-all checks-effect checks-group checks-pure checks-tag clean doctor kind-down kind-reset kind-status kind-up root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly suites-all suites-list tests-all

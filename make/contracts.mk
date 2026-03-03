@@ -35,66 +35,21 @@ contracts-release: _contracts_guard ## Run full release contracts matrix
 	@CI=1 $(DEV_ATLAS) contracts all --lane release --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-all: _contracts_guard ## Run the full contract suite without static skips
-	@mkdir -p $(ARTIFACT_ROOT)/contracts-all/$(RUN_ID)
-	@printf '%s\n' "contracts-all runs: contracts-root contracts-repo-effect contracts-crates contracts-runtime contracts-control-plane-effect contracts-configs contracts-docs contracts-docker-effect contracts-make contracts-ops-effect"
-	@printf '%s\n' \
-		"full-suite: contracts-all" \
-		"contracts-root (static)" \
-		"contracts-repo (effect)" \
-		"contracts-crates (static)" \
-		"contracts-runtime (static)" \
-		"contracts-control-plane (effect)" \
-		"contracts-configs (static)" \
-		"contracts-docs (static)" \
-		"contracts-docker (effect)" \
-		"contracts-make (static)" \
-		"contracts-ops (effect)" \
-		> $(ARTIFACT_ROOT)/contracts-all/$(RUN_ID)/manifest.txt
-	@set -eu; \
-	summary_file="$(ARTIFACT_ROOT)/contracts-all/$(RUN_ID)/summary.txt"; \
-	: > "$$summary_file"; \
-	printf '%-15s %-8s %10s %10s %10s %10s %10s %10s\n' "group" "mode" "contracts" "tests" "pass" "fail" "skip" "error" >> "$$summary_file"; \
-	printf '%-15s %-8s %10s %10s %10s %10s %10s %10s\n' "---------------" "--------" "----------" "----------" "----------" "----------" "----------" "----------" >> "$$summary_file"; \
-	total_contracts=0; \
-	total_tests=0; \
-	total_pass=0; \
-	total_fail=0; \
-	total_skip=0; \
-	total_error=0; \
-	run_and_capture() { \
-		group="$$1"; \
-		mode="$$2"; \
-		shift 2; \
-		log_file="$(ARTIFACT_ROOT)/contracts-all/$(RUN_ID)/$${group}.log"; \
-		"$$@" > "$$log_file" 2>&1; \
-		cat "$$log_file"; \
-		stats="$$(awk '/^Summary:/ { c = $$2; t = $$4; p = $$6; f = $$8; s = $$10; e = $$12 } END { if (c != "") { print c, t, p, f, s, e } }' "$$log_file")"; \
-		if [ -z "$$stats" ]; then \
-			printf '%s\n' "missing summary line for $$group" >&2; \
-			exit 1; \
-		fi; \
-		set -- $$stats; \
-		printf '%-15s %-8s %10s %10s %10s %10s %10s %10s\n' "$$group" "$$mode" "$$1" "$$2" "$$3" "$$4" "$$5" "$$6" >> "$$summary_file"; \
-		total_contracts=$$((total_contracts + $$1)); \
-		total_tests=$$((total_tests + $$2)); \
-		total_pass=$$((total_pass + $$3)); \
-		total_fail=$$((total_fail + $$4)); \
-		total_skip=$$((total_skip + $$5)); \
-		total_error=$$((total_error + $$6)); \
-	}; \
-	run_and_capture "root" "static" $(MAKE) -s contracts-root; \
-	run_and_capture "repo" "effect" $(DEV_ATLAS) contracts repo $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT); \
-	run_and_capture "crates" "static" $(MAKE) -s contracts-crates; \
-	run_and_capture "runtime" "static" $(MAKE) -s contracts-runtime; \
-	run_and_capture "control-plane" "effect" $(DEV_ATLAS) contracts control-plane $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT); \
-	run_and_capture "configs" "static" $(MAKE) -s contracts-configs; \
-	run_and_capture "docs" "static" $(MAKE) -s contracts-docs; \
-	run_and_capture "docker" "effect" $(DEV_ATLAS) contracts docker $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT); \
-	run_and_capture "make" "static" $(MAKE) -s contracts-make; \
-	run_and_capture "ops" "effect" $(DEV_ATLAS) contracts ops $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT); \
-	printf '%-15s %-8s %10s %10s %10s %10s %10s %10s\n' "contracts-all" "mixed" "$$total_contracts" "$$total_tests" "$$total_pass" "$$total_fail" "$$total_skip" "$$total_error" >> "$$summary_file"; \
-	printf '\n%s\n' "contracts-all summary"; \
-	cat "$$summary_file"
+	@$(DEV_ATLAS) suites run --suite contracts --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+
+contracts-group: _contracts_guard ## Run one contracts suite group (GROUP=<name>)
+	@[ -n "$${GROUP:-}" ] || { echo "usage: make contracts-group GROUP=<name>" >&2; exit 2; }
+	@$(DEV_ATLAS) suites run --suite contracts --group "$${GROUP}" --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+
+contracts-tag: _contracts_guard ## Run contracts suite entries with a shared tag (TAG=<name>)
+	@[ -n "$${TAG:-}" ] || { echo "usage: make contracts-tag TAG=<name>" >&2; exit 2; }
+	@$(DEV_ATLAS) suites run --suite contracts --tag "$${TAG}" --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+
+contracts-pure: _contracts_guard ## Run only pure contracts suite entries
+	@$(DEV_ATLAS) suites run --suite contracts --mode pure --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+
+contracts-effect: _contracts_guard ## Run only effectful contracts suite entries
+	@$(DEV_ATLAS) suites run --suite contracts --mode effect --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
 
 contracts-fast: _contracts_guard ## Run static-only contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts all --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
@@ -160,4 +115,4 @@ contracts-ops: _contracts_guard ## Run ops contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts ops --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
 	@$(DEV_ATLAS) contracts ops --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
-.PHONY: _contracts_guard contracts-help contracts contracts-pr contracts-merge contracts-release contracts-all contracts-fast contracts-changed contracts-json contracts-ci contracts-root contracts-repo contracts-crates contracts-runtime contracts-configs contracts-configs-required contracts-docs contracts-docs-required contracts-docker contracts-make contracts-make-required contracts-ops
+.PHONY: _contracts_guard contracts-help contracts contracts-pr contracts-merge contracts-release contracts-all contracts-changed contracts-ci contracts-configs contracts-crates contracts-docker contracts-docs contracts-effect contracts-fast contracts-group contracts-json contracts-make contracts-make-required contracts-merge contracts-ops contracts-pr contracts-pure contracts-release contracts-repo contracts-root contracts-runtime contracts-tag

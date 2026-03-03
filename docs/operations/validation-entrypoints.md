@@ -7,7 +7,7 @@
 - Stability: `stable`
 - Last verified against: `main@a4f9ebad44bca62517d2fcb77f8f2a38e4c72f54`
 - Last changed: `2026-03-03`
-- Reason to exist: explain the three canonical validation aggregators and when to use them.
+- Reason to exist: explain the canonical suite and Make entrypoints for deterministic validation.
 
 ## Taxonomy
 
@@ -17,25 +17,51 @@
 
 `tests` runs deterministic executable test suites that do not require external network access.
 
-## Exact Membership
+## Control Plane Entrypoints
 
-`contracts-all` runs: `contracts-root`, `contracts-repo`, `contracts-crates`,
-`contracts-runtime`, `contracts-configs`, `contracts-docs`, `contracts-docker`,
-`contracts-make`, `contracts-ops`.
+- `bijux dev atlas suites list`
+- `bijux dev atlas suites describe --suite checks`
+- `bijux dev atlas suites run --suite checks --jobs auto`
+- `bijux dev atlas suites run --suite contracts --jobs auto`
+- `bijux dev atlas check run CHECK-RUSTFMT-001`
+- `bijux dev atlas contract run OPS-DATASETS-001`
 
-`checks-all` runs: `fmt`, `lint`, `lint-policy-enforce`, `configs-lint`, `docs-validate`,
-`k8s-validate`.
+`--jobs auto` is the default on the control-plane surface. Use `--jobs <n>` only when a lane needs
+an explicit cap. Use `--fail-fast` when you want the first blocking failure to stop the suite.
 
-`tests-all` runs: `test`.
+## Make Entrypoints
+
+- `make suites-list` prints the governed suite ids.
+- `make checks-all` runs the full checks suite.
+- `make contracts-all` runs the full contracts suite.
+- `make suites-all` runs checks then contracts.
+- `make checks-group GROUP=rust` runs one checks group.
+- `make contracts-group GROUP=datasets` runs one contracts group.
+- `make checks-tag TAG=rust` runs one checks tag slice.
+- `make contracts-tag TAG=datasets` runs one contracts tag slice.
+- `make checks-pure` runs only pure checks.
+- `make checks-effect` runs only effectful checks.
+- `make contracts-pure` runs only pure contracts.
+- `make contracts-effect` runs only effectful contracts.
+
+All suite Make entrypoints accept:
+
+- `JOBS=<n|auto>` to override the suite worker count.
+- `FAIL_FAST=1` to stop after the first blocking failure.
 
 ## Effects Boundary
 
-These entrypoints intentionally exclude effectful operations. They do not invoke network, Docker,
-or cluster mutating commands unless a future explicit opt-in surface is added and documented.
+These entrypoints keep effectful work explicit:
+
+- `checks-pure` and `contracts-pure` stay within pure registry entries.
+- `checks-effect` and `contracts-effect` intentionally include effectful entries.
+- `checks-all` and `contracts-all` respect the registry mode metadata and write per-entry artifacts
+  under `artifacts/suites/<suite>/<run_id>/`.
 
 ## When To Use Each
 
-- Use `contracts-all` when changing contracts, schemas, docs governance, or make surfaces.
-- Use `checks-all` when changing implementation or docs and you need the deterministic quality
+- Use `make checks-all` before pushing implementation, docs, or config changes that affect quality
   gates.
-- Use `tests-all` when changing executable code and you need the deterministic test suite.
+- Use `make contracts-all` when touching contracts, governance, schemas, or release surfaces.
+- Use `make suites-all` when you want the full deterministic non-test validation lane locally.
+- Use `make tests-all` when you need executable test coverage in addition to checks and contracts.
