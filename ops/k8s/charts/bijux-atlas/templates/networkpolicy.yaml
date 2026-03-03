@@ -1,4 +1,24 @@
 {{- if .Values.networkPolicy.enabled }}
+{{- $egressMode := "internet-only" }}
+{{- if and .Values.networkPolicy.egress (hasKey .Values.networkPolicy.egress "mode") }}
+{{- $egressMode = .Values.networkPolicy.egress.mode }}
+{{- end }}
+{{- $allowDns := .Values.networkPolicy.allowDns }}
+{{- if and .Values.networkPolicy.egress (hasKey .Values.networkPolicy.egress "allowDns") }}
+{{- $allowDns = .Values.networkPolicy.egress.allowDns }}
+{{- end }}
+{{- $allowCidrs := .Values.networkPolicy.allowedEgressCIDRs }}
+{{- if and .Values.networkPolicy.egress (hasKey .Values.networkPolicy.egress "allowCidrs") }}
+{{- $allowCidrs = .Values.networkPolicy.egress.allowCidrs }}
+{{- end }}
+{{- $allowNamespaces := list }}
+{{- if and .Values.networkPolicy.egress (hasKey .Values.networkPolicy.egress "allowNamespaces") }}
+{{- $allowNamespaces = .Values.networkPolicy.egress.allowNamespaces }}
+{{- end }}
+{{- $enableEgress := ne $egressMode "disabled" }}
+{{- $hasInternetCidrs := and (eq $egressMode "internet-only") (gt (len $allowCidrs) 0) }}
+{{- $hasClusterRules := and (eq $egressMode "cluster-aware") (gt (len $allowNamespaces) 0) }}
+{{- $hasAutoRules := or $allowDns (or $hasInternetCidrs $hasClusterRules) }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -12,26 +32,38 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   policyTypes:
     - Ingress
+    {{- if $enableEgress }}
     - Egress
+    {{- end }}
   ingress:
     - from:
         - podSelector: {}
       ports:
         - protocol: TCP
           port: {{ .Values.service.port }}
+  {{- if $enableEgress }}
+  {{- if not $hasAutoRules }}
+  egress: []
+  {{- else }}
   egress:
-    {{- if .Values.networkPolicy.allowDns }}
+    {{- if $allowDns }}
+    # Allow kube-dns lookups so name resolution remains available for permitted egress paths.
     - to:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
       ports:
         - protocol: UDP
           port: 53
         - protocol: TCP
           port: 53
     {{- end }}
-    {{- range .Values.networkPolicy.allowedEgressCIDRs }}
+    {{- if eq $egressMode "internet-only" }}
+    # internet-only: permit outbound HTTP(S) only to explicitly allowed CIDRs.
+    {{- range $allowCidrs }}
     - to:
         - ipBlock:
             cidr: {{ . | quote }}
@@ -41,4 +73,31 @@ spec:
         - protocol: TCP
           port: 80
     {{- end }}
+    {{- else if eq $egressMode "cluster-aware" }}
+    # cluster-aware: permit dependency traffic by namespace selection, never by hardcoded service CIDRs.
+    {{- if gt (len $allowNamespaces) 0 }}
+    - to:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values:
+                  {{- range $allowNamespaces }}
+                  - {{ . | quote }}
+                  {{- end }}
+      ports:
+        - protocol: TCP
+          port: 6379
+        - protocol: TCP
+          port: 9000
+        - protocol: TCP
+          port: 80
+        - protocol: TCP
+          port: 443
+    {{- end }}
+    {{- else if eq $egressMode "custom" }}
+    # custom: no automatic egress rules are emitted; operators must supply custom policy overlays.
+    {{- end }}
+  {{- end }}
+  {{- end }}
 {{- end }}
