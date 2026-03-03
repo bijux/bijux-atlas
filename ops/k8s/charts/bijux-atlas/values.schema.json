@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "bijux-atlas chart values",
+  "description": "Strict allowlist for supported Helm values. Unknown top-level keys are rejected so chart profiles fail fast when they drift from the published contract.",
   "type": "object",
   "additionalProperties": false,
   "$defs": {
@@ -111,7 +112,11 @@
                   "type": "string",
                   "maxLength": 0
                 }
-              }
+              },
+              "required": [
+                "digest",
+                "tag"
+              ]
             }
           }
         },
@@ -127,12 +132,13 @@
                 "tag": {
                   "type": "string",
                   "minLength": 1,
-                  "pattern": "^[A-Za-z0-9_][A-Za-z0-9._-]{0,127}$",
-                  "not": {
-                    "const": "latest"
-                  }
+                  "pattern": "^(?!latest$)[A-Za-z0-9_][A-Za-z0-9._-]{0,127}$"
                 }
-              }
+              },
+              "required": [
+                "digest",
+                "tag"
+              ]
             }
           }
         }
@@ -328,7 +334,7 @@
       "properties": {
         "digest": {
           "type": "string",
-          "pattern": "^(|sha256:[a-f0-9]{64})$"
+          "pattern": "^$|^sha256:[a-f0-9]{64}$"
         },
         "pullPolicy": {
           "type": "string",
@@ -347,10 +353,7 @@
         },
         "tag": {
           "type": "string",
-          "pattern": "^$|^[A-Za-z0-9_][A-Za-z0-9._-]{0,127}$",
-          "not": {
-            "const": "latest"
-          }
+          "pattern": "^$|^(?!latest$)[A-Za-z0-9_][A-Za-z0-9._-]{0,127}$"
         }
       },
       "required": [
