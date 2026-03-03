@@ -13,7 +13,8 @@ const DOCS_ALLOWED_ROOT_DIRS: [&str; 10] = [
 
 const DOCS_ALLOWED_ROOT_DIRS_TAIL: [&str; 0] = [];
 
-const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 8] = [
+const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 9] = [
+    "cli-command-list.md",
     "contract.md",
     "glossary.md",
     "institutional-reader.md",
