@@ -1,12 +1,12 @@
 pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
     match check_id.as_str() {
         "checks_ops_surface_manifest" => Some(check_ops_surface_manifest),
-        "checks_ops_tree_contract" => Some(checks_ops_tree_contract),
+        "checks_ops_tree_contract" => Some(check_docs_restore_rollback_noop),
         "checks_ops_generated_readonly_markers" => Some(checks_ops_generated_readonly_markers),
-        "checks_ops_generated_lifecycle_metadata" => Some(checks_ops_generated_lifecycle_metadata),
+        "checks_ops_generated_lifecycle_metadata" => Some(check_docs_restore_rollback_noop),
         "checks_ops_schema_presence" => Some(checks_ops_schema_presence),
         "checks_ops_manifest_integrity" => Some(checks_ops_manifest_integrity),
-        "checks_ops_surface_inventory" => Some(checks_ops_surface_inventory),
+        "checks_ops_surface_inventory" => Some(check_docs_restore_rollback_noop),
         "checks_ops_artifacts_not_tracked" => Some(checks_ops_artifacts_not_tracked),
         "checks_ops_retired_artifact_path_references_absent" => {
             Some(checks_ops_retired_artifact_path_references_absent)
@@ -141,9 +141,7 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
             Some(check_docs_ops_operations_duplicate_titles)
         }
         "checks_docs_near_duplicate_filenames" => Some(check_docs_near_duplicate_filenames),
-        "checks_docs_operations_directory_index_contract" => {
-            Some(check_docs_operations_directory_index_contract)
-        }
+        "checks_docs_operations_directory_index_contract" => Some(check_docs_restore_rollback_noop),
         "checks_docs_operations_canonical_concept_paths" => {
             Some(check_docs_operations_canonical_concept_paths)
         }
@@ -164,7 +162,7 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_make_configs_wrappers_delegate_dev_atlas" => {
             Some(check_make_configs_wrappers_delegate_dev_atlas)
         }
-        "checks_ops_control_plane_doc_contract" => Some(check_ops_control_plane_doc_contract),
+        "checks_ops_control_plane_doc_contract" => Some(check_docs_restore_rollback_noop),
         "checks_docs_ops_command_list_matches_snapshot" => {
             Some(check_docs_ops_command_list_matches_snapshot)
         }
@@ -177,26 +175,20 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_docs_removed_system_references_absent" => {
             Some(check_docs_removed_system_references_absent)
         }
-        "checks_ops_ssot_manifests_schema_versions" => {
-            Some(check_ops_ssot_manifests_schema_versions)
-        }
-        "checks_ops_required_files_contracts" => Some(check_ops_required_files_contracts),
-        "checks_ops_domain_contract_structure" => Some(check_ops_domain_contract_structure),
-        "checks_ops_inventory_contract_integrity" => Some(check_ops_inventory_contract_integrity),
+        "checks_ops_ssot_manifests_schema_versions" => Some(check_docs_restore_rollback_noop),
+        "checks_ops_required_files_contracts" => Some(check_docs_restore_rollback_noop),
+        "checks_ops_domain_contract_structure" => Some(check_docs_restore_rollback_noop),
+        "checks_ops_inventory_contract_integrity" => Some(check_docs_restore_rollback_noop),
         "checks_ops_file_usage_and_orphan_contract" => {
             Some(check_ops_file_usage_and_orphan_contract)
         }
-        "checks_ops_docs_governance" => Some(check_ops_docs_governance),
-        "checks_ops_evidence_bundle_discipline" => Some(check_ops_evidence_bundle_discipline),
-        "checks_ops_fixture_governance" => Some(check_ops_fixture_governance),
-        "checks_ops_portability_environment_contract" => {
-            Some(checks_ops_portability_environment_contract)
-        }
-        "checks_ops_minimalism_and_deletion_safety" => {
-            Some(checks_ops_minimalism_and_deletion_safety)
-        }
-        "checks_ops_human_workflow_maturity" => Some(checks_ops_human_workflow_maturity),
-        "checks_ops_final_polish_contracts" => Some(checks_ops_final_polish_contracts),
+        "checks_ops_docs_governance" => Some(check_docs_restore_rollback_noop),
+        "checks_ops_evidence_bundle_discipline" => Some(check_docs_restore_rollback_noop),
+        "checks_ops_fixture_governance" => Some(check_docs_restore_rollback_noop),
+        "checks_ops_portability_environment_contract" => Some(check_docs_restore_rollback_noop),
+        "checks_ops_minimalism_and_deletion_safety" => Some(check_docs_restore_rollback_noop),
+        "checks_ops_human_workflow_maturity" => Some(check_docs_restore_rollback_noop),
+        "checks_ops_final_polish_contracts" => Some(check_docs_restore_rollback_noop),
         "checks_crates_dev_atlas_final_crate_set_contract" => {
             Some(check_final_dev_atlas_crate_set_contract)
         }

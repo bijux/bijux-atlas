@@ -216,36 +216,15 @@ pub(super) fn check_makefiles_no_multiline_recipes(
             continue;
         };
         let lines = text.lines().collect::<Vec<_>>();
-        let mut in_recipe = false;
-        let mut previous_was_recipe_line = false;
-        let mut previous_line_ended_with_backslash = false;
         for idx in 0..lines.len() {
             let line = lines[idx];
-            let trimmed = line.trim();
             if !line.starts_with('\t') {
-                // Only treat tab-indented blocks immediately under make targets as recipes.
-                let is_target_line = !trimmed.is_empty()
-                    && !trimmed.starts_with('#')
-                    && !trimmed.starts_with('.')
-                    && !trimmed.contains(":=")
-                    && !trimmed.contains("?=")
-                    && !trimmed.contains("+=")
-                    && trimmed.contains(':')
-                    && !trimmed.starts_with("include ");
-                in_recipe = is_target_line;
-                previous_was_recipe_line = false;
-                previous_line_ended_with_backslash = false;
-                continue;
-            }
-            if !in_recipe {
-                previous_was_recipe_line = false;
-                previous_line_ended_with_backslash = false;
                 continue;
             }
             if line.trim_start().starts_with('#') {
                 continue;
             }
-            if previous_was_recipe_line && !previous_line_ended_with_backslash {
+            if idx + 1 < lines.len() && lines[idx + 1].starts_with('\t') {
                 violations.push(violation(
                     "MAKEFILES_MULTILINE_RECIPE_FOUND",
                     format!(
@@ -258,8 +237,6 @@ pub(super) fn check_makefiles_no_multiline_recipes(
                 ));
                 break;
             }
-            previous_was_recipe_line = true;
-            previous_line_ended_with_backslash = trimmed.ends_with('\\');
         }
     }
     Ok(violations)

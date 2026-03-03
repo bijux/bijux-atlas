@@ -171,11 +171,7 @@ pub(super) fn check_docs_index_reachability_ledger(
     let mut index_paths = Vec::new();
     for path in docs_markdown_paths(ctx) {
         let rel = path.strip_prefix(ctx.repo_root).unwrap_or(&path).to_path_buf();
-        if rel
-            .file_name()
-            .and_then(|n| n.to_str())
-            .is_some_and(|name| name.eq_ignore_ascii_case("index.md"))
-        {
+        if rel.file_name().and_then(|n| n.to_str()) == Some("INDEX.md") {
             index_paths.push(path);
         }
     }
@@ -214,9 +210,6 @@ pub(super) fn check_docs_index_reachability_ledger(
             .unwrap_or(&path)
             .display()
             .to_string();
-        if rel.starts_with("docs/_drafts/") {
-            continue;
-        }
         let text = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
         let title = markdown_h1_title(&text).unwrap_or_else(|| "(untitled)".to_string());
         let is_index = rel.ends_with("/INDEX.md") || rel == "docs/INDEX.md" || rel == "docs/index.md";
@@ -365,15 +358,13 @@ pub(super) fn check_docs_operations_directory_index_contract(
     let mut violations = Vec::new();
     for dir in markdown_dirs {
         let rel_dir = dir.strip_prefix(ctx.repo_root).unwrap_or(&dir);
-        let mut index_variants = BTreeSet::new();
-        for entry in fs::read_dir(&dir).map_err(|err| CheckError::Failed(err.to_string()))? {
-            let entry = entry.map_err(|err| CheckError::Failed(err.to_string()))?;
-            let name = entry.file_name().to_string_lossy().to_string();
-            if name.eq_ignore_ascii_case("index.md") {
-                index_variants.insert(name);
+        let mut index_candidates = 0usize;
+        for name in ["INDEX.md", "index.md"] {
+            if dir.join(name).exists() {
+                index_candidates += 1;
             }
         }
-        if index_variants.is_empty() {
+        if index_candidates == 0 {
             violations.push(violation(
                 "DOCS_OPERATIONS_INDEX_MISSING",
                 format!(
@@ -383,7 +374,7 @@ pub(super) fn check_docs_operations_directory_index_contract(
                 "add a single INDEX.md entrypoint for each docs/operations directory",
                 Some(rel_dir),
             ));
-        } else if index_variants.len() > 1 {
+        } else if index_candidates > 1 {
             violations.push(violation(
                 "DOCS_OPERATIONS_PARALLEL_INDEX_FORBIDDEN",
                 format!(
@@ -436,18 +427,13 @@ pub(super) fn check_docs_operations_verify_command_quality(
 pub(super) fn check_docs_readme_index_contract_presence(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let required = ["docs/reference/contracts/index.md", "ops/CONTRACT.md", "ops/INDEX.md"];
+    let required = [
+        "docs/INDEX.md",
+        "docs/reference/contracts/index.md",
+        "ops/CONTRACT.md",
+        "ops/INDEX.md",
+    ];
     let mut violations = Vec::new();
-    let docs_index_upper = Path::new("docs/INDEX.md");
-    let docs_index_lower = Path::new("docs/index.md");
-    if !ctx.repo_root.join(docs_index_upper).exists() && !ctx.repo_root.join(docs_index_lower).exists() {
-        violations.push(violation(
-            "DOCS_CONTRACT_PRESENCE_MISSING",
-            "required contract/index document missing `docs/index.md`".to_string(),
-            "restore required docs root index document",
-            Some(docs_index_lower),
-        ));
-    }
     for rel in required {
         let p = Path::new(rel);
         if !ctx.repo_root.join(p).exists() {
@@ -481,14 +467,7 @@ pub(super) fn check_docs_file_naming_conventions(
             ));
             continue;
         }
-        let explicit_uppercase_allowlist = [
-            "EXAMPLE_INCIDENT_WALKTHROUGH.md",
-            "EXAMPLE_RELEASE_WALKTHROUGH.md",
-        ];
-        if name != "README.md"
-            && name != "INDEX.md"
-            && !explicit_uppercase_allowlist.contains(&name)
-            && name.chars().any(|c| c.is_ascii_uppercase())
+        if name != "README.md" && name != "INDEX.md" && name.chars().any(|c| c.is_ascii_uppercase())
         {
             violations.push(violation(
                 "DOCS_FILE_NAME_CASE_FORBIDDEN",

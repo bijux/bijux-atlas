@@ -146,7 +146,6 @@ nav:
       - Deprecation: api/deprecation.md
       - Caching: api/caching.md
   - Operations: operations/index.md
-  - Redirect Expiry Workflow: operations/redirect-expiry-workflow.md
   - Control-plane: control-plane/index.md
   - Development:
       - Development Overview: development/index.md

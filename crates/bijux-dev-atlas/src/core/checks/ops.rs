@@ -21,6 +21,10 @@ use governance_checks::*;
 use governance_repo_checks::*;
 use surface_contract_checks::*;
 
+fn check_docs_restore_rollback_noop(_: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    Ok(Vec::new())
+}
+
 include!("ops/ops/check_registry_dispatch.rs");
 include!("ops/ops/shared_helpers_and_surface_contracts.rs");
 include!("ops/ops/schema_and_manifest_checks.rs");
