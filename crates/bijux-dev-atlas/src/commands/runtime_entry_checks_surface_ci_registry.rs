@@ -301,9 +301,16 @@ pub(super) fn ci_exception_is_expired(raw: &str) -> Result<bool, String> {
     Ok(raw < today.as_str())
 }
 
+pub(super) struct CiRegistryPolicyDrift {
+    pub unplanned: Vec<CiPolicyEntry>,
+    pub uniqueness_errors: Vec<String>,
+    pub docs_errors: Vec<String>,
+    pub exception_errors: Vec<String>,
+}
+
 pub(super) fn ci_registry_unplanned_entries(
     repo_root: &Path,
-) -> Result<(Vec<CiPolicyEntry>, Vec<String>, Vec<String>, Vec<String>), String> {
+) -> Result<CiRegistryPolicyDrift, String> {
     let registry = load_ci_policy_registry(repo_root)?;
     let exceptions = load_ci_policy_exceptions(repo_root)?;
     let mut unplanned = Vec::new();
@@ -373,7 +380,12 @@ pub(super) fn ci_registry_unplanned_entries(
             ));
         }
     }
-    Ok((unplanned, uniqueness_errors, docs_errors, exception_errors))
+    Ok(CiRegistryPolicyDrift {
+        unplanned,
+        uniqueness_errors,
+        docs_errors,
+        exception_errors,
+    })
 }
 
 #[cfg(test)]
@@ -392,18 +404,27 @@ mod tests {
     #[test]
     fn ci_policy_registry_entries_are_all_planned_or_atlas() {
         let root = repo_root();
-        let (unplanned, uniqueness_errors, docs_errors, exception_errors) =
-            ci_registry_unplanned_entries(&root)
-                .unwrap_or_else(|err| panic!("ci registry validation: {err}"));
-        assert!(unplanned.is_empty(), "unexpected unplanned entries: {unplanned:?}");
+        let policy_drift = ci_registry_unplanned_entries(&root)
+            .unwrap_or_else(|err| panic!("ci registry validation: {err}"));
         assert!(
-            uniqueness_errors.is_empty(),
-            "unexpected uniqueness errors: {uniqueness_errors:?}"
+            policy_drift.unplanned.is_empty(),
+            "unexpected unplanned entries: {:?}",
+            policy_drift.unplanned
         );
-        assert!(docs_errors.is_empty(), "unexpected docs errors: {docs_errors:?}");
         assert!(
-            exception_errors.is_empty(),
-            "unexpected exception errors: {exception_errors:?}"
+            policy_drift.uniqueness_errors.is_empty(),
+            "unexpected uniqueness errors: {:?}",
+            policy_drift.uniqueness_errors
+        );
+        assert!(
+            policy_drift.docs_errors.is_empty(),
+            "unexpected docs errors: {:?}",
+            policy_drift.docs_errors
+        );
+        assert!(
+            policy_drift.exception_errors.is_empty(),
+            "unexpected exception errors: {:?}",
+            policy_drift.exception_errors
         );
     }
 

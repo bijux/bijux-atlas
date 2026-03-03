@@ -7,6 +7,14 @@ use ci_registry::{
     workflow_step_rows,
 };
 
+struct CiVerifyRunOptions {
+    format: FormatArg,
+    out: Option<PathBuf>,
+    allow_subprocess: bool,
+    allow_git: bool,
+    allow_write: bool,
+    allow_network: bool,
+}
 
 fn render_ci_explain(
     repo_root: &Path,
@@ -76,8 +84,7 @@ fn render_ci_report(
 ) -> Result<(String, i32), String> {
     let policy_registry = load_ci_policy_registry(repo_root)?;
     let lane_surface = load_ci_lane_surface(repo_root)?;
-    let (unplanned, uniqueness_errors, docs_errors, exception_errors) =
-        ci_registry_unplanned_entries(repo_root)?;
+    let policy_drift = ci_registry_unplanned_entries(repo_root)?;
     let payload = match kind {
         "lane-parity" => {
             let mut lane_rows = Vec::<serde_json::Value>::new();
@@ -106,15 +113,15 @@ fn render_ci_report(
                 "kind": "ci_policy_diff",
                 "summary": {
                     "entries": policy_registry.entries.len(),
-                    "unplanned": unplanned.len(),
-                    "uniqueness_errors": uniqueness_errors.len(),
-                    "docs_errors": docs_errors.len(),
-                    "exception_errors": exception_errors.len()
+                    "unplanned": policy_drift.unplanned.len(),
+                    "uniqueness_errors": policy_drift.uniqueness_errors.len(),
+                    "docs_errors": policy_drift.docs_errors.len(),
+                    "exception_errors": policy_drift.exception_errors.len()
                 },
-                "unplanned": unplanned,
-                "uniqueness_errors": uniqueness_errors,
-                "docs_errors": docs_errors,
-                "exception_errors": exception_errors
+                "unplanned": policy_drift.unplanned,
+                "uniqueness_errors": policy_drift.uniqueness_errors,
+                "docs_errors": policy_drift.docs_errors,
+                "exception_errors": policy_drift.exception_errors
             })
         }
         "atlas-authority" => {
@@ -181,13 +188,16 @@ fn github_ref_from_process_env() -> String {
 fn run_ci_verify_gate(
     repo_root: &Path,
     gate: &str,
-    format: FormatArg,
-    out: Option<PathBuf>,
-    allow_subprocess: bool,
-    allow_git: bool,
-    allow_write: bool,
-    allow_network: bool,
+    options: CiVerifyRunOptions,
 ) -> Result<(String, i32), String> {
+    let CiVerifyRunOptions {
+        format,
+        out,
+        allow_subprocess,
+        allow_git,
+        allow_write,
+        allow_network,
+    } = options;
     let payload = match gate {
         "workflow-policy" => {
             let workflow = repo_root.join(".github/workflows/ci-pr.yml");
@@ -207,16 +217,16 @@ fn run_ci_verify_gate(
             if !text.contains("actions/checkout@") {
                 errors.push("workflow-policy job must keep checkout".to_string());
             }
-            let (unplanned, uniqueness_errors, docs_errors, exception_errors) =
-                ci_registry_unplanned_entries(repo_root)?;
+            let policy_drift = ci_registry_unplanned_entries(repo_root)?;
             errors.extend(
-                unplanned
+                policy_drift
+                    .unplanned
                     .into_iter()
                     .map(|entry| format!("unplanned ci policy entry `{}`", entry.policy_id)),
             );
-            errors.extend(uniqueness_errors);
-            errors.extend(docs_errors);
-            errors.extend(exception_errors);
+            errors.extend(policy_drift.uniqueness_errors);
+            errors.extend(policy_drift.docs_errors);
+            errors.extend(policy_drift.exception_errors);
             let lint_rows = workflow_step_rows(repo_root)?;
             errors.extend(lint_rows.into_iter().filter(|row| !row.allowed).map(|row| {
                 format!(
@@ -620,16 +630,14 @@ pub(super) fn run_workflows_command(quiet: bool, command: WorkflowsCommand) -> i
             allow_write,
             allow_network,
         } => match resolve_repo_root(repo_root).and_then(|root| {
-            run_ci_verify_gate(
-                &root,
-                &gate,
+            run_ci_verify_gate(&root, &gate, CiVerifyRunOptions {
                 format,
                 out,
                 allow_subprocess,
                 allow_git,
                 allow_write,
                 allow_network,
-            )
+            })
         }) {
             Ok((rendered, code)) => {
                 if !quiet && !rendered.is_empty() {

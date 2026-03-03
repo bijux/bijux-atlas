@@ -669,7 +669,7 @@ fn scan_report_artifacts(
             report_id: report_id.to_string(),
             version,
             path: relative_or_absolute(repo_root, &path),
-            size_bytes: text.as_bytes().len() as u64,
+            size_bytes: text.len() as u64,
             digest_sha256: sha256_hex(&text),
             has_summary: value.get("summary").is_some(),
             has_evidence: value.get("evidence").is_some(),
