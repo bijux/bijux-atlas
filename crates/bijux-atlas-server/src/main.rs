@@ -9,8 +9,8 @@ use bijux_atlas_server::{
 };
 use clap::Parser;
 use opentelemetry::trace::TracerProvider as _;
-use std::sync::atomic::AtomicU64;
 use std::path::PathBuf;
+use std::sync::atomic::AtomicU64;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 use std::time::Duration;
@@ -71,7 +71,22 @@ struct WarmupLeaseAttempt {
     expired_total: u64,
 }
 
-fn warmup_lock_retry_delay_ms(pod_id: &str, dataset_key: &str, attempt: usize, base_ms: u64) -> u64 {
+struct WarmupLeaseRequest<'a> {
+    key: &'a str,
+    lock_val: &'a str,
+    lock_ttl_secs: u64,
+    retry_budget: usize,
+    retry_base_ms: u64,
+    pod_id: &'a str,
+    dataset: &'a str,
+}
+
+fn warmup_lock_retry_delay_ms(
+    pod_id: &str,
+    dataset_key: &str,
+    attempt: usize,
+    base_ms: u64,
+) -> u64 {
     let multiplier = (attempt as u64).saturating_add(1);
     let cap_ms = base_ms.saturating_mul(multiplier);
     if cap_ms == 0 {
@@ -116,18 +131,21 @@ async fn coordinated_startup_warmup_datasets(
     };
     let mut plan = WarmupCoordinationPlan::default();
     for ds in datasets {
-        let key = format!("atlas:warmup:{}", ds.canonical_string());
+        let dataset = ds.canonical_string();
+        let key = format!("atlas:warmup:{dataset}");
         let lock_val = unique_lock_value(pod_id);
         let started = std::time::Instant::now();
         match acquire_startup_warmup_lease(
             &mut conn,
-            &key,
-            &lock_val,
-            lock_ttl_secs,
-            retry_budget,
-            retry_base_ms,
-            pod_id,
-            &ds.canonical_string(),
+            WarmupLeaseRequest {
+                key: &key,
+                lock_val: &lock_val,
+                lock_ttl_secs,
+                retry_budget,
+                retry_base_ms,
+                pod_id,
+                dataset: &dataset,
+            },
         )
         .await
         {
@@ -141,7 +159,7 @@ async fn coordinated_startup_warmup_datasets(
                     .push(started.elapsed().as_nanos().min(u64::MAX as u128) as u64);
                 info!(
                     event_id = "warmup_lock_acquired",
-                    dataset = %ds.canonical_string(),
+                    dataset = %dataset,
                     lock_key = %lease.key,
                     wait_ms = started.elapsed().as_millis() as u64,
                     "startup warmup lock acquired"
@@ -211,14 +229,17 @@ fn is_stale_startup_warmup_lock(ttl_ms: i64) -> bool {
 
 async fn acquire_startup_warmup_lease(
     conn: &mut redis::aio::MultiplexedConnection,
-    key: &str,
-    lock_val: &str,
-    lock_ttl_secs: u64,
-    retry_budget: usize,
-    retry_base_ms: u64,
-    pod_id: &str,
-    dataset: &str,
+    request: WarmupLeaseRequest<'_>,
 ) -> Result<WarmupLeaseAttempt, redis::RedisError> {
+    let WarmupLeaseRequest {
+        key,
+        lock_val,
+        lock_ttl_secs,
+        retry_budget,
+        retry_base_ms,
+        pod_id,
+        dataset,
+    } = request;
     let mut contention_total = 0_u64;
     for attempt in 0..=retry_budget {
         if try_claim_startup_warmup_lock(conn, key, lock_val, lock_ttl_secs).await? {
@@ -277,10 +298,7 @@ async fn acquire_startup_warmup_lease(
     })
 }
 
-async fn release_startup_warmup_leases(
-    redis_url: Option<&str>,
-    leases: &[WarmupLockLease],
-) {
+async fn release_startup_warmup_leases(redis_url: Option<&str>, leases: &[WarmupLockLease]) {
     if leases.is_empty() {
         return;
     }
@@ -318,7 +336,11 @@ async fn release_startup_warmup_leases(
 fn unique_lock_value(pod_id: &str) -> String {
     static NONCE: AtomicU64 = AtomicU64::new(0);
     let nonce = NONCE.fetch_add(1, Ordering::Relaxed);
-    format!("{pod_id}:{}:{nonce}:{}", std::process::id(), chrono_like_millis())
+    format!(
+        "{pod_id}:{}:{nonce}:{}",
+        std::process::id(),
+        chrono_like_millis()
+    )
 }
 
 fn chrono_like_millis() -> u128 {
@@ -519,13 +541,16 @@ async fn main() -> Result<(), String> {
             Arc::new(LocalFsBackend::new(runtime.store.local_root.clone()))
         };
     let cache = DatasetCacheManager::new(cache_cfg.clone(), backend);
-    cache.metrics
+    cache
+        .metrics
         .warmup_lock_contention_total
         .fetch_add(startup_warmup_plan.contention_total, Ordering::Relaxed);
-    cache.metrics
+    cache
+        .metrics
         .warmup_lock_expired_total
         .fetch_add(startup_warmup_plan.expired_total, Ordering::Relaxed);
-    cache.metrics
+    cache
+        .metrics
         .warmup_lock_wait_ns
         .lock()
         .await
@@ -715,40 +740,33 @@ mod tests {
         let owner_a = unique_lock_value("owner-a");
         let owner_b = unique_lock_value("owner-b");
 
-        assert!(
-            try_claim_startup_warmup_lock(&mut conn, &key, &owner_a, 1)
-                .await
-                .expect("claim first owner")
-        );
-        assert!(
-            !try_claim_startup_warmup_lock(&mut conn, &key, &owner_b, 1)
-                .await
-                .expect("contention before ttl")
-        );
+        assert!(try_claim_startup_warmup_lock(&mut conn, &key, &owner_a, 1)
+            .await
+            .expect("claim first owner"));
+        assert!(!try_claim_startup_warmup_lock(&mut conn, &key, &owner_b, 1)
+            .await
+            .expect("contention before ttl"));
 
         tokio::time::sleep(std::time::Duration::from_millis(1200)).await;
 
-        assert!(
-            try_claim_startup_warmup_lock(&mut conn, &key, &owner_b, 1)
-                .await
-                .expect("claim after ttl expiry")
-        );
+        assert!(try_claim_startup_warmup_lock(&mut conn, &key, &owner_b, 1)
+            .await
+            .expect("claim after ttl expiry"));
 
         let stale_release = WarmupLockLease {
             key: key.clone(),
             value: owner_a,
         };
-        assert!(
-            !try_release_startup_warmup_lock(&mut conn, &stale_release)
-                .await
-                .expect("stale owner release should not delete")
-        );
+        assert!(!try_release_startup_warmup_lock(&mut conn, &stale_release)
+            .await
+            .expect("stale owner release should not delete"));
 
-        let current_release = WarmupLockLease { key, value: owner_b };
-        assert!(
-            try_release_startup_warmup_lock(&mut conn, &current_release)
-                .await
-                .expect("current owner release should delete")
-        );
+        let current_release = WarmupLockLease {
+            key,
+            value: owner_b,
+        };
+        assert!(try_release_startup_warmup_lock(&mut conn, &current_release)
+            .await
+            .expect("current owner release should delete"));
     }
 }

@@ -226,10 +226,9 @@ fn runtime_config_enforces_warm_coordination_retry_contract() {
                 cache_root: PathBuf::from(DEFAULT_CACHE_ROOT),
             };
             let err = RuntimeConfig::from_env(startup).expect_err("invalid retry budget");
-            assert!(
-                err.to_string()
-                    .contains("ATLAS_WARM_COORDINATION_RETRY_BUDGET>0")
-            );
+            assert!(err
+                .to_string()
+                .contains("ATLAS_WARM_COORDINATION_RETRY_BUDGET>0"));
         },
     );
 }
