@@ -1126,6 +1126,42 @@ fn tarball_contains_entry(
     }))
 }
 
+fn tarball_member_checksums(
+    tarball: &std::path::Path,
+) -> Result<std::collections::BTreeMap<String, String>, String> {
+    let python = r#"import hashlib, json, pathlib, sys, tarfile
+tarball_path = pathlib.Path(sys.argv[1])
+rows = {}
+with tarfile.open(tarball_path, "r") as archive:
+    for member in archive.getmembers():
+        if not member.isfile():
+            continue
+        extracted = archive.extractfile(member)
+        if extracted is None:
+            continue
+        rows[member.name] = hashlib.sha256(extracted.read()).hexdigest()
+print(json.dumps(rows, sort_keys=True))
+"#;
+    let output = std::process::Command::new("python3")
+        .args(["-c", python, &tarball.display().to_string()])
+        .output()
+        .map_err(|err| format!("failed to inspect {}: {err}", tarball.display()))?;
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
+        return Err(format!(
+            "failed to inspect {} members: {}",
+            tarball.display(),
+            if stderr.is_empty() {
+                "python3 returned a non-zero exit status".to_string()
+            } else {
+                stderr
+            }
+        ));
+    }
+    serde_json::from_slice(&output.stdout)
+        .map_err(|err| format!("failed to parse {} member checksums: {err}", tarball.display()))
+}
+
 fn git_head_sha(process: &OpsProcess, repo_root: &std::path::Path) -> Result<String, String> {
     let argv = vec!["rev-parse".to_string(), "HEAD".to_string()];
     let (stdout, _) = process
@@ -1366,6 +1402,65 @@ pub(crate) fn run_ops_evidence_verify(
     });
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+pub(crate) fn run_ops_evidence_diff(
+    args: &crate::cli::OpsEvidenceDiffArgs,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let tarball_a = if args.tarball_a.is_absolute() {
+        args.tarball_a.clone()
+    } else {
+        repo_root.join(&args.tarball_a)
+    };
+    let tarball_b = if args.tarball_b.is_absolute() {
+        args.tarball_b.clone()
+    } else {
+        repo_root.join(&args.tarball_b)
+    };
+    let members_a = tarball_member_checksums(&tarball_a)?;
+    let members_b = tarball_member_checksums(&tarball_b)?;
+    let names = members_a
+        .keys()
+        .chain(members_b.keys())
+        .cloned()
+        .collect::<std::collections::BTreeSet<_>>();
+    let mut added = Vec::new();
+    let mut removed = Vec::new();
+    let mut changed = Vec::new();
+    for name in names {
+        match (members_a.get(&name), members_b.get(&name)) {
+            (None, Some(_)) => added.push(name),
+            (Some(_), None) => removed.push(name),
+            (Some(left), Some(right)) if left != right => changed.push(serde_json::json!({
+                "path": name,
+                "sha256_a": left,
+                "sha256_b": right
+            })),
+            _ => {}
+        }
+    }
+    let differences = !added.is_empty() || !removed.is_empty() || !changed.is_empty();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": "ok",
+        "text": if differences { "release evidence bundles differ" } else { "release evidence bundles match" },
+        "rows": [{
+            "tarball_a": tarball_a.display().to_string(),
+            "tarball_b": tarball_b.display().to_string(),
+            "added": added,
+            "removed": removed,
+            "changed": changed
+        }],
+        "summary": {
+            "total": 1,
+            "errors": 0,
+            "warnings": 0,
+            "differences": if differences { 1 } else { 0 }
+        }
+    });
+    let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
+    Ok((rendered, 0))
 }
 
 fn helm_release_manifest(

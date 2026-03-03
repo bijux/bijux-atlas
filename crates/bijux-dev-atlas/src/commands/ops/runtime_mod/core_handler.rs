@@ -462,6 +462,9 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             crate::cli::OpsEvidenceCommand::Verify(args) => {
                 crate::ops_execution_runtime::run_ops_evidence_verify(&args)
             }
+            crate::cli::OpsEvidenceCommand::Diff(args) => {
+                crate::ops_execution_runtime::run_ops_evidence_diff(&args)
+            }
         },
         OpsCommand::Install(args) => crate::ops_execution_runtime::run_ops_install(&args),
         OpsCommand::Smoke(args) => crate::ops_execution_runtime::run_ops_smoke(&args),

@@ -3,12 +3,12 @@
 use crate::cli::OpsInstallArgs;
 use crate::cli::{
     OpsCollectArgs, OpsCollectCommand, OpsCommonArgs, OpsDatasetsCommand, OpsE2eCommand,
-    OpsEvidenceCommand, OpsEvidenceVerifyArgs, OpsGenerateCommand, OpsHelmCommand,
-    OpsHelmEnvArgs, OpsHelmInstallArgs, OpsHelmReleaseArgs, OpsHelmRollbackArgs,
-    OpsHelmUpgradeArgs, OpsInventoryCommand, OpsK8sCommand, OpsKindCommand, OpsKindPreloadArgs,
-    OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand, OpsObsDrillCommand, OpsPinsCommand,
-    OpsProfilesCommand, OpsProfilesValidateArgs, OpsRenderArgs, OpsRenderTarget,
-    OpsReportCommand, OpsResourcesCommand, OpsSchemaCommand, OpsStackCommand,
+    OpsEvidenceCommand, OpsEvidenceDiffArgs, OpsEvidenceVerifyArgs, OpsGenerateCommand,
+    OpsHelmCommand, OpsHelmEnvArgs, OpsHelmInstallArgs, OpsHelmReleaseArgs,
+    OpsHelmRollbackArgs, OpsHelmUpgradeArgs, OpsInventoryCommand, OpsK8sCommand,
+    OpsKindCommand, OpsKindPreloadArgs, OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand,
+    OpsObsDrillCommand, OpsPinsCommand, OpsProfilesCommand, OpsProfilesValidateArgs,
+    OpsRenderArgs, OpsRenderTarget, OpsReportCommand, OpsResourcesCommand, OpsSchemaCommand, OpsStackCommand,
     OpsSuiteCommand, OpsToolsCommand,
 };
 use crate::ops_support::{
@@ -108,6 +108,7 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
         OpsCommand::Evidence { command } => match command {
             OpsEvidenceCommand::Collect(common) => Some(common),
             OpsEvidenceCommand::Verify(OpsEvidenceVerifyArgs { common, .. }) => Some(common),
+            OpsEvidenceCommand::Diff(OpsEvidenceDiffArgs { common, .. }) => Some(common),
         },
         OpsCommand::Schema { .. }
         | OpsCommand::InventoryDomain { .. }

@@ -382,6 +382,7 @@ pub enum OpsReportCommand {
 pub enum OpsEvidenceCommand {
     Collect(OpsCommonArgs),
     Verify(OpsEvidenceVerifyArgs),
+    Diff(OpsEvidenceDiffArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -390,6 +391,16 @@ pub struct OpsEvidenceVerifyArgs {
     pub common: OpsCommonArgs,
     #[arg()]
     pub tarball: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsEvidenceDiffArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg()]
+    pub tarball_a: PathBuf,
+    #[arg()]
+    pub tarball_b: PathBuf,
 }
 
 #[derive(Subcommand, Debug, Clone)]
