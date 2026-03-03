@@ -36,6 +36,13 @@ Ingress modes:
 - `selected`: allow only the namespaces listed in `networkPolicy.ingress.allowNamespaces`.
 - `custom`: emit no automatic ingress rules and require operator-supplied overlays.
 
+Compatibility aliases:
+
+- `networkPolicy.mode` mirrors the primary egress selector.
+- `networkPolicy.ingressMode` mirrors the primary ingress selector.
+- `networkPolicy.monitoring.allowNamespace` mirrors `networkPolicy.allowMonitoringNamespace`.
+- `networkPolicy.dependencies.otel` mirrors `networkPolicy.dependencies.otelCollector`.
+
 ## Dependency Matrix
 
 | Dependency | Values Key | Default Ports | Namespace Allowlist |
@@ -44,6 +51,12 @@ Ingress modes:
 | MinIO | `networkPolicy.dependencies.minio` | `9000` | `networkPolicy.egress.allowNamespaces` |
 | Catalog HTTP | `networkPolicy.dependencies.catalog` | `80`, `443` | `networkPolicy.egress.allowNamespaces` |
 | OTel Collector | `networkPolicy.dependencies.otelCollector` | `4317`, `4318` | `networkPolicy.egress.allowNamespaces` |
+
+For kind and other low-friction local clusters, the minimum practical posture is:
+
+- egress: `internet-only`
+- ingress: `same-namespace`
+- monitoring namespace: explicit only when metrics scraping is enabled across namespaces
 
 ## Namespace Label Contract
 

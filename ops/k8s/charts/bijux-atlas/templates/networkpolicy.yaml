@@ -30,6 +30,9 @@
 {{- $ingressAllowNamespaces = .Values.networkPolicy.ingress.allowNamespaces }}
 {{- end }}
 {{- $monitoringNamespace := .Values.networkPolicy.allowMonitoringNamespace | default "" }}
+{{- if and .Values.networkPolicy.monitoring (hasKey .Values.networkPolicy.monitoring "allowNamespace") }}
+{{- $monitoringNamespace = .Values.networkPolicy.monitoring.allowNamespace }}
+{{- end }}
 {{- $customIngressRules := list }}
 {{- if and .Values.networkPolicy.ingress (hasKey .Values.networkPolicy.ingress "customRules") }}
 {{- $customIngressRules = .Values.networkPolicy.ingress.customRules }}
@@ -54,6 +57,11 @@
 {{- end }}
 {{- if .Values.networkPolicy.dependencies.catalog.enabled }}
 {{- range .Values.networkPolicy.dependencies.catalog.ports }}
+{{- $clusterPorts = append $clusterPorts . }}
+{{- end }}
+{{- end }}
+{{- if .Values.networkPolicy.dependencies.otel.enabled }}
+{{- range .Values.networkPolicy.dependencies.otel.ports }}
 {{- $clusterPorts = append $clusterPorts . }}
 {{- end }}
 {{- end }}

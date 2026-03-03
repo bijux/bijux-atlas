@@ -175,6 +175,8 @@ networkPolicy:
   ingressMode: same-namespace
   allowDns: true
   allowMonitoringNamespace: observability
+  monitoring:
+    allowNamespace: observability
   allowedEgressCIDRs: []
   ingress:
     mode: same-namespace
@@ -196,6 +198,9 @@ networkPolicy:
     catalog:
       enabled: false
       ports: [80, 443]
+    otel:
+      enabled: false
+      ports: [4317, 4318]
     otelCollector:
       enabled: false
       ports: [4317, 4318]

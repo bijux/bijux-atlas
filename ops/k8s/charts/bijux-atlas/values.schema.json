@@ -1143,6 +1143,28 @@
               ],
               "type": "object"
             },
+            "otel": {
+              "additionalProperties": false,
+              "description": "Compatibility alias for networkPolicy.dependencies.otelCollector.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "ports": {
+                  "items": {
+                    "maximum": 65535,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "enabled",
+                "ports"
+              ],
+              "type": "object"
+            },
             "otelCollector": {
               "additionalProperties": false,
               "properties": {
@@ -1251,6 +1273,17 @@
         },
         "enabled": {
           "type": "boolean"
+        },
+        "monitoring": {
+          "additionalProperties": false,
+          "description": "Compatibility alias for networkPolicy.allowMonitoringNamespace.",
+          "properties": {
+            "allowNamespace": {
+              "pattern": "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+              "type": "string"
+            }
+          },
+          "type": "object"
         },
         "ingress": {
           "additionalProperties": false,
