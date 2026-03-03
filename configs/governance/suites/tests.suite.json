@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "suite_id": "tests",
+  "purpose": "Reserved suite definition for governed test inventory until runtime test registry adoption lands.",
+  "owner": "team:atlas-governance",
+  "stability": "draft",
+  "entries": []
+}

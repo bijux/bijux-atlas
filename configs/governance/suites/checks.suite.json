@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "suite_id": "checks",
+  "purpose": "Machine-readable inventory for non-test quality gates exposed through Make and CI.",
+  "owner": "team:atlas-governance",
+  "stability": "stable",
+  "entries": [
+    {
+      "id": "CHECK-RUSTFMT-001",
+      "kind": "check",
+      "mode": "pure",
+      "owner": "team:atlas-platform",
+      "tags": [
+        "rust",
+        "format"
+      ]
+    },
+    {
+      "id": "CHECK-RUST-CLIPPY-001",
+      "kind": "check",
+      "mode": "effect",
+      "owner": "team:atlas-platform",
+      "tags": [
+        "rust",
+        "lint"
+      ]
+    },
+    {
+      "id": "CHECK-LINT-POLICY-001",
+      "kind": "check",
+      "mode": "pure",
+      "owner": "team:atlas-governance",
+      "tags": [
+        "policy",
+        "lint"
+      ]
+    },
+    {
+      "id": "CHECK-CONFIGS-LINT-001",
+      "kind": "check",
+      "mode": "pure",
+      "owner": "team:atlas-governance",
+      "tags": [
+        "configs",
+        "lint"
+      ]
+    },
+    {
+      "id": "CHECK-DOCS-VALIDATE-001",
+      "kind": "check",
+      "mode": "pure",
+      "owner": "team:atlas-docs",
+      "tags": [
+        "docs",
+        "validation"
+      ]
+    },
+    {
+      "id": "CHECK-K8S-VALIDATE-001",
+      "kind": "check",
+      "mode": "effect",
+      "owner": "team:atlas-operations",
+      "tags": [
+        "ops",
+        "k8s"
+      ]
+    },
+    {
+      "id": "CHECK-SUPPLY-CHAIN-DENY-001",
+      "kind": "check",
+      "mode": "effect",
+      "owner": "team:atlas-security",
+      "tags": [
+        "security",
+        "dependencies"
+      ]
+    },
+    {
+      "id": "CHECK-SUPPLY-CHAIN-AUDIT-001",
+      "kind": "check",
+      "mode": "effect",
+      "owner": "team:atlas-security",
+      "tags": [
+        "security",
+        "dependencies"
+      ]
+    },
+    {
+      "id": "CHECK-SUITE-CI-FAST-001",
+      "kind": "check",
+      "mode": "pure",
+      "owner": "team:atlas-governance",
+      "tags": [
+        "control_plane",
+        "suite"
+      ]
+    },
+    {
+      "id": "CHECK-SUITE-CI-PR-001",
+      "kind": "check",
+      "mode": "pure",
+      "owner": "team:atlas-governance",
+      "tags": [
+        "control_plane",
+        "suite"
+      ]
+    },
+    {
+      "id": "CHECK-SUITE-CI-NIGHTLY-001",
+      "kind": "check",
+      "mode": "pure",
+      "owner": "team:atlas-governance",
+      "tags": [
+        "control_plane",
+        "suite",
+        "nightly"
+      ]
+    },
+    {
+      "id": "CHECK-CONTRACTS-DOCS-REQUIRED-001",
+      "kind": "check",
+      "mode": "pure",
+      "owner": "team:atlas-docs",
+      "tags": [
+        "contracts",
+        "docs"
+      ]
+    },
+    {
+      "id": "CHECK-CONTRACTS-CONFIGS-REQUIRED-001",
+      "kind": "check",
+      "mode": "pure",
+      "owner": "team:atlas-governance",
+      "tags": [
+        "contracts",
+        "configs"
+      ]
+    },
+    {
+      "id": "CHECK-CONTRACTS-MAKE-REQUIRED-001",
+      "kind": "check",
+      "mode": "pure",
+      "owner": "team:atlas-governance",
+      "tags": [
+        "contracts",
+        "make"
+      ]
+    },
+    {
+      "id": "CHECK-CONTRACTS-REPO-REQUIRED-001",
+      "kind": "check",
+      "mode": "effect",
+      "owner": "team:atlas-governance",
+      "tags": [
+        "contracts",
+        "repo"
+      ]
+    }
+  ]
+}

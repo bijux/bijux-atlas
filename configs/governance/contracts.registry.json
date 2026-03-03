@@ -1,0 +1,2321 @@
+{
+  "schema_version": 1,
+  "registry_id": "contracts-registry",
+  "contracts": [
+    {
+      "contract_id": "OPS-DATASET-001",
+      "summary": "Governed contract OPS-DATASET-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-DATASET-001",
+      "reports": [
+        "artifacts/contracts/ops/profiles/full-matrix.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-DATASETS-001",
+      "summary": "Governed contract OPS-DATASETS-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-DATASETS-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-DATASETS-002",
+      "summary": "Governed contract OPS-DATASETS-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-DATASETS-002.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-DATASETS-003",
+      "summary": "Governed contract OPS-DATASETS-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-DATASETS-003.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-DATASETS-004",
+      "summary": "Governed contract OPS-DATASETS-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-DATASETS-004.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-DATASETS-005",
+      "summary": "Governed contract OPS-DATASETS-005 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-DATASETS-005.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-DATASETS-006",
+      "summary": "Governed contract OPS-DATASETS-006 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-DATASETS-006.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-DATASETS-007",
+      "summary": "Governed contract OPS-DATASETS-007 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-DATASETS-007.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-DATASETS-008",
+      "summary": "Governed contract OPS-DATASETS-008 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-DATASETS-008.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-DATASETS-009",
+      "summary": "Governed contract OPS-DATASETS-009 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-DATASETS-009.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-DATASETS-010",
+      "summary": "Governed contract OPS-DATASETS-010 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-DATASETS-010.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-DATASETS-011",
+      "summary": "Governed contract OPS-DATASETS-011 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-DATASETS-011.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-DATASETS-012",
+      "summary": "Governed contract OPS-DATASETS-012 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-DATASETS-012.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-DATASETS-013",
+      "summary": "Governed contract OPS-DATASETS-013 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-DATASETS-013.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-E2E-001",
+      "summary": "Governed contract OPS-E2E-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-E2E-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-E2E-002",
+      "summary": "Governed contract OPS-E2E-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-E2E-002.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-E2E-003",
+      "summary": "Governed contract OPS-E2E-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-E2E-003.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-E2E-004",
+      "summary": "Governed contract OPS-E2E-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-E2E-004.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-E2E-005",
+      "summary": "Governed contract OPS-E2E-005 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-E2E-005.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-E2E-006",
+      "summary": "Governed contract OPS-E2E-006 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-E2E-006.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-E2E-007",
+      "summary": "Governed contract OPS-E2E-007 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-E2E-007.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-E2E-008",
+      "summary": "Governed contract OPS-E2E-008 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-E2E-008.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-E2E-009",
+      "summary": "Governed contract OPS-E2E-009 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-E2E-009.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-E2E-010",
+      "summary": "Governed contract OPS-E2E-010 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-E2E-010.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-E2E-E-001",
+      "summary": "Governed contract OPS-E2E-E-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-E2E-E-001",
+      "reports": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-E2E-E-002",
+      "summary": "Governed contract OPS-E2E-E-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-E2E-E-002",
+      "reports": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ENV-001",
+      "summary": "Governed contract OPS-ENV-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ENV-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ENV-002",
+      "summary": "Governed contract OPS-ENV-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ENV-002.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ENV-003",
+      "summary": "Governed contract OPS-ENV-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ENV-003.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ENV-004",
+      "summary": "Governed contract OPS-ENV-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ENV-004.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ENV-005",
+      "summary": "Governed contract OPS-ENV-005 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ENV-005.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ENV-006",
+      "summary": "Governed contract OPS-ENV-006 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ENV-006.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ENV-007",
+      "summary": "Governed contract OPS-ENV-007 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ENV-007.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ENV-008",
+      "summary": "Governed contract OPS-ENV-008 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ENV-008.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ENV-009",
+      "summary": "Governed contract OPS-ENV-009 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ENV-009.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-HELM-ENV-001",
+      "summary": "Governed contract OPS-HELM-ENV-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-HELM-ENV-001",
+      "reports": [
+        "artifacts/contracts/ops/helm/helm-env-report.json",
+        "artifacts/contracts/ops/helm/helm-env-subset.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-001",
+      "summary": "Governed contract OPS-INV-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-002",
+      "summary": "Governed contract OPS-INV-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-002.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-003",
+      "summary": "Governed contract OPS-INV-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-003.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-004",
+      "summary": "Governed contract OPS-INV-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-004.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-005",
+      "summary": "Governed contract OPS-INV-005 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-005.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-006",
+      "summary": "Governed contract OPS-INV-006 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-006.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-007",
+      "summary": "Governed contract OPS-INV-007 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-007.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-008",
+      "summary": "Governed contract OPS-INV-008 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-008.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-009",
+      "summary": "Governed contract OPS-INV-009 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-009.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-010",
+      "summary": "Governed contract OPS-INV-010 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-010.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-011",
+      "summary": "Governed contract OPS-INV-011 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-011.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-DEBT-001",
+      "summary": "Governed contract OPS-INV-DEBT-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-DEBT-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-MAP-001",
+      "summary": "Governed contract OPS-INV-MAP-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-MAP-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-MAP-002",
+      "summary": "Governed contract OPS-INV-MAP-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-MAP-002.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-MAP-003",
+      "summary": "Governed contract OPS-INV-MAP-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-MAP-003.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-MAP-004",
+      "summary": "Governed contract OPS-INV-MAP-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-MAP-004.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-MAP-005",
+      "summary": "Governed contract OPS-INV-MAP-005 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-MAP-005.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-MAP-006",
+      "summary": "Governed contract OPS-INV-MAP-006 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-MAP-006.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-MAP-007",
+      "summary": "Governed contract OPS-INV-MAP-007 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-MAP-007.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-MAP-008",
+      "summary": "Governed contract OPS-INV-MAP-008 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-MAP-008.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-MAP-009",
+      "summary": "Governed contract OPS-INV-MAP-009 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-MAP-009.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-MAP-010",
+      "summary": "Governed contract OPS-INV-MAP-010 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-MAP-010.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-MAP-011",
+      "summary": "Governed contract OPS-INV-MAP-011 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-MAP-011.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-PILLARS-001",
+      "summary": "Governed contract OPS-INV-PILLARS-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-PILLARS-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-PILLARS-002",
+      "summary": "Governed contract OPS-INV-PILLARS-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-PILLARS-002.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-INV-PILLARS-003",
+      "summary": "Governed contract OPS-INV-PILLARS-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-INV-PILLARS-003.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-001",
+      "summary": "Governed contract OPS-K8S-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-K8S-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-002",
+      "summary": "Governed contract OPS-K8S-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-K8S-002.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-003",
+      "summary": "Governed contract OPS-K8S-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-K8S-003.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-004",
+      "summary": "Governed contract OPS-K8S-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-K8S-004.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-005",
+      "summary": "Governed contract OPS-K8S-005 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-K8S-005.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-006",
+      "summary": "Governed contract OPS-K8S-006 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-K8S-006.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-007",
+      "summary": "Governed contract OPS-K8S-007 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-K8S-007.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-008",
+      "summary": "Governed contract OPS-K8S-008 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-K8S-008.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-009",
+      "summary": "Governed contract OPS-K8S-009 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-K8S-009.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-010",
+      "summary": "Governed contract OPS-K8S-010 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-K8S-010.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-E-001",
+      "summary": "Governed contract OPS-K8S-E-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-K8S-E-001",
+      "reports": [
+        "artifacts/contracts/ops/helm/rendered.yaml"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-E-002",
+      "summary": "Governed contract OPS-K8S-E-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-K8S-E-002",
+      "reports": [
+        "artifacts/contracts/ops/helm/minimal.stdout.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-E-003",
+      "summary": "Governed contract OPS-K8S-E-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-K8S-E-003",
+      "reports": [
+        "artifacts/contracts/ops/helm/kubeconform.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-E-004",
+      "summary": "Governed contract OPS-K8S-E-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-K8S-E-004",
+      "reports": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-E-005",
+      "summary": "Governed contract OPS-K8S-E-005 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-K8S-E-005",
+      "reports": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-K8S-E-006",
+      "summary": "Governed contract OPS-K8S-E-006 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-K8S-E-006",
+      "reports": [
+        "artifacts/contracts/ops/tools.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-LOAD-001",
+      "summary": "Governed contract OPS-LOAD-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-LOAD-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-LOAD-002",
+      "summary": "Governed contract OPS-LOAD-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-LOAD-002.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-LOAD-003",
+      "summary": "Governed contract OPS-LOAD-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-LOAD-003.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-LOAD-004",
+      "summary": "Governed contract OPS-LOAD-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-LOAD-004.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-LOAD-005",
+      "summary": "Governed contract OPS-LOAD-005 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-LOAD-005.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-LOAD-006",
+      "summary": "Governed contract OPS-LOAD-006 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-LOAD-006.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-LOAD-007",
+      "summary": "Governed contract OPS-LOAD-007 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-LOAD-007.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-LOAD-008",
+      "summary": "Governed contract OPS-LOAD-008 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-LOAD-008.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-LOAD-009",
+      "summary": "Governed contract OPS-LOAD-009 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-LOAD-009.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-LOAD-010",
+      "summary": "Governed contract OPS-LOAD-010 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-LOAD-010.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-LOAD-E-001",
+      "summary": "Governed contract OPS-LOAD-E-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-LOAD-E-001",
+      "reports": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-LOAD-E-002",
+      "summary": "Governed contract OPS-LOAD-E-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-LOAD-E-002",
+      "reports": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-LOAD-E-003",
+      "summary": "Governed contract OPS-LOAD-E-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-LOAD-E-003",
+      "reports": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-META-001",
+      "summary": "Governed contract OPS-META-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-META-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-META-002",
+      "summary": "Governed contract OPS-META-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-META-002.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-OBS-001",
+      "summary": "Governed contract OPS-OBS-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-OBS-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-OBS-002",
+      "summary": "Governed contract OPS-OBS-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-OBS-002.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-OBS-003",
+      "summary": "Governed contract OPS-OBS-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-OBS-003.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-OBS-004",
+      "summary": "Governed contract OPS-OBS-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-OBS-004.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-OBS-005",
+      "summary": "Governed contract OPS-OBS-005 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-OBS-005.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-OBS-006",
+      "summary": "Governed contract OPS-OBS-006 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-OBS-006.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-OBS-007",
+      "summary": "Governed contract OPS-OBS-007 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-OBS-007.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-OBS-008",
+      "summary": "Governed contract OPS-OBS-008 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-OBS-008.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-OBS-009",
+      "summary": "Governed contract OPS-OBS-009 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-OBS-009.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-OBS-010",
+      "summary": "Governed contract OPS-OBS-010 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-OBS-010.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-OBS-E-001",
+      "summary": "Governed contract OPS-OBS-E-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-network --only-contract OPS-OBS-E-001",
+      "reports": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-OBS-E-002",
+      "summary": "Governed contract OPS-OBS-E-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-network --only-contract OPS-OBS-E-002",
+      "reports": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-OBS-E-003",
+      "summary": "Governed contract OPS-OBS-E-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-network --only-contract OPS-OBS-E-003",
+      "reports": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-PROFILES-001",
+      "summary": "Governed contract OPS-PROFILES-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-PROFILES-001",
+      "reports": [
+        "artifacts/contracts/ops/profiles/full-matrix.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-PROFILES-002",
+      "summary": "Governed contract OPS-PROFILES-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-PROFILES-002",
+      "reports": [
+        "artifacts/contracts/ops/profiles/full-matrix.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-PROFILES-003",
+      "summary": "Governed contract OPS-PROFILES-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-PROFILES-003",
+      "reports": [
+        "artifacts/contracts/ops/profiles/full-matrix.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-PROFILES-004",
+      "summary": "Governed contract OPS-PROFILES-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-PROFILES-004",
+      "reports": [
+        "artifacts/contracts/ops/profiles/rollout-safety-matrix.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-REPORT-001",
+      "summary": "Governed contract OPS-REPORT-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-REPORT-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-REPORT-002",
+      "summary": "Governed contract OPS-REPORT-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-REPORT-002.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-REPORT-003",
+      "summary": "Governed contract OPS-REPORT-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-REPORT-003.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-REPORT-004",
+      "summary": "Governed contract OPS-REPORT-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-REPORT-004.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-REPORT-005",
+      "summary": "Governed contract OPS-REPORT-005 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-REPORT-005.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-REPORT-006",
+      "summary": "Governed contract OPS-REPORT-006 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-REPORT-006.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-REPORT-007",
+      "summary": "Governed contract OPS-REPORT-007 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-REPORT-007.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-REPORT-008",
+      "summary": "Governed contract OPS-REPORT-008 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-REPORT-008.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-REPORT-009",
+      "summary": "Governed contract OPS-REPORT-009 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-REPORT-009.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-REPORT-010",
+      "summary": "Governed contract OPS-REPORT-010 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-REPORT-010.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-001",
+      "summary": "Governed contract OPS-ROOT-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-002",
+      "summary": "Governed contract OPS-ROOT-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-002.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-003",
+      "summary": "Governed contract OPS-ROOT-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-003.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-004",
+      "summary": "Governed contract OPS-ROOT-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-004.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-005",
+      "summary": "Governed contract OPS-ROOT-005 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-005.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-006",
+      "summary": "Governed contract OPS-ROOT-006 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-006.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-007",
+      "summary": "Governed contract OPS-ROOT-007 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-007.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-008",
+      "summary": "Governed contract OPS-ROOT-008 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-008.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-009",
+      "summary": "Governed contract OPS-ROOT-009 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-009.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-010",
+      "summary": "Governed contract OPS-ROOT-010 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-010.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-011",
+      "summary": "Governed contract OPS-ROOT-011 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-011.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-012",
+      "summary": "Governed contract OPS-ROOT-012 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-012.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-013",
+      "summary": "Governed contract OPS-ROOT-013 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-013.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-014",
+      "summary": "Governed contract OPS-ROOT-014 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-014.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-015",
+      "summary": "Governed contract OPS-ROOT-015 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-015.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-016",
+      "summary": "Governed contract OPS-ROOT-016 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-016.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-017",
+      "summary": "Governed contract OPS-ROOT-017 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-017.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-018",
+      "summary": "Governed contract OPS-ROOT-018 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-018.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-019",
+      "summary": "Governed contract OPS-ROOT-019 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-019.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-020",
+      "summary": "Governed contract OPS-ROOT-020 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-020.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-021",
+      "summary": "Governed contract OPS-ROOT-021 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-021.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-022",
+      "summary": "Governed contract OPS-ROOT-022 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-022.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-023",
+      "summary": "Governed contract OPS-ROOT-023 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-023.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-001",
+      "summary": "Governed contract OPS-ROOT-SURFACE-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-SURFACE-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-002",
+      "summary": "Governed contract OPS-ROOT-SURFACE-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-SURFACE-002.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-003",
+      "summary": "Governed contract OPS-ROOT-SURFACE-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-SURFACE-003.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-004",
+      "summary": "Governed contract OPS-ROOT-SURFACE-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-SURFACE-004.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-005",
+      "summary": "Governed contract OPS-ROOT-SURFACE-005 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-SURFACE-005.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-006",
+      "summary": "Governed contract OPS-ROOT-SURFACE-006 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-SURFACE-006.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-007",
+      "summary": "Governed contract OPS-ROOT-SURFACE-007 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-SURFACE-007.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-008",
+      "summary": "Governed contract OPS-ROOT-SURFACE-008 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-SURFACE-008.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-009",
+      "summary": "Governed contract OPS-ROOT-SURFACE-009 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-SURFACE-009.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-010",
+      "summary": "Governed contract OPS-ROOT-SURFACE-010 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-ROOT-SURFACE-010.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-SCHEMA-001",
+      "summary": "Governed contract OPS-SCHEMA-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-SCHEMA-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-SCHEMA-002",
+      "summary": "Governed contract OPS-SCHEMA-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-SCHEMA-002.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-SCHEMA-003",
+      "summary": "Governed contract OPS-SCHEMA-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-SCHEMA-003.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-SCHEMA-004",
+      "summary": "Governed contract OPS-SCHEMA-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-SCHEMA-004.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-SCHEMA-005",
+      "summary": "Governed contract OPS-SCHEMA-005 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-SCHEMA-005.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-SCHEMA-006",
+      "summary": "Governed contract OPS-SCHEMA-006 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-SCHEMA-006.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-SCHEMA-007",
+      "summary": "Governed contract OPS-SCHEMA-007 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-SCHEMA-007.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-SCHEMA-008",
+      "summary": "Governed contract OPS-SCHEMA-008 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-SCHEMA-008.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-SCHEMA-009",
+      "summary": "Governed contract OPS-SCHEMA-009 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-SCHEMA-009.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-SCHEMA-010",
+      "summary": "Governed contract OPS-SCHEMA-010 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-SCHEMA-010.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-STACK-001",
+      "summary": "Governed contract OPS-STACK-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-STACK-001.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-STACK-002",
+      "summary": "Governed contract OPS-STACK-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-STACK-002.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-STACK-003",
+      "summary": "Governed contract OPS-STACK-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-STACK-003.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-STACK-004",
+      "summary": "Governed contract OPS-STACK-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-STACK-004.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-STACK-005",
+      "summary": "Governed contract OPS-STACK-005 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-STACK-005.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-STACK-006",
+      "summary": "Governed contract OPS-STACK-006 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-STACK-006.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-STACK-007",
+      "summary": "Governed contract OPS-STACK-007 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-STACK-007.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-STACK-008",
+      "summary": "Governed contract OPS-STACK-008 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-STACK-008.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-STACK-009",
+      "summary": "Governed contract OPS-STACK-009 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-STACK-009.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-STACK-010",
+      "summary": "Governed contract OPS-STACK-010 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "pure",
+      "runner": "bijux dev atlas ops check",
+      "reports": [
+        "artifacts/contracts/by-id/OPS-STACK-010.json"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-STACK-E-001",
+      "summary": "Governed contract OPS-STACK-E-001 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-STACK-E-001",
+      "reports": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-STACK-E-002",
+      "summary": "Governed contract OPS-STACK-E-002 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-STACK-E-002",
+      "reports": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-STACK-E-003",
+      "summary": "Governed contract OPS-STACK-E-003 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-STACK-E-003",
+      "reports": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-STACK-E-004",
+      "summary": "Governed contract OPS-STACK-E-004 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-STACK-E-004",
+      "reports": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    },
+    {
+      "contract_id": "OPS-STACK-E-005",
+      "summary": "Governed contract OPS-STACK-E-005 enforced through the control-plane contract runner.",
+      "owner": "team:atlas-operations",
+      "mode": "effect",
+      "runner": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-STACK-E-005",
+      "reports": [
+        "artifacts/contracts/ops/kind/clusters.stdout.log"
+      ],
+      "suite_membership": [
+        "contracts"
+      ]
+    }
+  ]
+}
