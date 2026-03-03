@@ -29,7 +29,7 @@
   "properties": {
     "schema_version": {
       "type": "integer",
-      "const": 1
+      "const": 2
     },
     "generated_by": {
       "type": "string",
@@ -42,6 +42,13 @@
     "policy_path": {
       "type": "string",
       "minLength": 1
+    },
+    "signature_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
     },
     "provenance": {
       "type": "object",

@@ -991,7 +991,8 @@ fn evidence_root(repo_root: &std::path::Path) -> Result<std::path::PathBuf, Stri
 fn sha256_file(path: &std::path::Path) -> Result<String, String> {
     let bytes = std::fs::read(path)
         .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
-    Ok(sha256_hex(&String::from_utf8_lossy(&bytes)))
+    use sha2::{Digest, Sha256};
+    Ok(format!("{:x}", Sha256::digest(bytes)))
 }
 
 fn package_chart_for_evidence(
@@ -1901,7 +1902,7 @@ pub(crate) fn run_ops_evidence_collect(
     )
     .map_err(|err| format!("failed to write {}: {err}", provenance_path.display()))?;
     let manifest = serde_json::json!({
-        "schema_version": 1,
+        "schema_version": 2,
         "generated_by": "bijux dev atlas ops evidence collect",
         "identity_path": identity_path.strip_prefix(&repo_root).unwrap_or(&identity_path).display().to_string(),
         "policy_path": policy_path.strip_prefix(&repo_root).unwrap_or(&policy_path).display().to_string(),
@@ -1991,8 +1992,8 @@ pub(crate) fn run_ops_evidence_verify(
         .tarball
         .clone()
         .unwrap_or_else(|| evidence_root.join("bundle.tar"));
-    if manifest.get("schema_version").and_then(|v| v.as_i64()) != Some(1) {
-        errors.push("manifest schema_version must be 1".to_string());
+    if manifest.get("schema_version").and_then(|v| v.as_i64()) != Some(2) {
+        errors.push("manifest schema_version must be 2".to_string());
     }
     if identity.get("schema_version").and_then(|v| v.as_i64()) != Some(1) {
         errors.push("identity schema_version must be 1".to_string());

@@ -26,6 +26,7 @@ pub(super) fn force_json_output(command: &mut Command) {
             ReleaseCommand::Check(args) => args.format = FormatArg::Json,
             ReleaseCommand::Sign(args) => args.format = FormatArg::Json,
             ReleaseCommand::Verify(args) => args.format = FormatArg::Json,
+            ReleaseCommand::Diff(args) => args.format = FormatArg::Json,
         },
         Command::Docker { .. }
         | Command::Build { .. }
@@ -849,6 +850,11 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
             }
             ReleaseCommand::Verify(args) => {
+                if args.repo_root.is_none() {
+                    args.repo_root = Some(root.clone());
+                }
+            }
+            ReleaseCommand::Diff(args) => {
                 if args.repo_root.is_none() {
                     args.repo_root = Some(root.clone());
                 }

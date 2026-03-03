@@ -40,6 +40,10 @@
         "REL-SIGN-002",
         "REL-SIGN-003",
         "REL-SIGN-004",
+        "REL-SIGN-005",
+        "REL-SIGN-006",
+        "REL-TAR-001",
+        "REL-MAN-001",
         "REL-PROV-001"
       ],
       "properties": {
@@ -53,6 +57,18 @@
           "type": "boolean"
         },
         "REL-SIGN-004": {
+          "type": "boolean"
+        },
+        "REL-SIGN-005": {
+          "type": "boolean"
+        },
+        "REL-SIGN-006": {
+          "type": "boolean"
+        },
+        "REL-TAR-001": {
+          "type": "boolean"
+        },
+        "REL-MAN-001": {
           "type": "boolean"
         },
         "REL-PROV-001": {
