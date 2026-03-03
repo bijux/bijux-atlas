@@ -138,6 +138,17 @@ fn collect_tarball_members(
             files.push(rel.to_string());
         }
     }
+    for rel in manifest
+        .get("perf_assets")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+    {
+        if root.join(rel).exists() {
+            files.push(rel.to_string());
+        }
+    }
     files.sort();
     files.dedup();
     Ok(files)

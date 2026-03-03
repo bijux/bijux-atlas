@@ -1,21 +1,21 @@
 {
   "chart_package": {
     "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-    "sha256": "e4da7ed597c27c121cff09d57404a8da1447812acca4bd21ffdfe9ce5b0adf49"
+    "sha256": "e3e44e46c6adbccb19e458ccf5bf88c3fc2592d7813c8c8c2b3d426fe7fc3e5a"
   },
   "docker_bases_lock": {
     "path": "docker/bases.lock",
     "sha256": "4b9996348cba7a04aa56e8617aab6bba5dec62e950819626bbd15abd7145e8e1"
   },
   "docs_site_summary": {
-    "file_count": 592,
+    "file_count": 601,
     "sha256": "b47fbd1798d5b99c80b49ecce109b7ffb934df168d447a748c951275fb172a90",
     "site_dir": "artifacts/docs/site"
   },
   "drill_summaries": [],
   "evidence_tarball": {
     "path": "release/evidence/bundle.tar",
-    "sha256": "4ed6d2ac9b8324c9f1c6b8c5f3bd91298b71f2f9b2f7a9fc8f9932bf1831327a"
+    "sha256": "38aae21e031a339c428baae62d7bcf6e92f7bb7def9f085be2759a3025c7fd93"
   },
   "generated_by": "bijux dev atlas ops evidence collect",
   "identity_path": "release/evidence/identity.json",
@@ -72,10 +72,29 @@
     "ops/schema/observe/dashboard.schema.json",
     "ops/schema/observe/prometheus-rule.schema.json"
   ],
+  "perf_assets": [
+    "configs/perf/slo.yaml",
+    "configs/perf/budgets.yaml",
+    "configs/perf/benches.json",
+    "configs/perf/exceptions.json",
+    "configs/contracts/perf/slo.schema.json",
+    "configs/contracts/perf/budgets.schema.json",
+    "configs/contracts/perf/benches.schema.json",
+    "configs/contracts/perf/load-report.schema.json",
+    "configs/contracts/perf/exceptions.schema.json",
+    "configs/contracts/perf/cold-start-report.schema.json",
+    "ops/_benchmarks/gene-lookup-baseline.json",
+    "ops/schema/k8s/perf-on-kind.schema.json",
+    "tools/perf/gene-lookup.json",
+    "artifacts/perf/perf-slo.json",
+    "artifacts/perf/gene-lookup-load.json",
+    "artifacts/perf/cold-start.json",
+    "artifacts/perf/perf-on-kind.json"
+  ],
   "policy_path": "release/evidence/policy.json",
   "provenance": {
     "path": "release/provenance.json",
-    "sha256": "c8b55cc852c52edd36baca504f1df1eb9aea33ce906a173c061d7ae55f4b3256"
+    "sha256": "edd60fa5f7b309c67bec8b8a8a9173b03c7ff6461ba7242c103ceb97c81c9248"
   },
   "redacted_logs": [],
   "reports": [

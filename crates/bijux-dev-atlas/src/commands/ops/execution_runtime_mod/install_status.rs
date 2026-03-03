@@ -1357,6 +1357,44 @@ fn collect_observability_assets(repo_root: &std::path::Path) -> Result<Vec<Strin
     Ok(paths)
 }
 
+fn collect_perf_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
+    let mut paths = Vec::new();
+    for rel in [
+        "configs/perf/slo.yaml",
+        "configs/perf/budgets.yaml",
+        "configs/perf/benches.json",
+        "configs/perf/exceptions.json",
+        "configs/contracts/perf/slo.schema.json",
+        "configs/contracts/perf/budgets.schema.json",
+        "configs/contracts/perf/benches.schema.json",
+        "configs/contracts/perf/load-report.schema.json",
+        "configs/contracts/perf/exceptions.schema.json",
+        "configs/contracts/perf/cold-start-report.schema.json",
+        "ops/_benchmarks/gene-lookup-baseline.json",
+        "ops/schema/k8s/perf-on-kind.schema.json",
+        "tools/perf/gene-lookup.json",
+    ] {
+        let path = repo_root.join(rel);
+        if path.exists() {
+            paths.push(rel.to_string());
+        } else {
+            return Err(format!("required perf asset missing: {rel}"));
+        }
+    }
+    for rel in [
+        "artifacts/perf/perf-slo.json",
+        "artifacts/perf/gene-lookup-load.json",
+        "artifacts/perf/cold-start.json",
+        "artifacts/perf/perf-on-kind.json",
+    ] {
+        let path = repo_root.join(rel);
+        if path.exists() {
+            paths.push(rel.to_string());
+        }
+    }
+    Ok(paths)
+}
+
 fn load_required_metric_names(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
     let contract_path = repo_root.join("configs/contracts/observability/metrics.schema.json");
     let contract: serde_json::Value = serde_json::from_str(
@@ -1730,6 +1768,7 @@ fn build_release_evidence_tarball(
         }
     }
     files.extend(collect_observability_assets(repo_root)?);
+    files.extend(collect_perf_assets(repo_root)?);
     files.sort();
     files.dedup();
     std::fs::write(&list_path, files.join("\n"))
@@ -1934,7 +1973,8 @@ pub(crate) fn run_ops_evidence_collect(
         "simulation_summaries": collect_simulation_summary_paths(&repo_root, &run_id),
         "drill_summaries": collect_drill_summary_paths(&repo_root, &run_id),
         "redacted_logs": redacted_logs,
-        "observability_assets": collect_observability_assets(&repo_root)?
+        "observability_assets": collect_observability_assets(&repo_root)?,
+        "perf_assets": collect_perf_assets(&repo_root)?
     });
     let index_html = render_evidence_index_html(&repo_root, &manifest)?;
     std::fs::write(
@@ -2060,6 +2100,22 @@ pub(crate) fn run_ops_evidence_verify(
         }
         if tarball_path.exists() && !tarball_contains_entry(&tarball_path, rel)? {
             errors.push(format!("evidence tarball missing observability asset: {rel}"));
+        }
+    }
+    for rel in manifest
+        .get("perf_assets")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+    {
+        let path = repo_root.join(rel);
+        if !path.exists() {
+            errors.push(format!("referenced perf asset does not exist: {rel}"));
+            continue;
+        }
+        if tarball_path.exists() && !tarball_contains_entry(&tarball_path, rel)? {
+            errors.push(format!("evidence tarball missing perf asset: {rel}"));
         }
     }
     if let Some(path) = manifest

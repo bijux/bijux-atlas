@@ -7,19 +7,19 @@
   "items": [
     {
       "path": "release/evidence/bundle.tar",
-      "sha256": "4ed6d2ac9b8324c9f1c6b8c5f3bd91298b71f2f9b2f7a9fc8f9932bf1831327a"
+      "sha256": "38aae21e031a339c428baae62d7bcf6e92f7bb7def9f085be2759a3025c7fd93"
     },
     {
       "path": "release/evidence/identity.json",
-      "sha256": "dc0ee2b868d111951ad8794dd59d48d10e497df1255c5d56b173feea41af7fdc"
+      "sha256": "a3e7225c25f4b2f08e156f4bf29bd2ffc57c4f5068d0bbfee6925ce90420163b"
     },
     {
       "path": "release/evidence/manifest.json",
-      "sha256": "b316d7dce4b8106a528372852585082ad5cab08f358da4f1202af3e2bbf86733"
+      "sha256": "7db1d270f0d4e6f5f5b6eb7cd201b6812efab9ab4c301ccbe603661678f96129"
     },
     {
       "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-      "sha256": "e4da7ed597c27c121cff09d57404a8da1447812acca4bd21ffdfe9ce5b0adf49"
+      "sha256": "e3e44e46c6adbccb19e458ccf5bf88c3fc2592d7813c8c8c2b3d426fe7fc3e5a"
     },
     {
       "path": "release/evidence/sboms/perf.spdx.json",
@@ -39,15 +39,15 @@
     },
     {
       "path": "release/provenance.json",
-      "sha256": "c8b55cc852c52edd36baca504f1df1eb9aea33ce906a173c061d7ae55f4b3256"
+      "sha256": "edd60fa5f7b309c67bec8b8a8a9173b03c7ff6461ba7242c103ceb97c81c9248"
     },
     {
       "path": "release/signing/checksums.json",
-      "sha256": "7cf4410301a5da22faef769a6465549844a1d02ffd8c8773acdf7f242786f1b1"
+      "sha256": "6a4b6351f9ef15e5eaaa70c92bd4bafd2389d1c528e3dcf37f0ad08e181c847b"
     },
     {
       "path": "release/signing/release-sign.json",
-      "sha256": "09facb5c2d0858f8d825afd99a1edb5d30d2e5bc025a4f6c98ccfec74c3f8b45"
+      "sha256": "a0a9b6792890ca23556ab2e12ec86d6062d559945818fe038886d2bd2bea31fa"
     },
     {
       "path": "release/signing/release-verify.json",

@@ -24,6 +24,7 @@
     "evidence_tarball",
     "redacted_logs",
     "observability_assets",
+    "perf_assets",
     "index_html"
   ],
   "properties": {
@@ -294,6 +295,14 @@
       }
     },
     "observability_assets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "perf_assets": {
       "type": "array",
       "minItems": 1,
       "items": {
