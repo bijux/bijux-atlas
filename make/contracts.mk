@@ -82,8 +82,8 @@ contracts-changed: _contracts_guard ## Run changed-only contracts
 	@$(DEV_ATLAS) contracts all --mode static --changed-only --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-json: _contracts_guard ## Run all contracts and emit json
-	@printf '%s\n' "run: $(DEV_ATLAS) contracts all --mode static --format json --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(DEV_ATLAS) contracts all --mode static --format json --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+	@printf '%s\n' "run: $(DEV_ATLAS) --output-format json contract run --mode static --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
+	@$(DEV_ATLAS) --output-format json contract run --mode static --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-ci: _contracts_guard ## Run strict CI contracts lane
 	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) contracts all $(CONTRACTS_EFFECT_FLAGS) --format json --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
