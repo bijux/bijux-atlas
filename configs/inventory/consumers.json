@@ -4,6 +4,10 @@
     "ci": [
       "workflow routing and lane contracts"
     ],
+    "cli": [
+      "bijux dev atlas help",
+      "bijux dev atlas doctor"
+    ],
     "contracts": [
       "bijux-dev-atlas configs validate",
       "ci schema checks"
@@ -51,6 +55,10 @@
     ],
     "repo": [
       "repo doctor and surface checks"
+    ],
+    "reports": [
+      "bijux dev atlas artifacts report inventory",
+      "bijux dev atlas artifacts report validate"
     ],
     "rust": [
       "cargo fmt and clippy"

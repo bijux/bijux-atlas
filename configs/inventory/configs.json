@@ -35,6 +35,24 @@
     {
       "generated_files": [],
       "internal_files": [],
+      "name": "cli",
+      "owner": "platform",
+      "public_files": [
+        "configs/cli/*.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas help",
+        "bijux dev atlas doctor"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
       "name": "docs",
       "owner": "docs-governance",
       "public_files": [
@@ -253,10 +271,29 @@
       ]
     },
     {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "reports",
+      "owner": "platform",
+      "public_files": [
+        "configs/reports/*.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schema/reports/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas artifacts report inventory",
+        "bijux dev atlas artifacts report validate"
+      ]
+    },
+    {
       "generated_files": [
         "configs/schema/generated/*.json"
       ],
       "internal_files": [
+        "configs/schema/README.md",
         "configs/schema/config-compiler-report.schema.json",
         "configs/schema/configs-ownership.schema.json",
         "configs/schema/docs-registry.schema.json",
@@ -276,6 +313,7 @@
       "name": "schema",
       "owner": "platform",
       "public_files": [
+        "configs/schema/ci/*.json",
         "configs/schema/configs-consumer-map.schema.json",
         "configs/schema/configs-contracts.schema.json",
         "configs/schema/configs-index.schema.json",
@@ -284,11 +322,14 @@
         "configs/schema/configs-schema-map.schema.json",
         "configs/schema/meta-ownership.schema.json",
         "configs/schema/public-surface.schema.json",
+        "configs/schema/reports/*.json",
         "configs/schema/versioning-policy.json"
       ],
       "schema_owner": "platform",
       "schemas": [
         "configs/schema/*.json",
+        "configs/schema/ci/*.json",
+        "configs/schema/reports/*.json",
         "configs/contracts/*.json"
       ],
       "stability": "stable",
@@ -333,7 +374,7 @@
   ],
   "max_depth": 4,
   "max_group_depth": 2,
-  "max_groups": 15,
+  "max_groups": 17,
   "root_files": [
     "configs/CONSUMERS.json",
     "configs/CONTRACT.md",

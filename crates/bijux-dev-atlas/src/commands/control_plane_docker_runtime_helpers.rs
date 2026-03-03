@@ -161,12 +161,15 @@ fn validate_dockerfiles(repo_root: &Path) -> Result<Vec<serde_json::Value>, Stri
         let allowed = rel == "docker/README.md"
             || rel == "docker/CONTRACT.md"
             || rel == "docker/policy.json"
+            || rel == "docker/airgap-policy.json"
             || rel == "docker/bases.lock"
             || rel == "docker/images.manifest.json"
             || rel == "docker/build-matrix.json"
             || rel == "docker/docker.contracts.json"
             || rel == "docker/exceptions.json"
+            || rel == "docker/push-policy.json"
             || rel.starts_with("docker/images/")
+            || rel.starts_with("docker/schema/")
             || rel.starts_with("docker/fixtures/");
         if !allowed {
             rows.push(serde_json::json!({

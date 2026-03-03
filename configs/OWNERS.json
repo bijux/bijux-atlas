@@ -12,6 +12,7 @@
   },
   "groups": {
     "ci": "platform",
+    "cli": "platform",
     "docs": "docs-governance",
     "inventory": "platform",
     "layout": "platform",
@@ -22,6 +23,7 @@
     "ops": "bijux-atlas-operations",
     "perf": "bijux-atlas-performance",
     "policy": "platform",
+    "reports": "platform",
     "rust": "rust-foundation",
     "schema": "platform",
     "security": "security",

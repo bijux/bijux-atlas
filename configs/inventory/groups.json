@@ -2,6 +2,7 @@
   "allowed_groups": [
     "_internal",
     "ci",
+    "cli",
     "contracts",
     "coverage",
     "docs",
@@ -19,12 +20,13 @@
     "policy",
     "product",
     "repo",
+    "reports",
     "rust",
     "schema",
     "security",
     "shellcheck",
     "slo"
   ],
-  "max_top_level_dirs": 24,
+  "max_top_level_dirs": 26,
   "schema_version": 1
 }

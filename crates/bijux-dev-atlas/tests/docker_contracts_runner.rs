@@ -82,6 +82,21 @@ fn fixture_repo(name: &str) -> tempfile::TempDir {
         .to_string(),
     )
     .expect("exceptions");
+    fs::copy(
+        workspace_root().join("docker/policy.json"),
+        tmp.path().join("docker/policy.json"),
+    )
+    .expect("policy");
+    fs::copy(
+        workspace_root().join("docker/airgap-policy.json"),
+        tmp.path().join("docker/airgap-policy.json"),
+    )
+    .expect("airgap policy");
+    fs::copy(
+        workspace_root().join("docker/push-policy.json"),
+        tmp.path().join("docker/push-policy.json"),
+    )
+    .expect("push policy");
     fs::write(
         tmp.path().join("ops/policy/required-contracts.json"),
         serde_json::json!({
