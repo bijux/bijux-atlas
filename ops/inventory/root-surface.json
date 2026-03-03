@@ -73,8 +73,20 @@
     "ops": {
       "kind": "dir"
     },
+    "release": {
+      "kind": "dir"
+    },
     "rust-toolchain.toml": {
       "kind": "file"
+    },
+    "scripts": {
+      "kind": "dir"
+    },
+    "security": {
+      "kind": "dir"
+    },
+    "tools": {
+      "kind": "dir"
     }
   },
   "ssot_roots": [

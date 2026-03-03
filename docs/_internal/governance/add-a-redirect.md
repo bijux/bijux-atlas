@@ -11,8 +11,8 @@
 ## Procedure
 
 1. Add the old `docs/...` path and new `docs/...` path to `docs/redirects.json`.
-2. Run `python3 scripts/docs/sync_redirects.py`.
-3. Run `python3 scripts/docs/check_navigation_policy.py`.
+2. Run `bijux-dev-atlas docs redirects sync --allow-write`.
+3. Run `bijux-dev-atlas docs nav check`.
 4. Run `mkdocs build --strict`.
 
 ## Constraints

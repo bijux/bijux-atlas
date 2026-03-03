@@ -13,6 +13,6 @@
 
 1. Move the page to the new stable name.
 2. Add the old and new paths to `docs/redirects.json`.
-3. Run `python3 scripts/docs/sync_redirects.py`.
+3. Run `bijux-dev-atlas docs redirects sync --allow-write`.
 4. Run `mkdocs build --strict`.
 5. Update direct links in docs entrypoints before merging.

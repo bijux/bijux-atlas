@@ -1,12 +1,13 @@
 {
-  "schema_version": 1,
   "authoritative_paths": [
     "ops/CONTRACT.md",
     "ops/ERRORS.md",
     "ops/README.md",
     "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
+    "ops/_benchmarks/gene-lookup-baseline.json",
     "ops/datasets/fixture-policy.json",
     "ops/datasets/rollback-policy.json",
+    "ops/drills/drills.json",
     "ops/e2e/reproducibility-policy.json",
     "ops/env/portability-matrix.json",
     "ops/inventory/authoritative-file-list.json",
@@ -40,5 +41,6 @@
   ],
   "derived_paths": [
     "ops/inventory/contracts.json"
-  ]
+  ],
+  "schema_version": 1
 }

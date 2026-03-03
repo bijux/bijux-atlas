@@ -15,8 +15,8 @@ The source of truth is `docs/redirects.json`.
 
 ## Generation
 
-Run `scripts/docs/sync_redirects.py` to synchronize the `redirect_maps` block in `mkdocs.yml`
-from `docs/redirects.json`. The generator only materializes markdown-to-markdown redirects because
+Run `bijux-dev-atlas docs redirects sync --allow-write` to synchronize the `redirect_maps` block in
+`mkdocs.yml` from `docs/redirects.json`. The generator only materializes markdown-to-markdown redirects because
 that is the surface `mkdocs-redirects` can render during a normal docs build.
 
 ## Validation

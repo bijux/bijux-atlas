@@ -3,7 +3,7 @@
 - Owner: `docs-governance`
 - Review cadence: `quarterly`
 - Type: `reference`
-- Audience: `reader`
+- Audience: `reviewers`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: provide a top-level map of documentation sections and their purpose.

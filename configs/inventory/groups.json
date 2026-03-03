@@ -5,6 +5,7 @@
     "cli",
     "contracts",
     "coverage",
+    "datasets",
     "docs",
     "examples",
     "gates",
@@ -27,6 +28,6 @@
     "shellcheck",
     "slo"
   ],
-  "max_top_level_dirs": 26,
+  "max_top_level_dirs": 27,
   "schema_version": 1
 }

@@ -6,13 +6,22 @@
     "configs/_generated/configs-index.json": "platform",
     "configs/configs.contracts.json": "platform",
     "configs/consumers-registry.json": "platform",
+    "configs/datasets/manifest.yaml": "data-governance",
+    "configs/datasets/pinned-policy.yaml": "data-governance",
     "configs/inventory.json": "platform",
     "configs/owners-registry.json": "platform",
-    "configs/schema-map.json": "platform"
+    "configs/perf/budgets.yaml": "bijux-atlas-performance",
+    "configs/perf/slo.yaml": "bijux-atlas-performance",
+    "configs/schema-map.json": "platform",
+    "configs/security/dependency-source-policy.json": "security",
+    "configs/security/forbidden-patterns.json": "security",
+    "configs/security/redaction.json": "security",
+    "configs/security/secrets.json": "security"
   },
   "groups": {
     "ci": "platform",
     "cli": "platform",
+    "datasets": "data-governance",
     "docs": "docs-governance",
     "inventory": "platform",
     "layout": "platform",

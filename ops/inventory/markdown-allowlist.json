@@ -1,5 +1,4 @@
 {
-  "schema_version": 1,
   "allowed_markdown": [
     "ops/README.md",
     "ops/CONTRACT.md",
@@ -15,6 +14,8 @@
     "ops/inventory/CONTRACT.md",
     "ops/k8s/README.md",
     "ops/k8s/CONTRACT.md",
+    "ops/k8s/kind/README.md",
+    "ops/k8s/values/profile-readme.md",
     "ops/load/README.md",
     "ops/load/CONTRACT.md",
     "ops/observe/README.md",
@@ -25,5 +26,6 @@
     "ops/schema/CONTRACT.md",
     "ops/stack/README.md",
     "ops/stack/CONTRACT.md"
-  ]
+  ],
+  "schema_version": 1
 }

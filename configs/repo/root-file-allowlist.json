@@ -17,6 +17,10 @@
     "docs",
     "governance",
     "make",
-    "ops"
+    "ops",
+    "release",
+    "scripts",
+    "security",
+    "tools"
   ]
 }

@@ -100,6 +100,14 @@
       "used_in": []
     },
     {
+      "name": "checks-all",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "ci",
       "defined_in": [
         "makefiles/ci.mk"
@@ -286,6 +294,14 @@
       "used_in": []
     },
     {
+      "name": "contracts-crates",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "contracts-docker",
       "defined_in": [
         "make/contracts.mk"
@@ -372,7 +388,23 @@
       ]
     },
     {
+      "name": "contracts-repo",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "contracts-root",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-runtime",
       "defined_in": [
         "make/contracts.mk"
       ],
@@ -711,6 +743,38 @@
       "used_in": []
     },
     {
+      "name": "kind-down",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "kind-reset",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "kind-status",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "kind-up",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "lanes",
       "defined_in": [
         "makefiles/root.mk"
@@ -724,14 +788,6 @@
         "makefiles/cargo.mk"
       ],
       "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "lint-make",
-      "defined_in": [
-        "make/root.mk"
-      ],
-      "visibility": "public",
       "used_in": []
     },
     {
@@ -756,6 +812,14 @@
         "makefiles/root.mk"
       ],
       "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "lint-make",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "public",
       "used_in": []
     },
     {
@@ -799,6 +863,14 @@
       "used_in": []
     },
     {
+      "name": "make-fast",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "make-gate-no-retired-cli-refs",
       "defined_in": [
         "makefiles/root.mk"
@@ -812,14 +884,6 @@
         "makefiles/root.mk"
       ],
       "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "make-fast",
-      "defined_in": [
-        "make/root.mk"
-      ],
-      "visibility": "public",
       "used_in": []
     },
     {
@@ -1166,6 +1230,14 @@
         "makefiles/cargo.mk"
       ],
       "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "tests-all",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "public",
       "used_in": []
     },
     {

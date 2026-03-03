@@ -68,6 +68,30 @@
     },
     {
       "counts": {
+        "covered": 2,
+        "generated": 0,
+        "internal": 0,
+        "public": 2,
+        "schemas": 1
+      },
+      "files": [
+        "configs/datasets/manifest.yaml",
+        "configs/datasets/pinned-policy.yaml"
+      ],
+      "name": "datasets",
+      "owner": "data-governance",
+      "schema_owner": "data-governance",
+      "schemas": [
+        "configs/contracts/datasets/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas datasets validate",
+        "bijux dev atlas ingest dry-run"
+      ]
+    },
+    {
+      "counts": {
         "covered": 13,
         "generated": 0,
         "internal": 0,
@@ -336,22 +360,27 @@
     },
     {
       "counts": {
-        "covered": 3,
+        "covered": 7,
         "generated": 0,
         "internal": 0,
-        "public": 3,
-        "schemas": 1
+        "public": 7,
+        "schemas": 2
       },
       "files": [
+        "configs/perf/benches.json",
+        "configs/perf/budgets.yaml",
         "configs/perf/critical_queries.json",
         "configs/perf/critical_queries_explain_snapshot.json",
-        "configs/perf/k6-thresholds.v1.json"
+        "configs/perf/exceptions.json",
+        "configs/perf/k6-thresholds.v1.json",
+        "configs/perf/slo.yaml"
       ],
       "name": "perf",
       "owner": "bijux-atlas-performance",
       "schema_owner": "bijux-atlas-performance",
       "schemas": [
-        "configs/contracts/inventory-configs.schema.json"
+        "configs/contracts/inventory-configs.schema.json",
+        "configs/contracts/perf/*.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -467,11 +496,11 @@
     },
     {
       "counts": {
-        "covered": 65,
+        "covered": 95,
         "generated": 1,
-        "internal": 46,
+        "internal": 76,
         "public": 18,
-        "schemas": 4
+        "schemas": 9
       },
       "files": [
         "configs/contracts/ci-run-output.schema.json",
@@ -482,6 +511,11 @@
         "configs/contracts/crate-docs-index-allowlist.json",
         "configs/contracts/crate-docs-publish-allowlist.json",
         "configs/contracts/crate-docs-readme-allowlist.json",
+        "configs/contracts/datasets/endtoend.schema.json",
+        "configs/contracts/datasets/ingest-plan.schema.json",
+        "configs/contracts/datasets/ingest-run.schema.json",
+        "configs/contracts/datasets/manifest.schema.json",
+        "configs/contracts/datasets/pinned-policy.schema.json",
         "configs/contracts/dev-atlas-output.schema.json",
         "configs/contracts/docs-site-output.schema.json",
         "configs/contracts/env.schema.json",
@@ -495,7 +529,23 @@
         "configs/contracts/inventory-schemas.schema.json",
         "configs/contracts/inventory-touched-paths.schema.json",
         "configs/contracts/make-contracts-check-output.schema.json",
+        "configs/contracts/observability/error-codes.json",
+        "configs/contracts/observability/label-policy.json",
+        "configs/contracts/observability/log.schema.json",
+        "configs/contracts/observability/metrics.schema.json",
         "configs/contracts/ops-lint-output.schema.json",
+        "configs/contracts/perf/benches.schema.json",
+        "configs/contracts/perf/budgets.schema.json",
+        "configs/contracts/perf/cold-start-report.schema.json",
+        "configs/contracts/perf/exceptions.schema.json",
+        "configs/contracts/perf/load-report.schema.json",
+        "configs/contracts/perf/slo.schema.json",
+        "configs/contracts/release/checksum-list.schema.json",
+        "configs/contracts/release/packet-list.schema.json",
+        "configs/contracts/release/provenance.schema.json",
+        "configs/contracts/release/release-sign.schema.json",
+        "configs/contracts/release/release-verify.schema.json",
+        "configs/contracts/release/signing-policy.schema.json",
         "configs/contracts/reporting-ci-summary-output.schema.json",
         "configs/contracts/reports/closure-index.schema.json",
         "configs/contracts/reports/closure-summary.schema.json",
@@ -503,6 +553,15 @@
         "configs/contracts/reports/governance-index.schema.json",
         "configs/contracts/reports/helm-env.schema.json",
         "configs/contracts/reports/ops-profiles.schema.json",
+        "configs/contracts/security/assets.schema.json",
+        "configs/contracts/security/compliance-matrix.schema.json",
+        "configs/contracts/security/controls.schema.json",
+        "configs/contracts/security/dependency-source-policy.schema.json",
+        "configs/contracts/security/forbidden-patterns.schema.json",
+        "configs/contracts/security/mitigations.schema.json",
+        "configs/contracts/security/redaction.schema.json",
+        "configs/contracts/security/secrets.schema.json",
+        "configs/contracts/security/threats.schema.json",
         "configs/contracts/tooling-doctor-output.schema.json",
         "configs/contracts/tooling-surface-output.schema.json",
         "configs/contracts/tooling-tool-output.schema.json",
@@ -547,7 +606,12 @@
         "configs/schema/*.json",
         "configs/schema/ci/*.json",
         "configs/schema/reports/*.json",
-        "configs/contracts/*.json"
+        "configs/contracts/*.json",
+        "configs/contracts/datasets/*.json",
+        "configs/contracts/observability/*.json",
+        "configs/contracts/perf/*.json",
+        "configs/contracts/release/*.json",
+        "configs/contracts/security/*.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -557,20 +621,26 @@
     },
     {
       "counts": {
-        "covered": 2,
+        "covered": 6,
         "generated": 0,
         "internal": 0,
-        "public": 2,
-        "schemas": 0
+        "public": 6,
+        "schemas": 1
       },
       "files": [
         "configs/security/audit-allowlist.toml",
-        "configs/security/deny.toml"
+        "configs/security/deny.toml",
+        "configs/security/dependency-source-policy.json",
+        "configs/security/forbidden-patterns.json",
+        "configs/security/redaction.json",
+        "configs/security/secrets.json"
       ],
       "name": "security",
       "owner": "security",
       "schema_owner": "security",
-      "schemas": [],
+      "schemas": [
+        "configs/contracts/security/*.json"
+      ],
       "stability": "stable",
       "tool_entrypoints": [
         "cargo deny",
@@ -603,7 +673,7 @@
   "kind": "configs-index",
   "max_depth": 4,
   "max_group_depth": 2,
-  "max_groups": 17,
+  "max_groups": 18,
   "registry_path": "configs/inventory/configs.json",
   "root_files": [
     "configs/CONSUMERS.json",

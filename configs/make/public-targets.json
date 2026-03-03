@@ -1,6 +1,6 @@
 {
-  "max_public_targets": 41,
-  "target_public_targets": 38,
+  "max_public_targets": 50,
+  "target_public_targets": 47,
   "public_targets": [
     {
       "name": "artifacts-clean",
@@ -14,6 +14,15 @@
     {
       "name": "build",
       "description": "Run workspace build lane",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
+    },
+    {
+      "name": "checks-all",
+      "description": "Run deterministic non-test quality gates",
       "lanes": [
         "dev",
         "ci"
@@ -68,6 +77,15 @@
     {
       "name": "contracts-configs",
       "description": "Run contracts gate target",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-crates",
+      "description": "Run crate contracts",
       "lanes": [
         "dev",
         "ci"
@@ -164,8 +182,26 @@
       "area": "contracts"
     },
     {
+      "name": "contracts-repo",
+      "description": "Run repository contracts",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
       "name": "contracts-root",
       "description": "Run contracts gate target",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-runtime",
+      "description": "Run runtime contracts",
       "lanes": [
         "dev",
         "ci"
@@ -238,6 +274,42 @@
     {
       "name": "k8s-validate",
       "description": "Validate manifests via control plane",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "ops"
+    },
+    {
+      "name": "kind-down",
+      "description": "Delete kind simulation cluster",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "ops"
+    },
+    {
+      "name": "kind-reset",
+      "description": "Recreate kind simulation cluster",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "ops"
+    },
+    {
+      "name": "kind-status",
+      "description": "Report kind simulation cluster status",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "ops"
+    },
+    {
+      "name": "kind-up",
+      "description": "Create kind simulation cluster",
       "lanes": [
         "dev",
         "ci"
@@ -341,6 +413,15 @@
         "ci"
       ],
       "area": "ops"
+    },
+    {
+      "name": "tests-all",
+      "description": "Run deterministic test suite",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
     }
   ]
 }

@@ -20,4 +20,4 @@
 
 ## Enforcement
 
-Run `python3 scripts/docs/check_navigation_policy.py` after navigation edits.
+Run `bijux-dev-atlas docs nav check` after navigation edits.

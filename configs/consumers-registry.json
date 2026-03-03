@@ -35,6 +35,14 @@
       "bijux-dev-atlas",
       "ci"
     ],
+    "configs/datasets/manifest.yaml": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/datasets/pinned-policy.yaml": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
     "configs/docs/*.json": [
       "docs-build",
       "ci"
@@ -122,6 +130,14 @@
       "bijux-dev-atlas",
       "runtime"
     ],
+    "configs/perf/budgets.yaml": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/perf/slo.yaml": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
     "configs/policy/*.json": [
       "bijux-dev-atlas",
       "ci"
@@ -185,6 +201,22 @@
     "configs/security/*.toml": [
       "ci"
     ],
+    "configs/security/dependency-source-policy.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/security/forbidden-patterns.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/security/redaction.json": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/security/secrets.json": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
     "configs/shellcheck/*": [
       "bijux-dev-atlas",
       "ci"
@@ -201,6 +233,10 @@
     "cli": [
       "bijux-dev-atlas",
       "ci"
+    ],
+    "datasets": [
+      "bijux-dev-atlas",
+      "runtime"
     ],
     "docs": [
       "docs-build",

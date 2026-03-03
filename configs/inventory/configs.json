@@ -53,6 +53,24 @@
     {
       "generated_files": [],
       "internal_files": [],
+      "name": "datasets",
+      "owner": "data-governance",
+      "public_files": [
+        "configs/datasets/*.yaml"
+      ],
+      "schema_owner": "data-governance",
+      "schemas": [
+        "configs/contracts/datasets/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas datasets validate",
+        "bijux dev atlas ingest dry-run"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
       "name": "docs",
       "owner": "docs-governance",
       "public_files": [
@@ -218,11 +236,13 @@
       "name": "perf",
       "owner": "bijux-atlas-performance",
       "public_files": [
-        "configs/perf/*.json"
+        "configs/perf/*.json",
+        "configs/perf/*.yaml"
       ],
       "schema_owner": "bijux-atlas-performance",
       "schemas": [
-        "configs/contracts/inventory-configs.schema.json"
+        "configs/contracts/inventory-configs.schema.json",
+        "configs/contracts/perf/*.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -308,7 +328,12 @@
         "configs/schema/tool-versions.schema.json",
         "configs/schema/versioning-policy.schema.json",
         "configs/contracts/*.json",
-        "configs/contracts/reports/*.json"
+        "configs/contracts/datasets/*.json",
+        "configs/contracts/observability/*.json",
+        "configs/contracts/perf/*.json",
+        "configs/contracts/release/*.json",
+        "configs/contracts/reports/*.json",
+        "configs/contracts/security/*.json"
       ],
       "name": "schema",
       "owner": "platform",
@@ -330,7 +355,12 @@
         "configs/schema/*.json",
         "configs/schema/ci/*.json",
         "configs/schema/reports/*.json",
-        "configs/contracts/*.json"
+        "configs/contracts/*.json",
+        "configs/contracts/datasets/*.json",
+        "configs/contracts/observability/*.json",
+        "configs/contracts/perf/*.json",
+        "configs/contracts/release/*.json",
+        "configs/contracts/security/*.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -344,10 +374,13 @@
       "name": "security",
       "owner": "security",
       "public_files": [
+        "configs/security/*.json",
         "configs/security/*.toml"
       ],
       "schema_owner": "security",
-      "schemas": [],
+      "schemas": [
+        "configs/contracts/security/*.json"
+      ],
       "stability": "stable",
       "tool_entrypoints": [
         "cargo deny",
@@ -374,7 +407,7 @@
   ],
   "max_depth": 4,
   "max_group_depth": 2,
-  "max_groups": 17,
+  "max_groups": 18,
   "root_files": [
     "configs/CONSUMERS.json",
     "configs/CONTRACT.md",
