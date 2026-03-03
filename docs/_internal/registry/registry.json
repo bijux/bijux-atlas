@@ -14359,6 +14359,31 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "auth-error-codes",
+        "operations",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/auth-error-codes.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "auth-error-codes",
+        "operations",
+        "security"
+      ],
+      "title": "Auth Error Codes",
+      "topic": "auth-error-codes"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",

@@ -74,6 +74,8 @@ pub(crate) fn run_ops_evidence_collect(
     .map_err(|err| format!("failed to write {}: {err}", identity_path.display()))?;
     let docker_bases = repo_root.join("docker/bases.lock");
     let toolchain_inventory = repo_root.join("configs/rust/toolchain.json");
+    let auth_model = repo_root.join("configs/security/auth-model.yaml");
+    let access_policy = repo_root.join("configs/security/policy.yaml");
     let runtime_env_allowlist = repo_root.join("configs/contracts/env.schema.json");
     let signing_policy = repo_root.join("release/signing/policy.yaml");
     let action_pins_report = repo_root.join("artifacts/security/security-github-actions.json");
@@ -119,6 +121,16 @@ pub(crate) fn run_ops_evidence_collect(
         "toolchain_inventory": {
             "path": toolchain_inventory.strip_prefix(&repo_root).unwrap_or(&toolchain_inventory).display().to_string(),
             "sha256": sha256_file(&toolchain_inventory)?
+        },
+        "auth_policy": {
+            "auth_model": {
+                "path": auth_model.strip_prefix(&repo_root).unwrap_or(&auth_model).display().to_string(),
+                "sha256": sha256_file(&auth_model)?
+            },
+            "access_policy": {
+                "path": access_policy.strip_prefix(&repo_root).unwrap_or(&access_policy).display().to_string(),
+                "sha256": sha256_file(&access_policy)?
+            }
         },
         "supply_chain": {
             "action_pins_report": {
@@ -220,6 +232,60 @@ pub(crate) fn run_ops_evidence_verify(
         if tarball_path.exists() && !tarball_contains_entry(&tarball_path, rel)? {
             errors.push(format!("evidence tarball missing supply-chain inventory: {rel}"));
         }
+    }
+    if let Some(row) = manifest
+        .get("auth_policy")
+        .and_then(|v| v.get("auth_model"))
+    {
+        let path = row
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let abs = repo_root.join(path);
+        if path.is_empty() || !abs.exists() {
+            errors.push(format!("auth model snapshot does not exist: {path}"));
+        } else {
+            if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+                errors.push(format!("evidence tarball missing auth model snapshot: {path}"));
+            }
+            if let Some(expected) = row.get("sha256").and_then(serde_json::Value::as_str) {
+                let actual = sha256_file(&abs)?;
+                if actual != expected {
+                    errors.push(format!(
+                        "auth model snapshot checksum does not match manifest: {path}"
+                    ));
+                }
+            }
+        }
+    } else {
+        errors.push("manifest must include auth_policy.auth_model".to_string());
+    }
+    if let Some(row) = manifest
+        .get("auth_policy")
+        .and_then(|v| v.get("access_policy"))
+    {
+        let path = row
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let abs = repo_root.join(path);
+        if path.is_empty() || !abs.exists() {
+            errors.push(format!("access policy snapshot does not exist: {path}"));
+        } else {
+            if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+                errors.push(format!("evidence tarball missing access policy snapshot: {path}"));
+            }
+            if let Some(expected) = row.get("sha256").and_then(serde_json::Value::as_str) {
+                let actual = sha256_file(&abs)?;
+                if actual != expected {
+                    errors.push(format!(
+                        "access policy snapshot checksum does not match manifest: {path}"
+                    ));
+                }
+            }
+        }
+    } else {
+        errors.push("manifest must include auth_policy.access_policy".to_string());
     }
     if let Some(row) = manifest
         .get("supply_chain")

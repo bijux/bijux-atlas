@@ -7814,6 +7814,20 @@
     },
     {
       "keywords": [
+        "auth-error-codes",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/auth-error-codes.md",
+      "tags": [
+        "auth-error-codes",
+        "operations",
+        "security"
+      ],
+      "topic": "auth-error-codes"
+    },
+    {
+      "keywords": [
         "compliance",
         "operations",
         "security"

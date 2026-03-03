@@ -49,3 +49,16 @@ fn api_error_mapping_is_centralized_and_stable() {
     assert_eq!(mapped.status_code, 422);
     assert_eq!(mapped.schema_ref, API_ERROR_SCHEMA_REF);
 }
+
+#[test]
+fn auth_error_mapping_uses_http_auth_statuses() {
+    let unauthorized = ApiError::new(
+        ApiErrorCode::AuthenticationRequired,
+        "auth required",
+        json!({}),
+        "req-1",
+    );
+    let forbidden = ApiError::new(ApiErrorCode::AccessForbidden, "forbidden", json!({}), "req-2");
+    assert_eq!(map_error(&unauthorized).status_code, 401);
+    assert_eq!(map_error(&forbidden).status_code, 403);
+}

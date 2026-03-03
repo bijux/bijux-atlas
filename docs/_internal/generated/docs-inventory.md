@@ -599,6 +599,7 @@ License: Apache-2.0
 | `docs/operations/security/action-pin-refresh.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/advisory-process.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/security/api-access-model.md` | `concept` | `bijux-atlas-security` | `stable` |
+| `docs/operations/security/auth-error-codes.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/security/compliance.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/deploy-behind-auth-proxy.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/incident-response.md` | `concept` | `bijux-atlas-security` | `stable` |

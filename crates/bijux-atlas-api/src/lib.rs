@@ -175,6 +175,8 @@ mod tests {
     fn error_codes_match_generated_contract() {
         let generated = crate::generated::error_codes::API_ERROR_CODES;
         let from_enum = [
+            ApiErrorCode::AccessForbidden,
+            ApiErrorCode::AuthenticationRequired,
             ApiErrorCode::ArtifactCorrupted,
             ApiErrorCode::ArtifactQuarantined,
             ApiErrorCode::DatasetNotFound,

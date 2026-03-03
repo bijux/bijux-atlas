@@ -10,6 +10,8 @@ use serde_json::{json, Value};
 #[allow(dead_code)]
 pub(crate) fn api_error_status(code: ApiErrorCode) -> StatusCode {
     match code {
+        ApiErrorCode::AuthenticationRequired => StatusCode::UNAUTHORIZED,
+        ApiErrorCode::AccessForbidden => StatusCode::FORBIDDEN,
         ApiErrorCode::InvalidQueryParameter
         | ApiErrorCode::InvalidCursor
         | ApiErrorCode::MissingDatasetDimension
@@ -68,6 +70,16 @@ mod tests {
         .unwrap_or_else(|err| panic!("error registry: {err}"));
         let spec = bijux_atlas_api::openapi_v1_spec().to_string();
         let expected = [
+            (
+                "AccessForbidden",
+                ApiErrorCode::AccessForbidden,
+                StatusCode::FORBIDDEN,
+            ),
+            (
+                "AuthenticationRequired",
+                ApiErrorCode::AuthenticationRequired,
+                StatusCode::UNAUTHORIZED,
+            ),
             (
                 "InvalidQueryParameter",
                 ApiErrorCode::InvalidQueryParameter,

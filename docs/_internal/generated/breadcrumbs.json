@@ -5262,6 +5262,15 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/auth-error-codes.md"
+      ],
+      "path": "docs/operations/security/auth-error-codes.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/compliance.md"
       ],
       "path": "docs/operations/security/compliance.md"

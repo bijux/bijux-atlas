@@ -146,6 +146,14 @@ fn emit_auth_policy_decision(
     );
 }
 
+fn auth_error_code(status: StatusCode) -> ApiErrorCode {
+    match status {
+        StatusCode::UNAUTHORIZED => ApiErrorCode::AuthenticationRequired,
+        StatusCode::FORBIDDEN => ApiErrorCode::AccessForbidden,
+        _ => ApiErrorCode::QueryRejectedByPolicy,
+    }
+}
+
 fn parse_dataset_from_uri(uri: &Uri) -> Option<DatasetId> {
     let path = uri.path();
     let mut release: Option<String> = None;
@@ -383,7 +391,7 @@ async fn security_middleware(
         emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
         record_policy_violation(&state, "api_key_required").await;
         let err = Json(ApiError::new(
-            ApiErrorCode::QueryRejectedByPolicy,
+            auth_error_code(StatusCode::UNAUTHORIZED),
             "api key required",
             serde_json::json!({}),
             "req-unknown",
@@ -397,7 +405,7 @@ async fn security_middleware(
             emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
             record_policy_violation(&state, "api_key_invalid").await;
             let err = Json(ApiError::new(
-                ApiErrorCode::QueryRejectedByPolicy,
+                auth_error_code(StatusCode::UNAUTHORIZED),
                 "invalid api key",
                 serde_json::json!({}),
                 "req-unknown",
@@ -413,7 +421,7 @@ async fn security_middleware(
             emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
             record_policy_violation(&state, "hmac_missing_headers").await;
             let err = Json(ApiError::new(
-                ApiErrorCode::QueryRejectedByPolicy,
+                auth_error_code(StatusCode::UNAUTHORIZED),
                 "missing required HMAC headers",
                 serde_json::json!({}),
                 "req-unknown",
@@ -426,7 +434,7 @@ async fn security_middleware(
                 emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
                 record_policy_violation(&state, "hmac_invalid_timestamp").await;
                 let err = Json(ApiError::new(
-                    ApiErrorCode::QueryRejectedByPolicy,
+                    auth_error_code(StatusCode::UNAUTHORIZED),
                     "invalid hmac timestamp",
                     serde_json::json!({}),
                     "req-unknown",
@@ -438,7 +446,7 @@ async fn security_middleware(
                 emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
                 record_policy_violation(&state, "hmac_skew").await;
                 let err = Json(ApiError::new(
-                    ApiErrorCode::QueryRejectedByPolicy,
+                    auth_error_code(StatusCode::UNAUTHORIZED),
                     "hmac timestamp outside allowed skew",
                     serde_json::json!({"max_skew_secs": state.api.hmac_max_skew_secs}),
                     "req-unknown",
@@ -453,7 +461,7 @@ async fn security_middleware(
                 emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
                 record_policy_violation(&state, "hmac_signature").await;
                 let err = Json(ApiError::new(
-                    ApiErrorCode::QueryRejectedByPolicy,
+                    auth_error_code(StatusCode::UNAUTHORIZED),
                     "invalid hmac signature",
                     serde_json::json!({}),
                     "req-unknown",
@@ -477,6 +485,19 @@ async fn security_middleware(
         &route,
     );
     emit_auth_policy_decision(state.api.auth_mode, principal, &route, policy_allowed);
+    if !policy_allowed {
+        record_policy_violation(&state, "auth_policy_denied").await;
+        let err = Json(ApiError::new(
+            auth_error_code(StatusCode::FORBIDDEN),
+            "request denied by access policy",
+            serde_json::json!({
+                "action": route_action_id(&route),
+                "resource_kind": route_resource_kind(&route)
+            }),
+            "req-unknown",
+        ));
+        return (StatusCode::FORBIDDEN, err).into_response();
+    }
 
     let started = Instant::now();
     let method = req.method().clone();
@@ -517,6 +538,19 @@ mod tests {
                 "{mode:?} must not mark data routes as auth exempt"
             );
         }
+    }
+
+    #[test]
+    fn protected_routes_use_auth_failure_codes() {
+        assert!(!route_auth_exempt("/v1/datasets"));
+        assert_eq!(
+            auth_error_code(StatusCode::UNAUTHORIZED),
+            ApiErrorCode::AuthenticationRequired
+        );
+        assert_eq!(
+            auth_error_code(StatusCode::FORBIDDEN),
+            ApiErrorCode::AccessForbidden
+        );
     }
 }
 

@@ -14,6 +14,7 @@
 - [Security Posture](../security-posture.md)
 - [Security Compliance](compliance.md)
 - [API Access Model](api-access-model.md)
+- [Auth Error Codes](auth-error-codes.md)
 - [Security Incident Response](incident-response.md)
 - [Security Key Rotation](key-rotation.md)
 - [Refresh Pinned GitHub Actions SHAs](action-pin-refresh.md)

@@ -14,12 +14,12 @@
 - Unique external domains: `0`
 - Allowlist-covered external domains: `0/0`
 - Orphan pages: `84`
-- Pages missing `Last verified against`: `196`
+- Pages missing `Last verified against`: `197`
 
 ## Longest Pages
 
-- `docs/_internal/generated/docs-inventory.md`: `736` lines
-- `docs/_internal/generated/topic-index.md`: `455` lines
+- `docs/_internal/generated/docs-inventory.md`: `737` lines
+- `docs/_internal/generated/topic-index.md`: `456` lines
 - `docs/reference/contracts/errors.md`: `435` lines
 - `docs/operations/reference/ops-surface.md`: `308` lines
 - `docs/reference/contracts/plugins/spec.md`: `191` lines

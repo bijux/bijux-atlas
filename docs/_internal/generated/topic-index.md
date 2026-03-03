@@ -42,6 +42,7 @@
 | `artifact-output-contract` | `crates/bijux-atlas-ingest/docs/artifact-output-contract.md` |
 | `artifacts` | `crates/bijux-dev-atlas/docs/internal/artifacts.md` |
 | `attack-surface-budget` | `crates/bijux-atlas-store/docs/internal/attack-surface-budget.md` |
+| `auth-error-codes` | `docs/operations/security/auth-error-codes.md` |
 | `auth-model` | `docs/architecture/security/auth-model.md` |
 | `backend-feature-matrix` | `crates/bijux-atlas-store/docs/internal/backend-feature-matrix.md` |
 | `backends-and-guarantees` | `crates/bijux-atlas-store/docs/backends-and-guarantees.md` |

@@ -13,6 +13,8 @@ pub struct ApiErrorMapping {
 #[must_use]
 pub fn map_error(error: &ApiError) -> ApiErrorMapping {
     let status_code = match error.code {
+        ApiErrorCode::AuthenticationRequired => 401,
+        ApiErrorCode::AccessForbidden => 403,
         ApiErrorCode::InvalidQueryParameter
         | ApiErrorCode::MissingDatasetDimension
         | ApiErrorCode::InvalidCursor

@@ -1,6 +1,8 @@
 {
   "schema_version": 1,
   "codes": [
+    { "code": "AccessForbidden", "http_status": 403 },
+    { "code": "AuthenticationRequired", "http_status": 401 },
     { "code": "InvalidQueryParameter", "http_status": 400 },
     { "code": "InvalidCursor", "http_status": 400 },
     { "code": "MissingDatasetDimension", "http_status": 400 },

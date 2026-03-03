@@ -233,6 +233,9 @@
     "attack-surface-budget": [
       "crates/bijux-atlas-store/docs/internal/attack-surface-budget.md"
     ],
+    "auth-error-codes": [
+      "docs/operations/security/auth-error-codes.md"
+    ],
     "auth-model": [
       "docs/architecture/security/auth-model.md"
     ],

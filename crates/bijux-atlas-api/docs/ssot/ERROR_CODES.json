@@ -2,6 +2,8 @@
   "schema_version": 1,
   "type": "api_error_codes_registry",
   "codes": [
+    "AccessForbidden",
+    "AuthenticationRequired",
     "ArtifactCorrupted",
     "ArtifactQuarantined",
     "DatasetNotFound",

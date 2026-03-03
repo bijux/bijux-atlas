@@ -6,6 +6,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[non_exhaustive]
 pub enum ErrorCode {
+    AccessForbidden,
+    AuthenticationRequired,
     ArtifactCorrupted,
     ArtifactQuarantined,
     DatasetNotFound,
@@ -40,6 +42,8 @@ impl ErrorCode {
     #[must_use]
     pub const fn as_str(self) -> &'static str {
         match self {
+            Self::AccessForbidden => "AccessForbidden",
+            Self::AuthenticationRequired => "AuthenticationRequired",
             Self::ArtifactCorrupted => "ArtifactCorrupted",
             Self::ArtifactQuarantined => "ArtifactQuarantined",
             Self::DatasetNotFound => "DatasetNotFound",
@@ -73,6 +77,8 @@ impl ErrorCode {
 
     pub fn parse(value: &str) -> Option<Self> {
         match value {
+            "AccessForbidden" => Some(Self::AccessForbidden),
+            "AuthenticationRequired" => Some(Self::AuthenticationRequired),
             "ArtifactCorrupted" => Some(Self::ArtifactCorrupted),
             "ArtifactQuarantined" => Some(Self::ArtifactQuarantined),
             "DatasetNotFound" => Some(Self::DatasetNotFound),
@@ -107,6 +113,8 @@ impl ErrorCode {
 }
 
 pub const ERROR_CODES: &[&str] = &[
+    "AccessForbidden",
+    "AuthenticationRequired",
     "ArtifactCorrupted",
     "ArtifactQuarantined",
     "DatasetNotFound",
