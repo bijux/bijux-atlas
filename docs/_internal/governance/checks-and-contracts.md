@@ -25,9 +25,26 @@ Contracts are governance invariants. They define product or operational guarante
 - Every check must declare stable report ids and validate those reports against governed schemas.
 - Every check command list must be stored in deterministic execution order.
 - Every check must be idempotent when rerun against the same repository state and declared inputs.
+- Check ids are deprecated only through the deprecations registry, never by silent renaming or deletion.
 - The checks registry is the SSOT for stable check ids exposed by Make and CI.
 - The contracts registry is the SSOT for stable governance invariant ids exposed by the control plane.
 
 ## Checks As Product
 
 Checks are product surfaces, not throwaway shell wrappers. A governed check must be interpretable by humans from its summary, owner, artifacts, and reference docs, and by machines from its stable id, report ids, and schema-validated JSON outputs.
+
+## Suite Boundaries
+
+Checks are the quality gate layer. They answer whether a bounded engineering lane is healthy enough to proceed.
+
+Contracts are the governance invariant layer. They answer whether Atlas still honors product, operational, and institutional guarantees.
+
+The same implementation detail may appear in both layers only as a documented conceptual overlap through `overlaps_with[]`. Default suite membership remains singular.
+
+## Validation System
+
+| Surface | Primary purpose | Typical contents | Blocking default |
+| --- | --- | --- | --- |
+| `tests-all` | executable behavioral verification | unit, integration, and fixture-backed code tests | yes |
+| `checks-all` | quality gate verification | fmt, lint, docs, config, supply-chain, and fast control-plane lanes | yes, except `severity=info` unless `--strict` |
+| `contracts-all` | governance invariant verification | schema, policy, release, docs, and operational contracts | yes |

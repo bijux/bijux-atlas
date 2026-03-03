@@ -2363,6 +2363,22 @@
     },
     {
       "area": "_internal",
+      "audience": "contributor",
+      "owner": "team:atlas-governance",
+      "path": "docs/_internal/governance/add-check-template.md",
+      "stability": "stable",
+      "title": "Add A Check"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "team:atlas-governance",
+      "path": "docs/_internal/governance/add-contract-template.md",
+      "stability": "stable",
+      "title": "Add A Contract"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md",
@@ -2852,6 +2868,14 @@
     {
       "area": "_internal",
       "audience": "contributor",
+      "owner": "team:atlas-governance",
+      "path": "docs/_internal/governance/registry-status-index.md",
+      "stability": "stable",
+      "title": "Registry Status Index"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
       "owner": "bijux-atlas-governance",
       "path": "docs/_internal/governance/rename-chart-keys-safely.md",
       "stability": "stable",
@@ -2960,6 +2984,30 @@
       "path": "docs/_internal/governance/style/structure-templates.md",
       "stability": "stable",
       "title": "Structure Templates"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "team:atlas-governance",
+      "path": "docs/_internal/governance/suite-membership-policy.md",
+      "stability": "stable",
+      "title": "Suite Membership Policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "team:atlas-governance",
+      "path": "docs/_internal/governance/suites-and-registries.md",
+      "stability": "stable",
+      "title": "Suites And Registries"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "team:atlas-governance",
+      "path": "docs/_internal/governance/triage-validation-failures.md",
+      "stability": "stable",
+      "title": "Triage Validation Failures"
     },
     {
       "area": "_internal",
@@ -5173,6 +5221,14 @@
       "area": "reference",
       "audience": "contributor",
       "owner": "docs-governance",
+      "path": "docs/reference/checks/index.md",
+      "stability": "stable",
+      "title": "Checks Reference"
+    },
+    {
+      "area": "reference",
+      "audience": "contributor",
+      "owner": "docs-governance",
       "path": "docs/reference/command-inventory.md",
       "stability": "stable",
       "title": "Command inventory"
@@ -5712,6 +5768,14 @@
       "path": "docs/reference/repo-map.md",
       "stability": "stable",
       "title": "Repository Map"
+    },
+    {
+      "area": "reference",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/reference/reports/checks/index.md",
+      "stability": "stable",
+      "title": "Check Reports"
     },
     {
       "area": "reference",

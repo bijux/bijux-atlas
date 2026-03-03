@@ -30,6 +30,7 @@
 - [Institutional delta](../../../artifacts/governance/institutional-delta.md)
 - [Registry status](registry-status-index.md)
 - [Registry status markdown](../../../artifacts/governance/registry-status.md)
+- [Suite membership policy](suite-membership-policy.md)
 - [Crate docs budgets and violations](../generated/crate-docs-slice.json)
 - [Sitemap](../generated/sitemap.json)
 - [Search Index](../generated/search-index.json)

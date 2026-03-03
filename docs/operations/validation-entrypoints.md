@@ -27,13 +27,15 @@
 - `bijux dev atlas suites last --suite checks`
 - `bijux dev atlas suites report --suite checks --run <run_id>`
 - `bijux dev atlas suites diff --suite checks --a <run_id> --b <run_id>`
+- `bijux dev atlas suites lint`
 - `bijux dev atlas registry status`
 - `bijux dev atlas registry doctor`
 - `bijux dev atlas check run CHECK-RUSTFMT-001`
 - `bijux dev atlas contract run OPS-DATASETS-001`
 
 `--jobs auto` is the default on the control-plane surface. Use `--jobs <n>` only when a lane needs
-an explicit cap. Use `--fail-fast` when you want the first blocking failure to stop the suite.
+an explicit cap. Use `--fail-fast` when you want the first blocking failure to stop the suite. Use
+`--strict` when `severity=info` checks should fail the suite instead of surfacing as warnings.
 
 ## Make Entrypoints
 
@@ -67,6 +69,9 @@ These entrypoints keep effectful work explicit:
 - `checks-effect` and `contracts-effect` intentionally include effectful entries.
 - `checks-all` and `contracts-all` respect the registry mode metadata and write per-entry artifacts
   under `artifacts/suites/<suite>/<run_id>/`.
+- `checks-all` schedules work across groups while keeping high-memory checks from colliding.
+- `contracts-all` keeps effectful contract work isolated according to the governed concurrency
+  policy.
 
 ## When To Use Each
 

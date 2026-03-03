@@ -7171,6 +7171,56 @@
     },
     {
       "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "add-check-template",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "team:bijux-atlas-governance",
+      "path": "docs/_internal/governance/add-check-template.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "add-check-template",
+        "governance"
+      ],
+      "title": "Add A Check",
+      "topic": "add-check-template"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "add-contract-template",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "team:bijux-atlas-governance",
+      "path": "docs/_internal/governance/add-contract-template.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "add-contract-template",
+        "governance"
+      ],
+      "title": "Add A Contract",
+      "topic": "add-contract-template"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
@@ -8727,6 +8777,31 @@
       "keywords": [
         "-internal",
         "governance",
+        "registry-status-index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "team:atlas-governance",
+      "path": "docs/_internal/governance/registry-status-index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "registry-status-index"
+      ],
+      "title": "Registry Status Index",
+      "topic": "registry-status-index"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
         "rename-chart-keys-safely"
       ],
       "last_reviewed": "2026-02-25",
@@ -9085,6 +9160,81 @@
       ],
       "title": "Structure Templates",
       "topic": "structure-templates"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "suite-membership-policy"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "team:atlas-governance",
+      "path": "docs/_internal/governance/suite-membership-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "suite-membership-policy"
+      ],
+      "title": "Suite Membership Policy",
+      "topic": "suite-membership-policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "suites-and-registries"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "team:atlas-governance",
+      "path": "docs/_internal/governance/suites-and-registries.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "suites-and-registries"
+      ],
+      "title": "Suites And Registries",
+      "topic": "suites-and-registries"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "triage-validation-failures"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "team:atlas-governance",
+      "path": "docs/_internal/governance/triage-validation-failures.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "triage-validation-failures"
+      ],
+      "title": "Triage Validation Failures",
+      "topic": "triage-validation-failures"
     },
     {
       "area": "_internal",
@@ -15597,6 +15747,31 @@
       "doc_type": "reference",
       "doc_version": "v1",
       "keywords": [
+        "checks",
+        "index",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/checks/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "checks",
+        "index",
+        "reference"
+      ],
+      "title": "Checks Reference",
+      "topic": "index"
+    },
+    {
+      "area": "reference",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
         "command-inventory",
         "reference"
       ],
@@ -17291,6 +17466,33 @@
       ],
       "title": "Repository Map",
       "topic": "repo-map"
+    },
+    {
+      "area": "reference",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "checks",
+        "index",
+        "reference",
+        "reports"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/reports/checks/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "checks",
+        "index",
+        "reference",
+        "reports"
+      ],
+      "title": "Check Reports",
+      "topic": "index"
     },
     {
       "area": "reference",

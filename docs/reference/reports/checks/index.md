@@ -1,6 +1,6 @@
 # Check Reports
 
-- Owner: `team:atlas-governance`
+- Owner: `docs-governance`
 - Type: `reference`
 - Audience: `contributor`
 - Stability: `stable`
