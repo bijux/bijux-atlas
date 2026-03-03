@@ -8,10 +8,14 @@ fn internal_module_skeleton_exists() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("src");
     for rel in [
         "lib.rs",
+        "engine/mod.rs",
         "model/mod.rs",
         "policies/mod.rs",
         "ports/mod.rs",
         "adapters/mod.rs",
+        "runtime/mod.rs",
+        "registry/mod.rs",
+        "prelude.rs",
         "core/mod.rs",
         "commands/mod.rs",
         "cli/mod.rs",
@@ -26,14 +30,18 @@ fn internal_module_skeleton_exists() {
 
 #[test]
 fn model_module_does_not_depend_on_core_or_adapters() {
-    let model_mod = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/model/mod.rs");
-    let content = fs::read_to_string(&model_mod)
-        .unwrap_or_else(|err| panic!("failed to read {}: {err}", model_mod.display()));
-    for forbidden in ["crate::core", "crate::adapters"] {
-        assert!(
-            !content.contains(forbidden),
-            "model module must not depend on {forbidden}"
-        );
+    let model_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/model");
+    for file in ["mod.rs", "engine.rs", "governance.rs"] {
+        let path = model_root.join(file);
+        let content = fs::read_to_string(&path)
+            .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()));
+        for forbidden in ["crate::core", "crate::adapters"] {
+            assert!(
+                !content.contains(forbidden),
+                "model module file {} must not depend on {forbidden}",
+                path.display()
+            );
+        }
     }
 }
 
