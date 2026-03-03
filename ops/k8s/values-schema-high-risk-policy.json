@@ -1,0 +1,14 @@
+{
+  "policy_version": 1,
+  "high_risk_keys": [
+    "image",
+    "server",
+    "cache",
+    "store",
+    "resources",
+    "metrics",
+    "networkPolicy",
+    "serviceAccount",
+    "rbac"
+  ]
+}
