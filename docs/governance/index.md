@@ -25,8 +25,8 @@ This is the canonical governance index for repository-wide policy and SSOT bound
 
 - Documentation governance: [Development](../development/index.md)
 - Contract and checks reference: [Reference](../reference/contracts/index.md)
-- Operational governance index: [`ops/INDEX.md`](../../ops/INDEX.md)
+- Operational governance reference: [Ops Reference](../reference/ops/index.md)
 
 ## Operational Governance
 
-Operational governance artifacts remain under `ops/` and are indexed by `ops/INDEX.md`.
+Operational governance artifacts remain under `ops/` and are documented in [Ops Reference](../reference/ops/index.md).
