@@ -572,6 +572,33 @@
       "doc_version": "v1",
       "keywords": [
         "configs",
+        "governance",
+        "readme",
+        "suites"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/governance/suites/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "governance",
+        "readme",
+        "suites"
+      ],
+      "title": "Governance Suites",
+      "topic": "README"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "configs",
         "inventory",
         "readme"
       ],
@@ -7331,6 +7358,31 @@
     },
     {
       "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "checks-and-contracts",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "team:atlas-governance",
+      "path": "docs/_internal/governance/checks-and-contracts.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "checks-and-contracts",
+        "governance"
+      ],
+      "title": "Checks And Contracts",
+      "topic": "checks-and-contracts"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
@@ -7407,6 +7459,106 @@
       ],
       "title": "Boundary Closure Checks",
       "topic": "closure-checks"
+    },
+    {
+      "area": "_internal",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "compatibility-acceptance-gates",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/compatibility-acceptance-gates.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "compatibility-acceptance-gates",
+        "governance"
+      ],
+      "title": "Compatibility Acceptance Gates",
+      "topic": "compatibility-acceptance-gates"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "compatibility-and-deprecation-process",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/compatibility-and-deprecation-process.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "compatibility-and-deprecation-process",
+        "governance"
+      ],
+      "title": "Compatibility And Deprecation Process",
+      "topic": "compatibility-and-deprecation-process"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "compatibility-policy",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/compatibility-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "compatibility-policy",
+        "governance"
+      ],
+      "title": "Compatibility Policy",
+      "topic": "compatibility-policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "compatibility-review-checklist",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/compatibility-review-checklist.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "compatibility-review-checklist",
+        "governance"
+      ],
+      "title": "Compatibility Review Checklist",
+      "topic": "compatibility-review-checklist"
     },
     {
       "area": "_internal",
@@ -8289,6 +8441,56 @@
     },
     {
       "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "migrate-docs-urls-safely"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/migrate-docs-urls-safely.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "migrate-docs-urls-safely"
+      ],
+      "title": "Migrate Docs URLs Safely",
+      "topic": "migrate-docs-urls-safely"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "migrate-report-schemas"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/migrate-report-schemas.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "migrate-report-schemas"
+      ],
+      "title": "Migrate Report Schemas",
+      "topic": "migrate-report-schemas"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
@@ -8525,6 +8727,31 @@
       "keywords": [
         "-internal",
         "governance",
+        "rename-chart-keys-safely"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/rename-chart-keys-safely.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "rename-chart-keys-safely"
+      ],
+      "title": "Rename Chart Keys Safely",
+      "topic": "rename-chart-keys-safely"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
         "rename-doc-page"
       ],
       "last_reviewed": "2026-02-25",
@@ -8540,6 +8767,31 @@
       ],
       "title": "How To Rename A Doc Page",
       "topic": "rename-doc-page"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "rename-env-keys-safely"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/rename-env-keys-safely.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "rename-env-keys-safely"
+      ],
+      "title": "Rename Env Keys Safely",
+      "topic": "rename-env-keys-safely"
     },
     {
       "area": "_internal",
@@ -17063,6 +17315,33 @@
         "reports"
       ],
       "title": "Reports Reference",
+      "topic": "index"
+    },
+    {
+      "area": "reference",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "index",
+        "migrations",
+        "reference",
+        "reports"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/reference/reports/migrations/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "index",
+        "migrations",
+        "reference",
+        "reports"
+      ],
+      "title": "Report Schema Migrations",
       "topic": "index"
     },
     {

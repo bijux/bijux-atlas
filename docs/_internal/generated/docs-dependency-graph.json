@@ -123,6 +123,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "configs/governance/suites/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "configs/inventory/README.md"
     },
     {
@@ -1508,6 +1513,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/checks-and-contracts.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/checks/docs-checks.md"
     },
     {
@@ -1519,6 +1529,26 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/_internal/governance/closure-checks.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/compatibility-acceptance-gates.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/compatibility-and-deprecation-process.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/compatibility-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/compatibility-review-checklist.md"
     },
     {
       "crate": null,
@@ -1698,6 +1728,16 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/migrate-docs-urls-safely.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/migrate-report-schemas.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/naming.md"
     },
     {
@@ -1743,7 +1783,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/rename-chart-keys-safely.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/rename-doc-page.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/rename-env-keys-safely.md"
     },
     {
       "crate": null,
@@ -3524,6 +3574,11 @@
       "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/reports/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/reports/migrations/index.md"
     },
     {
       "crate": null,

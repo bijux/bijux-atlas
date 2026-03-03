@@ -179,6 +179,15 @@
     {
       "breadcrumbs": [
         "configs",
+        "configs/governance",
+        "configs/governance/suites",
+        "configs/governance/suites/README.md"
+      ],
+      "path": "configs/governance/suites/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
         "configs/inventory",
         "configs/inventory/README.md"
       ],
@@ -2776,6 +2785,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/checks-and-contracts.md"
+      ],
+      "path": "docs/_internal/governance/checks-and-contracts.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/checks",
         "docs/_internal/governance/checks/docs-checks.md"
       ],
@@ -2799,6 +2817,42 @@
         "docs/_internal/governance/closure-checks.md"
       ],
       "path": "docs/_internal/governance/closure-checks.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/compatibility-acceptance-gates.md"
+      ],
+      "path": "docs/_internal/governance/compatibility-acceptance-gates.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/compatibility-and-deprecation-process.md"
+      ],
+      "path": "docs/_internal/governance/compatibility-and-deprecation-process.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/compatibility-policy.md"
+      ],
+      "path": "docs/_internal/governance/compatibility-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/compatibility-review-checklist.md"
+      ],
+      "path": "docs/_internal/governance/compatibility-review-checklist.md"
     },
     {
       "breadcrumbs": [
@@ -3122,6 +3176,24 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/migrate-docs-urls-safely.md"
+      ],
+      "path": "docs/_internal/governance/migrate-docs-urls-safely.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/migrate-report-schemas.md"
+      ],
+      "path": "docs/_internal/governance/migrate-report-schemas.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/naming.md"
       ],
       "path": "docs/_internal/governance/naming.md"
@@ -3205,9 +3277,27 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/rename-chart-keys-safely.md"
+      ],
+      "path": "docs/_internal/governance/rename-chart-keys-safely.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/rename-doc-page.md"
       ],
       "path": "docs/_internal/governance/rename-doc-page.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/rename-env-keys-safely.md"
+      ],
+      "path": "docs/_internal/governance/rename-env-keys-safely.md"
     },
     {
       "breadcrumbs": [
@@ -6227,6 +6317,16 @@
         "docs/reference/reports/index.md"
       ],
       "path": "docs/reference/reports/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/reports",
+        "docs/reference/reports/migrations",
+        "docs/reference/reports/migrations/index.md"
+      ],
+      "path": "docs/reference/reports/migrations/index.md"
     },
     {
       "breadcrumbs": [

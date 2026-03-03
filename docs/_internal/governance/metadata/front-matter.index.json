@@ -196,6 +196,14 @@
     {
       "area": "configs",
       "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "configs/governance/suites/README.md",
+      "stability": "stable",
+      "title": "Governance Suites"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
       "owner": "platform",
       "path": "configs/inventory/README.md",
       "stability": "stable",
@@ -2411,6 +2419,14 @@
     },
     {
       "area": "_internal",
+      "audience": "contributor",
+      "owner": "team:atlas-governance",
+      "path": "docs/_internal/governance/checks-and-contracts.md",
+      "stability": "stable",
+      "title": "Checks And Contracts"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/governance/checks/docs-checks.md",
@@ -2432,6 +2448,38 @@
       "path": "docs/_internal/governance/closure-checks.md",
       "stability": "stable",
       "title": "Boundary Closure Checks"
+    },
+    {
+      "area": "_internal",
+      "audience": "reviewers",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/compatibility-acceptance-gates.md",
+      "stability": "stable",
+      "title": "Compatibility Acceptance Gates"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/compatibility-and-deprecation-process.md",
+      "stability": "stable",
+      "title": "Compatibility And Deprecation Process"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/compatibility-policy.md",
+      "stability": "stable",
+      "title": "Compatibility Policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "reviewers",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/compatibility-review-checklist.md",
+      "stability": "stable",
+      "title": "Compatibility Review Checklist"
     },
     {
       "area": "_internal",
@@ -2715,6 +2763,22 @@
     },
     {
       "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/migrate-docs-urls-safely.md",
+      "stability": "stable",
+      "title": "Migrate Docs URLs Safely"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/migrate-report-schemas.md",
+      "stability": "stable",
+      "title": "Migrate Report Schemas"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/governance/naming.md",
@@ -2788,10 +2852,26 @@
     {
       "area": "_internal",
       "audience": "contributor",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/rename-chart-keys-safely.md",
+      "stability": "stable",
+      "title": "Rename Chart Keys Safely"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
       "owner": "docs-governance",
       "path": "docs/_internal/governance/rename-doc-page.md",
       "stability": "stable",
       "title": "How To Rename A Doc Page"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/rename-env-keys-safely.md",
+      "stability": "stable",
+      "title": "Rename Env Keys Safely"
     },
     {
       "area": "_internal",
@@ -5640,6 +5720,14 @@
       "path": "docs/reference/reports/index.md",
       "stability": "stable",
       "title": "Reports Reference"
+    },
+    {
+      "area": "reference",
+      "audience": "contributor",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/reference/reports/migrations/index.md",
+      "stability": "stable",
+      "title": "Report Schema Migrations"
     },
     {
       "area": "reference",

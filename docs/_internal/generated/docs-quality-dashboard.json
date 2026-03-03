@@ -12,7 +12,7 @@
   "pruning_suggestions": [
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `CONTRACT` appears 25 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `INDEX` appears 4 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 77 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 78 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `architecture` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `benchmarks` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `caching` appears 3 times",
@@ -36,7 +36,7 @@
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `failure-modes` appears 4 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `generated-artifacts` appears 3 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `incident-response` appears 2 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `index` appears 50 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `index` appears 51 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `make-targets` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `make` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `networkpolicy` appears 2 times",
@@ -167,9 +167,12 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/checks-and-contracts.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/checks/docs-checks.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/checks/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/closure-checks.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/compatibility-acceptance-gates.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/compatibility-review-checklist.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/configs-refactor-ledger.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/contract-breaking-change-examples.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/decision-template.md` has no inbound doc links",
@@ -181,10 +184,14 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/exception-inventory.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/metadata/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/metadata/taxonomy-map.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/migrate-docs-urls-safely.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/migrate-report-schemas.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/naming.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/policies/checks.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/policies/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/policy-enforcement-mapping.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/rename-chart-keys-safely.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/rename-env-keys-safely.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/style-guide.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/style/concept-registry.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/style/crate-docs-depth-rubric.md` has no inbound doc links",
@@ -308,8 +315,8 @@
   ],
   "schema_version": 1,
   "summary": {
-    "errors": 46,
-    "registered": 746,
-    "warnings": 346
+    "errors": 47,
+    "registered": 757,
+    "warnings": 353
   }
 }

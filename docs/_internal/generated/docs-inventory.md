@@ -28,6 +28,7 @@ License: Apache-2.0
 | `configs/docs/README.md` | `concept` | `docs-governance` | `stable` |
 | `configs/examples/README.md` | `concept` | `docs-governance` | `stable` |
 | `configs/gates/README.md` | `concept` | `platform` | `stable` |
+| `configs/governance/suites/README.md` | `concept` | `docs-governance` | `stable` |
 | `configs/inventory/README.md` | `concept` | `platform` | `stable` |
 | `configs/layout/README.md` | `concept` | `platform` | `stable` |
 | `configs/make/README.md` | `concept` | `platform` | `stable` |
@@ -305,9 +306,14 @@ License: Apache-2.0
 | `docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/adrs/index.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/broken-link-policy.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/checks-and-contracts.md` | `concept` | `team:atlas-governance` | `stable` |
 | `docs/_internal/governance/checks/docs-checks.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/checks/index.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/closure-checks.md` | `concept` | `bijux-atlas-governance` | `stable` |
+| `docs/_internal/governance/compatibility-acceptance-gates.md` | `concept` | `bijux-atlas-governance` | `stable` |
+| `docs/_internal/governance/compatibility-and-deprecation-process.md` | `concept` | `bijux-atlas-governance` | `stable` |
+| `docs/_internal/governance/compatibility-policy.md` | `concept` | `bijux-atlas-governance` | `stable` |
+| `docs/_internal/governance/compatibility-review-checklist.md` | `concept` | `bijux-atlas-governance` | `stable` |
 | `docs/_internal/governance/configs-refactor-ledger.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/contract-breaking-change-examples.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/contract-change-checklist.md` | `concept` | `docs-governance` | `stable` |
@@ -343,6 +349,8 @@ License: Apache-2.0
 | `docs/_internal/governance/index.md` | `concept` | `platform` | `stable` |
 | `docs/_internal/governance/metadata/index.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/metadata/taxonomy-map.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/migrate-docs-urls-safely.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/migrate-report-schemas.md` | `concept` | `bijux-atlas-governance` | `stable` |
 | `docs/_internal/governance/naming.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/policies/checks.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/policies/index.md` | `concept` | `docs-governance` | `stable` |
@@ -352,7 +360,9 @@ License: Apache-2.0
 | `docs/_internal/governance/redirects-contract.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/redirects-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/regenerate-committed-artifacts.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/rename-chart-keys-safely.md` | `concept` | `bijux-atlas-governance` | `stable` |
 | `docs/_internal/governance/rename-doc-page.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/rename-env-keys-safely.md` | `concept` | `bijux-atlas-governance` | `stable` |
 | `docs/_internal/governance/style-guide.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/style-lints.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/style/concept-ids.md` | `concept` | `docs-governance` | `stable` |
@@ -709,6 +719,7 @@ License: Apache-2.0
 | `docs/reference/registry/shared-core-extraction.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/repo-map.md` | `reference` | `bijux-atlas-operations` | `stable` |
 | `docs/reference/reports/index.md` | `reference` | `docs-governance` | `stable` |
+| `docs/reference/reports/migrations/index.md` | `reference` | `bijux-atlas-governance` | `stable` |
 | `docs/reference/runtime/config.md` | `reference` | `bijux-atlas-server` | `stable` |
 | `docs/reference/schema-versioning-policy.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/schemas.md` | `reference` | `bijux-atlas-operations` | `stable` |

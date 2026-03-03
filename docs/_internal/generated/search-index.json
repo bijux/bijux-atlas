@@ -303,6 +303,22 @@
     {
       "keywords": [
         "configs",
+        "governance",
+        "readme",
+        "suites"
+      ],
+      "path": "configs/governance/suites/README.md",
+      "tags": [
+        "configs",
+        "governance",
+        "readme",
+        "suites"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
         "inventory",
         "readme"
       ],
@@ -4021,6 +4037,20 @@
     {
       "keywords": [
         "-internal",
+        "checks-and-contracts",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/checks-and-contracts.md",
+      "tags": [
+        "-internal",
+        "checks-and-contracts",
+        "governance"
+      ],
+      "topic": "checks-and-contracts"
+    },
+    {
+      "keywords": [
+        "-internal",
         "checks",
         "docs-checks",
         "governance"
@@ -4063,6 +4093,62 @@
         "governance"
       ],
       "topic": "closure-checks"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "compatibility-acceptance-gates",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/compatibility-acceptance-gates.md",
+      "tags": [
+        "-internal",
+        "compatibility-acceptance-gates",
+        "governance"
+      ],
+      "topic": "compatibility-acceptance-gates"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "compatibility-and-deprecation-process",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/compatibility-and-deprecation-process.md",
+      "tags": [
+        "-internal",
+        "compatibility-and-deprecation-process",
+        "governance"
+      ],
+      "topic": "compatibility-and-deprecation-process"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "compatibility-policy",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/compatibility-policy.md",
+      "tags": [
+        "-internal",
+        "compatibility-policy",
+        "governance"
+      ],
+      "topic": "compatibility-policy"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "compatibility-review-checklist",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/compatibility-review-checklist.md",
+      "tags": [
+        "-internal",
+        "compatibility-review-checklist",
+        "governance"
+      ],
+      "topic": "compatibility-review-checklist"
     },
     {
       "keywords": [
@@ -4562,6 +4648,34 @@
       "keywords": [
         "-internal",
         "governance",
+        "migrate-docs-urls-safely"
+      ],
+      "path": "docs/_internal/governance/migrate-docs-urls-safely.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "migrate-docs-urls-safely"
+      ],
+      "topic": "migrate-docs-urls-safely"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "migrate-report-schemas"
+      ],
+      "path": "docs/_internal/governance/migrate-report-schemas.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "migrate-report-schemas"
+      ],
+      "topic": "migrate-report-schemas"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
         "naming"
       ],
       "path": "docs/_internal/governance/naming.md",
@@ -4692,6 +4806,20 @@
       "keywords": [
         "-internal",
         "governance",
+        "rename-chart-keys-safely"
+      ],
+      "path": "docs/_internal/governance/rename-chart-keys-safely.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "rename-chart-keys-safely"
+      ],
+      "topic": "rename-chart-keys-safely"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
         "rename-doc-page"
       ],
       "path": "docs/_internal/governance/rename-doc-page.md",
@@ -4701,6 +4829,20 @@
         "rename-doc-page"
       ],
       "topic": "rename-doc-page"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "rename-env-keys-safely"
+      ],
+      "path": "docs/_internal/governance/rename-env-keys-safely.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "rename-env-keys-safely"
+      ],
+      "topic": "rename-env-keys-safely"
     },
     {
       "keywords": [
@@ -9305,6 +9447,22 @@
       "path": "docs/reference/reports/index.md",
       "tags": [
         "index",
+        "reference",
+        "reports"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "index",
+        "migrations",
+        "reference",
+        "reports"
+      ],
+      "path": "docs/reference/reports/migrations/index.md",
+      "tags": [
+        "index",
+        "migrations",
         "reference",
         "reports"
       ],

@@ -70,6 +70,7 @@
       "configs/docs/README.md",
       "configs/examples/README.md",
       "configs/gates/README.md",
+      "configs/governance/suites/README.md",
       "configs/inventory/README.md",
       "configs/layout/README.md",
       "configs/make/README.md",
@@ -331,6 +332,9 @@
     "checks": [
       "docs/_internal/governance/policies/checks.md"
     ],
+    "checks-and-contracts": [
+      "docs/_internal/governance/checks-and-contracts.md"
+    ],
     "ci-overview": [
       "docs/development/ci-overview.md"
     ],
@@ -386,8 +390,20 @@
       "docs/api/compatibility.md",
       "docs/reference/contracts/compatibility.md"
     ],
+    "compatibility-acceptance-gates": [
+      "docs/_internal/governance/compatibility-acceptance-gates.md"
+    ],
+    "compatibility-and-deprecation-process": [
+      "docs/_internal/governance/compatibility-and-deprecation-process.md"
+    ],
+    "compatibility-policy": [
+      "docs/_internal/governance/compatibility-policy.md"
+    ],
     "compatibility-promise": [
       "docs/product/compatibility-promise.md"
+    ],
+    "compatibility-review-checklist": [
+      "docs/_internal/governance/compatibility-review-checklist.md"
     ],
     "compatibility-test-plan": [
       "docs/api/compatibility-test-plan.md"
@@ -961,6 +977,7 @@
       "docs/reference/querying/index.md",
       "docs/reference/registry/index.md",
       "docs/reference/reports/index.md",
+      "docs/reference/reports/migrations/index.md",
       "docs/reference/store/index.md"
     ],
     "ingest-contract": [
@@ -1042,6 +1059,12 @@
     "make-targets": [
       "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/make-targets.md",
       "docs/reference/make-targets.md"
+    ],
+    "migrate-docs-urls-safely": [
+      "docs/_internal/governance/migrate-docs-urls-safely.md"
+    ],
+    "migrate-report-schemas": [
+      "docs/_internal/governance/migrate-report-schemas.md"
     ],
     "minimal-production-overrides": [
       "docs/operations/minimal-production-overrides.md"
@@ -1330,8 +1353,14 @@
     "release-workflow": [
       "docs/operations/release-workflow.md"
     ],
+    "rename-chart-keys-safely": [
+      "docs/_internal/governance/rename-chart-keys-safely.md"
+    ],
     "rename-doc-page": [
       "docs/_internal/governance/rename-doc-page.md"
+    ],
+    "rename-env-keys-safely": [
+      "docs/_internal/governance/rename-env-keys-safely.md"
     ],
     "repo-constitution": [
       "docs/_internal/repo-constitution.md"
