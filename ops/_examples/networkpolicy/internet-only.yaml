@@ -1,0 +1,69 @@
+---
+# Source: bijux-atlas/templates/networkpolicy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: atlas-contract-bijux-atlas
+  labels:
+    app.kubernetes.io/name: bijux-atlas
+    helm.sh/chart: bijux-atlas-0.1.0
+    app.kubernetes.io/instance: atlas-contract
+    app.kubernetes.io/version: 0.1.0
+    app.kubernetes.io/managed-by: Helm
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: bijux-atlas
+      app.kubernetes.io/instance: atlas-contract
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # same-namespace: permit only in-namespace clients, deny cross-namespace ingress by default.
+    - from:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 8080
+    # monitoring namespace: permit Prometheus scraping when metrics are enabled.
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values:
+                  - "observability"
+      ports:
+        - protocol: TCP
+          port: 8080
+  egress:
+    # Allow kube-dns lookups so name resolution remains available for permitted egress paths.
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # internet-only: permit outbound HTTP(S) only to explicitly allowed CIDRs.
+    - to:
+        - ipBlock:
+            cidr: "203.0.113.10/32"
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80
+    - to:
+        - ipBlock:
+            cidr: "198.51.100.0/24"
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80

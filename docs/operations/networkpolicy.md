@@ -54,6 +54,30 @@ selection without reclassifying namespaces.
 `cluster-aware` requires namespace labels and explicit namespace allowlists. If those are wrong,
 Atlas will fail by policy rather than silently falling back to broad egress.
 
+Atlas does not require in-cluster HTTPS access to the Kubernetes API for normal operation, so the
+chart keeps kube-apiserver egress closed by default.
+
+## Monitoring Namespace
+
+When `metrics.enabled=true`, the chart adds an ingress allowance for
+`networkPolicy.allowMonitoringNamespace` so Prometheus scraping can continue without opening
+cross-namespace application traffic.
+
+Example ServiceMonitor placement:
+
+```yaml
+networkPolicy:
+  allowMonitoringNamespace: observability
+```
+
+Run the ServiceMonitor and Prometheus Operator in the `observability` namespace, or set
+`networkPolicy.allowMonitoringNamespace` to the namespace you actually use.
+
+## Compatibility
+
+NetworkPolicy enforcement depends on the active CNI plugin. Validate behavior on the same CNI that
+will run production before treating a rendered policy as sufficient evidence.
+
 ## Verify
 
 ```bash
@@ -68,6 +92,12 @@ ports enabled for the profile.
 
 If a policy blocks expected traffic, switch the affected profile to a narrower known-good posture
 (`disabled` or `internet-only`) and redeploy while you fix the namespace contract.
+
+## Production Recommendation
+
+Use `cluster-aware` egress with an explicit dependency namespace allowlist and keep ingress at
+`same-namespace` unless you have a separate ingress or observability namespace that must be named
+explicitly.
 
 ## Troubleshooting
 

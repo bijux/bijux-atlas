@@ -1,0 +1,50 @@
+---
+# Source: bijux-atlas/templates/networkpolicy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: atlas-contract-bijux-atlas
+  labels:
+    app.kubernetes.io/name: bijux-atlas
+    helm.sh/chart: bijux-atlas-0.1.0
+    app.kubernetes.io/instance: atlas-contract
+    app.kubernetes.io/version: 0.1.0
+    app.kubernetes.io/managed-by: Helm
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: bijux-atlas
+      app.kubernetes.io/instance: atlas-contract
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # custom: emit only the operator-supplied ingress rules.
+    - from:
+      - namespaceSelector:
+          matchExpressions:
+          - key: kubernetes.io/metadata.name
+            operator: In
+            values:
+            - atlas-clients
+      ports:
+      - port: 8080
+        protocol: TCP
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values:
+                  - "observability"
+      ports:
+        - protocol: TCP
+          port: 8080
+  egress:
+    # custom: emit only the operator-supplied egress rules.
+    - ports:
+      - port: 8443
+        protocol: TCP
+      to:
+      - ipBlock:
+          cidr: 192.0.2.10/32

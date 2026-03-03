@@ -1,0 +1,4 @@
+# NetworkPolicy disabled example
+#
+# The chart intentionally renders no NetworkPolicy object when `networkPolicy.enabled=false`.
+# Use `ops/k8s/values/dev.yaml` to verify this behavior with `helm template`.

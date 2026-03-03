@@ -2,24 +2,29 @@
 # networkPolicy:
 #   enabled: false
 #   allowDns: false
+#   allowMonitoringNamespace: ""
 #   allowedEgressCIDRs: []
 #   ingress:
 #     mode: disabled
 #     allowNamespaces: []
+#     customRules: []
 #   egress:
 #     mode: disabled
 #     allowDns: false
 #     allowCidrs: []
 #     allowNamespaces: []
+#     customRules: []
 #
 # Example: internet-only
 # networkPolicy:
 #   enabled: true
 #   allowDns: true
+#   allowMonitoringNamespace: observability
 #   allowedEgressCIDRs: []
 #   ingress:
 #     mode: same-namespace
 #     allowNamespaces: []
+#     customRules: []
 #   egress:
 #     mode: internet-only
 #     allowDns: true
@@ -27,16 +32,19 @@
 #       - 203.0.113.10/32
 #       - 198.51.100.0/24
 #     allowNamespaces: []
+#     customRules: []
 #
 # Example: cluster-aware
 networkPolicy:
   enabled: true
   allowDns: true
+  allowMonitoringNamespace: observability
   allowedEgressCIDRs: []
   ingress:
     mode: selected
     allowNamespaces:
       - observability
+    customRules: []
   egress:
     mode: cluster-aware
     allowDns: true
@@ -44,6 +52,7 @@ networkPolicy:
     allowNamespaces:
       - atlas-deps
       - observability
+    customRules: []
   dependencies:
     redis:
       enabled: true
@@ -62,12 +71,31 @@ networkPolicy:
 # networkPolicy:
 #   enabled: true
 #   allowDns: false
+#   allowMonitoringNamespace: observability
 #   allowedEgressCIDRs: []
 #   ingress:
 #     mode: custom
 #     allowNamespaces: []
+#     customRules:
+#       - from:
+#           - namespaceSelector:
+#               matchExpressions:
+#                 - key: kubernetes.io/metadata.name
+#                   operator: In
+#                   values:
+#                     - atlas-clients
+#         ports:
+#           - protocol: TCP
+#             port: 8080
 #   egress:
 #     mode: custom
 #     allowDns: false
 #     allowCidrs: []
 #     allowNamespaces: []
+#     customRules:
+#       - to:
+#           - ipBlock:
+#               cidr: 192.0.2.10/32
+#         ports:
+#           - protocol: TCP
+#             port: 8443

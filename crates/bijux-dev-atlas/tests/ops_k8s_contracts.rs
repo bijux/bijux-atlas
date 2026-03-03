@@ -48,6 +48,32 @@ fn install_matrix_values_files(root: &Path) -> Vec<String> {
 }
 
 fn render_chart_with_values_file(root: &Path, values_file: &str) -> String {
+    render_chart_with_values_files(root, &[values_file])
+}
+
+fn render_chart_with_values_files(root: &Path, values_files: &[&str]) -> String {
+    let output = Command::new("helm")
+        .current_dir(root)
+        .args(["template", "atlas-contract", "ops/k8s/charts/bijux-atlas"])
+        .args(
+            values_files
+                .iter()
+                .flat_map(|values_file| ["-f", *values_file])
+                .collect::<Vec<_>>(),
+        )
+        .output()
+        .expect("helm template");
+    let values_label = values_files.join(", ");
+    assert!(
+        output.status.success(),
+        "helm template must pass for {values_label}:\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    String::from_utf8(output.stdout).expect("helm template utf8")
+}
+
+fn render_networkpolicy_with_values_file(root: &Path, values_file: &str) -> String {
     let output = Command::new("helm")
         .current_dir(root)
         .args([
@@ -56,12 +82,14 @@ fn render_chart_with_values_file(root: &Path, values_file: &str) -> String {
             "ops/k8s/charts/bijux-atlas",
             "-f",
             values_file,
+            "--show-only",
+            "templates/networkpolicy.yaml",
         ])
         .output()
         .expect("helm template");
     assert!(
         output.status.success(),
-        "helm template must pass for {values_file}:\nstdout:\n{}\nstderr:\n{}",
+        "helm template networkpolicy must pass for {values_file}:\nstdout:\n{}\nstderr:\n{}",
         String::from_utf8_lossy(&output.stdout),
         String::from_utf8_lossy(&output.stderr)
     );
@@ -274,10 +302,12 @@ fn install_matrix_profiles_keep_monitoring_scaling_and_network_policy_contracts_
         let values = load_yaml(&root.join(&values_file));
         let rendered = render_chart_with_values_file(&root, &values_file);
 
-        let service_monitor_enabled = values["serviceMonitor"]["enabled"]
+        let metrics_enabled = values["metrics"]["enabled"].as_bool().unwrap_or(true);
+        let service_monitor_enabled = values["metrics"]["serviceMonitor"]["enabled"]
             .as_bool()
+            .or_else(|| values["serviceMonitor"]["enabled"].as_bool())
             .unwrap_or(true);
-        if service_monitor_enabled {
+        if metrics_enabled && service_monitor_enabled {
             assert!(
                 rendered.contains("kind: ServiceMonitor"),
                 "{values_file} must render a ServiceMonitor when enabled"
@@ -312,4 +342,43 @@ fn install_matrix_profiles_keep_monitoring_scaling_and_network_policy_contracts_
             );
         }
     }
+}
+
+#[test]
+fn networkpolicy_rendered_goldens_match_canonical_modes() {
+    let root = repo_root();
+    let examples = [
+        (
+            "ops/k8s/values/networkpolicy-internet-only.yaml",
+            "ops/_examples/networkpolicy/internet-only.yaml",
+        ),
+        (
+            "ops/k8s/values/kind.yaml",
+            "ops/_examples/networkpolicy/cluster-aware.yaml",
+        ),
+        (
+            "ops/k8s/values/networkpolicy-custom.yaml",
+            "ops/_examples/networkpolicy/custom.yaml",
+        ),
+    ];
+
+    for (values_file, golden_file) in examples {
+        let rendered = render_networkpolicy_with_values_file(&root, values_file);
+        let expected = read(&root.join(golden_file));
+        assert_eq!(
+            rendered.trim(),
+            expected.trim(),
+            "network policy render snapshot drift for {values_file}"
+        );
+    }
+}
+
+#[test]
+fn networkpolicy_disabled_profile_renders_no_manifest() {
+    let root = repo_root();
+    let rendered = render_chart_with_values_file(&root, "ops/k8s/values/dev.yaml");
+    assert!(
+        !rendered.contains("kind: NetworkPolicy"),
+        "dev profile must not render a NetworkPolicy when disabled"
+    );
 }

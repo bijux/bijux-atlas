@@ -1,0 +1,17 @@
+networkPolicy:
+  enabled: true
+  allowDns: true
+  allowMonitoringNamespace: observability
+  allowedEgressCIDRs: []
+  ingress:
+    mode: same-namespace
+    allowNamespaces: []
+    customRules: []
+  egress:
+    mode: internet-only
+    allowDns: true
+    allowCidrs:
+      - 203.0.113.10/32
+      - 198.51.100.0/24
+    allowNamespaces: []
+    customRules: []

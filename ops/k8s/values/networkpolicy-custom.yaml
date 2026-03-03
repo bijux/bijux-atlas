@@ -1,0 +1,31 @@
+networkPolicy:
+  enabled: true
+  allowDns: false
+  allowMonitoringNamespace: observability
+  allowedEgressCIDRs: []
+  ingress:
+    mode: custom
+    allowNamespaces: []
+    customRules:
+      - from:
+          - namespaceSelector:
+              matchExpressions:
+                - key: kubernetes.io/metadata.name
+                  operator: In
+                  values:
+                    - atlas-clients
+        ports:
+          - protocol: TCP
+            port: 8080
+  egress:
+    mode: custom
+    allowDns: false
+    allowCidrs: []
+    allowNamespaces: []
+    customRules:
+      - to:
+          - ipBlock:
+              cidr: 192.0.2.10/32
+        ports:
+          - protocol: TCP
+            port: 8443

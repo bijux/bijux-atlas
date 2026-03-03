@@ -147,6 +147,18 @@ spec:
     {{- else if eq $ingressMode "custom" }}
     # custom: emit only the operator-supplied ingress rules.
     {{- toYaml $customIngressRules | nindent 4 }}
+    {{- if $hasMonitoringIngress }}
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values:
+                  - {{ $monitoringNamespace | quote }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.service.port }}
+    {{- end }}
     {{- end }}
   {{- end }}
   {{- end }}
