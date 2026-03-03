@@ -462,6 +462,36 @@
         "enabled": {
           "type": "boolean"
         },
+        "persistence": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "maxBytes": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "mountPath": {
+              "pattern": "^/.+",
+              "type": "string"
+            },
+            "storageClassName": {
+              "type": "string"
+            },
+            "size": {
+              "$ref": "#/$defs/k8sQuantity"
+            }
+          },
+          "required": [
+            "enabled",
+            "mountPath",
+            "storageClassName",
+            "size",
+            "maxBytes"
+          ],
+          "type": "object"
+        },
         "sink": {
           "enum": [
             "stdout",
@@ -473,6 +503,7 @@
       },
       "required": [
         "enabled",
+        "persistence",
         "sink"
       ],
       "type": "object"

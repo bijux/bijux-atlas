@@ -117,6 +117,10 @@ spec:
               mountPath: /cache
             - name: tmp
               mountPath: /tmp
+            {{- if .Values.audit.persistence.enabled }}
+            - name: audit-logs
+              mountPath: {{ .Values.audit.persistence.mountPath }}
+            {{- end }}
       volumes:
         - name: cache
           {{- if or .Values.cache.pvc.enabled (eq .Values.cache.storageMode "pvc") }}
@@ -129,6 +133,11 @@ spec:
         - name: tmp
           emptyDir:
             sizeLimit: {{ .Values.cache.tmpSize }}
+        {{- if .Values.audit.persistence.enabled }}
+        - name: audit-logs
+          persistentVolumeClaim:
+            claimName: {{ include "bijux-atlas.fullname" . }}-audit
+        {{- end }}
       nodeSelector:
         {{- toYaml .Values.nodeSelector | nindent 8 }}
       tolerations:

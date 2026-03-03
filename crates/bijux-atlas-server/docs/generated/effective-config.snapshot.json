@@ -21,8 +21,12 @@
     "emergency_global_breaker": false,
     "enable_api_key_rate_limit": false,
     "enable_admin_endpoints": false,
-    "audit_enabled": false,
-    "audit_sink": "stdout",
+    "audit": {
+      "enabled": false,
+      "file_path": "artifacts/server-audit/audit.log",
+      "max_bytes": 1048576,
+      "sink": "stdout"
+    },
     "enable_cheap_only_survival": false,
     "enable_debug_datasets": false,
     "enable_exemplars": false,

@@ -69,6 +69,14 @@ impl AuditSink {
 }
 
 #[derive(Debug, Clone, Serialize)]
+pub struct AuditConfig {
+    pub enabled: bool,
+    pub sink: AuditSink,
+    pub file_path: String,
+    pub max_bytes: u64,
+}
+
+#[derive(Debug, Clone, Serialize)]
 pub enum StoreMode {
     Local,
     S3,
@@ -264,8 +272,7 @@ pub struct ApiConfig {
     pub memory_pressure_rss_bytes: u64,
     pub max_request_queue_depth: usize,
     pub cors_allowed_origins: Vec<String>,
-    pub audit_enabled: bool,
-    pub audit_sink: AuditSink,
+    pub audit: AuditConfig,
     pub require_api_key: bool,
     pub allowed_api_keys: Vec<String>,
     pub hmac_secret: Option<String>,
@@ -336,8 +343,12 @@ impl Default for ApiConfig {
             memory_pressure_rss_bytes: 3 * 1024 * 1024 * 1024,
             max_request_queue_depth: 256,
             cors_allowed_origins: Vec::new(),
-            audit_enabled: false,
-            audit_sink: AuditSink::Stdout,
+            audit: AuditConfig {
+                enabled: false,
+                sink: AuditSink::Stdout,
+                file_path: "artifacts/server-audit/audit.log".to_string(),
+                max_bytes: 1_048_576,
+            },
             require_api_key: false,
             allowed_api_keys: Vec::new(),
             hmac_secret: None,
@@ -625,6 +636,11 @@ impl RuntimeConfig {
         };
         let audit_enabled =
             env_bool("ATLAS_AUDIT_ENABLED", env_bool("ATLAS_ENABLE_AUDIT_LOG", false)?)?;
+        let audit_file_path = std::env::var("ATLAS_AUDIT_FILE_PATH")
+            .ok()
+            .filter(|value| !value.is_empty())
+            .unwrap_or_else(|| "artifacts/server-audit/audit.log".to_string());
+        let audit_max_bytes = env_u64("ATLAS_AUDIT_MAX_BYTES", 1_048_576)?;
         let auth_mode_env = match std::env::var("ATLAS_AUTH_MODE") {
             Ok(value) => Some(match value.as_str() {
                 "disabled" => AuthMode::Disabled,
@@ -759,8 +775,12 @@ impl RuntimeConfig {
             )?,
             max_request_queue_depth: env_usize("ATLAS_MAX_REQUEST_QUEUE_DEPTH", 256)?,
             cors_allowed_origins: env_list("ATLAS_CORS_ALLOWED_ORIGINS"),
-            audit_enabled,
-            audit_sink,
+            audit: AuditConfig {
+                enabled: audit_enabled,
+                sink: audit_sink,
+                file_path: audit_file_path,
+                max_bytes: audit_max_bytes,
+            },
             require_api_key: matches!(auth_mode, AuthMode::ApiKey),
             allowed_api_keys,
             hmac_secret,

@@ -333,8 +333,8 @@ fn runtime_config_accepts_explicit_audit_settings() {
                 cache_root: PathBuf::from(DEFAULT_CACHE_ROOT),
             };
             let runtime = RuntimeConfig::from_env(startup).expect("audit runtime config");
-            assert!(runtime.api.audit_enabled);
-            assert_eq!(runtime.api.audit_sink.as_str(), "otel");
+            assert!(runtime.api.audit.enabled);
+            assert_eq!(runtime.api.audit.sink.as_str(), "otel");
         },
     );
 }

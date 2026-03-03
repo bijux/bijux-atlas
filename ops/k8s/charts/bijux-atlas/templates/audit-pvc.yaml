@@ -1,0 +1,17 @@
+{{- if .Values.audit.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "bijux-atlas.fullname" . }}-audit
+  labels:
+    {{- include "bijux-atlas.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  {{- if .Values.audit.persistence.storageClassName }}
+  storageClassName: {{ .Values.audit.persistence.storageClassName | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.audit.persistence.size }}
+{{- end }}

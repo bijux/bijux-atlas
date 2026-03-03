@@ -443,7 +443,7 @@ async fn main() -> Result<(), String> {
         effective_config = %effective_config_log,
         "effective runtime config"
     );
-    if runtime.api.audit_enabled {
+    if runtime.api.audit.enabled {
         info!(
             target: "atlas_audit",
             event_id = "audit_config_loaded",
@@ -452,7 +452,7 @@ async fn main() -> Result<(), String> {
                 "event_name": "config_loaded",
                 "timestamp_policy": "runtime-unix-seconds",
                 "timestamp_unix_s": (SystemTime::now().duration_since(UNIX_EPOCH).map_or(0, |d| d.as_secs())),
-                "sink": runtime.api.audit_sink.as_str(),
+                "sink": runtime.api.audit.sink.as_str(),
                 "action": "runtime.config.read",
                 "resource_kind": "namespace",
                 "resource_id": bind_addr
@@ -625,6 +625,8 @@ async fn main() -> Result<(), String> {
         auth_mode = runtime.api.auth_mode.as_str(),
         auth_disabled = runtime.api.auth_mode.as_str() == "disabled",
         admin_endpoints_enabled = runtime.api.enable_admin_endpoints,
+        audit_enabled = runtime.api.audit.enabled,
+        audit_sink = runtime.api.audit.sink.as_str(),
         "runtime auth mode selected"
     );
 
@@ -691,7 +693,7 @@ async fn main() -> Result<(), String> {
         bind_addr = %bind_addr,
         "atlas-server listening"
     );
-    if runtime.api.audit_enabled {
+    if runtime.api.audit.enabled {
         info!(
             target: "atlas_audit",
             event_id = "audit_startup",
@@ -700,7 +702,7 @@ async fn main() -> Result<(), String> {
                 "event_name": "startup",
                 "timestamp_policy": "runtime-unix-seconds",
                 "timestamp_unix_s": (SystemTime::now().duration_since(UNIX_EPOCH).map_or(0, |d| d.as_secs())),
-                "sink": runtime.api.audit_sink.as_str(),
+                "sink": runtime.api.audit.sink.as_str(),
                 "principal": "operator",
                 "action": "runtime.startup",
                 "resource_kind": "namespace",

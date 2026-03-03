@@ -33,6 +33,12 @@ ingress:
 audit:
   enabled: false
   sink: stdout
+  persistence:
+    enabled: false
+    mountPath: /var/lib/bijux-atlas/audit
+    storageClassName: ""
+    size: 1Gi
+    maxBytes: 1048576
 
 resources:
   requests:

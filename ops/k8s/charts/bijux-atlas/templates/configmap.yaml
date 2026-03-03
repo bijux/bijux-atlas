@@ -25,6 +25,8 @@ data:
   ATLAS_ENABLE_AUDIT_LOG: {{ .Values.audit.enabled | quote }}
   ATLAS_AUDIT_ENABLED: {{ .Values.audit.enabled | quote }}
   ATLAS_AUDIT_SINK: {{ .Values.audit.sink | quote }}
+  ATLAS_AUDIT_FILE_PATH: {{ printf "%s/%s" .Values.audit.persistence.mountPath "audit.log" | quote }}
+  ATLAS_AUDIT_MAX_BYTES: {{ .Values.audit.persistence.maxBytes | quote }}
   ATLAS_SQL_TIMEOUT_MS: {{ .Values.server.sqlTimeoutMs | quote }}
   ATLAS_RESPONSE_MAX_BYTES: {{ .Values.server.responseMaxBytes | quote }}
   ATLAS_MAX_BODY_BYTES: {{ .Values.server.maxBodyBytes | quote }}
