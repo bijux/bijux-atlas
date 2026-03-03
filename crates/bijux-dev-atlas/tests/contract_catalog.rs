@@ -3,6 +3,7 @@
 use std::path::PathBuf;
 
 use bijux_dev_atlas::contracts::{Contract, ContractId, TestCase, TestId, TestKind, TestResult};
+use bijux_dev_atlas::model::DocRef;
 use bijux_dev_atlas::registry::{ContractCatalog, ContractCatalogEntry};
 
 fn repo_root() -> PathBuf {
@@ -52,14 +53,34 @@ fn contract_catalog_rejects_duplicate_ids() {
     let catalog = ContractCatalog::from_entries(vec![
         ContractCatalogEntry {
             domain: "docs",
+            doc_ref: DocRef::new("docs/_internal/contracts/docs/README.md", None, "Docs Contracts"),
             contract: duplicate(),
         },
         ContractCatalogEntry {
             domain: "ops",
+            doc_ref: DocRef::new("docs/reference/ops-surface.md", None, "Ops Surface"),
             contract: duplicate(),
         },
     ]);
 
     let error = catalog.validate().expect_err("duplicate id must fail");
     assert!(error.contains("duplicate contract id `DUP-001`"));
+}
+
+#[test]
+fn contract_catalog_entries_resolve_docs_files() {
+    let catalog = ContractCatalog::load(&repo_root()).expect("contract catalog");
+    for entry in catalog.entries() {
+        assert!(
+            repo_root().join(entry.doc_ref.path).is_file(),
+            "expected docs file for {} at {}",
+            entry.id(),
+            entry.doc_ref.path
+        );
+        assert!(
+            !entry.doc_ref.title.trim().is_empty(),
+            "expected docs title for {}",
+            entry.id()
+        );
+    }
 }
