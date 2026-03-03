@@ -1,0 +1,67 @@
+{
+  "contracts": {
+    "REL-PACK-001": true
+  },
+  "evidence_root": "release/evidence",
+  "generated_by": "bijux-dev-atlas release packet",
+  "items": [
+    {
+      "path": "release/evidence/bundle.tar",
+      "sha256": "4ed6d2ac9b8324c9f1c6b8c5f3bd91298b71f2f9b2f7a9fc8f9932bf1831327a"
+    },
+    {
+      "path": "release/evidence/identity.json",
+      "sha256": "dc0ee2b868d111951ad8794dd59d48d10e497df1255c5d56b173feea41af7fdc"
+    },
+    {
+      "path": "release/evidence/manifest.json",
+      "sha256": "b316d7dce4b8106a528372852585082ad5cab08f358da4f1202af3e2bbf86733"
+    },
+    {
+      "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
+      "sha256": "e4da7ed597c27c121cff09d57404a8da1447812acca4bd21ffdfe9ce5b0adf49"
+    },
+    {
+      "path": "release/evidence/sboms/perf.spdx.json",
+      "sha256": "aea04d4b6578931456f347cb751ec663f496ae4128bf27431dda797a6104d60f"
+    },
+    {
+      "path": "release/evidence/sboms/prod-airgap.spdx.json",
+      "sha256": "41579a9557b0beae93bf1374baa1aafdc0fe22dcde09d67c65a92660e9c81da4"
+    },
+    {
+      "path": "release/evidence/sboms/prod-ha.spdx.json",
+      "sha256": "0275da35b50198a2192299a3ba0e10cbe7f2aaa45e63ac1bc697fe0e3e4561de"
+    },
+    {
+      "path": "release/evidence/sboms/prod-minimal.spdx.json",
+      "sha256": "4e17ea066f2acf11bb6c2fb47e516f6029d9c35a4e55c3650c4573bc59c3dc1b"
+    },
+    {
+      "path": "release/provenance.json",
+      "sha256": "c8b55cc852c52edd36baca504f1df1eb9aea33ce906a173c061d7ae55f4b3256"
+    },
+    {
+      "path": "release/signing/checksums.json",
+      "sha256": "7cf4410301a5da22faef769a6465549844a1d02ffd8c8773acdf7f242786f1b1"
+    },
+    {
+      "path": "release/signing/release-sign.json",
+      "sha256": "09facb5c2d0858f8d825afd99a1edb5d30d2e5bc025a4f6c98ccfec74c3f8b45"
+    },
+    {
+      "path": "release/signing/release-verify.json",
+      "sha256": "c93135fe5f785e90bb6b3fe032a7465ea6e11048244a50fbc983269ab79049c4"
+    }
+  ],
+  "required_minimum": [
+    "release/evidence/manifest.json",
+    "release/evidence/identity.json",
+    "release/evidence/bundle.tar",
+    "release/signing/checksums.json",
+    "release/signing/release-sign.json",
+    "release/signing/release-verify.json",
+    "release/provenance.json"
+  ],
+  "schema_version": 1
+}
