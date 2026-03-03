@@ -16,7 +16,7 @@ use crate::{
     run_suites_command, run_version_command, run_workflows_command,
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
-use bijux_dev_atlas::adapters::cli::{
+use bijux_dev_atlas::runtime::cli_adapter::{
     command_inventory_markdown, command_inventory_payload, route_name,
 };
 use bijux_dev_atlas::contracts;

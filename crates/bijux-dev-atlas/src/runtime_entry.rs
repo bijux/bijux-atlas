@@ -10,7 +10,7 @@ use crate::cli::{
     FormatArg, GatesCommand, OpsCommand, OpsCommonArgs, OpsRenderTarget, OpsStatusTarget,
     WorkflowsCommand,
 };
-use bijux_dev_atlas::adapters::{Capabilities, RealFs, RealProcessRunner, WorkspaceRoot};
+use bijux_dev_atlas::runtime::{Capabilities, RealFs, RealProcessRunner, WorkspaceRoot};
 use bijux_dev_atlas::core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
 use bijux_dev_atlas::core::{
     exit_code_for_report, explain_output, load_registry, registry_doctor, render_json,

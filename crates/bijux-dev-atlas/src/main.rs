@@ -45,7 +45,7 @@ include!("runtime_entry.rs");
 
 #[allow(dead_code)]
 fn workspace_root_resolver_anchor(arg: Option<std::path::PathBuf>) {
-    let _ = bijux_dev_atlas::adapters::WorkspaceRoot::from_cli_or_cwd(arg);
+    let _ = bijux_dev_atlas::runtime::WorkspaceRoot::from_cli_or_cwd(arg);
 }
 
 fn main() {
