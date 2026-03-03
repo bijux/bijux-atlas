@@ -9,7 +9,6 @@ cache:
 networkPolicy:
   enabled: true
   mode: cluster-aware
-  ingressMode: same-namespace
   cidrBudget:
     maxAllowCidrs: 4
   exceptions:

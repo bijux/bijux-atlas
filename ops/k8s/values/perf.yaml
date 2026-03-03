@@ -45,7 +45,6 @@ metrics:
 networkPolicy:
   enabled: true
   mode: cluster-aware
-  ingressMode: same-namespace
   exceptions:
     relaxedEgress: false
     prodDisableAllowed: false

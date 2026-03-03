@@ -1382,7 +1382,7 @@
         },
         "monitoring": {
           "additionalProperties": false,
-          "description": "Compatibility alias for networkPolicy.allowMonitoringNamespace.",
+          "description": "Preferred home for the monitoring namespace selector; keep networkPolicy.allowMonitoringNamespace accepted during the compatibility window.",
           "properties": {
             "allowNamespace": {
               "pattern": "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
@@ -1422,7 +1422,6 @@
       "required": [
         "enabled",
         "allowDns",
-        "allowMonitoringNamespace",
         "allowedEgressCIDRs",
         "dependencies"
       ],

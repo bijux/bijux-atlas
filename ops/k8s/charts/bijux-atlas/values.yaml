@@ -6,15 +6,6 @@ image:
 
 replicaCount: 2
 
-autoscaling:
-  enabled: false
-  minReplicas: 2
-  maxReplicas: 20
-  cpu:
-    targetAverageUtilization: 70
-  memory:
-    targetAverageUtilization: 80
-
 service:
   type: ClusterIP
   port: 8080
@@ -57,12 +48,6 @@ podSecurityContext:
   fsGroup: 65532
 
 containerSecurityContext:
-  readOnlyRootFilesystem: true
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop: ["ALL"]
-
-securityContext:
   readOnlyRootFilesystem: true
   allowPrivilegeEscalation: false
   capabilities:
@@ -190,7 +175,6 @@ store:
 networkPolicy:
   enabled: true
   mode: internet-only
-  ingressMode: same-namespace
   cidrBudget:
     maxAllowCidrs: 8
   exceptions:
@@ -199,7 +183,6 @@ networkPolicy:
     owner: ""
     expiresOn: ""
   allowDns: true
-  allowMonitoringNamespace: observability
   monitoring:
     allowNamespace: observability
   allowedEgressCIDRs: []
@@ -229,12 +212,6 @@ networkPolicy:
     otelCollector:
       enabled: false
       ports: [4317, 4318]
-
-serviceMonitor:
-  enabled: true
-  interval: 15s
-  scrapeTimeout: 5s
-  labels: {}
 
 metrics:
   enabled: true

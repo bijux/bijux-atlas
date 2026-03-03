@@ -7,14 +7,14 @@ replicaCount: 2
 networkPolicy:
   enabled: true
   mode: cluster-aware
-  ingressMode: same-namespace
   exceptions:
     relaxedEgress: false
     prodDisableAllowed: false
     owner: ""
     expiresOn: ""
   allowDns: true
-  allowMonitoringNamespace: observability
+  monitoring:
+    allowNamespace: observability
   allowedEgressCIDRs: []
   ingress:
     mode: same-namespace

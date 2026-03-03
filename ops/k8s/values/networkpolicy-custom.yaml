@@ -1,7 +1,8 @@
 networkPolicy:
   enabled: true
   allowDns: false
-  allowMonitoringNamespace: observability
+  monitoring:
+    allowNamespace: observability
   allowedEgressCIDRs: []
   ingress:
     mode: custom
