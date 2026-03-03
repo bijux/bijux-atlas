@@ -30,6 +30,15 @@ pub enum CatalogMode {
     Optional,
 }
 
+#[derive(Debug, Clone, Serialize, PartialEq, Eq, Default)]
+#[serde(rename_all = "kebab-case")]
+pub enum AuthMode {
+    #[default]
+    Disabled,
+    ApiKey,
+    Hmac,
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub enum StoreMode {
     Local,
@@ -172,6 +181,7 @@ impl Default for RateLimitConfig {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct ApiConfig {
+    pub auth_mode: AuthMode,
     pub max_body_bytes: usize,
     pub max_uri_bytes: usize,
     pub max_header_bytes: usize,
@@ -235,6 +245,7 @@ pub struct ApiConfig {
 impl Default for ApiConfig {
     fn default() -> Self {
         Self {
+            auth_mode: AuthMode::Disabled,
             max_body_bytes: 16 * 1024,
             max_uri_bytes: 2048,
             max_header_bytes: 16 * 1024,
@@ -324,6 +335,9 @@ pub fn validate_startup_config_contract(
     }
     if api.require_api_key && api.allowed_api_keys.is_empty() {
         return Err("require_api_key=true requires at least one allowed api key".to_string());
+    }
+    if api.require_api_key && api.hmac_required {
+        return Err("api key auth and hmac auth cannot both be enabled".to_string());
     }
     if api.hmac_required && api.hmac_secret.as_deref().is_none_or(str::is_empty) {
         return Err("hmac_required=true requires a non-empty hmac_secret".to_string());
@@ -547,7 +561,87 @@ impl RuntimeConfig {
             ..crate::DatasetCacheConfig::default()
         };
 
+        let require_api_key_env = env_bool("ATLAS_REQUIRE_API_KEY", false)?;
+        let hmac_required_env = env_bool("ATLAS_HMAC_REQUIRED", false)?;
+        let allowed_api_keys = env_list("ATLAS_ALLOWED_API_KEYS");
+        let hmac_secret = std::env::var("ATLAS_HMAC_SECRET")
+            .ok()
+            .filter(|x| !x.is_empty());
+        let auth_mode_env = match std::env::var("ATLAS_AUTH_MODE") {
+            Ok(value) => Some(match value.as_str() {
+                "disabled" => AuthMode::Disabled,
+                "api-key" => AuthMode::ApiKey,
+                "hmac" => AuthMode::Hmac,
+                _ => {
+                    return Err(RuntimeConfigError::InvalidFormat {
+                        name: "ATLAS_AUTH_MODE".to_string(),
+                        value,
+                        message:
+                            "ATLAS_AUTH_MODE must be one of: disabled, api-key, hmac"
+                                .to_string(),
+                    });
+                }
+            }),
+            Err(std::env::VarError::NotPresent) => None,
+            Err(std::env::VarError::NotUnicode(_)) => {
+                return Err(RuntimeConfigError::InvalidFormat {
+                    name: "ATLAS_AUTH_MODE".to_string(),
+                    value: "<non-unicode>".to_string(),
+                    message: "ATLAS_AUTH_MODE must be valid unicode".to_string(),
+                });
+            }
+        };
+        if require_api_key_env && hmac_required_env {
+            return Err(RuntimeConfigError::InvalidValue {
+                message:
+                    "ATLAS_REQUIRE_API_KEY=true and ATLAS_HMAC_REQUIRED=true cannot be enabled together"
+                        .to_string(),
+            });
+        }
+        let auth_mode = match auth_mode_env {
+            Some(AuthMode::Disabled) => {
+                if require_api_key_env || hmac_required_env {
+                    return Err(RuntimeConfigError::InvalidValue {
+                        message:
+                            "ATLAS_AUTH_MODE=disabled conflicts with legacy auth enable flags"
+                                .to_string(),
+                    });
+                }
+                AuthMode::Disabled
+            }
+            Some(AuthMode::ApiKey) => {
+                if hmac_required_env {
+                    return Err(RuntimeConfigError::InvalidValue {
+                        message:
+                            "ATLAS_AUTH_MODE=api-key conflicts with ATLAS_HMAC_REQUIRED=true"
+                                .to_string(),
+                    });
+                }
+                AuthMode::ApiKey
+            }
+            Some(AuthMode::Hmac) => {
+                if require_api_key_env {
+                    return Err(RuntimeConfigError::InvalidValue {
+                        message:
+                            "ATLAS_AUTH_MODE=hmac conflicts with ATLAS_REQUIRE_API_KEY=true"
+                                .to_string(),
+                    });
+                }
+                AuthMode::Hmac
+            }
+            None => {
+                if hmac_required_env {
+                    AuthMode::Hmac
+                } else if require_api_key_env {
+                    AuthMode::ApiKey
+                } else {
+                    AuthMode::Disabled
+                }
+            }
+        };
+
         let api = ApiConfig {
+            auth_mode: auth_mode.clone(),
             max_body_bytes: env_usize("ATLAS_MAX_BODY_BYTES", 16 * 1024)?,
             max_uri_bytes: env_usize("ATLAS_MAX_URI_BYTES", 2048)?,
             max_header_bytes: env_usize("ATLAS_MAX_HEADER_BYTES", 16 * 1024)?,
@@ -607,12 +701,10 @@ impl RuntimeConfig {
             max_request_queue_depth: env_usize("ATLAS_MAX_REQUEST_QUEUE_DEPTH", 256)?,
             cors_allowed_origins: env_list("ATLAS_CORS_ALLOWED_ORIGINS"),
             enable_audit_log: env_bool("ATLAS_ENABLE_AUDIT_LOG", false)?,
-            require_api_key: env_bool("ATLAS_REQUIRE_API_KEY", false)?,
-            allowed_api_keys: env_list("ATLAS_ALLOWED_API_KEYS"),
-            hmac_secret: std::env::var("ATLAS_HMAC_SECRET")
-                .ok()
-                .filter(|x| !x.is_empty()),
-            hmac_required: env_bool("ATLAS_HMAC_REQUIRED", false)?,
+            require_api_key: matches!(auth_mode, AuthMode::ApiKey),
+            allowed_api_keys,
+            hmac_secret,
+            hmac_required: matches!(auth_mode, AuthMode::Hmac),
             hmac_max_skew_secs: env_u64("ATLAS_HMAC_MAX_SKEW_SECS", 300)?,
             ..ApiConfig::default()
         };
