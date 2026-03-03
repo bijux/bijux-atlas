@@ -1,5 +1,3 @@
-replicaCount: 2
-
 server:
   cachedOnlyMode: true
   readinessRequiresCatalog: false
@@ -34,9 +32,11 @@ store:
   endpoint: ""
 
 cache:
+  pinnedDatasets:
+    - 110/homo_sapiens/GRCh38
   warmupEnabled: true
   initPrewarm:
-    enabled: false
+    enabled: true
 
 hpa:
   enabled: false
