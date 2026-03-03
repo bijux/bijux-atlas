@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/ops/k8s/ops-kind.schema.json",
+  "title": "Ops Kind Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "cluster",
+    "action",
+    "status",
+    "report_path"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "cluster": {
+      "type": "string",
+      "const": "kind"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "up",
+        "down",
+        "status",
+        "preload-image"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "failed"
+      ]
+    },
+    "report_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "details": {
+      "type": "object"
+    }
+  }
+}

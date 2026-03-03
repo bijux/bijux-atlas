@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/ops/k8s/ops-smoke.schema.json",
+  "title": "Ops Smoke Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "cluster",
+    "namespace",
+    "status",
+    "checks",
+    "report_path"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "cluster": {
+      "type": "string",
+      "const": "kind"
+    },
+    "namespace": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "failed"
+      ]
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object"
+      }
+    },
+    "report_path": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
