@@ -456,6 +456,27 @@
       ],
       "type": "object"
     },
+    "audit": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "sink": {
+          "enum": [
+            "stdout",
+            "file",
+            "otel"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "enabled",
+        "sink"
+      ],
+      "type": "object"
+    },
     "autoscaling": {
       "additionalProperties": false,
       "description": "Deprecated alias for hpa. Prefer hpa for current chart values, but keep this validated for compatibility surfaces.",

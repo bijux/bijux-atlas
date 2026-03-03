@@ -30,6 +30,10 @@ ingress:
     annotations: {}
     passThroughHeaders: []
 
+audit:
+  enabled: false
+  sink: stdout
+
 resources:
   requests:
     cpu: "500m"

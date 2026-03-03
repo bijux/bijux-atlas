@@ -323,6 +323,38 @@ fn runtime_config_admin_endpoints_are_disabled_by_default() {
 }
 
 #[test]
+fn runtime_config_accepts_explicit_audit_settings() {
+    with_runtime_env(
+        &[("ATLAS_AUDIT_ENABLED", "true"), ("ATLAS_AUDIT_SINK", "otel")],
+        || {
+            let startup = RuntimeStartupConfig {
+                bind_addr: DEFAULT_BIND_ADDR.to_string(),
+                store_root: PathBuf::from(DEFAULT_STORE_ROOT),
+                cache_root: PathBuf::from(DEFAULT_CACHE_ROOT),
+            };
+            let runtime = RuntimeConfig::from_env(startup).expect("audit runtime config");
+            assert!(runtime.api.audit_enabled);
+            assert_eq!(runtime.api.audit_sink.as_str(), "otel");
+        },
+    );
+}
+
+#[test]
+fn runtime_config_rejects_invalid_audit_sink() {
+    with_runtime_env(&[("ATLAS_AUDIT_SINK", "syslog")], || {
+        let startup = RuntimeStartupConfig {
+            bind_addr: DEFAULT_BIND_ADDR.to_string(),
+            store_root: PathBuf::from(DEFAULT_STORE_ROOT),
+            cache_root: PathBuf::from(DEFAULT_CACHE_ROOT),
+        };
+        let err = RuntimeConfig::from_env(startup).expect_err("invalid audit sink");
+        assert!(err
+            .to_string()
+            .contains("ATLAS_AUDIT_SINK must be one of: stdout, file, otel"));
+    });
+}
+
+#[test]
 fn effective_runtime_config_redacts_secrets() {
     with_runtime_env(
         &[

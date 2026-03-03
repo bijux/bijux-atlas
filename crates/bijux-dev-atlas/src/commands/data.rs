@@ -294,6 +294,22 @@ fn run_ingest(args: IngestDryRunArgs) -> Result<(String, i32), String> {
     let (source_dir, genome_sha, fai_sha, gff3_sha) =
         dataset_source_and_hashes(&root, &args.dataset)?;
     let started = std::time::Instant::now();
+    eprintln!(
+        "{}",
+        serde_json::json!({
+            "event_id": "audit_ingest_started",
+            "event_name": "ingest_started",
+            "timestamp_policy": "runtime-unix-seconds",
+            "timestamp_unix_s": (std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .map_or(0, |duration| duration.as_secs())),
+            "sink": "stdout",
+            "principal": "ci",
+            "action": "dataset.ingest",
+            "resource_kind": "dataset-id",
+            "resource_id": args.dataset
+        })
+    );
     let output_dir_rel = ingest_output_dir(&args.dataset);
     let output_dir = root.join(&output_dir_rel);
     fs::create_dir_all(&output_dir)
@@ -367,6 +383,22 @@ fn run_ingest(args: IngestDryRunArgs) -> Result<(String, i32), String> {
     });
     let e2e_path = root.join("artifacts/ingest/endtoend-ingest-query.json");
     write_json(&e2e_path, &e2e)?;
+    eprintln!(
+        "{}",
+        serde_json::json!({
+            "event_id": "audit_ingest_completed",
+            "event_name": "ingest_completed",
+            "timestamp_policy": "runtime-unix-seconds",
+            "timestamp_unix_s": (std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .map_or(0, |duration| duration.as_secs())),
+            "sink": "stdout",
+            "principal": "ci",
+            "action": "dataset.ingest",
+            "resource_kind": "dataset-id",
+            "resource_id": args.dataset
+        })
+    );
 
     let rendered = emit_payload(
         args.format,

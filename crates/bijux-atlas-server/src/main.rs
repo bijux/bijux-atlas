@@ -13,7 +13,7 @@ use std::path::PathBuf;
 use std::sync::atomic::AtomicU64;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
-use std::time::Duration;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use tokio::net::TcpListener;
 use tracing::{error, info, warn};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
@@ -443,6 +443,23 @@ async fn main() -> Result<(), String> {
         effective_config = %effective_config_log,
         "effective runtime config"
     );
+    if runtime.api.audit_enabled {
+        info!(
+            target: "atlas_audit",
+            event_id = "audit_config_loaded",
+            audit_payload = %serde_json::json!({
+                "event_id": "audit_config_loaded",
+                "event_name": "config_loaded",
+                "timestamp_policy": "runtime-unix-seconds",
+                "timestamp_unix_s": (SystemTime::now().duration_since(UNIX_EPOCH).map_or(0, |d| d.as_secs())),
+                "sink": runtime.api.audit_sink.as_str(),
+                "action": "runtime.config.read",
+                "resource_kind": "namespace",
+                "resource_id": bind_addr
+            }),
+            "audit event"
+        );
+    }
 
     if cli.validate_config {
         info!(
@@ -674,6 +691,24 @@ async fn main() -> Result<(), String> {
         bind_addr = %bind_addr,
         "atlas-server listening"
     );
+    if runtime.api.audit_enabled {
+        info!(
+            target: "atlas_audit",
+            event_id = "audit_startup",
+            audit_payload = %serde_json::json!({
+                "event_id": "audit_startup",
+                "event_name": "startup",
+                "timestamp_policy": "runtime-unix-seconds",
+                "timestamp_unix_s": (SystemTime::now().duration_since(UNIX_EPOCH).map_or(0, |d| d.as_secs())),
+                "sink": runtime.api.audit_sink.as_str(),
+                "principal": "operator",
+                "action": "runtime.startup",
+                "resource_kind": "namespace",
+                "resource_id": bind_addr
+            }),
+            "audit event"
+        );
+    }
     let accepting = state.accepting_requests.clone();
     let state_for_shutdown = state.clone();
     axum::serve(listener, app)

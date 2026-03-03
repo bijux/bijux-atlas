@@ -22,6 +22,9 @@ data:
   ATLAS_MAX_CONCURRENT_DOWNLOADS: {{ .Values.cache.maxConcurrentDownloads | quote }}
   ATLAS_STARTUP_WARMUP_JITTER_MAX_MS: {{ .Values.cache.startupWarmupJitterMaxMs | quote }}
   ATLAS_REQUEST_TIMEOUT_MS: {{ .Values.server.requestTimeoutMs | quote }}
+  ATLAS_ENABLE_AUDIT_LOG: {{ .Values.audit.enabled | quote }}
+  ATLAS_AUDIT_ENABLED: {{ .Values.audit.enabled | quote }}
+  ATLAS_AUDIT_SINK: {{ .Values.audit.sink | quote }}
   ATLAS_SQL_TIMEOUT_MS: {{ .Values.server.sqlTimeoutMs | quote }}
   ATLAS_RESPONSE_MAX_BYTES: {{ .Values.server.responseMaxBytes | quote }}
   ATLAS_MAX_BODY_BYTES: {{ .Values.server.maxBodyBytes | quote }}

@@ -49,6 +49,25 @@ impl AuthMode {
     }
 }
 
+#[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq, Default)]
+#[serde(rename_all = "kebab-case")]
+pub enum AuditSink {
+    #[default]
+    Stdout,
+    File,
+    Otel,
+}
+
+impl AuditSink {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Stdout => "stdout",
+            Self::File => "file",
+            Self::Otel => "otel",
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub enum StoreMode {
     Local,
@@ -245,7 +264,8 @@ pub struct ApiConfig {
     pub memory_pressure_rss_bytes: u64,
     pub max_request_queue_depth: usize,
     pub cors_allowed_origins: Vec<String>,
-    pub enable_audit_log: bool,
+    pub audit_enabled: bool,
+    pub audit_sink: AuditSink,
     pub require_api_key: bool,
     pub allowed_api_keys: Vec<String>,
     pub hmac_secret: Option<String>,
@@ -316,7 +336,8 @@ impl Default for ApiConfig {
             memory_pressure_rss_bytes: 3 * 1024 * 1024 * 1024,
             max_request_queue_depth: 256,
             cors_allowed_origins: Vec::new(),
-            enable_audit_log: false,
+            audit_enabled: false,
+            audit_sink: AuditSink::Stdout,
             require_api_key: false,
             allowed_api_keys: Vec::new(),
             hmac_secret: None,
@@ -579,6 +600,31 @@ impl RuntimeConfig {
         let hmac_secret = std::env::var("ATLAS_HMAC_SECRET")
             .ok()
             .filter(|x| !x.is_empty());
+        let audit_sink = match std::env::var("ATLAS_AUDIT_SINK") {
+            Ok(value) => match value.as_str() {
+                "stdout" => AuditSink::Stdout,
+                "file" => AuditSink::File,
+                "otel" => AuditSink::Otel,
+                _ => {
+                    return Err(RuntimeConfigError::InvalidFormat {
+                        name: "ATLAS_AUDIT_SINK".to_string(),
+                        value,
+                        message: "ATLAS_AUDIT_SINK must be one of: stdout, file, otel"
+                            .to_string(),
+                    });
+                }
+            },
+            Err(std::env::VarError::NotPresent) => AuditSink::Stdout,
+            Err(std::env::VarError::NotUnicode(_)) => {
+                return Err(RuntimeConfigError::InvalidFormat {
+                    name: "ATLAS_AUDIT_SINK".to_string(),
+                    value: "<non-unicode>".to_string(),
+                    message: "ATLAS_AUDIT_SINK must be valid unicode".to_string(),
+                });
+            }
+        };
+        let audit_enabled =
+            env_bool("ATLAS_AUDIT_ENABLED", env_bool("ATLAS_ENABLE_AUDIT_LOG", false)?)?;
         let auth_mode_env = match std::env::var("ATLAS_AUTH_MODE") {
             Ok(value) => Some(match value.as_str() {
                 "disabled" => AuthMode::Disabled,
@@ -713,7 +759,8 @@ impl RuntimeConfig {
             )?,
             max_request_queue_depth: env_usize("ATLAS_MAX_REQUEST_QUEUE_DEPTH", 256)?,
             cors_allowed_origins: env_list("ATLAS_CORS_ALLOWED_ORIGINS"),
-            enable_audit_log: env_bool("ATLAS_ENABLE_AUDIT_LOG", false)?,
+            audit_enabled,
+            audit_sink,
             require_api_key: matches!(auth_mode, AuthMode::ApiKey),
             allowed_api_keys,
             hmac_secret,

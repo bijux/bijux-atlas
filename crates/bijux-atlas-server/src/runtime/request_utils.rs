@@ -7,6 +7,10 @@ fn chrono_like_unix_millis() -> u128 {
         .map_or(0, |d| d.as_millis())
 }
 
+fn chrono_like_unix_secs() -> u64 {
+    (chrono_like_unix_millis() / 1000) as u64
+}
+
 pub(crate) fn route_sli_class(route: &str) -> &'static str {
     if matches!(route, "/healthz" | "/readyz" | "/metrics" | "/v1/version") {
         return "cheap";
@@ -152,6 +156,116 @@ fn auth_error_code(status: StatusCode) -> ApiErrorCode {
         StatusCode::FORBIDDEN => ApiErrorCode::AccessForbidden,
         _ => ApiErrorCode::QueryRejectedByPolicy,
     }
+}
+
+fn redacted_audit_field(key: &str, value: &str) -> Option<String> {
+    let normalized_key = key.to_ascii_lowercase();
+    if [
+        "authorization",
+        "token",
+        "api_key",
+        "api-key",
+        "signature",
+        "secret",
+        "email",
+        "client_ip",
+    ]
+    .iter()
+    .any(|needle| normalized_key.contains(needle))
+    {
+        return None;
+    }
+    let normalized_value = value.to_ascii_lowercase();
+    if normalized_value.contains("bearer ")
+        || normalized_value.contains("x-api-key")
+        || normalized_value.contains('@')
+    {
+        return Some("[REDACTED]".to_string());
+    }
+    Some(value.to_string())
+}
+
+fn build_audit_event(
+    event_name: &str,
+    principal: Option<&str>,
+    action: &str,
+    resource_kind: &str,
+    resource_id: &str,
+    sink: crate::config::AuditSink,
+    fields: &[(&str, &str)],
+) -> serde_json::Value {
+    let mut object = serde_json::Map::new();
+    object.insert(
+        "event_id".to_string(),
+        serde_json::Value::String(format!("audit_{event_name}")),
+    );
+    object.insert(
+        "event_name".to_string(),
+        serde_json::Value::String(event_name.to_string()),
+    );
+    object.insert(
+        "timestamp_policy".to_string(),
+        serde_json::Value::String("runtime-unix-seconds".to_string()),
+    );
+    object.insert(
+        "timestamp_unix_s".to_string(),
+        serde_json::Value::Number(serde_json::Number::from(chrono_like_unix_secs())),
+    );
+    object.insert(
+        "sink".to_string(),
+        serde_json::Value::String(sink.as_str().to_string()),
+    );
+    if let Some(value) = principal {
+        if let Some(redacted) = redacted_audit_field("principal", value) {
+            object.insert("principal".to_string(), serde_json::Value::String(redacted));
+        }
+    }
+    object.insert(
+        "action".to_string(),
+        serde_json::Value::String(action.to_string()),
+    );
+    object.insert(
+        "resource_kind".to_string(),
+        serde_json::Value::String(resource_kind.to_string()),
+    );
+    if let Some(redacted) = redacted_audit_field("resource_id", resource_id) {
+        object.insert("resource_id".to_string(), serde_json::Value::String(redacted));
+    }
+    for (key, value) in fields {
+        if let Some(redacted) = redacted_audit_field(key, value) {
+            object.insert(
+                (*key).to_string(),
+                serde_json::Value::String(redacted),
+            );
+        }
+    }
+    serde_json::Value::Object(object)
+}
+
+fn emit_audit_event(
+    sink: crate::config::AuditSink,
+    event_name: &str,
+    principal: Option<&str>,
+    action: &str,
+    resource_kind: &str,
+    resource_id: &str,
+    fields: &[(&str, &str)],
+) {
+    let payload = build_audit_event(
+        event_name,
+        principal,
+        action,
+        resource_kind,
+        resource_id,
+        sink,
+        fields,
+    );
+    info!(
+        target: "atlas_audit",
+        event_id = format!("audit_{event_name}"),
+        audit_payload = %payload,
+        "audit event"
+    );
 }
 
 fn parse_dataset_from_uri(uri: &Uri) -> Option<DatasetId> {
@@ -507,16 +621,28 @@ async fn security_middleware(
     let client_ip =
         normalized_forwarded_for(req.headers()).unwrap_or_else(|| "unknown".to_string());
     let resp = next.run(req).await;
-    if state.api.enable_audit_log {
-        info!(
-            target: "atlas_audit",
-            method = %method,
-            path = %path,
-            status = resp.status().as_u16(),
-            request_id = %request_id,
-            client_ip = %client_ip,
-            latency_ms = started.elapsed().as_millis() as u64,
-            "audit"
+    if state.api.audit_enabled {
+        let event_name = if route_is_admin_endpoint(&path) {
+            "admin_action"
+        } else {
+            "query_executed"
+        };
+        let status_text = resp.status().as_u16().to_string();
+        let latency_ms = started.elapsed().as_millis().to_string();
+        emit_audit_event(
+            state.api.audit_sink,
+            event_name,
+            Some(principal),
+            route_action_id(&path),
+            route_resource_kind(&path),
+            &path,
+            &[
+                ("method", method.as_str()),
+                ("status", status_text.as_str()),
+                ("request_id", request_id.as_str()),
+                ("client_ip", client_ip.as_str()),
+                ("latency_ms", latency_ms.as_str()),
+            ],
         );
     }
     resp
@@ -551,6 +677,42 @@ mod tests {
             auth_error_code(StatusCode::FORBIDDEN),
             ApiErrorCode::AccessForbidden
         );
+    }
+
+    #[test]
+    fn audit_redaction_removes_known_secret_patterns() {
+        assert_eq!(
+            redacted_audit_field("authorization", "Bearer topsecret"),
+            None
+        );
+        assert_eq!(
+            redacted_audit_field("request_id", "Bearer topsecret"),
+            Some("[REDACTED]".to_string())
+        );
+        assert_eq!(redacted_audit_field("client_ip", "127.0.0.1"), None);
+    }
+
+    #[test]
+    fn audit_event_contains_required_fields() {
+        let event = build_audit_event(
+            "query_executed",
+            Some("service-account"),
+            "dataset.read",
+            "dataset-id",
+            "/v1/datasets",
+            crate::config::AuditSink::Stdout,
+            &[("status", "200")],
+        );
+        assert_eq!(event["event_id"].as_str(), Some("audit_query_executed"));
+        assert_eq!(
+            event["timestamp_policy"].as_str(),
+            Some("runtime-unix-seconds")
+        );
+        assert_eq!(event["principal"].as_str(), Some("service-account"));
+        assert_eq!(event["action"].as_str(), Some("dataset.read"));
+        assert_eq!(event["resource_kind"].as_str(), Some("dataset-id"));
+        assert_eq!(event["status"].as_str(), Some("200"));
+        assert!(event["timestamp_unix_s"].as_u64().is_some());
     }
 }
 
