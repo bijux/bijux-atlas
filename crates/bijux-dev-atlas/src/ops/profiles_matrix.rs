@@ -231,6 +231,16 @@ fn load_rollout_safety(path: &Path) -> Result<RolloutSafetyDoc, String> {
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
+fn stage_kubeconform_manifest(repo_root: &Path, rendered_yaml: &str) -> Result<PathBuf, String> {
+    let temp_dir = repo_root.join("artifacts/ops/profile-render-matrix/tmp");
+    std::fs::create_dir_all(&temp_dir)
+        .map_err(|err| format!("failed to create {}: {err}", temp_dir.display()))?;
+    let rendered_path = temp_dir.join("rendered.yaml");
+    std::fs::write(&rendered_path, rendered_yaml)
+        .map_err(|err| format!("failed to write {}: {err}", rendered_path.display()))?;
+    Ok(rendered_path)
+}
+
 fn selected_profiles(
     values_root: &Path,
     matrix: &InstallMatrixDoc,
@@ -522,13 +532,9 @@ pub fn validate_profiles(
                 Ok((rendered_yaml, _stderr)) => {
                     let rendered_resources =
                         serde_yaml::Deserializer::from_str(&rendered_yaml).count();
+                    let staged_manifest = stage_kubeconform_manifest(repo_root, &rendered_yaml);
                     (
-                        kubeconform_profile(
-                            repo_root,
-                            &rendered_yaml,
-                            options.timeout_seconds,
-                            options.run_kubeconform,
-                        ),
+                        kubeconform_profile(repo_root, staged_manifest, options.timeout_seconds, options.run_kubeconform),
                         rendered_resources,
                     )
                 }

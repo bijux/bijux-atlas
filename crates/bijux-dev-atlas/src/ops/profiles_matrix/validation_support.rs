@@ -142,7 +142,7 @@ pub(super) fn template_profile_output(
 
 pub(super) fn kubeconform_profile(
     repo_root: &Path,
-    rendered_yaml: &str,
+    rendered_path: Result<PathBuf, String>,
     timeout_seconds: u64,
     run_kubeconform: bool,
 ) -> StatusReport {
@@ -175,35 +175,21 @@ pub(super) fn kubeconform_profile(
             event: event_base,
         };
     }
-    let temp_dir = repo_root.join("artifacts/ops/profile-render-matrix/tmp");
-    if let Err(err) = std::fs::create_dir_all(&temp_dir) {
-        return StatusReport {
-            status: "fail".to_string(),
-            note: "kubeconform staging failure".to_string(),
-            errors: vec![format!("failed to create {}: {err}", temp_dir.display())],
-            event: ToolInvocationReport {
+    let rendered_path = match rendered_path {
+        Ok(path) => path,
+        Err(message) => {
+            return StatusReport {
                 status: "fail".to_string(),
-                stderr: format!("failed to create {}: {err}", temp_dir.display()),
-                ..event_base
-            },
-        };
-    }
-    let rendered_path = temp_dir.join("rendered.yaml");
-    if let Err(err) = std::fs::write(&rendered_path, rendered_yaml) {
-        return StatusReport {
-            status: "fail".to_string(),
-            note: "kubeconform staging failure".to_string(),
-            errors: vec![format!(
-                "failed to write {}: {err}",
-                rendered_path.display()
-            )],
-            event: ToolInvocationReport {
-                status: "fail".to_string(),
-                stderr: format!("failed to write {}: {err}", rendered_path.display()),
-                ..event_base
-            },
-        };
-    }
+                note: "kubeconform staging failure".to_string(),
+                errors: vec![message.clone()],
+                event: ToolInvocationReport {
+                    status: "fail".to_string(),
+                    stderr: message,
+                    ..event_base
+                },
+            };
+        }
+    };
     let exec_args = vec![
         "-strict".to_string(),
         "-summary".to_string(),
