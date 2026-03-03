@@ -51,19 +51,19 @@
     },
     {
       "path": "release/evidence/bundle.tar",
-      "sha256": "bde102da26ffdcc9085bd1bdb301478fb35fbe81bb4e4988bee5f56af4d786e6"
+      "sha256": "785ade517ce30d03157c2893c4830b89e4c8cda817e8ae6ffc89432a58b24b20"
     },
     {
       "path": "release/evidence/identity.json",
-      "sha256": "c89df9d6b91bba43cf77ea82af932fb13421281623e092813093ceb129024687"
+      "sha256": "6cbce1fb6ec3c5beb2e9a32561bfe181cc550988e49d67a3324f04f7b0b8339f"
     },
     {
       "path": "release/evidence/manifest.json",
-      "sha256": "fe091d1c4f64883fc4b459046000a1ca33d124c9ced786e5f8ba33642347a0be"
+      "sha256": "3c29429d839762f40a48fa3e64037902bab8897fa5de5c65ae935f9f8caaf0a2"
     },
     {
       "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-      "sha256": "70b17bb9aab405c12c4fe0f41f6816dfa7477bfb5ba9177d3e5fb27b0cfdd2b2"
+      "sha256": "4054e6c5cba4f07ed1482d950975b6d2bc035cc390fd1a7f9b0d1538dcf04146"
     },
     {
       "path": "release/evidence/sboms/perf.spdx.json",
@@ -83,15 +83,15 @@
     },
     {
       "path": "release/provenance.json",
-      "sha256": "c83b19fa129396ba92e627b9c1731fc7ce8d6ba2177f6c9647f8b1e7711729b6"
+      "sha256": "fdecbfb9b2cf4a2c73e5cbc5676e80f88438724814ab64b9d2478c4f2fa16202"
     },
     {
       "path": "release/signing/checksums.json",
-      "sha256": "be05f02d5dce7f4e4a2cd12eff977ac185eaf955300f614b01bbb02a8c6c83e2"
+      "sha256": "c71cd42a50c551d704515c62b06c1a3884f005d998409efe86cdd87cfca598b3"
     },
     {
       "path": "release/signing/release-sign.json",
-      "sha256": "0be820e423b475be7305b7f0aac2633b405a3598ccb159d70b249ddce7fc5764"
+      "sha256": "766c10b6983fe5b4ff814558935881cd661b523d9ddba0d72560ef0cbb7b46c4"
     },
     {
       "path": "release/signing/release-verify.json",

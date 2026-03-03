@@ -912,8 +912,16 @@ fn build_release_evidence_tarball(
     if repo_root.join("artifacts/security/security-github-actions.json").exists() {
         files.push("artifacts/security/security-github-actions.json".to_string());
     }
+    if repo_root.join("artifacts/security/audit-verify.json").exists() {
+        files.push("artifacts/security/audit-verify.json".to_string());
+    }
+    if repo_root.join("artifacts/security/audit-smoke.jsonl").exists() {
+        files.push("artifacts/security/audit-smoke.jsonl".to_string());
+    }
     files.push("configs/security/auth-model.yaml".to_string());
     files.push("configs/security/policy.yaml".to_string());
+    files.push("configs/observability/audit-log.schema.json".to_string());
+    files.push("configs/observability/retention.yaml".to_string());
     files.push(".github/dependabot.yml".to_string());
     files.push("configs/docs/package-lock.json".to_string());
     files.push("configs/docs/requirements.lock.txt".to_string());

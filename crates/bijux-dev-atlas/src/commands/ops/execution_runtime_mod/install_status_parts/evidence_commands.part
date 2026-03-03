@@ -76,6 +76,10 @@ pub(crate) fn run_ops_evidence_collect(
     let toolchain_inventory = repo_root.join("configs/rust/toolchain.json");
     let auth_model = repo_root.join("configs/security/auth-model.yaml");
     let access_policy = repo_root.join("configs/security/policy.yaml");
+    let audit_schema = repo_root.join("configs/observability/audit-log.schema.json");
+    let retention_policy = repo_root.join("configs/observability/retention.yaml");
+    let audit_sample_log = repo_root.join("artifacts/security/audit-smoke.jsonl");
+    let audit_verify_report = repo_root.join("artifacts/security/audit-verify.json");
     let runtime_env_allowlist = repo_root.join("configs/contracts/env.schema.json");
     let signing_policy = repo_root.join("release/signing/policy.yaml");
     let action_pins_report = repo_root.join("artifacts/security/security-github-actions.json");
@@ -146,6 +150,24 @@ pub(crate) fn run_ops_evidence_collect(
         },
         "sboms": sboms,
         "scan_reports": scan_reports,
+        "audit_assets": {
+            "schema": {
+                "path": audit_schema.strip_prefix(&repo_root).unwrap_or(&audit_schema).display().to_string(),
+                "sha256": sha256_file(&audit_schema)?
+            },
+            "retention_policy": {
+                "path": retention_policy.strip_prefix(&repo_root).unwrap_or(&retention_policy).display().to_string(),
+                "sha256": sha256_file(&retention_policy)?
+            },
+            "sample_log": {
+                "path": audit_sample_log.strip_prefix(&repo_root).unwrap_or(&audit_sample_log).display().to_string(),
+                "sha256": sha256_file(&audit_sample_log)?
+            },
+            "verification_report": {
+                "path": audit_verify_report.strip_prefix(&repo_root).unwrap_or(&audit_verify_report).display().to_string(),
+                "sha256": sha256_file(&audit_verify_report)?
+            }
+        },
         "reports": collect_report_paths(&repo_root, &run_id)?,
         "simulation_summaries": collect_simulation_summary_paths(&repo_root, &run_id),
         "drill_summaries": collect_drill_summary_paths(&repo_root, &run_id),
@@ -232,6 +254,33 @@ pub(crate) fn run_ops_evidence_verify(
         if tarball_path.exists() && !tarball_contains_entry(&tarball_path, rel)? {
             errors.push(format!("evidence tarball missing supply-chain inventory: {rel}"));
         }
+    }
+    if let Some(row) = manifest
+        .get("audit_assets")
+        .and_then(serde_json::Value::as_object)
+    {
+        for (name, item) in row {
+            let path = item
+                .get("path")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
+            let abs = repo_root.join(path);
+            if path.is_empty() || !abs.exists() {
+                errors.push(format!("audit asset does not exist for {name}: {path}"));
+                continue;
+            }
+            if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+                errors.push(format!("evidence tarball missing audit asset for {name}: {path}"));
+            }
+            if let Some(expected) = item.get("sha256").and_then(serde_json::Value::as_str) {
+                let actual = sha256_file(&abs)?;
+                if actual != expected {
+                    errors.push(format!("audit asset checksum does not match manifest for {name}: {path}"));
+                }
+            }
+        }
+    } else {
+        errors.push("manifest must include audit_assets".to_string());
     }
     if let Some(row) = manifest
         .get("auth_policy")

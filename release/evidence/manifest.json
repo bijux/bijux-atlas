@@ -1,4 +1,22 @@
 {
+  "audit_assets": {
+    "retention_policy": {
+      "path": "configs/observability/retention.yaml",
+      "sha256": "170b07e84732310b760ca353ca3e5452ed5681a2d1dc65b2c973c333fea14dff"
+    },
+    "sample_log": {
+      "path": "artifacts/security/audit-smoke.jsonl",
+      "sha256": "f6a6ecf0538a79263603546d17549dafe93d06145d74ae6cc413c5a1872f7ae2"
+    },
+    "schema": {
+      "path": "configs/observability/audit-log.schema.json",
+      "sha256": "94f3caaf6a19579d1bb6ca15de6d3fc7d8cc20a53f66b0a5c33d975c47a92334"
+    },
+    "verification_report": {
+      "path": "artifacts/security/audit-verify.json",
+      "sha256": "97337e8feb66b38abeb7c7a6d4ee39a295862cd79eeec1207aef25176d768f95"
+    }
+  },
   "auth_policy": {
     "access_policy": {
       "path": "configs/security/policy.yaml",
@@ -11,7 +29,7 @@
   },
   "chart_package": {
     "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-    "sha256": "70b17bb9aab405c12c4fe0f41f6816dfa7477bfb5ba9177d3e5fb27b0cfdd2b2"
+    "sha256": "4054e6c5cba4f07ed1482d950975b6d2bc035cc390fd1a7f9b0d1538dcf04146"
   },
   "dataset_assets": [
     "configs/datasets/manifest.yaml",
@@ -31,14 +49,14 @@
     "sha256": "4b9996348cba7a04aa56e8617aab6bba5dec62e950819626bbd15abd7145e8e1"
   },
   "docs_site_summary": {
-    "file_count": 640,
+    "file_count": 646,
     "sha256": "d758e43fd4b0e02a4f563069fd7ecaa05de1b8fd60c399d0ddf4134c31d63aef",
     "site_dir": "artifacts/docs/site"
   },
   "drill_summaries": [],
   "evidence_tarball": {
     "path": "release/evidence/bundle.tar",
-    "sha256": "bde102da26ffdcc9085bd1bdb301478fb35fbe81bb4e4988bee5f56af4d786e6"
+    "sha256": "785ade517ce30d03157c2893c4830b89e4c8cda817e8ae6ffc89432a58b24b20"
   },
   "generated_by": "bijux dev atlas ops evidence collect",
   "identity_path": "release/evidence/identity.json",
@@ -123,7 +141,7 @@
   "policy_path": "release/evidence/policy.json",
   "provenance": {
     "path": "release/provenance.json",
-    "sha256": "c83b19fa129396ba92e627b9c1731fc7ce8d6ba2177f6c9647f8b1e7711729b6"
+    "sha256": "fdecbfb9b2cf4a2c73e5cbc5676e80f88438724814ab64b9d2478c4f2fa16202"
   },
   "redacted_logs": [],
   "reports": [
@@ -134,7 +152,7 @@
   ],
   "runtime_env_allowlist": {
     "path": "configs/contracts/env.schema.json",
-    "sha256": "c7068f402c97ee4de6d6f7345891da4ef1bf68f54774e521673e877b4e14d6ad"
+    "sha256": "66e2ec32308bc546a3d9574416e075ec5bab89621e3c17be4435e03abdfd2123"
   },
   "sboms": [
     {
