@@ -596,4 +596,15 @@ mod tests {
         assert!(readyz_catalog_ready(false, false, false));
         assert!(readyz_catalog_ready(false, true, false));
     }
+
+    #[test]
+    fn readyz_offline_profile_stays_ready_without_catalog() {
+        assert!(readyz_catalog_ready(true, true, false));
+    }
+
+    #[test]
+    fn readyz_baseline_and_perf_profiles_require_catalog_when_enabled() {
+        assert!(!readyz_catalog_ready(true, false, false));
+        assert!(readyz_catalog_ready(true, false, true));
+    }
 }
