@@ -66,10 +66,7 @@ pub(super) fn env_f64(name: &str, default: f64) -> Result<f64, RuntimeConfigErro
     })
 }
 
-pub(super) fn env_duration_ms(
-    name: &str,
-    default_ms: u64,
-) -> Result<Duration, RuntimeConfigError> {
+pub(super) fn env_duration_ms(name: &str, default_ms: u64) -> Result<Duration, RuntimeConfigError> {
     Ok(Duration::from_millis(env_u64(name, default_ms)?))
 }
 
