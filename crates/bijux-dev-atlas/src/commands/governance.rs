@@ -15,6 +15,7 @@ use bijux_dev_atlas::governance_objects::{
     governance_summary_paths, validate_governance_objects,
 };
 use serde::Deserialize;
+use sha2::{Digest, Sha256};
 use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -30,6 +31,7 @@ struct ExceptionsRegistry {
 #[derive(Debug, Deserialize)]
 struct ExceptionsPolicy {
     max_days_by_severity: MaxDaysBySeverity,
+    warning_days: i64,
     allowed_tracking_domains: Vec<String>,
     no_exception_zones: Vec<String>,
 }
@@ -52,6 +54,8 @@ struct GovernanceException {
     expires_at: String,
     mitigation: String,
     tracking_link: String,
+    risk_accepted_by: String,
+    verification_plan: String,
     governance_approval: Option<bool>,
 }
 
@@ -59,6 +63,29 @@ struct GovernanceException {
 struct ExceptionScope {
     kind: String,
     id: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct ExceptionsArchive {
+    schema_version: u64,
+    archived_exceptions: Vec<ArchivedException>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ArchivedException {
+    id: String,
+    scope: ExceptionScope,
+    severity: String,
+    reason: String,
+    owner: String,
+    created_at: String,
+    expires_at: String,
+    mitigation: String,
+    tracking_link: String,
+    risk_accepted_by: String,
+    verification_plan: String,
+    archived_at: String,
+    content_sha256: String,
 }
 
 fn exceptions_registry_path(root: &Path) -> PathBuf {
@@ -69,12 +96,28 @@ fn exceptions_registry_schema_path(root: &Path) -> PathBuf {
     root.join("configs/contracts/governance/exceptions.schema.json")
 }
 
+fn exceptions_archive_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/exceptions-archive.yaml")
+}
+
+fn exceptions_archive_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/contracts/governance/exceptions-archive.schema.json")
+}
+
 fn exceptions_summary_path(root: &Path) -> PathBuf {
     root.join("artifacts/governance/exceptions-summary.json")
 }
 
 fn exceptions_table_path(root: &Path) -> PathBuf {
     root.join("artifacts/governance/exceptions-table.md")
+}
+
+fn exceptions_warning_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/exceptions-expiry-warning.json")
+}
+
+fn exceptions_churn_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/exceptions-churn.json")
 }
 
 fn is_iso_date(value: &str) -> bool {
@@ -207,6 +250,12 @@ fn render_exceptions_table(rows: &[serde_json::Value]) -> String {
         ));
     }
     out
+}
+
+fn stable_exception_digest(value: &serde_json::Value) -> Result<String, String> {
+    let bytes =
+        serde_json::to_vec(value).map_err(|err| format!("encode exception digest failed: {err}"))?;
+    Ok(format!("{:x}", Sha256::digest(bytes)))
 }
 
 pub(crate) fn run_governance_command(
@@ -394,13 +443,27 @@ pub(crate) fn run_governance_command(
                         .map_err(|err| format!("read {} failed: {err}", schema_path.display()))?,
                 )
                 .map_err(|err| format!("parse {} failed: {err}", schema_path.display()))?;
+                let archive_schema_path = exceptions_archive_schema_path(&root);
+                let _: serde_json::Value = serde_json::from_str(
+                    &fs::read_to_string(&archive_schema_path).map_err(|err| {
+                        format!("read {} failed: {err}", archive_schema_path.display())
+                    })?,
+                )
+                .map_err(|err| format!("parse {} failed: {err}", archive_schema_path.display()))?;
                 let registry_path = exceptions_registry_path(&root);
                 let registry_text = fs::read_to_string(&registry_path)
                     .map_err(|err| format!("read {} failed: {err}", registry_path.display()))?;
                 let registry: ExceptionsRegistry = serde_yaml::from_str(&registry_text)
                     .map_err(|err| format!("parse {} failed: {err}", registry_path.display()))?;
+                let archive_path = exceptions_archive_path(&root);
+                let archive_text = fs::read_to_string(&archive_path)
+                    .map_err(|err| format!("read {} failed: {err}", archive_path.display()))?;
+                let archive: ExceptionsArchive = serde_yaml::from_str(&archive_text)
+                    .map_err(|err| format!("parse {} failed: {err}", archive_path.display()))?;
                 let summary_path = exceptions_summary_path(&root);
                 let table_path = exceptions_table_path(&root);
+                let warning_path = exceptions_warning_path(&root);
+                let churn_path = exceptions_churn_path(&root);
                 let known_contracts = known_contract_ids(&root)?;
                 let known_checks = known_check_ids(&root)?;
                 let today = current_utc_day()?;
@@ -421,6 +484,7 @@ pub(crate) fn run_governance_command(
                 let mut errors = Vec::new();
                 let mut rows = Vec::new();
                 let mut seen_ids = BTreeSet::new();
+                let mut warning_rows = Vec::new();
 
                 for item in &registry.exceptions {
                     if !seen_ids.insert(item.id.clone()) {
@@ -431,6 +495,12 @@ pub(crate) fn run_governance_command(
                     }
                     if item.mitigation.trim().is_empty() {
                         errors.push(format!("{} missing mitigation", item.id));
+                    }
+                    if item.risk_accepted_by.trim().is_empty() {
+                        errors.push(format!("{} missing risk_accepted_by", item.id));
+                    }
+                    if item.verification_plan.trim().is_empty() {
+                        errors.push(format!("{} missing verification_plan", item.id));
                     }
                     if !reason_taxonomy.contains(&item.reason) {
                         errors.push(format!("{} uses unknown reason `{}`", item.id, item.reason));
@@ -508,6 +578,15 @@ pub(crate) fn run_governance_command(
                             item.id, max_days, item.severity
                         ));
                     }
+                    if days_to_expiry < registry.policy.warning_days && days_to_expiry >= 0 {
+                        warning_rows.push(serde_json::json!({
+                            "id": item.id,
+                            "scope": format!("{}:{}", item.scope.kind, item.scope.id),
+                            "owner": item.owner,
+                            "expires_at": item.expires_at,
+                            "days_to_expiry": days_to_expiry
+                        }));
+                    }
 
                     rows.push(serde_json::json!({
                         "id": item.id,
@@ -519,8 +598,50 @@ pub(crate) fn run_governance_command(
                         "expires_at": item.expires_at,
                         "days_to_expiry": days_to_expiry,
                         "tracking_link": item.tracking_link,
+                        "risk_accepted_by": item.risk_accepted_by,
+                        "verification_plan": item.verification_plan,
                         "governance_approval": item.governance_approval.unwrap_or(false)
                     }));
+                }
+
+                let mut archived_ids = BTreeSet::new();
+                for item in &archive.archived_exceptions {
+                    if !archived_ids.insert(item.id.clone()) {
+                        errors.push(format!("duplicate archived exception id `{}`", item.id));
+                    }
+                    if !is_iso_date(&item.archived_at) {
+                        errors.push(format!(
+                            "{} has invalid archived_at `{}`",
+                            item.id, item.archived_at
+                        ));
+                    }
+                    if item.verification_plan.trim().is_empty() {
+                        errors.push(format!(
+                            "{} archived entry missing verification_plan",
+                            item.id
+                        ));
+                    }
+                    let digest_input = serde_json::json!({
+                        "id": item.id,
+                        "scope": {"kind": item.scope.kind, "id": item.scope.id},
+                        "severity": item.severity,
+                        "reason": item.reason,
+                        "owner": item.owner,
+                        "created_at": item.created_at,
+                        "expires_at": item.expires_at,
+                        "mitigation": item.mitigation,
+                        "tracking_link": item.tracking_link,
+                        "risk_accepted_by": item.risk_accepted_by,
+                        "verification_plan": item.verification_plan,
+                        "archived_at": item.archived_at
+                    });
+                    let actual_digest = stable_exception_digest(&digest_input)?;
+                    if actual_digest != item.content_sha256 {
+                        errors.push(format!(
+                            "{} archived entry content_sha256 does not match frozen content",
+                            item.id
+                        ));
+                    }
                 }
 
                 rows.sort_by(|left, right| {
@@ -534,6 +655,86 @@ pub(crate) fn run_governance_command(
                     .iter()
                     .filter(|row| row["days_to_expiry"].as_i64().unwrap_or(-1) >= 0)
                     .count();
+                let warning_report = serde_json::json!({
+                    "report_id": "exceptions-expiry-warning",
+                    "version": 1,
+                    "inputs": {
+                        "generator": "bijux-dev-atlas governance exceptions validate",
+                        "sources": ["configs/governance/exceptions.yaml"]
+                    },
+                    "status": "ok",
+                    "summary": {
+                        "total": warning_rows.len(),
+                        "warning_days": registry.policy.warning_days
+                    },
+                    "rows": warning_rows,
+                    "contracts": {
+                        "GOV-EXC-007": true
+                    },
+                    "errors": []
+                });
+                validate_named_report(&root, "exceptions-expiry-warning.schema.json", &warning_report)?;
+                write_pretty_json(&warning_path, &warning_report)?;
+                let churn_rows = archive
+                    .archived_exceptions
+                    .iter()
+                    .map(|item| {
+                        serde_json::json!({
+                            "id": item.id,
+                            "status": if seen_ids.contains(&item.id) { "restored" } else { "archived" },
+                            "archived_at": item.archived_at,
+                            "scope": format!("{}:{}", item.scope.kind, item.scope.id)
+                        })
+                    })
+                    .collect::<Vec<_>>();
+                let churn_report = serde_json::json!({
+                    "report_id": "exceptions-churn",
+                    "version": 1,
+                    "inputs": {
+                        "generator": "bijux-dev-atlas governance exceptions validate",
+                        "sources": [
+                            "configs/governance/exceptions.yaml",
+                            "configs/governance/exceptions-archive.yaml"
+                        ]
+                    },
+                    "status": "ok",
+                    "summary": {
+                        "active": rows.len(),
+                        "archived": archive.archived_exceptions.len()
+                    },
+                    "rows": churn_rows,
+                    "contracts": {
+                        "GOV-EXC-008": true
+                    },
+                    "errors": []
+                });
+                validate_named_report(&root, "exceptions-churn.schema.json", &churn_report)?;
+                write_pretty_json(&churn_path, &churn_report)?;
+                let release_manifest_path = root.join("release/evidence/manifest.json");
+                let rel_exc_001 = if release_manifest_path.exists() {
+                    let manifest: serde_json::Value = serde_json::from_str(
+                        &fs::read_to_string(&release_manifest_path).map_err(|err| {
+                            format!("read {} failed: {err}", release_manifest_path.display())
+                        })?,
+                    )
+                    .map_err(|err| {
+                        format!("parse {} failed: {err}", release_manifest_path.display())
+                    })?;
+                    manifest
+                        .get("governance_assets")
+                        .and_then(|value| value.get("exceptions_registry"))
+                        .and_then(|value| value.get("path"))
+                        .and_then(serde_json::Value::as_str)
+                        == Some("configs/governance/exceptions.yaml")
+                        && manifest
+                            .get("governance_assets")
+                            .and_then(|value| value.get("exceptions_summary"))
+                            .and_then(|value| value.get("path"))
+                            .and_then(serde_json::Value::as_str)
+                            == Some("artifacts/governance/exceptions-summary.json")
+                } else {
+                    false
+                };
                 let summary = serde_json::json!({
                     "report_id": "exceptions-summary",
                     "version": 1,
@@ -550,16 +751,22 @@ pub(crate) fn run_governance_command(
                         "total": rows.len(),
                         "active": active_rows,
                         "errors": errors.len(),
-                        "no_exception_zones": registry.policy.no_exception_zones.len()
+                        "no_exception_zones": registry.policy.no_exception_zones.len(),
+                        "archived": archive.archived_exceptions.len()
                     },
                     "rows": rows,
                     "contracts": {
-                        "GOV-EXC-001": registry.schema_version == 1,
+                        "GOV-EXC-001": registry.schema_version == 1 && archive.schema_version == 1,
+                        "GOV-EXC-007": true,
+                        "GOV-EXC-008": true,
                         "GOV-EXC-002": !errors.iter().any(|err| err.contains("expired on")),
                         "GOV-EXC-003": !errors.iter().any(|err| err.contains("unknown contract id") || err.contains("unknown check id")),
                         "GOV-EXC-004": !errors.iter().any(|err| err.contains("missing mitigation")),
                         "GOV-EXC-005": !errors.iter().any(|err| err.contains("missing owner") || err.contains("tracking link domain")),
-                        "GOV-EXC-006": !errors.iter().any(|err| err.contains("no-exception zone"))
+                        "GOV-EXC-006": !errors.iter().any(|err| err.contains("no-exception zone")),
+                        "GOV-EXC-009": !errors.iter().any(|err| err.contains("missing verification_plan")),
+                        "GOV-EXC-010": !errors.iter().any(|err| err.contains("content_sha256 does not match")),
+                        "REL-EXC-001": rel_exc_001
                     },
                     "errors": errors
                 });
@@ -576,8 +783,11 @@ pub(crate) fn run_governance_command(
                     "kind": "governance_exceptions_validate",
                     "status": summary["status"].clone(),
                     "registry_path": registry_path.strip_prefix(&root).unwrap_or(&registry_path).display().to_string(),
+                    "archive_path": archive_path.strip_prefix(&root).unwrap_or(&archive_path).display().to_string(),
                     "summary_path": summary_path.strip_prefix(&root).unwrap_or(&summary_path).display().to_string(),
                     "table_path": table_path.strip_prefix(&root).unwrap_or(&table_path).display().to_string(),
+                    "warning_path": warning_path.strip_prefix(&root).unwrap_or(&warning_path).display().to_string(),
+                    "churn_path": churn_path.strip_prefix(&root).unwrap_or(&churn_path).display().to_string(),
                     "contracts": summary["contracts"].clone(),
                     "errors": summary["errors"].clone()
                 });

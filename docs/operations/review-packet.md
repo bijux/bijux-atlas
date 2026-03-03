@@ -36,3 +36,10 @@
 - Include `configs/observability/retention.yaml`.
 - Include `artifacts/security/audit-verify.json`.
 - Include `artifacts/security/log-field-inventory.json`.
+
+## Exception inventory
+
+- Include `configs/governance/exceptions.yaml`.
+- Include `configs/governance/exceptions-archive.yaml`.
+- Include `artifacts/governance/exceptions-summary.json`.
+- Include `artifacts/governance/exceptions-expiry-warning.json`.

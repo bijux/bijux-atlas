@@ -8135,6 +8135,31 @@
     },
     {
       "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "exception-inventory",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/exception-inventory.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "exception-inventory",
+        "governance"
+      ],
+      "title": "Exception Inventory",
+      "topic": "exception-inventory"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
@@ -12156,6 +12181,75 @@
       ],
       "title": "Fixture Dataset Ingest",
       "topic": "fixture-dataset-ingest"
+    },
+    {
+      "area": "operations",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance-exception-closure",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/operations/governance-exception-closure.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance-exception-closure",
+        "operations"
+      ],
+      "title": "Exception Closure",
+      "topic": "governance-exception-closure"
+    },
+    {
+      "area": "operations",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance-exception-review-checklist",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/operations/governance-exception-review-checklist.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance-exception-review-checklist",
+        "operations"
+      ],
+      "title": "Exception Review Checklist",
+      "topic": "governance-exception-review-checklist"
+    },
+    {
+      "area": "operations",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance-exceptions",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/operations/governance-exceptions.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance-exceptions",
+        "operations"
+      ],
+      "title": "Governance Exceptions",
+      "topic": "governance-exceptions"
     },
     {
       "area": "operations",

@@ -11,6 +11,8 @@
 
 - Summary JSON: `artifacts/governance/exceptions-summary.json`
 - Read-only table: `artifacts/governance/exceptions-table.md`
+- Expiry warning JSON: `artifacts/governance/exceptions-expiry-warning.json`
+- Churn JSON: `artifacts/governance/exceptions-churn.json`
 
 ## Usage rules
 

@@ -15,6 +15,7 @@
 - Runtime and command contracts: [Reference contracts](reference/contracts/index.md)
 - Generated documentation diagnostics: [Docs health dashboard](_internal/generated/docs-health-dashboard.md)
 - Supply-chain and release controls: [Operations supply-chain policies](operations/supply-chain-policies.md)
+- Exception posture and inventory: [Governance exceptions](operations/governance-exceptions.md)
 
 ## What This Page Is For
 

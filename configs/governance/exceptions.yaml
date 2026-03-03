@@ -4,6 +4,7 @@ policy:
     low: 30
     medium: 21
     high: 7
+  warning_days: 7
   allowed_tracking_domains:
     - github.com
     - jira.example.com
