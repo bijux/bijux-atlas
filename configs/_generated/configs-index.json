@@ -129,14 +129,16 @@
     },
     {
       "counts": {
-        "covered": 18,
+        "covered": 20,
         "generated": 0,
         "internal": 0,
-        "public": 18,
+        "public": 20,
         "schemas": 1
       },
       "files": [
         "configs/governance/check-groups.json",
+        "configs/governance/check-policy-authority-map.json",
+        "configs/governance/checks-output.schema.json",
         "configs/governance/checks.registry.json",
         "configs/governance/compatibility.yaml",
         "configs/governance/contract-groups.json",
@@ -169,18 +171,20 @@
     },
     {
       "counts": {
-        "covered": 6,
+        "covered": 8,
         "generated": 1,
         "internal": 0,
-        "public": 5,
+        "public": 7,
         "schemas": 3
       },
       "files": [
         "configs/_generated/configs-index.json",
         "configs/inventory/configs.json",
         "configs/inventory/consumers.json",
+        "configs/inventory/docs-owners.json",
         "configs/inventory/groups.json",
         "configs/inventory/no-schema-justifications.json",
+        "configs/inventory/ops-owners.json",
         "configs/inventory/owners.json"
       ],
       "name": "inventory",
@@ -199,10 +203,10 @@
     },
     {
       "counts": {
-        "covered": 17,
+        "covered": 20,
         "generated": 0,
         "internal": 0,
-        "public": 17,
+        "public": 20,
         "schemas": 1
       },
       "files": [
@@ -210,7 +214,10 @@
         "configs/coverage/thresholds.toml",
         "configs/gates/lanes.json",
         "configs/layout/README.md",
+        "configs/layout/generated-files.json",
         "configs/layout/inventory-budgets.json",
+        "configs/layout/ops-markdown-naming-policy.json",
+        "configs/layout/root-markdown-allowlist.json",
         "configs/product/README.md",
         "configs/product/artifact-manifest.schema.json",
         "configs/product/external-tools-manifest.json",
