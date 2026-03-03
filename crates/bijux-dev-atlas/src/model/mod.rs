@@ -13,6 +13,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 pub mod engine;
+pub mod exit_codes;
 pub mod governance;
 
 pub const CONTRACT_SCHEMA_VERSION: u64 = 1;

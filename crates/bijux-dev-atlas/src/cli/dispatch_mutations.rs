@@ -10,6 +10,9 @@ pub(super) fn force_json_output(command: &mut Command) {
     match command {
         Command::Version { format, .. } => *format = FormatArg::Json,
         Command::Help { format, .. } => *format = FormatArg::Json,
+        Command::List { format, .. } => *format = FormatArg::Json,
+        Command::Describe { format, .. } => *format = FormatArg::Json,
+        Command::Run { format, .. } => *format = FormatArg::Json,
         Command::Suites { command } => match command {
             crate::cli::SuitesCommand::Run { format, .. }
             | crate::cli::SuitesCommand::Report { format, .. }
@@ -951,6 +954,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         Command::Contract { command } => match command {
             ContractCommand::Run { repo_root, .. } => *repo_root = Some(root.clone()),
         },
+        Command::List { repo_root, .. }
+        | Command::Describe { repo_root, .. }
+        | Command::Run { repo_root, .. } => *repo_root = Some(root.clone()),
         Command::Registry { command } => match command {
             RegistryCommand::Status { repo_root, .. }
             | RegistryCommand::Doctor { repo_root, .. } => *repo_root = Some(root.clone()),

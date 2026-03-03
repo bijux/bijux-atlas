@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{CheckCommand, CheckRegistryCommand, Cli, Command, FormatArg};
+use crate::cli::{CheckCommand, CheckRegistryCommand, Cli, Command, FormatArg, GlobalFormatArg};
 use crate::{
     plugin_metadata_json, run_artifacts_command, run_build_command, run_capabilities_command,
     run_check_doctor, run_check_explain, run_check_list, run_check_registry_doctor,
@@ -13,10 +13,18 @@ use crate::{
     run_suites_command, run_version_command, run_workflows_command,
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
+use bijux_dev_atlas::adapters::cli::{
+    command_inventory_markdown, command_inventory_payload, route_name,
+};
+use bijux_dev_atlas::domains;
+use bijux_dev_atlas::model::exit_codes::{EXIT_FAILURE, EXIT_NOT_FOUND, EXIT_SUCCESS};
+use bijux_dev_atlas::model::{RunnableId, RunnableKind, RunnableMode};
+use bijux_dev_atlas::registry::RunnableRegistry;
 use std::io::{self, Write};
 use std::process::Command as ProcessCommand;
 
 use crate::cli::dispatch_mutations::{apply_fail_fast, force_json_output, propagate_repo_root};
+use crate::resolve_repo_root;
 pub(crate) fn run_cli(cli: Cli) -> i32 {
     let mut cli = cli;
     if let Some(command) = cli.command.as_mut() {
@@ -496,6 +504,66 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         }
         Command::Registry { command } => run_registry_command(cli.quiet, command),
         Command::Suites { command } => run_suites_command(cli.quiet, command),
+        Command::List {
+            repo_root,
+            format,
+            out,
+        } => match run_list_command(cli.format, repo_root, format, out) {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    let _ = writeln!(io::stdout(), "{rendered}");
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas list failed: {err}");
+                EXIT_FAILURE
+            }
+        },
+        Command::Describe {
+            id,
+            repo_root,
+            format,
+            out,
+        } => match run_describe_command(cli.format, repo_root, &id, format, out) {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    let _ = writeln!(io::stdout(), "{rendered}");
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas describe failed: {err}");
+                EXIT_FAILURE
+            }
+        },
+        Command::Run {
+            id,
+            repo_root,
+            artifacts_root,
+            run_id,
+            format,
+            out,
+        } => match run_runnable_command(
+            cli.format,
+            repo_root,
+            artifacts_root,
+            run_id,
+            &id,
+            format,
+            out,
+        ) {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    let _ = writeln!(io::stdout(), "{rendered}");
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas run failed: {err}");
+                EXIT_FAILURE
+            }
+        },
         Command::Ops { command } => run_ops_command(cli.quiet, cli.debug, command),
     };
 
@@ -503,4 +571,193 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         let _ = writeln!(io::stderr(), "bijux-dev-atlas exit={exit}");
     }
     exit
+}
+
+fn effective_format(global: Option<GlobalFormatArg>, local: FormatArg) -> GlobalFormatArg {
+    global.unwrap_or(match local {
+        FormatArg::Text => GlobalFormatArg::Human,
+        FormatArg::Json | FormatArg::Jsonl => GlobalFormatArg::Json,
+    })
+}
+
+fn run_list_command(
+    global: Option<GlobalFormatArg>,
+    repo_root: Option<std::path::PathBuf>,
+    local: FormatArg,
+    out: Option<std::path::PathBuf>,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let registry = RunnableRegistry::load(&root)?;
+    let domains = domains::load_domains(&root)?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "runnable_inventory",
+        "domains": domains.into_iter().map(|catalog| serde_json::json!({
+            "name": catalog.registration.name,
+            "runnables": catalog.runnables.len(),
+        })).collect::<Vec<_>>(),
+        "suites": registry.suites().iter().map(|suite| serde_json::json!({
+            "id": suite.id.as_str(),
+            "runnables": suite.runnables.iter().map(|id| id.as_str()).collect::<Vec<_>>(),
+        })).collect::<Vec<_>>(),
+        "runnables": registry.all().iter().map(|entry| serde_json::json!({
+            "id": entry.id.as_str(),
+            "suite": entry.suite.as_str(),
+            "kind": match entry.kind {
+                RunnableKind::Check => "check",
+                RunnableKind::Contract => "contract",
+            },
+            "mode": match entry.mode {
+                RunnableMode::Pure => "pure",
+                RunnableMode::Effect => "effect",
+            },
+            "group": entry.group,
+        })).collect::<Vec<_>>(),
+    });
+    let rendered = match effective_format(global, local) {
+        GlobalFormatArg::Human => {
+            let mut lines = vec!["Domains".to_string()];
+            for row in payload["domains"].as_array().into_iter().flatten() {
+                lines.push(format!(
+                    "- {} ({})",
+                    row["name"].as_str().unwrap_or_default(),
+                    row["runnables"].as_u64().unwrap_or(0)
+                ));
+            }
+            lines.push(String::new());
+            lines.push(command_inventory_markdown());
+            lines.join("\n")
+        }
+        GlobalFormatArg::Json => serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode runnable inventory failed: {err}"))?,
+        GlobalFormatArg::Both => format!(
+            "{}\n{}",
+            command_inventory_markdown(),
+            serde_json::to_string_pretty(&payload)
+                .map_err(|err| format!("encode runnable inventory failed: {err}"))?
+        ),
+    };
+    if let Some(path) = out {
+        std::fs::write(&path, format!("{rendered}\n"))
+            .map_err(|err| format!("write {} failed: {err}", path.display()))?;
+    }
+    Ok((rendered, EXIT_SUCCESS))
+}
+
+fn run_describe_command(
+    global: Option<GlobalFormatArg>,
+    repo_root: Option<std::path::PathBuf>,
+    id: &str,
+    local: FormatArg,
+    out: Option<std::path::PathBuf>,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let registry = RunnableRegistry::load(&root)?;
+    let runnable_id = RunnableId::parse(id)?;
+    let Some(entry) = registry.get(&runnable_id) else {
+        return Ok((format!("unknown runnable `{id}`"), EXIT_NOT_FOUND));
+    };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "runnable_description",
+        "id": entry.id.as_str(),
+        "suite": entry.suite.as_str(),
+        "kind_name": match entry.kind {
+            RunnableKind::Check => "check",
+            RunnableKind::Contract => "contract",
+        },
+        "mode": match entry.mode {
+            RunnableMode::Pure => "pure",
+            RunnableMode::Effect => "effect",
+        },
+        "summary": entry.summary,
+        "owner": entry.owner,
+        "group": entry.group,
+        "tags": entry.tags.iter().map(|tag| tag.as_str()).collect::<Vec<_>>(),
+        "required_tools": entry.required_tools,
+        "route": route_name(entry.suite.as_str()),
+    });
+    let rendered = match effective_format(global, local) {
+        GlobalFormatArg::Human => format!(
+            "{}\nsuite: {}\nkind: {}\nmode: {}\ngroup: {}\nsummary: {}",
+            entry.id,
+            entry.suite,
+            payload["kind_name"].as_str().unwrap_or_default(),
+            payload["mode"].as_str().unwrap_or_default(),
+            entry.group,
+            entry.summary
+        ),
+        GlobalFormatArg::Json => serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode runnable description failed: {err}"))?,
+        GlobalFormatArg::Both => format!(
+            "{}\n{}",
+            entry.id,
+            serde_json::to_string_pretty(&payload)
+                .map_err(|err| format!("encode runnable description failed: {err}"))?
+        ),
+    };
+    if let Some(path) = out {
+        std::fs::write(&path, format!("{rendered}\n"))
+            .map_err(|err| format!("write {} failed: {err}", path.display()))?;
+    }
+    Ok((rendered, EXIT_SUCCESS))
+}
+
+fn run_runnable_command(
+    global: Option<GlobalFormatArg>,
+    repo_root: Option<std::path::PathBuf>,
+    artifacts_root: Option<std::path::PathBuf>,
+    run_id: Option<String>,
+    id: &str,
+    local: FormatArg,
+    out: Option<std::path::PathBuf>,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let registry = RunnableRegistry::load(&root)?;
+    let runnable_id = RunnableId::parse(id)?;
+    let Some(entry) = registry.get(&runnable_id) else {
+        return Ok((format!("unknown runnable `{id}`"), EXIT_NOT_FOUND));
+    };
+    let requested = match effective_format(global, local) {
+        GlobalFormatArg::Human => FormatArg::Text,
+        GlobalFormatArg::Json | GlobalFormatArg::Both => FormatArg::Json,
+    };
+    let result = match entry.kind {
+        RunnableKind::Check => run_registry_check_by_id(
+            Some(root),
+            artifacts_root,
+            run_id,
+            id.to_string(),
+            false,
+            requested,
+            out,
+        )?,
+        RunnableKind::Contract => run_registry_contract_by_id(
+            Some(root),
+            artifacts_root,
+            run_id,
+            id.to_string(),
+            false,
+            requested,
+            out,
+        )?,
+    };
+    if matches!(effective_format(global, local), GlobalFormatArg::Both) {
+        let summary = serde_json::json!({
+            "schema_version": 1,
+            "kind": "runnable_execution",
+            "id": id,
+            "route": route_name(entry.suite.as_str()),
+            "status_code": result.1,
+            "command_registry": command_inventory_payload(),
+        });
+        let rendered = format!(
+            "{}\n{}",
+            result.0,
+            serde_json::to_string_pretty(&summary)
+                .map_err(|err| format!("encode runnable execution summary failed: {err}"))?
+        );
+        return Ok((rendered, result.1));
+    }
+    Ok(result)
 }

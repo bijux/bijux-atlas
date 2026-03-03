@@ -27,6 +27,13 @@ pub(crate) fn run() -> i32 {
     dispatch::run_cli(cli)
 }
 
+#[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
+pub enum GlobalFormatArg {
+    Human,
+    Json,
+    Both,
+}
+
 #[derive(Parser, Debug)]
 #[command(name = "bijux-dev-atlas", version, disable_help_subcommand = true)]
 #[command(about = "Bijux Atlas development control-plane")]
@@ -51,6 +58,8 @@ pub struct Cli {
     pub umbrella_version: Option<String>,
     #[arg(long)]
     pub repo_root: Option<PathBuf>,
+    #[arg(long, global = true, value_enum)]
+    pub format: Option<GlobalFormatArg>,
     #[command(subcommand)]
     pub command: Option<Command>,
 }
@@ -174,6 +183,36 @@ pub enum Command {
     Suites {
         #[command(subcommand)]
         command: SuitesCommand,
+    },
+    List {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Describe {
+        id: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Run {
+        id: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long)]
+        artifacts_root: Option<PathBuf>,
+        #[arg(long)]
+        run_id: Option<String>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
     },
     Validate {
         #[arg(long)]
