@@ -292,7 +292,7 @@
         "maxReplicas": {
           "type": "integer",
           "minimum": 1,
-          "description": "Helm template validation also enforces maxReplicas >= minReplicas."
+          "description": "Must be greater than or equal to hpa.minReplicas. Portable Helm JSON Schema cannot compare sibling integers, so the chart enforces this relation during template rendering."
         },
         "memory": {
           "type": "object",
