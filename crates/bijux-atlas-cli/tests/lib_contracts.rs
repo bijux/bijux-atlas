@@ -99,7 +99,7 @@ fn help_output_command_surface_matches_doc_exactly() {
     let top_help = String::from_utf8(top.stdout).expect("utf8 top help");
     let top_cmds = parse_commands_from_help(&top_help);
 
-    let mut observed = Vec::new();
+    let mut observed = vec!["atlas".to_string()];
     for sub in &top_cmds {
         if matches!(
             sub.as_str(),
