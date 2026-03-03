@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Security domain registration.
 
+pub mod commands;
 pub mod runtime;
 
 use crate::domains::Domain;
@@ -14,12 +15,7 @@ pub fn plugin() -> SecurityDomain {
 }
 
 pub fn routes() -> Vec<CommandRoute> {
-    vec![CommandRoute::new(
-        "security",
-        "security",
-        "security",
-        "Run security validation commands",
-    )]
+    commands::routes()
 }
 
 impl Domain for SecurityDomain {

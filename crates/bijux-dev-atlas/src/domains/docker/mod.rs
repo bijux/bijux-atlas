@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Docker domain contracts canonical surface.
 
+pub mod commands;
 pub mod contracts;
 
 use crate::contracts::Contract;
@@ -20,12 +21,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
 }
 
 pub fn routes() -> Vec<CommandRoute> {
-    vec![CommandRoute::new(
-        "docker",
-        "docker",
-        "docker",
-        "Run docker validation commands",
-    )]
+    commands::routes()
 }
 
 impl Domain for DockerDomain {

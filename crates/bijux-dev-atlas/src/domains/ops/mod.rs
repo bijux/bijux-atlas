@@ -2,6 +2,7 @@
 //! Ops domain contracts, checks, and runtime support.
 
 pub mod checks;
+pub mod commands;
 pub mod contracts;
 pub mod runtime;
 
@@ -22,12 +23,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
 }
 
 pub fn routes() -> Vec<CommandRoute> {
-    vec![CommandRoute::new(
-        "ops",
-        "ops",
-        "ops",
-        "Run ops runtime and validation commands",
-    )]
+    commands::routes()
 }
 
 impl Domain for OpsDomain {

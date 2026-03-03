@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Performance domain registration.
 
+pub mod commands;
 pub mod runtime;
 
 use crate::domains::Domain;
@@ -14,12 +15,7 @@ pub fn plugin() -> PerfDomain {
 }
 
 pub fn routes() -> Vec<CommandRoute> {
-    vec![CommandRoute::new(
-        "perf",
-        "perf",
-        "perf",
-        "Run performance validation commands",
-    )]
+    commands::routes()
 }
 
 impl Domain for PerfDomain {

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Docs domain contracts and runtime adapters.
 
+pub mod commands;
 pub mod contracts;
 pub mod runtime;
 
@@ -21,12 +22,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
 }
 
 pub fn routes() -> Vec<CommandRoute> {
-    vec![CommandRoute::new(
-        "docs",
-        "docs",
-        "docs",
-        "Run docs validation and generation commands",
-    )]
+    commands::routes()
 }
 
 impl Domain for DocsDomain {

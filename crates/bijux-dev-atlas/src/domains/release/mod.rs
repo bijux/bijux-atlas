@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Release domain registration.
 
+pub mod commands;
 pub mod runtime;
 
 use crate::domains::Domain;
@@ -14,12 +15,7 @@ pub fn plugin() -> ReleaseDomain {
 }
 
 pub fn routes() -> Vec<CommandRoute> {
-    vec![CommandRoute::new(
-        "release",
-        "release",
-        "release",
-        "Run release verification commands",
-    )]
+    commands::routes()
 }
 
 impl Domain for ReleaseDomain {

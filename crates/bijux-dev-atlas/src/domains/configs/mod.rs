@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Configs domain contracts and registry-facing plugin surface.
 
+pub mod commands;
 pub mod contracts;
 
 use crate::contracts::Contract;
@@ -20,12 +21,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
 }
 
 pub fn routes() -> Vec<CommandRoute> {
-    vec![CommandRoute::new(
-        "configs",
-        "configs",
-        "configs",
-        "Run configs validation and explanation commands",
-    )]
+    commands::routes()
 }
 
 impl Domain for ConfigsDomain {

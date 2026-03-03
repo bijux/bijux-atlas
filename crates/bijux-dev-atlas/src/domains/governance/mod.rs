@@ -2,6 +2,7 @@
 //! Governance domain contracts canonical surface.
 
 pub mod checks;
+pub mod commands;
 pub mod contracts;
 
 use crate::contracts::Contract;
@@ -24,12 +25,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
 }
 
 pub fn routes() -> Vec<CommandRoute> {
-    vec![CommandRoute::new(
-        "governance",
-        "governance",
-        "governance",
-        "Inspect governance registries and policy status",
-    )]
+    commands::routes()
 }
 
 impl Domain for GovernanceDomain {
