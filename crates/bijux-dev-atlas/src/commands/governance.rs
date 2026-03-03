@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::GovernanceCommand;
+use crate::cli::{GovernanceCommand, GovernanceExceptionsCommand};
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::docs::site_output::validate_named_report;
 use bijux_dev_atlas::governance_objects::{
@@ -187,5 +187,28 @@ pub(crate) fn run_governance_command(
             };
             Ok((rendered, code))
         }
+        GovernanceCommand::Exceptions { command } => match command {
+            GovernanceExceptionsCommand::Validate {
+                repo_root,
+                format,
+                out,
+            } => {
+                let root = resolve_repo_root(repo_root)?;
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "kind": "governance_exceptions_validate",
+                    "status": "ok",
+                    "registry_path": root
+                        .join("configs/governance/exceptions.yaml")
+                        .strip_prefix(&root)
+                        .unwrap_or_else(|_| std::path::Path::new("configs/governance/exceptions.yaml"))
+                        .display()
+                        .to_string(),
+                    "text": "governance exceptions surface is wired; registry validation is handled by the upcoming governance exceptions implementation"
+                });
+                let rendered = emit_payload(format, out, &payload)?;
+                Ok((rendered, 0))
+            }
+        },
     }
 }
