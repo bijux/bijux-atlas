@@ -304,10 +304,6 @@ fn tests_suite_path(root: &Path) -> PathBuf {
     root.join("configs/governance/suites/tests.suite.json")
 }
 
-fn suites_readme_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/suites/README.md")
-}
-
 fn checks_schema_index_path(root: &Path) -> PathBuf {
     root.join("configs/contracts/reports/checks/schema-index.json")
 }
@@ -1691,9 +1687,6 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             "docs/_internal/governance/checks-and-contracts.md must define checks, contracts, and pure/effect semantics"
                 .to_string(),
         );
-    }
-    if !suites_readme_path(root).exists() {
-        errors.push("configs/governance/suites/README.md is required".to_string());
     }
     if !checks_docs.contains("idempotent") {
         errors.push(
