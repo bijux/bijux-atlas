@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/reports.registry.schema.json",
+  "title": "reports registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "reports"],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "reports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["report_id", "version", "schema_path", "example_path"],
+        "properties": {
+          "report_id": { "type": "string", "minLength": 1 },
+          "version": { "type": "integer", "minimum": 1 },
+          "schema_path": { "type": "string", "minLength": 1 },
+          "example_path": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

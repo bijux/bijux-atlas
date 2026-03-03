@@ -12,5 +12,8 @@ pub use crate::core::{
     expand_suite, explain_output, list_output, load_registry, registry_doctor, select_checks,
     validate_registry, Registry, RegistryDoctorReport, SuiteSpec, DEFAULT_REGISTRY_PATH,
 };
-pub use reports::{ReportRegistry, ReportRegistryEntry, REPORTS_REGISTRY_PATH};
+pub use reports::{
+    ReportArtifactValidation, ReportCatalogValidation, ReportRegistry, ReportRegistryEntry,
+    REPORTS_REGISTRY_PATH, REPORTS_REGISTRY_SCHEMA_PATH,
+};
 pub use runnable::RunnableRegistry;
