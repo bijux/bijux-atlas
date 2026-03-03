@@ -1,7 +1,20 @@
 {
   "chart_package": {
     "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-    "sha256": "e39a41f1ee524c41ccb3a1871e288c1de9af47dd1d7b79de552a3a54a85ff3b3"
+    "sha256": "40d919475165edc54d6305d2e3a4eea876501ccf2627e6cdda2f3df8784eee7d"
+  },
+  "docker_bases_lock": {
+    "path": "docker/bases.lock",
+    "sha256": "4b9996348cba7a04aa56e8617aab6bba5dec62e950819626bbd15abd7145e8e1"
+  },
+  "docs_site_summary": {
+    "file_count": 570,
+    "sha256": "b47fbd1798d5b99c80b49ecce109b7ffb934df168d447a748c951275fb172a90",
+    "site_dir": "artifacts/docs/site"
+  },
+  "evidence_tarball": {
+    "path": "release/evidence/bundle.tar",
+    "sha256": "4e4d36ebcc1a571a6b82e151f8d8936d52b378cf7fc912a9fe54fd4ef9aeab89"
   },
   "generated_by": "bijux dev atlas ops evidence collect",
   "identity_path": "release/evidence/identity.json",
@@ -42,13 +55,22 @@
       "tag": ""
     }
   ],
+  "policy_path": "release/evidence/policy.json",
   "reports": [
     "ops/report/generated/historical-comparison.json",
     "ops/report/generated/readiness-score.json",
     "ops/report/generated/release-evidence-bundle.json",
     "ops/report/generated/report-diff.json"
   ],
+  "runtime_env_allowlist": {
+    "path": "configs/contracts/env.schema.json",
+    "sha256": "2431dfc4f7499c4fe9efa57bb1703165cc7b174dda600076455dbbec46a35f1d"
+  },
   "sboms": [],
   "schema_version": 1,
-  "simulation_summaries": []
+  "simulation_summaries": [],
+  "toolchain_inventory": {
+    "path": "configs/rust/toolchain.json",
+    "sha256": "c3c66958ac518576718c5f38c71faa105f394e9559b9ef9567f3059b08cb82a0"
+  }
 }
