@@ -1553,7 +1553,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-artifact-contract.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/docs-build-publish-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-change-classification.md"
     },
     {
       "crate": null,
@@ -1608,6 +1618,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-publication-semantics.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/docs-quality-policy.md"
     },
     {
@@ -1624,6 +1639,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/_internal/governance/docs-review-checklist.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-reviewability-policy.md"
     },
     {
       "crate": null,
@@ -1649,6 +1669,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/_internal/governance/generated-content-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/governance-ssot.md"
     },
     {
       "crate": null,
@@ -1704,6 +1729,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/_internal/governance/redirects-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/regenerate-committed-artifacts.md"
     },
     {
       "crate": null,
@@ -2928,6 +2958,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/security/action-pin-refresh.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/security/advisory-process.md"
     },
     {
@@ -2979,6 +3014,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/values-mapping-to-config-keys.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/values-schema.md"
     },
     {
       "crate": null,
@@ -3169,6 +3209,11 @@
       "crate": null,
       "doc_type": "spec",
       "from": "docs/reference/contracts/ops/lifecycle.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "spec",
+      "from": "docs/reference/contracts/ops/networkpolicy.md"
     },
     {
       "crate": null,

@@ -7566,6 +7566,31 @@
       "doc_version": "v1",
       "keywords": [
         "-internal",
+        "docs-artifact-contract",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-artifact-contract.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-artifact-contract",
+        "governance"
+      ],
+      "title": "Docs Artifact Contract",
+      "topic": "docs-artifact-contract"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
         "docs-build-publish-model",
         "governance"
       ],
@@ -7582,6 +7607,31 @@
       ],
       "title": "Docs Build Publish Model",
       "topic": "docs-build-publish-model"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-change-classification",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-change-classification.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-change-classification",
+        "governance"
+      ],
+      "title": "Docs Change Classification",
+      "topic": "docs-change-classification"
     },
     {
       "area": "_internal",
@@ -7835,6 +7885,31 @@
     },
     {
       "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-publication-semantics",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-publication-semantics.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-publication-semantics",
+        "governance"
+      ],
+      "title": "Docs Publication Semantics",
+      "topic": "docs-publication-semantics"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
@@ -7932,6 +8007,31 @@
       ],
       "title": "Documentation Review Checklist",
       "topic": "docs-review-checklist"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-reviewability-policy",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-reviewability-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-reviewability-policy",
+        "governance"
+      ],
+      "title": "Docs Reviewability Policy",
+      "topic": "docs-reviewability-policy"
     },
     {
       "area": "_internal",
@@ -8057,6 +8157,31 @@
       ],
       "title": "Generated Documentation Content Policy",
       "topic": "generated-content-policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "governance-ssot"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/governance-ssot.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "governance-ssot"
+      ],
+      "title": "Governance Source Of Truth",
+      "topic": "governance-ssot"
     },
     {
       "area": "_internal",
@@ -8340,6 +8465,31 @@
       ],
       "title": "Redirects Policy",
       "topic": "redirects-policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "regenerate-committed-artifacts"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/regenerate-committed-artifacts.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "regenerate-committed-artifacts"
+      ],
+      "title": "Regenerate Committed Docs Artifacts",
+      "topic": "regenerate-committed-artifacts"
     },
     {
       "area": "_internal",
@@ -14109,6 +14259,31 @@
     },
     {
       "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "action-pin-refresh",
+        "operations",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/action-pin-refresh.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "action-pin-refresh",
+        "operations",
+        "security"
+      ],
+      "title": "Refresh Pinned GitHub Actions SHAs",
+      "topic": "action-pin-refresh"
+    },
+    {
+      "area": "operations",
       "audience": "operators",
       "crate": null,
       "doc_type": "concept",
@@ -14373,6 +14548,29 @@
       ],
       "title": "Values mapping to config keys",
       "topic": "values-mapping-to-config-keys"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "values-schema"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/values-schema.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "values-schema"
+      ],
+      "title": "Values Schema",
+      "topic": "values-schema"
     },
     {
       "area": "operations",
@@ -15295,6 +15493,33 @@
       ],
       "title": "Ops Lifecycle Contracts",
       "topic": "lifecycle"
+    },
+    {
+      "area": "reference",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "networkpolicy",
+        "ops",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/contracts/ops/networkpolicy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "networkpolicy",
+        "ops",
+        "reference"
+      ],
+      "title": "NetworkPolicy Contracts",
+      "topic": "networkpolicy"
     },
     {
       "area": "reference",
@@ -16350,7 +16575,7 @@
     },
     {
       "area": "reference",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "reference",
       "doc_version": "v1",
@@ -16360,7 +16585,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
+      "owner": "bijux-atlas-docs",
       "path": "docs/reference/repo-map.md",
       "review_due": "2026-08-24",
       "stability": "stable",

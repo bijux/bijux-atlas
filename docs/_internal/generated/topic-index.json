@@ -143,6 +143,9 @@
     "SECURITY": [
       "SECURITY.md"
     ],
+    "action-pin-refresh": [
+      "docs/operations/security/action-pin-refresh.md"
+    ],
     "add-a-check-in-30-minutes": [
       "docs/control-plane/add-a-check-in-30-minutes.md"
     ],
@@ -574,6 +577,9 @@
     "doc-conventions": [
       "docs/development/doc-conventions.md"
     ],
+    "docs-artifact-contract": [
+      "docs/_internal/governance/docs-artifact-contract.md"
+    ],
     "docs-as-runbooks": [
       "docs/operations/docs-as-runbooks.md"
     ],
@@ -582,6 +588,9 @@
     ],
     "docs-build-publish-model": [
       "docs/_internal/governance/docs-build-publish-model.md"
+    ],
+    "docs-change-classification": [
+      "docs/_internal/governance/docs-change-classification.md"
     ],
     "docs-change-process": [
       "docs/_internal/meta/docs-change-process.md"
@@ -629,6 +638,9 @@
     "docs-publication-model": [
       "docs/_internal/governance/docs-publication-model.md"
     ],
+    "docs-publication-semantics": [
+      "docs/_internal/governance/docs-publication-semantics.md"
+    ],
     "docs-quality-policy": [
       "docs/_internal/governance/docs-quality-policy.md"
     ],
@@ -640,6 +652,9 @@
     ],
     "docs-review-checklist": [
       "docs/_internal/governance/docs-review-checklist.md"
+    ],
+    "docs-reviewability-policy": [
+      "docs/_internal/governance/docs-reviewability-policy.md"
     ],
     "docs-rewrite-plan": [
       "docs/_internal/meta/internal/docs-rewrite-plan.md"
@@ -813,6 +828,9 @@
     ],
     "glossary": [
       "docs/glossary.md"
+    ],
+    "governance-ssot": [
+      "docs/_internal/governance/governance-ssot.md"
     ],
     "health-endpoints": [
       "docs/reference/contracts/health-endpoints.md"
@@ -993,7 +1011,8 @@
       "docs/_internal/governance/naming.md"
     ],
     "networkpolicy": [
-      "docs/operations/networkpolicy.md"
+      "docs/operations/networkpolicy.md",
+      "docs/reference/contracts/ops/networkpolicy.md"
     ],
     "no-dna-dependency-policy": [
       "docs/reference/registry/no-dna-dependency-policy.md"
@@ -1195,6 +1214,9 @@
     ],
     "redirects-policy": [
       "docs/_internal/governance/redirects-policy.md"
+    ],
+    "regenerate-committed-artifacts": [
+      "docs/_internal/governance/regenerate-committed-artifacts.md"
     ],
     "registry-contract": [
       "crates/bijux-dev-atlas/docs/registry-contract.md"
@@ -1552,6 +1574,9 @@
     ],
     "values-mapping-to-config-keys": [
       "docs/operations/values-mapping-to-config-keys.md"
+    ],
+    "values-schema": [
+      "docs/operations/values-schema.md"
     ],
     "verification-metadata": [
       "docs/_internal/governance/verification-metadata.md"

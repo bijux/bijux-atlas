@@ -13,21 +13,21 @@
 - External links: `0`
 - Unique external domains: `0`
 - Allowlist-covered external domains: `0/0`
-- Orphan pages: `83`
+- Orphan pages: `84`
 - Pages missing `Last verified against`: `195`
 
 ## Longest Pages
 
-- `docs/_internal/generated/docs-inventory.md`: `725` lines
-- `docs/_internal/generated/topic-index.md`: `445` lines
+- `docs/_internal/generated/docs-inventory.md`: `734` lines
+- `docs/_internal/generated/topic-index.md`: `453` lines
 - `docs/reference/contracts/errors.md`: `435` lines
 - `docs/operations/reference/ops-surface.md`: `308` lines
 - `docs/reference/contracts/plugins/spec.md`: `191` lines
 - `docs/reference/contracts/config-keys.md`: `167` lines
 - `docs/contract.md`: `162` lines
 - `docs/reference/make-targets.md`: `161` lines
+- `docs/operations/networkpolicy.md`: `160` lines
 - `docs/_internal/generated/make-targets.md`: `156` lines
-- `docs/_internal/generated/governance-audit/docs-inventory-triage-report.md`: `145` lines
 
 ## Single-Line Offenders
 
@@ -37,10 +37,10 @@
 - `docs/control-plane/control-plane-architecture.md`: longest line `268` characters
 - `docs/_internal/governance/docs-debt-backlog.md`: longest line `249` characters
 - `docs/operations/release-evidence.md`: longest line `227` characters
+- `docs/_internal/generated/legacy-url-inventory.md`: longest line `227` characters
 - `docs/architecture/architecture-map.md`: longest line `216` characters
 - `docs/control-plane/lane-matrix.md`: longest line `212` characters
 - `docs/contract.md`: longest line `206` characters
-- `docs/operations/release-signing.md`: longest line `203` characters
 
 ## Missing Verification Markers
 

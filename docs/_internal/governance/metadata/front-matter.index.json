@@ -2485,9 +2485,25 @@
       "area": "_internal",
       "audience": "contributor",
       "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-artifact-contract.md",
+      "stability": "stable",
+      "title": "Docs Artifact Contract"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
       "path": "docs/_internal/governance/docs-build-publish-model.md",
       "stability": "stable",
       "title": "Docs Build Publish Model"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-change-classification.md",
+      "stability": "stable",
+      "title": "Docs Change Classification"
     },
     {
       "area": "_internal",
@@ -2571,6 +2587,14 @@
     },
     {
       "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-publication-semantics.md",
+      "stability": "stable",
+      "title": "Docs Publication Semantics"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/governance/docs-quality-policy.md",
@@ -2600,6 +2624,14 @@
       "path": "docs/_internal/governance/docs-review-checklist.md",
       "stability": "stable",
       "title": "Documentation Review Checklist"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-reviewability-policy.md",
+      "stability": "stable",
+      "title": "Docs Reviewability Policy"
     },
     {
       "area": "_internal",
@@ -2640,6 +2672,14 @@
       "path": "docs/_internal/governance/generated-content-policy.md",
       "stability": "stable",
       "title": "Generated Documentation Content Policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/governance-ssot.md",
+      "stability": "stable",
+      "title": "Governance Source Of Truth"
     },
     {
       "area": "_internal",
@@ -2728,6 +2768,14 @@
       "path": "docs/_internal/governance/redirects-policy.md",
       "stability": "stable",
       "title": "Redirects Policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/regenerate-committed-artifacts.md",
+      "stability": "stable",
+      "title": "Regenerate Committed Docs Artifacts"
     },
     {
       "area": "_internal",
@@ -4683,6 +4731,14 @@
     },
     {
       "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/action-pin-refresh.md",
+      "stability": "stable",
+      "title": "Refresh Pinned GitHub Actions SHAs"
+    },
+    {
+      "area": "operations",
       "audience": "operators",
       "owner": "docs-governance",
       "path": "docs/operations/security/advisory-process.md",
@@ -4768,6 +4824,14 @@
       "path": "docs/operations/values-mapping-to-config-keys.md",
       "stability": "stable",
       "title": "Values mapping to config keys"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/values-schema.md",
+      "stability": "stable",
+      "title": "Values Schema"
     },
     {
       "area": "operations",
@@ -5072,6 +5136,14 @@
       "path": "docs/reference/contracts/ops/lifecycle.md",
       "stability": "stable",
       "title": "Ops Lifecycle Contracts"
+    },
+    {
+      "area": "reference",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/contracts/ops/networkpolicy.md",
+      "stability": "stable",
+      "title": "NetworkPolicy Contracts"
     },
     {
       "area": "reference",
@@ -5411,8 +5483,8 @@
     },
     {
       "area": "reference",
-      "audience": "operators",
-      "owner": "bijux-atlas-operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-docs",
       "path": "docs/reference/repo-map.md",
       "stability": "stable",
       "title": "Repository Map"

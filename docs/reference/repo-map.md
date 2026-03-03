@@ -1,28 +1,22 @@
 # Repository Map
 
-- Owner: `bijux-atlas-docs`
-- Review cadence: `quarterly`
+- Owner: `bijux-atlas-operations`
 - Type: `reference`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@ff8cd5f299e568c93feec8b4d40347bf1c5a93c4`
 - Source-of-truth: `docs/_internal/generated/docs-inventory.md`
-- Reason to exist: point readers to the canonical repository layout guide and the governed generated inventory.
 
 ## Purpose
 
-This page is the stable public entrypoint for repository layout questions.
-It does not duplicate the generated inventory because that surface changes frequently and is maintained for
-contributors, not readers.
+This page is the stable reader entrypoint for repository layout. Use the generated inventory for exhaustive listings and
+the curated layout guide for narrative structure.
 
-## Entrypoints
+## Canonical Inputs
 
-- Read [Repository Layout](../development/repo-layout.md) for the curated explanation of where code and
-  operational surfaces live.
-- Use `docs/_internal/generated/docs-inventory.md` as the detailed generated inventory when you need the
-  current committed filesystem snapshot.
+- [Docs Inventory](../_internal/generated/docs-inventory.md)
+- [Repository Layout](../development/repo-layout.md)
 
-## Verification
+## Reader Guidance
 
-The docs contracts verify that the `Source-of-truth` path above exists and that the curated entrypoint keeps
-pointing at the canonical repository layout page.
+Start with the curated layout guide when you need to understand ownership or subsystem boundaries. Use the generated
+inventory when you need a complete file-level listing.

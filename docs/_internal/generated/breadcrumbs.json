@@ -2859,9 +2859,27 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/docs-artifact-contract.md"
+      ],
+      "path": "docs/_internal/governance/docs-artifact-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/docs-build-publish-model.md"
       ],
       "path": "docs/_internal/governance/docs-build-publish-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-change-classification.md"
+      ],
+      "path": "docs/_internal/governance/docs-change-classification.md"
     },
     {
       "breadcrumbs": [
@@ -2958,6 +2976,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/docs-publication-semantics.md"
+      ],
+      "path": "docs/_internal/governance/docs-publication-semantics.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/docs-quality-policy.md"
       ],
       "path": "docs/_internal/governance/docs-quality-policy.md"
@@ -2988,6 +3015,15 @@
         "docs/_internal/governance/docs-review-checklist.md"
       ],
       "path": "docs/_internal/governance/docs-review-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-reviewability-policy.md"
+      ],
+      "path": "docs/_internal/governance/docs-reviewability-policy.md"
     },
     {
       "breadcrumbs": [
@@ -3033,6 +3069,15 @@
         "docs/_internal/governance/generated-content-policy.md"
       ],
       "path": "docs/_internal/governance/generated-content-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/governance-ssot.md"
+      ],
+      "path": "docs/_internal/governance/governance-ssot.md"
     },
     {
       "breadcrumbs": [
@@ -3136,6 +3181,15 @@
         "docs/_internal/governance/redirects-policy.md"
       ],
       "path": "docs/_internal/governance/redirects-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/regenerate-committed-artifacts.md"
+      ],
+      "path": "docs/_internal/governance/regenerate-committed-artifacts.md"
     },
     {
       "breadcrumbs": [
@@ -5172,6 +5226,15 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/action-pin-refresh.md"
+      ],
+      "path": "docs/operations/security/action-pin-refresh.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/advisory-process.md"
       ],
       "path": "docs/operations/security/advisory-process.md"
@@ -5261,6 +5324,14 @@
         "docs/operations/values-mapping-to-config-keys.md"
       ],
       "path": "docs/operations/values-mapping-to-config-keys.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/values-schema.md"
+      ],
+      "path": "docs/operations/values-schema.md"
     },
     {
       "breadcrumbs": [
@@ -5590,6 +5661,16 @@
         "docs/reference/contracts/ops/lifecycle.md"
       ],
       "path": "docs/reference/contracts/ops/lifecycle.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/contracts",
+        "docs/reference/contracts/ops",
+        "docs/reference/contracts/ops/networkpolicy.md"
+      ],
+      "path": "docs/reference/contracts/ops/networkpolicy.md"
     },
     {
       "breadcrumbs": [

@@ -237,34 +237,31 @@ fn render_docs_reference_make_targets(repo_root: &std::path::Path) -> Result<Str
 }
 
 fn render_docs_reference_repo_map(repo_root: &std::path::Path) -> Result<String, String> {
-    let mut out = String::new();
-    out.push_str("# Repository Map\n\n");
-    out.push_str("- Owner: `bijux-atlas-operations`\n");
-    out.push_str("- Tier: `generated`\n");
-    out.push_str("- Audience: `operators`\n");
-    out.push_str("- Source-of-truth: repository filesystem snapshot\n\n");
-    out.push_str("## Top-Level Directories\n\n| Directory | Markdown Files | Total Files |\n| --- | --- | --- |\n");
-
-    let mut dirs = std::fs::read_dir(repo_root)
-        .map_err(|e| format!("list repo root failed: {e}"))?
-        .filter_map(Result::ok)
-        .filter(|e| e.path().is_dir())
-        .filter_map(|e| e.file_name().to_str().map(str::to_string))
-        .collect::<Vec<_>>();
-    dirs.sort();
-    for dir in dirs {
-        if dir.starts_with(".git") {
-            continue;
-        }
-        let root = repo_root.join(&dir);
-        let files = walk_files_local(root.as_path());
-        let md_count = files
-            .iter()
-            .filter(|p| p.extension().and_then(|v| v.to_str()) == Some("md"))
-            .count();
-        out.push_str(&format!("| `{dir}` | `{md_count}` | `{}` |\n", files.len()));
+    let inventory_path = repo_root.join("docs/_internal/generated/docs-inventory.md");
+    if !inventory_path.exists() {
+        return Err(format!(
+            "missing canonical docs inventory at {}",
+            inventory_path.display()
+        ));
     }
-    Ok(out)
+    Ok(
+        "# Repository Map\n\n\
+- Owner: `bijux-atlas-operations`\n\
+- Type: `reference`\n\
+- Audience: `operator`\n\
+- Stability: `stable`\n\
+- Source-of-truth: `docs/_internal/generated/docs-inventory.md`\n\n\
+## Purpose\n\n\
+This page is the stable reader entrypoint for repository layout. Use the generated inventory for exhaustive listings and\n\
+the curated layout guide for narrative structure.\n\n\
+## Canonical Inputs\n\n\
+- [Docs Inventory](../_internal/generated/docs-inventory.md)\n\
+- [Repository Layout](../development/repo-layout.md)\n\n\
+## Reader Guidance\n\n\
+Start with the curated layout guide when you need to understand ownership or subsystem boundaries. Use the generated\n\
+inventory when you need a complete file-level listing.\n"
+            .to_string(),
+    )
 }
 
 fn run_bijux_dev_atlas_help(repo_root: &std::path::Path, args: &[&str]) -> Result<String, String> {

@@ -4151,6 +4151,20 @@
     {
       "keywords": [
         "-internal",
+        "docs-artifact-contract",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-artifact-contract.md",
+      "tags": [
+        "-internal",
+        "docs-artifact-contract",
+        "governance"
+      ],
+      "topic": "docs-artifact-contract"
+    },
+    {
+      "keywords": [
+        "-internal",
         "docs-build-publish-model",
         "governance"
       ],
@@ -4161,6 +4175,20 @@
         "governance"
       ],
       "topic": "docs-build-publish-model"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-change-classification",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-change-classification.md",
+      "tags": [
+        "-internal",
+        "docs-change-classification",
+        "governance"
+      ],
+      "topic": "docs-change-classification"
     },
     {
       "keywords": [
@@ -4305,6 +4333,20 @@
     {
       "keywords": [
         "-internal",
+        "docs-publication-semantics",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-publication-semantics.md",
+      "tags": [
+        "-internal",
+        "docs-publication-semantics",
+        "governance"
+      ],
+      "topic": "docs-publication-semantics"
+    },
+    {
+      "keywords": [
+        "-internal",
         "docs-quality-policy",
         "governance"
       ],
@@ -4357,6 +4399,20 @@
         "governance"
       ],
       "topic": "docs-review-checklist"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-reviewability-policy",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-reviewability-policy.md",
+      "tags": [
+        "-internal",
+        "docs-reviewability-policy",
+        "governance"
+      ],
+      "topic": "docs-reviewability-policy"
     },
     {
       "keywords": [
@@ -4427,6 +4483,20 @@
         "governance"
       ],
       "topic": "generated-content-policy"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "governance-ssot"
+      ],
+      "path": "docs/_internal/governance/governance-ssot.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "governance-ssot"
+      ],
+      "topic": "governance-ssot"
     },
     {
       "keywords": [
@@ -4589,6 +4659,20 @@
         "redirects-policy"
       ],
       "topic": "redirects-policy"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "regenerate-committed-artifacts"
+      ],
+      "path": "docs/_internal/governance/regenerate-committed-artifacts.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "regenerate-committed-artifacts"
+      ],
+      "topic": "regenerate-committed-artifacts"
     },
     {
       "keywords": [
@@ -7674,6 +7758,20 @@
     },
     {
       "keywords": [
+        "action-pin-refresh",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/action-pin-refresh.md",
+      "tags": [
+        "action-pin-refresh",
+        "operations",
+        "security"
+      ],
+      "topic": "action-pin-refresh"
+    },
+    {
+      "keywords": [
         "advisory-process",
         "operations",
         "security"
@@ -7817,6 +7915,18 @@
         "values-mapping-to-config-keys"
       ],
       "topic": "values-mapping-to-config-keys"
+    },
+    {
+      "keywords": [
+        "operations",
+        "values-schema"
+      ],
+      "path": "docs/operations/values-schema.md",
+      "tags": [
+        "operations",
+        "values-schema"
+      ],
+      "topic": "values-schema"
     },
     {
       "keywords": [
@@ -8321,6 +8431,22 @@
         "reference"
       ],
       "topic": "lifecycle"
+    },
+    {
+      "keywords": [
+        "contracts",
+        "networkpolicy",
+        "ops",
+        "reference"
+      ],
+      "path": "docs/reference/contracts/ops/networkpolicy.md",
+      "tags": [
+        "contracts",
+        "networkpolicy",
+        "ops",
+        "reference"
+      ],
+      "topic": "networkpolicy"
     },
     {
       "keywords": [
