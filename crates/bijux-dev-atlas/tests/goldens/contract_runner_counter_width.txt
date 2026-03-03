@@ -1,0 +1,6 @@
+contract-run: mode=static jobs=auto fail-fast=false
+preflight: required-tools=none missing-tools=none
+planning: contracts=1 cases=1002
+PASS [  0.001s] (   1/1002) ops::OPS-COUNTER-001 ops.counter.case_0001
+PASS [  0.001s] (1002/1002) ops::OPS-COUNTER-001 ops.counter.case_1002
+contract-summary: total=1002 passed=1002 failed=0 skipped=0

@@ -1,0 +1,7 @@
+contract-run: mode=static jobs=auto fail-fast=false
+preflight: required-tools=none missing-tools=none
+planning: contracts=1 cases=1
+FAIL [  0.022s] (1/1) governance::GOVERNANCE-CONTRACT-NAME-THAT-STAYS-LONG-AND-EXPLICIT-001 governance.case_name_that_stays_long_and_explicit_without_wrapping (long-output)
+contract-summary: total=1 passed=0 failed=1 skipped=0
+failed-tests:
+governance::GOVERNANCE-CONTRACT-NAME-THAT-STAYS-LONG-AND-EXPLICIT-001 governance.case_name_that_stays_long_and_explicit_without_wrapping

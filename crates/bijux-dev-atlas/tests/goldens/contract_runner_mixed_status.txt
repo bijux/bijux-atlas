@@ -1,0 +1,15 @@
+contract-run: mode=static jobs=auto fail-fast=false
+preflight: required-tools=sh missing-tools=sh
+planning: contracts=2 cases=6
+FAIL [  0.012s] (1/6) ops::OPS-001 ops.case.fail (violation)
+PASS [  0.010s] (2/6) ops::OPS-001 ops.case.pass_a
+PASS [  0.008s] (3/6) ops::OPS-001 ops.case.pass_b
+PASS [  0.007s] (4/6) ops::OPS-002 ops.case.pass_c
+SKIP [  0.005s] (5/6) ops::OPS-002 ops.case.skip_a (missing tool: sh)
+SKIP [  0.005s] (6/6) ops::OPS-002 ops.case.skip_b (disabled effect policy)
+contract-summary: total=6 passed=3 failed=1 skipped=2
+failed-tests:
+ops::OPS-001 ops.case.fail
+skipped-tests:
+ops::OPS-002 ops.case.skip_a
+ops::OPS-002 ops.case.skip_b
