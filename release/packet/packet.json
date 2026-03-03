@@ -19,7 +19,7 @@
     },
     {
       "path": "artifacts/ingest/ingest-run.json",
-      "sha256": "ccc35a3ebab76692be7afefbaf18608c21724f3ed3b06ffe6cee3016abccf78f"
+      "sha256": "0dedbad84efd3a6da07a7f1316366a0d1e03b39ce5329e074d569e1ea77efa0e"
     },
     {
       "path": "configs/contracts/datasets/endtoend.schema.json",
@@ -51,19 +51,19 @@
     },
     {
       "path": "release/evidence/bundle.tar",
-      "sha256": "6e517b80b6546927e0e65dbecd485e15333cf4a8175f20503e345fd23bfa40ea"
+      "sha256": "54750de03bbe61d91fe1dae055f9a11f6c8d7431a3da9484610c679eca97e175"
     },
     {
       "path": "release/evidence/identity.json",
-      "sha256": "9d7a736bfc1f103d9d8517e69f5430e4afcd0c050463d1a05386bd64c764fc98"
+      "sha256": "4be02fb76c1de676984cca3d3ec042981ef28ad2fede2a2669514f0c7254f31f"
     },
     {
       "path": "release/evidence/manifest.json",
-      "sha256": "1c69eeb3de6c9acad8680f866a80f9becf9f0794666ba14232453d2b064711f7"
+      "sha256": "e52cd8df2e7bfb4f93229bfced43341cf45a89573af33762fcb9a430dc8cb4a5"
     },
     {
       "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-      "sha256": "4cdec04db7cd010f7377093d03775814c5d3e61345ba2de9b3c8451d9dfa2252"
+      "sha256": "82748b81c091a7332660583ae775180f40fda6d7d2ee28d2003fbd449f7c6cae"
     },
     {
       "path": "release/evidence/sboms/perf.spdx.json",
@@ -83,15 +83,15 @@
     },
     {
       "path": "release/provenance.json",
-      "sha256": "bb29ac12f9271d82f570152055f65405b5849e386d7db54e1ce2079bc2688b9b"
+      "sha256": "c363ef8cccb715d06dc4cf2c5f2c5744e8e213631aa517453363ffa74182a487"
     },
     {
       "path": "release/signing/checksums.json",
-      "sha256": "5a3a7030ef9797b9fd321932b1b01793d1f358f794b243666b52d4a2815780cd"
+      "sha256": "d5edb16db862edc4d13d35eb35c66b5afaa658ae661788a36af9b4d780e19d1c"
     },
     {
       "path": "release/signing/release-sign.json",
-      "sha256": "31007494ccad2d7d0727c65f74496192ddda2b172639c1bb5fb2f35d7c1bdc7b"
+      "sha256": "5b3940bcce276a62b1447816a2d62a38ab94f6f186dadb56ed9290d33d5f76de"
     },
     {
       "path": "release/signing/release-verify.json",

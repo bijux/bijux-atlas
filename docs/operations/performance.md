@@ -18,7 +18,7 @@ Related ops contracts: `OPS-ROOT-023`, `PERF-KIND-001`.
 - `configs/perf/benches.json`
 - `configs/perf/exceptions.json`
 - `ops/_benchmarks/gene-lookup-baseline.json`
-- `the committed gene-lookup scenario definition under the perf harness inputs`
+- `the built-in gene-lookup scenario embedded in bijux-dev-atlas`
 
 ## Reproducibility Rules
 

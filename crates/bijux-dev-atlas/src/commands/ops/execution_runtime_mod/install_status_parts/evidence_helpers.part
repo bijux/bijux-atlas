@@ -458,7 +458,6 @@ fn collect_perf_assets(repo_root: &std::path::Path) -> Result<Vec<String>, Strin
         "configs/contracts/perf/cold-start-report.schema.json",
         "ops/_benchmarks/gene-lookup-baseline.json",
         "ops/schema/k8s/perf-on-kind.schema.json",
-        "tools/perf/gene-lookup.json",
     ] {
         let path = repo_root.join(rel);
         if path.exists() {

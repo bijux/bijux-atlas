@@ -1,7 +1,7 @@
 {
   "chart_package": {
     "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-    "sha256": "4cdec04db7cd010f7377093d03775814c5d3e61345ba2de9b3c8451d9dfa2252"
+    "sha256": "82748b81c091a7332660583ae775180f40fda6d7d2ee28d2003fbd449f7c6cae"
   },
   "dataset_assets": [
     "configs/datasets/manifest.yaml",
@@ -21,14 +21,14 @@
     "sha256": "4b9996348cba7a04aa56e8617aab6bba5dec62e950819626bbd15abd7145e8e1"
   },
   "docs_site_summary": {
-    "file_count": 605,
-    "sha256": "b47fbd1798d5b99c80b49ecce109b7ffb934df168d447a748c951275fb172a90",
+    "file_count": 621,
+    "sha256": "d758e43fd4b0e02a4f563069fd7ecaa05de1b8fd60c399d0ddf4134c31d63aef",
     "site_dir": "artifacts/docs/site"
   },
   "drill_summaries": [],
   "evidence_tarball": {
     "path": "release/evidence/bundle.tar",
-    "sha256": "6e517b80b6546927e0e65dbecd485e15333cf4a8175f20503e345fd23bfa40ea"
+    "sha256": "54750de03bbe61d91fe1dae055f9a11f6c8d7431a3da9484610c679eca97e175"
   },
   "generated_by": "bijux dev atlas ops evidence collect",
   "identity_path": "release/evidence/identity.json",
@@ -98,7 +98,6 @@
     "configs/contracts/perf/cold-start-report.schema.json",
     "ops/_benchmarks/gene-lookup-baseline.json",
     "ops/schema/k8s/perf-on-kind.schema.json",
-    "tools/perf/gene-lookup.json",
     "artifacts/perf/perf-slo.json",
     "artifacts/perf/gene-lookup-load.json",
     "artifacts/perf/cold-start.json",
@@ -107,7 +106,7 @@
   "policy_path": "release/evidence/policy.json",
   "provenance": {
     "path": "release/provenance.json",
-    "sha256": "bb29ac12f9271d82f570152055f65405b5849e386d7db54e1ce2079bc2688b9b"
+    "sha256": "c363ef8cccb715d06dc4cf2c5f2c5744e8e213631aa517453363ffa74182a487"
   },
   "redacted_logs": [],
   "reports": [
@@ -118,7 +117,7 @@
   ],
   "runtime_env_allowlist": {
     "path": "configs/contracts/env.schema.json",
-    "sha256": "2431dfc4f7499c4fe9efa57bb1703165cc7b174dda600076455dbbec46a35f1d"
+    "sha256": "a159e71d9cf7f5e23caa001a6251c56b980320b02a4ef09229932e6eac3fca7d"
   },
   "sboms": [
     {

@@ -1,6 +1,6 @@
 {
-  "git_sha": "972a2c7b4af32e92cd593d2c5d92b7ab1a17207e",
-  "governance_version": "main@972a2c7b4af32e92cd593d2c5d92b7ab1a17207e",
-  "release_id": "data_provenance_refresh-972a2c7b4af3",
+  "git_sha": "19a04111fd69d224a120cde77e9c2245e8e225a5",
+  "governance_version": "main@19a04111fd69d224a120cde77e9c2245e8e225a5",
+  "release_id": "no_root_tools_refresh-19a04111fd69",
   "schema_version": 1
 }

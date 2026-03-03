@@ -50,6 +50,24 @@ fn write_json(path: &Path, value: &serde_json::Value) -> Result<(), String> {
     .map_err(|err| format!("failed to write {}: {err}", path.display()))
 }
 
+fn load_perf_scenario(name: &str) -> Result<serde_json::Value, String> {
+    match name {
+        "gene-lookup" => Ok(serde_json::json!({
+            "schema_version": 1,
+            "scenario": "gene-lookup",
+            "seed": 110,
+            "warmup_requests": 8,
+            "duration_seconds": 1,
+            "threads": 4,
+            "requests_per_thread": 32,
+            "request_path": "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1",
+            "expected_status": 200,
+            "response_body": "{\"items\":[{\"gene_id\":\"g1\",\"name\":\"G1\"}],\"count\":1}"
+        })),
+        other => Err(format!("unknown perf scenario: {other}")),
+    }
+}
+
 fn current_rss_mb() -> Result<f64, String> {
     let pid = std::process::id().to_string();
     let output = ProcessCommand::new("ps")
@@ -233,8 +251,7 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
     ensure_json(&root.join("configs/contracts/perf/load-report.schema.json"))?;
     ensure_json(&root.join("configs/contracts/perf/budgets.schema.json"))?;
 
-    let scenario_path = root.join(format!("tools/perf/{}.json", args.scenario));
-    let scenario = read_json(&scenario_path)?;
+    let scenario = load_perf_scenario(&args.scenario)?;
     let slo = read_yaml(&root.join("configs/perf/slo.yaml"))?;
     let budgets = read_yaml(&root.join("configs/perf/budgets.yaml"))?;
 
@@ -445,7 +462,7 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
             "text": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 && perf_cpu_001 { "perf run passed" } else { "perf run failed" },
             "rows": [{
                 "report_path": format!("artifacts/perf/{}-load.json", args.scenario),
-                "scenario_path": format!("tools/perf/{}.json", args.scenario),
+                "scenario": args.scenario,
                 "baseline_path": format!("ops/_benchmarks/{}-baseline.json", args.scenario),
                 "regression_window_runs": history_runs,
                 "contracts": report["contracts"].clone(),
