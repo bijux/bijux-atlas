@@ -5,6 +5,7 @@
 #![cfg_attr(not(test), deny(clippy::unwrap_used, clippy::expect_used))]
 #![deny(clippy::todo)]
 
+mod app;
 #[path = "commands/artifacts.rs"]
 mod artifacts_commands;
 #[path = "commands/build.rs"]
@@ -48,5 +49,5 @@ fn workspace_root_resolver_anchor(arg: Option<std::path::PathBuf>) {
 }
 
 fn main() {
-    std::process::exit(run());
+    std::process::exit(app::run());
 }
