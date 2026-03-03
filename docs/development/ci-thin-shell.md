@@ -4,7 +4,7 @@
 - Type: `guide`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main`
+- Last verified against: `main@ff8cd5f299e568c93feec8b4d40347bf1c5a93c4`
 - Reason to exist: define the permanent rule that CI orchestrates atlas and does not become a second policy engine.
 
 ## Rule

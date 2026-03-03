@@ -75,6 +75,10 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-062" => "docs/_internal/registry/sections.json must validate against the declared docs sections schema.".to_string(),
         "DOC-063" => "docs/site-map.md must link the canonical reader spine and published utility pages.".to_string(),
         "DOC-064" => "docs/index.md must expose exactly three canonical onboarding golden paths: run locally, deploy to kind, and deploy to Kubernetes.".to_string(),
+        "DOC-065" => "docs/reference/repo-map.md must stay a curated entrypoint that points to real canonical inventory inputs.".to_string(),
+        "DOC-066" => "Markdown files that declare Last verified against must use the canonical explicit ref plus full SHA form.".to_string(),
+        "DOC-067" => "Committed generated markdown must declare its generator and tell contributors not to edit it by hand.".to_string(),
+        "DOC-068" => "Authored markdown may not collapse into ultra-short placeholder pages unless explicitly exempted for reviewability.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }

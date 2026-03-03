@@ -671,5 +671,45 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_064_index_links_three_golden_paths,
             }],
         },
+        Contract {
+            id: ContractId("DOC-065".to_string()),
+            title: "docs repo map stays curated and verifiable",
+            tests: vec![TestCase {
+                id: TestId("docs.reference.repo_map_curated".to_string()),
+                title: "docs/reference/repo-map.md stays curated and points to existing canonical inventory inputs",
+                kind: TestKind::Pure,
+                run: test_docs_065_repo_map_curated_sources_exist,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-066".to_string()),
+            title: "docs verification markers stay canonical",
+            tests: vec![TestCase {
+                id: TestId("docs.metadata.canonical_last_verified".to_string()),
+                title: "markdown files keep Last verified against in canonical ref-plus-full-sha form",
+                kind: TestKind::Pure,
+                run: test_docs_066_verification_markers_are_canonical,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-067".to_string()),
+            title: "generated markdown keeps generator headers",
+            tests: vec![TestCase {
+                id: TestId("docs.generated.generator_headers".to_string()),
+                title: "generated markdown must declare its generator and manual-edit prohibition",
+                kind: TestKind::Pure,
+                run: test_docs_067_generated_markdown_has_required_header,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-068".to_string()),
+            title: "authored markdown reviewability stays bounded",
+            tests: vec![TestCase {
+                id: TestId("docs.reviewability.authored_markdown_not_minified".to_string()),
+                title: "authored markdown may not collapse into ultra-short placeholder pages unless explicitly exempt",
+                kind: TestKind::Pure,
+                run: test_docs_068_authored_markdown_not_minified_without_exemption,
+            }],
+        },
     ])
 }
