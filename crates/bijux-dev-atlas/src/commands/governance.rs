@@ -2,7 +2,7 @@
 
 use crate::cli::{
     GovernanceBreakingCommand, GovernanceCommand, GovernanceDeprecationsCommand,
-    GovernanceExceptionsCommand,
+    GovernanceExceptionsCommand, RegistryCommand, RegistryMissingArg,
 };
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::core::load_registry;
@@ -288,6 +288,18 @@ fn registry_missing_fields_path(root: &Path) -> PathBuf {
     root.join("artifacts/governance/registry-missing-fields.json")
 }
 
+fn registry_status_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/registry-status.json")
+}
+
+fn registry_work_remaining_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/registry-work-remaining.json")
+}
+
+fn registry_status_markdown_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/registry-status.md")
+}
+
 fn suites_index_path(root: &Path) -> PathBuf {
     root.join("configs/governance/suites/suites.index.json")
 }
@@ -461,6 +473,208 @@ fn write_pretty_json(path: &Path, value: &serde_json::Value) -> Result<(), Strin
     .map_err(|err| format!("write {} failed: {err}", path.display()))
 }
 
+fn registry_status_markdown(payload: &serde_json::Value) -> String {
+    let mut out = String::from("# Registry Status\n\n");
+    out.push_str(&format!(
+        "Status: `{}`\n\n",
+        payload["status"].as_str().unwrap_or("unknown")
+    ));
+    out.push_str("| Kind | Id | Missing |\n|---|---|---|\n");
+    for row in payload["rows"].as_array().into_iter().flatten() {
+        let missing = row["missing"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(serde_json::Value::as_str)
+            .collect::<Vec<_>>()
+            .join(", ");
+        out.push_str(&format!(
+            "| `{}` | `{}` | {} |\n",
+            row["kind"].as_str().unwrap_or_default(),
+            row["id"].as_str().unwrap_or_default(),
+            if missing.is_empty() { "none" } else { &missing }
+        ));
+    }
+    out
+}
+
+fn registry_missing_field_name(filter: RegistryMissingArg) -> &'static str {
+    match filter {
+        RegistryMissingArg::Owner => "owner",
+        RegistryMissingArg::Reports => "reports",
+        RegistryMissingArg::SuiteMembership => "suite_membership",
+        RegistryMissingArg::Command => "command",
+        RegistryMissingArg::BrokenCommand => "broken_command",
+    }
+}
+
+fn registry_required_field_total(kind: &str) -> usize {
+    match kind {
+        "check" => 5,
+        "contract" => 4,
+        _ => 0,
+    }
+}
+
+fn registry_status_payload(root: &Path) -> Result<serde_json::Value, String> {
+    let checks_inventory = validate_checks_inventory(root)?;
+    let missing_fields = read_json_value(&registry_missing_fields_path(root))?;
+    let checks_registry: ChecksRegistryCatalog = read_json_file(&checks_registry_path(root))?;
+    let contracts_registry: ContractsRegistryCatalog =
+        read_json_file(&contracts_registry_path(root))?;
+    let resolvable_commands = known_commands(root)?;
+
+    let mut rows = Vec::<serde_json::Value>::new();
+    let missing_map = missing_fields["rows"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(|row| {
+            Some((
+                format!(
+                    "{}:{}",
+                    row.get("kind")?.as_str()?,
+                    row.get("id")?.as_str()?
+                ),
+                row.get("missing")?.as_array()?.clone(),
+            ))
+        })
+        .collect::<BTreeMap<_, _>>();
+
+    for check in &checks_registry.checks {
+        let mut missing = Vec::<String>::new();
+        if check.owner.trim().is_empty() {
+            missing.push("owner".to_string());
+        }
+        if check.reports.is_empty() {
+            missing.push("reports".to_string());
+        }
+        if check.suite_membership.is_empty() {
+            missing.push("suite_membership".to_string());
+        }
+        if check.commands.is_empty() {
+            missing.push("command".to_string());
+        }
+        if check
+            .commands
+            .iter()
+            .any(|command| !resolvable_commands.contains(command))
+        {
+            missing.push("broken_command".to_string());
+        }
+        if let Some(extra_missing) = missing_map.get(&format!("check:{}", check.check_id)) {
+            for value in extra_missing.iter().filter_map(serde_json::Value::as_str) {
+                if !missing.iter().any(|entry| entry == value) {
+                    missing.push(value.to_string());
+                }
+            }
+        }
+        rows.push(serde_json::json!({
+            "kind": "check",
+            "id": check.check_id,
+            "owner": check.owner,
+            "missing": missing,
+            "reports": check.reports,
+            "suite_membership": check.suite_membership,
+            "command_count": check.commands.len(),
+        }));
+    }
+    for contract in &contracts_registry.contracts {
+        let mut missing = Vec::<String>::new();
+        if contract.owner.trim().is_empty() {
+            missing.push("owner".to_string());
+        }
+        if contract.reports.is_empty() {
+            missing.push("reports".to_string());
+        }
+        if contract.suite_membership.is_empty() {
+            missing.push("suite_membership".to_string());
+        }
+        if contract.runner.trim().is_empty() {
+            missing.push("command".to_string());
+        } else if !resolvable_commands.contains(&contract.runner) {
+            missing.push("broken_command".to_string());
+        }
+        if let Some(extra_missing) = missing_map.get(&format!("contract:{}", contract.contract_id))
+        {
+            for value in extra_missing.iter().filter_map(serde_json::Value::as_str) {
+                if !missing.iter().any(|entry| entry == value) {
+                    missing.push(value.to_string());
+                }
+            }
+        }
+        rows.push(serde_json::json!({
+            "kind": "contract",
+            "id": contract.contract_id,
+            "owner": contract.owner,
+            "missing": missing,
+            "reports": contract.reports,
+            "suite_membership": contract.suite_membership,
+            "command_count": if contract.runner.trim().is_empty() { 0 } else { 1 },
+        }));
+    }
+
+    rows.sort_by(|left, right| {
+        left["kind"]
+            .as_str()
+            .unwrap_or_default()
+            .cmp(right["kind"].as_str().unwrap_or_default())
+            .then_with(|| {
+                left["id"]
+                    .as_str()
+                    .unwrap_or_default()
+                    .cmp(right["id"].as_str().unwrap_or_default())
+            })
+    });
+
+    let fully_specified = rows
+        .iter()
+        .filter(|row| {
+            row["missing"]
+                .as_array()
+                .is_some_and(|items| items.is_empty())
+        })
+        .count();
+    let missing = rows
+        .iter()
+        .filter(|row| {
+            let field_count = row["missing"].as_array().map_or(0, |items| items.len());
+            field_count == registry_required_field_total(row["kind"].as_str().unwrap_or_default())
+        })
+        .count();
+    let partially_specified = rows.len().saturating_sub(fully_specified + missing);
+    let work_remaining = rows
+        .iter()
+        .filter(|row| {
+            row["missing"]
+                .as_array()
+                .is_some_and(|items| !items.is_empty())
+        })
+        .cloned()
+        .collect::<Vec<_>>();
+
+    let payload = serde_json::json!({
+        "report_id": "registry-status",
+        "version": 1,
+        "inputs": {
+            "checks_inventory": checks_inventory_path(root).strip_prefix(root).unwrap_or(&checks_inventory_path(root)).display().to_string(),
+            "missing_fields_report": registry_missing_fields_path(root).strip_prefix(root).unwrap_or(&registry_missing_fields_path(root)).display().to_string()
+        },
+        "status": if checks_inventory["status"] == "ok" { "ok" } else { "failed" },
+        "summary": {
+            "total": rows.len(),
+            "fully_specified": fully_specified,
+            "partially_specified": partially_specified,
+            "missing": missing,
+            "work_remaining": work_remaining.len()
+        },
+        "rows": rows,
+        "work_remaining": work_remaining,
+        "errors": checks_inventory["errors"].clone()
+    });
+    Ok(payload)
+}
+
 fn write_text(path: &Path, text: &str) -> Result<(), String> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)
@@ -497,9 +711,14 @@ fn known_check_ids(root: &Path) -> Result<BTreeSet<String>, String> {
 fn render_exceptions_table(rows: &[serde_json::Value]) -> String {
     let mut out = String::from("# Governance Exceptions\n\n");
     out.push_str("Read-only generated view from `configs/governance/exceptions.yaml`.\n\n");
-    out.push_str("| Id | Scope | Severity | Owner | Expires | Days left |\n|---|---|---|---|---|---|\n");
+    out.push_str(
+        "| Id | Scope | Severity | Owner | Expires | Days left |\n|---|---|---|---|---|---|\n",
+    );
     for row in rows {
-        let id = row.get("id").and_then(serde_json::Value::as_str).unwrap_or_default();
+        let id = row
+            .get("id")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
         let scope = row
             .get("scope")
             .and_then(serde_json::Value::as_str)
@@ -529,21 +748,23 @@ fn render_exceptions_table(rows: &[serde_json::Value]) -> String {
 }
 
 fn stable_exception_digest(value: &serde_json::Value) -> Result<String, String> {
-    let bytes =
-        serde_json::to_vec(value).map_err(|err| format!("encode exception digest failed: {err}"))?;
+    let bytes = serde_json::to_vec(value)
+        .map_err(|err| format!("encode exception digest failed: {err}"))?;
     Ok(format!("{:x}", Sha256::digest(bytes)))
 }
 
 fn read_json_value(path: &Path) -> Result<serde_json::Value, String> {
     serde_json::from_str(
-        &fs::read_to_string(path).map_err(|err| format!("read {} failed: {err}", path.display()))?,
+        &fs::read_to_string(path)
+            .map_err(|err| format!("read {} failed: {err}", path.display()))?,
     )
     .map_err(|err| format!("parse {} failed: {err}", path.display()))
 }
 
 fn read_json_file<T: for<'de> Deserialize<'de>>(path: &Path) -> Result<T, String> {
     serde_json::from_str(
-        &fs::read_to_string(path).map_err(|err| format!("read {} failed: {err}", path.display()))?,
+        &fs::read_to_string(path)
+            .map_err(|err| format!("read {} failed: {err}", path.display()))?,
     )
     .map_err(|err| format!("parse {} failed: {err}", path.display()))
 }
@@ -594,7 +815,8 @@ fn known_commands(root: &Path) -> Result<BTreeSet<String>, String> {
     {
         if let Some(id) = row.get("id").and_then(serde_json::Value::as_str) {
             commands.insert(format!("bijux dev atlas {id}"));
-            if let Some(subcommands) = row.get("subcommands").and_then(serde_json::Value::as_array) {
+            if let Some(subcommands) = row.get("subcommands").and_then(serde_json::Value::as_array)
+            {
                 for subcommand in subcommands.iter().filter_map(serde_json::Value::as_str) {
                     commands.insert(format!("bijux dev atlas {id} {subcommand}"));
                 }
@@ -618,9 +840,9 @@ fn known_commands(root: &Path) -> Result<BTreeSet<String>, String> {
             if let Some((target, _)) = trimmed.split_once(':') {
                 if !target.is_empty()
                     && !target.starts_with('.')
-                    && target
-                        .chars()
-                        .all(|ch| ch.is_ascii_lowercase() || ch.is_ascii_digit() || matches!(ch, '-' | '_'))
+                    && target.chars().all(|ch| {
+                        ch.is_ascii_lowercase() || ch.is_ascii_digit() || matches!(ch, '-' | '_')
+                    })
                 {
                     commands.insert(format!("make {target}"));
                 }
@@ -645,10 +867,7 @@ fn known_commands(root: &Path) -> Result<BTreeSet<String>, String> {
         if let Some(command) = row.get("command").and_then(serde_json::Value::as_str) {
             commands.insert(command.to_string());
         }
-        if let Some(command) = row
-            .get("repro_command")
-            .and_then(serde_json::Value::as_str)
-        {
+        if let Some(command) = row.get("repro_command").and_then(serde_json::Value::as_str) {
             commands.insert(command.to_string());
         }
     }
@@ -689,7 +908,9 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
         .and_then(serde_json::Value::as_str)
         != Some("contracts-registry")
     {
-        return Err("contracts registry schema must pin registry_id=contracts-registry".to_string());
+        return Err(
+            "contracts registry schema must pin registry_id=contracts-registry".to_string(),
+        );
     }
 
     let checks_suite: GovernanceSuiteRegistry = read_json_file(&checks_suite_path(root))?;
@@ -704,8 +925,9 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     let contract_groups: GroupRegistry = read_json_file(&contract_groups_path(root))?;
     let completeness_policy: RegistryCompletenessPolicy =
         read_json_file(&registry_completeness_policy_path(root))?;
-    let checks_docs = fs::read_to_string(root.join("docs/_internal/governance/checks-and-contracts.md"))
-        .map_err(|err| format!("read checks-and-contracts.md failed: {err}"))?;
+    let checks_docs =
+        fs::read_to_string(root.join("docs/_internal/governance/checks-and-contracts.md"))
+            .map_err(|err| format!("read checks-and-contracts.md failed: {err}"))?;
 
     let mut errors = Vec::<String>::new();
     let mut check_ids = BTreeSet::new();
@@ -734,29 +956,50 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
 
     for suite in [&checks_suite, &contracts_suite, &tests_suite] {
         if suite.schema_version != 1 {
-            errors.push(format!("suite `{}` must declare schema_version=1", suite.suite_id));
+            errors.push(format!(
+                "suite `{}` must declare schema_version=1",
+                suite.suite_id
+            ));
         }
         if suite.purpose.trim().is_empty() {
             errors.push(format!("suite `{}` must declare purpose", suite.suite_id));
         }
         if !owner_format_valid(&suite.owner) {
-            errors.push(format!("suite `{}` owner `{}` has invalid format", suite.suite_id, suite.owner));
+            errors.push(format!(
+                "suite `{}` owner `{}` has invalid format",
+                suite.suite_id, suite.owner
+            ));
         }
         if !matches!(suite.stability.as_str(), "draft" | "stable" | "deprecated") {
-            errors.push(format!("suite `{}` stability `{}` is invalid", suite.suite_id, suite.stability));
+            errors.push(format!(
+                "suite `{}` stability `{}` is invalid",
+                suite.suite_id, suite.stability
+            ));
         }
         for entry in &suite.entries {
             if entry.id.trim().is_empty() {
-                errors.push(format!("suite `{}` contains an entry with empty id", suite.suite_id));
+                errors.push(format!(
+                    "suite `{}` contains an entry with empty id",
+                    suite.suite_id
+                ));
             }
             if !matches!(entry.kind.as_str(), "check" | "contract") {
-                errors.push(format!("suite `{}` entry `{}` has invalid kind `{}`", suite.suite_id, entry.id, entry.kind));
+                errors.push(format!(
+                    "suite `{}` entry `{}` has invalid kind `{}`",
+                    suite.suite_id, entry.id, entry.kind
+                ));
             }
             if !matches!(entry.mode.as_str(), "pure" | "effect") {
-                errors.push(format!("suite `{}` entry `{}` has invalid mode `{}`", suite.suite_id, entry.id, entry.mode));
+                errors.push(format!(
+                    "suite `{}` entry `{}` has invalid mode `{}`",
+                    suite.suite_id, entry.id, entry.mode
+                ));
             }
             if !owner_format_valid(&entry.owner) {
-                errors.push(format!("suite `{}` entry `{}` owner `{}` has invalid format", suite.suite_id, entry.id, entry.owner));
+                errors.push(format!(
+                    "suite `{}` entry `{}` owner `{}` has invalid format",
+                    suite.suite_id, entry.id, entry.owner
+                ));
             }
             for tag in &entry.tags {
                 if !allowed_tags.contains(tag) {
@@ -779,10 +1022,15 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
         errors.push("tests suite must use suite_id `tests`".to_string());
     }
     if suites_index.schema_version != 1 || suites_index.index_id != "governance-suites" {
-        errors.push("suites index must declare schema_version=1 and index_id=governance-suites".to_string());
+        errors.push(
+            "suites index must declare schema_version=1 and index_id=governance-suites".to_string(),
+        );
     }
     if !owner_format_valid(&suites_index.owner) {
-        errors.push(format!("suites index owner `{}` has invalid format", suites_index.owner));
+        errors.push(format!(
+            "suites index owner `{}` has invalid format",
+            suites_index.owner
+        ));
     }
     if indexed_suite_files != expected_suite_files {
         errors.push(format!(
@@ -791,24 +1039,39 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
         ));
     }
     if tags_taxonomy.schema_version != 1 || tags_taxonomy.taxonomy_id != "governance-tags" {
-        errors.push("tags taxonomy must declare schema_version=1 and taxonomy_id=governance-tags".to_string());
+        errors.push(
+            "tags taxonomy must declare schema_version=1 and taxonomy_id=governance-tags"
+                .to_string(),
+        );
     }
     if !owner_format_valid(&tags_taxonomy.owner) {
-        errors.push(format!("tags taxonomy owner `{}` has invalid format", tags_taxonomy.owner));
+        errors.push(format!(
+            "tags taxonomy owner `{}` has invalid format",
+            tags_taxonomy.owner
+        ));
     }
     if check_groups.schema_version != 1 || check_groups.group_set_id != "check-groups" {
-        errors.push("check groups must declare schema_version=1 and group_set_id=check-groups".to_string());
+        errors.push(
+            "check groups must declare schema_version=1 and group_set_id=check-groups".to_string(),
+        );
     }
     if !owner_format_valid(&check_groups.owner) {
-        errors.push(format!("check groups owner `{}` has invalid format", check_groups.owner));
+        errors.push(format!(
+            "check groups owner `{}` has invalid format",
+            check_groups.owner
+        ));
     }
-    if contract_groups.schema_version != 1
-        || contract_groups.group_set_id != "contract-groups"
-    {
-        errors.push("contract groups must declare schema_version=1 and group_set_id=contract-groups".to_string());
+    if contract_groups.schema_version != 1 || contract_groups.group_set_id != "contract-groups" {
+        errors.push(
+            "contract groups must declare schema_version=1 and group_set_id=contract-groups"
+                .to_string(),
+        );
     }
     if !owner_format_valid(&contract_groups.owner) {
-        errors.push(format!("contract groups owner `{}` has invalid format", contract_groups.owner));
+        errors.push(format!(
+            "contract groups owner `{}` has invalid format",
+            contract_groups.owner
+        ));
     }
     if completeness_policy.schema_version != 1
         || completeness_policy.policy_id != "registry-completeness-threshold"
@@ -823,37 +1086,63 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     }
 
     if checks_registry.schema_version != 1 || checks_registry.registry_id != "checks-registry" {
-        errors.push("checks registry must declare schema_version=1 and registry_id=checks-registry".to_string());
+        errors.push(
+            "checks registry must declare schema_version=1 and registry_id=checks-registry"
+                .to_string(),
+        );
     }
     for check in &checks_registry.checks {
         if !check_ids.insert(check.check_id.clone()) {
-            errors.push(format!("duplicate check id `{}` in checks registry", check.check_id));
+            errors.push(format!(
+                "duplicate check id `{}` in checks registry",
+                check.check_id
+            ));
         }
         if check.summary.trim().is_empty() {
             errors.push(format!("{} missing summary", check.check_id));
         }
         if !owner_format_valid(&check.owner) {
-            errors.push(format!("{} owner `{}` has invalid format", check.check_id, check.owner));
+            errors.push(format!(
+                "{} owner `{}` has invalid format",
+                check.check_id, check.owner
+            ));
         }
         if check.owner.contains('+') || check.owner.contains(',') {
             errors.push(format!("{} must have exactly one owner", check.check_id));
         }
         if !matches!(check.mode.as_str(), "pure" | "effect") {
-            errors.push(format!("{} mode `{}` is invalid", check.check_id, check.mode));
+            errors.push(format!(
+                "{} mode `{}` is invalid",
+                check.check_id, check.mode
+            ));
         }
         if !known_check_groups.contains(&check.group) {
-            errors.push(format!("{} group `{}` is invalid", check.check_id, check.group));
+            errors.push(format!(
+                "{} group `{}` is invalid",
+                check.check_id, check.group
+            ));
         }
         if check.inputs.is_empty() || check.outputs.is_empty() {
-            errors.push(format!("{} must declare non-empty inputs and outputs", check.check_id));
+            errors.push(format!(
+                "{} must declare non-empty inputs and outputs",
+                check.check_id
+            ));
             missing_rows.push(serde_json::json!({"kind":"check","id":check.check_id,"missing":["inputs_or_outputs"]}));
         }
         if check.commands.is_empty() {
-            errors.push(format!("{} must declare at least one command", check.check_id));
-            missing_rows.push(serde_json::json!({"kind":"check","id":check.check_id,"missing":["commands"]}));
+            errors.push(format!(
+                "{} must declare at least one command",
+                check.check_id
+            ));
+            missing_rows.push(
+                serde_json::json!({"kind":"check","id":check.check_id,"missing":["commands"]}),
+            );
         }
         if !validate_command_order(&check.commands) {
-            errors.push(format!("{} commands must be stored in deterministic sorted order", check.check_id));
+            errors.push(format!(
+                "{} commands must be stored in deterministic sorted order",
+                check.check_id
+            ));
         }
         for command in &check.commands {
             if !resolvable_commands.contains(command) {
@@ -864,28 +1153,54 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             }
         }
         if check.reports.is_empty() {
-            errors.push(format!("{} must declare at least one report artifact", check.check_id));
-            missing_rows.push(serde_json::json!({"kind":"check","id":check.check_id,"missing":["reports"]}));
+            errors.push(format!(
+                "{} must declare at least one report artifact",
+                check.check_id
+            ));
+            missing_rows.push(
+                serde_json::json!({"kind":"check","id":check.check_id,"missing":["reports"]}),
+            );
         }
         if check.suite_membership.is_empty() {
             errors.push(format!("{} must declare suite_membership", check.check_id));
             missing_rows.push(serde_json::json!({"kind":"check","id":check.check_id,"missing":["suite_membership"]}));
         }
-        if !matches!(check.severity.as_str(), "blocker" | "major" | "minor" | "info") {
-            errors.push(format!("{} severity `{}` is invalid", check.check_id, check.severity));
+        if !matches!(
+            check.severity.as_str(),
+            "blocker" | "major" | "minor" | "info"
+        ) {
+            errors.push(format!(
+                "{} severity `{}` is invalid",
+                check.check_id, check.severity
+            ));
         }
         if !matches!(check.stage.as_str(), "local" | "pr" | "merge" | "release") {
-            errors.push(format!("{} stage `{}` is invalid", check.check_id, check.stage));
+            errors.push(format!(
+                "{} stage `{}` is invalid",
+                check.check_id, check.stage
+            ));
         }
         if !matches!(check.runtime_cost.as_str(), "low" | "medium" | "high") {
-            errors.push(format!("{} runtime_cost `{}` is invalid", check.check_id, check.runtime_cost));
+            errors.push(format!(
+                "{} runtime_cost `{}` is invalid",
+                check.check_id, check.runtime_cost
+            ));
         }
-        if !matches!(check.determinism.as_str(), "strict" | "bounded" | "best-effort") {
-            errors.push(format!("{} determinism `{}` is invalid", check.check_id, check.determinism));
+        if !matches!(
+            check.determinism.as_str(),
+            "strict" | "bounded" | "best-effort"
+        ) {
+            errors.push(format!(
+                "{} determinism `{}` is invalid",
+                check.check_id, check.determinism
+            ));
         }
         if let Some(tags) = &check.tags {
             if tags.is_empty() {
-                errors.push(format!("{} tags must not be empty when present", check.check_id));
+                errors.push(format!(
+                    "{} tags must not be empty when present",
+                    check.check_id
+                ));
             }
             for tag in tags {
                 if !allowed_tags.contains(tag) {
@@ -895,17 +1210,26 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
         }
         if let Some(depends_on) = &check.depends_on {
             if depends_on.iter().any(|value| value.trim().is_empty()) {
-                errors.push(format!("{} depends_on must not contain empty ids", check.check_id));
+                errors.push(format!(
+                    "{} depends_on must not contain empty ids",
+                    check.check_id
+                ));
             }
         }
         if let Some(replaces) = &check.replaces {
             if replaces.iter().any(|value| value.trim().is_empty()) {
-                errors.push(format!("{} replaces must not contain empty ids", check.check_id));
+                errors.push(format!(
+                    "{} replaces must not contain empty ids",
+                    check.check_id
+                ));
             }
         }
         if let Some(since_version) = &check.since_version {
             if since_version.trim().is_empty() {
-                errors.push(format!("{} since_version must not be blank", check.check_id));
+                errors.push(format!(
+                    "{} since_version must not be blank",
+                    check.check_id
+                ));
             }
         }
         if let Some(retries) = check.retries {
@@ -970,7 +1294,10 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             ));
         }
         if contract.owner.contains('+') || contract.owner.contains(',') {
-            errors.push(format!("{} must have exactly one owner", contract.contract_id));
+            errors.push(format!(
+                "{} must have exactly one owner",
+                contract.contract_id
+            ));
         }
         if !matches!(contract.mode.as_str(), "pure" | "effect") {
             errors.push(format!(
@@ -1001,13 +1328,19 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             missing_rows.push(serde_json::json!({"kind":"contract","id":contract.contract_id,"missing":["reports"]}));
         }
         if contract.suite_membership.is_empty() {
-            errors.push(format!("{} must declare suite_membership", contract.contract_id));
+            errors.push(format!(
+                "{} must declare suite_membership",
+                contract.contract_id
+            ));
             missing_rows.push(serde_json::json!({"kind":"contract","id":contract.contract_id,"missing":["suite_membership"]}));
         }
         if let Some(tags) = &contract.tags {
             for tag in tags {
                 if !allowed_tags.contains(tag) {
-                    errors.push(format!("{} uses unknown tag `{}`", contract.contract_id, tag));
+                    errors.push(format!(
+                        "{} uses unknown tag `{}`",
+                        contract.contract_id, tag
+                    ));
                 }
             }
         }
@@ -1040,7 +1373,11 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
                 ));
             }
         }
-        if !contract.suite_membership.iter().any(|suite| suite == "contracts") {
+        if !contract
+            .suite_membership
+            .iter()
+            .any(|suite| suite == "contracts")
+        {
             errors.push(format!(
                 "{} suite_membership must include `contracts`",
                 contract.contract_id
@@ -1077,10 +1414,21 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
         .iter()
         .map(|entry| entry.id.clone())
         .collect::<BTreeSet<_>>();
-    let checks_suite_tag_count: usize = checks_suite.entries.iter().map(|entry| entry.tags.len()).sum();
-    let contracts_suite_tag_count: usize =
-        contracts_suite.entries.iter().map(|entry| entry.tags.len()).sum();
-    let tests_suite_tag_count: usize = tests_suite.entries.iter().map(|entry| entry.tags.len()).sum();
+    let checks_suite_tag_count: usize = checks_suite
+        .entries
+        .iter()
+        .map(|entry| entry.tags.len())
+        .sum();
+    let contracts_suite_tag_count: usize = contracts_suite
+        .entries
+        .iter()
+        .map(|entry| entry.tags.len())
+        .sum();
+    let tests_suite_tag_count: usize = tests_suite
+        .entries
+        .iter()
+        .map(|entry| entry.tags.len())
+        .sum();
 
     for id in &check_ids {
         if !checks_suite_ids.contains(id) {
@@ -1094,7 +1442,10 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     }
     for entry in &checks_suite.entries {
         if !check_ids.contains(&entry.id) {
-            errors.push(format!("checks suite entry references unknown check `{}`", entry.id));
+            errors.push(format!(
+                "checks suite entry references unknown check `{}`",
+                entry.id
+            ));
         }
     }
     for entry in &contracts_suite.entries {
@@ -1137,10 +1488,15 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
         }
     }
 
-    let required_fields_total = (checks_registry.checks.len() * 5) + (contracts_registry.contracts.len() * 4);
+    let required_fields_total =
+        (checks_registry.checks.len() * 5) + (contracts_registry.contracts.len() * 4);
     let required_fields_missing = missing_rows
         .iter()
-        .map(|row| row.get("missing").and_then(serde_json::Value::as_array).map_or(0, |items| items.len()))
+        .map(|row| {
+            row.get("missing")
+                .and_then(serde_json::Value::as_array)
+                .map_or(0, |items| items.len())
+        })
         .sum::<usize>();
     let required_fields_present = required_fields_total.saturating_sub(required_fields_missing);
     let coverage_percent = if required_fields_total == 0 {
@@ -1173,7 +1529,11 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             Vec::<String>::new()
         }
     });
-    validate_named_report(root, "registry-missing-fields.schema.json", &missing_fields_report)?;
+    validate_named_report(
+        root,
+        "registry-missing-fields.schema.json",
+        &missing_fields_report,
+    )?;
     write_pretty_json(&registry_missing_fields_path(root), &missing_fields_report)?;
     if coverage_percent < completeness_policy.required_field_coverage_percent {
         errors.push(format!(
@@ -1221,7 +1581,8 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
 fn load_compatibility_policy(root: &Path) -> Result<CompatibilityPolicyRegistry, String> {
     let path = compatibility_policy_path(root);
     serde_yaml::from_str(
-        &fs::read_to_string(&path).map_err(|err| format!("read {} failed: {err}", path.display()))?,
+        &fs::read_to_string(&path)
+            .map_err(|err| format!("read {} failed: {err}", path.display()))?,
     )
     .map_err(|err| format!("parse {} failed: {err}", path.display()))
 }
@@ -1229,7 +1590,8 @@ fn load_compatibility_policy(root: &Path) -> Result<CompatibilityPolicyRegistry,
 fn load_deprecations_registry(root: &Path) -> Result<DeprecationsRegistry, String> {
     let path = deprecations_registry_path(root);
     serde_yaml::from_str(
-        &fs::read_to_string(&path).map_err(|err| format!("read {} failed: {err}", path.display()))?,
+        &fs::read_to_string(&path)
+            .map_err(|err| format!("read {} failed: {err}", path.display()))?,
     )
     .map_err(|err| format!("parse {} failed: {err}", path.display()))
 }
@@ -1253,7 +1615,10 @@ fn yaml_paths(value: &serde_yaml::Value, prefix: Option<&str>, out: &mut BTreeSe
 fn schema_supports_path(schema: &serde_json::Value, dotted_path: &str) -> bool {
     let mut current = schema;
     for segment in dotted_path.split('.') {
-        current = match current.get("properties").and_then(|value| value.get(segment)) {
+        current = match current
+            .get("properties")
+            .and_then(|value| value.get(segment))
+        {
             Some(next) => next,
             None => return false,
         };
@@ -1287,7 +1652,8 @@ fn compat_warning_rows(
 
     for path in files {
         let value: serde_yaml::Value = serde_yaml::from_str(
-            &fs::read_to_string(&path).map_err(|err| format!("read {} failed: {err}", path.display()))?,
+            &fs::read_to_string(&path)
+                .map_err(|err| format!("read {} failed: {err}", path.display()))?,
         )
         .map_err(|err| format!("parse {} failed: {err}", path.display()))?;
         let mut present_paths = BTreeSet::new();
@@ -1325,7 +1691,8 @@ fn compat_warning_rows(
 fn read_chart_metadata(root: &Path) -> Result<ChartMetadata, String> {
     let path = root.join("ops/k8s/charts/bijux-atlas/Chart.yaml");
     serde_yaml::from_str(
-        &fs::read_to_string(&path).map_err(|err| format!("read {} failed: {err}", path.display()))?,
+        &fs::read_to_string(&path)
+            .map_err(|err| format!("read {} failed: {err}", path.display()))?,
     )
     .map_err(|err| format!("parse {} failed: {err}", path.display()))
 }
@@ -1362,18 +1729,20 @@ fn parse_front_matter(text: &str) -> Result<serde_yaml::Value, String> {
 fn load_breaking_notes_meta(root: &Path) -> Result<serde_json::Value, String> {
     let path = release_breaking_notes_meta_path(root);
     let schema_path = release_breaking_notes_schema_path(root);
-    let text =
-        fs::read_to_string(&path).map_err(|err| format!("read {} failed: {err}", path.display()))?;
+    let text = fs::read_to_string(&path)
+        .map_err(|err| format!("read {} failed: {err}", path.display()))?;
     let front_matter = parse_front_matter(&text)?;
-    let value =
-        serde_json::to_value(front_matter).map_err(|err| format!("front matter encode failed: {err}"))?;
+    let value = serde_json::to_value(front_matter)
+        .map_err(|err| format!("front matter encode failed: {err}"))?;
     let schema = read_json_value(&schema_path)?;
     if schema
         .get("properties")
         .and_then(|value| value.get("schema_version"))
         .and_then(|value| value.get("const"))
         .and_then(serde_json::Value::as_u64)
-        != value.get("schema_version").and_then(serde_json::Value::as_u64)
+        != value
+            .get("schema_version")
+            .and_then(serde_json::Value::as_u64)
     {
         return Err(format!(
             "{} schema_version does not match {}",
@@ -1381,8 +1750,15 @@ fn load_breaking_notes_meta(root: &Path) -> Result<serde_json::Value, String> {
             schema_path.display()
         ));
     }
-    if value.get("entries").and_then(serde_json::Value::as_array).is_none() {
-        return Err(format!("{} front matter must declare entries array", path.display()));
+    if value
+        .get("entries")
+        .and_then(serde_json::Value::as_array)
+        .is_none()
+    {
+        return Err(format!(
+            "{} front matter must declare entries array",
+            path.display()
+        ));
     }
     Ok(value)
 }
@@ -1405,7 +1781,9 @@ fn active_exception_for_contract(root: &Path, contract_id: &str) -> Result<bool,
 
 fn render_institutional_delta_markdown(inputs: &serde_json::Value) -> String {
     let mut out = String::from("# Institutional Delta\n\n");
-    out.push_str("Deterministic release delta generated from governed compatibility artifacts.\n\n");
+    out.push_str(
+        "Deterministic release delta generated from governed compatibility artifacts.\n\n",
+    );
     out.push_str("## Breaking changes\n\n");
     let breaking = inputs
         .get("breaking_changes")
@@ -1416,7 +1794,10 @@ fn render_institutional_delta_markdown(inputs: &serde_json::Value) -> String {
         out.push_str("- None.\n");
     } else {
         for row in breaking {
-            let id = row.get("id").and_then(serde_json::Value::as_str).unwrap_or_default();
+            let id = row
+                .get("id")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
             let change = row
                 .get("change")
                 .and_then(serde_json::Value::as_str)
@@ -1434,9 +1815,18 @@ fn render_institutional_delta_markdown(inputs: &serde_json::Value) -> String {
         out.push_str("- None.\n");
     } else {
         for row in deprecations {
-            let id = row.get("id").and_then(serde_json::Value::as_str).unwrap_or_default();
-            let old_name = row.get("old_name").and_then(serde_json::Value::as_str).unwrap_or_default();
-            let new_name = row.get("new_name").and_then(serde_json::Value::as_str).unwrap_or_default();
+            let id = row
+                .get("id")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
+            let old_name = row
+                .get("old_name")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
+            let new_name = row
+                .get("new_name")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
             let removal_target = row
                 .get("removal_target")
                 .and_then(serde_json::Value::as_str)
@@ -1674,12 +2064,8 @@ pub(crate) fn run_governance_command(
                 let known_contracts = known_contract_ids(&root)?;
                 let known_checks = known_check_ids(&root)?;
                 let today = current_utc_day()?;
-                let no_exception_zones: BTreeSet<String> = registry
-                    .policy
-                    .no_exception_zones
-                    .iter()
-                    .cloned()
-                    .collect();
+                let no_exception_zones: BTreeSet<String> =
+                    registry.policy.no_exception_zones.iter().cloned().collect();
                 let allowed_domains: BTreeSet<String> = registry
                     .policy
                     .allowed_tracking_domains
@@ -1713,10 +2099,16 @@ pub(crate) fn run_governance_command(
                         errors.push(format!("{} uses unknown reason `{}`", item.id, item.reason));
                     }
                     if !is_iso_date(&item.created_at) {
-                        errors.push(format!("{} has invalid created_at `{}`", item.id, item.created_at));
+                        errors.push(format!(
+                            "{} has invalid created_at `{}`",
+                            item.id, item.created_at
+                        ));
                     }
                     if !is_iso_date(&item.expires_at) {
-                        errors.push(format!("{} has invalid expires_at `{}`", item.id, item.expires_at));
+                        errors.push(format!(
+                            "{} has invalid expires_at `{}`",
+                            item.id, item.expires_at
+                        ));
                     }
                     let domain = tracking_domain(&item.tracking_link).unwrap_or_default();
                     if domain.is_empty() || !allowed_domains.contains(domain) {
@@ -1749,10 +2141,9 @@ pub(crate) fn run_governance_command(
                                 ));
                             }
                         }
-                        other => errors.push(format!(
-                            "{} uses invalid scope.kind `{}`",
-                            item.id, other
-                        )),
+                        other => {
+                            errors.push(format!("{} uses invalid scope.kind `{}`", item.id, other))
+                        }
                     }
 
                     let expires_days = date_days(&item.expires_at)?;
@@ -1880,7 +2271,11 @@ pub(crate) fn run_governance_command(
                     },
                     "errors": []
                 });
-                validate_named_report(&root, "exceptions-expiry-warning.schema.json", &warning_report)?;
+                validate_named_report(
+                    &root,
+                    "exceptions-expiry-warning.schema.json",
+                    &warning_report,
+                )?;
                 write_pretty_json(&warning_path, &warning_report)?;
                 let churn_rows = archive
                     .archived_exceptions
@@ -1919,14 +2314,13 @@ pub(crate) fn run_governance_command(
                 write_pretty_json(&churn_path, &churn_report)?;
                 let release_manifest_path = root.join("release/evidence/manifest.json");
                 let rel_exc_001 = if release_manifest_path.exists() {
-                    let manifest: serde_json::Value = serde_json::from_str(
-                        &fs::read_to_string(&release_manifest_path).map_err(|err| {
-                            format!("read {} failed: {err}", release_manifest_path.display())
-                        })?,
-                    )
-                    .map_err(|err| {
-                        format!("parse {} failed: {err}", release_manifest_path.display())
-                    })?;
+                    let manifest: serde_json::Value =
+                        serde_json::from_str(&fs::read_to_string(&release_manifest_path).map_err(
+                            |err| format!("read {} failed: {err}", release_manifest_path.display()),
+                        )?)
+                        .map_err(|err| {
+                            format!("parse {} failed: {err}", release_manifest_path.display())
+                        })?;
                     manifest
                         .get("governance_assets")
                         .and_then(|value| value.get("exceptions_registry"))
@@ -2016,11 +2410,9 @@ pub(crate) fn run_governance_command(
                 let deprecations_schema = read_json_value(&deprecations_schema_path)?;
                 let compatibility = load_compatibility_policy(&root)?;
                 let deprecations = load_deprecations_registry(&root)?;
-                let values_schema = read_json_value(
-                    &root.join("ops/k8s/charts/bijux-atlas/values.schema.json"),
-                )?;
-                let env_schema =
-                    read_json_value(&root.join("configs/contracts/env.schema.json"))?;
+                let values_schema =
+                    read_json_value(&root.join("ops/k8s/charts/bijux-atlas/values.schema.json"))?;
+                let env_schema = read_json_value(&root.join("configs/contracts/env.schema.json"))?;
                 let redirects = read_json_value(&root.join("docs/redirects.json"))?;
                 let redirects_map = redirects
                     .as_object()
@@ -2047,7 +2439,11 @@ pub(crate) fn run_governance_command(
                     "rows": compat_warning_rows,
                     "errors": []
                 });
-                validate_named_report(&root, "compat-warnings.schema.json", &compat_warnings_report)?;
+                validate_named_report(
+                    &root,
+                    "compat-warnings.schema.json",
+                    &compat_warnings_report,
+                )?;
                 write_pretty_json(&compat_path, &compat_warnings_report)?;
 
                 let mut errors = Vec::new();
@@ -2062,7 +2458,9 @@ pub(crate) fn run_governance_command(
                 ];
                 for rule_set in required_rule_sets {
                     if !compatibility.compatibility_rules.contains_key(rule_set) {
-                        errors.push(format!("compatibility policy missing rule set `{rule_set}`"));
+                        errors.push(format!(
+                            "compatibility policy missing rule set `{rule_set}`"
+                        ));
                     }
                     if !compatibility.deprecation_window_days.contains_key(rule_set) {
                         errors.push(format!(
@@ -2072,7 +2470,9 @@ pub(crate) fn run_governance_command(
                 }
                 for (name, rule_set) in &compatibility.compatibility_rules {
                     if rule_set.breaking_changes.is_empty() {
-                        errors.push(format!("compatibility rule set `{name}` missing breaking_changes"));
+                        errors.push(format!(
+                            "compatibility rule set `{name}` missing breaking_changes"
+                        ));
                     }
                     if rule_set.rename_requirements.is_empty() {
                         errors.push(format!(
@@ -2116,10 +2516,15 @@ pub(crate) fn run_governance_command(
                     let mut checks = BTreeMap::new();
                     match entry.surface.as_str() {
                         "env-key" => {
-                            let old_supported = env_allowlist_contains(&env_schema, &entry.old_name);
-                            let new_supported = env_allowlist_contains(&env_schema, &entry.new_name);
+                            let old_supported =
+                                env_allowlist_contains(&env_schema, &entry.old_name);
+                            let new_supported =
+                                env_allowlist_contains(&env_schema, &entry.new_name);
                             let docs_updated = !entry.new_name.is_empty();
-                            checks.insert("allowlist_support".to_string(), old_supported && new_supported);
+                            checks.insert(
+                                "allowlist_support".to_string(),
+                                old_supported && new_supported,
+                            );
                             checks.insert("docs_updated".to_string(), docs_updated);
                             if !old_supported || !new_supported {
                                 errors.push(format!(
@@ -2129,8 +2534,10 @@ pub(crate) fn run_governance_command(
                             }
                         }
                         "chart-value" => {
-                            let old_supported = schema_supports_path(&values_schema, &entry.old_name);
-                            let new_supported = schema_supports_path(&values_schema, &entry.new_name);
+                            let old_supported =
+                                schema_supports_path(&values_schema, &entry.old_name);
+                            let new_supported =
+                                schema_supports_path(&values_schema, &entry.new_name);
                             checks.insert(
                                 "schema_overlap".to_string(),
                                 old_supported && new_supported,
@@ -2169,7 +2576,8 @@ pub(crate) fn run_governance_command(
                         }
                         "report-schema" => {}
                         other => {
-                            errors.push(format!("{} has unsupported surface `{}`", entry.id, other));
+                            errors
+                                .push(format!("{} has unsupported surface `{}`", entry.id, other));
                         }
                     }
 
@@ -2288,10 +2696,8 @@ pub(crate) fn run_governance_command(
                     .collect::<Vec<_>>();
                 let mut gov_rep_001 = true;
                 for entry in &report_schema_deprecations {
-                    let migration_path = root.join(format!(
-                        "docs/reference/reports/migrations/{}.md",
-                        entry.id
-                    ));
+                    let migration_path =
+                        root.join(format!("docs/reference/reports/migrations/{}.md", entry.id));
                     if !migration_path.exists() {
                         gov_rep_001 = false;
                         errors.push(format!(
@@ -2344,8 +2750,7 @@ pub(crate) fn run_governance_command(
                         row.get("file")
                             .and_then(serde_json::Value::as_str)
                             .is_some_and(|file| {
-                                file.contains("prod")
-                                    || file.contains("profile-baseline.yaml")
+                                file.contains("prod") || file.contains("profile-baseline.yaml")
                             })
                     })
                     .collect::<Vec<_>>();
@@ -2358,7 +2763,9 @@ pub(crate) fn run_governance_command(
                     .filter(|row| {
                         row.get("file")
                             .and_then(serde_json::Value::as_str)
-                            .is_some_and(|file| file.ends_with("/ci.yaml") || file.ends_with("ci.yaml"))
+                            .is_some_and(|file| {
+                                file.ends_with("/ci.yaml") || file.ends_with("ci.yaml")
+                            })
                     })
                     .collect::<Vec<_>>();
                 let ops_comp_exception = active_exception_for_contract(&root, "OPS-COMP-001")?;
@@ -2519,7 +2926,11 @@ pub(crate) fn run_governance_command(
             let active_exceptions = exceptions
                 .exceptions
                 .iter()
-                .filter(|item| date_days(&item.expires_at).map(|day| day >= today).unwrap_or(false))
+                .filter(|item| {
+                    date_days(&item.expires_at)
+                        .map(|day| day >= today)
+                        .unwrap_or(false)
+                })
                 .map(|item| {
                     serde_json::json!({
                         "kind": "exception",
@@ -2533,7 +2944,11 @@ pub(crate) fn run_governance_command(
             let active_deprecations = deprecations
                 .deprecations
                 .iter()
-                .filter(|item| date_days(&item.removal_target).map(|day| day >= today).unwrap_or(false))
+                .filter(|item| {
+                    date_days(&item.removal_target)
+                        .map(|day| day >= today)
+                        .unwrap_or(false)
+                })
                 .map(|item| {
                     serde_json::json!({
                         "kind": "deprecation",
@@ -2665,6 +3080,144 @@ pub(crate) fn run_governance_command(
             });
             let rendered = emit_payload(format, out, &payload)?;
             Ok((rendered, 0))
+        }
+    }
+}
+
+pub(crate) fn run_registry_command(quiet: bool, command: RegistryCommand) -> i32 {
+    let result = (|| -> Result<(String, i32), String> {
+        match command {
+            RegistryCommand::Status {
+                repo_root,
+                format,
+                missing,
+                out,
+            } => {
+                let root = resolve_repo_root(repo_root)?;
+                let payload = registry_status_payload(&root)?;
+                validate_named_report(&root, "registry-status.schema.json", &payload)?;
+                write_pretty_json(&registry_status_path(&root), &payload)?;
+                fs::write(
+                    registry_status_markdown_path(&root),
+                    registry_status_markdown(&payload),
+                )
+                .map_err(|err| {
+                    format!(
+                        "write {} failed: {err}",
+                        registry_status_markdown_path(&root).display()
+                    )
+                })?;
+                let filtered_rows = if let Some(filter) = missing {
+                    let needle = registry_missing_field_name(filter);
+                    payload["rows"]
+                        .as_array()
+                        .into_iter()
+                        .flatten()
+                        .filter(|row| {
+                            row["missing"].as_array().is_some_and(|items| {
+                                items.iter().any(|item| item.as_str() == Some(needle))
+                            })
+                        })
+                        .cloned()
+                        .collect::<Vec<_>>()
+                } else {
+                    payload["rows"].as_array().cloned().unwrap_or_default()
+                };
+                let response = serde_json::json!({
+                    "schema_version": 1,
+                    "kind": "registry_status",
+                    "status": payload["status"].clone(),
+                    "summary": payload["summary"].clone(),
+                    "filter": missing.map(registry_missing_field_name),
+                    "rows": filtered_rows,
+                    "report_path": registry_status_path(&root).strip_prefix(&root).unwrap_or(&registry_status_path(&root)).display().to_string()
+                });
+                let rendered = emit_payload(format, out, &response)?;
+                let exit_code = if response["status"] == "ok" { 0 } else { 1 };
+                Ok((rendered, exit_code))
+            }
+            RegistryCommand::Doctor {
+                repo_root,
+                fix_suggestions,
+                format,
+                out,
+            } => {
+                let root = resolve_repo_root(repo_root)?;
+                let registry_status = registry_status_payload(&root)?;
+                validate_named_report(&root, "registry-status.schema.json", &registry_status)?;
+                write_pretty_json(&registry_status_path(&root), &registry_status)?;
+                fs::write(
+                    registry_status_markdown_path(&root),
+                    registry_status_markdown(&registry_status),
+                )
+                .map_err(|err| {
+                    format!(
+                        "write {} failed: {err}",
+                        registry_status_markdown_path(&root).display()
+                    )
+                })?;
+                let work_remaining = serde_json::json!({
+                    "schema_version": 1,
+                    "kind": "registry_work_remaining",
+                    "status": registry_status["status"].clone(),
+                    "rows": registry_status["work_remaining"].clone()
+                });
+                write_pretty_json(&registry_work_remaining_path(&root), &work_remaining)?;
+                let suggestions = if fix_suggestions {
+                    registry_status["work_remaining"]
+                        .as_array()
+                        .into_iter()
+                        .flatten()
+                        .map(|row| {
+                            let missing = row["missing"]
+                                .as_array()
+                                .into_iter()
+                                .flatten()
+                                .filter_map(serde_json::Value::as_str)
+                                .collect::<Vec<_>>()
+                                .join(", ");
+                            format!(
+                                "{} {}: fill {}",
+                                row["kind"].as_str().unwrap_or_default(),
+                                row["id"].as_str().unwrap_or_default(),
+                                missing
+                            )
+                        })
+                        .collect::<Vec<_>>()
+                } else {
+                    Vec::new()
+                };
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "kind": "registry_doctor",
+                    "status": registry_status["status"].clone(),
+                    "summary": registry_status["summary"].clone(),
+                    "report_path": registry_status_path(&root).strip_prefix(&root).unwrap_or(&registry_status_path(&root)).display().to_string(),
+                    "work_remaining_path": registry_work_remaining_path(&root).strip_prefix(&root).unwrap_or(&registry_work_remaining_path(&root)).display().to_string(),
+                    "fix_suggestions": suggestions,
+                    "errors": registry_status["errors"].clone()
+                });
+                let rendered = emit_payload(format, out, &payload)?;
+                let exit_code = if payload["status"] == "ok" { 0 } else { 1 };
+                Ok((rendered, exit_code))
+            }
+        }
+    })();
+
+    match result {
+        Ok((rendered, code)) => {
+            if !quiet && !rendered.is_empty() {
+                if code == 0 {
+                    println!("{rendered}");
+                } else {
+                    eprintln!("{rendered}");
+                }
+            }
+            code
+        }
+        Err(err) => {
+            eprintln!("bijux-dev-atlas registry failed: {err}");
+            1
         }
     }
 }

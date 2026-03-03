@@ -3,7 +3,7 @@
 use crate::cli::{
     ArtifactsCommand, CheckCommand, CheckRegistryCommand, Command, ConfigsCommand, ContractCommand,
     ContractsCommand, DatasetsCommand, DocsCommand, FormatArg, IngestCommand, MakeCommand,
-    OpsCommand, PerfCommand, PoliciesCommand, ReleaseCommand, SecurityCommand,
+    OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand, ReleaseCommand, SecurityCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -18,10 +18,16 @@ pub(super) fn force_json_output(command: &mut Command) {
             }
             crate::cli::SuitesCommand::List { format, .. }
             | crate::cli::SuitesCommand::Describe { format, .. }
-            | crate::cli::SuitesCommand::Last { format, .. } => *format = FormatArg::Json,
+            | crate::cli::SuitesCommand::Last { format, .. }
+            | crate::cli::SuitesCommand::History { format, .. } => *format = FormatArg::Json,
         },
         Command::Contract { command } => match command {
             ContractCommand::Run { format, .. } => *format = FormatArg::Json,
+        },
+        Command::Registry { command } => match command {
+            RegistryCommand::Status { format, .. } | RegistryCommand::Doctor { format, .. } => {
+                *format = FormatArg::Json
+            }
         },
         Command::Ops { command } => force_json_ops(command),
         Command::Docs { command } => force_json_docs(command),
@@ -936,11 +942,16 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | crate::cli::SuitesCommand::List { repo_root, .. }
             | crate::cli::SuitesCommand::Describe { repo_root, .. }
             | crate::cli::SuitesCommand::Last { repo_root, .. }
+            | crate::cli::SuitesCommand::History { repo_root, .. }
             | crate::cli::SuitesCommand::Report { repo_root, .. }
             | crate::cli::SuitesCommand::Diff { repo_root, .. } => *repo_root = Some(root.clone()),
         },
         Command::Contract { command } => match command {
             ContractCommand::Run { repo_root, .. } => *repo_root = Some(root.clone()),
+        },
+        Command::Registry { command } => match command {
+            RegistryCommand::Status { repo_root, .. }
+            | RegistryCommand::Doctor { repo_root, .. } => *repo_root = Some(root.clone()),
         },
         Command::Demo { command } => match command {
             crate::cli::DemoCommand::Quickstart(args) => args.repo_root = Some(root.clone()),

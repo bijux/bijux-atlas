@@ -115,6 +115,22 @@ pub enum SuitesCommand {
         #[arg(long)]
         out: Option<PathBuf>,
     },
+    History {
+        #[arg(long)]
+        suite: String,
+        #[arg(long)]
+        id: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long)]
+        artifacts_root: Option<PathBuf>,
+        #[arg(long, default_value_t = 10)]
+        limit: usize,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
     Diff {
         #[arg(long)]
         suite: String,

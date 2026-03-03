@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/reports/registry-status.schema.json",
+  "title": "Registry Status Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_id",
+    "version",
+    "inputs",
+    "status",
+    "summary",
+    "rows",
+    "work_remaining",
+    "errors"
+  ],
+  "properties": {
+    "report_id": { "const": "registry-status" },
+    "version": { "const": 1 },
+    "inputs": { "type": "object" },
+    "status": { "type": "string" },
+    "summary": { "type": "object" },
+    "rows": { "type": "array" },
+    "work_remaining": { "type": "array" },
+    "errors": { "type": "array" }
+  }
+}

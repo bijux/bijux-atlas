@@ -205,6 +205,12 @@ fn latest_runs_pointer_path(artifacts_root: &Path) -> PathBuf {
     artifacts_root.join("suites/LATEST")
 }
 
+fn suite_history_path(artifacts_root: &Path, suite_id: &str) -> PathBuf {
+    artifacts_root
+        .join("suites/history")
+        .join(format!("{suite_id}.jsonl"))
+}
+
 fn suite_result_schema_name() -> &'static str {
     "suite-result.schema.json"
 }
@@ -219,6 +225,10 @@ fn suite_preflight_schema_name() -> &'static str {
 
 fn suite_diff_schema_name() -> &'static str {
     "suite-diff.schema.json"
+}
+
+fn suite_history_entry_schema_name() -> &'static str {
+    "suite-history-entry.schema.json"
 }
 
 fn normalize_suite_id(raw: &str) -> String {
@@ -369,6 +379,44 @@ fn parse_jobs(raw: &str) -> Result<usize, String> {
         return Err("jobs must be at least 1".to_string());
     }
     Ok(jobs)
+}
+
+fn known_commands_local(root: &Path) -> Result<BTreeSet<String>, String> {
+    let inventory: serde_json::Value = read_json_file(&root.join("make/target-list.json"))?;
+    let targets = inventory["public_targets"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .map(|target| format!("make {target}"))
+        .collect::<BTreeSet<_>>();
+    let mut commands = targets;
+    commands.extend([
+        "bijux dev atlas contracts ops --mode static".to_string(),
+        "bijux dev atlas contracts ops --mode effect".to_string(),
+        "bijux dev atlas contracts ops --mode static --only".to_string(),
+        "bijux dev atlas contracts ops --mode effect --only".to_string(),
+    ]);
+    let checks_registry: serde_json::Value = read_json_file(&checks_registry_path(root))?;
+    for check in checks_registry["checks"].as_array().into_iter().flatten() {
+        for command in check["commands"].as_array().into_iter().flatten() {
+            if let Some(command) = command.as_str() {
+                commands.insert(command.to_string());
+            }
+        }
+    }
+    let contracts_registry: serde_json::Value = read_json_file(&contracts_registry_path(root))?;
+    for contract in contracts_registry["contracts"]
+        .as_array()
+        .into_iter()
+        .flatten()
+    {
+        if let Some(runner) = contract["runner"].as_str() {
+            commands.insert(runner.to_string());
+            commands.insert(runner.replace("--only-contract", "--only"));
+        }
+    }
+    Ok(commands)
 }
 
 fn parse_command_invocation(command: &str) -> Result<(String, Vec<String>), String> {
@@ -535,6 +583,56 @@ fn write_latest_run_pointer(
     .map_err(|err| format!("write LATEST pointer failed: {err}"))
 }
 
+fn append_suite_history_entries(
+    repo_root: &Path,
+    artifacts_root: &Path,
+    suite_id: &str,
+    run_id: &str,
+    task_outputs: &[TaskOutput],
+) -> Result<(), String> {
+    let history_path = suite_history_path(artifacts_root, suite_id);
+    if let Some(parent) = history_path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("create {} failed: {err}", parent.display()))?;
+    }
+    let mut content = if history_path.exists() {
+        fs::read_to_string(&history_path)
+            .map_err(|err| format!("read {} failed: {err}", history_path.display()))?
+    } else {
+        String::new()
+    };
+    for task_output in task_outputs {
+        let entry = serde_json::json!({
+            "report_id": "suite-history-entry",
+            "version": 1,
+            "inputs": {
+                "suite": suite_id,
+                "run_id": run_id,
+            },
+            "suite": suite_id,
+            "run_id": run_id,
+            "task_id": task_output.task.id,
+            "group": task_output.task.group,
+            "mode": task_output.task.mode,
+            "status": task_output.status,
+            "duration_ms": task_output.duration_ms,
+            "timestamp": run_timestamp(),
+            "result_path": artifacts_root.join("suites").join(suite_id).join(run_id).join(&task_output.task.id).join("result.json").display().to_string(),
+        });
+        validate_named_report(repo_root, suite_history_entry_schema_name(), &entry)?;
+        content.push_str(
+            &serde_json::to_string(&entry)
+                .map_err(|err| format!("encode suite history entry failed: {err}"))?,
+        );
+        content.push('\n');
+    }
+    let temp_path = history_path.with_extension("jsonl.tmp");
+    fs::write(&temp_path, content)
+        .map_err(|err| format!("write {} failed: {err}", temp_path.display()))?;
+    fs::rename(&temp_path, &history_path)
+        .map_err(|err| format!("rename {} failed: {err}", history_path.display()))
+}
+
 fn render_suite_list(root: &Path, format: FormatArg) -> Result<String, String> {
     let index = load_suites_index(root)?;
     let suite_ids = index
@@ -674,6 +772,7 @@ fn human_suite_report(
     verbose: bool,
     color: SuiteColorArg,
     slowdown_rows: &[String],
+    registry_footer: Option<&str>,
 ) -> String {
     let suite = summary["suite"].as_str().unwrap_or_default();
     let run_id = summary["run_id"].as_str().unwrap_or_default();
@@ -742,7 +841,70 @@ fn human_suite_report(
         run_id,
         suite_root.display()
     ));
+    if let Some(footer) = registry_footer {
+        lines.push(footer.to_string());
+    }
     lines.join("\n")
+}
+
+fn registry_completeness_footer(root: &Path) -> Result<String, String> {
+    let checks: serde_json::Value = read_json_file(&checks_registry_path(root))?;
+    let contracts: serde_json::Value = read_json_file(&contracts_registry_path(root))?;
+    let known_commands = known_commands_local(root)?;
+    let mut total = 0usize;
+    let mut missing = 0usize;
+    for row in checks["checks"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .chain(contracts["contracts"].as_array().into_iter().flatten())
+    {
+        total += 1;
+        let owner_missing = row["owner"]
+            .as_str()
+            .is_none_or(|value| value.trim().is_empty());
+        let reports_missing = row["reports"]
+            .as_array()
+            .is_none_or(|value| value.is_empty());
+        let membership_missing = row["suite_membership"]
+            .as_array()
+            .is_none_or(|value| value.is_empty());
+        let command_missing = row
+            .get("commands")
+            .and_then(serde_json::Value::as_array)
+            .is_some_and(|value| value.is_empty())
+            || row
+                .get("runner")
+                .and_then(serde_json::Value::as_str)
+                .is_some_and(|value| value.trim().is_empty());
+        let broken_command = row
+            .get("commands")
+            .and_then(serde_json::Value::as_array)
+            .into_iter()
+            .flatten()
+            .filter_map(serde_json::Value::as_str)
+            .any(|command| !known_commands.contains(command))
+            || row
+                .get("runner")
+                .and_then(serde_json::Value::as_str)
+                .is_some_and(|runner| {
+                    !runner.trim().is_empty() && !known_commands.contains(runner)
+                });
+        if owner_missing
+            || reports_missing
+            || membership_missing
+            || command_missing
+            || broken_command
+        {
+            missing += 1;
+        }
+    }
+    Ok(format!(
+        "Registry completeness total={} fully_specified={} work_remaining={}",
+        total,
+        total.saturating_sub(missing),
+        missing
+    ))
 }
 
 fn select_tasks(
@@ -1099,6 +1261,7 @@ fn render_suite_output(
     verbose: bool,
     color: SuiteColorArg,
     slowdown_rows: &[String],
+    registry_footer: Option<&str>,
 ) -> Result<String, String> {
     let human = human_suite_report(
         summary,
@@ -1108,6 +1271,7 @@ fn render_suite_output(
         verbose,
         color,
         slowdown_rows,
+        registry_footer,
     );
     let json = serde_json::to_string_pretty(summary)
         .map_err(|err| format!("encode suite summary failed: {err}"))?;
@@ -1198,6 +1362,7 @@ fn run_report_command(
         verbose,
         color,
         &[],
+        None,
     )?;
     let exit = if summary["status"].as_str() == Some("pass") {
         0
@@ -1205,6 +1370,61 @@ fn run_report_command(
         1
     };
     Ok((rendered, exit))
+}
+
+fn run_history_command(
+    artifacts_root: &Path,
+    suite_id: &str,
+    task_id: &str,
+    limit: usize,
+    format: FormatArg,
+) -> Result<(String, i32), String> {
+    let history_path = suite_history_path(artifacts_root, suite_id);
+    let entries = if history_path.exists() {
+        fs::read_to_string(&history_path)
+            .map_err(|err| format!("read {} failed: {err}", history_path.display()))?
+            .lines()
+            .filter(|line| !line.trim().is_empty())
+            .map(|line| {
+                serde_json::from_str::<serde_json::Value>(line)
+                    .map_err(|err| format!("parse {} failed: {err}", history_path.display()))
+            })
+            .collect::<Result<Vec<_>, _>>()?
+    } else {
+        Vec::new()
+    };
+    let filtered = entries
+        .into_iter()
+        .filter(|entry| entry["task_id"].as_str() == Some(task_id))
+        .rev()
+        .take(limit.max(1))
+        .collect::<Vec<_>>();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "suite": suite_id,
+        "task_id": task_id,
+        "history_path": history_path.display().to_string(),
+        "entries": filtered.iter().rev().cloned().collect::<Vec<_>>(),
+    });
+    let rendered = match format {
+        FormatArg::Text => {
+            let mut lines = vec![format!("History {suite_id} {task_id}")];
+            for entry in payload["entries"].as_array().into_iter().flatten() {
+                lines.push(format!(
+                    "{} {} {} {}",
+                    entry["run_id"].as_str().unwrap_or_default(),
+                    entry["status"].as_str().unwrap_or_default(),
+                    format_duration_ms(entry["duration_ms"].as_u64().unwrap_or(0)),
+                    entry["timestamp"].as_str().unwrap_or_default()
+                ));
+            }
+            lines.join("\n")
+        }
+        FormatArg::Json => serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode suites history failed: {err}"))?,
+        FormatArg::Jsonl => Err("jsonl output is not supported for suites history".to_string())?,
+    };
+    Ok((rendered, 0))
 }
 
 fn suite_diff_report(
@@ -1529,6 +1749,13 @@ fn execute_suite_run(options: SuiteRunOptions) -> Result<(String, i32), String> 
     fs::write(&summary_path, format!("{summary_text}\n"))
         .map_err(|err| format!("write {} failed: {err}", summary_path.display()))?;
     write_latest_run_pointer(&options.artifacts_root, &suite_id, &run_id, &suite_root)?;
+    append_suite_history_entries(
+        &options.repo_root,
+        &options.artifacts_root,
+        &suite_id,
+        &run_id,
+        &task_outputs,
+    )?;
     let detail_rows = task_outputs.iter().map(result_report).collect::<Vec<_>>();
     let rendered = render_suite_output(
         &summary,
@@ -1539,6 +1766,7 @@ fn execute_suite_run(options: SuiteRunOptions) -> Result<(String, i32), String> 
         options.verbose,
         options.color,
         &[],
+        Some(&registry_completeness_footer(&options.repo_root)?),
     )?;
     write_output_if_requested(options.out, &rendered)?;
     let exit = if summary["status"].as_str() == Some("pass") {
@@ -1624,6 +1852,13 @@ pub(crate) fn run_registry_check_by_id(
     )
     .map_err(|err| format!("write suite summary failed: {err}"))?;
     write_latest_run_pointer(&options.artifacts_root, &suite_id, &run_id, &suite_root)?;
+    append_suite_history_entries(
+        &options.repo_root,
+        &options.artifacts_root,
+        &suite_id,
+        &run_id,
+        std::slice::from_ref(&output),
+    )?;
     let rendered = render_suite_output(
         &summary,
         &[result_report(&output)],
@@ -1633,6 +1868,7 @@ pub(crate) fn run_registry_check_by_id(
         false,
         SuiteColorArg::Never,
         &[],
+        Some(&registry_completeness_footer(&options.repo_root)?),
     )?;
     write_output_if_requested(out, &rendered)?;
     let exit = if output.status == "pass" { 0 } else { 1 };
@@ -1721,6 +1957,13 @@ pub(crate) fn run_registry_contract_by_id(
     )
     .map_err(|err| format!("write suite summary failed: {err}"))?;
     write_latest_run_pointer(&artifacts_root, "contracts", &effective_run_id, &suite_root)?;
+    append_suite_history_entries(
+        &root,
+        &artifacts_root,
+        "contracts",
+        &effective_run_id,
+        std::slice::from_ref(&output),
+    )?;
     let rendered = render_suite_output(
         &summary,
         &[result_report(&output)],
@@ -1736,6 +1979,7 @@ pub(crate) fn run_registry_contract_by_id(
         false,
         SuiteColorArg::Never,
         &[],
+        Some(&registry_completeness_footer(&root)?),
     )?;
     write_output_if_requested(out, &rendered)?;
     let exit = if output.status == "pass" { 0 } else { 1 };
@@ -1808,6 +2052,26 @@ pub(crate) fn run_suites_command(quiet: bool, command: SuitesCommand) -> i32 {
                     quiet,
                     verbose,
                     color,
+                )?;
+                write_output_if_requested(out, &rendered)?;
+                Ok((rendered, code))
+            }
+            SuitesCommand::History {
+                suite,
+                id,
+                repo_root,
+                artifacts_root,
+                limit,
+                format,
+                out,
+            } => {
+                let root = resolve_repo_root(repo_root)?;
+                let (rendered, code) = run_history_command(
+                    &artifacts_root.unwrap_or_else(|| root.join("artifacts")),
+                    &normalize_suite_id(&suite),
+                    &id,
+                    limit,
+                    format,
                 )?;
                 write_output_if_requested(out, &rendered)?;
                 Ok((rendered, code))
@@ -2071,6 +2335,27 @@ mod tests {
                     "fixed_failures":{"type":"array"},
                     "duration_regressions":{"type":"array"},
                     "new_tasks":{"type":"array"}
+                }
+            }),
+        );
+        write_json(
+            &dir.path()
+                .join("configs/contracts/reports/suite-history-entry.schema.json"),
+            &serde_json::json!({
+                "required":["report_id","version","inputs","suite","run_id","task_id","group","mode","status","duration_ms","timestamp","result_path"],
+                "properties":{
+                    "report_id":{"const":"suite-history-entry"},
+                    "version":{"const":1},
+                    "inputs":{"type":"object"},
+                    "suite":{"type":"string"},
+                    "run_id":{"type":"string"},
+                    "task_id":{"type":"string"},
+                    "group":{"type":"string"},
+                    "mode":{"type":"string"},
+                    "status":{"type":"string"},
+                    "duration_ms":{"type":"integer"},
+                    "timestamp":{"type":"string"},
+                    "result_path":{"type":"string"}
                 }
             }),
         );

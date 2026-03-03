@@ -12,11 +12,13 @@ mod checks;
 mod dispatch;
 mod dispatch_mutations;
 mod ops;
+mod registry;
 mod suites;
 mod surfaces;
 
 pub use checks::*;
 pub use ops::*;
+pub use registry::*;
 pub use suites::*;
 pub use surfaces::*;
 
@@ -164,6 +166,10 @@ pub enum Command {
     Contract {
         #[command(subcommand)]
         command: ContractCommand,
+    },
+    Registry {
+        #[command(subcommand)]
+        command: RegistryCommand,
     },
     Suites {
         #[command(subcommand)]

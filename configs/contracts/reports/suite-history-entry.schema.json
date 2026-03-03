@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/reports/suite-history-entry.schema.json",
+  "title": "Suite History Entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_id",
+    "version",
+    "inputs",
+    "suite",
+    "run_id",
+    "task_id",
+    "group",
+    "mode",
+    "status",
+    "duration_ms",
+    "timestamp",
+    "result_path"
+  ],
+  "properties": {
+    "report_id": { "const": "suite-history-entry" },
+    "version": { "const": 1 },
+    "inputs": { "type": "object" },
+    "suite": { "type": "string" },
+    "run_id": { "type": "string" },
+    "task_id": { "type": "string" },
+    "group": { "type": "string" },
+    "mode": { "type": "string" },
+    "status": { "type": "string" },
+    "duration_ms": { "type": "integer" },
+    "timestamp": { "type": "string" },
+    "result_path": { "type": "string" }
+  }
+}
