@@ -102,6 +102,19 @@ fn is_sha256_digest(value: &str) -> bool {
     hex.len() == 64 && hex.chars().all(|ch| ch.is_ascii_hexdigit())
 }
 
+fn is_iso_date(value: &str) -> bool {
+    let bytes = value.as_bytes();
+    if bytes.len() != 10 {
+        return false;
+    }
+    bytes[4] == b'-'
+        && bytes[7] == b'-'
+        && bytes
+            .iter()
+            .enumerate()
+            .all(|(idx, byte)| matches!(idx, 4 | 7) || byte.is_ascii_digit())
+}
+
 pub(crate) fn run_security_command(
     _quiet: bool,
     command: SecurityCommand,
@@ -179,6 +192,8 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         root.join("configs/contracts/security/forbidden-patterns.schema.json");
     let dependency_policy_schema_path =
         root.join("configs/contracts/security/dependency-source-policy.schema.json");
+    let github_actions_exceptions_schema_path =
+        root.join("configs/contracts/security/github-actions-exceptions.schema.json");
     let signing_policy_schema_path =
         root.join("configs/contracts/release/signing-policy.schema.json");
     let secrets_path = root.join("configs/security/secrets.json");
@@ -195,6 +210,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     ensure_json(&redaction_schema_path)?;
     ensure_json(&forbidden_patterns_schema_path)?;
     ensure_json(&dependency_policy_schema_path)?;
+    ensure_json(&github_actions_exceptions_schema_path)?;
     ensure_json(&signing_policy_schema_path)?;
 
     let assets = read_yaml(&assets_path)?;
@@ -508,13 +524,58 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         .and_then(|value| value.get("toolchain_inventory"))
         .and_then(serde_json::Value::as_str)
         .unwrap_or("ops/inventory/toolchain.json");
+    let action_exceptions_path = dependency_policy
+        .get("github_actions")
+        .and_then(|value| value.get("exceptions_path"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("configs/security/github-actions-exceptions.json");
     let action_inventory = read_json(&root.join(action_inventory_path))?;
+    let action_exceptions = read_json(&root.join(action_exceptions_path))?;
     let allowed_actions = action_inventory
         .get("github_actions")
         .and_then(serde_json::Value::as_object)
         .cloned()
         .unwrap_or_default();
+    let exception_rows = action_exceptions
+        .get("exceptions")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let mut invalid_action_exceptions = Vec::new();
+    for row in &exception_rows {
+        let workflow_path = row
+            .get("workflow_path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let action = row
+            .get("action")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let reason = row
+            .get("reason")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let owner = row
+            .get("owner")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let expires_on = row
+            .get("expires_on")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        if workflow_path.is_empty()
+            || action.is_empty()
+            || reason.is_empty()
+            || owner.is_empty()
+            || !is_iso_date(expires_on)
+        {
+            invalid_action_exceptions.push(format!(
+                "{workflow_path}:{action}:owner-or-expiry-invalid"
+            ));
+        }
+    }
     let mut workflow_pin_gaps = Vec::new();
+    let mut workflow_action_rows = Vec::new();
     for file in list_files_recursive(&root.join(workflow_dir))? {
         if file.extension().and_then(|ext| ext.to_str()) != Some("yml") {
             continue;
@@ -539,14 +600,60 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
                 continue;
             }
             let Some((action_name, reference)) = spec.rsplit_once('@') else {
+                workflow_action_rows.push(serde_json::json!({
+                    "workflow_path": rel.clone(),
+                    "line": line_idx + 1,
+                    "action": spec,
+                    "reference": serde_json::Value::Null,
+                    "status": "missing-ref"
+                }));
                 workflow_pin_gaps.push(format!("{rel}:{}:{spec}:missing-ref", line_idx + 1));
                 continue;
             };
+            let exception = exception_rows.iter().find(|row| {
+                row.get("workflow_path")
+                    .and_then(serde_json::Value::as_str)
+                    .is_some_and(|value| value == rel.as_str())
+                    && row
+                        .get("action")
+                        .and_then(serde_json::Value::as_str)
+                        .is_some_and(|value| value == action_name)
+                    && row
+                        .get("reason")
+                        .and_then(serde_json::Value::as_str)
+                        .is_some_and(|value| !value.is_empty())
+                    && row
+                        .get("owner")
+                        .and_then(serde_json::Value::as_str)
+                        .is_some_and(|value| !value.is_empty())
+                    && row
+                        .get("expires_on")
+                        .and_then(serde_json::Value::as_str)
+                        .is_some_and(is_iso_date)
+            });
             if !is_full_sha(reference) {
+                let allow_exception = exception.is_some();
+                workflow_action_rows.push(serde_json::json!({
+                    "workflow_path": rel.clone(),
+                    "line": line_idx + 1,
+                    "action": action_name,
+                    "reference": reference,
+                    "status": if allow_exception { "exception" } else { "unpinned" }
+                }));
+                if allow_exception {
+                    continue;
+                }
                 workflow_pin_gaps.push(format!("{rel}:{}:{action_name}:{reference}", line_idx + 1));
                 continue;
             }
             let Some(entry) = allowed_actions.get(action_name) else {
+                workflow_action_rows.push(serde_json::json!({
+                    "workflow_path": rel.clone(),
+                    "line": line_idx + 1,
+                    "action": action_name,
+                    "reference": reference,
+                    "status": "not-allowlisted"
+                }));
                 workflow_pin_gaps.push(format!(
                     "{rel}:{}:{action_name}:not-allowlisted",
                     line_idx + 1
@@ -558,10 +665,26 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
                 .and_then(serde_json::Value::as_str)
                 .unwrap_or_default();
             if expected_sha != reference {
+                workflow_action_rows.push(serde_json::json!({
+                    "workflow_path": rel.clone(),
+                    "line": line_idx + 1,
+                    "action": action_name,
+                    "reference": reference,
+                    "status": "inventory-mismatch",
+                    "expected_sha": expected_sha
+                }));
                 workflow_pin_gaps.push(format!(
                     "{rel}:{}:{action_name}:expected-{expected_sha}-got-{reference}",
                     line_idx + 1
                 ));
+            } else {
+                workflow_action_rows.push(serde_json::json!({
+                    "workflow_path": rel.clone(),
+                    "line": line_idx + 1,
+                    "action": action_name,
+                    "reference": reference,
+                    "status": "pinned"
+                }));
             }
         }
     }
@@ -730,7 +853,30 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let signing_policy_valid = signing_policy_gaps.is_empty();
     let sec_deps_001 = disallowed_npm_sources.is_empty();
     let sec_deps_002 = disallowed_python_indexes.is_empty();
+    if !invalid_action_exceptions.is_empty() {
+        workflow_pin_gaps.extend(invalid_action_exceptions.clone());
+    }
     let sec_actions_001 = workflow_pin_gaps.is_empty();
+    let github_actions_report = serde_json::json!({
+        "schema_version": 1,
+        "status": if sec_actions_001 { "ok" } else { "failed" },
+        "workflow_dir": workflow_dir,
+        "inventory_path": action_inventory_path,
+        "exceptions_path": action_exceptions_path,
+        "summary": {
+            "total_refs": workflow_action_rows.len(),
+            "unpinned_or_invalid": workflow_pin_gaps.len(),
+            "exceptions": exception_rows.len()
+        },
+        "rows": workflow_action_rows
+    });
+    let github_actions_report_path = named_report_path(&root, "security-github-actions.json")?;
+    fs::write(
+        &github_actions_report_path,
+        serde_json::to_string_pretty(&github_actions_report)
+            .map_err(|err| format!("encode github actions report failed: {err}"))?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", github_actions_report_path.display()))?;
 
     let payload = serde_json::json!({
         "schema_version": 1,
@@ -756,6 +902,13 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "prod_image_digests": prod_digests.len(),
             "sboms": sbom_rows.len(),
             "signed_items": signing_items.len()
+        },
+        "reports": {
+            "github_actions": github_actions_report_path
+                .strip_prefix(&root)
+                .unwrap_or(&github_actions_report_path)
+                .display()
+                .to_string()
         },
         "contracts": {
             "SEC-THREAT-001": sec_threat_001,
@@ -785,6 +938,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "disallowed_npm_sources": disallowed_npm_sources,
             "disallowed_python_indexes": disallowed_python_indexes,
             "workflow_pin_gaps": workflow_pin_gaps,
+            "invalid_action_exceptions": invalid_action_exceptions,
             "image_evidence_gaps": image_evidence_gaps,
             "sbom_gaps": sbom_gaps,
             "signing_policy_gaps": signing_policy_gaps
