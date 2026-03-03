@@ -50,6 +50,14 @@ fn architecture_docs_and_template_exist() {
         "src/domains/_template/checks.rs",
         "src/domains/_template/commands.rs",
         "src/domains/_template/runtime.rs",
+        "src/domains/configs/commands.rs",
+        "src/domains/docs/commands.rs",
+        "src/domains/docker/commands.rs",
+        "src/domains/governance/commands.rs",
+        "src/domains/ops/commands.rs",
+        "src/domains/perf/commands.rs",
+        "src/domains/release/commands.rs",
+        "src/domains/security/commands.rs",
     ] {
         assert!(root.join(relative).exists(), "missing {relative}");
     }
