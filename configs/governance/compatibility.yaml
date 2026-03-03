@@ -1,0 +1,48 @@
+schema_version: 1
+compatibility_rules:
+  env_keys:
+    breaking_changes:
+      - remove key
+      - rename key without overlap window
+      - change requiredness
+    rename_requirements:
+      - env allowlist coverage
+      - compatibility registry entry
+      - docs update
+  chart_values:
+    breaking_changes:
+      - remove key
+      - change key type
+      - remove deprecated alias before removal target
+      - change safety default
+    rename_requirements:
+      - old and new keys accepted during deprecation window
+      - compatibility warning emitted for old key usage
+  profile_keys:
+    breaking_changes:
+      - remove consumed key
+      - stop honoring compatibility alias before removal target
+    rename_requirements:
+      - compatibility registry entry
+      - warning report coverage
+  report_schemas:
+    breaking_changes:
+      - remove required field
+      - change field type
+      - change report identity without migration notice
+    rename_requirements:
+      - compatibility entry
+      - migration note when schema version changes
+  docs_urls:
+    breaking_changes:
+      - move reader URL without redirect
+      - repurpose existing URL to different meaning
+    rename_requirements:
+      - redirect entry
+      - docs update
+deprecation_window_days:
+  env_keys: 180
+  chart_values: 180
+  profile_keys: 180
+  report_schemas: 180
+  docs_urls: 365

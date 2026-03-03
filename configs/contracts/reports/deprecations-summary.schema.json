@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "report_id": "deprecations-summary",
+  "version": 1,
+  "type": "object",
+  "required": ["report_id", "version", "inputs", "status", "summary", "rows", "contracts", "errors"],
+  "properties": {
+    "report_id": { "const": "deprecations-summary" },
+    "version": { "const": 1 },
+    "inputs": { "type": "object" },
+    "status": { "type": "string" },
+    "summary": { "type": "object" },
+    "rows": { "type": "array" },
+    "contracts": { "type": "object" },
+    "errors": { "type": "array" }
+  }
+}

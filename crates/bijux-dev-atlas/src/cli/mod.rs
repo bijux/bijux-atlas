@@ -245,10 +245,26 @@ pub enum GovernanceCommand {
         #[command(subcommand)]
         command: GovernanceExceptionsCommand,
     },
+    Deprecations {
+        #[command(subcommand)]
+        command: GovernanceDeprecationsCommand,
+    },
 }
 
 #[derive(Subcommand, Debug)]
 pub enum GovernanceExceptionsCommand {
+    Validate {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum GovernanceDeprecationsCommand {
     Validate {
         #[arg(long)]
         repo_root: Option<PathBuf>,

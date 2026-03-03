@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/governance/compatibility.schema.json",
+  "title": "Governance Compatibility Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "compatibility_rules", "deprecation_window_days"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "compatibility_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["env_keys", "chart_values", "profile_keys", "report_schemas", "docs_urls"],
+      "properties": {
+        "env_keys": { "$ref": "#/$defs/ruleSet" },
+        "chart_values": { "$ref": "#/$defs/ruleSet" },
+        "profile_keys": { "$ref": "#/$defs/ruleSet" },
+        "report_schemas": { "$ref": "#/$defs/ruleSet" },
+        "docs_urls": { "$ref": "#/$defs/ruleSet" }
+      }
+    },
+    "deprecation_window_days": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["env_keys", "chart_values", "profile_keys", "report_schemas", "docs_urls"],
+      "properties": {
+        "env_keys": { "type": "integer", "minimum": 1 },
+        "chart_values": { "type": "integer", "minimum": 1 },
+        "profile_keys": { "type": "integer", "minimum": 1 },
+        "report_schemas": { "type": "integer", "minimum": 1 },
+        "docs_urls": { "type": "integer", "minimum": 1 }
+      }
+    }
+  },
+  "$defs": {
+    "ruleSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["breaking_changes", "rename_requirements"],
+      "properties": {
+        "breaking_changes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "rename_requirements": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

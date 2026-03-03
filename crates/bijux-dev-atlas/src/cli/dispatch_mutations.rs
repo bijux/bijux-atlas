@@ -334,6 +334,11 @@ fn force_json_governance(command: &mut crate::cli::GovernanceCommand) {
                 *format = FormatArg::Json
             }
         },
+        crate::cli::GovernanceCommand::Deprecations { command } => match command {
+            crate::cli::GovernanceDeprecationsCommand::Validate { format, .. } => {
+                *format = FormatArg::Json
+            }
+        },
     }
 }
 
@@ -833,6 +838,11 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             }
             crate::cli::GovernanceCommand::Exceptions { command } => match command {
                 crate::cli::GovernanceExceptionsCommand::Validate { repo_root, .. } => {
+                    *repo_root = Some(root.clone())
+                }
+            },
+            crate::cli::GovernanceCommand::Deprecations { command } => match command {
+                crate::cli::GovernanceDeprecationsCommand::Validate { repo_root, .. } => {
                     *repo_root = Some(root.clone())
                 }
             },

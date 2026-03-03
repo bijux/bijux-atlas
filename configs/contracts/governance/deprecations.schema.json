@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/governance/deprecations.schema.json",
+  "title": "Governance Deprecations Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "deprecations"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "deprecations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "surface",
+          "old_name",
+          "new_name",
+          "introduced",
+          "removal_target",
+          "redirect_required",
+          "comms_required"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^DEP-[A-Z0-9-]+$"
+          },
+          "surface": {
+            "type": "string",
+            "enum": ["env-key", "chart-value", "profile-key", "report-schema", "docs-url"]
+          },
+          "old_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "new_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "introduced": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "removal_target": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "redirect_required": {
+            "type": "boolean"
+          },
+          "comms_required": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

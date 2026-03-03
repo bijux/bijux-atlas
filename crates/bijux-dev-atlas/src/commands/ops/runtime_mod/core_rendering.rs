@@ -153,6 +153,27 @@ pub(super) fn validate_helm_profile_matrix(
     let payload = serde_json::to_value(&report).map_err(|err| err.to_string())?;
     let schema_path = repo_root.join("configs/contracts/reports/ops-profiles.schema.json");
     bijux_dev_atlas::ops::profiles_matrix::validate_report_value(&payload, &schema_path)?;
+    let exe =
+        std::env::current_exe().map_err(|err| format!("ops profiles validate failed: {err}"))?;
+    let mut deprecations_args = vec![
+        "governance".to_string(),
+        "deprecations".to_string(),
+        "validate".to_string(),
+        "--format".to_string(),
+        "json".to_string(),
+    ];
+    deprecations_args.push("--repo-root".to_string());
+    deprecations_args.push(repo_root.display().to_string());
+    let deprecations_out = std::process::Command::new(exe)
+        .args(&deprecations_args)
+        .output()
+        .map_err(|err| format!("ops profiles validate failed: {err}"))?;
+    if !deprecations_out.status.success() {
+        return Err(format!(
+            "ops profiles validate failed: governance deprecations validate returned {}",
+            deprecations_out.status
+        ));
+    }
     let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
     let exit = if report.summary.helm_failures == 0
         && report.summary.schema_failures == 0

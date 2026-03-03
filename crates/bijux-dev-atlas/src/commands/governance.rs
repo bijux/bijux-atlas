@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{GovernanceCommand, GovernanceExceptionsCommand};
+use crate::cli::{
+    GovernanceCommand, GovernanceDeprecationsCommand, GovernanceExceptionsCommand,
+};
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::core::load_registry;
 use bijux_dev_atlas::docs::site_output::validate_named_report;
@@ -16,7 +18,7 @@ use bijux_dev_atlas::governance_objects::{
 };
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -88,8 +90,55 @@ struct ArchivedException {
     content_sha256: String,
 }
 
+#[derive(Debug, Deserialize)]
+struct CompatibilityPolicyRegistry {
+    schema_version: u64,
+    compatibility_rules: BTreeMap<String, CompatibilityRuleSet>,
+    deprecation_window_days: BTreeMap<String, i64>,
+}
+
+#[derive(Debug, Deserialize)]
+struct CompatibilityRuleSet {
+    breaking_changes: Vec<String>,
+    rename_requirements: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct DeprecationsRegistry {
+    schema_version: u64,
+    deprecations: Vec<DeprecationEntry>,
+}
+
+#[derive(Debug, Deserialize)]
+struct DeprecationEntry {
+    id: String,
+    surface: String,
+    old_name: String,
+    new_name: String,
+    introduced: String,
+    removal_target: String,
+    redirect_required: bool,
+    comms_required: bool,
+}
+
 fn exceptions_registry_path(root: &Path) -> PathBuf {
     root.join("configs/governance/exceptions.yaml")
+}
+
+fn compatibility_policy_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/compatibility.yaml")
+}
+
+fn compatibility_policy_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/contracts/governance/compatibility.schema.json")
+}
+
+fn deprecations_registry_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/deprecations.yaml")
+}
+
+fn deprecations_registry_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/contracts/governance/deprecations.schema.json")
 }
 
 fn exceptions_registry_schema_path(root: &Path) -> PathBuf {
@@ -118,6 +167,14 @@ fn exceptions_warning_path(root: &Path) -> PathBuf {
 
 fn exceptions_churn_path(root: &Path) -> PathBuf {
     root.join("artifacts/governance/exceptions-churn.json")
+}
+
+fn deprecations_summary_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/deprecations-summary.json")
+}
+
+fn compat_warnings_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/compat-warnings.json")
 }
 
 fn is_iso_date(value: &str) -> bool {
@@ -256,6 +313,117 @@ fn stable_exception_digest(value: &serde_json::Value) -> Result<String, String> 
     let bytes =
         serde_json::to_vec(value).map_err(|err| format!("encode exception digest failed: {err}"))?;
     Ok(format!("{:x}", Sha256::digest(bytes)))
+}
+
+fn read_json_value(path: &Path) -> Result<serde_json::Value, String> {
+    serde_json::from_str(
+        &fs::read_to_string(path).map_err(|err| format!("read {} failed: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("parse {} failed: {err}", path.display()))
+}
+
+fn load_compatibility_policy(root: &Path) -> Result<CompatibilityPolicyRegistry, String> {
+    let path = compatibility_policy_path(root);
+    serde_yaml::from_str(
+        &fs::read_to_string(&path).map_err(|err| format!("read {} failed: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("parse {} failed: {err}", path.display()))
+}
+
+fn load_deprecations_registry(root: &Path) -> Result<DeprecationsRegistry, String> {
+    let path = deprecations_registry_path(root);
+    serde_yaml::from_str(
+        &fs::read_to_string(&path).map_err(|err| format!("read {} failed: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("parse {} failed: {err}", path.display()))
+}
+
+fn yaml_paths(value: &serde_yaml::Value, prefix: Option<&str>, out: &mut BTreeSet<String>) {
+    if let serde_yaml::Value::Mapping(map) = value {
+        for (key, child) in map {
+            let Some(key_text) = key.as_str() else {
+                continue;
+            };
+            let path = match prefix {
+                Some(prefix) => format!("{prefix}.{key_text}"),
+                None => key_text.to_string(),
+            };
+            out.insert(path.clone());
+            yaml_paths(child, Some(&path), out);
+        }
+    }
+}
+
+fn schema_supports_path(schema: &serde_json::Value, dotted_path: &str) -> bool {
+    let mut current = schema;
+    for segment in dotted_path.split('.') {
+        current = match current.get("properties").and_then(|value| value.get(segment)) {
+            Some(next) => next,
+            None => return false,
+        };
+    }
+    true
+}
+
+fn env_allowlist_contains(schema: &serde_json::Value, key: &str) -> bool {
+    schema
+        .get("properties")
+        .and_then(|value| value.get(key))
+        .is_some()
+}
+
+fn compat_warning_rows(
+    root: &Path,
+    registry: &DeprecationsRegistry,
+) -> Result<Vec<serde_json::Value>, String> {
+    let mut rows = Vec::new();
+    let mut files = vec![root.join("ops/k8s/charts/bijux-atlas/values.yaml")];
+    for entry in fs::read_dir(root.join("ops/k8s/values"))
+        .map_err(|err| format!("read ops/k8s/values failed: {err}"))?
+    {
+        let entry = entry.map_err(|err| format!("read ops/k8s/values entry failed: {err}"))?;
+        let path = entry.path();
+        if path.extension().and_then(|value| value.to_str()) == Some("yaml") {
+            files.push(path);
+        }
+    }
+    files.sort();
+
+    for path in files {
+        let value: serde_yaml::Value = serde_yaml::from_str(
+            &fs::read_to_string(&path).map_err(|err| format!("read {} failed: {err}", path.display()))?,
+        )
+        .map_err(|err| format!("parse {} failed: {err}", path.display()))?;
+        let mut present_paths = BTreeSet::new();
+        yaml_paths(&value, None, &mut present_paths);
+        for entry in &registry.deprecations {
+            if matches!(entry.surface.as_str(), "chart-value" | "profile-key")
+                && present_paths.contains(&entry.old_name)
+            {
+                rows.push(serde_json::json!({
+                    "deprecation_id": entry.id,
+                    "surface": entry.surface,
+                    "file": path.strip_prefix(root).unwrap_or(&path).display().to_string(),
+                    "deprecated_key": entry.old_name,
+                    "replacement_key": entry.new_name,
+                    "removal_target": entry.removal_target
+                }));
+            }
+        }
+    }
+
+    rows.sort_by(|left, right| {
+        let left_key = (
+            left["file"].as_str().unwrap_or_default(),
+            left["deprecated_key"].as_str().unwrap_or_default(),
+        );
+        let right_key = (
+            right["file"].as_str().unwrap_or_default(),
+            right["deprecated_key"].as_str().unwrap_or_default(),
+        );
+        left_key.cmp(&right_key)
+    });
+    Ok(rows)
 }
 
 pub(crate) fn run_governance_command(
@@ -788,6 +956,263 @@ pub(crate) fn run_governance_command(
                     "table_path": table_path.strip_prefix(&root).unwrap_or(&table_path).display().to_string(),
                     "warning_path": warning_path.strip_prefix(&root).unwrap_or(&warning_path).display().to_string(),
                     "churn_path": churn_path.strip_prefix(&root).unwrap_or(&churn_path).display().to_string(),
+                    "contracts": summary["contracts"].clone(),
+                    "errors": summary["errors"].clone()
+                });
+                let rendered = emit_payload(format, out, &payload)?;
+                let exit_code = if summary["status"] == "ok" { 0 } else { 1 };
+                Ok((rendered, exit_code))
+            }
+        },
+        GovernanceCommand::Deprecations { command } => match command {
+            GovernanceDeprecationsCommand::Validate {
+                repo_root,
+                format,
+                out,
+            } => {
+                let root = resolve_repo_root(repo_root)?;
+                let compatibility_schema_path = compatibility_policy_schema_path(&root);
+                let compatibility_schema = read_json_value(&compatibility_schema_path)?;
+                let deprecations_schema_path = deprecations_registry_schema_path(&root);
+                let deprecations_schema = read_json_value(&deprecations_schema_path)?;
+                let compatibility = load_compatibility_policy(&root)?;
+                let deprecations = load_deprecations_registry(&root)?;
+                let values_schema = read_json_value(
+                    &root.join("ops/k8s/charts/bijux-atlas/values.schema.json"),
+                )?;
+                let env_schema =
+                    read_json_value(&root.join("configs/contracts/env.schema.json"))?;
+                let redirects = read_json_value(&root.join("docs/redirects.json"))?;
+                let redirects_map = redirects
+                    .as_object()
+                    .ok_or_else(|| "docs/redirects.json must be a JSON object".to_string())?;
+                let summary_path = deprecations_summary_path(&root);
+                let compat_path = compat_warnings_path(&root);
+                let today = current_utc_day()?;
+                let compat_warning_rows = compat_warning_rows(&root, &deprecations)?;
+                let compat_warnings_report = serde_json::json!({
+                    "report_id": "compat-warnings",
+                    "version": 1,
+                    "inputs": {
+                        "generator": "bijux-dev-atlas governance deprecations validate",
+                        "sources": [
+                            "configs/governance/deprecations.yaml",
+                            "ops/k8s/charts/bijux-atlas/values.yaml",
+                            "ops/k8s/values"
+                        ]
+                    },
+                    "status": "ok",
+                    "summary": {
+                        "total": compat_warning_rows.len()
+                    },
+                    "rows": compat_warning_rows,
+                    "errors": []
+                });
+                validate_named_report(&root, "compat-warnings.schema.json", &compat_warnings_report)?;
+                write_pretty_json(&compat_path, &compat_warnings_report)?;
+
+                let mut errors = Vec::new();
+                let mut rows = Vec::new();
+                let mut seen_ids = BTreeSet::new();
+                let required_rule_sets = [
+                    "env_keys",
+                    "chart_values",
+                    "profile_keys",
+                    "report_schemas",
+                    "docs_urls",
+                ];
+                for rule_set in required_rule_sets {
+                    if !compatibility.compatibility_rules.contains_key(rule_set) {
+                        errors.push(format!("compatibility policy missing rule set `{rule_set}`"));
+                    }
+                    if !compatibility.deprecation_window_days.contains_key(rule_set) {
+                        errors.push(format!(
+                            "compatibility policy missing deprecation window for `{rule_set}`"
+                        ));
+                    }
+                }
+                for (name, rule_set) in &compatibility.compatibility_rules {
+                    if rule_set.breaking_changes.is_empty() {
+                        errors.push(format!("compatibility rule set `{name}` missing breaking_changes"));
+                    }
+                    if rule_set.rename_requirements.is_empty() {
+                        errors.push(format!(
+                            "compatibility rule set `{name}` missing rename_requirements"
+                        ));
+                    }
+                }
+
+                for entry in &deprecations.deprecations {
+                    if !seen_ids.insert(entry.id.clone()) {
+                        errors.push(format!("duplicate deprecation id `{}`", entry.id));
+                    }
+                    if !is_iso_date(&entry.introduced) {
+                        errors.push(format!(
+                            "{} has invalid introduced `{}`",
+                            entry.id, entry.introduced
+                        ));
+                    }
+                    if !is_iso_date(&entry.removal_target) {
+                        errors.push(format!(
+                            "{} has invalid removal_target `{}`",
+                            entry.id, entry.removal_target
+                        ));
+                    }
+                    let introduced_days = date_days(&entry.introduced)?;
+                    let removal_days = date_days(&entry.removal_target)?;
+                    if removal_days < introduced_days {
+                        errors.push(format!(
+                            "{} removal_target precedes introduced date",
+                            entry.id
+                        ));
+                    }
+                    let days_until_removal = removal_days - today;
+                    if days_until_removal < 0 {
+                        errors.push(format!(
+                            "{} is past removal_target {}",
+                            entry.id, entry.removal_target
+                        ));
+                    }
+
+                    let mut checks = BTreeMap::new();
+                    match entry.surface.as_str() {
+                        "env-key" => {
+                            let old_supported = env_allowlist_contains(&env_schema, &entry.old_name);
+                            let new_supported = env_allowlist_contains(&env_schema, &entry.new_name);
+                            let docs_updated = !entry.new_name.is_empty();
+                            checks.insert("allowlist_support".to_string(), old_supported && new_supported);
+                            checks.insert("docs_updated".to_string(), docs_updated);
+                            if !old_supported || !new_supported {
+                                errors.push(format!(
+                                    "{} env rename requires old and new keys in env schema",
+                                    entry.id
+                                ));
+                            }
+                        }
+                        "chart-value" => {
+                            let old_supported = schema_supports_path(&values_schema, &entry.old_name);
+                            let new_supported = schema_supports_path(&values_schema, &entry.new_name);
+                            checks.insert(
+                                "schema_overlap".to_string(),
+                                old_supported && new_supported,
+                            );
+                            if !old_supported || !new_supported {
+                                errors.push(format!(
+                                    "{} chart rename requires schema support for old and new keys",
+                                    entry.id
+                                ));
+                            }
+                        }
+                        "profile-key" => {
+                            let warning_exists = compat_warnings_report["rows"]
+                                .as_array()
+                                .is_some_and(|rows| {
+                                    rows.iter().any(|row| {
+                                        row.get("deprecation_id")
+                                            .and_then(serde_json::Value::as_str)
+                                            == Some(entry.id.as_str())
+                                    })
+                                });
+                            checks.insert("warning_report".to_string(), warning_exists);
+                        }
+                        "docs-url" => {
+                            let redirect_ok = redirects_map
+                                .get(&entry.old_name)
+                                .and_then(serde_json::Value::as_str)
+                                == Some(entry.new_name.as_str());
+                            checks.insert("redirect_present".to_string(), redirect_ok);
+                            if entry.redirect_required && !redirect_ok {
+                                errors.push(format!(
+                                    "{} docs move requires redirect {} -> {}",
+                                    entry.id, entry.old_name, entry.new_name
+                                ));
+                            }
+                        }
+                        "report-schema" => {}
+                        other => {
+                            errors.push(format!("{} has unsupported surface `{}`", entry.id, other));
+                        }
+                    }
+
+                    rows.push(serde_json::json!({
+                        "id": entry.id,
+                        "surface": entry.surface,
+                        "old_name": entry.old_name,
+                        "new_name": entry.new_name,
+                        "introduced": entry.introduced,
+                        "removal_target": entry.removal_target,
+                        "days_until_removal": days_until_removal,
+                        "redirect_required": entry.redirect_required,
+                        "comms_required": entry.comms_required,
+                        "checks": checks
+                    }));
+                }
+
+                rows.sort_by(|left, right| {
+                    left["id"]
+                        .as_str()
+                        .unwrap_or_default()
+                        .cmp(right["id"].as_str().unwrap_or_default())
+                });
+
+                let summary = serde_json::json!({
+                    "report_id": "deprecations-summary",
+                    "version": 1,
+                    "inputs": {
+                        "generator": "bijux-dev-atlas governance deprecations validate",
+                        "sources": [
+                            "configs/governance/compatibility.yaml",
+                            "configs/governance/deprecations.yaml",
+                            "configs/contracts/env.schema.json",
+                            "ops/k8s/charts/bijux-atlas/values.schema.json",
+                            "docs/redirects.json"
+                        ]
+                    },
+                    "status": if errors.is_empty() { "ok" } else { "failed" },
+                    "summary": {
+                        "total": rows.len(),
+                        "compat_warning_count": compat_warnings_report["summary"]["total"].clone(),
+                        "errors": errors.len()
+                    },
+                    "rows": rows,
+                    "contracts": {
+                        "GOV-COMP-001": compatibility.schema_version == 1
+                            && compatibility_schema
+                                .get("properties")
+                                .and_then(|value| value.get("schema_version"))
+                                .and_then(|value| value.get("const"))
+                                .and_then(serde_json::Value::as_u64)
+                                == Some(1),
+                        "GOV-DEP-001": deprecations.schema_version == 1
+                            && deprecations_schema
+                                .get("properties")
+                                .and_then(|value| value.get("schema_version"))
+                                .and_then(|value| value.get("const"))
+                                .and_then(serde_json::Value::as_u64)
+                                == Some(1),
+                        "GOV-DEP-002": !errors.iter().any(|error| error.contains("past removal_target"))
+                    },
+                    "errors": errors
+                });
+                validate_named_report(&root, "deprecations-summary.schema.json", &summary)?;
+                write_pretty_json(&summary_path, &summary)?;
+
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "kind": "governance_deprecations_validate",
+                    "status": summary["status"].clone(),
+                    "compatibility_policy_path": compatibility_policy_path(&root)
+                        .strip_prefix(&root)
+                        .unwrap_or(&compatibility_policy_path(&root))
+                        .display()
+                        .to_string(),
+                    "deprecations_registry_path": deprecations_registry_path(&root)
+                        .strip_prefix(&root)
+                        .unwrap_or(&deprecations_registry_path(&root))
+                        .display()
+                        .to_string(),
+                    "summary_path": summary_path.strip_prefix(&root).unwrap_or(&summary_path).display().to_string(),
+                    "compat_warnings_path": compat_path.strip_prefix(&root).unwrap_or(&compat_path).display().to_string(),
                     "contracts": summary["contracts"].clone(),
                     "errors": summary["errors"].clone()
                 });
