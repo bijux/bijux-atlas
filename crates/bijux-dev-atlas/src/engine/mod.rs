@@ -9,9 +9,11 @@ use std::path::Path;
 use crate::model::engine::*;
 
 mod executor;
+mod report_codec;
 mod reporting;
 
 pub use executor::*;
+pub use report_codec::*;
 pub use reporting::*;
 
 include!("selection.rs");

@@ -247,6 +247,12 @@ impl RunnableExecutor for CommandRunnableExecutor<'_> {
         if let Some(skipped) = check_effect_gate(entry, context) {
             let payload = serde_json::json!({
                 "report_id": "run-result",
+                "version": 1,
+                "inputs": {
+                    "commands": entry.commands,
+                    "effects_required": entry.effects_required,
+                },
+                "artifacts": [],
                 "run_id": context.run_id.as_str(),
                 "runnable_id": entry.id.as_str(),
                 "status": "skip",
@@ -255,9 +261,12 @@ impl RunnableExecutor for CommandRunnableExecutor<'_> {
                     "required_tool": skipped.required_tool,
                 }
             });
-            let report = context
-                .artifact_store
-                .write_json_report(&context.run_id, &entry.id, "run-result", &payload)?;
+            let report = context.artifact_store.write_json_report(
+                &context.run_id,
+                &entry.id,
+                "run-result",
+                &payload,
+            )?;
             return Ok(RunResult {
                 runnable_id: entry.id.clone(),
                 status: RunStatus::Skip,
@@ -293,6 +302,12 @@ impl RunnableExecutor for CommandRunnableExecutor<'_> {
         };
         let payload = serde_json::json!({
             "report_id": "run-result",
+            "version": 1,
+            "inputs": {
+                "commands": entry.commands,
+                "effects_required": entry.effects_required,
+            },
+            "artifacts": [],
             "run_id": context.run_id.as_str(),
             "runnable_id": entry.id.as_str(),
             "status": status_text,
@@ -300,10 +315,15 @@ impl RunnableExecutor for CommandRunnableExecutor<'_> {
             "failure_summary": failure_summary,
             "declared_reports": entry.report_ids,
         });
-        let report = context
-            .artifact_store
-            .write_json_report(&context.run_id, &entry.id, "run-result", &payload)?;
-        let _ = self.fs.exists(&context.repo_root, std::path::Path::new("."));
+        let report = context.artifact_store.write_json_report(
+            &context.run_id,
+            &entry.id,
+            "run-result",
+            &payload,
+        )?;
+        let _ = self
+            .fs
+            .exists(&context.repo_root, std::path::Path::new("."));
         Ok(RunResult {
             runnable_id: entry.id.clone(),
             status,

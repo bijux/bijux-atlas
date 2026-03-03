@@ -15,6 +15,11 @@ use serde_json::{json, Value};
 pub mod engine;
 pub mod exit_codes;
 pub mod governance;
+pub mod report_header;
+pub mod report_ref;
+
+pub use report_header::ReportHeader;
+pub use report_ref::ReportRef;
 
 pub const CONTRACT_SCHEMA_VERSION: u64 = 1;
 pub const fn schema_version() -> u64 {
@@ -428,7 +433,9 @@ impl RunnableId {
             return Err("runnable id cannot be empty".to_string());
         }
         if raw.contains(char::is_whitespace) {
-            return Err(format!("invalid runnable id `{raw}`: whitespace is not allowed"));
+            return Err(format!(
+                "invalid runnable id `{raw}`: whitespace is not allowed"
+            ));
         }
         Ok(Self(raw.to_string()))
     }
@@ -480,12 +487,6 @@ pub struct RunnableEntry {
 pub struct SuiteEntry {
     pub id: SuiteId,
     pub runnables: Vec<RunnableId>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ReportRef {
-    pub report_id: String,
-    pub path: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
