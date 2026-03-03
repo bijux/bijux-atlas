@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::GovernanceCommand;
-use bijux_dev_atlas::docs::site_output::validate_named_report;
 use crate::{emit_payload, resolve_repo_root};
+use bijux_dev_atlas::docs::site_output::validate_named_report;
 use bijux_dev_atlas::governance_objects::{
     collect_governance_objects, find_governance_object, governance_contract_coverage_path,
     governance_contract_coverage_payload, governance_coverage_path, governance_coverage_score,
     governance_drift_path, governance_drift_payload, governance_index_path,
     governance_index_payload, governance_lane_coverage_path, governance_lane_coverage_payload,
     governance_object_schema, governance_orphan_checks_path, governance_orphan_checks_payload,
-    governance_orphan_report_path, governance_orphan_report_payload, governance_policy_surface_path,
-    governance_policy_surface_payload, governance_summary_markdown, governance_summary_paths,
-    validate_governance_objects,
+    governance_orphan_report_path, governance_orphan_report_payload,
+    governance_policy_surface_path, governance_policy_surface_payload, governance_summary_markdown,
+    governance_summary_paths, validate_governance_objects,
 };
 use std::fs;
 
