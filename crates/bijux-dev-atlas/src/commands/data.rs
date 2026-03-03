@@ -47,7 +47,8 @@ fn write_json(path: &Path, value: &serde_json::Value) -> Result<(), String> {
 }
 
 fn sha256_file(path: &Path) -> Result<String, String> {
-    let bytes = fs::read(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let bytes =
+        fs::read(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     let digest = Sha256::digest(bytes);
     Ok(format!("{digest:x}"))
 }
@@ -80,14 +81,25 @@ fn run_datasets_validate(args: DatasetsValidateArgs) -> Result<(String, i32), St
     let ids = load_dataset_ids(&manifest);
     let unique_ids = ids.len() == datasets.len();
     let checksums_ok = datasets.iter().all(|entry| {
-        entry.get("checksum")
+        entry
+            .get("checksum")
             .and_then(serde_yaml::Value::as_str)
-            .is_some_and(|value| value.len() == 64 && value.chars().all(|ch| ch.is_ascii_hexdigit()))
+            .is_some_and(|value| {
+                value.len() == 64 && value.chars().all(|ch| ch.is_ascii_hexdigit())
+            })
     });
     let required_fields_ok = datasets.iter().all(|entry| {
-        ["id", "version", "source", "license", "checksum", "size", "schema_version"]
-            .iter()
-            .all(|field| entry.get(*field).is_some())
+        [
+            "id",
+            "version",
+            "source",
+            "license",
+            "checksum",
+            "size",
+            "schema_version",
+        ]
+        .iter()
+        .all(|field| entry.get(*field).is_some())
     });
     let allowed_ids = pinned_policy
         .get("profiles")
@@ -158,11 +170,14 @@ fn run_ingest_dry_run(args: IngestDryRunArgs) -> Result<(String, i32), String> {
     let selected = datasets
         .iter()
         .find(|entry| {
-            entry.get("id")
-                .and_then(serde_yaml::Value::as_str)
-                == Some(args.dataset.as_str())
+            entry.get("id").and_then(serde_yaml::Value::as_str) == Some(args.dataset.as_str())
         })
-        .ok_or_else(|| format!("dataset `{}` is not declared in configs/datasets/manifest.yaml", args.dataset))?;
+        .ok_or_else(|| {
+            format!(
+                "dataset `{}` is not declared in configs/datasets/manifest.yaml",
+                args.dataset
+            )
+        })?;
 
     let source_dir = selected
         .get("source")
@@ -171,7 +186,10 @@ fn run_ingest_dry_run(args: IngestDryRunArgs) -> Result<(String, i32), String> {
     let genome = root.join(source_dir).join("genome.fa");
     let fai = root.join(source_dir).join("genome.fa.fai");
     let gff3 = root.join(source_dir).join("genes.gff3");
-    let output_dir = format!("artifacts/ingest/{}/outputs", args.dataset.replace('/', "_"));
+    let output_dir = format!(
+        "artifacts/ingest/{}/outputs",
+        args.dataset.replace('/', "_")
+    );
     let genome_sha = sha256_file(&genome)?;
     let fai_sha = sha256_file(&fai)?;
     let gff3_sha = sha256_file(&gff3)?;
@@ -254,12 +272,10 @@ fn dataset_source_and_hashes(
         .unwrap_or_default();
     let selected = datasets
         .iter()
-        .find(|entry| {
-            entry.get("id")
-                .and_then(serde_yaml::Value::as_str)
-                == Some(dataset_id)
-        })
-        .ok_or_else(|| format!("dataset `{dataset_id}` is not declared in configs/datasets/manifest.yaml"))?;
+        .find(|entry| entry.get("id").and_then(serde_yaml::Value::as_str) == Some(dataset_id))
+        .ok_or_else(|| {
+            format!("dataset `{dataset_id}` is not declared in configs/datasets/manifest.yaml")
+        })?;
     let source_dir = selected
         .get("source")
         .and_then(serde_yaml::Value::as_str)
@@ -275,7 +291,8 @@ fn run_ingest(args: IngestDryRunArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     ensure_json(&root.join("configs/contracts/datasets/ingest-run.schema.json"))?;
     ensure_json(&root.join("configs/contracts/datasets/endtoend.schema.json"))?;
-    let (source_dir, genome_sha, fai_sha, gff3_sha) = dataset_source_and_hashes(&root, &args.dataset)?;
+    let (source_dir, genome_sha, fai_sha, gff3_sha) =
+        dataset_source_and_hashes(&root, &args.dataset)?;
     let started = std::time::Instant::now();
     let output_dir_rel = ingest_output_dir(&args.dataset);
     let output_dir = root.join(&output_dir_rel);
@@ -377,7 +394,10 @@ fn run_ingest(args: IngestDryRunArgs) -> Result<(String, i32), String> {
     Ok((rendered, 0))
 }
 
-pub(crate) fn run_data_command(_quiet: bool, command: DataCommand) -> Result<(String, i32), String> {
+pub(crate) fn run_data_command(
+    _quiet: bool,
+    command: DataCommand,
+) -> Result<(String, i32), String> {
     match command {
         DataCommand::Datasets(command) => match command {
             DatasetsCommand::Validate(args) => run_datasets_validate(args),
@@ -410,7 +430,9 @@ mod tests {
         .expect("dry run");
         assert_eq!(result.1, 0);
         assert!(result.0.contains("\"INGEST-001\": true"));
-        assert!(result.0.contains("\"dataset_id\": \"110/homo_sapiens/GRCh38\""));
+        assert!(result
+            .0
+            .contains("\"dataset_id\": \"110/homo_sapiens/GRCh38\""));
     }
 
     #[test]

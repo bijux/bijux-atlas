@@ -73,12 +73,15 @@ fn validate_surface_and_filesystem_policies(
     }
 
     let allowed_top_level: BTreeSet<&str> = [
+        "_benchmarks",
         "_generated",
         "_generated.example",
         "_meta",
+        "_examples",
         "atlas-dev",
         "datasets",
         "docs",
+        "drills",
         "e2e",
         "env",
         "fixtures",

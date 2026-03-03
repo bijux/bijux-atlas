@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ArtifactsCommand, CheckCommand, CheckRegistryCommand, Command, ConfigsCommand, DatasetsCommand,
-    ContractsCommand, DocsCommand, FormatArg, MakeCommand, OpsCommand, PoliciesCommand,
-    IngestCommand, PerfCommand, ReleaseCommand, SecurityCommand,
+    ArtifactsCommand, CheckCommand, CheckRegistryCommand, Command, ConfigsCommand,
+    ContractsCommand, DatasetsCommand, DocsCommand, FormatArg, IngestCommand, MakeCommand,
+    OpsCommand, PerfCommand, PoliciesCommand, ReleaseCommand, SecurityCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {

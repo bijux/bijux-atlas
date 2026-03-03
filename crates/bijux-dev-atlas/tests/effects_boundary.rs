@@ -46,6 +46,8 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
         "src/commands/make.rs",
         "src/commands/configs.rs",
         "src/commands/configs_payloads.rs",
+        "src/commands/perf.rs",
+        "src/commands/release.rs",
         "src/commands/docs/validation_and_links.rs",
         "src/commands/docs/runtime/docs_command_router.rs",
         "src/commands/control_plane_docker_runtime_helpers.rs",

@@ -4,6 +4,10 @@ contracts
 demo
 configs
 governance
+security
+datasets
+ingest
+perf
 policies
 ci
 check

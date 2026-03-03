@@ -879,9 +879,11 @@ fn run_release_packet(args: ReleasePacketArgs) -> Result<(String, i32), String> 
         .collect::<Vec<_>>();
 
     let rel_pack_001 = required.iter().all(|path| selected.contains(*path))
-        && packet_items
-            .iter()
-            .any(|item| item["path"].as_str().is_some_and(|path| path.starts_with("release/evidence/sboms/")));
+        && packet_items.iter().any(|item| {
+            item["path"]
+                .as_str()
+                .is_some_and(|path| path.starts_with("release/evidence/sboms/"))
+        });
 
     let packet = serde_json::json!({
         "schema_version": 1,

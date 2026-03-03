@@ -174,7 +174,8 @@ pub(crate) fn run_demo_command(quiet: bool, command: DemoCommand) -> i32 {
 }
 
 
-include!("runtime_entry_checks.rs");
+include!("runtime_entry_checks_surface.rs");
+include!("runtime_entry_checks_governance.rs");
 
 pub(crate) fn run() -> i32 {
     cli::run()

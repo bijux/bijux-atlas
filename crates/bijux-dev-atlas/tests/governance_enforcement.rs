@@ -151,7 +151,6 @@ fn src_root_contains_only_canonical_module_dirs_and_entry_files() {
         "policies".to_string(),
         "ports".to_string(),
         "runtime_entry.rs".to_string(),
-        "runtime_entry_checks.rs".to_string(),
         "runtime_entry_checks_governance.rs".to_string(),
         "runtime_entry_checks_surface.rs".to_string(),
         "schema_support.rs".to_string(),

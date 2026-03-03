@@ -89,6 +89,7 @@ fn test_ops_k8s_003_install_matrix_complete(ctx: &RunContext) -> TestResult {
         "offline",
         "perf",
         "prod",
+        "profile-baseline",
     ]
     .into_iter()
     .map(std::string::ToString::to_string)

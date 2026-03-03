@@ -96,8 +96,8 @@ fn percentile_ms(samples: &[f64], quantile: f64) -> f64 {
 }
 
 fn start_fixture_server(expected_path: String, response_body: String) -> Result<String, String> {
-    let listener =
-        TcpListener::bind("127.0.0.1:0").map_err(|err| format!("failed to bind perf server: {err}"))?;
+    let listener = TcpListener::bind("127.0.0.1:0")
+        .map_err(|err| format!("failed to bind perf server: {err}"))?;
     let addr = listener
         .local_addr()
         .map_err(|err| format!("failed to read perf server address: {err}"))?;
@@ -255,15 +255,18 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
     let requests_per_thread = scenario
         .get("requests_per_thread")
         .and_then(serde_json::Value::as_u64)
-        .ok_or_else(|| "scenario is missing requests_per_thread".to_string())? as usize;
+        .ok_or_else(|| "scenario is missing requests_per_thread".to_string())?
+        as usize;
     let warmup_requests = scenario
         .get("warmup_requests")
         .and_then(serde_json::Value::as_u64)
-        .ok_or_else(|| "scenario is missing warmup_requests".to_string())? as usize;
+        .ok_or_else(|| "scenario is missing warmup_requests".to_string())?
+        as usize;
     let duration_seconds = scenario
         .get("duration_seconds")
         .and_then(serde_json::Value::as_u64)
-        .ok_or_else(|| "scenario is missing duration_seconds".to_string())? as u64;
+        .ok_or_else(|| "scenario is missing duration_seconds".to_string())?
+        as u64;
     let seed = scenario
         .get("seed")
         .and_then(serde_json::Value::as_u64)
@@ -296,7 +299,9 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
 
     let started = Instant::now();
     let failures = Arc::new(AtomicU64::new(0));
-    let samples = Arc::new(Mutex::new(Vec::with_capacity(threads * requests_per_thread)));
+    let samples = Arc::new(Mutex::new(Vec::with_capacity(
+        threads * requests_per_thread,
+    )));
     thread::scope(|scope| {
         for _thread in 0..threads {
             let client = client.clone();
@@ -731,7 +736,14 @@ fn run_perf_benches_list(args: PerfValidateArgs) -> Result<(String, i32), String
         }
     });
     let rendered = emit_payload(args.format, args.out, &payload)?;
-    Ok((rendered, if perf_bench_001 && perf_bench_002 { 0 } else { 1 }))
+    Ok((
+        rendered,
+        if perf_bench_001 && perf_bench_002 {
+            0
+        } else {
+            1
+        },
+    ))
 }
 
 pub(crate) fn run_perf_command(

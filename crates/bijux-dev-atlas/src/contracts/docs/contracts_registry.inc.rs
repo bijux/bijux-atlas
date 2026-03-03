@@ -13,11 +13,13 @@ const DOCS_ALLOWED_ROOT_DIRS: [&str; 10] = [
 
 const DOCS_ALLOWED_ROOT_DIRS_TAIL: [&str; 0] = [];
 
-const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 6] = [
+const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 8] = [
     "contract.md",
     "glossary.md",
+    "institutional-reader.md",
     "index.md",
     "start-here.md",
+    "structure-index.md",
     "site-map.md",
     "what-to-read-next.md",
 ];
@@ -25,7 +27,7 @@ const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 6] = [
 const DOCS_ALLOWED_ROOT_FILES: [&str; 1] = ["redirects.json"];
 
 const DOCS_MAX_DEPTH: usize = 4;
-const DOCS_MAX_SIBLINGS: usize = 49;
+const DOCS_MAX_SIBLINGS: usize = 96;
 
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![

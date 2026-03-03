@@ -534,7 +534,12 @@ pub fn validate_profiles(
                         serde_yaml::Deserializer::from_str(&rendered_yaml).count();
                     let staged_manifest = stage_kubeconform_manifest(repo_root, &rendered_yaml);
                     (
-                        kubeconform_profile(repo_root, staged_manifest, options.timeout_seconds, options.run_kubeconform),
+                        kubeconform_profile(
+                            repo_root,
+                            staged_manifest,
+                            options.timeout_seconds,
+                            options.run_kubeconform,
+                        ),
                         rendered_resources,
                     )
                 }

@@ -11,6 +11,9 @@ fn ops_markdown_allowed(rel: &str) -> bool {
             return true;
         }
     }
+    if rel == "ops/k8s/kind/README.md" || rel == "ops/k8s/values/profile-readme.md" {
+        return true;
+    }
     false
 }
 
@@ -169,8 +172,11 @@ fn test_ops_000_allow_only_known_domain_dirs(ctx: &RunContext) -> TestResult {
     for name in DOMAIN_DIRS {
         allowed.insert(*name);
     }
+    allowed.insert("_benchmarks");
     allowed.insert("_generated");
     allowed.insert("_generated.example");
+    allowed.insert("_examples");
+    allowed.insert("drills");
     allowed.insert("policy");
     let mut violations = Vec::new();
     for entry in entries.flatten() {

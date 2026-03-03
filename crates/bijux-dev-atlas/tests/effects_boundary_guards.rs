@@ -153,6 +153,8 @@ fn process_calls_are_constrained_to_explicit_allowlist() {
             "src/cli/dispatch.rs",
             "src/commands/control_plane_docker_runtime_helpers.rs",
             "src/commands/docs/runtime/reference_page_generators.rs",
+            "src/commands/perf.rs",
+            "src/commands/release.rs",
             "src/contracts/engine_model.rs",
             "src/contracts/docker/mod.rs",
             "src/commands/control_plane_contracts.rs",
@@ -188,6 +190,12 @@ fn env_var_calls_are_constrained_to_explicit_allowlist() {
 
 #[test]
 fn network_client_calls_are_constrained_to_explicit_allowlist() {
-    assert_only_allowlisted_paths("reqwest::", &["src/commands/docs/validation_and_links.rs"]);
+    assert_only_allowlisted_paths(
+        "reqwest::",
+        &[
+            "src/commands/docs/validation_and_links.rs",
+            "src/commands/perf.rs",
+        ],
+    );
     assert_only_allowlisted_paths("ureq::", &[]);
 }

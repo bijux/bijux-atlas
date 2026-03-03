@@ -21,8 +21,17 @@ const ROOT_ALLOWED_VISIBLE: [&str; 20] = [
     "governance",
 ];
 
-const ROOT_ALLOWED_VISIBLE_TAIL: [&str; 5] =
-    ["docs", "make", "mkdocs.yml", "ops", "rust-toolchain.toml"];
+const ROOT_ALLOWED_VISIBLE_TAIL: [&str; 9] = [
+    "docs",
+    "make",
+    "mkdocs.yml",
+    "ops",
+    "release",
+    "rust-toolchain.toml",
+    "scripts",
+    "security",
+    "tools",
+];
 
 const ROOT_IGNORED_LOCAL: [&str; 4] = [".git", ".idea", "artifacts", "target"];
 

@@ -10,12 +10,12 @@ mod artifacts_commands;
 #[path = "commands/build.rs"]
 mod build_commands;
 mod cli;
+#[path = "commands/data.rs"]
+mod commands_data;
 #[path = "commands/configs.rs"]
 mod configs_commands;
 #[path = "commands/control_plane.rs"]
 mod control_plane_commands;
-#[path = "commands/data.rs"]
-mod commands_data;
 #[path = "commands/docs.rs"]
 mod docs_commands;
 #[path = "commands/governance.rs"]

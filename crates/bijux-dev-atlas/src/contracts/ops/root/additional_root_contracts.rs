@@ -17,9 +17,12 @@ fn test_ops_root_001_allowed_surface(ctx: &RunContext) -> TestResult {
         "RUNBOOK_GENERATION_FROM_GRAPH.md",
     ]);
     let allowed_dirs = BTreeSet::from([
+        "_benchmarks",
         "_generated",
         "_generated.example",
+        "_examples",
         "datasets",
+        "drills",
         "e2e",
         "env",
         "inventory",
