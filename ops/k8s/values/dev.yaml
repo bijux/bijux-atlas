@@ -7,3 +7,26 @@ server:
 
 networkPolicy:
   enabled: false
+  allowDns: false
+  allowedEgressCIDRs: []
+  ingress:
+    mode: disabled
+    allowNamespaces: []
+  egress:
+    mode: disabled
+    allowDns: false
+    allowCidrs: []
+    allowNamespaces: []
+  dependencies:
+    redis:
+      enabled: false
+      ports: [6379]
+    minio:
+      enabled: false
+      ports: [9000]
+    catalog:
+      enabled: false
+      ports: [80, 443]
+    otelCollector:
+      enabled: false
+      ports: [4317, 4318]

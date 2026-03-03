@@ -36,3 +36,30 @@ metrics:
     requiredPodAnnotations:
       prometheus.io/scrape: "true"
       prometheus.io/path: "/metrics"
+
+networkPolicy:
+  enabled: true
+  allowDns: true
+  allowedEgressCIDRs: []
+  ingress:
+    mode: same-namespace
+    allowNamespaces: []
+  egress:
+    mode: cluster-aware
+    allowDns: true
+    allowCidrs: []
+    allowNamespaces:
+      - atlas-deps
+  dependencies:
+    redis:
+      enabled: true
+      ports: [6379]
+    minio:
+      enabled: true
+      ports: [9000]
+    catalog:
+      enabled: true
+      ports: [80, 443]
+    otelCollector:
+      enabled: false
+      ports: [4317, 4318]

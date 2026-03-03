@@ -1,0 +1,73 @@
+# Example: disabled
+# networkPolicy:
+#   enabled: false
+#   allowDns: false
+#   allowedEgressCIDRs: []
+#   ingress:
+#     mode: disabled
+#     allowNamespaces: []
+#   egress:
+#     mode: disabled
+#     allowDns: false
+#     allowCidrs: []
+#     allowNamespaces: []
+#
+# Example: internet-only
+# networkPolicy:
+#   enabled: true
+#   allowDns: true
+#   allowedEgressCIDRs: []
+#   ingress:
+#     mode: same-namespace
+#     allowNamespaces: []
+#   egress:
+#     mode: internet-only
+#     allowDns: true
+#     allowCidrs:
+#       - 203.0.113.10/32
+#       - 198.51.100.0/24
+#     allowNamespaces: []
+#
+# Example: cluster-aware
+networkPolicy:
+  enabled: true
+  allowDns: true
+  allowedEgressCIDRs: []
+  ingress:
+    mode: selected
+    allowNamespaces:
+      - observability
+  egress:
+    mode: cluster-aware
+    allowDns: true
+    allowCidrs: []
+    allowNamespaces:
+      - atlas-deps
+      - observability
+  dependencies:
+    redis:
+      enabled: true
+      ports: [6379]
+    minio:
+      enabled: true
+      ports: [9000]
+    catalog:
+      enabled: true
+      ports: [80, 443]
+    otelCollector:
+      enabled: true
+      ports: [4317, 4318]
+#
+# Example: custom
+# networkPolicy:
+#   enabled: true
+#   allowDns: false
+#   allowedEgressCIDRs: []
+#   ingress:
+#     mode: custom
+#     allowNamespaces: []
+#   egress:
+#     mode: custom
+#     allowDns: false
+#     allowCidrs: []
+#     allowNamespaces: []
