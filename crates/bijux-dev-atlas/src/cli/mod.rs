@@ -104,6 +104,10 @@ pub enum Command {
         #[command(subcommand)]
         command: GovernanceCommand,
     },
+    Security {
+        #[command(subcommand)]
+        command: SecurityCommand,
+    },
     #[command(hide = true)]
     Docker {
         #[command(subcommand)]
@@ -192,6 +196,21 @@ pub enum GovernanceCommand {
         #[arg(long)]
         out: Option<PathBuf>,
     },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum SecurityCommand {
+    Validate(SecurityValidateArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct SecurityValidateArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
 }
 
 #[derive(Args, Debug, Clone)]

@@ -3,7 +3,7 @@
 use crate::cli::{
     ArtifactsCommand, CheckCommand, CheckRegistryCommand, Command, ConfigsCommand,
     ContractsCommand, DocsCommand, FormatArg, MakeCommand, OpsCommand, PoliciesCommand,
-    ReleaseCommand,
+    ReleaseCommand, SecurityCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -18,6 +18,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Contracts { command } => force_json_contracts(command),
         Command::Configs { command } => force_json_configs(command),
         Command::Governance { command } => force_json_governance(command),
+        Command::Security { command } => force_json_security(command),
         Command::Policies { command } => force_json_policies(command),
         Command::Check { command } => force_json_check(command),
         Command::Validate { format, .. } => *format = FormatArg::Json,
@@ -340,6 +341,12 @@ fn force_json_policies(command: &mut PoliciesCommand) {
         | PoliciesCommand::Report { format, .. }
         | PoliciesCommand::Print { format, .. }
         | PoliciesCommand::Validate { format, .. } => *format = FormatArg::Json,
+    }
+}
+
+fn force_json_security(command: &mut SecurityCommand) {
+    match command {
+        SecurityCommand::Validate(args) => args.format = FormatArg::Json,
     }
 }
 
@@ -750,6 +757,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | crate::cli::GovernanceCommand::Validate { repo_root, .. } => {
                 *repo_root = Some(root.clone())
             }
+        },
+        Command::Security { command } => match command {
+            SecurityCommand::Validate(args) => args.repo_root = Some(root.clone()),
         },
         Command::Policies { command } => match command {
             PoliciesCommand::List { repo_root, .. }
