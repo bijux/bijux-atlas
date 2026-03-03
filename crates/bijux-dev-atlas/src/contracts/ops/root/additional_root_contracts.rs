@@ -2,6 +2,7 @@ fn allowed_ops_root_markdown() -> BTreeSet<&'static str> {
     BTreeSet::from([
         "README.md",
         "CONTRACT.md",
+        "END_TO_END_INVARIANTS.md",
         "ERRORS.md",
         "INDEX.md",
         "ARTIFACTS.md",
@@ -27,6 +28,7 @@ fn allowed_ops_root_markdown() -> BTreeSet<&'static str> {
         "OWNERSHIP_ROTATION_POLICY.md",
         "PORTABILITY_MATRIX.md",
         "PUBLIC_SURFACE_CONTRACT_SUMMARY.md",
+        "SCENARIO_RETENTION.md",
         "RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
         "RUNBOOK_GENERATION_FROM_GRAPH.md",
         "SCHEMA_EVOLUTION_WORKFLOW.md",

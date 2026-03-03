@@ -1,8 +1,5 @@
 # Ops Contract
 
-- Legacy shell compatibility deadline: 2026-12-31.
-- Canonical directory budget: 10 domain directories plus curated generated roots.
-
 ## Scope
 
 - Governed surface: `ops/` and `ops/CONTRACT.md`.
@@ -391,9 +388,3 @@
 ## Exceptions policy
 
 - No exceptions are allowed by this document.
-
-- Compatibility migrations must be timeboxed and include explicit cutoff dates
-
-Ops is specification-only.
-
-Release pins are immutable after release publication

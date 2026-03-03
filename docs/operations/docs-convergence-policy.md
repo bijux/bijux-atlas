@@ -7,6 +7,7 @@
 ## Convergence Rule
 
 Documentation must converge on one canonical page per concept and remain aligned with current checks and contracts.
+Contract binding: `OPS-ROOT-023`.
 
 ## Deletion Rule
 

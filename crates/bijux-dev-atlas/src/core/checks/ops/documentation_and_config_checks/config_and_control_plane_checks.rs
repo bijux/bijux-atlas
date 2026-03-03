@@ -222,7 +222,7 @@ pub(super) fn check_scripting_contract_rust_control_plane_lock(
 pub(super) fn check_docs_ops_command_list_matches_snapshot(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md");
+    let rel = Path::new("crates/bijux-dev-atlas/docs/internal/ops-command-list.md");
     let current = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let expected = [
@@ -251,7 +251,7 @@ pub(super) fn check_docs_ops_command_list_matches_snapshot(
         Ok(vec![violation(
             "DOCS_OPS_COMMAND_LIST_MISMATCH",
             "ops command list doc does not match canonical ops help snapshot".to_string(),
-            "update crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md to match ops --help command list",
+            "update crates/bijux-dev-atlas/docs/internal/ops-command-list.md to match ops --help command list",
             Some(rel),
         )])
     }
@@ -260,7 +260,7 @@ pub(super) fn check_docs_ops_command_list_matches_snapshot(
 pub(super) fn check_docs_configs_command_list_matches_snapshot(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md");
+    let rel = Path::new("crates/bijux-dev-atlas/docs/internal/configs-command-list.md");
     let current = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let expected = [
@@ -279,7 +279,7 @@ pub(super) fn check_docs_configs_command_list_matches_snapshot(
         Ok(vec![violation(
             "DOCS_CONFIGS_COMMAND_LIST_MISMATCH",
             "configs command list doc does not match canonical configs help snapshot".to_string(),
-            "update crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md to match configs --help command list",
+            "update crates/bijux-dev-atlas/docs/internal/configs-command-list.md to match configs --help command list",
             Some(rel),
         )])
     }

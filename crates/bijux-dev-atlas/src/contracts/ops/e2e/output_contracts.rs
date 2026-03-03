@@ -349,7 +349,10 @@ fn test_ops_e2e_009_no_stray_e2e_artifacts(ctx: &RunContext) -> TestResult {
     };
     let allowed_entries = BTreeSet::from([
         "CONTRACT.md",
+        "END_TO_END_INVARIANTS.md",
+        "OWNER.md",
         "README.md",
+        "REQUIRED_FILES.md",
         "datasets",
         "expectations",
         "fixtures",
@@ -545,4 +548,3 @@ fn test_ops_e2e_010_summary_schema_valid(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
-

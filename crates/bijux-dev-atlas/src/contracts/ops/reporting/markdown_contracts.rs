@@ -160,6 +160,10 @@ fn test_ops_root_014_no_procedure_docs_in_ops(ctx: &RunContext) -> TestResult {
             "ops/GOLDEN_REFRESH_POLICY.md",
             "ops/INCIDENT_PLAYBOOK_GENERATION.md",
             "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
+            "ops/schema/BUDGET_POLICY.md",
+            "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md",
+            "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
+            "ops/schema/VERSIONING_POLICY.md",
         ]);
         if explicitly_allowed.contains(rel.as_str()) {
             continue;
