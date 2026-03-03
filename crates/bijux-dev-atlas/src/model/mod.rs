@@ -17,9 +17,11 @@ pub mod exit_codes;
 pub mod governance;
 pub mod report_header;
 pub mod report_ref;
+pub mod run_history;
 
 pub use report_header::ReportHeader;
 pub use report_ref::ReportRef;
+pub use run_history::{RunHistory, RunHistoryEntry};
 
 pub const CONTRACT_SCHEMA_VERSION: u64 = 1;
 pub const fn schema_version() -> u64 {
