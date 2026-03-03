@@ -14,6 +14,16 @@
 - Remove a redirect only after the replacement path has been stable long enough for consumers to
   update.
 
+## Required Metadata
+
+Every governed redirect must resolve to:
+
+- an owner
+- a migration reason
+- an expiry date when the redirect is temporary
+
+Those fields are resolved from `docs/_internal/governance/redirect-registry.json`.
+
 ## Removal Criteria
 
 - The destination page remains unchanged and valid.
@@ -23,4 +33,5 @@
 ## Verification
 
 Before removing a redirect, run `mkdocs build --strict` and verify no docs entrypoint depends on
-the old path.
+the old path. Regenerate `docs/_internal/generated/legacy-url-inventory.md` with
+`bijux-dev-atlas docs redirects sync --allow-write` before merging the redirect update.

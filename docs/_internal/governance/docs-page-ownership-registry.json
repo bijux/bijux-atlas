@@ -1,0 +1,52 @@
+{
+  "docs/index.md": {
+    "owner": "docs-governance",
+    "reviewCadence": "quarterly",
+    "stability": "stable"
+  },
+  "docs/start-here.md": {
+    "owner": "docs-governance",
+    "reviewCadence": "quarterly",
+    "stability": "stable"
+  },
+  "docs/operations/index.md": {
+    "owner": "bijux-atlas-operations",
+    "reviewCadence": "quarterly",
+    "stability": "stable"
+  },
+  "docs/control-plane/index.md": {
+    "owner": "bijux-atlas-developer-experience",
+    "reviewCadence": "quarterly",
+    "stability": "stable"
+  },
+  "docs/reference/index.md": {
+    "owner": "bijux-atlas-docs",
+    "reviewCadence": "quarterly",
+    "stability": "stable"
+  },
+  "docs/reference/repo-map.md": {
+    "owner": "bijux-atlas-docs",
+    "reviewCadence": "quarterly",
+    "stability": "stable"
+  },
+  "docs/_internal/governance/index.md": {
+    "owner": "docs-governance",
+    "reviewCadence": "quarterly",
+    "stability": "stable"
+  },
+  "docs/_internal/governance/redirects-contract.md": {
+    "owner": "docs-governance",
+    "reviewCadence": "quarterly",
+    "stability": "stable"
+  },
+  "docs/_internal/governance/docs-publication-semantics.md": {
+    "owner": "docs-governance",
+    "reviewCadence": "quarterly",
+    "stability": "stable"
+  },
+  "docs/_internal/governance/docs-reviewability-policy.md": {
+    "owner": "docs-governance",
+    "reviewCadence": "quarterly",
+    "stability": "stable"
+  }
+}

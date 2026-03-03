@@ -28,6 +28,7 @@ Provide governance rules that keep reader docs accurate, minimal, and stable.
 - [Redirects Contract](redirects-contract.md)
 - [How To Add A Redirect](add-a-redirect.md)
 - [Redirect Lifecycle And Expiry](redirect-lifecycle.md)
+- [Docs change classification](docs-change-classification.md)
 - [Broken Link Policy](broken-link-policy.md)
 - [Verification Metadata](verification-metadata.md)
 - [Docs reviewability policy](docs-reviewability-policy.md)
