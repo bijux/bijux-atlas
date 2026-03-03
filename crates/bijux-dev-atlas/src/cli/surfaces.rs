@@ -428,6 +428,7 @@ pub enum ContractsCommand {
 #[derive(Subcommand, Debug)]
 pub enum ContractCommand {
     List(ContractListArgs),
+    #[command(alias = "explain")]
     Describe(ContractDescribeArgs),
     Run(ContractRunArgs),
     Report(ContractReportArgs),
