@@ -128,6 +128,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "configs/governance/suites/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "configs/inventory/README.md"
     },
     {

@@ -317,6 +317,22 @@
     {
       "keywords": [
         "configs",
+        "governance",
+        "readme",
+        "suites"
+      ],
+      "path": "configs/governance/suites/README.md",
+      "tags": [
+        "configs",
+        "governance",
+        "readme",
+        "suites"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
         "inventory",
         "readme"
       ],

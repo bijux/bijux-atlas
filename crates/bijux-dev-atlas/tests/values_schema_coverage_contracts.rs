@@ -53,7 +53,9 @@ fn descend(
 
 fn generate_report(root: &Path) -> Value {
     let schema = load_json(&schema_path(root));
-    let properties = schema["properties"].as_object().expect("top-level properties");
+    let properties = schema["properties"]
+        .as_object()
+        .expect("top-level properties");
     let mut missing_types = Vec::new();
     let mut description_only = Vec::new();
     for (key, value) in properties {
@@ -82,7 +84,9 @@ fn values_schema_generates_coverage_report_without_missing_type_nodes() {
         serde_json::to_string_pretty(&report).expect("encode report"),
     )
     .expect("write coverage report");
-    let missing = report["missing_type_nodes"].as_array().expect("missing_type_nodes");
+    let missing = report["missing_type_nodes"]
+        .as_array()
+        .expect("missing_type_nodes");
     assert!(
         missing.is_empty(),
         "values schema nodes missing explicit type/$ref/allOf: {}",
@@ -97,13 +101,19 @@ fn high_risk_values_keys_are_not_description_only() {
     let policy = load_json(&policy_path);
     let high_risk = policy["high_risk_keys"].as_array().expect("high_risk_keys");
     let schema = load_json(&schema_path(&root));
-    let properties = schema["properties"].as_object().expect("top-level properties");
+    let properties = schema["properties"]
+        .as_object()
+        .expect("top-level properties");
     let mut offenders = Map::new();
     for key in high_risk {
         let key = key.as_str().expect("key");
-        let node = properties.get(key).unwrap_or_else(|| panic!("missing schema key {key}"));
+        let node = properties
+            .get(key)
+            .unwrap_or_else(|| panic!("missing schema key {key}"));
         let object = node.as_object().expect("schema object");
-        let typed = object.contains_key("type") || object.contains_key("$ref") || object.contains_key("allOf");
+        let typed = object.contains_key("type")
+            || object.contains_key("$ref")
+            || object.contains_key("allOf");
         let description_only = object.contains_key("description") && !typed;
         if description_only {
             offenders.insert(key.to_string(), node.clone());

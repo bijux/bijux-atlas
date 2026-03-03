@@ -58,7 +58,12 @@ fn auth_error_mapping_uses_http_auth_statuses() {
         json!({}),
         "req-1",
     );
-    let forbidden = ApiError::new(ApiErrorCode::AccessForbidden, "forbidden", json!({}), "req-2");
+    let forbidden = ApiError::new(
+        ApiErrorCode::AccessForbidden,
+        "forbidden",
+        json!({}),
+        "req-2",
+    );
     assert_eq!(map_error(&unauthorized).status_code, 401);
     assert_eq!(map_error(&forbidden).status_code, 403);
 }

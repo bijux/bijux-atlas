@@ -204,6 +204,14 @@
     {
       "area": "configs",
       "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "configs/governance/suites/README.md",
+      "stability": "stable",
+      "title": "Governance Suites"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
       "owner": "platform",
       "path": "configs/inventory/README.md",
       "stability": "stable",

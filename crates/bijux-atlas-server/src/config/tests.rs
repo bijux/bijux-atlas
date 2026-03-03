@@ -322,7 +322,10 @@ fn runtime_config_admin_endpoints_are_disabled_by_default() {
 #[test]
 fn runtime_config_accepts_explicit_audit_settings() {
     with_runtime_env(
-        &[("ATLAS_AUDIT_ENABLED", "true"), ("ATLAS_AUDIT_SINK", "otel")],
+        &[
+            ("ATLAS_AUDIT_ENABLED", "true"),
+            ("ATLAS_AUDIT_SINK", "otel"),
+        ],
         || {
             let startup = RuntimeStartupConfig {
                 bind_addr: DEFAULT_BIND_ADDR.to_string(),

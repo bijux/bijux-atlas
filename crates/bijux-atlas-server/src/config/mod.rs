@@ -622,8 +622,7 @@ impl RuntimeConfig {
                     return Err(RuntimeConfigError::InvalidFormat {
                         name: "ATLAS_AUDIT_SINK".to_string(),
                         value,
-                        message: "ATLAS_AUDIT_SINK must be one of: stdout, file, otel"
-                            .to_string(),
+                        message: "ATLAS_AUDIT_SINK must be one of: stdout, file, otel".to_string(),
                     });
                 }
             },
@@ -636,8 +635,10 @@ impl RuntimeConfig {
                 });
             }
         };
-        let audit_enabled =
-            env_bool("ATLAS_AUDIT_ENABLED", env_bool("ATLAS_ENABLE_AUDIT_LOG", false)?)?;
+        let audit_enabled = env_bool(
+            "ATLAS_AUDIT_ENABLED",
+            env_bool("ATLAS_ENABLE_AUDIT_LOG", false)?,
+        )?;
         let audit_file_path = std::env::var("ATLAS_AUDIT_FILE_PATH")
             .ok()
             .filter(|value| !value.is_empty())
@@ -653,9 +654,8 @@ impl RuntimeConfig {
                     return Err(RuntimeConfigError::InvalidFormat {
                         name: "ATLAS_AUTH_MODE".to_string(),
                         value,
-                        message:
-                            "ATLAS_AUTH_MODE must be one of: disabled, api-key, oidc, mtls"
-                                .to_string(),
+                        message: "ATLAS_AUTH_MODE must be one of: disabled, api-key, oidc, mtls"
+                            .to_string(),
                     });
                 }
             }),
@@ -679,9 +679,8 @@ impl RuntimeConfig {
             Some(AuthMode::Disabled) => {
                 if require_api_key_env || hmac_required_env {
                     return Err(RuntimeConfigError::InvalidValue {
-                        message:
-                            "ATLAS_AUTH_MODE=disabled conflicts with legacy auth enable flags"
-                                .to_string(),
+                        message: "ATLAS_AUTH_MODE=disabled conflicts with legacy auth enable flags"
+                            .to_string(),
                     });
                 }
                 AuthMode::Disabled
@@ -689,9 +688,8 @@ impl RuntimeConfig {
             Some(AuthMode::ApiKey) => {
                 if hmac_required_env {
                     return Err(RuntimeConfigError::InvalidValue {
-                        message:
-                            "ATLAS_AUTH_MODE=api-key conflicts with ATLAS_HMAC_REQUIRED=true"
-                                .to_string(),
+                        message: "ATLAS_AUTH_MODE=api-key conflicts with ATLAS_HMAC_REQUIRED=true"
+                            .to_string(),
                     });
                 }
                 AuthMode::ApiKey

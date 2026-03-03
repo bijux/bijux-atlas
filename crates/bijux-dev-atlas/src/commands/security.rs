@@ -134,7 +134,9 @@ fn validate_audit_record_shape(
         .and_then(serde_json::Value::as_str)
         .ok_or_else(|| "audit record missing event_name".to_string())?;
     if !allowed_events.contains(&event_name) {
-        return Err(format!("audit record event_name is not allowed: {event_name}"));
+        return Err(format!(
+            "audit record event_name is not allowed: {event_name}"
+        ));
     }
     if object
         .get("timestamp_policy")
@@ -169,7 +171,9 @@ fn validate_audit_record_shape(
     let encoded = serde_json::to_string(record).map_err(|err| err.to_string())?;
     for forbidden in ["Bearer ", "topsecret", "@", "127.0.0.1"] {
         if encoded.contains(forbidden) {
-            return Err(format!("audit record contains forbidden marker: {forbidden}"));
+            return Err(format!(
+                "audit record contains forbidden marker: {forbidden}"
+            ));
         }
     }
     Ok(())
@@ -584,12 +588,12 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             .iter()
             .all(|id| data_class_ids.contains(id.as_str()));
 
-    let request_utils_source = fs::read_to_string(root.join(
-        "crates/bijux-atlas-server/src/runtime/request_utils.rs",
-    ))
-    .map_err(|err| format!("failed to read request utils source: {err}"))?;
-    let data_command_source = fs::read_to_string(root.join("crates/bijux-dev-atlas/src/commands/data.rs"))
-        .map_err(|err| format!("failed to read data command source: {err}"))?;
+    let request_utils_source =
+        fs::read_to_string(root.join("crates/bijux-atlas-server/src/runtime/request_utils.rs"))
+            .map_err(|err| format!("failed to read request utils source: {err}"))?;
+    let data_command_source =
+        fs::read_to_string(root.join("crates/bijux-dev-atlas/src/commands/data.rs"))
+            .map_err(|err| format!("failed to read data command source: {err}"))?;
     let main_audit_source_fields = collect_source_json_fields(&main_source);
     let data_audit_source_fields = collect_source_json_fields(&data_command_source);
     let audit_event_names = [
@@ -702,7 +706,12 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         serde_json::to_string_pretty(&audit_verify_report)
             .map_err(|err| format!("encode audit verify report failed: {err}"))?,
     )
-    .map_err(|err| format!("failed to write {}: {err}", audit_verify_report_path.display()))?;
+    .map_err(|err| {
+        format!(
+            "failed to write {}: {err}",
+            audit_verify_report_path.display()
+        )
+    })?;
     let obs_audit_002 = audit_verify_errors.is_empty();
     let obs_ret_001 = !retention_rows.is_empty()
         && retention
@@ -763,7 +772,12 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         serde_json::to_string_pretty(&log_field_inventory_report)
             .map_err(|err| format!("encode log field inventory report failed: {err}"))?,
     )
-    .map_err(|err| format!("failed to write {}: {err}", log_field_inventory_path.display()))?;
+    .map_err(|err| {
+        format!(
+            "failed to write {}: {err}",
+            log_field_inventory_path.display()
+        )
+    })?;
     let obs_log_inv_001 = unclassified_log_fields.is_empty();
     let release_manifest_path = root.join("release/evidence/manifest.json");
     let release_manifest = if release_manifest_path.exists() {
@@ -1144,9 +1158,8 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             || owner.is_empty()
             || !is_iso_date(expires_on)
         {
-            invalid_action_exceptions.push(format!(
-                "{workflow_path}:{action}:owner-or-expiry-invalid"
-            ));
+            invalid_action_exceptions
+                .push(format!("{workflow_path}:{action}:owner-or-expiry-invalid"));
         }
     }
     let mut workflow_pin_gaps = Vec::new();
@@ -1451,7 +1464,12 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         serde_json::to_string_pretty(&github_actions_report)
             .map_err(|err| format!("encode github actions report failed: {err}"))?,
     )
-    .map_err(|err| format!("failed to write {}: {err}", github_actions_report_path.display()))?;
+    .map_err(|err| {
+        format!(
+            "failed to write {}: {err}",
+            github_actions_report_path.display()
+        )
+    })?;
 
     let payload = serde_json::json!({
         "schema_version": 1,

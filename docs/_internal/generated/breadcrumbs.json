@@ -187,6 +187,15 @@
     {
       "breadcrumbs": [
         "configs",
+        "configs/governance",
+        "configs/governance/suites",
+        "configs/governance/suites/README.md"
+      ],
+      "path": "configs/governance/suites/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
         "configs/inventory",
         "configs/inventory/README.md"
       ],

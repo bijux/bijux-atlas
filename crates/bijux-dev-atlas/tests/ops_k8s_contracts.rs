@@ -576,8 +576,10 @@ fn prod_profiles_keep_admin_endpoints_disabled_without_registered_exception() {
 #[test]
 fn networkpolicy_render_contains_expected_policy_shape() {
     let root = repo_root();
-    let internet_only =
-        render_networkpolicy_with_values_file(&root, "ops/k8s/values/networkpolicy-internet-only.yaml");
+    let internet_only = render_networkpolicy_with_values_file(
+        &root,
+        "ops/k8s/values/networkpolicy-internet-only.yaml",
+    );
     assert!(
         internet_only.contains("policyTypes:\n    - Ingress\n    - Egress"),
         "internet-only policy must render both policy types when ingress and egress are configured"

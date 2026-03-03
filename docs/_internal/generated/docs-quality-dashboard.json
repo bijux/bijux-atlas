@@ -12,7 +12,7 @@
   "pruning_suggestions": [
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `CONTRACT` appears 25 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `INDEX` appears 4 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 79 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 80 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `architecture` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `benchmarks` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `caching` appears 3 times",
@@ -316,7 +316,7 @@
   "schema_version": 1,
   "summary": {
     "errors": 47,
-    "registered": 766,
+    "registered": 767,
     "warnings": 353
   }
 }

@@ -29,6 +29,7 @@ License: Apache-2.0
 | `configs/examples/README.md` | `concept` | `docs-governance` | `stable` |
 | `configs/gates/README.md` | `concept` | `platform` | `stable` |
 | `configs/governance/README.md` | `concept` | `docs-governance` | `stable` |
+| `configs/governance/suites/README.md` | `concept` | `docs-governance` | `stable` |
 | `configs/inventory/README.md` | `concept` | `platform` | `stable` |
 | `configs/layout/README.md` | `concept` | `platform` | `stable` |
 | `configs/make/README.md` | `concept` | `platform` | `stable` |
