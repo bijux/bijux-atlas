@@ -69,6 +69,10 @@ fn checks_all_runs_one_human_facing_check_command() {
         "checks-all should default to human-readable nextest-style output"
     );
     assert!(
+        target_block.contains("--suite ci"),
+        "checks-all should target the canonical public ci checks suite"
+    );
+    assert!(
         !target_block.contains("--format json"),
         "checks-all should not emit the legacy json summary by default"
     );
