@@ -51,6 +51,7 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 20. [Institutional drills](drills.md)
 21. [Institutional readiness checklist](institutional-readiness-checklist.md)
 22. [Review packet](review-packet.md)
+23. [Performance operations](performance.md)
 
 ## What This Page Is Not
 

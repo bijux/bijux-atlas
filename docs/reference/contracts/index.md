@@ -12,6 +12,7 @@
 - API surfaces: [Endpoints](endpoints.md), [Errors](errors.md)
 - Health semantics: [Health Endpoints](health-endpoints.md)
 - Observability: [Observability Contracts](observability.md)
+- Performance: [Performance Contracts](performance.md)
 - Drills: [Drill Contracts](drills.md)
 - Security: [Security Contracts](security.md)
 - Runtime configuration: [Config Keys](config-keys.md), [Chart Values](chart-values.md)
