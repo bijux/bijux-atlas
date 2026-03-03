@@ -695,22 +695,6 @@
       "used_in": []
     },
     {
-      "name": "gate-10",
-      "defined_in": [
-        "makefiles/gates.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "gate-20",
-      "defined_in": [
-        "makefiles/gates.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
       "name": "gates",
       "defined_in": [
         "makefiles/root.mk"

@@ -18,7 +18,6 @@ include make/build.mk
 include make/ci.mk
 include make/dev.mk
 include make/runenv.mk
-include make/gates.mk
 include make/k8s.mk
 include make/verification.mk
 
