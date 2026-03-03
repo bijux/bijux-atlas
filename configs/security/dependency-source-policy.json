@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "npm": {
+    "allowed_registries": [
+      "https://registry.npmjs.org/"
+    ],
+    "lockfile_paths": [
+      "configs/docs/package-lock.json"
+    ]
+  },
+  "python": {
+    "allowed_indexes": [
+      "https://pypi.org/simple",
+      "https://pypi.org/simple/"
+    ],
+    "requirements_paths": [
+      "configs/docs/requirements.txt",
+      "configs/docs/requirements.lock.txt"
+    ]
+  },
+  "github_actions": {
+    "workflow_dir": ".github/workflows",
+    "toolchain_inventory": "ops/inventory/toolchain.json",
+    "require_sha_pins": true
+  },
+  "images": {
+    "toolchain_inventory": "ops/inventory/toolchain.json",
+    "bases_lock": "docker/bases.lock",
+    "evidence_manifest": "release/evidence/manifest.json",
+    "require_digest_pins": true
+  },
+  "sbom": {
+    "evidence_manifest": "release/evidence/manifest.json",
+    "required_formats": [
+      "spdx-json",
+      "cyclonedx-json"
+    ],
+    "require_prod_profiles": true
+  }
+}

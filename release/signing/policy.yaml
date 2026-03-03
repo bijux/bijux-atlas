@@ -1,0 +1,39 @@
+schema_version: 1
+mechanism:
+  type: internal-checksum-ledger
+  mode: keyless-local
+  rationale: >
+    The current release surface uses deterministic checksums and provenance files as the
+    consumer-verifiable integrity contract until detached signature material is introduced.
+key_custody_model:
+  owner: bijux-atlas-release
+  storage: repository-governed evidence workspace
+  rotation_expectation: rotate signing metadata on release process changes and before any trust-root change
+verification:
+  command: bijux-dev-atlas ops evidence verify release/evidence/bundle.tar --format json
+  airgap_supported: true
+  notes:
+    - verification reads only local evidence files
+    - consumers should compare checksums before promoting artifacts
+signed_items:
+  - path: release/evidence/packages/bijux-atlas-0.1.0.tgz
+    kind: chart-package
+    required: true
+  - path: release/evidence/bundle.tar
+    kind: evidence-tarball
+    required: true
+  - path: release/evidence/manifest.json
+    kind: evidence-manifest
+    required: true
+  - path: release/evidence/sboms/perf.spdx.json
+    kind: sbom
+    required: true
+  - path: release/evidence/sboms/prod-airgap.spdx.json
+    kind: sbom
+    required: true
+  - path: release/evidence/sboms/prod-ha.spdx.json
+    kind: sbom
+    required: true
+  - path: release/evidence/sboms/prod-minimal.spdx.json
+    kind: sbom
+    required: true
