@@ -45,6 +45,7 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
         "src/commands/artifacts.rs",
         "src/commands/make.rs",
         "src/commands/configs.rs",
+        "src/commands/configs_payloads.rs",
         "src/commands/docs/validation_and_links.rs",
         "src/commands/docs/runtime/docs_command_router.rs",
         "src/commands/control_plane_docker_runtime_helpers.rs",
@@ -121,6 +122,7 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
         "src/core/ops_inventory/summary_and_fs_scan.rs",
         "src/ops/helm_env.rs",
         "src/ops/profiles_matrix.rs",
+        "src/ops/profiles_matrix/validation_support.rs",
         "src/ops/profiles_matrix/tests.rs",
         "src/policies/validate.rs",
     ]
