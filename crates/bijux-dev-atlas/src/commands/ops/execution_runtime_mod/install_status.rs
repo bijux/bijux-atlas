@@ -1567,7 +1567,9 @@ fn build_release_evidence_tarball(
             );
         }
     }
+    files.extend(collect_observability_assets(repo_root)?);
     files.sort();
+    files.dedup();
     std::fs::write(&list_path, files.join("\n"))
         .map_err(|err| format!("failed to write {}: {err}", list_path.display()))?;
     let python = r#"import io, pathlib, tarfile
