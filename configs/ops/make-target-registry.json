@@ -308,6 +308,46 @@
       "used_in": []
     },
     {
+      "name": "contract",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contract-all",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contract-effect",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contract-list",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contract-report",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "contracts",
       "defined_in": [
         "make/contracts.mk"

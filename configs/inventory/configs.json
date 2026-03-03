@@ -355,6 +355,7 @@
         "configs/schema/README.md",
         "configs/schema/config-compiler-report.schema.json",
         "configs/schema/configs-ownership.schema.json",
+        "configs/schema/contracts/contract-run-summary.schema.json",
         "configs/schema/docs-registry.schema.json",
         "configs/schema/docs-sections.schema.json",
         "configs/schema/forbidden-adjectives-approvals.schema.json",

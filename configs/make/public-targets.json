@@ -1,6 +1,6 @@
 {
-  "max_public_targets": 64,
-  "target_public_targets": 62,
+  "max_public_targets": 68,
+  "target_public_targets": 67,
   "public_targets": [
     {
       "name": "artifacts-clean",
@@ -82,6 +82,51 @@
         "ci"
       ],
       "area": "make"
+    },
+    {
+      "name": "contract",
+      "description": "Run static contract execution",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contract-all",
+      "description": "Run full contract execution",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contract-effect",
+      "description": "Run effect contract execution",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contract-list",
+      "description": "List canonical contracts",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contract-report",
+      "description": "Read the last contract run summary",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
     },
     {
       "name": "contracts",

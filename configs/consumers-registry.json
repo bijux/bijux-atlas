@@ -186,6 +186,10 @@
       "bijux-dev-atlas",
       "ci"
     ],
+    "configs/reports/reports.registry.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
     "configs/reports/schema-registry.json": [
       "bijux-dev-atlas",
       "ci"
