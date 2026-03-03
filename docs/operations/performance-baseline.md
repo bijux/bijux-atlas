@@ -1,0 +1,27 @@
+# Performance Baseline Maintenance
+
+- Owner: `platform`
+- Stability: `stable`
+- Last verified against: `main@8de46d1c91cf58e9c1947d6c5cf0fefef08d40fc`
+
+## Purpose
+
+This runbook governs how the committed performance baseline is updated. The baseline is evidence,
+not a convenience cache.
+
+## Update Conditions
+
+Only update [gene-lookup-baseline.json](/Users/bijan/bijux/bijux-atlas/ops/_benchmarks/gene-lookup-baseline.json)
+after a fresh local deterministic perf run and an explicit review of the SLO and budget files.
+
+## Procedure
+
+1. Run `bijux-dev-atlas perf validate --format json`.
+2. Run `bijux-dev-atlas perf run --scenario gene-lookup --format json`.
+3. Compare the new report to the committed baseline with `bijux-dev-atlas perf diff`.
+4. Update the committed baseline only when the new result is the accepted reference point and the
+   reason is documented in the commit.
+
+## Rollback
+
+If the new baseline is wrong, restore the previous committed baseline and rerun the comparison.

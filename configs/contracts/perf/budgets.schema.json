@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Performance Budgets",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "throughput",
+    "regression_window",
+    "mode"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "throughput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "min_requests_per_second"
+      ],
+      "properties": {
+        "min_requests_per_second": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "regression_window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "history_runs",
+        "compare_fields"
+      ],
+      "properties": {
+        "history_runs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "compare_fields": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "mode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "local_only",
+        "no_network"
+      ],
+      "properties": {
+        "local_only": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_network": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    }
+  }
+}

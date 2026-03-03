@@ -181,6 +181,16 @@ pub enum ReleaseCommand {
 pub enum PerfCommand {
     Validate(PerfValidateArgs),
     Run(PerfRunArgs),
+    Diff(PerfDiffArgs),
+    Benches {
+        #[command(subcommand)]
+        command: PerfBenchesCommand,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum PerfBenchesCommand {
+    List(PerfValidateArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -327,6 +337,20 @@ pub struct PerfRunArgs {
     pub repo_root: Option<PathBuf>,
     #[arg(long, default_value = "gene-lookup")]
     pub scenario: String,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct PerfDiffArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg()]
+    pub report_a: PathBuf,
+    #[arg()]
+    pub report_b: PathBuf,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]

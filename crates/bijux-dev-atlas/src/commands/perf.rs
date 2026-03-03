@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{PerfCommand, PerfRunArgs, PerfValidateArgs};
+use crate::cli::{PerfBenchesCommand, PerfCommand, PerfDiffArgs, PerfRunArgs, PerfValidateArgs};
 use crate::{emit_payload, resolve_repo_root};
 use reqwest::blocking::Client;
+use std::collections::BTreeSet;
 use std::fs;
 use std::io::{Read, Write};
 use std::net::TcpListener;
@@ -93,8 +94,11 @@ fn start_fixture_server(expected_path: String, response_body: String) -> Result<
 fn run_perf_validate(args: PerfValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     ensure_json(&root.join("configs/contracts/perf/slo.schema.json"))?;
+    ensure_json(&root.join("configs/contracts/perf/budgets.schema.json"))?;
     let slo_path = root.join("configs/perf/slo.yaml");
+    let budgets_path = root.join("configs/perf/budgets.yaml");
     let slo = read_yaml(&slo_path)?;
+    let budgets = read_yaml(&budgets_path)?;
     let validate_ok = slo
         .get("schema_version")
         .and_then(serde_yaml::Value::as_i64)
@@ -103,13 +107,24 @@ fn run_perf_validate(args: PerfValidateArgs) -> Result<(String, i32), String> {
             .get("canonical_scenario")
             .and_then(serde_yaml::Value::as_str)
             .is_some()
-        && slo.get("targets").is_some();
+        && slo.get("targets").is_some()
+        && budgets
+            .get("throughput")
+            .and_then(|value| value.get("min_requests_per_second"))
+            .and_then(serde_yaml::Value::as_f64)
+            .is_some()
+        && budgets
+            .get("regression_window")
+            .and_then(|value| value.get("history_runs"))
+            .and_then(serde_yaml::Value::as_i64)
+            .is_some();
 
     let report_path = root.join("artifacts/perf/perf-slo.json");
     let report = serde_json::json!({
         "schema_version": 1,
         "status": if validate_ok { "ok" } else { "failed" },
         "slo_path": "configs/perf/slo.yaml",
+        "budgets_path": "configs/perf/budgets.yaml",
         "contracts": {
             "PERF-SLO-001": validate_ok
         }
@@ -124,6 +139,7 @@ fn run_perf_validate(args: PerfValidateArgs) -> Result<(String, i32), String> {
             "text": if validate_ok { "perf SLO validates" } else { "perf SLO is invalid" },
             "rows": [{
                 "report_path": "artifacts/perf/perf-slo.json",
+                "budgets_path": "configs/perf/budgets.yaml",
                 "contracts": report["contracts"].clone()
             }],
             "summary": {
@@ -140,10 +156,12 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     ensure_json(&root.join("configs/contracts/perf/slo.schema.json"))?;
     ensure_json(&root.join("configs/contracts/perf/load-report.schema.json"))?;
+    ensure_json(&root.join("configs/contracts/perf/budgets.schema.json"))?;
 
     let scenario_path = root.join(format!("tools/perf/{}.json", args.scenario));
     let scenario = read_json(&scenario_path)?;
     let slo = read_yaml(&root.join("configs/perf/slo.yaml"))?;
+    let budgets = read_yaml(&root.join("configs/perf/budgets.yaml"))?;
 
     let expected_path = scenario
         .get("request_path")
@@ -257,6 +275,11 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
         .and_then(|value| value.get("p99_ms"))
         .and_then(serde_yaml::Value::as_f64)
         .ok_or_else(|| "SLO file is missing targets.latency.p99_ms".to_string())?;
+    let min_throughput = budgets
+        .get("throughput")
+        .and_then(|value| value.get("min_requests_per_second"))
+        .and_then(serde_yaml::Value::as_f64)
+        .ok_or_else(|| "budgets file is missing throughput.min_requests_per_second".to_string())?;
 
     let report_valid = scenario
         .get("schema_version")
@@ -264,6 +287,14 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
         == Some(1)
         && !samples.is_empty();
     let perf_load_002 = p99 <= max_p99;
+    let perf_load_003 = error_rate_percent
+        <= slo
+            .get("targets")
+            .and_then(|value| value.get("error_rate"))
+            .and_then(|value| value.get("max_percent"))
+            .and_then(serde_yaml::Value::as_f64)
+            .ok_or_else(|| "SLO file is missing targets.error_rate.max_percent".to_string())?;
+    let perf_load_004 = throughput_rps >= min_throughput;
 
     let report = serde_json::json!({
         "schema_version": 1,
@@ -285,34 +316,181 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
         "throughput_rps": throughput_rps,
         "contracts": {
             "PERF-LOAD-001": report_valid,
-            "PERF-LOAD-002": perf_load_002
+            "PERF-LOAD-002": perf_load_002,
+            "PERF-LOAD-003": perf_load_003,
+            "PERF-LOAD-004": perf_load_004
         }
     });
 
     let report_path = root.join(format!("artifacts/perf/{}-load.json", args.scenario));
     write_json(&report_path, &report)?;
+    let baseline_path = root.join(format!("ops/_benchmarks/{}-baseline.json", args.scenario));
+    let history_runs = budgets
+        .get("regression_window")
+        .and_then(|value| value.get("history_runs"))
+        .and_then(serde_yaml::Value::as_i64)
+        .unwrap_or(5);
     let rendered = emit_payload(
         args.format,
         args.out,
         &serde_json::json!({
             "schema_version": 1,
-            "status": if report_valid && perf_load_002 { "ok" } else { "failed" },
-            "text": if report_valid && perf_load_002 { "perf run passed" } else { "perf run failed" },
+            "status": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 { "ok" } else { "failed" },
+            "text": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 { "perf run passed" } else { "perf run failed" },
             "rows": [{
                 "report_path": format!("artifacts/perf/{}-load.json", args.scenario),
                 "scenario_path": format!("tools/perf/{}.json", args.scenario),
+                "baseline_path": format!("ops/_benchmarks/{}-baseline.json", args.scenario),
+                "regression_window_runs": history_runs,
                 "contracts": report["contracts"].clone(),
                 "latency_ms": report["latency_ms"].clone(),
-                "throughput_rps": report["throughput_rps"].clone()
+                "throughput_rps": report["throughput_rps"].clone(),
+                "error_rate_percent": report["error_rate_percent"].clone()
             }],
             "summary": {
                 "total": 1,
-                "errors": if report_valid && perf_load_002 { 0 } else { 1 },
+                "errors": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 { 0 } else { 1 },
                 "warnings": 0
             }
         }),
     )?;
-    Ok((rendered, if report_valid && perf_load_002 { 0 } else { 1 }))
+    let _ = baseline_path;
+    Ok((
+        rendered,
+        if report_valid && perf_load_002 && perf_load_003 && perf_load_004 {
+            0
+        } else {
+            1
+        },
+    ))
+}
+
+fn run_perf_diff(args: PerfDiffArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    ensure_json(&root.join("configs/contracts/perf/load-report.schema.json"))?;
+    let left_path = if args.report_a.is_absolute() {
+        args.report_a
+    } else {
+        root.join(args.report_a)
+    };
+    let right_path = if args.report_b.is_absolute() {
+        args.report_b
+    } else {
+        root.join(args.report_b)
+    };
+    let left = read_json(&left_path)?;
+    let right = read_json(&right_path)?;
+    let p99_a = left
+        .get("latency_ms")
+        .and_then(|value| value.get("p99"))
+        .and_then(serde_json::Value::as_f64)
+        .unwrap_or(0.0);
+    let p99_b = right
+        .get("latency_ms")
+        .and_then(|value| value.get("p99"))
+        .and_then(serde_json::Value::as_f64)
+        .unwrap_or(0.0);
+    let throughput_a = left
+        .get("throughput_rps")
+        .and_then(serde_json::Value::as_f64)
+        .unwrap_or(0.0);
+    let throughput_b = right
+        .get("throughput_rps")
+        .and_then(serde_json::Value::as_f64)
+        .unwrap_or(0.0);
+    let error_rate_a = left
+        .get("error_rate_percent")
+        .and_then(serde_json::Value::as_f64)
+        .unwrap_or(0.0);
+    let error_rate_b = right
+        .get("error_rate_percent")
+        .and_then(serde_json::Value::as_f64)
+        .unwrap_or(0.0);
+
+    let regressed = p99_b > p99_a || throughput_b < throughput_a || error_rate_b > error_rate_a;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": "ok",
+        "text": if regressed { "perf reports regressed" } else { "perf reports are stable or improved" },
+        "rows": [{
+            "report_a": left_path.display().to_string(),
+            "report_b": right_path.display().to_string(),
+            "changes": {
+                "p99_ms": {"from": p99_a, "to": p99_b, "regressed": p99_b > p99_a},
+                "throughput_rps": {"from": throughput_a, "to": throughput_b, "regressed": throughput_b < throughput_a},
+                "error_rate_percent": {"from": error_rate_a, "to": error_rate_b, "regressed": error_rate_b > error_rate_a}
+            }
+        }],
+        "summary": {
+            "total": 1,
+            "errors": 0,
+            "warnings": if regressed { 1 } else { 0 }
+        }
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_perf_benches_list(args: PerfValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    ensure_json(&root.join("configs/contracts/perf/benches.schema.json"))?;
+    let registry = read_json(&root.join("configs/perf/benches.json"))?;
+    let benches_root = root.join("crates/bijux-atlas-server/benches");
+    let mut disk_entries = BTreeSet::new();
+    for entry in fs::read_dir(&benches_root)
+        .map_err(|err| format!("failed to read {}: {err}", benches_root.display()))?
+    {
+        let entry = entry.map_err(|err| format!("failed to read directory entry: {err}"))?;
+        let path = entry.path();
+        if path.extension().and_then(|value| value.to_str()) == Some("rs") {
+            if let Some(name) = path.file_stem().and_then(|value| value.to_str()) {
+                disk_entries.insert(name.to_string());
+            }
+        }
+    }
+    let registry_entries = registry
+        .get("benches")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let registry_names = registry_entries
+        .iter()
+        .filter_map(|value| value.get("name"))
+        .filter_map(serde_json::Value::as_str)
+        .map(ToString::to_string)
+        .collect::<BTreeSet<_>>();
+    let perf_bench_001 = registry_names == disk_entries;
+    let perf_bench_002 = registry_entries.iter().all(|entry| {
+        let weight = entry
+            .get("weight")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("micro");
+        let default_enabled = entry
+            .get("default_enabled")
+            .and_then(serde_json::Value::as_bool)
+            .unwrap_or(false);
+        weight != "macro" || !default_enabled
+    });
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": if perf_bench_001 && perf_bench_002 { "ok" } else { "failed" },
+        "text": if perf_bench_001 && perf_bench_002 { "bench registry matches disk" } else { "bench registry mismatch" },
+        "rows": [{
+            "registry_path": "configs/perf/benches.json",
+            "contracts": {
+                "PERF-BENCH-001": perf_bench_001,
+                "PERF-BENCH-002": perf_bench_002
+            },
+            "benches": registry_entries
+        }],
+        "summary": {
+            "total": 1,
+            "errors": if perf_bench_001 && perf_bench_002 { 0 } else { 1 },
+            "warnings": 0
+        }
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if perf_bench_001 && perf_bench_002 { 0 } else { 1 }))
 }
 
 pub(crate) fn run_perf_command(
@@ -322,5 +500,9 @@ pub(crate) fn run_perf_command(
     match command {
         PerfCommand::Validate(args) => run_perf_validate(args),
         PerfCommand::Run(args) => run_perf(args),
+        PerfCommand::Diff(args) => run_perf_diff(args),
+        PerfCommand::Benches { command } => match command {
+            PerfBenchesCommand::List(args) => run_perf_benches_list(args),
+        },
     }
 }

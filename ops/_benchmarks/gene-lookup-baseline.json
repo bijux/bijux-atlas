@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "scenario": "gene-lookup",
+  "captured_from": "artifacts/perf/gene-lookup-load.json",
+  "seed": 110,
+  "latency_ms": {
+    "p50": 0.520625,
+    "p95": 0.664208,
+    "p99": 0.725209
+  },
+  "error_rate_percent": 0.0,
+  "throughput_rps": 7396.278747255288,
+  "notes": "Deterministic localhost fixture baseline for regression comparisons."
+}

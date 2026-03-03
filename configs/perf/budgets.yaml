@@ -1,0 +1,12 @@
+schema_version: 1
+throughput:
+  min_requests_per_second: 50.0
+regression_window:
+  history_runs: 5
+  compare_fields:
+    - latency_ms.p99
+    - throughput_rps
+    - error_rate_percent
+mode:
+  local_only: true
+  no_network: true

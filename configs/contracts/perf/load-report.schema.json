@@ -95,13 +95,21 @@
       "additionalProperties": false,
       "required": [
         "PERF-LOAD-001",
-        "PERF-LOAD-002"
+        "PERF-LOAD-002",
+        "PERF-LOAD-003",
+        "PERF-LOAD-004"
       ],
       "properties": {
         "PERF-LOAD-001": {
           "type": "boolean"
         },
         "PERF-LOAD-002": {
+          "type": "boolean"
+        },
+        "PERF-LOAD-003": {
+          "type": "boolean"
+        },
+        "PERF-LOAD-004": {
           "type": "boolean"
         }
       }

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "macro_default_enabled": false
+  },
+  "benches": [
+    {
+      "name": "bulkhead_tuning",
+      "purpose": "Measure bulkhead limiter behavior under synthetic pressure.",
+      "weight": "macro",
+      "default_enabled": false
+    },
+    {
+      "name": "cache_manager",
+      "purpose": "Measure cache manager hot-path operations.",
+      "weight": "micro",
+      "default_enabled": true
+    },
+    {
+      "name": "diff_merge",
+      "purpose": "Measure diff and merge support routines.",
+      "weight": "micro",
+      "default_enabled": true
+    },
+    {
+      "name": "gene_lookup_p99",
+      "purpose": "Measure representative gene lookup latency under load.",
+      "weight": "macro",
+      "default_enabled": false
+    },
+    {
+      "name": "query_validate",
+      "purpose": "Measure query validation and normalization overhead.",
+      "weight": "micro",
+      "default_enabled": true
+    },
+    {
+      "name": "sequence_fetch",
+      "purpose": "Measure sequence fetch path latency and throughput.",
+      "weight": "macro",
+      "default_enabled": false
+    }
+  ]
+}
