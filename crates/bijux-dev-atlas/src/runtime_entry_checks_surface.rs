@@ -22,6 +22,21 @@ fn write_output_if_requested(out: Option<PathBuf>, rendered: &str) -> Result<(),
     Ok(())
 }
 
+fn check_report_color_enabled() -> bool {
+    let no_color = std::env::var_os("NO_COLOR").is_some();
+    let force_color = std::env::var("FORCE_COLOR")
+        .ok()
+        .map(|value| value != "0")
+        .unwrap_or(false);
+    if force_color {
+        true
+    } else if no_color {
+        false
+    } else {
+        io::stdout().is_terminal()
+    }
+}
+
 fn render_list_output(checks: &[CheckSpec], format: FormatArg) -> Result<String, String> {
     match format {
         FormatArg::Text => {
@@ -349,7 +364,10 @@ pub(crate) fn run_check_run(options: CheckRunOptions) -> Result<(String, i32), S
     )?;
     let rendered = match options.format {
         FormatArg::Text => {
-            let mut rendered = render_check_run_report(&report, false);
+            let mut rendered = render_check_run_report(
+                &report,
+                options.out.is_none() && check_report_color_enabled(),
+            );
             if options.durations > 0 {
                 rendered.push('\n');
                 rendered.push_str(&render_text_with_durations(&report, options.durations));
