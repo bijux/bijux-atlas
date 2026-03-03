@@ -42,10 +42,12 @@ fn run_surface(
 ) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let targets = load_curated_targets(&repo_root)?;
+    let text = targets.join("\n");
     let payload = serde_json::json!({
         "schema_version": 1,
         "action": "surface",
         "source": "make/root.mk:CURATED_TARGETS",
+        "text": text,
         "public_targets": targets,
     });
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
@@ -55,10 +57,12 @@ fn run_surface(
 fn run_list(common: crate::cli::MakeCommonArgs, started: Instant) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let targets = load_curated_targets(&repo_root)?;
+    let text = targets.join("\n");
     let payload = serde_json::json!({
         "schema_version": 1,
         "action": "list",
         "source": "make/root.mk:CURATED_TARGETS",
+        "text": text,
         "public_targets": targets,
         "target_count": targets.len(),
         "duration_ms": started.elapsed().as_millis() as u64,
@@ -107,7 +111,7 @@ fn run_explain(args: MakeExplainArgs, started: Instant) -> Result<(String, i32),
             "target": target,
             "known": false,
             "text": format!("{target} is not part of the curated make surface"),
-            "hint": "Use `bijux dev atlas make list --format json` to inspect supported targets.",
+            "hint": "Use `bijux dev atlas make list` to inspect supported targets.",
             "where_to_read": [
                 "docs/development/tooling/make.md",
                 "make/CONTRACT.md",
@@ -632,7 +636,7 @@ mod tests {
         assert_eq!(payload["known"], false);
         assert_eq!(
             payload["hint"],
-            "Use `bijux dev atlas make list --format json` to inspect supported targets."
+            "Use `bijux dev atlas make list` to inspect supported targets."
         );
     }
 
