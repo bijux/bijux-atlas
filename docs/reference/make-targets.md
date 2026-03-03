@@ -5,8 +5,9 @@
 - Audience: `operators`
 - Source-of-truth: `configs/ops/make-target-registry.json`
 
-> Contract runner naming is migrating to `contract`; legacy `contracts*` targets remain documented
-> until the thin-wrapper rename lands.
+> Canonical contract execution targets are `contract`, `contract-effect`, `contract-all`, and
+> `contract-list`. Legacy `contracts*` targets remain as deprecated thin wrappers during the
+> compatibility window.
 
 ## Targets
 
@@ -49,6 +50,10 @@
 | `configs-inventory` | `` |  |
 | `configs-lint` | `` |  |
 | `configs-validate` | `` |  |
+| `contract` | `` |  |
+| `contract-all` | `` |  |
+| `contract-effect` | `` |  |
+| `contract-list` | `` |  |
 | `contracts` | `` |  |
 | `contracts-all` | `` |  |
 | `contracts-changed` | `` |  |
