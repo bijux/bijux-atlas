@@ -1,5 +1,11 @@
 {
   "checksums_path": "release/signing/checksums.json",
+  "contracts": {
+    "REL-SIGN-001": true,
+    "REL-SIGN-002": true,
+    "REL-SIGN-003": true,
+    "REL-SIGN-006": true
+  },
   "errors": [],
   "mechanism": "internal-checksum-ledger",
   "policy_path": "release/signing/policy.yaml",
@@ -9,17 +15,17 @@
     {
       "kind": "chart-package",
       "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-      "sha256": "00b77a7d04b973d72a6a3356b498b86f35c514fc5c1bb68b354ce9751c955677"
+      "sha256": "e4da7ed597c27c121cff09d57404a8da1447812acca4bd21ffdfe9ce5b0adf49"
     },
     {
       "kind": "evidence-tarball",
       "path": "release/evidence/bundle.tar",
-      "sha256": "2867124fae97debe065750ef6038d6d2711eac9f25b0513e77fa85d27bf9f1cd"
+      "sha256": "4ed6d2ac9b8324c9f1c6b8c5f3bd91298b71f2f9b2f7a9fc8f9932bf1831327a"
     },
     {
       "kind": "evidence-manifest",
       "path": "release/evidence/manifest.json",
-      "sha256": "9082b5774ce7b691a609b2b570acd553c3262a1340fe8adecb4ac778001c61f4"
+      "sha256": "b316d7dce4b8106a528372852585082ad5cab08f358da4f1202af3e2bbf86733"
     },
     {
       "kind": "sbom",
