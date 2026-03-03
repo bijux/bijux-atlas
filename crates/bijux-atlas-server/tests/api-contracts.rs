@@ -385,6 +385,7 @@ async fn debug_echo_is_gated_and_echoes_query_when_enabled() {
         mgr,
         ApiConfig {
             enable_debug_datasets: true,
+            enable_admin_endpoints: true,
             ..ApiConfig::default()
         },
         Default::default(),

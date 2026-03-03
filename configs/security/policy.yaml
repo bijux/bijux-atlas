@@ -17,7 +17,10 @@ rules:
         - health
     routes:
       - /healthz
+      - /healthz/overload
       - /readyz
+      - /metrics
+      - /v1/openapi.json
       - /v1/version
   - id: AUTH-POLICY-READ
     effect: allow
@@ -42,6 +45,7 @@ rules:
       - /v1/query/validate
       - /v1/sequence
       - /v1/diff
+      - /v1/transcripts
   - id: AUTH-POLICY-ADMIN
     effect: allow
     principals:

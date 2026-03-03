@@ -475,6 +475,7 @@ async fn canonical_dataset_endpoint_and_legacy_redirect_are_available() {
         mgr,
         ApiConfig {
             enable_debug_datasets: true,
+            enable_admin_endpoints: true,
             ..ApiConfig::default()
         },
         Default::default(),

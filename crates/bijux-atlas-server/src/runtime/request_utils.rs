@@ -22,7 +22,10 @@ pub(crate) fn route_sli_class(route: &str) -> &'static str {
 }
 
 fn route_auth_exempt(route: &str) -> bool {
-    matches!(route, "/healthz" | "/readyz" | "/v1/version")
+    matches!(
+        route,
+        "/healthz" | "/healthz/overload" | "/readyz" | "/metrics" | "/v1/version" | "/v1/openapi.json"
+    )
 }
 
 fn route_is_admin_endpoint(route: &str) -> bool {
