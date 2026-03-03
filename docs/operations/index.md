@@ -38,9 +38,13 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 7. [Observability setup](observability-setup.md)
 8. [Validation entrypoints](validation-entrypoints.md)
 9. [Kind simulation](kind-simulation.md)
-10. [Incident response](incident-response.md)
-11. [Release](release/index.md)
-12. [Security posture](security-posture.md)
+10. [Upgrade validation](upgrade.md)
+11. [Chart semver policy](chart-semver-policy.md)
+12. [Profile upgrade policy](profile-upgrade-policy.md)
+13. [Rollback limitations](rollback-limitations.md)
+14. [Incident response](incident-response.md)
+15. [Release](release/index.md)
+16. [Security posture](security-posture.md)
 
 ## What This Page Is Not
 
