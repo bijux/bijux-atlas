@@ -15,11 +15,14 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 
 - [Alerts](alerts.md): alert-to-runbook routing and severity model
 - [Dashboards](dashboards.md): dashboard set for incident triage
+- [Observability lifecycle](../observability-lifecycle.md): how dashboards, alerts, and SLOs evolve safely
 - [Observability setup](../observability-setup.md): minimum metrics, logs, and trace wiring
 - [Tracing](tracing.md): trace-first diagnosis flow
 - [SLO policy](slo-policy.md): target objectives and burn policy
 - [SLOs with PromQL](slos-with-promql.md): practical query patterns for burn analysis
 - Alert rule source: `ops/observe/alerts/atlas-alert-rules.yaml`
+- Dashboard source: `ops/observe/dashboards/atlas-observability-dashboard.json`
+- Contract reference: [Observability Contracts](../../reference/contracts/observability.md)
 
 ## Verify success
 
@@ -28,6 +31,13 @@ make ops-observability-verify
 ```
 
 Expected result: alert, metric, and trace checks pass for the current environment.
+
+## Governed interfaces
+
+- Metrics must satisfy `configs/contracts/observability/metrics.schema.json`.
+- Structured logs must satisfy `configs/contracts/observability/log.schema.json`.
+- Error codes must stay aligned with `configs/contracts/observability/error-codes.json`.
+- Release evidence includes the observability assets used for the current candidate bundle.
 
 ## Next
 
