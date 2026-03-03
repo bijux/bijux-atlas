@@ -19016,33 +19016,6 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "datasets",
-        "generated",
-        "ops",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "ops/datasets/generated/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "datasets",
-        "generated",
-        "ops",
-        "readme"
-      ],
-      "title": "Generated Dataset Artifacts",
-      "topic": "README"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
         "contract",
         "e2e",
         "ops"
@@ -19060,31 +19033,6 @@
       ],
       "title": "Contract",
       "topic": "CONTRACT"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "e2e",
-        "end-to-end-invariants",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "ops/e2e/END_TO_END_INVARIANTS.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "e2e",
-        "end-to-end-invariants",
-        "ops"
-      ],
-      "title": "End-to-end Invariants",
-      "topic": "END_TO_END_INVARIANTS"
     },
     {
       "area": "ops",
@@ -19160,33 +19108,6 @@
       ],
       "title": "Required Files",
       "topic": "REQUIRED_FILES"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "e2e",
-        "generated",
-        "ops",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "ops/e2e/generated/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "e2e",
-        "generated",
-        "ops",
-        "readme"
-      ],
-      "title": "Generated E2E Artifacts",
-      "topic": "README"
     },
     {
       "area": "ops",
@@ -19490,33 +19411,6 @@
     },
     {
       "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "generated",
-        "k8s",
-        "ops",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "ops/k8s/generated/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "generated",
-        "k8s",
-        "ops",
-        "readme"
-      ],
-      "title": "Generated Kubernetes Artifacts",
-      "topic": "README"
-    },
-    {
-      "area": "ops",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -19676,31 +19570,6 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "load",
-        "ops",
-        "scenario-retention"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-performance",
-      "path": "ops/load/SCENARIO_RETENTION.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "load",
-        "ops",
-        "scenario-retention"
-      ],
-      "title": "Scenario Retention",
-      "topic": "SCENARIO_RETENTION"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
         "contract",
         "observe",
         "ops"
@@ -19818,31 +19687,6 @@
       ],
       "title": "Contract",
       "topic": "CONTRACT"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "evidence-completeness-checklist",
-        "ops",
-        "report"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "evidence-completeness-checklist",
-        "ops",
-        "report"
-      ],
-      "title": "Evidence Completeness Checklist",
-      "topic": "EVIDENCE_COMPLETENESS_CHECKLIST"
     },
     {
       "area": "ops",

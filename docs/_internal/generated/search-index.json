@@ -10376,22 +10376,6 @@
     },
     {
       "keywords": [
-        "datasets",
-        "generated",
-        "ops",
-        "readme"
-      ],
-      "path": "ops/datasets/generated/README.md",
-      "tags": [
-        "datasets",
-        "generated",
-        "ops",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
         "contract",
         "e2e",
         "ops"
@@ -10403,20 +10387,6 @@
         "ops"
       ],
       "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "e2e",
-        "end-to-end-invariants",
-        "ops"
-      ],
-      "path": "ops/e2e/END_TO_END_INVARIANTS.md",
-      "tags": [
-        "e2e",
-        "end-to-end-invariants",
-        "ops"
-      ],
-      "topic": "END_TO_END_INVARIANTS"
     },
     {
       "keywords": [
@@ -10459,22 +10429,6 @@
         "required-files"
       ],
       "topic": "REQUIRED_FILES"
-    },
-    {
-      "keywords": [
-        "e2e",
-        "generated",
-        "ops",
-        "readme"
-      ],
-      "path": "ops/e2e/generated/README.md",
-      "tags": [
-        "e2e",
-        "generated",
-        "ops",
-        "readme"
-      ],
-      "topic": "README"
     },
     {
       "keywords": [
@@ -10646,22 +10600,6 @@
     },
     {
       "keywords": [
-        "generated",
-        "k8s",
-        "ops",
-        "readme"
-      ],
-      "path": "ops/k8s/generated/README.md",
-      "tags": [
-        "generated",
-        "k8s",
-        "ops",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
         "k8s",
         "kind",
         "ops",
@@ -10750,20 +10688,6 @@
     },
     {
       "keywords": [
-        "load",
-        "ops",
-        "scenario-retention"
-      ],
-      "path": "ops/load/SCENARIO_RETENTION.md",
-      "tags": [
-        "load",
-        "ops",
-        "scenario-retention"
-      ],
-      "topic": "SCENARIO_RETENTION"
-    },
-    {
-      "keywords": [
         "contract",
         "observe",
         "ops"
@@ -10831,20 +10755,6 @@
         "report"
       ],
       "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "evidence-completeness-checklist",
-        "ops",
-        "report"
-      ],
-      "path": "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md",
-      "tags": [
-        "evidence-completeness-checklist",
-        "ops",
-        "report"
-      ],
-      "topic": "EVIDENCE_COMPLETENESS_CHECKLIST"
     },
     {
       "keywords": [

@@ -3928,17 +3928,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/datasets/generated/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/e2e/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/e2e/END_TO_END_INVARIANTS.md"
     },
     {
       "crate": null,
@@ -3954,11 +3944,6 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/e2e/REQUIRED_FILES.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/e2e/generated/README.md"
     },
     {
       "crate": null,
@@ -4023,11 +4008,6 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/k8s/generated/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/k8s/kind/README.md"
     },
     {
@@ -4058,11 +4038,6 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/load/SCENARIO_RETENTION.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/observe/CONTRACT.md"
     },
     {
@@ -4084,11 +4059,6 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/report/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md"
     },
     {
       "crate": null,

@@ -6903,27 +6903,10 @@
     {
       "breadcrumbs": [
         "ops",
-        "ops/datasets",
-        "ops/datasets/generated",
-        "ops/datasets/generated/README.md"
-      ],
-      "path": "ops/datasets/generated/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
         "ops/e2e",
         "ops/e2e/CONTRACT.md"
       ],
       "path": "ops/e2e/CONTRACT.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/e2e",
-        "ops/e2e/END_TO_END_INVARIANTS.md"
-      ],
-      "path": "ops/e2e/END_TO_END_INVARIANTS.md"
     },
     {
       "breadcrumbs": [
@@ -6948,15 +6931,6 @@
         "ops/e2e/REQUIRED_FILES.md"
       ],
       "path": "ops/e2e/REQUIRED_FILES.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/e2e",
-        "ops/e2e/generated",
-        "ops/e2e/generated/README.md"
-      ],
-      "path": "ops/e2e/generated/README.md"
     },
     {
       "breadcrumbs": [
@@ -7058,15 +7032,6 @@
       "breadcrumbs": [
         "ops",
         "ops/k8s",
-        "ops/k8s/generated",
-        "ops/k8s/generated/README.md"
-      ],
-      "path": "ops/k8s/generated/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/k8s",
         "ops/k8s/kind",
         "ops/k8s/kind/README.md"
       ],
@@ -7116,14 +7081,6 @@
     {
       "breadcrumbs": [
         "ops",
-        "ops/load",
-        "ops/load/SCENARIO_RETENTION.md"
-      ],
-      "path": "ops/load/SCENARIO_RETENTION.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
         "ops/observe",
         "ops/observe/CONTRACT.md"
       ],
@@ -7160,14 +7117,6 @@
         "ops/report/CONTRACT.md"
       ],
       "path": "ops/report/CONTRACT.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/report",
-        "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md"
-      ],
-      "path": "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md"
     },
     {
       "breadcrumbs": [

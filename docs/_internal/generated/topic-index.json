@@ -40,14 +40,8 @@
     "CONTRIBUTING": [
       "CONTRIBUTING.md"
     ],
-    "END_TO_END_INVARIANTS": [
-      "ops/e2e/END_TO_END_INVARIANTS.md"
-    ],
     "ERRORS": [
       "ops/ERRORS.md"
-    ],
-    "EVIDENCE_COMPLETENESS_CHECKLIST": [
-      "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md"
     ],
     "INDEX": [
       "configs/INDEX.md",
@@ -159,13 +153,10 @@
       "ops/README.md",
       "ops/_generated.example/README.md",
       "ops/datasets/README.md",
-      "ops/datasets/generated/README.md",
       "ops/e2e/README.md",
-      "ops/e2e/generated/README.md",
       "ops/env/README.md",
       "ops/inventory/README.md",
       "ops/k8s/README.md",
-      "ops/k8s/generated/README.md",
       "ops/k8s/kind/README.md",
       "ops/load/README.md",
       "ops/observe/README.md",
@@ -188,9 +179,6 @@
     ],
     "RUNBOOK_GENERATION_FROM_GRAPH": [
       "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
-    ],
-    "SCENARIO_RETENTION": [
-      "ops/load/SCENARIO_RETENTION.md"
     ],
     "SCHEMA_BUDGET_EXCEPTIONS": [
       "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md"

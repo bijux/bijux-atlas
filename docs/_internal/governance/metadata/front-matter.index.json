@@ -6284,26 +6284,10 @@
     {
       "area": "ops",
       "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "ops/datasets/generated/README.md",
-      "stability": "stable",
-      "title": "Generated Dataset Artifacts"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
       "owner": "bijux-atlas-operations",
       "path": "ops/e2e/CONTRACT.md",
       "stability": "stable",
       "title": "Contract"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "ops/e2e/END_TO_END_INVARIANTS.md",
-      "stability": "stable",
-      "title": "End-to-end Invariants"
     },
     {
       "area": "ops",
@@ -6328,14 +6312,6 @@
       "path": "ops/e2e/REQUIRED_FILES.md",
       "stability": "stable",
       "title": "Required Files"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "ops/e2e/generated/README.md",
-      "stability": "stable",
-      "title": "Generated E2E Artifacts"
     },
     {
       "area": "ops",
@@ -6435,14 +6411,6 @@
     },
     {
       "area": "ops",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "ops/k8s/generated/README.md",
-      "stability": "stable",
-      "title": "Generated Kubernetes Artifacts"
-    },
-    {
-      "area": "ops",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "ops/k8s/kind/README.md",
@@ -6492,14 +6460,6 @@
     {
       "area": "ops",
       "audience": "contributors",
-      "owner": "bijux-atlas-performance",
-      "path": "ops/load/SCENARIO_RETENTION.md",
-      "stability": "stable",
-      "title": "Scenario Retention"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
       "owner": "bijux-atlas-observability",
       "path": "ops/observe/CONTRACT.md",
       "stability": "stable",
@@ -6536,14 +6496,6 @@
       "path": "ops/report/CONTRACT.md",
       "stability": "stable",
       "title": "Contract"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md",
-      "stability": "stable",
-      "title": "Evidence Completeness Checklist"
     },
     {
       "area": "ops",

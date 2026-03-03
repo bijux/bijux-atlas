@@ -13,7 +13,7 @@
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `CONTRACT` appears 25 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `INDEX` appears 5 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `OWNER` appears 11 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 84 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 81 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `REQUIRED_FILES` appears 11 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `architecture` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `benchmarks` appears 10 times",
@@ -242,7 +242,6 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/development/ingest-format-contracts.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/development/runtime-vs-control-plane-vs-ops.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/development/update-pinned-dependencies.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/governance/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/governance/ops-deletion-impact-simulation.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/governance/ops-determinism-proof.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/governance/ops-maturity-scorecard.md` has no inbound doc links",
@@ -334,7 +333,6 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/datasets/OWNER.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/datasets/REQUIRED_FILES.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/e2e/CONTRACT.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/e2e/END_TO_END_INVARIANTS.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/e2e/OWNER.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/e2e/REQUIRED_FILES.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/env/CONTRACT.md` has no inbound doc links",
@@ -350,12 +348,10 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/load/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/load/OWNER.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/load/REQUIRED_FILES.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/load/SCENARIO_RETENTION.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/observe/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/observe/OWNER.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/observe/REQUIRED_FILES.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/report/CONTRACT.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/report/OWNER.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/report/REQUIRED_FILES.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/schema/BUDGET_POLICY.md` has no inbound doc links",
@@ -373,7 +369,7 @@
   "schema_version": 1,
   "summary": {
     "errors": 53,
-    "registered": 834,
-    "warnings": 410
+    "registered": 828,
+    "warnings": 406
   }
 }
