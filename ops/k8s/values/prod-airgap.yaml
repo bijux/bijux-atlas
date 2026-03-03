@@ -1,0 +1,48 @@
+image:
+  repository: registry.airgap.local/bijux-atlas
+  tag: ""
+  digest: "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+  pullPolicy: IfNotPresent
+
+server:
+  cachedOnlyMode: true
+  readinessRequiresCatalog: false
+
+cache:
+  pinnedDatasets:
+    - 110/homo_sapiens/GRCh38
+  initPrewarm:
+    enabled: true
+    image: registry.airgap.local/bijux-atlas@sha256:4444444444444444444444444444444444444444444444444444444444444444
+
+networkPolicy:
+  enabled: true
+  allowDns: false
+  allowMonitoringNamespace: observability
+  allowedEgressCIDRs: []
+  ingress:
+    mode: same-namespace
+    allowNamespaces: []
+    customRules: []
+  egress:
+    mode: disabled
+    allowDns: false
+    allowCidrs: []
+    allowNamespaces: []
+    customRules: []
+  dependencies:
+    redis:
+      enabled: false
+      ports: [6379]
+    minio:
+      enabled: false
+      ports: [9000]
+    catalog:
+      enabled: false
+      ports: [80, 443]
+    otelCollector:
+      enabled: false
+      ports: [4317, 4318]
+
+hpa:
+  enabled: false

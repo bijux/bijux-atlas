@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema_version": 1,
+  "profiles": [
+    {
+      "id": "ci",
+      "name": "CI",
+      "purpose": "Fast validation lane with cached-only startup and no external dependency egress.",
+      "risk_level": "low",
+      "intendedUse": "ci",
+      "forbiddenToggles": [
+        "server.enableDebugDatasets",
+        "networkPolicy.egress.mode=cluster-aware"
+      ],
+      "requiredToggles": [
+        "server.cachedOnlyMode=true",
+        "server.readinessRequiresCatalog=false",
+        "hpa.enabled=false"
+      ],
+      "expectedResourcesClass": "tiny",
+      "networkPolicyModeRequired": "disabled",
+      "hpaPolicyRequired": "disabled",
+      "imageDigestRequired": false,
+      "readOnlyRootFilesystemRequired": true,
+      "debugEndpointsDisabled": true,
+      "storage": {
+        "enabled": false,
+        "mode": "ephemeral"
+      },
+      "owner": "bijux-atlas-operations",
+      "values_file": "ops/k8s/values/ci.yaml"
+    },
+    {
+      "id": "kind",
+      "name": "Kind",
+      "purpose": "Local cluster install profile for realistic dependency wiring without persistent storage.",
+      "risk_level": "medium",
+      "intendedUse": "kind",
+      "forbiddenToggles": [
+        "server.enableDebugDatasets"
+      ],
+      "requiredToggles": [
+        "networkPolicy.egress.mode=cluster-aware",
+        "networkPolicy.egress.allowNamespaces=atlas-deps",
+        "cache.pvc.enabled=false"
+      ],
+      "expectedResourcesClass": "small",
+      "networkPolicyModeRequired": "cluster-aware",
+      "hpaPolicyRequired": "disabled",
+      "imageDigestRequired": false,
+      "readOnlyRootFilesystemRequired": true,
+      "debugEndpointsDisabled": true,
+      "storage": {
+        "enabled": false,
+        "mode": "ephemeral"
+      },
+      "owner": "bijux-atlas-operations",
+      "values_file": "ops/k8s/values/kind.yaml"
+    },
+    {
+      "id": "offline",
+      "name": "Offline",
+      "purpose": "Air-gapped startup profile that prewarms a governed dataset and serves from cache only.",
+      "risk_level": "medium",
+      "intendedUse": "offline",
+      "forbiddenToggles": [
+        "server.enableDebugDatasets",
+        "networkPolicy.egress.mode=cluster-aware"
+      ],
+      "requiredToggles": [
+        "server.cachedOnlyMode=true",
+        "cache.initPrewarm.enabled=true",
+        "cache.pinnedDatasets=110/homo_sapiens/GRCh38"
+      ],
+      "expectedResourcesClass": "small",
+      "networkPolicyModeRequired": "disabled",
+      "hpaPolicyRequired": "disabled",
+      "imageDigestRequired": false,
+      "readOnlyRootFilesystemRequired": true,
+      "debugEndpointsDisabled": true,
+      "storage": {
+        "enabled": false,
+        "mode": "ephemeral"
+      },
+      "owner": "bijux-atlas-operations",
+      "values_file": "ops/k8s/values/offline.yaml"
+    },
+    {
+      "id": "perf",
+      "name": "Performance",
+      "purpose": "Load-oriented profile with digest-pinned image, HPA, and dependency-aware network policy.",
+      "risk_level": "high",
+      "intendedUse": "perf",
+      "forbiddenToggles": [
+        "image.tag",
+        "server.enableDebugDatasets"
+      ],
+      "requiredToggles": [
+        "image.digest",
+        "hpa.enabled=true",
+        "metrics.serviceMonitor.enabled=true"
+      ],
+      "expectedResourcesClass": "large",
+      "networkPolicyModeRequired": "cluster-aware",
+      "hpaPolicyRequired": "enabled",
+      "imageDigestRequired": true,
+      "readOnlyRootFilesystemRequired": true,
+      "debugEndpointsDisabled": true,
+      "storage": {
+        "enabled": false,
+        "mode": "ephemeral"
+      },
+      "owner": "bijux-atlas-performance",
+      "values_file": "ops/k8s/values/perf.yaml"
+    },
+    {
+      "id": "prod",
+      "name": "Production",
+      "purpose": "Primary production rollout profile with autoscaling and dependency-aware network isolation.",
+      "risk_level": "high",
+      "intendedUse": "prod",
+      "forbiddenToggles": [
+        "server.enableDebugDatasets",
+        "image.tag"
+      ],
+      "requiredToggles": [
+        "hpa.enabled=true",
+        "networkPolicy.egress.mode=cluster-aware",
+        "server.readOnlyFsMode=false"
+      ],
+      "expectedResourcesClass": "medium",
+      "networkPolicyModeRequired": "cluster-aware",
+      "hpaPolicyRequired": "enabled",
+      "imageDigestRequired": false,
+      "readOnlyRootFilesystemRequired": true,
+      "debugEndpointsDisabled": true,
+      "storage": {
+        "enabled": false,
+        "mode": "ephemeral"
+      },
+      "owner": "bijux-atlas-operations",
+      "values_file": "ops/k8s/values/prod.yaml"
+    },
+    {
+      "id": "prod-minimal",
+      "name": "Production Minimal",
+      "purpose": "Minimum production-safe profile with digest pinning, HPA, and cluster-aware dependency policy.",
+      "risk_level": "high",
+      "intendedUse": "prod",
+      "forbiddenToggles": [
+        "server.enableDebugDatasets",
+        "image.tag"
+      ],
+      "requiredToggles": [
+        "image.digest",
+        "hpa.enabled=true",
+        "networkPolicy.egress.mode=cluster-aware"
+      ],
+      "expectedResourcesClass": "small",
+      "networkPolicyModeRequired": "cluster-aware",
+      "hpaPolicyRequired": "enabled",
+      "imageDigestRequired": true,
+      "readOnlyRootFilesystemRequired": true,
+      "debugEndpointsDisabled": true,
+      "storage": {
+        "enabled": false,
+        "mode": "ephemeral"
+      },
+      "owner": "bijux-atlas-operations",
+      "values_file": "ops/k8s/values/prod-minimal.yaml"
+    },
+    {
+      "id": "prod-ha",
+      "name": "Production HA",
+      "purpose": "High-availability production profile with >1 replica, tighter probes, HPA, and disruption protection.",
+      "risk_level": "high",
+      "intendedUse": "prod",
+      "forbiddenToggles": [
+        "server.enableDebugDatasets",
+        "image.tag"
+      ],
+      "requiredToggles": [
+        "replicaCount>1",
+        "pdb.enabled=true",
+        "hpa.enabled=true"
+      ],
+      "expectedResourcesClass": "large",
+      "networkPolicyModeRequired": "cluster-aware",
+      "hpaPolicyRequired": "enabled",
+      "imageDigestRequired": true,
+      "readOnlyRootFilesystemRequired": true,
+      "debugEndpointsDisabled": true,
+      "storage": {
+        "enabled": false,
+        "mode": "ephemeral"
+      },
+      "owner": "bijux-atlas-operations",
+      "values_file": "ops/k8s/values/prod-ha.yaml"
+    },
+    {
+      "id": "prod-airgap",
+      "name": "Production Airgap",
+      "purpose": "Production deployment for disconnected environments with immutable local image and pinned dataset assets.",
+      "risk_level": "high",
+      "intendedUse": "prod",
+      "forbiddenToggles": [
+        "server.enableDebugDatasets",
+        "image.tag"
+      ],
+      "requiredToggles": [
+        "image.repository=registry.airgap.local/bijux-atlas",
+        "image.digest",
+        "cache.initPrewarm.enabled=true"
+      ],
+      "expectedResourcesClass": "medium",
+      "networkPolicyModeRequired": "disabled",
+      "hpaPolicyRequired": "disabled",
+      "imageDigestRequired": true,
+      "readOnlyRootFilesystemRequired": true,
+      "debugEndpointsDisabled": true,
+      "storage": {
+        "enabled": false,
+        "mode": "ephemeral"
+      },
+      "owner": "bijux-atlas-operations",
+      "values_file": "ops/k8s/values/prod-airgap.yaml"
+    }
+  ]
+}

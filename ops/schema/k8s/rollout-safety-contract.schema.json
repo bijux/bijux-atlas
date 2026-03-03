@@ -18,14 +18,25 @@
         "type": "object",
         "additionalProperties": false,
         "required": [
+          "id",
           "name",
           "suite",
           "values_file",
           "rollout_mode",
           "warmup_required",
-          "readiness_path_required"
+          "readiness_path_required",
+          "intendedUse",
+          "forbiddenToggles",
+          "requiredToggles",
+          "expectedResourcesClass",
+          "networkPolicyModeRequired",
+          "hpaPolicyRequired"
         ],
         "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
           "name": {
             "type": "string",
             "minLength": 1
@@ -54,6 +65,55 @@
           },
           "readiness_path_required": {
             "type": "boolean"
+          },
+          "intendedUse": {
+            "type": "string",
+            "enum": [
+              "ci",
+              "kind",
+              "prod",
+              "offline",
+              "perf"
+            ]
+          },
+          "forbiddenToggles": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "requiredToggles": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "expectedResourcesClass": {
+            "type": "string",
+            "enum": [
+              "tiny",
+              "small",
+              "medium",
+              "large"
+            ]
+          },
+          "networkPolicyModeRequired": {
+            "type": "string",
+            "enum": [
+              "disabled",
+              "internet-only",
+              "cluster-aware",
+              "custom"
+            ]
+          },
+          "hpaPolicyRequired": {
+            "type": "string",
+            "enum": [
+              "disabled",
+              "enabled"
+            ]
           }
         }
       }
