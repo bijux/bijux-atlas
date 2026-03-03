@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "patterns": [
+    {
+      "id": "raw_redacted_sentinel",
+      "literal": "secret-value"
+    },
+    {
+      "id": "bearer_token_fixture",
+      "literal": "Bearer abc123"
+    },
+    {
+      "id": "aws_access_key_prefix",
+      "literal": "AKIA"
+    }
+  ]
+}

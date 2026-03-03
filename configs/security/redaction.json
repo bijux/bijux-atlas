@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "rules": [
+    {
+      "key": "ATLAS_REDIS_URL",
+      "replacement": "[REDACTED_REDIS_URL]"
+    },
+    {
+      "key": "ATLAS_S3_SECRET_ACCESS_KEY",
+      "replacement": "[REDACTED_S3_SECRET]"
+    },
+    {
+      "key": "ATLAS_S3_ACCESS_KEY_ID",
+      "replacement": "[REDACTED_S3_ACCESS_KEY]"
+    },
+    {
+      "key": "ATLAS_OTEL_AUTH_TOKEN",
+      "replacement": "[REDACTED_OTEL_TOKEN]"
+    },
+    {
+      "key": "ATLAS_HELM_PULL_SECRET",
+      "replacement": "[REDACTED_PULL_SECRET]"
+    }
+  ]
+}

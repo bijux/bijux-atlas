@@ -1,0 +1,18 @@
+schema_version: 1
+mappings:
+  - control_id: CTRL-LOG-001
+    evidence:
+      - configs/contracts/observability/log.schema.json
+      - docs/reference/contracts/observability.md
+  - control_id: CTRL-EVID-001
+    evidence:
+      - release/evidence/manifest.json
+      - docs/reference/contracts/release/evidence.md
+  - control_id: CTRL-NP-001
+    evidence:
+      - docs/operations/networkpolicy.md
+      - ops/k8s/charts/bijux-atlas/templates/networkpolicy.yaml
+  - control_id: CTRL-OBS-001
+    evidence:
+      - ops/schema/k8s/obs-verify.schema.json
+      - docs/reference/contracts/observability.md
