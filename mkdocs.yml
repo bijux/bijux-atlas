@@ -44,84 +44,86 @@ plugins:
       fallback_to_build_date: false
       strict: false
   - redirects:
+      # redirect_maps generated from docs/redirects.json; run scripts/docs/sync_redirects.py
       redirect_maps:
-        root/architecture-overview.md: architecture/index.md
-        root/ops-overview.md: operations/index.md
-        root/docker-overview.md: operations/deploy.md
-        root/makefiles-overview.md: development/repo-layout.md
-        root/commands-reference.md: reference/commands.md
-        root/command-index.md: reference/commands.md
-        root/configs-overview.md: reference/configs.md
-        root/schema-index.md: reference/schemas.md
-        root/security-model.md: operations/security/index.md
-        root/observability-overview.md: operations/observability/index.md
-        root/repository-structure.md: development/repo-layout.md
-        root/ci-workflow-explanation.md: development/ci-overview.md
-        root/control-plane-overview.md: control-plane/index.md
-        root/reproducibility-guarantees.md: product/compatibility-promise.md
-        root/stability-guarantees.md: product/compatibility-promise.md
-        root/compatibility-policy.md: product/compatibility-promise.md
-        root/release-process-overview.md: operations/release/index.md
-        root/faq.md: start-here.md
-        root/glossary.md: glossary.md
-        root/terminology-rules.md: _internal/governance/docs-style.md
-        root/navigation-policy.md: _internal/governance/docs-navigation-policy.md
-        root/index.md: index.md
-        contracts/index.md: reference/contracts/index.md
-        contracts/errors.md: reference/contracts/errors.md
-        contracts/endpoints.md: reference/contracts/endpoints.md
-        contracts/compatibility.md: reference/contracts/compatibility.md
-        contracts/ssot-workflow.md: _internal/governance/contract-ssot-workflow.md
-        contracts/contract-change-checklist.md: _internal/governance/contract-change-checklist.md
+        _generated/governance-audit/index.md: _internal/generated/governance-audit/index.md
+        _generated/topic-index.md: _internal/generated/topic-index.md
         contracts/breaking-change-examples.md: _internal/governance/contract-breaking-change-examples.md
+        contracts/compatibility.md: reference/contracts/compatibility.md
+        contracts/contract-change-checklist.md: _internal/governance/contract-change-checklist.md
+        contracts/endpoints.md: reference/contracts/endpoints.md
+        contracts/errors.md: reference/contracts/errors.md
+        contracts/index.md: reference/contracts/index.md
         contracts/metrics.md: reference/contracts/telemetry.md
-        contracts/tracing.md: reference/contracts/telemetry.md
-        contracts/plugin/spec.md: reference/contracts/plugins/spec.md
-        contracts/plugin/mode.md: reference/contracts/plugins/mode.md
         contracts/plugin/index.md: reference/contracts/plugins/index.md
-        reference/contracts/ssot-workflow.md: _internal/governance/contract-ssot-workflow.md
-        reference/contracts/contract-change-checklist.md: _internal/governance/contract-change-checklist.md
-        reference/contracts/breaking-change-examples.md: _internal/governance/contract-breaking-change-examples.md
-        reference/contracts/metrics.md: reference/contracts/telemetry.md
-        reference/contracts/tracing.md: reference/contracts/telemetry.md
+        contracts/plugin/mode.md: reference/contracts/plugins/mode.md
+        contracts/plugin/spec.md: reference/contracts/plugins/spec.md
+        contracts/ssot-workflow.md: _internal/governance/contract-ssot-workflow.md
+        contracts/tracing.md: reference/contracts/telemetry.md
+        control-plane/contracts.md: control-plane/index.md
+        control-plane/ops-boundary.md: control-plane/index.md
+        dev/check-failures.md: development/debugging-locally.md
+        dev/index.md: development/index.md
+        development/contributor-onboarding-checklist.md: development/contributor-onboarding-rubric.md
+        development/control-plane.md: control-plane/index.md
+        development/docs-site-map.md: site-map.md
+        development/how-to-add-check.md: control-plane/add-a-check-in-30-minutes.md
+        development/how-to-add-contract-registry.md: control-plane/add-a-contract-registry-in-30-minutes.md
+        development/how-to-add-gate-policy.md: control-plane/add-a-gate-policy.md
+        development/known-limitations.md: control-plane/known-limitations.md
+        development/reports-and-ci-consumption.md: control-plane/ci-report-consumption.md
+        engineering/index.md: _internal/governance/docs-lint-rules.md
+        engineering/lints.md: _internal/governance/docs-lint-rules.md
+        examples/catalog-example.md: reference/examples/catalog-example.md
+        examples/index.md: reference/examples/index.md
+        governance/contract-breaking-change-examples.md: _internal/governance/contract-breaking-change-examples.md
+        governance/contract-change-checklist.md: _internal/governance/contract-change-checklist.md
+        governance/contract-ssot-workflow.md: _internal/governance/contract-ssot-workflow.md
+        governance/docs-dashboard.md: _internal/governance/docs-dashboard.md
+        governance/docs-lint-rules.md: _internal/governance/docs-lint-rules.md
+        governance/docs-operating-model.md: _internal/governance/docs-operating-model.md
+        governance/docs-ownership.md: _internal/governance/docs-ownership.md
+        governance/docs-rewrite-plan.md: _internal/meta/internal/docs-rewrite-plan.md
+        governance/docs-style.md: _internal/governance/docs-style.md
+        governance/index.md: _internal/governance/index.md
+        governance/root-legacy-mapping.md: _internal/meta/internal/root-legacy-mapping.md
+        ownership.md: _internal/governance/docs-ownership.md
+        product/reading-tracks.md: what-to-read-next.md
         reference/contracts/artifacts/directory-contract.md: reference/contracts/artifacts/index.md
         reference/contracts/artifacts/manifest-contract.md: reference/contracts/artifacts/index.md
         reference/contracts/artifacts/sqlite-schema-contract.md: reference/contracts/artifacts/index.md
         reference/contracts/artifacts/sqlite-schema-evolution-strategy.md: reference/contracts/artifacts/index.md
-        examples/index.md: reference/examples/index.md
-        examples/catalog-example.md: reference/examples/catalog-example.md
-        security/index.md: operations/security/index.md
+        reference/contracts/breaking-change-examples.md: _internal/governance/contract-breaking-change-examples.md
+        reference/contracts/contract-change-checklist.md: _internal/governance/contract-change-checklist.md
+        reference/contracts/metrics.md: reference/contracts/telemetry.md
+        reference/contracts/ssot-workflow.md: _internal/governance/contract-ssot-workflow.md
+        reference/contracts/tracing.md: reference/contracts/telemetry.md
+        root/architecture-overview.md: architecture/index.md
+        root/ci-workflow-explanation.md: development/ci-overview.md
+        root/command-index.md: reference/commands.md
+        root/commands-reference.md: reference/commands.md
+        root/compatibility-policy.md: product/compatibility-promise.md
+        root/configs-overview.md: reference/configs.md
+        root/control-plane-overview.md: control-plane/index.md
+        root/docker-overview.md: operations/deploy.md
+        root/faq.md: start-here.md
+        root/glossary.md: glossary.md
+        root/index.md: index.md
+        root/makefiles-overview.md: development/repo-layout.md
+        root/navigation-policy.md: _internal/governance/docs-navigation-policy.md
+        root/observability-overview.md: operations/observability/index.md
+        root/ops-overview.md: operations/index.md
+        root/release-process-overview.md: operations/release/index.md
+        root/repository-structure.md: development/repo-layout.md
+        root/reproducibility-guarantees.md: product/compatibility-promise.md
+        root/schema-index.md: reference/schemas.md
+        root/security-model.md: operations/security/index.md
+        root/stability-guarantees.md: product/compatibility-promise.md
+        root/terminology-rules.md: _internal/governance/docs-style.md
         science/index.md: product/index.md
-        development/control-plane.md: control-plane/index.md
-        control-plane/contracts.md: control-plane/index.md
-        control-plane/ops-boundary.md: control-plane/index.md
-        dev/index.md: development/index.md
-        dev/check-failures.md: development/debugging-locally.md
-        engineering/index.md: _internal/governance/docs-lint-rules.md
-        engineering/lints.md: _internal/governance/docs-lint-rules.md
-        governance/index.md: _internal/governance/index.md
-        governance/docs-dashboard.md: _internal/governance/docs-dashboard.md
-        governance/docs-operating-model.md: _internal/governance/docs-operating-model.md
-        governance/docs-style.md: _internal/governance/docs-style.md
-        governance/docs-ownership.md: _internal/governance/docs-ownership.md
-        governance/docs-lint-rules.md: _internal/governance/docs-lint-rules.md
-        governance/contract-ssot-workflow.md: _internal/governance/contract-ssot-workflow.md
-        governance/contract-change-checklist.md: _internal/governance/contract-change-checklist.md
-        governance/contract-breaking-change-examples.md: _internal/governance/contract-breaking-change-examples.md
-        governance/docs-rewrite-plan.md: _internal/meta/internal/docs-rewrite-plan.md
-        governance/root-legacy-mapping.md: _internal/meta/internal/root-legacy-mapping.md
-        ownership.md: _internal/governance/docs-ownership.md
+        security/index.md: operations/security/index.md
         style.md: _internal/governance/docs-style.md
-        development/docs-site-map.md: site-map.md
-        development/contributor-onboarding-checklist.md: development/contributor-onboarding-rubric.md
-        development/how-to-add-check.md: control-plane/add-a-check-in-30-minutes.md
-        development/how-to-add-contract-registry.md: control-plane/add-a-contract-registry-in-30-minutes.md
-        development/how-to-add-gate-policy.md: control-plane/add-a-gate-policy.md
-        development/reports-and-ci-consumption.md: control-plane/ci-report-consumption.md
-        development/known-limitations.md: control-plane/known-limitations.md
-        product/reading-tracks.md: what-to-read-next.md
-        _generated/topic-index.md: _internal/generated/topic-index.md
-        _generated/governance-audit/index.md: _internal/generated/governance-audit/index.md
+      # end generated redirect_maps
 
 not_in_nav: |
   _assets/**
