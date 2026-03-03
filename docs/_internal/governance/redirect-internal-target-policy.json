@@ -1,0 +1,7 @@
+{
+  "allowedPrefixes": [
+    "docs/_internal/governance/",
+    "docs/_internal/meta/internal/",
+    "docs/_internal/generated/"
+  ]
+}

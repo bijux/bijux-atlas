@@ -1,23 +1,28 @@
 # Repository Map
 
-- Owner: `bijux-atlas-operations`
-- Tier: `generated`
-- Audience: `operators`
-- Source-of-truth: repository filesystem snapshot
+- Owner: `bijux-atlas-docs`
+- Review cadence: `quarterly`
+- Type: `reference`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@ff8cd5f299e568c93feec8b4d40347bf1c5a93c4`
+- Source-of-truth: `docs/_internal/generated/docs-inventory.md`
+- Reason to exist: point readers to the canonical repository layout guide and the governed generated inventory.
 
-## Top-Level Directories
+## Purpose
 
-| Directory | Markdown Files | Total Files |
-| --- | --- | --- |
-| `.cargo` | `0` | `1` |
-| `.idea` | `0` | `6` |
-| `artifacts` | `576` | `256988` |
-| `configs` | `30` | `290` |
-| `crates` | `242` | `988` |
-| `docker` | `2` | `13` |
-| `docs` | `420` | `505` |
-| `governance` | `1` | `5` |
-| `make` | `5` | `27` |
-| `ops` | `26` | `549` |
-| `release` | `0` | `20` |
-| `security` | `4` | `9` |
+This page is the stable public entrypoint for repository layout questions.
+It does not duplicate the generated inventory because that surface changes frequently and is maintained for
+contributors, not readers.
+
+## Entrypoints
+
+- Read [Repository Layout](../development/repo-layout.md) for the curated explanation of where code and
+  operational surfaces live.
+- Use `docs/_internal/generated/docs-inventory.md` as the detailed generated inventory when you need the
+  current committed filesystem snapshot.
+
+## Verification
+
+The docs contracts verify that the `Source-of-truth` path above exists and that the curated entrypoint keeps
+pointing at the canonical repository layout page.
