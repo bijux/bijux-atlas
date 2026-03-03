@@ -17,6 +17,7 @@
 - `SEC-AUTH-002`: auth policy registry validates and references only known principals, actions, and resources.
 - `SEC-AUTH-003`: runtime startup logs declare whether auth is disabled or enforced.
 - `SEC-AUTH-004`: the auth-disabled stance keeps a mandatory reverse-proxy boundary in the canonical docs.
+- `REL-SEC-AUTH-001`: release evidence includes the auth model and access policy snapshots.
 
 ## Compliance checks
 
@@ -29,6 +30,8 @@
 - `SEC-RED-001`: redaction policy covers all declared secrets.
 - `SEC-RED-002`: the default release evidence directory contains no declared secret matches.
 - `SEC-ART-001`: artifact scan passes for the selected directory.
+- `REL-AUDIT-001`: release evidence includes the governed audit schema and retention policy.
+- `REL-AUDIT-002`: release evidence includes the audit verification report and safe-field inventory.
 
 ## Supply-chain checks
 

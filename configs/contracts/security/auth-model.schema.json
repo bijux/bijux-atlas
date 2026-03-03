@@ -32,7 +32,7 @@
       "minItems": 1,
       "items": {
         "type": "string",
-        "enum": ["disabled", "api-key", "hmac", "mTLS", "oidc"]
+        "enum": ["api-key", "oidc", "mtls"]
       },
       "uniqueItems": true
     },

@@ -34,6 +34,7 @@ data:
   ATLAS_ENABLE_DEBUG_DATASETS: {{ .Values.server.enableDebugDatasets | quote }}
   ATLAS_ENABLE_EXEMPLARS: {{ .Values.server.enableExemplars | quote }}
   ATLAS_ENABLE_ADMIN_ENDPOINTS: {{ .Values.server.adminEndpoints.enabled | quote }}
+  ATLAS_AUTH_MODE: {{ .Values.server.auth.mode | quote }}
   ATLAS_CACHED_ONLY_MODE: {{ $cachedOnlyMode | quote }}
   ATLAS_READ_ONLY_FS_MODE: {{ .Values.server.readOnlyFsMode | quote }}
   ATLAS_SHUTDOWN_DRAIN_MS: {{ .Values.server.shutdownDrainMs | quote }}

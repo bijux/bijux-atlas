@@ -63,7 +63,7 @@ fn startup_config_validation_enforces_auth_contracts() {
     assert!(err.contains("cannot both"));
 
     api.hmac_required = false;
-    api.auth_mode = AuthMode::Hmac;
+    api.auth_mode = AuthMode::Mtls;
     api.require_api_key = false;
     api.hmac_required = true;
     let err = validate_startup_config_contract(&api, &cache).expect_err("missing hmac");
@@ -257,7 +257,7 @@ fn runtime_config_accepts_catalog_required_mode() {
 
 #[test]
 fn runtime_config_rejects_invalid_auth_mode() {
-    with_runtime_env(&[("ATLAS_AUTH_MODE", "oidc")], || {
+    with_runtime_env(&[("ATLAS_AUTH_MODE", "hmac")], || {
         let startup = RuntimeStartupConfig {
             bind_addr: DEFAULT_BIND_ADDR.to_string(),
             store_root: PathBuf::from(DEFAULT_STORE_ROOT),
@@ -266,7 +266,7 @@ fn runtime_config_rejects_invalid_auth_mode() {
         let err = RuntimeConfig::from_env(startup).expect_err("invalid auth mode");
         assert!(err
             .to_string()
-            .contains("ATLAS_AUTH_MODE must be one of: disabled, api-key, hmac"));
+            .contains("ATLAS_AUTH_MODE must be one of: disabled, api-key, oidc, mtls"));
     });
 }
 
@@ -292,21 +292,18 @@ fn runtime_config_accepts_explicit_api_key_auth_mode() {
 }
 
 #[test]
-fn runtime_config_rejects_conflicting_explicit_auth_mode() {
-    with_runtime_env(
-        &[("ATLAS_AUTH_MODE", "hmac"), ("ATLAS_REQUIRE_API_KEY", "true")],
-        || {
+fn runtime_config_accepts_proxy_verified_auth_modes() {
+    for auth_mode in ["oidc", "mtls"] {
+        with_runtime_env(&[("ATLAS_AUTH_MODE", auth_mode)], || {
             let startup = RuntimeStartupConfig {
                 bind_addr: DEFAULT_BIND_ADDR.to_string(),
                 store_root: PathBuf::from(DEFAULT_STORE_ROOT),
                 cache_root: PathBuf::from(DEFAULT_CACHE_ROOT),
             };
-            let err = RuntimeConfig::from_env(startup).expect_err("conflicting auth mode");
-            assert!(err
-                .to_string()
-                .contains("ATLAS_AUTH_MODE=hmac conflicts with ATLAS_REQUIRE_API_KEY=true"));
-        },
-    );
+            let runtime = RuntimeConfig::from_env(startup).expect("proxy auth mode");
+            assert_eq!(runtime.api.auth_mode.as_str(), auth_mode);
+        });
+    }
 }
 
 #[test]

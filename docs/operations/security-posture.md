@@ -33,7 +33,7 @@ Use this page to validate the security baseline before and after deployment chan
 ## Auth boundary
 
 - Default auth stance: `internal`.
-- Built-in auth modes: `disabled`, `api-key`, `hmac`.
+- Supported auth modes: `disabled`, `api-key`, `oidc`, `mtls`.
 - If built-in auth is disabled, Atlas must remain behind an ingress auth proxy or equivalent boundary.
 - Primary references: `docs/architecture/security/auth-model.md` and
   `docs/operations/security/deploy-behind-auth-proxy.md`.

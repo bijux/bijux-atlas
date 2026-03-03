@@ -471,6 +471,23 @@ fn normalized_forwarded_for(headers: &HeaderMap) -> Option<String> {
     }
 }
 
+fn proxy_authenticated_principal(
+    headers: &HeaderMap,
+    auth_mode: crate::config::AuthMode,
+) -> Option<&'static str> {
+    match auth_mode {
+        crate::config::AuthMode::Oidc => normalized_header_value(headers, "x-forwarded-user", 256)
+            .or_else(|| normalized_header_value(headers, "x-atlas-oidc-subject", 256))
+            .map(|_| "user"),
+        crate::config::AuthMode::Mtls => {
+            normalized_header_value(headers, "x-forwarded-client-cert", 512)
+                .or_else(|| normalized_header_value(headers, "x-atlas-mtls-subject", 256))
+                .map(|_| "service-account")
+        }
+        _ => None,
+    }
+}
+
 fn build_hmac_signature(secret: &str, method: &str, uri: &str, ts: &str) -> Option<String> {
     let mut mac = Hmac::<Sha256>::new_from_slice(secret.as_bytes()).ok()?;
     let payload = format!("{method}\n{uri}\n{ts}\n");
@@ -644,6 +661,23 @@ async fn security_middleware(
         "operator"
     } else if auth_exempt || state.api.auth_mode == crate::config::AuthMode::Disabled {
         "user"
+    } else if matches!(
+        state.api.auth_mode,
+        crate::config::AuthMode::Oidc | crate::config::AuthMode::Mtls
+    ) {
+        let Some(principal) = proxy_authenticated_principal(req.headers(), state.api.auth_mode)
+        else {
+            emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
+            record_policy_violation(&state, "proxy_identity_missing").await;
+            let err = Json(ApiError::new(
+                auth_error_code(StatusCode::UNAUTHORIZED),
+                "trusted auth proxy identity header required",
+                serde_json::json!({"auth_mode": state.api.auth_mode.as_str()}),
+                "req-unknown",
+            ));
+            return (StatusCode::UNAUTHORIZED, err).into_response();
+        };
+        principal
     } else {
         "service-account"
     };
@@ -710,7 +744,12 @@ mod tests {
 
     #[test]
     fn health_endpoints_stay_auth_exempt_in_all_modes() {
-        for mode in [AuthMode::Disabled, AuthMode::ApiKey, AuthMode::Hmac] {
+        for mode in [
+            AuthMode::Disabled,
+            AuthMode::ApiKey,
+            AuthMode::Oidc,
+            AuthMode::Mtls,
+        ] {
             assert!(route_auth_exempt("/healthz"), "{mode:?} must allow /healthz");
             assert!(route_auth_exempt("/readyz"), "{mode:?} must allow /readyz");
             assert!(route_auth_exempt("/v1/version"), "{mode:?} must allow /v1/version");
@@ -731,6 +770,24 @@ mod tests {
         assert_eq!(
             auth_error_code(StatusCode::FORBIDDEN),
             ApiErrorCode::AccessForbidden
+        );
+    }
+
+    #[test]
+    fn proxy_modes_require_boundary_identity_headers() {
+        let mut headers = HeaderMap::new();
+        assert_eq!(proxy_authenticated_principal(&headers, AuthMode::Oidc), None);
+        assert_eq!(proxy_authenticated_principal(&headers, AuthMode::Mtls), None);
+        headers.insert("x-forwarded-user", HeaderValue::from_static("alice"));
+        assert_eq!(proxy_authenticated_principal(&headers, AuthMode::Oidc), Some("user"));
+        headers.clear();
+        headers.insert(
+            "x-atlas-mtls-subject",
+            HeaderValue::from_static("spiffe://atlas/service"),
+        );
+        assert_eq!(
+            proxy_authenticated_principal(&headers, AuthMode::Mtls),
+            Some("service-account")
         );
     }
 

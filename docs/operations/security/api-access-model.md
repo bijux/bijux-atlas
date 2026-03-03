@@ -30,6 +30,9 @@ These endpoints are intended for approved callers behind the deployment boundary
 
 These are subject to the configured auth mode and request policy evaluation.
 
+When `auth.mode=oidc` or `auth.mode=mtls`, these routes must be reached through the approved auth
+boundary so the trusted identity headers are present.
+
 ## Admin endpoint inventory
 
 Admin-style endpoints are:

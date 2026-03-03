@@ -765,6 +765,54 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     )
     .map_err(|err| format!("failed to write {}: {err}", log_field_inventory_path.display()))?;
     let obs_log_inv_001 = unclassified_log_fields.is_empty();
+    let release_manifest_path = root.join("release/evidence/manifest.json");
+    let release_manifest = if release_manifest_path.exists() {
+        Some(read_json(&release_manifest_path)?)
+    } else {
+        None
+    };
+    let rel_sec_auth_001 = release_manifest.as_ref().is_some_and(|manifest| {
+        manifest
+            .get("auth_policy")
+            .and_then(|value| value.get("auth_model"))
+            .and_then(|value| value.get("path"))
+            .and_then(serde_json::Value::as_str)
+            == Some("configs/security/auth-model.yaml")
+            && manifest
+                .get("auth_policy")
+                .and_then(|value| value.get("access_policy"))
+                .and_then(|value| value.get("path"))
+                .and_then(serde_json::Value::as_str)
+                == Some("configs/security/policy.yaml")
+    });
+    let rel_audit_001 = release_manifest.as_ref().is_some_and(|manifest| {
+        manifest
+            .get("audit_assets")
+            .and_then(|value| value.get("schema"))
+            .and_then(|value| value.get("path"))
+            .and_then(serde_json::Value::as_str)
+            == Some("configs/observability/audit-log.schema.json")
+            && manifest
+                .get("audit_assets")
+                .and_then(|value| value.get("retention_policy"))
+                .and_then(|value| value.get("path"))
+                .and_then(serde_json::Value::as_str)
+                == Some("configs/observability/retention.yaml")
+    });
+    let rel_audit_002 = release_manifest.as_ref().is_some_and(|manifest| {
+        manifest
+            .get("audit_assets")
+            .and_then(|value| value.get("verification_report"))
+            .and_then(|value| value.get("path"))
+            .and_then(serde_json::Value::as_str)
+            == Some("artifacts/security/audit-verify.json")
+            && manifest
+                .get("audit_assets")
+                .and_then(|value| value.get("log_field_inventory"))
+                .and_then(|value| value.get("path"))
+                .and_then(serde_json::Value::as_str)
+                == Some("artifacts/security/log-field-inventory.json")
+    });
 
     let mitigation_ids = mitigation_rows
         .iter()
@@ -1421,6 +1469,9 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             && obs_audit_002
             && obs_ret_001
             && obs_log_inv_001
+            && rel_sec_auth_001
+            && rel_audit_001
+            && rel_audit_002
             && sec_deps_001
             && sec_deps_002
             && sec_images_001
@@ -1473,6 +1524,9 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "OBS-AUDIT-002": obs_audit_002,
             "OBS-RET-001": obs_ret_001,
             "OBS-LOG-INV-001": obs_log_inv_001,
+            "REL-SEC-AUTH-001": rel_sec_auth_001,
+            "REL-AUDIT-001": rel_audit_001,
+            "REL-AUDIT-002": rel_audit_002,
             "SEC-RED-001": sec_red_001,
             "SEC-RED-002": sec_red_002,
             "SEC-DEPS-001": sec_deps_001,
@@ -1502,6 +1556,11 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "audit_verify_errors": audit_verify_errors,
             "audit_log_matches": audit_log_matches,
             "unclassified_log_fields": unclassified_log_fields,
+            "release_evidence_gaps": {
+                "REL-SEC-AUTH-001": !rel_sec_auth_001,
+                "REL-AUDIT-001": !rel_audit_001,
+                "REL-AUDIT-002": !rel_audit_002
+            },
             "evidence_secret_matches": evidence_matches,
             "disallowed_npm_sources": disallowed_npm_sources,
             "disallowed_python_indexes": disallowed_python_indexes,

@@ -10,7 +10,7 @@
 ## Prereqs
 
 - An ingress controller or reverse proxy in front of Atlas.
-- A policy decision on whether Atlas built-in auth is `disabled`, `api-key`, or `hmac`.
+- A policy decision on whether Atlas auth mode is `disabled`, `api-key`, `oidc`, or `mtls`.
 
 ## Install
 
@@ -46,7 +46,8 @@ metadata:
 
 - Confirm Atlas is not directly exposed on a public listener without the proxy.
 - Confirm the ingress layer rejects unauthenticated callers before forwarding.
-- If Atlas built-in auth is enabled, confirm the proxy and Atlas mode agree on the expected caller contract.
+- If Atlas auth mode is `oidc` or `mtls`, confirm the proxy forwards only the approved identity headers after successful authentication.
+- If Atlas auth mode is `api-key`, confirm the proxy preserves the expected application auth header contract without injecting credentials.
 
 ## Rollback
 

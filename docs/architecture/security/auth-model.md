@@ -44,9 +44,9 @@ That means:
 
 Atlas supports built-in request authentication with these methods:
 
-- `disabled`
 - `api-key`
-- `hmac`
+- `oidc`
+- `mtls`
 
 The runtime configuration surface is `auth.mode`, exposed as `ATLAS_AUTH_MODE`.
 
@@ -65,7 +65,10 @@ Preferred order:
 
 1. Ingress auth proxy for human and institutional client entrypoints.
 2. Service mesh policy for service-to-service paths.
-3. Built-in `api-key` or `hmac` only where the caller set is small and tightly governed.
+3. Built-in `api-key` where the caller set is small and tightly governed.
+
+For proxy-verified `oidc` and `mtls`, Atlas expects the trusted boundary to forward only approved
+identity headers after authentication succeeds.
 
 ## Principal vocabulary
 

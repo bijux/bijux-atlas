@@ -101,6 +101,8 @@ server:
   bindAddress: 0.0.0.0
   port: 8080
   publicPathPrefix: /
+  auth:
+    mode: disabled
   log:
     level: info
     format: json

@@ -36,7 +36,8 @@ pub enum AuthMode {
     #[default]
     Disabled,
     ApiKey,
-    Hmac,
+    Oidc,
+    Mtls,
 }
 
 impl AuthMode {
@@ -44,7 +45,8 @@ impl AuthMode {
         match self {
             Self::Disabled => "disabled",
             Self::ApiKey => "api-key",
-            Self::Hmac => "hmac",
+            Self::Oidc => "oidc",
+            Self::Mtls => "mtls",
         }
     }
 }
@@ -645,13 +647,14 @@ impl RuntimeConfig {
             Ok(value) => Some(match value.as_str() {
                 "disabled" => AuthMode::Disabled,
                 "api-key" => AuthMode::ApiKey,
-                "hmac" => AuthMode::Hmac,
+                "oidc" => AuthMode::Oidc,
+                "mtls" => AuthMode::Mtls,
                 _ => {
                     return Err(RuntimeConfigError::InvalidFormat {
                         name: "ATLAS_AUTH_MODE".to_string(),
                         value,
                         message:
-                            "ATLAS_AUTH_MODE must be one of: disabled, api-key, hmac"
+                            "ATLAS_AUTH_MODE must be one of: disabled, api-key, oidc, mtls"
                                 .to_string(),
                     });
                 }
@@ -693,20 +696,10 @@ impl RuntimeConfig {
                 }
                 AuthMode::ApiKey
             }
-            Some(AuthMode::Hmac) => {
-                if require_api_key_env {
-                    return Err(RuntimeConfigError::InvalidValue {
-                        message:
-                            "ATLAS_AUTH_MODE=hmac conflicts with ATLAS_REQUIRE_API_KEY=true"
-                                .to_string(),
-                    });
-                }
-                AuthMode::Hmac
-            }
+            Some(AuthMode::Oidc) => AuthMode::Oidc,
+            Some(AuthMode::Mtls) => AuthMode::Mtls,
             None => {
-                if hmac_required_env {
-                    AuthMode::Hmac
-                } else if require_api_key_env {
+                if require_api_key_env {
                     AuthMode::ApiKey
                 } else {
                     AuthMode::Disabled
@@ -784,7 +777,7 @@ impl RuntimeConfig {
             require_api_key: matches!(auth_mode, AuthMode::ApiKey),
             allowed_api_keys,
             hmac_secret,
-            hmac_required: matches!(auth_mode, AuthMode::Hmac),
+            hmac_required: hmac_required_env,
             hmac_max_skew_secs: env_u64("ATLAS_HMAC_MAX_SKEW_SECS", 300)?,
             ..ApiConfig::default()
         };
