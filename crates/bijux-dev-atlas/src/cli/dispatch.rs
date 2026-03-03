@@ -114,7 +114,12 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         Command::Docs { command } => run_docs_command(cli.quiet, command),
         Command::Artifacts { command } => run_artifacts_command(cli.quiet, command),
         Command::Make { command } => run_make_command(cli.quiet, command),
-        Command::Contracts { command } => run_contracts_command(cli.quiet, command),
+        Command::Contracts { command } => {
+            if !cli.no_deprecation_warn {
+                let _ = writeln!(io::stderr(), "{}", deprecated_contracts_warning());
+            }
+            run_contracts_command(cli.quiet, command)
+        }
         Command::Demo { command } => run_demo_command(cli.quiet, command),
         Command::Configs { command } => run_configs_command(cli.quiet, command),
         Command::Governance { command } => match run_governance_command(cli.quiet, command) {
@@ -472,42 +477,10 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                 }
             }
         }
-        Command::Contract { command } => {
-            let result = match command {
-                crate::cli::ContractCommand::Run {
-                    contract_id,
-                    repo_root,
-                    artifacts_root,
-                    run_id,
-                    fail_fast,
-                    format,
-                    out,
-                } => run_registry_contract_by_id(
-                    repo_root,
-                    artifacts_root,
-                    run_id,
-                    contract_id,
-                    fail_fast,
-                    format,
-                    out,
-                ),
-            };
-            match result {
-                Ok((rendered, code)) => {
-                    if !cli.quiet && !rendered.is_empty() {
-                        let _ = writeln!(io::stdout(), "{rendered}");
-                    }
-                    code
-                }
-                Err(err) => {
-                    let _ = writeln!(io::stderr(), "bijux-dev-atlas contract failed: {err}");
-                    1
-                }
-            }
-        }
+        Command::Contract { command } => run_contracts_command(cli.quiet, command),
         Command::Registry { command } => run_registry_command(cli.quiet, command),
         Command::Suites { command } => run_suites_command(cli.quiet, command),
-        Command::Reports { command } => match run_reports_command(cli.format, command) {
+        Command::Reports { command } => match run_reports_command(cli.output_format, command) {
             Ok((rendered, code)) => {
                 if !cli.quiet && !rendered.is_empty() {
                     let _ = writeln!(io::stdout(), "{rendered}");
@@ -523,7 +496,7 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
             repo_root,
             format,
             out,
-        } => match run_list_command(cli.format, repo_root, format, out) {
+        } => match run_list_command(cli.output_format, repo_root, format, out) {
             Ok((rendered, code)) => {
                 if !cli.quiet && !rendered.is_empty() {
                     let _ = writeln!(io::stdout(), "{rendered}");
@@ -540,7 +513,7 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
             repo_root,
             format,
             out,
-        } => match run_describe_command(cli.format, repo_root, &id, format, out) {
+        } => match run_describe_command(cli.output_format, repo_root, &id, format, out) {
             Ok((rendered, code)) => {
                 if !cli.quiet && !rendered.is_empty() {
                     let _ = writeln!(io::stdout(), "{rendered}");
@@ -560,7 +533,7 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
             format,
             out,
         } => match run_runnable_command(
-            cli.format,
+            cli.output_format,
             repo_root,
             artifacts_root,
             run_id,
@@ -586,6 +559,10 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         let _ = writeln!(io::stderr(), "bijux-dev-atlas exit={exit}");
     }
     exit
+}
+
+pub(crate) fn deprecated_contracts_warning() -> &'static str {
+    "bijux-dev-atlas: `contracts` is deprecated; use `contract` instead"
 }
 
 fn effective_format(global: Option<GlobalFormatArg>, local: FormatArg) -> GlobalFormatArg {

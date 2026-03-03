@@ -264,6 +264,31 @@ mod tests {
     }
 
     #[test]
+    fn contract_command_prefers_canonical_surface() {
+        let cli =
+            crate::Cli::try_parse_from(vec!["bijux-dev-atlas", "contract", "all"]).expect("parse");
+        match cli.command {
+            Some(crate::cli::Command::Contract { .. }) => {}
+            _ => panic!("expected canonical contract command"),
+        }
+    }
+
+    #[test]
+    fn contracts_command_remains_parseable_as_deprecated_alias() {
+        let cli =
+            crate::Cli::try_parse_from(vec!["bijux-dev-atlas", "contracts", "all"]).expect("parse");
+        match cli.command {
+            Some(crate::cli::Command::Contracts { .. }) => {}
+            _ => panic!("expected deprecated contracts alias"),
+        }
+        assert!(
+            "bijux-dev-atlas: `contracts` is deprecated; use `contract` instead"
+                .contains("deprecated"),
+            "expected a deprecation warning message"
+        );
+    }
+
+    #[test]
     fn top_level_version_and_help_inventory_parse() {
         for argv in [
             vec!["bijux-dev-atlas", "version"],

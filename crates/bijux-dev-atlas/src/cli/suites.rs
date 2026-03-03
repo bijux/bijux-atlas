@@ -7,25 +7,6 @@ use clap::{Subcommand, ValueEnum};
 use super::FormatArg;
 
 #[derive(Subcommand, Debug)]
-pub enum ContractCommand {
-    Run {
-        contract_id: String,
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long)]
-        artifacts_root: Option<PathBuf>,
-        #[arg(long)]
-        run_id: Option<String>,
-        #[arg(long, default_value_t = false)]
-        fail_fast: bool,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-}
-
-#[derive(Subcommand, Debug)]
 pub enum SuitesCommand {
     Run {
         #[arg(long)]

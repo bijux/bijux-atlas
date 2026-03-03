@@ -35,6 +35,7 @@ fn command_routes_cover_top_level_runtime_commands() {
         "security",
         "release",
         "perf",
+        "contract",
         "reports",
     ] {
         assert_eq!(

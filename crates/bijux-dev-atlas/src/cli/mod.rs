@@ -58,8 +58,10 @@ pub struct Cli {
     pub umbrella_version: Option<String>,
     #[arg(long)]
     pub repo_root: Option<PathBuf>,
-    #[arg(long, global = true, value_enum)]
-    pub format: Option<GlobalFormatArg>,
+    #[arg(long = "output-format", global = true, value_enum)]
+    pub output_format: Option<GlobalFormatArg>,
+    #[arg(long, global = true, default_value_t = false)]
+    pub no_deprecation_warn: bool,
     #[command(subcommand)]
     pub command: Option<Command>,
 }
@@ -105,6 +107,7 @@ pub enum Command {
         #[command(subcommand)]
         command: MakeCommand,
     },
+    #[command(hide = true)]
     Contracts {
         #[command(subcommand)]
         command: ContractsCommand,
@@ -178,7 +181,7 @@ pub enum Command {
     },
     Contract {
         #[command(subcommand)]
-        command: ContractCommand,
+        command: ContractsCommand,
     },
     Registry {
         #[command(subcommand)]
