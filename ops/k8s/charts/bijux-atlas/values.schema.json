@@ -390,14 +390,41 @@
       "type": "object"
     },
     "cache": {
-      "additionalProperties": true,
+      "additionalProperties": false,
       "properties": {
         "cachedOnlyMode": {
           "type": "boolean"
         },
+        "diskSize": {
+          "$ref": "#/$defs/k8sQuantity"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
         "initPrewarm": {
-          "additionalProperties": true,
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "image": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
           "type": "object"
+        },
+        "maxConcurrentDownloads": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "maxDatasetCount": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "maxDiskBytes": {
+          "minimum": 1,
+          "type": "integer"
         },
         "pinnedDatasets": {
           "items": {
@@ -406,7 +433,39 @@
           },
           "type": "array"
         },
+        "pvc": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "size": {
+              "$ref": "#/$defs/k8sQuantity"
+            },
+            "storageClassName": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
         "readinessRequiresCatalog": {
+          "type": "boolean"
+        },
+        "startupWarmupJitterMaxMs": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "storageMode": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "tmpSize": {
+          "$ref": "#/$defs/k8sQuantity"
+        },
+        "warmupEnabled": {
+          "type": "boolean"
+        },
+        "warmupFailReadinessOnMissing": {
           "type": "boolean"
         }
       },
@@ -468,7 +527,12 @@
       "type": "object"
     },
     "containerSecurityContext": {
-      "$ref": "#/$defs/containerSecurityContext"
+      "allOf": [
+        {
+          "$ref": "#/$defs/containerSecurityContext"
+        }
+      ],
+      "type": "object"
     },
     "datasetWarmupJob": {
       "type": "object"
@@ -1069,8 +1133,13 @@
       "type": "object"
     },
     "securityContext": {
-      "$ref": "#/$defs/containerSecurityContext",
-      "description": "Deprecated alias for containerSecurityContext. Prefer containerSecurityContext for new values files."
+      "allOf": [
+        {
+          "$ref": "#/$defs/containerSecurityContext"
+        }
+      ],
+      "description": "Deprecated alias for containerSecurityContext. Prefer containerSecurityContext for new values files.",
+      "type": "object"
     },
     "sequenceRateLimits": {
       "type": "object"
@@ -1080,6 +1149,11 @@
       "properties": {
         "baseUrl": {
           "format": "uri",
+          "type": "string"
+        },
+        "bindAddress": {
+          "default": "0.0.0.0",
+          "minLength": 1,
           "type": "string"
         },
         "cachedOnlyMode": {
@@ -1097,11 +1171,63 @@
           "minLength": 1,
           "type": "string"
         },
+        "cors": {
+          "additionalProperties": false,
+          "properties": {
+            "allowedOrigins": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
         "enableDebugDatasets": {
           "type": "boolean"
         },
         "enableExemplars": {
           "type": "boolean"
+        },
+        "http": {
+          "additionalProperties": false,
+          "properties": {
+            "maxBodyBytes": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "maxHeaderBytes": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        },
+        "log": {
+          "additionalProperties": false,
+          "properties": {
+            "format": {
+              "enum": [
+                "json",
+                "pretty"
+              ],
+              "type": "string"
+            },
+            "level": {
+              "enum": [
+                "trace",
+                "debug",
+                "info",
+                "warn",
+                "error"
+              ],
+              "type": "string"
+            }
+          },
+          "type": "object"
         },
         "logLevel": {
           "enum": [
@@ -1125,6 +1251,10 @@
           "maximum": 65535,
           "minimum": 1,
           "type": "integer"
+        },
+        "publicPathPrefix": {
+          "pattern": "^/",
+          "type": "string"
         },
         "readOnlyFsMode": {
           "type": "boolean"
@@ -1160,6 +1290,16 @@
           "minimum": 0,
           "type": "integer"
         },
+        "shutdown": {
+          "additionalProperties": false,
+          "properties": {
+            "graceSeconds": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        },
         "shutdownGraceSeconds": {
           "minimum": 0,
           "type": "integer"
@@ -1175,6 +1315,24 @@
         "startupProbePath": {
           "pattern": "^/",
           "type": "string"
+        },
+        "timeouts": {
+          "additionalProperties": false,
+          "properties": {
+            "readMs": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "requestMs": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "writeMs": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "type": "object"
         }
       },
       "required": [
