@@ -87,6 +87,11 @@
     },
     {
       "crate": null,
+      "doc_type": "concept",
+      "from": "configs/cli/README.md"
+    },
+    {
+      "crate": null,
       "doc_type": "spec",
       "from": "configs/contracts/README.md"
     },
@@ -169,6 +174,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "configs/repo/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "configs/reports/README.md"
     },
     {
       "crate": null,
@@ -2188,6 +2198,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/development/ci-thin-shell.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/development/config-change-checklist.md"
     },
     {
@@ -2599,6 +2614,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/security/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/supply-chain-policies.md"
     },
     {
       "crate": null,
@@ -3034,6 +3054,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
     },
     {
       "crate": null,

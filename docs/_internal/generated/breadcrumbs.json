@@ -123,6 +123,14 @@
     {
       "breadcrumbs": [
         "configs",
+        "configs/cli",
+        "configs/cli/README.md"
+      ],
+      "path": "configs/cli/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
         "configs/contracts",
         "configs/contracts/README.md"
       ],
@@ -255,6 +263,14 @@
         "configs/repo/README.md"
       ],
       "path": "configs/repo/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
+        "configs/reports",
+        "configs/reports/README.md"
+      ],
+      "path": "configs/reports/README.md"
     },
     {
       "breadcrumbs": [
@@ -3932,6 +3948,14 @@
       "breadcrumbs": [
         "docs",
         "docs/development",
+        "docs/development/ci-thin-shell.md"
+      ],
+      "path": "docs/development/ci-thin-shell.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
         "docs/development/config-change-checklist.md"
       ],
       "path": "docs/development/config-change-checklist.md"
@@ -4627,6 +4651,14 @@
         "docs/operations/security/index.md"
       ],
       "path": "docs/operations/security/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/supply-chain-policies.md"
+      ],
+      "path": "docs/operations/supply-chain-policies.md"
     },
     {
       "breadcrumbs": [
@@ -5379,6 +5411,13 @@
         "ops/README.md"
       ],
       "path": "ops/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
+      ],
+      "path": "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
     },
     {
       "breadcrumbs": [

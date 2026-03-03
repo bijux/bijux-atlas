@@ -21,6 +21,7 @@ License: Apache-2.0
 | `configs/README.md` | `concept` | `docs-governance` | `stable` |
 | `configs/_internal/README.md` | `concept` | `platform` | `stable` |
 | `configs/ci/README.md` | `concept` | `platform` | `stable` |
+| `configs/cli/README.md` | `concept` | `docs-governance` | `stable` |
 | `configs/contracts/README.md` | `spec` | `docs-governance` | `stable` |
 | `configs/coverage/README.md` | `concept` | `platform` | `stable` |
 | `configs/docs/README.md` | `concept` | `docs-governance` | `stable` |
@@ -38,6 +39,7 @@ License: Apache-2.0
 | `configs/policy/README.md` | `concept` | `platform` | `stable` |
 | `configs/product/README.md` | `concept` | `product` | `stable` |
 | `configs/repo/README.md` | `concept` | `platform` | `stable` |
+| `configs/reports/README.md` | `concept` | `docs-governance` | `stable` |
 | `configs/rust/README.md` | `concept` | `platform` | `stable` |
 | `configs/schema/README.md` | `concept` | `platform` | `stable` |
 | `configs/security/README.md` | `concept` | `security` | `stable` |
@@ -441,6 +443,7 @@ License: Apache-2.0
 | `docs/development/add-endpoint.md` | `concept` | `docs-governance` | `stable` |
 | `docs/development/add-metric-span.md` | `concept` | `docs-governance` | `stable` |
 | `docs/development/ci-overview.md` | `concept` | `platform` | `stable` |
+| `docs/development/ci-thin-shell.md` | `concept` | `bijux-atlas-governance` | `stable` |
 | `docs/development/config-change-checklist.md` | `concept` | `docs-governance` | `stable` |
 | `docs/development/config-versioning.md` | `concept` | `platform` | `stable` |
 | `docs/development/contributing.md` | `concept` | `platform` | `stable` |
@@ -524,6 +527,7 @@ License: Apache-2.0
 | `docs/operations/security-posture.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/advisory-process.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/security/index.md` | `concept` | `bijux-atlas-security` | `stable` |
+| `docs/operations/supply-chain-policies.md` | `concept` | `bijux-atlas-platform` | `stable` |
 | `docs/operations/values-mapping-to-config-keys.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/product/compatibility-promise.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/diffs-v1.md` | `concept` | `bijux-atlas-query` | `stable` |
@@ -611,6 +615,7 @@ License: Apache-2.0
 | `ops/CONTRACT.md` | `concept` | `docs-governance` | `stable` |
 | `ops/ERRORS.md` | `concept` | `docs-governance` | `stable` |
 | `ops/README.md` | `concept` | `docs-governance` | `stable` |
+| `ops/RUNBOOK_GENERATION_FROM_GRAPH.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `ops/datasets/CONTRACT.md` | `concept` | `bijux-atlas-data` | `stable` |
 | `ops/datasets/README.md` | `concept` | `bijux-atlas-data` | `stable` |
 | `ops/e2e/CONTRACT.md` | `concept` | `bijux-atlas-operations` | `stable` |

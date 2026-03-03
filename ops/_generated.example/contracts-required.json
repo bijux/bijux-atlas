@@ -247,6 +247,16 @@
       "required": true
     },
     {
+      "contract_id": "OPS-STACK-010",
+      "domain": "ops",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
       "contract_id": "OPS-STACK-E-005",
       "domain": "ops",
       "lanes": [

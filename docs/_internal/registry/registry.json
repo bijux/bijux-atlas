@@ -395,6 +395,31 @@
       "area": "configs",
       "audience": "contributors",
       "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "cli",
+        "configs",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/cli/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "cli",
+        "configs",
+        "readme"
+      ],
+      "title": "CLI Configs",
+      "topic": "README"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
+      "crate": null,
       "doc_type": "spec",
       "doc_version": "v1",
       "keywords": [
@@ -812,6 +837,31 @@
         "repo"
       ],
       "title": "Repository configs",
+      "topic": "README"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "configs",
+        "readme",
+        "reports"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/reports/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "readme",
+        "reports"
+      ],
+      "title": "Report Configs",
       "topic": "README"
     },
     {
@@ -12599,6 +12649,29 @@
       "doc_version": "v1",
       "keywords": [
         "operations",
+        "supply-chain-policies"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-platform",
+      "path": "docs/operations/supply-chain-policies.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "supply-chain-policies"
+      ],
+      "title": "Supply-Chain Policies",
+      "topic": "supply-chain-policies"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
         "values-mapping-to-config-keys"
       ],
       "last_reviewed": "2026-02-25",
@@ -14715,6 +14788,29 @@
       ],
       "title": "Ops",
       "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "ops",
+        "runbook-generation-from-graph"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "runbook-generation-from-graph"
+      ],
+      "title": "Runbook Generation From Control Graph",
+      "topic": "RUNBOOK_GENERATION_FROM_GRAPH"
     },
     {
       "area": "ops",

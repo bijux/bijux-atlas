@@ -12,7 +12,7 @@
   "pruning_suggestions": [
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `CONTRACT` appears 25 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `INDEX` appears 4 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 73 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 75 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `architecture` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `benchmarks` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `caching` appears 3 times",
@@ -223,6 +223,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/release-operations.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/runbook-template.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/runbooks-to-alerts-mapping.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/supply-chain-policies.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/product/diffs-v1.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/product/immutability-and-aliases.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/product/sequence-v1.md` has no inbound doc links",
@@ -254,6 +255,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `make/_internal/contracts/target-deprecation-policy.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/ERRORS.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/RUNBOOK_GENERATION_FROM_GRAPH.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/datasets/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/e2e/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/env/CONTRACT.md` has no inbound doc links",
@@ -268,7 +270,7 @@
   "schema_version": 1,
   "summary": {
     "errors": 41,
-    "registered": 627,
-    "warnings": 305
+    "registered": 632,
+    "warnings": 307
   }
 }

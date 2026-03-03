@@ -63,6 +63,7 @@
       "configs/README.md",
       "configs/_internal/README.md",
       "configs/ci/README.md",
+      "configs/cli/README.md",
       "configs/contracts/README.md",
       "configs/coverage/README.md",
       "configs/docs/README.md",
@@ -80,6 +81,7 @@
       "configs/policy/README.md",
       "configs/product/README.md",
       "configs/repo/README.md",
+      "configs/reports/README.md",
       "configs/rust/README.md",
       "configs/schema/README.md",
       "configs/security/README.md",
@@ -132,6 +134,9 @@
       "ops/report/README.md",
       "ops/schema/README.md",
       "ops/stack/README.md"
+    ],
+    "RUNBOOK_GENERATION_FROM_GRAPH": [
+      "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
     ],
     "SECURITY": [
       "SECURITY.md"
@@ -299,6 +304,9 @@
     ],
     "ci-report-consumption": [
       "docs/control-plane/ci-report-consumption.md"
+    ],
+    "ci-thin-shell": [
+      "docs/development/ci-thin-shell.md"
     ],
     "cli-command-list": [
       "crates/bijux-atlas-cli/docs/cli-command-list.md",
@@ -1237,6 +1245,9 @@
     ],
     "suites": [
       "docs/operations/load/suites.md"
+    ],
+    "supply-chain-policies": [
+      "docs/operations/supply-chain-policies.md"
     ],
     "system-graph-explained": [
       "docs/architecture/system-graph-explained.md"

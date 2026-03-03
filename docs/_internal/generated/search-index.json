@@ -206,6 +206,20 @@
     },
     {
       "keywords": [
+        "cli",
+        "configs",
+        "readme"
+      ],
+      "path": "configs/cli/README.md",
+      "tags": [
+        "cli",
+        "configs",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
         "configs",
         "contracts",
         "readme"
@@ -437,6 +451,20 @@
         "configs",
         "readme",
         "repo"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "readme",
+        "reports"
+      ],
+      "path": "configs/reports/README.md",
+      "tags": [
+        "configs",
+        "readme",
+        "reports"
       ],
       "topic": "README"
     },
@@ -5784,6 +5812,18 @@
     },
     {
       "keywords": [
+        "ci-thin-shell",
+        "development"
+      ],
+      "path": "docs/development/ci-thin-shell.md",
+      "tags": [
+        "ci-thin-shell",
+        "development"
+      ],
+      "topic": "ci-thin-shell"
+    },
+    {
+      "keywords": [
         "config-change-checklist",
         "development"
       ],
@@ -6847,6 +6887,18 @@
         "security"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "operations",
+        "supply-chain-policies"
+      ],
+      "path": "docs/operations/supply-chain-policies.md",
+      "tags": [
+        "operations",
+        "supply-chain-policies"
+      ],
+      "topic": "supply-chain-policies"
     },
     {
       "keywords": [
@@ -8015,6 +8067,18 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "ops",
+        "runbook-generation-from-graph"
+      ],
+      "path": "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
+      "tags": [
+        "ops",
+        "runbook-generation-from-graph"
+      ],
+      "topic": "RUNBOOK_GENERATION_FROM_GRAPH"
     },
     {
       "keywords": [

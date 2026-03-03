@@ -141,6 +141,14 @@
       "area": "configs",
       "audience": "contributors",
       "owner": "docs-governance",
+      "path": "configs/cli/README.md",
+      "stability": "stable",
+      "title": "CLI Configs"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
+      "owner": "docs-governance",
       "path": "configs/contracts/README.md",
       "stability": "stable",
       "title": "Config Contracts"
@@ -272,6 +280,14 @@
       "path": "configs/repo/README.md",
       "stability": "stable",
       "title": "Repository configs"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "configs/reports/README.md",
+      "stability": "stable",
+      "title": "Report Configs"
     },
     {
       "area": "configs",
@@ -3499,6 +3515,14 @@
     },
     {
       "area": "development",
+      "audience": "contributor",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/development/ci-thin-shell.md",
+      "stability": "stable",
+      "title": "Why CI Is A Thin Shell"
+    },
+    {
+      "area": "development",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/development/config-change-checklist.md",
@@ -4160,6 +4184,14 @@
       "path": "docs/operations/security/index.md",
       "stability": "stable",
       "title": "Security"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-platform",
+      "path": "docs/operations/supply-chain-policies.md",
+      "stability": "stable",
+      "title": "Supply-Chain Policies"
     },
     {
       "area": "operations",
@@ -4856,6 +4888,14 @@
       "path": "ops/README.md",
       "stability": "stable",
       "title": "Ops"
+    },
+    {
+      "area": "ops",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
+      "stability": "stable",
+      "title": "Runbook Generation From Control Graph"
     },
     {
       "area": "ops",
