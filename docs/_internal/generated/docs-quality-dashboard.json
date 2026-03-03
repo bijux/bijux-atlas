@@ -138,8 +138,6 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-store/docs/internal/failure-modes-reference.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-store/docs/versioning.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/CONTRACT.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/docs/architecture.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/docs/benchmarks.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/docs/cli-command-list.md` has no inbound doc links",
@@ -325,10 +323,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `make/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `make/_internal/contracts/MAKE_LAWS.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `make/_internal/contracts/target-deprecation-policy.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/AUTHORITY_TIERS.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/CONTRACT.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/DIRECTORY_BUDGET_POLICY.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/DOC_NECESSITY_CHECKLIST.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/ERRORS.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/MINIMAL_RELEASE_SURFACE.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/RUNBOOK_GENERATION_FROM_GRAPH.md` has no inbound doc links",
@@ -378,7 +373,7 @@
   "schema_version": 1,
   "summary": {
     "errors": 53,
-    "registered": 839,
-    "warnings": 415
+    "registered": 834,
+    "warnings": 410
   }
 }

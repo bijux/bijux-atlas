@@ -2131,24 +2131,6 @@
         "crates",
         "crates/bijux-dev-atlas",
         "crates/bijux-dev-atlas/docs",
-        "crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md"
-      ],
-      "path": "crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-dev-atlas",
-        "crates/bijux-dev-atlas/docs",
-        "crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md"
-      ],
-      "path": "crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-dev-atlas",
-        "crates/bijux-dev-atlas/docs",
         "crates/bijux-dev-atlas/docs/architecture.md"
       ],
       "path": "crates/bijux-dev-atlas/docs/architecture.md"
@@ -6815,30 +6797,9 @@
     {
       "breadcrumbs": [
         "ops",
-        "ops/AUTHORITY_TIERS.md"
-      ],
-      "path": "ops/AUTHORITY_TIERS.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
         "ops/CONTRACT.md"
       ],
       "path": "ops/CONTRACT.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/DIRECTORY_BUDGET_POLICY.md"
-      ],
-      "path": "ops/DIRECTORY_BUDGET_POLICY.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/DOC_NECESSITY_CHECKLIST.md"
-      ],
-      "path": "ops/DOC_NECESSITY_CHECKLIST.md"
     },
     {
       "breadcrumbs": [

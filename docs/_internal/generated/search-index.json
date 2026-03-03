@@ -3046,30 +3046,6 @@
     },
     {
       "keywords": [
-        "bijux-dev-atlas",
-        "configs-command-list"
-      ],
-      "path": "crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md",
-      "tags": [
-        "bijux-dev-atlas",
-        "configs-command-list"
-      ],
-      "topic": "CONFIGS_COMMAND_LIST"
-    },
-    {
-      "keywords": [
-        "bijux-dev-atlas",
-        "ops-command-list"
-      ],
-      "path": "crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md",
-      "tags": [
-        "bijux-dev-atlas",
-        "ops-command-list"
-      ],
-      "topic": "OPS_COMMAND_LIST"
-    },
-    {
-      "keywords": [
         "architecture",
         "bijux-dev-atlas"
       ],
@@ -10216,18 +10192,6 @@
     },
     {
       "keywords": [
-        "authority-tiers",
-        "ops"
-      ],
-      "path": "ops/AUTHORITY_TIERS.md",
-      "tags": [
-        "authority-tiers",
-        "ops"
-      ],
-      "topic": "AUTHORITY_TIERS"
-    },
-    {
-      "keywords": [
         "contract",
         "ops"
       ],
@@ -10237,30 +10201,6 @@
         "ops"
       ],
       "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "directory-budget-policy",
-        "ops"
-      ],
-      "path": "ops/DIRECTORY_BUDGET_POLICY.md",
-      "tags": [
-        "directory-budget-policy",
-        "ops"
-      ],
-      "topic": "DIRECTORY_BUDGET_POLICY"
-    },
-    {
-      "keywords": [
-        "doc-necessity-checklist",
-        "ops"
-      ],
-      "path": "ops/DOC_NECESSITY_CHECKLIST.md",
-      "tags": [
-        "doc-necessity-checklist",
-        "ops"
-      ],
-      "topic": "DOC_NECESSITY_CHECKLIST"
     },
     {
       "keywords": [

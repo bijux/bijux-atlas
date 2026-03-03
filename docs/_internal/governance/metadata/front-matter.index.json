@@ -1932,22 +1932,6 @@
     {
       "area": "bijux-dev-atlas",
       "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md",
-      "stability": "stable",
-      "title": "CONFIGS_COMMAND_LIST"
-    },
-    {
-      "area": "bijux-dev-atlas",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md",
-      "stability": "stable",
-      "title": "OPS_COMMAND_LIST"
-    },
-    {
-      "area": "bijux-dev-atlas",
-      "audience": "contributors",
       "owner": "bijux-dev-atlas",
       "path": "crates/bijux-dev-atlas/docs/architecture.md",
       "stability": "stable",
@@ -4164,7 +4148,7 @@
     {
       "area": "governance",
       "audience": "contributors",
-      "owner": "bijux-atlas-platform",
+      "owner": "docs-governance",
       "path": "docs/governance/index.md",
       "stability": "stable",
       "title": "Governance"
@@ -6189,33 +6173,9 @@
       "area": "ops",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "ops/AUTHORITY_TIERS.md",
-      "stability": "stable",
-      "title": "Authority Tiers"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "owner": "docs-governance",
       "path": "ops/CONTRACT.md",
       "stability": "stable",
       "title": "Ops Contract"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/DIRECTORY_BUDGET_POLICY.md",
-      "stability": "stable",
-      "title": "Directory Budget Policy"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "ops/DOC_NECESSITY_CHECKLIST.md",
-      "stability": "stable",
-      "title": "Document Necessity Checklist"
     },
     {
       "area": "ops",

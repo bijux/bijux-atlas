@@ -1208,16 +1208,6 @@
     {
       "crate": "bijux-dev-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md"
-    },
-    {
-      "crate": "bijux-dev-atlas",
-      "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md"
-    },
-    {
-      "crate": "bijux-dev-atlas",
-      "doc_type": "concept",
       "from": "crates/bijux-dev-atlas/docs/architecture.md"
     },
     {
@@ -3868,22 +3858,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/AUTHORITY_TIERS.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/DIRECTORY_BUDGET_POLICY.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/DOC_NECESSITY_CHECKLIST.md"
     },
     {
       "crate": null,

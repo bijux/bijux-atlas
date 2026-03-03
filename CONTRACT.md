@@ -139,8 +139,3 @@
 ## Exceptions policy
 
 - No exceptions are allowed by this document.
-
-## SSOT Migration Note
-
-Repository documentation SSOT boundaries are defined in `docs/_internal/ssot.md`.
-Root markdown additions are blocked unless `configs/layout/root-markdown-allowlist.json` and related contract surfaces are updated in the same change.

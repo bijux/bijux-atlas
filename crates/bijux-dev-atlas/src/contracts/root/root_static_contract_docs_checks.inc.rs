@@ -168,6 +168,16 @@ fn render_canonical_contract_doc(
     out
 }
 
+pub fn sync_canonical_contract_docs(repo_root: &std::path::Path) -> Result<(), String> {
+    for domain in CONTRACT_DOC_DOMAINS {
+        let contracts = contracts_for_domain(repo_root, domain.name)?;
+        let rendered = render_canonical_contract_doc(repo_root, &domain, &contracts);
+        std::fs::write(repo_root.join(domain.file), rendered)
+            .map_err(|err| format!("write {} failed: {err}", domain.file))?;
+    }
+    Ok(())
+}
+
 fn test_root_041_contract_docs_canonical_template(ctx: &RunContext) -> TestResult {
     let mut violations = Vec::new();
     for domain in CONTRACT_DOC_DOMAINS {
@@ -227,7 +237,10 @@ fn test_root_041_contract_docs_canonical_template(ctx: &RunContext) -> TestResul
                 "ROOT-041",
                 "root.contract_docs.canonical_template",
                 Some(domain.file.to_string()),
-                "contract markdown drifted from canonical template; regenerate with contracts registry data",
+                format!(
+                    "contract markdown drifted from canonical template for {}; regenerate with contracts registry data",
+                    domain.file
+                ),
             );
         }
     }

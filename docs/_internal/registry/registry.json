@@ -5702,52 +5702,6 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "bijux-dev-atlas",
-        "configs-command-list"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "bijux-dev-atlas",
-        "configs-command-list"
-      ],
-      "title": "CONFIGS_COMMAND_LIST",
-      "topic": "CONFIGS_COMMAND_LIST"
-    },
-    {
-      "area": "bijux-dev-atlas",
-      "audience": "contributors",
-      "crate": "bijux-dev-atlas",
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "bijux-dev-atlas",
-        "ops-command-list"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "bijux-dev-atlas",
-        "ops-command-list"
-      ],
-      "title": "OPS_COMMAND_LIST",
-      "topic": "OPS_COMMAND_LIST"
-    },
-    {
-      "area": "bijux-dev-atlas",
-      "audience": "contributors",
-      "crate": "bijux-dev-atlas",
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
         "architecture",
         "bijux-dev-atlas"
       ],
@@ -12622,7 +12576,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "bijux-atlas-platform",
+      "owner": "docs-governance",
       "path": "docs/governance/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -18724,29 +18678,6 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "authority-tiers",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "ops/AUTHORITY_TIERS.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "authority-tiers",
-        "ops"
-      ],
-      "title": "Authority Tiers",
-      "topic": "AUTHORITY_TIERS"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
         "contract",
         "ops"
       ],
@@ -18762,52 +18693,6 @@
       ],
       "title": "Ops Contract",
       "topic": "CONTRACT"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "directory-budget-policy",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/DIRECTORY_BUDGET_POLICY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "directory-budget-policy",
-        "ops"
-      ],
-      "title": "Directory Budget Policy",
-      "topic": "DIRECTORY_BUDGET_POLICY"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "doc-necessity-checklist",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "ops/DOC_NECESSITY_CHECKLIST.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "doc-necessity-checklist",
-        "ops"
-      ],
-      "title": "Document Necessity Checklist",
-      "topic": "DOC_NECESSITY_CHECKLIST"
     },
     {
       "area": "ops",
