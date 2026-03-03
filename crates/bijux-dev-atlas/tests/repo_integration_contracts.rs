@@ -7,7 +7,7 @@ use std::process::Command;
 
 use serde_json::Value;
 
-#[path = "repo_integration_contracts_surface_checks.rs"]
+#[path = "repo_integration_contracts/surface_checks.rs"]
 mod repo_integration_contracts_surface_checks;
 
 fn repo_root() -> PathBuf {

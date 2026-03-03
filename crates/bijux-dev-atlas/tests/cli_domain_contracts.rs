@@ -4,7 +4,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 
-#[path = "cli_domain_contracts_ops_execution.rs"]
+#[path = "cli_domain_contracts/ops_execution.rs"]
 mod cli_domain_contracts_ops_execution;
 
 fn repo_root() -> PathBuf {
