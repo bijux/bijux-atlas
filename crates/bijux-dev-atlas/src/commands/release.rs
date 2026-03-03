@@ -160,6 +160,28 @@ fn collect_tarball_members(
             files.push(rel.to_string());
         }
     }
+    if let Some(path) = manifest
+        .get("supply_chain")
+        .and_then(|v| v.get("action_pins_report"))
+        .and_then(|v| v.get("path"))
+        .and_then(serde_json::Value::as_str)
+    {
+        if root.join(path).exists() {
+            files.push(path.to_string());
+        }
+    }
+    for rel in manifest
+        .get("supply_chain")
+        .and_then(|v| v.get("docs_toolchain_inventory"))
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(|row| row.get("path").and_then(serde_json::Value::as_str))
+    {
+        if root.join(rel).exists() {
+            files.push(rel.to_string());
+        }
+    }
     files.sort();
     files.dedup();
     Ok(files)

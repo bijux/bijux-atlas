@@ -851,6 +851,29 @@ fn collect_docs_site_summary(repo_root: &std::path::Path) -> Result<serde_json::
     }))
 }
 
+fn collect_supply_chain_inventory(
+    repo_root: &std::path::Path,
+) -> Result<Vec<serde_json::Value>, String> {
+    let paths = [
+        ".github/dependabot.yml",
+        "configs/docs/package-lock.json",
+        "configs/docs/requirements.lock.txt",
+        "configs/security/dependency-source-policy.json",
+    ];
+    let mut rows = Vec::new();
+    for relative in paths {
+        let path = repo_root.join(relative);
+        if !path.exists() {
+            return Err(format!("missing supply-chain inventory file {}", path.display()));
+        }
+        rows.push(serde_json::json!({
+            "path": relative,
+            "sha256": sha256_file(&path)?
+        }));
+    }
+    Ok(rows)
+}
+
 fn build_release_evidence_tarball(
     repo_root: &std::path::Path,
 ) -> Result<std::path::PathBuf, String> {
@@ -886,6 +909,13 @@ fn build_release_evidence_tarball(
     }
     files.extend(collect_observability_assets(repo_root)?);
     files.extend(collect_perf_assets(repo_root)?);
+    if repo_root.join("artifacts/security/security-github-actions.json").exists() {
+        files.push("artifacts/security/security-github-actions.json".to_string());
+    }
+    files.push(".github/dependabot.yml".to_string());
+    files.push("configs/docs/package-lock.json".to_string());
+    files.push("configs/docs/requirements.lock.txt".to_string());
+    files.push("configs/security/dependency-source-policy.json".to_string());
     files.sort();
     files.dedup();
     std::fs::write(&list_path, files.join("\n"))

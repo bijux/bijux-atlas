@@ -11,6 +11,34 @@ fn git_head_sha(process: &OpsProcess, repo_root: &std::path::Path) -> Result<Str
     }
 }
 
+fn run_security_validate_for_evidence(
+    process: &OpsProcess,
+    repo_root: &std::path::Path,
+) -> Result<(), String> {
+    let argv = vec![
+        "run".to_string(),
+        "-q".to_string(),
+        "-p".to_string(),
+        "bijux-dev-atlas".to_string(),
+        "--".to_string(),
+        "security".to_string(),
+        "validate".to_string(),
+        "--format".to_string(),
+        "json".to_string(),
+    ];
+    let _ = process
+        .run_subprocess("cargo", &argv, repo_root)
+        .map_err(|err| err.to_stable_message())?;
+    let report_path = repo_root.join("artifacts/security/security-github-actions.json");
+    if !report_path.exists() {
+        return Err(format!(
+            "security validate completed without writing {}",
+            report_path.display()
+        ));
+    }
+    Ok(())
+}
+
 pub(crate) fn run_ops_evidence_collect(
     common: &OpsCommonArgs,
 ) -> Result<(String, i32), String> {
@@ -27,6 +55,7 @@ pub(crate) fn run_ops_evidence_collect(
     let release_id = format!("{}-{}", run_id.as_str(), &git_sha[..12]);
     let governance_version = format!("main@{git_sha}");
     let evidence_root = evidence_root(&repo_root)?;
+    run_security_validate_for_evidence(&process, &repo_root)?;
     let chart_package = package_chart_for_evidence(&process, &repo_root)?;
     let policy_path = repo_root.join("release/evidence/policy.json");
     let identity_path = evidence_root.join("identity.json");
@@ -47,7 +76,9 @@ pub(crate) fn run_ops_evidence_collect(
     let toolchain_inventory = repo_root.join("configs/rust/toolchain.json");
     let runtime_env_allowlist = repo_root.join("configs/contracts/env.schema.json");
     let signing_policy = repo_root.join("release/signing/policy.yaml");
+    let action_pins_report = repo_root.join("artifacts/security/security-github-actions.json");
     let docs_site_summary = collect_docs_site_summary(&repo_root)?;
+    let supply_chain_inventory = collect_supply_chain_inventory(&repo_root)?;
     let image_artifacts = collect_image_artifacts(&repo_root)?;
     let sboms = collect_sboms(&repo_root, &image_artifacts)?;
     let scan_reports = collect_scan_reports(&repo_root)?;
@@ -88,6 +119,13 @@ pub(crate) fn run_ops_evidence_collect(
         "toolchain_inventory": {
             "path": toolchain_inventory.strip_prefix(&repo_root).unwrap_or(&toolchain_inventory).display().to_string(),
             "sha256": sha256_file(&toolchain_inventory)?
+        },
+        "supply_chain": {
+            "action_pins_report": {
+                "path": action_pins_report.strip_prefix(&repo_root).unwrap_or(&action_pins_report).display().to_string(),
+                "sha256": sha256_file(&action_pins_report)?
+            },
+            "docs_toolchain_inventory": supply_chain_inventory
         },
         "docs_site_summary": docs_site_summary,
         "runtime_env_allowlist": {
@@ -165,6 +203,48 @@ pub(crate) fn run_ops_evidence_verify(
     }
     if identity.get("schema_version").and_then(|v| v.as_i64()) != Some(1) {
         errors.push("identity schema_version must be 1".to_string());
+    }
+    for rel in manifest
+        .get("supply_chain")
+        .and_then(|v| v.get("docs_toolchain_inventory"))
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(|row| row.get("path").and_then(serde_json::Value::as_str))
+    {
+        let path = repo_root.join(rel);
+        if !path.exists() {
+            errors.push(format!("referenced supply-chain inventory does not exist: {rel}"));
+            continue;
+        }
+        if tarball_path.exists() && !tarball_contains_entry(&tarball_path, rel)? {
+            errors.push(format!("evidence tarball missing supply-chain inventory: {rel}"));
+        }
+    }
+    if let Some(row) = manifest
+        .get("supply_chain")
+        .and_then(|v| v.get("action_pins_report"))
+    {
+        let path = row
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let abs = repo_root.join(path);
+        if path.is_empty() || !abs.exists() {
+            errors.push(format!("action pins report does not exist: {path}"));
+        } else {
+            if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+                errors.push(format!("evidence tarball missing action pins report: {path}"));
+            }
+            if let Some(expected) = row.get("sha256").and_then(serde_json::Value::as_str) {
+                let actual = sha256_file(&abs)?;
+                if actual != expected {
+                    errors.push(format!("action pins report checksum does not match manifest: {path}"));
+                }
+            }
+        }
+    } else {
+        errors.push("manifest must include supply_chain.action_pins_report".to_string());
     }
     for rel in manifest
         .get("reports")
@@ -900,4 +980,3 @@ fn run_smoke_checks(
     let _ = child.wait();
     checks
 }
-

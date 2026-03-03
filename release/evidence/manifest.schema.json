@@ -14,6 +14,7 @@
     "image_artifacts",
     "docker_bases_lock",
     "toolchain_inventory",
+    "supply_chain",
     "docs_site_summary",
     "runtime_env_allowlist",
     "sboms",
@@ -151,6 +152,56 @@
         "sha256": {
           "type": "string",
           "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "supply_chain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_pins_report",
+        "docs_toolchain_inventory"
+      ],
+      "properties": {
+        "action_pins_report": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "docs_toolchain_inventory": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "sha256"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       }
     },
