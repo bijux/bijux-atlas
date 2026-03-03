@@ -363,6 +363,41 @@ fn check_list_supports_json_alias() {
 }
 
 #[test]
+fn checks_list_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["checks", "list", "--format", "json"])
+        .output()
+        .expect("checks list json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert!(payload.get("checks").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
+fn checks_explain_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "checks",
+            "explain",
+            "CHECK-DOCS-VALIDATE-001",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("checks explain json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(
+        payload.get("id").and_then(|v| v.as_str()),
+        Some("CHECK-DOCS-VALIDATE-001")
+    );
+}
+
+#[test]
 fn slow_check_doctor_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())

@@ -300,6 +300,30 @@ mod tests {
     }
 
     #[test]
+    fn checks_subcommands_parse() {
+        let commands = [
+            vec!["bijux-dev-atlas", "checks", "list"],
+            vec![
+                "bijux-dev-atlas",
+                "checks",
+                "list",
+                "--domain",
+                "ops",
+                "--format",
+                "json",
+            ],
+            vec!["bijux-dev-atlas", "checks", "explain", "CHECK-DOCS-VALIDATE-001"],
+        ];
+        for argv in commands {
+            let cli = crate::Cli::try_parse_from(argv).expect("parse");
+            match cli.command {
+                Some(crate::cli::Command::Checks { .. }) => {}
+                _ => panic!("expected checks command"),
+            }
+        }
+    }
+
+    #[test]
     fn release_subcommands_parse() {
         let cli =
             crate::Cli::try_parse_from(vec!["bijux-dev-atlas", "release", "check"]).expect("parse");

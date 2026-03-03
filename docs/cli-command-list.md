@@ -10,6 +10,7 @@
 | `release` | `release` | Run release verification commands |
 | `perf` | `perf` | Run performance validation commands |
 | `contract` | `engine` | Run governed contract lanes and introspection surfaces |
+| `checks` | `engine` | List and explain registry-backed checks surfaces |
 | `reports` | `engine` | List governed reports and validate report artifacts |
 | `suites` | `engine` | Run grouped runnable suites |
 | `list` | `engine` | List domains, suites, and runnable ids |
