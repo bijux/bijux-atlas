@@ -22,7 +22,12 @@ Contracts are governance invariants. They define product or operational guarante
 ## Required registry rules
 
 - Every check must declare at least one report artifact path in the registry.
+- Every check must declare stable report ids and validate those reports against governed schemas.
 - Every check command list must be stored in deterministic execution order.
 - Every check must be idempotent when rerun against the same repository state and declared inputs.
 - The checks registry is the SSOT for stable check ids exposed by Make and CI.
 - The contracts registry is the SSOT for stable governance invariant ids exposed by the control plane.
+
+## Checks As Product
+
+Checks are product surfaces, not throwaway shell wrappers. A governed check must be interpretable by humans from its summary, owner, artifacts, and reference docs, and by machines from its stable id, report ids, and schema-validated JSON outputs.
