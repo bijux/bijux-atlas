@@ -15,6 +15,7 @@ checks
 contract
 registry
 suites
+tests
 list
 describe
 run
