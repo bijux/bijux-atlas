@@ -54,6 +54,7 @@
 | `contract-all` | `` |  |
 | `contract-effect` | `` |  |
 | `contract-list` | `` |  |
+| `contract-report` | `` |  |
 | `contracts` | `` |  |
 | `contracts-all` | `` |  |
 | `contracts-changed` | `` |  |

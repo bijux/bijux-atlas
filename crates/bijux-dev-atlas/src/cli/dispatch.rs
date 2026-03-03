@@ -814,6 +814,7 @@ fn run_contract_command(
         ContractCommand::List(args) => run_contract_list_command(global, args),
         ContractCommand::Describe(args) => run_contract_describe_command(global, args),
         ContractCommand::Run(args) => run_contract_run_command(global, args),
+        ContractCommand::Report(args) => run_contract_report_command(global, args),
     }
 }
 
@@ -992,7 +993,7 @@ fn run_contract_run_command(
             direct_id.is_none_or(|id| contract.id.0 == id)
                 && (include.is_empty() || include.contains(contract.id.0.as_str()))
                 && !exclude.contains(contract.id.0.as_str())
-                && contract_mode_matches_engine(args.mode, *mode)
+                && (direct_id.is_some() || contract_mode_matches_engine(args.mode, *mode))
                 && (domain_filter.is_empty() || domain_filter.contains(&domain.to_string()))
                 && (args.tags.is_empty()
                     || args.tags.iter().any(|tag| match tag.as_str() {
@@ -1175,10 +1176,64 @@ fn run_contract_run_command(
                 .map_err(|err| format!("encode contract run summary failed: {err}"))?
         ),
     };
+    if let Some(root) = args.artifacts_root.as_ref() {
+        std::fs::create_dir_all(root)
+            .map_err(|err| format!("create {} failed: {err}", root.display()))?;
+        let summary_path = root.join("contract-run-summary.json");
+        std::fs::write(
+            &summary_path,
+            format!(
+                "{}\n",
+                serde_json::to_string_pretty(&payload)
+                    .map_err(|err| format!("encode contract run summary failed: {err}"))?
+            ),
+        )
+        .map_err(|err| format!("write {} failed: {err}", summary_path.display()))?;
+    }
     let _ = planned_cases;
     write_output(args.out, &rendered)?;
     let exit = reports.iter().map(|report| report.exit_code()).max().unwrap_or(EXIT_SUCCESS);
     Ok((rendered, exit))
+}
+
+fn run_contract_report_command(
+    global: Option<GlobalFormatArg>,
+    args: crate::cli::ContractReportArgs,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.repo_root)?;
+    if !args.last {
+        return Ok((
+            "usage: contract report requires --last".to_string(),
+            EXIT_FAILURE,
+        ));
+    }
+    let artifacts_root = args
+        .artifacts_root
+        .unwrap_or_else(|| repo_root.join("artifacts").join("contracts").join("local"));
+    let summary_path = artifacts_root.join("contract-run-summary.json");
+    let text = std::fs::read_to_string(&summary_path)
+        .map_err(|err| format!("read {} failed: {err}", summary_path.display()))?;
+    let summary: ContractRunSummary = serde_json::from_str(&text)
+        .map_err(|err| format!("parse {} failed: {err}", summary_path.display()))?;
+    let rendered = match effective_format(global, args.format) {
+        GlobalFormatArg::Human => format!(
+            "contract-summary: total={} passed={} failed={} skipped={}",
+            summary.counts.total, summary.counts.passed, summary.counts.failed, summary.counts.skipped
+        ),
+        GlobalFormatArg::Json => serde_json::to_string_pretty(&summary)
+            .map_err(|err| format!("encode contract report failed: {err}"))?,
+        GlobalFormatArg::Both => format!(
+            "contract-summary: total={} passed={} failed={} skipped={}\n{}",
+            summary.counts.total,
+            summary.counts.passed,
+            summary.counts.failed,
+            summary.counts.skipped,
+            serde_json::to_string_pretty(&summary)
+                .map_err(|err| format!("encode contract report failed: {err}"))?
+        ),
+    };
+    write_output(args.out, &rendered)?;
+    Ok((rendered, EXIT_SUCCESS))
 }
 
 fn run_reports_command(

@@ -430,6 +430,7 @@ pub enum ContractCommand {
     List(ContractListArgs),
     Describe(ContractDescribeArgs),
     Run(ContractRunArgs),
+    Report(ContractReportArgs),
 }
 
 #[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
@@ -503,6 +504,20 @@ pub struct ContractRunArgs {
     pub quiet: bool,
     #[arg(long, default_value_t = false)]
     pub verbose: bool,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ContractReportArgs {
+    #[arg(long, default_value_t = false)]
+    pub last: bool,
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub artifacts_root: Option<PathBuf>,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]

@@ -1,5 +1,6 @@
 # Scope: contracts wrapper targets delegated to bijux-dev-atlas contract and suite runners.
-# Public targets: contract, contract-effect, contract-all, contract-list, contracts, contracts-pr, contracts-merge, contracts-release, contracts-all, contracts-fast, contracts-changed, contracts-json, contracts-ci, contracts-root, contracts-repo, contracts-crates, contracts-runtime, contracts-configs, contracts-configs-required, contracts-docs, contracts-docs-required, contracts-docker, contracts-make, contracts-make-required, contracts-ops, contracts-help, contracts-group, contracts-tag, contracts-pure, contracts-effect
+# Public targets: contract, contract-effect, contract-all, contract-list, contract-report, contracts, contracts-pr, contracts-merge, contracts-release, contracts-all, contracts-fast, contracts-changed, contracts-json, contracts-ci, contracts-root, contracts-repo, contracts-crates, contracts-runtime, contracts-configs, contracts-configs-required, contracts-docs, contracts-docs-required, contracts-docker, contracts-make, contracts-make-required, contracts-ops, contracts-help, contracts-group, contracts-tag, contracts-pure, contracts-effect
+# Wrapper rule: canonical contract targets may only delegate to $(DEV_ATLAS); no grep/jq/sed/awk parsing is allowed.
 CONTRACTS_ARTIFACT_ROOT ?= $(ARTIFACT_ROOT)/contracts/$(RUN_ID)
 CONTRACTS_DEV_ATLAS_TARGET_DIR ?= $(WORKSPACE_ROOT)/artifacts/target
 CONTRACTS_DEV_ATLAS_BIN ?= $(CONTRACTS_DEV_ATLAS_TARGET_DIR)/debug/bijux-dev-atlas
@@ -33,6 +34,9 @@ contract-all: _contracts_guard ## Run the complete contract execution set throug
 
 contract-list: _contracts_guard ## List canonical contracts exposed by the contract runner
 	@$(DEV_ATLAS) --output-format $(FORMAT) contract list
+
+contract-report: _contracts_guard ## Read the last canonical contract run summary from the artifacts root
+	@$(DEV_ATLAS) --output-format $(FORMAT) contract report --last --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts: ## Deprecated alias for make contract
 	@printf '%s\n' "deprecated: use \`make contract\`"
@@ -133,4 +137,4 @@ contracts-ops: _contracts_guard ## Run ops contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts ops --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
 	@$(DEV_ATLAS) contracts ops --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
-.PHONY: _contracts_guard contract contract-effect contract-all contract-list contracts-help contracts contracts-pr contracts-merge contracts-release contracts-all contracts-changed contracts-ci contracts-configs contracts-crates contracts-docker contracts-docs contracts-effect contracts-fast contracts-group contracts-json contracts-make contracts-make-required contracts-merge contracts-ops contracts-pr contracts-pure contracts-release contracts-repo contracts-root contracts-runtime contracts-tag
+.PHONY: _contracts_guard contract contract-effect contract-all contract-list contract-report contracts-help contracts contracts-pr contracts-merge contracts-release contracts-all contracts-changed contracts-ci contracts-configs contracts-crates contracts-docker contracts-docs contracts-effect contracts-fast contracts-group contracts-json contracts-make contracts-make-required contracts-merge contracts-ops contracts-pr contracts-pure contracts-release contracts-repo contracts-root contracts-runtime contracts-tag

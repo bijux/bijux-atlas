@@ -30,6 +30,7 @@ automation can migrate without a hard cutover.
 - `make contract-effect` delegates to `bijux dev atlas contract run --mode effect --effects-policy allow`
 - `make contract-all` delegates to `bijux dev atlas contract run --mode all --effects-policy allow`
 - `make contract-list` delegates to `bijux dev atlas contract list`
+- `make contract-report` delegates to `bijux dev atlas contract report --last`
 - `make contracts`, `make contracts-effect`, and `make contracts-all` remain temporary deprecated wrappers
 
 ## Compatibility
