@@ -16,8 +16,16 @@ pub fn run(
     repo_root: &Path,
     options: &RunOptions,
 ) -> Result<RunReport, String> {
+    run_selected(domain, contracts_fn(repo_root)?, repo_root, options)
+}
+
+pub fn run_selected(
+    domain: &str,
+    mut contracts: Vec<Contract>,
+    repo_root: &Path,
+    options: &RunOptions,
+) -> Result<RunReport, String> {
     let run_started = Instant::now();
-    let mut contracts = contracts_fn(repo_root)?;
     contracts.sort_by_key(|c| c.id.0.clone());
     let required_map = required_contract_map(repo_root)?;
 
