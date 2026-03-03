@@ -64,6 +64,9 @@ struct CheckRegistryEntry {
     commands: Vec<String>,
     reports: Vec<String>,
     tags: Option<Vec<String>>,
+    retries: Option<u64>,
+    requires_tools: Option<Vec<String>>,
+    missing_tools_policy: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -79,6 +82,9 @@ struct ContractRegistryEntry {
     runner: String,
     reports: Vec<String>,
     tags: Option<Vec<String>>,
+    retries: Option<u64>,
+    requires_tools: Option<Vec<String>>,
+    missing_tools_policy: Option<String>,
 }
 
 #[derive(Clone, Debug)]
@@ -92,6 +98,9 @@ struct SuiteTask {
     tags: Vec<String>,
     commands: Vec<String>,
     reports: Vec<String>,
+    retries: u64,
+    requires_tools: Vec<String>,
+    missing_tools_policy: String,
 }
 
 #[derive(Clone, Debug)]
@@ -167,6 +176,10 @@ fn suite_summary_schema_name() -> &'static str {
     "suite-summary.schema.json"
 }
 
+fn suite_preflight_schema_name() -> &'static str {
+    "suite-preflight.schema.json"
+}
+
 fn normalize_suite_id(raw: &str) -> String {
     raw.trim().to_ascii_lowercase().replace('-', "_")
 }
@@ -232,6 +245,11 @@ fn load_suite_tasks(root: &Path, suite_id: &str) -> Result<Vec<SuiteTask>, Strin
                         tags: entry.tags.unwrap_or_else(|| suite_entry.tags.clone()),
                         commands: entry.commands,
                         reports: entry.reports,
+                        retries: entry.retries.unwrap_or(0),
+                        requires_tools: entry.requires_tools.unwrap_or_default(),
+                        missing_tools_policy: entry
+                            .missing_tools_policy
+                            .unwrap_or_else(|| "fail".to_string()),
                     })
                 })
                 .collect::<Vec<_>>()
@@ -244,15 +262,24 @@ fn load_suite_tasks(root: &Path, suite_id: &str) -> Result<Vec<SuiteTask>, Strin
                 .into_iter()
                 .filter_map(|entry| {
                     entry_map.get(&entry.contract_id).map(|suite_entry| SuiteTask {
-                        id: entry.contract_id,
+                        id: entry.contract_id.clone(),
                         kind: suite_entry.kind.clone(),
                         summary: entry.summary,
                         owner: suite_entry.owner.clone(),
                         mode: suite_entry.mode.clone(),
                         group: entry.group,
                         tags: entry.tags.unwrap_or_else(|| suite_entry.tags.clone()),
-                        commands: vec![entry.runner],
+                        commands: vec![normalized_contract_command(
+                            &entry.runner,
+                            &suite_entry.mode,
+                            &entry.contract_id,
+                        )],
                         reports: entry.reports,
+                        retries: entry.retries.unwrap_or(0),
+                        requires_tools: entry.requires_tools.unwrap_or_default(),
+                        missing_tools_policy: entry
+                            .missing_tools_policy
+                            .unwrap_or_else(|| "fail".to_string()),
                     })
                 })
                 .collect::<Vec<_>>()
@@ -271,6 +298,18 @@ trait Pipe: Sized {
 }
 
 impl<T> Pipe for T {}
+
+fn normalized_contract_command(command: &str, mode: &str, contract_id: &str) -> String {
+    if command == "bijux dev atlas ops check" {
+        format!(
+            "bijux dev atlas contracts ops --mode {} --only {}",
+            if mode == "effect" { "effect" } else { "static" },
+            contract_id
+        )
+    } else {
+        command.replace("--only-contract", "--only")
+    }
+}
 
 fn parse_jobs(raw: &str) -> Result<usize, String> {
     if raw.eq_ignore_ascii_case("auto") {
@@ -458,6 +497,75 @@ fn task_report_paths(task: &SuiteTask, task_root: &Path) -> Vec<String> {
         .collect()
 }
 
+fn tool_in_path(tool: &str) -> bool {
+    if tool == "bijux-dev-atlas" {
+        return true;
+    }
+    let Some(path) = std::env::var_os("PATH") else {
+        return false;
+    };
+    std::env::split_paths(&path).any(|entry| entry.join(tool).is_file())
+}
+
+fn suite_preflight_report(suite_id: &str, run_id: &str, tasks: &[SuiteTask]) -> serde_json::Value {
+    let rows = tasks
+        .iter()
+        .map(|task| {
+            let missing_tools = task
+                .requires_tools
+                .iter()
+                .filter(|tool| !tool_in_path(tool))
+                .cloned()
+                .collect::<Vec<_>>();
+            serde_json::json!({
+                "id": task.id,
+                "group": task.group,
+                "mode": task.mode,
+                "required_tools": task.requires_tools,
+                "missing_tools": missing_tools,
+                "missing_tools_policy": task.missing_tools_policy,
+                "status": if missing_tools.is_empty() { "ready" } else if task.missing_tools_policy == "skip" { "skip" } else { "fail" }
+            })
+        })
+        .collect::<Vec<_>>();
+    let missing_tool_tasks = rows
+        .iter()
+        .filter(|row| row["missing_tools"].as_array().is_some_and(|value| !value.is_empty()))
+        .count();
+    serde_json::json!({
+        "report_id": "suite-preflight",
+        "version": 1,
+        "inputs": {
+            "suite": suite_id,
+            "run_id": run_id
+        },
+        "suite": suite_id,
+        "run_id": run_id,
+        "status": if missing_tool_tasks == 0 { "ready" } else { "degraded" },
+        "summary": {
+            "task_count": tasks.len(),
+            "missing_tool_tasks": missing_tool_tasks
+        },
+        "rows": rows
+    })
+}
+
+fn skipped_or_failed_output(task: &SuiteTask, missing_tools: Vec<String>) -> TaskOutput {
+    TaskOutput {
+        task: task.clone(),
+        status: if task.missing_tools_policy == "skip" {
+            "skip".to_string()
+        } else {
+            "fail".to_string()
+        },
+        duration_ms: 0,
+        report_paths: Vec::new(),
+        error_summary: Some(format!("missing required tools: {}", missing_tools.join(", "))),
+        stdout_path: String::new(),
+        stderr_path: String::new(),
+    }
+}
+
 fn task_status_from_exit(code: i32) -> &'static str {
     if code == 0 {
         "pass"
@@ -480,34 +588,45 @@ fn run_task(repo_root: &Path, task_root: &Path, task: &SuiteTask) -> Result<Task
     let mut status = "pass".to_string();
     let mut error_summary = None;
 
-    for command in &task.commands {
-        let (program, args) = parse_command_invocation(command)?;
-        let output = Command::new(&program)
-            .args(&args)
-            .current_dir(repo_root)
-            .env("TMPDIR", &temp_root)
-            .env("TMP", &temp_root)
-            .env("TEMP", &temp_root)
-            .env("ATLAS_SUITE_TASK_ARTIFACT_ROOT", task_root)
-            .output()
-            .map_err(|err| format!("run `{command}` failed: {err}"))?;
-        if !combined_stdout.is_empty() {
-            combined_stdout.push('\n');
+    for attempt in 0..=task.retries {
+        combined_stdout.clear();
+        combined_stderr.clear();
+        status = "pass".to_string();
+        error_summary = None;
+        let mut failed = false;
+        for command in &task.commands {
+            let (program, args) = parse_command_invocation(command)?;
+            let output = Command::new(&program)
+                .args(&args)
+                .current_dir(repo_root)
+                .env("TMPDIR", &temp_root)
+                .env("TMP", &temp_root)
+                .env("TEMP", &temp_root)
+                .env("ATLAS_SUITE_TASK_ARTIFACT_ROOT", task_root)
+                .output()
+                .map_err(|err| format!("run `{command}` failed: {err}"))?;
+            if !combined_stdout.is_empty() {
+                combined_stdout.push('\n');
+            }
+            if !combined_stderr.is_empty() {
+                combined_stderr.push('\n');
+            }
+            combined_stdout.push_str(&String::from_utf8_lossy(&output.stdout));
+            combined_stderr.push_str(&String::from_utf8_lossy(&output.stderr));
+            let code = output.status.code().unwrap_or(1);
+            if code != 0 {
+                status = task_status_from_exit(code).to_string();
+                let stderr = String::from_utf8_lossy(&output.stderr);
+                let summary = stderr
+                    .lines()
+                    .find(|line| !line.trim().is_empty())
+                    .unwrap_or("command failed");
+                error_summary = Some(format!("{command}: {summary}"));
+                failed = true;
+                break;
+            }
         }
-        if !combined_stderr.is_empty() {
-            combined_stderr.push('\n');
-        }
-        combined_stdout.push_str(&String::from_utf8_lossy(&output.stdout));
-        combined_stderr.push_str(&String::from_utf8_lossy(&output.stderr));
-        let code = output.status.code().unwrap_or(1);
-        if code != 0 {
-            status = task_status_from_exit(code).to_string();
-            let stderr = String::from_utf8_lossy(&output.stderr);
-            let summary = stderr
-                .lines()
-                .find(|line| !line.trim().is_empty())
-                .unwrap_or("command failed");
-            error_summary = Some(format!("{command}: {summary}"));
+        if !failed || attempt == task.retries {
             break;
         }
     }
@@ -717,14 +836,44 @@ fn execute_suite_run(options: SuiteRunOptions) -> Result<(String, i32), String> 
         .join(&run_id);
     fs::create_dir_all(&suite_root)
         .map_err(|err| format!("create {} failed: {err}", suite_root.display()))?;
+    let preflight = suite_preflight_report(&suite_id, &run_id, &tasks);
+    validate_named_report(&options.repo_root, suite_preflight_schema_name(), &preflight)?;
+    let preflight_path = suite_root.join("suite-preflight.json");
+    let preflight_text = serde_json::to_string_pretty(&preflight)
+        .map_err(|err| format!("encode suite preflight failed: {err}"))?;
+    fs::write(&preflight_path, format!("{preflight_text}\n"))
+        .map_err(|err| format!("write {} failed: {err}", preflight_path.display()))?;
 
-    let task_outputs = run_tasks_parallel(
+    let (runnable, gated) = tasks
+        .into_iter()
+        .partition::<Vec<_>, _>(|task| task.requires_tools.iter().all(|tool| tool_in_path(tool)));
+    let mut task_outputs = gated
+        .into_iter()
+        .map(|task| {
+            let missing_tools = task
+                .requires_tools
+                .iter()
+                .filter(|tool| !tool_in_path(tool))
+                .cloned()
+                .collect::<Vec<_>>();
+            let output = skipped_or_failed_output(&task, missing_tools);
+            let task_root = suite_root.join(&task.id);
+            fs::create_dir_all(&task_root)
+                .map_err(|err| format!("create {} failed: {err}", task_root.display()))?;
+            write_task_result(&options.repo_root, &task_root, &output)?;
+            Ok(output)
+        })
+        .collect::<Result<Vec<_>, String>>()?;
+
+    let mut executed = run_tasks_parallel(
         &options.repo_root,
         &suite_root,
-        tasks,
+        runnable,
         jobs,
         options.fail_fast.unwrap_or(false),
     )?;
+    task_outputs.append(&mut executed);
+    task_outputs.sort_by(|a, b| a.task.id.cmp(&b.task.id));
     let summary = summary_report(&suite_id, &run_id, &task_outputs, &suite_root);
     validate_named_report(&options.repo_root, suite_summary_schema_name(), &summary)?;
     let summary_path = suite_root.join("suite-summary.json");
@@ -790,6 +939,81 @@ pub(crate) fn run_registry_check_by_id(
     write_task_result(&options.repo_root, &task_root, &output)?;
     let summary = summary_report(&suite_id, &run_id, std::slice::from_ref(&output), &suite_root);
     validate_named_report(&options.repo_root, suite_summary_schema_name(), &summary)?;
+    let summary_text = serde_json::to_string_pretty(&summary)
+        .map_err(|err| format!("encode suite summary failed: {err}"))?;
+    fs::write(suite_root.join("suite-summary.json"), format!("{summary_text}\n"))
+        .map_err(|err| format!("write suite summary failed: {err}"))?;
+    let rendered = render_run_output(&summary, format)?;
+    write_output_if_requested(out, &rendered)?;
+    let exit = if output.status == "pass" { 0 } else { 1 };
+    Ok((rendered, exit))
+}
+
+fn normalized_contract_runner(task: &SuiteTask) -> Vec<String> {
+    task.commands
+        .iter()
+        .map(|command| normalized_contract_command(command, &task.mode, &task.id))
+        .collect()
+}
+
+pub(crate) fn run_registry_contract_by_id(
+    repo_root: Option<PathBuf>,
+    artifacts_root: Option<PathBuf>,
+    run_id: Option<String>,
+    contract_id: String,
+    _fail_fast: bool,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let task = select_tasks(&root, "contracts", SuiteModeArg::All, None, None)?
+        .into_iter()
+        .find(|task| task.id == contract_id)
+        .ok_or_else(|| format!("unknown contract id `{contract_id}`"))?;
+    let effective_run_id = run_id.unwrap_or_else(|| format!("contract-{}", contract_id.to_ascii_lowercase()));
+    let suite_root = artifacts_root
+        .unwrap_or_else(|| root.join("artifacts"))
+        .join("suites")
+        .join("contracts")
+        .join(&effective_run_id);
+    fs::create_dir_all(&suite_root)
+        .map_err(|err| format!("create {} failed: {err}", suite_root.display()))?;
+
+    let mut runnable = task.clone();
+    runnable.commands = normalized_contract_runner(&task);
+    let preflight = suite_preflight_report("contracts", &effective_run_id, std::slice::from_ref(&runnable));
+    validate_named_report(&root, suite_preflight_schema_name(), &preflight)?;
+    let preflight_text = serde_json::to_string_pretty(&preflight)
+        .map_err(|err| format!("encode suite preflight failed: {err}"))?;
+    fs::write(suite_root.join("suite-preflight.json"), format!("{preflight_text}\n"))
+        .map_err(|err| format!("write suite preflight failed: {err}"))?;
+
+    let task_root = suite_root.join(&runnable.id);
+    let missing_tools = runnable
+        .requires_tools
+        .iter()
+        .filter(|tool| !tool_in_path(tool))
+        .cloned()
+        .collect::<Vec<_>>();
+    let output = if missing_tools.is_empty() {
+        let output = run_task(&root, &task_root, &runnable)?;
+        write_task_result(&root, &task_root, &output)?;
+        output
+    } else {
+        let output = skipped_or_failed_output(&runnable, missing_tools);
+        fs::create_dir_all(&task_root)
+            .map_err(|err| format!("create {} failed: {err}", task_root.display()))?;
+        write_task_result(&root, &task_root, &output)?;
+        output
+    };
+
+    let summary = summary_report(
+        "contracts",
+        &effective_run_id,
+        std::slice::from_ref(&output),
+        &suite_root,
+    );
+    validate_named_report(&root, suite_summary_schema_name(), &summary)?;
     let summary_text = serde_json::to_string_pretty(&summary)
         .map_err(|err| format!("encode suite summary failed: {err}"))?;
     fs::write(suite_root.join("suite-summary.json"), format!("{summary_text}\n"))
@@ -999,6 +1223,22 @@ mod tests {
                     "summary":{"type":"object"},
                     "failures":{"type":"array"},
                     "tasks":{"type":"array"}
+                }
+            }),
+        );
+        write_json(
+            &dir.path().join("configs/contracts/reports/suite-preflight.schema.json"),
+            &serde_json::json!({
+                "required":["report_id","version","inputs","suite","run_id","status","summary","rows"],
+                "properties":{
+                    "report_id":{"const":"suite-preflight"},
+                    "version":{"const":1},
+                    "inputs":{"type":"object"},
+                    "suite":{"type":"string"},
+                    "run_id":{"type":"string"},
+                    "status":{"type":"string"},
+                    "summary":{"type":"object"},
+                    "rows":{"type":"array"}
                 }
             }),
         );

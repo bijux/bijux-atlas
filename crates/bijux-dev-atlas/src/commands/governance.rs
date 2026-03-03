@@ -168,6 +168,9 @@ struct ChecksRegistryEntry {
     replaces: Option<Vec<String>>,
     tags: Option<Vec<String>>,
     since_version: Option<String>,
+    retries: Option<u64>,
+    requires_tools: Option<Vec<String>>,
+    missing_tools_policy: Option<String>,
     suite_membership: Vec<String>,
     severity: String,
     stage: String,
@@ -193,6 +196,9 @@ struct ContractsRegistryEntry {
     reports: Vec<String>,
     suite_membership: Vec<String>,
     tags: Option<Vec<String>>,
+    retries: Option<u64>,
+    requires_tools: Option<Vec<String>>,
+    missing_tools_policy: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -902,6 +908,35 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
                 errors.push(format!("{} since_version must not be blank", check.check_id));
             }
         }
+        if let Some(retries) = check.retries {
+            let has_flaky_tag = check
+                .tags
+                .as_ref()
+                .map(|tags| tags.iter().any(|tag| tag == "flaky"))
+                .unwrap_or(false);
+            if retries > 1 && !has_flaky_tag {
+                errors.push(format!(
+                    "{} retries `{}` exceeds 1 without flaky tag",
+                    check.check_id, retries
+                ));
+            }
+        }
+        if let Some(requires_tools) = &check.requires_tools {
+            if requires_tools.iter().any(|value| value.trim().is_empty()) {
+                errors.push(format!(
+                    "{} requires_tools must not contain blank tool names",
+                    check.check_id
+                ));
+            }
+        }
+        if let Some(policy) = &check.missing_tools_policy {
+            if !matches!(policy.as_str(), "fail" | "skip") {
+                errors.push(format!(
+                    "{} missing_tools_policy `{}` is invalid",
+                    check.check_id, policy
+                ));
+            }
+        }
         if !check.suite_membership.iter().any(|suite| suite == "checks") {
             errors.push(format!(
                 "{} suite_membership must include `checks`",
@@ -974,6 +1009,35 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
                 if !allowed_tags.contains(tag) {
                     errors.push(format!("{} uses unknown tag `{}`", contract.contract_id, tag));
                 }
+            }
+        }
+        if let Some(retries) = contract.retries {
+            let has_flaky_tag = contract
+                .tags
+                .as_ref()
+                .map(|tags| tags.iter().any(|tag| tag == "flaky"))
+                .unwrap_or(false);
+            if retries > 1 && !has_flaky_tag {
+                errors.push(format!(
+                    "{} retries `{}` exceeds 1 without flaky tag",
+                    contract.contract_id, retries
+                ));
+            }
+        }
+        if let Some(requires_tools) = &contract.requires_tools {
+            if requires_tools.iter().any(|value| value.trim().is_empty()) {
+                errors.push(format!(
+                    "{} requires_tools must not contain blank tool names",
+                    contract.contract_id
+                ));
+            }
+        }
+        if let Some(policy) = &contract.missing_tools_policy {
+            if !matches!(policy.as_str(), "fail" | "skip") {
+                errors.push(format!(
+                    "{} missing_tools_policy `{}` is invalid",
+                    contract.contract_id, policy
+                ));
             }
         }
         if !contract.suite_membership.iter().any(|suite| suite == "contracts") {

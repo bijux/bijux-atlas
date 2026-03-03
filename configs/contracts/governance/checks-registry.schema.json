@@ -123,6 +123,25 @@
             "type": "string",
             "minLength": 1
           },
+          "retries": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "requires_tools": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "missing_tools_policy": {
+            "type": "string",
+            "enum": [
+              "fail",
+              "skip"
+            ]
+          },
           "suite_membership": {
             "type": "array",
             "items": {

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/reports/suite-preflight.schema.json",
+  "title": "Suite Preflight Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_id",
+    "version",
+    "inputs",
+    "suite",
+    "run_id",
+    "status",
+    "summary",
+    "rows"
+  ],
+  "properties": {
+    "report_id": { "const": "suite-preflight" },
+    "version": { "const": 1 },
+    "inputs": { "type": "object" },
+    "suite": { "type": "string" },
+    "run_id": { "type": "string" },
+    "status": { "type": "string" },
+    "summary": { "type": "object" },
+    "rows": { "type": "array" }
+  }
+}

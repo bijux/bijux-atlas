@@ -161,6 +161,10 @@ pub enum Command {
         #[command(subcommand)]
         command: CheckCommand,
     },
+    Contract {
+        #[command(subcommand)]
+        command: ContractCommand,
+    },
     Suites {
         #[command(subcommand)]
         command: SuitesCommand,

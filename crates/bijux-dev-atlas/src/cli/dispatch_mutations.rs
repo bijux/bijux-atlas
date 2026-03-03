@@ -2,8 +2,8 @@
 
 use crate::cli::{
     ArtifactsCommand, CheckCommand, CheckRegistryCommand, Command, ConfigsCommand,
-    ContractsCommand, DatasetsCommand, DocsCommand, FormatArg, IngestCommand, MakeCommand,
-    OpsCommand, PerfCommand, PoliciesCommand, ReleaseCommand, SecurityCommand,
+    ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, FormatArg, IngestCommand,
+    MakeCommand, OpsCommand, PerfCommand, PoliciesCommand, ReleaseCommand, SecurityCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -14,6 +14,9 @@ pub(super) fn force_json_output(command: &mut Command) {
             crate::cli::SuitesCommand::Run { format, .. }
             | crate::cli::SuitesCommand::List { format, .. }
             | crate::cli::SuitesCommand::Describe { format, .. } => *format = FormatArg::Json,
+        },
+        Command::Contract { command } => match command {
+            ContractCommand::Run { format, .. } => *format = FormatArg::Json,
         },
         Command::Ops { command } => force_json_ops(command),
         Command::Docs { command } => force_json_docs(command),
@@ -441,6 +444,9 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
     match command {
         Command::Check {
             command: CheckCommand::Run { fail_fast, .. },
+        } => *fail_fast = true,
+        Command::Contract {
+            command: ContractCommand::Run { fail_fast, .. },
         } => *fail_fast = true,
         Command::Suites {
             command: crate::cli::SuitesCommand::Run {
@@ -925,6 +931,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | crate::cli::SuitesCommand::Describe { repo_root, .. } => {
                 *repo_root = Some(root.clone())
             }
+        },
+        Command::Contract { command } => match command {
+            ContractCommand::Run { repo_root, .. } => *repo_root = Some(root.clone()),
         },
         Command::Demo { command } => match command {
             crate::cli::DemoCommand::Quickstart(args) => args.repo_root = Some(root.clone()),

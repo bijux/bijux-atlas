@@ -9,6 +9,7 @@ use crate::{
     run_docker_command, run_docs_command, run_gates_command, run_governance_command,
     run_help_inventory_command, run_make_command, run_ops_command, run_perf_command,
     run_policies_command, run_print_boundaries_command, run_registry_check_by_id,
+    run_registry_contract_by_id,
     run_release_command, run_security_command, run_suites_command, run_version_command,
     run_workflows_command,
 };
@@ -457,6 +458,39 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                 }
                 Err(err) => {
                     let _ = writeln!(io::stderr(), "bijux-dev-atlas check failed: {err}");
+                    1
+                }
+            }
+        }
+        Command::Contract { command } => {
+            let result = match command {
+                crate::cli::ContractCommand::Run {
+                    contract_id,
+                    repo_root,
+                    artifacts_root,
+                    run_id,
+                    fail_fast,
+                    format,
+                    out,
+                } => run_registry_contract_by_id(
+                    repo_root,
+                    artifacts_root,
+                    run_id,
+                    contract_id,
+                    fail_fast,
+                    format,
+                    out,
+                ),
+            };
+            match result {
+                Ok((rendered, code)) => {
+                    if !cli.quiet && !rendered.is_empty() {
+                        let _ = writeln!(io::stdout(), "{rendered}");
+                    }
+                    code
+                }
+                Err(err) => {
+                    let _ = writeln!(io::stderr(), "bijux-dev-atlas contract failed: {err}");
                     1
                 }
             }

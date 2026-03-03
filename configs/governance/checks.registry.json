@@ -21,6 +21,11 @@
       "reports": [
         "artifacts/lint/rustfmt-check.json"
       ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
@@ -55,6 +60,11 @@
         "artifacts/lint/clippy.json",
         "artifacts/lint/report.json"
       ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
@@ -87,6 +97,11 @@
       "reports": [
         "artifacts/lint-policy/report.json"
       ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
@@ -121,6 +136,11 @@
       "reports": [
         "artifacts/configs-lint/report.json"
       ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
@@ -153,6 +173,11 @@
       "reports": [
         "artifacts/docs-validate/report.json"
       ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
@@ -186,6 +211,11 @@
       "reports": [
         "artifacts/k8s-validate/report.json"
       ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
@@ -219,6 +249,11 @@
       "reports": [
         "artifacts/supply-chain/supply-chain.json"
       ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
@@ -252,6 +287,11 @@
       "reports": [
         "artifacts/supply-chain/supply-chain.json"
       ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
@@ -284,6 +324,11 @@
       "reports": [
         "artifacts/ops-fast/report.json"
       ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
@@ -317,6 +362,11 @@
       "reports": [
         "artifacts/ops-pr/report.json"
       ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
@@ -350,6 +400,11 @@
       "reports": [
         "artifacts/ops-nightly/report.json"
       ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
@@ -384,6 +439,11 @@
       "reports": [
         "artifacts/contracts/docs-required.json"
       ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
@@ -416,6 +476,11 @@
       "reports": [
         "artifacts/contracts/configs-required.json"
       ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
@@ -448,6 +513,11 @@
       "reports": [
         "artifacts/contracts/make-required.json"
       ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
@@ -481,6 +551,11 @@
       "reports": [
         "artifacts/contracts/repo-required.json"
       ],
+      "retries": 0,
+      "requires_tools": [
+        "bijux-dev-atlas"
+      ],
+      "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
