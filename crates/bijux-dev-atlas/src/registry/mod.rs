@@ -13,7 +13,7 @@ pub use crate::core::{
     validate_registry, Registry, RegistryDoctorReport, SuiteSpec, DEFAULT_REGISTRY_PATH,
 };
 pub use reports::{
-    ReportArtifactValidation, ReportCatalogValidation, ReportRegistry, ReportRegistryEntry,
-    REPORTS_REGISTRY_PATH, REPORTS_REGISTRY_SCHEMA_PATH,
+    ReportArtifactValidation, ReportCatalogValidation, ReportProgress, ReportProgressRow,
+    ReportRegistry, ReportRegistryEntry, REPORTS_REGISTRY_PATH, REPORTS_REGISTRY_SCHEMA_PATH,
 };
 pub use runnable::RunnableRegistry;

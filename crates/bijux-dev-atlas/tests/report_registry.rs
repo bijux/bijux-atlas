@@ -105,3 +105,18 @@ fn report_registry_validates_report_artifacts() {
 
     let _ = fs::remove_dir_all(&temp_root);
 }
+
+#[test]
+fn report_registry_renders_markdown_index() {
+    let markdown = ReportRegistry::render_index_markdown(&repo_root()).expect("report index");
+    assert!(markdown.contains("| `ops-profiles` | `1` |"));
+    assert!(markdown.starts_with("# Report Index"));
+}
+
+#[test]
+fn report_registry_progress_tracks_missing_metadata() {
+    let progress = ReportRegistry::progress(&repo_root()).expect("report progress");
+    assert_eq!(progress.total_reports, 5);
+    assert_eq!(progress.missing_schema_files, 0);
+    assert_eq!(progress.missing_example_paths, 0);
+}

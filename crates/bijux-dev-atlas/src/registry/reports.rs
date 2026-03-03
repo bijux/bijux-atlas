@@ -37,6 +37,20 @@ pub struct ReportArtifactValidation {
     pub errors: Vec<String>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ReportProgress {
+    pub total_reports: usize,
+    pub missing_example_paths: usize,
+    pub missing_schema_files: usize,
+    pub rows: Vec<ReportProgressRow>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ReportProgressRow {
+    pub report_id: String,
+    pub missing: Vec<String>,
+}
+
 impl ReportRegistry {
     pub fn load(repo_root: &Path) -> Result<Self, String> {
         let path = repo_root.join(REPORTS_REGISTRY_PATH);
@@ -138,6 +152,50 @@ impl ReportRegistry {
         Ok(ReportArtifactValidation {
             scanned_reports,
             errors,
+        })
+    }
+
+    pub fn render_index_markdown(repo_root: &Path) -> Result<String, String> {
+        let registry = Self::load(repo_root)?;
+        let mut out = String::from("# Report Index\n\n");
+        out.push_str("| Report ID | Version | Schema | Example |\n");
+        out.push_str("| --- | --- | --- | --- |\n");
+        for report in &registry.reports {
+            out.push_str(&format!(
+                "| `{}` | `{}` | `{}` | `{}` |\n",
+                report.report_id, report.version, report.schema_path, report.example_path
+            ));
+        }
+        Ok(out)
+    }
+
+    pub fn progress(repo_root: &Path) -> Result<ReportProgress, String> {
+        let registry = Self::load(repo_root)?;
+        let mut rows = Vec::new();
+        let mut missing_example_paths = 0usize;
+        let mut missing_schema_files = 0usize;
+        for report in &registry.reports {
+            let mut missing = Vec::new();
+            if report.example_path.trim().is_empty() {
+                missing.push("example_path".to_string());
+                missing_example_paths += 1;
+            }
+            if !repo_root.join(&report.schema_path).exists() {
+                missing.push("schema_file".to_string());
+                missing_schema_files += 1;
+            }
+            if !missing.is_empty() {
+                rows.push(ReportProgressRow {
+                    report_id: report.report_id.clone(),
+                    missing,
+                });
+            }
+        }
+        Ok(ReportProgress {
+            total_reports: registry.reports.len(),
+            missing_example_paths,
+            missing_schema_files,
+            rows,
         })
     }
 }

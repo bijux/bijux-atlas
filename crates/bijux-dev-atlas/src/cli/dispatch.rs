@@ -674,6 +674,78 @@ fn run_reports_command(
                 },
             ))
         }
+        ReportsCommand::Index(args) => {
+            let repo_root = resolve_repo_root(args.repo_root)?;
+            let markdown = ReportRegistry::render_index_markdown(&repo_root)?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "reports_index",
+                "markdown": markdown,
+            });
+            let rendered = match effective_format(global, args.format) {
+                GlobalFormatArg::Human => {
+                    payload["markdown"].as_str().unwrap_or_default().to_string()
+                }
+                GlobalFormatArg::Json => serde_json::to_string_pretty(&payload)
+                    .map_err(|err| format!("encode reports index failed: {err}"))?,
+                GlobalFormatArg::Both => format!(
+                    "{}\n{}",
+                    payload["markdown"].as_str().unwrap_or_default(),
+                    serde_json::to_string_pretty(&payload)
+                        .map_err(|err| format!("encode reports index failed: {err}"))?
+                ),
+            };
+            if let Some(path) = args.out {
+                std::fs::write(&path, format!("{rendered}\n"))
+                    .map_err(|err| format!("write {} failed: {err}", path.display()))?;
+            }
+            Ok((rendered, EXIT_SUCCESS))
+        }
+        ReportsCommand::Progress(args) => {
+            let repo_root = resolve_repo_root(args.repo_root)?;
+            let progress = ReportRegistry::progress(&repo_root)?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "reports_progress",
+                "summary": {
+                    "total_reports": progress.total_reports,
+                    "missing_example_paths": progress.missing_example_paths,
+                    "missing_schema_files": progress.missing_schema_files,
+                    "rows": progress.rows.len(),
+                },
+                "rows": progress.rows.iter().map(|row| serde_json::json!({
+                    "report_id": row.report_id,
+                    "missing": row.missing,
+                })).collect::<Vec<_>>()
+            });
+            let rendered = match effective_format(global, args.format) {
+                GlobalFormatArg::Human => {
+                    let mut lines = vec![format!(
+                        "Reports: {} total, {} missing example paths, {} missing schema files",
+                        progress.total_reports,
+                        progress.missing_example_paths,
+                        progress.missing_schema_files
+                    )];
+                    for row in &progress.rows {
+                        lines.push(format!("- {}: {}", row.report_id, row.missing.join(", ")));
+                    }
+                    lines.join("\n")
+                }
+                GlobalFormatArg::Json => serde_json::to_string_pretty(&payload)
+                    .map_err(|err| format!("encode reports progress failed: {err}"))?,
+                GlobalFormatArg::Both => format!(
+                    "{}\n{}",
+                    payload["summary"]["rows"].as_u64().unwrap_or(0),
+                    serde_json::to_string_pretty(&payload)
+                        .map_err(|err| format!("encode reports progress failed: {err}"))?
+                ),
+            };
+            if let Some(path) = args.out {
+                std::fs::write(&path, format!("{rendered}\n"))
+                    .map_err(|err| format!("write {} failed: {err}", path.display()))?;
+            }
+            Ok((rendered, EXIT_SUCCESS))
+        }
         ReportsCommand::Validate(args) => {
             let repo_root = resolve_repo_root(args.repo_root)?;
             let validation = ReportRegistry::validate_reports_dir(&repo_root, &args.dir)?;

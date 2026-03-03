@@ -40,6 +40,8 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Artifacts { command } => force_json_artifacts(command),
         Command::Reports { command } => match command {
             ReportsCommand::List(args) => args.format = FormatArg::Json,
+            ReportsCommand::Index(args) => args.format = FormatArg::Json,
+            ReportsCommand::Progress(args) => args.format = FormatArg::Json,
             ReportsCommand::Validate(args) => args.format = FormatArg::Json,
         },
         Command::Demo { command } => force_json_demo(command),
@@ -580,6 +582,8 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         },
         Command::Reports { command } => match command {
             ReportsCommand::List(args) => args.repo_root = Some(root.clone()),
+            ReportsCommand::Index(args) => args.repo_root = Some(root.clone()),
+            ReportsCommand::Progress(args) => args.repo_root = Some(root.clone()),
             ReportsCommand::Validate(args) => args.repo_root = Some(root.clone()),
         },
         Command::Ops { command } => match command {

@@ -19,6 +19,8 @@ pub enum ArtifactsCommand {
 #[derive(Subcommand, Debug)]
 pub enum ReportsCommand {
     List(ReportsListArgs),
+    Index(ReportsListArgs),
+    Progress(ReportsListArgs),
     Validate(ReportsValidateArgs),
 }
 
