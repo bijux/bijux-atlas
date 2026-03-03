@@ -18,6 +18,7 @@ Run Atlas reliably on Kubernetes with one path for deploy, health checks, and fa
 - K8s validation in [E2E Kubernetes Tests](../e2e/k8s-tests.md)
 - Install profile guardrails in [Profile Invariants](profile-invariants.md)
 - Chart-level invariants in [Chart Contracts](chart-contracts.md)
+- Network policy modes in [NetworkPolicy](../networkpolicy.md)
 - Incident actions in [Incident Response](../incident-response.md)
 
 ## Verify success
