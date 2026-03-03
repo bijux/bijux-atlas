@@ -9,13 +9,12 @@
 #[cfg(test)]
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
-use std::time::Instant;
 
 #[cfg(test)]
 use crate::model::Visibility;
 use crate::model::{
     ArtifactsRoot, CheckId, CheckResult, CheckSpec, CheckStatus, DomainId, Effect, RunId,
-    RunReport, RunSummary, Severity, SuiteId, Tag, Violation,
+    RunReport, Severity, SuiteId, Tag, Violation,
 };
 use std::borrow::Cow;
 

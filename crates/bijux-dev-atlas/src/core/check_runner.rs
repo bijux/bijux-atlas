@@ -174,7 +174,7 @@ impl<'a> CheckRunner<'a> {
                 continue;
             }
 
-            let start = Instant::now();
+            let start = crate::engine::start_timer();
             let mut result = CheckResult {
                 schema_version: crate::model::schema_version(),
                 id: check.id().clone(),
@@ -210,7 +210,7 @@ impl<'a> CheckRunner<'a> {
                 }
             }
 
-            result.duration_ms = start.elapsed().as_millis() as u64;
+            result.duration_ms = crate::engine::elapsed_ms(start);
             if result
                 .evidence
                 .iter()
@@ -249,27 +249,6 @@ impl<'a> CheckRunner<'a> {
 
         results.sort_by(|a, b| a.id.as_str().cmp(b.id.as_str()));
 
-        let summary = RunSummary {
-            schema_version: crate::model::schema_version(),
-            passed: results
-                .iter()
-                .filter(|row| row.status == CheckStatus::Pass)
-                .count() as u64,
-            failed: results
-                .iter()
-                .filter(|row| row.status == CheckStatus::Fail)
-                .count() as u64,
-            skipped: results
-                .iter()
-                .filter(|row| row.status == CheckStatus::Skip)
-                .count() as u64,
-            errors: results
-                .iter()
-                .filter(|row| row.status == CheckStatus::Error)
-                .count() as u64,
-            total: results.len() as u64,
-        };
-
         let effective_selectors = Selectors {
             domain: self.selectors.domain.or(self.request.domain),
             include_internal: self.selectors.include_internal,
@@ -279,16 +258,14 @@ impl<'a> CheckRunner<'a> {
             suite: self.selectors.suite.clone(),
         };
 
-        Ok(RunReport {
-            schema_version: crate::model::schema_version(),
-            run_id: ctx.run_id,
-            repo_root: runtime.repo_root.display().to_string(),
-            command: self
-                .request
+        Ok(crate::engine::core_run_report(
+            ctx.run_id,
+            runtime.repo_root.display().to_string(),
+            self.request
                 .command
                 .clone()
                 .unwrap_or_else(|| "check run".to_string()),
-            selections: BTreeMap::from([
+            std::collections::BTreeMap::from([
                 (
                     "suite".to_string(),
                     effective_selectors
@@ -314,18 +291,9 @@ impl<'a> CheckRunner<'a> {
                     effective_selectors.id_glob.clone().unwrap_or_default(),
                 ),
             ]),
-            capabilities: BTreeMap::from([
-                ("fs_write".to_string(), runtime.capabilities.fs_write),
-                ("subprocess".to_string(), runtime.capabilities.subprocess),
-                ("git".to_string(), runtime.capabilities.git),
-                ("network".to_string(), runtime.capabilities.network),
-            ]),
+            runtime.capabilities,
             results,
-            durations_ms: timings.clone(),
-            counts: summary.clone(),
-            summary,
-            timings_ms: timings,
-        })
+        ))
     }
 }
 

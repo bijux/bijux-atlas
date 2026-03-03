@@ -12,9 +12,16 @@ use std::time::{Instant, SystemTime, UNIX_EPOCH};
 
 use crate::cli::{FormatArg, SuiteColorArg, SuiteModeArg, SuiteOutputFormatArg, SuitesCommand};
 use crate::resolve_repo_root;
+use bijux_dev_atlas::engine::{
+    ArtifactStore, CommandRunnableExecutor, EffectPolicy, RunStatus, RunnableExecutor,
+    RunnableRunContext,
+};
 use bijux_dev_atlas::docs::site_output::{
     validate_named_report, validate_report_value_against_schema,
 };
+use bijux_dev_atlas::model::{RunId, RunnableId, RunnableKind, RunnableSelection};
+use bijux_dev_atlas::registry::RunnableRegistry;
+use bijux_dev_atlas::runtime::{Capabilities, RealFs, RealProcessRunner};
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
 
@@ -2527,110 +2534,16 @@ pub(crate) fn run_registry_check_by_id(
     out: Option<PathBuf>,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(repo_root)?;
-    let tasks = select_tasks(&root, "checks", SuiteModeArg::All, None, None)?;
-    let known = tasks
-        .iter()
-        .map(|task| task.id.clone())
-        .collect::<BTreeSet<_>>();
-    if !known.contains(&check_id) {
-        return Err(format!("unknown check id `{check_id}`"));
-    }
-    let options = SuiteRunOptions {
-        suite: "checks".to_string(),
-        repo_root: root.clone(),
-        artifacts_root: artifacts_root.unwrap_or_else(|| root.join("artifacts")),
-        run_id_override: run_id.map(|value| format!("check-{check_id}-{value}")),
-        jobs: "1".to_string(),
-        fail_fast: Some(fail_fast),
-        mode: SuiteModeArg::All,
-        group: None,
-        tag: None,
-        format: match format {
-            FormatArg::Json => SuiteOutputFormatArg::Json,
-            FormatArg::Text => SuiteOutputFormatArg::Human,
-            FormatArg::Jsonl => {
-                return Err("jsonl output is not supported for check run".to_string())
-            }
-        },
-        quiet: false,
-        verbose: false,
-        color: SuiteColorArg::Never,
-        strict: true,
-        out: out.clone(),
-    };
-    let suite_id = normalize_suite_id(&options.suite);
-    let run_id = match options.run_id_override.clone() {
-        Some(value) => value,
-        None => deterministic_run_id(&options.repo_root, &suite_id, options.mode, None, None)?,
-    };
-    let suite_root = options
-        .artifacts_root
-        .join("suites")
-        .join(&suite_id)
-        .join(&run_id);
-    fs::create_dir_all(&suite_root)
-        .map_err(|err| format!("create {} failed: {err}", suite_root.display()))?;
-    let task = tasks
-        .into_iter()
-        .find(|task| task.id == check_id)
-        .ok_or_else(|| format!("unknown check id `{check_id}`"))?;
-    let task_root = suite_root.join(&task.id);
-    let output = run_task(&options.repo_root, &task_root, &task)?;
-    write_task_result(&options.repo_root, &task_root, &output)?;
-    let summary = summary_report(
-        &suite_id,
-        &run_id,
-        std::slice::from_ref(&output),
-        &suite_root,
-        output.duration_ms,
-        true,
-        &[SchedulingLane {
-            batch: 0,
-            id: output.task.id.clone(),
-            group: output.task.group.clone(),
-            mode: output.task.mode.clone(),
-            severity: output.task.severity.clone(),
-            cpu_hint: output.task.cpu_hint.clone(),
-            mem_hint: output.task.mem_hint.clone(),
-        }],
-    );
-    validate_named_report(&options.repo_root, suite_summary_schema_name(), &summary)?;
-    let summary_text = serde_json::to_string_pretty(&summary)
-        .map_err(|err| format!("encode suite summary failed: {err}"))?;
-    fs::write(
-        suite_root.join("suite-summary.json"),
-        format!("{summary_text}\n"),
+    run_registered_runnable(
+        &root,
+        artifacts_root,
+        run_id.map(|value| format!("check-{check_id}-{value}")),
+        check_id,
+        RunnableKind::Check,
+        fail_fast,
+        format,
+        out,
     )
-    .map_err(|err| format!("write suite summary failed: {err}"))?;
-    write_latest_run_pointer(&options.artifacts_root, &suite_id, &run_id, &suite_root)?;
-    append_suite_history_entries(
-        &options.repo_root,
-        &options.artifacts_root,
-        &suite_id,
-        &run_id,
-        std::slice::from_ref(&output),
-    )?;
-    let rendered = render_suite_output(
-        &summary,
-        &[result_report(&output)],
-        &suite_root,
-        options.format,
-        false,
-        false,
-        SuiteColorArg::Never,
-        &[],
-        Some(&registry_completeness_footer(&options.repo_root)?),
-    )?;
-    write_output_if_requested(out, &rendered)?;
-    let exit = if output.status == "pass" { 0 } else { 1 };
-    Ok((rendered, exit))
-}
-
-fn normalized_contract_runner(task: &SuiteTask) -> Vec<String> {
-    task.commands
-        .iter()
-        .map(|command| normalized_contract_command(command, &task.mode, &task.id))
-        .collect()
 }
 
 pub(crate) fn run_registry_contract_by_id(
@@ -2643,108 +2556,136 @@ pub(crate) fn run_registry_contract_by_id(
     out: Option<PathBuf>,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(repo_root)?;
-    let artifacts_root = artifacts_root.unwrap_or_else(|| root.join("artifacts"));
-    let task = select_tasks(&root, "contracts", SuiteModeArg::All, None, None)?
-        .into_iter()
-        .find(|task| task.id == contract_id)
-        .ok_or_else(|| format!("unknown contract id `{contract_id}`"))?;
-    let effective_run_id =
-        run_id.unwrap_or_else(|| format!("contract-{}", contract_id.to_ascii_lowercase()));
-    let suite_root = artifacts_root
-        .join("suites")
-        .join("contracts")
-        .join(&effective_run_id);
-    fs::create_dir_all(&suite_root)
-        .map_err(|err| format!("create {} failed: {err}", suite_root.display()))?;
-
-    let mut runnable = task.clone();
-    runnable.commands = normalized_contract_runner(&task);
-    let preflight = suite_preflight_report(
-        "contracts",
-        &effective_run_id,
-        std::slice::from_ref(&runnable),
-    );
-    validate_named_report(&root, suite_preflight_schema_name(), &preflight)?;
-    let preflight_text = serde_json::to_string_pretty(&preflight)
-        .map_err(|err| format!("encode suite preflight failed: {err}"))?;
-    fs::write(
-        suite_root.join("suite-preflight.json"),
-        format!("{preflight_text}\n"),
-    )
-    .map_err(|err| format!("write suite preflight failed: {err}"))?;
-
-    let task_root = suite_root.join(&runnable.id);
-    let missing_tools = runnable
-        .requires_tools
-        .iter()
-        .filter(|tool| !tool_in_path(tool))
-        .cloned()
-        .collect::<Vec<_>>();
-    let output = if missing_tools.is_empty() {
-        let output = run_task(&root, &task_root, &runnable)?;
-        write_task_result(&root, &task_root, &output)?;
-        output
-    } else {
-        let output = skipped_or_failed_output(&runnable, missing_tools);
-        fs::create_dir_all(&task_root)
-            .map_err(|err| format!("create {} failed: {err}", task_root.display()))?;
-        write_task_result(&root, &task_root, &output)?;
-        output
-    };
-
-    let summary = summary_report(
-        "contracts",
-        &effective_run_id,
-        std::slice::from_ref(&output),
-        &suite_root,
-        output.duration_ms,
-        true,
-        &[SchedulingLane {
-            batch: 0,
-            id: output.task.id.clone(),
-            group: output.task.group.clone(),
-            mode: output.task.mode.clone(),
-            severity: output.task.severity.clone(),
-            cpu_hint: output.task.cpu_hint.clone(),
-            mem_hint: output.task.mem_hint.clone(),
-        }],
-    );
-    validate_named_report(&root, suite_summary_schema_name(), &summary)?;
-    let summary_text = serde_json::to_string_pretty(&summary)
-        .map_err(|err| format!("encode suite summary failed: {err}"))?;
-    fs::write(
-        suite_root.join("suite-summary.json"),
-        format!("{summary_text}\n"),
-    )
-    .map_err(|err| format!("write suite summary failed: {err}"))?;
-    write_latest_run_pointer(&artifacts_root, "contracts", &effective_run_id, &suite_root)?;
-    append_suite_history_entries(
+    run_registered_runnable(
         &root,
-        &artifacts_root,
-        "contracts",
-        &effective_run_id,
-        std::slice::from_ref(&output),
-    )?;
-    let rendered = render_suite_output(
-        &summary,
-        &[result_report(&output)],
-        &suite_root,
-        match format {
-            FormatArg::Json => SuiteOutputFormatArg::Json,
-            FormatArg::Text => SuiteOutputFormatArg::Human,
-            FormatArg::Jsonl => {
-                return Err("jsonl output is not supported for contract run".to_string())
-            }
+        artifacts_root,
+        run_id.or_else(|| Some(format!("contract-{}", contract_id.to_ascii_lowercase()))),
+        contract_id,
+        RunnableKind::Contract,
+        false,
+        format,
+        out,
+    )
+}
+
+fn run_registered_runnable(
+    repo_root: &Path,
+    artifacts_root: Option<PathBuf>,
+    run_id: Option<String>,
+    runnable_id: String,
+    kind: RunnableKind,
+    _fail_fast: bool,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    if matches!(format, FormatArg::Jsonl) {
+        return Err("jsonl output is not supported for runnable execution".to_string());
+    }
+
+    let registry = RunnableRegistry::load(repo_root)?;
+    let selection = RunnableSelection {
+        suite: None,
+        group: None,
+        tag: None,
+        id: Some(RunnableId::parse(&runnable_id)?),
+    };
+    let mut selected = registry.select(&selection);
+    let Some(mut entry) = selected.pop() else {
+        return Err(format!("unknown runnable id `{runnable_id}`"));
+    };
+    if entry.kind != kind {
+        return Err(format!("runnable `{runnable_id}` is not a {:?}", kind).to_lowercase());
+    }
+    if entry.kind == RunnableKind::Contract {
+        entry.commands = normalized_contract_runner_from_entry(&entry);
+    }
+
+    let effective_run_id = RunId::from_seed(
+        &run_id.unwrap_or_else(|| format!("{}-{}", entry.suite.as_str(), entry.id.as_str())),
+    );
+    let artifact_root = artifacts_root
+        .unwrap_or_else(|| repo_root.join("artifacts").join("run"));
+    let context = RunnableRunContext {
+        repo_root: repo_root.to_path_buf(),
+        run_id: effective_run_id.clone(),
+        artifact_store: ArtifactStore::new(artifact_root),
+        effect_policy: EffectPolicy {
+            capabilities: Capabilities {
+                fs_write: true,
+                subprocess: true,
+                git: true,
+                network: true,
+            },
         },
-        false,
-        false,
-        SuiteColorArg::Never,
-        &[],
-        Some(&registry_completeness_footer(&root)?),
-    )?;
+    };
+    let process = RealProcessRunner;
+    let fs = RealFs;
+    let executor = CommandRunnableExecutor {
+        process: &process,
+        fs: &fs,
+    };
+    let result = executor.execute(&entry, &context)?;
+    let status = match result.status {
+        RunStatus::Pass => "pass",
+        RunStatus::Fail => "fail",
+        RunStatus::Skip => "skip",
+        RunStatus::Error => "error",
+    };
+    let payload = serde_json::json!({
+        "suite": entry.suite.as_str(),
+        "run_id": effective_run_id.as_str(),
+        "runnable_id": entry.id.as_str(),
+        "kind": match entry.kind {
+            RunnableKind::Check => "check",
+            RunnableKind::Contract => "contract",
+        },
+        "status": status,
+        "duration_ms": result.duration_ms,
+        "summary": entry.summary,
+        "group": entry.group,
+        "reports": result.report_refs,
+        "failure_summary": result.failure_summary,
+        "skipped": result.skipped.as_ref().map(|item| serde_json::json!({
+            "reason": item.reason,
+            "required_tool": item.required_tool,
+        })),
+    });
+    let rendered = match format {
+        FormatArg::Json => serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode runnable result failed: {err}"))?,
+        FormatArg::Text => {
+            let mut lines = vec![
+                format!("{} {}", payload["kind"].as_str().unwrap_or("runnable"), entry.id),
+                format!("status: {}", status),
+                format!("run_id: {}", effective_run_id.as_str()),
+            ];
+            if let Some(summary) = result.failure_summary.as_ref() {
+                lines.push(format!("failure: {summary}"));
+            }
+            if let Some(skipped) = result.skipped.as_ref() {
+                lines.push(format!("skip: {}", skipped.reason));
+            }
+            lines.push(format!("artifacts: {}", context.artifact_store.root().display()));
+            lines.join("\n")
+        }
+        FormatArg::Jsonl => unreachable!(),
+    };
     write_output_if_requested(out, &rendered)?;
-    let exit = if output.status == "pass" { 0 } else { 1 };
+    let exit = if result.status == RunStatus::Pass { 0 } else { 1 };
     Ok((rendered, exit))
+}
+
+fn normalized_contract_runner_from_entry(
+    entry: &bijux_dev_atlas::model::RunnableEntry,
+) -> Vec<String> {
+    let mode = match entry.mode {
+        bijux_dev_atlas::model::RunnableMode::Pure => "pure",
+        bijux_dev_atlas::model::RunnableMode::Effect => "effect",
+    };
+    entry.commands
+        .iter()
+        .map(|command| normalized_contract_command(command, mode, entry.id.as_str()))
+        .collect()
 }
 
 pub(crate) fn run_suites_command(quiet: bool, command: SuitesCommand) -> i32 {
