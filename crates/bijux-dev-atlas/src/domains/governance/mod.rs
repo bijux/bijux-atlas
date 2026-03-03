@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Governance domain contracts canonical surface.
 
+pub mod checks;
 pub mod contracts;
 
 use crate::contracts::Contract;

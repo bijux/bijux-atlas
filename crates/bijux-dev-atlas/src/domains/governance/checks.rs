@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-//! Ops checks canonical module surface.
-
-pub mod baseline_checks;
-pub mod effect_checks;
-pub mod static_checks;
+//! Governance checks canonical module surface.
 
 use std::path::Path;
 
@@ -13,7 +9,7 @@ pub fn checks(repo_root: &Path) -> Result<Vec<CheckCatalogEntry>, String> {
     Ok(CheckCatalog::load(repo_root)?
         .entries()
         .iter()
-        .filter(|entry| entry.domain == "ops")
+        .filter(|entry| entry.domain == "governance")
         .cloned()
         .collect())
 }
