@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "group_set_id": "check-groups",
+  "owner": "team:atlas-governance",
+  "groups": [
+    {
+      "id": "configs",
+      "summary": "Configuration quality gates."
+    },
+    {
+      "id": "docs",
+      "summary": "Documentation quality gates."
+    },
+    {
+      "id": "governance",
+      "summary": "Repository and control-plane governance quality gates."
+    },
+    {
+      "id": "ops",
+      "summary": "Operational validation quality gates."
+    },
+    {
+      "id": "rust",
+      "summary": "Rust toolchain quality gates."
+    },
+    {
+      "id": "security",
+      "summary": "Supply-chain and security quality gates."
+    }
+  ]
+}

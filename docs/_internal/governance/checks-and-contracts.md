@@ -23,5 +23,6 @@ Contracts are governance invariants. They define product or operational guarante
 
 - Every check must declare at least one report artifact path in the registry.
 - Every check command list must be stored in deterministic execution order.
+- Every check must be idempotent when rerun against the same repository state and declared inputs.
 - The checks registry is the SSOT for stable check ids exposed by Make and CI.
 - The contracts registry is the SSOT for stable governance invariant ids exposed by the control plane.

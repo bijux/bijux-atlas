@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "policy_id": "registry-completeness-threshold",
+  "owner": "team:atlas-governance",
+  "required_field_coverage_percent": 100,
+  "required_rules": [
+    "all checks declare group",
+    "all checks declare reports",
+    "all checks declare resolvable commands",
+    "all contracts declare group",
+    "all suite entries resolve to a registry id"
+  ]
+}

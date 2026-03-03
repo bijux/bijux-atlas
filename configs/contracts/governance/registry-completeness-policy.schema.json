@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/governance/registry-completeness-policy.schema.json",
+  "title": "Registry Completeness Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "policy_id", "owner", "required_field_coverage_percent", "required_rules"],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "policy_id": { "type": "string", "const": "registry-completeness-threshold" },
+    "owner": { "type": "string", "minLength": 1 },
+    "required_field_coverage_percent": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "required_rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

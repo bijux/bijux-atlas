@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/governance/tags.schema.json",
+  "title": "Governance Tags",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "taxonomy_id", "owner", "tags"],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "taxonomy_id": { "type": "string", "const": "governance-tags" },
+    "owner": { "type": "string", "minLength": 1 },
+    "tags": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9_]+$"
+      }
+    }
+  }
+}

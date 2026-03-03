@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "index_id": "governance-suites",
+  "owner": "team:atlas-governance",
+  "suites": [
+    "checks.suite.json",
+    "contracts.suite.json",
+    "tests.suite.json"
+  ]
+}

@@ -13,6 +13,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "datasets",
+      "tags": [
+        "contracts",
+        "datasets"
       ]
     },
     {
@@ -26,6 +31,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "datasets",
+      "tags": [
+        "contracts",
+        "datasets"
       ]
     },
     {
@@ -39,6 +49,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "datasets",
+      "tags": [
+        "contracts",
+        "datasets"
       ]
     },
     {
@@ -52,6 +67,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "datasets",
+      "tags": [
+        "contracts",
+        "datasets"
       ]
     },
     {
@@ -65,6 +85,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "datasets",
+      "tags": [
+        "contracts",
+        "datasets"
       ]
     },
     {
@@ -78,6 +103,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "datasets",
+      "tags": [
+        "contracts",
+        "datasets"
       ]
     },
     {
@@ -91,6 +121,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "datasets",
+      "tags": [
+        "contracts",
+        "datasets"
       ]
     },
     {
@@ -104,6 +139,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "datasets",
+      "tags": [
+        "contracts",
+        "datasets"
       ]
     },
     {
@@ -117,6 +157,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "datasets",
+      "tags": [
+        "contracts",
+        "datasets"
       ]
     },
     {
@@ -130,6 +175,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "datasets",
+      "tags": [
+        "contracts",
+        "datasets"
       ]
     },
     {
@@ -143,6 +193,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "datasets",
+      "tags": [
+        "contracts",
+        "datasets"
       ]
     },
     {
@@ -156,6 +211,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "datasets",
+      "tags": [
+        "contracts",
+        "datasets"
       ]
     },
     {
@@ -169,6 +229,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "datasets",
+      "tags": [
+        "contracts",
+        "datasets"
       ]
     },
     {
@@ -182,6 +247,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "datasets",
+      "tags": [
+        "contracts",
+        "datasets"
       ]
     },
     {
@@ -195,6 +265,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "e2e",
+      "tags": [
+        "contracts",
+        "e2e"
       ]
     },
     {
@@ -208,6 +283,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "e2e",
+      "tags": [
+        "contracts",
+        "e2e"
       ]
     },
     {
@@ -221,6 +301,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "e2e",
+      "tags": [
+        "contracts",
+        "e2e"
       ]
     },
     {
@@ -234,6 +319,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "e2e",
+      "tags": [
+        "contracts",
+        "e2e"
       ]
     },
     {
@@ -247,6 +337,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "e2e",
+      "tags": [
+        "contracts",
+        "e2e"
       ]
     },
     {
@@ -260,6 +355,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "e2e",
+      "tags": [
+        "contracts",
+        "e2e"
       ]
     },
     {
@@ -273,6 +373,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "e2e",
+      "tags": [
+        "contracts",
+        "e2e"
       ]
     },
     {
@@ -286,6 +391,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "e2e",
+      "tags": [
+        "contracts",
+        "e2e"
       ]
     },
     {
@@ -299,6 +409,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "e2e",
+      "tags": [
+        "contracts",
+        "e2e"
       ]
     },
     {
@@ -312,6 +427,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "e2e",
+      "tags": [
+        "contracts",
+        "e2e"
       ]
     },
     {
@@ -325,6 +445,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "e2e",
+      "tags": [
+        "contracts",
+        "e2e"
       ]
     },
     {
@@ -338,6 +463,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "e2e",
+      "tags": [
+        "contracts",
+        "e2e"
       ]
     },
     {
@@ -351,6 +481,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "environment",
+      "tags": [
+        "contracts",
+        "environment"
       ]
     },
     {
@@ -364,6 +499,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "environment",
+      "tags": [
+        "contracts",
+        "environment"
       ]
     },
     {
@@ -377,6 +517,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "environment",
+      "tags": [
+        "contracts",
+        "environment"
       ]
     },
     {
@@ -390,6 +535,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "environment",
+      "tags": [
+        "contracts",
+        "environment"
       ]
     },
     {
@@ -403,6 +553,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "environment",
+      "tags": [
+        "contracts",
+        "environment"
       ]
     },
     {
@@ -416,6 +571,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "environment",
+      "tags": [
+        "contracts",
+        "environment"
       ]
     },
     {
@@ -429,6 +589,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "environment",
+      "tags": [
+        "contracts",
+        "environment"
       ]
     },
     {
@@ -442,6 +607,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "environment",
+      "tags": [
+        "contracts",
+        "environment"
       ]
     },
     {
@@ -455,6 +625,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "environment",
+      "tags": [
+        "contracts",
+        "environment"
       ]
     },
     {
@@ -469,6 +644,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "environment",
+      "tags": [
+        "contracts",
+        "environment"
       ]
     },
     {
@@ -482,6 +662,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -495,6 +680,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -508,6 +698,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -521,6 +716,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -534,6 +734,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -547,6 +752,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -560,6 +770,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -573,6 +788,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -586,6 +806,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -599,6 +824,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -612,6 +842,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -625,6 +860,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -638,6 +878,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -651,6 +896,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -664,6 +914,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -677,6 +932,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -690,6 +950,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -703,6 +968,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -716,6 +986,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -729,6 +1004,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -742,6 +1022,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -755,6 +1040,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -768,6 +1058,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -781,6 +1076,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -794,6 +1094,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -807,6 +1112,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -820,6 +1130,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -833,6 +1148,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -846,6 +1166,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -859,6 +1184,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -872,6 +1202,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -885,6 +1220,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -898,6 +1238,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -911,6 +1256,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -924,6 +1274,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -937,6 +1292,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -950,6 +1310,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -963,6 +1328,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -976,6 +1346,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -989,6 +1364,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -1002,6 +1382,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -1015,6 +1400,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "kubernetes",
+      "tags": [
+        "contracts",
+        "kubernetes"
       ]
     },
     {
@@ -1028,6 +1418,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "load",
+      "tags": [
+        "contracts",
+        "load"
       ]
     },
     {
@@ -1041,6 +1436,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "load",
+      "tags": [
+        "contracts",
+        "load"
       ]
     },
     {
@@ -1054,6 +1454,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "load",
+      "tags": [
+        "contracts",
+        "load"
       ]
     },
     {
@@ -1067,6 +1472,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "load",
+      "tags": [
+        "contracts",
+        "load"
       ]
     },
     {
@@ -1080,6 +1490,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "load",
+      "tags": [
+        "contracts",
+        "load"
       ]
     },
     {
@@ -1093,6 +1508,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "load",
+      "tags": [
+        "contracts",
+        "load"
       ]
     },
     {
@@ -1106,6 +1526,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "load",
+      "tags": [
+        "contracts",
+        "load"
       ]
     },
     {
@@ -1119,6 +1544,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "load",
+      "tags": [
+        "contracts",
+        "load"
       ]
     },
     {
@@ -1132,6 +1562,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "load",
+      "tags": [
+        "contracts",
+        "load"
       ]
     },
     {
@@ -1145,6 +1580,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "load",
+      "tags": [
+        "contracts",
+        "load"
       ]
     },
     {
@@ -1158,6 +1598,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "load",
+      "tags": [
+        "contracts",
+        "load"
       ]
     },
     {
@@ -1171,6 +1616,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "load",
+      "tags": [
+        "contracts",
+        "load"
       ]
     },
     {
@@ -1184,6 +1634,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "load",
+      "tags": [
+        "contracts",
+        "load"
       ]
     },
     {
@@ -1197,6 +1652,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -1210,6 +1670,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -1223,6 +1688,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "observability",
+      "tags": [
+        "contracts",
+        "observability"
       ]
     },
     {
@@ -1236,6 +1706,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "observability",
+      "tags": [
+        "contracts",
+        "observability"
       ]
     },
     {
@@ -1249,6 +1724,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "observability",
+      "tags": [
+        "contracts",
+        "observability"
       ]
     },
     {
@@ -1262,6 +1742,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "observability",
+      "tags": [
+        "contracts",
+        "observability"
       ]
     },
     {
@@ -1275,6 +1760,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "observability",
+      "tags": [
+        "contracts",
+        "observability"
       ]
     },
     {
@@ -1288,6 +1778,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "observability",
+      "tags": [
+        "contracts",
+        "observability"
       ]
     },
     {
@@ -1301,6 +1796,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "observability",
+      "tags": [
+        "contracts",
+        "observability"
       ]
     },
     {
@@ -1314,6 +1814,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "observability",
+      "tags": [
+        "contracts",
+        "observability"
       ]
     },
     {
@@ -1327,6 +1832,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "observability",
+      "tags": [
+        "contracts",
+        "observability"
       ]
     },
     {
@@ -1340,6 +1850,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "observability",
+      "tags": [
+        "contracts",
+        "observability"
       ]
     },
     {
@@ -1353,6 +1868,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "observability",
+      "tags": [
+        "contracts",
+        "observability"
       ]
     },
     {
@@ -1366,6 +1886,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "observability",
+      "tags": [
+        "contracts",
+        "observability"
       ]
     },
     {
@@ -1379,6 +1904,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "observability",
+      "tags": [
+        "contracts",
+        "observability"
       ]
     },
     {
@@ -1392,6 +1922,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "environment",
+      "tags": [
+        "contracts",
+        "environment"
       ]
     },
     {
@@ -1405,6 +1940,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "environment",
+      "tags": [
+        "contracts",
+        "environment"
       ]
     },
     {
@@ -1418,6 +1958,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "environment",
+      "tags": [
+        "contracts",
+        "environment"
       ]
     },
     {
@@ -1431,6 +1976,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "environment",
+      "tags": [
+        "contracts",
+        "environment"
       ]
     },
     {
@@ -1444,6 +1994,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "reporting",
+      "tags": [
+        "contracts",
+        "reporting"
       ]
     },
     {
@@ -1457,6 +2012,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "reporting",
+      "tags": [
+        "contracts",
+        "reporting"
       ]
     },
     {
@@ -1470,6 +2030,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "reporting",
+      "tags": [
+        "contracts",
+        "reporting"
       ]
     },
     {
@@ -1483,6 +2048,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "reporting",
+      "tags": [
+        "contracts",
+        "reporting"
       ]
     },
     {
@@ -1496,6 +2066,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "reporting",
+      "tags": [
+        "contracts",
+        "reporting"
       ]
     },
     {
@@ -1509,6 +2084,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "reporting",
+      "tags": [
+        "contracts",
+        "reporting"
       ]
     },
     {
@@ -1522,6 +2102,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "reporting",
+      "tags": [
+        "contracts",
+        "reporting"
       ]
     },
     {
@@ -1535,6 +2120,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "reporting",
+      "tags": [
+        "contracts",
+        "reporting"
       ]
     },
     {
@@ -1548,6 +2138,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "reporting",
+      "tags": [
+        "contracts",
+        "reporting"
       ]
     },
     {
@@ -1561,6 +2156,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "reporting",
+      "tags": [
+        "contracts",
+        "reporting"
       ]
     },
     {
@@ -1574,6 +2174,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1587,6 +2192,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1600,6 +2210,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1613,6 +2228,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1626,6 +2246,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1639,6 +2264,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1652,6 +2282,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1665,6 +2300,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1678,6 +2318,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1691,6 +2336,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1704,6 +2354,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1717,6 +2372,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1730,6 +2390,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1743,6 +2408,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1756,6 +2426,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1769,6 +2444,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1782,6 +2462,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1795,6 +2480,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1808,6 +2498,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1821,6 +2516,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1834,6 +2534,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1847,6 +2552,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1860,6 +2570,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1873,6 +2588,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1886,6 +2606,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1899,6 +2624,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1912,6 +2642,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1925,6 +2660,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1938,6 +2678,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1951,6 +2696,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1964,6 +2714,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1977,6 +2732,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -1990,6 +2750,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "root",
+      "tags": [
+        "contracts",
+        "root"
       ]
     },
     {
@@ -2003,6 +2768,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -2016,6 +2786,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -2029,6 +2804,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -2042,6 +2822,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -2055,6 +2840,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -2068,6 +2858,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -2081,6 +2876,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -2094,6 +2894,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -2107,6 +2912,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -2120,6 +2930,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "inventory",
+      "tags": [
+        "contracts",
+        "inventory"
       ]
     },
     {
@@ -2133,6 +2948,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "stack",
+      "tags": [
+        "contracts",
+        "stack"
       ]
     },
     {
@@ -2146,6 +2966,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "stack",
+      "tags": [
+        "contracts",
+        "stack"
       ]
     },
     {
@@ -2159,6 +2984,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "stack",
+      "tags": [
+        "contracts",
+        "stack"
       ]
     },
     {
@@ -2172,6 +3002,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "stack",
+      "tags": [
+        "contracts",
+        "stack"
       ]
     },
     {
@@ -2185,6 +3020,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "stack",
+      "tags": [
+        "contracts",
+        "stack"
       ]
     },
     {
@@ -2198,6 +3038,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "stack",
+      "tags": [
+        "contracts",
+        "stack"
       ]
     },
     {
@@ -2211,6 +3056,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "stack",
+      "tags": [
+        "contracts",
+        "stack"
       ]
     },
     {
@@ -2224,6 +3074,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "stack",
+      "tags": [
+        "contracts",
+        "stack"
       ]
     },
     {
@@ -2237,6 +3092,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "stack",
+      "tags": [
+        "contracts",
+        "stack"
       ]
     },
     {
@@ -2250,6 +3110,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "stack",
+      "tags": [
+        "contracts",
+        "stack"
       ]
     },
     {
@@ -2263,6 +3128,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "stack",
+      "tags": [
+        "contracts",
+        "stack"
       ]
     },
     {
@@ -2276,6 +3146,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "stack",
+      "tags": [
+        "contracts",
+        "stack"
       ]
     },
     {
@@ -2289,6 +3164,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "stack",
+      "tags": [
+        "contracts",
+        "stack"
       ]
     },
     {
@@ -2302,6 +3182,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "stack",
+      "tags": [
+        "contracts",
+        "stack"
       ]
     },
     {
@@ -2315,6 +3200,11 @@
       ],
       "suite_membership": [
         "contracts"
+      ],
+      "group": "stack",
+      "tags": [
+        "contracts",
+        "stack"
       ]
     }
   ]

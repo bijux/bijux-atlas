@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "group_set_id": "contract-groups",
+  "owner": "team:atlas-governance",
+  "groups": [
+    {
+      "id": "datasets",
+      "summary": "Dataset and ingest governance invariants."
+    },
+    {
+      "id": "e2e",
+      "summary": "End-to-end execution invariants."
+    },
+    {
+      "id": "environment",
+      "summary": "Environment and profile invariants."
+    },
+    {
+      "id": "inventory",
+      "summary": "Inventory, metadata, and schema invariants."
+    },
+    {
+      "id": "kubernetes",
+      "summary": "Kubernetes and chart invariants."
+    },
+    {
+      "id": "load",
+      "summary": "Load and performance invariants."
+    },
+    {
+      "id": "observability",
+      "summary": "Observability invariants."
+    },
+    {
+      "id": "reporting",
+      "summary": "Reporting and release evidence invariants."
+    },
+    {
+      "id": "root",
+      "summary": "Repository root invariants."
+    },
+    {
+      "id": "stack",
+      "summary": "Operational stack invariants."
+    }
+  ]
+}

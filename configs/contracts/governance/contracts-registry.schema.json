@@ -28,6 +28,7 @@
           "summary",
           "owner",
           "mode",
+          "group",
           "runner",
           "reports",
           "suite_membership"
@@ -52,6 +53,10 @@
               "effect"
             ]
           },
+          "group": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          },
           "runner": {
             "type": "string",
             "minLength": 1
@@ -71,6 +76,14 @@
               "minLength": 1
             },
             "minItems": 1,
+            "uniqueItems": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
             "uniqueItems": true
           }
         }
