@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "owner": "bijux-atlas-operations",
+  "areas": {
+    "ops/datasets": "bijux-atlas-data",
+    "ops/e2e": "bijux-atlas-operations",
+    "ops/env": "bijux-atlas-operations",
+    "ops/inventory": "bijux-atlas-operations",
+    "ops/k8s": "bijux-atlas-operations",
+    "ops/load": "bijux-atlas-performance",
+    "ops/observe": "bijux-atlas-observability",
+    "ops/report": "bijux-atlas-operations",
+    "ops/schema": "bijux-atlas-operations",
+    "ops/stack": "bijux-atlas-operations"
+  }
+}

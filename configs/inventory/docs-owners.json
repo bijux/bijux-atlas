@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "owner": "bijux-atlas-platform",
+  "areas": {
+    "docs/api": "bijux-atlas-api",
+    "docs/architecture": "bijux-atlas-platform",
+    "docs/control-plane": "bijux-atlas-platform",
+    "docs/development": "bijux-atlas-platform",
+    "docs/governance": "bijux-atlas-platform",
+    "docs/operations": "bijux-atlas-operations",
+    "docs/product": "bijux-atlas-product",
+    "docs/reference": "bijux-atlas-docs"
+  }
+}

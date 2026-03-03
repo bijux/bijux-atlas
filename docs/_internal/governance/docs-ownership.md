@@ -26,7 +26,9 @@
 
 ## Ownership Registry
 
-The canonical section-entry registry lives in `docs/_internal/governance/docs-ownership-registry.json`.
+Narrative ownership policy lives in `docs/_internal/governance/docs-ownership-registry.json`.
+
+Machine-owned section mapping for control-plane checks lives in `configs/inventory/docs-owners.json`.
 
 ## Service Levels
 

@@ -4,3 +4,8 @@
 - Purpose: define the authoritative inventory of config groups, files, owners, and consumers.
 - Consumers: configs contracts, registry indexing, and generated configs index output.
 - Update workflow: update the inventory entries with the file move or new config, then rerun configs contracts and refresh generated indexes.
+
+## Ownership registries
+
+- `docs-owners.json`: canonical docs section owners.
+- `ops-owners.json`: canonical ops section owners.
