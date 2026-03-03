@@ -781,5 +781,25 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_075_operations_runbooks_include_required_sections,
             }],
         },
+        Contract {
+            id: ContractId("DOC-076".to_string()),
+            title: "major docs spine changes require explicit governance owner approval",
+            tests: vec![TestCase {
+                id: TestId("docs.governance.major_changes_require_owner_approval".to_string()),
+                title: "docs change classification must require explicit docs-governance owner approval for major changes",
+                kind: TestKind::Pure,
+                run: test_docs_076_major_docs_changes_require_explicit_owner_approval,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-077".to_string()),
+            title: "committed docs artifacts use one canonical regeneration path",
+            tests: vec![TestCase {
+                id: TestId("docs.governance.committed_artifacts_use_canonical_regeneration".to_string()),
+                title: "docs artifact governance must require control-plane regeneration and reject manual edits to committed generated markdown",
+                kind: TestKind::Pure,
+                run: test_docs_077_committed_docs_artifacts_use_canonical_regeneration_flow,
+            }],
+        },
     ])
 }

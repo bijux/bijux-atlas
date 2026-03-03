@@ -16,7 +16,7 @@ Examples: typo fixes, clarified examples, regenerated artifacts with no semantic
 ## Major Changes
 
 Treat a docs change as major when it changes navigation, redirects, published page names, stable policy language, or
-operator workflows. These changes need explicit governance review before merge.
+operator workflows. These changes need explicit `docs-governance` owner approval before merge.
 
 ## Verification
 

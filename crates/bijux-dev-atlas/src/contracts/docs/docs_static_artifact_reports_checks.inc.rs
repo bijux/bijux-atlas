@@ -977,6 +977,106 @@ fn test_docs_075_operations_runbooks_include_required_sections(ctx: &RunContext)
     }
 }
 
+fn test_docs_076_major_docs_changes_require_explicit_owner_approval(ctx: &RunContext) -> TestResult {
+    let relative = "docs/_internal/governance/docs-change-classification.md";
+    let text = match std::fs::read_to_string(ctx.repo_root.join(relative)) {
+        Ok(text) => text,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-076".to_string(),
+                test_id: "docs.governance.major_changes_require_owner_approval".to_string(),
+                file: Some(relative.to_string()),
+                line: None,
+                message: format!("read failed: {err}"),
+                evidence: None,
+            }]);
+        }
+    };
+    if text.contains("explicit `docs-governance` owner approval before merge") {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![Violation {
+            contract_id: "DOC-076".to_string(),
+            test_id: "docs.governance.major_changes_require_owner_approval".to_string(),
+            file: Some(relative.to_string()),
+            line: None,
+            message: "major changes policy must require explicit docs-governance owner approval before merge".to_string(),
+            evidence: None,
+        }])
+    }
+}
+
+fn test_docs_077_committed_docs_artifacts_use_canonical_regeneration_flow(
+    ctx: &RunContext,
+) -> TestResult {
+    let artifact_contract_path = "docs/_internal/governance/docs-artifact-contract.md";
+    let regenerate_path = "docs/_internal/governance/regenerate-committed-artifacts.md";
+    let artifact_contract = match std::fs::read_to_string(ctx.repo_root.join(artifact_contract_path)) {
+        Ok(text) => text,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-077".to_string(),
+                test_id: "docs.governance.committed_artifacts_use_canonical_regeneration".to_string(),
+                file: Some(artifact_contract_path.to_string()),
+                line: None,
+                message: format!("read failed: {err}"),
+                evidence: None,
+            }]);
+        }
+    };
+    let regenerate_doc = match std::fs::read_to_string(ctx.repo_root.join(regenerate_path)) {
+        Ok(text) => text,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-077".to_string(),
+                test_id: "docs.governance.committed_artifacts_use_canonical_regeneration".to_string(),
+                file: Some(regenerate_path.to_string()),
+                line: None,
+                message: format!("read failed: {err}"),
+                evidence: None,
+            }]);
+        }
+    };
+
+    let mut violations = Vec::new();
+    if !artifact_contract.contains("must be refreshed with the control-plane") {
+        violations.push(Violation {
+            contract_id: "DOC-077".to_string(),
+            test_id: "docs.governance.committed_artifacts_use_canonical_regeneration".to_string(),
+            file: Some(artifact_contract_path.to_string()),
+            line: None,
+            message: "docs artifact contract must require committed generated markdown to be refreshed with the control-plane".to_string(),
+            evidence: None,
+        });
+    }
+    if !regenerate_doc.contains("bijux-dev-atlas docs") {
+        violations.push(Violation {
+            contract_id: "DOC-077".to_string(),
+            test_id: "docs.governance.committed_artifacts_use_canonical_regeneration".to_string(),
+            file: Some(regenerate_path.to_string()),
+            line: None,
+            message: "regeneration guide must declare the canonical bijux-dev-atlas docs command flow".to_string(),
+            evidence: None,
+        });
+    }
+    if !regenerate_doc.contains("Do not edit committed generated markdown directly") {
+        violations.push(Violation {
+            contract_id: "DOC-077".to_string(),
+            test_id: "docs.governance.committed_artifacts_use_canonical_regeneration".to_string(),
+            file: Some(regenerate_path.to_string()),
+            line: None,
+            message: "regeneration guide must forbid manual edits to committed generated markdown".to_string(),
+            evidence: None,
+        });
+    }
+
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn docs_markdown_paths_under(root: &std::path::Path) -> Vec<std::path::PathBuf> {
     fn visit(dir: &std::path::Path, out: &mut Vec<std::path::PathBuf>) {
         let entries = match std::fs::read_dir(dir) {

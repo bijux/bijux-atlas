@@ -86,6 +86,8 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-073" => "mkdocs.yml nav may reference only files that actually exist under docs/.".to_string(),
         "DOC-074" => "Top-level docs section index pages must explain their purpose and how to enter the section.".to_string(),
         "DOC-075" => "Operations runbooks must keep the required Prereqs, Verify, and Rollback sections.".to_string(),
+        "DOC-076" => "Major docs spine changes must require explicit docs-governance owner approval before merge.".to_string(),
+        "DOC-077" => "Committed generated docs artifacts must use the single canonical control-plane regeneration flow and reject manual edits.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }
