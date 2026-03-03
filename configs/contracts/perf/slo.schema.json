@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Performance SLO",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "owner",
+    "canonical_scenario",
+    "targets"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_scenario": {
+      "type": "string",
+      "minLength": 1
+    },
+    "targets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "latency",
+        "error_rate",
+        "throughput",
+        "availability"
+      ],
+      "properties": {
+        "latency": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "p99_ms"
+          ],
+          "properties": {
+            "p99_ms": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        "error_rate": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "max_percent"
+          ],
+          "properties": {
+            "max_percent": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "throughput": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "min_requests_per_second"
+          ],
+          "properties": {
+            "min_requests_per_second": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        "availability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "min_percent"
+          ],
+          "properties": {
+            "min_percent": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            }
+          }
+        }
+      }
+    }
+  }
+}

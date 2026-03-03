@@ -3,7 +3,7 @@
 use crate::cli::{
     ArtifactsCommand, CheckCommand, CheckRegistryCommand, Command, ConfigsCommand,
     ContractsCommand, DocsCommand, FormatArg, MakeCommand, OpsCommand, PoliciesCommand,
-    ReleaseCommand, SecurityCommand,
+    PerfCommand, ReleaseCommand, SecurityCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -19,6 +19,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Configs { command } => force_json_configs(command),
         Command::Governance { command } => force_json_governance(command),
         Command::Security { command } => force_json_security(command),
+        Command::Perf { command } => force_json_perf(command),
         Command::Policies { command } => force_json_policies(command),
         Command::Check { command } => force_json_check(command),
         Command::Validate { format, .. } => *format = FormatArg::Json,
@@ -27,6 +28,7 @@ pub(super) fn force_json_output(command: &mut Command) {
             ReleaseCommand::Sign(args) => args.format = FormatArg::Json,
             ReleaseCommand::Verify(args) => args.format = FormatArg::Json,
             ReleaseCommand::Diff(args) => args.format = FormatArg::Json,
+            ReleaseCommand::Packet(args) => args.format = FormatArg::Json,
         },
         Command::Docker { .. }
         | Command::Build { .. }
@@ -358,6 +360,13 @@ fn force_json_security(command: &mut SecurityCommand) {
             crate::cli::SecurityComplianceCommand::Validate(args) => args.format = FormatArg::Json,
         },
         SecurityCommand::ScanArtifacts(args) => args.format = FormatArg::Json,
+    }
+}
+
+fn force_json_perf(command: &mut PerfCommand) {
+    match command {
+        PerfCommand::Validate(args) => args.format = FormatArg::Json,
+        PerfCommand::Run(args) => args.format = FormatArg::Json,
     }
 }
 
@@ -784,6 +793,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             },
             SecurityCommand::ScanArtifacts(args) => args.repo_root = Some(root.clone()),
         },
+        Command::Perf { command } => match command {
+            PerfCommand::Validate(args) => args.repo_root = Some(root.clone()),
+            PerfCommand::Run(args) => args.repo_root = Some(root.clone()),
+        },
         Command::Policies { command } => match command {
             PoliciesCommand::List { repo_root, .. }
             | PoliciesCommand::Explain { repo_root, .. }
@@ -855,6 +868,11 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
             }
             ReleaseCommand::Diff(args) => {
+                if args.repo_root.is_none() {
+                    args.repo_root = Some(root.clone());
+                }
+            }
+            ReleaseCommand::Packet(args) => {
                 if args.repo_root.is_none() {
                     args.repo_root = Some(root.clone());
                 }

@@ -29,6 +29,8 @@ mod ops_commands;
 mod ops_execution_runtime;
 #[path = "commands/ops/support.rs"]
 mod ops_support;
+#[path = "commands/perf.rs"]
+mod perf_commands;
 #[path = "commands/release.rs"]
 mod release_commands;
 #[path = "commands/security.rs"]

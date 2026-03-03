@@ -1,0 +1,12 @@
+schema_version: 1
+owner: platform
+canonical_scenario: gene-lookup
+targets:
+  latency:
+    p99_ms: 75
+  error_rate:
+    max_percent: 0.0
+  throughput:
+    min_requests_per_second: 50.0
+  availability:
+    min_percent: 99.9

@@ -108,6 +108,10 @@ pub enum Command {
         #[command(subcommand)]
         command: SecurityCommand,
     },
+    Perf {
+        #[command(subcommand)]
+        command: PerfCommand,
+    },
     #[command(hide = true)]
     Docker {
         #[command(subcommand)]
@@ -170,6 +174,13 @@ pub enum ReleaseCommand {
     Sign(ReleaseSignArgs),
     Verify(ReleaseVerifyArgs),
     Diff(ReleaseDiffArgs),
+    Packet(ReleasePacketArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum PerfCommand {
+    Validate(PerfValidateArgs),
+    Run(PerfRunArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -282,6 +293,40 @@ pub struct ReleaseDiffArgs {
     pub evidence_a: PathBuf,
     #[arg()]
     pub evidence_b: PathBuf,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleasePacketArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, default_value = "release/evidence")]
+    pub evidence: PathBuf,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct PerfValidateArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct PerfRunArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, default_value = "gene-lookup")]
+    pub scenario: String,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]

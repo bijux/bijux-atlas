@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "scenario": "gene-lookup",
+  "seed": 110,
+  "warmup_requests": 8,
+  "threads": 4,
+  "requests_per_thread": 32,
+  "request_path": "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1",
+  "expected_status": 200,
+  "response_body": "{\"items\":[{\"gene_id\":\"g1\",\"name\":\"G1\"}],\"count\":1}"
+}

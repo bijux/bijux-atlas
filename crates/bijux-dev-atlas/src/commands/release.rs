@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    FormatArg, ReleaseCheckArgs, ReleaseCommand, ReleaseDiffArgs, ReleaseSignArgs,
-    ReleaseVerifyArgs,
+    FormatArg, ReleaseCheckArgs, ReleaseCommand, ReleaseDiffArgs, ReleasePacketArgs,
+    ReleaseSignArgs, ReleaseVerifyArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
 use sha2::{Digest, Sha256};
@@ -783,6 +783,107 @@ fn run_release_diff(args: ReleaseDiffArgs) -> Result<(String, i32), String> {
     Ok((rendered, 0))
 }
 
+fn run_release_packet(args: ReleasePacketArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    ensure_json(&root.join("configs/contracts/release/packet-list.schema.json"))?;
+
+    let evidence_dir = if args.evidence.is_absolute() {
+        args.evidence
+    } else {
+        root.join(args.evidence)
+    };
+    let manifest_path = evidence_dir.join("manifest.json");
+    let manifest = read_json(&manifest_path)?;
+    let packet_dir = root.join("release/packet");
+    let packet_path = packet_dir.join("packet.json");
+
+    let required = [
+        "release/evidence/manifest.json",
+        "release/evidence/identity.json",
+        "release/evidence/bundle.tar",
+        "release/signing/checksums.json",
+        "release/signing/release-sign.json",
+        "release/signing/release-verify.json",
+        "release/provenance.json",
+    ];
+
+    let mut selected = BTreeSet::new();
+    for item in required {
+        if root.join(item).exists() {
+            selected.insert(item.to_string());
+        }
+    }
+    if let Some(path) = manifest
+        .get("chart_package")
+        .and_then(|value| value.get("path"))
+        .and_then(serde_json::Value::as_str)
+    {
+        if root.join(path).exists() {
+            selected.insert(path.to_string());
+        }
+    }
+    for path in manifest
+        .get("sboms")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(|value| value.get("path"))
+        .filter_map(serde_json::Value::as_str)
+    {
+        if root.join(path).exists() {
+            selected.insert(path.to_string());
+        }
+    }
+
+    let packet_items = selected
+        .iter()
+        .map(|path| {
+            serde_json::json!({
+                "path": path,
+                "sha256": sha256_file(&root.join(path)).unwrap_or_default()
+            })
+        })
+        .collect::<Vec<_>>();
+
+    let rel_pack_001 = required.iter().all(|path| selected.contains(*path))
+        && packet_items
+            .iter()
+            .any(|item| item["path"].as_str().is_some_and(|path| path.starts_with("release/evidence/sboms/")));
+
+    let packet = serde_json::json!({
+        "schema_version": 1,
+        "generated_by": "bijux-dev-atlas release packet",
+        "evidence_root": repo_rel(&root, &evidence_dir),
+        "required_minimum": required,
+        "items": packet_items,
+        "contracts": {
+            "REL-PACK-001": rel_pack_001
+        }
+    });
+    write_json(&packet_path, &packet)?;
+
+    let rendered = emit_payload(
+        args.format,
+        args.out,
+        &serde_json::json!({
+            "schema_version": 1,
+            "status": if rel_pack_001 { "ok" } else { "failed" },
+            "text": if rel_pack_001 { "institutional packet inventory generated" } else { "institutional packet is incomplete" },
+            "rows": [{
+                "packet_path": repo_rel(&root, &packet_path),
+                "items": packet["items"].clone(),
+                "contracts": packet["contracts"].clone()
+            }],
+            "summary": {
+                "total": 1,
+                "errors": if rel_pack_001 { 0 } else { 1 },
+                "warnings": 0
+            }
+        }),
+    )?;
+    Ok((rendered, if rel_pack_001 { 0 } else { 1 }))
+}
+
 pub(crate) fn run_release_command(
     _quiet: bool,
     command: ReleaseCommand,
@@ -792,5 +893,6 @@ pub(crate) fn run_release_command(
         ReleaseCommand::Sign(args) => run_release_sign(args),
         ReleaseCommand::Verify(args) => run_release_verify(args),
         ReleaseCommand::Diff(args) => run_release_diff(args),
+        ReleaseCommand::Packet(args) => run_release_packet(args),
     }
 }

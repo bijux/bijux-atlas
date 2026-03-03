@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Performance Load Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "scenario",
+    "seed",
+    "configuration",
+    "latency_ms",
+    "error_rate_percent",
+    "throughput_rps",
+    "contracts"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "scenario": {
+      "type": "string",
+      "minLength": 1
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "warmup_requests",
+        "threads",
+        "requests_per_thread",
+        "request_path"
+      ],
+      "properties": {
+        "warmup_requests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "threads": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "requests_per_thread": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "request_path": {
+          "type": "string",
+          "pattern": "^/"
+        }
+      }
+    },
+    "latency_ms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "p50",
+        "p95",
+        "p99"
+      ],
+      "properties": {
+        "p50": {
+          "type": "number",
+          "minimum": 0
+        },
+        "p95": {
+          "type": "number",
+          "minimum": 0
+        },
+        "p99": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "error_rate_percent": {
+      "type": "number",
+      "minimum": 0
+    },
+    "throughput_rps": {
+      "type": "number",
+      "minimum": 0
+    },
+    "contracts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "PERF-LOAD-001",
+        "PERF-LOAD-002"
+      ],
+      "properties": {
+        "PERF-LOAD-001": {
+          "type": "boolean"
+        },
+        "PERF-LOAD-002": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
