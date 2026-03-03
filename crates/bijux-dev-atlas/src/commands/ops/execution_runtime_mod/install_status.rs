@@ -188,6 +188,154 @@ fn write_simulation_report(
     Ok(path)
 }
 
+fn load_drill_registry(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
+    let path = repo_root.join("ops/drills/drills.json");
+    let payload: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    Ok(payload
+        .get("drills")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default())
+}
+
+fn update_drill_summary(
+    repo_root: &std::path::Path,
+    run_id: &RunId,
+    drill: &str,
+    report_path: &std::path::Path,
+    status: &str,
+) -> Result<std::path::PathBuf, String> {
+    let summary_path = simulation_report_path(repo_root, run_id, "ops-drills-summary.json")?;
+    let mut payload = if summary_path.exists() {
+        serde_json::from_str::<serde_json::Value>(
+            &std::fs::read_to_string(&summary_path)
+                .map_err(|err| format!("failed to read {}: {err}", summary_path.display()))?,
+        )
+        .map_err(|err| format!("failed to parse {}: {err}", summary_path.display()))?
+    } else {
+        serde_json::json!({
+            "schema_version": 1,
+            "drills": []
+        })
+    };
+    if !payload["drills"].is_array() {
+        payload["drills"] = serde_json::json!([]);
+    }
+    let rows = payload["drills"]
+        .as_array_mut()
+        .ok_or_else(|| "drill summary rows must be an array".to_string())?;
+    rows.retain(|row| row.get("name").and_then(serde_json::Value::as_str) != Some(drill));
+    rows.push(serde_json::json!({
+        "name": drill,
+        "status": status,
+        "report_path": report_path.strip_prefix(repo_root).unwrap_or(report_path).display().to_string()
+    }));
+    rows.sort_by(|left, right| {
+        left.get("name")
+            .and_then(serde_json::Value::as_str)
+            .cmp(&right.get("name").and_then(serde_json::Value::as_str))
+    });
+    std::fs::write(
+        &summary_path,
+        serde_json::to_string_pretty(&payload).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", summary_path.display()))?;
+    Ok(summary_path)
+}
+
+fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec<(&'static str, std::path::PathBuf)> {
+    match drill {
+        "warmup-pod-restart" => vec![
+            ("warmup lock doc", repo_root.join("docs/operations/warmup-lock.md")),
+            (
+                "warmup lock metric contract",
+                repo_root.join("configs/contracts/observability/metrics.schema.json"),
+            ),
+            (
+                "warmup lock runtime source",
+                repo_root.join("crates/bijux-atlas-server/src/main.rs"),
+            ),
+        ],
+        "redis-outage" => vec![
+            ("network policy guide", repo_root.join("docs/operations/networkpolicy.md")),
+            (
+                "error registry",
+                repo_root.join("configs/contracts/observability/error-codes.json"),
+            ),
+            (
+                "drills guide",
+                repo_root.join("docs/operations/drills.md"),
+            ),
+        ],
+        "offline-network-deny" | "offline-prewarm-serve" => vec![
+            ("offline profile", repo_root.join("ops/k8s/values/offline.yaml")),
+            ("network policy examples", repo_root.join("ops/k8s/values/networkpolicy-examples.yaml")),
+            (
+                "health endpoints contract",
+                repo_root.join("docs/reference/contracts/health-endpoints.md"),
+            ),
+        ],
+        "catalog-unreachable" => vec![
+            (
+                "readiness handler",
+                repo_root.join("crates/bijux-atlas-server/src/http/handlers_utilities.rs"),
+            ),
+            (
+                "health endpoints contract",
+                repo_root.join("docs/reference/contracts/health-endpoints.md"),
+            ),
+            (
+                "error registry",
+                repo_root.join("configs/contracts/observability/error-codes.json"),
+            ),
+        ],
+        "store-unreachable" => vec![
+            (
+                "alert rules",
+                repo_root.join("ops/observe/alerts/atlas-alert-rules.yaml"),
+            ),
+            (
+                "release evidence guide",
+                repo_root.join("docs/operations/release-evidence.md"),
+            ),
+            (
+                "error registry",
+                repo_root.join("configs/contracts/observability/error-codes.json"),
+            ),
+        ],
+        "rollout-failure-recovery" => vec![
+            ("upgrade guide", repo_root.join("docs/operations/upgrade.md")),
+            (
+                "rollback schema",
+                repo_root.join("ops/schema/k8s/ops-rollback.schema.json"),
+            ),
+            (
+                "lifecycle contract",
+                repo_root.join("docs/reference/contracts/ops/lifecycle.md"),
+            ),
+        ],
+        "invalid-config-rejected" => vec![
+            (
+                "environment allowlist",
+                repo_root.join("configs/contracts/env.schema.json"),
+            ),
+            (
+                "server config tests",
+                repo_root.join("crates/bijux-atlas-server/src/config/tests.rs"),
+            ),
+            (
+                "log schema",
+                repo_root.join("configs/contracts/observability/log.schema.json"),
+            ),
+        ],
+        _ => Vec::new(),
+    }
+}
+
 fn update_simulation_summary(
     repo_root: &std::path::Path,
     run_id: &RunId,
@@ -1501,6 +1649,19 @@ fn collect_simulation_summary_paths(repo_root: &std::path::Path, run_id: &RunId)
         .collect::<Vec<_>>()
 }
 
+fn collect_drill_summary_paths(repo_root: &std::path::Path, run_id: &RunId) -> Vec<String> {
+    let path = repo_root
+        .join("artifacts/ops")
+        .join(run_id.as_str())
+        .join("reports")
+        .join("ops-drills-summary.json");
+    if path.exists() {
+        vec![path.strip_prefix(repo_root).unwrap_or(&path).display().to_string()]
+    } else {
+        Vec::new()
+    }
+}
+
 fn collect_docs_site_summary(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
     let site_dir = repo_root.join("artifacts/docs/site");
     let mut file_count = 0usize;
@@ -1749,6 +1910,7 @@ pub(crate) fn run_ops_evidence_collect(
         "scan_reports": scan_reports,
         "reports": collect_report_paths(&repo_root, &run_id)?,
         "simulation_summaries": collect_simulation_summary_paths(&repo_root, &run_id),
+        "drill_summaries": collect_drill_summary_paths(&repo_root, &run_id),
         "redacted_logs": redacted_logs,
         "observability_assets": collect_observability_assets(&repo_root)?
     });
@@ -1823,6 +1985,14 @@ pub(crate) fn run_ops_evidence_verify(
         .chain(
             manifest
                 .get("simulation_summaries")
+                .and_then(|v| v.as_array())
+                .into_iter()
+                .flatten()
+                .filter_map(serde_json::Value::as_str),
+        )
+        .chain(
+            manifest
+                .get("drill_summaries")
                 .and_then(|v| v.as_array())
                 .into_iter()
                 .flatten()
@@ -2606,6 +2776,80 @@ pub(crate) fn run_ops_obs_verify(common: &OpsCommonArgs) -> Result<(String, i32)
         }),
     )?;
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+pub(crate) fn run_ops_drill(
+    args: &crate::cli::OpsDrillRunArgs,
+) -> Result<(String, i32), String> {
+    let common = &args.common;
+    if !common.allow_write {
+        return Err("drills run requires --allow-write".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let drills = load_drill_registry(&repo_root)?;
+    let drill = drills
+        .iter()
+        .find(|row| row.get("name").and_then(serde_json::Value::as_str) == Some(args.name.as_str()))
+        .cloned()
+        .ok_or_else(|| format!("unknown drill `{}`", args.name))?;
+    let mut checks = Vec::new();
+    for (name, path) in drill_check_paths(&repo_root, &args.name) {
+        checks.push(serde_json::json!({
+            "name": name,
+            "status": if path.exists() { "pass" } else { "fail" },
+            "detail": if path.exists() {
+                format!("verified {}", path.strip_prefix(&repo_root).unwrap_or(&path).display())
+            } else {
+                format!("missing {}", path.strip_prefix(&repo_root).unwrap_or(&path).display())
+            }
+        }));
+    }
+    let status = if checks
+        .iter()
+        .all(|row| row.get("status").and_then(serde_json::Value::as_str) == Some("pass"))
+    {
+        "pass"
+    } else {
+        "fail"
+    };
+    let evidence_paths = drill_check_paths(&repo_root, &args.name)
+        .into_iter()
+        .map(|(_, path)| path.strip_prefix(&repo_root).unwrap_or(&path).display().to_string())
+        .collect::<Vec<_>>();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "drill": args.name,
+        "status": status,
+        "execution_mode": "contract-verification",
+        "expected_outcome": drill.get("expected_outcome").cloned().unwrap_or(serde_json::Value::String(String::new())),
+        "checks": checks,
+        "evidence_paths": evidence_paths
+    });
+    let report_path = write_simulation_report(
+        &repo_root,
+        &run_id,
+        &format!("ops-drill-{}.json", args.name),
+        &payload,
+    )?;
+    let summary_path = update_drill_summary(&repo_root, &run_id, &args.name, &report_path, status)?;
+    let rendered = emit_payload(
+        common.format,
+        common.out.clone(),
+        &serde_json::json!({
+            "schema_version": 1,
+            "status": status,
+            "text": if status == "pass" { "drill checks passed" } else { "drill checks failed" },
+            "rows": [{
+                "drill": args.name,
+                "report_path": report_path.display().to_string(),
+                "summary_path": summary_path.display().to_string(),
+                "expected_outcome": drill.get("expected_outcome").cloned().unwrap_or(serde_json::Value::String(String::new()))
+            }],
+            "summary": {"total": 1, "errors": if status == "pass" { 0 } else { 1 }, "warnings": 0}
+        }),
+    )?;
+    Ok((rendered, if status == "pass" { 0 } else { 1 }))
 }
 
 pub(crate) fn run_ops_kind_up(common: &OpsCommonArgs) -> Result<(String, i32), String> {

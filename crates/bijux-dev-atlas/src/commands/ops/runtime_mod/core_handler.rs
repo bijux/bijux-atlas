@@ -66,7 +66,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                 "load-run" => serde_json::json!({"action":"load-run","purpose":"run k6 load suite and collect summary","effects_required":["subprocess","network","fs_write"]}),
                 "load-report" => serde_json::json!({"action":"load-report","purpose":"parse k6 summary into structured report","effects_required":[]}),
                 "e2e-run" => serde_json::json!({"action":"e2e-run","purpose":"reserved for scenario orchestration","status":"not_implemented"}),
-                "obs-drill-run" => serde_json::json!({"action":"obs-drill-run","purpose":"reserved for observability drill orchestration","status":"not_implemented"}),
+                "obs-drill-run" | "drills-run" => serde_json::json!({"action":"drills-run","purpose":"run a governed institutional drill and emit a drill report","effects_required":["fs_write"],"flags":["--allow-write","--name <drill>"]}),
                 "obs-verify" => serde_json::json!({"action":"obs-verify","purpose":"verify metrics endpoint reachability and required observability contracts","effects_required":["subprocess","network","fs_write"],"flags":["--allow-subprocess","--allow-network","--allow-write"]}),
                 "tools-doctor" => serde_json::json!({"action":"tools-doctor","purpose":"show required tools and missing requirements without subprocess by default","effects_required":[]}),
                 "suite-list" => serde_json::json!({"kind":"suite","action":"list","suites":["e2e","k8s","load","obs"]}),
@@ -104,6 +104,12 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
         OpsCommand::Obs { command } => match command {
             crate::cli::OpsObsCommand::Verify(common) => crate::ops_execution_runtime::run_ops_obs_verify(&common),
             crate::cli::OpsObsCommand::Validate(common) => crate::ops_execution_runtime::run_ops_obs_verify(&common),
+            crate::cli::OpsObsCommand::Drill { command: crate::cli::OpsObsDrillCommand::Run(common) } => {
+                crate::ops_execution_runtime::run_ops_drill(&crate::cli::OpsDrillRunArgs {
+                    common,
+                    name: "warmup-pod-restart".to_string(),
+                })
+            }
             other => {
                 let payload = serde_json::json!({
                     "schema_version": 1,
@@ -126,6 +132,9 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                 let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
                 Ok((rendered, ops_exit::PASS))
             }
+        },
+        OpsCommand::Drills { command } => match command {
+            crate::cli::OpsDrillsCommand::Run(args) => crate::ops_execution_runtime::run_ops_drill(&args),
         },
         OpsCommand::Doctor(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;

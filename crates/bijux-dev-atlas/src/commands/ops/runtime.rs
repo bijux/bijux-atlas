@@ -3,7 +3,7 @@
 use crate::cli::OpsInstallArgs;
 use crate::cli::{
     OpsCollectArgs, OpsCollectCommand, OpsCommonArgs, OpsDatasetsCommand, OpsE2eCommand,
-    OpsEvidenceCommand, OpsEvidenceDiffArgs, OpsEvidenceVerifyArgs, OpsGenerateCommand,
+    OpsDrillRunArgs, OpsDrillsCommand, OpsEvidenceCommand, OpsEvidenceDiffArgs, OpsEvidenceVerifyArgs, OpsGenerateCommand,
     OpsHelmCommand, OpsHelmEnvArgs, OpsHelmInstallArgs, OpsHelmReleaseArgs,
     OpsHelmRollbackArgs, OpsHelmUpgradeArgs, OpsInventoryCommand, OpsK8sCommand,
     OpsKindCommand, OpsKindPreloadArgs, OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand,
@@ -110,6 +110,9 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
             OpsEvidenceCommand::Verify(OpsEvidenceVerifyArgs { common, .. }) => Some(common),
             OpsEvidenceCommand::Diff(OpsEvidenceDiffArgs { common, .. }) => Some(common),
         },
+        OpsCommand::Drills { command } => match command {
+            OpsDrillsCommand::Run(OpsDrillRunArgs { common, .. }) => Some(common),
+        },
         OpsCommand::Schema { .. }
         | OpsCommand::InventoryDomain { .. }
         | OpsCommand::ReportDomain { .. }
@@ -134,6 +137,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
     let command = match command {
         OpsCommand::Kind { command } => OpsCommand::Kind { command },
         OpsCommand::Helm { command } => OpsCommand::Helm { command },
+        OpsCommand::Drills { command } => OpsCommand::Drills { command },
         OpsCommand::Logs { command } => OpsCommand::Logs { command },
         OpsCommand::Describe { command } => OpsCommand::Describe { command },
         OpsCommand::Events { command } => OpsCommand::Events { command },

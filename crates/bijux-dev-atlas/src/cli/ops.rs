@@ -82,6 +82,10 @@ pub enum OpsCommand {
         #[command(subcommand)]
         command: OpsEvidenceCommand,
     },
+    Drills {
+        #[command(subcommand)]
+        command: OpsDrillsCommand,
+    },
     Tools {
         #[command(subcommand)]
         command: OpsToolsCommand,
@@ -385,6 +389,11 @@ pub enum OpsEvidenceCommand {
     Diff(OpsEvidenceDiffArgs),
 }
 
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsDrillsCommand {
+    Run(OpsDrillRunArgs),
+}
+
 #[derive(Args, Debug, Clone)]
 pub struct OpsEvidenceVerifyArgs {
     #[command(flatten)]
@@ -401,6 +410,14 @@ pub struct OpsEvidenceDiffArgs {
     pub tarball_a: PathBuf,
     #[arg()]
     pub tarball_b: PathBuf,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsDrillRunArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long)]
+    pub name: String,
 }
 
 #[derive(Subcommand, Debug, Clone)]

@@ -145,6 +145,9 @@ fn force_json_ops(command: &mut OpsCommand) {
             crate::cli::OpsEvidenceCommand::Verify(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsEvidenceCommand::Diff(args) => args.common.format = FormatArg::Json,
         },
+        OpsCommand::Drills { command } => match command {
+            crate::cli::OpsDrillsCommand::Run(args) => args.common.format = FormatArg::Json,
+        },
         OpsCommand::Datasets { command } => match command {
             crate::cli::OpsDatasetsCommand::List(common)
             | crate::cli::OpsDatasetsCommand::Ingest(common)
@@ -559,6 +562,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 crate::cli::OpsEvidenceCommand::Diff(args) => {
                     args.common.repo_root = Some(root.clone())
                 }
+            },
+            OpsCommand::Drills { command } => match command {
+                crate::cli::OpsDrillsCommand::Run(args) => args.common.repo_root = Some(root.clone()),
             },
             OpsCommand::Datasets { command } => match command {
                 crate::cli::OpsDatasetsCommand::List(common)

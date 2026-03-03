@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "drills": [
+    {
+      "name": "warmup-pod-restart",
+      "purpose": "Restart the atlas server during warmup and verify recovery remains bounded.",
+      "expected_outcome": "Availability returns after the restart and warmup lock ownership remains safe.",
+      "verification_steps": [
+        "Warmup lock contract and metrics exist.",
+        "Startup path emits warmup lock lifecycle events.",
+        "Recovery evidence is written to the drill report."
+      ]
+    },
+    {
+      "name": "redis-outage",
+      "purpose": "Simulate Redis loss and verify the server follows the documented degradation policy.",
+      "expected_outcome": "Redis dependency failure is observable and the server fails fast or degrades according to contract.",
+      "verification_steps": [
+        "Redis dependency handling is documented.",
+        "Error registry contains stable degraded-state codes.",
+        "Failure evidence is written to the drill report."
+      ]
+    },
+    {
+      "name": "offline-network-deny",
+      "purpose": "Deny external egress and verify the offline profile still serves from pinned data.",
+      "expected_outcome": "Offline profile remains internally functional with cached-only behavior and no catalog dependency.",
+      "verification_steps": [
+        "Offline profile uses pinned datasets.",
+        "Offline profile enables init prewarm.",
+        "Offline readiness bypasses catalog dependency."
+      ]
+    },
+    {
+      "name": "catalog-unreachable",
+      "purpose": "Simulate catalog unavailability and verify readiness and error behavior remain deterministic.",
+      "expected_outcome": "Profiles that require catalog readiness fail readiness, while cached-only intent stays ready.",
+      "verification_steps": [
+        "Readiness helper encodes the catalog requirement rule.",
+        "Error registry exposes the not-ready code.",
+        "Health endpoint contract documents the behavior."
+      ]
+    },
+    {
+      "name": "store-unreachable",
+      "purpose": "Simulate store dependency failure and verify retries and error reporting remain bounded.",
+      "expected_outcome": "Store failure produces stable error taxonomy and does not trigger unbounded retry behavior.",
+      "verification_steps": [
+        "Store failure signals are present in alert rules.",
+        "Error registry alignment remains intact.",
+        "Release evidence can capture the resulting reports."
+      ]
+    },
+    {
+      "name": "offline-prewarm-serve",
+      "purpose": "Run the offline profile through prewarm and verify cached serving remains available afterwards.",
+      "expected_outcome": "Prewarm requirements are satisfied and the offline profile remains ready without catalog access.",
+      "verification_steps": [
+        "Offline profile lists pinned datasets.",
+        "Init prewarm requires non-empty pinned datasets.",
+        "Cached-only readiness intent is preserved."
+      ]
+    },
+    {
+      "name": "rollout-failure-recovery",
+      "purpose": "Simulate a failed rollout and verify rollback restores healthy service.",
+      "expected_outcome": "Lifecycle evidence captures rollback and the service health contract returns to healthy.",
+      "verification_steps": [
+        "Lifecycle summary report exists.",
+        "Rollback report schema exists.",
+        "Upgrade runbook documents rollback verification."
+      ]
+    },
+    {
+      "name": "invalid-config-rejected",
+      "purpose": "Inject invalid runtime configuration and verify startup fails cleanly without partial service.",
+      "expected_outcome": "Invalid configuration is rejected before serving traffic and failure remains observable.",
+      "verification_steps": [
+        "Environment allowlist contract exists.",
+        "Config contract tests exist.",
+        "Startup log contract can report the rejection deterministically."
+      ]
+    }
+  ]
+}

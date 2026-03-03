@@ -731,6 +731,7 @@ pub(super) fn dispatch_execution(
         | OpsCommand::K8s { .. }
         | OpsCommand::Load { .. }
         | OpsCommand::E2e { .. }
+        | OpsCommand::Drills { .. }
         | OpsCommand::Obs { .. } => {
             unreachable!("ops nested wrapper variants are normalized before execution")
         }

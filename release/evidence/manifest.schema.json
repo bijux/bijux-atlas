@@ -19,6 +19,7 @@
     "scan_reports",
     "reports",
     "simulation_summaries",
+    "drill_summaries",
     "evidence_tarball",
     "redacted_logs",
     "observability_assets",
@@ -228,6 +229,13 @@
       }
     },
     "simulation_summaries": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "drill_summaries": {
       "type": "array",
       "items": {
         "type": "string",
