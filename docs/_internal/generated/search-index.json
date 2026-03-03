@@ -249,6 +249,20 @@
     {
       "keywords": [
         "configs",
+        "datasets",
+        "readme"
+      ],
+      "path": "configs/datasets/README.md",
+      "tags": [
+        "configs",
+        "datasets",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
         "readme"
       ],
       "path": "configs/docs/README.md",
@@ -3883,6 +3897,20 @@
     {
       "keywords": [
         "-internal",
+        "add-a-redirect",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/add-a-redirect.md",
+      "tags": [
+        "-internal",
+        "add-a-redirect",
+        "governance"
+      ],
+      "topic": "add-a-redirect"
+    },
+    {
+      "keywords": [
+        "-internal",
         "adr-0001-workspace-boundaries-and-effects",
         "adrs",
         "governance"
@@ -3975,6 +4003,20 @@
         "index"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "broken-link-policy",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/broken-link-policy.md",
+      "tags": [
+        "-internal",
+        "broken-link-policy",
+        "governance"
+      ],
+      "topic": "broken-link-policy"
     },
     {
       "keywords": [
@@ -4095,6 +4137,20 @@
     {
       "keywords": [
         "-internal",
+        "deprecate-doc-page",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/deprecate-doc-page.md",
+      "tags": [
+        "-internal",
+        "deprecate-doc-page",
+        "governance"
+      ],
+      "topic": "deprecate-doc-page"
+    },
+    {
+      "keywords": [
+        "-internal",
         "docs-build-publish-model",
         "governance"
       ],
@@ -4165,6 +4221,20 @@
     {
       "keywords": [
         "-internal",
+        "docs-inventory-taxonomy",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-inventory-taxonomy.md",
+      "tags": [
+        "-internal",
+        "docs-inventory-taxonomy",
+        "governance"
+      ],
+      "topic": "docs-inventory-taxonomy"
+    },
+    {
+      "keywords": [
+        "-internal",
         "docs-lint-rules",
         "governance"
       ],
@@ -4217,6 +4287,20 @@
         "governance"
       ],
       "topic": "docs-ownership"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-publication-model",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-publication-model.md",
+      "tags": [
+        "-internal",
+        "docs-publication-model",
+        "governance"
+      ],
+      "topic": "docs-publication-model"
     },
     {
       "keywords": [
@@ -4301,6 +4385,34 @@
         "governance"
       ],
       "topic": "docs-style"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-toolchain-policy",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-toolchain-policy.md",
+      "tags": [
+        "-internal",
+        "docs-toolchain-policy",
+        "governance"
+      ],
+      "topic": "docs-toolchain-policy"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-versioning-model",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-versioning-model.md",
+      "tags": [
+        "-internal",
+        "docs-versioning-model",
+        "governance"
+      ],
+      "topic": "docs-versioning-model"
     },
     {
       "keywords": [
@@ -4440,6 +4552,34 @@
       "keywords": [
         "-internal",
         "governance",
+        "redirect-lifecycle"
+      ],
+      "path": "docs/_internal/governance/redirect-lifecycle.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "redirect-lifecycle"
+      ],
+      "topic": "redirect-lifecycle"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "redirects-contract"
+      ],
+      "path": "docs/_internal/governance/redirects-contract.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "redirects-contract"
+      ],
+      "topic": "redirects-contract"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
         "redirects-policy"
       ],
       "path": "docs/_internal/governance/redirects-policy.md",
@@ -4454,6 +4594,20 @@
       "keywords": [
         "-internal",
         "governance",
+        "rename-doc-page"
+      ],
+      "path": "docs/_internal/governance/rename-doc-page.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "rename-doc-page"
+      ],
+      "topic": "rename-doc-page"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
         "style-guide"
       ],
       "path": "docs/_internal/governance/style-guide.md",
@@ -4463,6 +4617,20 @@
         "style-guide"
       ],
       "topic": "style-guide"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "style-lints"
+      ],
+      "path": "docs/_internal/governance/style-lints.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "style-lints"
+      ],
+      "topic": "style-lints"
     },
     {
       "keywords": [
@@ -4607,6 +4775,20 @@
         "style"
       ],
       "topic": "structure-templates"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "verification-metadata"
+      ],
+      "path": "docs/_internal/governance/verification-metadata.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "verification-metadata"
+      ],
+      "topic": "verification-metadata"
     },
     {
       "keywords": [
@@ -6090,6 +6272,28 @@
     },
     {
       "keywords": [
+        "institutional-reader"
+      ],
+      "path": "docs/institutional-reader.md",
+      "tags": [
+        "institutional-reader"
+      ],
+      "topic": "institutional-reader"
+    },
+    {
+      "keywords": [
+        "chart-semver-policy",
+        "operations"
+      ],
+      "path": "docs/operations/chart-semver-policy.md",
+      "tags": [
+        "chart-semver-policy",
+        "operations"
+      ],
+      "topic": "chart-semver-policy"
+    },
+    {
+      "keywords": [
         "config",
         "operations"
       ],
@@ -6099,6 +6303,54 @@
         "operations"
       ],
       "topic": "config"
+    },
+    {
+      "keywords": [
+        "data-access-model",
+        "operations"
+      ],
+      "path": "docs/operations/data-access-model.md",
+      "tags": [
+        "data-access-model",
+        "operations"
+      ],
+      "topic": "data-access-model"
+    },
+    {
+      "keywords": [
+        "data-retention-policy",
+        "operations"
+      ],
+      "path": "docs/operations/data-retention-policy.md",
+      "tags": [
+        "data-retention-policy",
+        "operations"
+      ],
+      "topic": "data-retention-policy"
+    },
+    {
+      "keywords": [
+        "dataset-deprecation",
+        "operations"
+      ],
+      "path": "docs/operations/dataset-deprecation.md",
+      "tags": [
+        "dataset-deprecation",
+        "operations"
+      ],
+      "topic": "dataset-deprecation"
+    },
+    {
+      "keywords": [
+        "dataset-update",
+        "operations"
+      ],
+      "path": "docs/operations/dataset-update.md",
+      "tags": [
+        "dataset-update",
+        "operations"
+      ],
+      "topic": "dataset-update"
     },
     {
       "keywords": [
@@ -6150,6 +6402,18 @@
     },
     {
       "keywords": [
+        "docs-as-runbooks",
+        "operations"
+      ],
+      "path": "docs/operations/docs-as-runbooks.md",
+      "tags": [
+        "docs-as-runbooks",
+        "operations"
+      ],
+      "topic": "docs-as-runbooks"
+    },
+    {
+      "keywords": [
         "docs-convergence-policy",
         "operations"
       ],
@@ -6171,6 +6435,18 @@
         "operations"
       ],
       "topic": "drills-program"
+    },
+    {
+      "keywords": [
+        "drills",
+        "operations"
+      ],
+      "path": "docs/operations/drills.md",
+      "tags": [
+        "drills",
+        "operations"
+      ],
+      "topic": "drills"
     },
     {
       "keywords": [
@@ -6213,6 +6489,30 @@
         "operations"
       ],
       "topic": "k8s-tests"
+    },
+    {
+      "keywords": [
+        "evidence-retention-policy",
+        "operations"
+      ],
+      "path": "docs/operations/evidence-retention-policy.md",
+      "tags": [
+        "evidence-retention-policy",
+        "operations"
+      ],
+      "topic": "evidence-retention-policy"
+    },
+    {
+      "keywords": [
+        "evidence-viewer",
+        "operations"
+      ],
+      "path": "docs/operations/evidence-viewer.md",
+      "tags": [
+        "evidence-viewer",
+        "operations"
+      ],
+      "topic": "evidence-viewer"
     },
     {
       "keywords": [
@@ -6261,6 +6561,30 @@
         "operations"
       ],
       "topic": "install-verification-checklist"
+    },
+    {
+      "keywords": [
+        "institutional-packet",
+        "operations"
+      ],
+      "path": "docs/operations/institutional-packet.md",
+      "tags": [
+        "institutional-packet",
+        "operations"
+      ],
+      "topic": "institutional-packet"
+    },
+    {
+      "keywords": [
+        "institutional-readiness-checklist",
+        "operations"
+      ],
+      "path": "docs/operations/institutional-readiness-checklist.md",
+      "tags": [
+        "institutional-readiness-checklist",
+        "operations"
+      ],
+      "topic": "institutional-readiness-checklist"
     },
     {
       "keywords": [
@@ -6318,6 +6642,18 @@
     },
     {
       "keywords": [
+        "kind-simulation",
+        "operations"
+      ],
+      "path": "docs/operations/kind-simulation.md",
+      "tags": [
+        "kind-simulation",
+        "operations"
+      ],
+      "topic": "kind-simulation"
+    },
+    {
+      "keywords": [
         "index",
         "load",
         "operations"
@@ -6358,6 +6694,18 @@
     },
     {
       "keywords": [
+        "log-redaction-policy",
+        "operations"
+      ],
+      "path": "docs/operations/log-redaction-policy.md",
+      "tags": [
+        "log-redaction-policy",
+        "operations"
+      ],
+      "topic": "log-redaction-policy"
+    },
+    {
+      "keywords": [
         "minimal-production-overrides",
         "operations"
       ],
@@ -6367,6 +6715,30 @@
         "operations"
       ],
       "topic": "minimal-production-overrides"
+    },
+    {
+      "keywords": [
+        "networkpolicy",
+        "operations"
+      ],
+      "path": "docs/operations/networkpolicy.md",
+      "tags": [
+        "networkpolicy",
+        "operations"
+      ],
+      "topic": "networkpolicy"
+    },
+    {
+      "keywords": [
+        "observability-lifecycle",
+        "operations"
+      ],
+      "path": "docs/operations/observability-lifecycle.md",
+      "tags": [
+        "observability-lifecycle",
+        "operations"
+      ],
+      "topic": "observability-lifecycle"
     },
     {
       "keywords": [
@@ -6479,6 +6851,18 @@
     {
       "keywords": [
         "operations",
+        "operator-quickstart"
+      ],
+      "path": "docs/operations/operator-quickstart.md",
+      "tags": [
+        "operations",
+        "operator-quickstart"
+      ],
+      "topic": "operator-quickstart"
+    },
+    {
+      "keywords": [
+        "operations",
         "ops-docs-contract"
       ],
       "path": "docs/operations/ops-docs-contract.md",
@@ -6515,6 +6899,114 @@
     {
       "keywords": [
         "operations",
+        "performance-baseline"
+      ],
+      "path": "docs/operations/performance-baseline.md",
+      "tags": [
+        "operations",
+        "performance-baseline"
+      ],
+      "topic": "performance-baseline"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance"
+      ],
+      "path": "docs/operations/performance.md",
+      "tags": [
+        "operations",
+        "performance"
+      ],
+      "topic": "performance"
+    },
+    {
+      "keywords": [
+        "operations",
+        "profile-change-policy"
+      ],
+      "path": "docs/operations/profile-change-policy.md",
+      "tags": [
+        "operations",
+        "profile-change-policy"
+      ],
+      "topic": "profile-change-policy"
+    },
+    {
+      "keywords": [
+        "operations",
+        "profile-ownership"
+      ],
+      "path": "docs/operations/profile-ownership.md",
+      "tags": [
+        "operations",
+        "profile-ownership"
+      ],
+      "topic": "profile-ownership"
+    },
+    {
+      "keywords": [
+        "operations",
+        "profile-rollback"
+      ],
+      "path": "docs/operations/profile-rollback.md",
+      "tags": [
+        "operations",
+        "profile-rollback"
+      ],
+      "topic": "profile-rollback"
+    },
+    {
+      "keywords": [
+        "operations",
+        "profile-upgrade-policy"
+      ],
+      "path": "docs/operations/profile-upgrade-policy.md",
+      "tags": [
+        "operations",
+        "profile-upgrade-policy"
+      ],
+      "topic": "profile-upgrade-policy"
+    },
+    {
+      "keywords": [
+        "operations",
+        "profile-upgrade"
+      ],
+      "path": "docs/operations/profile-upgrade.md",
+      "tags": [
+        "operations",
+        "profile-upgrade"
+      ],
+      "topic": "profile-upgrade"
+    },
+    {
+      "keywords": [
+        "operations",
+        "profiles-matrix"
+      ],
+      "path": "docs/operations/profiles-matrix.md",
+      "tags": [
+        "operations",
+        "profiles-matrix"
+      ],
+      "topic": "profiles-matrix"
+    },
+    {
+      "keywords": [
+        "operations",
+        "profiles"
+      ],
+      "path": "docs/operations/profiles.md",
+      "tags": [
+        "operations",
+        "profiles"
+      ],
+      "topic": "profiles"
+    },
+    {
+      "keywords": [
+        "operations",
         "promotion-record"
       ],
       "path": "docs/operations/promotion-record.md",
@@ -6527,6 +7019,78 @@
     {
       "keywords": [
         "operations",
+        "release-add-artifact"
+      ],
+      "path": "docs/operations/release-add-artifact.md",
+      "tags": [
+        "operations",
+        "release-add-artifact"
+      ],
+      "topic": "release-add-artifact"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release-artifact-retention"
+      ],
+      "path": "docs/operations/release-artifact-retention.md",
+      "tags": [
+        "operations",
+        "release-artifact-retention"
+      ],
+      "topic": "release-artifact-retention"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release-candidate-checklist"
+      ],
+      "path": "docs/operations/release-candidate-checklist.md",
+      "tags": [
+        "operations",
+        "release-candidate-checklist"
+      ],
+      "topic": "release-candidate-checklist"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release-consumer-checklist"
+      ],
+      "path": "docs/operations/release-consumer-checklist.md",
+      "tags": [
+        "operations",
+        "release-consumer-checklist"
+      ],
+      "topic": "release-consumer-checklist"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release-evidence"
+      ],
+      "path": "docs/operations/release-evidence.md",
+      "tags": [
+        "operations",
+        "release-evidence"
+      ],
+      "topic": "release-evidence"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release-external-reviewer"
+      ],
+      "path": "docs/operations/release-external-reviewer.md",
+      "tags": [
+        "operations",
+        "release-external-reviewer"
+      ],
+      "topic": "release-external-reviewer"
+    },
+    {
+      "keywords": [
+        "operations",
         "release-operations"
       ],
       "path": "docs/operations/release-operations.md",
@@ -6535,6 +7099,78 @@
         "release-operations"
       ],
       "topic": "release-operations"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release-promotion-policy"
+      ],
+      "path": "docs/operations/release-promotion-policy.md",
+      "tags": [
+        "operations",
+        "release-promotion-policy"
+      ],
+      "topic": "release-promotion-policy"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release-provenance"
+      ],
+      "path": "docs/operations/release-provenance.md",
+      "tags": [
+        "operations",
+        "release-provenance"
+      ],
+      "topic": "release-provenance"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release-signature-rotation"
+      ],
+      "path": "docs/operations/release-signature-rotation.md",
+      "tags": [
+        "operations",
+        "release-signature-rotation"
+      ],
+      "topic": "release-signature-rotation"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release-signing"
+      ],
+      "path": "docs/operations/release-signing.md",
+      "tags": [
+        "operations",
+        "release-signing"
+      ],
+      "topic": "release-signing"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release-trust-root"
+      ],
+      "path": "docs/operations/release-trust-root.md",
+      "tags": [
+        "operations",
+        "release-trust-root"
+      ],
+      "topic": "release-trust-root"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release-verification-failures"
+      ],
+      "path": "docs/operations/release-verification-failures.md",
+      "tags": [
+        "operations",
+        "release-verification-failures"
+      ],
+      "topic": "release-verification-failures"
     },
     {
       "keywords": [
@@ -6685,6 +7321,30 @@
         "retention-and-gc"
       ],
       "topic": "retention-and-gc"
+    },
+    {
+      "keywords": [
+        "operations",
+        "review-packet"
+      ],
+      "path": "docs/operations/review-packet.md",
+      "tags": [
+        "operations",
+        "review-packet"
+      ],
+      "topic": "review-packet"
+    },
+    {
+      "keywords": [
+        "operations",
+        "rollback-limitations"
+      ],
+      "path": "docs/operations/rollback-limitations.md",
+      "tags": [
+        "operations",
+        "rollback-limitations"
+      ],
+      "topic": "rollback-limitations"
     },
     {
       "keywords": [
@@ -6851,6 +7511,18 @@
     {
       "keywords": [
         "operations",
+        "scientific-defensibility"
+      ],
+      "path": "docs/operations/scientific-defensibility.md",
+      "tags": [
+        "operations",
+        "scientific-defensibility"
+      ],
+      "topic": "scientific-defensibility"
+    },
+    {
+      "keywords": [
+        "operations",
         "security-posture"
       ],
       "path": "docs/operations/security-posture.md",
@@ -6876,6 +7548,34 @@
     },
     {
       "keywords": [
+        "compliance",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/compliance.md",
+      "tags": [
+        "compliance",
+        "operations",
+        "security"
+      ],
+      "topic": "compliance"
+    },
+    {
+      "keywords": [
+        "incident-response",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/incident-response.md",
+      "tags": [
+        "incident-response",
+        "operations",
+        "security"
+      ],
+      "topic": "incident-response"
+    },
+    {
+      "keywords": [
         "index",
         "operations",
         "security"
@@ -6887,6 +7587,48 @@
         "security"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "key-rotation",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/key-rotation.md",
+      "tags": [
+        "key-rotation",
+        "operations",
+        "security"
+      ],
+      "topic": "key-rotation"
+    },
+    {
+      "keywords": [
+        "model-scope",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/model-scope.md",
+      "tags": [
+        "model-scope",
+        "operations",
+        "security"
+      ],
+      "topic": "model-scope"
+    },
+    {
+      "keywords": [
+        "operations",
+        "review-checklist",
+        "security"
+      ],
+      "path": "docs/operations/security/review-checklist.md",
+      "tags": [
+        "operations",
+        "review-checklist",
+        "security"
+      ],
+      "topic": "review-checklist"
     },
     {
       "keywords": [
@@ -6903,6 +7645,30 @@
     {
       "keywords": [
         "operations",
+        "upgrade"
+      ],
+      "path": "docs/operations/upgrade.md",
+      "tags": [
+        "operations",
+        "upgrade"
+      ],
+      "topic": "upgrade"
+    },
+    {
+      "keywords": [
+        "operations",
+        "validation-entrypoints"
+      ],
+      "path": "docs/operations/validation-entrypoints.md",
+      "tags": [
+        "operations",
+        "validation-entrypoints"
+      ],
+      "topic": "validation-entrypoints"
+    },
+    {
+      "keywords": [
+        "operations",
         "values-mapping-to-config-keys"
       ],
       "path": "docs/operations/values-mapping-to-config-keys.md",
@@ -6911,6 +7677,18 @@
         "values-mapping-to-config-keys"
       ],
       "topic": "values-mapping-to-config-keys"
+    },
+    {
+      "keywords": [
+        "operations",
+        "warmup-lock"
+      ],
+      "path": "docs/operations/warmup-lock.md",
+      "tags": [
+        "operations",
+        "warmup-lock"
+      ],
+      "topic": "warmup-lock"
     },
     {
       "keywords": [
@@ -7261,6 +8039,20 @@
     {
       "keywords": [
         "contracts",
+        "drills",
+        "reference"
+      ],
+      "path": "docs/reference/contracts/drills.md",
+      "tags": [
+        "contracts",
+        "drills",
+        "reference"
+      ],
+      "topic": "drills"
+    },
+    {
+      "keywords": [
+        "contracts",
         "endpoints",
         "reference"
       ],
@@ -7305,6 +8097,20 @@
     {
       "keywords": [
         "contracts",
+        "health-endpoints",
+        "reference"
+      ],
+      "path": "docs/reference/contracts/health-endpoints.md",
+      "tags": [
+        "contracts",
+        "health-endpoints",
+        "reference"
+      ],
+      "topic": "health-endpoints"
+    },
+    {
+      "keywords": [
+        "contracts",
         "index",
         "reference"
       ],
@@ -7333,6 +8139,20 @@
     {
       "keywords": [
         "contracts",
+        "observability",
+        "reference"
+      ],
+      "path": "docs/reference/contracts/observability.md",
+      "tags": [
+        "contracts",
+        "observability",
+        "reference"
+      ],
+      "topic": "observability"
+    },
+    {
+      "keywords": [
+        "contracts",
         "helm-env-subset",
         "ops",
         "reference"
@@ -7349,6 +8169,22 @@
     {
       "keywords": [
         "contracts",
+        "lifecycle",
+        "ops",
+        "reference"
+      ],
+      "path": "docs/reference/contracts/ops/lifecycle.md",
+      "tags": [
+        "contracts",
+        "lifecycle",
+        "ops",
+        "reference"
+      ],
+      "topic": "lifecycle"
+    },
+    {
+      "keywords": [
+        "contracts",
         "ops",
         "profile-matrix",
         "reference"
@@ -7361,6 +8197,36 @@
         "reference"
       ],
       "topic": "profile-matrix"
+    },
+    {
+      "keywords": [
+        "contracts",
+        "ops",
+        "reference",
+        "simulation"
+      ],
+      "path": "docs/reference/contracts/ops/simulation.md",
+      "tags": [
+        "contracts",
+        "ops",
+        "reference",
+        "simulation"
+      ],
+      "topic": "simulation"
+    },
+    {
+      "keywords": [
+        "contracts",
+        "performance",
+        "reference"
+      ],
+      "path": "docs/reference/contracts/performance.md",
+      "tags": [
+        "contracts",
+        "performance",
+        "reference"
+      ],
+      "topic": "performance"
     },
     {
       "keywords": [
@@ -7457,6 +8323,36 @@
     {
       "keywords": [
         "contracts",
+        "reference",
+        "release-signing"
+      ],
+      "path": "docs/reference/contracts/release-signing.md",
+      "tags": [
+        "contracts",
+        "reference",
+        "release-signing"
+      ],
+      "topic": "release-signing"
+    },
+    {
+      "keywords": [
+        "contracts",
+        "evidence",
+        "reference",
+        "release"
+      ],
+      "path": "docs/reference/contracts/release/evidence.md",
+      "tags": [
+        "contracts",
+        "evidence",
+        "reference",
+        "release"
+      ],
+      "topic": "evidence"
+    },
+    {
+      "keywords": [
+        "contracts",
         "index",
         "reference",
         "schemas"
@@ -7469,6 +8365,20 @@
         "schemas"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "contracts",
+        "reference",
+        "security"
+      ],
+      "path": "docs/reference/contracts/security.md",
+      "tags": [
+        "contracts",
+        "reference",
+        "security"
+      ],
+      "topic": "security"
     },
     {
       "keywords": [
@@ -7538,6 +8448,18 @@
     },
     {
       "keywords": [
+        "generated-artifacts",
+        "reference"
+      ],
+      "path": "docs/reference/generated-artifacts.md",
+      "tags": [
+        "generated-artifacts",
+        "reference"
+      ],
+      "topic": "generated-artifacts"
+    },
+    {
+      "keywords": [
         "index",
         "reference"
       ],
@@ -7547,6 +8469,20 @@
         "reference"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "ingest",
+        "reference",
+        "reproducibility"
+      ],
+      "path": "docs/reference/ingest/reproducibility.md",
+      "tags": [
+        "ingest",
+        "reference",
+        "reproducibility"
+      ],
+      "topic": "reproducibility"
     },
     {
       "keywords": [
@@ -7952,6 +8888,16 @@
     },
     {
       "keywords": [
+        "structure-index"
+      ],
+      "path": "docs/structure-index.md",
+      "tags": [
+        "structure-index"
+      ],
+      "topic": "structure-index"
+    },
+    {
+      "keywords": [
         "what-to-read-next"
       ],
       "path": "docs/what-to-read-next.md",
@@ -8219,6 +9165,38 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "k8s",
+        "kind",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/k8s/kind/README.md",
+      "tags": [
+        "k8s",
+        "kind",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "k8s",
+        "ops",
+        "profile-readme",
+        "values"
+      ],
+      "path": "ops/k8s/values/profile-readme.md",
+      "tags": [
+        "k8s",
+        "ops",
+        "profile-readme",
+        "values"
+      ],
+      "topic": "profile-readme"
     },
     {
       "keywords": [

@@ -165,6 +165,14 @@
       "area": "configs",
       "audience": "contributors",
       "owner": "docs-governance",
+      "path": "configs/datasets/README.md",
+      "stability": "stable",
+      "title": "Datasets Configs"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
+      "owner": "docs-governance",
       "path": "configs/docs/README.md",
       "stability": "stable",
       "title": "Docs tooling configs"
@@ -2339,6 +2347,14 @@
     },
     {
       "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/add-a-redirect.md",
+      "stability": "stable",
+      "title": "How To Add A Redirect"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md",
@@ -2384,6 +2400,14 @@
       "path": "docs/_internal/governance/adrs/index.md",
       "stability": "stable",
       "title": "Architectural Decision Records"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/broken-link-policy.md",
+      "stability": "stable",
+      "title": "Broken Link Policy"
     },
     {
       "area": "_internal",
@@ -2453,6 +2477,14 @@
       "area": "_internal",
       "audience": "contributor",
       "owner": "docs-governance",
+      "path": "docs/_internal/governance/deprecate-doc-page.md",
+      "stability": "stable",
+      "title": "How To Deprecate A Doc Page"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
       "path": "docs/_internal/governance/docs-build-publish-model.md",
       "stability": "stable",
       "title": "Docs Build Publish Model"
@@ -2493,13 +2525,21 @@
       "area": "_internal",
       "audience": "contributor",
       "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-inventory-taxonomy.md",
+      "stability": "stable",
+      "title": "Docs Inventory Taxonomy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
       "path": "docs/_internal/governance/docs-lint-rules.md",
       "stability": "stable",
       "title": "Documentation lint rules"
     },
     {
       "area": "_internal",
-      "audience": "contributors",
+      "audience": "contributor",
       "owner": "docs-governance",
       "path": "docs/_internal/governance/docs-navigation-policy.md",
       "stability": "stable",
@@ -2515,11 +2555,19 @@
     },
     {
       "area": "_internal",
-      "audience": "contributors",
+      "audience": "contributor",
       "owner": "docs-governance",
       "path": "docs/_internal/governance/docs-ownership.md",
       "stability": "stable",
       "title": "Documentation Ownership"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-publication-model.md",
+      "stability": "stable",
+      "title": "Docs Publication Model"
     },
     {
       "area": "_internal",
@@ -2568,6 +2616,22 @@
       "path": "docs/_internal/governance/docs-style.md",
       "stability": "stable",
       "title": "Documentation Style"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-toolchain-policy.md",
+      "stability": "stable",
+      "title": "Docs Toolchain Policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-versioning-model.md",
+      "stability": "stable",
+      "title": "Docs Versioning Model"
     },
     {
       "area": "_internal",
@@ -2645,9 +2709,33 @@
       "area": "_internal",
       "audience": "contributor",
       "owner": "docs-governance",
+      "path": "docs/_internal/governance/redirect-lifecycle.md",
+      "stability": "stable",
+      "title": "Redirect Lifecycle And Expiry"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/redirects-contract.md",
+      "stability": "stable",
+      "title": "Redirects Contract"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
       "path": "docs/_internal/governance/redirects-policy.md",
       "stability": "stable",
       "title": "Redirects Policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/rename-doc-page.md",
+      "stability": "stable",
+      "title": "How To Rename A Doc Page"
     },
     {
       "area": "_internal",
@@ -2656,6 +2744,14 @@
       "path": "docs/_internal/governance/style-guide.md",
       "stability": "stable",
       "title": "Governance Style Guide"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/style-lints.md",
+      "stability": "stable",
+      "title": "Style Lints"
     },
     {
       "area": "_internal",
@@ -2728,6 +2824,14 @@
       "path": "docs/_internal/governance/style/structure-templates.md",
       "stability": "stable",
       "title": "Structure Templates"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/verification-metadata.md",
+      "stability": "stable",
+      "title": "Verification Metadata"
     },
     {
       "area": "_internal",
@@ -3698,12 +3802,60 @@
       "title": "Home"
     },
     {
+      "area": "institutional-reader.md",
+      "audience": "reviewers",
+      "owner": "docs-governance",
+      "path": "docs/institutional-reader.md",
+      "stability": "stable",
+      "title": "Institutional Reader"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/chart-semver-policy.md",
+      "stability": "stable",
+      "title": "Chart Semver Policy"
+    },
+    {
       "area": "operations",
       "audience": "operators",
       "owner": "docs-governance",
       "path": "docs/operations/config.md",
       "stability": "stable",
       "title": "Config"
+    },
+    {
+      "area": "operations",
+      "audience": "reviewers",
+      "owner": "bijux-atlas-data",
+      "path": "docs/operations/data-access-model.md",
+      "stability": "stable",
+      "title": "Data Access Model"
+    },
+    {
+      "area": "operations",
+      "audience": "reviewers",
+      "owner": "bijux-atlas-data",
+      "path": "docs/operations/data-retention-policy.md",
+      "stability": "stable",
+      "title": "Data Retention Policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-data",
+      "path": "docs/operations/dataset-deprecation.md",
+      "stability": "stable",
+      "title": "Dataset Deprecation"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-data",
+      "path": "docs/operations/dataset-update.md",
+      "stability": "stable",
+      "title": "Dataset Update"
     },
     {
       "area": "operations",
@@ -3739,6 +3891,14 @@
     },
     {
       "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/docs-as-runbooks.md",
+      "stability": "stable",
+      "title": "Docs As Runbooks"
+    },
+    {
+      "area": "operations",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/operations/docs-convergence-policy.md",
@@ -3752,6 +3912,14 @@
       "path": "docs/operations/drills-program.md",
       "stability": "stable",
       "title": "DR drills program"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/drills.md",
+      "stability": "stable",
+      "title": "Institutional Drills"
     },
     {
       "area": "operations",
@@ -3776,6 +3944,22 @@
       "path": "docs/operations/e2e/k8s-tests.md",
       "stability": "stable",
       "title": "Kubernetes E2E guarantees"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/evidence-retention-policy.md",
+      "stability": "stable",
+      "title": "Evidence Retention Policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/evidence-viewer.md",
+      "stability": "stable",
+      "title": "Evidence Viewer"
     },
     {
       "area": "operations",
@@ -3808,6 +3992,22 @@
       "path": "docs/operations/install-verification-checklist.md",
       "stability": "stable",
       "title": "Install verification checklist"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "platform",
+      "path": "docs/operations/institutional-packet.md",
+      "stability": "stable",
+      "title": "Institutional Packet"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/institutional-readiness-checklist.md",
+      "stability": "stable",
+      "title": "Institutional Readiness Checklist"
     },
     {
       "area": "operations",
@@ -3845,6 +4045,14 @@
       "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
+      "path": "docs/operations/kind-simulation.md",
+      "stability": "stable",
+      "title": "Kind Simulation"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/load/index.md",
       "stability": "stable",
       "title": "Load testing"
@@ -3869,9 +4077,33 @@
       "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
+      "path": "docs/operations/log-redaction-policy.md",
+      "stability": "stable",
+      "title": "Log Redaction Policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/minimal-production-overrides.md",
       "stability": "stable",
       "title": "Minimal production overrides"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/networkpolicy.md",
+      "stability": "stable",
+      "title": "NetworkPolicy"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/observability-lifecycle.md",
+      "stability": "stable",
+      "title": "Observability Lifecycle"
     },
     {
       "area": "operations",
@@ -3941,6 +4173,14 @@
       "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
+      "path": "docs/operations/operator-quickstart.md",
+      "stability": "stable",
+      "title": "Operator Quickstart"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/ops-docs-contract.md",
       "stability": "stable",
       "title": "Ops docs contract"
@@ -3963,6 +4203,78 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "platform",
+      "path": "docs/operations/performance-baseline.md",
+      "stability": "stable",
+      "title": "Performance Baseline Maintenance"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "platform",
+      "path": "docs/operations/performance.md",
+      "stability": "stable",
+      "title": "Performance Operations"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/profile-change-policy.md",
+      "stability": "stable",
+      "title": "Profile Change Policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/profile-ownership.md",
+      "stability": "stable",
+      "title": "Profile Ownership"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/profile-rollback.md",
+      "stability": "stable",
+      "title": "Profile Rollback"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/profile-upgrade-policy.md",
+      "stability": "stable",
+      "title": "Profile Upgrade Policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/profile-upgrade.md",
+      "stability": "stable",
+      "title": "Profile Upgrade"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/profiles-matrix.md",
+      "stability": "stable",
+      "title": "Profiles Matrix"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/profiles.md",
+      "stability": "stable",
+      "title": "Profiles"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/promotion-record.md",
@@ -3973,9 +4285,105 @@
       "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release-add-artifact.md",
+      "stability": "stable",
+      "title": "Add A Release Artifact"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release-artifact-retention.md",
+      "stability": "stable",
+      "title": "Release Artifact Retention"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release-candidate-checklist.md",
+      "stability": "stable",
+      "title": "Release Candidate Checklist"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release-consumer-checklist.md",
+      "stability": "stable",
+      "title": "Release Consumer Checklist"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release-evidence.md",
+      "stability": "stable",
+      "title": "Release Evidence"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "platform",
+      "path": "docs/operations/release-external-reviewer.md",
+      "stability": "stable",
+      "title": "External Reviewer Guidance"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/release-operations.md",
       "stability": "stable",
       "title": "Release operations"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release-promotion-policy.md",
+      "stability": "stable",
+      "title": "Release Promotion Policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release-provenance.md",
+      "stability": "stable",
+      "title": "Release Provenance"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release-signature-rotation.md",
+      "stability": "stable",
+      "title": "Release Signature Rotation"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release-signing.md",
+      "stability": "stable",
+      "title": "Release Signing"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release-trust-root.md",
+      "stability": "stable",
+      "title": "Release Trust Root"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release-verification-failures.md",
+      "stability": "stable",
+      "title": "Release Verification Failures"
     },
     {
       "area": "operations",
@@ -4064,6 +4472,22 @@
       "path": "docs/operations/retention-and-gc.md",
       "stability": "stable",
       "title": "Retention and garbage collection"
+    },
+    {
+      "area": "operations",
+      "audience": "reviewers",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/review-packet.md",
+      "stability": "stable",
+      "title": "Review Packet"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/rollback-limitations.md",
+      "stability": "stable",
+      "title": "Rollback Limitations"
     },
     {
       "area": "operations",
@@ -4163,6 +4587,14 @@
     },
     {
       "area": "operations",
+      "audience": "reviewers",
+      "owner": "bijux-atlas-data",
+      "path": "docs/operations/scientific-defensibility.md",
+      "stability": "stable",
+      "title": "Scientific Defensibility"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-security",
       "path": "docs/operations/security-posture.md",
@@ -4181,9 +4613,49 @@
       "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/compliance.md",
+      "stability": "stable",
+      "title": "Security Compliance"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/incident-response.md",
+      "stability": "stable",
+      "title": "Security Incident Response"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-security",
       "path": "docs/operations/security/index.md",
       "stability": "stable",
       "title": "Security"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/key-rotation.md",
+      "stability": "stable",
+      "title": "Security Key Rotation"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/model-scope.md",
+      "stability": "stable",
+      "title": "Security Model Scope"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/review-checklist.md",
+      "stability": "stable",
+      "title": "Security Review Checklist"
     },
     {
       "area": "operations",
@@ -4197,9 +4669,33 @@
       "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
+      "path": "docs/operations/upgrade.md",
+      "stability": "stable",
+      "title": "Upgrade Validation"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/validation-entrypoints.md",
+      "stability": "stable",
+      "title": "Validation Entrypoints"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/values-mapping-to-config-keys.md",
       "stability": "stable",
       "title": "Values mapping to config keys"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/warmup-lock.md",
+      "stability": "stable",
+      "title": "Warmup Lock Model"
     },
     {
       "area": "product",
@@ -4419,6 +4915,14 @@
     },
     {
       "area": "reference",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/contracts/drills.md",
+      "stability": "stable",
+      "title": "Drill Contracts"
+    },
+    {
+      "area": "reference",
       "audience": "mixed",
       "owner": "docs-governance",
       "path": "docs/reference/contracts/endpoints.md",
@@ -4443,6 +4947,14 @@
     },
     {
       "area": "reference",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/contracts/health-endpoints.md",
+      "stability": "stable",
+      "title": "Health Endpoints"
+    },
+    {
+      "area": "reference",
       "audience": "user",
       "owner": "docs-governance",
       "path": "docs/reference/contracts/index.md",
@@ -4459,6 +4971,14 @@
     },
     {
       "area": "reference",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/contracts/observability.md",
+      "stability": "stable",
+      "title": "Observability Contracts"
+    },
+    {
+      "area": "reference",
       "audience": "reviewers",
       "owner": "bijux-atlas-operations",
       "path": "docs/reference/contracts/ops/helm-env-subset.md",
@@ -4467,11 +4987,35 @@
     },
     {
       "area": "reference",
+      "audience": "operator",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/ops/lifecycle.md",
+      "stability": "stable",
+      "title": "Ops Lifecycle Contracts"
+    },
+    {
+      "area": "reference",
       "audience": "user",
       "owner": "docs-governance",
       "path": "docs/reference/contracts/ops/profile-matrix.md",
       "stability": "stable",
       "title": "Profile Matrix Contracts"
+    },
+    {
+      "area": "reference",
+      "audience": "operator",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/ops/simulation.md",
+      "stability": "stable",
+      "title": "Ops Simulation Contracts"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "platform",
+      "path": "docs/reference/contracts/performance.md",
+      "stability": "stable",
+      "title": "Performance Contracts"
     },
     {
       "area": "reference",
@@ -4523,11 +5067,35 @@
     },
     {
       "area": "reference",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/contracts/release-signing.md",
+      "stability": "stable",
+      "title": "Release Signing Contracts"
+    },
+    {
+      "area": "reference",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/contracts/release/evidence.md",
+      "stability": "stable",
+      "title": "Release Evidence Contracts"
+    },
+    {
+      "area": "reference",
       "audience": "mixed",
       "owner": "docs-governance",
       "path": "docs/reference/contracts/schemas/index.md",
       "stability": "stable",
       "title": "Contract Schemas"
+    },
+    {
+      "area": "reference",
+      "audience": "operator",
+      "owner": "bijux-atlas-security",
+      "path": "docs/reference/contracts/security.md",
+      "stability": "stable",
+      "title": "Security Contracts"
     },
     {
       "area": "reference",
@@ -4571,11 +5139,27 @@
     },
     {
       "area": "reference",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/reference/generated-artifacts.md",
+      "stability": "stable",
+      "title": "Generated Artifacts"
+    },
+    {
+      "area": "reference",
       "audience": "user",
       "owner": "docs-governance",
       "path": "docs/reference/index.md",
       "stability": "stable",
       "title": "Reference"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "platform",
+      "path": "docs/reference/ingest/reproducibility.md",
+      "stability": "stable",
+      "title": "Ingest Reproducibility"
     },
     {
       "area": "reference",
@@ -4739,7 +5323,7 @@
     },
     {
       "area": "reference",
-      "audience": "operators",
+      "audience": "contributor",
       "owner": "bijux-atlas-operations",
       "path": "docs/reference/repo-map.md",
       "stability": "stable",
@@ -4816,6 +5400,14 @@
       "path": "docs/start-here.md",
       "stability": "stable",
       "title": "Start here"
+    },
+    {
+      "area": "structure-index.md",
+      "audience": "reviewers",
+      "owner": "docs-governance",
+      "path": "docs/structure-index.md",
+      "stability": "stable",
+      "title": "Docs Structure Index"
     },
     {
       "area": "what-to-read-next.md",
@@ -4976,6 +5568,22 @@
       "path": "ops/k8s/README.md",
       "stability": "stable",
       "title": "Ops K8s"
+    },
+    {
+      "area": "ops",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/k8s/kind/README.md",
+      "stability": "stable",
+      "title": "Kind Simulation Cluster"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/k8s/values/profile-readme.md",
+      "stability": "stable",
+      "title": "Profile Intent"
     },
     {
       "area": "ops",

@@ -147,6 +147,14 @@
     {
       "breadcrumbs": [
         "configs",
+        "configs/datasets",
+        "configs/datasets/README.md"
+      ],
+      "path": "configs/datasets/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
         "configs/docs",
         "configs/docs/README.md"
       ],
@@ -2690,6 +2698,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/add-a-redirect.md"
+      ],
+      "path": "docs/_internal/governance/add-a-redirect.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/adrs",
         "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md"
       ],
@@ -2744,6 +2761,15 @@
         "docs/_internal/governance/adrs/index.md"
       ],
       "path": "docs/_internal/governance/adrs/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/broken-link-policy.md"
+      ],
+      "path": "docs/_internal/governance/broken-link-policy.md"
     },
     {
       "breadcrumbs": [
@@ -2824,6 +2850,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/deprecate-doc-page.md"
+      ],
+      "path": "docs/_internal/governance/deprecate-doc-page.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/docs-build-publish-model.md"
       ],
       "path": "docs/_internal/governance/docs-build-publish-model.md"
@@ -2869,6 +2904,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/docs-inventory-taxonomy.md"
+      ],
+      "path": "docs/_internal/governance/docs-inventory-taxonomy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/docs-lint-rules.md"
       ],
       "path": "docs/_internal/governance/docs-lint-rules.md"
@@ -2899,6 +2943,15 @@
         "docs/_internal/governance/docs-ownership.md"
       ],
       "path": "docs/_internal/governance/docs-ownership.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-publication-model.md"
+      ],
+      "path": "docs/_internal/governance/docs-publication-model.md"
     },
     {
       "breadcrumbs": [
@@ -2953,6 +3006,24 @@
         "docs/_internal/governance/docs-style.md"
       ],
       "path": "docs/_internal/governance/docs-style.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-toolchain-policy.md"
+      ],
+      "path": "docs/_internal/governance/docs-toolchain-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-versioning-model.md"
+      ],
+      "path": "docs/_internal/governance/docs-versioning-model.md"
     },
     {
       "breadcrumbs": [
@@ -3044,6 +3115,24 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/redirect-lifecycle.md"
+      ],
+      "path": "docs/_internal/governance/redirect-lifecycle.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/redirects-contract.md"
+      ],
+      "path": "docs/_internal/governance/redirects-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/redirects-policy.md"
       ],
       "path": "docs/_internal/governance/redirects-policy.md"
@@ -3053,9 +3142,27 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/rename-doc-page.md"
+      ],
+      "path": "docs/_internal/governance/rename-doc-page.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/style-guide.md"
       ],
       "path": "docs/_internal/governance/style-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/style-lints.md"
+      ],
+      "path": "docs/_internal/governance/style-lints.md"
     },
     {
       "breadcrumbs": [
@@ -3146,6 +3253,15 @@
         "docs/_internal/governance/style/structure-templates.md"
       ],
       "path": "docs/_internal/governance/style/structure-templates.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/verification-metadata.md"
+      ],
+      "path": "docs/_internal/governance/verification-metadata.md"
     },
     {
       "breadcrumbs": [
@@ -4132,10 +4248,57 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/institutional-reader.md"
+      ],
+      "path": "docs/institutional-reader.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/chart-semver-policy.md"
+      ],
+      "path": "docs/operations/chart-semver-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
         "docs/operations",
         "docs/operations/config.md"
       ],
       "path": "docs/operations/config.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/data-access-model.md"
+      ],
+      "path": "docs/operations/data-access-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/data-retention-policy.md"
+      ],
+      "path": "docs/operations/data-retention-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/dataset-deprecation.md"
+      ],
+      "path": "docs/operations/dataset-deprecation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/dataset-update.md"
+      ],
+      "path": "docs/operations/dataset-update.md"
     },
     {
       "breadcrumbs": [
@@ -4173,6 +4336,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/docs-as-runbooks.md"
+      ],
+      "path": "docs/operations/docs-as-runbooks.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/docs-convergence-policy.md"
       ],
       "path": "docs/operations/docs-convergence-policy.md"
@@ -4184,6 +4355,14 @@
         "docs/operations/drills-program.md"
       ],
       "path": "docs/operations/drills-program.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/drills.md"
+      ],
+      "path": "docs/operations/drills.md"
     },
     {
       "breadcrumbs": [
@@ -4216,6 +4395,22 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/evidence-retention-policy.md"
+      ],
+      "path": "docs/operations/evidence-retention-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/evidence-viewer.md"
+      ],
+      "path": "docs/operations/evidence-viewer.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/fixture-dataset-ingest.md"
       ],
       "path": "docs/operations/fixture-dataset-ingest.md"
@@ -4243,6 +4438,22 @@
         "docs/operations/install-verification-checklist.md"
       ],
       "path": "docs/operations/install-verification-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/institutional-packet.md"
+      ],
+      "path": "docs/operations/institutional-packet.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/institutional-readiness-checklist.md"
+      ],
+      "path": "docs/operations/institutional-readiness-checklist.md"
     },
     {
       "breadcrumbs": [
@@ -4283,6 +4494,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/kind-simulation.md"
+      ],
+      "path": "docs/operations/kind-simulation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/load",
         "docs/operations/load/index.md"
       ],
@@ -4310,9 +4529,33 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/log-redaction-policy.md"
+      ],
+      "path": "docs/operations/log-redaction-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/minimal-production-overrides.md"
       ],
       "path": "docs/operations/minimal-production-overrides.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/networkpolicy.md"
+      ],
+      "path": "docs/operations/networkpolicy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability-lifecycle.md"
+      ],
+      "path": "docs/operations/observability-lifecycle.md"
     },
     {
       "breadcrumbs": [
@@ -4388,6 +4631,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/operator-quickstart.md"
+      ],
+      "path": "docs/operations/operator-quickstart.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/ops-docs-contract.md"
       ],
       "path": "docs/operations/ops-docs-contract.md"
@@ -4412,6 +4663,78 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/performance-baseline.md"
+      ],
+      "path": "docs/operations/performance-baseline.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/performance.md"
+      ],
+      "path": "docs/operations/performance.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/profile-change-policy.md"
+      ],
+      "path": "docs/operations/profile-change-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/profile-ownership.md"
+      ],
+      "path": "docs/operations/profile-ownership.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/profile-rollback.md"
+      ],
+      "path": "docs/operations/profile-rollback.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/profile-upgrade-policy.md"
+      ],
+      "path": "docs/operations/profile-upgrade-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/profile-upgrade.md"
+      ],
+      "path": "docs/operations/profile-upgrade.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/profiles-matrix.md"
+      ],
+      "path": "docs/operations/profiles-matrix.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/profiles.md"
+      ],
+      "path": "docs/operations/profiles.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/promotion-record.md"
       ],
       "path": "docs/operations/promotion-record.md"
@@ -4420,9 +4743,105 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/release-add-artifact.md"
+      ],
+      "path": "docs/operations/release-add-artifact.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-artifact-retention.md"
+      ],
+      "path": "docs/operations/release-artifact-retention.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-candidate-checklist.md"
+      ],
+      "path": "docs/operations/release-candidate-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-consumer-checklist.md"
+      ],
+      "path": "docs/operations/release-consumer-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-evidence.md"
+      ],
+      "path": "docs/operations/release-evidence.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-external-reviewer.md"
+      ],
+      "path": "docs/operations/release-external-reviewer.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/release-operations.md"
       ],
       "path": "docs/operations/release-operations.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-promotion-policy.md"
+      ],
+      "path": "docs/operations/release-promotion-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-provenance.md"
+      ],
+      "path": "docs/operations/release-provenance.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-signature-rotation.md"
+      ],
+      "path": "docs/operations/release-signature-rotation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-signing.md"
+      ],
+      "path": "docs/operations/release-signing.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-trust-root.md"
+      ],
+      "path": "docs/operations/release-trust-root.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-verification-failures.md"
+      ],
+      "path": "docs/operations/release-verification-failures.md"
     },
     {
       "breadcrumbs": [
@@ -4520,6 +4939,22 @@
         "docs/operations/retention-and-gc.md"
       ],
       "path": "docs/operations/retention-and-gc.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/review-packet.md"
+      ],
+      "path": "docs/operations/review-packet.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/rollback-limitations.md"
+      ],
+      "path": "docs/operations/rollback-limitations.md"
     },
     {
       "breadcrumbs": [
@@ -4630,6 +5065,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/scientific-defensibility.md"
+      ],
+      "path": "docs/operations/scientific-defensibility.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/security-posture.md"
       ],
       "path": "docs/operations/security-posture.md"
@@ -4648,9 +5091,54 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/compliance.md"
+      ],
+      "path": "docs/operations/security/compliance.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/incident-response.md"
+      ],
+      "path": "docs/operations/security/incident-response.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/index.md"
       ],
       "path": "docs/operations/security/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/key-rotation.md"
+      ],
+      "path": "docs/operations/security/key-rotation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/model-scope.md"
+      ],
+      "path": "docs/operations/security/model-scope.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/review-checklist.md"
+      ],
+      "path": "docs/operations/security/review-checklist.md"
     },
     {
       "breadcrumbs": [
@@ -4664,9 +5152,33 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/upgrade.md"
+      ],
+      "path": "docs/operations/upgrade.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/validation-entrypoints.md"
+      ],
+      "path": "docs/operations/validation-entrypoints.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/values-mapping-to-config-keys.md"
       ],
       "path": "docs/operations/values-mapping-to-config-keys.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/warmup-lock.md"
+      ],
+      "path": "docs/operations/warmup-lock.md"
     },
     {
       "breadcrumbs": [
@@ -4901,6 +5413,15 @@
         "docs",
         "docs/reference",
         "docs/reference/contracts",
+        "docs/reference/contracts/drills.md"
+      ],
+      "path": "docs/reference/contracts/drills.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/contracts",
         "docs/reference/contracts/endpoints.md"
       ],
       "path": "docs/reference/contracts/endpoints.md"
@@ -4929,6 +5450,15 @@
         "docs",
         "docs/reference",
         "docs/reference/contracts",
+        "docs/reference/contracts/health-endpoints.md"
+      ],
+      "path": "docs/reference/contracts/health-endpoints.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/contracts",
         "docs/reference/contracts/index.md"
       ],
       "path": "docs/reference/contracts/index.md"
@@ -4947,6 +5477,15 @@
         "docs",
         "docs/reference",
         "docs/reference/contracts",
+        "docs/reference/contracts/observability.md"
+      ],
+      "path": "docs/reference/contracts/observability.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/contracts",
         "docs/reference/contracts/ops",
         "docs/reference/contracts/ops/helm-env-subset.md"
       ],
@@ -4958,9 +5497,38 @@
         "docs/reference",
         "docs/reference/contracts",
         "docs/reference/contracts/ops",
+        "docs/reference/contracts/ops/lifecycle.md"
+      ],
+      "path": "docs/reference/contracts/ops/lifecycle.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/contracts",
+        "docs/reference/contracts/ops",
         "docs/reference/contracts/ops/profile-matrix.md"
       ],
       "path": "docs/reference/contracts/ops/profile-matrix.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/contracts",
+        "docs/reference/contracts/ops",
+        "docs/reference/contracts/ops/simulation.md"
+      ],
+      "path": "docs/reference/contracts/ops/simulation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/contracts",
+        "docs/reference/contracts/performance.md"
+      ],
+      "path": "docs/reference/contracts/performance.md"
     },
     {
       "breadcrumbs": [
@@ -5026,10 +5594,38 @@
         "docs",
         "docs/reference",
         "docs/reference/contracts",
+        "docs/reference/contracts/release-signing.md"
+      ],
+      "path": "docs/reference/contracts/release-signing.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/contracts",
+        "docs/reference/contracts/release",
+        "docs/reference/contracts/release/evidence.md"
+      ],
+      "path": "docs/reference/contracts/release/evidence.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/contracts",
         "docs/reference/contracts/schemas",
         "docs/reference/contracts/schemas/index.md"
       ],
       "path": "docs/reference/contracts/schemas/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/contracts",
+        "docs/reference/contracts/security.md"
+      ],
+      "path": "docs/reference/contracts/security.md"
     },
     {
       "breadcrumbs": [
@@ -5078,9 +5674,26 @@
       "breadcrumbs": [
         "docs",
         "docs/reference",
+        "docs/reference/generated-artifacts.md"
+      ],
+      "path": "docs/reference/generated-artifacts.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
         "docs/reference/index.md"
       ],
       "path": "docs/reference/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/ingest",
+        "docs/reference/ingest/reproducibility.md"
+      ],
+      "path": "docs/reference/ingest/reproducibility.md"
     },
     {
       "breadcrumbs": [
@@ -5346,6 +5959,13 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/structure-index.md"
+      ],
+      "path": "docs/structure-index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
         "docs/what-to-read-next.md"
       ],
       "path": "docs/what-to-read-next.md"
@@ -5498,6 +6118,24 @@
         "ops/k8s/README.md"
       ],
       "path": "ops/k8s/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/k8s",
+        "ops/k8s/kind",
+        "ops/k8s/kind/README.md"
+      ],
+      "path": "ops/k8s/kind/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/k8s",
+        "ops/k8s/values",
+        "ops/k8s/values/profile-readme.md"
+      ],
+      "path": "ops/k8s/values/profile-readme.md"
     },
     {
       "breadcrumbs": [

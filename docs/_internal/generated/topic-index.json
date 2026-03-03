@@ -66,6 +66,7 @@
       "configs/cli/README.md",
       "configs/contracts/README.md",
       "configs/coverage/README.md",
+      "configs/datasets/README.md",
       "configs/docs/README.md",
       "configs/examples/README.md",
       "configs/gates/README.md",
@@ -129,6 +130,7 @@
       "ops/env/README.md",
       "ops/inventory/README.md",
       "ops/k8s/README.md",
+      "ops/k8s/kind/README.md",
       "ops/load/README.md",
       "ops/observe/README.md",
       "ops/report/README.md",
@@ -149,6 +151,9 @@
     ],
     "add-a-gate-policy": [
       "docs/control-plane/add-a-gate-policy.md"
+    ],
+    "add-a-redirect": [
+      "docs/_internal/governance/add-a-redirect.md"
     ],
     "add-dataset-type": [
       "docs/development/add-dataset-type.md"
@@ -258,6 +263,9 @@
     "boundary-maps": [
       "docs/architecture/boundary-maps.md"
     ],
+    "broken-link-policy": [
+      "docs/_internal/governance/broken-link-policy.md"
+    ],
     "budget-exceptions": [
       "docs/reference/ops-schema/budget-exceptions.md"
     ],
@@ -292,6 +300,9 @@
     ],
     "chart-contracts": [
       "docs/operations/k8s/chart-contracts.md"
+    ],
+    "chart-semver-policy": [
+      "docs/operations/chart-semver-policy.md"
     ],
     "chart-values": [
       "docs/reference/contracts/chart-values.md"
@@ -358,6 +369,9 @@
     ],
     "compatibility-test-plan": [
       "docs/api/compatibility-test-plan.md"
+    ],
+    "compliance": [
+      "docs/operations/security/compliance.md"
     ],
     "components": [
       "docs/architecture/components.md"
@@ -483,8 +497,14 @@
     "dashboards": [
       "docs/operations/observability/dashboards.md"
     ],
+    "data-access-model": [
+      "docs/operations/data-access-model.md"
+    ],
     "data-model": [
       "crates/bijux-atlas-model/docs/data-model.md"
+    ],
+    "data-retention-policy": [
+      "docs/operations/data-retention-policy.md"
     ],
     "dataflow": [
       "docs/architecture/dataflow.md"
@@ -492,8 +512,14 @@
     "dataset-corruption": [
       "docs/operations/runbooks/dataset-corruption.md"
     ],
+    "dataset-deprecation": [
+      "docs/operations/dataset-deprecation.md"
+    ],
     "dataset-operations": [
       "docs/reference/dataset-operations.md"
+    ],
+    "dataset-update": [
+      "docs/operations/dataset-update.md"
     ],
     "dataset-workflow": [
       "docs/operations/dataset-workflow.md"
@@ -520,6 +546,9 @@
     "deploy-kubernetes-minimal": [
       "docs/operations/deploy-kubernetes-minimal.md"
     ],
+    "deprecate-doc-page": [
+      "docs/_internal/governance/deprecate-doc-page.md"
+    ],
     "deprecation": [
       "docs/api/deprecation.md"
     ],
@@ -543,6 +572,9 @@
     ],
     "doc-conventions": [
       "docs/development/doc-conventions.md"
+    ],
+    "docs-as-runbooks": [
+      "docs/operations/docs-as-runbooks.md"
     ],
     "docs-build-model": [
       "docs/_internal/meta/docs-build-model.md"
@@ -574,6 +606,9 @@
     "docs-governance": [
       ".github/PULL_REQUEST_TEMPLATE/docs-governance.md"
     ],
+    "docs-inventory-taxonomy": [
+      "docs/_internal/governance/docs-inventory-taxonomy.md"
+    ],
     "docs-lint-rules": [
       "docs/_internal/governance/docs-lint-rules.md"
     ],
@@ -589,6 +624,9 @@
     ],
     "docs-principles": [
       "docs/_internal/meta/docs-principles.md"
+    ],
+    "docs-publication-model": [
+      "docs/_internal/governance/docs-publication-model.md"
     ],
     "docs-quality-policy": [
       "docs/_internal/governance/docs-quality-policy.md"
@@ -614,8 +652,18 @@
     "docs-taxonomy-quick-reference": [
       "docs/_internal/meta/docs-taxonomy-quick-reference.md"
     ],
+    "docs-toolchain-policy": [
+      "docs/_internal/governance/docs-toolchain-policy.md"
+    ],
+    "docs-versioning-model": [
+      "docs/_internal/governance/docs-versioning-model.md"
+    ],
     "draft": [
       "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_drafts/draft.md"
+    ],
+    "drills": [
+      "docs/operations/drills.md",
+      "docs/reference/contracts/drills.md"
     ],
     "drills-program": [
       "docs/operations/drills-program.md"
@@ -682,6 +730,15 @@
       "docs/reference/contracts/errors.md",
       "docs/reference/errors.md"
     ],
+    "evidence": [
+      "docs/reference/contracts/release/evidence.md"
+    ],
+    "evidence-retention-policy": [
+      "docs/operations/evidence-retention-policy.md"
+    ],
+    "evidence-viewer": [
+      "docs/operations/evidence-viewer.md"
+    ],
     "evidence-writing-style": [
       "docs/control-plane/evidence-writing-style.md"
     ],
@@ -740,13 +797,17 @@
     ],
     "generated-artifacts": [
       "docs/_internal/generated-artifacts.md",
-      "docs/_internal/meta/generated-artifacts.md"
+      "docs/_internal/meta/generated-artifacts.md",
+      "docs/reference/generated-artifacts.md"
     ],
     "generated-content-policy": [
       "docs/_internal/governance/generated-content-policy.md"
     ],
     "glossary": [
       "docs/glossary.md"
+    ],
+    "health-endpoints": [
+      "docs/reference/contracts/health-endpoints.md"
     ],
     "helm-env-subset": [
       "docs/reference/contracts/ops/helm-env-subset.md"
@@ -779,7 +840,8 @@
       "docs/operations/runbooks/incident-playbook.md"
     ],
     "incident-response": [
-      "docs/operations/incident-response.md"
+      "docs/operations/incident-response.md",
+      "docs/operations/security/incident-response.md"
     ],
     "index": [
       "crates/bijux-atlas-api/docs/index.md",
@@ -845,6 +907,15 @@
     "install-verification-checklist": [
       "docs/operations/install-verification-checklist.md"
     ],
+    "institutional-packet": [
+      "docs/operations/institutional-packet.md"
+    ],
+    "institutional-reader": [
+      "docs/institutional-reader.md"
+    ],
+    "institutional-readiness-checklist": [
+      "docs/operations/institutional-readiness-checklist.md"
+    ],
     "integrity-model": [
       "docs/reference/store/integrity-model.md"
     ],
@@ -857,8 +928,14 @@
     "k8s-tests": [
       "docs/operations/e2e/k8s-tests.md"
     ],
+    "key-rotation": [
+      "docs/operations/security/key-rotation.md"
+    ],
     "kind-profile": [
       "docs/operations/kind-profile.md"
+    ],
+    "kind-simulation": [
+      "docs/operations/kind-simulation.md"
     ],
     "known-limitations": [
       "docs/control-plane/known-limitations.md"
@@ -878,8 +955,14 @@
     "layering-rules": [
       "docs/architecture/layering-rules.md"
     ],
+    "lifecycle": [
+      "docs/reference/contracts/ops/lifecycle.md"
+    ],
     "load-failure-triage": [
       "docs/operations/runbooks/load-failure-triage.md"
+    ],
+    "log-redaction-policy": [
+      "docs/operations/log-redaction-policy.md"
     ],
     "make": [
       "docs/development/tooling/make.md",
@@ -894,8 +977,14 @@
     "mode": [
       "docs/reference/contracts/plugins/mode.md"
     ],
+    "model-scope": [
+      "docs/operations/security/model-scope.md"
+    ],
     "naming": [
       "docs/_internal/governance/naming.md"
+    ],
+    "networkpolicy": [
+      "docs/operations/networkpolicy.md"
     ],
     "no-dna-dependency-policy": [
       "docs/reference/registry/no-dna-dependency-policy.md"
@@ -908,6 +997,12 @@
     ],
     "not-in-model": [
       "crates/bijux-atlas-model/docs/not-in-model.md"
+    ],
+    "observability": [
+      "docs/reference/contracts/observability.md"
+    ],
+    "observability-lifecycle": [
+      "docs/operations/observability-lifecycle.md"
     ],
     "observability-setup": [
       "docs/operations/observability-setup.md"
@@ -923,6 +1018,9 @@
     ],
     "operator-faq": [
       "docs/operations/operator-faq.md"
+    ],
+    "operator-quickstart": [
+      "docs/operations/operator-quickstart.md"
     ],
     "ops-command-list": [
       "crates/bijux-dev-atlas/docs/internal/ops-command-list.md"
@@ -972,6 +1070,13 @@
     "perf-regression": [
       ".github/ISSUE_TEMPLATE/perf-regression.md"
     ],
+    "performance": [
+      "docs/operations/performance.md",
+      "docs/reference/contracts/performance.md"
+    ],
+    "performance-baseline": [
+      "docs/operations/performance-baseline.md"
+    ],
     "performance-budget": [
       "docs/control-plane/performance-budget.md"
     ],
@@ -996,11 +1101,35 @@
     "policy-enforcement-mapping": [
       "docs/_internal/governance/policy-enforcement-mapping.md"
     ],
+    "profile-change-policy": [
+      "docs/operations/profile-change-policy.md"
+    ],
     "profile-invariants": [
       "docs/operations/k8s/profile-invariants.md"
     ],
     "profile-matrix": [
       "docs/reference/contracts/ops/profile-matrix.md"
+    ],
+    "profile-ownership": [
+      "docs/operations/profile-ownership.md"
+    ],
+    "profile-readme": [
+      "ops/k8s/values/profile-readme.md"
+    ],
+    "profile-rollback": [
+      "docs/operations/profile-rollback.md"
+    ],
+    "profile-upgrade": [
+      "docs/operations/profile-upgrade.md"
+    ],
+    "profile-upgrade-policy": [
+      "docs/operations/profile-upgrade-policy.md"
+    ],
+    "profiles": [
+      "docs/operations/profiles.md"
+    ],
+    "profiles-matrix": [
+      "docs/operations/profiles-matrix.md"
     ],
     "promotion-record": [
       "docs/operations/promotion-record.md"
@@ -1045,6 +1174,12 @@
     "readers-guide": [
       "docs/_internal/governance/readers-guide.md"
     ],
+    "redirect-lifecycle": [
+      "docs/_internal/governance/redirect-lifecycle.md"
+    ],
+    "redirects-contract": [
+      "docs/_internal/governance/redirects-contract.md"
+    ],
     "redirects-policy": [
       "docs/_internal/governance/redirects-policy.md"
     ],
@@ -1060,8 +1195,26 @@
     "registry-federation-model": [
       "docs/architecture/registry-federation-model.md"
     ],
+    "release-add-artifact": [
+      "docs/operations/release-add-artifact.md"
+    ],
+    "release-artifact-retention": [
+      "docs/operations/release-artifact-retention.md"
+    ],
+    "release-candidate-checklist": [
+      "docs/operations/release-candidate-checklist.md"
+    ],
+    "release-consumer-checklist": [
+      "docs/operations/release-consumer-checklist.md"
+    ],
     "release-contract-checklist": [
       "docs/product/release-contract-checklist.md"
+    ],
+    "release-evidence": [
+      "docs/operations/release-evidence.md"
+    ],
+    "release-external-reviewer": [
+      "docs/operations/release-external-reviewer.md"
     ],
     "release-model": [
       "docs/product/release-model.md"
@@ -1072,8 +1225,30 @@
     "release-operations": [
       "docs/operations/release-operations.md"
     ],
+    "release-promotion-policy": [
+      "docs/operations/release-promotion-policy.md"
+    ],
+    "release-provenance": [
+      "docs/operations/release-provenance.md"
+    ],
+    "release-signature-rotation": [
+      "docs/operations/release-signature-rotation.md"
+    ],
+    "release-signing": [
+      "docs/operations/release-signing.md",
+      "docs/reference/contracts/release-signing.md"
+    ],
+    "release-trust-root": [
+      "docs/operations/release-trust-root.md"
+    ],
+    "release-verification-failures": [
+      "docs/operations/release-verification-failures.md"
+    ],
     "release-workflow": [
       "docs/operations/release-workflow.md"
+    ],
+    "rename-doc-page": [
+      "docs/_internal/governance/rename-doc-page.md"
     ],
     "repo-constitution": [
       "docs/_internal/repo-constitution.md"
@@ -1096,14 +1271,26 @@
     "reproduce-ci-locally": [
       "docs/control-plane/reproduce-ci-locally.md"
     ],
+    "reproducibility": [
+      "docs/reference/ingest/reproducibility.md"
+    ],
     "required-status-checks": [
       ".github/required-status-checks.md"
     ],
     "retention-and-gc": [
       "docs/operations/retention-and-gc.md"
     ],
+    "review-checklist": [
+      "docs/operations/security/review-checklist.md"
+    ],
+    "review-packet": [
+      "docs/operations/review-packet.md"
+    ],
     "rollback": [
       "crates/bijux-atlas-store/docs/internal/rollback.md"
+    ],
+    "rollback-limitations": [
+      "docs/operations/rollback-limitations.md"
     ],
     "rollback-playbook": [
       "docs/operations/runbooks/rollback-playbook.md"
@@ -1172,11 +1359,17 @@
       "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/schemas.md",
       "docs/reference/schemas.md"
     ],
+    "scientific-defensibility": [
+      "docs/operations/scientific-defensibility.md"
+    ],
     "scripts-migration-release-note": [
       ".github/templates/scripts-migration-release-note.md"
     ],
     "sdk-strategy": [
       "docs/api/sdk-strategy.md"
+    ],
+    "security": [
+      "docs/reference/contracts/security.md"
     ],
     "security-posture": [
       "docs/control-plane/security-posture.md",
@@ -1196,6 +1389,9 @@
     ],
     "shared-core-extraction": [
       "docs/reference/registry/shared-core-extraction.md"
+    ],
+    "simulation": [
+      "docs/reference/contracts/ops/simulation.md"
     ],
     "site-map": [
       "docs/site-map.md"
@@ -1237,11 +1433,17 @@
     "store-outage": [
       "docs/operations/runbooks/store-outage.md"
     ],
+    "structure-index": [
+      "docs/structure-index.md"
+    ],
     "structure-templates": [
       "docs/_internal/governance/style/structure-templates.md"
     ],
     "style-guide": [
       "docs/_internal/governance/style-guide.md"
+    ],
+    "style-lints": [
+      "docs/_internal/governance/style-lints.md"
     ],
     "suites": [
       "docs/operations/load/suites.md"
@@ -1313,6 +1515,9 @@
     "update-schema-generators": [
       "docs/control-plane/update-schema-generators.md"
     ],
+    "upgrade": [
+      "docs/operations/upgrade.md"
+    ],
     "upgrade-procedure": [
       "docs/operations/release/upgrade-procedure.md"
     ],
@@ -1322,8 +1527,14 @@
     "v1-surface": [
       "docs/api/v1-surface.md"
     ],
+    "validation-entrypoints": [
+      "docs/operations/validation-entrypoints.md"
+    ],
     "values-mapping-to-config-keys": [
       "docs/operations/values-mapping-to-config-keys.md"
+    ],
+    "verification-metadata": [
+      "docs/_internal/governance/verification-metadata.md"
     ],
     "versioning": [
       "crates/bijux-atlas-api/docs/versioning.md",
@@ -1340,6 +1551,9 @@
     ],
     "versioning-policy": [
       "docs/reference/ops-schema/versioning-policy.md"
+    ],
+    "warmup-lock": [
+      "docs/operations/warmup-lock.md"
     ],
     "what-belongs-where": [
       "docs/architecture/what-belongs-where.md"
