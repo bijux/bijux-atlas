@@ -11,8 +11,8 @@ not a convenience cache.
 
 ## Update Conditions
 
-Only update [gene-lookup-baseline.json](/Users/bijan/bijux/bijux-atlas/ops/_benchmarks/gene-lookup-baseline.json)
-after a fresh local deterministic perf run and an explicit review of the SLO and budget files.
+Only update `ops/_benchmarks/gene-lookup-baseline.json` after a fresh local deterministic perf run
+and an explicit review of the SLO and budget files.
 
 ## Procedure
 
