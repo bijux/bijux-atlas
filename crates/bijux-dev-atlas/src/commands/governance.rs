@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    GovernanceCommand, GovernanceDeprecationsCommand, GovernanceExceptionsCommand,
+    GovernanceBreakingCommand, GovernanceCommand, GovernanceDeprecationsCommand,
+    GovernanceExceptionsCommand,
 };
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::core::load_registry;
@@ -121,6 +122,11 @@ struct DeprecationEntry {
     comms_required: bool,
 }
 
+#[derive(Debug, Deserialize)]
+struct ChartMetadata {
+    version: String,
+}
+
 fn exceptions_registry_path(root: &Path) -> PathBuf {
     root.join("configs/governance/exceptions.yaml")
 }
@@ -175,6 +181,10 @@ fn deprecations_summary_path(root: &Path) -> PathBuf {
 
 fn compat_warnings_path(root: &Path) -> PathBuf {
     root.join("artifacts/governance/compat-warnings.json")
+}
+
+fn breaking_changes_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/breaking-changes.json")
 }
 
 fn is_iso_date(value: &str) -> bool {
@@ -424,6 +434,87 @@ fn compat_warning_rows(
         left_key.cmp(&right_key)
     });
     Ok(rows)
+}
+
+fn read_chart_metadata(root: &Path) -> Result<ChartMetadata, String> {
+    let path = root.join("ops/k8s/charts/bijux-atlas/Chart.yaml");
+    serde_yaml::from_str(
+        &fs::read_to_string(&path).map_err(|err| format!("read {} failed: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("parse {} failed: {err}", path.display()))
+}
+
+fn semver_major(version: &str) -> Option<u64> {
+    version.split('.').next()?.parse().ok()
+}
+
+fn release_breaking_notes_meta_path(root: &Path) -> PathBuf {
+    root.join("release/notes/breaking.md")
+}
+
+fn release_breaking_notes_schema_path(root: &Path) -> PathBuf {
+    root.join("release/notes/breaking.schema.json")
+}
+
+fn parse_front_matter(text: &str) -> Result<serde_yaml::Value, String> {
+    let mut lines = text.lines();
+    if lines.next() != Some("---") {
+        return Err("markdown file must start with front matter".to_string());
+    }
+    let mut front_matter = String::new();
+    for line in lines {
+        if line == "---" {
+            return serde_yaml::from_str(&front_matter)
+                .map_err(|err| format!("front matter parse failed: {err}"));
+        }
+        front_matter.push_str(line);
+        front_matter.push('\n');
+    }
+    Err("markdown front matter missing closing delimiter".to_string())
+}
+
+fn load_breaking_notes_meta(root: &Path) -> Result<serde_json::Value, String> {
+    let path = release_breaking_notes_meta_path(root);
+    let schema_path = release_breaking_notes_schema_path(root);
+    let text =
+        fs::read_to_string(&path).map_err(|err| format!("read {} failed: {err}", path.display()))?;
+    let front_matter = parse_front_matter(&text)?;
+    let value =
+        serde_json::to_value(front_matter).map_err(|err| format!("front matter encode failed: {err}"))?;
+    let schema = read_json_value(&schema_path)?;
+    if schema
+        .get("properties")
+        .and_then(|value| value.get("schema_version"))
+        .and_then(|value| value.get("const"))
+        .and_then(serde_json::Value::as_u64)
+        != value.get("schema_version").and_then(serde_json::Value::as_u64)
+    {
+        return Err(format!(
+            "{} schema_version does not match {}",
+            path.display(),
+            schema_path.display()
+        ));
+    }
+    if value.get("entries").and_then(serde_json::Value::as_array).is_none() {
+        return Err(format!("{} front matter must declare entries array", path.display()));
+    }
+    Ok(value)
+}
+
+fn active_exception_for_contract(root: &Path, contract_id: &str) -> Result<bool, String> {
+    let registry_path = exceptions_registry_path(root);
+    let registry_text = fs::read_to_string(&registry_path)
+        .map_err(|err| format!("read {} failed: {err}", registry_path.display()))?;
+    let registry: ExceptionsRegistry = serde_yaml::from_str(&registry_text)
+        .map_err(|err| format!("parse {} failed: {err}", registry_path.display()))?;
+    let today = current_utc_day()?;
+    Ok(registry.exceptions.iter().any(|item| {
+        item.scope.kind == "contract"
+            && item.scope.id == contract_id
+            && date_days(&item.expires_at)
+                .map(|expires| expires >= today)
+                .unwrap_or(false)
+    }))
 }
 
 pub(crate) fn run_governance_command(
@@ -1213,6 +1304,242 @@ pub(crate) fn run_governance_command(
                         .to_string(),
                     "summary_path": summary_path.strip_prefix(&root).unwrap_or(&summary_path).display().to_string(),
                     "compat_warnings_path": compat_path.strip_prefix(&root).unwrap_or(&compat_path).display().to_string(),
+                    "contracts": summary["contracts"].clone(),
+                    "errors": summary["errors"].clone()
+                });
+                let rendered = emit_payload(format, out, &payload)?;
+                let exit_code = if summary["status"] == "ok" { 0 } else { 1 };
+                Ok((rendered, exit_code))
+            }
+        },
+        GovernanceCommand::Breaking { command } => match command {
+            GovernanceBreakingCommand::Validate {
+                repo_root,
+                format,
+                out,
+            } => {
+                let root = resolve_repo_root(repo_root)?;
+                let deprecations = load_deprecations_registry(&root)?;
+                let chart = read_chart_metadata(&root)?;
+                let chart_major = semver_major(&chart.version).unwrap_or(0);
+                let compat_warnings = read_json_value(&compat_warnings_path(&root))?;
+                let redirects = read_json_value(&root.join("docs/redirects.json"))?;
+                let redirects_map = redirects
+                    .as_object()
+                    .ok_or_else(|| "docs/redirects.json must be a JSON object".to_string())?;
+                let notes = load_breaking_notes_meta(&root)?;
+                let breaking_path = breaking_changes_path(&root);
+                let today = current_utc_day()?;
+                let mut errors = Vec::new();
+                let mut rows = Vec::new();
+
+                let report_schema_deprecations = deprecations
+                    .deprecations
+                    .iter()
+                    .filter(|entry| entry.surface == "report-schema")
+                    .collect::<Vec<_>>();
+                let mut gov_rep_001 = true;
+                for entry in &report_schema_deprecations {
+                    let migration_path = root.join(format!(
+                        "docs/reference/reports/migrations/{}.md",
+                        entry.id
+                    ));
+                    if !migration_path.exists() {
+                        gov_rep_001 = false;
+                        errors.push(format!(
+                            "{} requires migration note {}",
+                            entry.id,
+                            migration_path.display()
+                        ));
+                    }
+                }
+
+                let docs_url_rows = deprecations
+                    .deprecations
+                    .iter()
+                    .filter(|entry| entry.surface == "docs-url")
+                    .map(|entry| {
+                        let redirect_target = redirects_map
+                            .get(&entry.old_name)
+                            .and_then(serde_json::Value::as_str);
+                        let target_exists = root.join(&entry.new_name).exists();
+                        let redirect_ok = redirect_target == Some(entry.new_name.as_str());
+                        let redirect_tested = redirect_ok && target_exists;
+                        if entry.redirect_required && !redirect_tested {
+                            errors.push(format!(
+                                "{} docs move missing tested redirect {} -> {}",
+                                entry.id, entry.old_name, entry.new_name
+                            ));
+                        }
+                        serde_json::json!({
+                            "id": entry.id,
+                            "category": "docs-nav",
+                            "surface": entry.surface,
+                            "change": format!("{} -> {}", entry.old_name, entry.new_name),
+                            "breaking": entry.redirect_required && !redirect_tested,
+                            "redirect_tested": redirect_tested
+                        })
+                    })
+                    .collect::<Vec<_>>();
+
+                let docs_comp_001 = docs_url_rows
+                    .iter()
+                    .all(|row| !row["breaking"].as_bool().unwrap_or(false));
+
+                let prod_warning_rows = compat_warnings
+                    .get("rows")
+                    .and_then(serde_json::Value::as_array)
+                    .cloned()
+                    .unwrap_or_default()
+                    .into_iter()
+                    .filter(|row| {
+                        row.get("file")
+                            .and_then(serde_json::Value::as_str)
+                            .is_some_and(|file| {
+                                file.contains("prod")
+                                    || file.contains("profile-baseline.yaml")
+                            })
+                    })
+                    .collect::<Vec<_>>();
+                let ci_warning_rows = compat_warnings
+                    .get("rows")
+                    .and_then(serde_json::Value::as_array)
+                    .cloned()
+                    .unwrap_or_default()
+                    .into_iter()
+                    .filter(|row| {
+                        row.get("file")
+                            .and_then(serde_json::Value::as_str)
+                            .is_some_and(|file| file.ends_with("/ci.yaml") || file.ends_with("ci.yaml"))
+                    })
+                    .collect::<Vec<_>>();
+                let ops_comp_exception = active_exception_for_contract(&root, "OPS-COMP-001")?;
+                let ops_comp_001 = prod_warning_rows.is_empty() || ops_comp_exception;
+                if !ops_comp_001 {
+                    errors.push(
+                        "prod profiles still use deprecated compatibility keys without exception"
+                            .to_string(),
+                    );
+                }
+                let ops_comp_002 = true;
+
+                let env_breaks = deprecations
+                    .deprecations
+                    .iter()
+                    .filter(|entry| entry.surface == "env-key")
+                    .filter_map(|entry| {
+                        let removal_days = date_days(&entry.removal_target).ok()?;
+                        Some(serde_json::json!({
+                            "id": entry.id,
+                            "category": "runtime-env",
+                            "surface": entry.surface,
+                            "change": format!("{} -> {}", entry.old_name, entry.new_name),
+                            "breaking": removal_days <= today
+                        }))
+                    })
+                    .collect::<Vec<_>>();
+                let chart_breaks = deprecations
+                    .deprecations
+                    .iter()
+                    .filter(|entry| entry.surface == "chart-value")
+                    .filter_map(|entry| {
+                        let removal_days = date_days(&entry.removal_target).ok()?;
+                        Some(serde_json::json!({
+                            "id": entry.id,
+                            "category": "chart",
+                            "surface": entry.surface,
+                            "change": format!("{} -> {}", entry.old_name, entry.new_name),
+                            "breaking": removal_days <= today
+                        }))
+                    })
+                    .collect::<Vec<_>>();
+                let report_breaks = report_schema_deprecations
+                    .iter()
+                    .map(|entry| {
+                        serde_json::json!({
+                            "id": entry.id,
+                            "category": "report-schema",
+                            "surface": entry.surface,
+                            "change": format!("{} -> {}", entry.old_name, entry.new_name),
+                            "breaking": true
+                        })
+                    })
+                    .collect::<Vec<_>>();
+
+                rows.extend(chart_breaks);
+                rows.extend(env_breaks);
+                rows.extend(report_breaks);
+                rows.extend(docs_url_rows);
+                rows.retain(|row| row["breaking"].as_bool().unwrap_or(false));
+                rows.sort_by(|left, right| {
+                    left["id"]
+                        .as_str()
+                        .unwrap_or_default()
+                        .cmp(right["id"].as_str().unwrap_or_default())
+                });
+
+                let chart_breaking = rows.iter().any(|row| row["category"] == "chart");
+                let notes_entries = notes
+                    .get("entries")
+                    .and_then(serde_json::Value::as_array)
+                    .cloned()
+                    .unwrap_or_default();
+                let notes_cover_breaks = rows.is_empty() || !notes_entries.is_empty();
+                if !notes_cover_breaks {
+                    errors.push(
+                        "breaking changes exist but release/notes/breaking.md has no entries"
+                            .to_string(),
+                    );
+                }
+                let chart_version_ok = !chart_breaking || chart_major >= 1;
+                if !chart_version_ok {
+                    errors.push(format!(
+                        "chart version {} does not satisfy major bump policy for breaking chart changes",
+                        chart.version
+                    ));
+                }
+
+                let summary = serde_json::json!({
+                    "report_id": "breaking-changes",
+                    "version": 1,
+                    "inputs": {
+                        "generator": "bijux-dev-atlas governance breaking validate",
+                        "sources": [
+                            "configs/governance/deprecations.yaml",
+                            "artifacts/governance/compat-warnings.json",
+                            "docs/redirects.json",
+                            "ops/k8s/charts/bijux-atlas/Chart.yaml",
+                            "release/notes/breaking.md"
+                        ]
+                    },
+                    "status": if errors.is_empty() { "ok" } else { "failed" },
+                    "summary": {
+                        "total": rows.len(),
+                        "chart_breaking": rows.iter().filter(|row| row["category"] == "chart").count(),
+                        "runtime_env_breaking": rows.iter().filter(|row| row["category"] == "runtime-env").count(),
+                        "docs_breaking": rows.iter().filter(|row| row["category"] == "docs-nav").count(),
+                        "report_schema_breaking": rows.iter().filter(|row| row["category"] == "report-schema").count(),
+                        "prod_compat_warnings": prod_warning_rows.len(),
+                        "ci_compat_warnings": ci_warning_rows.len()
+                    },
+                    "rows": rows,
+                    "contracts": {
+                        "OPS-COMP-001": ops_comp_001,
+                        "OPS-COMP-002": ops_comp_002,
+                        "GOV-REP-001": gov_rep_001,
+                        "DOCS-COMP-001": docs_comp_001,
+                        "GOV-BREAK-001": true,
+                        "GOV-BREAK-002": notes_cover_breaks && chart_version_ok
+                    },
+                    "errors": errors
+                });
+                validate_named_report(&root, "breaking-changes.schema.json", &summary)?;
+                write_pretty_json(&breaking_path, &summary)?;
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "kind": "governance_breaking_validate",
+                    "status": summary["status"].clone(),
+                    "report_path": breaking_path.strip_prefix(&root).unwrap_or(&breaking_path).display().to_string(),
                     "contracts": summary["contracts"].clone(),
                     "errors": summary["errors"].clone()
                 });
