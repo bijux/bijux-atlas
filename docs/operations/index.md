@@ -44,7 +44,10 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 13. [Rollback limitations](rollback-limitations.md)
 14. [Incident response](incident-response.md)
 15. [Release](release/index.md)
-16. [Security posture](security-posture.md)
+16. [Release evidence](release-evidence.md)
+17. [Release candidate checklist](release-candidate-checklist.md)
+18. [Evidence viewer](evidence-viewer.md)
+19. [Security posture](security-posture.md)
 
 ## What This Page Is Not
 
