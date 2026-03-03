@@ -35,6 +35,7 @@ contracts-release: _contracts_guard ## Run full release contracts matrix
 	@CI=1 $(DEV_ATLAS) contracts all --lane release --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-all: _contracts_guard ## Run the full contract suite without static skips
+	@$(DEV_ATLAS) registry doctor --format json >/dev/null
 	@$(DEV_ATLAS) suites run --suite contracts --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
 
 contracts-group: _contracts_guard ## Run one contracts suite group (GROUP=<name>)

@@ -23,6 +23,12 @@
 - `bijux dev atlas suites describe --suite checks`
 - `bijux dev atlas suites run --suite checks --jobs auto`
 - `bijux dev atlas suites run --suite contracts --jobs auto`
+- `bijux dev atlas suites history --suite checks --id CHECK-RUSTFMT-001`
+- `bijux dev atlas suites last --suite checks`
+- `bijux dev atlas suites report --suite checks --run <run_id>`
+- `bijux dev atlas suites diff --suite checks --a <run_id> --b <run_id>`
+- `bijux dev atlas registry status`
+- `bijux dev atlas registry doctor`
 - `bijux dev atlas check run CHECK-RUSTFMT-001`
 - `bijux dev atlas contract run OPS-DATASETS-001`
 
@@ -35,6 +41,7 @@ an explicit cap. Use `--fail-fast` when you want the first blocking failure to s
 - `make checks-all` runs the full checks suite.
 - `make contracts-all` runs the full contracts suite.
 - `make suites-all` runs checks then contracts.
+- `make registry-doctor` validates suite registries and mappings.
 - `make checks-group GROUP=rust` runs one checks group.
 - `make contracts-group GROUP=datasets` runs one contracts group.
 - `make checks-tag TAG=rust` runs one checks tag slice.
@@ -48,6 +55,9 @@ All suite Make entrypoints accept:
 
 - `JOBS=<n|auto>` to override the suite worker count.
 - `FAIL_FAST=1` to stop after the first blocking failure.
+
+`make checks-all` and `make contracts-all` run `registry doctor` before suite execution so
+registry drift fails before the worker pool starts.
 
 ## Effects Boundary
 

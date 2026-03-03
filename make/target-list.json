@@ -52,6 +52,7 @@
     "ops-fast",
     "ops-nightly",
     "ops-pr",
+    "registry-doctor",
     "root-surface-explain",
     "stack-down",
     "stack-up",

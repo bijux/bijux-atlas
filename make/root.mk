@@ -28,7 +28,7 @@ CURATED_TARGETS := \
 	help \
 	k8s-render k8s-validate \
 	kind-down kind-reset kind-status kind-up \
-	lint-make make-fast make-target-list \
+	lint-make make-fast make-target-list registry-doctor \
 	ops-contracts ops-contracts-effect ops-fast ops-nightly ops-pr \
 	root-surface-explain \
 	stack-down stack-up suites-all suites-list tests-all
@@ -141,6 +141,7 @@ checks: ## Run the fast non-test quality gate lane
 	@$(MAKE) -s configs-lint
 
 checks-all: ## Run the deterministic non-test quality gates
+	@$(DEV_ATLAS) registry doctor --format json >/dev/null
 	@$(DEV_ATLAS) suites run --suite checks --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
 
 checks-group: ## Run one checks suite group (GROUP=<name>)
@@ -164,10 +165,13 @@ suites-all: ## Run checks and contracts suite aggregators sequentially
 	@$(MAKE) -s checks-all JOBS="$(JOBS)" FAIL_FAST="$(FAIL_FAST)"
 	@$(MAKE) -s contracts-all JOBS="$(JOBS)" FAIL_FAST="$(FAIL_FAST)"
 
+registry-doctor: ## Validate governed suite registries and mappings
+	@$(DEV_ATLAS) registry doctor --format json
+
 tests-all: ## Run the deterministic test suite without external network
 	@mkdir -p $(ARTIFACT_ROOT)/tests-all/$(RUN_ID)
 	@printf '%s\n' "tests-all runs: test"
 	@printf '%s\n' "effects-boundary: no effectful operations" "test" > $(ARTIFACT_ROOT)/tests-all/$(RUN_ID)/manifest.txt
 	@$(MAKE) -s test
 
-.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean checks checks-all checks-effect checks-group checks-pure checks-tag clean doctor kind-down kind-reset kind-status kind-up root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly suites-all suites-list tests-all
+.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean checks checks-all checks-effect checks-group checks-pure checks-tag clean doctor kind-down kind-reset kind-status kind-up registry-doctor root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly suites-all suites-list tests-all

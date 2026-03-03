@@ -28,6 +28,8 @@
 - [Breaking changes](../../../artifacts/governance/breaking-changes.json)
 - [Governance doctor](../../../artifacts/governance/governance-doctor.json)
 - [Institutional delta](../../../artifacts/governance/institutional-delta.md)
+- [Registry status](registry-status-index.md)
+- [Registry status markdown](../../../artifacts/governance/registry-status.md)
 - [Crate docs budgets and violations](../generated/crate-docs-slice.json)
 - [Sitemap](../generated/sitemap.json)
 - [Search Index](../generated/search-index.json)
