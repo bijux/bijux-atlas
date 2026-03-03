@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "metrics_required_labels": [
+    "subsystem",
+    "version"
+  ],
+  "alerts_required_labels": [
+    "severity",
+    "subsystem"
+  ]
+}

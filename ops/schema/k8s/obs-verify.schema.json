@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/k8s/ops-obs-verify.schema.json",
+  "title": "Ops Observability Verification Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "checks"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "failed"
+      ]
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metrics_endpoint",
+        "required_metrics_present",
+        "missing_metrics",
+        "warmup_lock_metrics_present",
+        "error_registry_aligned",
+        "startup_log_fields_present",
+        "redaction_contract_passed",
+        "dashboard_contract_valid",
+        "slo_contract_valid",
+        "alert_rules_contract_valid",
+        "alert_rules_reference_known_metrics",
+        "label_policy_passed"
+      ],
+      "properties": {
+        "metrics_endpoint": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "status",
+            "latency_ms",
+            "body_sha256"
+          ],
+          "properties": {
+            "path": { "type": "string", "const": "/metrics" },
+            "status": { "type": "integer", "minimum": 100, "maximum": 599 },
+            "latency_ms": { "type": "integer", "minimum": 0 },
+            "body_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          }
+        },
+        "required_metrics_present": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "missing_metrics": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "warmup_lock_metrics_present": { "type": "boolean" },
+        "error_registry_aligned": { "type": "boolean" },
+        "startup_log_fields_present": { "type": "boolean" },
+        "redaction_contract_passed": { "type": "boolean" },
+        "dashboard_contract_valid": { "type": "boolean" },
+        "slo_contract_valid": { "type": "boolean" },
+        "alert_rules_contract_valid": { "type": "boolean" },
+        "alert_rules_reference_known_metrics": { "type": "boolean" },
+        "label_policy_passed": { "type": "boolean" }
+      }
+    }
+  }
+}

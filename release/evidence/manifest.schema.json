@@ -21,6 +21,7 @@
     "simulation_summaries",
     "evidence_tarball",
     "redacted_logs",
+    "observability_assets",
     "index_html"
   ],
   "properties": {
@@ -253,6 +254,14 @@
     },
     "redacted_logs": {
       "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "observability_assets": {
+      "type": "array",
+      "minItems": 1,
       "items": {
         "type": "string",
         "minLength": 1

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/observe/dashboard.schema.json",
+  "title": "Observability Dashboard",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "title",
+    "uid",
+    "schemaVersion",
+    "version",
+    "panels",
+    "tags"
+  ],
+  "properties": {
+    "title": { "type": "string", "minLength": 1 },
+    "uid": { "type": "string", "minLength": 1 },
+    "schemaVersion": { "type": "integer", "minimum": 1 },
+    "version": { "type": "integer", "minimum": 1 },
+    "timezone": { "type": "string" },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "panels": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "title",
+          "type"
+        ],
+        "properties": {
+          "title": { "type": "string", "minLength": 1 },
+          "type": { "type": "string", "minLength": 1 },
+          "description": { "type": "string" },
+          "targets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["expr"],
+              "properties": {
+                "expr": { "type": "string", "minLength": 1 }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}
