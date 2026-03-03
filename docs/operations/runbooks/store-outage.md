@@ -5,7 +5,16 @@
 - Audience: `operator`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last changed: `2026-03-03`
 - Reason to exist: restore service when the serving store is unavailable or timing out broadly.
+
+## Prereqs
+
+- Access to the store control plane, rollout history, and current alert context.
+
+## Install
+
+- Start the store stabilization path and reduce blast radius before retrying normal load.
 
 ## Symptoms
 
@@ -32,6 +41,10 @@ make ops-release-rollback
 
 1. Remove pressure from the failing store path by reducing rollout or traffic blast radius.
 2. Roll back the latest risky release if the outage started after deploy.
+
+## Verify
+
+Readiness returns, store-facing alerts stop paging, and core read traffic succeeds again.
 
 ## Verify success
 

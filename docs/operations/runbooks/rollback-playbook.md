@@ -5,7 +5,16 @@
 - Audience: `operator`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last changed: `2026-03-03`
 - Reason to exist: define the general rollback path used by deploy, release, and incident workflows.
+
+## Prereqs
+
+- Access to the release control surface and the previous known-good revision.
+
+## Install
+
+- Start the controlled rollback procedure and capture evidence before any second rollout.
 
 ## Symptoms
 
@@ -32,6 +41,10 @@ make ops-observability-verify
 
 1. Revert to the last known good release pointer or deployment state.
 2. Preserve failure evidence before attempting a second rollout.
+
+## Verify
+
+Serving returns to the last known good behavior, alert pressure drops, and post-rollback checks pass.
 
 ## Verify success
 

@@ -5,7 +5,17 @@
 - Audience: `operator`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last changed: `2026-03-03`
 - Reason to exist: provide the fallback runbook when the failing subsystem is not yet known.
+
+## Prereqs
+
+- Cluster and observability access.
+- Authority to stabilize service before deeper diagnosis.
+
+## Install
+
+- Start the generic incident triage flow and collect the first safety signals.
 
 ## Symptoms
 
@@ -31,6 +41,10 @@ make ops-observability-verify
 
 1. Apply the safest stabilization action for the identified failure mode.
 2. Reduce blast radius while preserving critical read paths.
+
+## Verify
+
+Alerts quiet down, readiness recovers, and you can hand off to a more specific runbook if the subsystem is identified.
 
 ## Verify success
 

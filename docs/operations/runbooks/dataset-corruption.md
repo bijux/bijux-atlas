@@ -5,7 +5,16 @@
 - Audience: `operator`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last changed: `2026-03-03`
 - Reason to exist: recover safely when a promoted dataset or artifact fails integrity checks.
+
+## Prereqs
+
+- Access to promotion history, artifact evidence, and rollback controls.
+
+## Install
+
+- Freeze further promotion and isolate the suspect dataset before any cleanup.
 
 ## Symptoms
 
@@ -31,6 +40,10 @@ make ops-release-rollback
 
 1. Stop promotion of the corrupt dataset and move traffic back to the last known good release.
 2. Preserve evidence before any cleanup or republish action.
+
+## Verify
+
+Integrity errors stop recurring, the previous good dataset serves successfully, and rollback evidence is captured.
 
 ## Verify success
 

@@ -20,6 +20,7 @@ related:
 - Audience: `user`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last changed: `2026-03-03`
 - Reason to exist: provide the user-facing API entrypoint for requests, pagination, errors, and compatibility.
 
 ## Why you are reading this
@@ -32,6 +33,11 @@ Use this section to integrate clients with Atlas API surfaces safely and predict
 - [Pagination](pagination.md)
 - [Errors](errors.md)
 - [Compatibility](compatibility.md)
+
+## Entry Points
+
+- Start here for request semantics and client behavior.
+- Use [Reference](../reference/index.md) for exact names and schemas.
 
 ## Consumer policies
 

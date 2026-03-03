@@ -20,6 +20,7 @@ related:
 - Audience: `contributor`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last changed: `2026-03-03`
 - Reason to exist: provide the canonical control-plane product surface for contributors and CI operators.
 
 ## Why this section exists
@@ -39,6 +40,11 @@ In this documentation set, the `Control plane` is the `bijux dev atlas` surface 
 - [Add a contract registry in 30 minutes](add-a-contract-registry-in-30-minutes.md)
 - [Debug failing checks](debug-failing-checks.md)
 - [CLI reference](cli-reference.md)
+
+## Entry Points
+
+- Start here for contributor automation and check orchestration.
+- Use [Development](../development/index.md) for workflow context.
 
 ## Stable entrypoints
 

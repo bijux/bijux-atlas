@@ -5,7 +5,16 @@
 - Audience: `operator`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last changed: `2026-03-03`
 - Reason to exist: stabilize the service during sustained overload or sudden traffic growth.
+
+## Prereqs
+
+- Access to latency, traffic, and queue depth signals for the live system.
+
+## Install
+
+- Start the overload mitigation flow and reduce pressure on the dominant path.
 
 ## Symptoms
 
@@ -32,6 +41,10 @@ make ops-load-smoke
 
 1. Reduce pressure on the dominant expensive path.
 2. Roll back the latest capacity-sensitive deploy if the spike started after rollout.
+
+## Verify
+
+Latency and timeout alerts return to target range and the service stays ready under representative smoke load.
 
 ## Verify success
 

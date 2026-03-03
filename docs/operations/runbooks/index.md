@@ -5,7 +5,16 @@
 - Audience: `operator`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last changed: `2026-03-03`
 - Reason to exist: provide the essential incident runbook catalog and alert mapping.
+
+## Prereqs
+
+- Access to alerting, cluster context, and operator evidence commands.
+
+## Install
+
+- Select the runbook that matches the active failure mode and begin the documented response.
 
 ## Runbook catalog
 
@@ -25,6 +34,10 @@ See [Runbooks to alerts mapping](../runbooks-to-alerts-mapping.md) for the expli
 ## Alert mapping
 
 See [Observability Alerts](../observability/alerts.md) for alert-to-runbook routing.
+
+## Verify
+
+The selected runbook produces a clear mitigation path and a concrete success signal.
 
 ## Symptoms
 

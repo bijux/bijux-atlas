@@ -23,6 +23,7 @@ source:
 - Audience: `user`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last changed: `2026-03-03`
 - Reason to exist: provide the stable factual portal for Atlas commands, configs, schemas, and contracts.
 
 ## Why you are reading this
@@ -35,6 +36,11 @@ Facts live here. Procedures do not. Use this section for stable names, keys, sch
 - Runtime definitions: [Configs reference](configs.md), [Runtime config](runtime/config.md), [Errors reference](errors.md), [Schemas reference](schemas.md)
 - Config governance facts: [Schema versioning policy](schema-versioning-policy.md), [Config keys reference](config-keys-reference.md)
 - Contracts and registries: [Contracts](contracts/index.md), [Reports](reports/index.md), [Dataset operations](dataset-operations.md)
+
+## Entry Points
+
+- Start here for stable definitions, commands, and contract links.
+- Leave this section when you need a procedure instead of a definition.
 
 ## Reading rule
 

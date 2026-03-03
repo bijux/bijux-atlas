@@ -20,19 +20,25 @@ related:
 - Audience: `operator`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last changed: `2026-03-03`
 - Reason to exist: provide the canonical operator entrypoint across run, deploy, observe, and incident workflows.
 
-## Operator Entry
+## Purpose
+
+Give operators one stable entrypoint for deploy, observe, rollback, and incident handling.
+
+## Entry Points
 
 1. [Operations overview](overview.md)
-2. [Run locally](run-locally.md)
-3. [Deploy](deploy.md)
-4. [Minimal production overrides](minimal-production-overrides.md)
-5. [Install verification checklist](install-verification-checklist.md)
-6. [Observability setup](observability-setup.md)
-7. [Incident response](incident-response.md)
-8. [Release](release/index.md)
-9. [Security posture](security-posture.md)
+2. [Operator quickstart](operator-quickstart.md)
+3. [Run locally](run-locally.md)
+4. [Deploy](deploy.md)
+5. [Minimal production overrides](minimal-production-overrides.md)
+6. [Install verification checklist](install-verification-checklist.md)
+7. [Observability setup](observability-setup.md)
+8. [Incident response](incident-response.md)
+9. [Release](release/index.md)
+10. [Security posture](security-posture.md)
 
 ## What This Page Is Not
 

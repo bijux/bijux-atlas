@@ -5,7 +5,16 @@
 - Audience: `operator`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last changed: `2026-03-03`
 - Reason to exist: explain how to diagnose a failed load suite and decide whether it blocks release.
+
+## Prereqs
+
+- Access to recent load artifacts and the baseline thresholds.
+
+## Install
+
+- Reproduce the failing load slice and pin down whether the failure is real or environmental.
 
 ## Symptoms
 
@@ -32,6 +41,10 @@ make ops-observability-verify
 
 1. Separate threshold regression from environment noise before blocking promotion.
 2. Escalate to [Traffic spike](traffic-spike.md) if the same pattern appears in live traffic.
+
+## Verify
+
+The failing suite is either reproduced with clear evidence or downgraded to an explained non-blocker with no hidden ambiguity.
 
 ## Verify success
 

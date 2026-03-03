@@ -5,7 +5,16 @@
 - Audience: `operator`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last changed: `2026-03-03`
 - Reason to exist: recover when release alias or registry federation fails to converge.
+
+## Prereqs
+
+- Access to registry state, alias controls, and the last converged release pointer.
+
+## Install
+
+- Freeze promotion and inspect the federated registry state before changing aliases.
 
 ## Symptoms
 
@@ -32,6 +41,10 @@ make ops-readiness-scorecard
 
 1. Freeze promotion while the registry state is inconsistent.
 2. Roll back the alias or release pointer to the last converged state.
+
+## Verify
+
+Registry errors stop, aliases resolve deterministically again, and readiness checks pass.
 
 ## Verify success
 

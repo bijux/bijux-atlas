@@ -5,7 +5,16 @@
 - Audience: `operator`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last changed: `2026-03-03`
 - Reason to exist: triage elevated store-backed error ratios before they become a full outage.
+
+## Prereqs
+
+- Access to current alerts, store dashboards, and recent rollout history.
+
+## Install
+
+- Start the store error triage flow and determine whether the issue is localized or broad.
 
 ## Symptoms
 
@@ -31,6 +40,10 @@ make ops-observability-verify
 
 1. Reduce load or rollback the latest risky release if the spike started after change.
 2. Escalate to [Store outage](store-outage.md) if errors turn into broad unavailability.
+
+## Verify
+
+Error-rate burn returns to baseline and the alert clears without rolling into a harder outage page.
 
 ## Verify success
 

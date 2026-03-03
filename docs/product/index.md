@@ -20,6 +20,7 @@ related:
 - Audience: `user`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last changed: `2026-03-03`
 - Reason to exist: define what Atlas is, what it promises, and what it does not do.
 
 ## Purpose
@@ -38,6 +39,12 @@ Provide the canonical product story: what Atlas is, who it serves, and the promi
 - [Compatibility promise](compatibility-promise.md)
 - [Non-goals](non-goals.md)
 - [Release model](release-model.md)
+
+## Entry Points
+
+- Start in this section for product intent and compatibility promises.
+- Move to [API](../api/index.md) for client integration details.
+- Move to [Operations](../operations/index.md) for runtime workflows.
 
 ## What This Page Is Not
 

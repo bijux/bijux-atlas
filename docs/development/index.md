@@ -20,6 +20,7 @@ related:
 - Audience: `contributor`
 - Stability: `stable`
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last changed: `2026-03-03`
 - Reason to exist: provide the canonical contributor path for making safe changes.
 
 ## Purpose
@@ -38,6 +39,11 @@ Guide contributors through repository structure, CI behavior, control-plane oper
 - [Tooling](tooling/index.md)
 - [Add a check in 30 minutes](../control-plane/add-a-check-in-30-minutes.md)
 - [Where truth lives](where-truth-lives.md)
+
+## Entry Points
+
+- Start here for contributor workflows and repository change paths.
+- Use [Control-plane](../control-plane/index.md) for automation surfaces.
 
 ## Where to ask questions
 
