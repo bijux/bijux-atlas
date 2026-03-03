@@ -21,10 +21,9 @@ fn canonical_make_contract_targets_delegate_to_contract_runner() {
     assert!(makefile.contains("contract-all: _contracts_guard"));
     assert!(makefile.contains("contract-list: _contracts_guard"));
     assert!(makefile.contains("contract-report: _contracts_guard"));
-    assert!(
-        makefile
-            .contains("$(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode static")
-    );
+    assert!(makefile.contains(
+        "$(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode static"
+    ));
     assert!(makefile.contains(
         "$(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode effect --effects-policy allow"
     ));
