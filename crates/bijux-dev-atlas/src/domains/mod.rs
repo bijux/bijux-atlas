@@ -12,6 +12,21 @@ pub mod perf;
 pub mod release;
 pub mod security;
 
+pub const ALL_DOMAIN_NAMES: &[&str] = &[
+    "configs",
+    "docker",
+    "docs",
+    "governance",
+    "ops",
+    "perf",
+    "release",
+    "security",
+];
+
+pub fn all_domains() -> &'static [&'static str] {
+    ALL_DOMAIN_NAMES
+}
+
 pub use loader::{
     load_domains, Domain, DomainCatalog, DomainEvent, DomainRegistration, ToolingContract,
 };

@@ -1,0 +1,2 @@
+// SPDX-License-Identifier: Apache-2.0
+//! Example runtime entrypoint for a domain template.
