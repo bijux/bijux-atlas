@@ -4115,14 +4115,6 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "owner": "docs-governance",
-      "path": "docs/operations/REDIRECT_EXPIRY_WORKFLOW.md",
-      "stability": "stable",
-      "title": "Redirect Expiry Workflow"
-    },
-    {
-      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/chart-semver-policy.md",
@@ -4215,7 +4207,15 @@
       "owner": "docs-governance",
       "path": "docs/operations/docs-convergence-policy.md",
       "stability": "stable",
-      "title": "Docs convergence policy"
+      "title": "Docs Convergence Policy"
+    },
+    {
+      "area": "operations",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/operations/docs-structure-freeze.md",
+      "stability": "stable",
+      "title": "Docs Structure Freeze"
     },
     {
       "area": "operations",
@@ -4256,6 +4256,14 @@
       "path": "docs/operations/e2e/k8s-tests.md",
       "stability": "stable",
       "title": "Kubernetes E2E guarantees"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/entrypoints.md",
+      "stability": "stable",
+      "title": "Entrypoints"
     },
     {
       "area": "operations",
@@ -4616,6 +4624,14 @@
       "path": "docs/operations/promotion-record.md",
       "stability": "stable",
       "title": "Promotion Record"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/redirect-expiry-workflow.md",
+      "stability": "stable",
+      "title": "Redirect Expiry Workflow"
     },
     {
       "area": "operations",
@@ -6060,6 +6076,14 @@
     {
       "area": "ops",
       "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/AUTHORITY_TIERS.md",
+      "stability": "stable",
+      "title": "Authority Tiers"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
       "owner": "bijux-atlas-operations",
       "path": "ops/BREAKING_CHANGE_TEMPLATE.md",
       "stability": "stable",
@@ -6109,9 +6133,25 @@
       "area": "ops",
       "audience": "contributors",
       "owner": "bijux-atlas-operations",
+      "path": "ops/DIRECTORY_BUDGET_POLICY.md",
+      "stability": "stable",
+      "title": "Directory Budget Policy"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "bijux-atlas-operations",
       "path": "ops/DIRECTORY_NECESSITY.md",
       "stability": "stable",
       "title": "Ops Directory Necessity"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/DOC_NECESSITY_CHECKLIST.md",
+      "stability": "stable",
+      "title": "Document Necessity Checklist"
     },
     {
       "area": "ops",
@@ -6192,6 +6232,14 @@
       "path": "ops/MATURITY_SCORECARD.md",
       "stability": "stable",
       "title": "Ops Maturity Scorecard"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/MINIMAL_RELEASE_SURFACE.md",
+      "stability": "stable",
+      "title": "Minimal Release Surface"
     },
     {
       "area": "ops",
@@ -6348,6 +6396,14 @@
     {
       "area": "ops",
       "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/_generated.example/control-plane.snapshot.md",
+      "stability": "stable",
+      "title": "Control Plane Snapshot"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
       "owner": "bijux-atlas-data",
       "path": "ops/datasets/CONTRACT.md",
       "stability": "stable",
@@ -6380,10 +6436,26 @@
     {
       "area": "ops",
       "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/datasets/generated/README.md",
+      "stability": "stable",
+      "title": "Generated Dataset Artifacts"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
       "owner": "bijux-atlas-operations",
       "path": "ops/e2e/CONTRACT.md",
       "stability": "stable",
       "title": "Contract"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/e2e/END_TO_END_INVARIANTS.md",
+      "stability": "stable",
+      "title": "End-to-end Invariants"
     },
     {
       "area": "ops",
@@ -6416,6 +6488,14 @@
       "path": "ops/e2e/fixtures/README.md",
       "stability": "stable",
       "title": "E2E Fixtures"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/e2e/generated/README.md",
+      "stability": "stable",
+      "title": "Generated E2E Artifacts"
     },
     {
       "area": "ops",
@@ -6515,6 +6595,14 @@
     },
     {
       "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/k8s/generated/README.md",
+      "stability": "stable",
+      "title": "Generated Kubernetes Artifacts"
+    },
+    {
+      "area": "ops",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "ops/k8s/kind/README.md",
@@ -6564,6 +6652,14 @@
     {
       "area": "ops",
       "audience": "contributors",
+      "owner": "bijux-atlas-performance",
+      "path": "ops/load/SCENARIO_RETENTION.md",
+      "stability": "stable",
+      "title": "Scenario Retention"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
       "owner": "bijux-atlas-observability",
       "path": "ops/observe/CONTRACT.md",
       "stability": "stable",
@@ -6608,6 +6704,14 @@
       "path": "ops/report/CONTRACT.md",
       "stability": "stable",
       "title": "Contract"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md",
+      "stability": "stable",
+      "title": "Evidence Completeness Checklist"
     },
     {
       "area": "ops",

@@ -1,10 +1,8 @@
 {
   "schema_version": 1,
   "paths": [
-    "ops/ARTIFACTS.md",
     "ops/DRIFT.md",
     "ops/NAMING.md",
-    "ops/DIRECTORY_BUDGET_POLICY.md",
-    "ops/GENERATED_LIFECYCLE.md"
+    "ops/DIRECTORY_BUDGET_POLICY.md"
   ]
 }

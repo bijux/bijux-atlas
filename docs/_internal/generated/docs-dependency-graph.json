@@ -2573,11 +2573,6 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "docs/operations/REDIRECT_EXPIRY_WORKFLOW.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "docs/operations/chart-semver-policy.md"
     },
     {
@@ -2638,6 +2633,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/docs-structure-freeze.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/drills-program.md"
     },
     {
@@ -2659,6 +2659,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/e2e/k8s-tests.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/entrypoints.md"
     },
     {
       "crate": null,
@@ -2884,6 +2889,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/promotion-record.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/redirect-expiry-workflow.md"
     },
     {
       "crate": null,
@@ -3788,6 +3798,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/AUTHORITY_TIERS.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/BREAKING_CHANGE_TEMPLATE.md"
     },
     {
@@ -3818,7 +3833,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/DIRECTORY_BUDGET_POLICY.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/DIRECTORY_NECESSITY.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/DOC_NECESSITY_CHECKLIST.md"
     },
     {
       "crate": null,
@@ -3869,6 +3894,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/MATURITY_SCORECARD.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/MINIMAL_RELEASE_SURFACE.md"
     },
     {
       "crate": null,
@@ -3968,6 +3998,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/_generated.example/control-plane.snapshot.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/datasets/CONTRACT.md"
     },
     {
@@ -3988,7 +4023,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/datasets/generated/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/e2e/CONTRACT.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/e2e/END_TO_END_INVARIANTS.md"
     },
     {
       "crate": null,
@@ -4009,6 +4054,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/e2e/fixtures/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/e2e/generated/README.md"
     },
     {
       "crate": null,
@@ -4073,6 +4123,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/k8s/generated/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/k8s/kind/README.md"
     },
     {
@@ -4103,6 +4158,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/load/SCENARIO_RETENTION.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/observe/CONTRACT.md"
     },
     {
@@ -4129,6 +4189,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/report/CONTRACT.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md"
     },
     {
       "crate": null,

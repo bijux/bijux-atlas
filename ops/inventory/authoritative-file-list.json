@@ -1,15 +1,21 @@
 {
   "authoritative_paths": [
+    "ops/ARTIFACTS.md",
     "ops/CONTRACT.md",
+    "ops/DEPRECATION_WORKFLOW.md",
+    "ops/EMERGENCY_OVERRIDE_WORKFLOW.md",
     "ops/ERRORS.md",
+    "ops/ESCALATION_MAPPING.md",
+    "ops/INCIDENT_PLAYBOOK_GENERATION.md",
+    "ops/OPS_FREEZE_WORKFLOW.md",
+    "ops/OWNERSHIP_ROTATION_POLICY.md",
     "ops/README.md",
     "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
-    "ops/report/gene-lookup-baseline.json",
     "ops/datasets/fixture-policy.json",
     "ops/datasets/rollback-policy.json",
-    "ops/observe/drills.json",
     "ops/e2e/reproducibility-policy.json",
     "ops/env/portability-matrix.json",
+    "ops/inventory/CONTRACT.md",
     "ops/inventory/authoritative-file-list.json",
     "ops/inventory/authority-index.json",
     "ops/inventory/contract-gate-map.json",
@@ -35,15 +41,28 @@
     "ops/k8s/admin-endpoints-exceptions.json",
     "ops/k8s/profile-security-contract.json",
     "ops/k8s/values-schema-high-risk-policy.json",
+    "ops/load/contracts/deterministic-seed-policy.json",
+    "ops/observe/drills.json",
     "ops/policy/contracts-performance-budget.json",
     "ops/policy/effect-tool-version-policy.json",
     "ops/policy/proof-level-checks.json",
     "ops/policy/required-contracts-change.json",
     "ops/policy/required-contracts.json",
-    "ops/load/contracts/deterministic-seed-policy.json"
+    "ops/report/gene-lookup-baseline.json"
   ],
   "derived_paths": [
     "ops/inventory/contracts.json"
   ],
-  "schema_version": 1
+  "schema_version": 1,
+  "files": [
+    "ops/ARTIFACTS.md",
+    "ops/DEPRECATION_WORKFLOW.md",
+    "ops/EMERGENCY_OVERRIDE_WORKFLOW.md",
+    "ops/ESCALATION_MAPPING.md",
+    "ops/INCIDENT_PLAYBOOK_GENERATION.md",
+    "ops/OPS_FREEZE_WORKFLOW.md",
+    "ops/OWNERSHIP_ROTATION_POLICY.md",
+    "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
+    "ops/inventory/CONTRACT.md"
+  ]
 }

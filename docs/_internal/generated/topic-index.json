@@ -7,6 +7,9 @@
     "ARTIFACTS": [
       "ops/ARTIFACTS.md"
     ],
+    "AUTHORITY_TIERS": [
+      "ops/AUTHORITY_TIERS.md"
+    ],
     "BREAKING_CHANGE_TEMPLATE": [
       "ops/BREAKING_CHANGE_TEMPLATE.md"
     ],
@@ -61,8 +64,14 @@
     "DETERMINISM_PROOF": [
       "ops/DETERMINISM_PROOF.md"
     ],
+    "DIRECTORY_BUDGET_POLICY": [
+      "ops/DIRECTORY_BUDGET_POLICY.md"
+    ],
     "DIRECTORY_NECESSITY": [
       "ops/DIRECTORY_NECESSITY.md"
+    ],
+    "DOC_NECESSITY_CHECKLIST": [
+      "ops/DOC_NECESSITY_CHECKLIST.md"
     ],
     "DOMAIN_DOCUMENT_TEMPLATE_CONTRACT": [
       "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md"
@@ -70,11 +79,17 @@
     "EMERGENCY_OVERRIDE_WORKFLOW": [
       "ops/EMERGENCY_OVERRIDE_WORKFLOW.md"
     ],
+    "END_TO_END_INVARIANTS": [
+      "ops/e2e/END_TO_END_INVARIANTS.md"
+    ],
     "ERRORS": [
       "ops/ERRORS.md"
     ],
     "ESCALATION_MAPPING": [
       "ops/ESCALATION_MAPPING.md"
+    ],
+    "EVIDENCE_COMPLETENESS_CHECKLIST": [
+      "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md"
     ],
     "EVIDENCE_SIGNOFF_WORKFLOW": [
       "ops/EVIDENCE_SIGNOFF_WORKFLOW.md"
@@ -110,6 +125,9 @@
     ],
     "MATURITY_SCORECARD": [
       "ops/MATURITY_SCORECARD.md"
+    ],
+    "MINIMAL_RELEASE_SURFACE": [
+      "ops/MINIMAL_RELEASE_SURFACE.md"
     ],
     "MIRROR_POLICY": [
       "ops/_generated.example/MIRROR_POLICY.md"
@@ -232,20 +250,20 @@
       "ops/README.md",
       "ops/_generated.example/README.md",
       "ops/datasets/README.md",
+      "ops/datasets/generated/README.md",
       "ops/e2e/README.md",
       "ops/e2e/fixtures/README.md",
+      "ops/e2e/generated/README.md",
       "ops/env/README.md",
       "ops/inventory/README.md",
       "ops/k8s/README.md",
+      "ops/k8s/generated/README.md",
       "ops/k8s/kind/README.md",
       "ops/load/README.md",
       "ops/observe/README.md",
       "ops/report/README.md",
       "ops/schema/README.md",
       "ops/stack/README.md"
-    ],
-    "REDIRECT_EXPIRY_WORKFLOW": [
-      "docs/operations/REDIRECT_EXPIRY_WORKFLOW.md"
     ],
     "RELEASE_READINESS_SIGNOFF_CHECKLIST": [
       "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md"
@@ -265,6 +283,9 @@
     ],
     "RUNBOOK_GENERATION_FROM_GRAPH": [
       "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
+    ],
+    "SCENARIO_RETENTION": [
+      "ops/load/SCENARIO_RETENTION.md"
     ],
     "SCHEMA_BUDGET_EXCEPTIONS": [
       "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md"
@@ -677,6 +698,9 @@
     "control-plane-architecture": [
       "docs/control-plane/control-plane-architecture.md"
     ],
+    "control-plane.snapshot": [
+      "ops/_generated.example/control-plane.snapshot.md"
+    ],
     "cost-estimator": [
       "crates/bijux-atlas-query/docs/cost-estimator.md"
     ],
@@ -862,6 +886,9 @@
     "docs-search-tips": [
       "docs/_internal/governance/docs-search-tips.md"
     ],
+    "docs-structure-freeze": [
+      "docs/operations/docs-structure-freeze.md"
+    ],
     "docs-style": [
       "docs/_internal/governance/docs-style.md"
     ],
@@ -922,6 +949,9 @@
     ],
     "ensembl-layout": [
       "crates/bijux-atlas-ingest/docs/ensembl-layout.md"
+    ],
+    "entrypoints": [
+      "docs/operations/entrypoints.md"
     ],
     "environment-contract": [
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/environment-contract.md"
@@ -1447,6 +1477,9 @@
     ],
     "readers-guide": [
       "docs/_internal/governance/readers-guide.md"
+    ],
+    "redirect-expiry-workflow": [
+      "docs/operations/redirect-expiry-workflow.md"
     ],
     "redirect-lifecycle": [
       "docs/_internal/governance/redirect-lifecycle.md"

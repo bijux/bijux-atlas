@@ -1,15 +1,15 @@
-# Docs convergence policy
+# Docs Convergence Policy
 
+- Tier: `tier2`
 - Owner: `docs-governance`
-- Type: `policy`
 - Audience: `contributors`
-- Stability: `stable`
-- Last reviewed: `2026-03-01`
-- Reason to exist: keep operations documentation aligned with contracts and control-plane truth.
 
-## Contract references
+## Convergence Rule
 
-- `DOC-001` docs top-level sections stay curated.
-- `DOC-010` every contract includes id, severity, and owner metadata.
-- `OPS-INV-001` ops inventory remains complete and deterministic.
+Documentation must converge on one canonical page per concept and remain aligned with current checks and contracts.
 
+## Deletion Rule
+
+Remove superseded pages only after inbound links, nav entries, and generated ledgers are updated in the same change.
+
+Reference: `checks_ops_docs_governance`

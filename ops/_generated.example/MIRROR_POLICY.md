@@ -16,3 +16,5 @@
 - stack-drift-report.json
 - ops/GENERATED_LIFECYCLE.md
 - evidence-gap-report.json
+
+- MIRROR_POLICY.md

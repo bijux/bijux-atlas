@@ -201,7 +201,7 @@ fn validate_required_human_workflow_docs(
             .as_slice(),
         ),
         (
-            "docs/operations/REDIRECT_EXPIRY_WORKFLOW.md",
+            "docs/operations/redirect-expiry-workflow.md",
             [
                 "- Owner:",
                 "- Purpose:",

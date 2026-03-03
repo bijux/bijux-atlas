@@ -4593,14 +4593,6 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
-        "docs/operations/REDIRECT_EXPIRY_WORKFLOW.md"
-      ],
-      "path": "docs/operations/REDIRECT_EXPIRY_WORKFLOW.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/operations",
         "docs/operations/chart-semver-policy.md"
       ],
       "path": "docs/operations/chart-semver-policy.md"
@@ -4697,6 +4689,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/docs-structure-freeze.md"
+      ],
+      "path": "docs/operations/docs-structure-freeze.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/drills-program.md"
       ],
       "path": "docs/operations/drills-program.md"
@@ -4735,6 +4735,14 @@
         "docs/operations/e2e/k8s-tests.md"
       ],
       "path": "docs/operations/e2e/k8s-tests.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/entrypoints.md"
+      ],
+      "path": "docs/operations/entrypoints.md"
     },
     {
       "breadcrumbs": [
@@ -5107,6 +5115,14 @@
         "docs/operations/promotion-record.md"
       ],
       "path": "docs/operations/promotion-record.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/redirect-expiry-workflow.md"
+      ],
+      "path": "docs/operations/redirect-expiry-workflow.md"
     },
     {
       "breadcrumbs": [
@@ -6678,6 +6694,13 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/AUTHORITY_TIERS.md"
+      ],
+      "path": "ops/AUTHORITY_TIERS.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/BREAKING_CHANGE_TEMPLATE.md"
       ],
       "path": "ops/BREAKING_CHANGE_TEMPLATE.md"
@@ -6720,9 +6743,23 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/DIRECTORY_BUDGET_POLICY.md"
+      ],
+      "path": "ops/DIRECTORY_BUDGET_POLICY.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/DIRECTORY_NECESSITY.md"
       ],
       "path": "ops/DIRECTORY_NECESSITY.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/DOC_NECESSITY_CHECKLIST.md"
+      ],
+      "path": "ops/DOC_NECESSITY_CHECKLIST.md"
     },
     {
       "breadcrumbs": [
@@ -6793,6 +6830,13 @@
         "ops/MATURITY_SCORECARD.md"
       ],
       "path": "ops/MATURITY_SCORECARD.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/MINIMAL_RELEASE_SURFACE.md"
+      ],
+      "path": "ops/MINIMAL_RELEASE_SURFACE.md"
     },
     {
       "breadcrumbs": [
@@ -6934,6 +6978,14 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/_generated.example",
+        "ops/_generated.example/control-plane.snapshot.md"
+      ],
+      "path": "ops/_generated.example/control-plane.snapshot.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/datasets",
         "ops/datasets/CONTRACT.md"
       ],
@@ -6966,10 +7018,27 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/datasets",
+        "ops/datasets/generated",
+        "ops/datasets/generated/README.md"
+      ],
+      "path": "ops/datasets/generated/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/e2e",
         "ops/e2e/CONTRACT.md"
       ],
       "path": "ops/e2e/CONTRACT.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/e2e",
+        "ops/e2e/END_TO_END_INVARIANTS.md"
+      ],
+      "path": "ops/e2e/END_TO_END_INVARIANTS.md"
     },
     {
       "breadcrumbs": [
@@ -7003,6 +7072,15 @@
         "ops/e2e/fixtures/README.md"
       ],
       "path": "ops/e2e/fixtures/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/e2e",
+        "ops/e2e/generated",
+        "ops/e2e/generated/README.md"
+      ],
+      "path": "ops/e2e/generated/README.md"
     },
     {
       "breadcrumbs": [
@@ -7104,6 +7182,15 @@
       "breadcrumbs": [
         "ops",
         "ops/k8s",
+        "ops/k8s/generated",
+        "ops/k8s/generated/README.md"
+      ],
+      "path": "ops/k8s/generated/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/k8s",
         "ops/k8s/kind",
         "ops/k8s/kind/README.md"
       ],
@@ -7153,6 +7240,14 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/load",
+        "ops/load/SCENARIO_RETENTION.md"
+      ],
+      "path": "ops/load/SCENARIO_RETENTION.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/observe",
         "ops/observe/CONTRACT.md"
       ],
@@ -7198,6 +7293,14 @@
         "ops/report/CONTRACT.md"
       ],
       "path": "ops/report/CONTRACT.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md"
+      ],
+      "path": "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md"
     },
     {
       "breadcrumbs": [

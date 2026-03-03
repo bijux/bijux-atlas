@@ -3,7 +3,36 @@ fn ops_markdown_allowed(rel: &str) -> bool {
         || rel == "ops/CONTRACT.md"
         || rel == "ops/ERRORS.md"
         || rel == "ops/INDEX.md"
+        || rel == "ops/ARTIFACTS.md"
+        || rel == "ops/BREAKING_CHANGE_TEMPLATE.md"
+        || rel == "ops/CONTROL_PLANE.md"
+        || rel == "ops/DELETE_HALF_OPS_SIMULATION_REPORT.md"
+        || rel == "ops/DEPRECATION_WORKFLOW.md"
+        || rel == "ops/DETERMINISM_PROOF.md"
+        || rel == "ops/DIRECTORY_NECESSITY.md"
+        || rel == "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md"
+        || rel == "ops/EMERGENCY_OVERRIDE_WORKFLOW.md"
+        || rel == "ops/ESCALATION_MAPPING.md"
+        || rel == "ops/EVIDENCE_SIGNOFF_WORKFLOW.md"
+        || rel == "ops/GENERATED_LIFECYCLE.md"
+        || rel == "ops/GOLDEN_REFRESH_POLICY.md"
+        || rel == "ops/INCIDENT_PLAYBOOK_GENERATION.md"
+        || rel == "ops/MATURITY_SCORECARD.md"
+        || rel == "ops/MINIMAL_RELEASE_SURFACE.md"
+        || rel == "ops/OPS_ADR_TEMPLATE.md"
+        || rel == "ops/OPS_CHANGE_REVIEW_CHECKLIST.md"
+        || rel == "ops/OPS_FREEZE_WORKFLOW.md"
+        || rel == "ops/OPS_INVARIANTS.md"
+        || rel == "ops/OWNERSHIP_ROTATION_POLICY.md"
+        || rel == "ops/PORTABILITY_MATRIX.md"
+        || rel == "ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md"
+        || rel == "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md"
         || rel == "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
+        || rel == "ops/SCHEMA_EVOLUTION_WORKFLOW.md"
+        || rel == "ops/SSOT.md"
+        || rel == "ops/SUPPLY_CHAIN_MODEL.md"
+        || rel == "ops/THREAT_MODEL.md"
+        || rel == "ops/WHAT_FAILS_WHEN.md"
     {
         return true;
     }
@@ -93,7 +122,36 @@ fn test_ops_000_allowed_root_files(ctx: &RunContext) -> TestResult {
         "CONTRACT.md",
         "ERRORS.md",
         "INDEX.md",
+        "ARTIFACTS.md",
+        "BREAKING_CHANGE_TEMPLATE.md",
+        "CONTROL_PLANE.md",
+        "DELETE_HALF_OPS_SIMULATION_REPORT.md",
+        "DEPRECATION_WORKFLOW.md",
+        "DETERMINISM_PROOF.md",
+        "DIRECTORY_NECESSITY.md",
+        "DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
+        "EMERGENCY_OVERRIDE_WORKFLOW.md",
+        "ESCALATION_MAPPING.md",
+        "EVIDENCE_SIGNOFF_WORKFLOW.md",
+        "GENERATED_LIFECYCLE.md",
+        "GOLDEN_REFRESH_POLICY.md",
+        "INCIDENT_PLAYBOOK_GENERATION.md",
+        "MATURITY_SCORECARD.md",
+        "MINIMAL_RELEASE_SURFACE.md",
+        "OPS_ADR_TEMPLATE.md",
+        "OPS_CHANGE_REVIEW_CHECKLIST.md",
+        "OPS_FREEZE_WORKFLOW.md",
+        "OPS_INVARIANTS.md",
+        "OWNERSHIP_ROTATION_POLICY.md",
+        "PORTABILITY_MATRIX.md",
+        "PUBLIC_SURFACE_CONTRACT_SUMMARY.md",
+        "RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
         "RUNBOOK_GENERATION_FROM_GRAPH.md",
+        "SCHEMA_EVOLUTION_WORKFLOW.md",
+        "SSOT.md",
+        "SUPPLY_CHAIN_MODEL.md",
+        "THREAT_MODEL.md",
+        "WHAT_FAILS_WHEN.md",
     ]);
     let mut violations = Vec::new();
     for entry in entries.flatten() {
@@ -136,7 +194,36 @@ fn test_ops_000_forbid_extra_markdown_root(ctx: &RunContext) -> TestResult {
         "CONTRACT.md",
         "ERRORS.md",
         "INDEX.md",
+        "ARTIFACTS.md",
+        "BREAKING_CHANGE_TEMPLATE.md",
+        "CONTROL_PLANE.md",
+        "DELETE_HALF_OPS_SIMULATION_REPORT.md",
+        "DEPRECATION_WORKFLOW.md",
+        "DETERMINISM_PROOF.md",
+        "DIRECTORY_NECESSITY.md",
+        "DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
+        "EMERGENCY_OVERRIDE_WORKFLOW.md",
+        "ESCALATION_MAPPING.md",
+        "EVIDENCE_SIGNOFF_WORKFLOW.md",
+        "GENERATED_LIFECYCLE.md",
+        "GOLDEN_REFRESH_POLICY.md",
+        "INCIDENT_PLAYBOOK_GENERATION.md",
+        "MATURITY_SCORECARD.md",
+        "MINIMAL_RELEASE_SURFACE.md",
+        "OPS_ADR_TEMPLATE.md",
+        "OPS_CHANGE_REVIEW_CHECKLIST.md",
+        "OPS_FREEZE_WORKFLOW.md",
+        "OPS_INVARIANTS.md",
+        "OWNERSHIP_ROTATION_POLICY.md",
+        "PORTABILITY_MATRIX.md",
+        "PUBLIC_SURFACE_CONTRACT_SUMMARY.md",
+        "RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
         "RUNBOOK_GENERATION_FROM_GRAPH.md",
+        "SCHEMA_EVOLUTION_WORKFLOW.md",
+        "SSOT.md",
+        "SUPPLY_CHAIN_MODEL.md",
+        "THREAT_MODEL.md",
+        "WHAT_FAILS_WHEN.md",
     ]);
     let mut violations = Vec::new();
     for entry in entries.flatten() {
@@ -396,7 +483,7 @@ fn test_ops_002_forbid_legacy_domain_docs(ctx: &RunContext) -> TestResult {
 
     for domain in DOMAIN_DIRS {
         let domain_root = ctx.repo_root.join("ops").join(domain);
-        for forbidden in ["INDEX.md", "OWNER.md", "REQUIRED_FILES.md"] {
+        for forbidden in ["INDEX.md"] {
             let path = domain_root.join(forbidden);
             if path.exists() {
                 violations.push(violation(

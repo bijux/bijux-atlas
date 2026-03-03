@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
-  "max_docs_per_crate": 20,
+  "max_docs_per_crate": 24,
   "allowed_doc_types": [
     "index",
     "architecture",

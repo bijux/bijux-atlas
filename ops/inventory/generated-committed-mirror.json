@@ -3,6 +3,7 @@
   "allow_runtime_compat": [
     "ops/_generated.example/ALLOWLIST.json",
     "ops/_generated.example/INDEX.example.md",
+    "ops/_generated.example/MIRROR_POLICY.md",
     "ops/_generated.example/OWNER.md",
     "ops/_generated.example/README.md",
     "ops/_generated.example/REQUIRED_FILES.md",

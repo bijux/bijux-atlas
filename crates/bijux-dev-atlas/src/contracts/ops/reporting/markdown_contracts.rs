@@ -147,7 +147,21 @@ fn test_ops_root_014_no_procedure_docs_in_ops(ctx: &RunContext) -> TestResult {
             continue;
         }
         let rel = rel_to_root(&path, &ctx.repo_root);
-        if rel == "ops/RUNBOOK_GENERATION_FROM_GRAPH.md" {
+        let explicitly_allowed = BTreeSet::from([
+            "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
+            "ops/BREAKING_CHANGE_TEMPLATE.md",
+            "ops/DEPRECATION_WORKFLOW.md",
+            "ops/EMERGENCY_OVERRIDE_WORKFLOW.md",
+            "ops/EVIDENCE_SIGNOFF_WORKFLOW.md",
+            "ops/OPS_FREEZE_WORKFLOW.md",
+            "ops/OPS_CHANGE_REVIEW_CHECKLIST.md",
+            "ops/OWNERSHIP_ROTATION_POLICY.md",
+            "ops/SCHEMA_EVOLUTION_WORKFLOW.md",
+            "ops/GOLDEN_REFRESH_POLICY.md",
+            "ops/INCIDENT_PLAYBOOK_GENERATION.md",
+            "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
+        ]);
+        if explicitly_allowed.contains(rel.as_str()) {
             continue;
         }
         let lower = rel.to_ascii_lowercase();

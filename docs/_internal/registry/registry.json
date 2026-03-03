@@ -12456,29 +12456,6 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "operations",
-        "redirect-expiry-workflow"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/REDIRECT_EXPIRY_WORKFLOW.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "operations",
-        "redirect-expiry-workflow"
-      ],
-      "title": "Redirect Expiry Workflow",
-      "topic": "REDIRECT_EXPIRY_WORKFLOW"
-    },
-    {
-      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -12750,8 +12727,31 @@
         "docs-convergence-policy",
         "operations"
       ],
-      "title": "Docs convergence policy",
+      "title": "Docs Convergence Policy",
       "topic": "docs-convergence-policy"
+    },
+    {
+      "area": "operations",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "docs-structure-freeze",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/docs-structure-freeze.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "docs-structure-freeze",
+        "operations"
+      ],
+      "title": "Docs Structure Freeze",
+      "topic": "docs-structure-freeze"
     },
     {
       "area": "operations",
@@ -12873,6 +12873,29 @@
       ],
       "title": "Kubernetes E2E guarantees",
       "topic": "k8s-tests"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "entrypoints",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/entrypoints.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "entrypoints",
+        "operations"
+      ],
+      "title": "Entrypoints",
+      "topic": "entrypoints"
     },
     {
       "area": "operations",
@@ -13930,6 +13953,29 @@
       ],
       "title": "Promotion Record",
       "topic": "promotion-record"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "redirect-expiry-workflow"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/redirect-expiry-workflow.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "redirect-expiry-workflow"
+      ],
+      "title": "Redirect Expiry Workflow",
+      "topic": "redirect-expiry-workflow"
     },
     {
       "area": "operations",
@@ -18340,6 +18386,29 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "authority-tiers",
+        "ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/AUTHORITY_TIERS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "authority-tiers",
+        "ops"
+      ],
+      "title": "Authority Tiers",
+      "topic": "AUTHORITY_TIERS"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "breaking-change-template",
         "ops"
       ],
@@ -18478,6 +18547,29 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "directory-budget-policy",
+        "ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/DIRECTORY_BUDGET_POLICY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "directory-budget-policy",
+        "ops"
+      ],
+      "title": "Directory Budget Policy",
+      "topic": "DIRECTORY_BUDGET_POLICY"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "directory-necessity",
         "ops"
       ],
@@ -18493,6 +18585,29 @@
       ],
       "title": "Ops Directory Necessity",
       "topic": "DIRECTORY_NECESSITY"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "doc-necessity-checklist",
+        "ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/DOC_NECESSITY_CHECKLIST.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "doc-necessity-checklist",
+        "ops"
+      ],
+      "title": "Document Necessity Checklist",
+      "topic": "DOC_NECESSITY_CHECKLIST"
     },
     {
       "area": "ops",
@@ -18723,6 +18838,29 @@
       ],
       "title": "Ops Maturity Scorecard",
       "topic": "MATURITY_SCORECARD"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "minimal-release-surface",
+        "ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/MINIMAL_RELEASE_SURFACE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "minimal-release-surface",
+        "ops"
+      ],
+      "title": "Minimal Release Surface",
+      "topic": "MINIMAL_RELEASE_SURFACE"
     },
     {
       "area": "ops",
@@ -19176,6 +19314,31 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "-generated.example",
+        "control-plane.snapshot",
+        "ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/_generated.example/control-plane.snapshot.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-generated.example",
+        "control-plane.snapshot",
+        "ops"
+      ],
+      "title": "Control Plane Snapshot",
+      "topic": "control-plane.snapshot"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "contract",
         "datasets",
         "ops"
@@ -19276,6 +19439,33 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "datasets",
+        "generated",
+        "ops",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/datasets/generated/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "datasets",
+        "generated",
+        "ops",
+        "readme"
+      ],
+      "title": "Generated Dataset Artifacts",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "contract",
         "e2e",
         "ops"
@@ -19293,6 +19483,31 @@
       ],
       "title": "Contract",
       "topic": "CONTRACT"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "e2e",
+        "end-to-end-invariants",
+        "ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/e2e/END_TO_END_INVARIANTS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "e2e",
+        "end-to-end-invariants",
+        "ops"
+      ],
+      "title": "End-to-end Invariants",
+      "topic": "END_TO_END_INVARIANTS"
     },
     {
       "area": "ops",
@@ -19394,6 +19609,33 @@
         "readme"
       ],
       "title": "E2E Fixtures",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "e2e",
+        "generated",
+        "ops",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/e2e/generated/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "e2e",
+        "generated",
+        "ops",
+        "readme"
+      ],
+      "title": "Generated E2E Artifacts",
       "topic": "README"
     },
     {
@@ -19698,6 +19940,33 @@
     },
     {
       "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "generated",
+        "k8s",
+        "ops",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/k8s/generated/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "generated",
+        "k8s",
+        "ops",
+        "readme"
+      ],
+      "title": "Generated Kubernetes Artifacts",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -19857,6 +20126,31 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "load",
+        "ops",
+        "scenario-retention"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-performance",
+      "path": "ops/load/SCENARIO_RETENTION.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "load",
+        "ops",
+        "scenario-retention"
+      ],
+      "title": "Scenario Retention",
+      "topic": "SCENARIO_RETENTION"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "contract",
         "observe",
         "ops"
@@ -20001,6 +20295,31 @@
       ],
       "title": "Contract",
       "topic": "CONTRACT"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "evidence-completeness-checklist",
+        "ops",
+        "report"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "evidence-completeness-checklist",
+        "ops",
+        "report"
+      ],
+      "title": "Evidence Completeness Checklist",
+      "topic": "EVIDENCE_COMPLETENESS_CHECKLIST"
     },
     {
       "area": "ops",

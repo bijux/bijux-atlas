@@ -6802,18 +6802,6 @@
     },
     {
       "keywords": [
-        "operations",
-        "redirect-expiry-workflow"
-      ],
-      "path": "docs/operations/REDIRECT_EXPIRY_WORKFLOW.md",
-      "tags": [
-        "operations",
-        "redirect-expiry-workflow"
-      ],
-      "topic": "REDIRECT_EXPIRY_WORKFLOW"
-    },
-    {
-      "keywords": [
         "chart-semver-policy",
         "operations"
       ],
@@ -6958,6 +6946,18 @@
     },
     {
       "keywords": [
+        "docs-structure-freeze",
+        "operations"
+      ],
+      "path": "docs/operations/docs-structure-freeze.md",
+      "tags": [
+        "docs-structure-freeze",
+        "operations"
+      ],
+      "topic": "docs-structure-freeze"
+    },
+    {
+      "keywords": [
         "drills-program",
         "operations"
       ],
@@ -7021,6 +7021,18 @@
         "operations"
       ],
       "topic": "k8s-tests"
+    },
+    {
+      "keywords": [
+        "entrypoints",
+        "operations"
+      ],
+      "path": "docs/operations/entrypoints.md",
+      "tags": [
+        "entrypoints",
+        "operations"
+      ],
+      "topic": "entrypoints"
     },
     {
       "keywords": [
@@ -7583,6 +7595,18 @@
         "promotion-record"
       ],
       "topic": "promotion-record"
+    },
+    {
+      "keywords": [
+        "operations",
+        "redirect-expiry-workflow"
+      ],
+      "path": "docs/operations/redirect-expiry-workflow.md",
+      "tags": [
+        "operations",
+        "redirect-expiry-workflow"
+      ],
+      "topic": "redirect-expiry-workflow"
     },
     {
       "keywords": [
@@ -10008,6 +10032,18 @@
     },
     {
       "keywords": [
+        "authority-tiers",
+        "ops"
+      ],
+      "path": "ops/AUTHORITY_TIERS.md",
+      "tags": [
+        "authority-tiers",
+        "ops"
+      ],
+      "topic": "AUTHORITY_TIERS"
+    },
+    {
+      "keywords": [
         "breaking-change-template",
         "ops"
       ],
@@ -10080,6 +10116,18 @@
     },
     {
       "keywords": [
+        "directory-budget-policy",
+        "ops"
+      ],
+      "path": "ops/DIRECTORY_BUDGET_POLICY.md",
+      "tags": [
+        "directory-budget-policy",
+        "ops"
+      ],
+      "topic": "DIRECTORY_BUDGET_POLICY"
+    },
+    {
+      "keywords": [
         "directory-necessity",
         "ops"
       ],
@@ -10089,6 +10137,18 @@
         "ops"
       ],
       "topic": "DIRECTORY_NECESSITY"
+    },
+    {
+      "keywords": [
+        "doc-necessity-checklist",
+        "ops"
+      ],
+      "path": "ops/DOC_NECESSITY_CHECKLIST.md",
+      "tags": [
+        "doc-necessity-checklist",
+        "ops"
+      ],
+      "topic": "DOC_NECESSITY_CHECKLIST"
     },
     {
       "keywords": [
@@ -10209,6 +10269,18 @@
         "ops"
       ],
       "topic": "MATURITY_SCORECARD"
+    },
+    {
+      "keywords": [
+        "minimal-release-surface",
+        "ops"
+      ],
+      "path": "ops/MINIMAL_RELEASE_SURFACE.md",
+      "tags": [
+        "minimal-release-surface",
+        "ops"
+      ],
+      "topic": "MINIMAL_RELEASE_SURFACE"
     },
     {
       "keywords": [
@@ -10448,6 +10520,20 @@
     },
     {
       "keywords": [
+        "-generated.example",
+        "control-plane.snapshot",
+        "ops"
+      ],
+      "path": "ops/_generated.example/control-plane.snapshot.md",
+      "tags": [
+        "-generated.example",
+        "control-plane.snapshot",
+        "ops"
+      ],
+      "topic": "control-plane.snapshot"
+    },
+    {
+      "keywords": [
         "contract",
         "datasets",
         "ops"
@@ -10504,6 +10590,22 @@
     },
     {
       "keywords": [
+        "datasets",
+        "generated",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/datasets/generated/README.md",
+      "tags": [
+        "datasets",
+        "generated",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
         "contract",
         "e2e",
         "ops"
@@ -10515,6 +10617,20 @@
         "ops"
       ],
       "topic": "CONTRACT"
+    },
+    {
+      "keywords": [
+        "e2e",
+        "end-to-end-invariants",
+        "ops"
+      ],
+      "path": "ops/e2e/END_TO_END_INVARIANTS.md",
+      "tags": [
+        "e2e",
+        "end-to-end-invariants",
+        "ops"
+      ],
+      "topic": "END_TO_END_INVARIANTS"
     },
     {
       "keywords": [
@@ -10569,6 +10685,22 @@
       "tags": [
         "e2e",
         "fixtures",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "e2e",
+        "generated",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/e2e/generated/README.md",
+      "tags": [
+        "e2e",
+        "generated",
         "ops",
         "readme"
       ],
@@ -10744,6 +10876,22 @@
     },
     {
       "keywords": [
+        "generated",
+        "k8s",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/k8s/generated/README.md",
+      "tags": [
+        "generated",
+        "k8s",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
         "k8s",
         "kind",
         "ops",
@@ -10832,6 +10980,20 @@
     },
     {
       "keywords": [
+        "load",
+        "ops",
+        "scenario-retention"
+      ],
+      "path": "ops/load/SCENARIO_RETENTION.md",
+      "tags": [
+        "load",
+        "ops",
+        "scenario-retention"
+      ],
+      "topic": "SCENARIO_RETENTION"
+    },
+    {
+      "keywords": [
         "contract",
         "observe",
         "ops"
@@ -10915,6 +11077,20 @@
         "report"
       ],
       "topic": "CONTRACT"
+    },
+    {
+      "keywords": [
+        "evidence-completeness-checklist",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md",
+      "tags": [
+        "evidence-completeness-checklist",
+        "ops",
+        "report"
+      ],
+      "topic": "EVIDENCE_COMPLETENESS_CHECKLIST"
     },
     {
       "keywords": [

@@ -81,11 +81,11 @@ fn validate_ops_authority_tiers_and_doc_necessity(
                 .as_slice(),
         ),
         (
-            Path::new("docs/operations/DOCS_CONVERGENCE_POLICY.md"),
+            Path::new("docs/operations/docs-convergence-policy.md"),
             ["- Tier: `tier2`", "## Convergence Rule", "## Deletion Rule", "checks_ops_docs_governance"].as_slice(),
         ),
         (
-            Path::new("docs/operations/DOCS_STRUCTURE_FREEZE.md"),
+            Path::new("docs/operations/docs-structure-freeze.md"),
             ["- Tier: `tier2`", "## Version", "v0.1", "## Change Control"].as_slice(),
         ),
     ] {

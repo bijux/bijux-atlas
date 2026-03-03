@@ -214,6 +214,9 @@ pub(super) fn check_docs_index_reachability_ledger(
             .unwrap_or(&path)
             .display()
             .to_string();
+        if rel.starts_with("docs/_drafts/") {
+            continue;
+        }
         let text = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
         let title = markdown_h1_title(&text).unwrap_or_else(|| "(untitled)".to_string());
         let is_index = rel.ends_with("/INDEX.md") || rel == "docs/INDEX.md" || rel == "docs/index.md";

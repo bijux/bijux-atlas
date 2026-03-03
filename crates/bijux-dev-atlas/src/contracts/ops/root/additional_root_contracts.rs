@@ -1,3 +1,42 @@
+fn allowed_ops_root_markdown() -> BTreeSet<&'static str> {
+    BTreeSet::from([
+        "README.md",
+        "CONTRACT.md",
+        "ERRORS.md",
+        "INDEX.md",
+        "ARTIFACTS.md",
+        "BREAKING_CHANGE_TEMPLATE.md",
+        "CONTROL_PLANE.md",
+        "DELETE_HALF_OPS_SIMULATION_REPORT.md",
+        "DEPRECATION_WORKFLOW.md",
+        "DETERMINISM_PROOF.md",
+        "DIRECTORY_NECESSITY.md",
+        "DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
+        "EMERGENCY_OVERRIDE_WORKFLOW.md",
+        "ESCALATION_MAPPING.md",
+        "EVIDENCE_SIGNOFF_WORKFLOW.md",
+        "GENERATED_LIFECYCLE.md",
+        "GOLDEN_REFRESH_POLICY.md",
+        "INCIDENT_PLAYBOOK_GENERATION.md",
+        "MATURITY_SCORECARD.md",
+        "MINIMAL_RELEASE_SURFACE.md",
+        "OPS_ADR_TEMPLATE.md",
+        "OPS_CHANGE_REVIEW_CHECKLIST.md",
+        "OPS_FREEZE_WORKFLOW.md",
+        "OPS_INVARIANTS.md",
+        "OWNERSHIP_ROTATION_POLICY.md",
+        "PORTABILITY_MATRIX.md",
+        "PUBLIC_SURFACE_CONTRACT_SUMMARY.md",
+        "RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
+        "RUNBOOK_GENERATION_FROM_GRAPH.md",
+        "SCHEMA_EVOLUTION_WORKFLOW.md",
+        "SSOT.md",
+        "SUPPLY_CHAIN_MODEL.md",
+        "THREAT_MODEL.md",
+        "WHAT_FAILS_WHEN.md",
+    ])
+}
+
 fn test_ops_root_001_allowed_surface(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-ROOT-001";
     let test_id = "ops.root.allowed_surface";
@@ -10,13 +49,7 @@ fn test_ops_root_001_allowed_surface(ctx: &RunContext) -> TestResult {
             Some("ops".to_string()),
         )]);
     };
-    let allowed_files = BTreeSet::from([
-        "README.md",
-        "CONTRACT.md",
-        "ERRORS.md",
-        "INDEX.md",
-        "RUNBOOK_GENERATION_FROM_GRAPH.md",
-    ]);
+    let allowed_files = allowed_ops_root_markdown();
     let allowed_dirs = BTreeSet::from([
         "_benchmarks",
         "_generated",
@@ -80,13 +113,7 @@ fn test_ops_root_002_forbid_extra_root_markdown(ctx: &RunContext) -> TestResult 
         let Some(name) = path.file_name().and_then(|v| v.to_str()) else {
             continue;
         };
-        if name.ends_with(".md")
-            && name != "README.md"
-            && name != "CONTRACT.md"
-            && name != "ERRORS.md"
-            && name != "INDEX.md"
-            && name != "RUNBOOK_GENERATION_FROM_GRAPH.md"
-        {
+        if name.ends_with(".md") && !allowed_ops_root_markdown().contains(name) {
             violations.push(violation(
                 contract_id,
                 test_id,
@@ -173,8 +200,7 @@ fn test_ops_root_005_filename_policy(ctx: &RunContext) -> TestResult {
     let mut files = Vec::new();
     walk_files(&ops_root(&ctx.repo_root), &mut files);
     files.sort();
-    let uppercase_allow =
-        BTreeSet::from([
+    let uppercase_allow = BTreeSet::from([
         "README.md",
         "CONTRACT.md",
         "ERRORS.md",
@@ -188,7 +214,36 @@ fn test_ops_root_005_filename_policy(ctx: &RunContext) -> TestResult {
         "SCHEMA_BUDGET_EXCEPTIONS.md",
         "SCHEMA_REFERENCE_ALLOWLIST.md",
         "VERSIONING_POLICY.md",
+        "ARTIFACTS.md",
+        "BREAKING_CHANGE_TEMPLATE.md",
+        "CONTROL_PLANE.md",
+        "DELETE_HALF_OPS_SIMULATION_REPORT.md",
+        "DEPRECATION_WORKFLOW.md",
+        "DETERMINISM_PROOF.md",
+        "DIRECTORY_NECESSITY.md",
+        "DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
+        "EMERGENCY_OVERRIDE_WORKFLOW.md",
+        "ESCALATION_MAPPING.md",
+        "EVIDENCE_SIGNOFF_WORKFLOW.md",
+        "GENERATED_LIFECYCLE.md",
+        "GOLDEN_REFRESH_POLICY.md",
+        "INCIDENT_PLAYBOOK_GENERATION.md",
+        "MATURITY_SCORECARD.md",
+        "MINIMAL_RELEASE_SURFACE.md",
+        "OPS_ADR_TEMPLATE.md",
+        "OPS_CHANGE_REVIEW_CHECKLIST.md",
+        "OPS_FREEZE_WORKFLOW.md",
+        "OPS_INVARIANTS.md",
+        "OWNERSHIP_ROTATION_POLICY.md",
+        "PORTABILITY_MATRIX.md",
+        "PUBLIC_SURFACE_CONTRACT_SUMMARY.md",
+        "RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
         "RUNBOOK_GENERATION_FROM_GRAPH.md",
+        "SCHEMA_EVOLUTION_WORKFLOW.md",
+        "SSOT.md",
+        "SUPPLY_CHAIN_MODEL.md",
+        "THREAT_MODEL.md",
+        "WHAT_FAILS_WHEN.md",
     ]);
     let mut violations = Vec::new();
     for path in files {

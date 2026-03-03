@@ -391,3 +391,9 @@
 ## Exceptions policy
 
 - No exceptions are allowed by this document.
+
+- Compatibility migrations must be timeboxed and include explicit cutoff dates
+
+Ops is specification-only.
+
+Release pins are immutable after release publication

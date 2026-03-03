@@ -45,3 +45,5 @@ Atlas has one onboarding funnel: Start here.
 - [Site map](site-map.md)
 - [What to read next](what-to-read-next.md)
 - [Glossary](glossary.md)
+
+- [_Assets Index](_assets/index.md)
