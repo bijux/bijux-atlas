@@ -113,6 +113,27 @@ networkPolicy:
   enabled: true
   allowDns: true
   allowedEgressCIDRs: []
+  ingress:
+    mode: same-namespace
+    allowNamespaces: []
+  egress:
+    mode: internet-only
+    allowDns: true
+    allowCidrs: []
+    allowNamespaces: []
+  dependencies:
+    redis:
+      enabled: false
+      ports: [6379]
+    minio:
+      enabled: false
+      ports: [9000]
+    catalog:
+      enabled: false
+      ports: [80, 443]
+    otelCollector:
+      enabled: false
+      ports: [4317, 4318]
 
 serviceMonitor:
   enabled: true

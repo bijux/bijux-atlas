@@ -556,6 +556,102 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "dependencies": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "catalog": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "ports": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
+                  }
+                }
+              },
+              "required": [
+                "enabled",
+                "ports"
+              ]
+            },
+            "minio": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "ports": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
+                  }
+                }
+              },
+              "required": [
+                "enabled",
+                "ports"
+              ]
+            },
+            "otelCollector": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "ports": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
+                  }
+                }
+              },
+              "required": [
+                "enabled",
+                "ports"
+              ]
+            },
+            "redis": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "ports": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
+                  }
+                }
+              },
+              "required": [
+                "enabled",
+                "ports"
+              ]
+            }
+          },
+          "required": [
+            "redis",
+            "minio",
+            "catalog",
+            "otelCollector"
+          ]
+        },
         "allowDns": {
           "type": "boolean"
         },
@@ -623,7 +719,8 @@
       "required": [
         "enabled",
         "allowDns",
-        "allowedEgressCIDRs"
+        "allowedEgressCIDRs",
+        "dependencies"
       ]
     },
     "nodeLocalSsdProfile": {
