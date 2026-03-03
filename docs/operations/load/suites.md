@@ -4,7 +4,7 @@
 - Type: `reference`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@c59da0bf`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: define suite intent and when to use each suite.
 
 ## Gating suites

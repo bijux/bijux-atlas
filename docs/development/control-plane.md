@@ -4,7 +4,7 @@
 - Type: `guide`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@d09a3c7f`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: explain how the control-plane keeps repository truth enforceable in local and CI workflows.
 
 ## What this page covers

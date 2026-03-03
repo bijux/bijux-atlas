@@ -4,7 +4,7 @@
 - Type: `runbook`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@fbf7e658`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: define the canonical Helm-based deployment path and route operators to the right verification and override guides.
 
 ## Prerequisites

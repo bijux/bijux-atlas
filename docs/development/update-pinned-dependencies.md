@@ -4,7 +4,7 @@
 - Type: `guide`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@50be979f`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: define safe update workflow for pinned dependencies.
 
 ## Steps

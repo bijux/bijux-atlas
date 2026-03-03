@@ -4,7 +4,7 @@
 - Type: `concept`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@2026-03-01`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: explain the control-plane as a ports-and-adapters system instead of a script bundle.
 
 ## Diagram

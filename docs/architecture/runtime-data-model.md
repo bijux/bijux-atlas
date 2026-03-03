@@ -4,7 +4,7 @@
 - Type: `concept`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@ff4b8084`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: provide one-page overview of artifact, registry, and serving-store runtime data relationships.
 
 ## Core entities

@@ -4,7 +4,7 @@
 - Type: `concept`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@bdd91bc0`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: define enforceable crate, layer, and effects boundaries in plain language.
 
 ## Plain-language summary

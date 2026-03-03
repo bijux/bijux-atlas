@@ -4,7 +4,7 @@
 - Type: `policy`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@bdd91bc0`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: preserve stable URL while canonical layering rules live in Boundaries.
 
 This page is retained as a stable URL. Canonical layering rules are now in [Boundaries](boundaries.md).

@@ -4,7 +4,7 @@
 - Type: `concept`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@ff4b8084`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: define component responsibilities with clear runtime and control-plane boundaries.
 
 ## Runtime Components

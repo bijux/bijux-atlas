@@ -4,7 +4,7 @@
 - Type: `guide`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@331751e4`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: provide a fast path for adding one new control-plane check safely.
 
 ## Workflow

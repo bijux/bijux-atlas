@@ -4,7 +4,7 @@
 - Type: `reference`
 - Audience: `reviewers`
 - Stability: `stable`
-- Last verified against: `main@c59da0bf`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: define the executable contract that keeps Helm-emitted ConfigMap env keys inside the runtime allowlist.
 
 ## Contract

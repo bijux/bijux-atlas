@@ -4,7 +4,7 @@
 - Type: `runbook`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@fbf7e658`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: provide one canonical 5-minute local workflow with explicit verification and recovery guidance.
 
 ## Prerequisites

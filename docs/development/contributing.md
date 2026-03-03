@@ -4,7 +4,7 @@
 - Type: `guide`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@d489531b`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: define merge requirements and review standards.
 
 ## Contribution Checklist

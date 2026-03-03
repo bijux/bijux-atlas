@@ -4,7 +4,7 @@
 - Type: `policy`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@fc2319a8483a4d0c9d08e5227ec31d7cb6677c4a`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: define what counts as a breaking profile change.
 
 ## Breaking Changes

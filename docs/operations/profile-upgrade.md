@@ -4,7 +4,7 @@
 - Type: `runbook`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@f585bb97e56a5d8adfd1b3d7c557a39d0dd9c8cb`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: describe how to change a Kubernetes profile without silently changing its intent.
 
 ## Prereqs

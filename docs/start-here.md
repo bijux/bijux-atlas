@@ -23,7 +23,7 @@ prerequisites:
 - Type: `guide`
 - Audience: `user`
 - Stability: `stable`
-- Last verified against: `main@699e8b0e`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: provide the only onboarding funnel for Atlas.
 
 This is the only onboarding root in `docs/`.

@@ -4,7 +4,7 @@
 - Type: `concept`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@bdd91bc0`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: provide one-page crate topology with ownership, stability, inputs, and outputs.
 
 ## Crate dependency direction rules

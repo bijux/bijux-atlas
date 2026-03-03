@@ -4,7 +4,7 @@
 - Type: `runbook`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@0ffe86b4bb01b04093f540baba3b228327a3c628`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: define the canonical Atlas NetworkPolicy modes and the namespace contract they rely on.
 
 ## Purpose

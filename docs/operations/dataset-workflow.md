@@ -4,7 +4,7 @@
 - Audience: `operator`
 - Type: `runbook`
 - Stability: `stable`
-- Last verified against: `main@c59da0bf`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: define the canonical dataset lifecycle used by operators.
 
 ## Lifecycle
