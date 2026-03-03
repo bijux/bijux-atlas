@@ -1,259 +1,172 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "bijux-atlas chart values",
+  "type": "object",
   "additionalProperties": false,
+  "$defs": {
+    "k8sQuantity": {
+      "type": "string",
+      "pattern": "^[0-9]+(?:\\.[0-9]+)?(?:[eEinumkKMGTP]+i?)?$"
+    },
+    "dnsLabel": {
+      "type": "string",
+      "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+    },
+    "dnsName": {
+      "type": "string",
+      "pattern": "^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$"
+    },
+    "cidr": {
+      "type": "string",
+      "pattern": "^(?:\\d{1,3}\\.){3}\\d{1,3}/\\d{1,2}$"
+    },
+    "duration": {
+      "type": "string",
+      "pattern": "^[0-9]+(?:ms|s|m|h)$"
+    },
+    "stringMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "containerSecurityContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allowPrivilegeEscalation": {
+          "const": false
+        },
+        "readOnlyRootFilesystem": {
+          "const": true
+        },
+        "capabilities": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "drop": {
+              "type": "array",
+              "items": {
+                "const": "ALL"
+              },
+              "minItems": 1,
+              "maxItems": 1
+            }
+          },
+          "required": [
+            "drop"
+          ]
+        }
+      },
+      "required": [
+        "allowPrivilegeEscalation",
+        "readOnlyRootFilesystem",
+        "capabilities"
+      ]
+    }
+  },
   "allOf": [
     {
-      "if": {
-        "properties": {
-          "image": {
-            "properties": {
-              "digest": {
-                "minLength": 1
-              },
-              "tag": {
-                "minLength": 1
-              }
-            },
-            "required": [
-              "digest",
-              "tag"
-            ],
-            "type": "object"
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "image": {
-            "properties": {
-              "tag": {
-                "maxLength": 0
-              }
-            },
-            "type": "object"
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "cache": {
-            "properties": {
-              "initPrewarm": {
-                "properties": {
-                  "enabled": {
-                    "const": true
-                  }
+      "description": "Exactly one image selector must be set: use a digest for immutable deploys or a tag for mutable/dev flows, never both.",
+      "oneOf": [
+        {
+          "properties": {
+            "image": {
+              "type": "object",
+              "properties": {
+                "digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[a-f0-9]{64}$"
                 },
-                "type": "object"
+                "tag": {
+                  "type": "string",
+                  "maxLength": 0
+                }
               }
-            },
-            "type": "object"
+            }
           }
-        }
-      },
-      "then": {
-        "properties": {
-          "cache": {
-            "properties": {
-              "pinnedDatasets": {
-                "items": {
+        },
+        {
+          "properties": {
+            "image": {
+              "type": "object",
+              "properties": {
+                "digest": {
+                  "type": "string",
+                  "maxLength": 0
+                },
+                "tag": {
+                  "type": "string",
                   "minLength": 1,
-                  "type": "string"
-                },
-                "minItems": 1,
-                "type": "array"
-              }
-            },
-            "type": "object"
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "alertRules": {
-            "properties": {
-              "enabled": {
-                "const": true
-              }
-            },
-            "type": "object"
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "serviceMonitor": {
-            "properties": {
-              "enabled": {
-                "const": true
-              }
-            },
-            "type": "object"
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "server": {
-            "properties": {
-              "cachedOnlyMode": {
-                "const": true
-              }
-            },
-            "type": "object"
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "server": {
-            "properties": {
-              "readinessRequiresCatalog": {
-                "const": false
-              }
-            },
-            "type": "object"
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "hpa": {
-            "properties": {
-              "enabled": {
-                "const": true
-              }
-            },
-            "type": "object"
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "hpa": {
-            "properties": {
-              "cpuUtilization": {
-                "maximum": 100,
-                "minimum": 1,
-                "type": "integer"
-              },
-              "maxReplicas": {
-                "minimum": 1,
-                "type": "integer"
-              },
-              "minReplicas": {
-                "minimum": 1,
-                "type": "integer"
-              }
-            },
-            "type": "object"
-          },
-          "metrics": {
-            "properties": {
-              "customMetrics": {
-                "properties": {
-                  "enabled": {
-                    "const": true
-                  },
-                  "requiredPodAnnotations": {
-                    "properties": {
-                      "prometheus.io/path": {
-                        "minLength": 1,
-                        "type": "string"
-                      },
-                      "prometheus.io/scrape": {
-                        "minLength": 1,
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "prometheus.io/scrape",
-                      "prometheus.io/path"
-                    ],
-                    "type": "object"
+                  "pattern": "^[A-Za-z0-9_][A-Za-z0-9._-]{0,127}$",
+                  "not": {
+                    "const": "latest"
                   }
-                },
-                "type": "object"
+                }
               }
-            },
-            "type": "object"
-          },
-          "serviceMonitor": {
-            "properties": {
-              "enabled": {
-                "const": true
-              }
-            },
-            "type": "object"
+            }
           }
         }
-      }
+      ]
     }
   ],
   "properties": {
     "affinity": {
-      "description": "Chart values key `affinity` from SSOT contract."
+      "type": "object"
     },
     "alertRules": {
+      "type": "object",
       "additionalProperties": false,
       "properties": {
         "enabled": {
           "type": "boolean"
         },
         "runbookUrlBase": {
-          "pattern": "^https?://.+",
-          "type": "string"
+          "type": "string",
+          "pattern": "^https?://.+"
         }
       },
       "required": [
         "enabled",
         "runbookUrlBase"
-      ],
-      "type": "object"
+      ]
     },
     "cache": {
+      "type": "object",
       "additionalProperties": true,
       "properties": {
         "initPrewarm": {
-          "additionalProperties": true,
-          "type": "object"
+          "type": "object",
+          "additionalProperties": true
         },
         "pinnedDatasets": {
+          "type": "array",
           "items": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "type": "array"
+            "type": "string",
+            "minLength": 1
+          }
         }
-      },
-      "type": "object"
+      }
     },
     "catalog": {
+      "type": "object",
       "additionalProperties": false,
       "properties": {
         "backoffBaseMs": {
-          "minimum": 0,
-          "type": "integer"
+          "type": "integer",
+          "minimum": 0
         },
         "breakerFailureThreshold": {
-          "minimum": 1,
-          "type": "integer"
+          "type": "integer",
+          "minimum": 1
         },
         "breakerOpenMs": {
-          "minimum": 0,
-          "type": "integer"
+          "type": "integer",
+          "minimum": 0
         },
         "endpoint": {
-          "pattern": "^(|https?://.+)$",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(|https?://.+)$"
         },
         "etagEnabled": {
           "type": "boolean"
@@ -265,47 +178,82 @@
         "backoffBaseMs",
         "breakerFailureThreshold",
         "breakerOpenMs"
-      ],
-      "type": "object"
+      ]
     },
     "catalogPublishJob": {
-      "description": "Chart values key `catalogPublishJob` from SSOT contract."
+      "type": "object"
+    },
+    "containerSecurityContext": {
+      "$ref": "#/$defs/containerSecurityContext"
     },
     "datasetWarmupJob": {
-      "description": "Chart values key `datasetWarmupJob` from SSOT contract."
+      "type": "object"
+    },
+    "env": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[A-Z0-9_]+$"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
     },
     "extraEnv": {
-      "description": "Chart values key `extraEnv` from SSOT contract."
+      "type": "array"
     },
     "hpa": {
+      "type": "object",
       "additionalProperties": false,
       "properties": {
         "behavior": {
           "type": "object"
         },
+        "cpu": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "targetAverageUtilization": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        },
         "cpuUtilization": {
-          "maximum": 100,
+          "type": "integer",
           "minimum": 1,
-          "type": "integer"
+          "maximum": 100
         },
         "enabled": {
           "type": "boolean"
         },
         "heavyInflightAverageValue": {
-          "minLength": 1,
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "maxReplicas": {
+          "type": "integer",
           "minimum": 1,
-          "type": "integer"
+          "description": "Helm template validation also enforces maxReplicas >= minReplicas."
+        },
+        "memory": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "targetAverageUtilization": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
         },
         "minReplicas": {
-          "minimum": 1,
-          "type": "integer"
+          "type": "integer",
+          "minimum": 1
         },
         "p95LatencySeconds": {
-          "minLength": 1,
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         }
       },
       "required": [
@@ -316,33 +264,38 @@
         "p95LatencySeconds",
         "heavyInflightAverageValue",
         "behavior"
-      ],
-      "type": "object"
+      ]
     },
     "image": {
+      "type": "object",
       "additionalProperties": false,
+      "description": "Set exactly one of image.digest or image.tag. Digest is preferred for immutable production rollouts.",
       "properties": {
         "digest": {
-          "pattern": "^(|sha256:[a-f0-9]{64})$",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(|sha256:[a-f0-9]{64})$"
         },
         "pullPolicy": {
+          "type": "string",
           "enum": [
             "Always",
             "IfNotPresent",
             "Never"
-          ],
-          "type": "string"
+          ]
         },
         "repository": {
+          "type": "string",
           "minLength": 1,
           "not": {
             "pattern": "@"
-          },
-          "type": "string"
+          }
         },
         "tag": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^$|^[A-Za-z0-9_][A-Za-z0-9._-]{0,127}$",
+          "not": {
+            "const": "latest"
+          }
         }
       },
       "required": [
@@ -350,130 +303,478 @@
         "tag",
         "digest",
         "pullPolicy"
-      ],
-      "type": "object"
+      ]
     },
     "ingress": {
-      "description": "Chart values key `ingress` from SSOT contract."
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "className": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "host": {
+          "type": "string",
+          "pattern": "^$|^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$"
+        },
+        "hosts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "host": {
+                "$ref": "#/$defs/dnsName"
+              },
+              "paths": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "pattern": "^/"
+                    }
+                  },
+                  "required": [
+                    "path"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "host",
+              "paths"
+            ]
+          }
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "tls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "hosts": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/dnsName"
+                }
+              },
+              "secretName": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "secretName"
+            ]
+          }
+        }
+      },
+      "required": [
+        "enabled",
+        "className",
+        "host",
+        "path"
+      ]
     },
     "metrics": {
+      "type": "object",
       "additionalProperties": false,
       "properties": {
         "customMetrics": {
+          "type": "object",
           "additionalProperties": false,
           "properties": {
             "enabled": {
               "type": "boolean"
             },
             "requiredPodAnnotations": {
+              "type": "object",
               "additionalProperties": {
                 "type": "string"
               },
               "properties": {
                 "prometheus.io/path": {
-                  "minLength": 1,
-                  "type": "string"
+                  "type": "string",
+                  "minLength": 1
                 },
                 "prometheus.io/scrape": {
-                  "minLength": 1,
-                  "type": "string"
+                  "type": "string",
+                  "minLength": 1
                 }
               },
               "required": [
                 "prometheus.io/scrape",
                 "prometheus.io/path"
-              ],
-              "type": "object"
+              ]
             }
           },
           "required": [
             "enabled",
             "requiredPodAnnotations"
-          ],
-          "type": "object"
+          ]
         }
       },
       "required": [
         "customMetrics"
-      ],
-      "type": "object"
+      ]
     },
     "networkPolicy": {
+      "type": "object",
       "additionalProperties": false,
       "properties": {
         "allowDns": {
           "type": "boolean"
         },
         "allowedEgressCIDRs": {
+          "type": "array",
           "items": {
-            "pattern": "^[^\\s]+$",
-            "type": "string"
-          },
-          "type": "array"
+            "$ref": "#/$defs/cidr"
+          }
+        },
+        "egress": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "allowCidrs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/cidr"
+              }
+            },
+            "allowDns": {
+              "type": "boolean"
+            },
+            "allowNamespaces": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/dnsLabel"
+              }
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "disabled",
+                "internet-only",
+                "cluster-aware",
+                "custom"
+              ]
+            }
+          }
         },
         "enabled": {
           "type": "boolean"
+        },
+        "ingress": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "allowNamespaces": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/dnsLabel"
+              }
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "disabled",
+                "same-namespace",
+                "selected",
+                "custom"
+              ]
+            }
+          }
         }
       },
       "required": [
         "enabled",
         "allowDns",
         "allowedEgressCIDRs"
-      ],
-      "type": "object"
+      ]
     },
     "nodeLocalSsdProfile": {
-      "description": "Chart values key `nodeLocalSsdProfile` from SSOT contract."
+      "type": "object"
     },
     "nodeSelector": {
-      "description": "Chart values key `nodeSelector` from SSOT contract."
+      "type": "object"
     },
     "pdb": {
-      "description": "Chart values key `pdb` from SSOT contract."
+      "type": "object"
     },
     "podSecurityContext": {
-      "description": "Chart values key `podSecurityContext` from SSOT contract."
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fsGroup": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "runAsGroup": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "runAsNonRoot": {
+          "type": "boolean"
+        },
+        "runAsUser": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "runAsNonRoot",
+        "runAsUser"
+      ]
     },
     "priorityClassName": {
-      "description": "Chart values key `priorityClassName` from SSOT contract."
+      "type": "string"
     },
     "replicaCount": {
-      "description": "Chart values key `replicaCount` from SSOT contract."
+      "type": "integer",
+      "minimum": 1
     },
     "resources": {
-      "description": "Chart values key `resources` from SSOT contract."
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "cpu": {
+              "type": "string",
+              "pattern": "^\\d+m?$"
+            },
+            "ephemeral-storage": {
+              "$ref": "#/$defs/k8sQuantity"
+            },
+            "memory": {
+              "$ref": "#/$defs/k8sQuantity"
+            }
+          },
+          "required": [
+            "cpu",
+            "memory"
+          ]
+        },
+        "requests": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "cpu": {
+              "type": "string",
+              "pattern": "^\\d+m?$"
+            },
+            "ephemeral-storage": {
+              "$ref": "#/$defs/k8sQuantity"
+            },
+            "memory": {
+              "$ref": "#/$defs/k8sQuantity"
+            }
+          },
+          "required": [
+            "cpu",
+            "memory"
+          ]
+        }
+      },
+      "required": [
+        "requests",
+        "limits"
+      ]
     },
     "rollout": {
-      "description": "Chart values key `rollout` from SSOT contract."
+      "type": "object"
     },
     "securityContext": {
-      "description": "Chart values key `securityContext` from SSOT contract."
+      "$ref": "#/$defs/containerSecurityContext",
+      "description": "Deprecated alias for containerSecurityContext. Prefer containerSecurityContext for new values files."
     },
     "sequenceRateLimits": {
-      "description": "Chart values key `sequenceRateLimits` from SSOT contract."
+      "type": "object"
     },
     "server": {
-      "description": "Chart values key `server` from SSOT contract."
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "baseUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "cachedOnlyMode": {
+          "type": "boolean"
+        },
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "configSchemaVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "enableDebugDatasets": {
+          "type": "boolean"
+        },
+        "enableExemplars": {
+          "type": "boolean"
+        },
+        "logLevel": {
+          "type": "string",
+          "enum": [
+            "trace",
+            "debug",
+            "info",
+            "warn",
+            "error"
+          ]
+        },
+        "maxBodyBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxSequenceBases": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "readOnlyFsMode": {
+          "type": "boolean"
+        },
+        "readinessProbePath": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "readinessRequiresCatalog": {
+          "type": "boolean"
+        },
+        "requestTimeoutMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "responseMaxBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestTimeoutSeconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sequenceApiKeyRequiredBases": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sequenceTtlMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "shutdownDrainMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "shutdownGraceSeconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "slowQueryThresholdMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sqlTimeoutMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "startupProbePath": {
+          "type": "string",
+          "pattern": "^/"
+        }
+      },
+      "required": [
+        "command",
+        "configSchemaVersion",
+        "startupProbePath",
+        "readinessProbePath",
+        "requestTimeoutMs",
+        "sqlTimeoutMs",
+        "responseMaxBytes",
+        "maxBodyBytes",
+        "slowQueryThresholdMs",
+        "enableDebugDatasets",
+        "enableExemplars",
+        "cachedOnlyMode",
+        "readOnlyFsMode",
+        "shutdownDrainMs",
+        "readinessRequiresCatalog",
+        "maxSequenceBases",
+        "sequenceApiKeyRequiredBases",
+        "sequenceTtlMs"
+      ]
     },
     "service": {
-      "description": "Chart values key `service` from SSOT contract."
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "$ref": "#/$defs/stringMap"
+        },
+        "nodePort": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "ClusterIP",
+            "NodePort",
+            "LoadBalancer"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "port"
+      ]
     },
     "serviceMonitor": {
+      "type": "object",
       "additionalProperties": false,
       "properties": {
         "enabled": {
           "type": "boolean"
         },
         "interval": {
-          "minLength": 1,
-          "type": "string"
+          "$ref": "#/$defs/duration"
         },
         "labels": {
           "type": "object"
         },
         "scrapeTimeout": {
-          "minLength": 1,
-          "type": "string"
+          "$ref": "#/$defs/duration"
         }
       },
       "required": [
@@ -481,25 +782,25 @@
         "interval",
         "scrapeTimeout",
         "labels"
-      ],
-      "type": "object"
+      ]
     },
     "store": {
+      "type": "object",
       "additionalProperties": false,
       "properties": {
         "credentialsSecretName": {
           "type": "string"
         },
         "endpoint": {
-          "pattern": "^(|https?://.+)$",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(|https?://.+)$"
         },
         "manageCredentialsSecret": {
           "type": "boolean"
         },
         "s3PresignedBaseUrl": {
-          "pattern": "^(|https?://.+)$",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(|https?://.+)$"
         }
       },
       "required": [
@@ -507,16 +808,14 @@
         "s3PresignedBaseUrl",
         "credentialsSecretName",
         "manageCredentialsSecret"
-      ],
-      "type": "object"
+      ]
     },
     "terminationGracePeriodSeconds": {
-      "description": "Chart values key `terminationGracePeriodSeconds` from SSOT contract."
+      "type": "integer",
+      "minimum": 0
     },
     "tolerations": {
-      "description": "Chart values key `tolerations` from SSOT contract."
+      "type": "array"
     }
-  },
-  "title": "bijux-atlas chart values",
-  "type": "object"
+  }
 }
