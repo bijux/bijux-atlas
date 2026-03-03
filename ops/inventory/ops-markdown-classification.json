@@ -1,0 +1,403 @@
+{
+  "schema_version": 1,
+  "owner": "bijux-atlas-operations",
+  "description": "Classification of markdown files under ops/ surface.",
+  "entries": [
+    {
+      "path": "ops/ARTIFACTS.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/AUTHORITY_TIERS.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/BREAKING_CHANGE_TEMPLATE.md",
+      "class": "policy"
+    },
+    {
+      "path": "ops/CONTRACT.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/CONTROL_PLANE.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/DELETE_HALF_OPS_SIMULATION_REPORT.md",
+      "class": "stub"
+    },
+    {
+      "path": "ops/DEPRECATION_WORKFLOW.md",
+      "class": "runbook"
+    },
+    {
+      "path": "ops/DETERMINISM_PROOF.md",
+      "class": "stub"
+    },
+    {
+      "path": "ops/DIRECTORY_BUDGET_POLICY.md",
+      "class": "policy"
+    },
+    {
+      "path": "ops/DIRECTORY_NECESSITY.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/DOC_NECESSITY_CHECKLIST.md",
+      "class": "policy"
+    },
+    {
+      "path": "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
+      "class": "policy"
+    },
+    {
+      "path": "ops/EMERGENCY_OVERRIDE_WORKFLOW.md",
+      "class": "runbook"
+    },
+    {
+      "path": "ops/ERRORS.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/ESCALATION_MAPPING.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/EVIDENCE_SIGNOFF_WORKFLOW.md",
+      "class": "runbook"
+    },
+    {
+      "path": "ops/GENERATED_LIFECYCLE.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/GOLDEN_REFRESH_POLICY.md",
+      "class": "policy"
+    },
+    {
+      "path": "ops/INCIDENT_PLAYBOOK_GENERATION.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/INDEX.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/MATURITY_SCORECARD.md",
+      "class": "stub"
+    },
+    {
+      "path": "ops/MINIMAL_RELEASE_SURFACE.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/OPS_ADR_TEMPLATE.md",
+      "class": "policy"
+    },
+    {
+      "path": "ops/OPS_CHANGE_REVIEW_CHECKLIST.md",
+      "class": "policy"
+    },
+    {
+      "path": "ops/OPS_FREEZE_WORKFLOW.md",
+      "class": "runbook"
+    },
+    {
+      "path": "ops/OPS_INVARIANTS.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/OWNERSHIP_ROTATION_POLICY.md",
+      "class": "policy"
+    },
+    {
+      "path": "ops/PORTABILITY_MATRIX.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
+      "class": "policy"
+    },
+    {
+      "path": "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
+      "class": "runbook"
+    },
+    {
+      "path": "ops/SCHEMA_EVOLUTION_WORKFLOW.md",
+      "class": "runbook"
+    },
+    {
+      "path": "ops/SSOT.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/SUPPLY_CHAIN_MODEL.md",
+      "class": "stub"
+    },
+    {
+      "path": "ops/THREAT_MODEL.md",
+      "class": "stub"
+    },
+    {
+      "path": "ops/WHAT_FAILS_WHEN.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/_generated.example/MIRROR_POLICY.md",
+      "class": "policy"
+    },
+    {
+      "path": "ops/_generated.example/OWNER.md",
+      "class": "evidence"
+    },
+    {
+      "path": "ops/_generated.example/README.md",
+      "class": "evidence"
+    },
+    {
+      "path": "ops/_generated.example/REQUIRED_FILES.md",
+      "class": "evidence"
+    },
+    {
+      "path": "ops/_generated.example/control-plane.snapshot.md",
+      "class": "evidence"
+    },
+    {
+      "path": "ops/datasets/CONTRACT.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/datasets/OWNER.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/datasets/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/datasets/REQUIRED_FILES.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/datasets/generated/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/e2e/CONTRACT.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/e2e/END_TO_END_INVARIANTS.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/e2e/OWNER.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/e2e/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/e2e/REQUIRED_FILES.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/e2e/fixtures/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/e2e/generated/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/env/CONTRACT.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/env/OWNER.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/env/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/env/REQUIRED_FILES.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/governance/INDEX.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/governance/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/inventory/CONTRACT.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/inventory/OWNER.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/inventory/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/inventory/REQUIRED_FILES.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/k8s/CONTRACT.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/k8s/OWNER.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/k8s/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/k8s/REQUIRED_FILES.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/k8s/generated/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/k8s/kind/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/k8s/values/profile-readme.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/load/CONTRACT.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/load/OWNER.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/load/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/load/REQUIRED_FILES.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/load/SCENARIO_RETENTION.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/observe/CONTRACT.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/observe/OWNER.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/observe/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/observe/REQUIRED_FILES.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/observe/drills/OWNERSHIP.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/report/CONTRACT.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md",
+      "class": "policy"
+    },
+    {
+      "path": "ops/report/OWNER.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/report/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/report/REQUIRED_FILES.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/schema/BUDGET_POLICY.md",
+      "class": "policy"
+    },
+    {
+      "path": "ops/schema/CONTRACT.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/schema/OWNER.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/schema/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/schema/REQUIRED_FILES.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md",
+      "class": "policy"
+    },
+    {
+      "path": "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/schema/VERSIONING_POLICY.md",
+      "class": "policy"
+    },
+    {
+      "path": "ops/schema/generated/schema-index.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/stack/CONTRACT.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/stack/OWNER.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/stack/README.md",
+      "class": "spec"
+    },
+    {
+      "path": "ops/stack/REQUIRED_FILES.md",
+      "class": "spec"
+    }
+  ]
+}

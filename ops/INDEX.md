@@ -10,6 +10,7 @@
 - `ops/datasets/`
 - `ops/e2e/`
 - `ops/report/`
+- `ops/governance/`
 - `ops/_generated/`
 - `ops/_generated.example/`
 

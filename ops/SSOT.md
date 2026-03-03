@@ -1,14 +1,23 @@
-# Ops SSOT Index
+# Ops SSOT
 
 - Owner: `bijux-atlas-operations`
-- Purpose: enumerate source-of-truth manifests and versioned policies.
+- Purpose: define operational SSOT boundaries and canonical inventories.
 - Consumers: `checks_ops_ssot_manifests_schema_versions`
 
-## SSOT Manifests
+## Boundary
 
-- `ops/stack/profiles.json`
-- `ops/stack/generated/version-manifest.json`
-- `ops/inventory/toolchain.json`
+`ops/` is specification-only for operational contracts, inventories, runbooks, and evidence models.
+Narrative governance content is canonical under `docs/governance/` and referenced from `ops/` via stubs.
+
+## Canonical Manifests
+
+- `ops/inventory/contracts-map.json`
+- `ops/inventory/authority-index.json`
 - `ops/inventory/surfaces.json`
-- `ops/inventory/contracts.json`
+- `ops/inventory/toolchain.json`
 - `ops/inventory/generated-committed-mirror.json`
+
+## Generated Evidence Model
+
+- Runtime-generated outputs: `ops/_generated/`
+- Committed curated examples: `ops/_generated.example/`
