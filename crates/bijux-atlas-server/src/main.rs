@@ -108,23 +108,6 @@ fn chrono_like_millis() -> u128 {
         .map_or(0, |d| d.as_millis())
 }
 
-#[cfg(test)]
-mod tests {
-    use super::try_claim_startup_warmup_lock;
-
-    #[test]
-    fn startup_lock_uses_atomic_set_command_shape() {
-        let _ = try_claim_startup_warmup_lock;
-        let source = std::fs::read_to_string(
-            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src/main.rs"),
-        )
-        .expect("read main.rs");
-        assert!(source.contains("redis::cmd(\"SET\")"));
-        assert!(source.contains(".arg(\"NX\")"));
-        assert!(source.contains(".arg(\"EX\")"));
-    }
-}
-
 async fn wait_for_shutdown_signal() -> Result<(), String> {
     #[cfg(unix)]
     {
@@ -402,4 +385,21 @@ async fn main() -> Result<(), String> {
         })
         .await
         .map_err(|e| format!("server failed: {e}"))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::try_claim_startup_warmup_lock;
+
+    #[test]
+    fn startup_lock_uses_atomic_set_command_shape() {
+        let _ = try_claim_startup_warmup_lock;
+        let source = std::fs::read_to_string(
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src/main.rs"),
+        )
+        .expect("read main.rs");
+        assert!(source.contains("redis::cmd(\"SET\")"));
+        assert!(source.contains(".arg(\"NX\")"));
+        assert!(source.contains(".arg(\"EX\")"));
+    }
 }
