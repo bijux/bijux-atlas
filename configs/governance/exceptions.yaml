@@ -1,0 +1,18 @@
+schema_version: 1
+policy:
+  max_days_by_severity:
+    low: 30
+    medium: 21
+    high: 7
+  allowed_tracking_domains:
+    - github.com
+    - jira.example.com
+  no_exception_zones:
+    - SEC-RED-002
+    - SEC-ACTIONS-001
+    - runtime-env-allowlist
+reason_taxonomy:
+  - compatibility
+  - third-party
+  - temporary-incident
+exceptions: []

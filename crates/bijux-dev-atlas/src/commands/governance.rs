@@ -2,6 +2,7 @@
 
 use crate::cli::{GovernanceCommand, GovernanceExceptionsCommand};
 use crate::{emit_payload, resolve_repo_root};
+use bijux_dev_atlas::core::load_registry;
 use bijux_dev_atlas::docs::site_output::validate_named_report;
 use bijux_dev_atlas::governance_objects::{
     collect_governance_objects, find_governance_object, governance_contract_coverage_path,
@@ -13,7 +14,200 @@ use bijux_dev_atlas::governance_objects::{
     governance_policy_surface_path, governance_policy_surface_payload, governance_summary_markdown,
     governance_summary_paths, validate_governance_objects,
 };
+use serde::Deserialize;
+use std::collections::BTreeSet;
 use std::fs;
+use std::path::{Path, PathBuf};
+
+#[derive(Debug, Deserialize)]
+struct ExceptionsRegistry {
+    schema_version: u64,
+    policy: ExceptionsPolicy,
+    reason_taxonomy: Vec<String>,
+    exceptions: Vec<GovernanceException>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ExceptionsPolicy {
+    max_days_by_severity: MaxDaysBySeverity,
+    allowed_tracking_domains: Vec<String>,
+    no_exception_zones: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct MaxDaysBySeverity {
+    low: i64,
+    medium: i64,
+    high: i64,
+}
+
+#[derive(Debug, Deserialize)]
+struct GovernanceException {
+    id: String,
+    scope: ExceptionScope,
+    severity: String,
+    reason: String,
+    owner: String,
+    created_at: String,
+    expires_at: String,
+    mitigation: String,
+    tracking_link: String,
+    governance_approval: Option<bool>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ExceptionScope {
+    kind: String,
+    id: String,
+}
+
+fn exceptions_registry_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/exceptions.yaml")
+}
+
+fn exceptions_registry_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/contracts/governance/exceptions.schema.json")
+}
+
+fn exceptions_summary_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/exceptions-summary.json")
+}
+
+fn exceptions_table_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/exceptions-table.md")
+}
+
+fn is_iso_date(value: &str) -> bool {
+    let bytes = value.as_bytes();
+    if bytes.len() != 10 {
+        return false;
+    }
+    bytes[4] == b'-'
+        && bytes[7] == b'-'
+        && bytes
+            .iter()
+            .enumerate()
+            .all(|(idx, byte)| matches!(idx, 4 | 7) || byte.is_ascii_digit())
+}
+
+fn parse_ymd(value: &str) -> Option<(i64, i64, i64)> {
+    if !is_iso_date(value) {
+        return None;
+    }
+    let year = value.get(0..4)?.parse().ok()?;
+    let month = value.get(5..7)?.parse().ok()?;
+    let day = value.get(8..10)?.parse().ok()?;
+    Some((year, month, day))
+}
+
+fn days_from_civil(year: i64, month: i64, day: i64) -> i64 {
+    let year = year - if month <= 2 { 1 } else { 0 };
+    let era = if year >= 0 { year } else { year - 399 } / 400;
+    let yoe = year - era * 400;
+    let month_adj = month + if month > 2 { -3 } else { 9 };
+    let doy = (153 * month_adj + 2) / 5 + day - 1;
+    let doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    era * 146097 + doe - 719468
+}
+
+fn current_utc_day() -> Result<i64, String> {
+    let now = std::time::SystemTime::now();
+    let secs = now
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_err(|err| format!("system clock before unix epoch: {err}"))?
+        .as_secs() as i64;
+    Ok(secs / 86_400)
+}
+
+fn date_days(value: &str) -> Result<i64, String> {
+    let (year, month, day) =
+        parse_ymd(value).ok_or_else(|| format!("invalid date `{value}`; expected YYYY-MM-DD"))?;
+    Ok(days_from_civil(year, month, day))
+}
+
+fn tracking_domain(url: &str) -> Option<&str> {
+    let (_, rest) = url.split_once("://")?;
+    Some(rest.split('/').next()?.split(':').next()?)
+}
+
+fn write_pretty_json(path: &Path, value: &serde_json::Value) -> Result<(), String> {
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("create {} failed: {err}", parent.display()))?;
+    }
+    fs::write(
+        path,
+        serde_json::to_string_pretty(value).map_err(|err| format!("encode json failed: {err}"))?,
+    )
+    .map_err(|err| format!("write {} failed: {err}", path.display()))
+}
+
+fn write_text(path: &Path, text: &str) -> Result<(), String> {
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("create {} failed: {err}", parent.display()))?;
+    }
+    fs::write(path, text).map_err(|err| format!("write {} failed: {err}", path.display()))
+}
+
+fn known_contract_ids(root: &Path) -> Result<BTreeSet<String>, String> {
+    let contracts_path = root.join("ops/inventory/contracts.json");
+    let value: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(&contracts_path)
+            .map_err(|err| format!("read {} failed: {err}", contracts_path.display()))?,
+    )
+    .map_err(|err| format!("parse {} failed: {err}", contracts_path.display()))?;
+    Ok(value
+        .get("contract_ids")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .map(ToString::to_string)
+        .collect())
+}
+
+fn known_check_ids(root: &Path) -> Result<BTreeSet<String>, String> {
+    Ok(load_registry(root)?
+        .checks
+        .into_iter()
+        .map(|check| check.id.as_str().to_string())
+        .collect())
+}
+
+fn render_exceptions_table(rows: &[serde_json::Value]) -> String {
+    let mut out = String::from("# Governance Exceptions\n\n");
+    out.push_str("Read-only generated view from `configs/governance/exceptions.yaml`.\n\n");
+    out.push_str("| Id | Scope | Severity | Owner | Expires | Days left |\n|---|---|---|---|---|---|\n");
+    for row in rows {
+        let id = row.get("id").and_then(serde_json::Value::as_str).unwrap_or_default();
+        let scope = row
+            .get("scope")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let severity = row
+            .get("severity")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let owner = row
+            .get("owner")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let expires = row
+            .get("expires_at")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let days_left = row
+            .get("days_to_expiry")
+            .and_then(serde_json::Value::as_i64)
+            .map(|v| v.to_string())
+            .unwrap_or_else(|| "n/a".to_string());
+        out.push_str(&format!(
+            "| `{id}` | `{scope}` | `{severity}` | `{owner}` | `{expires}` | `{days_left}` |\n"
+        ));
+    }
+    out
+}
 
 pub(crate) fn run_governance_command(
     _quiet: bool,
@@ -194,20 +388,202 @@ pub(crate) fn run_governance_command(
                 out,
             } => {
                 let root = resolve_repo_root(repo_root)?;
+                let schema_path = exceptions_registry_schema_path(&root);
+                let _: serde_json::Value = serde_json::from_str(
+                    &fs::read_to_string(&schema_path)
+                        .map_err(|err| format!("read {} failed: {err}", schema_path.display()))?,
+                )
+                .map_err(|err| format!("parse {} failed: {err}", schema_path.display()))?;
+                let registry_path = exceptions_registry_path(&root);
+                let registry_text = fs::read_to_string(&registry_path)
+                    .map_err(|err| format!("read {} failed: {err}", registry_path.display()))?;
+                let registry: ExceptionsRegistry = serde_yaml::from_str(&registry_text)
+                    .map_err(|err| format!("parse {} failed: {err}", registry_path.display()))?;
+                let summary_path = exceptions_summary_path(&root);
+                let table_path = exceptions_table_path(&root);
+                let known_contracts = known_contract_ids(&root)?;
+                let known_checks = known_check_ids(&root)?;
+                let today = current_utc_day()?;
+                let no_exception_zones: BTreeSet<String> = registry
+                    .policy
+                    .no_exception_zones
+                    .iter()
+                    .cloned()
+                    .collect();
+                let allowed_domains: BTreeSet<String> = registry
+                    .policy
+                    .allowed_tracking_domains
+                    .iter()
+                    .cloned()
+                    .collect();
+                let reason_taxonomy: BTreeSet<String> =
+                    registry.reason_taxonomy.iter().cloned().collect();
+                let mut errors = Vec::new();
+                let mut rows = Vec::new();
+                let mut seen_ids = BTreeSet::new();
+
+                for item in &registry.exceptions {
+                    if !seen_ids.insert(item.id.clone()) {
+                        errors.push(format!("duplicate exception id `{}`", item.id));
+                    }
+                    if item.owner.trim().is_empty() {
+                        errors.push(format!("{} missing owner", item.id));
+                    }
+                    if item.mitigation.trim().is_empty() {
+                        errors.push(format!("{} missing mitigation", item.id));
+                    }
+                    if !reason_taxonomy.contains(&item.reason) {
+                        errors.push(format!("{} uses unknown reason `{}`", item.id, item.reason));
+                    }
+                    if !is_iso_date(&item.created_at) {
+                        errors.push(format!("{} has invalid created_at `{}`", item.id, item.created_at));
+                    }
+                    if !is_iso_date(&item.expires_at) {
+                        errors.push(format!("{} has invalid expires_at `{}`", item.id, item.expires_at));
+                    }
+                    let domain = tracking_domain(&item.tracking_link).unwrap_or_default();
+                    if domain.is_empty() || !allowed_domains.contains(domain) {
+                        errors.push(format!(
+                            "{} tracking link domain `{}` is not allowlisted",
+                            item.id, domain
+                        ));
+                    }
+                    let scope_key = item.scope.id.clone();
+                    if no_exception_zones.contains(&scope_key) {
+                        errors.push(format!(
+                            "{} targets no-exception zone `{}`",
+                            item.id, scope_key
+                        ));
+                    }
+                    match item.scope.kind.as_str() {
+                        "contract" => {
+                            if !known_contracts.contains(&item.scope.id) {
+                                errors.push(format!(
+                                    "{} references unknown contract id `{}`",
+                                    item.id, item.scope.id
+                                ));
+                            }
+                        }
+                        "check" => {
+                            if !known_checks.contains(&item.scope.id) {
+                                errors.push(format!(
+                                    "{} references unknown check id `{}`",
+                                    item.id, item.scope.id
+                                ));
+                            }
+                        }
+                        other => errors.push(format!(
+                            "{} uses invalid scope.kind `{}`",
+                            item.id, other
+                        )),
+                    }
+
+                    let expires_days = date_days(&item.expires_at)?;
+                    let created_days = date_days(&item.created_at)?;
+                    if expires_days < created_days {
+                        errors.push(format!(
+                            "{} expires before it is created ({} < {})",
+                            item.id, item.expires_at, item.created_at
+                        ));
+                    }
+                    let days_to_expiry = expires_days - today;
+                    if days_to_expiry < 0 {
+                        errors.push(format!("{} expired on {}", item.id, item.expires_at));
+                    }
+                    let max_days = match item.severity.as_str() {
+                        "low" => registry.policy.max_days_by_severity.low,
+                        "medium" => registry.policy.max_days_by_severity.medium,
+                        "high" => registry.policy.max_days_by_severity.high,
+                        other => {
+                            errors.push(format!("{} uses unknown severity `{}`", item.id, other));
+                            0
+                        }
+                    };
+                    let duration_days = expires_days - created_days;
+                    if duration_days > max_days
+                        && !(item.severity == "high" && item.governance_approval == Some(true))
+                    {
+                        errors.push(format!(
+                            "{} exceeds {}-day limit for severity `{}`",
+                            item.id, max_days, item.severity
+                        ));
+                    }
+
+                    rows.push(serde_json::json!({
+                        "id": item.id,
+                        "scope": format!("{}:{}", item.scope.kind, item.scope.id),
+                        "severity": item.severity,
+                        "reason": item.reason,
+                        "owner": item.owner,
+                        "created_at": item.created_at,
+                        "expires_at": item.expires_at,
+                        "days_to_expiry": days_to_expiry,
+                        "tracking_link": item.tracking_link,
+                        "governance_approval": item.governance_approval.unwrap_or(false)
+                    }));
+                }
+
+                rows.sort_by(|left, right| {
+                    left["id"]
+                        .as_str()
+                        .unwrap_or_default()
+                        .cmp(right["id"].as_str().unwrap_or_default())
+                });
+
+                let active_rows = rows
+                    .iter()
+                    .filter(|row| row["days_to_expiry"].as_i64().unwrap_or(-1) >= 0)
+                    .count();
+                let summary = serde_json::json!({
+                    "report_id": "exceptions-summary",
+                    "version": 1,
+                    "inputs": {
+                        "generator": "bijux-dev-atlas governance exceptions validate",
+                        "sources": [
+                            "configs/governance/exceptions.yaml",
+                            "ops/inventory/contracts.json",
+                            "ops/inventory/registry.toml"
+                        ]
+                    },
+                    "status": if errors.is_empty() { "ok" } else { "failed" },
+                    "summary": {
+                        "total": rows.len(),
+                        "active": active_rows,
+                        "errors": errors.len(),
+                        "no_exception_zones": registry.policy.no_exception_zones.len()
+                    },
+                    "rows": rows,
+                    "contracts": {
+                        "GOV-EXC-001": registry.schema_version == 1,
+                        "GOV-EXC-002": !errors.iter().any(|err| err.contains("expired on")),
+                        "GOV-EXC-003": !errors.iter().any(|err| err.contains("unknown contract id") || err.contains("unknown check id")),
+                        "GOV-EXC-004": !errors.iter().any(|err| err.contains("missing mitigation")),
+                        "GOV-EXC-005": !errors.iter().any(|err| err.contains("missing owner") || err.contains("tracking link domain")),
+                        "GOV-EXC-006": !errors.iter().any(|err| err.contains("no-exception zone"))
+                    },
+                    "errors": errors
+                });
+                validate_named_report(&root, "exceptions-summary.schema.json", &summary)?;
+                write_pretty_json(&summary_path, &summary)?;
+                write_text(
+                    &table_path,
+                    &render_exceptions_table(
+                        summary["rows"].as_array().map(Vec::as_slice).unwrap_or(&[]),
+                    ),
+                )?;
                 let payload = serde_json::json!({
                     "schema_version": 1,
                     "kind": "governance_exceptions_validate",
-                    "status": "ok",
-                    "registry_path": root
-                        .join("configs/governance/exceptions.yaml")
-                        .strip_prefix(&root)
-                        .unwrap_or_else(|_| std::path::Path::new("configs/governance/exceptions.yaml"))
-                        .display()
-                        .to_string(),
-                    "text": "governance exceptions surface is wired; registry validation is handled by the upcoming governance exceptions implementation"
+                    "status": summary["status"].clone(),
+                    "registry_path": registry_path.strip_prefix(&root).unwrap_or(&registry_path).display().to_string(),
+                    "summary_path": summary_path.strip_prefix(&root).unwrap_or(&summary_path).display().to_string(),
+                    "table_path": table_path.strip_prefix(&root).unwrap_or(&table_path).display().to_string(),
+                    "contracts": summary["contracts"].clone(),
+                    "errors": summary["errors"].clone()
                 });
                 let rendered = emit_payload(format, out, &payload)?;
-                Ok((rendered, 0))
+                let exit_code = if summary["status"] == "ok" { 0 } else { 1 };
+                Ok((rendered, exit_code))
             }
         },
     }

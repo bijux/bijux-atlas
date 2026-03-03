@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "report_id": "exceptions-summary",
+  "version": 1,
+  "inputs": {
+    "generator": "bijux-dev-atlas governance exceptions validate",
+    "sources": [
+      "configs/governance/exceptions.yaml",
+      "ops/inventory/contracts.json",
+      "ops/inventory/registry.toml"
+    ]
+  },
+  "type": "object",
+  "required": ["report_id", "version", "inputs", "status", "summary", "rows", "contracts", "errors"],
+  "properties": {
+    "report_id": {
+      "const": "exceptions-summary"
+    },
+    "version": {
+      "const": 1
+    },
+    "inputs": {
+      "type": "object"
+    },
+    "status": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "object"
+    },
+    "rows": {
+      "type": "array"
+    },
+    "contracts": {
+      "type": "object"
+    },
+    "errors": {
+      "type": "array"
+    }
+  }
+}
