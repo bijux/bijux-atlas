@@ -4,6 +4,7 @@
     "ops/README.md",
     "ops/CONTRACT.md",
     "ops/ERRORS.md",
+    "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
     "ops/datasets/README.md",
     "ops/datasets/CONTRACT.md",
     "ops/e2e/README.md",

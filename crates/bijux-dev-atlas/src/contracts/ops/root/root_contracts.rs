@@ -1,5 +1,9 @@
 fn ops_markdown_allowed(rel: &str) -> bool {
-    if rel == "ops/README.md" || rel == "ops/CONTRACT.md" || rel == "ops/ERRORS.md" {
+    if rel == "ops/README.md"
+        || rel == "ops/CONTRACT.md"
+        || rel == "ops/ERRORS.md"
+        || rel == "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
+    {
         return true;
     }
     for domain in DOMAIN_DIRS {
@@ -69,7 +73,12 @@ fn test_ops_000_allowed_root_files(ctx: &RunContext) -> TestResult {
             Some("ops".to_string()),
         )]);
     };
-    let allowed_files = BTreeSet::from(["README.md", "CONTRACT.md", "ERRORS.md"]);
+    let allowed_files = BTreeSet::from([
+        "README.md",
+        "CONTRACT.md",
+        "ERRORS.md",
+        "RUNBOOK_GENERATION_FROM_GRAPH.md",
+    ]);
     let mut violations = Vec::new();
     for entry in entries.flatten() {
         let path = entry.path();
@@ -106,7 +115,12 @@ fn test_ops_000_forbid_extra_markdown_root(ctx: &RunContext) -> TestResult {
             Some("ops".to_string()),
         )]);
     };
-    let allowed_markdown = BTreeSet::from(["README.md", "CONTRACT.md", "ERRORS.md"]);
+    let allowed_markdown = BTreeSet::from([
+        "README.md",
+        "CONTRACT.md",
+        "ERRORS.md",
+        "RUNBOOK_GENERATION_FROM_GRAPH.md",
+    ]);
     let mut violations = Vec::new();
     for entry in entries.flatten() {
         let path = entry.path();

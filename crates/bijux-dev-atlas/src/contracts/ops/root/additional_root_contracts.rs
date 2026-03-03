@@ -10,7 +10,12 @@ fn test_ops_root_001_allowed_surface(ctx: &RunContext) -> TestResult {
             Some("ops".to_string()),
         )]);
     };
-    let allowed_files = BTreeSet::from(["README.md", "CONTRACT.md", "ERRORS.md"]);
+    let allowed_files = BTreeSet::from([
+        "README.md",
+        "CONTRACT.md",
+        "ERRORS.md",
+        "RUNBOOK_GENERATION_FROM_GRAPH.md",
+    ]);
     let allowed_dirs = BTreeSet::from([
         "_generated",
         "_generated.example",
@@ -75,6 +80,7 @@ fn test_ops_root_002_forbid_extra_root_markdown(ctx: &RunContext) -> TestResult 
             && name != "README.md"
             && name != "CONTRACT.md"
             && name != "ERRORS.md"
+            && name != "RUNBOOK_GENERATION_FROM_GRAPH.md"
         {
             violations.push(violation(
                 contract_id,
@@ -170,6 +176,7 @@ fn test_ops_root_005_filename_policy(ctx: &RunContext) -> TestResult {
             "Chart.yaml",
             "ALLOWLIST.json",
             "NOTES.txt",
+            "RUNBOOK_GENERATION_FROM_GRAPH.md",
         ]);
     let mut violations = Vec::new();
     for path in files {

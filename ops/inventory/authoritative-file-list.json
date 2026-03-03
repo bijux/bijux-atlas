@@ -4,6 +4,7 @@
     "ops/CONTRACT.md",
     "ops/ERRORS.md",
     "ops/README.md",
+    "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
     "ops/datasets/fixture-policy.json",
     "ops/datasets/rollback-policy.json",
     "ops/e2e/reproducibility-policy.json",

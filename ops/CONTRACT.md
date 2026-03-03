@@ -185,6 +185,7 @@
 | `OPS-STACK-007` | stack health report generator contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-STACK-008` | stack command surface contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-STACK-009` | stack offline profile policy contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
+| `OPS-STACK-010` | stack profile intent registry contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-STACK-E-001` | stack effect kind cluster contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-STACK-E-002` | stack effect component rollout contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
 | `OPS-STACK-E-003` | stack effect ports inventory contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |
@@ -367,6 +368,7 @@
 | `OPS-STACK-007` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-STACK-008` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-STACK-009` | `bijux dev atlas contracts ops --mode static` |
+| `OPS-STACK-010` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-STACK-E-001` | `bijux dev atlas contracts ops --mode effect` |
 | `OPS-STACK-E-002` | `bijux dev atlas contracts ops --mode effect` |
 | `OPS-STACK-E-003` | `bijux dev atlas contracts ops --mode effect` |

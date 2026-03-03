@@ -203,6 +203,12 @@
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
+      "path": "ops/stack/profile-intent.json",
+      "schema": "ops/schema/stack/profile-intent.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
       "path": "ops/stack/service-dependency-contract.json",
       "schema": "ops/schema/stack/service-dependency-contract.schema.json",
       "generator": "manual",
