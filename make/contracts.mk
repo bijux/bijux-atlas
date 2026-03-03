@@ -49,18 +49,50 @@ contracts-all: _contracts_guard ## Run the full contract suite without static sk
 		"contracts-make (static)" \
 		"contracts-ops (effect)" \
 		> $(ARTIFACT_ROOT)/contracts-all/$(RUN_ID)/manifest.txt
-	@$(MAKE) -s contracts-root
-	@printf '%s\n' "run: $(DEV_ATLAS) contracts repo $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(DEV_ATLAS) contracts repo $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
-	@$(MAKE) -s contracts-crates
-	@$(MAKE) -s contracts-runtime
-	@$(MAKE) -s contracts-configs
-	@$(MAKE) -s contracts-docs
-	@printf '%s\n' "run: $(DEV_ATLAS) contracts docker $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(DEV_ATLAS) contracts docker $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
-	@$(MAKE) -s contracts-make
-	@printf '%s\n' "run: $(DEV_ATLAS) contracts ops $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(DEV_ATLAS) contracts ops $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+	@set -eu; \
+	summary_file="$(ARTIFACT_ROOT)/contracts-all/$(RUN_ID)/summary.txt"; \
+	: > "$$summary_file"; \
+	printf '%-15s %-8s %10s %10s %10s %10s %10s %10s\n' "group" "mode" "contracts" "tests" "pass" "fail" "skip" "error" >> "$$summary_file"; \
+	printf '%-15s %-8s %10s %10s %10s %10s %10s %10s\n' "---------------" "--------" "----------" "----------" "----------" "----------" "----------" "----------" >> "$$summary_file"; \
+	total_contracts=0; \
+	total_tests=0; \
+	total_pass=0; \
+	total_fail=0; \
+	total_skip=0; \
+	total_error=0; \
+	run_and_capture() { \
+		group="$$1"; \
+		mode="$$2"; \
+		shift 2; \
+		log_file="$(ARTIFACT_ROOT)/contracts-all/$(RUN_ID)/$${group}.log"; \
+		"$$@" > "$$log_file" 2>&1; \
+		cat "$$log_file"; \
+		stats="$$(awk '/^Summary:/ { c = $$2; t = $$4; p = $$6; f = $$8; s = $$10; e = $$12 } END { if (c != "") { print c, t, p, f, s, e } }' "$$log_file")"; \
+		if [ -z "$$stats" ]; then \
+			printf '%s\n' "missing summary line for $$group" >&2; \
+			exit 1; \
+		fi; \
+		set -- $$stats; \
+		printf '%-15s %-8s %10s %10s %10s %10s %10s %10s\n' "$$group" "$$mode" "$$1" "$$2" "$$3" "$$4" "$$5" "$$6" >> "$$summary_file"; \
+		total_contracts=$$((total_contracts + $$1)); \
+		total_tests=$$((total_tests + $$2)); \
+		total_pass=$$((total_pass + $$3)); \
+		total_fail=$$((total_fail + $$4)); \
+		total_skip=$$((total_skip + $$5)); \
+		total_error=$$((total_error + $$6)); \
+	}; \
+	run_and_capture "root" "static" $(MAKE) -s contracts-root; \
+	run_and_capture "repo" "effect" $(DEV_ATLAS) contracts repo $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT); \
+	run_and_capture "crates" "static" $(MAKE) -s contracts-crates; \
+	run_and_capture "runtime" "static" $(MAKE) -s contracts-runtime; \
+	run_and_capture "configs" "static" $(MAKE) -s contracts-configs; \
+	run_and_capture "docs" "static" $(MAKE) -s contracts-docs; \
+	run_and_capture "docker" "effect" $(DEV_ATLAS) contracts docker $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT); \
+	run_and_capture "make" "static" $(MAKE) -s contracts-make; \
+	run_and_capture "ops" "effect" $(DEV_ATLAS) contracts ops $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT); \
+	printf '%-15s %-8s %10s %10s %10s %10s %10s %10s\n' "contracts-all" "mixed" "$$total_contracts" "$$total_tests" "$$total_pass" "$$total_fail" "$$total_skip" "$$total_error" >> "$$summary_file"; \
+	printf '\n%s\n' "contracts-all summary"; \
+	cat "$$summary_file"
 
 contracts-fast: _contracts_guard ## Run static-only contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts all --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
