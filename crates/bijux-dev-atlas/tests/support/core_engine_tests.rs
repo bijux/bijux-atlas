@@ -3,6 +3,7 @@
 #![allow(clippy::expect_used)]
 
 use super::*;
+use crate::model::RunSummary;
 use std::fs;
 use std::path::{Path, PathBuf};
 use tempfile::TempDir;

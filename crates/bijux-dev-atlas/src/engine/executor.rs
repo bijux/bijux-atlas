@@ -106,7 +106,9 @@ pub fn execute_all<E: RunnableExecutor + Send + Sync + 'static>(
                 let context = context.clone();
                 workers.push(thread::spawn(move || loop {
                     let next = {
-                        let mut queue = queue.lock().expect("queue lock");
+                        let mut queue = queue
+                            .lock()
+                            .unwrap_or_else(|poisoned| poisoned.into_inner());
                         if queue.is_empty() {
                             None
                         } else {
@@ -117,9 +119,14 @@ pub fn execute_all<E: RunnableExecutor + Send + Sync + 'static>(
                         break;
                     };
                     match executor.execute(&entry, &context) {
-                        Ok(result) => results.lock().expect("results lock").push(result),
+                        Ok(result) => results
+                            .lock()
+                            .unwrap_or_else(|poisoned| poisoned.into_inner())
+                            .push(result),
                         Err(err) => {
-                            let mut slot = first_error.lock().expect("error lock");
+                            let mut slot = first_error
+                                .lock()
+                                .unwrap_or_else(|poisoned| poisoned.into_inner());
                             if slot.is_none() {
                                 *slot = Some(err);
                             }
@@ -131,10 +138,17 @@ pub fn execute_all<E: RunnableExecutor + Send + Sync + 'static>(
             for worker in workers {
                 let _ = worker.join();
             }
-            if let Some(err) = first_error.lock().expect("error lock").clone() {
+            if let Some(err) = first_error
+                .lock()
+                .unwrap_or_else(|poisoned| poisoned.into_inner())
+                .clone()
+            {
                 return Err(err);
             }
-            let mut out = results.lock().expect("results lock").clone();
+            let mut out = results
+                .lock()
+                .unwrap_or_else(|poisoned| poisoned.into_inner())
+                .clone();
             out.sort_by(|a, b| a.runnable_id.as_str().cmp(b.runnable_id.as_str()));
             Ok(out)
         }

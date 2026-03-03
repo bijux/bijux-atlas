@@ -78,10 +78,11 @@ mod tests {
     fn temp_repo_root() -> PathBuf {
         let suffix = SystemTime::now()
             .duration_since(UNIX_EPOCH)
-            .expect("time")
+            .unwrap_or_else(|err| panic!("duration since unix epoch failed: {err}"))
             .as_nanos();
         let root = std::env::temp_dir().join(format!("bijux-dev-atlas-adapter-io-{suffix}"));
-        fs::create_dir_all(&root).expect("mkdir");
+        fs::create_dir_all(&root)
+            .unwrap_or_else(|err| panic!("create temp repo root failed: {err}"));
         root
     }
 
@@ -145,7 +146,7 @@ mod tests {
         let fake = FakeWorld::default().with_file(&file_path, "index");
         let text = fake
             .read_text(&repo_root, Path::new("docs/INDEX.md"))
-            .expect("read");
+            .unwrap_or_else(|err| panic!("fake world read failed: {err}"));
         assert_eq!(text, "index");
     }
 
@@ -167,7 +168,8 @@ mod tests {
     fn repo_root_discovery_has_explicit_failure_mode() {
         let repo_root = temp_repo_root();
         let nested = repo_root.join("deep/nested");
-        fs::create_dir_all(&nested).expect("mkdir nested");
+        fs::create_dir_all(&nested)
+            .unwrap_or_else(|err| panic!("create nested repo root failed: {err}"));
         let err = discover_repo_root(&nested).expect_err("must fail");
         assert!(matches!(err, AdapterError::PathViolation { .. }));
     }
@@ -196,7 +198,7 @@ mod tests {
         let walked = bundle
             .walker()
             .walk_files(&repo_root, Path::new("docs"))
-            .expect("walk");
+            .unwrap_or_else(|err| panic!("walk files failed: {err}"));
         assert_eq!(walked, vec![docs]);
         let err = bundle
             .exec()
