@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schemas/security/policy.schema.json",
+  "title": "Security Policy Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "default_decision", "rules"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "default_decision": {
+      "type": "string",
+      "enum": ["allow", "deny"]
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "effect", "principals", "actions", "resources", "routes"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^AUTH-[A-Z0-9-]+$"
+          },
+          "effect": {
+            "type": "string",
+            "enum": ["allow", "deny"]
+          },
+          "principals": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z-]*$"
+            }
+          },
+          "actions": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z]+\\.[a-z]+$"
+            }
+          },
+          "resources": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kinds", "values"],
+            "properties": {
+              "kinds": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z-]*$"
+                }
+              },
+              "values": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "routes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^/"
+            }
+          }
+        }
+      }
+    }
+  }
+}

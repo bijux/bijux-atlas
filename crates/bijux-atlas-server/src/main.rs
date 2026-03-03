@@ -600,6 +600,16 @@ async fn main() -> Result<(), String> {
         runtime_policy = %runtime_policy_payload,
         "canonical runtime policy"
     );
+    info!(
+        event_id = "auth_mode_selected",
+        release_id = %release_id,
+        governance_version = %governance_version,
+        event = "auth_mode_selected",
+        auth_mode = runtime.api.auth_mode.as_str(),
+        auth_disabled = runtime.api.auth_mode.as_str() == "disabled",
+        admin_endpoints_enabled = runtime.api.enable_admin_endpoints,
+        "runtime auth mode selected"
+    );
 
     let mut state = AppState::with_config(cache.clone(), runtime.api.clone(), query_limits);
     state.runtime_policy_hash = Arc::new(runtime_policy_hash);

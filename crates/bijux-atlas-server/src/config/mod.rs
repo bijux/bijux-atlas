@@ -30,13 +30,23 @@ pub enum CatalogMode {
     Optional,
 }
 
-#[derive(Debug, Clone, Serialize, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq, Default)]
 #[serde(rename_all = "kebab-case")]
 pub enum AuthMode {
     #[default]
     Disabled,
     ApiKey,
     Hmac,
+}
+
+impl AuthMode {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Disabled => "disabled",
+            Self::ApiKey => "api-key",
+            Self::Hmac => "hmac",
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -182,6 +192,7 @@ impl Default for RateLimitConfig {
 #[derive(Debug, Clone, Serialize)]
 pub struct ApiConfig {
     pub auth_mode: AuthMode,
+    pub enable_admin_endpoints: bool,
     pub max_body_bytes: usize,
     pub max_uri_bytes: usize,
     pub max_header_bytes: usize,
@@ -246,6 +257,7 @@ impl Default for ApiConfig {
     fn default() -> Self {
         Self {
             auth_mode: AuthMode::Disabled,
+            enable_admin_endpoints: false,
             max_body_bytes: 16 * 1024,
             max_uri_bytes: 2048,
             max_header_bytes: 16 * 1024,
@@ -642,6 +654,7 @@ impl RuntimeConfig {
 
         let api = ApiConfig {
             auth_mode: auth_mode.clone(),
+            enable_admin_endpoints: env_bool("ATLAS_ENABLE_ADMIN_ENDPOINTS", false)?,
             max_body_bytes: env_usize("ATLAS_MAX_BODY_BYTES", 16 * 1024)?,
             max_uri_bytes: env_usize("ATLAS_MAX_URI_BYTES", 2048)?,
             max_header_bytes: env_usize("ATLAS_MAX_HEADER_BYTES", 16 * 1024)?,

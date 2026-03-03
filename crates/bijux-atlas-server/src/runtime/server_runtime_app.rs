@@ -98,7 +98,7 @@ impl AppState {
 }
 
 pub fn build_router(state: AppState) -> Router {
-    Router::new()
+    let mut router = Router::new()
         .route("/", get(http::handlers::landing_handler))
         .route("/healthz", get(http::handlers::healthz_handler))
         .route(
@@ -141,20 +141,24 @@ pub fn build_router(state: AppState) -> Router {
         .route(
             "/v1/transcripts/:tx_id",
             get(http::handlers::transcript_summary_handler),
-        )
-        .route(
-            "/debug/datasets",
-            get(http::handlers::debug_datasets_handler),
-        )
-        .route(
-            "/debug/dataset-health",
-            get(http::handlers::dataset_health_handler),
-        )
-        .route(
-            "/debug/registry-health",
-            get(http::handlers::registry_health_handler),
-        )
-        .route("/v1/_debug/echo", get(http::handlers::debug_echo_handler))
+        );
+    if state.api.enable_admin_endpoints {
+        router = router
+            .route(
+                "/debug/datasets",
+                get(http::handlers::debug_datasets_handler),
+            )
+            .route(
+                "/debug/dataset-health",
+                get(http::handlers::dataset_health_handler),
+            )
+            .route(
+                "/debug/registry-health",
+                get(http::handlers::registry_health_handler),
+            )
+            .route("/v1/_debug/echo", get(http::handlers::debug_echo_handler));
+    }
+    router
         .layer(from_fn_with_state(
             state.clone(),
             crate::middleware::request_tracing::request_tracing_middleware,

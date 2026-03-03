@@ -6,6 +6,7 @@
     "allowed_api_keys": [
       "<redacted>"
     ],
+    "auth_mode": "disabled",
     "compression_min_bytes": 4096,
     "concurrency_cheap": 128,
     "concurrency_heavy": 16,
@@ -19,6 +20,7 @@
     },
     "emergency_global_breaker": false,
     "enable_api_key_rate_limit": false,
+    "enable_admin_endpoints": false,
     "enable_audit_log": false,
     "enable_cheap_only_survival": false,
     "enable_debug_datasets": false,

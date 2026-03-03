@@ -17,6 +17,135 @@ pub(crate) fn route_sli_class(route: &str) -> &'static str {
     "standard"
 }
 
+fn route_auth_exempt(route: &str) -> bool {
+    matches!(route, "/healthz" | "/readyz" | "/v1/version")
+}
+
+fn route_is_admin_endpoint(route: &str) -> bool {
+    matches!(
+        route,
+        "/debug/datasets"
+            | "/debug/dataset-health"
+            | "/debug/registry-health"
+            | "/v1/_debug/echo"
+    )
+}
+
+fn route_action_id(route: &str) -> &'static str {
+    if route_auth_exempt(route) {
+        "catalog.read"
+    } else if route_is_admin_endpoint(route) {
+        "ops.admin"
+    } else {
+        "dataset.read"
+    }
+}
+
+fn route_resource_kind(route: &str) -> &'static str {
+    if route_auth_exempt(route) || route_is_admin_endpoint(route) {
+        "namespace"
+    } else {
+        "dataset-id"
+    }
+}
+
+fn embedded_policy_allows(
+    principal: &str,
+    action: &str,
+    resource_kind: &str,
+    route: &str,
+) -> bool {
+    static POLICY: std::sync::OnceLock<serde_yaml::Value> = std::sync::OnceLock::new();
+    let policy = POLICY.get_or_init(|| {
+        serde_yaml::from_str(include_str!("../../../../configs/security/policy.yaml"))
+            .unwrap_or_else(|err| panic!("embedded auth policy: {err}"))
+    });
+    let default_allow = policy
+        .get("default_decision")
+        .and_then(serde_yaml::Value::as_str)
+        .is_some_and(|value| value == "allow");
+    let rules = policy
+        .get("rules")
+        .and_then(serde_yaml::Value::as_sequence)
+        .cloned()
+        .unwrap_or_default();
+    for rule in rules {
+        let principals = rule
+            .get("principals")
+            .and_then(serde_yaml::Value::as_sequence)
+            .cloned()
+            .unwrap_or_default();
+        if !principals
+            .iter()
+            .filter_map(serde_yaml::Value::as_str)
+            .any(|value| value == principal)
+        {
+            continue;
+        }
+        let actions = rule
+            .get("actions")
+            .and_then(serde_yaml::Value::as_sequence)
+            .cloned()
+            .unwrap_or_default();
+        if !actions
+            .iter()
+            .filter_map(serde_yaml::Value::as_str)
+            .any(|value| value == action)
+        {
+            continue;
+        }
+        let kinds = rule
+            .get("resources")
+            .and_then(|value| value.get("kinds"))
+            .and_then(serde_yaml::Value::as_sequence)
+            .cloned()
+            .unwrap_or_default();
+        if !kinds
+            .iter()
+            .filter_map(serde_yaml::Value::as_str)
+            .any(|value| value == resource_kind)
+        {
+            continue;
+        }
+        let routes = rule
+            .get("routes")
+            .and_then(serde_yaml::Value::as_sequence)
+            .cloned()
+            .unwrap_or_default();
+        if !routes
+            .iter()
+            .filter_map(serde_yaml::Value::as_str)
+            .any(|value| route.starts_with(value))
+        {
+            continue;
+        }
+        return rule
+            .get("effect")
+            .and_then(serde_yaml::Value::as_str)
+            .is_some_and(|effect| effect == "allow");
+    }
+    default_allow
+}
+
+fn emit_auth_policy_decision(
+    auth_mode: crate::config::AuthMode,
+    principal: &str,
+    route: &str,
+    allowed: bool,
+) {
+    info!(
+        event_id = "auth_policy_decision",
+        event = "auth_policy_decision",
+        auth_mode = auth_mode.as_str(),
+        principal = principal,
+        action = route_action_id(route),
+        resource_kind = route_resource_kind(route),
+        route = route,
+        decision = if allowed { "allow" } else { "deny" },
+        "auth policy decision"
+    );
+}
+
 fn parse_dataset_from_uri(uri: &Uri) -> Option<DatasetId> {
     let path = uri.path();
     let mut release: Option<String> = None;
@@ -200,6 +329,17 @@ async fn security_middleware(
 ) -> Response {
     let uri_text = req.uri().to_string();
     let route = req.uri().path().to_string();
+    let auth_exempt = route_auth_exempt(&route);
+    if route_is_admin_endpoint(&route) && !state.api.enable_admin_endpoints {
+        emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
+        let err = Json(ApiError::new(
+            ApiErrorCode::DatasetNotFound,
+            "admin endpoints are disabled",
+            serde_json::json!({}),
+            "req-unknown",
+        ));
+        return (StatusCode::NOT_FOUND, err).into_response();
+    }
     if uri_text.len() > state.api.max_uri_bytes {
         record_policy_violation(&state, "uri_bytes").await;
         let err = Json(ApiError::new(
@@ -239,7 +379,8 @@ async fn security_middleware(
         .await;
 
     let api_key = normalized_header_value(req.headers(), "x-api-key", 256);
-    if state.api.require_api_key && api_key.is_none() {
+    if !auth_exempt && state.api.require_api_key && api_key.is_none() {
+        emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
         record_policy_violation(&state, "api_key_required").await;
         let err = Json(ApiError::new(
             ApiErrorCode::QueryRejectedByPolicy,
@@ -253,6 +394,7 @@ async fn security_middleware(
         if !state.api.allowed_api_keys.is_empty()
             && !state.api.allowed_api_keys.iter().any(|k| k == key)
         {
+            emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
             record_policy_violation(&state, "api_key_invalid").await;
             let err = Json(ApiError::new(
                 ApiErrorCode::QueryRejectedByPolicy,
@@ -267,7 +409,8 @@ async fn security_middleware(
     if let Some(secret) = &state.api.hmac_secret {
         let ts = normalized_header_value(req.headers(), "x-bijux-timestamp", 64);
         let sig = normalized_header_value(req.headers(), "x-bijux-signature", 128);
-        if state.api.hmac_required && (ts.is_none() || sig.is_none()) {
+        if !auth_exempt && state.api.hmac_required && (ts.is_none() || sig.is_none()) {
+            emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
             record_policy_violation(&state, "hmac_missing_headers").await;
             let err = Json(ApiError::new(
                 ApiErrorCode::QueryRejectedByPolicy,
@@ -280,6 +423,7 @@ async fn security_middleware(
         if let (Some(ts_value), Some(sig_value)) = (ts, sig) {
             let now = chrono_like_unix_millis() / 1000;
             let Some(parsed_ts) = ts_value.parse::<u128>().ok() else {
+                emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
                 record_policy_violation(&state, "hmac_invalid_timestamp").await;
                 let err = Json(ApiError::new(
                     ApiErrorCode::QueryRejectedByPolicy,
@@ -291,6 +435,7 @@ async fn security_middleware(
             };
             let skew = now.abs_diff(parsed_ts);
             if skew > state.api.hmac_max_skew_secs as u128 {
+                emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
                 record_policy_violation(&state, "hmac_skew").await;
                 let err = Json(ApiError::new(
                     ApiErrorCode::QueryRejectedByPolicy,
@@ -305,6 +450,7 @@ async fn security_middleware(
             if build_hmac_signature(secret, method, uri, &ts_value).as_deref()
                 != Some(sig_value.as_str())
             {
+                emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
                 record_policy_violation(&state, "hmac_signature").await;
                 let err = Json(ApiError::new(
                     ApiErrorCode::QueryRejectedByPolicy,
@@ -316,6 +462,21 @@ async fn security_middleware(
             }
         }
     }
+
+    let principal = if route_is_admin_endpoint(&route) {
+        "operator"
+    } else if auth_exempt || state.api.auth_mode == crate::config::AuthMode::Disabled {
+        "user"
+    } else {
+        "service-account"
+    };
+    let policy_allowed = embedded_policy_allows(
+        principal,
+        route_action_id(&route),
+        route_resource_kind(&route),
+        &route,
+    );
+    emit_auth_policy_decision(state.api.auth_mode, principal, &route, policy_allowed);
 
     let started = Instant::now();
     let method = req.method().clone();
@@ -338,6 +499,25 @@ async fn security_middleware(
         );
     }
     resp
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::config::AuthMode;
+
+    #[test]
+    fn health_endpoints_stay_auth_exempt_in_all_modes() {
+        for mode in [AuthMode::Disabled, AuthMode::ApiKey, AuthMode::Hmac] {
+            assert!(route_auth_exempt("/healthz"), "{mode:?} must allow /healthz");
+            assert!(route_auth_exempt("/readyz"), "{mode:?} must allow /readyz");
+            assert!(route_auth_exempt("/v1/version"), "{mode:?} must allow /v1/version");
+            assert!(
+                !route_auth_exempt("/v1/datasets"),
+                "{mode:?} must not mark data routes as auth exempt"
+            );
+        }
+    }
 }
 
 fn classify_client_type(user_agent: Option<&str>) -> &'static str {
@@ -373,4 +553,3 @@ fn classify_user_agent_family(user_agent: Option<&str>) -> &'static str {
         "other"
     }
 }
-

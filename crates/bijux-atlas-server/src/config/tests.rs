@@ -310,6 +310,19 @@ fn runtime_config_rejects_conflicting_explicit_auth_mode() {
 }
 
 #[test]
+fn runtime_config_admin_endpoints_are_disabled_by_default() {
+    with_runtime_env(&[], || {
+        let startup = RuntimeStartupConfig {
+            bind_addr: DEFAULT_BIND_ADDR.to_string(),
+            store_root: PathBuf::from(DEFAULT_STORE_ROOT),
+            cache_root: PathBuf::from(DEFAULT_CACHE_ROOT),
+        };
+        let runtime = RuntimeConfig::from_env(startup).expect("default runtime");
+        assert!(!runtime.api.enable_admin_endpoints);
+    });
+}
+
+#[test]
 fn effective_runtime_config_redacts_secrets() {
     with_runtime_env(
         &[
