@@ -1,6 +1,6 @@
 {
-  "git_sha": "4bbbc1fb37e52b7b5f126c7665e8a70315bb1b0f",
-  "governance_version": "main@4bbbc1fb37e52b7b5f126c7665e8a70315bb1b0f",
-  "release_id": "observability_evidence_refresh-4bbbc1fb37e5",
+  "git_sha": "93ad533e345fde461233e13ac2b5a92c65dce6ff",
+  "governance_version": "main@93ad533e345fde461233e13ac2b5a92c65dce6ff",
+  "release_id": "drills_contract_refresh-93ad533e345f",
   "schema_version": 1
 }
