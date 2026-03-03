@@ -171,6 +171,99 @@ fn write_simulation_report(
     Ok(path)
 }
 
+fn update_simulation_summary(
+    repo_root: &std::path::Path,
+    run_id: &RunId,
+    profile: &str,
+    namespace: &str,
+    install_report_path: Option<&std::path::Path>,
+    install_status: Option<&str>,
+    smoke_report_path: Option<&std::path::Path>,
+    smoke_status: Option<&str>,
+    cleanup_report_path: Option<&std::path::Path>,
+    cleanup_status: Option<&str>,
+) -> Result<std::path::PathBuf, String> {
+    let summary_path = simulation_report_path(repo_root, run_id, "ops-simulation-summary.json")?;
+    let mut payload = if summary_path.exists() {
+        serde_json::from_str::<serde_json::Value>(
+            &std::fs::read_to_string(&summary_path)
+                .map_err(|err| format!("failed to read {}: {err}", summary_path.display()))?,
+        )
+        .map_err(|err| format!("failed to parse {}: {err}", summary_path.display()))?
+    } else {
+        serde_json::json!({
+            "schema_version": 1,
+            "cluster": "kind",
+            "profiles": []
+        })
+    };
+    if !payload["profiles"].is_array() {
+        payload["profiles"] = serde_json::json!([]);
+    }
+    let rows = payload["profiles"]
+        .as_array_mut()
+        .ok_or_else(|| "ops-simulation-summary.json profiles must be an array".to_string())?;
+    if let Some(existing) = rows
+        .iter_mut()
+        .find(|row| row.get("profile").and_then(|v| v.as_str()) == Some(profile))
+    {
+        existing["namespace"] = serde_json::json!(namespace);
+        if let Some(path) = install_report_path {
+            existing["install_report_path"] = serde_json::json!(path.display().to_string());
+        }
+        if let Some(status) = install_status {
+            existing["install_status"] = serde_json::json!(status);
+        }
+        if let Some(path) = smoke_report_path {
+            existing["smoke_report_path"] = serde_json::json!(path.display().to_string());
+        }
+        if let Some(status) = smoke_status {
+            existing["smoke_status"] = serde_json::json!(status);
+        }
+        if let Some(path) = cleanup_report_path {
+            existing["cleanup_report_path"] = serde_json::json!(path.display().to_string());
+        }
+        if let Some(status) = cleanup_status {
+            existing["cleanup_status"] = serde_json::json!(status);
+        }
+    } else {
+        let mut row = serde_json::json!({
+            "profile": profile,
+            "namespace": namespace
+        });
+        if let Some(path) = install_report_path {
+            row["install_report_path"] = serde_json::json!(path.display().to_string());
+        }
+        if let Some(status) = install_status {
+            row["install_status"] = serde_json::json!(status);
+        }
+        if let Some(path) = smoke_report_path {
+            row["smoke_report_path"] = serde_json::json!(path.display().to_string());
+        }
+        if let Some(status) = smoke_status {
+            row["smoke_status"] = serde_json::json!(status);
+        }
+        if let Some(path) = cleanup_report_path {
+            row["cleanup_report_path"] = serde_json::json!(path.display().to_string());
+        }
+        if let Some(status) = cleanup_status {
+            row["cleanup_status"] = serde_json::json!(status);
+        }
+        rows.push(row);
+    }
+    rows.sort_by(|a, b| {
+        a.get("profile")
+            .and_then(serde_json::Value::as_str)
+            .cmp(&b.get("profile").and_then(serde_json::Value::as_str))
+    });
+    std::fs::write(
+        &summary_path,
+        serde_json::to_string_pretty(&payload).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", summary_path.display()))?;
+    Ok(summary_path)
+}
+
 fn ensure_simulation_context(process: &OpsProcess, force: bool) -> Result<(), String> {
     let args = vec!["config".to_string(), "current-context".to_string()];
     let (stdout, _) = process
@@ -834,6 +927,18 @@ pub(crate) fn run_ops_helm_install(
         }
     });
     let report_path = write_simulation_report(&repo_root, &run_id, "ops-install.json", &payload)?;
+    let summary_path = update_simulation_summary(
+        &repo_root,
+        &run_id,
+        &profile,
+        &namespace,
+        Some(&report_path),
+        Some(status),
+        Some(&smoke_report_path),
+        Some(smoke_payload["status"].as_str().unwrap_or("failed")),
+        None,
+        None,
+    )?;
     let envelope = serde_json::json!({
         "schema_version": 1,
         "text": if status == "ok" { "helm install completed" } else { "helm install failed" },
@@ -844,6 +949,7 @@ pub(crate) fn run_ops_helm_install(
             "namespace": payload["namespace"].clone(),
             "status": status,
             "report_path": report_path.display().to_string(),
+            "summary_report_path": summary_path.display().to_string(),
             "details": payload["details"].clone()
         }],
         "summary": {"total": 1, "errors": errors.len(), "warnings": 0}
@@ -933,6 +1039,18 @@ pub(crate) fn run_ops_helm_uninstall(
     });
     let report_path =
         write_simulation_report(&repo_root, &run_id, "ops-uninstall.json", &payload)?;
+    let summary_path = update_simulation_summary(
+        &repo_root,
+        &run_id,
+        &profile,
+        &namespace,
+        None,
+        None,
+        None,
+        None,
+        Some(&cleanup_report_path),
+        Some(status),
+    )?;
     let envelope = serde_json::json!({
         "schema_version": 1,
         "text": if status == "ok" { "helm uninstall completed" } else { "helm uninstall left resources" },
@@ -943,6 +1061,7 @@ pub(crate) fn run_ops_helm_uninstall(
             "namespace": payload["namespace"].clone(),
             "status": status,
             "report_path": report_path.display().to_string(),
+            "summary_report_path": summary_path.display().to_string(),
             "details": payload["details"].clone()
         }],
         "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}

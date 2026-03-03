@@ -37,9 +37,10 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 6. [Install verification checklist](install-verification-checklist.md)
 7. [Observability setup](observability-setup.md)
 8. [Validation entrypoints](validation-entrypoints.md)
-9. [Incident response](incident-response.md)
-10. [Release](release/index.md)
-11. [Security posture](security-posture.md)
+9. [Kind simulation](kind-simulation.md)
+10. [Incident response](incident-response.md)
+11. [Release](release/index.md)
+12. [Security posture](security-posture.md)
 
 ## What This Page Is Not
 

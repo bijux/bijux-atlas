@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/ops/k8s/ops-simulation-summary.schema.json",
+  "title": "Ops Simulation Summary Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "cluster",
+    "profiles"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "cluster": {
+      "type": "string",
+      "const": "kind"
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "profile",
+          "namespace"
+        ],
+        "properties": {
+          "profile": {
+            "type": "string",
+            "minLength": 1
+          },
+          "namespace": {
+            "type": "string",
+            "minLength": 1
+          },
+          "install_report_path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "smoke_report_path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cleanup_report_path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "install_status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "failed"
+            ]
+          },
+          "smoke_status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "failed"
+            ]
+          },
+          "cleanup_status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "failed"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
