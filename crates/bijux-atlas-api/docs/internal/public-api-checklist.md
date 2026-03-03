@@ -1,5 +1,7 @@
 # Public Surface Checklist
 
+- Owner: `bijux-atlas-api`
+
 Before merge, verify:
 
 - Public functions are listed in public-api.md`.

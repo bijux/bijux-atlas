@@ -1,5 +1,7 @@
 # OpenAPI
 
+- Owner: `bijux-atlas-api`
+
 - License: Apache-2.0
 
 - Source of truth:

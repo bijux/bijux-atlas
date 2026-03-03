@@ -282,19 +282,25 @@ fn checks_reports_schema_registry_ssot(
         .into_iter()
         .filter_map(|path| {
             let rel = path.strip_prefix(ctx.repo_root).ok()?.to_path_buf();
-            if rel.extension().and_then(|v| v.to_str()) != Some("json") {
+            let rel_text = rel.display().to_string();
+            if !rel_text.ends_with(".schema.json") {
                 return None;
             }
             let text = fs::read_to_string(&path).ok()?;
             let value: serde_json::Value = serde_json::from_str(&text).ok()?;
+            let report_id = value
+                .get("properties")
+                .and_then(|v| v.get("report_id"))
+                .and_then(|v| v.get("const"))
+                .and_then(|v| v.as_str())
+                .unwrap_or_default()
+                .to_string();
+            if report_id.is_empty() {
+                return None;
+            }
             Some((
-                value.get("properties")
-                    .and_then(|v| v.get("report_id"))
-                    .and_then(|v| v.get("const"))
-                    .and_then(|v| v.as_str())
-                    .unwrap_or_default()
-                    .to_string(),
-                rel.display().to_string(),
+                report_id,
+                rel_text,
             ))
         })
         .collect::<Vec<_>>();

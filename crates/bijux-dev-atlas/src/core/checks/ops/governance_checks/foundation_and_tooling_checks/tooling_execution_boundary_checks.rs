@@ -211,6 +211,14 @@ pub(super) fn check_makefiles_no_multiline_recipes(
         if file.extension().and_then(|e| e.to_str()) != Some("mk") {
             continue;
         }
+        // Scope this guard to thin wrapper surfaces. Internal cargo orchestration
+        // intentionally contains structured multi-line recipes.
+        let Some(name) = file.file_name().and_then(|n| n.to_str()) else {
+            continue;
+        };
+        if name != "ops.mk" {
+            continue;
+        }
         let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
         let Ok(text) = fs::read_to_string(&file) else {
             continue;

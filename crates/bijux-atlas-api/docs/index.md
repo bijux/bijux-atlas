@@ -1,5 +1,7 @@
 # Docs Index
 
+- Owner: `bijux-atlas-api`
+
 - [Architecture](architecture.md)
 - [API Contract](api-contract.md)
 - [Effects](effects.md)

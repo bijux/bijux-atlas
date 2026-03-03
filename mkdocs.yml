@@ -138,6 +138,8 @@ nav:
   - Architecture: architecture/index.md
   - API:
       - API Overview: api/index.md
+      - Errors: api/errors.md
+      - OpenAPI Generation: api/openapi-generation.md
       - Client Behavior: api/client-behavior.md
       - Compatibility Test Plan: api/compatibility-test-plan.md
       - Client Retries and Backoff: api/client-retries-and-backoff.md
@@ -145,10 +147,18 @@ nav:
       - Default Field Set: api/default-field-set.md
       - Deprecation: api/deprecation.md
       - Caching: api/caching.md
+      - Pagination: api/pagination.md
+      - Performance Expectations: api/performance-expectations.md
+      - Quick Reference: api/quick-reference.md
+      - SDK Strategy: api/sdk-strategy.md
+      - Troubleshooting: api/troubleshooting.md
+      - v1 Surface: api/v1-surface.md
+      - Versioning: api/versioning.md
   - Operations: operations/index.md
   - Control-plane: control-plane/index.md
   - Development:
       - Development Overview: development/index.md
+      - Tooling: development/tooling/index.md
       - Governance: governance/index.md
       - Docs governance: _internal/governance/index.md
       - Docs Dashboard: _internal/governance/docs-dashboard.md

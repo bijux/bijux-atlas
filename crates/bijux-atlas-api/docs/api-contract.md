@@ -1,5 +1,7 @@
 # API Contract (v1)
 
+- Owner: `bijux-atlas-api`
+
 This crate defines Atlas wire contracts only.
 
 ## Stability

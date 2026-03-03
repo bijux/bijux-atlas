@@ -1,5 +1,7 @@
 # API Stability and Versioning
 
+- Owner: `bijux-atlas-api`
+
 ## Contract Scope
 
 The API contract includes:
