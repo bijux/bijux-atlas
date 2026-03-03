@@ -9,6 +9,7 @@ use bijux_atlas_server::{
 };
 use clap::Parser;
 use opentelemetry::trace::TracerProvider as _;
+use std::sync::atomic::AtomicU64;
 use std::path::PathBuf;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
@@ -48,40 +49,119 @@ fn pod_jitter_ms(seed_source: &str, max_ms: u64) -> u64 {
     seed % max_ms
 }
 
+#[derive(Debug, Clone)]
+struct WarmupLockLease {
+    key: String,
+    value: String,
+}
+
+#[derive(Debug, Default)]
+struct WarmupCoordinationPlan {
+    datasets: Vec<bijux_atlas_model::DatasetId>,
+    leases: Vec<WarmupLockLease>,
+    contention_total: u64,
+    expired_total: u64,
+    wait_samples_ns: Vec<u64>,
+}
+
+#[derive(Debug)]
+struct WarmupLeaseAttempt {
+    lease: Option<WarmupLockLease>,
+    contention_total: u64,
+    expired_total: u64,
+}
+
+fn warmup_lock_retry_delay_ms(pod_id: &str, dataset_key: &str, attempt: usize, base_ms: u64) -> u64 {
+    let multiplier = (attempt as u64).saturating_add(1);
+    let cap_ms = base_ms.saturating_mul(multiplier);
+    if cap_ms == 0 {
+        return 0;
+    }
+    let seed = format!("{pod_id}:{dataset_key}:{attempt}");
+    1 + pod_jitter_ms(&seed, cap_ms)
+}
+
 async fn coordinated_startup_warmup_datasets(
     datasets: Vec<bijux_atlas_model::DatasetId>,
     redis_url: Option<&str>,
     enabled: bool,
     lock_ttl_secs: u64,
+    retry_budget: usize,
+    retry_base_ms: u64,
     pod_id: &str,
-) -> Vec<bijux_atlas_model::DatasetId> {
+) -> WarmupCoordinationPlan {
     if !enabled {
-        return datasets;
+        return WarmupCoordinationPlan {
+            datasets,
+            ..WarmupCoordinationPlan::default()
+        };
     }
     let Some(url) = redis_url else {
-        return datasets;
+        return WarmupCoordinationPlan {
+            datasets,
+            ..WarmupCoordinationPlan::default()
+        };
     };
     let Ok(client) = redis::Client::open(url) else {
-        return datasets;
+        return WarmupCoordinationPlan {
+            datasets,
+            ..WarmupCoordinationPlan::default()
+        };
     };
     let Ok(mut conn) = client.get_multiplexed_async_connection().await else {
-        return datasets;
+        return WarmupCoordinationPlan {
+            datasets,
+            ..WarmupCoordinationPlan::default()
+        };
     };
-    let mut claimed = Vec::new();
+    let mut plan = WarmupCoordinationPlan::default();
     for ds in datasets {
         let key = format!("atlas:warmup:{}", ds.canonical_string());
-        let lock_val = format!("{pod_id}:{}", chrono_like_millis());
-        match try_claim_startup_warmup_lock(&mut conn, &key, &lock_val, lock_ttl_secs).await {
-            Ok(true) => {
-                claimed.push(ds);
+        let lock_val = unique_lock_value(pod_id);
+        let started = std::time::Instant::now();
+        match acquire_startup_warmup_lease(
+            &mut conn,
+            &key,
+            &lock_val,
+            lock_ttl_secs,
+            retry_budget,
+            retry_base_ms,
+            pod_id,
+            &ds.canonical_string(),
+        )
+        .await
+        {
+            Ok(attempt) => {
+                plan.contention_total += attempt.contention_total;
+                plan.expired_total += attempt.expired_total;
+                let Some(lease) = attempt.lease else {
+                    continue;
+                };
+                plan.wait_samples_ns
+                    .push(started.elapsed().as_nanos().min(u64::MAX as u128) as u64);
+                info!(
+                    event_id = "warmup_lock_acquired",
+                    dataset = %ds.canonical_string(),
+                    lock_key = %lease.key,
+                    wait_ms = started.elapsed().as_millis() as u64,
+                    "startup warmup lock acquired"
+                );
+                plan.datasets.push(ds);
+                plan.leases.push(lease);
             }
-            Ok(false) => {}
-            Err(_) => {
-                claimed.push(ds);
+            Err(err) => {
+                warn!(
+                    event_id = "warmup_lock_expired",
+                    dataset = %ds.canonical_string(),
+                    error = %err,
+                    "warmup lock fallback to local startup"
+                );
+                plan.expired_total += 1;
+                plan.datasets.push(ds);
             }
         }
     }
-    claimed
+    plan
 }
 
 async fn try_claim_startup_warmup_lock(
@@ -99,6 +179,146 @@ async fn try_claim_startup_warmup_lock(
         .query_async(conn)
         .await?;
     Ok(response.as_deref() == Some("OK"))
+}
+
+async fn try_release_startup_warmup_lock(
+    conn: &mut redis::aio::MultiplexedConnection,
+    lease: &WarmupLockLease,
+) -> Result<bool, redis::RedisError> {
+    let released: i32 = redis::Script::new(
+        r#"if redis.call("GET", KEYS[1]) == ARGV[1] then
+               return redis.call("DEL", KEYS[1])
+           end
+           return 0"#,
+    )
+    .key(&lease.key)
+    .arg(&lease.value)
+    .invoke_async(conn)
+    .await?;
+    Ok(released == 1)
+}
+
+async fn startup_warmup_lock_ttl_ms(
+    conn: &mut redis::aio::MultiplexedConnection,
+    key: &str,
+) -> Result<i64, redis::RedisError> {
+    redis::cmd("PTTL").arg(key).query_async(conn).await
+}
+
+fn is_stale_startup_warmup_lock(ttl_ms: i64) -> bool {
+    ttl_ms == -2 || ttl_ms == 0
+}
+
+async fn acquire_startup_warmup_lease(
+    conn: &mut redis::aio::MultiplexedConnection,
+    key: &str,
+    lock_val: &str,
+    lock_ttl_secs: u64,
+    retry_budget: usize,
+    retry_base_ms: u64,
+    pod_id: &str,
+    dataset: &str,
+) -> Result<WarmupLeaseAttempt, redis::RedisError> {
+    let mut contention_total = 0_u64;
+    for attempt in 0..=retry_budget {
+        if try_claim_startup_warmup_lock(conn, key, lock_val, lock_ttl_secs).await? {
+            return Ok(WarmupLeaseAttempt {
+                lease: Some(WarmupLockLease {
+                    key: key.to_string(),
+                    value: lock_val.to_string(),
+                }),
+                contention_total,
+                expired_total: 0,
+            });
+        }
+        contention_total += 1;
+        warn!(
+            event_id = "warmup_lock_contention",
+            dataset = %dataset,
+            lock_key = %key,
+            attempt,
+            "startup warmup lock contention"
+        );
+        if attempt == retry_budget {
+            let ttl_ms = startup_warmup_lock_ttl_ms(conn, key).await?;
+            if is_stale_startup_warmup_lock(ttl_ms)
+                && try_claim_startup_warmup_lock(conn, key, lock_val, lock_ttl_secs).await?
+            {
+                warn!(
+                    event_id = "warmup_lock_expired",
+                    dataset = %dataset,
+                    lock_key = %key,
+                    "startup warmup lock expired before retry window closed"
+                );
+                return Ok(WarmupLeaseAttempt {
+                    lease: Some(WarmupLockLease {
+                        key: key.to_string(),
+                        value: lock_val.to_string(),
+                    }),
+                    contention_total,
+                    expired_total: 1,
+                });
+            }
+            return Ok(WarmupLeaseAttempt {
+                lease: None,
+                contention_total,
+                expired_total: 0,
+            });
+        }
+        let delay_ms = warmup_lock_retry_delay_ms(pod_id, key, attempt, retry_base_ms);
+        if delay_ms > 0 {
+            tokio::time::sleep(Duration::from_millis(delay_ms)).await;
+        }
+    }
+    Ok(WarmupLeaseAttempt {
+        lease: None,
+        contention_total,
+        expired_total: 0,
+    })
+}
+
+async fn release_startup_warmup_leases(
+    redis_url: Option<&str>,
+    leases: &[WarmupLockLease],
+) {
+    if leases.is_empty() {
+        return;
+    }
+    let Some(url) = redis_url else {
+        return;
+    };
+    let Ok(client) = redis::Client::open(url) else {
+        return;
+    };
+    let Ok(mut conn) = client.get_multiplexed_async_connection().await else {
+        return;
+    };
+    for lease in leases {
+        match try_release_startup_warmup_lock(&mut conn, lease).await {
+            Ok(true) => {}
+            Ok(false) => {
+                warn!(
+                    event_id = "warmup_lock_expired",
+                    lock_key = %lease.key,
+                    "startup warmup lock already expired or transferred before release"
+                );
+            }
+            Err(err) => {
+                warn!(
+                    event_id = "warmup_lock_expired",
+                    lock_key = %lease.key,
+                    error = %err,
+                    "startup warmup lock release failed"
+                );
+            }
+        }
+    }
+}
+
+fn unique_lock_value(pod_id: &str) -> String {
+    static NONCE: AtomicU64 = AtomicU64::new(0);
+    let nonce = NONCE.fetch_add(1, Ordering::Relaxed);
+    format!("{pod_id}:{}:{nonce}:{}", std::process::id(), chrono_like_millis())
 }
 
 fn chrono_like_millis() -> u128 {
@@ -203,16 +423,18 @@ async fn main() -> Result<(), String> {
     }
 
     let startup_warmup_jitter_max_ms = runtime.cache.startup_warmup_jitter_max_ms;
-    let startup_warmup = coordinated_startup_warmup_datasets(
+    let startup_warmup_plan = coordinated_startup_warmup_datasets(
         runtime.cache.startup_warmup.clone(),
         runtime.api.redis_url.as_deref(),
         runtime.warm_coordination_enabled,
         runtime.warm_coordination_lock_ttl_secs,
+        runtime.warm_coordination_retry_budget,
+        runtime.warm_coordination_retry_base_ms,
         &runtime.pod_id,
     )
     .await;
     let cache_cfg = bijux_atlas_server::DatasetCacheConfig {
-        startup_warmup,
+        startup_warmup: startup_warmup_plan.datasets.clone(),
         ..runtime.cache.clone()
     };
     let retry = bijux_atlas_server::RetryPolicy {
@@ -279,6 +501,17 @@ async fn main() -> Result<(), String> {
             Arc::new(LocalFsBackend::new(runtime.store.local_root.clone()))
         };
     let cache = DatasetCacheManager::new(cache_cfg.clone(), backend);
+    cache.metrics
+        .warmup_lock_contention_total
+        .fetch_add(startup_warmup_plan.contention_total, Ordering::Relaxed);
+    cache.metrics
+        .warmup_lock_expired_total
+        .fetch_add(startup_warmup_plan.expired_total, Ordering::Relaxed);
+    cache.metrics
+        .warmup_lock_wait_ns
+        .lock()
+        .await
+        .extend(startup_warmup_plan.wait_samples_ns.iter().copied());
     cache.spawn_background_tasks();
     if startup_warmup_jitter_max_ms > 0 {
         let delay = pod_jitter_ms(&runtime.pod_id, startup_warmup_jitter_max_ms);
@@ -289,6 +522,11 @@ async fn main() -> Result<(), String> {
     if let Err(e) = cache.startup_warmup().await {
         error!("startup warmup failed: {e}");
     }
+    release_startup_warmup_leases(
+        runtime.api.redis_url.as_deref(),
+        &startup_warmup_plan.leases,
+    )
+    .await;
 
     let query_limits = bijux_atlas_query::QueryLimits::default();
     let policy_mode = runtime.policy_mode.clone();
@@ -389,7 +627,11 @@ async fn main() -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
-    use super::try_claim_startup_warmup_lock;
+    use super::{
+        is_stale_startup_warmup_lock, try_claim_startup_warmup_lock,
+        try_release_startup_warmup_lock, unique_lock_value, warmup_lock_retry_delay_ms,
+        WarmupLockLease,
+    };
 
     #[test]
     fn startup_lock_uses_atomic_set_command_shape() {
@@ -401,5 +643,82 @@ mod tests {
         assert!(source.contains("redis::cmd(\"SET\")"));
         assert!(source.contains(".arg(\"NX\")"));
         assert!(source.contains(".arg(\"EX\")"));
+    }
+
+    #[test]
+    fn startup_lock_uses_unique_nonce_values() {
+        let first = unique_lock_value("atlas-a");
+        let second = unique_lock_value("atlas-a");
+        assert_ne!(first, second);
+        assert!(first.starts_with("atlas-a:"));
+    }
+
+    #[test]
+    fn startup_lock_retry_delay_is_bounded_and_nonzero() {
+        let delay = warmup_lock_retry_delay_ms("pod-a", "atlas:warmup:one", 2, 25);
+        assert!(delay >= 1);
+        assert!(delay <= 75);
+    }
+
+    #[test]
+    fn missing_startup_lock_is_treated_as_expired() {
+        assert!(is_stale_startup_warmup_lock(-2));
+        assert!(is_stale_startup_warmup_lock(0));
+        assert!(!is_stale_startup_warmup_lock(100));
+    }
+
+    #[tokio::test]
+    #[ignore = "requires REDIS_URL and local Redis; non-CI integration test"]
+    async fn startup_lock_recovers_after_owner_crash_and_release_is_owner_safe() {
+        let redis_url = match std::env::var("REDIS_URL") {
+            Ok(value) => value,
+            Err(_) => return,
+        };
+        let client = match redis::Client::open(redis_url) {
+            Ok(client) => client,
+            Err(_) => return,
+        };
+        let Ok(mut conn) = client.get_multiplexed_async_connection().await else {
+            return;
+        };
+        let key = format!("atlas:test:warmup-lock:{}", unique_lock_value("suite"));
+        let owner_a = unique_lock_value("owner-a");
+        let owner_b = unique_lock_value("owner-b");
+
+        assert!(
+            try_claim_startup_warmup_lock(&mut conn, &key, &owner_a, 1)
+                .await
+                .expect("claim first owner")
+        );
+        assert!(
+            !try_claim_startup_warmup_lock(&mut conn, &key, &owner_b, 1)
+                .await
+                .expect("contention before ttl")
+        );
+
+        tokio::time::sleep(std::time::Duration::from_millis(1200)).await;
+
+        assert!(
+            try_claim_startup_warmup_lock(&mut conn, &key, &owner_b, 1)
+                .await
+                .expect("claim after ttl expiry")
+        );
+
+        let stale_release = WarmupLockLease {
+            key: key.clone(),
+            value: owner_a,
+        };
+        assert!(
+            !try_release_startup_warmup_lock(&mut conn, &stale_release)
+                .await
+                .expect("stale owner release should not delete")
+        );
+
+        let current_release = WarmupLockLease { key, value: owner_b };
+        assert!(
+            try_release_startup_warmup_lock(&mut conn, &current_release)
+                .await
+                .expect("current owner release should delete")
+        );
     }
 }

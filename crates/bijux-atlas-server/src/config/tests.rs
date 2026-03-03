@@ -213,6 +213,28 @@ fn runtime_config_accepts_valid_cached_only_mode() {
 }
 
 #[test]
+fn runtime_config_enforces_warm_coordination_retry_contract() {
+    with_runtime_env(
+        &[
+            ("ATLAS_WARM_COORDINATION_ENABLED", "true"),
+            ("ATLAS_WARM_COORDINATION_RETRY_BUDGET", "0"),
+        ],
+        || {
+            let startup = RuntimeStartupConfig {
+                bind_addr: DEFAULT_BIND_ADDR.to_string(),
+                store_root: PathBuf::from(DEFAULT_STORE_ROOT),
+                cache_root: PathBuf::from(DEFAULT_CACHE_ROOT),
+            };
+            let err = RuntimeConfig::from_env(startup).expect_err("invalid retry budget");
+            assert!(
+                err.to_string()
+                    .contains("ATLAS_WARM_COORDINATION_RETRY_BUDGET>0")
+            );
+        },
+    );
+}
+
+#[test]
 fn runtime_config_accepts_catalog_required_mode() {
     with_runtime_env(&[("ATLAS_READINESS_REQUIRES_CATALOG", "true")], || {
         let startup = RuntimeStartupConfig {

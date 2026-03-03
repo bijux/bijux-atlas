@@ -127,6 +127,8 @@ pub fn effective_runtime_config_payload(
             "otel_enabled": runtime.otel_enabled,
             "warm_coordination_enabled": runtime.warm_coordination_enabled,
             "warm_coordination_lock_ttl_secs": runtime.warm_coordination_lock_ttl_secs,
+            "warm_coordination_retry_budget": runtime.warm_coordination_retry_budget,
+            "warm_coordination_retry_base_ms": runtime.warm_coordination_retry_base_ms,
             "pod_id": runtime.pod_id,
             "policy_mode": runtime.policy_mode,
             "shutdown_drain_ms": runtime.shutdown_drain_ms,

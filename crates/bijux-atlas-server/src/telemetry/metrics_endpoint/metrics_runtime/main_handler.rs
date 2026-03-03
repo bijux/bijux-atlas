@@ -453,6 +453,41 @@ bijux_fs_space_pressure_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"
             .fs_space_pressure_events_total
             .load(Ordering::Relaxed)
     ));
+    let warmup_lock_wait_p95_ns = {
+        let mut v = state.cache.metrics.warmup_lock_wait_ns.lock().await.clone();
+        if v.is_empty() {
+            0_u64
+        } else {
+            v.sort_unstable();
+            let idx = ((v.len() as f64) * 0.95).ceil() as usize - 1;
+            v[idx.min(v.len() - 1)]
+        }
+    };
+    body.push_str(&format!(
+        "bijux_warmup_lock_contention_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_warmup_lock_expired_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_warmup_lock_wait_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {:.6}\n",
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .warmup_lock_contention_total
+            .load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .warmup_lock_expired_total
+            .load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        warmup_lock_wait_p95_ns as f64 / 1_000_000_000.0
+    ));
     let mut policy_counts = state
         .cache
         .metrics

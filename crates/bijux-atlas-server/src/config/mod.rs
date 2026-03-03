@@ -77,6 +77,8 @@ pub struct RuntimeConfig {
     pub otel_enabled: bool,
     pub warm_coordination_enabled: bool,
     pub warm_coordination_lock_ttl_secs: u64,
+    pub warm_coordination_retry_budget: usize,
+    pub warm_coordination_retry_base_ms: u64,
     pub pod_id: String,
     pub policy_mode: String,
     pub shutdown_drain_ms: u64,
@@ -440,6 +442,20 @@ fn validate_runtime_config_contract(runtime: &RuntimeConfig) -> Result<(), Runti
                 .to_string(),
         });
     }
+    if runtime.warm_coordination_enabled {
+        if runtime.warm_coordination_lock_ttl_secs == 0 {
+            return Err(RuntimeConfigError::InvalidValue {
+                message: "ATLAS_WARM_COORDINATION_ENABLED=true requires ATLAS_WARM_COORDINATION_LOCK_TTL_SECS>0"
+                    .to_string(),
+            });
+        }
+        if runtime.warm_coordination_retry_budget == 0 {
+            return Err(RuntimeConfigError::InvalidValue {
+                message: "ATLAS_WARM_COORDINATION_ENABLED=true requires ATLAS_WARM_COORDINATION_RETRY_BUDGET>0"
+                    .to_string(),
+            });
+        }
+    }
     if runtime.env_name.eq_ignore_ascii_case("prod") {
         if runtime.startup.bind_addr.contains("127.0.0.1")
             || runtime.startup.bind_addr.contains("localhost")
@@ -652,6 +668,8 @@ impl RuntimeConfig {
             otel_enabled: env_bool("ATLAS_OTEL_ENABLED", false)?,
             warm_coordination_enabled: env_bool("ATLAS_WARM_COORDINATION_ENABLED", false)?,
             warm_coordination_lock_ttl_secs: env_u64("ATLAS_WARM_COORDINATION_LOCK_TTL_SECS", 300)?,
+            warm_coordination_retry_budget: env_usize("ATLAS_WARM_COORDINATION_RETRY_BUDGET", 3)?,
+            warm_coordination_retry_base_ms: env_u64("ATLAS_WARM_COORDINATION_RETRY_BASE_MS", 250)?,
             pod_id: std::env::var("HOSTNAME").unwrap_or_else(|_| "atlas-pod".to_string()),
             policy_mode: std::env::var("ATLAS_POLICY_MODE")
                 .unwrap_or_else(|_| "strict".to_string()),
