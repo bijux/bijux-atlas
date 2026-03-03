@@ -4,7 +4,7 @@ use crate::cli::{
     ArtifactsCommand, CheckCommand, CheckRegistryCommand, ChecksCommand, Command, ConfigsCommand,
     ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, FormatArg, IngestCommand,
     MakeCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand, ReleaseCommand,
-    ReportsCommand, SecurityCommand,
+    ReportsCommand, SecurityCommand, TestsCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -26,6 +26,7 @@ pub(super) fn force_json_output(command: &mut Command) {
             | crate::cli::SuitesCommand::History { format, .. }
             | crate::cli::SuitesCommand::Lint { format, .. } => *format = FormatArg::Json,
         },
+        Command::Tests { command } => force_json_tests(command),
         Command::Contract { command } => force_json_contract(command),
         Command::Registry { command } => match command {
             RegistryCommand::Status { format, .. } | RegistryCommand::Doctor { format, .. } => {
@@ -475,9 +476,7 @@ fn force_json_checks(command: &mut ChecksCommand) {
         ChecksCommand::List { format, .. }
         | ChecksCommand::Explain { format, .. }
         | ChecksCommand::Doctor { format, .. }
-        | ChecksCommand::Run { format, .. } => {
-            *format = FormatArg::Json
-        }
+        | ChecksCommand::Run { format, .. } => *format = FormatArg::Json,
     }
 }
 
@@ -490,8 +489,14 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             command: ChecksCommand::Run { fail_fast, .. },
         } => *fail_fast = true,
         Command::Checks { .. } => {}
+        Command::Tests {
+            command: TestsCommand::Run { fail_fast, .. },
+        } => *fail_fast = true,
+        Command::Tests { .. } => {}
         Command::Contract { command } => match command {
-            ContractCommand::List(_) | ContractCommand::Describe(_) | ContractCommand::Report(_) => {}
+            ContractCommand::List(_)
+            | ContractCommand::Describe(_)
+            | ContractCommand::Report(_) => {}
             ContractCommand::Run(args) => {
                 args.fail_fast = true;
                 args.no_fail_fast = false;
@@ -997,6 +1002,11 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | crate::cli::SuitesCommand::Diff { repo_root, .. }
             | crate::cli::SuitesCommand::Lint { repo_root, .. } => *repo_root = Some(root.clone()),
         },
+        Command::Tests { command } => match command {
+            TestsCommand::List { repo_root, .. }
+            | TestsCommand::Run { repo_root, .. }
+            | TestsCommand::Doctor { repo_root, .. } => *repo_root = Some(root.clone()),
+        },
         Command::Contract { command } => match command {
             ContractCommand::List(args) => args.repo_root = Some(root.clone()),
             ContractCommand::Describe(args) => args.repo_root = Some(root.clone()),
@@ -1078,5 +1088,13 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         | Command::Build { .. }
         | Command::Gates { .. }
         | Command::Capabilities { .. } => {}
+    }
+}
+
+fn force_json_tests(command: &mut TestsCommand) {
+    match command {
+        TestsCommand::List { format, .. }
+        | TestsCommand::Run { format, .. }
+        | TestsCommand::Doctor { format, .. } => *format = FormatArg::Json,
     }
 }

@@ -29,10 +29,16 @@ pub fn validate_command_routes(routes: &[CommandRoute]) -> Result<(), String> {
             return Err("route id cannot be empty".to_string());
         }
         if route.name.trim().is_empty() {
-            return Err(format!("route `{}` must declare a non-empty name", route.id));
+            return Err(format!(
+                "route `{}` must declare a non-empty name",
+                route.id
+            ));
         }
         if route.purpose.trim().is_empty() {
-            return Err(format!("route `{}` must declare a non-empty purpose", route.id));
+            return Err(format!(
+                "route `{}` must declare a non-empty purpose",
+                route.id
+            ));
         }
         if !ids.insert(route.id) {
             return Err(format!("duplicate route id `{}`", route.id));
@@ -65,7 +71,12 @@ fn engine_routes() -> [CommandRoute; 7] {
             "List governed reports and validate report artifacts",
         ),
         CommandRoute::new("suites", "suites", "engine", "Run grouped runnable suites"),
-        CommandRoute::new("list", "list", "engine", "List domains, suites, and runnable ids"),
+        CommandRoute::new(
+            "list",
+            "list",
+            "engine",
+            "List domains, suites, and runnable ids",
+        ),
         CommandRoute::new(
             "describe",
             "describe",

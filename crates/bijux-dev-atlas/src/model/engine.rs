@@ -327,8 +327,7 @@ impl RunReport {
             .contracts
             .iter()
             .filter(|contract| {
-                contract.required
-                    && matches!(contract.status, CaseStatus::Fail | CaseStatus::Error)
+                contract.required && matches!(contract.status, CaseStatus::Fail | CaseStatus::Error)
             })
             .map(|contract| contract.id.clone())
             .collect::<Vec<_>>();
@@ -433,8 +432,8 @@ pub fn required_contract_map(
     repo_root: &Path,
 ) -> Result<BTreeMap<String, BTreeMap<String, Vec<ContractLane>>>, String> {
     let path = required_contracts_path(repo_root);
-    let text =
-        std::fs::read_to_string(&path).map_err(|e| format!("read {} failed: {e}", path.display()))?;
+    let text = std::fs::read_to_string(&path)
+        .map_err(|e| format!("read {} failed: {e}", path.display()))?;
     let json = serde_json::from_str::<serde_json::Value>(&text)
         .map_err(|e| format!("parse {} failed: {e}", path.display()))?;
     let contracts = json
@@ -450,7 +449,12 @@ pub fn required_contract_map(
         let contract_id = row
             .get("contract_id")
             .and_then(|value| value.as_str())
-            .ok_or_else(|| format!("{} contract row missing string `contract_id`", path.display()))?;
+            .ok_or_else(|| {
+                format!(
+                    "{} contract row missing string `contract_id`",
+                    path.display()
+                )
+            })?;
         let lanes = row
             .get("lanes")
             .and_then(|value| value.as_array())
@@ -692,7 +696,10 @@ pub fn lint_contracts(catalogs: &[(&str, &[Contract])]) -> Vec<RegistryLint> {
 }
 
 fn derived_contract_mode(contract: &Contract) -> ContractMode {
-    let has_pure = contract.tests.iter().any(|case| case.kind == TestKind::Pure);
+    let has_pure = contract
+        .tests
+        .iter()
+        .any(|case| case.kind == TestKind::Pure);
     let has_effect = contract
         .tests
         .iter()
@@ -728,7 +735,11 @@ pub fn validate_registry(catalogs: &[(&str, &[Contract])]) -> Result<(), Vec<Reg
     let mut lints = lint_registry_rows(&rows);
     lints.extend(lint_contracts(catalogs));
     lints.sort_by(|a, b| a.code.cmp(b.code).then(a.message.cmp(&b.message)));
-    if lints.is_empty() { Ok(()) } else { Err(lints) }
+    if lints.is_empty() {
+        Ok(())
+    } else {
+        Err(lints)
+    }
 }
 
 pub fn coverage_report(report: &RunReport) -> CoverageReport {

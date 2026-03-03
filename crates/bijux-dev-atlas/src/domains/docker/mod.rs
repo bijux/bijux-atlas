@@ -30,7 +30,10 @@ impl Domain for DockerDomain {
     }
 
     fn docs_links(&self) -> &'static [&'static str] {
-        &["docs/control-plane/tooling-dependencies.md", "docs/reference/contracts/security.md"]
+        &[
+            "docs/control-plane/tooling-dependencies.md",
+            "docs/reference/contracts/security.md",
+        ]
     }
 
     fn required_tools(&self) -> &'static [&'static str] {

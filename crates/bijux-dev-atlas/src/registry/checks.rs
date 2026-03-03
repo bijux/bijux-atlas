@@ -32,10 +32,10 @@ impl CheckCatalog {
 
     pub fn load(repo_root: &Path) -> Result<Self, String> {
         let path = repo_root.join("configs/governance/checks.registry.json");
-        let text =
-            fs::read_to_string(&path).map_err(|err| format!("read {} failed: {err}", path.display()))?;
-        let registry: ChecksRegistry =
-            serde_json::from_str(&text).map_err(|err| format!("parse {} failed: {err}", path.display()))?;
+        let text = fs::read_to_string(&path)
+            .map_err(|err| format!("read {} failed: {err}", path.display()))?;
+        let registry: ChecksRegistry = serde_json::from_str(&text)
+            .map_err(|err| format!("parse {} failed: {err}", path.display()))?;
         if registry.schema_version != 1 || registry.registry_id != "checks-registry" {
             return Err(format!(
                 "{} must declare schema_version=1 and registry_id=checks-registry",
@@ -59,7 +59,11 @@ impl CheckCatalog {
                 })
             })
             .collect::<Result<Vec<_>, String>>()?;
-        entries.sort_by(|a, b| a.domain.cmp(b.domain).then_with(|| a.check_id.cmp(&b.check_id)));
+        entries.sort_by(|a, b| {
+            a.domain
+                .cmp(b.domain)
+                .then_with(|| a.check_id.cmp(&b.check_id))
+        });
 
         let catalog = Self::from_entries(entries);
         catalog.validate(repo_root)?;
@@ -81,10 +85,16 @@ impl CheckCatalog {
         let mut ids = BTreeSet::new();
         for entry in &self.entries {
             if entry.check_id.trim().is_empty() {
-                return Err(format!("domain `{}` contains an empty check id", entry.domain));
+                return Err(format!(
+                    "domain `{}` contains an empty check id",
+                    entry.domain
+                ));
             }
             if !ids.insert(entry.check_id.clone()) {
-                return Err(format!("duplicate check id `{}` in check catalog", entry.check_id));
+                return Err(format!(
+                    "duplicate check id `{}` in check catalog",
+                    entry.check_id
+                ));
             }
             if entry.summary.trim().is_empty() {
                 return Err(format!(
@@ -149,8 +159,16 @@ fn infer_domain(group: &str, check_id: &str) -> &'static str {
 fn default_doc_ref(domain: &'static str) -> DocRef {
     match domain {
         "configs" => DocRef::new("docs/reference/configs.md", None, "Configs Reference"),
-        "docs" => DocRef::new("docs/_internal/governance/checks/docs-checks.md", None, "Docs Checks"),
-        "docker" => DocRef::new("docs/reference/contracts/index.md", None, "Contract Reference"),
+        "docs" => DocRef::new(
+            "docs/_internal/governance/checks/docs-checks.md",
+            None,
+            "Docs Checks",
+        ),
+        "docker" => DocRef::new(
+            "docs/reference/contracts/index.md",
+            None,
+            "Contract Reference",
+        ),
         "ops" => DocRef::new("docs/reference/ops-surface.md", None, "Ops Surface"),
         _ => DocRef::new(
             "docs/_internal/governance/checks-and-contracts.md",

@@ -31,7 +31,10 @@ impl Domain for DocsDomain {
     }
 
     fn docs_links(&self) -> &'static [&'static str] {
-        &["docs/control-plane/contracts.md", "docs/reference/reports/index.md"]
+        &[
+            "docs/control-plane/contracts.md",
+            "docs/reference/reports/index.md",
+        ]
     }
 
     fn required_tools(&self) -> &'static [&'static str] {

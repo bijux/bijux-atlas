@@ -94,7 +94,13 @@ pub fn render(
             preflight.missing_tools.join(",")
         }
     ));
-    lines.push(format!("planning: contracts={} cases={total}", reports.iter().map(|report| report.contracts.len()).sum::<usize>()));
+    lines.push(format!(
+        "planning: contracts={} cases={total}",
+        reports
+            .iter()
+            .map(|report| report.contracts.len())
+            .sum::<usize>()
+    ));
     let mut failed = Vec::new();
     let mut skipped = Vec::new();
 

@@ -15,12 +15,14 @@ mod ops;
 mod registry;
 mod suites;
 mod surfaces;
+mod tests;
 
 pub use checks::*;
 pub use ops::*;
 pub use registry::*;
 pub use suites::*;
 pub use surfaces::*;
+pub use tests::*;
 
 pub(crate) fn run() -> i32 {
     let cli = Cli::parse();
@@ -194,6 +196,10 @@ pub enum Command {
     Suites {
         #[command(subcommand)]
         command: SuitesCommand,
+    },
+    Tests {
+        #[command(subcommand)]
+        command: TestsCommand,
     },
     List {
         #[arg(long)]

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::runtime::{DeniedNetwork, FakeWorld, RealFs, RealGit, RealProcessRunner};
 use crate::ports::{Clock, Exec, Fs, FsRead, Git, Network, ProcessRunner, SystemClock, Walk};
+use crate::runtime::{DeniedNetwork, FakeWorld, RealFs, RealGit, RealProcessRunner};
 
 #[derive(Debug, Default)]
 pub struct AdaptersBundle {

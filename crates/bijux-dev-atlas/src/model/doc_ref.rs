@@ -14,6 +14,10 @@ impl DocRef {
         anchor: Option<&'static str>,
         title: &'static str,
     ) -> Self {
-        Self { path, anchor, title }
+        Self {
+            path,
+            anchor,
+            title,
+        }
     }
 }

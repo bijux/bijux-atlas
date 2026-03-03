@@ -34,7 +34,10 @@ impl Domain for GovernanceDomain {
     }
 
     fn docs_links(&self) -> &'static [&'static str] {
-        &["docs/_internal/governance/checks-and-contracts.md", "docs/_internal/architecture/layers.md"]
+        &[
+            "docs/_internal/governance/checks-and-contracts.md",
+            "docs/_internal/architecture/layers.md",
+        ]
     }
 
     fn required_tools(&self) -> &'static [&'static str] {

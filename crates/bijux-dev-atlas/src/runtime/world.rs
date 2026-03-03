@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::runtime::{AdapterError, RealFs, RealProcessRunner};
 use crate::ports::{Fs, FsWrite, Git, Network, ProcessRunner, Walk};
+use crate::runtime::{AdapterError, RealFs, RealProcessRunner};
 use std::path::{Path, PathBuf};
 
 #[derive(Debug, Default)]

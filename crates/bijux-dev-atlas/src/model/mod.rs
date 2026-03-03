@@ -12,21 +12,21 @@ use std::path::{Path, PathBuf};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
+pub mod command_route;
+pub mod contract_run;
+pub mod doc_ref;
 pub mod engine;
 pub mod exit_codes;
 pub mod governance;
-pub mod contract_run;
-pub mod command_route;
-pub mod doc_ref;
 pub mod report_header;
 pub mod report_ref;
 pub mod run_history;
 
+pub use command_route::CommandRoute;
 pub use contract_run::{
     ContractCaseResult, ContractCaseStatus, ContractRunCounts, ContractRunPreflight,
     ContractRunSummary,
 };
-pub use command_route::CommandRoute;
 pub use doc_ref::DocRef;
 pub use report_header::ReportHeader;
 pub use report_ref::ReportRef;

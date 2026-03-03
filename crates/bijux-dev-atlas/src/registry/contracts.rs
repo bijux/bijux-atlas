@@ -36,11 +36,26 @@ impl ContractCatalog {
 
     pub fn load(repo_root: &Path) -> Result<Self, String> {
         let mut entries = Vec::new();
-        entries.extend(load_domain_contracts("configs", domains::configs::contracts(repo_root)?)?);
-        entries.extend(load_domain_contracts("docs", domains::docs::contracts(repo_root)?)?);
-        entries.extend(load_domain_contracts("docker", domains::docker::contracts(repo_root)?)?);
-        entries.extend(load_domain_contracts("governance", domains::governance::contracts(repo_root)?)?);
-        entries.extend(load_domain_contracts("ops", domains::ops::contracts(repo_root)?)?);
+        entries.extend(load_domain_contracts(
+            "configs",
+            domains::configs::contracts(repo_root)?,
+        )?);
+        entries.extend(load_domain_contracts(
+            "docs",
+            domains::docs::contracts(repo_root)?,
+        )?);
+        entries.extend(load_domain_contracts(
+            "docker",
+            domains::docker::contracts(repo_root)?,
+        )?);
+        entries.extend(load_domain_contracts(
+            "governance",
+            domains::governance::contracts(repo_root)?,
+        )?);
+        entries.extend(load_domain_contracts(
+            "ops",
+            domains::ops::contracts(repo_root)?,
+        )?);
         entries.sort_by(|a, b| a.domain.cmp(b.domain).then_with(|| a.id().cmp(b.id())));
 
         let catalog = Self::from_entries(entries);
@@ -63,7 +78,10 @@ impl ContractCatalog {
         let mut ids = BTreeSet::new();
         for entry in &self.entries {
             if !ids.insert(entry.id().to_string()) {
-                return Err(format!("duplicate contract id `{}` in contract catalog", entry.id()));
+                return Err(format!(
+                    "duplicate contract id `{}` in contract catalog",
+                    entry.id()
+                ));
             }
             if entry.doc_ref.title.trim().is_empty() {
                 return Err(format!(
@@ -124,7 +142,9 @@ fn load_domain_contracts(
         .collect::<Vec<_>>();
     entries.sort_by(|a, b| a.id().cmp(b.id()));
     if entries.is_empty() {
-        return Err(format!("domain `{domain}` must register at least one contract"));
+        return Err(format!(
+            "domain `{domain}` must register at least one contract"
+        ));
     }
     Ok(entries)
 }
@@ -132,15 +152,27 @@ fn load_domain_contracts(
 fn default_doc_ref(domain: &'static str) -> Result<DocRef, String> {
     let doc_ref = match domain {
         "configs" => DocRef::new("docs/reference/configs.md", None, "Configs Reference"),
-        "docs" => DocRef::new("docs/_internal/contracts/docs/README.md", None, "Docs Contracts"),
-        "docker" => DocRef::new("docs/reference/contracts/index.md", None, "Contract Reference"),
+        "docs" => DocRef::new(
+            "docs/_internal/contracts/docs/README.md",
+            None,
+            "Docs Contracts",
+        ),
+        "docker" => DocRef::new(
+            "docs/reference/contracts/index.md",
+            None,
+            "Contract Reference",
+        ),
         "governance" => DocRef::new(
             "docs/_internal/governance/checks-and-contracts.md",
             None,
             "Checks And Contracts",
         ),
         "ops" => DocRef::new("docs/reference/ops-surface.md", None, "Ops Surface"),
-        _ => return Err(format!("domain `{domain}` is missing a canonical doc reference")),
+        _ => {
+            return Err(format!(
+                "domain `{domain}` is missing a canonical doc reference"
+            ))
+        }
     };
     Ok(doc_ref)
 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::runtime::AdapterError;
 use crate::ports::{Fs, FsWrite, Walk};
+use crate::runtime::AdapterError;
 use std::fs;
 use std::path::{Component, Path, PathBuf};
 

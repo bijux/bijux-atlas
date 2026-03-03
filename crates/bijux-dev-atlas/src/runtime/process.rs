@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::runtime::AdapterError;
 use crate::ports::ProcessRunner;
+use crate::runtime::AdapterError;
 use std::path::Path;
 use std::process::Command;
 

@@ -30,7 +30,10 @@ impl Domain for ConfigsDomain {
     }
 
     fn docs_links(&self) -> &'static [&'static str] {
-        &["docs/reference/configs.md", "docs/reference/registry/index.md"]
+        &[
+            "docs/reference/configs.md",
+            "docs/reference/registry/index.md",
+        ]
     }
 
     fn required_tools(&self) -> &'static [&'static str] {
@@ -41,7 +44,9 @@ impl Domain for ConfigsDomain {
         registry
             .all()
             .iter()
-            .filter(|entry| entry.group.contains("configs") || entry.id.as_str().contains("CONFIGS"))
+            .filter(|entry| {
+                entry.group.contains("configs") || entry.id.as_str().contains("CONFIGS")
+            })
             .cloned()
             .collect()
     }
