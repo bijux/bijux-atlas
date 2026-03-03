@@ -73,3 +73,36 @@ fn checks_all_runs_one_human_facing_check_command() {
         "checks-all should not emit the legacy json summary by default"
     );
 }
+
+#[test]
+fn checks_variant_targets_use_human_check_run_surface() {
+    let root_mk =
+        fs::read_to_string(workspace_root().join("make/root.mk")).expect("read make/root.mk");
+    for marker in [
+        "checks-group: ## Run one checks suite group (GROUP=<name>)",
+        "checks-tag: ## Run checks suite entries with a shared tag (TAG=<name>)",
+        "checks-pure: ## Run only pure checks suite entries",
+        "checks-effect: ## Run only effectful checks suite entries",
+    ] {
+        let start = root_mk.find(marker).expect("target block");
+        let tail = &root_mk[start..];
+        let end = tail.find("\n\n").unwrap_or(tail.len());
+        let target_block = &tail[..end];
+        assert!(
+            target_block.contains("$(DEV_ATLAS) check run"),
+            "{marker} should use the human-facing check runner"
+        );
+        assert!(
+            !target_block.contains("suites run"),
+            "{marker} should not shell through the suite runner"
+        );
+        assert!(
+            target_block.contains("--format text"),
+            "{marker} should use human output"
+        );
+        assert!(
+            !target_block.contains("--format json"),
+            "{marker} should not emit legacy json by default"
+        );
+    }
+}

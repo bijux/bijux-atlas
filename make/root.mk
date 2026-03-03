@@ -137,17 +137,17 @@ checks-all: ## Run the deterministic non-test quality gates
 
 checks-group: ## Run one checks suite group (GROUP=<name>)
 	@[ -n "$${GROUP:-}" ] || { echo "usage: make checks-group GROUP=<name>" >&2; exit 2; }
-	@$(DEV_ATLAS) suites run --suite checks --group "$${GROUP}" --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+	@$(DEV_ATLAS) check run --suite "$${GROUP}" --include-internal --include-slow --allow-subprocess --allow-git --allow-write --allow-network $(CHECK_FAIL_FAST_FLAG) --format text
 
 checks-tag: ## Run checks suite entries with a shared tag (TAG=<name>)
 	@[ -n "$${TAG:-}" ] || { echo "usage: make checks-tag TAG=<name>" >&2; exit 2; }
-	@$(DEV_ATLAS) suites run --suite checks --tag "$${TAG}" --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+	@$(DEV_ATLAS) check run --suite deep --include-internal --include-slow --tag "$${TAG}" --allow-subprocess --allow-git --allow-write --allow-network $(CHECK_FAIL_FAST_FLAG) --format text
 
 checks-pure: ## Run only pure checks suite entries
-	@$(DEV_ATLAS) suites run --suite checks --mode pure --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+	@$(DEV_ATLAS) check run --suite deep --include-internal --include-slow $(CHECK_FAIL_FAST_FLAG) --format text
 
 checks-effect: ## Run only effectful checks suite entries
-	@$(DEV_ATLAS) suites run --suite checks --mode effect --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+	@$(DEV_ATLAS) check run --suite deep --include-internal --include-slow --allow-subprocess --allow-git --allow-write --allow-network $(CHECK_FAIL_FAST_FLAG) --format text
 
 suites-list: ## List suite ids exposed through the control plane
 	@$(DEV_ATLAS) suites list --format text
