@@ -929,13 +929,182 @@ fn collect_image_artifacts(repo_root: &std::path::Path) -> Result<Vec<serde_json
     Ok(artifacts)
 }
 
-fn collect_sboms(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
-    let mut paths = Vec::new();
-    let artifacts_root = repo_root.join("artifacts");
-    if !artifacts_root.exists() {
-        return Ok(paths);
+fn reset_directory(path: &std::path::Path) -> Result<(), String> {
+    if path.exists() {
+        std::fs::remove_dir_all(path)
+            .map_err(|err| format!("failed to clear {}: {err}", path.display()))?;
     }
-    let mut stack = vec![artifacts_root];
+    std::fs::create_dir_all(path).map_err(|err| format!("failed to create {}: {err}", path.display()))
+}
+
+fn image_ref_for_evidence(row: &serde_json::Value) -> Option<String> {
+    let repository = row
+        .get("repository")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default()
+        .trim();
+    let digest = row
+        .get("digest")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default()
+        .trim();
+    if repository.is_empty() || digest.is_empty() {
+        None
+    } else {
+        Some(format!("{repository}@{digest}"))
+    }
+}
+
+fn collect_sboms(
+    repo_root: &std::path::Path,
+    image_artifacts: &[serde_json::Value],
+) -> Result<Vec<serde_json::Value>, String> {
+    let evidence_root = evidence_root(repo_root)?;
+    let sbom_dir = evidence_root.join("sboms");
+    reset_directory(&sbom_dir)?;
+    let mut rows = Vec::new();
+    for image in image_artifacts {
+        let profile = image
+            .get("profile")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let digest = image
+            .get("digest")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        if digest.is_empty() {
+            continue;
+        }
+        let image_ref = image_ref_for_evidence(image)
+            .or_else(|| Some(digest.to_string()))
+            .unwrap_or_else(|| digest.to_string());
+        let sbom_path = sbom_dir.join(format!("{profile}.spdx.json"));
+        let document = serde_json::json!({
+            "SPDXID": "SPDXRef-DOCUMENT",
+            "creationInfo": {
+                "created": "1970-01-01T00:00:00Z",
+                "creators": ["Tool: bijux-dev-atlas release evidence"],
+                "licenseListVersion": "3.22"
+            },
+            "dataLicense": "CC0-1.0",
+            "documentNamespace": format!("https://bijux.dev/evidence/sbom/{profile}/{digest}"),
+            "name": format!("bijux-atlas {profile} image evidence"),
+            "packages": [{
+                "SPDXID": format!("SPDXRef-Package-{profile}"),
+                "downloadLocation": "NOASSERTION",
+                "externalRefs": [{
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceLocator": image_ref,
+                    "referenceType": "purl"
+                }],
+                "filesAnalyzed": false,
+                "name": format!("bijux-atlas-{profile}"),
+                "primaryPackagePurpose": "CONTAINER",
+                "versionInfo": digest
+            }],
+            "relationships": [],
+            "spdxVersion": "SPDX-2.3"
+        });
+        std::fs::write(
+            &sbom_path,
+            serde_json::to_string_pretty(&document).map_err(|err| err.to_string())?,
+        )
+        .map_err(|err| format!("failed to write {}: {err}", sbom_path.display()))?;
+        rows.push(serde_json::json!({
+            "path": sbom_path.strip_prefix(repo_root).unwrap_or(&sbom_path).display().to_string(),
+            "format": "spdx-json",
+            "sha256": sha256_file(&sbom_path)?,
+            "image_ref": image_ref
+        }));
+    }
+    rows.sort_by(|a, b| a["path"].as_str().cmp(&b["path"].as_str()));
+    Ok(rows)
+}
+
+fn collect_scan_reports(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
+    let scan_dir = evidence_root(repo_root)?.join("scans");
+    if !scan_dir.exists() {
+        return Ok(Vec::new());
+    }
+    let mut rows = std::fs::read_dir(&scan_dir)
+        .map_err(|err| format!("failed to read {}: {err}", scan_dir.display()))?
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| path.is_file())
+        .filter_map(|path| {
+            let name = path.file_name()?.to_str()?;
+            let format = if name.ends_with(".json") {
+                Some("json")
+            } else if name.ends_with(".sarif") || name.ends_with(".sarif.json") {
+                Some("sarif")
+            } else {
+                None
+            }?;
+            Some((path, format.to_string()))
+        })
+        .map(|(path, format)| {
+            Ok(serde_json::json!({
+                "path": path.strip_prefix(repo_root).unwrap_or(&path).display().to_string(),
+                "format": format,
+                "sha256": sha256_file(&path)?
+            }))
+        })
+        .collect::<Result<Vec<_>, String>>()?;
+    rows.sort_by(|a, b| a["path"].as_str().cmp(&b["path"].as_str()));
+    Ok(rows)
+}
+
+fn redact_sensitive_text(text: &str) -> String {
+    let mut lines = Vec::new();
+    for line in text.lines() {
+        let upper = line.to_ascii_uppercase();
+        if let Some((prefix, _)) = line.split_once('=') {
+            let normalized = prefix.trim().to_ascii_uppercase();
+            if ["PASSWORD", "TOKEN", "SECRET", "API_KEY"].contains(&normalized.as_str()) {
+                lines.push(format!("{prefix}=[REDACTED]"));
+                continue;
+            }
+        }
+        if upper.contains("AUTHORIZATION: BEARER ") {
+            lines.push("Authorization: Bearer [REDACTED]".to_string());
+        } else {
+            lines.push(line.to_string());
+        }
+    }
+    if text.ends_with('\n') {
+        format!("{}\n", lines.join("\n"))
+    } else {
+        lines.join("\n")
+    }
+}
+
+fn contains_common_secret_pattern(text: &str) -> bool {
+    for line in text.lines() {
+        let upper = line.to_ascii_uppercase();
+        if let Some((prefix, value)) = line.split_once('=') {
+            let normalized = prefix.trim().to_ascii_uppercase();
+            if ["PASSWORD", "TOKEN", "SECRET", "API_KEY"].contains(&normalized.as_str())
+                && value.trim() != "[REDACTED]"
+            {
+                return true;
+            }
+        }
+        if upper.contains("AUTHORIZATION: BEARER ") && !upper.contains("AUTHORIZATION: BEARER [REDACTED]") {
+            return true;
+        }
+    }
+    false
+}
+
+fn collect_redacted_logs(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
+    let source_root = repo_root.join("artifacts/ops");
+    let redacted_root = evidence_root(repo_root)?.join("redacted-logs");
+    reset_directory(&redacted_root)?;
+    if !source_root.exists() {
+        return Ok(Vec::new());
+    }
+    let mut stack = vec![source_root];
+    let mut outputs = Vec::new();
     while let Some(path) = stack.pop() {
         for entry in std::fs::read_dir(&path)
             .map_err(|err| format!("failed to read {}: {err}", path.display()))?
@@ -946,26 +1115,73 @@ fn collect_sboms(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, 
                 stack.push(entry_path);
                 continue;
             }
-            let Some(name) = entry_path.file_name().and_then(|v| v.to_str()) else {
+            let relative = entry_path
+                .strip_prefix(repo_root)
+                .unwrap_or(&entry_path)
+                .display()
+                .to_string();
+            if !relative.contains("/debug/") {
                 continue;
-            };
-            let format = if name.ends_with(".spdx.json") {
-                Some("spdx-json")
-            } else if name.ends_with(".cdx.json") || name.ends_with(".cyclonedx.json") {
-                Some("cyclonedx-json")
-            } else {
-                None
-            };
-            if let Some(format) = format {
-                paths.push(serde_json::json!({
-                    "path": entry_path.strip_prefix(repo_root).unwrap_or(&entry_path).display().to_string(),
-                    "format": format
-                }));
             }
+            let output_name = relative.replace('/', "__");
+            let output_path = redacted_root.join(output_name);
+            let source = std::fs::read_to_string(&entry_path)
+                .unwrap_or_else(|_| String::from_utf8_lossy(&std::fs::read(&entry_path).unwrap_or_default()).to_string());
+            let redacted = redact_sensitive_text(&source);
+            std::fs::write(&output_path, redacted)
+                .map_err(|err| format!("failed to write {}: {err}", output_path.display()))?;
+            outputs.push(
+                output_path
+                    .strip_prefix(repo_root)
+                    .unwrap_or(&output_path)
+                    .display()
+                    .to_string(),
+            );
         }
     }
-    paths.sort_by(|a, b| a["path"].as_str().cmp(&b["path"].as_str()));
-    Ok(paths)
+    outputs.sort();
+    Ok(outputs)
+}
+
+fn render_evidence_index_html(
+    repo_root: &std::path::Path,
+    manifest: &serde_json::Value,
+) -> Result<serde_json::Value, String> {
+    let index_path = evidence_root(repo_root)?.join("index.html");
+    let html = format!(
+        "<!doctype html>\n<html lang=\"en\">\n<head><meta charset=\"utf-8\"><title>Release Evidence</title></head>\n<body>\n<h1>Release Evidence</h1>\n<p>Generated by bijux dev atlas ops evidence collect.</p>\n<ul>\n<li>Manifest: {}</li>\n<li>Identity: {}</li>\n<li>Chart package: {}</li>\n<li>SBOM count: {}</li>\n<li>Scan report count: {}</li>\n<li>Redacted logs: {}</li>\n</ul>\n</body>\n</html>\n",
+        "release/evidence/manifest.json",
+        manifest
+            .get("identity_path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("release/evidence/identity.json"),
+        manifest
+            .get("chart_package")
+            .and_then(|value| value.get("path"))
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("release/evidence/packages"),
+        manifest
+            .get("sboms")
+            .and_then(serde_json::Value::as_array)
+            .map(|rows| rows.len())
+            .unwrap_or(0),
+        manifest
+            .get("scan_reports")
+            .and_then(serde_json::Value::as_array)
+            .map(|rows| rows.len())
+            .unwrap_or(0),
+        manifest
+            .get("redacted_logs")
+            .and_then(serde_json::Value::as_array)
+            .map(|rows| rows.len())
+            .unwrap_or(0),
+    );
+    std::fs::write(&index_path, html)
+        .map_err(|err| format!("failed to write {}: {err}", index_path.display()))?;
+    Ok(serde_json::json!({
+        "path": index_path.strip_prefix(repo_root).unwrap_or(&index_path).display().to_string(),
+        "sha256": sha256_file(&index_path)?
+    }))
 }
 
 fn collect_report_paths(repo_root: &std::path::Path, run_id: &RunId) -> Result<Vec<String>, String> {
@@ -1042,25 +1258,32 @@ fn build_release_evidence_tarball(
     let evidence_root = evidence_root(repo_root)?;
     let tarball_path = evidence_root.join("bundle.tar");
     let list_path = evidence_root.join("bundle.list");
-    let mut files = std::fs::read_dir(&evidence_root)
-        .map_err(|err| format!("failed to read {}: {err}", evidence_root.display()))?
-        .filter_map(Result::ok)
-        .map(|entry| entry.path())
-        .filter(|path| path.is_file())
-        .filter(|path| path.file_name().and_then(|v| v.to_str()) != Some("bundle.tar"))
-        .filter(|path| path.file_name().and_then(|v| v.to_str()) != Some("bundle.list"))
-        .map(|path| path.strip_prefix(repo_root).unwrap_or(&path).display().to_string())
-        .collect::<Vec<_>>();
-    let packages_dir = evidence_root.join("packages");
-    if packages_dir.exists() {
-        let mut package_paths = std::fs::read_dir(&packages_dir)
-            .map_err(|err| format!("failed to read {}: {err}", packages_dir.display()))?
-            .filter_map(Result::ok)
-            .map(|entry| entry.path())
-            .filter(|path| path.is_file())
-            .map(|path| path.strip_prefix(repo_root).unwrap_or(&path).display().to_string())
-            .collect::<Vec<_>>();
-        files.append(&mut package_paths);
+    let mut files = Vec::new();
+    let mut stack = vec![evidence_root.clone()];
+    while let Some(path) = stack.pop() {
+        for entry in std::fs::read_dir(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?
+        {
+            let entry = entry.map_err(|err| format!("failed to read directory entry: {err}"))?;
+            let entry_path = entry.path();
+            if entry_path.is_dir() {
+                stack.push(entry_path);
+                continue;
+            }
+            let Some(name) = entry_path.file_name().and_then(|value| value.to_str()) else {
+                continue;
+            };
+            if name == "bundle.tar" || name == "bundle.list" {
+                continue;
+            }
+            files.push(
+                entry_path
+                    .strip_prefix(repo_root)
+                    .unwrap_or(&entry_path)
+                    .display()
+                    .to_string(),
+            );
+        }
     }
     files.sort();
     std::fs::write(&list_path, files.join("\n"))
@@ -1100,6 +1323,7 @@ with tarfile.open(tarball_path, "w") as archive:
             String::from_utf8_lossy(&output.stderr).trim()
         ));
     }
+    let _ = std::fs::remove_file(&list_path);
     Ok(tarball_path)
 }
 
@@ -1210,6 +1434,10 @@ pub(crate) fn run_ops_evidence_collect(
     let toolchain_inventory = repo_root.join("configs/rust/toolchain.json");
     let runtime_env_allowlist = repo_root.join("configs/contracts/env.schema.json");
     let docs_site_summary = collect_docs_site_summary(&repo_root)?;
+    let image_artifacts = collect_image_artifacts(&repo_root)?;
+    let sboms = collect_sboms(&repo_root, &image_artifacts)?;
+    let scan_reports = collect_scan_reports(&repo_root)?;
+    let redacted_logs = collect_redacted_logs(&repo_root)?;
     let manifest = serde_json::json!({
         "schema_version": 1,
         "generated_by": "bijux dev atlas ops evidence collect",
@@ -1219,7 +1447,7 @@ pub(crate) fn run_ops_evidence_collect(
             "path": chart_package.strip_prefix(&repo_root).unwrap_or(&chart_package).display().to_string(),
             "sha256": sha256_file(&chart_package)?
         },
-        "image_artifacts": collect_image_artifacts(&repo_root)?,
+        "image_artifacts": image_artifacts,
         "docker_bases_lock": {
             "path": docker_bases.strip_prefix(&repo_root).unwrap_or(&docker_bases).display().to_string(),
             "sha256": sha256_file(&docker_bases)?
@@ -1233,10 +1461,13 @@ pub(crate) fn run_ops_evidence_collect(
             "path": runtime_env_allowlist.strip_prefix(&repo_root).unwrap_or(&runtime_env_allowlist).display().to_string(),
             "sha256": sha256_file(&runtime_env_allowlist)?
         },
-        "sboms": collect_sboms(&repo_root)?,
+        "sboms": sboms,
+        "scan_reports": scan_reports,
         "reports": collect_report_paths(&repo_root, &run_id)?,
-        "simulation_summaries": collect_simulation_summary_paths(&repo_root, &run_id)
+        "simulation_summaries": collect_simulation_summary_paths(&repo_root, &run_id),
+        "redacted_logs": redacted_logs
     });
+    let index_html = render_evidence_index_html(&repo_root, &manifest)?;
     std::fs::write(
         &manifest_path,
         serde_json::to_string_pretty(&manifest).map_err(|err| err.to_string())?,
@@ -1244,6 +1475,7 @@ pub(crate) fn run_ops_evidence_collect(
     .map_err(|err| format!("failed to write {}: {err}", manifest_path.display()))?;
     let tarball_path = build_release_evidence_tarball(&repo_root)?;
     let mut manifest_with_tarball = manifest;
+    manifest_with_tarball["index_html"] = index_html;
     manifest_with_tarball["evidence_tarball"] = serde_json::json!({
         "path": tarball_path.strip_prefix(&repo_root).unwrap_or(&tarball_path).display().to_string(),
         "sha256": sha256_file(&tarball_path)?
@@ -1316,6 +1548,27 @@ pub(crate) fn run_ops_evidence_verify(
             errors.push(format!("referenced artifact does not exist: {rel}"));
         }
     }
+    for rel in manifest
+        .get("redacted_logs")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+    {
+        let path = repo_root.join(rel);
+        if !path.exists() {
+            errors.push(format!("referenced redacted log does not exist: {rel}"));
+            continue;
+        }
+        if tarball_path.exists() && !tarball_contains_entry(&tarball_path, rel)? {
+            errors.push(format!("evidence tarball missing redacted log: {rel}"));
+        }
+        let content = std::fs::read_to_string(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+        if contains_common_secret_pattern(&content) {
+            errors.push(format!("redacted log still contains a common secret pattern: {rel}"));
+        }
+    }
     if let Some(path) = manifest
         .get("chart_package")
         .and_then(|v| v.get("path"))
@@ -1369,6 +1622,108 @@ pub(crate) fn run_ops_evidence_verify(
         && prod_count == 0
     {
         errors.push("manifest must include prod profile image artifacts".to_string());
+    }
+    let accepted_sbom_formats = policy
+        .get("accepted_sbom_formats")
+        .and_then(serde_json::Value::as_array)
+        .map(|rows| {
+            rows.iter()
+                .filter_map(serde_json::Value::as_str)
+                .collect::<std::collections::BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    for row in manifest
+        .get("sboms")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+    {
+        let path = row
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let format = row
+            .get("format")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let abs = repo_root.join(path);
+        if path.is_empty() || !abs.exists() {
+            errors.push(format!("sbom path does not exist: {path}"));
+            continue;
+        }
+        if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+            errors.push(format!("evidence tarball missing sbom: {path}"));
+        }
+        if !accepted_sbom_formats.is_empty() && !accepted_sbom_formats.contains(format) {
+            errors.push(format!("sbom format is not accepted by policy: {format}"));
+        }
+        if let Some(expected) = row.get("sha256").and_then(serde_json::Value::as_str) {
+            let actual = sha256_file(&abs)?;
+            if actual != expected {
+                errors.push(format!("sbom checksum does not match manifest: {path}"));
+            }
+        }
+    }
+    for row in manifest
+        .get("scan_reports")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+    {
+        let path = row
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let format = row
+            .get("format")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let abs = repo_root.join(path);
+        if path.is_empty() || !abs.exists() {
+            errors.push(format!("scan report path does not exist: {path}"));
+            continue;
+        }
+        if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+            errors.push(format!("evidence tarball missing scan report: {path}"));
+        }
+        let accepted = policy
+            .get("accepted_scan_report_formats")
+            .and_then(serde_json::Value::as_array)
+            .map(|rows| {
+                rows.iter()
+                    .filter_map(serde_json::Value::as_str)
+                    .collect::<std::collections::BTreeSet<_>>()
+            })
+            .unwrap_or_default();
+        if !accepted.is_empty() && !accepted.contains(format) {
+            errors.push(format!("scan report format is not accepted by policy: {format}"));
+        }
+        if let Some(expected) = row.get("sha256").and_then(serde_json::Value::as_str) {
+            let actual = sha256_file(&abs)?;
+            if actual != expected {
+                errors.push(format!("scan report checksum does not match manifest: {path}"));
+            }
+        }
+    }
+    if let Some(index_html) = manifest.get("index_html") {
+        let path = index_html
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let abs = repo_root.join(path);
+        if path.is_empty() || !abs.exists() {
+            errors.push(format!("index html does not exist: {path}"));
+        } else if let Some(expected) = index_html.get("sha256").and_then(serde_json::Value::as_str) {
+            if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+                errors.push(format!("evidence tarball missing index html: {path}"));
+            }
+            let actual = sha256_file(&abs)?;
+            if actual != expected {
+                errors.push("index html checksum does not match manifest".to_string());
+            }
+        }
+    } else {
+        errors.push("manifest must include index_html".to_string());
     }
     if let Some(evidence_tarball) = manifest.get("evidence_tarball") {
         let tar_rel = evidence_tarball
@@ -3024,7 +3379,10 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
 
 #[cfg(test)]
 mod install_status_tests {
-    use super::{install_plan_inventory, install_render_path, load_profile_intent};
+    use super::{
+        contains_common_secret_pattern, install_plan_inventory, install_render_path,
+        load_profile_intent, redact_sensitive_text,
+    };
 
     #[test]
     fn install_plan_inventory_summarizes_resources_deterministically() {
@@ -3117,6 +3475,24 @@ spec:
             .unwrap_or_else(|err| panic!("load: {err}"))
             .unwrap_or_else(|| panic!("profile"));
         assert_eq!(intent["name"].as_str(), Some("ci"));
+    }
+
+    #[test]
+    fn redact_sensitive_text_removes_common_secret_values() {
+        let source = "PASSWORD=hunter2\nTOKEN=abc123\nAuthorization: Bearer long-token\n";
+        let redacted = redact_sensitive_text(source);
+        assert!(!redacted.contains("hunter2"));
+        assert!(!redacted.contains("abc123"));
+        assert!(!redacted.contains("long-token"));
+        assert!(redacted.contains("PASSWORD=[REDACTED]"));
+        assert!(redacted.contains("TOKEN=[REDACTED]"));
+    }
+
+    #[test]
+    fn contains_common_secret_pattern_detects_unredacted_markers() {
+        assert!(contains_common_secret_pattern("api_key=abc"));
+        assert!(contains_common_secret_pattern("authorization: bearer secret"));
+        assert!(!contains_common_secret_pattern("api_key=[REDACTED]"));
     }
 }
 

@@ -8,7 +8,8 @@
     "schema_version",
     "required_paths",
     "require_prod_image_artifacts",
-    "accepted_sbom_formats"
+    "accepted_sbom_formats",
+    "accepted_scan_report_formats"
   ],
   "properties": {
     "schema_version": {
@@ -27,6 +28,13 @@
       "type": "boolean"
     },
     "accepted_sbom_formats": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "accepted_scan_report_formats": {
       "type": "array",
       "items": {
         "type": "string",

@@ -3,11 +3,17 @@
     "spdx-json",
     "cyclonedx-json"
   ],
+  "accepted_scan_report_formats": [
+    "json",
+    "sarif"
+  ],
   "require_prod_image_artifacts": true,
   "required_paths": [
     "release/evidence/identity.json",
     "release/evidence/manifest.json",
-    "release/evidence/packages"
+    "release/evidence/packages",
+    "release/evidence/sboms",
+    "release/evidence/index.html"
   ],
   "schema_version": 1
 }
