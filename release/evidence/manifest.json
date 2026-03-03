@@ -1,5 +1,9 @@
 {
   "audit_assets": {
+    "log_field_inventory": {
+      "path": "artifacts/security/log-field-inventory.json",
+      "sha256": "4b50d1963ee5c688a0e45855088ad1f7f16a2b5728113febc1531b9e827ad8cd"
+    },
     "retention_policy": {
       "path": "configs/observability/retention.yaml",
       "sha256": "170b07e84732310b760ca353ca3e5452ed5681a2d1dc65b2c973c333fea14dff"
@@ -29,7 +33,7 @@
   },
   "chart_package": {
     "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-    "sha256": "4054e6c5cba4f07ed1482d950975b6d2bc035cc390fd1a7f9b0d1538dcf04146"
+    "sha256": "4389bb684d9965214cae09a9dedefe564c7d65a431ae04e475b0d43849ab66af"
   },
   "dataset_assets": [
     "configs/datasets/manifest.yaml",
@@ -49,14 +53,14 @@
     "sha256": "4b9996348cba7a04aa56e8617aab6bba5dec62e950819626bbd15abd7145e8e1"
   },
   "docs_site_summary": {
-    "file_count": 646,
+    "file_count": 650,
     "sha256": "d758e43fd4b0e02a4f563069fd7ecaa05de1b8fd60c399d0ddf4134c31d63aef",
     "site_dir": "artifacts/docs/site"
   },
   "drill_summaries": [],
   "evidence_tarball": {
     "path": "release/evidence/bundle.tar",
-    "sha256": "785ade517ce30d03157c2893c4830b89e4c8cda817e8ae6ffc89432a58b24b20"
+    "sha256": "d31b700b269c12803fbd524228d4c245751ecacae12ba102e8fbc20d46e3e914"
   },
   "generated_by": "bijux dev atlas ops evidence collect",
   "identity_path": "release/evidence/identity.json",
@@ -141,7 +145,7 @@
   "policy_path": "release/evidence/policy.json",
   "provenance": {
     "path": "release/provenance.json",
-    "sha256": "fdecbfb9b2cf4a2c73e5cbc5676e80f88438724814ab64b9d2478c4f2fa16202"
+    "sha256": "4c4008e2965f8efd10031c6a779d5afaaa2bacf2322dab6237efb0bc1f0e77f4"
   },
   "redacted_logs": [],
   "reports": [

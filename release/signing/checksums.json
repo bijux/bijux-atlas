@@ -2,19 +2,49 @@
   "generated_by": "bijux-dev-atlas release sign",
   "items": [
     {
+      "kind": "auth-model-snapshot",
+      "path": "configs/security/auth-model.yaml",
+      "sha256": "76e9337d47e2831db77e0664077d9fc82d583d63cc9fe503752ae3d341374576"
+    },
+    {
+      "kind": "auth-policy-snapshot",
+      "path": "configs/security/policy.yaml",
+      "sha256": "8f079d16ad9a7390c5daf4d876ca3a6b5eecb081b09cadc951a8c652801a8325"
+    },
+    {
+      "kind": "audit-schema",
+      "path": "configs/observability/audit-log.schema.json",
+      "sha256": "94f3caaf6a19579d1bb6ca15de6d3fc7d8cc20a53f66b0a5c33d975c47a92334"
+    },
+    {
+      "kind": "retention-policy",
+      "path": "configs/observability/retention.yaml",
+      "sha256": "170b07e84732310b760ca353ca3e5452ed5681a2d1dc65b2c973c333fea14dff"
+    },
+    {
+      "kind": "audit-verification-report",
+      "path": "artifacts/security/audit-verify.json",
+      "sha256": "97337e8feb66b38abeb7c7a6d4ee39a295862cd79eeec1207aef25176d768f95"
+    },
+    {
+      "kind": "audit-log-field-inventory",
+      "path": "artifacts/security/log-field-inventory.json",
+      "sha256": "4b50d1963ee5c688a0e45855088ad1f7f16a2b5728113febc1531b9e827ad8cd"
+    },
+    {
       "kind": "chart-package",
       "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-      "sha256": "4054e6c5cba4f07ed1482d950975b6d2bc035cc390fd1a7f9b0d1538dcf04146"
+      "sha256": "4389bb684d9965214cae09a9dedefe564c7d65a431ae04e475b0d43849ab66af"
     },
     {
       "kind": "evidence-tarball",
       "path": "release/evidence/bundle.tar",
-      "sha256": "785ade517ce30d03157c2893c4830b89e4c8cda817e8ae6ffc89432a58b24b20"
+      "sha256": "d31b700b269c12803fbd524228d4c245751ecacae12ba102e8fbc20d46e3e914"
     },
     {
       "kind": "evidence-manifest",
       "path": "release/evidence/manifest.json",
-      "sha256": "3c29429d839762f40a48fa3e64037902bab8897fa5de5c65ae935f9f8caaf0a2"
+      "sha256": "ea00575c59fe719d65aa826c051ae1251024385b26e9a4fd40f3f6b68b787588"
     },
     {
       "kind": "sbom",
