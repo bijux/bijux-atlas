@@ -21,14 +21,14 @@ include make/k8s.mk
 include make/verification.mk
 
 CURATED_TARGETS := \
-	artifacts-clean build clean contracts contracts-all contracts-changed contracts-ci contracts-configs contracts-docker contracts-docs contracts-fast contracts-help contracts-json contracts-make contracts-merge contracts-ops contracts-pr contracts-release contracts-root \
+	artifacts-clean build checks-all clean contracts contracts-all contracts-changed contracts-ci contracts-configs contracts-crates contracts-docker contracts-docs contracts-fast contracts-help contracts-json contracts-make contracts-merge contracts-ops contracts-pr contracts-release contracts-repo contracts-root contracts-runtime \
 	docker docker-contracts docker-contracts-effect docker-gate doctor \
 	help \
 	k8s-render k8s-validate \
 	lint-make make-fast make-target-list \
 	ops-contracts ops-contracts-effect ops-fast ops-nightly ops-pr \
 	root-surface-explain \
-	stack-down stack-up
+	stack-down stack-up tests-all
 
 help: ## Show curated make targets owned by Rust control-plane wrappers
 	@$(DEV_ATLAS) make surface --format text
@@ -115,4 +115,21 @@ ops-nightly: ## Run nightly ops check suite through dev-atlas
 	@mkdir -p $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)
 	@$(DEV_ATLAS) check run --suite ci_nightly --include-internal --include-slow --format json --out $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)/report.json >/dev/null
 
-.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean clean doctor root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly
+checks-all: ## Run the deterministic non-test quality gates
+	@mkdir -p $(ARTIFACT_ROOT)/checks-all/$(RUN_ID)
+	@printf '%s\n' "checks-all runs: fmt lint lint-policy-enforce configs-lint docs-validate k8s-validate"
+	@printf '%s\n' "effects-boundary: no effectful operations" "fmt" "lint" "lint-policy-enforce" "configs-lint" "docs-validate" "k8s-validate" > $(ARTIFACT_ROOT)/checks-all/$(RUN_ID)/manifest.txt
+	@$(MAKE) -s fmt
+	@$(MAKE) -s lint
+	@$(MAKE) -s lint-policy-enforce
+	@$(MAKE) -s configs-lint
+	@$(MAKE) -s docs-validate
+	@$(MAKE) -s k8s-validate
+
+tests-all: ## Run the deterministic test suite without external network
+	@mkdir -p $(ARTIFACT_ROOT)/tests-all/$(RUN_ID)
+	@printf '%s\n' "tests-all runs: test"
+	@printf '%s\n' "effects-boundary: no effectful operations" "test" > $(ARTIFACT_ROOT)/tests-all/$(RUN_ID)/manifest.txt
+	@$(MAKE) -s test
+
+.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean checks-all clean doctor root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly tests-all
