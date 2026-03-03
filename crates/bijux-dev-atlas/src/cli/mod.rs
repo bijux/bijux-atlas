@@ -13,10 +13,12 @@ mod dispatch;
 mod dispatch_mutations;
 mod ops;
 mod surfaces;
+mod suites;
 
 pub use checks::*;
 pub use ops::*;
 pub use surfaces::*;
+pub use suites::*;
 
 pub(crate) fn run() -> i32 {
     let cli = Cli::parse();
@@ -158,6 +160,10 @@ pub enum Command {
     Check {
         #[command(subcommand)]
         command: CheckCommand,
+    },
+    Suites {
+        #[command(subcommand)]
+        command: SuitesCommand,
     },
     Validate {
         #[arg(long)]

@@ -8,8 +8,9 @@ use crate::{
     run_configs_command, run_contracts_command, run_data_command, run_demo_command,
     run_docker_command, run_docs_command, run_gates_command, run_governance_command,
     run_help_inventory_command, run_make_command, run_ops_command, run_perf_command,
-    run_policies_command, run_print_boundaries_command, run_release_command, run_security_command,
-    run_version_command, run_workflows_command,
+    run_policies_command, run_print_boundaries_command, run_registry_check_by_id,
+    run_release_command, run_security_command, run_suites_command, run_version_command,
+    run_workflows_command,
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
 use std::io::{self, Write};
@@ -371,6 +372,7 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                     out,
                 } => run_check_doctor(repo_root, include_internal, include_slow, format, out),
                 CheckCommand::Run {
+                    check_id,
                     repo_root,
                     artifacts_root,
                     run_id,
@@ -389,26 +391,40 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                     format,
                     out,
                     durations,
-                } => run_check_run(CheckRunOptions {
-                    repo_root,
-                    artifacts_root,
-                    run_id,
-                    suite,
-                    domain,
-                    tag,
-                    id,
-                    include_internal,
-                    include_slow,
-                    allow_subprocess,
-                    allow_git,
-                    allow_write,
-                    allow_network,
-                    fail_fast,
-                    max_failures,
-                    format,
-                    out,
-                    durations,
-                }),
+                } => {
+                    if let Some(check_id) = check_id {
+                        run_registry_check_by_id(
+                            repo_root,
+                            artifacts_root,
+                            run_id,
+                            check_id,
+                            fail_fast,
+                            format,
+                            out,
+                        )
+                    } else {
+                        run_check_run(CheckRunOptions {
+                            repo_root,
+                            artifacts_root,
+                            run_id,
+                            suite,
+                            domain,
+                            tag,
+                            id,
+                            include_internal,
+                            include_slow,
+                            allow_subprocess,
+                            allow_git,
+                            allow_write,
+                            allow_network,
+                            fail_fast,
+                            max_failures,
+                            format,
+                            out,
+                            durations,
+                        })
+                    }
+                }
                 CheckCommand::TreeBudgets {
                     repo_root,
                     format,
@@ -445,6 +461,7 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                 }
             }
         }
+        Command::Suites { command } => run_suites_command(cli.quiet, command),
         Command::Ops { command } => run_ops_command(cli.quiet, cli.debug, command),
     };
 

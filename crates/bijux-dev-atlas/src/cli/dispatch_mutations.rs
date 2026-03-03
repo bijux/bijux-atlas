@@ -10,6 +10,11 @@ pub(super) fn force_json_output(command: &mut Command) {
     match command {
         Command::Version { format, .. } => *format = FormatArg::Json,
         Command::Help { format, .. } => *format = FormatArg::Json,
+        Command::Suites { command } => match command {
+            crate::cli::SuitesCommand::Run { format, .. }
+            | crate::cli::SuitesCommand::List { format, .. }
+            | crate::cli::SuitesCommand::Describe { format, .. } => *format = FormatArg::Json,
+        },
         Command::Ops { command } => force_json_ops(command),
         Command::Docs { command } => force_json_docs(command),
         Command::Make { command } => force_json_make(command),
@@ -437,6 +442,16 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
         Command::Check {
             command: CheckCommand::Run { fail_fast, .. },
         } => *fail_fast = true,
+        Command::Suites {
+            command: crate::cli::SuitesCommand::Run {
+                fail_fast,
+                no_fail_fast,
+                ..
+            },
+        } => {
+            *fail_fast = true;
+            *no_fail_fast = false;
+        }
         Command::Docs { command } => match command {
             DocsCommand::Check(common)
             | DocsCommand::Doctor(common)
@@ -903,6 +918,13 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | CheckCommand::TreeBudgets { repo_root, .. }
             | CheckCommand::RepoDoctor { repo_root, .. }
             | CheckCommand::RootSurfaceExplain { repo_root, .. } => *repo_root = Some(root.clone()),
+        },
+        Command::Suites { command } => match command {
+            crate::cli::SuitesCommand::Run { repo_root, .. }
+            | crate::cli::SuitesCommand::List { repo_root, .. }
+            | crate::cli::SuitesCommand::Describe { repo_root, .. } => {
+                *repo_root = Some(root.clone())
+            }
         },
         Command::Demo { command } => match command {
             crate::cli::DemoCommand::Quickstart(args) => args.repo_root = Some(root.clone()),

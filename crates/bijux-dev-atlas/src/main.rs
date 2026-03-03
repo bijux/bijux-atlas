@@ -37,6 +37,8 @@ mod perf_commands;
 mod release_commands;
 #[path = "commands/security.rs"]
 mod security_commands;
+#[path = "commands/suites.rs"]
+mod suites_commands;
 
 include!("runtime_entry.rs");
 

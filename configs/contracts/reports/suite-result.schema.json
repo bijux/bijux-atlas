@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/reports/suite-result.schema.json",
+  "title": "Suite Task Result Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_id",
+    "version",
+    "inputs",
+    "id",
+    "status",
+    "duration_ms",
+    "mode",
+    "group",
+    "report_paths",
+    "artifacts"
+  ],
+  "properties": {
+    "report_id": { "const": "suite-result" },
+    "version": { "const": 1 },
+    "inputs": { "type": "object" },
+    "id": { "type": "string" },
+    "status": { "type": "string" },
+    "duration_ms": { "type": "integer" },
+    "mode": { "type": "string" },
+    "group": { "type": "string" },
+    "report_paths": { "type": "array" },
+    "error_summary": { "type": ["string", "null"] },
+    "artifacts": { "type": "object" }
+  }
+}

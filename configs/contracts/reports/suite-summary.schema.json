@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/reports/suite-summary.schema.json",
+  "title": "Suite Summary Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_id",
+    "version",
+    "inputs",
+    "suite",
+    "run_id",
+    "run_timestamp",
+    "status",
+    "summary",
+    "failures",
+    "tasks"
+  ],
+  "properties": {
+    "report_id": { "const": "suite-summary" },
+    "version": { "const": 1 },
+    "inputs": { "type": "object" },
+    "suite": { "type": "string" },
+    "run_id": { "type": "string" },
+    "run_timestamp": { "type": "string" },
+    "status": { "type": "string" },
+    "summary": { "type": "object" },
+    "failures": { "type": "array" },
+    "tasks": { "type": "array" }
+  }
+}

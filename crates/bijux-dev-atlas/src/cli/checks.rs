@@ -54,6 +54,7 @@ pub enum CheckCommand {
         out: Option<PathBuf>,
     },
     Run {
+        check_id: Option<String>,
         #[arg(long)]
         repo_root: Option<PathBuf>,
         #[arg(long)]
