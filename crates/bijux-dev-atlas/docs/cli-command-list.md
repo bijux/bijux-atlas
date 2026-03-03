@@ -1,6 +1,6 @@
 ops
 docs
-contract
+reports
 demo
 configs
 governance
@@ -11,6 +11,10 @@ perf
 policies
 ci
 check
+contract
 registry
 suites
+list
+describe
+run
 validate

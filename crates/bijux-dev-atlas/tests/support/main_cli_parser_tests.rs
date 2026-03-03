@@ -311,8 +311,14 @@ mod tests {
 
     #[test]
     fn contract_command_prefers_canonical_surface() {
-        let cli =
-            crate::Cli::try_parse_from(vec!["bijux-dev-atlas", "contract", "all"]).expect("parse");
+        let cli = crate::Cli::try_parse_from(vec![
+            "bijux-dev-atlas",
+            "contract",
+            "run",
+            "--mode",
+            "all",
+        ])
+        .expect("parse");
         match cli.command {
             Some(crate::cli::Command::Contract { .. }) => {}
             _ => panic!("expected canonical contract command"),

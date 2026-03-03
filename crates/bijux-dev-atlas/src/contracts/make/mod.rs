@@ -575,6 +575,7 @@ fn test_make_contracts_003_delegate_only(ctx: &RunContext) -> TestResult {
             continue;
         }
         if !(trimmed.contains(" contracts ")
+            || trimmed.contains(" contract ")
             || trimmed.contains(" suites run --suite contracts")
             || trimmed.contains(" registry doctor ")
             || trimmed.contains(" check run --suite "))

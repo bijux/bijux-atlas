@@ -5,7 +5,7 @@ Usage: bijux-dev-atlas [OPTIONS] [COMMAND]
 Commands:
   ops         
   docs        
-  contracts   
+  reports     
   demo        
   configs     
   governance  
@@ -19,6 +19,9 @@ Commands:
   contract    
   registry    
   suites      
+  list        
+  describe    
+  run         
   validate    
 
 Options:
@@ -32,5 +35,7 @@ Options:
       --bijux-plugin-metadata                
       --umbrella-version <UMBRELLA_VERSION>  
       --repo-root <REPO_ROOT>                
+      --output-format <OUTPUT_FORMAT>        [possible values: human, json, both]
+      --no-deprecation-warn                  
   -h, --help                                 Print help
   -V, --version                              Print version

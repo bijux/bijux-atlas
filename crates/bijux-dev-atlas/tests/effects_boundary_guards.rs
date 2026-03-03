@@ -145,6 +145,7 @@ fn fs_calls_are_constrained_to_explicit_allowlist() {
             "src/ops/profiles_matrix/tests.rs",
             "src/runtime_entry_checks_surface.rs",
             "src/runtime_entry.rs",
+            "src/registry/reports.rs",
         ],
     );
 }

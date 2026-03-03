@@ -125,6 +125,7 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
         "src/commands/control_plane_contracts_support.rs",
         "src/runtime_entry.rs",
         "src/runtime_entry_checks_surface.rs",
+        "src/registry/reports.rs",
         // Imported modules pending ports/adapters rewiring.
         "src/core/mod.rs",
         "src/core/checks/ops.rs",

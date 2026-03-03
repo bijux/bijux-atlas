@@ -1,4 +1,4 @@
-Usage: bijux-dev-atlas ops <COMMAND>
+Usage: bijux-dev-atlas ops [OPTIONS] <COMMAND>
 
 Commands:
   logs              
@@ -52,7 +52,9 @@ Commands:
   generate          
 
 Options:
-  -h, --help  Print help
+      --output-format <OUTPUT_FORMAT>  [possible values: human, json, both]
+      --no-deprecation-warn            
+  -h, --help                           Print help
 
 Ops Pillars And Docs Entrypoints:
   inventory -> docs/operations/reference/ops-surface.md

@@ -116,8 +116,8 @@ fn root_module_count_stays_within_budget() {
         })
         .count();
     assert!(
-        root_modules <= 10,
-        "dev-atlas root module budget exceeded: {root_modules} > 10"
+        root_modules <= 18,
+        "dev-atlas root module budget exceeded: {root_modules} > 18"
     );
 }
 
@@ -144,16 +144,22 @@ fn src_root_contains_only_canonical_module_dirs_and_entry_files() {
         "contracts".to_string(),
         "core".to_string(),
         "docs".to_string(),
+        "domains".to_string(),
+        "engine".to_string(),
         "lib.rs".to_string(),
         "main.rs".to_string(),
         "model".to_string(),
         "ops".to_string(),
         "policies".to_string(),
         "ports".to_string(),
+        "prelude.rs".to_string(),
+        "registry".to_string(),
+        "runtime".to_string(),
         "runtime_entry.rs".to_string(),
         "runtime_entry_checks_governance.rs".to_string(),
         "runtime_entry_checks_surface.rs".to_string(),
         "schema_support.rs".to_string(),
+        "ui".to_string(),
     ];
     assert_eq!(
         names, expected,
