@@ -189,6 +189,9 @@
     "SECURITY": [
       "SECURITY.md"
     ],
+    "SSOT": [
+      "ops/SSOT.md"
+    ],
     "VERSIONING_POLICY": [
       "ops/schema/VERSIONING_POLICY.md"
     ],

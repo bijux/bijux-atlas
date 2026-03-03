@@ -10264,6 +10264,18 @@
     },
     {
       "keywords": [
+        "ops",
+        "ssot"
+      ],
+      "path": "ops/SSOT.md",
+      "tags": [
+        "ops",
+        "ssot"
+      ],
+      "topic": "SSOT"
+    },
+    {
+      "keywords": [
         "-generated.example",
         "ops",
         "owner"

@@ -6220,6 +6220,14 @@
     {
       "area": "ops",
       "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/SSOT.md",
+      "stability": "stable",
+      "title": "Ops SSOT Boundary"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
       "owner": "bijux-atlas-operations",
       "path": "ops/_generated.example/OWNER.md",
       "stability": "stable",

@@ -784,6 +784,7 @@ License: Apache-2.0
 | `ops/MINIMAL_RELEASE_SURFACE.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `ops/README.md` | `concept` | `docs-governance` | `stable` |
 | `ops/RUNBOOK_GENERATION_FROM_GRAPH.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `ops/SSOT.md` | `concept` | `docs-governance` | `stable` |
 | `ops/_generated.example/OWNER.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `ops/_generated.example/README.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `ops/_generated.example/REQUIRED_FILES.md` | `concept` | `docs-governance` | `stable` |

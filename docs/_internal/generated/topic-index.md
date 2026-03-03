@@ -25,6 +25,7 @@
 | `SCHEMA_BUDGET_EXCEPTIONS` | `ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md` |
 | `SCHEMA_REFERENCE_ALLOWLIST` | `ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md` |
 | `SECURITY` | `SECURITY.md` |
+| `SSOT` | `ops/SSOT.md` |
 | `VERSIONING_POLICY` | `ops/schema/VERSIONING_POLICY.md` |
 | `action-pin-refresh` | `docs/operations/security/action-pin-refresh.md` |
 | `add-a-check-in-30-minutes` | `docs/control-plane/add-a-check-in-30-minutes.md` |

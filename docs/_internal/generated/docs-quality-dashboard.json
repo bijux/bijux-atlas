@@ -326,6 +326,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/ERRORS.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/MINIMAL_RELEASE_SURFACE.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/RUNBOOK_GENERATION_FROM_GRAPH.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/SSOT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/_generated.example/OWNER.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/_generated.example/REQUIRED_FILES.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/_generated.example/control-plane.snapshot.md` has no inbound doc links",
@@ -369,7 +370,7 @@
   "schema_version": 1,
   "summary": {
     "errors": 53,
-    "registered": 828,
-    "warnings": 406
+    "registered": 829,
+    "warnings": 407
   }
 }

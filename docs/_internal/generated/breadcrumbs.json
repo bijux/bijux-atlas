@@ -6839,6 +6839,13 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/SSOT.md"
+      ],
+      "path": "ops/SSOT.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/_generated.example",
         "ops/_generated.example/OWNER.md"
       ],

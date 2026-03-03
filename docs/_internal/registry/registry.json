@@ -18816,6 +18816,29 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "ops",
+        "ssot"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/SSOT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "ssot"
+      ],
+      "title": "Ops SSOT Boundary",
+      "topic": "SSOT"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "-generated.example",
         "ops",
         "owner"

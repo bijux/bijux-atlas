@@ -3888,6 +3888,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/SSOT.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/_generated.example/OWNER.md"
     },
     {
