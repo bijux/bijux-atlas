@@ -2,9 +2,9 @@
   "checksum_list_path": "release/signing/checksums.json",
   "evidence_manifest_path": "release/evidence/manifest.json",
   "generated_by": "bijux-dev-atlas release sign",
-  "git_sha": "21030f7300bb98b96d3cf489a29db547b1a78323",
-  "governance_version": "main@21030f7300bb98b96d3cf489a29db547b1a78323",
-  "release_id": "supply_chain_evidence_refresh-21030f7300bb",
+  "git_sha": "cc8eecf3cc60f75021d89f0a2437d0749e16711e",
+  "governance_version": "main@cc8eecf3cc60f75021d89f0a2437d0749e16711e",
+  "release_id": "auth_policy_evidence_refresh-cc8eecf3cc60",
   "schema_version": 1,
   "signing_policy_path": "release/signing/policy.yaml",
   "toolchain_inventory": "configs/rust/toolchain.json"
