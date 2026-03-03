@@ -5,6 +5,9 @@
 - Audience: `operators`
 - Source-of-truth: `configs/ops/make-target-registry.json`
 
+> Contract runner naming is migrating to `contract`; legacy `contracts*` targets remain documented
+> until the thin-wrapper rename lands.
+
 ## Targets
 
 | Target | Surface | Description |

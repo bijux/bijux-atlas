@@ -14,7 +14,7 @@
 | `check` | `group` | discover, explain, and execute governed checks |
 | `ci` | `group` | run CI-oriented lane, explain, report, and verification surfaces |
 | `configs` | `group` | inspect, validate, lint, and compile repository configuration inputs |
-| `contracts` | `group` | run contract registries, snapshots, doctors, and effect-mode reports |
+| `contract` | `group` | run contract registries, snapshots, doctors, and effect-mode reports |
 | `demo` | `group` | execute curated local demonstration flows |
 | `docker` | `group` | run docker policy, contract, and release-oriented validations |
 | `docs` | `group` | build, lint, validate, and regenerate governed documentation artifacts |

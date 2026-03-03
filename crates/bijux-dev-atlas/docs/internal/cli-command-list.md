@@ -1,6 +1,6 @@
 ops
 docs
-contracts
+contract
 demo
 configs
 policies

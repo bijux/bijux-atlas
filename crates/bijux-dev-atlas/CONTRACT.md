@@ -11,6 +11,7 @@
 ## Outputs
 
 - Deterministic results for identical inputs.
+- Canonical contract runner surface is `bijux-dev-atlas contract ...`; `contracts ...` is a temporary deprecated alias.
 - Public outputs documented in:
 - [Crate docs index](docs/index.md)
 - [Central docs index](../../docs/index.md)

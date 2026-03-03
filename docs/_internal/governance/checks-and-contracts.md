@@ -47,4 +47,4 @@ The same implementation detail may appear in both layers only as a documented co
 | --- | --- | --- | --- |
 | `tests-all` | executable behavioral verification | unit, integration, and fixture-backed code tests | yes |
 | `checks-all` | quality gate verification | fmt, lint, docs, config, supply-chain, and fast control-plane lanes | yes, except `severity=info` unless `--strict` |
-| `contracts-all` | governance invariant verification | schema, policy, release, docs, and operational contracts | yes |
+| `contract all` | governance invariant verification | schema, policy, release, docs, and operational contracts | yes |

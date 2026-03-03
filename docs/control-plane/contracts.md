@@ -9,6 +9,9 @@
 
 ## Exit codes
 
+- Canonical CLI surface: `bijux dev atlas contract ...`
+- Deprecated alias: `bijux dev atlas contracts ...` (scheduled removal `2026-09-01`)
+
 - `0`: all selected contracts passed.
 - `1`: one or more non-required contracts failed.
 - `2`: usage error, including invalid wildcard filters or missing required flags.

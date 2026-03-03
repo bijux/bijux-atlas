@@ -19,7 +19,6 @@ Usage: bijux-dev-atlas [OPTIONS] [COMMAND]
 Commands:
   ops
   docs
-  contracts
   demo
   configs
   governance

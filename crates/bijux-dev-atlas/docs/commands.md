@@ -6,6 +6,7 @@ Stable command families:
 - `ops`
 - `docs`
 - `configs`
+- `contract`
 - `policies`
 - `check`
 
@@ -23,6 +24,7 @@ Top-level command namespace is intentionally limited to these families.
 - `bijux dev atlas check list --suite ci_fast`
 - `bijux dev atlas check run --suite ci_fast --fail-fast`
 - `bijux dev atlas docs doctor --json`
+- `bijux dev atlas contract all --format json`
 - `bijux dev atlas configs validate --json --fail-fast`
 - `bijux dev atlas ops validate --json`
 - `bijux dev atlas policies report --json`
