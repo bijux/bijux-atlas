@@ -12,6 +12,9 @@ use std::path::{Path, PathBuf};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
+pub mod engine;
+pub mod governance;
+
 pub const CONTRACT_SCHEMA_VERSION: u64 = 1;
 pub const fn schema_version() -> u64 {
     CONTRACT_SCHEMA_VERSION

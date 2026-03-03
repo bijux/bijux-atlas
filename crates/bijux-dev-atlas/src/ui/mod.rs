@@ -1,3 +1,4 @@
 // SPDX-License-Identifier: Apache-2.0
+//! Output adapters.
 
-pub use crate::engine::*;
+pub mod terminal;

@@ -21,7 +21,7 @@ use std::borrow::Cow;
 
 mod check_runner;
 pub mod checks;
-pub mod governance_objects;
+pub use crate::model::governance as governance_objects;
 pub mod logging;
 #[path = "inventory.rs"]
 pub mod ops_inventory;

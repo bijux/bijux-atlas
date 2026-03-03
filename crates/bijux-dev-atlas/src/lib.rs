@@ -13,10 +13,15 @@ pub(crate) mod commands;
 pub mod contracts;
 pub mod core;
 pub mod docs;
+pub mod engine;
 pub mod model;
 pub mod ops;
 pub mod policies;
+pub mod prelude;
 pub(crate) mod ports;
+pub mod registry;
+pub mod runtime;
 pub(crate) mod schema_support;
+pub mod ui;
 
-pub use crate::core::governance_objects;
+pub use crate::model::governance as governance_objects;

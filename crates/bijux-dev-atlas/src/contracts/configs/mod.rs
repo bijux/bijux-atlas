@@ -15,3 +15,7 @@ include!("configs_registry_contracts.rs");
 include!("configs_authority_contracts.rs");
 include!("configs_schema_contracts.rs");
 include!("configs_surface_contracts.rs");
+
+pub fn generated_index_payload(repo_root: &Path) -> Result<serde_json::Value, String> {
+    generated_index_json(repo_root)
+}
