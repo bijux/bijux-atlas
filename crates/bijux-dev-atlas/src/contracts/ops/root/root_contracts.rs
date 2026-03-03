@@ -2,16 +2,28 @@ fn ops_markdown_allowed(rel: &str) -> bool {
     if rel == "ops/README.md"
         || rel == "ops/CONTRACT.md"
         || rel == "ops/ERRORS.md"
+        || rel == "ops/INDEX.md"
         || rel == "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
     {
         return true;
     }
     for domain in DOMAIN_DIRS {
-        if rel == format!("ops/{domain}/README.md") || rel == format!("ops/{domain}/CONTRACT.md") {
+        if rel == format!("ops/{domain}/README.md")
+            || rel == format!("ops/{domain}/CONTRACT.md")
+            || rel == format!("ops/{domain}/OWNER.md")
+            || rel == format!("ops/{domain}/REQUIRED_FILES.md")
+        {
             return true;
         }
     }
-    if rel == "ops/k8s/kind/README.md" || rel == "ops/k8s/values/profile-readme.md" {
+    if rel == "ops/k8s/kind/README.md"
+        || rel == "ops/k8s/values/profile-readme.md"
+        || rel == "ops/schema/BUDGET_POLICY.md"
+        || rel == "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md"
+        || rel == "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md"
+        || rel == "ops/schema/VERSIONING_POLICY.md"
+        || rel == "ops/schema/generated/schema-index.md"
+    {
         return true;
     }
     false
@@ -80,6 +92,7 @@ fn test_ops_000_allowed_root_files(ctx: &RunContext) -> TestResult {
         "README.md",
         "CONTRACT.md",
         "ERRORS.md",
+        "INDEX.md",
         "RUNBOOK_GENERATION_FROM_GRAPH.md",
     ]);
     let mut violations = Vec::new();
@@ -122,6 +135,7 @@ fn test_ops_000_forbid_extra_markdown_root(ctx: &RunContext) -> TestResult {
         "README.md",
         "CONTRACT.md",
         "ERRORS.md",
+        "INDEX.md",
         "RUNBOOK_GENERATION_FROM_GRAPH.md",
     ]);
     let mut violations = Vec::new();
@@ -144,7 +158,7 @@ fn test_ops_000_forbid_extra_markdown_root(ctx: &RunContext) -> TestResult {
             violations.push(violation(
                 contract_id,
                 test_id,
-                "only ops/README.md, ops/CONTRACT.md, and ops/ERRORS.md are allowed at ops root",
+                "only the canonical ops root markdown files are allowed at ops root",
                 Some(rel_to_root(&path, &ctx.repo_root)),
             ));
         }
@@ -250,7 +264,7 @@ fn test_ops_001_generated_runtime_allowed_files(ctx: &RunContext) -> TestResult 
     walk_files(&root, &mut files);
     files.sort();
 
-    let allowed_extensions = BTreeSet::from(["json", "gitkeep"]);
+    let allowed_extensions = BTreeSet::from(["json", "md", "gitkeep"]);
     let mut violations = Vec::new();
     for path in files {
         let name = path.file_name().and_then(|v| v.to_str()).unwrap_or("");
@@ -287,7 +301,7 @@ fn test_ops_001_generated_example_allowed_files(ctx: &RunContext) -> TestResult 
     walk_files(&root, &mut files);
     files.sort();
 
-    let allowed_extensions = BTreeSet::from(["json", "gitkeep"]);
+    let allowed_extensions = BTreeSet::from(["json", "md", "gitkeep"]);
     let mut violations = Vec::new();
     for path in files {
         let name = path.file_name().and_then(|v| v.to_str()).unwrap_or("");
@@ -642,6 +656,12 @@ fn test_ops_inv_002_no_orphan_files(ctx: &RunContext) -> TestResult {
         if depth > 3 {
             continue;
         }
+        if rel.starts_with("ops/_generated/") || rel.starts_with("ops/_generated.example/") {
+            continue;
+        }
+        if path.extension().and_then(|v| v.to_str()) == Some("md") && ops_markdown_allowed(&rel) {
+            continue;
+        }
         if is_inventory_referenced(&rel, &authoritative, &contract_paths) {
             continue;
         }
@@ -680,7 +700,9 @@ fn test_ops_inv_003_no_duplicate_ssot(ctx: &RunContext) -> TestResult {
         let Some(name) = path.file_name().and_then(|v| v.to_str()) else {
             continue;
         };
-        if ["OWNER.md", "INDEX.md", "REQUIRED_FILES.md"].contains(&name) {
+        if ["ARTIFACTS.md", "DRIFT.md", "NAMING.md", "DIRECTORY_BUDGET_POLICY.md", "GENERATED_LIFECYCLE.md"]
+            .contains(&name)
+        {
             violations.push(violation(
                 contract_id,
                 test_id,

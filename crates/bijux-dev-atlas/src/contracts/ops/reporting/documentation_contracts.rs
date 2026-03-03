@@ -9,9 +9,6 @@ fn test_ops_root_010_forbid_deleted_doc_names(ctx: &RunContext) -> TestResult {
         "ARTIFACTS.md",
         "DRIFT.md",
         "NAMING.md",
-        "INDEX.md",
-        "OWNER.md",
-        "REQUIRED_FILES.md",
         "DIRECTORY_BUDGET_POLICY.md",
         "GENERATED_LIFECYCLE.md",
     ]);

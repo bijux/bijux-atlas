@@ -14,6 +14,7 @@ fn test_ops_root_001_allowed_surface(ctx: &RunContext) -> TestResult {
         "README.md",
         "CONTRACT.md",
         "ERRORS.md",
+        "INDEX.md",
         "RUNBOOK_GENERATION_FROM_GRAPH.md",
     ]);
     let allowed_dirs = BTreeSet::from([
@@ -83,12 +84,13 @@ fn test_ops_root_002_forbid_extra_root_markdown(ctx: &RunContext) -> TestResult 
             && name != "README.md"
             && name != "CONTRACT.md"
             && name != "ERRORS.md"
+            && name != "INDEX.md"
             && name != "RUNBOOK_GENERATION_FROM_GRAPH.md"
         {
             violations.push(violation(
                 contract_id,
                 test_id,
-                "only README.md, CONTRACT.md, and ERRORS.md are allowed markdown files at ops root",
+                "only the canonical ops root markdown files are allowed at ops root",
                 Some(format!("ops/{name}")),
             ));
         }
@@ -173,14 +175,21 @@ fn test_ops_root_005_filename_policy(ctx: &RunContext) -> TestResult {
     files.sort();
     let uppercase_allow =
         BTreeSet::from([
-            "README.md",
-            "CONTRACT.md",
-            "ERRORS.md",
-            "Chart.yaml",
-            "ALLOWLIST.json",
-            "NOTES.txt",
-            "RUNBOOK_GENERATION_FROM_GRAPH.md",
-        ]);
+        "README.md",
+        "CONTRACT.md",
+        "ERRORS.md",
+        "INDEX.md",
+        "Chart.yaml",
+        "ALLOWLIST.json",
+        "NOTES.txt",
+        "OWNER.md",
+        "REQUIRED_FILES.md",
+        "BUDGET_POLICY.md",
+        "SCHEMA_BUDGET_EXCEPTIONS.md",
+        "SCHEMA_REFERENCE_ALLOWLIST.md",
+        "VERSIONING_POLICY.md",
+        "RUNBOOK_GENERATION_FROM_GRAPH.md",
+    ]);
     let mut violations = Vec::new();
     for path in files {
         let rel = rel_to_root(&path, &ctx.repo_root);

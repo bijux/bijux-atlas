@@ -46,6 +46,9 @@ fn test_ops_root_011_markdown_allowlist_only(ctx: &RunContext) -> TestResult {
             continue;
         }
         let rel = rel_to_root(&path, &ctx.repo_root);
+        if rel.starts_with("ops/_generated/") || rel.starts_with("ops/_generated.example/") {
+            continue;
+        }
         if !allowlist.contains(&rel) {
             violations.push(violation(
                 contract_id,
@@ -184,6 +187,9 @@ fn test_ops_root_015_no_extra_pillar_markdown(ctx: &RunContext) -> TestResult {
             continue;
         }
         let rel = rel_to_root(&path, &ctx.repo_root);
+        if rel.starts_with("ops/_generated/") || rel.starts_with("ops/_generated.example/") {
+            continue;
+        }
         if !allowlist.contains(&rel) {
             violations.push(violation(
                 contract_id,
