@@ -171,6 +171,8 @@ store:
 
 networkPolicy:
   enabled: true
+  mode: internet-only
+  ingressMode: same-namespace
   allowDns: true
   allowMonitoringNamespace: observability
   allowedEgressCIDRs: []

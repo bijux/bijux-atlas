@@ -1194,6 +1194,25 @@
           ],
           "type": "object"
         },
+        "ingressMode": {
+          "description": "Top-level alias for networkPolicy.ingress.mode. Prefer this when you want a single explicit ingress policy selector.",
+          "enum": [
+            "same-namespace",
+            "selected",
+            "custom"
+          ],
+          "type": "string"
+        },
+        "mode": {
+          "description": "Top-level alias for networkPolicy.egress.mode. Atlas treats NetworkPolicy as east-west isolation with optional internet egress limiting.",
+          "enum": [
+            "disabled",
+            "internet-only",
+            "cluster-aware",
+            "custom"
+          ],
+          "type": "string"
+        },
         "egress": {
           "additionalProperties": false,
           "properties": {

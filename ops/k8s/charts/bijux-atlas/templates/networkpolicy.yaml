@@ -1,5 +1,8 @@
 {{- if .Values.networkPolicy.enabled }}
 {{- $egressMode := "internet-only" }}
+{{- if hasKey .Values.networkPolicy "mode" }}
+{{- $egressMode = .Values.networkPolicy.mode }}
+{{- end }}
 {{- if and .Values.networkPolicy.egress (hasKey .Values.networkPolicy.egress "mode") }}
 {{- $egressMode = .Values.networkPolicy.egress.mode }}
 {{- end }}
@@ -16,6 +19,9 @@
 {{- $allowNamespaces = .Values.networkPolicy.egress.allowNamespaces }}
 {{- end }}
 {{- $ingressMode := "same-namespace" }}
+{{- if hasKey .Values.networkPolicy "ingressMode" }}
+{{- $ingressMode = .Values.networkPolicy.ingressMode }}
+{{- end }}
 {{- if and .Values.networkPolicy.ingress (hasKey .Values.networkPolicy.ingress "mode") }}
 {{- $ingressMode = .Values.networkPolicy.ingress.mode }}
 {{- end }}
@@ -99,9 +105,11 @@ spec:
   {{- else }}
   ingress:
     {{- if eq $ingressMode "same-namespace" }}
-    # same-namespace: permit only in-namespace clients, deny cross-namespace ingress by default.
+    # same-namespace: permit only callers from the release namespace, deny cross-namespace ingress by default.
     - from:
-        - podSelector: {}
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Release.Namespace | quote }}
       ports:
         - protocol: TCP
           port: {{ .Values.service.port }}
@@ -195,7 +203,7 @@ spec:
           port: 80
     {{- end }}
     {{- else if eq $egressMode "cluster-aware" }}
-    # cluster-aware: permit dependency traffic by namespace selection, never by hardcoded service CIDRs.
+    # cluster-aware: permit dependency traffic by namespace selection and explicit pod selection, never by hardcoded service CIDRs.
     {{- if gt (len $allowNamespaces) 0 }}
     - to:
         - namespaceSelector:
@@ -206,6 +214,7 @@ spec:
                   {{- range $allowNamespaces }}
                   - {{ . | quote }}
                   {{- end }}
+          podSelector: {}
       ports:
         {{- range $clusterPorts }}
         - protocol: TCP

@@ -14,6 +14,11 @@ Related ops contracts: `OPS-ROOT-023`, `OPS-K8S-001`.
 Use one explicit NetworkPolicy model for Atlas so operators can reason about what traffic is
 permitted, which dependencies are assumed, and what must be labeled before a release goes live.
 
+The canonical intent is east-west isolation first, with optional internet egress limiting layered
+on top. Use `networkPolicy.mode` for the primary egress selector and `networkPolicy.ingressMode`
+for the primary ingress selector; the nested `networkPolicy.egress.mode` and
+`networkPolicy.ingress.mode` keys remain valid as compatibility aliases.
+
 ## Modes
 
 - `disabled`: render no policy and rely on the cluster default posture.
