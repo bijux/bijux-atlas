@@ -27,6 +27,7 @@
       "additionalProperties": false,
       "required": [
         "latency",
+        "memory",
         "error_rate",
         "throughput",
         "availability"
@@ -55,6 +56,19 @@
             "max_percent": {
               "type": "number",
               "minimum": 0
+            }
+          }
+        },
+        "memory": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "max_rss_mb"
+          ],
+          "properties": {
+            "max_rss_mb": {
+              "type": "number",
+              "exclusiveMinimum": 0
             }
           }
         },

@@ -8,6 +8,7 @@ use std::fs;
 use std::io::{Read, Write};
 use std::net::TcpListener;
 use std::path::Path;
+use std::process::Command as ProcessCommand;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -45,6 +46,25 @@ fn write_json(path: &Path, value: &serde_json::Value) -> Result<(), String> {
             .map_err(|err| format!("failed to encode {}: {err}", path.display()))?,
     )
     .map_err(|err| format!("failed to write {}: {err}", path.display()))
+}
+
+fn current_rss_mb() -> Result<f64, String> {
+    let pid = std::process::id().to_string();
+    let output = ProcessCommand::new("ps")
+        .args(["-o", "rss=", "-p", &pid])
+        .output()
+        .map_err(|err| format!("failed to sample process rss: {err}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "failed to sample process rss: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        ));
+    }
+    let rss_kb = String::from_utf8_lossy(&output.stdout)
+        .trim()
+        .parse::<f64>()
+        .map_err(|err| format!("failed to parse process rss: {err}"))?;
+    Ok(rss_kb / 1024.0)
 }
 
 fn percentile_ms(samples: &[f64], quantile: f64) -> f64 {
@@ -108,6 +128,12 @@ fn run_perf_validate(args: PerfValidateArgs) -> Result<(String, i32), String> {
             .and_then(serde_yaml::Value::as_str)
             .is_some()
         && slo.get("targets").is_some()
+        && slo
+            .get("targets")
+            .and_then(|value| value.get("memory"))
+            .and_then(|value| value.get("max_rss_mb"))
+            .and_then(serde_yaml::Value::as_f64)
+            .is_some()
         && budgets
             .get("throughput")
             .and_then(|value| value.get("min_requests_per_second"))
@@ -204,6 +230,7 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
         .timeout(Duration::from_secs(2))
         .build()
         .map_err(|err| format!("failed to build perf client: {err}"))?;
+    let rss_before_mb = current_rss_mb()?;
 
     for _ in 0..warmup_requests {
         let response = client
@@ -269,6 +296,8 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
         total_requests / total_elapsed
     };
     let p99 = percentile_ms(&samples, 0.99);
+    let rss_after_mb = current_rss_mb()?;
+    let rss_mb = rss_before_mb.max(rss_after_mb);
     let max_p99 = slo
         .get("targets")
         .and_then(|value| value.get("latency"))
@@ -295,6 +324,13 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
             .and_then(serde_yaml::Value::as_f64)
             .ok_or_else(|| "SLO file is missing targets.error_rate.max_percent".to_string())?;
     let perf_load_004 = throughput_rps >= min_throughput;
+    let perf_mem_001 = rss_mb
+        <= slo
+            .get("targets")
+            .and_then(|value| value.get("memory"))
+            .and_then(|value| value.get("max_rss_mb"))
+            .and_then(serde_yaml::Value::as_f64)
+            .ok_or_else(|| "SLO file is missing targets.memory.max_rss_mb".to_string())?;
 
     let report = serde_json::json!({
         "schema_version": 1,
@@ -312,13 +348,17 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
             "p95": percentile_ms(&samples, 0.95),
             "p99": p99
         },
+        "memory_mb": {
+            "rss": rss_mb
+        },
         "error_rate_percent": error_rate_percent,
         "throughput_rps": throughput_rps,
         "contracts": {
             "PERF-LOAD-001": report_valid,
             "PERF-LOAD-002": perf_load_002,
             "PERF-LOAD-003": perf_load_003,
-            "PERF-LOAD-004": perf_load_004
+            "PERF-LOAD-004": perf_load_004,
+            "PERF-MEM-001": perf_mem_001
         }
     });
 
@@ -335,8 +375,8 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
         args.out,
         &serde_json::json!({
             "schema_version": 1,
-            "status": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 { "ok" } else { "failed" },
-            "text": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 { "perf run passed" } else { "perf run failed" },
+            "status": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 { "ok" } else { "failed" },
+            "text": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 { "perf run passed" } else { "perf run failed" },
             "rows": [{
                 "report_path": format!("artifacts/perf/{}-load.json", args.scenario),
                 "scenario_path": format!("tools/perf/{}.json", args.scenario),
@@ -344,12 +384,13 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
                 "regression_window_runs": history_runs,
                 "contracts": report["contracts"].clone(),
                 "latency_ms": report["latency_ms"].clone(),
+                "memory_mb": report["memory_mb"].clone(),
                 "throughput_rps": report["throughput_rps"].clone(),
                 "error_rate_percent": report["error_rate_percent"].clone()
             }],
             "summary": {
                 "total": 1,
-                "errors": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 { 0 } else { 1 },
+                "errors": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 { 0 } else { 1 },
                 "warnings": 0
             }
         }),
@@ -357,7 +398,7 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
     let _ = baseline_path;
     Ok((
         rendered,
-        if report_valid && perf_load_002 && perf_load_003 && perf_load_004 {
+        if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 {
             0
         } else {
             1

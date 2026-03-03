@@ -4,6 +4,8 @@ canonical_scenario: gene-lookup
 targets:
   latency:
     p99_ms: 75
+  memory:
+    max_rss_mb: 256
   error_rate:
     max_percent: 0.0
   throughput:

@@ -9,6 +9,7 @@
     "seed",
     "configuration",
     "latency_ms",
+    "memory_mb",
     "error_rate_percent",
     "throughput_rps",
     "contracts"
@@ -82,6 +83,19 @@
         }
       }
     },
+    "memory_mb": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rss"
+      ],
+      "properties": {
+        "rss": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
     "error_rate_percent": {
       "type": "number",
       "minimum": 0
@@ -97,7 +111,8 @@
         "PERF-LOAD-001",
         "PERF-LOAD-002",
         "PERF-LOAD-003",
-        "PERF-LOAD-004"
+        "PERF-LOAD-004",
+        "PERF-MEM-001"
       ],
       "properties": {
         "PERF-LOAD-001": {
@@ -110,6 +125,9 @@
           "type": "boolean"
         },
         "PERF-LOAD-004": {
+          "type": "boolean"
+        },
+        "PERF-MEM-001": {
           "type": "boolean"
         }
       }
