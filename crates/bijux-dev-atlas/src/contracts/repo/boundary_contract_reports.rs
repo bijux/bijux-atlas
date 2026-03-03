@@ -149,7 +149,10 @@ pub(super) fn run_boundary_profile_render_matrix_check(
     };
 
     let mut profile_rows = Vec::new();
-    if let Some(profiles) = matrix_json.get("profiles").and_then(|value| value.as_array()) {
+    if let Some(profiles) = matrix_json
+        .get("profiles")
+        .and_then(|value| value.as_array())
+    {
         for profile in profiles {
             let name = profile
                 .get("name")

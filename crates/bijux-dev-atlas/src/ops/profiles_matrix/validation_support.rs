@@ -335,7 +335,10 @@ fn schema_violations(
         }
     }
 
-    if let Some(required) = schema_obj.get("required").and_then(|value| value.as_array()) {
+    if let Some(required) = schema_obj
+        .get("required")
+        .and_then(|value| value.as_array())
+    {
         if let Some(obj) = instance.as_object() {
             for field in required.iter().filter_map(|value| value.as_str()) {
                 if !obj.contains_key(field) {
@@ -345,7 +348,10 @@ fn schema_violations(
         }
     }
 
-    if let Some(properties) = schema_obj.get("properties").and_then(|value| value.as_object()) {
+    if let Some(properties) = schema_obj
+        .get("properties")
+        .and_then(|value| value.as_object())
+    {
         if let Some(obj) = instance.as_object() {
             for (key, child_schema) in properties {
                 if let Some(child_value) = obj.get(key) {

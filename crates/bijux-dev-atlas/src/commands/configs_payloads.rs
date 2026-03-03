@@ -508,8 +508,7 @@ pub(crate) fn configs_compile_payload(
     }
     files.sort_by(|a, b| a["path"].as_str().cmp(&b["path"].as_str()));
     let compiled_path = out_dir.join("compiled.index.json");
-    let compiled =
-        serde_json::json!({"schema_version":1,"run_id": ctx.run_id.as_str(),"files": files,"summary": merged});
+    let compiled = serde_json::json!({"schema_version":1,"run_id": ctx.run_id.as_str(),"files": files,"summary": merged});
     fs::write(
         &compiled_path,
         serde_json::to_string_pretty(&compiled).map_err(|e| e.to_string())?,
