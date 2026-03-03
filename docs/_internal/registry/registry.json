@@ -14559,6 +14559,31 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "export-audit-logs-to-siem",
+        "operations",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/export-audit-logs-to-siem.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "export-audit-logs-to-siem",
+        "operations",
+        "security"
+      ],
+      "title": "Export Audit Logs To Institutional SIEM",
+      "topic": "export-audit-logs-to-siem"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -14634,6 +14659,31 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "log-field-inventory",
+        "operations",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/log-field-inventory.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "log-field-inventory",
+        "operations",
+        "security"
+      ],
+      "title": "Audit Log Field Inventory",
+      "topic": "log-field-inventory"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -14684,6 +14734,31 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "respond-to-suspicious-activity",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/respond-to-suspicious-activity.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "respond-to-suspicious-activity",
+        "security"
+      ],
+      "title": "Respond To Suspicious Activity",
+      "topic": "respond-to-suspicious-activity"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -14706,6 +14781,31 @@
       ],
       "title": "Security Review Checklist",
       "topic": "review-checklist"
+    },
+    {
+      "area": "operations",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "safe-logging-guidelines",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/safe-logging-guidelines.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "safe-logging-guidelines",
+        "security"
+      ],
+      "title": "Safe Logging Guidelines",
+      "topic": "safe-logging-guidelines"
     },
     {
       "area": "operations",

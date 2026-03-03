@@ -16,6 +16,7 @@
 - Navigation must keep one onboarding funnel and one governance authority entry.
 - Runbooks must include `Prereqs`, `Install`, `Verify`, and `Rollback`.
 - Redirects must validate through the canonical MkDocs publication path.
+- Structured log changes must update the safe-field registry or data-classification registry.
 
 ## Why These Rules Exist
 

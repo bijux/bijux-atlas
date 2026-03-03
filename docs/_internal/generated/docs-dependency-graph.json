@@ -3018,6 +3018,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/security/export-audit-logs-to-siem.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/security/incident-response.md"
     },
     {
@@ -3033,6 +3038,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/security/log-field-inventory.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/security/model-scope.md"
     },
     {
@@ -3043,7 +3053,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/security/respond-to-suspicious-activity.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/security/review-checklist.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/safe-logging-guidelines.md"
     },
     {
       "crate": null,

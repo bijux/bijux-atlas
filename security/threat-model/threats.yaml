@@ -49,3 +49,30 @@ threats:
       - MIT-READINESS-CONTRACT
       - MIT-DRILL-COVERAGE
     residual_risk: Infrastructure-level failures can still exceed local recovery budgets.
+  - id: SEC-THREAT-AUDIT-TAMPER
+    category: tampering
+    title: Audit verification artifacts are changed after capture to hide operator activity.
+    severity: high
+    likelihood: low
+    affected_component: audit_pipeline
+    mitigations:
+      - MIT-AUDIT-VERIFICATION
+    residual_risk: Reviewers still need to verify the signed evidence bundle before relying on it.
+  - id: SEC-THREAT-AUDIT-BYPASS
+    category: repudiation
+    title: Runtime changes bypass governed audit fields or emit unclassified log fields.
+    severity: high
+    likelihood: medium
+    affected_component: audit_pipeline
+    mitigations:
+      - MIT-AUDIT-FIELD-GOVERNANCE
+    residual_risk: Manual log statements outside the governed helpers still require reviewer attention.
+  - id: SEC-THREAT-AUDIT-LOSS
+    category: denial-of-service
+    title: Local audit files are lost because retention and rotation were not configured for the deployment.
+    severity: medium
+    likelihood: medium
+    affected_component: audit_pipeline
+    mitigations:
+      - MIT-AUDIT-RETENTION
+    residual_risk: Local storage failure can still remove unsent file-sink events before export.

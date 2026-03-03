@@ -7926,6 +7926,20 @@
     },
     {
       "keywords": [
+        "export-audit-logs-to-siem",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/export-audit-logs-to-siem.md",
+      "tags": [
+        "export-audit-logs-to-siem",
+        "operations",
+        "security"
+      ],
+      "topic": "export-audit-logs-to-siem"
+    },
+    {
+      "keywords": [
         "incident-response",
         "operations",
         "security"
@@ -7968,6 +7982,20 @@
     },
     {
       "keywords": [
+        "log-field-inventory",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/log-field-inventory.md",
+      "tags": [
+        "log-field-inventory",
+        "operations",
+        "security"
+      ],
+      "topic": "log-field-inventory"
+    },
+    {
+      "keywords": [
         "model-scope",
         "operations",
         "security"
@@ -7997,6 +8025,20 @@
     {
       "keywords": [
         "operations",
+        "respond-to-suspicious-activity",
+        "security"
+      ],
+      "path": "docs/operations/security/respond-to-suspicious-activity.md",
+      "tags": [
+        "operations",
+        "respond-to-suspicious-activity",
+        "security"
+      ],
+      "topic": "respond-to-suspicious-activity"
+    },
+    {
+      "keywords": [
+        "operations",
         "review-checklist",
         "security"
       ],
@@ -8007,6 +8049,20 @@
         "security"
       ],
       "topic": "review-checklist"
+    },
+    {
+      "keywords": [
+        "operations",
+        "safe-logging-guidelines",
+        "security"
+      ],
+      "path": "docs/operations/security/safe-logging-guidelines.md",
+      "tags": [
+        "operations",
+        "safe-logging-guidelines",
+        "security"
+      ],
+      "topic": "safe-logging-guidelines"
     },
     {
       "keywords": [

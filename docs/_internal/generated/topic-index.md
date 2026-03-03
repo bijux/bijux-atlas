@@ -211,6 +211,7 @@
 | `evolution` | `crates/bijux-atlas-policies/docs/internal/evolution.md` |
 | `examples` | `crates/bijux-atlas-api/docs/examples.md, crates/bijux-atlas-cli/docs/examples.md, crates/bijux-atlas-core/docs/examples.md, crates/bijux-atlas-ingest/docs/examples.md, crates/bijux-atlas-model/docs/examples.md, crates/bijux-atlas-policies/docs/examples.md, crates/bijux-atlas-query/docs/examples.md, crates/bijux-atlas-server/docs/examples.md, crates/bijux-atlas-store/docs/examples.md, crates/bijux-dev-atlas/docs/examples.md` |
 | `exit-codes` | `crates/bijux-atlas-cli/docs/exit-codes.md, crates/bijux-dev-atlas/docs/exit-codes.md` |
+| `export-audit-logs-to-siem` | `docs/operations/security/export-audit-logs-to-siem.md` |
 | `extensibility-and-stability-levels` | `docs/control-plane/extensibility-and-stability-levels.md` |
 | `extension-guide` | `crates/bijux-atlas-policies/docs/extension-guide.md` |
 | `failure-modes` | `crates/bijux-atlas-ingest/docs/failure-modes.md, crates/bijux-atlas-server/docs/failure-modes.md, crates/bijux-atlas-store/docs/failure-modes.md, crates/bijux-dev-atlas/docs/failure-modes.md` |
@@ -261,6 +262,7 @@
 | `layering-rules` | `docs/architecture/layering-rules.md` |
 | `lifecycle` | `docs/reference/contracts/ops/lifecycle.md` |
 | `load-failure-triage` | `docs/operations/runbooks/load-failure-triage.md` |
+| `log-field-inventory` | `docs/operations/security/log-field-inventory.md` |
 | `log-redaction-policy` | `docs/operations/log-redaction-policy.md` |
 | `make` | `docs/development/tooling/make.md, docs/reference/make.md` |
 | `make-targets` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/make-targets.md, docs/reference/make-targets.md` |
@@ -364,6 +366,7 @@
 | `reproduce-ci-locally` | `docs/control-plane/reproduce-ci-locally.md` |
 | `reproducibility` | `docs/reference/ingest/reproducibility.md` |
 | `required-status-checks` | `.github/required-status-checks.md` |
+| `respond-to-suspicious-activity` | `docs/operations/security/respond-to-suspicious-activity.md` |
 | `retention-and-gc` | `docs/operations/retention-and-gc.md` |
 | `review-checklist` | `docs/operations/security/review-checklist.md` |
 | `review-packet` | `docs/operations/review-packet.md` |
@@ -382,6 +385,7 @@
 | `runtime-model` | `crates/bijux-atlas-server/docs/internal/runtime-model.md` |
 | `runtime-startup-config` | `crates/bijux-atlas-server/docs/generated/runtime-startup-config.md` |
 | `runtime-vs-control-plane-vs-ops` | `docs/development/runtime-vs-control-plane-vs-ops.md` |
+| `safe-logging-guidelines` | `docs/operations/security/safe-logging-guidelines.md` |
 | `schema` | `crates/bijux-atlas-policies/docs/schema.md` |
 | `schema-evolution` | `crates/bijux-atlas-policies/docs/internal/schema-evolution.md` |
 | `schema-evolution-notes` | `crates/bijux-atlas-model/docs/internal/schema-evolution-notes.md` |

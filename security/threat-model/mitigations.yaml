@@ -36,6 +36,21 @@ mitigations:
     control_check_id: DRILL-001
     docs_page: docs/reference/contracts/drills.md
     runbook_page: docs/operations/drills.md
+  - id: MIT-AUDIT-VERIFICATION
+    title: Audit verification reports are checksum-bound into signed release evidence.
+    control_check_id: REL-AUDIT-002
+    docs_page: docs/operations/security/audit-logging.md
+    runbook_page: docs/operations/security/respond-to-suspicious-activity.md
+  - id: MIT-AUDIT-FIELD-GOVERNANCE
+    title: Governed safe-field inventory blocks unclassified audit fields.
+    control_check_id: OBS-LOG-INV-001
+    docs_page: docs/operations/security/log-field-inventory.md
+    runbook_page: docs/operations/security/safe-logging-guidelines.md
+  - id: MIT-AUDIT-RETENTION
+    title: Retention and rotation contracts keep audit logs bounded and reviewable.
+    control_check_id: OBS-RET-001
+    docs_page: docs/operations/security/audit-log-rotation.md
+    runbook_page: docs/operations/security/export-audit-logs-to-siem.md
   - id: MIT-MANUAL-REVIEW
     title: Human review remains required for new external integrations.
     docs_page: docs/operations/review-packet.md

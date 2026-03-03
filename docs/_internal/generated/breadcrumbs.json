@@ -5334,6 +5334,15 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/export-audit-logs-to-siem.md"
+      ],
+      "path": "docs/operations/security/export-audit-logs-to-siem.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/incident-response.md"
       ],
       "path": "docs/operations/security/incident-response.md"
@@ -5361,6 +5370,15 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/log-field-inventory.md"
+      ],
+      "path": "docs/operations/security/log-field-inventory.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/model-scope.md"
       ],
       "path": "docs/operations/security/model-scope.md"
@@ -5379,9 +5397,27 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/respond-to-suspicious-activity.md"
+      ],
+      "path": "docs/operations/security/respond-to-suspicious-activity.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/review-checklist.md"
       ],
       "path": "docs/operations/security/review-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/safe-logging-guidelines.md"
+      ],
+      "path": "docs/operations/security/safe-logging-guidelines.md"
     },
     {
       "breadcrumbs": [

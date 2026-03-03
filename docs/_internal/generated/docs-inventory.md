@@ -607,12 +607,16 @@ License: Apache-2.0
 | `docs/operations/security/data-deletion-requests.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/security/deploy-behind-auth-proxy.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/enable-audit-logging.md` | `concept` | `docs-governance` | `stable` |
+| `docs/operations/security/export-audit-logs-to-siem.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/incident-response.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/index.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/key-rotation.md` | `concept` | `bijux-atlas-security` | `stable` |
+| `docs/operations/security/log-field-inventory.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/model-scope.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/privacy-stance.md` | `concept` | `docs-governance` | `stable` |
+| `docs/operations/security/respond-to-suspicious-activity.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/review-checklist.md` | `concept` | `bijux-atlas-security` | `stable` |
+| `docs/operations/security/safe-logging-guidelines.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/supply-chain-policies.md` | `concept` | `bijux-atlas-platform` | `stable` |
 | `docs/operations/upgrade.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/validation-entrypoints.md` | `concept` | `bijux-atlas-operations` | `stable` |

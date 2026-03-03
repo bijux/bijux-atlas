@@ -29,3 +29,10 @@
 
 - Include `configs/security/auth-model.yaml` so reviewers can verify the declared trust boundary.
 - Include `configs/security/policy.yaml` so reviewers can inspect the governed principal/action/resource model.
+
+## Audit evidence
+
+- Include `configs/observability/audit-log.schema.json`.
+- Include `configs/observability/retention.yaml`.
+- Include `artifacts/security/audit-verify.json`.
+- Include `artifacts/security/log-field-inventory.json`.

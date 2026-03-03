@@ -4827,6 +4827,14 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/export-audit-logs-to-siem.md",
+      "stability": "stable",
+      "title": "Export Audit Logs To Institutional SIEM"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-security",
       "path": "docs/operations/security/incident-response.md",
@@ -4851,6 +4859,14 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/log-field-inventory.md",
+      "stability": "stable",
+      "title": "Audit Log Field Inventory"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-security",
       "path": "docs/operations/security/model-scope.md",
@@ -4867,11 +4883,27 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/respond-to-suspicious-activity.md",
+      "stability": "stable",
+      "title": "Respond To Suspicious Activity"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-security",
       "path": "docs/operations/security/review-checklist.md",
       "stability": "stable",
       "title": "Security Review Checklist"
+    },
+    {
+      "area": "operations",
+      "audience": "contributors",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/safe-logging-guidelines.md",
+      "stability": "stable",
+      "title": "Safe Logging Guidelines"
     },
     {
       "area": "operations",

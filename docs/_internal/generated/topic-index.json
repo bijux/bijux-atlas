@@ -808,6 +808,9 @@
       "crates/bijux-atlas-cli/docs/exit-codes.md",
       "crates/bijux-dev-atlas/docs/exit-codes.md"
     ],
+    "export-audit-logs-to-siem": [
+      "docs/operations/security/export-audit-logs-to-siem.md"
+    ],
     "extensibility-and-stability-levels": [
       "docs/control-plane/extensibility-and-stability-levels.md"
     ],
@@ -1013,6 +1016,9 @@
     ],
     "load-failure-triage": [
       "docs/operations/runbooks/load-failure-triage.md"
+    ],
+    "log-field-inventory": [
+      "docs/operations/security/log-field-inventory.md"
     ],
     "log-redaction-policy": [
       "docs/operations/log-redaction-policy.md"
@@ -1342,6 +1348,9 @@
     "required-status-checks": [
       ".github/required-status-checks.md"
     ],
+    "respond-to-suspicious-activity": [
+      "docs/operations/security/respond-to-suspicious-activity.md"
+    ],
     "retention-and-gc": [
       "docs/operations/retention-and-gc.md"
     ],
@@ -1395,6 +1404,9 @@
     ],
     "runtime-vs-control-plane-vs-ops": [
       "docs/development/runtime-vs-control-plane-vs-ops.md"
+    ],
+    "safe-logging-guidelines": [
+      "docs/operations/security/safe-logging-guidelines.md"
     ],
     "schema": [
       "crates/bijux-atlas-policies/docs/schema.md"
