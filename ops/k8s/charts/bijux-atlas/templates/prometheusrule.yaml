@@ -27,6 +27,7 @@ spec:
           for: 10m
           labels:
             severity: page
+            owner: atlas-operations
             subsystem: atlas
             version: "1"
           annotations:
@@ -38,6 +39,7 @@ spec:
           for: 15m
           labels:
             severity: page
+            owner: atlas-operations
             subsystem: atlas
             version: "1"
           annotations:
@@ -49,6 +51,7 @@ spec:
           for: 10m
           labels:
             severity: warn
+            owner: atlas-operations
             subsystem: atlas
             version: "1"
           annotations:
@@ -63,6 +66,7 @@ spec:
           for: 15m
           labels:
             severity: warn
+            owner: atlas-operations
             subsystem: atlas
             version: "1"
           annotations:

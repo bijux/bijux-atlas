@@ -13,7 +13,7 @@ mod tests {
 
     #[test]
     fn scanner_detects_unpinned_images() {
-        let errors = scan_unpinned_images("image: registry.example/app:v1\n");
+        let errors = scan_unpinned_images("image: registry.example/app:v1\n", "prod");
         assert!(errors.iter().any(|e| e.contains("digest pinned")));
     }
 

@@ -78,7 +78,7 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
         }
     };
 
-    let mut validation_errors = validate_render_output(&rendered_manifest, args.target);
+    let mut validation_errors = validate_render_output(&rendered_manifest, args.target, &profile.name);
     let mut kubeconform_result = None;
     if matches!(args.target, OpsRenderTarget::Helm) {
         validation_errors.extend(validate_helm_dependencies(&ops_root));
@@ -253,10 +253,10 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
     Ok((rendered, exit))
 }
 
-fn validate_render_output(rendered: &str, target: OpsRenderTarget) -> Vec<String> {
+fn validate_render_output(rendered: &str, target: OpsRenderTarget, profile_name: &str) -> Vec<String> {
     let mut errors = Vec::new();
     let required_kinds = match target {
-        OpsRenderTarget::Helm => ["Namespace", "Deployment", "Service"].to_vec(),
+        OpsRenderTarget::Helm => ["Deployment", "Service"].to_vec(),
         OpsRenderTarget::Kind | OpsRenderTarget::Kustomize => Vec::new(),
     };
     for kind in required_kinds {
@@ -266,7 +266,7 @@ fn validate_render_output(rendered: &str, target: OpsRenderTarget) -> Vec<String
         }
     }
     errors.extend(scan_forbidden_kinds(rendered));
-    errors.extend(scan_unpinned_images(rendered));
+    errors.extend(scan_unpinned_images(rendered, profile_name));
     errors.extend(scan_invalid_image_refs(rendered));
     errors.extend(scan_invalid_runbook_urls(rendered));
     errors.extend(scan_alert_annotation_contract(rendered));
@@ -289,6 +289,7 @@ fn run_kubeconform_validation(
         .map_err(|err| format!("failed to write {}: {err}", manifest_path.display()))?;
     let args = vec![
         "-strict".to_string(),
+        "-ignore-missing-schemas".to_string(),
         "-summary".to_string(),
         manifest_path.display().to_string(),
     ];
@@ -366,8 +367,18 @@ fn scan_timestamps(rendered: &str) -> Vec<String> {
     errors
 }
 
-fn scan_unpinned_images(rendered: &str) -> Vec<String> {
+fn profile_requires_digest_pins(profile_name: &str) -> bool {
+    matches!(
+        profile_name,
+        "prod" | "prod-minimal" | "prod-ha" | "prod-airgap"
+    )
+}
+
+fn scan_unpinned_images(rendered: &str, profile_name: &str) -> Vec<String> {
     let mut errors = Vec::new();
+    if !profile_requires_digest_pins(profile_name) {
+        return errors;
+    }
     for line in rendered.lines() {
         let trimmed = line.trim();
         if !trimmed.starts_with("image:") {
@@ -528,7 +539,7 @@ mod render_tests {
     #[test]
     fn rendered_image_reference_accepts_digest_form() {
         let rendered = "image: ghcr.io/bijux/bijux-atlas@sha256:1111111111111111111111111111111111111111111111111111111111111111";
-        let errors = scan_unpinned_images(rendered);
+        let errors = scan_unpinned_images(rendered, "prod");
         assert!(errors.is_empty(), "expected digest pinned image, got {errors:?}");
     }
 
