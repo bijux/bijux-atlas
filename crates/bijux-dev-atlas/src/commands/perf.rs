@@ -167,6 +167,10 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
         .get("warmup_requests")
         .and_then(serde_json::Value::as_u64)
         .ok_or_else(|| "scenario is missing warmup_requests".to_string())? as usize;
+    let duration_seconds = scenario
+        .get("duration_seconds")
+        .and_then(serde_json::Value::as_u64)
+        .ok_or_else(|| "scenario is missing duration_seconds".to_string())? as u64;
     let seed = scenario
         .get("seed")
         .and_then(serde_json::Value::as_u64)
@@ -267,6 +271,7 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
         "seed": seed,
         "configuration": {
             "warmup_requests": warmup_requests,
+            "duration_seconds": duration_seconds,
             "threads": threads,
             "requests_per_thread": requests_per_thread,
             "request_path": expected_path
