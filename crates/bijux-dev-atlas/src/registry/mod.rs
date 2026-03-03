@@ -5,6 +5,7 @@
 //! configs contracts, while preserving existing callers through re-exports.
 
 pub mod configs;
+pub mod contracts;
 pub mod contract_modes;
 pub mod reports;
 mod runnable;
@@ -13,6 +14,7 @@ pub use crate::core::{
     expand_suite, explain_output, list_output, load_registry, registry_doctor, select_checks,
     validate_registry, Registry, RegistryDoctorReport, SuiteSpec, DEFAULT_REGISTRY_PATH,
 };
+pub use contracts::{ContractCatalog, ContractCatalogEntry};
 pub use contract_modes::{
     ContractMode, ContractModesFile, ContractModesValidation, CONTRACT_MODES_PATH,
     CONTRACT_MODES_SCHEMA_PATH,
