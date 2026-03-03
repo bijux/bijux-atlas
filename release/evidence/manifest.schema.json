@@ -355,7 +355,8 @@
         "schema",
         "retention_policy",
         "sample_log",
-        "verification_report"
+        "verification_report",
+        "log_field_inventory"
       ],
       "properties": {
         "schema": {
@@ -395,6 +396,18 @@
           }
         },
         "verification_report": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": { "type": "string", "minLength": 1 },
+            "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          }
+        },
+        "log_field_inventory": {
           "type": "object",
           "additionalProperties": false,
           "required": [

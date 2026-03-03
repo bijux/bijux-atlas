@@ -111,22 +111,6 @@ fn collect_tarball_members(
             files.push(repo_rel(root, &entry_path));
         }
     }
-    let provenance_path = root.join("release/provenance.json");
-    if provenance_path.exists() {
-        files.push(repo_rel(root, &provenance_path));
-    }
-    let signing_root = root.join("release/signing");
-    if signing_root.exists() {
-        for entry in fs::read_dir(&signing_root)
-            .map_err(|err| format!("failed to read {}: {err}", signing_root.display()))?
-        {
-            let entry = entry.map_err(|err| format!("failed to read directory entry: {err}"))?;
-            let path = entry.path();
-            if path.is_file() && path.extension().and_then(|ext| ext.to_str()) == Some("json") {
-                files.push(repo_rel(root, &path));
-            }
-        }
-    }
     for rel in manifest
         .get("observability_assets")
         .and_then(serde_json::Value::as_array)

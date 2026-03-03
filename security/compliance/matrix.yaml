@@ -1,5 +1,25 @@
 schema_version: 1
 mappings:
+  - control_id: CTRL-AUTH-001
+    evidence:
+      - docs/architecture/security/auth-model.md
+      - docs/operations/security/deploy-behind-auth-proxy.md
+      - configs/security/auth-model.yaml
+      - configs/security/policy.yaml
+  - control_id: CTRL-AUDIT-001
+    evidence:
+      - docs/operations/security/audit-logging.md
+      - docs/operations/security/audit-log-rotation.md
+      - docs/operations/security/respond-to-suspicious-activity.md
+      - configs/observability/audit-log.schema.json
+      - configs/observability/retention.yaml
+      - artifacts/security/audit-verify.json
+  - control_id: CTRL-PRIV-001
+    evidence:
+      - docs/operations/security/safe-logging-guidelines.md
+      - docs/operations/security/data-deletion-requests.md
+      - configs/security/data-classification.yaml
+      - configs/security/redaction.json
   - control_id: CTRL-LOG-001
     evidence:
       - configs/contracts/observability/log.schema.json

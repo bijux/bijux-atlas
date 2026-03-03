@@ -909,6 +909,7 @@ fn build_release_evidence_tarball(
     }
     files.extend(collect_observability_assets(repo_root)?);
     files.extend(collect_perf_assets(repo_root)?);
+    files.extend(collect_dataset_assets(repo_root)?);
     if repo_root.join("artifacts/security/security-github-actions.json").exists() {
         files.push("artifacts/security/security-github-actions.json".to_string());
     }
@@ -917,6 +918,9 @@ fn build_release_evidence_tarball(
     }
     if repo_root.join("artifacts/security/audit-smoke.jsonl").exists() {
         files.push("artifacts/security/audit-smoke.jsonl".to_string());
+    }
+    if repo_root.join("artifacts/security/log-field-inventory.json").exists() {
+        files.push("artifacts/security/log-field-inventory.json".to_string());
     }
     files.push("configs/security/auth-model.yaml".to_string());
     files.push("configs/security/policy.yaml".to_string());

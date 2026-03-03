@@ -80,6 +80,7 @@ pub(crate) fn run_ops_evidence_collect(
     let retention_policy = repo_root.join("configs/observability/retention.yaml");
     let audit_sample_log = repo_root.join("artifacts/security/audit-smoke.jsonl");
     let audit_verify_report = repo_root.join("artifacts/security/audit-verify.json");
+    let log_field_inventory = repo_root.join("artifacts/security/log-field-inventory.json");
     let runtime_env_allowlist = repo_root.join("configs/contracts/env.schema.json");
     let signing_policy = repo_root.join("release/signing/policy.yaml");
     let action_pins_report = repo_root.join("artifacts/security/security-github-actions.json");
@@ -166,6 +167,10 @@ pub(crate) fn run_ops_evidence_collect(
             "verification_report": {
                 "path": audit_verify_report.strip_prefix(&repo_root).unwrap_or(&audit_verify_report).display().to_string(),
                 "sha256": sha256_file(&audit_verify_report)?
+            },
+            "log_field_inventory": {
+                "path": log_field_inventory.strip_prefix(&repo_root).unwrap_or(&log_field_inventory).display().to_string(),
+                "sha256": sha256_file(&log_field_inventory)?
             }
         },
         "reports": collect_report_paths(&repo_root, &run_id)?,

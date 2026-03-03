@@ -1,5 +1,14 @@
 schema_version: 1
 controls:
+  - id: CTRL-AUTH-001
+    category: access-control
+    title: Auth stance, policy vocabulary, and deployment boundary are explicit and reviewable.
+  - id: CTRL-AUDIT-001
+    category: audit
+    title: Audit logging, retention, and verification artifacts are governed for release review.
+  - id: CTRL-PRIV-001
+    category: privacy
+    title: Sensitive field classification and redaction posture are documented and enforced.
   - id: CTRL-LOG-001
     category: logging
     title: Structured logging is governed and reviewable.
