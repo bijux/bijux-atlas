@@ -457,7 +457,22 @@ fn fail_fast_stops_after_first_failure() {
     )
     .expect("report");
     assert!(report.summary.failed + report.summary.errors >= 1);
-    assert!(report.summary.total < 9);
+    let full_report = run_checks(
+        &DeniedProcessRunner,
+        &TestFs,
+        &req,
+        &Selectors {
+            include_internal: true,
+            include_slow: true,
+            ..Selectors::default()
+        },
+        &RunOptions {
+            fail_fast: false,
+            max_failures: None,
+        },
+    )
+    .expect("full report");
+    assert!(report.summary.total < full_report.summary.total);
 }
 
 #[test]

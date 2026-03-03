@@ -14,8 +14,8 @@ fn workspace_root() -> PathBuf {
 
 #[test]
 fn test_all_runs_nextest_once_without_retries() {
-    let cargo_mk = fs::read_to_string(workspace_root().join("make/cargo.mk"))
-        .expect("read make/cargo.mk");
+    let cargo_mk =
+        fs::read_to_string(workspace_root().join("make/cargo.mk")).expect("read make/cargo.mk");
     let start = cargo_mk
         .find("test-all: ## Run all workspace tests including slow_ and ignored tests")
         .expect("test-all target");

@@ -53,7 +53,11 @@ fn contract_catalog_rejects_duplicate_ids() {
     let catalog = ContractCatalog::from_entries(vec![
         ContractCatalogEntry {
             domain: "docs",
-            doc_ref: DocRef::new("docs/_internal/contracts/docs/README.md", None, "Docs Contracts"),
+            doc_ref: DocRef::new(
+                "docs/_internal/contracts/docs/README.md",
+                None,
+                "Docs Contracts",
+            ),
             contract: duplicate(),
         },
         ContractCatalogEntry {

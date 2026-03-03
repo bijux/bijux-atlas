@@ -2,9 +2,9 @@
 
 use std::path::PathBuf;
 
-use bijux_dev_atlas::runtime::TestBundle;
 use bijux_dev_atlas::core::{run_checks, Capabilities, RunOptions, RunRequest, Selectors};
 use bijux_dev_atlas::model::{CheckStatus, DomainId, RunId};
+use bijux_dev_atlas::runtime::TestBundle;
 
 fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))

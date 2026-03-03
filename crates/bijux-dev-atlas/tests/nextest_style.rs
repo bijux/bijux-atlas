@@ -4,8 +4,8 @@ use bijux_dev_atlas::model::engine::{
     CaseReport, CaseStatus, ContractLane, ContractMode, ContractSummary, EffectKind, RunMetadata,
     RunReport, TestKind,
 };
-use bijux_dev_atlas::ui::terminal::report::{render_status_line, LineStyle};
 use bijux_dev_atlas::ui::terminal::nextest_style::{render, PreflightSummary, RenderOptions};
+use bijux_dev_atlas::ui::terminal::report::{render_status_line, LineStyle};
 use std::fs;
 use std::path::PathBuf;
 
@@ -260,7 +260,8 @@ fn long_name_report() -> RunReport {
             contract_title: "Long name".to_string(),
             required: false,
             lanes: vec![],
-            test_id: "governance.case_name_that_stays_long_and_explicit_without_wrapping".to_string(),
+            test_id: "governance.case_name_that_stays_long_and_explicit_without_wrapping"
+                .to_string(),
             test_title: "long".to_string(),
             kind: TestKind::Pure,
             status: CaseStatus::Fail,
@@ -310,7 +311,10 @@ fn shared_line_style_renders_canonical_contract_line() {
         "docs::DOC-001",
         "docs.root.surface",
     );
-    assert_eq!(line, "PASS [  0.016s] ( 2/12) docs::DOC-001 docs.root.surface");
+    assert_eq!(
+        line,
+        "PASS [  0.016s] ( 2/12) docs::DOC-001 docs.root.surface"
+    );
 }
 
 #[test]
@@ -330,8 +334,8 @@ fn matches_no_ansi_golden_output() {
             verbose: false,
         },
     );
-    let expected =
-        fs::read_to_string(golden_path("contract_runner_no_ansi.txt")).expect("read no-ansi golden");
+    let expected = fs::read_to_string(golden_path("contract_runner_no_ansi.txt"))
+        .expect("read no-ansi golden");
     assert_eq!(rendered, expected.trim_end());
 }
 
@@ -415,7 +419,10 @@ fn keeps_counter_width_stable_above_one_thousand() {
     let expected = fs::read_to_string(golden_path("contract_runner_counter_width.txt"))
         .expect("read counter-width golden");
     for line in expected.lines() {
-        assert!(rendered.contains(line), "missing counter-width line: {line}");
+        assert!(
+            rendered.contains(line),
+            "missing counter-width line: {line}"
+        );
     }
 }
 

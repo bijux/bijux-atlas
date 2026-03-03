@@ -59,6 +59,8 @@ fn check_catalog_rejects_duplicate_ids() {
         },
     ]);
 
-    let error = catalog.validate(&repo_root()).expect_err("duplicate id must fail");
+    let error = catalog
+        .validate(&repo_root())
+        .expect_err("duplicate id must fail");
     assert!(error.contains("duplicate check id `CHECK-DUP-001`"));
 }

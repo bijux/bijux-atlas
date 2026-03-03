@@ -147,7 +147,9 @@ fn check_run_renderer_uses_nextest_style_lines() {
     let rendered = render_check_run_report(&report, false);
     assert!(rendered.contains("check-run: run_id=checks_run total=2 fail-fast=false"));
     assert!(rendered.contains("PASS [  0.016s] (1/2) checks::checks_docs_index_links main"));
-    assert!(rendered.contains("FAIL [ 10.123s] (2/2) checks::checks_make_wrapper_commands main (wrapper drift)"));
+    assert!(rendered.contains(
+        "FAIL [ 10.123s] (2/2) checks::checks_make_wrapper_commands main (wrapper drift)"
+    ));
     assert!(rendered.contains("check-summary: total=2 passed=1 failed=1 skipped=0 errors=0"));
     assert!(rendered.contains("failed-tests:\nchecks::checks_make_wrapper_commands main"));
 }

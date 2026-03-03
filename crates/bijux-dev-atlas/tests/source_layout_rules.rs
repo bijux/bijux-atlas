@@ -37,7 +37,9 @@ fn source_tree_does_not_contain_part_files() {
 
 #[test]
 fn converged_module_roots_respect_depth_budget() {
-    let roots = ["app", "cli", "domains", "engine", "model", "registry", "runtime", "ui"];
+    let roots = [
+        "app", "cli", "domains", "engine", "model", "registry", "runtime", "ui",
+    ];
     let mut offenders = Vec::new();
     for root in roots {
         let start = crate_root().join("src").join(root);

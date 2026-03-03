@@ -6,7 +6,9 @@ use bijux_dev_atlas::engine::{
     ArtifactStore, CommandRunnableExecutor, EffectPolicy, RunStatus, RunnableExecutor,
     RunnableRunContext,
 };
-use bijux_dev_atlas::model::{RunId, RunnableEntry, RunnableId, RunnableKind, RunnableMode, SuiteId};
+use bijux_dev_atlas::model::{
+    RunId, RunnableEntry, RunnableId, RunnableKind, RunnableMode, SuiteId,
+};
 use bijux_dev_atlas::registry::RunnableRegistry;
 use bijux_dev_atlas::runtime::{Capabilities, FakeWorld};
 
@@ -34,7 +36,10 @@ fn runnable_registry_loads_checks_and_contracts() {
         "expected at least one contract runnable"
     );
     assert!(
-        registry.suites().iter().any(|suite| suite.id.as_str() == "checks"),
+        registry
+            .suites()
+            .iter()
+            .any(|suite| suite.id.as_str() == "checks"),
         "expected checks suite"
     );
     assert!(
@@ -48,10 +53,8 @@ fn runnable_registry_loads_checks_and_contracts() {
 
 #[test]
 fn command_executor_writes_skip_report_for_missing_tool() {
-    let temp_root = std::env::temp_dir().join(format!(
-        "bijux-dev-atlas-runnable-{}",
-        std::process::id()
-    ));
+    let temp_root =
+        std::env::temp_dir().join(format!("bijux-dev-atlas-runnable-{}", std::process::id()));
     let _ = fs::remove_dir_all(&temp_root);
     fs::create_dir_all(&temp_root).expect("create temp root");
 
@@ -92,9 +95,7 @@ fn command_executor_writes_skip_report_for_missing_tool() {
     let result = executor.execute(&entry, &context).expect("execute");
     assert_eq!(result.status, RunStatus::Skip);
     assert_eq!(result.report_refs.len(), 1);
-    assert!(
-        fs::read_to_string(&result.report_refs[0].path)
-            .expect("read report")
-            .contains("\"status\": \"skip\"")
-    );
+    assert!(fs::read_to_string(&result.report_refs[0].path)
+        .expect("read report")
+        .contains("\"status\": \"skip\""));
 }

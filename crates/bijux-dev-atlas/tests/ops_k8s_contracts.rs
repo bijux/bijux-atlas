@@ -100,7 +100,7 @@ fn yaml_bool(value: &YamlValue) -> Option<bool> {
     value.as_bool()
 }
 
-fn yaml_str<'a>(value: &'a YamlValue) -> Option<&'a str> {
+fn yaml_str(value: &YamlValue) -> Option<&str> {
     value.as_str()
 }
 

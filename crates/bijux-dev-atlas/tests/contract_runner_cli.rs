@@ -27,7 +27,11 @@ fn effect_only_contract_skips_in_static_mode() {
         ])
         .output()
         .expect("run contract command");
-    assert!(output.status.success(), "stderr: {}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let json: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("parse json output");
     assert_eq!(json["counts"]["failed"].as_u64().unwrap_or(0), 0);

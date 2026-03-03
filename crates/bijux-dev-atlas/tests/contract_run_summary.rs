@@ -44,8 +44,7 @@ fn contract_run_summary_roundtrips() {
             duration_ms: 16,
             message: None,
             artifact_paths: vec![
-                "artifacts/contracts/DOC-001/cases/docs.surface.allowed_root_dirs.json"
-                    .to_string(),
+                "artifacts/contracts/DOC-001/cases/docs.surface.allowed_root_dirs.json".to_string(),
             ],
         }],
     };
