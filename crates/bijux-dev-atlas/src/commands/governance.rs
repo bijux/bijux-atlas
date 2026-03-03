@@ -159,6 +159,7 @@ struct ChecksRegistryEntry {
     summary: String,
     owner: String,
     mode: String,
+    group: String,
     inputs: Vec<String>,
     outputs: Vec<String>,
     commands: Vec<String>,
@@ -187,9 +188,50 @@ struct ContractsRegistryEntry {
     summary: String,
     owner: String,
     mode: String,
+    group: String,
     runner: String,
     reports: Vec<String>,
     suite_membership: Vec<String>,
+    tags: Option<Vec<String>>,
+}
+
+#[derive(Debug, Deserialize)]
+struct GovernanceTagsTaxonomy {
+    schema_version: u64,
+    taxonomy_id: String,
+    owner: String,
+    tags: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct GovernanceSuitesIndex {
+    schema_version: u64,
+    index_id: String,
+    owner: String,
+    suites: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct GroupRegistry {
+    schema_version: u64,
+    group_set_id: String,
+    owner: String,
+    groups: Vec<GroupEntry>,
+}
+
+#[derive(Debug, Deserialize)]
+struct GroupEntry {
+    id: String,
+    summary: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct RegistryCompletenessPolicy {
+    schema_version: u64,
+    policy_id: String,
+    owner: String,
+    required_field_coverage_percent: u64,
+    required_rules: Vec<String>,
 }
 
 fn exceptions_registry_path(root: &Path) -> PathBuf {
@@ -234,6 +276,50 @@ fn contracts_registry_schema_path(root: &Path) -> PathBuf {
 
 fn checks_inventory_path(root: &Path) -> PathBuf {
     root.join("artifacts/governance/checks-inventory.json")
+}
+
+fn registry_missing_fields_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/registry-missing-fields.json")
+}
+
+fn suites_index_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/suites/suites.index.json")
+}
+
+fn suites_index_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/contracts/governance/suites-index.schema.json")
+}
+
+fn tags_taxonomy_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/tags.json")
+}
+
+fn tags_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/contracts/governance/tags.schema.json")
+}
+
+fn check_groups_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/check-groups.json")
+}
+
+fn check_groups_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/contracts/governance/check-groups.schema.json")
+}
+
+fn contract_groups_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/contract-groups.json")
+}
+
+fn contract_groups_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/contracts/governance/contract-groups.schema.json")
+}
+
+fn registry_completeness_policy_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/registry-completeness-policy.json")
+}
+
+fn registry_completeness_policy_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/contracts/governance/registry-completeness-policy.schema.json")
 }
 
 fn compatibility_policy_path(root: &Path) -> PathBuf {
@@ -479,10 +565,99 @@ fn validate_command_order(commands: &[String]) -> bool {
     sorted == commands
 }
 
+fn known_commands(root: &Path) -> Result<BTreeSet<String>, String> {
+    let mut commands = BTreeSet::new();
+    let public_targets = read_json_value(&root.join("configs/make/public-targets.json"))?;
+    for row in public_targets
+        .get("public_targets")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+    {
+        if let Some(name) = row.get("name").and_then(serde_json::Value::as_str) {
+            commands.insert(format!("make {name}"));
+        }
+    }
+
+    let command_index = read_json_value(&root.join("docs/_internal/generated/command-index.json"))?;
+    for row in command_index
+        .get("commands")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+    {
+        if let Some(id) = row.get("id").and_then(serde_json::Value::as_str) {
+            commands.insert(format!("bijux dev atlas {id}"));
+            if let Some(subcommands) = row.get("subcommands").and_then(serde_json::Value::as_array) {
+                for subcommand in subcommands.iter().filter_map(serde_json::Value::as_str) {
+                    commands.insert(format!("bijux dev atlas {id} {subcommand}"));
+                }
+            }
+        }
+    }
+
+    for rel in [
+        "make/cargo.mk",
+        "make/root.mk",
+        "make/contracts.mk",
+        "make/configs.mk",
+        "make/docs.mk",
+        "make/k8s.mk",
+    ] {
+        let path = root.join(rel);
+        let text = fs::read_to_string(&path)
+            .map_err(|err| format!("read {} failed: {err}", path.display()))?;
+        for line in text.lines() {
+            let trimmed = line.trim();
+            if let Some((target, _)) = trimmed.split_once(':') {
+                if !target.is_empty()
+                    && !target.starts_with('.')
+                    && target
+                        .chars()
+                        .all(|ch| ch.is_ascii_lowercase() || ch.is_ascii_digit() || matches!(ch, '-' | '_'))
+                {
+                    commands.insert(format!("make {target}"));
+                }
+            }
+            if let Some(command) = trimmed
+                .strip_prefix("@printf '%s\\n' \"run: ")
+                .and_then(|value| value.strip_suffix('"'))
+            {
+                let canonical = command.replace("$(DEV_ATLAS)", "bijux dev atlas");
+                commands.insert(canonical);
+            }
+        }
+    }
+
+    let contract_gate_map = read_json_value(&root.join("ops/inventory/contract-gate-map.json"))?;
+    for row in contract_gate_map
+        .get("mappings")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+    {
+        if let Some(command) = row.get("command").and_then(serde_json::Value::as_str) {
+            commands.insert(command.to_string());
+        }
+        if let Some(command) = row
+            .get("repro_command")
+            .and_then(serde_json::Value::as_str)
+        {
+            commands.insert(command.to_string());
+        }
+    }
+    Ok(commands)
+}
+
 fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     let checks_suite_schema = read_json_value(&suite_schema_path(root))?;
     let checks_registry_schema = read_json_value(&checks_registry_schema_path(root))?;
     let contracts_registry_schema = read_json_value(&contracts_registry_schema_path(root))?;
+    let _: serde_json::Value = read_json_value(&suites_index_schema_path(root))?;
+    let _: serde_json::Value = read_json_value(&tags_schema_path(root))?;
+    let _: serde_json::Value = read_json_value(&check_groups_schema_path(root))?;
+    let _: serde_json::Value = read_json_value(&contract_groups_schema_path(root))?;
+    let _: serde_json::Value = read_json_value(&registry_completeness_policy_schema_path(root))?;
     if checks_suite_schema
         .get("properties")
         .and_then(|value| value.get("schema_version"))
@@ -514,15 +689,42 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     let checks_suite: GovernanceSuiteRegistry = read_json_file(&checks_suite_path(root))?;
     let contracts_suite: GovernanceSuiteRegistry = read_json_file(&contracts_suite_path(root))?;
     let tests_suite: GovernanceSuiteRegistry = read_json_file(&tests_suite_path(root))?;
+    let suites_index: GovernanceSuitesIndex = read_json_file(&suites_index_path(root))?;
     let checks_registry: ChecksRegistryCatalog = read_json_file(&checks_registry_path(root))?;
     let contracts_registry: ContractsRegistryCatalog =
         read_json_file(&contracts_registry_path(root))?;
+    let tags_taxonomy: GovernanceTagsTaxonomy = read_json_file(&tags_taxonomy_path(root))?;
+    let check_groups: GroupRegistry = read_json_file(&check_groups_path(root))?;
+    let contract_groups: GroupRegistry = read_json_file(&contract_groups_path(root))?;
+    let completeness_policy: RegistryCompletenessPolicy =
+        read_json_file(&registry_completeness_policy_path(root))?;
     let checks_docs = fs::read_to_string(root.join("docs/_internal/governance/checks-and-contracts.md"))
         .map_err(|err| format!("read checks-and-contracts.md failed: {err}"))?;
 
     let mut errors = Vec::<String>::new();
     let mut check_ids = BTreeSet::new();
     let mut contract_ids = BTreeSet::new();
+    let mut missing_rows = Vec::<serde_json::Value>::new();
+    let allowed_tags = tags_taxonomy.tags.iter().cloned().collect::<BTreeSet<_>>();
+    let known_check_groups = check_groups
+        .groups
+        .iter()
+        .map(|group| group.id.clone())
+        .collect::<BTreeSet<_>>();
+    let known_contract_groups = contract_groups
+        .groups
+        .iter()
+        .map(|group| group.id.clone())
+        .collect::<BTreeSet<_>>();
+    let resolvable_commands = known_commands(root)?;
+    let expected_suite_files = [
+        "checks.suite.json".to_string(),
+        "contracts.suite.json".to_string(),
+        "tests.suite.json".to_string(),
+    ]
+    .into_iter()
+    .collect::<BTreeSet<_>>();
+    let indexed_suite_files = suites_index.suites.iter().cloned().collect::<BTreeSet<_>>();
 
     for suite in [&checks_suite, &contracts_suite, &tests_suite] {
         if suite.schema_version != 1 {
@@ -550,6 +752,14 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             if !owner_format_valid(&entry.owner) {
                 errors.push(format!("suite `{}` entry `{}` owner `{}` has invalid format", suite.suite_id, entry.id, entry.owner));
             }
+            for tag in &entry.tags {
+                if !allowed_tags.contains(tag) {
+                    errors.push(format!(
+                        "suite `{}` entry `{}` uses unknown tag `{}`",
+                        suite.suite_id, entry.id, tag
+                    ));
+                }
+            }
         }
     }
 
@@ -561,6 +771,49 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     }
     if tests_suite.suite_id != "tests" {
         errors.push("tests suite must use suite_id `tests`".to_string());
+    }
+    if suites_index.schema_version != 1 || suites_index.index_id != "governance-suites" {
+        errors.push("suites index must declare schema_version=1 and index_id=governance-suites".to_string());
+    }
+    if !owner_format_valid(&suites_index.owner) {
+        errors.push(format!("suites index owner `{}` has invalid format", suites_index.owner));
+    }
+    if indexed_suite_files != expected_suite_files {
+        errors.push(format!(
+            "suites index must match suite files on disk: expected {:?}, found {:?}",
+            expected_suite_files, indexed_suite_files
+        ));
+    }
+    if tags_taxonomy.schema_version != 1 || tags_taxonomy.taxonomy_id != "governance-tags" {
+        errors.push("tags taxonomy must declare schema_version=1 and taxonomy_id=governance-tags".to_string());
+    }
+    if !owner_format_valid(&tags_taxonomy.owner) {
+        errors.push(format!("tags taxonomy owner `{}` has invalid format", tags_taxonomy.owner));
+    }
+    if check_groups.schema_version != 1 || check_groups.group_set_id != "check-groups" {
+        errors.push("check groups must declare schema_version=1 and group_set_id=check-groups".to_string());
+    }
+    if !owner_format_valid(&check_groups.owner) {
+        errors.push(format!("check groups owner `{}` has invalid format", check_groups.owner));
+    }
+    if contract_groups.schema_version != 1
+        || contract_groups.group_set_id != "contract-groups"
+    {
+        errors.push("contract groups must declare schema_version=1 and group_set_id=contract-groups".to_string());
+    }
+    if !owner_format_valid(&contract_groups.owner) {
+        errors.push(format!("contract groups owner `{}` has invalid format", contract_groups.owner));
+    }
+    if completeness_policy.schema_version != 1
+        || completeness_policy.policy_id != "registry-completeness-threshold"
+    {
+        errors.push("registry completeness policy must declare schema_version=1 and policy_id=registry-completeness-threshold".to_string());
+    }
+    if !owner_format_valid(&completeness_policy.owner) {
+        errors.push(format!(
+            "registry completeness policy owner `{}` has invalid format",
+            completeness_policy.owner
+        ));
     }
 
     if checks_registry.schema_version != 1 || checks_registry.registry_id != "checks-registry" {
@@ -576,23 +829,41 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
         if !owner_format_valid(&check.owner) {
             errors.push(format!("{} owner `{}` has invalid format", check.check_id, check.owner));
         }
+        if check.owner.contains('+') || check.owner.contains(',') {
+            errors.push(format!("{} must have exactly one owner", check.check_id));
+        }
         if !matches!(check.mode.as_str(), "pure" | "effect") {
             errors.push(format!("{} mode `{}` is invalid", check.check_id, check.mode));
         }
+        if !known_check_groups.contains(&check.group) {
+            errors.push(format!("{} group `{}` is invalid", check.check_id, check.group));
+        }
         if check.inputs.is_empty() || check.outputs.is_empty() {
             errors.push(format!("{} must declare non-empty inputs and outputs", check.check_id));
+            missing_rows.push(serde_json::json!({"kind":"check","id":check.check_id,"missing":["inputs_or_outputs"]}));
         }
         if check.commands.is_empty() {
             errors.push(format!("{} must declare at least one command", check.check_id));
+            missing_rows.push(serde_json::json!({"kind":"check","id":check.check_id,"missing":["commands"]}));
         }
         if !validate_command_order(&check.commands) {
             errors.push(format!("{} commands must be stored in deterministic sorted order", check.check_id));
         }
+        for command in &check.commands {
+            if !resolvable_commands.contains(command) {
+                errors.push(format!(
+                    "{} command `{}` is not resolvable from known make/control-plane inventory",
+                    check.check_id, command
+                ));
+            }
+        }
         if check.reports.is_empty() {
             errors.push(format!("{} must declare at least one report artifact", check.check_id));
+            missing_rows.push(serde_json::json!({"kind":"check","id":check.check_id,"missing":["reports"]}));
         }
         if check.suite_membership.is_empty() {
             errors.push(format!("{} must declare suite_membership", check.check_id));
+            missing_rows.push(serde_json::json!({"kind":"check","id":check.check_id,"missing":["suite_membership"]}));
         }
         if !matches!(check.severity.as_str(), "blocker" | "major" | "minor" | "info") {
             errors.push(format!("{} severity `{}` is invalid", check.check_id, check.severity));
@@ -610,6 +881,11 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             if tags.is_empty() {
                 errors.push(format!("{} tags must not be empty when present", check.check_id));
             }
+            for tag in tags {
+                if !allowed_tags.contains(tag) {
+                    errors.push(format!("{} uses unknown tag `{}`", check.check_id, tag));
+                }
+            }
         }
         if let Some(depends_on) = &check.depends_on {
             if depends_on.iter().any(|value| value.trim().is_empty()) {
@@ -625,6 +901,12 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             if since_version.trim().is_empty() {
                 errors.push(format!("{} since_version must not be blank", check.check_id));
             }
+        }
+        if !check.suite_membership.iter().any(|suite| suite == "checks") {
+            errors.push(format!(
+                "{} suite_membership must include `checks`",
+                check.check_id
+            ));
         }
     }
 
@@ -652,23 +934,53 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
                 contract.contract_id, contract.owner
             ));
         }
+        if contract.owner.contains('+') || contract.owner.contains(',') {
+            errors.push(format!("{} must have exactly one owner", contract.contract_id));
+        }
         if !matches!(contract.mode.as_str(), "pure" | "effect") {
             errors.push(format!(
                 "{} mode `{}` is invalid",
                 contract.contract_id, contract.mode
             ));
         }
+        if !known_contract_groups.contains(&contract.group) {
+            errors.push(format!(
+                "{} group `{}` is invalid",
+                contract.contract_id, contract.group
+            ));
+        }
         if contract.runner.trim().is_empty() {
             errors.push(format!("{} missing runner", contract.contract_id));
+            missing_rows.push(serde_json::json!({"kind":"contract","id":contract.contract_id,"missing":["runner"]}));
+        } else if !resolvable_commands.contains(&contract.runner) {
+            errors.push(format!(
+                "{} runner `{}` is not resolvable from known make/control-plane inventory",
+                contract.contract_id, contract.runner
+            ));
         }
         if contract.reports.is_empty() {
             errors.push(format!(
                 "{} must declare at least one report artifact",
                 contract.contract_id
             ));
+            missing_rows.push(serde_json::json!({"kind":"contract","id":contract.contract_id,"missing":["reports"]}));
         }
         if contract.suite_membership.is_empty() {
             errors.push(format!("{} must declare suite_membership", contract.contract_id));
+            missing_rows.push(serde_json::json!({"kind":"contract","id":contract.contract_id,"missing":["suite_membership"]}));
+        }
+        if let Some(tags) = &contract.tags {
+            for tag in tags {
+                if !allowed_tags.contains(tag) {
+                    errors.push(format!("{} uses unknown tag `{}`", contract.contract_id, tag));
+                }
+            }
+        }
+        if !contract.suite_membership.iter().any(|suite| suite == "contracts") {
+            errors.push(format!(
+                "{} suite_membership must include `contracts`",
+                contract.contract_id
+            ));
         }
     }
 
@@ -683,6 +995,12 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     }
     if !suites_readme_path(root).exists() {
         errors.push("configs/governance/suites/README.md is required".to_string());
+    }
+    if !checks_docs.contains("idempotent") {
+        errors.push(
+            "docs/_internal/governance/checks-and-contracts.md must define the idempotent checks rule"
+                .to_string(),
+        );
     }
 
     let checks_suite_ids = checks_suite
@@ -710,6 +1028,95 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             errors.push(format!("contracts suite missing registry id `{id}`"));
         }
     }
+    for entry in &checks_suite.entries {
+        if !check_ids.contains(&entry.id) {
+            errors.push(format!("checks suite entry references unknown check `{}`", entry.id));
+        }
+    }
+    for entry in &contracts_suite.entries {
+        if !contract_ids.contains(&entry.id) {
+            errors.push(format!(
+                "contracts suite entry references unknown contract `{}`",
+                entry.id
+            ));
+        }
+    }
+
+    for group in &check_groups.groups {
+        if group.summary.trim().is_empty() {
+            errors.push(format!("check group `{}` must define summary", group.id));
+        }
+        if !checks_registry
+            .checks
+            .iter()
+            .any(|check| check.group == group.id)
+        {
+            errors.push(format!(
+                "check group `{}` has no checks and should be removed",
+                group.id
+            ));
+        }
+    }
+    for group in &contract_groups.groups {
+        if group.summary.trim().is_empty() {
+            errors.push(format!("contract group `{}` must define summary", group.id));
+        }
+        if !contracts_registry
+            .contracts
+            .iter()
+            .any(|contract| contract.group == group.id)
+        {
+            errors.push(format!(
+                "contract group `{}` has no contracts and should be removed",
+                group.id
+            ));
+        }
+    }
+
+    let required_fields_total = (checks_registry.checks.len() * 5) + (contracts_registry.contracts.len() * 4);
+    let required_fields_missing = missing_rows
+        .iter()
+        .map(|row| row.get("missing").and_then(serde_json::Value::as_array).map_or(0, |items| items.len()))
+        .sum::<usize>();
+    let required_fields_present = required_fields_total.saturating_sub(required_fields_missing);
+    let coverage_percent = if required_fields_total == 0 {
+        100
+    } else {
+        ((required_fields_present * 100) / required_fields_total) as u64
+    };
+    let missing_fields_report = serde_json::json!({
+        "report_id": "registry-missing-fields",
+        "version": 1,
+        "inputs": {
+            "checks_registry": "configs/governance/checks.registry.json",
+            "contracts_registry": "configs/governance/contracts.registry.json",
+            "completeness_policy": "configs/governance/registry-completeness-policy.json"
+        },
+        "status": if missing_rows.is_empty() { "ok" } else { "failed" },
+        "summary": {
+            "rows": missing_rows.len(),
+            "required_field_coverage_percent": coverage_percent,
+            "threshold_percent": completeness_policy.required_field_coverage_percent,
+            "required_rule_count": completeness_policy.required_rules.len()
+        },
+        "rows": missing_rows,
+        "errors": if coverage_percent < completeness_policy.required_field_coverage_percent {
+            vec![format!(
+                "registry completeness below threshold: {} < {}",
+                coverage_percent, completeness_policy.required_field_coverage_percent
+            )]
+        } else {
+            Vec::<String>::new()
+        }
+    });
+    validate_named_report(root, "registry-missing-fields.schema.json", &missing_fields_report)?;
+    write_pretty_json(&registry_missing_fields_path(root), &missing_fields_report)?;
+    if coverage_percent < completeness_policy.required_field_coverage_percent {
+        errors.push(format!(
+            "registry completeness below threshold: {} < {}",
+            coverage_percent, completeness_policy.required_field_coverage_percent
+        ));
+    }
 
     errors.sort();
     errors.dedup();
@@ -725,7 +1132,8 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             "tests_suite_entries": tests_suite.entries.len(),
             "checks_suite_tags": checks_suite_tag_count,
             "contracts_suite_tags": contracts_suite_tag_count,
-            "tests_suite_tags": tests_suite_tag_count
+            "tests_suite_tags": tests_suite_tag_count,
+            "required_field_coverage_percent": coverage_percent
         },
         "artifacts": {
             "checks_registry": checks_registry_path(root).strip_prefix(root).unwrap_or(&checks_registry_path(root)).display().to_string(),
@@ -733,7 +1141,12 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             "checks_suite": checks_suite_path(root).strip_prefix(root).unwrap_or(&checks_suite_path(root)).display().to_string(),
             "contracts_suite": contracts_suite_path(root).strip_prefix(root).unwrap_or(&contracts_suite_path(root)).display().to_string(),
             "tests_suite": tests_suite_path(root).strip_prefix(root).unwrap_or(&tests_suite_path(root)).display().to_string(),
-            "guide": "docs/_internal/governance/checks-and-contracts.md"
+            "guide": "docs/_internal/governance/checks-and-contracts.md",
+            "suites_index": suites_index_path(root).strip_prefix(root).unwrap_or(&suites_index_path(root)).display().to_string(),
+            "tags_taxonomy": tags_taxonomy_path(root).strip_prefix(root).unwrap_or(&tags_taxonomy_path(root)).display().to_string(),
+            "check_groups": check_groups_path(root).strip_prefix(root).unwrap_or(&check_groups_path(root)).display().to_string(),
+            "contract_groups": contract_groups_path(root).strip_prefix(root).unwrap_or(&contract_groups_path(root)).display().to_string(),
+            "missing_fields_report": registry_missing_fields_path(root).strip_prefix(root).unwrap_or(&registry_missing_fields_path(root)).display().to_string()
         },
         "errors": errors
     });
