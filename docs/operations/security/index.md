@@ -4,13 +4,17 @@
 - Type: `runbook`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last verified against: `main@a98808392299dfcbf57f73e25722d2b7070f72e4`
 - Reason to exist: provide security operations entrypoints.
 
 ## Start here
 
+- [Security Model Scope](model-scope.md)
 - [Security Posture](../security-posture.md)
 - [Security Compliance](compliance.md)
+- [Security Incident Response](incident-response.md)
+- [Security Key Rotation](key-rotation.md)
+- [Security Review Checklist](review-checklist.md)
 - [Advisory Process](advisory-process.md)
 - [Incident Response](../incident-response.md)
 

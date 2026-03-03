@@ -4,7 +4,7 @@
 - Type: `reference`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@bb6ad845da4ad296a761a62e4b69f40969f7b563`
+- Last verified against: `main@a98808392299dfcbf57f73e25722d2b7070f72e4`
 - Reason to exist: define the machine-readable security contract checks and their sources.
 
 ## Threat model checks
@@ -26,9 +26,18 @@
 - `SEC-RED-002`: the default release evidence directory contains no declared secret matches.
 - `SEC-ART-001`: artifact scan passes for the selected directory.
 
+## Supply-chain checks
+
+- `SEC-DEPS-001`: docs npm dependencies resolve only from the allowlisted registry set.
+- `SEC-DEPS-002`: docs Python requirements use only the allowlisted package index set.
+- `SEC-IMAGES-001`: governed base images are digest-pinned and recorded in release evidence.
+- `SEC-ACTIONS-001`: GitHub Actions refs are SHA-pinned and match the canonical inventory.
+- `SEC-SBOM-001`: release evidence includes SBOM coverage that matches prod image digests.
+
 ## Source files
 
 - Threat model: `security/threat-model/*.md`, `security/threat-model/*.yaml`
 - Compliance: `security/compliance/*.yaml`
 - Secret policy: `configs/security/*.json`
+- Signing policy: `release/signing/policy.yaml`
 - Schemas: `configs/contracts/security/*.json`
