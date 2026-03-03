@@ -308,6 +308,399 @@ fn manifest_diff_summary(before: &str, after: &str) -> serde_json::Value {
     })
 }
 
+fn configmap_env_keys_from_manifest(manifest: &str) -> Vec<String> {
+    let mut keys = std::collections::BTreeSet::<String>::new();
+    for document in serde_yaml::Deserializer::from_str(manifest) {
+        let value: serde_yaml::Value = match serde::Deserialize::deserialize(document) {
+            Ok(value) => value,
+            Err(_) => continue,
+        };
+        if value
+            .get("kind")
+            .and_then(serde_yaml::Value::as_str)
+            != Some("ConfigMap")
+        {
+            continue;
+        }
+        let Some(data) = value.get("data").and_then(serde_yaml::Value::as_mapping) else {
+            continue;
+        };
+        for key in data.keys().filter_map(serde_yaml::Value::as_str) {
+            if key
+                .chars()
+                .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_')
+            {
+                keys.insert(key.to_string());
+            }
+        }
+    }
+    keys.into_iter().collect()
+}
+
+fn manifest_contract_summary(manifest: &str) -> serde_json::Value {
+    let mut services = Vec::<serde_json::Value>::new();
+    let mut pvcs = Vec::<serde_json::Value>::new();
+    let mut ingresses = Vec::<serde_json::Value>::new();
+    let mut hpas = Vec::<serde_json::Value>::new();
+    let mut network_policies = Vec::<serde_json::Value>::new();
+
+    for document in serde_yaml::Deserializer::from_str(manifest) {
+        let value: serde_yaml::Value = match serde::Deserialize::deserialize(document) {
+            Ok(value) => value,
+            Err(_) => continue,
+        };
+        let kind = value
+            .get("kind")
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or_default();
+        let metadata = value.get("metadata");
+        let name = metadata
+            .and_then(|meta| meta.get("name"))
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or_default()
+            .to_string();
+        match kind {
+            "Service" => {
+                let selector = value
+                    .get("spec")
+                    .and_then(|spec| spec.get("selector"))
+                    .and_then(serde_yaml::Value::as_mapping)
+                    .map(|mapping| {
+                        let mut pairs = mapping
+                            .iter()
+                            .filter_map(|(key, value)| Some((key.as_str()?.to_string(), value.as_str()?.to_string())))
+                            .collect::<Vec<_>>();
+                        pairs.sort();
+                        pairs
+                    })
+                    .unwrap_or_default();
+                let mut ports = value
+                    .get("spec")
+                    .and_then(|spec| spec.get("ports"))
+                    .and_then(serde_yaml::Value::as_sequence)
+                    .map(|rows| {
+                        rows.iter()
+                            .filter_map(|row| row.get("port").and_then(serde_yaml::Value::as_i64))
+                            .collect::<Vec<_>>()
+                    })
+                    .unwrap_or_default();
+                ports.sort();
+                services.push(serde_json::json!({
+                    "name": name,
+                    "selector": selector,
+                    "ports": ports
+                }));
+            }
+            "PersistentVolumeClaim" => {
+                pvcs.push(serde_json::json!({
+                    "name": name,
+                    "storage_class_name": value
+                        .get("spec")
+                        .and_then(|spec| spec.get("storageClassName"))
+                        .and_then(serde_yaml::Value::as_str)
+                        .unwrap_or_default()
+                }));
+            }
+            "Ingress" => {
+                let mut hosts = value
+                    .get("spec")
+                    .and_then(|spec| spec.get("rules"))
+                    .and_then(serde_yaml::Value::as_sequence)
+                    .map(|rows| {
+                        rows.iter()
+                            .filter_map(|row| row.get("host").and_then(serde_yaml::Value::as_str))
+                            .map(str::to_string)
+                            .collect::<Vec<_>>()
+                    })
+                    .unwrap_or_default();
+                hosts.sort();
+                ingresses.push(serde_json::json!({
+                    "name": name,
+                    "hosts": hosts
+                }));
+            }
+            "HorizontalPodAutoscaler" => {
+                let spec = value.get("spec");
+                let metrics = spec
+                    .and_then(|row| row.get("metrics"))
+                    .and_then(serde_yaml::Value::as_sequence)
+                    .cloned()
+                    .unwrap_or_default();
+                let metric_target = |resource_name: &str| {
+                    metrics.iter().find_map(|metric| {
+                        let resource = metric.get("resource")?;
+                        if resource.get("name").and_then(serde_yaml::Value::as_str) == Some(resource_name) {
+                            resource
+                                .get("target")
+                                .and_then(|target| target.get("averageUtilization"))
+                                .and_then(serde_yaml::Value::as_i64)
+                        } else {
+                            None
+                        }
+                    })
+                };
+                hpas.push(serde_json::json!({
+                    "name": name,
+                    "min_replicas": spec.and_then(|row| row.get("minReplicas")).and_then(serde_yaml::Value::as_i64),
+                    "max_replicas": spec.and_then(|row| row.get("maxReplicas")).and_then(serde_yaml::Value::as_i64),
+                    "cpu_target": metric_target("cpu"),
+                    "memory_target": metric_target("memory")
+                }));
+            }
+            "NetworkPolicy" => {
+                network_policies.push(serde_json::json!({ "name": name }));
+            }
+            _ => {}
+        }
+    }
+
+    services.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
+    pvcs.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
+    ingresses.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
+    hpas.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
+    network_policies.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
+
+    serde_json::json!({
+        "services": services,
+        "persistent_volume_claims": pvcs,
+        "ingresses": ingresses,
+        "hpas": hpas,
+        "network_policies": network_policies,
+        "configmap_env_keys": configmap_env_keys_from_manifest(manifest)
+    })
+}
+
+fn lifecycle_compatibility_checks(before_manifest: &str, after_manifest: &str) -> serde_json::Value {
+    let before = manifest_contract_summary(before_manifest);
+    let after = manifest_contract_summary(after_manifest);
+    let service_names_stable = before["services"]
+        .as_array()
+        .zip(after["services"].as_array())
+        .map(|(left, right)| {
+            left.iter()
+                .map(|row| row["name"].as_str().unwrap_or_default())
+                .collect::<Vec<_>>()
+                == right
+                    .iter()
+                    .map(|row| row["name"].as_str().unwrap_or_default())
+                    .collect::<Vec<_>>()
+        })
+        .unwrap_or(false);
+    let service_selector_stable = before["services"] == after["services"] || before["services"]
+        .as_array()
+        .zip(after["services"].as_array())
+        .map(|(left, right)| {
+            left.iter()
+                .map(|row| (&row["name"], &row["selector"]))
+                .collect::<Vec<_>>()
+                == right.iter().map(|row| (&row["name"], &row["selector"])).collect::<Vec<_>>()
+        })
+        .unwrap_or(false);
+    let service_ports_stable = before["services"]
+        .as_array()
+        .zip(after["services"].as_array())
+        .map(|(left, right)| {
+            left.iter()
+                .map(|row| (&row["name"], &row["ports"]))
+                .collect::<Vec<_>>()
+                == right.iter().map(|row| (&row["name"], &row["ports"])).collect::<Vec<_>>()
+        })
+        .unwrap_or(false);
+    let pvc_stable = before["persistent_volume_claims"] == after["persistent_volume_claims"];
+    let ingress_host_shape_stable = before["ingresses"] == after["ingresses"];
+    let network_policy_default_stable = before["network_policies"] == after["network_policies"];
+    let hpa_defaults_stable = before["hpas"] == after["hpas"];
+    let before_env = before["configmap_env_keys"].as_array().cloned().unwrap_or_default();
+    let after_env = after["configmap_env_keys"].as_array().cloned().unwrap_or_default();
+    let removed_required_env_keys = before_env
+        .iter()
+        .filter_map(serde_json::Value::as_str)
+        .filter(|key| {
+            !after_env
+                .iter()
+                .any(|candidate| candidate.as_str() == Some(*key))
+        })
+        .map(str::to_string)
+        .collect::<Vec<_>>();
+    serde_json::json!({
+        "immutable_fields_safe": service_names_stable && service_selector_stable && pvc_stable,
+        "service_name_stable": service_names_stable,
+        "service_selector_stable": service_selector_stable,
+        "service_ports_stable": service_ports_stable,
+        "pvc_definitions_stable": pvc_stable,
+        "ingress_host_shape_stable": ingress_host_shape_stable,
+        "networkpolicy_default_stable": network_policy_default_stable,
+        "hpa_defaults_stable": hpa_defaults_stable,
+        "required_env_keys_stable": removed_required_env_keys.is_empty(),
+        "removed_required_env_keys": removed_required_env_keys,
+        "before": before,
+        "after": after
+    })
+}
+
+fn deployment_revision(
+    process: &OpsProcess,
+    repo_root: &std::path::Path,
+    namespace: &str,
+) -> Option<i64> {
+    let argv = vec![
+        "get".to_string(),
+        "deployment".to_string(),
+        "bijux-atlas".to_string(),
+        "-n".to_string(),
+        namespace.to_string(),
+        "-o".to_string(),
+        "json".to_string(),
+    ];
+    let (stdout, _) = process.run_subprocess("kubectl", &argv, repo_root).ok()?;
+    let json: serde_json::Value = serde_json::from_str(&stdout).ok()?;
+    json.get("metadata")
+        .and_then(|row| row.get("annotations"))
+        .and_then(|row| row.get("deployment.kubernetes.io/revision"))
+        .and_then(serde_json::Value::as_str)
+        .and_then(|value| value.parse::<i64>().ok())
+}
+
+fn rollout_history(
+    process: &OpsProcess,
+    repo_root: &std::path::Path,
+    namespace: &str,
+) -> serde_json::Value {
+    let argv = vec![
+        "rollout".to_string(),
+        "history".to_string(),
+        "deployment/bijux-atlas".to_string(),
+        "-n".to_string(),
+        namespace.to_string(),
+    ];
+    match process.run_subprocess("kubectl", &argv, repo_root) {
+        Ok((stdout, event)) => serde_json::json!({
+            "status": "ok",
+            "stdout": stdout,
+            "event": event
+        }),
+        Err(err) => serde_json::json!({
+            "status": "failed",
+            "error": err.to_stable_message()
+        }),
+    }
+}
+
+fn pods_restart_count(
+    process: &OpsProcess,
+    repo_root: &std::path::Path,
+    namespace: &str,
+) -> u64 {
+    let argv = vec![
+        "get".to_string(),
+        "pods".to_string(),
+        "-n".to_string(),
+        namespace.to_string(),
+        "-o".to_string(),
+        "json".to_string(),
+    ];
+    let Ok((stdout, _)) = process.run_subprocess("kubectl", &argv, repo_root) else {
+        return 0;
+    };
+    let Ok(json) = serde_json::from_str::<serde_json::Value>(&stdout) else {
+        return 0;
+    };
+    json.get("items")
+        .and_then(serde_json::Value::as_array)
+        .map(|rows| {
+            rows.iter()
+                .flat_map(|row| {
+                    row.get("status")
+                        .and_then(|status| status.get("containerStatuses"))
+                        .and_then(serde_json::Value::as_array)
+                        .cloned()
+                        .unwrap_or_default()
+                })
+                .filter_map(|container| container.get("restartCount").and_then(serde_json::Value::as_u64))
+                .sum()
+        })
+        .unwrap_or(0)
+}
+
+fn update_lifecycle_summary(
+    repo_root: &std::path::Path,
+    run_id: &RunId,
+    profile: &str,
+    namespace: &str,
+    upgrade_report_path: Option<&std::path::Path>,
+    upgrade_status: Option<&str>,
+    rollback_report_path: Option<&std::path::Path>,
+    rollback_status: Option<&str>,
+) -> Result<std::path::PathBuf, String> {
+    let summary_path = simulation_report_path(repo_root, run_id, "ops-lifecycle-summary.json")?;
+    let mut payload = if summary_path.exists() {
+        serde_json::from_str::<serde_json::Value>(
+            &std::fs::read_to_string(&summary_path)
+                .map_err(|err| format!("failed to read {}: {err}", summary_path.display()))?,
+        )
+        .map_err(|err| format!("failed to parse {}: {err}", summary_path.display()))?
+    } else {
+        serde_json::json!({
+            "schema_version": 1,
+            "cluster": "kind",
+            "profiles": []
+        })
+    };
+    if !payload["profiles"].is_array() {
+        payload["profiles"] = serde_json::json!([]);
+    }
+    let rows = payload["profiles"]
+        .as_array_mut()
+        .ok_or_else(|| "ops-lifecycle-summary.json profiles must be an array".to_string())?;
+    if let Some(existing) = rows
+        .iter_mut()
+        .find(|row| row.get("profile").and_then(|v| v.as_str()) == Some(profile))
+    {
+        existing["namespace"] = serde_json::json!(namespace);
+        if let Some(path) = upgrade_report_path {
+            existing["upgrade_report_path"] = serde_json::json!(path.display().to_string());
+        }
+        if let Some(status) = upgrade_status {
+            existing["upgrade_status"] = serde_json::json!(status);
+        }
+        if let Some(path) = rollback_report_path {
+            existing["rollback_report_path"] = serde_json::json!(path.display().to_string());
+        }
+        if let Some(status) = rollback_status {
+            existing["rollback_status"] = serde_json::json!(status);
+        }
+    } else {
+        let mut row = serde_json::json!({
+            "profile": profile,
+            "namespace": namespace
+        });
+        if let Some(path) = upgrade_report_path {
+            row["upgrade_report_path"] = serde_json::json!(path.display().to_string());
+        }
+        if let Some(status) = upgrade_status {
+            row["upgrade_status"] = serde_json::json!(status);
+        }
+        if let Some(path) = rollback_report_path {
+            row["rollback_report_path"] = serde_json::json!(path.display().to_string());
+        }
+        if let Some(status) = rollback_status {
+            row["rollback_status"] = serde_json::json!(status);
+        }
+        rows.push(row);
+    }
+    rows.sort_by(|a, b| {
+        a.get("profile")
+            .and_then(serde_json::Value::as_str)
+            .cmp(&b.get("profile").and_then(serde_json::Value::as_str))
+    });
+    std::fs::write(
+        &summary_path,
+        serde_json::to_string_pretty(&payload).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", summary_path.display()))?;
+    Ok(summary_path)
+}
+
 fn helm_release_manifest(
     process: &OpsProcess,
     repo_root: &std::path::Path,
@@ -1205,6 +1598,7 @@ pub(crate) fn run_ops_helm_upgrade(
         ));
     }
     let before_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
+    let before_revision = deployment_revision(&process, &repo_root, &namespace);
     let helm_args = vec![
         "upgrade".to_string(),
         "bijux-atlas".to_string(),
@@ -1236,11 +1630,21 @@ pub(crate) fn run_ops_helm_upgrade(
         })
         .collect::<Vec<_>>();
     let after_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
+    let after_revision = deployment_revision(&process, &repo_root, &namespace);
     let diff_summary = manifest_diff_summary(&before_manifest, &after_manifest);
+    let compatibility = lifecycle_compatibility_checks(&before_manifest, &after_manifest);
+    let rollout_history = rollout_history(&process, &repo_root, &namespace);
+    let pods_restarted = pods_restart_count(&process, &repo_root, &namespace);
     let errors = wait_errors
         .iter()
         .cloned()
         .chain(smoke_errors.iter().cloned())
+        .chain(
+            compatibility["immutable_fields_safe"]
+                .as_bool()
+                .filter(|safe| !safe)
+                .map(|_| "immutable field compatibility check failed".to_string()),
+        )
         .collect::<Vec<_>>();
     let status = if errors.is_empty() { "ok" } else { "failed" };
     let smoke_payload = serde_json::json!({
@@ -1271,11 +1675,25 @@ pub(crate) fn run_ops_helm_upgrade(
                 "upgrade_target": "current-working-tree-chart"
             },
             "diff_summary": diff_summary,
+            "compatibility_checks": compatibility,
+            "configmap_restart_verified": {
+                "before_revision": before_revision,
+                "after_revision": after_revision,
+                "status": if diff_summary["changed_lines"].as_u64().unwrap_or(0) == 0 {
+                    "not-needed"
+                } else if after_revision.unwrap_or_default() > before_revision.unwrap_or_default() {
+                    "ok"
+                } else {
+                    "failed"
+                }
+            },
             "readiness_wait": {
                 "elapsed_ms": wait_ms,
                 "rows": wait_rows,
                 "errors": wait_errors
             },
+            "rollout_history": rollout_history,
+            "pods_restarted_count": pods_restarted,
             "smoke": {
                 "report_path": smoke_report_path.display().to_string(),
                 "checks": smoke_payload["checks"].clone()
@@ -1283,6 +1701,16 @@ pub(crate) fn run_ops_helm_upgrade(
         }
     });
     let report_path = write_simulation_report(&repo_root, &run_id, "ops-upgrade.json", &payload)?;
+    let lifecycle_summary_path = update_lifecycle_summary(
+        &repo_root,
+        &run_id,
+        &profile,
+        &namespace,
+        Some(&report_path),
+        Some(status),
+        None,
+        None,
+    )?;
     let envelope = serde_json::json!({
         "schema_version": 1,
         "text": if status == "ok" { "helm upgrade completed" } else { "helm upgrade failed" },
@@ -1293,6 +1721,7 @@ pub(crate) fn run_ops_helm_upgrade(
             "namespace": payload["namespace"].clone(),
             "status": status,
             "report_path": report_path.display().to_string(),
+            "summary_report_path": lifecycle_summary_path.display().to_string(),
             "details": payload["details"].clone()
         }],
         "summary": {"total": 1, "errors": errors.len(), "warnings": 0}
@@ -1330,6 +1759,7 @@ pub(crate) fn run_ops_helm_rollback(
         .unwrap_or_else(|| "kind".to_string());
     let namespace = simulation_namespace(&profile, args.release.namespace.as_deref());
     let before_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
+    let before_revision = deployment_revision(&process, &repo_root, &namespace);
     let revision = prior_release_revision(&process, &repo_root, &namespace)?;
     let helm_args = vec![
         "rollback".to_string(),
@@ -1360,11 +1790,21 @@ pub(crate) fn run_ops_helm_rollback(
         })
         .collect::<Vec<_>>();
     let after_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
+    let after_revision = deployment_revision(&process, &repo_root, &namespace);
     let diff_summary = manifest_diff_summary(&before_manifest, &after_manifest);
+    let compatibility = lifecycle_compatibility_checks(&before_manifest, &after_manifest);
+    let rollout_history = rollout_history(&process, &repo_root, &namespace);
+    let pods_restarted = pods_restart_count(&process, &repo_root, &namespace);
     let errors = wait_errors
         .iter()
         .cloned()
         .chain(smoke_errors.iter().cloned())
+        .chain(
+            compatibility["immutable_fields_safe"]
+                .as_bool()
+                .filter(|safe| !safe)
+                .map(|_| "immutable field compatibility check failed".to_string()),
+        )
         .collect::<Vec<_>>();
     let status = if errors.is_empty() { "ok" } else { "failed" };
     let smoke_payload = serde_json::json!({
@@ -1390,11 +1830,26 @@ pub(crate) fn run_ops_helm_rollback(
                 "revision": revision
             },
             "diff_summary": diff_summary,
+            "compatibility_checks": compatibility,
+            "configmap_restart_verified": {
+                "before_revision": before_revision,
+                "after_revision": after_revision,
+                "status": if diff_summary["changed_lines"].as_u64().unwrap_or(0) == 0 {
+                    "not-needed"
+                } else if after_revision.unwrap_or_default() >= before_revision.unwrap_or_default() {
+                    "ok"
+                } else {
+                    "failed"
+                }
+            },
             "readiness_wait": {
                 "elapsed_ms": wait_ms,
                 "rows": wait_rows,
                 "errors": wait_errors
             },
+            "rollout_history": rollout_history,
+            "pods_restarted_count": pods_restarted,
+            "service_healthy_after_rollback": wait_errors.is_empty() && smoke_errors.is_empty(),
             "smoke": {
                 "report_path": smoke_report_path.display().to_string(),
                 "checks": smoke_payload["checks"].clone()
@@ -1402,6 +1857,16 @@ pub(crate) fn run_ops_helm_rollback(
         }
     });
     let report_path = write_simulation_report(&repo_root, &run_id, "ops-rollback.json", &payload)?;
+    let lifecycle_summary_path = update_lifecycle_summary(
+        &repo_root,
+        &run_id,
+        &profile,
+        &namespace,
+        None,
+        None,
+        Some(&report_path),
+        Some(status),
+    )?;
     let envelope = serde_json::json!({
         "schema_version": 1,
         "text": if status == "ok" { "helm rollback completed" } else { "helm rollback failed" },
@@ -1412,6 +1877,7 @@ pub(crate) fn run_ops_helm_rollback(
             "namespace": payload["namespace"].clone(),
             "status": status,
             "report_path": report_path.display().to_string(),
+            "summary_report_path": lifecycle_summary_path.display().to_string(),
             "details": payload["details"].clone()
         }],
         "summary": {"total": 1, "errors": errors.len(), "warnings": 0}
