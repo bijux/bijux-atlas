@@ -1,0 +1,14 @@
+{
+  "checksums_path": "release/signing/checksums.json",
+  "contracts": {
+    "REL-PROV-001": true,
+    "REL-SIGN-001": true,
+    "REL-SIGN-002": true,
+    "REL-SIGN-003": true,
+    "REL-SIGN-004": true
+  },
+  "errors": [],
+  "evidence_tarball": "release/evidence/bundle.tar",
+  "schema_version": 1,
+  "status": "ok"
+}

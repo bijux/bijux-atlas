@@ -1,23 +1,21 @@
 {
   "chart_package": {
     "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-    "sha256": "85062d52b50e287f788e7e0e6e274faa61b887eb50de741f63808d72ce950718"
+    "sha256": "45aaa57fdbc7440cd09c1493a250f7de9ac24ad5003f735f0f64e4254378ec79"
   },
   "docker_bases_lock": {
     "path": "docker/bases.lock",
     "sha256": "4b9996348cba7a04aa56e8617aab6bba5dec62e950819626bbd15abd7145e8e1"
   },
   "docs_site_summary": {
-    "file_count": 584,
+    "file_count": 590,
     "sha256": "b47fbd1798d5b99c80b49ecce109b7ffb934df168d447a748c951275fb172a90",
     "site_dir": "artifacts/docs/site"
   },
-  "drill_summaries": [
-    "artifacts/ops/drills_contract_refresh/reports/ops-drills-summary.json"
-  ],
+  "drill_summaries": [],
   "evidence_tarball": {
     "path": "release/evidence/bundle.tar",
-    "sha256": "a0895060dad9c3d88491dd7be7fffc780333dcd9a6a2d26918385d6958462583"
+    "sha256": "b52db3d33cb9972a31642aac09771afa40d323717c9c297ea4c0ffe289663009"
   },
   "generated_by": "bijux dev atlas ops evidence collect",
   "identity_path": "release/evidence/identity.json",
@@ -75,10 +73,12 @@
     "ops/schema/observe/prometheus-rule.schema.json"
   ],
   "policy_path": "release/evidence/policy.json",
+  "provenance": {
+    "path": "release/provenance.json",
+    "sha256": "300fce33b24b4943c486d9bac11f97cdf5859bcd5f5179052a524a85a0c7a2fc"
+  },
   "redacted_logs": [],
   "reports": [
-    "artifacts/ops/drills_contract_refresh/reports/ops-drill-warmup-pod-restart.json",
-    "artifacts/ops/drills_contract_refresh/reports/ops-drills-summary.json",
     "ops/report/generated/historical-comparison.json",
     "ops/report/generated/readiness-score.json",
     "ops/report/generated/release-evidence-bundle.json",

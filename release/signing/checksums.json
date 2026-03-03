@@ -1,0 +1,41 @@
+{
+  "generated_by": "bijux-dev-atlas release sign",
+  "items": [
+    {
+      "kind": "chart-package",
+      "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
+      "sha256": "00b77a7d04b973d72a6a3356b498b86f35c514fc5c1bb68b354ce9751c955677"
+    },
+    {
+      "kind": "evidence-tarball",
+      "path": "release/evidence/bundle.tar",
+      "sha256": "2867124fae97debe065750ef6038d6d2711eac9f25b0513e77fa85d27bf9f1cd"
+    },
+    {
+      "kind": "evidence-manifest",
+      "path": "release/evidence/manifest.json",
+      "sha256": "9082b5774ce7b691a609b2b570acd553c3262a1340fe8adecb4ac778001c61f4"
+    },
+    {
+      "kind": "sbom",
+      "path": "release/evidence/sboms/perf.spdx.json",
+      "sha256": "aea04d4b6578931456f347cb751ec663f496ae4128bf27431dda797a6104d60f"
+    },
+    {
+      "kind": "sbom",
+      "path": "release/evidence/sboms/prod-airgap.spdx.json",
+      "sha256": "41579a9557b0beae93bf1374baa1aafdc0fe22dcde09d67c65a92660e9c81da4"
+    },
+    {
+      "kind": "sbom",
+      "path": "release/evidence/sboms/prod-ha.spdx.json",
+      "sha256": "0275da35b50198a2192299a3ba0e10cbe7f2aaa45e63ac1bc697fe0e3e4561de"
+    },
+    {
+      "kind": "sbom",
+      "path": "release/evidence/sboms/prod-minimal.spdx.json",
+      "sha256": "4e17ea066f2acf11bb6c2fb47e516f6029d9c35a4e55c3650c4573bc59c3dc1b"
+    }
+  ],
+  "schema_version": 1
+}
