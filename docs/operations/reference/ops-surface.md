@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Tier: `generated`
 - Audience: `operators`
-- Source-of-truth: `ops/inventory/surfaces.json`, `ops/_generated.example/control-plane.snapshot.md`
+- Source-of-truth: `../../../ops/inventory/surfaces.json`, `../../../ops/_generated.example/control-plane-surface-list.json`
 
 ## Purpose
 
@@ -304,5 +304,5 @@ Generated ops surface reference derived from inventory surfaces.
 
 ## See Also
 
-- `ops/_generated.example/control-plane.snapshot.md` (example generated snapshot)
-- `ops/inventory/surfaces.json` (machine truth)
+- `../../../ops/_generated.example/control-plane-surface-list.json` (example generated snapshot)
+- `../../../ops/inventory/surfaces.json` (machine truth)

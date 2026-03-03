@@ -11,4 +11,7 @@ perf
 policies
 ci
 check
+contract
+registry
+suites
 validate
