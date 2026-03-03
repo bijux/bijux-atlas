@@ -28,12 +28,12 @@
     },
     "auth_model": {
       "path": "configs/security/auth-model.yaml",
-      "sha256": "76e9337d47e2831db77e0664077d9fc82d583d63cc9fe503752ae3d341374576"
+      "sha256": "6c0bd46330edb353802b54819269e03866badc8ac44f8a53fcd23d11f9874400"
     }
   },
   "chart_package": {
     "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-    "sha256": "4389bb684d9965214cae09a9dedefe564c7d65a431ae04e475b0d43849ab66af"
+    "sha256": "604590e72bc115783301489d69b235434252a3ed6258b9bbdbbce0524c68ce86"
   },
   "dataset_assets": [
     "configs/datasets/manifest.yaml",
@@ -60,9 +60,31 @@
   "drill_summaries": [],
   "evidence_tarball": {
     "path": "release/evidence/bundle.tar",
-    "sha256": "d31b700b269c12803fbd524228d4c245751ecacae12ba102e8fbc20d46e3e914"
+    "sha256": "b8cd7c62a040719e19a2bc1d5690db7cfffa2f6fdf2721e326003fd10ab3a92a"
   },
   "generated_by": "bijux dev atlas ops evidence collect",
+  "governance_assets": {
+    "exceptions_archive": {
+      "path": "configs/governance/exceptions-archive.yaml",
+      "sha256": "ee0c326533753bb51c20a547533543c7b556f353300d5bd62967fe2d1f059017"
+    },
+    "exceptions_churn": {
+      "path": "artifacts/governance/exceptions-churn.json",
+      "sha256": "e49657b018f1374abd50eda32ceefe88a2cd646a66fff240701c81575127a415"
+    },
+    "exceptions_expiry_warning": {
+      "path": "artifacts/governance/exceptions-expiry-warning.json",
+      "sha256": "2bea370260114e65a4042b635672d5ec97af14a442722cfb8e4aaf8f54906a7b"
+    },
+    "exceptions_registry": {
+      "path": "configs/governance/exceptions.yaml",
+      "sha256": "66f19a0cdeb024f982932f994150191ec2dce3945452b6595ba981996a38fac9"
+    },
+    "exceptions_summary": {
+      "path": "artifacts/governance/exceptions-summary.json",
+      "sha256": "43de57dff02b7be6a6129072be63edd0f0ec1dc067b2573920bf525988377f4e"
+    }
+  },
   "identity_path": "release/evidence/identity.json",
   "image_artifacts": [
     {
@@ -145,7 +167,7 @@
   "policy_path": "release/evidence/policy.json",
   "provenance": {
     "path": "release/provenance.json",
-    "sha256": "4c4008e2965f8efd10031c6a779d5afaaa2bacf2322dab6237efb0bc1f0e77f4"
+    "sha256": "24e26e285d6e6ff3ca1f6c629a3cc00f2115b044e4b02974ccff3610225b09e9"
   },
   "redacted_logs": [],
   "reports": [
