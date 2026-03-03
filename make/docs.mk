@@ -5,39 +5,39 @@ BIJUX ?= bijux
 BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas
 
 docs: ## Canonical docs gate
-	@$(DEV_ATLAS) docs doctor --format json
+	@$(DEV_ATLAS) docs doctor --format $(FORMAT)
 
 docs-doctor: ## Run docs doctor checks
-	@$(DEV_ATLAS) docs doctor --format json
+	@$(DEV_ATLAS) docs doctor --format $(FORMAT)
 
 docs-validate: ## Run docs validation checks
-	@$(DEV_ATLAS) docs validate --format json
+	@$(DEV_ATLAS) docs validate --format $(FORMAT)
 
 docs-external-links: ## Run docs external link checks
-	@$(DEV_ATLAS) docs external-links --allow-network --format json
+	@$(DEV_ATLAS) docs external-links --allow-network --format $(FORMAT)
 
 docs-registry: ## Build docs registry and generated docs indexes
-	@$(DEV_ATLAS) docs registry build --allow-write --format json
+	@$(DEV_ATLAS) docs registry build --allow-write --format $(FORMAT)
 
 docs-registry-validate: ## Validate docs registry coverage and contracts
-	@$(DEV_ATLAS) docs registry validate --format json
+	@$(DEV_ATLAS) docs registry validate --format $(FORMAT)
 
 docs-build: ## Build docs into artifacts
-	@$(DEV_ATLAS) docs build --allow-subprocess --allow-write --format json
+	@$(DEV_ATLAS) docs build --allow-subprocess --allow-write --format $(FORMAT)
 
 docs-serve: ## Serve docs locally
-	@$(DEV_ATLAS) docs serve --allow-subprocess --allow-network --format text
+	@$(DEV_ATLAS) docs serve --allow-subprocess --allow-network --format $(FORMAT)
 
 docs-clean: ## Clean docs generated outputs
-	@$(DEV_ATLAS) docs inventory --format text >/dev/null
+	@$(DEV_ATLAS) docs inventory --format $(FORMAT) >/dev/null
 
 docs-lock: ## Refresh docs requirements lock deterministically
-	@$(DEV_ATLAS) docs build --allow-subprocess --allow-write --format text
+	@$(DEV_ATLAS) docs build --allow-subprocess --allow-write --format $(FORMAT)
 
 docs-reference-regenerate: ## Regenerate docs operations reference pages from SSOT inputs
-	@$(DEV_ATLAS) docs reference generate --allow-subprocess --allow-write --format json
+	@$(DEV_ATLAS) docs reference generate --allow-subprocess --allow-write --format $(FORMAT)
 
 docs-reference-check: ## Check docs operations reference pages are regenerated
-	@$(DEV_ATLAS) docs reference check --allow-subprocess --format json
+	@$(DEV_ATLAS) docs reference check --allow-subprocess --format $(FORMAT)
 
 .PHONY: docs docs-doctor docs-validate docs-external-links docs-registry docs-registry-validate docs-build docs-serve docs-clean docs-lock docs-reference-regenerate docs-reference-check

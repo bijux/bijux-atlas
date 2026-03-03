@@ -7,19 +7,19 @@ BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas
 CONFIGS_STRICT ?=
 
 configs: ## Canonical configs gate
-	@$(DEV_ATLAS) configs doctor $(CONFIGS_STRICT) --format text
+	@$(DEV_ATLAS) configs doctor $(CONFIGS_STRICT) --format $(FORMAT)
 
 configs-doctor: ## Run configs doctor checks
-	@$(DEV_ATLAS) configs doctor $(CONFIGS_STRICT) --format json
+	@$(DEV_ATLAS) configs doctor $(CONFIGS_STRICT) --format $(FORMAT)
 
 configs-validate: ## Run configs validation checks
-	@$(DEV_ATLAS) configs validate $(CONFIGS_STRICT) --format json
+	@$(DEV_ATLAS) configs validate $(CONFIGS_STRICT) --format $(FORMAT)
 
 configs-lint: ## Run configs lint checks
-	@$(DEV_ATLAS) configs lint $(CONFIGS_STRICT) --format json
+	@$(DEV_ATLAS) configs lint $(CONFIGS_STRICT) --format $(FORMAT)
 
 configs-inventory: ## List configs inventory (verification smoke target)
-	@$(DEV_ATLAS) configs inventory --format json
+	@$(DEV_ATLAS) configs inventory --format $(FORMAT)
 
 configs-check: ## Back-compat alias to canonical configs doctor wrapper
 	@$(MAKE) -s configs-doctor

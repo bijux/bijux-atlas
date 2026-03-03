@@ -21,6 +21,6 @@ verification: ## Run every target declared in make/<module>.mk
 		printf '%s\n' "usage: make verification <module>"; \
 		exit 2; \
 	fi; \
-	$(DEV_ATLAS) make verify-module "$$module" --allow-subprocess --format text
+	$(DEV_ATLAS) make verify-module "$$module" --allow-subprocess --format $(FORMAT)
 
 .PHONY: verification

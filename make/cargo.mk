@@ -72,7 +72,7 @@ coverage: ## Run workspace coverage with cargo llvm-cov + nextest
 fmt: ## Run cargo fmt --check
 	@printf '%s\n' "run: bijux-dev-atlas ci verify rust-fmt"
 	@mkdir -p $(ARTIFACT_ROOT)/fmt/$(RUN_ID)
-	@output="$$(cargo run -q -p bijux-dev-atlas -- ci verify rust-fmt --allow-subprocess --format json 2>&1)"; \
+	@output="$$(cargo run -q -p bijux-dev-atlas -- ci verify rust-fmt --allow-subprocess --format $(FORMAT) 2>&1)"; \
 	status=$$?; \
 	printf '%s\n' "$$output" | tee $(ARTIFACT_ROOT)/fmt/$(RUN_ID)/report.txt; \
 	if [ $$status -eq 0 ]; then \
@@ -83,10 +83,10 @@ fmt: ## Run cargo fmt --check
 lint: ## Run cargo clippy with warnings denied
 	@printf '%s\n' "run: bijux-dev-atlas ci verify rust-clippy"
 	@mkdir -p $(ARTIFACT_ROOT)/lint/$(RUN_ID)
-	@cargo run -q -p bijux-dev-atlas -- ci verify rust-clippy --allow-subprocess --format json | tee $(ARTIFACT_ROOT)/lint/$(RUN_ID)/report.json
+	@cargo run -q -p bijux-dev-atlas -- ci verify rust-clippy --allow-subprocess --format $(FORMAT) | tee $(ARTIFACT_ROOT)/lint/$(RUN_ID)/report.json
 
 lint-policy-report: ## Emit effective lint policy report artifact
-	@$(DEV_ATLAS) make lint-policy-report --allow-write --format text
+	@$(DEV_ATLAS) make lint-policy-report --allow-write --format $(FORMAT)
 
 lint-policy-enforce: ## Enforce repository lint drift guards
 	@! rg -n '\btodo!\(' crates

@@ -11,10 +11,10 @@ BIJUX_DEV_ATLAS ?= $(DEV_ATLAS)
 export BIJUX DEV_ATLAS BIJUX_DEV_ATLAS
 
 dev-doctor: ## Run dev control-plane doctor suite
-	@$(DEV_ATLAS) check doctor --format text
+	@$(DEV_ATLAS) check doctor --format $(FORMAT)
 
 dev-check-ci: ## Run dev control-plane ci suite
-	@$(DEV_ATLAS) check run --suite ci --format text
+	@$(DEV_ATLAS) check run --suite ci --format $(FORMAT)
 
 dev-ci: ## Alias for dev-check-ci
 	@$(MAKE) -s dev-check-ci
