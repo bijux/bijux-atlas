@@ -37,6 +37,12 @@ pub struct RenderOptions {
     pub verbose: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct PreflightSummary {
+    pub required_tools: Vec<String>,
+    pub missing_tools: Vec<String>,
+}
+
 fn status_label(status: Status, color: bool) -> &'static str {
     if !color {
         return status.label();
@@ -61,7 +67,14 @@ fn counter_block(index: usize, total: usize) -> String {
     format!("({:>width$}/{:>width$})", index, total, width = width)
 }
 
-pub fn render(reports: &[RunReport], mode: &str, jobs: &str, fail_fast: bool, options: RenderOptions) -> String {
+pub fn render(
+    reports: &[RunReport],
+    mode: &str,
+    jobs: &str,
+    fail_fast: bool,
+    preflight: &PreflightSummary,
+    options: RenderOptions,
+) -> String {
     let mut cases = reports
         .iter()
         .flat_map(|report| report.cases.iter().map(move |case| (report, case)))
@@ -78,6 +91,20 @@ pub fn render(reports: &[RunReport], mode: &str, jobs: &str, fail_fast: bool, op
     let mut lines = vec![format!(
         "contract-run: mode={mode} jobs={jobs} fail-fast={fail_fast}"
     )];
+    lines.push(format!(
+        "preflight: required-tools={} missing-tools={}",
+        if preflight.required_tools.is_empty() {
+            "none".to_string()
+        } else {
+            preflight.required_tools.join(",")
+        },
+        if preflight.missing_tools.is_empty() {
+            "none".to_string()
+        } else {
+            preflight.missing_tools.join(",")
+        }
+    ));
+    lines.push(format!("planning: contracts={} cases={total}", reports.iter().map(|report| report.contracts.len()).sum::<usize>()));
     let mut failed = Vec::new();
     let mut skipped = Vec::new();
 
@@ -113,6 +140,10 @@ pub fn render(reports: &[RunReport], mode: &str, jobs: &str, fail_fast: bool, op
             for violation in &case.violations {
                 lines.push(format!("  detail: {}", violation.message));
             }
+            lines.push(format!(
+                "  artifact: artifacts/contracts/{}/cases/{}.json",
+                case.contract_id, case.test_id
+            ));
         }
     }
 

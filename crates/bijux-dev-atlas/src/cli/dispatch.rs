@@ -28,7 +28,7 @@ use bijux_dev_atlas::model::engine::{
 };
 use bijux_dev_atlas::model::{RunnableId, RunnableKind, RunnableMode};
 use bijux_dev_atlas::registry::{ContractModesFile, ReportRegistry, RunnableRegistry};
-use bijux_dev_atlas::ui::terminal::nextest_style::{self, RenderOptions};
+use bijux_dev_atlas::ui::terminal::nextest_style::{self, PreflightSummary, RenderOptions};
 use std::collections::{BTreeMap, BTreeSet};
 use std::io::{self, Write};
 use std::path::Path;
@@ -665,6 +665,7 @@ fn contract_effects_allowed(mode: ContractRunModeArg, policy: ContractEffectsPol
 fn collect_available_tools() -> BTreeSet<&'static str> {
     const COMMON_TOOLS: &[&str] = &[
         "cargo", "docker", "git", "helm", "jq", "just", "kind", "kubectl", "make", "mkdocs",
+        "sh",
         "node", "npm", "python3", "rg", "rustc",
     ];
     COMMON_TOOLS
@@ -920,8 +921,37 @@ fn run_contract_run_command(
         return Ok(("no contracts matched the requested selection".to_string(), EXIT_NOT_FOUND));
     }
 
-    let _available_tools = collect_available_tools();
-    let missing_tool_ids = BTreeMap::<String, Vec<String>>::new();
+    let available_tools = collect_available_tools();
+    let mut required_tools = BTreeSet::<String>::new();
+    let mut missing_tool_ids = BTreeMap::<String, Vec<String>>::new();
+
+    for (domain, contract, mode) in load_contract_catalog(&root)?
+        .into_iter()
+        .filter(|(_, contract, _)| selected_ids.contains(contract.id.0.as_str()))
+    {
+        let mut missing = Vec::new();
+        for case in &contract.tests {
+            let required = match case.kind {
+                TestKind::Pure => continue,
+                TestKind::Subprocess => "sh",
+                TestKind::Network => "network-access",
+            };
+            required_tools.insert(required.to_string());
+            let unavailable = match required {
+                "network-access" => !allowed_effects,
+                tool => !available_tools.contains(tool),
+            };
+            if unavailable {
+                missing.push(required.to_string());
+            }
+        }
+        if !missing.is_empty() {
+            missing.sort();
+            missing.dedup();
+            missing_tool_ids.insert(contract.id.0.clone(), missing);
+        }
+        let _ = (domain, mode);
+    }
 
     let mut reports = Vec::new();
     let mut planned_cases = 0usize;
@@ -993,6 +1023,15 @@ fn run_contract_run_command(
     }
 
     let payload = engine::to_json_all(&reports);
+    let preflight = PreflightSummary {
+        required_tools: required_tools.iter().cloned().collect(),
+        missing_tools: missing_tool_ids
+            .values()
+            .flat_map(|tools| tools.iter().cloned())
+            .collect::<BTreeSet<_>>()
+            .into_iter()
+            .collect(),
+    };
     let rendered = match effective_format(global, args.format) {
         GlobalFormatArg::Human => nextest_style::render(
             &reports,
@@ -1003,6 +1042,7 @@ fn run_contract_run_command(
             },
             &args.jobs,
             fail_fast,
+            &preflight,
             RenderOptions {
                 color: match args.color {
                     ContractsColorArg::Auto => !args.no_ansi,
@@ -1026,6 +1066,7 @@ fn run_contract_run_command(
                 },
                 &args.jobs,
                 fail_fast,
+                &preflight,
                 RenderOptions {
                     color: false,
                     quiet: args.quiet,
