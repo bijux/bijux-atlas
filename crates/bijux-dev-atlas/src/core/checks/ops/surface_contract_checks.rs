@@ -474,12 +474,12 @@ pub(super) fn check_docs_dev_command_list_matches_contract(
     let rel = Path::new("crates/bijux-dev-atlas/docs/cli-command-list.md");
     let current = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    if current.lines().next() == Some("dev") {
+    if current.lines().next() == Some("ops") {
         Ok(Vec::new())
     } else {
         Ok(vec![violation(
             "DOCS_DEV_COMMAND_LIST_INVALID",
-            "dev command list doc must start with canonical `dev` command".to_string(),
+            "dev-atlas command list doc must start with canonical `ops` command".to_string(),
             "refresh dev command list snapshot from bijux dev atlas --help",
             Some(rel),
         )])

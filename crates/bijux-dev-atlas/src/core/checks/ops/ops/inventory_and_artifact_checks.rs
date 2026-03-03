@@ -220,7 +220,8 @@ fn checks_ops_runtime_output_roots_under_ops_absent(
                 continue;
             }
             let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
-            if rel.display().to_string().contains("/tests.rs") {
+            let rel_text = rel.display().to_string();
+            if rel_text.contains("/tests.rs") || rel_text.contains("tests_and_status.rs") {
                 continue;
             }
             let Ok(text) = fs::read_to_string(&file) else {
