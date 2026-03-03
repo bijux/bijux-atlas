@@ -6,6 +6,8 @@ metadata:
   name: {{ include "bijux-atlas.fullname" . }}
   labels:
     {{- include "bijux-atlas.labels" . | nindent 4 }}
+    app.kubernetes.io/component: metrics
+    observability.bijux.atlas/scrape: "true"
     {{- with $serviceMonitor.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
