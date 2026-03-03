@@ -127,6 +127,41 @@ impl ContractModesFile {
             }
         }
 
+        let resolved_static = resolved
+            .static_ids
+            .iter()
+            .map(String::as_str)
+            .collect::<BTreeSet<_>>();
+        let resolved_effect = resolved
+            .effect_ids
+            .iter()
+            .map(String::as_str)
+            .collect::<BTreeSet<_>>();
+        for contract in &registry.contracts {
+            match contract.mode.as_str() {
+                "pure" => {
+                    if !resolved_static.contains(contract.contract_id.as_str()) {
+                        errors.push(format!(
+                            "contract `{}` is marked pure in contracts.registry.json but not classified as static in contract-modes",
+                            contract.contract_id
+                        ));
+                    }
+                }
+                "effect" => {
+                    if !resolved_effect.contains(contract.contract_id.as_str()) {
+                        errors.push(format!(
+                            "contract `{}` is marked effect in contracts.registry.json but not classified as effect in contract-modes",
+                            contract.contract_id
+                        ));
+                    }
+                }
+                other => errors.push(format!(
+                    "contract `{}` uses unsupported registry mode `{other}`",
+                    contract.contract_id
+                )),
+            }
+        }
+
         Ok(ContractModesValidation {
             total_contracts: known_ids.len(),
             errors,
