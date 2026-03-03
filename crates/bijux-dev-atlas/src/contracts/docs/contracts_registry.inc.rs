@@ -711,5 +711,75 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_068_authored_markdown_not_minified_without_exemption,
             }],
         },
+        Contract {
+            id: ContractId("DOC-069".to_string()),
+            title: "high-value docs pages keep governed ownership metadata",
+            tests: vec![TestCase {
+                id: TestId("docs.metadata.high_value_ownership_registry".to_string()),
+                title: "high-value docs pages are listed in the ownership registry with owner review cadence and stability",
+                kind: TestKind::Pure,
+                run: test_docs_069_high_value_pages_keep_governed_ownership_registry,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-070".to_string()),
+            title: "docs health dashboard stays generated and present",
+            tests: vec![TestCase {
+                id: TestId("docs.generated.health_dashboard_present".to_string()),
+                title: "docs health dashboard exists and keeps the generated header",
+                kind: TestKind::Pure,
+                run: test_docs_070_docs_health_dashboard_exists_and_is_generated,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-071".to_string()),
+            title: "readme files avoid stub docs pointers",
+            tests: vec![TestCase {
+                id: TestId("docs.links.readme_avoids_stub_reference_pages".to_string()),
+                title: "README files may not link directly to declared stub-style docs pointer pages",
+                kind: TestKind::Pure,
+                run: test_docs_071_readme_files_do_not_link_to_stub_reference_pages,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-072".to_string()),
+            title: "redirect registry stays complete and inventory stays generated",
+            tests: vec![TestCase {
+                id: TestId("docs.redirects.registry_and_inventory".to_string()),
+                title: "redirect registry resolves every redirect and legacy URL inventory matches the redirect source of truth",
+                kind: TestKind::Pure,
+                run: test_docs_072_redirect_registry_covers_redirects_and_inventory_matches,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-073".to_string()),
+            title: "mkdocs nav references only real files",
+            tests: vec![TestCase {
+                id: TestId("docs.navigation.mkdocs_nav_targets_exist".to_string()),
+                title: "mkdocs nav entries must reference files that exist under docs/",
+                kind: TestKind::Pure,
+                run: test_docs_073_mkdocs_nav_references_real_files,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-074".to_string()),
+            title: "docs section indexes declare purpose and entrypoints",
+            tests: vec![TestCase {
+                id: TestId("docs.structure.section_indexes_have_purpose_and_entrypoints".to_string()),
+                title: "top-level docs section indexes keep both purpose and entrypoint guidance",
+                kind: TestKind::Pure,
+                run: test_docs_074_section_indexes_include_purpose_and_entrypoints,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-075".to_string()),
+            title: "operations runbooks keep required sections",
+            tests: vec![TestCase {
+                id: TestId("docs.operations.runbooks_have_required_sections".to_string()),
+                title: "operations runbooks must include Prereqs Verify and Rollback sections",
+                kind: TestKind::Pure,
+                run: test_docs_075_operations_runbooks_include_required_sections,
+            }],
+        },
     ])
 }

@@ -79,6 +79,13 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-066" => "Markdown files that declare Last verified against must use the canonical explicit ref plus full SHA form.".to_string(),
         "DOC-067" => "Committed generated markdown must declare its generator and tell contributors not to edit it by hand.".to_string(),
         "DOC-068" => "Authored markdown may not collapse into ultra-short placeholder pages unless explicitly exempted for reviewability.".to_string(),
+        "DOC-069" => "High-value docs pages must be listed in the governance ownership registry with owner, review cadence, and stability.".to_string(),
+        "DOC-070" => "The docs health dashboard must exist as a committed generated page and keep the standard generated header.".to_string(),
+        "DOC-071" => "README files may not link readers to declared stub-style pointer pages instead of canonical substantive docs.".to_string(),
+        "DOC-072" => "Every redirect must resolve redirect metadata and the legacy URL inventory must be generated from the redirects source of truth.".to_string(),
+        "DOC-073" => "mkdocs.yml nav may reference only files that actually exist under docs/.".to_string(),
+        "DOC-074" => "Top-level docs section index pages must explain their purpose and how to enter the section.".to_string(),
+        "DOC-075" => "Operations runbooks must keep the required Prereqs, Verify, and Rollback sections.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }
