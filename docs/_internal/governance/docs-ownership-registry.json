@@ -1,0 +1,42 @@
+{
+  "docs/index.md": {
+    "owner": "docs-governance",
+    "reviewCadence": "quarterly"
+  },
+  "docs/start-here.md": {
+    "owner": "docs-governance",
+    "reviewCadence": "quarterly"
+  },
+  "docs/product/index.md": {
+    "owner": "bijux-atlas-product",
+    "reviewCadence": "quarterly"
+  },
+  "docs/architecture/index.md": {
+    "owner": "bijux-atlas-architecture",
+    "reviewCadence": "quarterly"
+  },
+  "docs/api/index.md": {
+    "owner": "bijux-atlas-api",
+    "reviewCadence": "quarterly"
+  },
+  "docs/operations/index.md": {
+    "owner": "bijux-atlas-operations",
+    "reviewCadence": "quarterly"
+  },
+  "docs/control-plane/index.md": {
+    "owner": "bijux-atlas-developer-experience",
+    "reviewCadence": "quarterly"
+  },
+  "docs/development/index.md": {
+    "owner": "bijux-atlas-developer-experience",
+    "reviewCadence": "quarterly"
+  },
+  "docs/reference/index.md": {
+    "owner": "bijux-atlas-docs",
+    "reviewCadence": "quarterly"
+  },
+  "docs/_internal/governance/index.md": {
+    "owner": "docs-governance",
+    "reviewCadence": "quarterly"
+  }
+}

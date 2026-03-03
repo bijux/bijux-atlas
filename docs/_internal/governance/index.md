@@ -1,9 +1,11 @@
 # Governance
 
 - Owner: `platform`
+- Review cadence: `quarterly`
 - Type: `policy`
 - Audience: `contributor`
 - Stability: `stable`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: define contributor-only policy, review, and decision controls for documentation.
 
 ## Purpose
@@ -19,14 +21,19 @@ Provide governance rules that keep reader docs accurate, minimal, and stable.
 - [Docs Dashboard](docs-dashboard.md)
 - [Docs debt backlog](docs-debt-backlog.md)
 - [Docs quarterly cleanup](docs-quarterly-cleanup.md)
-- [Docs build model](../meta/docs-build-model.md)
-- [Docs operating model](../meta/docs-operating-model.md)
-- [Docs principles](../meta/docs-principles.md)
-- [Docs change process](../meta/docs-change-process.md)
+- [Docs publication model](docs-publication-model.md)
+- [Docs versioning model](docs-versioning-model.md)
+- [Documentation ownership](docs-ownership.md)
+- [Redirects Contract](redirects-contract.md)
+- [How To Add A Redirect](add-a-redirect.md)
+- [Redirect Lifecycle And Expiry](redirect-lifecycle.md)
+- [Broken Link Policy](broken-link-policy.md)
+- [Verification Metadata](verification-metadata.md)
 - [Docs Contract](docs-contract.md)
 - [Docs Review Checklist](docs-review-checklist.md)
 - [Docs Removal Policy](docs-removal-policy.md)
 - [Redirects Policy](redirects-policy.md)
+- [Docs Health Dashboard](../generated/docs-health-dashboard.md)
 - [ADRs](adrs/index.md)
 
 ## Next Steps

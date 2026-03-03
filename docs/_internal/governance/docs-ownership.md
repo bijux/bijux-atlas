@@ -1,5 +1,13 @@
 # Documentation Ownership
 
+- Owner: `docs-governance`
+- Review cadence: `quarterly`
+- Type: `policy`
+- Audience: `contributor`
+- Stability: `stable`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Reason to exist: define owner assignment and review cadence requirements for documentation.
+
 ## Section Owners
 
 - `product/`: `bijux-atlas-product`
@@ -14,6 +22,11 @@
 
 - Every docs change must be approved by the owner of the touched top-level section.
 - Cross-section changes require approvals from every impacted section owner.
+- Stable pages must declare an owner and a review cadence in page metadata.
+
+## Ownership Registry
+
+The canonical section-entry registry lives in `docs/_internal/governance/docs-ownership-registry.json`.
 
 ## Service Levels
 

@@ -133,6 +133,7 @@ not_in_nav: |
 
 nav:
   - Home: index.md
+  - Governance: _internal/governance/index.md
   - Start Here: start-here.md
   - Product: product/index.md
   - Architecture: architecture/index.md
@@ -141,7 +142,4 @@ nav:
   - Control-plane: control-plane/index.md
   - Development:
       - Overview: development/index.md
-      - Docs governance: _internal/governance/index.md
-      - Docs Dashboard: _internal/governance/docs-dashboard.md
-      - Boundary Closure Checks: _internal/governance/closure-checks.md
   - Reference: reference/index.md
