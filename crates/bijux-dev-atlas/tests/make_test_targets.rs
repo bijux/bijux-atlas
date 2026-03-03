@@ -56,7 +56,7 @@ fn checks_all_runs_one_human_facing_check_command() {
     let target_block = &tail[..end];
 
     assert_eq!(
-        target_block.matches("$(DEV_ATLAS) check run").count(),
+        target_block.matches("$(DEV_ATLAS) checks run").count(),
         1,
         "checks-all should execute one direct check run"
     );
@@ -64,10 +64,7 @@ fn checks_all_runs_one_human_facing_check_command() {
         !target_block.contains("suites run"),
         "checks-all should not shell through the suite runner"
     );
-    assert!(
-        target_block.contains("--format text"),
-        "checks-all should default to human-readable nextest-style output"
-    );
+    assert!(target_block.contains("--format $(FORMAT)"));
     assert!(
         target_block.contains("--suite deep"),
         "checks-all should target the full deep checks suite"
@@ -100,18 +97,12 @@ fn checks_variant_targets_use_human_check_run_surface() {
         let tail = &root_mk[start..];
         let end = tail.find("\n\n").unwrap_or(tail.len());
         let target_block = &tail[..end];
-        assert!(
-            target_block.contains("$(DEV_ATLAS) check run"),
-            "{marker} should use the human-facing check runner"
-        );
+        assert!(target_block.contains("$(DEV_ATLAS) checks run"));
         assert!(
             !target_block.contains("suites run"),
             "{marker} should not shell through the suite runner"
         );
-        assert!(
-            target_block.contains("--format text"),
-            "{marker} should use human output"
-        );
+        assert!(target_block.contains("--format $(FORMAT)"));
         assert!(
             !target_block.contains("--format json"),
             "{marker} should not emit legacy json by default"
