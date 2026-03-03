@@ -1,0 +1,19 @@
+schema_version: 1
+classes:
+  - id: pii
+    description: Direct identifiers tied to a person.
+    fields:
+      - client_ip
+      - user_email
+  - id: secrets
+    description: Values that grant or extend access.
+    fields:
+      - authorization
+      - api_key
+      - hmac_signature
+      - bearer_token
+  - id: proprietary
+    description: Internal identifiers and policy state that should stay operationally scoped.
+    fields:
+      - dataset_internal_note
+      - runtime_policy_hash

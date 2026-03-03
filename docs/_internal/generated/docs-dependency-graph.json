@@ -2978,6 +2978,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/security/audit-logging.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/security/auth-error-codes.md"
     },
     {
@@ -3009,6 +3014,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/security/model-scope.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/privacy-stance.md"
     },
     {
       "crate": null,

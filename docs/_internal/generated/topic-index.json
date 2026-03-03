@@ -233,6 +233,9 @@
     "attack-surface-budget": [
       "crates/bijux-atlas-store/docs/internal/attack-surface-budget.md"
     ],
+    "audit-logging": [
+      "docs/operations/security/audit-logging.md"
+    ],
     "auth-error-codes": [
       "docs/operations/security/auth-error-codes.md"
     ],
@@ -1144,6 +1147,9 @@
     ],
     "policy-enforcement-mapping": [
       "docs/_internal/governance/policy-enforcement-mapping.md"
+    ],
+    "privacy-stance": [
+      "docs/operations/security/privacy-stance.md"
     ],
     "profile-change-policy": [
       "docs/operations/profile-change-policy.md"

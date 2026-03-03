@@ -7814,6 +7814,20 @@
     },
     {
       "keywords": [
+        "audit-logging",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/audit-logging.md",
+      "tags": [
+        "audit-logging",
+        "operations",
+        "security"
+      ],
+      "topic": "audit-logging"
+    },
+    {
+      "keywords": [
         "auth-error-codes",
         "operations",
         "security"
@@ -7909,6 +7923,20 @@
         "security"
       ],
       "topic": "model-scope"
+    },
+    {
+      "keywords": [
+        "operations",
+        "privacy-stance",
+        "security"
+      ],
+      "path": "docs/operations/security/privacy-stance.md",
+      "tags": [
+        "operations",
+        "privacy-stance",
+        "security"
+      ],
+      "topic": "privacy-stance"
     },
     {
       "keywords": [

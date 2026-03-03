@@ -599,6 +599,7 @@ License: Apache-2.0
 | `docs/operations/security/action-pin-refresh.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/advisory-process.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/security/api-access-model.md` | `concept` | `bijux-atlas-security` | `stable` |
+| `docs/operations/security/audit-logging.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/security/auth-error-codes.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/security/compliance.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/deploy-behind-auth-proxy.md` | `concept` | `bijux-atlas-security` | `stable` |
@@ -606,6 +607,7 @@ License: Apache-2.0
 | `docs/operations/security/index.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/key-rotation.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/model-scope.md` | `concept` | `bijux-atlas-security` | `stable` |
+| `docs/operations/security/privacy-stance.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/security/review-checklist.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/supply-chain-policies.md` | `concept` | `bijux-atlas-platform` | `stable` |
 | `docs/operations/upgrade.md` | `concept` | `bijux-atlas-operations` | `stable` |

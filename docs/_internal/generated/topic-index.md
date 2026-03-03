@@ -42,6 +42,7 @@
 | `artifact-output-contract` | `crates/bijux-atlas-ingest/docs/artifact-output-contract.md` |
 | `artifacts` | `crates/bijux-dev-atlas/docs/internal/artifacts.md` |
 | `attack-surface-budget` | `crates/bijux-atlas-store/docs/internal/attack-surface-budget.md` |
+| `audit-logging` | `docs/operations/security/audit-logging.md` |
 | `auth-error-codes` | `docs/operations/security/auth-error-codes.md` |
 | `auth-model` | `docs/architecture/security/auth-model.md` |
 | `backend-feature-matrix` | `crates/bijux-atlas-store/docs/internal/backend-feature-matrix.md` |
@@ -302,6 +303,7 @@
 | `plugin-versioning-and-release-independence` | `docs/reference/registry/plugin-versioning-and-release-independence.md` |
 | `policy-authoring-guide` | `crates/bijux-atlas-policies/docs/policy-authoring-guide.md` |
 | `policy-enforcement-mapping` | `docs/_internal/governance/policy-enforcement-mapping.md` |
+| `privacy-stance` | `docs/operations/security/privacy-stance.md` |
 | `profile-change-policy` | `docs/operations/profile-change-policy.md` |
 | `profile-invariants` | `docs/operations/k8s/profile-invariants.md` |
 | `profile-matrix` | `docs/reference/contracts/ops/profile-matrix.md` |

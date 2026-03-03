@@ -4765,6 +4765,14 @@
       "area": "operations",
       "audience": "operators",
       "owner": "docs-governance",
+      "path": "docs/operations/security/audit-logging.md",
+      "stability": "stable",
+      "title": "Audit Logging Model"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
       "path": "docs/operations/security/auth-error-codes.md",
       "stability": "stable",
       "title": "Auth Error Codes"
@@ -4816,6 +4824,14 @@
       "path": "docs/operations/security/model-scope.md",
       "stability": "stable",
       "title": "Security Model Scope"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/privacy-stance.md",
+      "stability": "stable",
+      "title": "Privacy Stance"
     },
     {
       "area": "operations",

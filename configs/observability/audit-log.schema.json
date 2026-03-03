@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/observability/audit-log.schema.json",
+  "title": "Atlas Audit Event",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "event_id",
+    "event_name",
+    "timestamp_policy",
+    "timestamp_unix_s",
+    "sink",
+    "action",
+    "resource_kind",
+    "resource_id"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "pattern": "^audit_[a-z_]+$"
+    },
+    "event_name": {
+      "type": "string",
+      "enum": [
+        "startup",
+        "config_loaded",
+        "ingest_started",
+        "ingest_completed",
+        "query_executed",
+        "admin_action"
+      ]
+    },
+    "timestamp_policy": {
+      "type": "string",
+      "const": "runtime-unix-seconds"
+    },
+    "timestamp_unix_s": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "sink": {
+      "type": "string",
+      "enum": [
+        "stdout",
+        "file",
+        "otel"
+      ]
+    },
+    "principal": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resource_kind": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resource_id": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

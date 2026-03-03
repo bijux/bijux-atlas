@@ -5262,6 +5262,15 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/audit-logging.md"
+      ],
+      "path": "docs/operations/security/audit-logging.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/auth-error-codes.md"
       ],
       "path": "docs/operations/security/auth-error-codes.md"
@@ -5319,6 +5328,15 @@
         "docs/operations/security/model-scope.md"
       ],
       "path": "docs/operations/security/model-scope.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/privacy-stance.md"
+      ],
+      "path": "docs/operations/security/privacy-stance.md"
     },
     {
       "breadcrumbs": [
