@@ -55,6 +55,7 @@ jobs:
           set -euo pipefail
           python3 -m pip install --upgrade pip
           python3 -m pip install -r configs/docs/requirements.lock.txt
+          npm ci --prefix configs/docs
       - name: Run docs markdown lint
         shell: bash
         run: |
@@ -76,9 +77,17 @@ jobs:
           set -euo pipefail
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/docs-only"
+          site_dir="$(python3 - <<'PY'
+          import pathlib, yaml
+          mkdocs = yaml.safe_load(pathlib.Path("mkdocs.yml").read_text())
+          print(mkdocs["site_dir"])
+          PY
+          )"
           mkdir -p "${report_root}" "${logs_root}"
           cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-preview --allow-subprocess --allow-write --format json > "${report_root}/mkdocs-build.json" 2> "${logs_root}/mkdocs-build.stderr.log"
-          cp -R "artifacts/docs/site" "artifacts/${RUN_ID}/site-preview"
+          test -f "${site_dir}/index.html"
+          test -d "${site_dir}/assets"
+          cp -R "${site_dir}" "artifacts/${RUN_ID}/site-preview"
           rm -rf "artifacts/${RUN_ID}/site-preview/_internal"
       - name: Run docs lane
         shell: bash
