@@ -36,9 +36,10 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 5. [Minimal production overrides](minimal-production-overrides.md)
 6. [Install verification checklist](install-verification-checklist.md)
 7. [Observability setup](observability-setup.md)
-8. [Incident response](incident-response.md)
-9. [Release](release/index.md)
-10. [Security posture](security-posture.md)
+8. [Validation entrypoints](validation-entrypoints.md)
+9. [Incident response](incident-response.md)
+10. [Release](release/index.md)
+11. [Security posture](security-posture.md)
 
 ## What This Page Is Not
 
