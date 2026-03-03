@@ -485,3 +485,78 @@ fn kind_profile_networkpolicy_remains_reachable_shape_for_simulation() {
         "kind profile NetworkPolicy must keep the service port reachable"
     );
 }
+
+#[test]
+fn networkpolicy_budget_and_prod_exception_rules_are_governed() {
+    let root = repo_root();
+    let governed_profiles = [
+        ("ops/k8s/values/prod.yaml", true),
+        ("ops/k8s/values/prod-minimal.yaml", true),
+        ("ops/k8s/values/prod-ha.yaml", true),
+        ("ops/k8s/values/prod-airgap.yaml", true),
+        ("ops/k8s/values/perf.yaml", false),
+        ("ops/k8s/values/kind.yaml", false),
+    ];
+
+    for (values_file, prod_like) in governed_profiles {
+        let values = load_yaml(&root.join(values_file));
+        let network_policy = &values["networkPolicy"];
+        let egress_mode = yaml_str(&network_policy["mode"])
+            .or_else(|| yaml_str(&network_policy["egress"]["mode"]))
+            .unwrap_or("internet-only");
+        let cidr_budget = network_policy["cidrBudget"]["maxAllowCidrs"]
+            .as_i64()
+            .unwrap_or(8);
+        let allow_cidrs = network_policy["egress"]["allowCidrs"]
+            .as_sequence()
+            .map(|items| items.len() as i64)
+            .unwrap_or(0);
+        let exceptions = &network_policy["exceptions"];
+        let relaxed_egress = yaml_bool(&exceptions["relaxedEgress"]).unwrap_or(false);
+        let prod_disable_allowed = yaml_bool(&exceptions["prodDisableAllowed"]).unwrap_or(false);
+        let owner = yaml_str(&exceptions["owner"]).unwrap_or("");
+        let expires_on = yaml_str(&exceptions["expiresOn"]).unwrap_or("");
+
+        if allow_cidrs > cidr_budget {
+            assert!(
+                relaxed_egress,
+                "{values_file} exceeds network policy CIDR budget without relaxedEgress exception"
+            );
+        }
+
+        if prod_like && egress_mode == "disabled" {
+            assert!(
+                prod_disable_allowed,
+                "{values_file} may not disable network policy without an explicit prod exception"
+            );
+        }
+
+        if relaxed_egress || prod_disable_allowed {
+            assert!(
+                !owner.is_empty() && !expires_on.is_empty(),
+                "{values_file} exceptions must declare both owner and expiry"
+            );
+        }
+    }
+}
+
+#[test]
+fn networkpolicy_render_contains_expected_policy_shape() {
+    let root = repo_root();
+    let internet_only =
+        render_networkpolicy_with_values_file(&root, "ops/k8s/values/networkpolicy-internet-only.yaml");
+    assert!(
+        internet_only.contains("policyTypes:\n    - Ingress\n    - Egress"),
+        "internet-only policy must render both policy types when ingress and egress are configured"
+    );
+    assert!(
+        !internet_only.contains("cidr: \"0.0.0.0/0\"") && !internet_only.contains("cidr: \"::/0\""),
+        "network policy must not render wide-open default-route CIDRs"
+    );
+
+    let cluster_aware = render_networkpolicy_with_values_file(&root, "ops/k8s/values/kind.yaml");
+    assert!(
+        cluster_aware.contains("operator: In"),
+        "cluster-aware policy must use explicit namespace label membership"
+    );
+}

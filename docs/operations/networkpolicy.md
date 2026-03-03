@@ -98,6 +98,29 @@ Run the ServiceMonitor and Prometheus Operator in the `observability` namespace,
 NetworkPolicy enforcement depends on the active CNI plugin. Validate behavior on the same CNI that
 will run production before treating a rendered policy as sufficient evidence.
 
+## Exceptions
+
+Atlas keeps exceptions explicit under `networkPolicy.exceptions`.
+
+- `relaxedEgress=true` is required when a profile exceeds the CIDR budget.
+- `prodDisableAllowed=true` is required when a production-oriented profile disables network policy.
+- Every enabled exception must declare both `owner` and `expiresOn`.
+
+Use exceptions as short-lived escape hatches, not as permanent defaults.
+
+## Migration Note
+
+Older values files may still use `networkPolicy.egress.mode`, `networkPolicy.ingress.mode`,
+`networkPolicy.allowMonitoringNamespace`, and `networkPolicy.dependencies.otelCollector` directly.
+Those remain supported, but the preferred public selectors are now:
+
+- `networkPolicy.mode`
+- `networkPolicy.ingressMode`
+- `networkPolicy.monitoring.allowNamespace`
+- `networkPolicy.dependencies.otel`
+
+Update overlays to the new selectors before the next chart compatibility boundary.
+
 ## Verify
 
 ```bash
@@ -107,6 +130,13 @@ helm template atlas ops/k8s/charts/bijux-atlas -f ops/k8s/values/prod.yaml --sho
 
 Expected result: the rendered policy contains only the selected ingress mode and the dependency
 ports enabled for the profile.
+
+Quick verify checklist:
+
+- `policyTypes` includes both `Ingress` and `Egress` when both rule families are enabled.
+- same-namespace ingress renders a namespace selector for the release namespace.
+- `cluster-aware` egress does not render `ipBlock` entries.
+- metrics-enabled cross-namespace scraping renders the monitoring namespace allowance.
 
 ## Rollback
 
@@ -118,6 +148,9 @@ If a policy blocks expected traffic, switch the affected profile to a narrower k
 Use `cluster-aware` egress with an explicit dependency namespace allowlist and keep ingress at
 `same-namespace` unless you have a separate ingress or observability namespace that must be named
 explicitly.
+
+If production must disable NP temporarily, set `networkPolicy.exceptions.prodDisableAllowed=true`
+with an owner and expiry, then treat that rollout as an exception that must be retired.
 
 ## Troubleshooting
 
