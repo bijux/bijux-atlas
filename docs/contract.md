@@ -77,6 +77,19 @@
 | `DOC-062` | docs sections validate against their schema | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
 | `DOC-063` | site map links the reader spine | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
 | `DOC-064` | docs home links exactly three canonical golden paths | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-065` | docs repo map stays curated and verifiable | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-066` | docs verification markers stay canonical | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-067` | generated markdown keeps generator headers | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-068` | authored markdown reviewability stays bounded | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-069` | high-value docs pages keep governed ownership metadata | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-070` | docs health dashboard stays generated and present | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-071` | readme files avoid stub docs pointers | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-072` | redirect registry stays complete and inventory stays generated | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-073` | mkdocs nav references only real files | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-074` | docs section indexes declare purpose and entrypoints | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-075` | operations runbooks keep required sections | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-076` | major docs spine changes require explicit governance owner approval | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-077` | committed docs artifacts use one canonical regeneration path | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
 
 ## Enforcement mapping
 
@@ -146,6 +159,19 @@
 | `DOC-062` | `bijux dev atlas contracts docs --mode static` |
 | `DOC-063` | `bijux dev atlas contracts docs --mode static` |
 | `DOC-064` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-065` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-066` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-067` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-068` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-069` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-070` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-071` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-072` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-073` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-074` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-075` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-076` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-077` | `bijux dev atlas contracts docs --mode static` |
 
 ## Output artifacts
 
