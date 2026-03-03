@@ -15,17 +15,17 @@
     {
       "kind": "chart-package",
       "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-      "sha256": "82748b81c091a7332660583ae775180f40fda6d7d2ee28d2003fbd449f7c6cae"
+      "sha256": "7ab0623018bc4b5aa37230bae7cff689cdda31ffb8aa23443412f8a89d058050"
     },
     {
       "kind": "evidence-tarball",
       "path": "release/evidence/bundle.tar",
-      "sha256": "54750de03bbe61d91fe1dae055f9a11f6c8d7431a3da9484610c679eca97e175"
+      "sha256": "aa44cdb1153de6758f7626ed39acc79b0aa3a275d3ac3102442d189c51b0d87b"
     },
     {
       "kind": "evidence-manifest",
       "path": "release/evidence/manifest.json",
-      "sha256": "e52cd8df2e7bfb4f93229bfced43341cf45a89573af33762fcb9a430dc8cb4a5"
+      "sha256": "ddcc17a7aff76989e8cb3d9d4a0b4828d62fcbe5a7e20f2ceb9c23a7a7f41f61"
     },
     {
       "kind": "sbom",
