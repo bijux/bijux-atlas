@@ -1,4 +1,3 @@
-dev
 ops
 docs
 reports

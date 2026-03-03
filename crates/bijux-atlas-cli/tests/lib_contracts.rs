@@ -5,6 +5,7 @@ use std::process::Command;
 #[test]
 fn command_surface_ssot_matches_doc() {
     let expected = [
+        "atlas",
         "catalog validate",
         "catalog publish",
         "catalog rollback",
