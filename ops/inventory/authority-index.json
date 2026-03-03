@@ -131,6 +131,7 @@
     "ops/PORTABILITY_MATRIX.md",
     "ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md",
     "ops/README.md",
+    "ops/inventory/README.md",
     "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
     "ops/SCHEMA_EVOLUTION_WORKFLOW.md",
     "ops/SSOT.md",
@@ -139,6 +140,8 @@
     "ops/WHAT_FAILS_WHEN.md",
     "ops/inventory/CONTRACT.md",
     "ops/inventory/OWNER.md"
+    ,
+    "ops/inventory/placeholder-dirs.json"
   ],
   "ignored_prefixes": [
     "ops/_generated/",

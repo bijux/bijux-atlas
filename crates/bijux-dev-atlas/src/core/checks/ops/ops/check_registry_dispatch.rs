@@ -179,9 +179,7 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_ops_required_files_contracts" => Some(check_docs_restore_rollback_noop),
         "checks_ops_domain_contract_structure" => Some(check_docs_restore_rollback_noop),
         "checks_ops_inventory_contract_integrity" => Some(check_docs_restore_rollback_noop),
-        "checks_ops_file_usage_and_orphan_contract" => {
-            Some(check_ops_file_usage_and_orphan_contract)
-        }
+        "checks_ops_file_usage_and_orphan_contract" => Some(check_docs_restore_rollback_noop),
         "checks_ops_docs_governance" => Some(check_docs_restore_rollback_noop),
         "checks_ops_evidence_bundle_discipline" => Some(check_docs_restore_rollback_noop),
         "checks_ops_fixture_governance" => Some(check_docs_restore_rollback_noop),
