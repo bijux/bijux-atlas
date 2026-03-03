@@ -2,6 +2,8 @@
 # Public targets: ops, ops-contracts, ops-contracts-effect, ops-help, ops-doctor, ops-validate, ops-artifact-root-check, ops-render, ops-install-plan, ops-up, ops-down, ops-clean, ops-reset, ops-status, ops-kind-up, ops-kind-down, ops-tools-verify, ops-pins-check, ops-pins-update, ops-stack, ops-k8s, ops-e2e, ops-load, ops-load-plan, ops-load-run, ops-observability
 # All external tools are invoked through bijux dev atlas command surfaces.
 SHELL := /bin/sh
+BIJUX ?= bijux
+BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas
 PROFILE ?= kind
 OPS_RESET_RUN_ID ?= ops_reset
 OPS_CONTRACTS_ARTIFACT_ROOT ?= $(ARTIFACT_ROOT)/ops-contracts/$(RUN_ID)

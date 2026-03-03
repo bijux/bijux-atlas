@@ -1,3 +1,4 @@
+atlas
 catalog validate
 catalog publish
 catalog rollback

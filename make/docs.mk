@@ -1,6 +1,8 @@
 # Scope: docs wrapper targets delegated to bijux-dev-atlas docs surfaces.
 # Public targets: docs, docs-doctor
 SHELL := /bin/sh
+BIJUX ?= bijux
+BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas
 
 docs: ## Canonical docs gate
 	@$(DEV_ATLAS) docs doctor --format json

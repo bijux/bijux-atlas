@@ -4,8 +4,20 @@
     "ARCHITECTURE": [
       "crates/bijux-atlas-server/src/cache/ARCHITECTURE.md"
     ],
+    "ARTIFACTS": [
+      "ops/ARTIFACTS.md"
+    ],
+    "BREAKING_CHANGE_TEMPLATE": [
+      "ops/BREAKING_CHANGE_TEMPLATE.md"
+    ],
+    "BUDGET_POLICY": [
+      "ops/schema/BUDGET_POLICY.md"
+    ],
     "CHANGELOG": [
       "CHANGELOG.md"
+    ],
+    "CONFIGS_COMMAND_LIST": [
+      "crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md"
     ],
     "CONTRACT": [
       "CONTRACT.md",
@@ -37,14 +49,58 @@
     "CONTRIBUTING": [
       "CONTRIBUTING.md"
     ],
+    "CONTROL_PLANE": [
+      "ops/CONTROL_PLANE.md"
+    ],
+    "DELETE_HALF_OPS_SIMULATION_REPORT": [
+      "ops/DELETE_HALF_OPS_SIMULATION_REPORT.md"
+    ],
+    "DEPRECATION_WORKFLOW": [
+      "ops/DEPRECATION_WORKFLOW.md"
+    ],
+    "DETERMINISM_PROOF": [
+      "ops/DETERMINISM_PROOF.md"
+    ],
+    "DIRECTORY_NECESSITY": [
+      "ops/DIRECTORY_NECESSITY.md"
+    ],
+    "DOMAIN_DOCUMENT_TEMPLATE_CONTRACT": [
+      "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md"
+    ],
+    "EMERGENCY_OVERRIDE_WORKFLOW": [
+      "ops/EMERGENCY_OVERRIDE_WORKFLOW.md"
+    ],
     "ERRORS": [
       "ops/ERRORS.md"
+    ],
+    "ESCALATION_MAPPING": [
+      "ops/ESCALATION_MAPPING.md"
+    ],
+    "EVIDENCE_SIGNOFF_WORKFLOW": [
+      "ops/EVIDENCE_SIGNOFF_WORKFLOW.md"
+    ],
+    "EXAMPLE_INCIDENT_WALKTHROUGH": [
+      "docs/operations/EXAMPLE_INCIDENT_WALKTHROUGH.md"
+    ],
+    "EXAMPLE_RELEASE_WALKTHROUGH": [
+      "docs/operations/EXAMPLE_RELEASE_WALKTHROUGH.md"
+    ],
+    "GENERATED_LIFECYCLE": [
+      "ops/GENERATED_LIFECYCLE.md"
+    ],
+    "GOLDEN_REFRESH_POLICY": [
+      "ops/GOLDEN_REFRESH_POLICY.md"
+    ],
+    "INCIDENT_PLAYBOOK_GENERATION": [
+      "ops/INCIDENT_PLAYBOOK_GENERATION.md"
     ],
     "INDEX": [
       "configs/INDEX.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/INDEX.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/INDEX.md",
-      "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/INDEX.md"
+      "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/INDEX.md",
+      "docs/operations/reference/INDEX.md",
+      "ops/INDEX.md"
     ],
     "LINT_POLICY": [
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/rust/LINT_POLICY.md"
@@ -52,11 +108,57 @@
     "MAKE_LAWS": [
       "make/_internal/contracts/MAKE_LAWS.md"
     ],
+    "MATURITY_SCORECARD": [
+      "ops/MATURITY_SCORECARD.md"
+    ],
+    "MIRROR_POLICY": [
+      "ops/_generated.example/MIRROR_POLICY.md"
+    ],
     "NAMING": [
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/NAMING.md"
     ],
+    "OPS_ADR_TEMPLATE": [
+      "ops/OPS_ADR_TEMPLATE.md"
+    ],
+    "OPS_CHANGE_REVIEW_CHECKLIST": [
+      "ops/OPS_CHANGE_REVIEW_CHECKLIST.md"
+    ],
+    "OPS_COMMAND_LIST": [
+      "crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md"
+    ],
+    "OPS_FREEZE_WORKFLOW": [
+      "ops/OPS_FREEZE_WORKFLOW.md"
+    ],
+    "OPS_INVARIANTS": [
+      "ops/OPS_INVARIANTS.md"
+    ],
+    "OWNER": [
+      "ops/_generated.example/OWNER.md",
+      "ops/datasets/OWNER.md",
+      "ops/e2e/OWNER.md",
+      "ops/env/OWNER.md",
+      "ops/inventory/OWNER.md",
+      "ops/k8s/OWNER.md",
+      "ops/load/OWNER.md",
+      "ops/observe/OWNER.md",
+      "ops/report/OWNER.md",
+      "ops/schema/OWNER.md",
+      "ops/stack/OWNER.md"
+    ],
     "OWNERS": [
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/OWNERS.md"
+    ],
+    "OWNERSHIP": [
+      "ops/observe/drills/OWNERSHIP.md"
+    ],
+    "OWNERSHIP_ROTATION_POLICY": [
+      "ops/OWNERSHIP_ROTATION_POLICY.md"
+    ],
+    "PORTABILITY_MATRIX": [
+      "ops/PORTABILITY_MATRIX.md"
+    ],
+    "PUBLIC_SURFACE_CONTRACT_SUMMARY": [
+      "ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md"
     ],
     "README": [
       "README.md",
@@ -113,6 +215,7 @@
       "crates/bijux-atlas-store/README.md",
       "crates/bijux-atlas-store/tests/README.md",
       "crates/bijux-dev-atlas/README.md",
+      "crates/bijux-dev-atlas/src/domains/_template/README.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/README.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/README.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/README.md",
@@ -127,8 +230,10 @@
       "make/README.md",
       "make/_internal/contracts/README.md",
       "ops/README.md",
+      "ops/_generated.example/README.md",
       "ops/datasets/README.md",
       "ops/e2e/README.md",
+      "ops/e2e/fixtures/README.md",
       "ops/env/README.md",
       "ops/inventory/README.md",
       "ops/k8s/README.md",
@@ -139,11 +244,54 @@
       "ops/schema/README.md",
       "ops/stack/README.md"
     ],
+    "REDIRECT_EXPIRY_WORKFLOW": [
+      "docs/operations/REDIRECT_EXPIRY_WORKFLOW.md"
+    ],
+    "RELEASE_READINESS_SIGNOFF_CHECKLIST": [
+      "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md"
+    ],
+    "REQUIRED_FILES": [
+      "ops/_generated.example/REQUIRED_FILES.md",
+      "ops/datasets/REQUIRED_FILES.md",
+      "ops/e2e/REQUIRED_FILES.md",
+      "ops/env/REQUIRED_FILES.md",
+      "ops/inventory/REQUIRED_FILES.md",
+      "ops/k8s/REQUIRED_FILES.md",
+      "ops/load/REQUIRED_FILES.md",
+      "ops/observe/REQUIRED_FILES.md",
+      "ops/report/REQUIRED_FILES.md",
+      "ops/schema/REQUIRED_FILES.md",
+      "ops/stack/REQUIRED_FILES.md"
+    ],
     "RUNBOOK_GENERATION_FROM_GRAPH": [
       "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
     ],
+    "SCHEMA_BUDGET_EXCEPTIONS": [
+      "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md"
+    ],
+    "SCHEMA_EVOLUTION_WORKFLOW": [
+      "ops/SCHEMA_EVOLUTION_WORKFLOW.md"
+    ],
+    "SCHEMA_REFERENCE_ALLOWLIST": [
+      "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md"
+    ],
     "SECURITY": [
       "SECURITY.md"
+    ],
+    "SSOT": [
+      "ops/SSOT.md"
+    ],
+    "SUPPLY_CHAIN_MODEL": [
+      "ops/SUPPLY_CHAIN_MODEL.md"
+    ],
+    "THREAT_MODEL": [
+      "ops/THREAT_MODEL.md"
+    ],
+    "VERSIONING_POLICY": [
+      "ops/schema/VERSIONING_POLICY.md"
+    ],
+    "WHAT_FAILS_WHEN": [
+      "ops/WHAT_FAILS_WHEN.md"
     ],
     "action-pin-refresh": [
       "docs/operations/security/action-pin-refresh.md"
@@ -725,6 +873,9 @@
     ],
     "docs-versioning-model": [
       "docs/_internal/governance/docs-versioning-model.md"
+    ],
+    "domain-module-contract": [
+      "crates/bijux-dev-atlas/docs/internal/domain-module-contract.md"
     ],
     "draft": [
       "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_drafts/draft.md"
@@ -1488,7 +1639,8 @@
       "crates/bijux-atlas-model/docs/internal/schema-evolution-notes.md"
     ],
     "schema-index": [
-      "docs/operations/reference/schema-index.md"
+      "docs/operations/reference/schema-index.md",
+      "ops/schema/generated/schema-index.md"
     ],
     "schema-overview": [
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/schema-overview.md"
@@ -1511,6 +1663,9 @@
     ],
     "scientific-defensibility": [
       "docs/operations/scientific-defensibility.md"
+    ],
+    "scripting": [
+      "docs/architecture/scripting.md"
     ],
     "scripts-migration-release-note": [
       ".github/templates/scripts-migration-release-note.md"

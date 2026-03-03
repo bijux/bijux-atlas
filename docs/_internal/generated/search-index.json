@@ -3046,6 +3046,30 @@
     },
     {
       "keywords": [
+        "bijux-dev-atlas",
+        "configs-command-list"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs-command-list"
+      ],
+      "topic": "CONFIGS_COMMAND_LIST"
+    },
+    {
+      "keywords": [
+        "bijux-dev-atlas",
+        "ops-command-list"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "ops-command-list"
+      ],
+      "topic": "OPS_COMMAND_LIST"
+    },
+    {
+      "keywords": [
         "architecture",
         "bijux-dev-atlas"
       ],
@@ -3233,6 +3257,20 @@
     {
       "keywords": [
         "bijux-dev-atlas",
+        "domain-module-contract",
+        "internal"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/internal/domain-module-contract.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "domain-module-contract",
+        "internal"
+      ],
+      "topic": "domain-module-contract"
+    },
+    {
+      "keywords": [
+        "bijux-dev-atlas",
         "engine-contract",
         "internal"
       ],
@@ -3293,6 +3331,24 @@
         "versioning"
       ],
       "topic": "versioning"
+    },
+    {
+      "keywords": [
+        "-template",
+        "bijux-dev-atlas",
+        "domains",
+        "readme",
+        "src"
+      ],
+      "path": "crates/bijux-dev-atlas/src/domains/_template/README.md",
+      "tags": [
+        "-template",
+        "bijux-dev-atlas",
+        "domains",
+        "readme",
+        "src"
+      ],
+      "topic": "README"
     },
     {
       "keywords": [
@@ -5909,6 +5965,18 @@
     {
       "keywords": [
         "architecture",
+        "scripting"
+      ],
+      "path": "docs/architecture/scripting.md",
+      "tags": [
+        "architecture",
+        "scripting"
+      ],
+      "topic": "scripting"
+    },
+    {
+      "keywords": [
+        "architecture",
         "auth-model",
         "security"
       ],
@@ -6710,6 +6778,42 @@
     },
     {
       "keywords": [
+        "example-incident-walkthrough",
+        "operations"
+      ],
+      "path": "docs/operations/EXAMPLE_INCIDENT_WALKTHROUGH.md",
+      "tags": [
+        "example-incident-walkthrough",
+        "operations"
+      ],
+      "topic": "EXAMPLE_INCIDENT_WALKTHROUGH"
+    },
+    {
+      "keywords": [
+        "example-release-walkthrough",
+        "operations"
+      ],
+      "path": "docs/operations/EXAMPLE_RELEASE_WALKTHROUGH.md",
+      "tags": [
+        "example-release-walkthrough",
+        "operations"
+      ],
+      "topic": "EXAMPLE_RELEASE_WALKTHROUGH"
+    },
+    {
+      "keywords": [
+        "operations",
+        "redirect-expiry-workflow"
+      ],
+      "path": "docs/operations/REDIRECT_EXPIRY_WORKFLOW.md",
+      "tags": [
+        "operations",
+        "redirect-expiry-workflow"
+      ],
+      "topic": "REDIRECT_EXPIRY_WORKFLOW"
+    },
+    {
+      "keywords": [
         "chart-semver-policy",
         "operations"
       ],
@@ -7479,6 +7583,20 @@
         "promotion-record"
       ],
       "topic": "promotion-record"
+    },
+    {
+      "keywords": [
+        "index",
+        "operations",
+        "reference"
+      ],
+      "path": "docs/operations/reference/INDEX.md",
+      "tags": [
+        "index",
+        "operations",
+        "reference"
+      ],
+      "topic": "INDEX"
     },
     {
       "keywords": [
@@ -9878,6 +9996,30 @@
     },
     {
       "keywords": [
+        "artifacts",
+        "ops"
+      ],
+      "path": "ops/ARTIFACTS.md",
+      "tags": [
+        "artifacts",
+        "ops"
+      ],
+      "topic": "ARTIFACTS"
+    },
+    {
+      "keywords": [
+        "breaking-change-template",
+        "ops"
+      ],
+      "path": "ops/BREAKING_CHANGE_TEMPLATE.md",
+      "tags": [
+        "breaking-change-template",
+        "ops"
+      ],
+      "topic": "BREAKING_CHANGE_TEMPLATE"
+    },
+    {
+      "keywords": [
         "contract",
         "ops"
       ],
@@ -9890,6 +10032,90 @@
     },
     {
       "keywords": [
+        "control-plane",
+        "ops"
+      ],
+      "path": "ops/CONTROL_PLANE.md",
+      "tags": [
+        "control-plane",
+        "ops"
+      ],
+      "topic": "CONTROL_PLANE"
+    },
+    {
+      "keywords": [
+        "delete-half-ops-simulation-report",
+        "ops"
+      ],
+      "path": "ops/DELETE_HALF_OPS_SIMULATION_REPORT.md",
+      "tags": [
+        "delete-half-ops-simulation-report",
+        "ops"
+      ],
+      "topic": "DELETE_HALF_OPS_SIMULATION_REPORT"
+    },
+    {
+      "keywords": [
+        "deprecation-workflow",
+        "ops"
+      ],
+      "path": "ops/DEPRECATION_WORKFLOW.md",
+      "tags": [
+        "deprecation-workflow",
+        "ops"
+      ],
+      "topic": "DEPRECATION_WORKFLOW"
+    },
+    {
+      "keywords": [
+        "determinism-proof",
+        "ops"
+      ],
+      "path": "ops/DETERMINISM_PROOF.md",
+      "tags": [
+        "determinism-proof",
+        "ops"
+      ],
+      "topic": "DETERMINISM_PROOF"
+    },
+    {
+      "keywords": [
+        "directory-necessity",
+        "ops"
+      ],
+      "path": "ops/DIRECTORY_NECESSITY.md",
+      "tags": [
+        "directory-necessity",
+        "ops"
+      ],
+      "topic": "DIRECTORY_NECESSITY"
+    },
+    {
+      "keywords": [
+        "domain-document-template-contract",
+        "ops"
+      ],
+      "path": "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
+      "tags": [
+        "domain-document-template-contract",
+        "ops"
+      ],
+      "topic": "DOMAIN_DOCUMENT_TEMPLATE_CONTRACT"
+    },
+    {
+      "keywords": [
+        "emergency-override-workflow",
+        "ops"
+      ],
+      "path": "ops/EMERGENCY_OVERRIDE_WORKFLOW.md",
+      "tags": [
+        "emergency-override-workflow",
+        "ops"
+      ],
+      "topic": "EMERGENCY_OVERRIDE_WORKFLOW"
+    },
+    {
+      "keywords": [
         "errors",
         "ops"
       ],
@@ -9899,6 +10125,174 @@
         "ops"
       ],
       "topic": "ERRORS"
+    },
+    {
+      "keywords": [
+        "escalation-mapping",
+        "ops"
+      ],
+      "path": "ops/ESCALATION_MAPPING.md",
+      "tags": [
+        "escalation-mapping",
+        "ops"
+      ],
+      "topic": "ESCALATION_MAPPING"
+    },
+    {
+      "keywords": [
+        "evidence-signoff-workflow",
+        "ops"
+      ],
+      "path": "ops/EVIDENCE_SIGNOFF_WORKFLOW.md",
+      "tags": [
+        "evidence-signoff-workflow",
+        "ops"
+      ],
+      "topic": "EVIDENCE_SIGNOFF_WORKFLOW"
+    },
+    {
+      "keywords": [
+        "generated-lifecycle",
+        "ops"
+      ],
+      "path": "ops/GENERATED_LIFECYCLE.md",
+      "tags": [
+        "generated-lifecycle",
+        "ops"
+      ],
+      "topic": "GENERATED_LIFECYCLE"
+    },
+    {
+      "keywords": [
+        "golden-refresh-policy",
+        "ops"
+      ],
+      "path": "ops/GOLDEN_REFRESH_POLICY.md",
+      "tags": [
+        "golden-refresh-policy",
+        "ops"
+      ],
+      "topic": "GOLDEN_REFRESH_POLICY"
+    },
+    {
+      "keywords": [
+        "incident-playbook-generation",
+        "ops"
+      ],
+      "path": "ops/INCIDENT_PLAYBOOK_GENERATION.md",
+      "tags": [
+        "incident-playbook-generation",
+        "ops"
+      ],
+      "topic": "INCIDENT_PLAYBOOK_GENERATION"
+    },
+    {
+      "keywords": [
+        "index",
+        "ops"
+      ],
+      "path": "ops/INDEX.md",
+      "tags": [
+        "index",
+        "ops"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "keywords": [
+        "maturity-scorecard",
+        "ops"
+      ],
+      "path": "ops/MATURITY_SCORECARD.md",
+      "tags": [
+        "maturity-scorecard",
+        "ops"
+      ],
+      "topic": "MATURITY_SCORECARD"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ops-adr-template"
+      ],
+      "path": "ops/OPS_ADR_TEMPLATE.md",
+      "tags": [
+        "ops",
+        "ops-adr-template"
+      ],
+      "topic": "OPS_ADR_TEMPLATE"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ops-change-review-checklist"
+      ],
+      "path": "ops/OPS_CHANGE_REVIEW_CHECKLIST.md",
+      "tags": [
+        "ops",
+        "ops-change-review-checklist"
+      ],
+      "topic": "OPS_CHANGE_REVIEW_CHECKLIST"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ops-freeze-workflow"
+      ],
+      "path": "ops/OPS_FREEZE_WORKFLOW.md",
+      "tags": [
+        "ops",
+        "ops-freeze-workflow"
+      ],
+      "topic": "OPS_FREEZE_WORKFLOW"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ops-invariants"
+      ],
+      "path": "ops/OPS_INVARIANTS.md",
+      "tags": [
+        "ops",
+        "ops-invariants"
+      ],
+      "topic": "OPS_INVARIANTS"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ownership-rotation-policy"
+      ],
+      "path": "ops/OWNERSHIP_ROTATION_POLICY.md",
+      "tags": [
+        "ops",
+        "ownership-rotation-policy"
+      ],
+      "topic": "OWNERSHIP_ROTATION_POLICY"
+    },
+    {
+      "keywords": [
+        "ops",
+        "portability-matrix"
+      ],
+      "path": "ops/PORTABILITY_MATRIX.md",
+      "tags": [
+        "ops",
+        "portability-matrix"
+      ],
+      "topic": "PORTABILITY_MATRIX"
+    },
+    {
+      "keywords": [
+        "ops",
+        "public-surface-contract-summary"
+      ],
+      "path": "ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md",
+      "tags": [
+        "ops",
+        "public-surface-contract-summary"
+      ],
+      "topic": "PUBLIC_SURFACE_CONTRACT_SUMMARY"
     },
     {
       "keywords": [
@@ -9915,6 +10309,18 @@
     {
       "keywords": [
         "ops",
+        "release-readiness-signoff-checklist"
+      ],
+      "path": "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
+      "tags": [
+        "ops",
+        "release-readiness-signoff-checklist"
+      ],
+      "topic": "RELEASE_READINESS_SIGNOFF_CHECKLIST"
+    },
+    {
+      "keywords": [
+        "ops",
         "runbook-generation-from-graph"
       ],
       "path": "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
@@ -9923,6 +10329,122 @@
         "runbook-generation-from-graph"
       ],
       "topic": "RUNBOOK_GENERATION_FROM_GRAPH"
+    },
+    {
+      "keywords": [
+        "ops",
+        "schema-evolution-workflow"
+      ],
+      "path": "ops/SCHEMA_EVOLUTION_WORKFLOW.md",
+      "tags": [
+        "ops",
+        "schema-evolution-workflow"
+      ],
+      "topic": "SCHEMA_EVOLUTION_WORKFLOW"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ssot"
+      ],
+      "path": "ops/SSOT.md",
+      "tags": [
+        "ops",
+        "ssot"
+      ],
+      "topic": "SSOT"
+    },
+    {
+      "keywords": [
+        "ops",
+        "supply-chain-model"
+      ],
+      "path": "ops/SUPPLY_CHAIN_MODEL.md",
+      "tags": [
+        "ops",
+        "supply-chain-model"
+      ],
+      "topic": "SUPPLY_CHAIN_MODEL"
+    },
+    {
+      "keywords": [
+        "ops",
+        "threat-model"
+      ],
+      "path": "ops/THREAT_MODEL.md",
+      "tags": [
+        "ops",
+        "threat-model"
+      ],
+      "topic": "THREAT_MODEL"
+    },
+    {
+      "keywords": [
+        "ops",
+        "what-fails-when"
+      ],
+      "path": "ops/WHAT_FAILS_WHEN.md",
+      "tags": [
+        "ops",
+        "what-fails-when"
+      ],
+      "topic": "WHAT_FAILS_WHEN"
+    },
+    {
+      "keywords": [
+        "-generated.example",
+        "mirror-policy",
+        "ops"
+      ],
+      "path": "ops/_generated.example/MIRROR_POLICY.md",
+      "tags": [
+        "-generated.example",
+        "mirror-policy",
+        "ops"
+      ],
+      "topic": "MIRROR_POLICY"
+    },
+    {
+      "keywords": [
+        "-generated.example",
+        "ops",
+        "owner"
+      ],
+      "path": "ops/_generated.example/OWNER.md",
+      "tags": [
+        "-generated.example",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "-generated.example",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/_generated.example/README.md",
+      "tags": [
+        "-generated.example",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "-generated.example",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/_generated.example/REQUIRED_FILES.md",
+      "tags": [
+        "-generated.example",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
     },
     {
       "keywords": [
@@ -9942,6 +10464,20 @@
       "keywords": [
         "datasets",
         "ops",
+        "owner"
+      ],
+      "path": "ops/datasets/OWNER.md",
+      "tags": [
+        "datasets",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "ops",
         "readme"
       ],
       "path": "ops/datasets/README.md",
@@ -9951,6 +10487,20 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/datasets/REQUIRED_FILES.md",
+      "tags": [
+        "datasets",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
     },
     {
       "keywords": [
@@ -9970,11 +10520,55 @@
       "keywords": [
         "e2e",
         "ops",
+        "owner"
+      ],
+      "path": "ops/e2e/OWNER.md",
+      "tags": [
+        "e2e",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "e2e",
+        "ops",
         "readme"
       ],
       "path": "ops/e2e/README.md",
       "tags": [
         "e2e",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "e2e",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/e2e/REQUIRED_FILES.md",
+      "tags": [
+        "e2e",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
+        "e2e",
+        "fixtures",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/e2e/fixtures/README.md",
+      "tags": [
+        "e2e",
+        "fixtures",
         "ops",
         "readme"
       ],
@@ -9998,6 +10592,20 @@
       "keywords": [
         "env",
         "ops",
+        "owner"
+      ],
+      "path": "ops/env/OWNER.md",
+      "tags": [
+        "env",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "env",
+        "ops",
         "readme"
       ],
       "path": "ops/env/README.md",
@@ -10007,6 +10615,20 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "env",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/env/REQUIRED_FILES.md",
+      "tags": [
+        "env",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
     },
     {
       "keywords": [
@@ -10026,6 +10648,20 @@
       "keywords": [
         "inventory",
         "ops",
+        "owner"
+      ],
+      "path": "ops/inventory/OWNER.md",
+      "tags": [
+        "inventory",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "inventory",
+        "ops",
         "readme"
       ],
       "path": "ops/inventory/README.md",
@@ -10035,6 +10671,20 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "inventory",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/inventory/REQUIRED_FILES.md",
+      "tags": [
+        "inventory",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
     },
     {
       "keywords": [
@@ -10054,6 +10704,20 @@
       "keywords": [
         "k8s",
         "ops",
+        "owner"
+      ],
+      "path": "ops/k8s/OWNER.md",
+      "tags": [
+        "k8s",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "k8s",
+        "ops",
         "readme"
       ],
       "path": "ops/k8s/README.md",
@@ -10063,6 +10727,20 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "k8s",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/k8s/REQUIRED_FILES.md",
+      "tags": [
+        "k8s",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
     },
     {
       "keywords": [
@@ -10114,6 +10792,20 @@
       "keywords": [
         "load",
         "ops",
+        "owner"
+      ],
+      "path": "ops/load/OWNER.md",
+      "tags": [
+        "load",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "load",
+        "ops",
         "readme"
       ],
       "path": "ops/load/README.md",
@@ -10123,6 +10815,20 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "load",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/load/REQUIRED_FILES.md",
+      "tags": [
+        "load",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
     },
     {
       "keywords": [
@@ -10142,6 +10848,20 @@
       "keywords": [
         "observe",
         "ops",
+        "owner"
+      ],
+      "path": "ops/observe/OWNER.md",
+      "tags": [
+        "observe",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "observe",
+        "ops",
         "readme"
       ],
       "path": "ops/observe/README.md",
@@ -10151,6 +10871,36 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "observe",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/observe/REQUIRED_FILES.md",
+      "tags": [
+        "observe",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
+        "drills",
+        "observe",
+        "ops",
+        "ownership"
+      ],
+      "path": "ops/observe/drills/OWNERSHIP.md",
+      "tags": [
+        "drills",
+        "observe",
+        "ops",
+        "ownership"
+      ],
+      "topic": "OWNERSHIP"
     },
     {
       "keywords": [
@@ -10169,6 +10919,20 @@
     {
       "keywords": [
         "ops",
+        "owner",
+        "report"
+      ],
+      "path": "ops/report/OWNER.md",
+      "tags": [
+        "ops",
+        "owner",
+        "report"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "ops",
         "readme",
         "report"
       ],
@@ -10179,6 +10943,34 @@
         "report"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "ops",
+        "report",
+        "required-files"
+      ],
+      "path": "ops/report/REQUIRED_FILES.md",
+      "tags": [
+        "ops",
+        "report",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
+        "budget-policy",
+        "ops",
+        "schema"
+      ],
+      "path": "ops/schema/BUDGET_POLICY.md",
+      "tags": [
+        "budget-policy",
+        "ops",
+        "schema"
+      ],
+      "topic": "BUDGET_POLICY"
     },
     {
       "keywords": [
@@ -10197,6 +10989,20 @@
     {
       "keywords": [
         "ops",
+        "owner",
+        "schema"
+      ],
+      "path": "ops/schema/OWNER.md",
+      "tags": [
+        "ops",
+        "owner",
+        "schema"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "ops",
         "readme",
         "schema"
       ],
@@ -10207,6 +11013,78 @@
         "schema"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "ops",
+        "required-files",
+        "schema"
+      ],
+      "path": "ops/schema/REQUIRED_FILES.md",
+      "tags": [
+        "ops",
+        "required-files",
+        "schema"
+      ],
+      "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
+        "ops",
+        "schema",
+        "schema-budget-exceptions"
+      ],
+      "path": "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md",
+      "tags": [
+        "ops",
+        "schema",
+        "schema-budget-exceptions"
+      ],
+      "topic": "SCHEMA_BUDGET_EXCEPTIONS"
+    },
+    {
+      "keywords": [
+        "ops",
+        "schema",
+        "schema-reference-allowlist"
+      ],
+      "path": "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
+      "tags": [
+        "ops",
+        "schema",
+        "schema-reference-allowlist"
+      ],
+      "topic": "SCHEMA_REFERENCE_ALLOWLIST"
+    },
+    {
+      "keywords": [
+        "ops",
+        "schema",
+        "versioning-policy"
+      ],
+      "path": "ops/schema/VERSIONING_POLICY.md",
+      "tags": [
+        "ops",
+        "schema",
+        "versioning-policy"
+      ],
+      "topic": "VERSIONING_POLICY"
+    },
+    {
+      "keywords": [
+        "generated",
+        "ops",
+        "schema",
+        "schema-index"
+      ],
+      "path": "ops/schema/generated/schema-index.md",
+      "tags": [
+        "generated",
+        "ops",
+        "schema",
+        "schema-index"
+      ],
+      "topic": "schema-index"
     },
     {
       "keywords": [
@@ -10225,6 +11103,20 @@
     {
       "keywords": [
         "ops",
+        "owner",
+        "stack"
+      ],
+      "path": "ops/stack/OWNER.md",
+      "tags": [
+        "ops",
+        "owner",
+        "stack"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "ops",
         "readme",
         "stack"
       ],
@@ -10235,6 +11127,20 @@
         "stack"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "ops",
+        "required-files",
+        "stack"
+      ],
+      "path": "ops/stack/REQUIRED_FILES.md",
+      "tags": [
+        "ops",
+        "required-files",
+        "stack"
+      ],
+      "topic": "REQUIRED_FILES"
     }
   ],
   "schema_version": 1,

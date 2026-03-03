@@ -1,6 +1,8 @@
 # Scope: configs wrapper targets delegated to canonical control-plane commands.
 # Public targets: configs, configs-doctor
 SHELL := /bin/sh
+BIJUX ?= bijux
+BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas
 
 CONFIGS_STRICT ?=
 
