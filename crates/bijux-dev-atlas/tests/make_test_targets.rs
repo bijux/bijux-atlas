@@ -43,3 +43,33 @@ fn nextest_default_profile_marks_tests_slow_after_ten_seconds() {
         "default nextest profile must mark >10s tests as slow with a long termination window"
     );
 }
+
+#[test]
+fn checks_all_runs_one_human_facing_check_command() {
+    let root_mk =
+        fs::read_to_string(workspace_root().join("make/root.mk")).expect("read make/root.mk");
+    let start = root_mk
+        .find("checks-all: ## Run the deterministic non-test quality gates")
+        .expect("checks-all target");
+    let tail = &root_mk[start..];
+    let end = tail.find("\n\n").unwrap_or(tail.len());
+    let target_block = &tail[..end];
+
+    assert_eq!(
+        target_block.matches("$(DEV_ATLAS) check run").count(),
+        1,
+        "checks-all should execute one direct check run"
+    );
+    assert!(
+        !target_block.contains("suites run"),
+        "checks-all should not shell through the suite runner"
+    );
+    assert!(
+        target_block.contains("--format text"),
+        "checks-all should default to human-readable nextest-style output"
+    );
+    assert!(
+        !target_block.contains("--format json"),
+        "checks-all should not emit the legacy json summary by default"
+    );
+}

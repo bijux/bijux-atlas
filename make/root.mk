@@ -7,6 +7,7 @@ FAIL_FAST ?= 0
 ARTIFACT_ROOT ?= artifacts
 RUN_ID ?= local
 SUITE_FAIL_FAST_FLAG := $(if $(filter 1 true yes,$(FAIL_FAST)),--fail-fast,--no-fail-fast)
+CHECK_FAIL_FAST_FLAG := $(if $(filter 1 true yes,$(FAIL_FAST)),--fail-fast,)
 
 include make/cargo.mk
 include make/configs.mk
@@ -132,8 +133,7 @@ checks: ## Run the fast non-test quality gate lane
 	@$(MAKE) -s configs-lint
 
 checks-all: ## Run the deterministic non-test quality gates
-	@$(DEV_ATLAS) registry doctor --format json >/dev/null
-	@$(DEV_ATLAS) suites run --suite checks --jobs $(JOBS) $(SUITE_FAIL_FAST_FLAG) --format json
+	@$(DEV_ATLAS) check run --suite deep --include-internal --include-slow --allow-subprocess --allow-git --allow-write --allow-network $(CHECK_FAIL_FAST_FLAG) --format text
 
 checks-group: ## Run one checks suite group (GROUP=<name>)
 	@[ -n "$${GROUP:-}" ] || { echo "usage: make checks-group GROUP=<name>" >&2; exit 2; }
