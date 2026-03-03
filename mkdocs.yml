@@ -7,6 +7,9 @@ strict: true
 docs_dir: docs
 site_dir: artifacts/docs/site
 
+validation:
+  omitted_files: ignore
+
 exclude_docs: |
   _drafts/**
   README.md

@@ -191,15 +191,33 @@ fn run_boundary_docs_output_dir_check(ctx: &RunContext) -> (serde_json::Value, V
         }
     };
 
-    let build = run_sanitized_output(&ctx.repo_root, "mkdocs", &["build", "--strict"]);
-    let build_ok = build.as_ref().is_ok_and(|output| output.status.success());
-    if !build_ok {
-        violations.push(violation(
-            contract_id,
-            test_id,
-            Some("mkdocs.yml".to_string()),
-            "mkdocs build --strict must succeed",
-        ));
+    let build = Command::new("mkdocs")
+        .current_dir(&ctx.repo_root)
+        .args(["build", "--strict"])
+        .output();
+    match build {
+        Ok(output) if output.status.success() => {}
+        Ok(output) => {
+            let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
+            violations.push(violation(
+                contract_id,
+                test_id,
+                Some("mkdocs.yml".to_string()),
+                if stderr.is_empty() {
+                    "mkdocs build --strict must succeed".to_string()
+                } else {
+                    format!("mkdocs build --strict must succeed: {stderr}")
+                },
+            ));
+        }
+        Err(err) => {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                Some("mkdocs.yml".to_string()),
+                format!("failed to run mkdocs build --strict: {err}"),
+            ));
+        }
     }
 
     let site_root = ctx.repo_root.join(&site_dir);

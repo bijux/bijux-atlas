@@ -10,8 +10,8 @@
 ## Rule
 
 - CI may set up toolchains, restore caches, invoke `bijux-dev-atlas` or thin `make` delegates, and upload artifacts.
-- CI may not introduce new workflow-local validation logic unless it is registered in [`configs/ci/policy-outside-control-plane.json`](../../configs/ci/policy-outside-control-plane.json) with an atlas replacement plan.
-- Temporary exceptions must be recorded in [`configs/ci/workflow-allowlist.json`](../../configs/ci/workflow-allowlist.json) with owner, expiry, and renewal reference.
+- CI may not introduce new workflow-local validation logic unless it is registered in `configs/ci/policy-outside-control-plane.json` with an atlas replacement plan.
+- Temporary exceptions must be recorded in `configs/ci/workflow-allowlist.json` with owner, expiry, and renewal reference.
 
 ## Allowed Patterns
 
