@@ -146,8 +146,10 @@ fn default_doc_ref(domain: &'static str) -> Result<DocRef, String> {
 }
 
 fn workspace_root() -> &'static Path {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
-        .parent()
-        .and_then(Path::parent)
-        .expect("workspace root")
+    let manifest_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
+    if let Some(root) = manifest_dir.parent().and_then(Path::parent) {
+        root
+    } else {
+        panic!("workspace root not found from {}", manifest_dir.display());
+    }
 }

@@ -12,7 +12,9 @@ pub struct CommandDescriptor {
 
 pub fn command_inventory() -> Vec<CommandDescriptor> {
     let routes = command_routes();
-    validate_command_routes(&routes).expect("command routes must stay valid");
+    if let Err(err) = validate_command_routes(&routes) {
+        panic!("command routes must stay valid: {err}");
+    }
     routes
         .into_iter()
         .map(|route| CommandDescriptor {

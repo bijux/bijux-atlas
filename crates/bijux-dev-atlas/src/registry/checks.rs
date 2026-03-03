@@ -161,9 +161,10 @@ fn default_doc_ref(domain: &'static str) -> DocRef {
 }
 
 pub fn workspace_root() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .parent()
-        .and_then(Path::parent)
-        .expect("workspace root")
-        .to_path_buf()
+    let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    if let Some(root) = manifest_dir.parent().and_then(Path::parent) {
+        root.to_path_buf()
+    } else {
+        panic!("workspace root not found from {}", manifest_dir.display());
+    }
 }
