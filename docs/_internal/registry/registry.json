@@ -14364,6 +14364,56 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "audit-log-access",
+        "operations",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/audit-log-access.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "audit-log-access",
+        "operations",
+        "security"
+      ],
+      "title": "Access To Audit Logs",
+      "topic": "audit-log-access"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "audit-log-rotation",
+        "operations",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/audit-log-rotation.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "audit-log-rotation",
+        "operations",
+        "security"
+      ],
+      "title": "Audit Log Rotation And Export",
+      "topic": "audit-log-rotation"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "audit-logging",
         "operations",
         "security"
@@ -14434,6 +14484,31 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "data-deletion-requests",
+        "operations",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/data-deletion-requests.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "data-deletion-requests",
+        "operations",
+        "security"
+      ],
+      "title": "Data Deletion Requests",
+      "topic": "data-deletion-requests"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -14456,6 +14531,31 @@
       ],
       "title": "Deploy Behind Auth Proxy",
       "topic": "deploy-behind-auth-proxy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "enable-audit-logging",
+        "operations",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/enable-audit-logging.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "enable-audit-logging",
+        "operations",
+        "security"
+      ],
+      "title": "Enable Audit Logging And Retention",
+      "topic": "enable-audit-logging"
     },
     {
       "area": "operations",

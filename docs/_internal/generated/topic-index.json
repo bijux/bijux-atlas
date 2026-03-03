@@ -233,6 +233,12 @@
     "attack-surface-budget": [
       "crates/bijux-atlas-store/docs/internal/attack-surface-budget.md"
     ],
+    "audit-log-access": [
+      "docs/operations/security/audit-log-access.md"
+    ],
+    "audit-log-rotation": [
+      "docs/operations/security/audit-log-rotation.md"
+    ],
     "audit-logging": [
       "docs/operations/security/audit-logging.md"
     ],
@@ -516,6 +522,9 @@
     "data-access-model": [
       "docs/operations/data-access-model.md"
     ],
+    "data-deletion-requests": [
+      "docs/operations/security/data-deletion-requests.md"
+    ],
     "data-model": [
       "crates/bijux-atlas-model/docs/data-model.md"
     ],
@@ -722,6 +731,9 @@
       "crates/bijux-atlas-server/docs/effects.md",
       "crates/bijux-atlas-store/docs/effects.md",
       "docs/architecture/effects.md"
+    ],
+    "enable-audit-logging": [
+      "docs/operations/security/enable-audit-logging.md"
     ],
     "endpoints": [
       "docs/reference/contracts/endpoints.md"

@@ -599,10 +599,14 @@ License: Apache-2.0
 | `docs/operations/security/action-pin-refresh.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/advisory-process.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/security/api-access-model.md` | `concept` | `bijux-atlas-security` | `stable` |
+| `docs/operations/security/audit-log-access.md` | `concept` | `docs-governance` | `stable` |
+| `docs/operations/security/audit-log-rotation.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/security/audit-logging.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/security/auth-error-codes.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/security/compliance.md` | `concept` | `bijux-atlas-security` | `stable` |
+| `docs/operations/security/data-deletion-requests.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/security/deploy-behind-auth-proxy.md` | `concept` | `bijux-atlas-security` | `stable` |
+| `docs/operations/security/enable-audit-logging.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/security/incident-response.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/index.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/key-rotation.md` | `concept` | `bijux-atlas-security` | `stable` |

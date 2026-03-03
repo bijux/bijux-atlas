@@ -2978,6 +2978,16 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/security/audit-log-access.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/audit-log-rotation.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/security/audit-logging.md"
     },
     {
@@ -2993,7 +3003,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/security/data-deletion-requests.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/security/deploy-behind-auth-proxy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/enable-audit-logging.md"
     },
     {
       "crate": null,

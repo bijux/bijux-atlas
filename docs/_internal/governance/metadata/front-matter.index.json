@@ -4765,6 +4765,22 @@
       "area": "operations",
       "audience": "operators",
       "owner": "docs-governance",
+      "path": "docs/operations/security/audit-log-access.md",
+      "stability": "stable",
+      "title": "Access To Audit Logs"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/audit-log-rotation.md",
+      "stability": "stable",
+      "title": "Audit Log Rotation And Export"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
       "path": "docs/operations/security/audit-logging.md",
       "stability": "stable",
       "title": "Audit Logging Model"
@@ -4787,11 +4803,27 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/data-deletion-requests.md",
+      "stability": "stable",
+      "title": "Data Deletion Requests"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-security",
       "path": "docs/operations/security/deploy-behind-auth-proxy.md",
       "stability": "stable",
       "title": "Deploy Behind Auth Proxy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/enable-audit-logging.md",
+      "stability": "stable",
+      "title": "Enable Audit Logging And Retention"
     },
     {
       "area": "operations",

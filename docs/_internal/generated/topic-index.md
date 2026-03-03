@@ -42,6 +42,8 @@
 | `artifact-output-contract` | `crates/bijux-atlas-ingest/docs/artifact-output-contract.md` |
 | `artifacts` | `crates/bijux-dev-atlas/docs/internal/artifacts.md` |
 | `attack-surface-budget` | `crates/bijux-atlas-store/docs/internal/attack-surface-budget.md` |
+| `audit-log-access` | `docs/operations/security/audit-log-access.md` |
+| `audit-log-rotation` | `docs/operations/security/audit-log-rotation.md` |
 | `audit-logging` | `docs/operations/security/audit-logging.md` |
 | `auth-error-codes` | `docs/operations/security/auth-error-codes.md` |
 | `auth-model` | `docs/architecture/security/auth-model.md` |
@@ -128,6 +130,7 @@
 | `cross-project-compatibility-policy` | `docs/reference/compatibility/cross-project-compatibility-policy.md` |
 | `dashboards` | `docs/operations/observability/dashboards.md` |
 | `data-access-model` | `docs/operations/data-access-model.md` |
+| `data-deletion-requests` | `docs/operations/security/data-deletion-requests.md` |
 | `data-model` | `crates/bijux-atlas-model/docs/data-model.md` |
 | `data-retention-policy` | `docs/operations/data-retention-policy.md` |
 | `dataflow` | `docs/architecture/dataflow.md` |
@@ -190,6 +193,7 @@
 | `drills-program` | `docs/operations/drills-program.md` |
 | `effect-boundary-map` | `crates/bijux-atlas-api/docs/effect-boundary-map.md, crates/bijux-atlas-cli/docs/internal/effect-boundary-map.md, crates/bijux-atlas-core/docs/effect-boundary-map.md, crates/bijux-atlas-ingest/docs/internal/effect-boundary-map.md, crates/bijux-atlas-model/docs/effect-boundary-map.md, crates/bijux-atlas-policies/docs/effect-boundary-map.md, crates/bijux-atlas-query/docs/effect-boundary-map.md, crates/bijux-atlas-server/docs/effect-boundary-map.md, crates/bijux-atlas-store/docs/effect-boundary-map.md` |
 | `effects` | `crates/bijux-atlas-api/docs/effects.md, crates/bijux-atlas-cli/docs/effects.md, crates/bijux-atlas-core/docs/effects.md, crates/bijux-atlas-ingest/docs/effects.md, crates/bijux-atlas-model/docs/effects.md, crates/bijux-atlas-policies/docs/effects.md, crates/bijux-atlas-query/docs/effects.md, crates/bijux-atlas-server/docs/effects.md, crates/bijux-atlas-store/docs/effects.md, docs/architecture/effects.md` |
+| `enable-audit-logging` | `docs/operations/security/enable-audit-logging.md` |
 | `endpoints` | `docs/reference/contracts/endpoints.md` |
 | `engine-contract` | `crates/bijux-dev-atlas/docs/internal/engine-contract.md` |
 | `ensembl-layout` | `crates/bijux-atlas-ingest/docs/ensembl-layout.md` |

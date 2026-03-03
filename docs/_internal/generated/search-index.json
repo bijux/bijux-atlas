@@ -7814,6 +7814,34 @@
     },
     {
       "keywords": [
+        "audit-log-access",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/audit-log-access.md",
+      "tags": [
+        "audit-log-access",
+        "operations",
+        "security"
+      ],
+      "topic": "audit-log-access"
+    },
+    {
+      "keywords": [
+        "audit-log-rotation",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/audit-log-rotation.md",
+      "tags": [
+        "audit-log-rotation",
+        "operations",
+        "security"
+      ],
+      "topic": "audit-log-rotation"
+    },
+    {
+      "keywords": [
         "audit-logging",
         "operations",
         "security"
@@ -7856,6 +7884,20 @@
     },
     {
       "keywords": [
+        "data-deletion-requests",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/data-deletion-requests.md",
+      "tags": [
+        "data-deletion-requests",
+        "operations",
+        "security"
+      ],
+      "topic": "data-deletion-requests"
+    },
+    {
+      "keywords": [
         "deploy-behind-auth-proxy",
         "operations",
         "security"
@@ -7867,6 +7909,20 @@
         "security"
       ],
       "topic": "deploy-behind-auth-proxy"
+    },
+    {
+      "keywords": [
+        "enable-audit-logging",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/enable-audit-logging.md",
+      "tags": [
+        "enable-audit-logging",
+        "operations",
+        "security"
+      ],
+      "topic": "enable-audit-logging"
     },
     {
       "keywords": [

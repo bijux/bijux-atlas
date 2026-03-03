@@ -5262,6 +5262,24 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/audit-log-access.md"
+      ],
+      "path": "docs/operations/security/audit-log-access.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/audit-log-rotation.md"
+      ],
+      "path": "docs/operations/security/audit-log-rotation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/audit-logging.md"
       ],
       "path": "docs/operations/security/audit-logging.md"
@@ -5289,9 +5307,27 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/data-deletion-requests.md"
+      ],
+      "path": "docs/operations/security/data-deletion-requests.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/deploy-behind-auth-proxy.md"
       ],
       "path": "docs/operations/security/deploy-behind-auth-proxy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/enable-audit-logging.md"
+      ],
+      "path": "docs/operations/security/enable-audit-logging.md"
     },
     {
       "breadcrumbs": [
