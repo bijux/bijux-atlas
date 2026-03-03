@@ -48,6 +48,9 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 17. [Release candidate checklist](release-candidate-checklist.md)
 18. [Evidence viewer](evidence-viewer.md)
 19. [Security posture](security-posture.md)
+20. [Institutional drills](drills.md)
+21. [Institutional readiness checklist](institutional-readiness-checklist.md)
+22. [Review packet](review-packet.md)
 
 ## What This Page Is Not
 

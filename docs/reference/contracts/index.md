@@ -12,6 +12,7 @@
 - API surfaces: [Endpoints](endpoints.md), [Errors](errors.md)
 - Health semantics: [Health Endpoints](health-endpoints.md)
 - Observability: [Observability Contracts](observability.md)
+- Drills: [Drill Contracts](drills.md)
 - Runtime configuration: [Config Keys](config-keys.md), [Chart Values](chart-values.md)
 - Ops governance: [Helm Env Allowlist Subset](ops/helm-env-subset.md), [Profile Matrix](ops/profile-matrix.md)
 - Release evidence: [Release Evidence Contracts](release/evidence.md)
