@@ -127,8 +127,113 @@ struct ChartMetadata {
     version: String,
 }
 
+#[derive(Debug, Deserialize)]
+struct GovernanceSuiteRegistry {
+    schema_version: u64,
+    suite_id: String,
+    purpose: String,
+    owner: String,
+    stability: String,
+    entries: Vec<GovernanceSuiteEntry>,
+}
+
+#[derive(Debug, Deserialize)]
+struct GovernanceSuiteEntry {
+    id: String,
+    kind: String,
+    mode: String,
+    owner: String,
+    tags: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ChecksRegistryCatalog {
+    schema_version: u64,
+    registry_id: String,
+    checks: Vec<ChecksRegistryEntry>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ChecksRegistryEntry {
+    check_id: String,
+    summary: String,
+    owner: String,
+    mode: String,
+    inputs: Vec<String>,
+    outputs: Vec<String>,
+    commands: Vec<String>,
+    reports: Vec<String>,
+    depends_on: Option<Vec<String>>,
+    replaces: Option<Vec<String>>,
+    tags: Option<Vec<String>>,
+    since_version: Option<String>,
+    suite_membership: Vec<String>,
+    severity: String,
+    stage: String,
+    runtime_cost: String,
+    determinism: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct ContractsRegistryCatalog {
+    schema_version: u64,
+    registry_id: String,
+    contracts: Vec<ContractsRegistryEntry>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ContractsRegistryEntry {
+    contract_id: String,
+    summary: String,
+    owner: String,
+    mode: String,
+    runner: String,
+    reports: Vec<String>,
+    suite_membership: Vec<String>,
+}
+
 fn exceptions_registry_path(root: &Path) -> PathBuf {
     root.join("configs/governance/exceptions.yaml")
+}
+
+fn checks_suite_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/suites/checks.suite.json")
+}
+
+fn contracts_suite_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/suites/contracts.suite.json")
+}
+
+fn tests_suite_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/suites/tests.suite.json")
+}
+
+fn suites_readme_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/suites/README.md")
+}
+
+fn suite_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/contracts/governance/suite.schema.json")
+}
+
+fn checks_registry_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/checks.registry.json")
+}
+
+fn checks_registry_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/contracts/governance/checks-registry.schema.json")
+}
+
+fn contracts_registry_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/contracts.registry.json")
+}
+
+fn contracts_registry_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/contracts/governance/contracts-registry.schema.json")
+}
+
+fn checks_inventory_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/checks-inventory.json")
 }
 
 fn compatibility_policy_path(root: &Path) -> PathBuf {
@@ -342,6 +447,298 @@ fn read_json_value(path: &Path) -> Result<serde_json::Value, String> {
         &fs::read_to_string(path).map_err(|err| format!("read {} failed: {err}", path.display()))?,
     )
     .map_err(|err| format!("parse {} failed: {err}", path.display()))
+}
+
+fn read_json_file<T: for<'de> Deserialize<'de>>(path: &Path) -> Result<T, String> {
+    serde_json::from_str(
+        &fs::read_to_string(path).map_err(|err| format!("read {} failed: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("parse {} failed: {err}", path.display()))
+}
+
+fn owner_format_valid(owner: &str) -> bool {
+    let owner = owner.trim();
+    if let Some(team) = owner.strip_prefix("team:") {
+        return !team.is_empty()
+            && team
+                .chars()
+                .all(|ch| ch.is_ascii_lowercase() || ch.is_ascii_digit() || ch == '-');
+    }
+    if let Some(handle) = owner.strip_prefix('@') {
+        return !handle.is_empty()
+            && handle
+                .chars()
+                .all(|ch| ch.is_ascii_alphanumeric() || matches!(ch, '-' | '_' | '.'));
+    }
+    false
+}
+
+fn validate_command_order(commands: &[String]) -> bool {
+    let mut sorted = commands.to_vec();
+    sorted.sort();
+    sorted == commands
+}
+
+fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
+    let checks_suite_schema = read_json_value(&suite_schema_path(root))?;
+    let checks_registry_schema = read_json_value(&checks_registry_schema_path(root))?;
+    let contracts_registry_schema = read_json_value(&contracts_registry_schema_path(root))?;
+    if checks_suite_schema
+        .get("properties")
+        .and_then(|value| value.get("schema_version"))
+        .and_then(|value| value.get("const"))
+        .and_then(serde_json::Value::as_u64)
+        != Some(1)
+    {
+        return Err("suite schema must pin schema_version=1".to_string());
+    }
+    if checks_registry_schema
+        .get("properties")
+        .and_then(|value| value.get("registry_id"))
+        .and_then(|value| value.get("const"))
+        .and_then(serde_json::Value::as_str)
+        != Some("checks-registry")
+    {
+        return Err("checks registry schema must pin registry_id=checks-registry".to_string());
+    }
+    if contracts_registry_schema
+        .get("properties")
+        .and_then(|value| value.get("registry_id"))
+        .and_then(|value| value.get("const"))
+        .and_then(serde_json::Value::as_str)
+        != Some("contracts-registry")
+    {
+        return Err("contracts registry schema must pin registry_id=contracts-registry".to_string());
+    }
+
+    let checks_suite: GovernanceSuiteRegistry = read_json_file(&checks_suite_path(root))?;
+    let contracts_suite: GovernanceSuiteRegistry = read_json_file(&contracts_suite_path(root))?;
+    let tests_suite: GovernanceSuiteRegistry = read_json_file(&tests_suite_path(root))?;
+    let checks_registry: ChecksRegistryCatalog = read_json_file(&checks_registry_path(root))?;
+    let contracts_registry: ContractsRegistryCatalog =
+        read_json_file(&contracts_registry_path(root))?;
+    let checks_docs = fs::read_to_string(root.join("docs/_internal/governance/checks-and-contracts.md"))
+        .map_err(|err| format!("read checks-and-contracts.md failed: {err}"))?;
+
+    let mut errors = Vec::<String>::new();
+    let mut check_ids = BTreeSet::new();
+    let mut contract_ids = BTreeSet::new();
+
+    for suite in [&checks_suite, &contracts_suite, &tests_suite] {
+        if suite.schema_version != 1 {
+            errors.push(format!("suite `{}` must declare schema_version=1", suite.suite_id));
+        }
+        if suite.purpose.trim().is_empty() {
+            errors.push(format!("suite `{}` must declare purpose", suite.suite_id));
+        }
+        if !owner_format_valid(&suite.owner) {
+            errors.push(format!("suite `{}` owner `{}` has invalid format", suite.suite_id, suite.owner));
+        }
+        if !matches!(suite.stability.as_str(), "draft" | "stable" | "deprecated") {
+            errors.push(format!("suite `{}` stability `{}` is invalid", suite.suite_id, suite.stability));
+        }
+        for entry in &suite.entries {
+            if entry.id.trim().is_empty() {
+                errors.push(format!("suite `{}` contains an entry with empty id", suite.suite_id));
+            }
+            if !matches!(entry.kind.as_str(), "check" | "contract") {
+                errors.push(format!("suite `{}` entry `{}` has invalid kind `{}`", suite.suite_id, entry.id, entry.kind));
+            }
+            if !matches!(entry.mode.as_str(), "pure" | "effect") {
+                errors.push(format!("suite `{}` entry `{}` has invalid mode `{}`", suite.suite_id, entry.id, entry.mode));
+            }
+            if !owner_format_valid(&entry.owner) {
+                errors.push(format!("suite `{}` entry `{}` owner `{}` has invalid format", suite.suite_id, entry.id, entry.owner));
+            }
+        }
+    }
+
+    if checks_suite.suite_id != "checks" {
+        errors.push("checks suite must use suite_id `checks`".to_string());
+    }
+    if contracts_suite.suite_id != "contracts" {
+        errors.push("contracts suite must use suite_id `contracts`".to_string());
+    }
+    if tests_suite.suite_id != "tests" {
+        errors.push("tests suite must use suite_id `tests`".to_string());
+    }
+
+    if checks_registry.schema_version != 1 || checks_registry.registry_id != "checks-registry" {
+        errors.push("checks registry must declare schema_version=1 and registry_id=checks-registry".to_string());
+    }
+    for check in &checks_registry.checks {
+        if !check_ids.insert(check.check_id.clone()) {
+            errors.push(format!("duplicate check id `{}` in checks registry", check.check_id));
+        }
+        if check.summary.trim().is_empty() {
+            errors.push(format!("{} missing summary", check.check_id));
+        }
+        if !owner_format_valid(&check.owner) {
+            errors.push(format!("{} owner `{}` has invalid format", check.check_id, check.owner));
+        }
+        if !matches!(check.mode.as_str(), "pure" | "effect") {
+            errors.push(format!("{} mode `{}` is invalid", check.check_id, check.mode));
+        }
+        if check.inputs.is_empty() || check.outputs.is_empty() {
+            errors.push(format!("{} must declare non-empty inputs and outputs", check.check_id));
+        }
+        if check.commands.is_empty() {
+            errors.push(format!("{} must declare at least one command", check.check_id));
+        }
+        if !validate_command_order(&check.commands) {
+            errors.push(format!("{} commands must be stored in deterministic sorted order", check.check_id));
+        }
+        if check.reports.is_empty() {
+            errors.push(format!("{} must declare at least one report artifact", check.check_id));
+        }
+        if check.suite_membership.is_empty() {
+            errors.push(format!("{} must declare suite_membership", check.check_id));
+        }
+        if !matches!(check.severity.as_str(), "blocker" | "major" | "minor" | "info") {
+            errors.push(format!("{} severity `{}` is invalid", check.check_id, check.severity));
+        }
+        if !matches!(check.stage.as_str(), "local" | "pr" | "merge" | "release") {
+            errors.push(format!("{} stage `{}` is invalid", check.check_id, check.stage));
+        }
+        if !matches!(check.runtime_cost.as_str(), "low" | "medium" | "high") {
+            errors.push(format!("{} runtime_cost `{}` is invalid", check.check_id, check.runtime_cost));
+        }
+        if !matches!(check.determinism.as_str(), "strict" | "bounded" | "best-effort") {
+            errors.push(format!("{} determinism `{}` is invalid", check.check_id, check.determinism));
+        }
+        if let Some(tags) = &check.tags {
+            if tags.is_empty() {
+                errors.push(format!("{} tags must not be empty when present", check.check_id));
+            }
+        }
+        if let Some(depends_on) = &check.depends_on {
+            if depends_on.iter().any(|value| value.trim().is_empty()) {
+                errors.push(format!("{} depends_on must not contain empty ids", check.check_id));
+            }
+        }
+        if let Some(replaces) = &check.replaces {
+            if replaces.iter().any(|value| value.trim().is_empty()) {
+                errors.push(format!("{} replaces must not contain empty ids", check.check_id));
+            }
+        }
+        if let Some(since_version) = &check.since_version {
+            if since_version.trim().is_empty() {
+                errors.push(format!("{} since_version must not be blank", check.check_id));
+            }
+        }
+    }
+
+    if contracts_registry.schema_version != 1
+        || contracts_registry.registry_id != "contracts-registry"
+    {
+        errors.push(
+            "contracts registry must declare schema_version=1 and registry_id=contracts-registry"
+                .to_string(),
+        );
+    }
+    for contract in &contracts_registry.contracts {
+        if !contract_ids.insert(contract.contract_id.clone()) {
+            errors.push(format!(
+                "duplicate contract id `{}` in contracts registry",
+                contract.contract_id
+            ));
+        }
+        if contract.summary.trim().is_empty() {
+            errors.push(format!("{} missing summary", contract.contract_id));
+        }
+        if !owner_format_valid(&contract.owner) {
+            errors.push(format!(
+                "{} owner `{}` has invalid format",
+                contract.contract_id, contract.owner
+            ));
+        }
+        if !matches!(contract.mode.as_str(), "pure" | "effect") {
+            errors.push(format!(
+                "{} mode `{}` is invalid",
+                contract.contract_id, contract.mode
+            ));
+        }
+        if contract.runner.trim().is_empty() {
+            errors.push(format!("{} missing runner", contract.contract_id));
+        }
+        if contract.reports.is_empty() {
+            errors.push(format!(
+                "{} must declare at least one report artifact",
+                contract.contract_id
+            ));
+        }
+        if contract.suite_membership.is_empty() {
+            errors.push(format!("{} must declare suite_membership", contract.contract_id));
+        }
+    }
+
+    if !checks_docs.contains("## Checks")
+        || !checks_docs.contains("## Contracts")
+        || !checks_docs.contains("## Pure And Effect")
+    {
+        errors.push(
+            "docs/_internal/governance/checks-and-contracts.md must define checks, contracts, and pure/effect semantics"
+                .to_string(),
+        );
+    }
+    if !suites_readme_path(root).exists() {
+        errors.push("configs/governance/suites/README.md is required".to_string());
+    }
+
+    let checks_suite_ids = checks_suite
+        .entries
+        .iter()
+        .map(|entry| entry.id.clone())
+        .collect::<BTreeSet<_>>();
+    let contracts_suite_ids = contracts_suite
+        .entries
+        .iter()
+        .map(|entry| entry.id.clone())
+        .collect::<BTreeSet<_>>();
+    let checks_suite_tag_count: usize = checks_suite.entries.iter().map(|entry| entry.tags.len()).sum();
+    let contracts_suite_tag_count: usize =
+        contracts_suite.entries.iter().map(|entry| entry.tags.len()).sum();
+    let tests_suite_tag_count: usize = tests_suite.entries.iter().map(|entry| entry.tags.len()).sum();
+
+    for id in &check_ids {
+        if !checks_suite_ids.contains(id) {
+            errors.push(format!("checks suite missing registry id `{id}`"));
+        }
+    }
+    for id in &contract_ids {
+        if !contracts_suite_ids.contains(id) {
+            errors.push(format!("contracts suite missing registry id `{id}`"));
+        }
+    }
+
+    errors.sort();
+    errors.dedup();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "checks_inventory",
+        "status": if errors.is_empty() { "ok" } else { "failed" },
+        "counts": {
+            "checks": check_ids.len(),
+            "contracts": contract_ids.len(),
+            "checks_suite_entries": checks_suite.entries.len(),
+            "contracts_suite_entries": contracts_suite.entries.len(),
+            "tests_suite_entries": tests_suite.entries.len(),
+            "checks_suite_tags": checks_suite_tag_count,
+            "contracts_suite_tags": contracts_suite_tag_count,
+            "tests_suite_tags": tests_suite_tag_count
+        },
+        "artifacts": {
+            "checks_registry": checks_registry_path(root).strip_prefix(root).unwrap_or(&checks_registry_path(root)).display().to_string(),
+            "contracts_registry": contracts_registry_path(root).strip_prefix(root).unwrap_or(&contracts_registry_path(root)).display().to_string(),
+            "checks_suite": checks_suite_path(root).strip_prefix(root).unwrap_or(&checks_suite_path(root)).display().to_string(),
+            "contracts_suite": contracts_suite_path(root).strip_prefix(root).unwrap_or(&contracts_suite_path(root)).display().to_string(),
+            "tests_suite": tests_suite_path(root).strip_prefix(root).unwrap_or(&tests_suite_path(root)).display().to_string(),
+            "guide": "docs/_internal/governance/checks-and-contracts.md"
+        },
+        "errors": errors
+    });
+    write_pretty_json(&checks_inventory_path(root), &payload)?;
+    Ok(payload)
 }
 
 fn load_compatibility_policy(root: &Path) -> Result<CompatibilityPolicyRegistry, String> {
@@ -632,6 +1029,7 @@ pub(crate) fn run_governance_command(
             let root = resolve_repo_root(repo_root)?;
             let objects = collect_governance_objects(&root)?;
             let validation = validate_governance_objects(&root, &objects);
+            let checks_inventory = validate_checks_inventory(&root)?;
             let (graph_path, summary_path) = governance_summary_paths(&root);
             let coverage_path = governance_coverage_path(&root);
             let orphan_path = governance_orphan_report_path(&root);
@@ -719,13 +1117,27 @@ pub(crate) fn run_governance_command(
                 .map_err(|e| format!("encode governance orphan report failed: {e}"))?,
             )
             .map_err(|e| format!("write {} failed: {e}", orphan_path.display()))?;
+            let mut governance_errors = validation.errors;
+            governance_errors.extend(
+                checks_inventory["errors"]
+                    .as_array()
+                    .into_iter()
+                    .flatten()
+                    .filter_map(|value| value.as_str().map(ToString::to_string)),
+            );
 
             let payload = serde_json::json!({
                 "schema_version": 1,
                 "kind": "governance_validate",
-                "status": if validation.errors.is_empty() {"ok"} else {"failed"},
+                "status": if governance_errors.is_empty()
+                    && checks_inventory["errors"].as_array().is_none_or(|rows| rows.is_empty()) {
+                    "ok"
+                } else {
+                    "failed"
+                },
                 "objects": collect_governance_objects(&root)?,
-                "errors": validation.errors,
+                "errors": governance_errors,
+                "checks_inventory": checks_inventory,
                 "artifacts": {
                     "governance_graph": graph_path.strip_prefix(&root).unwrap_or(&graph_path).display().to_string(),
                     "governance_summary": summary_path.strip_prefix(&root).unwrap_or(&summary_path).display().to_string(),
@@ -737,6 +1149,7 @@ pub(crate) fn run_governance_command(
                     "governance_orphans": orphan_path.strip_prefix(&root).unwrap_or(&orphan_path).display().to_string(),
                     "policy_surface_map": policy_surface_path.strip_prefix(&root).unwrap_or(&policy_surface_path).display().to_string(),
                     "governance_drift": drift_path.strip_prefix(&root).unwrap_or(&drift_path).display().to_string(),
+                    "checks_inventory": checks_inventory_path(&root).strip_prefix(&root).unwrap_or(&checks_inventory_path(&root)).display().to_string(),
                 }
             });
             let rendered = emit_payload(format, out, &payload)?;
