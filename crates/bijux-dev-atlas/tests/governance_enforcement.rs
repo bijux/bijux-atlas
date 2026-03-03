@@ -139,6 +139,7 @@ fn src_root_contains_only_canonical_module_dirs_and_entry_files() {
 
     let expected = vec![
         "adapters".to_string(),
+        "app".to_string(),
         "cli".to_string(),
         "commands".to_string(),
         "contracts".to_string(),

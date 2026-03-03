@@ -11,6 +11,7 @@ perf
 policies
 ci
 check
+checks
 contract
 registry
 suites
