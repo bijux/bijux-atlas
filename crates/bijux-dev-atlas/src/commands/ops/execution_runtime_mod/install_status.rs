@@ -2119,6 +2119,22 @@ fn wait_for_local_port(port: u16, timeout: Duration) -> Result<(), String> {
 }
 
 fn perform_http_check(local_port: u16, path: &str) -> Result<serde_json::Value, String> {
+    let response = perform_http_request(local_port, path)?;
+    Ok(serde_json::json!({
+        "path": path,
+        "status": response.status,
+        "latency_ms": response.latency_ms,
+        "body_sha256": sha256_hex(&response.body)
+    }))
+}
+
+struct HttpCheckResponse {
+    status: u16,
+    latency_ms: u128,
+    body: String,
+}
+
+fn perform_http_request(local_port: u16, path: &str) -> Result<HttpCheckResponse, String> {
     let started = Instant::now();
     let mut stream =
         TcpStream::connect(("127.0.0.1", local_port)).map_err(|err| format!("connect failed: {err}"))?;
@@ -2152,12 +2168,11 @@ fn perform_http_check(local_port: u16, path: &str) -> Result<serde_json::Value, 
         .position(|window| window == b"\r\n\r\n")
         .map(|offset| &response[offset + 4..])
         .unwrap_or_default();
-    Ok(serde_json::json!({
-        "path": path,
-        "status": status_code,
-        "latency_ms": started.elapsed().as_millis(),
-        "body_sha256": sha256_hex(&String::from_utf8_lossy(body))
-    }))
+    Ok(HttpCheckResponse {
+        status: status_code,
+        latency_ms: started.elapsed().as_millis(),
+        body: String::from_utf8_lossy(body).to_string(),
+    })
 }
 
 fn run_smoke_checks(
@@ -2191,6 +2206,99 @@ fn run_smoke_checks(
     let _ = child.kill();
     let _ = child.wait();
     checks
+}
+
+pub(crate) fn run_ops_obs_verify(common: &OpsCommonArgs) -> Result<(String, i32), String> {
+    if !common.allow_subprocess {
+        return Err("obs verify requires --allow-subprocess".to_string());
+    }
+    if !common.allow_write {
+        return Err("obs verify requires --allow-write".to_string());
+    }
+    if !common.allow_network {
+        return Err("obs verify requires --allow-network".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let profile = common
+        .profile
+        .clone()
+        .unwrap_or_else(|| "profile-baseline".to_string());
+    let namespace = simulation_namespace(&profile, None);
+    let mut child = std::process::Command::new("kubectl")
+        .args([
+            "port-forward",
+            "-n",
+            &namespace,
+            "--address",
+            "127.0.0.1",
+            "service/bijux-atlas",
+            "18081:8080",
+        ])
+        .current_dir(&repo_root)
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+        .map_err(|err| format!("failed to start kubectl port-forward: {err}"))?;
+    let result = (|| -> Result<serde_json::Value, String> {
+        wait_for_local_port(18081, Duration::from_secs(10))?;
+        let metrics = perform_http_request(18081, "/metrics")?;
+        let contract: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../../../../configs/contracts/observability/metrics.schema.json"
+        ))
+        .map_err(|err| format!("failed to parse metrics contract: {err}"))?;
+        let required = contract
+            .get("required_metrics")
+            .and_then(serde_json::Value::as_array)
+            .ok_or_else(|| "metrics contract missing required_metrics".to_string())?;
+        let mut missing = Vec::new();
+        let mut present = Vec::new();
+        for row in required {
+            let Some(name) = row.get("name").and_then(serde_json::Value::as_str) else {
+                continue;
+            };
+            if metrics.body.contains(&format!("{name}{{")) {
+                present.push(name.to_string());
+            } else {
+                missing.push(name.to_string());
+            }
+        }
+        Ok(serde_json::json!({
+            "schema_version": 1,
+            "status": if metrics.status == 200 && missing.is_empty() { "ok" } else { "failed" },
+            "checks": {
+                "metrics_endpoint": {
+                    "path": "/metrics",
+                    "status": metrics.status,
+                    "latency_ms": metrics.latency_ms,
+                    "body_sha256": sha256_hex(&metrics.body)
+                },
+                "required_metrics_present": present,
+                "missing_metrics": missing
+            }
+        }))
+    })();
+    let _ = child.kill();
+    let _ = child.wait();
+    let payload = result?;
+    let report_path = write_simulation_report(&repo_root, &run_id, "ops-obs-verify.json", &payload)?;
+    let status = payload["status"].as_str().unwrap_or("failed");
+    let rendered = emit_payload(
+        common.format,
+        common.out.clone(),
+        &serde_json::json!({
+            "schema_version": 1,
+            "status": status,
+            "text": if status == "ok" { "observability checks passed" } else { "observability checks failed" },
+            "rows": [{
+                "report_path": report_path.display().to_string(),
+                "namespace": namespace,
+                "checks": payload["checks"].clone()
+            }],
+            "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}
+        }),
+    )?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
 pub(crate) fn run_ops_kind_up(common: &OpsCommonArgs) -> Result<(String, i32), String> {

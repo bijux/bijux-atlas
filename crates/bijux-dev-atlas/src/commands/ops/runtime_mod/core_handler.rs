@@ -67,7 +67,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                 "load-report" => serde_json::json!({"action":"load-report","purpose":"parse k6 summary into structured report","effects_required":[]}),
                 "e2e-run" => serde_json::json!({"action":"e2e-run","purpose":"reserved for scenario orchestration","status":"not_implemented"}),
                 "obs-drill-run" => serde_json::json!({"action":"obs-drill-run","purpose":"reserved for observability drill orchestration","status":"not_implemented"}),
-                "obs-verify" => serde_json::json!({"action":"obs-verify","purpose":"verify observability contracts","effects_required":[]}),
+                "obs-verify" => serde_json::json!({"action":"obs-verify","purpose":"verify metrics endpoint reachability and required observability contracts","effects_required":["subprocess","network","fs_write"],"flags":["--allow-subprocess","--allow-network","--allow-write"]}),
                 "tools-doctor" => serde_json::json!({"action":"tools-doctor","purpose":"show required tools and missing requirements without subprocess by default","effects_required":[]}),
                 "suite-list" => serde_json::json!({"kind":"suite","action":"list","suites":["e2e","k8s","load","obs"]}),
                 value if value.starts_with("suite-run:") => serde_json::json!({"kind":"suite","action":"run","suite":value.trim_start_matches("suite-run:")}),
@@ -100,6 +100,32 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
         }
         OpsCommand::Profiles { command } => match command {
             crate::cli::OpsProfilesCommand::Validate(args) => validate_helm_profile_matrix(&args),
+        },
+        OpsCommand::Obs { command } => match command {
+            crate::cli::OpsObsCommand::Verify(common) => crate::ops_execution_runtime::run_ops_obs_verify(&common),
+            crate::cli::OpsObsCommand::Validate(common) => crate::ops_execution_runtime::run_ops_obs_verify(&common),
+            other => {
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "status": "not_implemented",
+                    "text": "observability surface reserved",
+                    "rows": [{
+                        "command": format!("{other:?}")
+                    }],
+                    "summary": {"total": 1, "errors": 0, "warnings": 1}
+                });
+                let common = match &other {
+                    crate::cli::OpsObsCommand::Up(common)
+                    | crate::cli::OpsObsCommand::Down(common)
+                    | crate::cli::OpsObsCommand::Snapshot(common)
+                    | crate::cli::OpsObsCommand::Dashboards(common) => common,
+                    crate::cli::OpsObsCommand::Drill { command: crate::cli::OpsObsDrillCommand::Run(common) } => common,
+                    crate::cli::OpsObsCommand::Validate(common)
+                    | crate::cli::OpsObsCommand::Verify(common) => common,
+                };
+                let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+                Ok((rendered, ops_exit::PASS))
+            }
         },
         OpsCommand::Doctor(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
