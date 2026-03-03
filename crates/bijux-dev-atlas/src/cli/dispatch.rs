@@ -26,7 +26,10 @@ use bijux_dev_atlas::model::exit_codes::{EXIT_FAILURE, EXIT_NOT_FOUND, EXIT_SUCC
 use bijux_dev_atlas::model::engine::{
     CaseStatus, ContractMode as EngineContractMode, Mode as EngineMode, RunOptions, TestKind,
 };
-use bijux_dev_atlas::model::{RunnableId, RunnableKind, RunnableMode};
+use bijux_dev_atlas::model::{
+    ContractCaseResult, ContractCaseStatus, ContractRunCounts, ContractRunPreflight,
+    ContractRunSummary, ReportHeader, ReportRef, RunnableId, RunnableKind, RunnableMode,
+};
 use bijux_dev_atlas::registry::{ContractModesFile, ReportRegistry, RunnableRegistry};
 use bijux_dev_atlas::ui::terminal::nextest_style::{self, PreflightSummary, RenderOptions};
 use std::collections::{BTreeMap, BTreeSet};
@@ -712,6 +715,97 @@ fn write_output(path: Option<std::path::PathBuf>, rendered: &str) -> Result<(), 
     Ok(())
 }
 
+fn contract_summary_from_reports(
+    reports: &[bijux_dev_atlas::model::engine::RunReport],
+    mode: &str,
+    jobs: &str,
+    fail_fast: bool,
+    preflight: &PreflightSummary,
+    artifacts_root: Option<&std::path::Path>,
+) -> ContractRunSummary {
+    let cases = reports
+        .iter()
+        .flat_map(|report| {
+            report.cases.iter().map(move |case| ContractCaseResult {
+                contract_id: case.contract_id.clone(),
+                contract_name: format!("{}::{}", report.domain, case.contract_id),
+                case_name: case.test_id.clone(),
+                status: match case.status {
+                    CaseStatus::Pass => ContractCaseStatus::Pass,
+                    CaseStatus::Fail | CaseStatus::Error => ContractCaseStatus::Fail,
+                    CaseStatus::Skip => ContractCaseStatus::Skip,
+                },
+                duration_ms: case.duration_ms,
+                message: case
+                    .note
+                    .clone()
+                    .or_else(|| case.violations.first().map(|row| row.message.clone())),
+                artifact_paths: vec![format!(
+                    "artifacts/contracts/{}/cases/{}.json",
+                    case.contract_id, case.test_id
+                )],
+            })
+        })
+        .collect::<Vec<_>>();
+    let passed = cases
+        .iter()
+        .filter(|case| case.status == ContractCaseStatus::Pass)
+        .count();
+    let failed = cases
+        .iter()
+        .filter(|case| case.status == ContractCaseStatus::Fail)
+        .count();
+    let skipped = cases
+        .iter()
+        .filter(|case| case.status == ContractCaseStatus::Skip)
+        .count();
+    let reports = artifacts_root
+        .map(|root| {
+            reports
+                .iter()
+                .map(|report| ReportRef {
+                    report_id: format!("contracts-{}", report.domain),
+                    path: root
+                        .join(format!("{}.json", report.domain))
+                        .strip_prefix(root)
+                        .unwrap_or_else(|_| std::path::Path::new(""))
+                        .display()
+                        .to_string()
+                        .replace('\\', "/"),
+                })
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    ContractRunSummary {
+        header: ReportHeader::new(
+            "contract-run-summary",
+            1,
+            serde_json::json!({
+                "mode": mode,
+                "jobs": jobs,
+                "fail_fast": fail_fast,
+            }),
+            reports.iter().map(|report| report.path.clone()).collect(),
+        ),
+        mode: mode.to_string(),
+        jobs: jobs.to_string(),
+        fail_fast,
+        preflight: ContractRunPreflight {
+            required_tools: preflight.required_tools.clone(),
+            missing_tools: preflight.missing_tools.clone(),
+        },
+        counts: ContractRunCounts {
+            total: cases.len(),
+            passed,
+            failed,
+            skipped,
+            not_run: 0,
+        },
+        reports,
+        cases,
+    }
+}
+
 fn run_contract_command(
     global: Option<GlobalFormatArg>,
     command: ContractCommand,
@@ -1022,7 +1116,6 @@ fn run_contract_run_command(
         }
     }
 
-    let payload = engine::to_json_all(&reports);
     let preflight = PreflightSummary {
         required_tools: required_tools.iter().cloned().collect(),
         missing_tools: missing_tool_ids
@@ -1032,14 +1125,23 @@ fn run_contract_run_command(
             .into_iter()
             .collect(),
     };
+    let mode_name = match args.mode {
+        ContractRunModeArg::Static => "static",
+        ContractRunModeArg::Effect => "effect",
+        ContractRunModeArg::All => "all",
+    };
+    let payload = contract_summary_from_reports(
+        &reports,
+        mode_name,
+        &args.jobs,
+        fail_fast,
+        &preflight,
+        args.artifacts_root.as_deref(),
+    );
     let rendered = match effective_format(global, args.format) {
         GlobalFormatArg::Human => nextest_style::render(
             &reports,
-            match args.mode {
-                ContractRunModeArg::Static => "static",
-                ContractRunModeArg::Effect => "effect",
-                ContractRunModeArg::All => "all",
-            },
+            mode_name,
             &args.jobs,
             fail_fast,
             &preflight,
@@ -1059,11 +1161,7 @@ fn run_contract_run_command(
             "{}\n{}",
             nextest_style::render(
                 &reports,
-                match args.mode {
-                    ContractRunModeArg::Static => "static",
-                    ContractRunModeArg::Effect => "effect",
-                    ContractRunModeArg::All => "all",
-                },
+                mode_name,
                 &args.jobs,
                 fail_fast,
                 &preflight,
