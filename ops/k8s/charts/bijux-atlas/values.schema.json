@@ -94,6 +94,47 @@
       }
     },
     {
+      "if": {
+        "properties": {
+          "cache": {
+            "type": "object",
+            "properties": {
+              "initPrewarm": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "enabled"
+                ]
+              }
+            },
+            "required": [
+              "initPrewarm"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "cache": {
+            "type": "object",
+            "properties": {
+              "pinnedDatasets": {
+                "type": "array",
+                "minItems": 1
+              }
+            },
+            "required": [
+              "pinnedDatasets"
+            ]
+          }
+        }
+      }
+    },
+    {
       "description": "Exactly one image selector must be set: use a digest for immutable deploys or a tag for mutable/dev flows, never both.",
       "oneOf": [
         {
