@@ -8,3 +8,5 @@ Use `bijux dev atlas contracts root --mode static` to validate and remediate rep
 | `REPO-LAW-002` | Root surface drifted outside approved allowlist. | Update root allowlist policy and ownership documentation before adding new root items. |
 | `REPO-LAW-003` | Generated or artifact output committed outside approved sinks. | Move outputs under `artifacts/` or approved generated directories, then untrack drift. |
 | `REPO-LAW-004` | Contract metadata missing required identifiers or ownership fields. | Add contract ID, severity, and owner metadata in registry and mapped docs. |
+
+Canonical index: `docs/reference/errors-and-exit-codes.md`

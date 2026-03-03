@@ -154,5 +154,6 @@ nav:
       - Docs governance: _internal/governance/index.md
       - Docs Dashboard: _internal/governance/docs-dashboard.md
   - Reference: reference/index.md
+  - Errors and Exit Codes: reference/errors-and-exit-codes.md
   - Ops Reference: reference/ops/index.md
   - Configs Reference: reference/configs/index.md
