@@ -1,6 +1,6 @@
 {
   "max_public_targets": 50,
-  "target_public_targets": 47,
+  "target_public_targets": 48,
   "public_targets": [
     {
       "name": "artifacts-clean",
@@ -14,6 +14,15 @@
     {
       "name": "build",
       "description": "Run workspace build lane",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
+    },
+    {
+      "name": "checks",
+      "description": "Run the fast non-test quality gate lane",
       "lanes": [
         "dev",
         "ci"

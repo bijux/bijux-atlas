@@ -100,6 +100,14 @@
       "used_in": []
     },
     {
+      "name": "checks",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "checks-all",
       "defined_in": [
         "make/root.mk"

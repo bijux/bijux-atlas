@@ -3,6 +3,7 @@
 CONTRACTS_ARTIFACT_ROOT ?= $(ARTIFACT_ROOT)/contracts/$(RUN_ID)
 CONTRACTS_DEV_ATLAS_TARGET_DIR ?= $(WORKSPACE_ROOT)/artifacts/target
 CONTRACTS_DEV_ATLAS_BIN ?= $(CONTRACTS_DEV_ATLAS_TARGET_DIR)/debug/bijux-dev-atlas
+CONTRACTS_EFFECT_FLAGS := --mode effect --allow-subprocess --allow-network --allow-k8s --allow-fs-write --allow-docker-daemon
 
 _contracts_guard:
 	@if [ ! -x "$(CONTRACTS_DEV_ATLAS_BIN)" ]; then \
@@ -17,7 +18,7 @@ _contracts_guard:
 contracts-help: ## Show contracts gate targets
 	@$(MAKE) -s help-contract
 
-contracts: _contracts_guard ## Run all contracts
+contracts: _contracts_guard ## Run the fast static contract lane
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts all --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
 	@$(DEV_ATLAS) contracts all --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
@@ -33,19 +34,33 @@ contracts-release: _contracts_guard ## Run full release contracts matrix
 	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) contracts all --lane release --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
 	@CI=1 $(DEV_ATLAS) contracts all --lane release --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
-contracts-all: _contracts_guard ## Run the deterministic contract domain set
+contracts-all: _contracts_guard ## Run the full contract suite without static skips
 	@mkdir -p $(ARTIFACT_ROOT)/contracts-all/$(RUN_ID)
-	@printf '%s\n' "contracts-all runs: contracts-root contracts-repo contracts-crates contracts-runtime contracts-configs contracts-docs contracts-docker contracts-make contracts-ops"
-	@printf '%s\n' "effects-boundary: no effectful operations" "contracts-root" "contracts-repo" "contracts-crates" "contracts-runtime" "contracts-configs" "contracts-docs" "contracts-docker" "contracts-make" "contracts-ops" > $(ARTIFACT_ROOT)/contracts-all/$(RUN_ID)/manifest.txt
+	@printf '%s\n' "contracts-all runs: contracts-root contracts-repo-effect contracts-crates contracts-runtime contracts-configs contracts-docs contracts-docker-effect contracts-make contracts-ops-effect"
+	@printf '%s\n' \
+		"full-suite: contracts-all" \
+		"contracts-root (static)" \
+		"contracts-repo (effect)" \
+		"contracts-crates (static)" \
+		"contracts-runtime (static)" \
+		"contracts-configs (static)" \
+		"contracts-docs (static)" \
+		"contracts-docker (effect)" \
+		"contracts-make (static)" \
+		"contracts-ops (effect)" \
+		> $(ARTIFACT_ROOT)/contracts-all/$(RUN_ID)/manifest.txt
 	@$(MAKE) -s contracts-root
-	@$(MAKE) -s contracts-repo
+	@printf '%s\n' "run: $(DEV_ATLAS) contracts repo $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
+	@$(DEV_ATLAS) contracts repo $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 	@$(MAKE) -s contracts-crates
 	@$(MAKE) -s contracts-runtime
 	@$(MAKE) -s contracts-configs
 	@$(MAKE) -s contracts-docs
-	@$(MAKE) -s contracts-docker
+	@printf '%s\n' "run: $(DEV_ATLAS) contracts docker $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
+	@$(DEV_ATLAS) contracts docker $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 	@$(MAKE) -s contracts-make
-	@$(MAKE) -s contracts-ops
+	@printf '%s\n' "run: $(DEV_ATLAS) contracts ops $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
+	@$(DEV_ATLAS) contracts ops $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-fast: _contracts_guard ## Run static-only contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts all --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
@@ -60,8 +75,8 @@ contracts-json: _contracts_guard ## Run all contracts and emit json
 	@$(DEV_ATLAS) contracts all --mode static --format json --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-ci: _contracts_guard ## Run strict CI contracts lane
-	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) contracts all --mode effect --allow-subprocess --allow-network --allow-k8s --allow-fs-write --allow-docker-daemon --format json --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@CI=1 $(DEV_ATLAS) contracts all --mode effect --allow-subprocess --allow-network --allow-k8s --allow-fs-write --allow-docker-daemon --format json --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) contracts all $(CONTRACTS_EFFECT_FLAGS) --format json --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
+	@CI=1 $(DEV_ATLAS) contracts all $(CONTRACTS_EFFECT_FLAGS) --format json --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-root: _contracts_guard ## Run root contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts root --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
