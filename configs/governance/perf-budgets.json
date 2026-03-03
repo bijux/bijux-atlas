@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "budgets": [
+    {
+      "suite": "checks",
+      "duration_regression_ms": 1000,
+      "duration_regression_ratio": 0.25
+    },
+    {
+      "suite": "contracts",
+      "duration_regression_ms": 1000,
+      "duration_regression_ratio": 0.25
+    }
+  ]
+}

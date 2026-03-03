@@ -12,13 +12,13 @@ mod checks;
 mod dispatch;
 mod dispatch_mutations;
 mod ops;
-mod surfaces;
 mod suites;
+mod surfaces;
 
 pub use checks::*;
 pub use ops::*;
-pub use surfaces::*;
 pub use suites::*;
+pub use surfaces::*;
 
 pub(crate) fn run() -> i32 {
     let cli = Cli::parse();

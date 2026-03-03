@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/reports/suite-diff.schema.json",
+  "title": "Suite Diff Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_id",
+    "version",
+    "inputs",
+    "suite",
+    "baseline_run_id",
+    "current_run_id",
+    "thresholds",
+    "summary",
+    "new_failures",
+    "fixed_failures",
+    "duration_regressions",
+    "new_tasks"
+  ],
+  "properties": {
+    "report_id": { "const": "suite-diff" },
+    "version": { "const": 1 },
+    "inputs": { "type": "object" },
+    "suite": { "type": "string" },
+    "baseline_run_id": { "type": "string" },
+    "current_run_id": { "type": "string" },
+    "thresholds": { "type": "object" },
+    "summary": { "type": "object" },
+    "new_failures": { "type": "array" },
+    "fixed_failures": { "type": "array" },
+    "duration_regressions": { "type": "array" },
+    "new_tasks": { "type": "array" }
+  }
+}

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ArtifactsCommand, CheckCommand, CheckRegistryCommand, Command, ConfigsCommand,
-    ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, FormatArg, IngestCommand,
-    MakeCommand, OpsCommand, PerfCommand, PoliciesCommand, ReleaseCommand, SecurityCommand,
+    ArtifactsCommand, CheckCommand, CheckRegistryCommand, Command, ConfigsCommand, ContractCommand,
+    ContractsCommand, DatasetsCommand, DocsCommand, FormatArg, IngestCommand, MakeCommand,
+    OpsCommand, PerfCommand, PoliciesCommand, ReleaseCommand, SecurityCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -12,8 +12,13 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Help { format, .. } => *format = FormatArg::Json,
         Command::Suites { command } => match command {
             crate::cli::SuitesCommand::Run { format, .. }
-            | crate::cli::SuitesCommand::List { format, .. }
-            | crate::cli::SuitesCommand::Describe { format, .. } => *format = FormatArg::Json,
+            | crate::cli::SuitesCommand::Report { format, .. }
+            | crate::cli::SuitesCommand::Diff { format, .. } => {
+                *format = crate::cli::SuiteOutputFormatArg::Json
+            }
+            crate::cli::SuitesCommand::List { format, .. }
+            | crate::cli::SuitesCommand::Describe { format, .. }
+            | crate::cli::SuitesCommand::Last { format, .. } => *format = FormatArg::Json,
         },
         Command::Contract { command } => match command {
             ContractCommand::Run { format, .. } => *format = FormatArg::Json,
@@ -449,11 +454,12 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             command: ContractCommand::Run { fail_fast, .. },
         } => *fail_fast = true,
         Command::Suites {
-            command: crate::cli::SuitesCommand::Run {
-                fail_fast,
-                no_fail_fast,
-                ..
-            },
+            command:
+                crate::cli::SuitesCommand::Run {
+                    fail_fast,
+                    no_fail_fast,
+                    ..
+                },
         } => {
             *fail_fast = true;
             *no_fail_fast = false;
@@ -928,9 +934,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         Command::Suites { command } => match command {
             crate::cli::SuitesCommand::Run { repo_root, .. }
             | crate::cli::SuitesCommand::List { repo_root, .. }
-            | crate::cli::SuitesCommand::Describe { repo_root, .. } => {
-                *repo_root = Some(root.clone())
-            }
+            | crate::cli::SuitesCommand::Describe { repo_root, .. }
+            | crate::cli::SuitesCommand::Last { repo_root, .. }
+            | crate::cli::SuitesCommand::Report { repo_root, .. }
+            | crate::cli::SuitesCommand::Diff { repo_root, .. } => *repo_root = Some(root.clone()),
         },
         Command::Contract { command } => match command {
             ContractCommand::Run { repo_root, .. } => *repo_root = Some(root.clone()),

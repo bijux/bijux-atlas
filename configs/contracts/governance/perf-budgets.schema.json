@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/governance/perf-budgets.schema.json",
+  "title": "Suite Performance Budgets",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "budgets"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "budgets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "suite",
+          "duration_regression_ms",
+          "duration_regression_ratio"
+        ],
+        "properties": {
+          "suite": { "type": "string" },
+          "duration_regression_ms": { "type": "integer", "minimum": 0 },
+          "duration_regression_ratio": { "type": "number", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

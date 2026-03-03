@@ -3,13 +3,14 @@
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::fs;
 use std::io::Write;
+use std::io::{stdout, IsTerminal};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
 use std::time::{Instant, SystemTime, UNIX_EPOCH};
 
-use crate::cli::{FormatArg, SuiteModeArg, SuitesCommand};
+use crate::cli::{FormatArg, SuiteColorArg, SuiteModeArg, SuiteOutputFormatArg, SuitesCommand};
 use crate::resolve_repo_root;
 use bijux_dev_atlas::docs::site_output::validate_named_report;
 use serde::Deserialize;
@@ -114,7 +115,10 @@ struct SuiteRunOptions {
     mode: SuiteModeArg,
     group: Option<String>,
     tag: Option<String>,
-    format: FormatArg,
+    format: SuiteOutputFormatArg,
+    quiet: bool,
+    verbose: bool,
+    color: SuiteColorArg,
     out: Option<PathBuf>,
 }
 
@@ -127,6 +131,31 @@ struct TaskOutput {
     error_summary: Option<String>,
     stdout_path: String,
     stderr_path: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct PerfBudgetsConfig {
+    schema_version: u64,
+    budgets: Vec<PerfBudgetEntry>,
+}
+
+#[derive(Debug, Deserialize)]
+struct PerfBudgetEntry {
+    suite: String,
+    duration_regression_ms: u64,
+    duration_regression_ratio: f64,
+}
+
+#[derive(Debug, Deserialize)]
+struct LatestRunsPointer {
+    schema_version: u64,
+    suites: BTreeMap<String, LatestSuiteRun>,
+}
+
+#[derive(Debug, Deserialize)]
+struct LatestSuiteRun {
+    run_id: String,
+    suite_root: String,
 }
 
 fn write_output_if_requested(out: Option<PathBuf>, rendered: &str) -> Result<(), String> {
@@ -168,6 +197,14 @@ fn contracts_registry_path(root: &Path) -> PathBuf {
     root.join("configs/governance/contracts.registry.json")
 }
 
+fn perf_budgets_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/perf-budgets.json")
+}
+
+fn latest_runs_pointer_path(artifacts_root: &Path) -> PathBuf {
+    artifacts_root.join("suites/LATEST")
+}
+
 fn suite_result_schema_name() -> &'static str {
     "suite-result.schema.json"
 }
@@ -180,6 +217,10 @@ fn suite_preflight_schema_name() -> &'static str {
     "suite-preflight.schema.json"
 }
 
+fn suite_diff_schema_name() -> &'static str {
+    "suite-diff.schema.json"
+}
+
 fn normalize_suite_id(raw: &str) -> String {
     raw.trim().to_ascii_lowercase().replace('-', "_")
 }
@@ -187,8 +228,9 @@ fn normalize_suite_id(raw: &str) -> String {
 fn load_suites_index(root: &Path) -> Result<SuitesIndex, String> {
     let index: SuitesIndex = read_json_file(&suites_index_path(root))?;
     if index.schema_version != 1 || index.index_id != "governance-suites" {
-        return Err("suites index must declare schema_version=1 and index_id=governance-suites"
-            .to_string());
+        return Err(
+            "suites index must declare schema_version=1 and index_id=governance-suites".to_string(),
+        );
     }
     Ok(index)
 }
@@ -261,26 +303,28 @@ fn load_suite_tasks(root: &Path, suite_id: &str) -> Result<Vec<SuiteTask>, Strin
                 .contracts
                 .into_iter()
                 .filter_map(|entry| {
-                    entry_map.get(&entry.contract_id).map(|suite_entry| SuiteTask {
-                        id: entry.contract_id.clone(),
-                        kind: suite_entry.kind.clone(),
-                        summary: entry.summary,
-                        owner: suite_entry.owner.clone(),
-                        mode: suite_entry.mode.clone(),
-                        group: entry.group,
-                        tags: entry.tags.unwrap_or_else(|| suite_entry.tags.clone()),
-                        commands: vec![normalized_contract_command(
-                            &entry.runner,
-                            &suite_entry.mode,
-                            &entry.contract_id,
-                        )],
-                        reports: entry.reports,
-                        retries: entry.retries.unwrap_or(0),
-                        requires_tools: entry.requires_tools.unwrap_or_default(),
-                        missing_tools_policy: entry
-                            .missing_tools_policy
-                            .unwrap_or_else(|| "fail".to_string()),
-                    })
+                    entry_map
+                        .get(&entry.contract_id)
+                        .map(|suite_entry| SuiteTask {
+                            id: entry.contract_id.clone(),
+                            kind: suite_entry.kind.clone(),
+                            summary: entry.summary,
+                            owner: suite_entry.owner.clone(),
+                            mode: suite_entry.mode.clone(),
+                            group: entry.group,
+                            tags: entry.tags.unwrap_or_else(|| suite_entry.tags.clone()),
+                            commands: vec![normalized_contract_command(
+                                &entry.runner,
+                                &suite_entry.mode,
+                                &entry.contract_id,
+                            )],
+                            reports: entry.reports,
+                            retries: entry.retries.unwrap_or(0),
+                            requires_tools: entry.requires_tools.unwrap_or_default(),
+                            missing_tools_policy: entry
+                                .missing_tools_policy
+                                .unwrap_or_else(|| "fail".to_string()),
+                        })
                 })
                 .collect::<Vec<_>>()
                 .pipe(Ok)
@@ -336,13 +380,17 @@ fn parse_command_invocation(command: &str) -> Result<(String, Vec<String>), Stri
         return Err("command cannot be empty".to_string());
     }
     if parts.len() >= 3 && parts[0] == "bijux" && parts[1] == "dev" && parts[2] == "atlas" {
-        let exe = std::env::current_exe().map_err(|err| format!("resolve current exe failed: {err}"))?;
+        let exe =
+            std::env::current_exe().map_err(|err| format!("resolve current exe failed: {err}"))?;
         return Ok((
             exe.display().to_string(),
             parts.into_iter().skip(3).collect::<Vec<_>>(),
         ));
     }
-    Ok((parts[0].clone(), parts.into_iter().skip(1).collect::<Vec<_>>()))
+    Ok((
+        parts[0].clone(),
+        parts.into_iter().skip(1).collect::<Vec<_>>(),
+    ))
 }
 
 fn git_sha(root: &Path) -> String {
@@ -351,7 +399,9 @@ fn git_sha(root: &Path) -> String {
         .current_dir(root)
         .output();
     match output {
-        Ok(value) if value.status.success() => String::from_utf8_lossy(&value.stdout).trim().to_string(),
+        Ok(value) if value.status.success() => {
+            String::from_utf8_lossy(&value.stdout).trim().to_string()
+        }
         _ => "nogit".to_string(),
     }
 }
@@ -393,6 +443,96 @@ fn run_timestamp() -> String {
         Ok(duration) => duration.as_secs().to_string(),
         Err(_) => "0".to_string(),
     }
+}
+
+fn supports_color(color: SuiteColorArg) -> bool {
+    match color {
+        SuiteColorArg::Always => true,
+        SuiteColorArg::Never => false,
+        SuiteColorArg::Auto => stdout().is_terminal(),
+    }
+}
+
+fn load_perf_budget(root: &Path, suite_id: &str) -> Result<PerfBudgetEntry, String> {
+    let schema_value: serde_json::Value =
+        read_json_file(&root.join("configs/contracts/governance/perf-budgets.schema.json"))?;
+    let required_fields = schema_value["required"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .collect::<Vec<_>>();
+    let config_value: serde_json::Value = read_json_file(&perf_budgets_path(root))?;
+    let config_object = config_value
+        .as_object()
+        .ok_or_else(|| "perf budgets config must be a JSON object".to_string())?;
+    for field in required_fields {
+        if !config_object.contains_key(field) {
+            return Err(format!(
+                "perf budgets config missing required key `{field}`"
+            ));
+        }
+    }
+    let config: PerfBudgetsConfig = serde_json::from_value(config_value)
+        .map_err(|err| format!("parse perf budgets failed: {err}"))?;
+    if config.schema_version != 1 {
+        return Err("perf budgets must declare schema_version=1".to_string());
+    }
+    config
+        .budgets
+        .into_iter()
+        .find(|entry| entry.suite == suite_id)
+        .ok_or_else(|| format!("perf budget for suite `{suite_id}` not found"))
+}
+
+fn load_latest_runs_pointer(artifacts_root: &Path) -> Result<LatestRunsPointer, String> {
+    let path = latest_runs_pointer_path(artifacts_root);
+    if !path.exists() {
+        return Ok(LatestRunsPointer {
+            schema_version: 1,
+            suites: BTreeMap::new(),
+        });
+    }
+    let pointer: LatestRunsPointer = read_json_file(&path)?;
+    if pointer.schema_version != 1 {
+        return Err("LATEST pointer must declare schema_version=1".to_string());
+    }
+    Ok(pointer)
+}
+
+fn write_latest_run_pointer(
+    artifacts_root: &Path,
+    suite_id: &str,
+    run_id: &str,
+    suite_root: &Path,
+) -> Result<(), String> {
+    let mut pointer = load_latest_runs_pointer(artifacts_root)?;
+    pointer.suites.insert(
+        suite_id.to_string(),
+        LatestSuiteRun {
+            run_id: run_id.to_string(),
+            suite_root: suite_root.display().to_string(),
+        },
+    );
+    let rendered = serde_json::to_string_pretty(&serde_json::json!({
+        "schema_version": 1,
+        "suites": pointer.suites.into_iter().map(|(suite, entry)| (suite, serde_json::json!({
+            "run_id": entry.run_id,
+            "suite_root": entry.suite_root,
+        }))).collect::<serde_json::Map<_, _>>()
+    }))
+    .map_err(|err| format!("encode LATEST pointer failed: {err}"))?;
+    fs::create_dir_all(artifacts_root.join("suites")).map_err(|err| {
+        format!(
+            "create {} failed: {err}",
+            artifacts_root.join("suites").display()
+        )
+    })?;
+    fs::write(
+        latest_runs_pointer_path(artifacts_root),
+        format!("{rendered}\n"),
+    )
+    .map_err(|err| format!("write LATEST pointer failed: {err}"))
 }
 
 fn render_suite_list(root: &Path, format: FormatArg) -> Result<String, String> {
@@ -437,10 +577,19 @@ fn render_suite_describe(root: &Path, suite_id: &str, format: FormatArg) -> Resu
     match format {
         FormatArg::Text => {
             let mut lines = vec![
-                format!("suite_id: {}", payload["suite_id"].as_str().unwrap_or_default()),
-                format!("purpose: {}", payload["purpose"].as_str().unwrap_or_default()),
+                format!(
+                    "suite_id: {}",
+                    payload["suite_id"].as_str().unwrap_or_default()
+                ),
+                format!(
+                    "purpose: {}",
+                    payload["purpose"].as_str().unwrap_or_default()
+                ),
                 format!("owner: {}", payload["owner"].as_str().unwrap_or_default()),
-                format!("stability: {}", payload["stability"].as_str().unwrap_or_default()),
+                format!(
+                    "stability: {}",
+                    payload["stability"].as_str().unwrap_or_default()
+                ),
                 "entries:".to_string(),
             ];
             for entry in payload["entries"].as_array().into_iter().flatten() {
@@ -459,6 +608,141 @@ fn render_suite_describe(root: &Path, suite_id: &str, format: FormatArg) -> Resu
             .map_err(|err| format!("encode suites describe failed: {err}")),
         FormatArg::Jsonl => Err("jsonl output is not supported for suites describe".to_string()),
     }
+}
+
+fn colorize(label: &str, color: SuiteColorArg, code: &str) -> String {
+    if supports_color(color) {
+        format!("\u{1b}[{code}m{label}\u{1b}[0m")
+    } else {
+        label.to_string()
+    }
+}
+
+fn status_label(status: &str, color: SuiteColorArg) -> String {
+    match status {
+        "pass" => colorize("[PASS]", color, "32"),
+        "fail" => colorize("[FAIL]", color, "31"),
+        "skip" => colorize("[SKIP]", color, "33"),
+        _ => format!("[{}]", status.to_ascii_uppercase()),
+    }
+}
+
+fn format_duration_ms(duration_ms: u64) -> String {
+    if duration_ms >= 1_000 {
+        format!("{:.2}s", duration_ms as f64 / 1_000.0)
+    } else {
+        format!("{duration_ms}ms")
+    }
+}
+
+fn suite_root_path(artifacts_root: &Path, suite_id: &str, run_id: &str) -> PathBuf {
+    artifacts_root.join("suites").join(suite_id).join(run_id)
+}
+
+fn read_suite_summary(suite_root: &Path) -> Result<serde_json::Value, String> {
+    read_json_file(&suite_root.join("suite-summary.json"))
+}
+
+fn read_result_value(result_path: &Path) -> Result<serde_json::Value, String> {
+    read_json_file(result_path)
+}
+
+fn filter_summary_tasks(
+    summary: &serde_json::Value,
+    failed_only: bool,
+    group: Option<&str>,
+    id: Option<&str>,
+) -> Vec<serde_json::Value> {
+    summary["tasks"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter(|task| {
+            (!failed_only || task["status"].as_str() == Some("fail"))
+                && group.is_none_or(|value| task["group"].as_str() == Some(value))
+                && id.is_none_or(|value| task["id"].as_str() == Some(value))
+        })
+        .cloned()
+        .collect::<Vec<_>>()
+}
+
+fn human_suite_report(
+    summary: &serde_json::Value,
+    task_details: &[serde_json::Value],
+    suite_root: &Path,
+    quiet: bool,
+    verbose: bool,
+    color: SuiteColorArg,
+    slowdown_rows: &[String],
+) -> String {
+    let suite = summary["suite"].as_str().unwrap_or_default();
+    let run_id = summary["run_id"].as_str().unwrap_or_default();
+    let elapsed_ms = summary["elapsed_ms"].as_u64().unwrap_or(0);
+    let mut lines = vec![format!("Suite {suite}  run_id={run_id}")];
+    let mut grouped = BTreeMap::<String, Vec<&serde_json::Value>>::new();
+    for task in task_details {
+        let group = task["group"].as_str().unwrap_or("ungrouped").to_string();
+        grouped.entry(group).or_default().push(task);
+    }
+    for (group, tasks) in grouped {
+        lines.push(format!("Group {group}"));
+        for task in tasks {
+            let status = task["status"].as_str().unwrap_or("unknown");
+            if quiet && status == "pass" {
+                continue;
+            }
+            let task_id = task["id"].as_str().unwrap_or_default();
+            let duration_ms = task["duration_ms"].as_u64().unwrap_or(0);
+            let summary_text = task["summary"].as_str().unwrap_or_default();
+            lines.push(format!(
+                "{} {} - {} ({})",
+                status_label(status, color),
+                task_id,
+                summary_text,
+                format_duration_ms(duration_ms)
+            ));
+            if status == "fail" {
+                let short_error = task["error_summary"].as_str().unwrap_or("command failed");
+                lines.push(format!("  error: {short_error}"));
+                let result_path = task["result_path"].as_str().unwrap_or_default();
+                if !result_path.is_empty() {
+                    lines.push(format!("  artifacts: {result_path}"));
+                }
+                if verbose {
+                    let stderr_path = task["stderr_path"].as_str().unwrap_or_default();
+                    if !stderr_path.is_empty() {
+                        let tail = fs::read_to_string(stderr_path)
+                            .unwrap_or_default()
+                            .lines()
+                            .take(10)
+                            .map(str::to_string)
+                            .collect::<Vec<_>>();
+                        if !tail.is_empty() {
+                            lines.push("  stderr_tail:".to_string());
+                            for line in tail {
+                                lines.push(format!("    {line}"));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if !slowdown_rows.is_empty() {
+        lines.push("Slowdowns".to_string());
+        lines.extend(slowdown_rows.iter().map(|row| format!("  {row}")));
+    }
+    lines.push(format!(
+        "Totals pass={} fail={} skip={} total={} elapsed={} run_id={} artifacts={}",
+        summary["summary"]["pass"].as_u64().unwrap_or(0),
+        summary["summary"]["fail"].as_u64().unwrap_or(0),
+        summary["summary"]["skip"].as_u64().unwrap_or(0),
+        summary["summary"]["total"].as_u64().unwrap_or(0),
+        format_duration_ms(elapsed_ms),
+        run_id,
+        suite_root.display()
+    ));
+    lines.join("\n")
 }
 
 fn select_tasks(
@@ -484,8 +768,7 @@ fn select_tasks(
     tasks.sort_by(|a, b| {
         let left = group_order.get(&a.group).copied().unwrap_or(usize::MAX);
         let right = group_order.get(&b.group).copied().unwrap_or(usize::MAX);
-        left.cmp(&right)
-            .then_with(|| a.id.cmp(&b.id))
+        left.cmp(&right).then_with(|| a.id.cmp(&b.id))
     });
     Ok(tasks)
 }
@@ -530,7 +813,11 @@ fn suite_preflight_report(suite_id: &str, run_id: &str, tasks: &[SuiteTask]) -> 
         .collect::<Vec<_>>();
     let missing_tool_tasks = rows
         .iter()
-        .filter(|row| row["missing_tools"].as_array().is_some_and(|value| !value.is_empty()))
+        .filter(|row| {
+            row["missing_tools"]
+                .as_array()
+                .is_some_and(|value| !value.is_empty())
+        })
         .count();
     serde_json::json!({
         "report_id": "suite-preflight",
@@ -560,7 +847,10 @@ fn skipped_or_failed_output(task: &SuiteTask, missing_tools: Vec<String>) -> Tas
         },
         duration_ms: 0,
         report_paths: Vec::new(),
-        error_summary: Some(format!("missing required tools: {}", missing_tools.join(", "))),
+        error_summary: Some(format!(
+            "missing required tools: {}",
+            missing_tools.join(", ")
+        )),
         stdout_path: String::new(),
         stderr_path: String::new(),
     }
@@ -660,6 +950,7 @@ fn result_report(task_output: &TaskOutput) -> serde_json::Value {
         "duration_ms": task_output.duration_ms,
         "mode": task_output.task.mode,
         "group": task_output.task.group,
+        "summary": task_output.task.summary,
         "report_paths": task_output.report_paths,
         "error_summary": task_output.error_summary,
         "artifacts": {
@@ -674,15 +965,18 @@ fn summary_report(
     run_id: &str,
     tasks: &[TaskOutput],
     artifacts_root: &Path,
+    elapsed_ms: u64,
 ) -> serde_json::Value {
     let failures = tasks
         .iter()
         .filter(|task| task.status == "fail")
-        .map(|task| serde_json::json!({
-            "id": task.task.id,
-            "group": task.task.group,
-            "error_summary": task.error_summary,
-        }))
+        .map(|task| {
+            serde_json::json!({
+                "id": task.task.id,
+                "group": task.task.group,
+                "error_summary": task.error_summary,
+            })
+        })
         .collect::<Vec<_>>();
     let pass = tasks.iter().filter(|task| task.status == "pass").count();
     let fail = tasks.iter().filter(|task| task.status == "fail").count();
@@ -697,6 +991,8 @@ fn summary_report(
         "suite": suite_id,
         "run_id": run_id,
         "run_timestamp": run_timestamp(),
+        "artifacts_root": artifacts_root.display().to_string(),
+        "elapsed_ms": elapsed_ms,
         "status": if fail == 0 { "pass" } else { "fail" },
         "summary": {
             "pass": pass,
@@ -711,12 +1007,20 @@ fn summary_report(
             "group": task.task.group,
             "mode": task.task.mode,
             "duration_ms": task.duration_ms,
+            "summary": task.task.summary,
+            "error_summary": task.error_summary,
             "result_path": artifacts_root.join(&task.task.id).join("result.json").display().to_string(),
+            "stdout_path": task.stdout_path,
+            "stderr_path": task.stderr_path,
         })).collect::<Vec<_>>()
     })
 }
 
-fn write_task_result(repo_root: &Path, task_root: &Path, task_output: &TaskOutput) -> Result<(), String> {
+fn write_task_result(
+    repo_root: &Path,
+    task_root: &Path,
+    task_output: &TaskOutput,
+) -> Result<(), String> {
     let report = result_report(task_output);
     validate_named_report(repo_root, suite_result_schema_name(), &report)?;
     let rendered = serde_json::to_string_pretty(&report)
@@ -758,7 +1062,8 @@ fn run_tasks_parallel(
                     write_task_result(repo_root, &task_root, &task_output)?;
                     Ok(task_output)
                 });
-                let should_stop = matches!(&result, Ok(output) if output.status == "fail") && fail_fast;
+                let should_stop =
+                    matches!(&result, Ok(output) if output.status == "fail") && fail_fast;
                 let _ = sender.send(result);
                 if should_stop {
                     stop.store(true, std::sync::atomic::Ordering::Relaxed);
@@ -785,25 +1090,362 @@ fn run_tasks_parallel(
     }
 }
 
-fn render_run_output(summary: &serde_json::Value, format: FormatArg) -> Result<String, String> {
+fn render_suite_output(
+    summary: &serde_json::Value,
+    task_details: &[serde_json::Value],
+    suite_root: &Path,
+    format: SuiteOutputFormatArg,
+    quiet: bool,
+    verbose: bool,
+    color: SuiteColorArg,
+    slowdown_rows: &[String],
+) -> Result<String, String> {
+    let human = human_suite_report(
+        summary,
+        task_details,
+        suite_root,
+        quiet,
+        verbose,
+        color,
+        slowdown_rows,
+    );
+    let json = serde_json::to_string_pretty(summary)
+        .map_err(|err| format!("encode suite summary failed: {err}"))?;
     match format {
-        FormatArg::Text => Ok(format!(
-            "suite={} run_id={} status={} pass={} fail={} skip={} total={}",
-            summary["suite"].as_str().unwrap_or_default(),
-            summary["run_id"].as_str().unwrap_or_default(),
-            summary["status"].as_str().unwrap_or_default(),
-            summary["summary"]["pass"].as_u64().unwrap_or(0),
-            summary["summary"]["fail"].as_u64().unwrap_or(0),
-            summary["summary"]["skip"].as_u64().unwrap_or(0),
-            summary["summary"]["total"].as_u64().unwrap_or(0),
-        )),
-        FormatArg::Json => serde_json::to_string_pretty(summary)
-            .map_err(|err| format!("encode suite summary failed: {err}")),
-        FormatArg::Jsonl => Err("jsonl output is not supported for suites run".to_string()),
+        SuiteOutputFormatArg::Human => Ok(human),
+        SuiteOutputFormatArg::Json => Ok(json),
+        SuiteOutputFormatArg::Both => Ok(format!("{human}\n\n{json}")),
     }
 }
 
+fn suite_task_details(
+    suite_root: &Path,
+    tasks: &[serde_json::Value],
+) -> Result<Vec<serde_json::Value>, String> {
+    tasks
+        .iter()
+        .map(|task| {
+            let result_path = task["result_path"]
+                .as_str()
+                .map(PathBuf::from)
+                .unwrap_or_else(|| {
+                    suite_root
+                        .join(task["id"].as_str().unwrap_or_default())
+                        .join("result.json")
+                });
+            let result = read_result_value(&result_path)?;
+            Ok(serde_json::json!({
+                "id": result["id"],
+                "status": result["status"],
+                "duration_ms": result["duration_ms"],
+                "mode": result["mode"],
+                "group": result["group"],
+                "summary": result["summary"],
+                "error_summary": result["error_summary"],
+                "result_path": result_path.display().to_string(),
+                "stdout_path": result["artifacts"]["stdout"],
+                "stderr_path": result["artifacts"]["stderr"],
+            }))
+        })
+        .collect()
+}
+
+fn render_suite_last(
+    artifacts_root: &Path,
+    suite_id: &str,
+    format: FormatArg,
+) -> Result<String, String> {
+    let pointer = load_latest_runs_pointer(artifacts_root)?;
+    let entry = pointer
+        .suites
+        .get(suite_id)
+        .ok_or_else(|| format!("no latest run recorded for suite `{suite_id}`"))?;
+    match format {
+        FormatArg::Text => Ok(entry.suite_root.clone()),
+        FormatArg::Json => serde_json::to_string_pretty(&serde_json::json!({
+            "schema_version": 1,
+            "suite": suite_id,
+            "run_id": entry.run_id,
+            "suite_root": entry.suite_root,
+        }))
+        .map_err(|err| format!("encode suites last failed: {err}")),
+        FormatArg::Jsonl => Err("jsonl output is not supported for suites last".to_string()),
+    }
+}
+
+fn run_report_command(
+    artifacts_root: &Path,
+    suite_id: &str,
+    run_id: &str,
+    failed_only: bool,
+    group: Option<&str>,
+    id: Option<&str>,
+    format: SuiteOutputFormatArg,
+    quiet: bool,
+    verbose: bool,
+    color: SuiteColorArg,
+) -> Result<(String, i32), String> {
+    let suite_root = suite_root_path(artifacts_root, suite_id, run_id);
+    let summary = read_suite_summary(&suite_root)?;
+    let filtered_tasks = filter_summary_tasks(&summary, failed_only, group, id);
+    let task_details = suite_task_details(&suite_root, &filtered_tasks)?;
+    let rendered = render_suite_output(
+        &summary,
+        &task_details,
+        &suite_root,
+        format,
+        quiet,
+        verbose,
+        color,
+        &[],
+    )?;
+    let exit = if summary["status"].as_str() == Some("pass") {
+        0
+    } else {
+        1
+    };
+    Ok((rendered, exit))
+}
+
+fn suite_diff_report(
+    root: &Path,
+    suite_id: &str,
+    baseline: &serde_json::Value,
+    current: &serde_json::Value,
+) -> Result<(serde_json::Value, Vec<String>), String> {
+    let budget = load_perf_budget(root, suite_id)?;
+    let baseline_tasks = baseline["tasks"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .map(|task| (task["id"].as_str().unwrap_or_default().to_string(), task))
+        .collect::<BTreeMap<_, _>>();
+    let current_tasks = current["tasks"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .map(|task| (task["id"].as_str().unwrap_or_default().to_string(), task))
+        .collect::<BTreeMap<_, _>>();
+
+    let new_failures = current_tasks
+        .iter()
+        .filter_map(|(id, task)| {
+            let current_failed = task["status"].as_str() == Some("fail");
+            let baseline_failed = baseline_tasks
+                .get(id)
+                .is_some_and(|baseline_task| baseline_task["status"].as_str() == Some("fail"));
+            if current_failed && !baseline_failed {
+                Some(serde_json::json!({
+                    "id": id,
+                    "group": task["group"],
+                    "current_status": task["status"],
+                    "baseline_status": baseline_tasks.get(id).map(|v| v["status"].clone()).unwrap_or(serde_json::Value::Null),
+                }))
+            } else {
+                None
+            }
+        })
+        .collect::<Vec<_>>();
+
+    let fixed_failures = baseline_tasks
+        .iter()
+        .filter_map(|(id, task)| {
+            let baseline_failed = task["status"].as_str() == Some("fail");
+            let current_failed = current_tasks
+                .get(id)
+                .is_some_and(|current_task| current_task["status"].as_str() == Some("fail"));
+            if baseline_failed && !current_failed {
+                Some(serde_json::json!({
+                    "id": id,
+                    "group": task["group"],
+                    "baseline_status": task["status"],
+                    "current_status": current_tasks.get(id).map(|v| v["status"].clone()).unwrap_or(serde_json::Value::Null),
+                }))
+            } else {
+                None
+            }
+        })
+        .collect::<Vec<_>>();
+
+    let new_tasks = current_tasks
+        .iter()
+        .filter(|(id, _)| !baseline_tasks.contains_key(*id))
+        .map(|(id, task)| {
+            serde_json::json!({
+                "id": id,
+                "group": task["group"],
+                "status": task["status"],
+            })
+        })
+        .collect::<Vec<_>>();
+
+    let duration_regressions = current_tasks
+        .iter()
+        .filter_map(|(id, task)| {
+            let current_duration = task["duration_ms"].as_u64().unwrap_or(0);
+            let baseline_task = baseline_tasks.get(id)?;
+            let baseline_duration = baseline_task["duration_ms"].as_u64().unwrap_or(0);
+            if current_duration <= baseline_duration {
+                return None;
+            }
+            let delta_ms = current_duration - baseline_duration;
+            let delta_ratio = if baseline_duration == 0 {
+                1.0
+            } else {
+                delta_ms as f64 / baseline_duration as f64
+            };
+            if delta_ms >= budget.duration_regression_ms
+                || delta_ratio >= budget.duration_regression_ratio
+            {
+                Some(serde_json::json!({
+                    "id": id,
+                    "group": task["group"],
+                    "baseline_duration_ms": baseline_duration,
+                    "current_duration_ms": current_duration,
+                    "delta_ms": delta_ms,
+                    "delta_ratio": delta_ratio,
+                }))
+            } else {
+                None
+            }
+        })
+        .collect::<Vec<_>>();
+
+    let slowdown_rows = duration_regressions
+        .iter()
+        .map(|row| {
+            format!(
+                "{} {} -> {} (+{}, +{:.0}%)",
+                row["id"].as_str().unwrap_or_default(),
+                format_duration_ms(row["baseline_duration_ms"].as_u64().unwrap_or(0)),
+                format_duration_ms(row["current_duration_ms"].as_u64().unwrap_or(0)),
+                format_duration_ms(row["delta_ms"].as_u64().unwrap_or(0)),
+                row["delta_ratio"].as_f64().unwrap_or(0.0) * 100.0
+            )
+        })
+        .collect::<Vec<_>>();
+
+    let report = serde_json::json!({
+        "report_id": "suite-diff",
+        "version": 1,
+        "inputs": {
+            "suite": suite_id,
+            "baseline_run_id": baseline["run_id"],
+            "current_run_id": current["run_id"],
+        },
+        "suite": suite_id,
+        "baseline_run_id": baseline["run_id"],
+        "current_run_id": current["run_id"],
+        "thresholds": {
+            "duration_regression_ms": budget.duration_regression_ms,
+            "duration_regression_ratio": budget.duration_regression_ratio,
+        },
+        "summary": {
+            "new_failures": new_failures.len(),
+            "fixed_failures": fixed_failures.len(),
+            "duration_regressions": duration_regressions.len(),
+            "new_tasks": new_tasks.len(),
+        },
+        "new_failures": new_failures,
+        "fixed_failures": fixed_failures,
+        "duration_regressions": duration_regressions,
+        "new_tasks": new_tasks,
+    });
+    Ok((report, slowdown_rows))
+}
+
+fn human_suite_diff_report(
+    report: &serde_json::Value,
+    suite_root: &Path,
+    quiet: bool,
+    slowdown_rows: &[String],
+) -> String {
+    let mut lines = vec![format!(
+        "Suite diff {}  {} -> {}",
+        report["suite"].as_str().unwrap_or_default(),
+        report["baseline_run_id"].as_str().unwrap_or_default(),
+        report["current_run_id"].as_str().unwrap_or_default()
+    )];
+    let sections = [
+        ("New failures", "new_failures"),
+        ("Fixed failures", "fixed_failures"),
+        ("New tasks", "new_tasks"),
+    ];
+    for (label, key) in sections {
+        let rows = report[key].as_array().cloned().unwrap_or_default();
+        if quiet && rows.is_empty() {
+            continue;
+        }
+        lines.push(label.to_string());
+        if rows.is_empty() {
+            lines.push("  none".to_string());
+        } else {
+            for row in rows {
+                lines.push(format!(
+                    "  {} [{}]",
+                    row["id"].as_str().unwrap_or_default(),
+                    row["group"].as_str().unwrap_or_default()
+                ));
+            }
+        }
+    }
+    if !quiet || !slowdown_rows.is_empty() {
+        lines.push("Slowdowns".to_string());
+        if slowdown_rows.is_empty() {
+            lines.push("  none".to_string());
+        } else {
+            lines.extend(slowdown_rows.iter().map(|row| format!("  {row}")));
+        }
+    }
+    lines.push(format!(
+        "Totals new_failures={} fixed_failures={} duration_regressions={} new_tasks={} artifacts={}",
+        report["summary"]["new_failures"].as_u64().unwrap_or(0),
+        report["summary"]["fixed_failures"].as_u64().unwrap_or(0),
+        report["summary"]["duration_regressions"].as_u64().unwrap_or(0),
+        report["summary"]["new_tasks"].as_u64().unwrap_or(0),
+        suite_root.display(),
+    ));
+    lines.join("\n")
+}
+
+fn run_diff_command(
+    root: &Path,
+    artifacts_root: &Path,
+    suite_id: &str,
+    baseline_run_id: &str,
+    current_run_id: &str,
+    format: SuiteOutputFormatArg,
+    quiet: bool,
+) -> Result<(String, i32), String> {
+    let current_root = suite_root_path(artifacts_root, suite_id, current_run_id);
+    let baseline_root = suite_root_path(artifacts_root, suite_id, baseline_run_id);
+    let baseline = read_suite_summary(&baseline_root)?;
+    let current = read_suite_summary(&current_root)?;
+    let (report, slowdown_rows) = suite_diff_report(root, suite_id, &baseline, &current)?;
+    validate_named_report(root, suite_diff_schema_name(), &report)?;
+    let rendered = match format {
+        SuiteOutputFormatArg::Human => {
+            human_suite_diff_report(&report, &current_root, quiet, &slowdown_rows)
+        }
+        SuiteOutputFormatArg::Json => serde_json::to_string_pretty(&report)
+            .map_err(|err| format!("encode suite diff failed: {err}"))?,
+        SuiteOutputFormatArg::Both => format!(
+            "{}\n\n{}",
+            human_suite_diff_report(&report, &current_root, quiet, &slowdown_rows),
+            serde_json::to_string_pretty(&report)
+                .map_err(|err| format!("encode suite diff failed: {err}"))?
+        ),
+    };
+    let exit = if report["summary"]["new_failures"].as_u64().unwrap_or(0) > 0 {
+        1
+    } else {
+        0
+    };
+    Ok((rendered, exit))
+}
+
 fn execute_suite_run(options: SuiteRunOptions) -> Result<(String, i32), String> {
+    let started = Instant::now();
     let suite_id = normalize_suite_id(&options.suite);
     if options.fail_fast == Some(true) && options.fail_fast == Some(false) {
         return Err("invalid fail-fast state".to_string());
@@ -837,7 +1479,11 @@ fn execute_suite_run(options: SuiteRunOptions) -> Result<(String, i32), String> 
     fs::create_dir_all(&suite_root)
         .map_err(|err| format!("create {} failed: {err}", suite_root.display()))?;
     let preflight = suite_preflight_report(&suite_id, &run_id, &tasks);
-    validate_named_report(&options.repo_root, suite_preflight_schema_name(), &preflight)?;
+    validate_named_report(
+        &options.repo_root,
+        suite_preflight_schema_name(),
+        &preflight,
+    )?;
     let preflight_path = suite_root.join("suite-preflight.json");
     let preflight_text = serde_json::to_string_pretty(&preflight)
         .map_err(|err| format!("encode suite preflight failed: {err}"))?;
@@ -874,16 +1520,32 @@ fn execute_suite_run(options: SuiteRunOptions) -> Result<(String, i32), String> 
     )?;
     task_outputs.append(&mut executed);
     task_outputs.sort_by(|a, b| a.task.id.cmp(&b.task.id));
-    let summary = summary_report(&suite_id, &run_id, &task_outputs, &suite_root);
+    let elapsed_ms = started.elapsed().as_millis() as u64;
+    let summary = summary_report(&suite_id, &run_id, &task_outputs, &suite_root, elapsed_ms);
     validate_named_report(&options.repo_root, suite_summary_schema_name(), &summary)?;
     let summary_path = suite_root.join("suite-summary.json");
     let summary_text = serde_json::to_string_pretty(&summary)
         .map_err(|err| format!("encode suite summary failed: {err}"))?;
     fs::write(&summary_path, format!("{summary_text}\n"))
         .map_err(|err| format!("write {} failed: {err}", summary_path.display()))?;
-    let rendered = render_run_output(&summary, options.format)?;
+    write_latest_run_pointer(&options.artifacts_root, &suite_id, &run_id, &suite_root)?;
+    let detail_rows = task_outputs.iter().map(result_report).collect::<Vec<_>>();
+    let rendered = render_suite_output(
+        &summary,
+        &detail_rows,
+        &suite_root,
+        options.format,
+        options.quiet,
+        options.verbose,
+        options.color,
+        &[],
+    )?;
     write_output_if_requested(options.out, &rendered)?;
-    let exit = if summary["status"].as_str() == Some("pass") { 0 } else { 1 };
+    let exit = if summary["status"].as_str() == Some("pass") {
+        0
+    } else {
+        1
+    };
     Ok((rendered, exit))
 }
 
@@ -915,7 +1577,16 @@ pub(crate) fn run_registry_check_by_id(
         mode: SuiteModeArg::All,
         group: None,
         tag: None,
-        format,
+        format: match format {
+            FormatArg::Json => SuiteOutputFormatArg::Json,
+            FormatArg::Text => SuiteOutputFormatArg::Human,
+            FormatArg::Jsonl => {
+                return Err("jsonl output is not supported for check run".to_string())
+            }
+        },
+        quiet: false,
+        verbose: false,
+        color: SuiteColorArg::Never,
         out: out.clone(),
     };
     let suite_id = normalize_suite_id(&options.suite);
@@ -937,13 +1608,32 @@ pub(crate) fn run_registry_check_by_id(
     let task_root = suite_root.join(&task.id);
     let output = run_task(&options.repo_root, &task_root, &task)?;
     write_task_result(&options.repo_root, &task_root, &output)?;
-    let summary = summary_report(&suite_id, &run_id, std::slice::from_ref(&output), &suite_root);
+    let summary = summary_report(
+        &suite_id,
+        &run_id,
+        std::slice::from_ref(&output),
+        &suite_root,
+        output.duration_ms,
+    );
     validate_named_report(&options.repo_root, suite_summary_schema_name(), &summary)?;
     let summary_text = serde_json::to_string_pretty(&summary)
         .map_err(|err| format!("encode suite summary failed: {err}"))?;
-    fs::write(suite_root.join("suite-summary.json"), format!("{summary_text}\n"))
-        .map_err(|err| format!("write suite summary failed: {err}"))?;
-    let rendered = render_run_output(&summary, format)?;
+    fs::write(
+        suite_root.join("suite-summary.json"),
+        format!("{summary_text}\n"),
+    )
+    .map_err(|err| format!("write suite summary failed: {err}"))?;
+    write_latest_run_pointer(&options.artifacts_root, &suite_id, &run_id, &suite_root)?;
+    let rendered = render_suite_output(
+        &summary,
+        &[result_report(&output)],
+        &suite_root,
+        options.format,
+        false,
+        false,
+        SuiteColorArg::Never,
+        &[],
+    )?;
     write_output_if_requested(out, &rendered)?;
     let exit = if output.status == "pass" { 0 } else { 1 };
     Ok((rendered, exit))
@@ -966,13 +1656,14 @@ pub(crate) fn run_registry_contract_by_id(
     out: Option<PathBuf>,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(repo_root)?;
+    let artifacts_root = artifacts_root.unwrap_or_else(|| root.join("artifacts"));
     let task = select_tasks(&root, "contracts", SuiteModeArg::All, None, None)?
         .into_iter()
         .find(|task| task.id == contract_id)
         .ok_or_else(|| format!("unknown contract id `{contract_id}`"))?;
-    let effective_run_id = run_id.unwrap_or_else(|| format!("contract-{}", contract_id.to_ascii_lowercase()));
+    let effective_run_id =
+        run_id.unwrap_or_else(|| format!("contract-{}", contract_id.to_ascii_lowercase()));
     let suite_root = artifacts_root
-        .unwrap_or_else(|| root.join("artifacts"))
         .join("suites")
         .join("contracts")
         .join(&effective_run_id);
@@ -981,12 +1672,19 @@ pub(crate) fn run_registry_contract_by_id(
 
     let mut runnable = task.clone();
     runnable.commands = normalized_contract_runner(&task);
-    let preflight = suite_preflight_report("contracts", &effective_run_id, std::slice::from_ref(&runnable));
+    let preflight = suite_preflight_report(
+        "contracts",
+        &effective_run_id,
+        std::slice::from_ref(&runnable),
+    );
     validate_named_report(&root, suite_preflight_schema_name(), &preflight)?;
     let preflight_text = serde_json::to_string_pretty(&preflight)
         .map_err(|err| format!("encode suite preflight failed: {err}"))?;
-    fs::write(suite_root.join("suite-preflight.json"), format!("{preflight_text}\n"))
-        .map_err(|err| format!("write suite preflight failed: {err}"))?;
+    fs::write(
+        suite_root.join("suite-preflight.json"),
+        format!("{preflight_text}\n"),
+    )
+    .map_err(|err| format!("write suite preflight failed: {err}"))?;
 
     let task_root = suite_root.join(&runnable.id);
     let missing_tools = runnable
@@ -1012,13 +1710,33 @@ pub(crate) fn run_registry_contract_by_id(
         &effective_run_id,
         std::slice::from_ref(&output),
         &suite_root,
+        output.duration_ms,
     );
     validate_named_report(&root, suite_summary_schema_name(), &summary)?;
     let summary_text = serde_json::to_string_pretty(&summary)
         .map_err(|err| format!("encode suite summary failed: {err}"))?;
-    fs::write(suite_root.join("suite-summary.json"), format!("{summary_text}\n"))
-        .map_err(|err| format!("write suite summary failed: {err}"))?;
-    let rendered = render_run_output(&summary, format)?;
+    fs::write(
+        suite_root.join("suite-summary.json"),
+        format!("{summary_text}\n"),
+    )
+    .map_err(|err| format!("write suite summary failed: {err}"))?;
+    write_latest_run_pointer(&artifacts_root, "contracts", &effective_run_id, &suite_root)?;
+    let rendered = render_suite_output(
+        &summary,
+        &[result_report(&output)],
+        &suite_root,
+        match format {
+            FormatArg::Json => SuiteOutputFormatArg::Json,
+            FormatArg::Text => SuiteOutputFormatArg::Human,
+            FormatArg::Jsonl => {
+                return Err("jsonl output is not supported for contract run".to_string())
+            }
+        },
+        false,
+        false,
+        SuiteColorArg::Never,
+        &[],
+    )?;
     write_output_if_requested(out, &rendered)?;
     let exit = if output.status == "pass" { 0 } else { 1 };
     Ok((rendered, exit))
@@ -1048,6 +1766,52 @@ pub(crate) fn run_suites_command(quiet: bool, command: SuitesCommand) -> i32 {
                 write_output_if_requested(out, &rendered)?;
                 Ok((rendered, 0))
             }
+            SuitesCommand::Last {
+                suite,
+                repo_root,
+                artifacts_root,
+                format,
+                out,
+            } => {
+                let root = resolve_repo_root(repo_root)?;
+                let rendered = render_suite_last(
+                    &artifacts_root.unwrap_or_else(|| root.join("artifacts")),
+                    &normalize_suite_id(&suite),
+                    format,
+                )?;
+                write_output_if_requested(out, &rendered)?;
+                Ok((rendered, 0))
+            }
+            SuitesCommand::Report {
+                suite,
+                run,
+                repo_root,
+                artifacts_root,
+                failed_only,
+                group,
+                id,
+                format,
+                quiet,
+                verbose,
+                color,
+                out,
+            } => {
+                let root = resolve_repo_root(repo_root)?;
+                let (rendered, code) = run_report_command(
+                    &artifacts_root.unwrap_or_else(|| root.join("artifacts")),
+                    &normalize_suite_id(&suite),
+                    &run,
+                    failed_only,
+                    group.as_deref(),
+                    id.as_deref(),
+                    format,
+                    quiet,
+                    verbose,
+                    color,
+                )?;
+                write_output_if_requested(out, &rendered)?;
+                Ok((rendered, code))
+            }
             SuitesCommand::Run {
                 suite,
                 repo_root,
@@ -1060,6 +1824,9 @@ pub(crate) fn run_suites_command(quiet: bool, command: SuitesCommand) -> i32 {
                 group,
                 tag,
                 format,
+                quiet,
+                verbose,
+                color,
                 out,
             } => {
                 if fail_fast && no_fail_fast {
@@ -1072,13 +1839,45 @@ pub(crate) fn run_suites_command(quiet: bool, command: SuitesCommand) -> i32 {
                     artifacts_root: artifacts_root.unwrap_or_else(|| root.join("artifacts")),
                     run_id_override: run_id,
                     jobs,
-                    fail_fast: if no_fail_fast { Some(false) } else { Some(fail_fast) },
+                    fail_fast: if no_fail_fast {
+                        Some(false)
+                    } else {
+                        Some(fail_fast)
+                    },
                     mode,
                     group,
                     tag,
                     format,
+                    quiet,
+                    verbose,
+                    color,
                     out,
                 })
+            }
+            SuitesCommand::Diff {
+                suite,
+                a,
+                b,
+                repo_root,
+                artifacts_root,
+                format,
+                quiet,
+                verbose: _,
+                color: _,
+                out,
+            } => {
+                let root = resolve_repo_root(repo_root)?;
+                let (rendered, code) = run_diff_command(
+                    &root,
+                    &artifacts_root.unwrap_or_else(|| root.join("artifacts")),
+                    &normalize_suite_id(&suite),
+                    &a,
+                    &b,
+                    format,
+                    quiet,
+                )?;
+                write_output_if_requested(out, &rendered)?;
+                Ok((rendered, code))
             }
         }
     })();
@@ -1117,7 +1916,8 @@ mod tests {
     fn fixture_root() -> tempfile::TempDir {
         let dir = tempdir().expect("tempdir");
         write_json(
-            &dir.path().join("configs/governance/suites/suites.index.json"),
+            &dir.path()
+                .join("configs/governance/suites/suites.index.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "index_id": "governance-suites",
@@ -1125,7 +1925,8 @@ mod tests {
             }),
         );
         write_json(
-            &dir.path().join("configs/governance/suites/checks.suite.json"),
+            &dir.path()
+                .join("configs/governance/suites/checks.suite.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "suite_id": "checks",
@@ -1138,7 +1939,8 @@ mod tests {
             }),
         );
         write_json(
-            &dir.path().join("configs/governance/suites/contracts.suite.json"),
+            &dir.path()
+                .join("configs/governance/suites/contracts.suite.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "suite_id": "contracts",
@@ -1178,7 +1980,8 @@ mod tests {
             }),
         );
         write_json(
-            &dir.path().join("configs/governance/contracts.registry.json"),
+            &dir.path()
+                .join("configs/governance/contracts.registry.json"),
             &serde_json::json!({
                 "contracts": [{
                     "contract_id":"CONTRACT-GIT-VERSION-001",
@@ -1193,9 +1996,10 @@ mod tests {
             }),
         );
         write_json(
-            &dir.path().join("configs/contracts/reports/suite-result.schema.json"),
+            &dir.path()
+                .join("configs/contracts/reports/suite-result.schema.json"),
             &serde_json::json!({
-                "required":["report_id","version","inputs","id","status","duration_ms","mode","group","report_paths"],
+                "required":["report_id","version","inputs","id","status","duration_ms","mode","group","summary","report_paths","artifacts"],
                 "properties":{
                     "report_id":{"const":"suite-result"},
                     "version":{"const":1},
@@ -1205,20 +2009,26 @@ mod tests {
                     "duration_ms":{"type":"integer"},
                     "mode":{"type":"string"},
                     "group":{"type":"string"},
-                    "report_paths":{"type":"array"}
+                    "summary":{"type":"string"},
+                    "report_paths":{"type":"array"},
+                    "artifacts":{"type":"object"}
                 }
             }),
         );
         write_json(
-            &dir.path().join("configs/contracts/reports/suite-summary.schema.json"),
+            &dir.path()
+                .join("configs/contracts/reports/suite-summary.schema.json"),
             &serde_json::json!({
-                "required":["report_id","version","inputs","suite","run_id","status","summary","failures","tasks"],
+                "required":["report_id","version","inputs","suite","run_id","run_timestamp","artifacts_root","elapsed_ms","status","summary","failures","tasks"],
                 "properties":{
                     "report_id":{"const":"suite-summary"},
                     "version":{"const":1},
                     "inputs":{"type":"object"},
                     "suite":{"type":"string"},
                     "run_id":{"type":"string"},
+                    "run_timestamp":{"type":"string"},
+                    "artifacts_root":{"type":"string"},
+                    "elapsed_ms":{"type":"integer"},
                     "status":{"type":"string"},
                     "summary":{"type":"object"},
                     "failures":{"type":"array"},
@@ -1227,7 +2037,8 @@ mod tests {
             }),
         );
         write_json(
-            &dir.path().join("configs/contracts/reports/suite-preflight.schema.json"),
+            &dir.path()
+                .join("configs/contracts/reports/suite-preflight.schema.json"),
             &serde_json::json!({
                 "required":["report_id","version","inputs","suite","run_id","status","summary","rows"],
                 "properties":{
@@ -1239,6 +2050,56 @@ mod tests {
                     "status":{"type":"string"},
                     "summary":{"type":"object"},
                     "rows":{"type":"array"}
+                }
+            }),
+        );
+        write_json(
+            &dir.path()
+                .join("configs/contracts/reports/suite-diff.schema.json"),
+            &serde_json::json!({
+                "required":["report_id","version","inputs","suite","baseline_run_id","current_run_id","thresholds","summary","new_failures","fixed_failures","duration_regressions","new_tasks"],
+                "properties":{
+                    "report_id":{"const":"suite-diff"},
+                    "version":{"const":1},
+                    "inputs":{"type":"object"},
+                    "suite":{"type":"string"},
+                    "baseline_run_id":{"type":"string"},
+                    "current_run_id":{"type":"string"},
+                    "thresholds":{"type":"object"},
+                    "summary":{"type":"object"},
+                    "new_failures":{"type":"array"},
+                    "fixed_failures":{"type":"array"},
+                    "duration_regressions":{"type":"array"},
+                    "new_tasks":{"type":"array"}
+                }
+            }),
+        );
+        write_json(
+            &dir.path().join("configs/governance/perf-budgets.json"),
+            &serde_json::json!({
+                "schema_version": 1,
+                "budgets": [
+                    {
+                        "suite": "checks",
+                        "duration_regression_ms": 1,
+                        "duration_regression_ratio": 0.0
+                    },
+                    {
+                        "suite": "contracts",
+                        "duration_regression_ms": 1,
+                        "duration_regression_ratio": 0.0
+                    }
+                ]
+            }),
+        );
+        write_json(
+            &dir.path()
+                .join("configs/contracts/governance/perf-budgets.schema.json"),
+            &serde_json::json!({
+                "required":["schema_version","budgets"],
+                "properties":{
+                    "schema_version":{"const":1},
+                    "budgets":{"type":"array"}
                 }
             }),
         );
@@ -1268,7 +2129,10 @@ mod tests {
             mode: SuiteModeArg::All,
             group: None,
             tag: None,
-            format: FormatArg::Json,
+            format: SuiteOutputFormatArg::Json,
+            quiet: false,
+            verbose: false,
+            color: SuiteColorArg::Never,
             out: None,
         })
         .expect("suite run");
@@ -1277,5 +2141,124 @@ mod tests {
             .path()
             .join("artifacts/suites/checks/checks-test/suite-summary.json");
         assert!(summary_path.exists());
+    }
+
+    #[test]
+    fn report_and_last_read_existing_suite_artifacts() {
+        let root = fixture_root();
+        execute_suite_run(SuiteRunOptions {
+            suite: "checks".to_string(),
+            repo_root: root.path().to_path_buf(),
+            artifacts_root: root.path().join("artifacts"),
+            run_id_override: Some("checks-report".to_string()),
+            jobs: "1".to_string(),
+            fail_fast: Some(false),
+            mode: SuiteModeArg::All,
+            group: None,
+            tag: None,
+            format: SuiteOutputFormatArg::Human,
+            quiet: false,
+            verbose: false,
+            color: SuiteColorArg::Never,
+            out: None,
+        })
+        .expect("suite run");
+
+        let latest = render_suite_last(&root.path().join("artifacts"), "checks", FormatArg::Text)
+            .expect("latest");
+        assert!(latest.ends_with("artifacts/suites/checks/checks-report"));
+
+        let (rendered, _) = run_report_command(
+            &root.path().join("artifacts"),
+            "checks",
+            "checks-report",
+            false,
+            None,
+            None,
+            SuiteOutputFormatArg::Human,
+            false,
+            false,
+            SuiteColorArg::Never,
+        )
+        .expect("report");
+        assert!(rendered.contains("CHECK-GIT-VERSION-001"));
+    }
+
+    #[test]
+    fn diff_reports_duration_regressions() {
+        let root = fixture_root();
+        let baseline_root = root.path().join("artifacts/suites/checks/run-a");
+        let current_root = root.path().join("artifacts/suites/checks/run-b");
+        fs::create_dir_all(&baseline_root).expect("baseline root");
+        fs::create_dir_all(&current_root).expect("current root");
+        write_json(
+            &baseline_root.join("suite-summary.json"),
+            &serde_json::json!({
+                "report_id":"suite-summary",
+                "version":1,
+                "inputs":{"suite":"checks","run_id":"run-a"},
+                "suite":"checks",
+                "run_id":"run-a",
+                "run_timestamp":"1",
+                "artifacts_root": baseline_root.display().to_string(),
+                "elapsed_ms": 10,
+                "status":"pass",
+                "summary":{"pass":1,"fail":0,"skip":0,"total":1},
+                "failures":[],
+                "tasks":[{
+                    "id":"CHECK-GIT-VERSION-001",
+                    "status":"pass",
+                    "group":"rust",
+                    "mode":"pure",
+                    "duration_ms":10,
+                    "summary":"git version",
+                    "error_summary": null,
+                    "result_path": baseline_root.join("CHECK-GIT-VERSION-001/result.json").display().to_string(),
+                    "stdout_path": "",
+                    "stderr_path": ""
+                }]
+            }),
+        );
+        write_json(
+            &current_root.join("suite-summary.json"),
+            &serde_json::json!({
+                "report_id":"suite-summary",
+                "version":1,
+                "inputs":{"suite":"checks","run_id":"run-b"},
+                "suite":"checks",
+                "run_id":"run-b",
+                "run_timestamp":"2",
+                "artifacts_root": current_root.display().to_string(),
+                "elapsed_ms": 50,
+                "status":"pass",
+                "summary":{"pass":1,"fail":0,"skip":0,"total":1},
+                "failures":[],
+                "tasks":[{
+                    "id":"CHECK-GIT-VERSION-001",
+                    "status":"pass",
+                    "group":"rust",
+                    "mode":"pure",
+                    "duration_ms":50,
+                    "summary":"git version",
+                    "error_summary": null,
+                    "result_path": current_root.join("CHECK-GIT-VERSION-001/result.json").display().to_string(),
+                    "stdout_path": "",
+                    "stderr_path": ""
+                }]
+            }),
+        );
+        let (rendered, code) = run_diff_command(
+            root.path(),
+            &root.path().join("artifacts"),
+            "checks",
+            "run-a",
+            "run-b",
+            SuiteOutputFormatArg::Human,
+            false,
+        )
+        .expect("diff");
+        assert_eq!(code, 0);
+        assert!(rendered.contains("Slowdowns"));
+        assert!(rendered.contains("CHECK-GIT-VERSION-001"));
     }
 }

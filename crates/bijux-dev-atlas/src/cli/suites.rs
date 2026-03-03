@@ -48,8 +48,14 @@ pub enum SuitesCommand {
         group: Option<String>,
         #[arg(long)]
         tag: Option<String>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
+        #[arg(long, value_enum, default_value_t = SuiteOutputFormatArg::Human)]
+        format: SuiteOutputFormatArg,
+        #[arg(long, default_value_t = false)]
+        quiet: bool,
+        #[arg(long, default_value_t = false)]
+        verbose: bool,
+        #[arg(long, value_enum, default_value_t = SuiteColorArg::Auto)]
+        color: SuiteColorArg,
         #[arg(long)]
         out: Option<PathBuf>,
     },
@@ -71,6 +77,66 @@ pub enum SuitesCommand {
         #[arg(long)]
         out: Option<PathBuf>,
     },
+    Last {
+        #[arg(long)]
+        suite: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long)]
+        artifacts_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Report {
+        #[arg(long)]
+        suite: String,
+        #[arg(long)]
+        run: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long)]
+        artifacts_root: Option<PathBuf>,
+        #[arg(long, default_value_t = false)]
+        failed_only: bool,
+        #[arg(long)]
+        group: Option<String>,
+        #[arg(long)]
+        id: Option<String>,
+        #[arg(long, value_enum, default_value_t = SuiteOutputFormatArg::Human)]
+        format: SuiteOutputFormatArg,
+        #[arg(long, default_value_t = false)]
+        quiet: bool,
+        #[arg(long, default_value_t = false)]
+        verbose: bool,
+        #[arg(long, value_enum, default_value_t = SuiteColorArg::Auto)]
+        color: SuiteColorArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Diff {
+        #[arg(long)]
+        suite: String,
+        #[arg(long)]
+        a: String,
+        #[arg(long)]
+        b: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long)]
+        artifacts_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = SuiteOutputFormatArg::Human)]
+        format: SuiteOutputFormatArg,
+        #[arg(long, default_value_t = false)]
+        quiet: bool,
+        #[arg(long, default_value_t = false)]
+        verbose: bool,
+        #[arg(long, value_enum, default_value_t = SuiteColorArg::Auto)]
+        color: SuiteColorArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
@@ -78,4 +144,18 @@ pub enum SuiteModeArg {
     Pure,
     Effect,
     All,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
+pub enum SuiteOutputFormatArg {
+    Human,
+    Json,
+    Both,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
+pub enum SuiteColorArg {
+    Auto,
+    Always,
+    Never,
 }

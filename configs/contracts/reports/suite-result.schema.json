@@ -25,6 +25,7 @@
     "duration_ms": { "type": "integer" },
     "mode": { "type": "string" },
     "group": { "type": "string" },
+    "summary": { "type": "string" },
     "report_paths": { "type": "array" },
     "error_summary": { "type": ["string", "null"] },
     "artifacts": { "type": "object" }
