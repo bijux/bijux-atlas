@@ -23,6 +23,15 @@
 {{- if and .Values.networkPolicy.ingress (hasKey .Values.networkPolicy.ingress "allowNamespaces") }}
 {{- $ingressAllowNamespaces = .Values.networkPolicy.ingress.allowNamespaces }}
 {{- end }}
+{{- $monitoringNamespace := .Values.networkPolicy.allowMonitoringNamespace | default "" }}
+{{- $customIngressRules := list }}
+{{- if and .Values.networkPolicy.ingress (hasKey .Values.networkPolicy.ingress "customRules") }}
+{{- $customIngressRules = .Values.networkPolicy.ingress.customRules }}
+{{- end }}
+{{- $customEgressRules := list }}
+{{- if and .Values.networkPolicy.egress (hasKey .Values.networkPolicy.egress "customRules") }}
+{{- $customEgressRules = .Values.networkPolicy.egress.customRules }}
+{{- end }}
 {{- $enableEgress := ne $egressMode "disabled" }}
 {{- $enableIngress := ne $ingressMode "disabled" }}
 {{- $hasInternetCidrs := and (eq $egressMode "internet-only") (gt (len $allowCidrs) 0) }}
@@ -48,9 +57,24 @@
 {{- end }}
 {{- end }}
 {{- $hasClusterRules := and (eq $egressMode "cluster-aware") (and (gt (len $allowNamespaces) 0) (gt (len $clusterPorts) 0)) }}
-{{- $hasAutoRules := or $allowDns (or $hasInternetCidrs $hasClusterRules) }}
+{{- $hasCustomEgressRules := and (eq $egressMode "custom") (gt (len $customEgressRules) 0) }}
+{{- $hasAutoRules := or $allowDns (or $hasInternetCidrs (or $hasClusterRules $hasCustomEgressRules)) }}
 {{- $hasSelectedIngress := and (eq $ingressMode "selected") (gt (len $ingressAllowNamespaces) 0) }}
-{{- $hasIngressRules := or (eq $ingressMode "same-namespace") $hasSelectedIngress }}
+{{- $hasMonitoringIngress := and .Values.metrics.enabled (ne $monitoringNamespace "") }}
+{{- $hasCustomIngressRules := and (eq $ingressMode "custom") (gt (len $customIngressRules) 0) }}
+{{- $hasIngressRules := or (eq $ingressMode "same-namespace") (or $hasSelectedIngress (or $hasMonitoringIngress $hasCustomIngressRules)) }}
+{{- if and (eq $egressMode "cluster-aware") (eq (len $allowNamespaces) 0) }}
+{{- fail "networkPolicy.egress.mode=cluster-aware requires networkPolicy.egress.allowNamespaces to be non-empty" }}
+{{- end }}
+{{- if and (eq $ingressMode "selected") (eq (len $ingressAllowNamespaces) 0) }}
+{{- fail "networkPolicy.ingress.mode=selected requires networkPolicy.ingress.allowNamespaces to be non-empty" }}
+{{- end }}
+{{- if and (eq $egressMode "custom") (eq (len $customEgressRules) 0) }}
+{{- fail "networkPolicy.egress.mode=custom requires networkPolicy.egress.customRules to be non-empty" }}
+{{- end }}
+{{- if and (eq $ingressMode "custom") (eq (len $customIngressRules) 0) }}
+{{- fail "networkPolicy.ingress.mode=custom requires networkPolicy.ingress.customRules to be non-empty" }}
+{{- end }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -81,6 +105,19 @@ spec:
       ports:
         - protocol: TCP
           port: {{ .Values.service.port }}
+    {{- if $hasMonitoringIngress }}
+    # monitoring namespace: permit Prometheus scraping when metrics are enabled.
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values:
+                  - {{ $monitoringNamespace | quote }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.service.port }}
+    {{- end }}
     {{- else if eq $ingressMode "selected" }}
     # selected: allow ingress only from explicitly named namespaces.
     - from:
@@ -95,8 +132,21 @@ spec:
       ports:
         - protocol: TCP
           port: {{ .Values.service.port }}
+    {{- if $hasMonitoringIngress }}
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values:
+                  - {{ $monitoringNamespace | quote }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.service.port }}
+    {{- end }}
     {{- else if eq $ingressMode "custom" }}
-    # custom: no automatic ingress rules are emitted; operators must supply custom policy overlays.
+    # custom: emit only the operator-supplied ingress rules.
+    {{- toYaml $customIngressRules | nindent 4 }}
     {{- end }}
   {{- end }}
   {{- end }}
@@ -151,7 +201,8 @@ spec:
         {{- end }}
     {{- end }}
     {{- else if eq $egressMode "custom" }}
-    # custom: no automatic egress rules are emitted; operators must supply custom policy overlays.
+    # custom: emit only the operator-supplied egress rules.
+    {{- toYaml $customEgressRules | nindent 4 }}
     {{- end }}
   {{- end }}
   {{- end }}

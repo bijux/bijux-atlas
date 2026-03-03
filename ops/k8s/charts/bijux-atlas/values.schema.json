@@ -135,6 +135,190 @@
       }
     },
     {
+      "if": {
+        "properties": {
+          "networkPolicy": {
+            "type": "object",
+            "properties": {
+              "egress": {
+                "type": "object",
+                "properties": {
+                  "mode": {
+                    "const": "cluster-aware"
+                  }
+                },
+                "required": [
+                  "mode"
+                ]
+              }
+            },
+            "required": [
+              "egress"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "networkPolicy": {
+            "type": "object",
+            "properties": {
+              "egress": {
+                "type": "object",
+                "properties": {
+                  "allowNamespaces": {
+                    "type": "array",
+                    "minItems": 1
+                  }
+                },
+                "required": [
+                  "allowNamespaces"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "networkPolicy": {
+            "type": "object",
+            "properties": {
+              "ingress": {
+                "type": "object",
+                "properties": {
+                  "mode": {
+                    "const": "selected"
+                  }
+                },
+                "required": [
+                  "mode"
+                ]
+              }
+            },
+            "required": [
+              "ingress"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "networkPolicy": {
+            "type": "object",
+            "properties": {
+              "ingress": {
+                "type": "object",
+                "properties": {
+                  "allowNamespaces": {
+                    "type": "array",
+                    "minItems": 1
+                  }
+                },
+                "required": [
+                  "allowNamespaces"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "networkPolicy": {
+            "type": "object",
+            "properties": {
+              "egress": {
+                "type": "object",
+                "properties": {
+                  "mode": {
+                    "const": "custom"
+                  }
+                },
+                "required": [
+                  "mode"
+                ]
+              }
+            },
+            "required": [
+              "egress"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "networkPolicy": {
+            "type": "object",
+            "properties": {
+              "egress": {
+                "type": "object",
+                "properties": {
+                  "customRules": {
+                    "type": "array",
+                    "minItems": 1
+                  }
+                },
+                "required": [
+                  "customRules"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "networkPolicy": {
+            "type": "object",
+            "properties": {
+              "ingress": {
+                "type": "object",
+                "properties": {
+                  "mode": {
+                    "const": "custom"
+                  }
+                },
+                "required": [
+                  "mode"
+                ]
+              }
+            },
+            "required": [
+              "ingress"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "networkPolicy": {
+            "type": "object",
+            "properties": {
+              "ingress": {
+                "type": "object",
+                "properties": {
+                  "customRules": {
+                    "type": "array",
+                    "minItems": 1
+                  }
+                },
+                "required": [
+                  "customRules"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
       "description": "Exactly one image selector must be set: use a digest for immutable deploys or a tag for mutable/dev flows, never both.",
       "oneOf": [
         {
@@ -655,6 +839,10 @@
         "allowDns": {
           "type": "boolean"
         },
+        "allowMonitoringNamespace": {
+          "type": "string",
+          "pattern": "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+        },
         "allowedEgressCIDRs": {
           "type": "array",
           "items": {
@@ -678,6 +866,12 @@
               "type": "array",
               "items": {
                 "$ref": "#/$defs/dnsLabel"
+              }
+            },
+            "customRules": {
+              "type": "array",
+              "items": {
+                "type": "object"
               }
             },
             "mode": {
@@ -704,6 +898,12 @@
                 "$ref": "#/$defs/dnsLabel"
               }
             },
+            "customRules": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
             "mode": {
               "type": "string",
               "enum": [
@@ -719,6 +919,7 @@
       "required": [
         "enabled",
         "allowDns",
+        "allowMonitoringNamespace",
         "allowedEgressCIDRs",
         "dependencies"
       ]
