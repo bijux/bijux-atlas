@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Stable command registry used by CLI adapters and generated docs.
 
+use crate::registry::{command_routes, validate_command_routes};
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CommandDescriptor {
     pub name: &'static str,
@@ -9,78 +11,16 @@ pub struct CommandDescriptor {
 }
 
 pub fn command_inventory() -> Vec<CommandDescriptor> {
-    vec![
-        CommandDescriptor {
-            name: "ops",
-            domain: "ops",
-            purpose: "Run ops runtime and validation commands",
-        },
-        CommandDescriptor {
-            name: "docs",
-            domain: "docs",
-            purpose: "Run docs validation and generation commands",
-        },
-        CommandDescriptor {
-            name: "configs",
-            domain: "configs",
-            purpose: "Run configs validation and explanation commands",
-        },
-        CommandDescriptor {
-            name: "governance",
-            domain: "governance",
-            purpose: "Inspect governance registries and policy status",
-        },
-        CommandDescriptor {
-            name: "security",
-            domain: "security",
-            purpose: "Run security validation commands",
-        },
-        CommandDescriptor {
-            name: "release",
-            domain: "release",
-            purpose: "Run release verification commands",
-        },
-        CommandDescriptor {
-            name: "perf",
-            domain: "perf",
-            purpose: "Run performance validation commands",
-        },
-        CommandDescriptor {
-            name: "contract",
-            domain: "engine",
-            purpose: "Run governed contract lanes and introspection surfaces",
-        },
-        CommandDescriptor {
-            name: "checks",
-            domain: "engine",
-            purpose: "List and explain registry-backed checks surfaces",
-        },
-        CommandDescriptor {
-            name: "reports",
-            domain: "engine",
-            purpose: "List governed reports and validate report artifacts",
-        },
-        CommandDescriptor {
-            name: "suites",
-            domain: "engine",
-            purpose: "Run grouped runnable suites",
-        },
-        CommandDescriptor {
-            name: "list",
-            domain: "engine",
-            purpose: "List domains, suites, and runnable ids",
-        },
-        CommandDescriptor {
-            name: "describe",
-            domain: "engine",
-            purpose: "Describe one runnable without executing it",
-        },
-        CommandDescriptor {
-            name: "run",
-            domain: "engine",
-            purpose: "Run one runnable by id",
-        },
-    ]
+    let routes = command_routes();
+    validate_command_routes(&routes).expect("command routes must stay valid");
+    routes
+        .into_iter()
+        .map(|route| CommandDescriptor {
+            name: route.name,
+            domain: route.domain,
+            purpose: route.purpose,
+        })
+        .collect()
 }
 
 pub fn describe_command(name: &str) -> Option<CommandDescriptor> {

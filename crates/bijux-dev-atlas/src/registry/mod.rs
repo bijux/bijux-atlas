@@ -9,6 +9,7 @@ pub mod checks;
 pub mod contracts;
 pub mod contract_modes;
 pub mod reports;
+pub mod routes;
 mod runnable;
 
 pub use crate::core::{
@@ -25,4 +26,5 @@ pub use reports::{
     ReportArtifactValidation, ReportCatalogValidation, ReportProgress, ReportProgressRow,
     ReportRegistry, ReportRegistryEntry, REPORTS_REGISTRY_PATH, REPORTS_REGISTRY_SCHEMA_PATH,
 };
+pub use routes::{command_routes, validate_command_routes};
 pub use runnable::RunnableRegistry;

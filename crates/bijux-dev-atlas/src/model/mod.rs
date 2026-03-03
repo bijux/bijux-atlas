@@ -16,6 +16,7 @@ pub mod engine;
 pub mod exit_codes;
 pub mod governance;
 pub mod contract_run;
+pub mod command_route;
 pub mod doc_ref;
 pub mod report_header;
 pub mod report_ref;
@@ -25,6 +26,7 @@ pub use contract_run::{
     ContractCaseResult, ContractCaseStatus, ContractRunCounts, ContractRunPreflight,
     ContractRunSummary,
 };
+pub use command_route::CommandRoute;
 pub use doc_ref::DocRef;
 pub use report_header::ReportHeader;
 pub use report_ref::ReportRef;

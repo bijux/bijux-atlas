@@ -4,13 +4,22 @@
 pub mod runtime;
 
 use crate::domains::Domain;
-use crate::model::RunnableEntry;
+use crate::model::{CommandRoute, RunnableEntry};
 use crate::registry::RunnableRegistry;
 
 pub struct ReleaseDomain;
 
 pub fn plugin() -> ReleaseDomain {
     ReleaseDomain
+}
+
+pub fn routes() -> Vec<CommandRoute> {
+    vec![CommandRoute::new(
+        "release",
+        "release",
+        "release",
+        "Run release verification commands",
+    )]
 }
 
 impl Domain for ReleaseDomain {

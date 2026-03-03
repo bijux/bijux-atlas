@@ -7,7 +7,7 @@ pub mod runtime;
 
 use crate::contracts::Contract;
 use crate::domains::Domain;
-use crate::model::RunnableEntry;
+use crate::model::{CommandRoute, RunnableEntry};
 use crate::registry::RunnableRegistry;
 use std::path::Path;
 
@@ -19,6 +19,15 @@ pub fn plugin() -> OpsDomain {
 
 pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
     crate::contracts::ops::contracts(repo_root)
+}
+
+pub fn routes() -> Vec<CommandRoute> {
+    vec![CommandRoute::new(
+        "ops",
+        "ops",
+        "ops",
+        "Run ops runtime and validation commands",
+    )]
 }
 
 impl Domain for OpsDomain {

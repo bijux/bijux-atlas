@@ -4,13 +4,22 @@
 pub mod runtime;
 
 use crate::domains::Domain;
-use crate::model::RunnableEntry;
+use crate::model::{CommandRoute, RunnableEntry};
 use crate::registry::RunnableRegistry;
 
 pub struct PerfDomain;
 
 pub fn plugin() -> PerfDomain {
     PerfDomain
+}
+
+pub fn routes() -> Vec<CommandRoute> {
+    vec![CommandRoute::new(
+        "perf",
+        "perf",
+        "perf",
+        "Run performance validation commands",
+    )]
 }
 
 impl Domain for PerfDomain {

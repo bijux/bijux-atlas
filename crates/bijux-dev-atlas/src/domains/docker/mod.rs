@@ -5,7 +5,7 @@ pub mod contracts;
 
 use crate::contracts::Contract;
 use crate::domains::Domain;
-use crate::model::RunnableEntry;
+use crate::model::{CommandRoute, RunnableEntry};
 use crate::registry::RunnableRegistry;
 use std::path::Path;
 
@@ -17,6 +17,15 @@ pub fn plugin() -> DockerDomain {
 
 pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
     crate::contracts::docker::contracts(repo_root)
+}
+
+pub fn routes() -> Vec<CommandRoute> {
+    vec![CommandRoute::new(
+        "docker",
+        "docker",
+        "docker",
+        "Run docker validation commands",
+    )]
 }
 
 impl Domain for DockerDomain {

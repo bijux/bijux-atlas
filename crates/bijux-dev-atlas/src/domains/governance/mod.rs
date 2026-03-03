@@ -6,7 +6,7 @@ pub mod contracts;
 
 use crate::contracts::Contract;
 use crate::domains::Domain;
-use crate::model::RunnableEntry;
+use crate::model::{CommandRoute, RunnableEntry};
 use crate::registry::RunnableRegistry;
 use std::path::Path;
 
@@ -21,6 +21,15 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
     rows.extend(crate::contracts::root::contracts(repo_root)?);
     rows.extend(crate::contracts::runtime::contracts(repo_root)?);
     Ok(rows)
+}
+
+pub fn routes() -> Vec<CommandRoute> {
+    vec![CommandRoute::new(
+        "governance",
+        "governance",
+        "governance",
+        "Inspect governance registries and policy status",
+    )]
 }
 
 impl Domain for GovernanceDomain {
