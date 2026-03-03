@@ -48,6 +48,12 @@ containerSecurityContext:
   capabilities:
     drop: ["ALL"]
 
+securityContext:
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
+
 cache:
   enabled: true
   storageMode: emptyDir
@@ -243,6 +249,14 @@ pdb:
   minAvailable: 1
   maxUnavailable: null
 
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+rbac:
+  create: true
+
 priorityClassName: ""
 
 terminationGracePeriodSeconds: 30
@@ -275,6 +289,13 @@ datasetWarmupJob:
   image: ghcr.io/bijux/bijux-atlas:0.1.0
 
 extraEnv: []
+envFromSecrets: []
+configMounts: []
+extraLabels: {}
+extraAnnotations: {}
+initContainers: []
+extraVolumes: []
+extraVolumeMounts: []
 
 nodeSelector: {}
 tolerations: []
