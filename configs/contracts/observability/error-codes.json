@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "codes": [
+    { "code": "InvalidQueryParameter", "http_status": 400 },
+    { "code": "InvalidCursor", "http_status": 400 },
+    { "code": "MissingDatasetDimension", "http_status": 400 },
+    { "code": "ValidationFailed", "http_status": 400 },
+    { "code": "RangeTooLarge", "http_status": 400 },
+    { "code": "PayloadTooLarge", "http_status": 413 },
+    { "code": "ResponseTooLarge", "http_status": 413 },
+    { "code": "QueryRejectedByPolicy", "http_status": 422 },
+    { "code": "QueryTooExpensive", "http_status": 422 },
+    { "code": "RateLimited", "http_status": 429 },
+    { "code": "DatasetNotFound", "http_status": 404 },
+    { "code": "GeneNotFound", "http_status": 404 },
+    { "code": "NotReady", "http_status": 503 },
+    { "code": "UpstreamStoreUnavailable", "http_status": 503 },
+    { "code": "Timeout", "http_status": 503 },
+    { "code": "Internal", "http_status": 500 },
+    { "code": "ArtifactCorrupted", "http_status": 500 },
+    { "code": "ArtifactQuarantined", "http_status": 500 }
+  ]
+}

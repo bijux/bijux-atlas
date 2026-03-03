@@ -535,11 +535,12 @@ pub(crate) async fn openapi_handler(State(state): State<AppState>) -> impl IntoR
 pub(crate) async fn readyz_handler(State(state): State<AppState>) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
-    let catalog_ready = if state.api.readiness_requires_catalog && !state.cache.cached_only_mode() {
-        state.cache.current_catalog().await.is_some()
-    } else {
-        true
-    };
+    let catalog_present = state.cache.current_catalog().await.is_some();
+    let catalog_ready = readyz_catalog_ready(
+        state.api.readiness_requires_catalog,
+        state.cache.cached_only_mode(),
+        catalog_present,
+    );
     if state.ready.load(Ordering::Relaxed) && catalog_ready {
         let resp = (StatusCode::OK, "ready").into_response();
         state
@@ -564,5 +565,35 @@ pub(crate) async fn readyz_handler(State(state): State<AppState>) -> impl IntoRe
             )
             .await;
         with_request_id(resp, &request_id)
+    }
+}
+
+fn readyz_catalog_ready(
+    readiness_requires_catalog: bool,
+    cached_only_mode: bool,
+    catalog_present: bool,
+) -> bool {
+    if readiness_requires_catalog && !cached_only_mode {
+        catalog_present
+    } else {
+        true
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::readyz_catalog_ready;
+
+    #[test]
+    fn readyz_requires_catalog_when_enabled_and_not_cached_only() {
+        assert!(!readyz_catalog_ready(true, false, false));
+        assert!(readyz_catalog_ready(true, false, true));
+    }
+
+    #[test]
+    fn readyz_ignores_catalog_when_cached_only_or_not_required() {
+        assert!(readyz_catalog_ready(true, true, false));
+        assert!(readyz_catalog_ready(false, false, false));
+        assert!(readyz_catalog_ready(false, true, false));
     }
 }

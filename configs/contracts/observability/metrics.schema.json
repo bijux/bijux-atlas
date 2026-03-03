@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/observability/metrics.schema.json",
+  "title": "Observability Metrics Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "required_labels",
+    "required_metrics"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "required_labels": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required_metrics": {
+      "type": "array",
+      "minItems": 6,
+      "prefixItems": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "type", "labels"],
+          "properties": {
+            "name": { "const": "bijux_http_requests_total" },
+            "type": { "const": "counter" },
+            "labels": { "const": ["subsystem", "version", "dataset", "route", "method", "status", "class"] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "type", "labels"],
+          "properties": {
+            "name": { "const": "http_request_duration_seconds_bucket" },
+            "type": { "const": "histogram" },
+            "labels": { "const": ["subsystem", "version", "dataset", "route", "class", "le"] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "type", "labels"],
+          "properties": {
+            "name": { "const": "bijux_errors_total" },
+            "type": { "const": "counter" },
+            "labels": { "const": ["subsystem", "version", "code"] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "type", "labels"],
+          "properties": {
+            "name": { "const": "atlas_cache_hits_total" },
+            "type": { "const": "counter" },
+            "labels": { "const": ["subsystem", "version", "dataset", "cache"] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "type", "labels"],
+          "properties": {
+            "name": { "const": "bijux_store_fetch_latency_p95_seconds" },
+            "type": { "const": "gauge" },
+            "labels": { "const": ["subsystem", "version", "dataset", "backend"] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "type", "labels"],
+          "properties": {
+            "name": { "const": "bijux_warmup_lock_contention_total" },
+            "type": { "const": "counter" },
+            "labels": { "const": ["subsystem", "version", "dataset"] }
+          }
+        }
+      ],
+      "items": {
+        "type": "object"
+      }
+    }
+  }
+}

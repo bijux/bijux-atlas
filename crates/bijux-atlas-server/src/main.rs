@@ -350,6 +350,14 @@ async fn wait_for_shutdown_signal() -> Result<(), String> {
     Ok(())
 }
 
+fn observability_release_id() -> String {
+    std::env::var("ATLAS_RELEASE_ID").unwrap_or_else(|_| "dev".to_string())
+}
+
+fn observability_governance_version() -> String {
+    std::env::var("ATLAS_GOVERNANCE_VERSION").unwrap_or_else(|_| "main@unknown".to_string())
+}
+
 fn init_tracing(log_json: bool, otel_enabled: bool) -> Result<(), String> {
     let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
     if otel_enabled {
@@ -404,13 +412,23 @@ async fn main() -> Result<(), String> {
     let effective_config_payload = effective_runtime_config_payload(&runtime)?;
     let effective_config_log = serde_json::to_string(&effective_config_payload)
         .map_err(|err| format!("render effective config log: {err}"))?;
+    let release_id = observability_release_id();
+    let governance_version = observability_governance_version();
     info!(
+        event_id = "config_loaded",
+        release_id = %release_id,
+        governance_version = %governance_version,
         effective_config = %effective_config_log,
         "effective runtime config"
     );
 
     if cli.validate_config {
-        info!("configuration validated");
+        info!(
+            event_id = "config_validated",
+            release_id = %release_id,
+            governance_version = %governance_version,
+            "configuration validated"
+        );
         return Ok(());
     }
     if cli.print_effective_config {
@@ -542,11 +560,17 @@ async fn main() -> Result<(), String> {
             Err(_) => sha256_hex(b"runtime-policy-hash-fallback"),
         };
     info!(
+        event_id = "policy_mode_selected",
+        release_id = %release_id,
+        governance_version = %governance_version,
         event = "policy_mode_selected",
         policy_mode = %policy_mode,
         "policy mode selected"
     );
     info!(
+        event_id = "runtime_policy_selected",
+        release_id = %release_id,
+        governance_version = %governance_version,
         runtime_policy_hash = %runtime_policy_hash,
         runtime_policy = %runtime_policy_payload,
         "canonical runtime policy"
@@ -608,7 +632,13 @@ async fn main() -> Result<(), String> {
     let listener: TcpListener = socket
         .listen(1024)
         .map_err(|e| format!("listen failed: {e}"))?;
-    info!("atlas-server listening on {bind_addr}");
+    info!(
+        event_id = "startup",
+        release_id = %release_id,
+        governance_version = %governance_version,
+        bind_addr = %bind_addr,
+        "atlas-server listening"
+    );
     let accepting = state.accepting_requests.clone();
     let state_for_shutdown = state.clone();
     axum::serve(listener, app)

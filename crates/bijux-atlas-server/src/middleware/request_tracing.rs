@@ -7,6 +7,7 @@ use axum::extract::State;
 use axum::http::Request;
 use axum::middleware::Next;
 use axum::response::Response;
+use tracing::info;
 use tracing::Instrument;
 
 pub(crate) async fn request_tracing_middleware(
@@ -28,6 +29,15 @@ pub(crate) async fn request_tracing_middleware(
     );
 
     let mut response = next.run(request).instrument(span).await;
+    info!(
+        event_id = "request_handled",
+        release_id = %std::env::var("ATLAS_RELEASE_ID").unwrap_or_else(|_| "dev".to_string()),
+        governance_version = %std::env::var("ATLAS_GOVERNANCE_VERSION").unwrap_or_else(|_| "main@unknown".to_string()),
+        request_id = %trace.request_id,
+        route = %route,
+        status = response.status().as_u16(),
+        "request handled"
+    );
     if let Ok(value) = axum::http::HeaderValue::from_str(&trace.request_id) {
         response.headers_mut().insert("x-request-id", value);
     }
