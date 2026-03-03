@@ -63,4 +63,17 @@ docs     DOC-061            no                            must     docs registry
 docs     DOC-062            no                            must     docs sections validate against their schema
 docs     DOC-063            no                            must     site map links the reader spine
 docs     DOC-064            no                            must     docs home links exactly three canonical golden paths
+docs     DOC-065            no                            must     docs repo map stays curated and verifiable
+docs     DOC-066            no                            must     docs verification markers stay canonical
+docs     DOC-067            no                            must     generated markdown keeps generator headers
+docs     DOC-068            no                            must     authored markdown reviewability stays bounded
+docs     DOC-069            no                            must     high-value docs pages keep governed ownership metadata
+docs     DOC-070            no                            must     docs health dashboard stays generated and present
+docs     DOC-071            no                            must     readme files avoid stub docs pointers
+docs     DOC-072            no                            must     redirect registry stays complete and inventory stays generated
+docs     DOC-073            no                            must     mkdocs nav references only real files
+docs     DOC-074            no                            must     docs section indexes declare purpose and entrypoints
+docs     DOC-075            no                            must     operations runbooks keep required sections
+docs     DOC-076            no                            must     major docs spine changes require explicit governance owner approval
+docs     DOC-077            no                            must     committed docs artifacts use one canonical regeneration path
 

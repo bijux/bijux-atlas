@@ -835,6 +835,175 @@
         }
       ],
       "title": "docs home links exactly three canonical golden paths"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-065",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.reference.repo_map_curated"
+        }
+      ],
+      "title": "docs repo map stays curated and verifiable"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-066",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.metadata.canonical_last_verified"
+        }
+      ],
+      "title": "docs verification markers stay canonical"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-067",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.generated.generator_headers"
+        }
+      ],
+      "title": "generated markdown keeps generator headers"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-068",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.reviewability.authored_markdown_not_minified"
+        }
+      ],
+      "title": "authored markdown reviewability stays bounded"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-069",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.metadata.high_value_ownership_registry"
+        }
+      ],
+      "title": "high-value docs pages keep governed ownership metadata"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-070",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.generated.health_dashboard_present"
+        }
+      ],
+      "title": "docs health dashboard stays generated and present"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-071",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.links.readme_avoids_stub_reference_pages"
+        }
+      ],
+      "title": "readme files avoid stub docs pointers"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-072",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.redirects.registry_and_inventory"
+        }
+      ],
+      "title": "redirect registry stays complete and inventory stays generated"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-073",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.navigation.mkdocs_nav_targets_exist"
+        }
+      ],
+      "title": "mkdocs nav references only real files"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-074",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.structure.section_indexes_have_purpose_and_entrypoints"
+        }
+      ],
+      "title": "docs section indexes declare purpose and entrypoints"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-075",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.operations.runbooks_have_required_sections"
+        }
+      ],
+      "title": "operations runbooks keep required sections"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-076",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.governance.major_changes_require_owner_approval"
+        }
+      ],
+      "title": "major docs spine changes require explicit governance owner approval"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-077",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.governance.committed_artifacts_use_canonical_regeneration"
+        }
+      ],
+      "title": "committed docs artifacts use one canonical regeneration path"
     }
   ],
   "schema_version": 1
