@@ -1122,7 +1122,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-api",
       "path": "crates/bijux-atlas-api/docs/api-contract.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -1145,7 +1145,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-api",
       "path": "crates/bijux-atlas-api/docs/api-stability.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -1237,7 +1237,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-api",
       "path": "crates/bijux-atlas-api/docs/effect-boundary-map.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -1260,7 +1260,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-api",
       "path": "crates/bijux-atlas-api/docs/effects.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -1329,7 +1329,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-api",
       "path": "crates/bijux-atlas-api/docs/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -1353,7 +1353,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-api",
       "path": "crates/bijux-atlas-api/docs/internal/public-api-checklist.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -1378,7 +1378,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-api",
       "path": "crates/bijux-atlas-api/docs/internal/wire-compatibility.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -1402,7 +1402,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-api",
       "path": "crates/bijux-atlas-api/docs/openapi.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -1425,7 +1425,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-api",
       "path": "crates/bijux-atlas-api/docs/patterns.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -1448,7 +1448,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-api",
       "path": "crates/bijux-atlas-api/docs/public-api.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7110,7 +7110,7 @@
         "-assets",
         "index"
       ],
-      "title": "Assets Index",
+      "title": "Assets Index Entry",
       "topic": "index"
     },
     {
@@ -7339,6 +7339,29 @@
       ],
       "title": "Generated artifacts",
       "topic": "generated-artifacts"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "generation"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-platform",
+      "path": "docs/_internal/generation.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "generation"
+      ],
+      "title": "Documentation Generation Model",
+      "topic": "generation"
     },
     {
       "area": "_internal",
@@ -7610,6 +7633,31 @@
       "doc_version": "v1",
       "keywords": [
         "-internal",
+        "check-rebase-decisions",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "team:atlas-governance",
+      "path": "docs/_internal/governance/check-rebase-decisions.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "check-rebase-decisions",
+        "governance"
+      ],
+      "title": "Check Rebase Decisions",
+      "topic": "check-rebase-decisions"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
         "checks-and-contracts",
         "governance"
       ],
@@ -7626,6 +7674,31 @@
       ],
       "title": "Checks And Contracts",
       "topic": "checks-and-contracts"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "checks-taxonomy",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "team:atlas-governance",
+      "path": "docs/_internal/governance/checks-taxonomy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "checks-taxonomy",
+        "governance"
+      ],
+      "title": "Checks Taxonomy",
+      "topic": "checks-taxonomy"
     },
     {
       "area": "_internal",
@@ -8130,6 +8203,31 @@
       ],
       "title": "Docs debt backlog",
       "topic": "docs-debt-backlog"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-drift-dashboard",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-platform",
+      "path": "docs/_internal/governance/docs-drift-dashboard.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-drift-dashboard",
+        "governance"
+      ],
+      "title": "Docs Drift Dashboard",
+      "topic": "docs-drift-dashboard"
     },
     {
       "area": "_internal",
@@ -8759,6 +8857,56 @@
       ],
       "title": "Naming Standard",
       "topic": "naming"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "ops-drift-dashboard"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/_internal/governance/ops-drift-dashboard.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "ops-drift-dashboard"
+      ],
+      "title": "Ops Drift Dashboard",
+      "topic": "ops-drift-dashboard"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "ops-ownership"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/_internal/governance/ops-ownership.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "ops-ownership"
+      ],
+      "title": "Operations Ownership",
+      "topic": "ops-ownership"
     },
     {
       "area": "_internal",
@@ -9538,6 +9686,29 @@
       "doc_version": "v1",
       "keywords": [
         "-internal",
+        "linking"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-platform",
+      "path": "docs/_internal/linking.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "linking"
+      ],
+      "title": "Documentation Linking Rules",
+      "topic": "linking"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
         "docs-build-model",
         "meta"
       ],
@@ -9819,6 +9990,56 @@
       "doc_version": "v1",
       "keywords": [
         "-internal",
+        "docs-surface-rules",
+        "policies"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-platform",
+      "path": "docs/_internal/policies/docs-surface-rules.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-surface-rules",
+        "policies"
+      ],
+      "title": "Docs Surface Rules",
+      "topic": "docs-surface-rules"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "policies",
+        "root-surface-policy"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-platform",
+      "path": "docs/_internal/policies/root-surface-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "policies",
+        "root-surface-policy"
+      ],
+      "title": "Root Surface Policy",
+      "topic": "root-surface-policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
         "registry-deprecation-plan"
       ],
       "last_reviewed": "2026-02-25",
@@ -9879,6 +10100,29 @@
       ],
       "title": "Root Surface Rationale",
       "topic": "root-surface"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "ssot"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-platform",
+      "path": "docs/_internal/ssot.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "ssot"
+      ],
+      "title": "SSOT Boundaries",
+      "topic": "ssot"
     },
     {
       "area": "api",
@@ -12367,6 +12611,144 @@
       "topic": "glossary"
     },
     {
+      "area": "governance",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-platform",
+      "path": "docs/governance/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "index"
+      ],
+      "title": "Governance",
+      "topic": "index"
+    },
+    {
+      "area": "governance",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "ops-deletion-impact-simulation"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/governance/ops-deletion-impact-simulation.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "ops-deletion-impact-simulation"
+      ],
+      "title": "Ops Deletion Impact Simulation",
+      "topic": "ops-deletion-impact-simulation"
+    },
+    {
+      "area": "governance",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "ops-determinism-proof"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/governance/ops-determinism-proof.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "ops-determinism-proof"
+      ],
+      "title": "Ops Determinism Proof",
+      "topic": "ops-determinism-proof"
+    },
+    {
+      "area": "governance",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "ops-maturity-scorecard"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/governance/ops-maturity-scorecard.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "ops-maturity-scorecard"
+      ],
+      "title": "Ops Maturity Scorecard",
+      "topic": "ops-maturity-scorecard"
+    },
+    {
+      "area": "governance",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "ops-supply-chain-model"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/governance/ops-supply-chain-model.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "ops-supply-chain-model"
+      ],
+      "title": "Ops Supply Chain Model",
+      "topic": "ops-supply-chain-model"
+    },
+    {
+      "area": "governance",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "ops-threat-model"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/governance/ops-threat-model.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "ops-threat-model"
+      ],
+      "title": "Ops Threat Model",
+      "topic": "ops-threat-model"
+    },
+    {
       "area": "index.md",
       "audience": "contributors",
       "crate": null,
@@ -12407,52 +12789,6 @@
       ],
       "title": "Institutional Reader",
       "topic": "institutional-reader"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "example-incident-walkthrough",
-        "operations"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "docs/operations/EXAMPLE_INCIDENT_WALKTHROUGH.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "example-incident-walkthrough",
-        "operations"
-      ],
-      "title": "Example Incident Walkthrough",
-      "topic": "EXAMPLE_INCIDENT_WALKTHROUGH"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "example-release-walkthrough",
-        "operations"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "docs/operations/EXAMPLE_RELEASE_WALKTHROUGH.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "example-release-walkthrough",
-        "operations"
-      ],
-      "title": "Example Release Walkthrough",
-      "topic": "EXAMPLE_RELEASE_WALKTHROUGH"
     },
     {
       "area": "operations",
@@ -13953,54 +14289,6 @@
       ],
       "title": "Promotion Record",
       "topic": "promotion-record"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "operations",
-        "redirect-expiry-workflow"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/redirect-expiry-workflow.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "operations",
-        "redirect-expiry-workflow"
-      ],
-      "title": "Redirect Expiry Workflow",
-      "topic": "redirect-expiry-workflow"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "reference",
-      "doc_version": "v1",
-      "keywords": [
-        "index",
-        "operations",
-        "reference"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/reference/INDEX.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "index",
-        "operations",
-        "reference"
-      ],
-      "title": "Operations Reference Index",
-      "topic": "INDEX"
     },
     {
       "area": "operations",
@@ -16389,6 +16677,31 @@
     },
     {
       "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "configs",
+        "index",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/configs/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "index",
+        "reference"
+      ],
+      "title": "Configs Reference",
+      "topic": "index"
+    },
+    {
+      "area": "reference",
       "audience": "contributors",
       "crate": null,
       "doc_type": "reference",
@@ -17236,6 +17549,29 @@
     },
     {
       "area": "reference",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "errors-and-exit-codes",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-platform",
+      "path": "docs/reference/errors-and-exit-codes.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "errors-and-exit-codes",
+        "reference"
+      ],
+      "title": "Errors and Exit Codes",
+      "topic": "errors-and-exit-codes"
+    },
+    {
+      "area": "reference",
       "audience": "user",
       "crate": null,
       "doc_type": "reference",
@@ -17571,6 +17907,31 @@
       ],
       "title": "Operations Surface Reference",
       "topic": "ops-surface"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "index",
+        "ops",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/ops/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "index",
+        "ops",
+        "reference"
+      ],
+      "title": "Ops Reference",
+      "topic": "index"
     },
     {
       "area": "reference",
@@ -18363,29 +18724,6 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "artifacts",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/ARTIFACTS.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "artifacts",
-        "ops"
-      ],
-      "title": "Ops Artifacts Contract",
-      "topic": "ARTIFACTS"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
         "authority-tiers",
         "ops"
       ],
@@ -18401,29 +18739,6 @@
       ],
       "title": "Authority Tiers",
       "topic": "AUTHORITY_TIERS"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "breaking-change-template",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/BREAKING_CHANGE_TEMPLATE.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "breaking-change-template",
-        "ops"
-      ],
-      "title": "Breaking Change Template",
-      "topic": "BREAKING_CHANGE_TEMPLATE"
     },
     {
       "area": "ops",
@@ -18455,98 +18770,6 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "control-plane",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/CONTROL_PLANE.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "control-plane",
-        "ops"
-      ],
-      "title": "Ops Control Plane Contract",
-      "topic": "CONTROL_PLANE"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "delete-half-ops-simulation-report",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/DELETE_HALF_OPS_SIMULATION_REPORT.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "delete-half-ops-simulation-report",
-        "ops"
-      ],
-      "title": "Ops Removal Simulation Report",
-      "topic": "DELETE_HALF_OPS_SIMULATION_REPORT"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "deprecation-workflow",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/DEPRECATION_WORKFLOW.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "deprecation-workflow",
-        "ops"
-      ],
-      "title": "Deprecation Workflow",
-      "topic": "DEPRECATION_WORKFLOW"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "determinism-proof",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/DETERMINISM_PROOF.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "determinism-proof",
-        "ops"
-      ],
-      "title": "Ops Determinism Proof",
-      "topic": "DETERMINISM_PROOF"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
         "directory-budget-policy",
         "ops"
       ],
@@ -18562,29 +18785,6 @@
       ],
       "title": "Directory Budget Policy",
       "topic": "DIRECTORY_BUDGET_POLICY"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "directory-necessity",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/DIRECTORY_NECESSITY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "directory-necessity",
-        "ops"
-      ],
-      "title": "Ops Directory Necessity",
-      "topic": "DIRECTORY_NECESSITY"
     },
     {
       "area": "ops",
@@ -18616,52 +18816,6 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "domain-document-template-contract",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "domain-document-template-contract",
-        "ops"
-      ],
-      "title": "Ops Domain Document Template Contract",
-      "topic": "DOMAIN_DOCUMENT_TEMPLATE_CONTRACT"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "emergency-override-workflow",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/EMERGENCY_OVERRIDE_WORKFLOW.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "emergency-override-workflow",
-        "ops"
-      ],
-      "title": "Emergency Override Workflow",
-      "topic": "EMERGENCY_OVERRIDE_WORKFLOW"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
         "errors",
         "ops"
       ],
@@ -18685,121 +18839,6 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "escalation-mapping",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/ESCALATION_MAPPING.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "escalation-mapping",
-        "ops"
-      ],
-      "title": "Escalation Mapping",
-      "topic": "ESCALATION_MAPPING"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "evidence-signoff-workflow",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/EVIDENCE_SIGNOFF_WORKFLOW.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "evidence-signoff-workflow",
-        "ops"
-      ],
-      "title": "Evidence Sign-Off Workflow",
-      "topic": "EVIDENCE_SIGNOFF_WORKFLOW"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "generated-lifecycle",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/GENERATED_LIFECYCLE.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "generated-lifecycle",
-        "ops"
-      ],
-      "title": "Ops Generated Lifecycle",
-      "topic": "GENERATED_LIFECYCLE"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "golden-refresh-policy",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/GOLDEN_REFRESH_POLICY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "golden-refresh-policy",
-        "ops"
-      ],
-      "title": "Golden Refresh Policy",
-      "topic": "GOLDEN_REFRESH_POLICY"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "incident-playbook-generation",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/INCIDENT_PLAYBOOK_GENERATION.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "incident-playbook-generation",
-        "ops"
-      ],
-      "title": "Incident Playbook Generation",
-      "topic": "INCIDENT_PLAYBOOK_GENERATION"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
         "index",
         "ops"
       ],
@@ -18815,29 +18854,6 @@
       ],
       "title": "Ops Index",
       "topic": "INDEX"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "maturity-scorecard",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/MATURITY_SCORECARD.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "maturity-scorecard",
-        "ops"
-      ],
-      "title": "Ops Maturity Scorecard",
-      "topic": "MATURITY_SCORECARD"
     },
     {
       "area": "ops",
@@ -18870,167 +18886,6 @@
       "doc_version": "v1",
       "keywords": [
         "ops",
-        "ops-adr-template"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/OPS_ADR_TEMPLATE.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ops",
-        "ops-adr-template"
-      ],
-      "title": "Ops ADR Template",
-      "topic": "OPS_ADR_TEMPLATE"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ops",
-        "ops-change-review-checklist"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/OPS_CHANGE_REVIEW_CHECKLIST.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ops",
-        "ops-change-review-checklist"
-      ],
-      "title": "Ops Change Review Checklist",
-      "topic": "OPS_CHANGE_REVIEW_CHECKLIST"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ops",
-        "ops-freeze-workflow"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/OPS_FREEZE_WORKFLOW.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ops",
-        "ops-freeze-workflow"
-      ],
-      "title": "Ops Freeze Workflow",
-      "topic": "OPS_FREEZE_WORKFLOW"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ops",
-        "ops-invariants"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/OPS_INVARIANTS.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ops",
-        "ops-invariants"
-      ],
-      "title": "Ops Invariants",
-      "topic": "OPS_INVARIANTS"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ops",
-        "ownership-rotation-policy"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/OWNERSHIP_ROTATION_POLICY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ops",
-        "ownership-rotation-policy"
-      ],
-      "title": "Ownership Rotation Policy",
-      "topic": "OWNERSHIP_ROTATION_POLICY"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ops",
-        "portability-matrix"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/PORTABILITY_MATRIX.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ops",
-        "portability-matrix"
-      ],
-      "title": "Ops Portability Matrix",
-      "topic": "PORTABILITY_MATRIX"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ops",
-        "public-surface-contract-summary"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ops",
-        "public-surface-contract-summary"
-      ],
-      "title": "Ops Public Surface Contract Summary",
-      "topic": "PUBLIC_SURFACE_CONTRACT_SUMMARY"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ops",
         "readme"
       ],
       "last_reviewed": "2026-02-25",
@@ -19045,29 +18900,6 @@
       ],
       "title": "Ops",
       "topic": "README"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ops",
-        "release-readiness-signoff-checklist"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ops",
-        "release-readiness-signoff-checklist"
-      ],
-      "title": "Release Readiness Sign-Off Checklist",
-      "topic": "RELEASE_READINESS_SIGNOFF_CHECKLIST"
     },
     {
       "area": "ops",
@@ -19091,146 +18923,6 @@
       ],
       "title": "Runbook Generation From Control Graph",
       "topic": "RUNBOOK_GENERATION_FROM_GRAPH"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "ops",
-        "schema-evolution-workflow"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/SCHEMA_EVOLUTION_WORKFLOW.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ops",
-        "schema-evolution-workflow"
-      ],
-      "title": "Schema Evolution Workflow",
-      "topic": "SCHEMA_EVOLUTION_WORKFLOW"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ops",
-        "ssot"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/SSOT.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ops",
-        "ssot"
-      ],
-      "title": "Ops SSOT Index",
-      "topic": "SSOT"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ops",
-        "supply-chain-model"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/SUPPLY_CHAIN_MODEL.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ops",
-        "supply-chain-model"
-      ],
-      "title": "Ops Supply Chain Model",
-      "topic": "SUPPLY_CHAIN_MODEL"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ops",
-        "threat-model"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/THREAT_MODEL.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ops",
-        "threat-model"
-      ],
-      "title": "Ops Threat Model",
-      "topic": "THREAT_MODEL"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ops",
-        "what-fails-when"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/WHAT_FAILS_WHEN.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ops",
-        "what-fails-when"
-      ],
-      "title": "Ops Failure Impact Map",
-      "topic": "WHAT_FAILS_WHEN"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-generated.example",
-        "mirror-policy",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "ops/_generated.example/MIRROR_POLICY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-generated.example",
-        "mirror-policy",
-        "ops"
-      ],
-      "title": "Mirror Policy",
-      "topic": "MIRROR_POLICY"
     },
     {
       "area": "ops",
@@ -19331,6 +19023,31 @@
       ],
       "title": "Control Plane Snapshot",
       "topic": "control-plane.snapshot"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "ops",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/_internal/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "ops",
+        "readme"
+      ],
+      "title": "Ops Internal",
+      "topic": "README"
     },
     {
       "area": "ops",
@@ -19592,33 +19309,6 @@
       "doc_version": "v1",
       "keywords": [
         "e2e",
-        "fixtures",
-        "ops",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "ops/e2e/fixtures/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "e2e",
-        "fixtures",
-        "ops",
-        "readme"
-      ],
-      "title": "E2E Fixtures",
-      "topic": "README"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "e2e",
         "generated",
         "ops",
         "readme"
@@ -19737,6 +19427,56 @@
       ],
       "title": "Required Files",
       "topic": "REQUIRED_FILES"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "index",
+        "ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/governance/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "index",
+        "ops"
+      ],
+      "title": "Ops Governance Index",
+      "topic": "INDEX"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "ops",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/governance/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "ops",
+        "readme"
+      ],
+      "title": "Ops Governance Redirect",
+      "topic": "README"
     },
     {
       "area": "ops",
@@ -20017,7 +19757,7 @@
         "values"
       ],
       "title": "Profile Intent",
-      "topic": "profile-readme"
+      "topic": "PROFILE_README"
     },
     {
       "area": "ops",
@@ -20243,33 +19983,6 @@
       ],
       "title": "Required Files",
       "topic": "REQUIRED_FILES"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "drills",
-        "observe",
-        "ops",
-        "ownership"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "ops/observe/drills/OWNERSHIP.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "drills",
-        "observe",
-        "ops",
-        "ownership"
-      ],
-      "title": "Drill Ownership",
-      "topic": "OWNERSHIP"
     },
     {
       "area": "ops",

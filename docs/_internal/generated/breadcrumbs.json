@@ -2778,6 +2778,14 @@
       "breadcrumbs": [
         "docs",
         "docs/_internal",
+        "docs/_internal/generation.md"
+      ],
+      "path": "docs/_internal/generation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
         "docs/_internal/governance",
         "docs/_internal/governance/add-a-redirect.md"
       ],
@@ -2875,9 +2883,27 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/check-rebase-decisions.md"
+      ],
+      "path": "docs/_internal/governance/check-rebase-decisions.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/checks-and-contracts.md"
       ],
       "path": "docs/_internal/governance/checks-and-contracts.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/checks-taxonomy.md"
+      ],
+      "path": "docs/_internal/governance/checks-taxonomy.md"
     },
     {
       "breadcrumbs": [
@@ -3060,6 +3086,15 @@
         "docs/_internal/governance/docs-debt-backlog.md"
       ],
       "path": "docs/_internal/governance/docs-debt-backlog.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-drift-dashboard.md"
+      ],
+      "path": "docs/_internal/governance/docs-drift-dashboard.md"
     },
     {
       "breadcrumbs": [
@@ -3287,6 +3322,24 @@
         "docs/_internal/governance/naming.md"
       ],
       "path": "docs/_internal/governance/naming.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/ops-drift-dashboard.md"
+      ],
+      "path": "docs/_internal/governance/ops-drift-dashboard.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/ops-ownership.md"
+      ],
+      "path": "docs/_internal/governance/ops-ownership.md"
     },
     {
       "breadcrumbs": [
@@ -3572,6 +3625,14 @@
       "breadcrumbs": [
         "docs",
         "docs/_internal",
+        "docs/_internal/linking.md"
+      ],
+      "path": "docs/_internal/linking.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
         "docs/_internal/meta",
         "docs/_internal/meta/docs-build-model.md"
       ],
@@ -3674,6 +3735,24 @@
       "breadcrumbs": [
         "docs",
         "docs/_internal",
+        "docs/_internal/policies",
+        "docs/_internal/policies/docs-surface-rules.md"
+      ],
+      "path": "docs/_internal/policies/docs-surface-rules.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/policies",
+        "docs/_internal/policies/root-surface-policy.md"
+      ],
+      "path": "docs/_internal/policies/root-surface-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
         "docs/_internal/registry-deprecation-plan.md"
       ],
       "path": "docs/_internal/registry-deprecation-plan.md"
@@ -3693,6 +3772,14 @@
         "docs/_internal/root-surface.md"
       ],
       "path": "docs/_internal/root-surface.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/ssot.md"
+      ],
+      "path": "docs/_internal/ssot.md"
     },
     {
       "breadcrumbs": [
@@ -4562,6 +4649,54 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/governance",
+        "docs/governance/index.md"
+      ],
+      "path": "docs/governance/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/ops-deletion-impact-simulation.md"
+      ],
+      "path": "docs/governance/ops-deletion-impact-simulation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/ops-determinism-proof.md"
+      ],
+      "path": "docs/governance/ops-determinism-proof.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/ops-maturity-scorecard.md"
+      ],
+      "path": "docs/governance/ops-maturity-scorecard.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/ops-supply-chain-model.md"
+      ],
+      "path": "docs/governance/ops-supply-chain-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/ops-threat-model.md"
+      ],
+      "path": "docs/governance/ops-threat-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
         "docs/index.md"
       ],
       "path": "docs/index.md"
@@ -4572,22 +4707,6 @@
         "docs/institutional-reader.md"
       ],
       "path": "docs/institutional-reader.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/operations",
-        "docs/operations/EXAMPLE_INCIDENT_WALKTHROUGH.md"
-      ],
-      "path": "docs/operations/EXAMPLE_INCIDENT_WALKTHROUGH.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/operations",
-        "docs/operations/EXAMPLE_RELEASE_WALKTHROUGH.md"
-      ],
-      "path": "docs/operations/EXAMPLE_RELEASE_WALKTHROUGH.md"
     },
     {
       "breadcrumbs": [
@@ -5115,23 +5234,6 @@
         "docs/operations/promotion-record.md"
       ],
       "path": "docs/operations/promotion-record.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/operations",
-        "docs/operations/redirect-expiry-workflow.md"
-      ],
-      "path": "docs/operations/redirect-expiry-workflow.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/operations",
-        "docs/operations/reference",
-        "docs/operations/reference/INDEX.md"
-      ],
-      "path": "docs/operations/reference/INDEX.md"
     },
     {
       "breadcrumbs": [
@@ -5983,6 +6085,15 @@
       "breadcrumbs": [
         "docs",
         "docs/reference",
+        "docs/reference/configs",
+        "docs/reference/configs/index.md"
+      ],
+      "path": "docs/reference/configs/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
         "docs/reference/contract-runner.md"
       ],
       "path": "docs/reference/contract-runner.md"
@@ -6293,6 +6404,14 @@
       "breadcrumbs": [
         "docs",
         "docs/reference",
+        "docs/reference/errors-and-exit-codes.md"
+      ],
+      "path": "docs/reference/errors-and-exit-codes.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
         "docs/reference/errors.md"
       ],
       "path": "docs/reference/errors.md"
@@ -6408,6 +6527,15 @@
         "docs/reference/ops-surface.md"
       ],
       "path": "docs/reference/ops-surface.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/ops",
+        "docs/reference/ops/index.md"
+      ],
+      "path": "docs/reference/ops/index.md"
     },
     {
       "breadcrumbs": [
@@ -6687,23 +6815,9 @@
     {
       "breadcrumbs": [
         "ops",
-        "ops/ARTIFACTS.md"
-      ],
-      "path": "ops/ARTIFACTS.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
         "ops/AUTHORITY_TIERS.md"
       ],
       "path": "ops/AUTHORITY_TIERS.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/BREAKING_CHANGE_TEMPLATE.md"
-      ],
-      "path": "ops/BREAKING_CHANGE_TEMPLATE.md"
     },
     {
       "breadcrumbs": [
@@ -6715,44 +6829,9 @@
     {
       "breadcrumbs": [
         "ops",
-        "ops/CONTROL_PLANE.md"
-      ],
-      "path": "ops/CONTROL_PLANE.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/DELETE_HALF_OPS_SIMULATION_REPORT.md"
-      ],
-      "path": "ops/DELETE_HALF_OPS_SIMULATION_REPORT.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/DEPRECATION_WORKFLOW.md"
-      ],
-      "path": "ops/DEPRECATION_WORKFLOW.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/DETERMINISM_PROOF.md"
-      ],
-      "path": "ops/DETERMINISM_PROOF.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
         "ops/DIRECTORY_BUDGET_POLICY.md"
       ],
       "path": "ops/DIRECTORY_BUDGET_POLICY.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/DIRECTORY_NECESSITY.md"
-      ],
-      "path": "ops/DIRECTORY_NECESSITY.md"
     },
     {
       "breadcrumbs": [
@@ -6764,58 +6843,9 @@
     {
       "breadcrumbs": [
         "ops",
-        "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md"
-      ],
-      "path": "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/EMERGENCY_OVERRIDE_WORKFLOW.md"
-      ],
-      "path": "ops/EMERGENCY_OVERRIDE_WORKFLOW.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
         "ops/ERRORS.md"
       ],
       "path": "ops/ERRORS.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/ESCALATION_MAPPING.md"
-      ],
-      "path": "ops/ESCALATION_MAPPING.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/EVIDENCE_SIGNOFF_WORKFLOW.md"
-      ],
-      "path": "ops/EVIDENCE_SIGNOFF_WORKFLOW.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/GENERATED_LIFECYCLE.md"
-      ],
-      "path": "ops/GENERATED_LIFECYCLE.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/GOLDEN_REFRESH_POLICY.md"
-      ],
-      "path": "ops/GOLDEN_REFRESH_POLICY.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/INCIDENT_PLAYBOOK_GENERATION.md"
-      ],
-      "path": "ops/INCIDENT_PLAYBOOK_GENERATION.md"
     },
     {
       "breadcrumbs": [
@@ -6827,65 +6857,9 @@
     {
       "breadcrumbs": [
         "ops",
-        "ops/MATURITY_SCORECARD.md"
-      ],
-      "path": "ops/MATURITY_SCORECARD.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
         "ops/MINIMAL_RELEASE_SURFACE.md"
       ],
       "path": "ops/MINIMAL_RELEASE_SURFACE.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/OPS_ADR_TEMPLATE.md"
-      ],
-      "path": "ops/OPS_ADR_TEMPLATE.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/OPS_CHANGE_REVIEW_CHECKLIST.md"
-      ],
-      "path": "ops/OPS_CHANGE_REVIEW_CHECKLIST.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/OPS_FREEZE_WORKFLOW.md"
-      ],
-      "path": "ops/OPS_FREEZE_WORKFLOW.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/OPS_INVARIANTS.md"
-      ],
-      "path": "ops/OPS_INVARIANTS.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/OWNERSHIP_ROTATION_POLICY.md"
-      ],
-      "path": "ops/OWNERSHIP_ROTATION_POLICY.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/PORTABILITY_MATRIX.md"
-      ],
-      "path": "ops/PORTABILITY_MATRIX.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md"
-      ],
-      "path": "ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md"
     },
     {
       "breadcrumbs": [
@@ -6897,59 +6871,9 @@
     {
       "breadcrumbs": [
         "ops",
-        "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md"
-      ],
-      "path": "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
         "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
       ],
       "path": "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/SCHEMA_EVOLUTION_WORKFLOW.md"
-      ],
-      "path": "ops/SCHEMA_EVOLUTION_WORKFLOW.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/SSOT.md"
-      ],
-      "path": "ops/SSOT.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/SUPPLY_CHAIN_MODEL.md"
-      ],
-      "path": "ops/SUPPLY_CHAIN_MODEL.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/THREAT_MODEL.md"
-      ],
-      "path": "ops/THREAT_MODEL.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/WHAT_FAILS_WHEN.md"
-      ],
-      "path": "ops/WHAT_FAILS_WHEN.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/_generated.example",
-        "ops/_generated.example/MIRROR_POLICY.md"
-      ],
-      "path": "ops/_generated.example/MIRROR_POLICY.md"
     },
     {
       "breadcrumbs": [
@@ -6982,6 +6906,14 @@
         "ops/_generated.example/control-plane.snapshot.md"
       ],
       "path": "ops/_generated.example/control-plane.snapshot.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/_internal",
+        "ops/_internal/README.md"
+      ],
+      "path": "ops/_internal/README.md"
     },
     {
       "breadcrumbs": [
@@ -7068,15 +7000,6 @@
       "breadcrumbs": [
         "ops",
         "ops/e2e",
-        "ops/e2e/fixtures",
-        "ops/e2e/fixtures/README.md"
-      ],
-      "path": "ops/e2e/fixtures/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/e2e",
         "ops/e2e/generated",
         "ops/e2e/generated/README.md"
       ],
@@ -7113,6 +7036,22 @@
         "ops/env/REQUIRED_FILES.md"
       ],
       "path": "ops/env/REQUIRED_FILES.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/governance",
+        "ops/governance/INDEX.md"
+      ],
+      "path": "ops/governance/INDEX.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/governance",
+        "ops/governance/README.md"
+      ],
+      "path": "ops/governance/README.md"
     },
     {
       "breadcrumbs": [
@@ -7276,15 +7215,6 @@
         "ops/observe/REQUIRED_FILES.md"
       ],
       "path": "ops/observe/REQUIRED_FILES.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/observe",
-        "ops/observe/drills",
-        "ops/observe/drills/OWNERSHIP.md"
-      ],
-      "path": "ops/observe/drills/OWNERSHIP.md"
     },
     {
       "breadcrumbs": [

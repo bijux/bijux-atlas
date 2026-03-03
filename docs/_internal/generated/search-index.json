@@ -4021,6 +4021,18 @@
     {
       "keywords": [
         "-internal",
+        "generation"
+      ],
+      "path": "docs/_internal/generation.md",
+      "tags": [
+        "-internal",
+        "generation"
+      ],
+      "topic": "generation"
+    },
+    {
+      "keywords": [
+        "-internal",
         "add-a-redirect",
         "governance"
       ],
@@ -4173,6 +4185,20 @@
     {
       "keywords": [
         "-internal",
+        "check-rebase-decisions",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/check-rebase-decisions.md",
+      "tags": [
+        "-internal",
+        "check-rebase-decisions",
+        "governance"
+      ],
+      "topic": "check-rebase-decisions"
+    },
+    {
+      "keywords": [
+        "-internal",
         "checks-and-contracts",
         "governance"
       ],
@@ -4183,6 +4209,20 @@
         "governance"
       ],
       "topic": "checks-and-contracts"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "checks-taxonomy",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/checks-taxonomy.md",
+      "tags": [
+        "-internal",
+        "checks-taxonomy",
+        "governance"
+      ],
+      "topic": "checks-taxonomy"
     },
     {
       "keywords": [
@@ -4467,6 +4507,20 @@
         "governance"
       ],
       "topic": "docs-debt-backlog"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-drift-dashboard",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-drift-dashboard.md",
+      "tags": [
+        "-internal",
+        "docs-drift-dashboard",
+        "governance"
+      ],
+      "topic": "docs-drift-dashboard"
     },
     {
       "keywords": [
@@ -4821,6 +4875,34 @@
         "naming"
       ],
       "topic": "naming"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "ops-drift-dashboard"
+      ],
+      "path": "docs/_internal/governance/ops-drift-dashboard.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "ops-drift-dashboard"
+      ],
+      "topic": "ops-drift-dashboard"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "ops-ownership"
+      ],
+      "path": "docs/_internal/governance/ops-ownership.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "ops-ownership"
+      ],
+      "topic": "ops-ownership"
     },
     {
       "keywords": [
@@ -5265,6 +5347,18 @@
     {
       "keywords": [
         "-internal",
+        "linking"
+      ],
+      "path": "docs/_internal/linking.md",
+      "tags": [
+        "-internal",
+        "linking"
+      ],
+      "topic": "linking"
+    },
+    {
+      "keywords": [
+        "-internal",
         "docs-build-model",
         "meta"
       ],
@@ -5425,6 +5519,34 @@
     {
       "keywords": [
         "-internal",
+        "docs-surface-rules",
+        "policies"
+      ],
+      "path": "docs/_internal/policies/docs-surface-rules.md",
+      "tags": [
+        "-internal",
+        "docs-surface-rules",
+        "policies"
+      ],
+      "topic": "docs-surface-rules"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "policies",
+        "root-surface-policy"
+      ],
+      "path": "docs/_internal/policies/root-surface-policy.md",
+      "tags": [
+        "-internal",
+        "policies",
+        "root-surface-policy"
+      ],
+      "topic": "root-surface-policy"
+    },
+    {
+      "keywords": [
+        "-internal",
         "registry-deprecation-plan"
       ],
       "path": "docs/_internal/registry-deprecation-plan.md",
@@ -5457,6 +5579,18 @@
         "root-surface"
       ],
       "topic": "root-surface"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "ssot"
+      ],
+      "path": "docs/_internal/ssot.md",
+      "tags": [
+        "-internal",
+        "ssot"
+      ],
+      "topic": "ssot"
     },
     {
       "keywords": [
@@ -6758,6 +6892,78 @@
     },
     {
       "keywords": [
+        "governance",
+        "index"
+      ],
+      "path": "docs/governance/index.md",
+      "tags": [
+        "governance",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "governance",
+        "ops-deletion-impact-simulation"
+      ],
+      "path": "docs/governance/ops-deletion-impact-simulation.md",
+      "tags": [
+        "governance",
+        "ops-deletion-impact-simulation"
+      ],
+      "topic": "ops-deletion-impact-simulation"
+    },
+    {
+      "keywords": [
+        "governance",
+        "ops-determinism-proof"
+      ],
+      "path": "docs/governance/ops-determinism-proof.md",
+      "tags": [
+        "governance",
+        "ops-determinism-proof"
+      ],
+      "topic": "ops-determinism-proof"
+    },
+    {
+      "keywords": [
+        "governance",
+        "ops-maturity-scorecard"
+      ],
+      "path": "docs/governance/ops-maturity-scorecard.md",
+      "tags": [
+        "governance",
+        "ops-maturity-scorecard"
+      ],
+      "topic": "ops-maturity-scorecard"
+    },
+    {
+      "keywords": [
+        "governance",
+        "ops-supply-chain-model"
+      ],
+      "path": "docs/governance/ops-supply-chain-model.md",
+      "tags": [
+        "governance",
+        "ops-supply-chain-model"
+      ],
+      "topic": "ops-supply-chain-model"
+    },
+    {
+      "keywords": [
+        "governance",
+        "ops-threat-model"
+      ],
+      "path": "docs/governance/ops-threat-model.md",
+      "tags": [
+        "governance",
+        "ops-threat-model"
+      ],
+      "topic": "ops-threat-model"
+    },
+    {
+      "keywords": [
         "index"
       ],
       "path": "docs/index.md",
@@ -6775,30 +6981,6 @@
         "institutional-reader"
       ],
       "topic": "institutional-reader"
-    },
-    {
-      "keywords": [
-        "example-incident-walkthrough",
-        "operations"
-      ],
-      "path": "docs/operations/EXAMPLE_INCIDENT_WALKTHROUGH.md",
-      "tags": [
-        "example-incident-walkthrough",
-        "operations"
-      ],
-      "topic": "EXAMPLE_INCIDENT_WALKTHROUGH"
-    },
-    {
-      "keywords": [
-        "example-release-walkthrough",
-        "operations"
-      ],
-      "path": "docs/operations/EXAMPLE_RELEASE_WALKTHROUGH.md",
-      "tags": [
-        "example-release-walkthrough",
-        "operations"
-      ],
-      "topic": "EXAMPLE_RELEASE_WALKTHROUGH"
     },
     {
       "keywords": [
@@ -7595,32 +7777,6 @@
         "promotion-record"
       ],
       "topic": "promotion-record"
-    },
-    {
-      "keywords": [
-        "operations",
-        "redirect-expiry-workflow"
-      ],
-      "path": "docs/operations/redirect-expiry-workflow.md",
-      "tags": [
-        "operations",
-        "redirect-expiry-workflow"
-      ],
-      "topic": "redirect-expiry-workflow"
-    },
-    {
-      "keywords": [
-        "index",
-        "operations",
-        "reference"
-      ],
-      "path": "docs/operations/reference/INDEX.md",
-      "tags": [
-        "index",
-        "operations",
-        "reference"
-      ],
-      "topic": "INDEX"
     },
     {
       "keywords": [
@@ -8920,6 +9076,20 @@
     },
     {
       "keywords": [
+        "configs",
+        "index",
+        "reference"
+      ],
+      "path": "docs/reference/configs/index.md",
+      "tags": [
+        "configs",
+        "index",
+        "reference"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
         "contract-runner",
         "reference"
       ],
@@ -9404,6 +9574,18 @@
     },
     {
       "keywords": [
+        "errors-and-exit-codes",
+        "reference"
+      ],
+      "path": "docs/reference/errors-and-exit-codes.md",
+      "tags": [
+        "errors-and-exit-codes",
+        "reference"
+      ],
+      "topic": "errors-and-exit-codes"
+    },
+    {
+      "keywords": [
         "errors",
         "reference"
       ],
@@ -9585,6 +9767,20 @@
         "reference"
       ],
       "topic": "ops-surface"
+    },
+    {
+      "keywords": [
+        "index",
+        "ops",
+        "reference"
+      ],
+      "path": "docs/reference/ops/index.md",
+      "tags": [
+        "index",
+        "ops",
+        "reference"
+      ],
+      "topic": "index"
     },
     {
       "keywords": [
@@ -10020,18 +10216,6 @@
     },
     {
       "keywords": [
-        "artifacts",
-        "ops"
-      ],
-      "path": "ops/ARTIFACTS.md",
-      "tags": [
-        "artifacts",
-        "ops"
-      ],
-      "topic": "ARTIFACTS"
-    },
-    {
-      "keywords": [
         "authority-tiers",
         "ops"
       ],
@@ -10041,18 +10225,6 @@
         "ops"
       ],
       "topic": "AUTHORITY_TIERS"
-    },
-    {
-      "keywords": [
-        "breaking-change-template",
-        "ops"
-      ],
-      "path": "ops/BREAKING_CHANGE_TEMPLATE.md",
-      "tags": [
-        "breaking-change-template",
-        "ops"
-      ],
-      "topic": "BREAKING_CHANGE_TEMPLATE"
     },
     {
       "keywords": [
@@ -10068,54 +10240,6 @@
     },
     {
       "keywords": [
-        "control-plane",
-        "ops"
-      ],
-      "path": "ops/CONTROL_PLANE.md",
-      "tags": [
-        "control-plane",
-        "ops"
-      ],
-      "topic": "CONTROL_PLANE"
-    },
-    {
-      "keywords": [
-        "delete-half-ops-simulation-report",
-        "ops"
-      ],
-      "path": "ops/DELETE_HALF_OPS_SIMULATION_REPORT.md",
-      "tags": [
-        "delete-half-ops-simulation-report",
-        "ops"
-      ],
-      "topic": "DELETE_HALF_OPS_SIMULATION_REPORT"
-    },
-    {
-      "keywords": [
-        "deprecation-workflow",
-        "ops"
-      ],
-      "path": "ops/DEPRECATION_WORKFLOW.md",
-      "tags": [
-        "deprecation-workflow",
-        "ops"
-      ],
-      "topic": "DEPRECATION_WORKFLOW"
-    },
-    {
-      "keywords": [
-        "determinism-proof",
-        "ops"
-      ],
-      "path": "ops/DETERMINISM_PROOF.md",
-      "tags": [
-        "determinism-proof",
-        "ops"
-      ],
-      "topic": "DETERMINISM_PROOF"
-    },
-    {
-      "keywords": [
         "directory-budget-policy",
         "ops"
       ],
@@ -10125,18 +10249,6 @@
         "ops"
       ],
       "topic": "DIRECTORY_BUDGET_POLICY"
-    },
-    {
-      "keywords": [
-        "directory-necessity",
-        "ops"
-      ],
-      "path": "ops/DIRECTORY_NECESSITY.md",
-      "tags": [
-        "directory-necessity",
-        "ops"
-      ],
-      "topic": "DIRECTORY_NECESSITY"
     },
     {
       "keywords": [
@@ -10152,30 +10264,6 @@
     },
     {
       "keywords": [
-        "domain-document-template-contract",
-        "ops"
-      ],
-      "path": "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
-      "tags": [
-        "domain-document-template-contract",
-        "ops"
-      ],
-      "topic": "DOMAIN_DOCUMENT_TEMPLATE_CONTRACT"
-    },
-    {
-      "keywords": [
-        "emergency-override-workflow",
-        "ops"
-      ],
-      "path": "ops/EMERGENCY_OVERRIDE_WORKFLOW.md",
-      "tags": [
-        "emergency-override-workflow",
-        "ops"
-      ],
-      "topic": "EMERGENCY_OVERRIDE_WORKFLOW"
-    },
-    {
-      "keywords": [
         "errors",
         "ops"
       ],
@@ -10188,66 +10276,6 @@
     },
     {
       "keywords": [
-        "escalation-mapping",
-        "ops"
-      ],
-      "path": "ops/ESCALATION_MAPPING.md",
-      "tags": [
-        "escalation-mapping",
-        "ops"
-      ],
-      "topic": "ESCALATION_MAPPING"
-    },
-    {
-      "keywords": [
-        "evidence-signoff-workflow",
-        "ops"
-      ],
-      "path": "ops/EVIDENCE_SIGNOFF_WORKFLOW.md",
-      "tags": [
-        "evidence-signoff-workflow",
-        "ops"
-      ],
-      "topic": "EVIDENCE_SIGNOFF_WORKFLOW"
-    },
-    {
-      "keywords": [
-        "generated-lifecycle",
-        "ops"
-      ],
-      "path": "ops/GENERATED_LIFECYCLE.md",
-      "tags": [
-        "generated-lifecycle",
-        "ops"
-      ],
-      "topic": "GENERATED_LIFECYCLE"
-    },
-    {
-      "keywords": [
-        "golden-refresh-policy",
-        "ops"
-      ],
-      "path": "ops/GOLDEN_REFRESH_POLICY.md",
-      "tags": [
-        "golden-refresh-policy",
-        "ops"
-      ],
-      "topic": "GOLDEN_REFRESH_POLICY"
-    },
-    {
-      "keywords": [
-        "incident-playbook-generation",
-        "ops"
-      ],
-      "path": "ops/INCIDENT_PLAYBOOK_GENERATION.md",
-      "tags": [
-        "incident-playbook-generation",
-        "ops"
-      ],
-      "topic": "INCIDENT_PLAYBOOK_GENERATION"
-    },
-    {
-      "keywords": [
         "index",
         "ops"
       ],
@@ -10257,18 +10285,6 @@
         "ops"
       ],
       "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "maturity-scorecard",
-        "ops"
-      ],
-      "path": "ops/MATURITY_SCORECARD.md",
-      "tags": [
-        "maturity-scorecard",
-        "ops"
-      ],
-      "topic": "MATURITY_SCORECARD"
     },
     {
       "keywords": [
@@ -10285,90 +10301,6 @@
     {
       "keywords": [
         "ops",
-        "ops-adr-template"
-      ],
-      "path": "ops/OPS_ADR_TEMPLATE.md",
-      "tags": [
-        "ops",
-        "ops-adr-template"
-      ],
-      "topic": "OPS_ADR_TEMPLATE"
-    },
-    {
-      "keywords": [
-        "ops",
-        "ops-change-review-checklist"
-      ],
-      "path": "ops/OPS_CHANGE_REVIEW_CHECKLIST.md",
-      "tags": [
-        "ops",
-        "ops-change-review-checklist"
-      ],
-      "topic": "OPS_CHANGE_REVIEW_CHECKLIST"
-    },
-    {
-      "keywords": [
-        "ops",
-        "ops-freeze-workflow"
-      ],
-      "path": "ops/OPS_FREEZE_WORKFLOW.md",
-      "tags": [
-        "ops",
-        "ops-freeze-workflow"
-      ],
-      "topic": "OPS_FREEZE_WORKFLOW"
-    },
-    {
-      "keywords": [
-        "ops",
-        "ops-invariants"
-      ],
-      "path": "ops/OPS_INVARIANTS.md",
-      "tags": [
-        "ops",
-        "ops-invariants"
-      ],
-      "topic": "OPS_INVARIANTS"
-    },
-    {
-      "keywords": [
-        "ops",
-        "ownership-rotation-policy"
-      ],
-      "path": "ops/OWNERSHIP_ROTATION_POLICY.md",
-      "tags": [
-        "ops",
-        "ownership-rotation-policy"
-      ],
-      "topic": "OWNERSHIP_ROTATION_POLICY"
-    },
-    {
-      "keywords": [
-        "ops",
-        "portability-matrix"
-      ],
-      "path": "ops/PORTABILITY_MATRIX.md",
-      "tags": [
-        "ops",
-        "portability-matrix"
-      ],
-      "topic": "PORTABILITY_MATRIX"
-    },
-    {
-      "keywords": [
-        "ops",
-        "public-surface-contract-summary"
-      ],
-      "path": "ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md",
-      "tags": [
-        "ops",
-        "public-surface-contract-summary"
-      ],
-      "topic": "PUBLIC_SURFACE_CONTRACT_SUMMARY"
-    },
-    {
-      "keywords": [
-        "ops",
         "readme"
       ],
       "path": "ops/README.md",
@@ -10381,18 +10313,6 @@
     {
       "keywords": [
         "ops",
-        "release-readiness-signoff-checklist"
-      ],
-      "path": "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
-      "tags": [
-        "ops",
-        "release-readiness-signoff-checklist"
-      ],
-      "topic": "RELEASE_READINESS_SIGNOFF_CHECKLIST"
-    },
-    {
-      "keywords": [
-        "ops",
         "runbook-generation-from-graph"
       ],
       "path": "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
@@ -10401,80 +10321,6 @@
         "runbook-generation-from-graph"
       ],
       "topic": "RUNBOOK_GENERATION_FROM_GRAPH"
-    },
-    {
-      "keywords": [
-        "ops",
-        "schema-evolution-workflow"
-      ],
-      "path": "ops/SCHEMA_EVOLUTION_WORKFLOW.md",
-      "tags": [
-        "ops",
-        "schema-evolution-workflow"
-      ],
-      "topic": "SCHEMA_EVOLUTION_WORKFLOW"
-    },
-    {
-      "keywords": [
-        "ops",
-        "ssot"
-      ],
-      "path": "ops/SSOT.md",
-      "tags": [
-        "ops",
-        "ssot"
-      ],
-      "topic": "SSOT"
-    },
-    {
-      "keywords": [
-        "ops",
-        "supply-chain-model"
-      ],
-      "path": "ops/SUPPLY_CHAIN_MODEL.md",
-      "tags": [
-        "ops",
-        "supply-chain-model"
-      ],
-      "topic": "SUPPLY_CHAIN_MODEL"
-    },
-    {
-      "keywords": [
-        "ops",
-        "threat-model"
-      ],
-      "path": "ops/THREAT_MODEL.md",
-      "tags": [
-        "ops",
-        "threat-model"
-      ],
-      "topic": "THREAT_MODEL"
-    },
-    {
-      "keywords": [
-        "ops",
-        "what-fails-when"
-      ],
-      "path": "ops/WHAT_FAILS_WHEN.md",
-      "tags": [
-        "ops",
-        "what-fails-when"
-      ],
-      "topic": "WHAT_FAILS_WHEN"
-    },
-    {
-      "keywords": [
-        "-generated.example",
-        "mirror-policy",
-        "ops"
-      ],
-      "path": "ops/_generated.example/MIRROR_POLICY.md",
-      "tags": [
-        "-generated.example",
-        "mirror-policy",
-        "ops"
-      ],
-      "topic": "MIRROR_POLICY"
     },
     {
       "keywords": [
@@ -10531,6 +10377,20 @@
         "ops"
       ],
       "topic": "control-plane.snapshot"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/_internal/README.md",
+      "tags": [
+        "-internal",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
     },
     {
       "keywords": [
@@ -10677,22 +10537,6 @@
     {
       "keywords": [
         "e2e",
-        "fixtures",
-        "ops",
-        "readme"
-      ],
-      "path": "ops/e2e/fixtures/README.md",
-      "tags": [
-        "e2e",
-        "fixtures",
-        "ops",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "e2e",
         "generated",
         "ops",
         "readme"
@@ -10761,6 +10605,34 @@
         "required-files"
       ],
       "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
+        "governance",
+        "index",
+        "ops"
+      ],
+      "path": "ops/governance/INDEX.md",
+      "tags": [
+        "governance",
+        "index",
+        "ops"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "keywords": [
+        "governance",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/governance/README.md",
+      "tags": [
+        "governance",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
     },
     {
       "keywords": [
@@ -10920,7 +10792,7 @@
         "profile-readme",
         "values"
       ],
-      "topic": "profile-readme"
+      "topic": "PROFILE_README"
     },
     {
       "keywords": [
@@ -11047,22 +10919,6 @@
         "required-files"
       ],
       "topic": "REQUIRED_FILES"
-    },
-    {
-      "keywords": [
-        "drills",
-        "observe",
-        "ops",
-        "ownership"
-      ],
-      "path": "ops/observe/drills/OWNERSHIP.md",
-      "tags": [
-        "drills",
-        "observe",
-        "ops",
-        "ownership"
-      ],
-      "topic": "OWNERSHIP"
     },
     {
       "keywords": [

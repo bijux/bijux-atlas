@@ -4,14 +4,8 @@
     "ARCHITECTURE": [
       "crates/bijux-atlas-server/src/cache/ARCHITECTURE.md"
     ],
-    "ARTIFACTS": [
-      "ops/ARTIFACTS.md"
-    ],
     "AUTHORITY_TIERS": [
       "ops/AUTHORITY_TIERS.md"
-    ],
-    "BREAKING_CHANGE_TEMPLATE": [
-      "ops/BREAKING_CHANGE_TEMPLATE.md"
     ],
     "BUDGET_POLICY": [
       "ops/schema/BUDGET_POLICY.md"
@@ -52,32 +46,11 @@
     "CONTRIBUTING": [
       "CONTRIBUTING.md"
     ],
-    "CONTROL_PLANE": [
-      "ops/CONTROL_PLANE.md"
-    ],
-    "DELETE_HALF_OPS_SIMULATION_REPORT": [
-      "ops/DELETE_HALF_OPS_SIMULATION_REPORT.md"
-    ],
-    "DEPRECATION_WORKFLOW": [
-      "ops/DEPRECATION_WORKFLOW.md"
-    ],
-    "DETERMINISM_PROOF": [
-      "ops/DETERMINISM_PROOF.md"
-    ],
     "DIRECTORY_BUDGET_POLICY": [
       "ops/DIRECTORY_BUDGET_POLICY.md"
     ],
-    "DIRECTORY_NECESSITY": [
-      "ops/DIRECTORY_NECESSITY.md"
-    ],
     "DOC_NECESSITY_CHECKLIST": [
       "ops/DOC_NECESSITY_CHECKLIST.md"
-    ],
-    "DOMAIN_DOCUMENT_TEMPLATE_CONTRACT": [
-      "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md"
-    ],
-    "EMERGENCY_OVERRIDE_WORKFLOW": [
-      "ops/EMERGENCY_OVERRIDE_WORKFLOW.md"
     ],
     "END_TO_END_INVARIANTS": [
       "ops/e2e/END_TO_END_INVARIANTS.md"
@@ -85,37 +58,16 @@
     "ERRORS": [
       "ops/ERRORS.md"
     ],
-    "ESCALATION_MAPPING": [
-      "ops/ESCALATION_MAPPING.md"
-    ],
     "EVIDENCE_COMPLETENESS_CHECKLIST": [
       "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md"
-    ],
-    "EVIDENCE_SIGNOFF_WORKFLOW": [
-      "ops/EVIDENCE_SIGNOFF_WORKFLOW.md"
-    ],
-    "EXAMPLE_INCIDENT_WALKTHROUGH": [
-      "docs/operations/EXAMPLE_INCIDENT_WALKTHROUGH.md"
-    ],
-    "EXAMPLE_RELEASE_WALKTHROUGH": [
-      "docs/operations/EXAMPLE_RELEASE_WALKTHROUGH.md"
-    ],
-    "GENERATED_LIFECYCLE": [
-      "ops/GENERATED_LIFECYCLE.md"
-    ],
-    "GOLDEN_REFRESH_POLICY": [
-      "ops/GOLDEN_REFRESH_POLICY.md"
-    ],
-    "INCIDENT_PLAYBOOK_GENERATION": [
-      "ops/INCIDENT_PLAYBOOK_GENERATION.md"
     ],
     "INDEX": [
       "configs/INDEX.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/INDEX.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/INDEX.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/INDEX.md",
-      "docs/operations/reference/INDEX.md",
-      "ops/INDEX.md"
+      "ops/INDEX.md",
+      "ops/governance/INDEX.md"
     ],
     "LINT_POLICY": [
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/rust/LINT_POLICY.md"
@@ -123,32 +75,14 @@
     "MAKE_LAWS": [
       "make/_internal/contracts/MAKE_LAWS.md"
     ],
-    "MATURITY_SCORECARD": [
-      "ops/MATURITY_SCORECARD.md"
-    ],
     "MINIMAL_RELEASE_SURFACE": [
       "ops/MINIMAL_RELEASE_SURFACE.md"
-    ],
-    "MIRROR_POLICY": [
-      "ops/_generated.example/MIRROR_POLICY.md"
     ],
     "NAMING": [
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/NAMING.md"
     ],
-    "OPS_ADR_TEMPLATE": [
-      "ops/OPS_ADR_TEMPLATE.md"
-    ],
-    "OPS_CHANGE_REVIEW_CHECKLIST": [
-      "ops/OPS_CHANGE_REVIEW_CHECKLIST.md"
-    ],
     "OPS_COMMAND_LIST": [
       "crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md"
-    ],
-    "OPS_FREEZE_WORKFLOW": [
-      "ops/OPS_FREEZE_WORKFLOW.md"
-    ],
-    "OPS_INVARIANTS": [
-      "ops/OPS_INVARIANTS.md"
     ],
     "OWNER": [
       "ops/_generated.example/OWNER.md",
@@ -166,17 +100,8 @@
     "OWNERS": [
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/OWNERS.md"
     ],
-    "OWNERSHIP": [
-      "ops/observe/drills/OWNERSHIP.md"
-    ],
-    "OWNERSHIP_ROTATION_POLICY": [
-      "ops/OWNERSHIP_ROTATION_POLICY.md"
-    ],
-    "PORTABILITY_MATRIX": [
-      "ops/PORTABILITY_MATRIX.md"
-    ],
-    "PUBLIC_SURFACE_CONTRACT_SUMMARY": [
-      "ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md"
+    "PROFILE_README": [
+      "ops/k8s/values/PROFILE_README.md"
     ],
     "README": [
       "README.md",
@@ -249,12 +174,13 @@
       "make/_internal/contracts/README.md",
       "ops/README.md",
       "ops/_generated.example/README.md",
+      "ops/_internal/README.md",
       "ops/datasets/README.md",
       "ops/datasets/generated/README.md",
       "ops/e2e/README.md",
-      "ops/e2e/fixtures/README.md",
       "ops/e2e/generated/README.md",
       "ops/env/README.md",
+      "ops/governance/README.md",
       "ops/inventory/README.md",
       "ops/k8s/README.md",
       "ops/k8s/generated/README.md",
@@ -264,9 +190,6 @@
       "ops/report/README.md",
       "ops/schema/README.md",
       "ops/stack/README.md"
-    ],
-    "RELEASE_READINESS_SIGNOFF_CHECKLIST": [
-      "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md"
     ],
     "REQUIRED_FILES": [
       "ops/_generated.example/REQUIRED_FILES.md",
@@ -290,29 +213,14 @@
     "SCHEMA_BUDGET_EXCEPTIONS": [
       "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md"
     ],
-    "SCHEMA_EVOLUTION_WORKFLOW": [
-      "ops/SCHEMA_EVOLUTION_WORKFLOW.md"
-    ],
     "SCHEMA_REFERENCE_ALLOWLIST": [
       "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md"
     ],
     "SECURITY": [
       "SECURITY.md"
     ],
-    "SSOT": [
-      "ops/SSOT.md"
-    ],
-    "SUPPLY_CHAIN_MODEL": [
-      "ops/SUPPLY_CHAIN_MODEL.md"
-    ],
-    "THREAT_MODEL": [
-      "ops/THREAT_MODEL.md"
-    ],
     "VERSIONING_POLICY": [
       "ops/schema/VERSIONING_POLICY.md"
-    ],
-    "WHAT_FAILS_WHEN": [
-      "ops/WHAT_FAILS_WHEN.md"
     ],
     "action-pin-refresh": [
       "docs/operations/security/action-pin-refresh.md"
@@ -505,11 +413,17 @@
     "chart-values": [
       "docs/reference/contracts/chart-values.md"
     ],
+    "check-rebase-decisions": [
+      "docs/_internal/governance/check-rebase-decisions.md"
+    ],
     "checks": [
       "docs/_internal/governance/policies/checks.md"
     ],
     "checks-and-contracts": [
       "docs/_internal/governance/checks-and-contracts.md"
+    ],
+    "checks-taxonomy": [
+      "docs/_internal/governance/checks-taxonomy.md"
     ],
     "ci-overview": [
       "docs/development/ci-overview.md"
@@ -837,6 +751,9 @@
     "docs-debt-backlog": [
       "docs/_internal/governance/docs-debt-backlog.md"
     ],
+    "docs-drift-dashboard": [
+      "docs/_internal/governance/docs-drift-dashboard.md"
+    ],
     "docs-governance": [
       ".github/PULL_REQUEST_TEMPLATE/docs-governance.md"
     ],
@@ -891,6 +808,9 @@
     ],
     "docs-style": [
       "docs/_internal/governance/docs-style.md"
+    ],
+    "docs-surface-rules": [
+      "docs/_internal/policies/docs-surface-rules.md"
     ],
     "docs-taxonomy-quick-reference": [
       "docs/_internal/meta/docs-taxonomy-quick-reference.md"
@@ -983,6 +903,9 @@
       "docs/reference/contracts/errors.md",
       "docs/reference/errors.md"
     ],
+    "errors-and-exit-codes": [
+      "docs/reference/errors-and-exit-codes.md"
+    ],
     "evidence": [
       "docs/reference/contracts/release/evidence.md"
     ],
@@ -1068,6 +991,9 @@
     "generated-content-policy": [
       "docs/_internal/governance/generated-content-policy.md"
     ],
+    "generation": [
+      "docs/_internal/generation.md"
+    ],
     "glossary": [
       "docs/glossary.md"
     ],
@@ -1148,6 +1074,7 @@
       "docs/control-plane/index.md",
       "docs/development/index.md",
       "docs/development/tooling/index.md",
+      "docs/governance/index.md",
       "docs/index.md",
       "docs/operations/e2e/index.md",
       "docs/operations/index.md",
@@ -1160,6 +1087,7 @@
       "docs/product/index.md",
       "docs/reference/checks/index.md",
       "docs/reference/compatibility/index.md",
+      "docs/reference/configs/index.md",
       "docs/reference/contracts/artifacts/index.md",
       "docs/reference/contracts/examples/index.md",
       "docs/reference/contracts/index.md",
@@ -1168,6 +1096,7 @@
       "docs/reference/examples/index.md",
       "docs/reference/index.md",
       "docs/reference/ops-schema/index.md",
+      "docs/reference/ops/index.md",
       "docs/reference/querying/index.md",
       "docs/reference/registry/index.md",
       "docs/reference/reports/checks/index.md",
@@ -1240,6 +1169,9 @@
     ],
     "lifecycle": [
       "docs/reference/contracts/ops/lifecycle.md"
+    ],
+    "linking": [
+      "docs/_internal/linking.md"
     ],
     "load-failure-triage": [
       "docs/operations/runbooks/load-failure-triage.md"
@@ -1322,8 +1254,17 @@
     "ops-command-list": [
       "crates/bijux-dev-atlas/docs/internal/ops-command-list.md"
     ],
+    "ops-deletion-impact-simulation": [
+      "docs/governance/ops-deletion-impact-simulation.md"
+    ],
+    "ops-determinism-proof": [
+      "docs/governance/ops-determinism-proof.md"
+    ],
     "ops-docs-contract": [
       "docs/operations/ops-docs-contract.md"
+    ],
+    "ops-drift-dashboard": [
+      "docs/_internal/governance/ops-drift-dashboard.md"
     ],
     "ops-e2e-boundary": [
       ".github/PULL_REQUEST_TEMPLATE/ops-e2e-boundary.md"
@@ -1331,9 +1272,21 @@
     "ops-map": [
       "docs/operations/ops-map.md"
     ],
+    "ops-maturity-scorecard": [
+      "docs/governance/ops-maturity-scorecard.md"
+    ],
+    "ops-ownership": [
+      "docs/_internal/governance/ops-ownership.md"
+    ],
+    "ops-supply-chain-model": [
+      "docs/governance/ops-supply-chain-model.md"
+    ],
     "ops-surface": [
       "docs/operations/reference/ops-surface.md",
       "docs/reference/ops-surface.md"
+    ],
+    "ops-threat-model": [
+      "docs/governance/ops-threat-model.md"
     ],
     "optional-fields": [
       "crates/bijux-atlas-model/docs/internal/optional-fields.md"
@@ -1417,9 +1370,6 @@
     "profile-ownership": [
       "docs/operations/profile-ownership.md"
     ],
-    "profile-readme": [
-      "ops/k8s/values/PROFILE_README.md"
-    ],
     "profile-rollback": [
       "docs/operations/profile-rollback.md"
     ],
@@ -1477,9 +1427,6 @@
     ],
     "readers-guide": [
       "docs/_internal/governance/readers-guide.md"
-    ],
-    "redirect-expiry-workflow": [
-      "docs/operations/redirect-expiry-workflow.md"
     ],
     "redirect-lifecycle": [
       "docs/_internal/governance/redirect-lifecycle.md"
@@ -1632,6 +1579,9 @@
     "root-surface": [
       "docs/_internal/root-surface.md"
     ],
+    "root-surface-policy": [
+      "docs/_internal/policies/root-surface-policy.md"
+    ],
     "run-locally": [
       "docs/operations/run-locally.md"
     ],
@@ -1751,6 +1701,9 @@
     ],
     "spec": [
       "docs/reference/contracts/plugins/spec.md"
+    ],
+    "ssot": [
+      "docs/_internal/ssot.md"
     ],
     "stability-levels": [
       "docs/_internal/governance/style/stability-levels.md"

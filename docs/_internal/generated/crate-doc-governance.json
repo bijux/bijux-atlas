@@ -10,7 +10,7 @@
         "CONTRACT.md",
         "README.md"
       ],
-      "owner_metadata_docs": 8,
+      "owner_metadata_docs": 18,
       "required": [
         "README.md",
         "CONTRACT.md"
@@ -205,7 +205,7 @@
     "CRATE_DOC_FRESHNESS_WARN: `bijux-atlas-server` has no `Last Reviewed:` metadata in crate docs",
     "CRATE_DOC_FRESHNESS_WARN: `bijux-atlas-store` has no `Last Reviewed:` metadata in crate docs",
     "CRATE_DOC_FRESHNESS_WARN: `bijux-dev-atlas` has no `Last Reviewed:` metadata in crate docs",
-    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-api` owner metadata present in 8/19 docs",
+    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-api` owner metadata present in 18/19 docs",
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-cli` owner metadata present in 8/18 docs",
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-core` owner metadata present in 7/19 docs",
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-ingest` owner metadata present in 9/18 docs",
