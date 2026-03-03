@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/contracts/contract-run-summary.schema.json",
+  "title": "contract run summary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["header", "mode", "jobs", "fail_fast", "preflight", "counts", "cases"],
+  "properties": {
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["report_id", "version", "inputs", "artifacts"],
+      "properties": {
+        "report_id": { "type": "string", "const": "contract-run-summary" },
+        "version": { "type": "integer", "const": 1 },
+        "inputs": { "type": "object" },
+        "artifacts": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "mode": { "type": "string", "enum": ["static", "effect", "all"] },
+    "jobs": { "type": "string", "minLength": 1 },
+    "fail_fast": { "type": "boolean" },
+    "preflight": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_tools", "missing_tools"],
+      "properties": {
+        "required_tools": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "missing_tools": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "passed", "failed", "skipped", "not_run"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 },
+        "skipped": { "type": "integer", "minimum": 0 },
+        "not_run": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "reports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["report_id", "path"],
+        "properties": {
+          "report_id": { "type": "string", "minLength": 1 },
+          "path": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contract_id",
+          "contract_name",
+          "case_name",
+          "status",
+          "duration_ms",
+          "artifact_paths"
+        ],
+        "properties": {
+          "contract_id": { "type": "string", "minLength": 1 },
+          "contract_name": { "type": "string", "minLength": 1 },
+          "case_name": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["pass", "fail", "skip"] },
+          "duration_ms": { "type": "integer", "minimum": 0 },
+          "message": { "type": ["string", "null"] },
+          "artifact_paths": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}
