@@ -48,6 +48,7 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
         "src/commands/configs_payloads.rs",
         "src/commands/perf.rs",
         "src/commands/release.rs",
+        "src/commands/suites.rs",
         "src/commands/docs/validation_and_links.rs",
         "src/commands/docs/runtime/docs_command_router.rs",
         "src/commands/control_plane_docker_runtime_helpers.rs",
@@ -109,6 +110,7 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
         "src/contracts/root/root_static_surface_checks.inc.rs",
         "src/contracts/root/root_static_workspace_checks.inc.rs",
         "src/commands/ops/runtime_mod/core_handler.rs",
+        "src/commands/ops/runtime_mod/core_rendering.rs",
         "src/commands/ops/runtime_mod/execution_handler.rs",
         "src/commands/ops/execution_runtime_mod/install_status.rs",
         "src/commands/control_plane_contracts.rs",
@@ -139,7 +141,9 @@ fn staged_stdio_exceptions() -> BTreeSet<&'static str> {
         "src/commands/build.rs",
         "src/commands/configs.rs",
         "src/commands/control_plane.rs",
+        "src/commands/data.rs",
         "src/commands/docs/runtime/docs_command_router.rs",
+        "src/commands/governance.rs",
         "src/commands/ops/runtime.rs",
     ]
     .into_iter()
@@ -154,7 +158,10 @@ fn staged_time_random_exceptions() -> BTreeSet<&'static str> {
         "src/ports/mod.rs",
         "src/contracts/docker/mod.rs",
         "src/commands/artifacts.rs",
+        "src/commands/data.rs",
         "src/commands/docs/runtime/docs_command_router.rs",
+        "src/commands/governance.rs",
+        "src/commands/suites.rs",
         "src/docs/site_output.rs",
     ]
     .into_iter()

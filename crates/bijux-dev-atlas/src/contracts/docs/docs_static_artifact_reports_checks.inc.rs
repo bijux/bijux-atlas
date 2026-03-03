@@ -423,7 +423,8 @@ fn test_docs_065_repo_map_curated_sources_exist(ctx: &RunContext) -> TestResult 
 }
 
 fn test_docs_066_verification_markers_are_canonical(ctx: &RunContext) -> TestResult {
-    let regex = regex::Regex::new(r"^- Last verified against: `(?:main|v[^`@]+)@[0-9a-f]{40}`$").unwrap();
+    let regex = regex::Regex::new(r"^- Last verified against: `(?:main|v[^`@]+)@[0-9a-f]{40}`$")
+        .unwrap_or_else(|err| panic!("invalid last-verified regex: {err}"));
     let mut violations = Vec::new();
     for path in docs_markdown_paths_under(&ctx.repo_root.join("docs")) {
         let relative = path.strip_prefix(&ctx.repo_root).unwrap_or(&path);
@@ -697,7 +698,8 @@ fn test_docs_071_readme_files_do_not_link_to_stub_reference_pages(ctx: &RunConte
         .into_iter()
         .filter_map(|value| value["path"].as_str().map(|value| value.strip_prefix("docs/").unwrap_or(value).to_string()))
         .collect::<Vec<_>>();
-    let link_re = regex::Regex::new(r"\[[^\]]+\]\(([^)]+)\)").unwrap();
+    let link_re = regex::Regex::new(r"\[[^\]]+\]\(([^)]+)\)")
+        .unwrap_or_else(|err| panic!("invalid markdown link regex: {err}"));
     let mut violations = Vec::new();
     for path in docs_markdown_paths_under(&ctx.repo_root) {
         let relative = path.strip_prefix(&ctx.repo_root).unwrap_or(&path);

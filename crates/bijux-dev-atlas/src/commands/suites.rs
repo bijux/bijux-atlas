@@ -1918,7 +1918,9 @@ fn run_tasks_parallel(
                     return;
                 }
                 let next = {
-                    let mut guard = queue.lock().expect("suite queue mutex poisoned");
+                    let mut guard = queue
+                        .lock()
+                        .unwrap_or_else(|err| panic!("suite queue mutex poisoned: {err}"));
                     guard.pop_front()
                 };
                 let Some(task) = next else {
