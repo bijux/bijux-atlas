@@ -26,6 +26,7 @@ pub(crate) use configs_commands::{
     configs_context, configs_diff_payload, configs_lint_payload, configs_validate_payload,
     run_configs_command,
 };
+pub(crate) use commands_data::run_data_command;
 pub(crate) use control_plane_commands::{
     help_inventory_payload, run_capabilities_command, run_contracts_command, run_docker_command,
     run_help_inventory_command, run_policies_command, run_print_boundaries_command,

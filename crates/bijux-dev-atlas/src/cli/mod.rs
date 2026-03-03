@@ -108,6 +108,14 @@ pub enum Command {
         #[command(subcommand)]
         command: SecurityCommand,
     },
+    Datasets {
+        #[command(subcommand)]
+        command: DatasetsCommand,
+    },
+    Ingest {
+        #[command(subcommand)]
+        command: IngestCommand,
+    },
     Perf {
         #[command(subcommand)]
         command: PerfCommand,
@@ -188,6 +196,16 @@ pub enum PerfCommand {
         #[command(subcommand)]
         command: PerfBenchesCommand,
     },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum DatasetsCommand {
+    Validate(DatasetsValidateArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum IngestCommand {
+    DryRun(IngestDryRunArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -365,6 +383,28 @@ pub struct PerfKindArgs {
     pub repo_root: Option<PathBuf>,
     #[arg(long, default_value = "perf")]
     pub profile: String,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct DatasetsValidateArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct IngestDryRunArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub dataset: String,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]

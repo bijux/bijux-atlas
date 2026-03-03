@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ArtifactsCommand, CheckCommand, CheckRegistryCommand, Command, ConfigsCommand,
+    ArtifactsCommand, CheckCommand, CheckRegistryCommand, Command, ConfigsCommand, DatasetsCommand,
     ContractsCommand, DocsCommand, FormatArg, MakeCommand, OpsCommand, PoliciesCommand,
-    PerfCommand, ReleaseCommand, SecurityCommand,
+    IngestCommand, PerfCommand, ReleaseCommand, SecurityCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -19,6 +19,8 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Configs { command } => force_json_configs(command),
         Command::Governance { command } => force_json_governance(command),
         Command::Security { command } => force_json_security(command),
+        Command::Datasets { command } => force_json_datasets(command),
+        Command::Ingest { command } => force_json_ingest(command),
         Command::Perf { command } => force_json_perf(command),
         Command::Policies { command } => force_json_policies(command),
         Command::Check { command } => force_json_check(command),
@@ -373,6 +375,18 @@ fn force_json_perf(command: &mut PerfCommand) {
         PerfCommand::Benches { command } => match command {
             crate::cli::PerfBenchesCommand::List(args) => args.format = FormatArg::Json,
         },
+    }
+}
+
+fn force_json_datasets(command: &mut DatasetsCommand) {
+    match command {
+        DatasetsCommand::Validate(args) => args.format = FormatArg::Json,
+    }
+}
+
+fn force_json_ingest(command: &mut IngestCommand) {
+    match command {
+        IngestCommand::DryRun(args) => args.format = FormatArg::Json,
     }
 }
 
@@ -798,6 +812,12 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
             },
             SecurityCommand::ScanArtifacts(args) => args.repo_root = Some(root.clone()),
+        },
+        Command::Datasets { command } => match command {
+            DatasetsCommand::Validate(args) => args.repo_root = Some(root.clone()),
+        },
+        Command::Ingest { command } => match command {
+            IngestCommand::DryRun(args) => args.repo_root = Some(root.clone()),
         },
         Command::Perf { command } => match command {
             PerfCommand::Validate(args) => args.repo_root = Some(root.clone()),

@@ -1,0 +1,5 @@
+schema_version: 1
+profiles:
+  offline:
+    required_dataset_ids:
+      - 110/homo_sapiens/GRCh38

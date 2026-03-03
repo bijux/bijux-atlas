@@ -5,7 +5,7 @@ use crate::{
     plugin_metadata_json, run_artifacts_command, run_build_command, run_capabilities_command,
     run_check_doctor, run_check_explain, run_check_list, run_check_registry_doctor,
     run_check_repo_doctor, run_check_root_surface_explain, run_check_run, run_check_tree_budgets,
-    run_configs_command, run_contracts_command, run_demo_command, run_docker_command,
+    run_configs_command, run_contracts_command, run_data_command, run_demo_command, run_docker_command,
     run_docs_command, run_gates_command, run_governance_command, run_help_inventory_command,
     run_make_command, run_ops_command, run_perf_command, run_policies_command,
     run_print_boundaries_command, run_release_command, run_security_command, run_version_command,
@@ -134,6 +134,38 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
             }
             Err(err) => {
                 let _ = writeln!(io::stderr(), "bijux-dev-atlas security failed: {err}");
+                1
+            }
+        },
+        Command::Datasets { command } => match run_data_command(cli.quiet, crate::commands_data::DataCommand::Datasets(command)) {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    if code == 0 {
+                        let _ = writeln!(io::stdout(), "{rendered}");
+                    } else {
+                        let _ = writeln!(io::stderr(), "{rendered}");
+                    }
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas datasets failed: {err}");
+                1
+            }
+        },
+        Command::Ingest { command } => match run_data_command(cli.quiet, crate::commands_data::DataCommand::Ingest(command)) {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    if code == 0 {
+                        let _ = writeln!(io::stdout(), "{rendered}");
+                    } else {
+                        let _ = writeln!(io::stderr(), "{rendered}");
+                    }
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas ingest failed: {err}");
                 1
             }
         },
