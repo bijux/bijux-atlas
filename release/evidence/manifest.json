@@ -1,7 +1,7 @@
 {
   "chart_package": {
     "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-    "sha256": "40d919475165edc54d6305d2e3a4eea876501ccf2627e6cdda2f3df8784eee7d"
+    "sha256": "40f9438f9f8239c36df10507df1a2d7389aaf8e375036d985b854b8d1b6c2872"
   },
   "docker_bases_lock": {
     "path": "docker/bases.lock",
@@ -14,7 +14,7 @@
   },
   "evidence_tarball": {
     "path": "release/evidence/bundle.tar",
-    "sha256": "4e4d36ebcc1a571a6b82e151f8d8936d52b378cf7fc912a9fe54fd4ef9aeab89"
+    "sha256": "40d672c4b945cdd98e5a8f49f70c53440f9cd4e1980f57c18f60df773542550d"
   },
   "generated_by": "bijux dev atlas ops evidence collect",
   "identity_path": "release/evidence/identity.json",
@@ -55,7 +55,12 @@
       "tag": ""
     }
   ],
+  "index_html": {
+    "path": "release/evidence/index.html",
+    "sha256": "96636104d2338a8517a16e7ab41c4190aa5c4579811ebf3b55bdb2070939cd9f"
+  },
   "policy_path": "release/evidence/policy.json",
+  "redacted_logs": [],
   "reports": [
     "ops/report/generated/historical-comparison.json",
     "ops/report/generated/readiness-score.json",
@@ -66,7 +71,33 @@
     "path": "configs/contracts/env.schema.json",
     "sha256": "2431dfc4f7499c4fe9efa57bb1703165cc7b174dda600076455dbbec46a35f1d"
   },
-  "sboms": [],
+  "sboms": [
+    {
+      "format": "spdx-json",
+      "image_ref": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "path": "release/evidence/sboms/perf.spdx.json",
+      "sha256": "aea04d4b6578931456f347cb751ec663f496ae4128bf27431dda797a6104d60f"
+    },
+    {
+      "format": "spdx-json",
+      "image_ref": "registry.airgap.local/bijux-atlas@sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "path": "release/evidence/sboms/prod-airgap.spdx.json",
+      "sha256": "41579a9557b0beae93bf1374baa1aafdc0fe22dcde09d67c65a92660e9c81da4"
+    },
+    {
+      "format": "spdx-json",
+      "image_ref": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "path": "release/evidence/sboms/prod-ha.spdx.json",
+      "sha256": "0275da35b50198a2192299a3ba0e10cbe7f2aaa45e63ac1bc697fe0e3e4561de"
+    },
+    {
+      "format": "spdx-json",
+      "image_ref": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "path": "release/evidence/sboms/prod-minimal.spdx.json",
+      "sha256": "4e17ea066f2acf11bb6c2fb47e516f6029d9c35a4e55c3650c4573bc59c3dc1b"
+    }
+  ],
+  "scan_reports": [],
   "schema_version": 1,
   "simulation_summaries": [],
   "toolchain_inventory": {

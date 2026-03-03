@@ -1,0 +1,32 @@
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "creationInfo": {
+    "created": "1970-01-01T00:00:00Z",
+    "creators": [
+      "Tool: bijux-dev-atlas release evidence"
+    ],
+    "licenseListVersion": "3.22"
+  },
+  "dataLicense": "CC0-1.0",
+  "documentNamespace": "https://bijux.dev/evidence/sbom/prod-minimal/sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "name": "bijux-atlas prod-minimal image evidence",
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-prod-minimal",
+      "downloadLocation": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "referenceType": "purl"
+        }
+      ],
+      "filesAnalyzed": false,
+      "name": "bijux-atlas-prod-minimal",
+      "primaryPackagePurpose": "CONTAINER",
+      "versionInfo": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+    }
+  ],
+  "relationships": [],
+  "spdxVersion": "SPDX-2.3"
+}

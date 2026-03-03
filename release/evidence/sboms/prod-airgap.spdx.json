@@ -1,0 +1,32 @@
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "creationInfo": {
+    "created": "1970-01-01T00:00:00Z",
+    "creators": [
+      "Tool: bijux-dev-atlas release evidence"
+    ],
+    "licenseListVersion": "3.22"
+  },
+  "dataLicense": "CC0-1.0",
+  "documentNamespace": "https://bijux.dev/evidence/sbom/prod-airgap/sha256:4444444444444444444444444444444444444444444444444444444444444444",
+  "name": "bijux-atlas prod-airgap image evidence",
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-prod-airgap",
+      "downloadLocation": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "registry.airgap.local/bijux-atlas@sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "referenceType": "purl"
+        }
+      ],
+      "filesAnalyzed": false,
+      "name": "bijux-atlas-prod-airgap",
+      "primaryPackagePurpose": "CONTAINER",
+      "versionInfo": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+    }
+  ],
+  "relationships": [],
+  "spdxVersion": "SPDX-2.3"
+}
