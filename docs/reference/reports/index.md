@@ -59,6 +59,9 @@
 - `bijux dev atlas artifacts report inventory --format json`
 - `bijux dev atlas artifacts report read --report-path docs/_internal/generated/closure-index.json --format json`
 - `bijux dev atlas artifacts report validate --reports-root docs/_internal/generated --format json`
+- `bijux-dev-atlas reports list --format json`
+- `bijux-dev-atlas reports index --format human`
+- `bijux-dev-atlas reports progress --format json`
 
 ## Consumption contract
 
