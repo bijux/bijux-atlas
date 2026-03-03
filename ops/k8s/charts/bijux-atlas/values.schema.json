@@ -416,6 +416,47 @@
       ],
       "type": "object"
     },
+    "autoscaling": {
+      "additionalProperties": false,
+      "description": "Deprecated alias for hpa. Prefer hpa for current chart values, but keep this validated for compatibility surfaces.",
+      "properties": {
+        "cpu": {
+          "additionalProperties": false,
+          "properties": {
+            "targetAverageUtilization": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "maxReplicas": {
+          "description": "Must be greater than or equal to autoscaling.minReplicas. Portable Helm JSON Schema cannot compare sibling integers, so callers must keep this bound coherent.",
+          "minimum": 1,
+          "type": "integer"
+        },
+        "memory": {
+          "additionalProperties": false,
+          "properties": {
+            "targetAverageUtilization": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        },
+        "minReplicas": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
     "cache": {
       "additionalProperties": false,
       "properties": {
@@ -841,6 +882,15 @@
         "enabled": {
           "type": "boolean"
         },
+        "path": {
+          "pattern": "^/",
+          "type": "string"
+        },
+        "port": {
+          "maximum": 65535,
+          "minimum": 1,
+          "type": "integer"
+        },
         "serviceMonitor": {
           "additionalProperties": false,
           "properties": {
@@ -1104,44 +1154,64 @@
         "liveness": {
           "additionalProperties": false,
           "properties": {
+            "failureThreshold": {
+              "maximum": 30,
+              "minimum": 1,
+              "type": "integer"
+            },
             "initialDelaySeconds": {
               "minimum": 0,
               "type": "integer"
             },
             "periodSeconds": {
+              "maximum": 3600,
               "minimum": 1,
               "type": "integer"
             }
           },
-          "required": [
-            "initialDelaySeconds",
-            "periodSeconds"
-          ],
           "type": "object"
         },
         "readiness": {
           "additionalProperties": false,
           "properties": {
+            "failureThreshold": {
+              "maximum": 30,
+              "minimum": 1,
+              "type": "integer"
+            },
             "initialDelaySeconds": {
               "minimum": 0,
               "type": "integer"
             },
             "periodSeconds": {
+              "maximum": 3600,
               "minimum": 1,
               "type": "integer"
             }
           },
-          "required": [
-            "initialDelaySeconds",
-            "periodSeconds"
-          ],
+          "type": "object"
+        },
+        "startup": {
+          "additionalProperties": false,
+          "properties": {
+            "failureThreshold": {
+              "maximum": 60,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "initialDelaySeconds": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "periodSeconds": {
+              "maximum": 3600,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
           "type": "object"
         }
       },
-      "required": [
-        "liveness",
-        "readiness"
-      ],
       "type": "object"
     },
     "replicaCount": {

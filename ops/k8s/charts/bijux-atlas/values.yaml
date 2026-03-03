@@ -6,6 +6,15 @@ image:
 
 replicaCount: 2
 
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 20
+  cpu:
+    targetAverageUtilization: 70
+  memory:
+    targetAverageUtilization: 80
+
 service:
   type: ClusterIP
   port: 8080
@@ -113,9 +122,15 @@ probes:
   readiness:
     initialDelaySeconds: 0
     periodSeconds: 5
+    failureThreshold: 3
   liveness:
     initialDelaySeconds: 0
     periodSeconds: 10
+    failureThreshold: 3
+  startup:
+    initialDelaySeconds: 0
+    periodSeconds: 5
+    failureThreshold: 12
 
 sequenceRateLimits:
   perIp:
@@ -185,6 +200,8 @@ serviceMonitor:
 
 metrics:
   enabled: true
+  path: /metrics
+  port: 8080
   serviceMonitor:
     enabled: true
     interval: 15s
