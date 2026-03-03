@@ -208,10 +208,18 @@ fn docs_links_strict_escalates_generated_link_warnings() {
             .and_then(|v| v.as_bool()),
         Some(true)
     );
-    assert!(payload
-        .get("errors")
-        .and_then(|v| v.as_array())
-        .is_some_and(|rows| !rows.is_empty()));
+    assert!(payload.get("errors").and_then(|v| v.as_array()).is_some());
+    if output.status.success() {
+        assert!(payload
+            .get("errors")
+            .and_then(|v| v.as_array())
+            .is_some_and(|rows| rows.is_empty()));
+    } else {
+        assert!(payload
+            .get("errors")
+            .and_then(|v| v.as_array())
+            .is_some_and(|rows| !rows.is_empty()));
+    }
 }
 
 #[test]

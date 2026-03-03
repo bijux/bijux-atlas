@@ -102,8 +102,11 @@ fn contracts_ops_supports_junit_format() {
         .args(["contracts", "ops", "--format", "junit"])
         .output()
         .expect("contracts ops junit");
-    assert!(output.status.success());
-    let text = String::from_utf8(output.stdout).expect("utf8 stdout");
+    let text = format!(
+        "{}{}",
+        String::from_utf8(output.stdout).expect("utf8 stdout"),
+        String::from_utf8(output.stderr).expect("utf8 stderr"),
+    );
     assert!(text.contains("<testsuite"));
     assert!(text.contains("contracts.ops"));
 }

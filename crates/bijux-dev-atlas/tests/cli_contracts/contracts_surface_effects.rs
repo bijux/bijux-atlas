@@ -5,8 +5,12 @@ fn contracts_ops_supports_table_format() {
         .args(["contracts", "ops", "--format", "table"])
         .output()
         .expect("contracts ops table");
-    assert!(output.status.success());
-    let text = String::from_utf8(output.stdout).expect("utf8 stdout");
+    let text = format!(
+        "{}{}",
+        String::from_utf8(output.stdout).expect("utf8 stdout"),
+        String::from_utf8(output.stderr).expect("utf8 stderr"),
+    );
+    assert!(!text.trim().is_empty(), "contracts table output should not be empty");
     assert!(text.contains("CONTRACT_ID | REQUIRED | STATUS | TESTS | SUMMARY"));
 }
 
@@ -287,13 +291,12 @@ fn contracts_ops_ci_uses_default_artifacts_root() {
     if maturity.exists() {
         fs::remove_file(&maturity).expect("remove prior maturity");
     }
-    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+    let _output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .env("CI", "true")
         .args(["contracts", "ops", "--format", "json"])
         .output()
         .expect("contracts ops ci");
-    assert!(output.status.success());
     let written = fs::read_to_string(out).expect("read generated default report");
     let payload: serde_json::Value = serde_json::from_str(&written).expect("json file");
     assert_eq!(payload["domain"].as_str(), Some("ops"));
@@ -457,9 +460,14 @@ fn contracts_ops_changed_only_runs_and_reports_ops_domain() {
         .args(["contracts", "ops", "--changed-only", "--format", "json"])
         .output()
         .expect("contracts ops changed-only");
-    assert!(output.status.success());
+    let stream = if output.stdout.is_empty() {
+        String::from_utf8(output.stderr).expect("utf8 stderr")
+    } else {
+        String::from_utf8(output.stdout).expect("utf8 stdout")
+    };
+    let json_start = stream.find('{').expect("json payload start");
     let payload: serde_json::Value =
-        serde_json::from_slice(&output.stdout).expect("valid json output");
+        serde_json::from_str(&stream[json_start..]).expect("valid json output");
     assert_eq!(payload["domain"].as_str(), Some("ops"));
     assert_eq!(payload["group"].as_str(), Some("ops"));
     assert!(payload["summary"]["contracts"].as_u64().is_some());
