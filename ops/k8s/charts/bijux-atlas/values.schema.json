@@ -316,6 +316,33 @@
       }
     },
     {
+      "if": {
+        "properties": {
+          "store": {
+            "properties": {
+              "backend": {
+                "const": "s3"
+              }
+            },
+            "required": [
+              "backend"
+            ],
+            "type": "object"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "store": {
+            "required": [
+              "s3"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
       "description": "Exactly one image selector must be set: use a digest for immutable deploys or a tag for mutable/dev flows, never both.",
       "oneOf": [
         {
@@ -450,6 +477,48 @@
         },
         "readinessRequiresCatalog": {
           "type": "boolean"
+        },
+        "warmup": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "lockTtlSeconds": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "retry": {
+              "additionalProperties": false,
+              "properties": {
+                "baseDelayMs": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "maxAttempts": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "maxDelayMs": {
+                  "description": "Must be greater than or equal to cache.warmup.retry.baseDelayMs. Portable JSON Schema cannot compare sibling integers, so callers must keep this bound coherent.",
+                  "minimum": 1,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "maxAttempts",
+                "baseDelayMs",
+                "maxDelayMs"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "enabled",
+            "lockTtlSeconds",
+            "retry"
+          ],
+          "type": "object"
         },
         "startupWarmupJitterMaxMs": {
           "minimum": 0,
@@ -1419,6 +1488,15 @@
     "store": {
       "additionalProperties": false,
       "properties": {
+        "backend": {
+          "enum": [
+            "local",
+            "s3",
+            "http",
+            "federated"
+          ],
+          "type": "string"
+        },
         "credentialsSecretName": {
           "type": "string"
         },
@@ -1426,8 +1504,61 @@
           "pattern": "^(|https?://.+)$",
           "type": "string"
         },
+        "http": {
+          "additionalProperties": false,
+          "properties": {
+            "baseUrl": {
+              "pattern": "^(|https?://.+)$",
+              "type": "string"
+            },
+            "timeoutMs": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        },
+        "local": {
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "pattern": "^/",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
         "manageCredentialsSecret": {
           "type": "boolean"
+        },
+        "s3": {
+          "additionalProperties": false,
+          "properties": {
+            "bucket": {
+              "type": "string"
+            },
+            "credentials": {
+              "additionalProperties": false,
+              "properties": {
+                "fromSecret": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "endpoint": {
+              "pattern": "^(|https?://.+)$",
+              "type": "string"
+            },
+            "pathStyle": {
+              "type": "boolean"
+            },
+            "region": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "type": "object"
         },
         "s3PresignedBaseUrl": {
           "pattern": "^(|https?://.+)$",
@@ -1435,6 +1566,7 @@
         }
       },
       "required": [
+        "backend",
         "endpoint",
         "s3PresignedBaseUrl",
         "credentialsSecretName",
