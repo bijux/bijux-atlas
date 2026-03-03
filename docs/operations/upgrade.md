@@ -17,9 +17,11 @@ last_reviewed: 2026-03-03
 - Last changed: `2026-03-03`
 - Reason to exist: define the kind-backed lifecycle validation path for upgrade and rollback simulations.
 
+Related ops contracts: `OPS-ROOT-023`, `OPS-LIFE-001`.
+
 ## Prereqs
 
-- Create or reuse the kind simulation cluster with `bijux dev atlas ops kind up`.
+- Create or reuse the kind simulation cluster with `bijux-dev-atlas ops kind up`.
 - Keep the previous chart package at `artifacts/ops/chart-sources/previous/bijux-atlas.tgz`.
 - Use a governed profile such as `profile-baseline`, `ci`, `offline`, or `perf`.
 - Treat the simulation environment as offline by default; do not rely on external network unless a command explicitly requires it.
@@ -27,9 +29,9 @@ last_reviewed: 2026-03-03
 ## Install
 
 ```bash
-bijux dev atlas ops helm install --profile profile-baseline --cluster kind --chart-source previous --allow-subprocess --allow-write --allow-network --format json
-bijux dev atlas ops helm upgrade --profile profile-baseline --cluster kind --to current --allow-subprocess --allow-write --allow-network --format json
-bijux dev atlas ops helm rollback --profile profile-baseline --cluster kind --to previous --allow-subprocess --allow-write --allow-network --format json
+bijux-dev-atlas ops helm install --profile profile-baseline --cluster kind --chart-source previous --allow-subprocess --allow-write --allow-network --format json
+bijux-dev-atlas ops helm upgrade --profile profile-baseline --cluster kind --to current --allow-subprocess --allow-write --allow-network --format json
+bijux-dev-atlas ops helm rollback --profile profile-baseline --cluster kind --to previous --allow-subprocess --allow-write --allow-network --format json
 ```
 
 ## Verify
@@ -42,11 +44,7 @@ bijux dev atlas ops helm rollback --profile profile-baseline --cluster kind --to
 
 ## Render Summary Table
 
-```bash
-python3 scripts/docs/generate_lifecycle_summary_table.py \
-  --input artifacts/ops/<run_id>/reports/ops-lifecycle-summary.json \
-  --output artifacts/docs/generated/ops-lifecycle-summary-table.md
-```
+Use `bijux-dev-atlas docs lifecycle-summary-table --input artifacts/ops/<run_id>/reports/ops-lifecycle-summary.json --output artifacts/docs/generated/ops-lifecycle-summary-table.md`.
 
 ## Rollback
 

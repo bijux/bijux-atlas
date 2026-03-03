@@ -1,6 +1,5 @@
 replicaCount: 3
 
-server:
 networkPolicy:
   enabled: true
   allowDns: true

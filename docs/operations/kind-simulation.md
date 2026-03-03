@@ -27,8 +27,8 @@ last_reviewed: 2026-03-03
 
 ```bash
 make kind-up
-bijux dev atlas ops helm install --profile profile-baseline --cluster kind --allow-subprocess --allow-write --allow-network --format json
-bijux dev atlas ops smoke --profile profile-baseline --cluster kind --allow-subprocess --allow-write --allow-network --format json
+bijux-dev-atlas ops helm install --profile profile-baseline --cluster kind --allow-subprocess --allow-write --allow-network --format json
+bijux-dev-atlas ops smoke --profile profile-baseline --cluster kind --allow-subprocess --allow-write --allow-network --format json
 ```
 
 ## Verify
@@ -45,5 +45,5 @@ bijux dev atlas ops smoke --profile profile-baseline --cluster kind --allow-subp
 
 ## Rollback
 
-- Run `bijux dev atlas ops helm uninstall --profile <name> --cluster kind --allow-subprocess --allow-write --allow-network --format json`.
+- Run `bijux-dev-atlas ops helm uninstall --profile <name> --cluster kind --allow-subprocess --allow-write --allow-network --format json`.
 - If the cluster itself is unhealthy, run `make kind-reset`.

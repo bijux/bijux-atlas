@@ -8,6 +8,8 @@
 - Last changed: `2026-03-03`
 - Reason to exist: define the only supported way to add or replace governed dataset inputs.
 
+Related ops contracts: `OPS-ROOT-023`, `DATA-001`.
+
 ## Prereqs
 
 - Confirm the source files are available locally and do not require live network fetches during review.

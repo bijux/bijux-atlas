@@ -9,6 +9,8 @@
 This guide explains how to read the governed release evidence without relying on internal build
 context.
 
+Related ops contracts: `OPS-ROOT-023`, `REL-PACK-001`.
+
 ## Review Order
 
 1. Read `release/evidence/identity.json` for release identity and governance version.

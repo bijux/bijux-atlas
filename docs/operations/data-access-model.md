@@ -2,11 +2,13 @@
 
 - Owner: `bijux-atlas-data`
 - Type: `concept`
-- Audience: `institutional-reader`
+- Audience: `reviewers`
 - Stability: `stable`
 - Last verified against: `main@522431fd5e6376d1fdc88f630ae5d334612ca8d2`
 - Last changed: `2026-03-03`
 - Reason to exist: describe who may access dataset sources and derived artifacts.
+
+Related ops contracts: `OPS-ROOT-023`, `REL-DATA-001`.
 
 ## Access Rules
 

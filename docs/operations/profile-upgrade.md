@@ -7,6 +7,8 @@
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: describe how to change a Kubernetes profile without silently changing its intent.
 
+Related ops contracts: `OPS-ROOT-023`, `OPS-LIFE-001`.
+
 ## Prereqs
 
 - Compare the target overlay with `ops/k8s/values/profile-baseline.yaml`.

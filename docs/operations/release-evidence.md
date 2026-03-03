@@ -17,6 +17,8 @@ last_reviewed: 2026-03-03
 - Last changed: `2026-03-03`
 - Reason to exist: define how release evidence is generated, verified, and reviewed.
 
+Related ops contracts: `OPS-ROOT-023`, `REL-EVID-001`.
+
 ## Prereqs
 
 - A clean working tree for the files you intend to package.

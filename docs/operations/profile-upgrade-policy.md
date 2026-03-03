@@ -16,6 +16,8 @@ last_reviewed: 2026-03-03
 - Last verified against: `main@3af24f78bdf0be1507efa8651298c45b68fa9e1e`
 - Reason to exist: define when governed install profiles may change and what proof is required.
 
+Related ops contracts: `OPS-ROOT-023`, `OPS-LIFE-001`.
+
 ## Rules
 
 - A profile may change only when `profiles.json`, the values overlay, and rollout-safety metadata stay aligned.

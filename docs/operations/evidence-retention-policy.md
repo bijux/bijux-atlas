@@ -17,6 +17,8 @@ last_reviewed: 2026-03-03
 - Last changed: `2026-03-03`
 - Reason to exist: define how long release evidence must be retained and what can be pruned.
 
+Related ops contracts: `OPS-ROOT-023`, `REL-EVID-005`.
+
 ## Retention Rules
 
 - Keep release-candidate evidence until the candidate is either promoted or rejected.

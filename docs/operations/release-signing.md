@@ -8,6 +8,8 @@
 - Last changed: `2026-03-03`
 - Reason to exist: define how release integrity artifacts are generated and how consumers verify them offline.
 
+Related ops contracts: `OPS-ROOT-023`, `REL-SIGN-001`.
+
 ## Prereqs
 
 - A freshly generated evidence bundle under `release/evidence/`

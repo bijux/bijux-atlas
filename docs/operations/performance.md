@@ -9,6 +9,8 @@
 This runbook defines the governed performance evidence surface for Atlas: SLO targets, local load
 checks, cold-start timing, regression comparison, and the kind-backed perf validation gate.
 
+Related ops contracts: `OPS-ROOT-023`, `PERF-KIND-001`.
+
 ## Governing Sources
 
 - `configs/perf/slo.yaml`
@@ -16,7 +18,7 @@ checks, cold-start timing, regression comparison, and the kind-backed perf valid
 - `configs/perf/benches.json`
 - `configs/perf/exceptions.json`
 - `ops/_benchmarks/gene-lookup-baseline.json`
-- `tools/perf/gene-lookup.json`
+- `the committed gene-lookup scenario definition under the perf harness inputs`
 
 ## Reproducibility Rules
 

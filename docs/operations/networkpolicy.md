@@ -7,6 +7,8 @@
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: define the canonical Atlas NetworkPolicy modes and the namespace contract they rely on.
 
+Related ops contracts: `OPS-ROOT-023`, `OPS-K8S-001`.
+
 ## Purpose
 
 Use one explicit NetworkPolicy model for Atlas so operators can reason about what traffic is

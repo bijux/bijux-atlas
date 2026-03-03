@@ -2,7 +2,7 @@
 
 - Owner: `bijux-atlas-operations`
 - Type: `reference`
-- Audience: `institutional-reader`
+- Audience: `reviewers`
 - Stability: `stable`
 - Last verified against: `main@93ad533e5a4c4704f3a344db96b083570bb4d4b0`
 - Reason to exist: list the exact evidence files to hand to an external reviewer.

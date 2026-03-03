@@ -3,7 +3,7 @@
 - Owner: `docs-governance`
 - Review cadence: `quarterly`
 - Type: `guide`
-- Audience: `reader`
+- Audience: `reviewers`
 - Stability: `stable`
 - Last verified against: `main@a10951a3e4e65b3b9be3bb67b16b4dc16a6d5287`
 - Last changed: `2026-03-03`

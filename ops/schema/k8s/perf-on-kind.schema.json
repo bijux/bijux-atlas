@@ -1,8 +1,40 @@
 {
+  "$id": "ops/schema/k8s/perf-on-kind.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Performance On Kind Report",
-  "type": "object",
   "additionalProperties": false,
+  "properties": {
+    "contracts": {
+      "additionalProperties": false,
+      "properties": {
+        "PERF-KIND-001": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "PERF-KIND-001"
+      ],
+      "type": "object"
+    },
+    "kind_status": {
+      "enum": [
+        "reachable",
+        "unreachable"
+      ],
+      "type": "string"
+    },
+    "load_report_path": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "profile": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    }
+  },
   "required": [
     "schema_version",
     "profile",
@@ -10,37 +42,6 @@
     "load_report_path",
     "contracts"
   ],
-  "properties": {
-    "schema_version": {
-      "type": "integer",
-      "const": 1
-    },
-    "profile": {
-      "type": "string",
-      "minLength": 1
-    },
-    "kind_status": {
-      "type": "string",
-      "enum": [
-        "reachable",
-        "unreachable"
-      ]
-    },
-    "load_report_path": {
-      "type": "string",
-      "minLength": 1
-    },
-    "contracts": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "PERF-KIND-001"
-      ],
-      "properties": {
-        "PERF-KIND-001": {
-          "type": "boolean"
-        }
-      }
-    }
-  }
+  "title": "Performance On Kind Report",
+  "type": "object"
 }

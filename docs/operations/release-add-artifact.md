@@ -8,6 +8,8 @@
 - Last changed: `2026-03-03`
 - Reason to exist: describe the governed process for adding a new artifact to the release evidence set.
 
+Related ops contracts: `OPS-ROOT-023`, `REL-EVID-005`.
+
 ## Prereqs
 
 - A clear justification for why the artifact is required for release review

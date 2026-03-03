@@ -1,48 +1,16 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "bijux-atlas chart values",
-  "description": "Strict allowlist for supported Helm values. Unknown top-level keys are rejected so chart profiles fail fast when they drift from the published contract.",
-  "type": "object",
-  "additionalProperties": false,
   "$defs": {
-    "k8sQuantity": {
-      "type": "string",
-      "pattern": "^[0-9]+(?:\\.[0-9]+)?(?:[eEinumkKMGTP]+i?)?$"
-    },
-    "dnsLabel": {
-      "type": "string",
-      "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
-    },
-    "dnsName": {
-      "type": "string",
-      "pattern": "^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$"
-    },
     "cidr": {
-      "type": "string",
-      "pattern": "^(?:\\d{1,3}\\.){3}\\d{1,3}/\\d{1,2}$"
-    },
-    "duration": {
-      "type": "string",
-      "pattern": "^[0-9]+(?:ms|s|m|h)$"
-    },
-    "stringMap": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      }
+      "pattern": "^(?:\\d{1,3}\\.){3}\\d{1,3}/\\d{1,2}$",
+      "type": "string"
     },
     "containerSecurityContext": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
         "allowPrivilegeEscalation": {
           "const": false
         },
-        "readOnlyRootFilesystem": {
-          "const": true
-        },
         "capabilities": {
-          "type": "object",
           "additionalProperties": false,
           "properties": {
             "drop": {
@@ -53,22 +21,50 @@
           },
           "required": [
             "drop"
-          ]
+          ],
+          "type": "object"
+        },
+        "readOnlyRootFilesystem": {
+          "const": true
         }
       },
       "required": [
         "allowPrivilegeEscalation",
         "readOnlyRootFilesystem",
         "capabilities"
-      ]
+      ],
+      "type": "object"
+    },
+    "dnsLabel": {
+      "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+      "type": "string"
+    },
+    "dnsName": {
+      "pattern": "^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$",
+      "type": "string"
+    },
+    "duration": {
+      "pattern": "^[0-9]+(?:ms|s|m|h)$",
+      "type": "string"
+    },
+    "k8sQuantity": {
+      "pattern": "^[0-9]+(?:\\.[0-9]+)?(?:[eEinumkKMGTP]+i?)?$",
+      "type": "string"
+    },
+    "stringMap": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "type": "object"
     }
   },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
   "allOf": [
     {
       "if": {
         "properties": {
           "cache": {
-            "type": "object",
             "properties": {
               "cachedOnlyMode": {
                 "const": true
@@ -76,19 +72,20 @@
             },
             "required": [
               "cachedOnlyMode"
-            ]
+            ],
+            "type": "object"
           }
         }
       },
       "then": {
         "properties": {
           "cache": {
-            "type": "object",
             "properties": {
               "readinessRequiresCatalog": {
                 "const": false
               }
-            }
+            },
+            "type": "object"
           }
         }
       }
@@ -97,10 +94,8 @@
       "if": {
         "properties": {
           "cache": {
-            "type": "object",
             "properties": {
               "initPrewarm": {
-                "type": "object",
                 "properties": {
                   "enabled": {
                     "const": true
@@ -108,28 +103,30 @@
                 },
                 "required": [
                   "enabled"
-                ]
+                ],
+                "type": "object"
               }
             },
             "required": [
               "initPrewarm"
-            ]
+            ],
+            "type": "object"
           }
         }
       },
       "then": {
         "properties": {
           "cache": {
-            "type": "object",
             "properties": {
               "pinnedDatasets": {
-                "type": "array",
-                "minItems": 1
+                "minItems": 1,
+                "type": "array"
               }
             },
             "required": [
               "pinnedDatasets"
-            ]
+            ],
+            "type": "object"
           }
         }
       }
@@ -138,10 +135,8 @@
       "if": {
         "properties": {
           "networkPolicy": {
-            "type": "object",
             "properties": {
               "egress": {
-                "type": "object",
                 "properties": {
                   "mode": {
                     "const": "cluster-aware"
@@ -149,33 +144,35 @@
                 },
                 "required": [
                   "mode"
-                ]
+                ],
+                "type": "object"
               }
             },
             "required": [
               "egress"
-            ]
+            ],
+            "type": "object"
           }
         }
       },
       "then": {
         "properties": {
           "networkPolicy": {
-            "type": "object",
             "properties": {
               "egress": {
-                "type": "object",
                 "properties": {
                   "allowNamespaces": {
-                    "type": "array",
-                    "minItems": 1
+                    "minItems": 1,
+                    "type": "array"
                   }
                 },
                 "required": [
                   "allowNamespaces"
-                ]
+                ],
+                "type": "object"
               }
-            }
+            },
+            "type": "object"
           }
         }
       }
@@ -184,10 +181,8 @@
       "if": {
         "properties": {
           "networkPolicy": {
-            "type": "object",
             "properties": {
               "ingress": {
-                "type": "object",
                 "properties": {
                   "mode": {
                     "const": "selected"
@@ -195,33 +190,35 @@
                 },
                 "required": [
                   "mode"
-                ]
+                ],
+                "type": "object"
               }
             },
             "required": [
               "ingress"
-            ]
+            ],
+            "type": "object"
           }
         }
       },
       "then": {
         "properties": {
           "networkPolicy": {
-            "type": "object",
             "properties": {
               "ingress": {
-                "type": "object",
                 "properties": {
                   "allowNamespaces": {
-                    "type": "array",
-                    "minItems": 1
+                    "minItems": 1,
+                    "type": "array"
                   }
                 },
                 "required": [
                   "allowNamespaces"
-                ]
+                ],
+                "type": "object"
               }
-            }
+            },
+            "type": "object"
           }
         }
       }
@@ -230,10 +227,8 @@
       "if": {
         "properties": {
           "networkPolicy": {
-            "type": "object",
             "properties": {
               "egress": {
-                "type": "object",
                 "properties": {
                   "mode": {
                     "const": "custom"
@@ -241,33 +236,35 @@
                 },
                 "required": [
                   "mode"
-                ]
+                ],
+                "type": "object"
               }
             },
             "required": [
               "egress"
-            ]
+            ],
+            "type": "object"
           }
         }
       },
       "then": {
         "properties": {
           "networkPolicy": {
-            "type": "object",
             "properties": {
               "egress": {
-                "type": "object",
                 "properties": {
                   "customRules": {
-                    "type": "array",
-                    "minItems": 1
+                    "minItems": 1,
+                    "type": "array"
                   }
                 },
                 "required": [
                   "customRules"
-                ]
+                ],
+                "type": "object"
               }
-            }
+            },
+            "type": "object"
           }
         }
       }
@@ -276,10 +273,8 @@
       "if": {
         "properties": {
           "networkPolicy": {
-            "type": "object",
             "properties": {
               "ingress": {
-                "type": "object",
                 "properties": {
                   "mode": {
                     "const": "custom"
@@ -287,33 +282,35 @@
                 },
                 "required": [
                   "mode"
-                ]
+                ],
+                "type": "object"
               }
             },
             "required": [
               "ingress"
-            ]
+            ],
+            "type": "object"
           }
         }
       },
       "then": {
         "properties": {
           "networkPolicy": {
-            "type": "object",
             "properties": {
               "ingress": {
-                "type": "object",
                 "properties": {
                   "customRules": {
-                    "type": "array",
-                    "minItems": 1
+                    "minItems": 1,
+                    "type": "array"
                   }
                 },
                 "required": [
                   "customRules"
-                ]
+                ],
+                "type": "object"
               }
-            }
+            },
+            "type": "object"
           }
         }
       }
@@ -324,112 +321,115 @@
         {
           "properties": {
             "image": {
-              "type": "object",
               "properties": {
                 "digest": {
-                  "type": "string",
-                  "pattern": "^sha256:[a-f0-9]{64}$"
+                  "pattern": "^sha256:[a-f0-9]{64}$",
+                  "type": "string"
                 },
                 "tag": {
-                  "type": "string",
-                  "maxLength": 0
+                  "maxLength": 0,
+                  "type": "string"
                 }
               },
               "required": [
                 "digest",
                 "tag"
-              ]
+              ],
+              "type": "object"
             }
           }
         },
         {
           "properties": {
             "image": {
-              "type": "object",
               "properties": {
                 "digest": {
-                  "type": "string",
-                  "maxLength": 0
+                  "maxLength": 0,
+                  "type": "string"
                 },
                 "tag": {
-                  "type": "string",
                   "minLength": 1,
-                  "pattern": "^(?!latest$)[A-Za-z0-9_][A-Za-z0-9._-]{0,127}$"
+                  "not": {
+                    "const": "latest"
+                  },
+                  "pattern": "^[A-Za-z0-9_][A-Za-z0-9._-]{0,127}$",
+                  "type": "string"
                 }
               },
               "required": [
                 "digest",
                 "tag"
-              ]
+              ],
+              "type": "object"
             }
           }
         }
       ]
     }
   ],
+  "description": "Strict allowlist for supported Helm values. Unknown top-level keys are rejected so chart profiles fail fast when they drift from the published contract.",
   "properties": {
     "affinity": {
       "type": "object"
     },
     "alertRules": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
         "enabled": {
           "type": "boolean"
         },
         "runbookUrlBase": {
-          "type": "string",
-          "pattern": "^https?://.+"
+          "pattern": "^https?://.+",
+          "type": "string"
         }
       },
       "required": [
         "enabled",
         "runbookUrlBase"
-      ]
+      ],
+      "type": "object"
     },
     "cache": {
-      "type": "object",
       "additionalProperties": true,
       "properties": {
         "cachedOnlyMode": {
           "type": "boolean"
         },
         "initPrewarm": {
-          "type": "object",
-          "additionalProperties": true
+          "additionalProperties": true,
+          "type": "object"
         },
         "pinnedDatasets": {
-          "type": "array",
           "items": {
-            "type": "string",
-            "minLength": 1
-          }
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
         },
         "readinessRequiresCatalog": {
           "type": "boolean"
         }
-      }
+      },
+      "type": "object"
     },
     "catalog": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
         "backoffBaseMs": {
-          "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "type": "integer"
         },
         "breakerFailureThreshold": {
-          "type": "integer",
-          "minimum": 1
+          "minimum": 1,
+          "type": "integer"
         },
         "breakerOpenMs": {
-          "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "type": "integer"
         },
         "endpoint": {
-          "type": "string",
-          "pattern": "^(|https?://.+)$"
+          "pattern": "^(|https?://.+)$",
+          "type": "string"
         },
         "etagEnabled": {
           "type": "boolean"
@@ -441,30 +441,31 @@
         "backoffBaseMs",
         "breakerFailureThreshold",
         "breakerOpenMs"
-      ]
+      ],
+      "type": "object"
     },
     "catalogPublishJob": {
       "type": "object"
     },
     "config": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
         "baseUrl": {
-          "type": "string",
-          "format": "uri"
+          "format": "uri",
+          "type": "string"
         },
         "logLevel": {
-          "type": "string",
           "enum": [
             "trace",
             "debug",
             "info",
             "warn",
             "error"
-          ]
+          ],
+          "type": "string"
         }
-      }
+      },
+      "type": "object"
     },
     "containerSecurityContext": {
       "$ref": "#/$defs/containerSecurityContext"
@@ -473,70 +474,69 @@
       "type": "object"
     },
     "env": {
-      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
       "propertyNames": {
         "pattern": "^[A-Z0-9_]+$"
       },
-      "additionalProperties": {
-        "type": "string"
-      }
+      "type": "object"
     },
     "extraEnv": {
       "type": "array"
     },
     "hpa": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
         "behavior": {
           "type": "object"
         },
         "cpu": {
-          "type": "object",
           "additionalProperties": false,
           "properties": {
             "targetAverageUtilization": {
-              "type": "integer",
+              "maximum": 100,
               "minimum": 1,
-              "maximum": 100
+              "type": "integer"
             }
-          }
+          },
+          "type": "object"
         },
         "cpuUtilization": {
-          "type": "integer",
+          "maximum": 100,
           "minimum": 1,
-          "maximum": 100
+          "type": "integer"
         },
         "enabled": {
           "type": "boolean"
         },
         "heavyInflightAverageValue": {
-          "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "type": "string"
         },
         "maxReplicas": {
-          "type": "integer",
+          "description": "Must be greater than or equal to hpa.minReplicas. Portable Helm JSON Schema cannot compare sibling integers, so the chart enforces this relation during template rendering.",
           "minimum": 1,
-          "description": "Must be greater than or equal to hpa.minReplicas. Portable Helm JSON Schema cannot compare sibling integers, so the chart enforces this relation during template rendering."
+          "type": "integer"
         },
         "memory": {
-          "type": "object",
           "additionalProperties": false,
           "properties": {
             "targetAverageUtilization": {
-              "type": "integer",
+              "maximum": 100,
               "minimum": 1,
-              "maximum": 100
+              "type": "integer"
             }
-          }
+          },
+          "type": "object"
         },
         "minReplicas": {
-          "type": "integer",
-          "minimum": 1
+          "minimum": 1,
+          "type": "integer"
         },
         "p95LatencySeconds": {
-          "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "type": "string"
         }
       },
       "required": [
@@ -547,35 +547,38 @@
         "p95LatencySeconds",
         "heavyInflightAverageValue",
         "behavior"
-      ]
+      ],
+      "type": "object"
     },
     "image": {
-      "type": "object",
       "additionalProperties": false,
       "description": "Set exactly one of image.digest or image.tag. Digest is preferred for immutable production rollouts.",
       "properties": {
         "digest": {
-          "type": "string",
-          "pattern": "^$|^sha256:[a-f0-9]{64}$"
+          "pattern": "^$|^sha256:[a-f0-9]{64}$",
+          "type": "string"
         },
         "pullPolicy": {
-          "type": "string",
           "enum": [
             "Always",
             "IfNotPresent",
             "Never"
-          ]
+          ],
+          "type": "string"
         },
         "repository": {
-          "type": "string",
           "minLength": 1,
           "not": {
             "pattern": "@"
-          }
+          },
+          "type": "string"
         },
         "tag": {
-          "type": "string",
-          "pattern": "^$|^(?!latest$)[A-Za-z0-9_][A-Za-z0-9._-]{0,127}$"
+          "not": {
+            "const": "latest"
+          },
+          "pattern": "^$|^[A-Za-z0-9_][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
         }
       },
       "required": [
@@ -583,10 +586,10 @@
         "tag",
         "digest",
         "pullPolicy"
-      ]
+      ],
+      "type": "object"
     },
     "ingress": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
         "className": {
@@ -596,66 +599,66 @@
           "type": "boolean"
         },
         "host": {
-          "type": "string",
-          "pattern": "^$|^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$"
+          "pattern": "^$|^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$",
+          "type": "string"
         },
         "hosts": {
-          "type": "array",
           "items": {
-            "type": "object",
             "additionalProperties": false,
             "properties": {
               "host": {
                 "$ref": "#/$defs/dnsName"
               },
               "paths": {
-                "type": "array",
                 "items": {
-                  "type": "object",
                   "additionalProperties": false,
                   "properties": {
                     "path": {
-                      "type": "string",
-                      "pattern": "^/"
+                      "pattern": "^/",
+                      "type": "string"
                     }
                   },
                   "required": [
                     "path"
-                  ]
-                }
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               }
             },
             "required": [
               "host",
               "paths"
-            ]
-          }
+            ],
+            "type": "object"
+          },
+          "type": "array"
         },
         "path": {
-          "type": "string",
-          "pattern": "^/"
+          "pattern": "^/",
+          "type": "string"
         },
         "tls": {
-          "type": "array",
           "items": {
-            "type": "object",
             "additionalProperties": false,
             "properties": {
               "hosts": {
-                "type": "array",
                 "items": {
                   "$ref": "#/$defs/dnsName"
-                }
+                },
+                "type": "array"
               },
               "secretName": {
-                "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "type": "string"
               }
             },
             "required": [
               "secretName"
-            ]
-          }
+            ],
+            "type": "object"
+          },
+          "type": "array"
         }
       },
       "required": [
@@ -663,50 +666,49 @@
         "className",
         "host",
         "path"
-      ]
+      ],
+      "type": "object"
     },
     "metrics": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
         "customMetrics": {
-          "type": "object",
           "additionalProperties": false,
           "properties": {
             "enabled": {
               "type": "boolean"
             },
             "requiredPodAnnotations": {
-              "type": "object",
               "additionalProperties": {
                 "type": "string"
               },
               "properties": {
                 "prometheus.io/path": {
-                  "type": "string",
-                  "minLength": 1
+                  "minLength": 1,
+                  "type": "string"
                 },
                 "prometheus.io/scrape": {
-                  "type": "string",
-                  "minLength": 1
+                  "minLength": 1,
+                  "type": "string"
                 }
               },
               "required": [
                 "prometheus.io/scrape",
                 "prometheus.io/path"
-              ]
+              ],
+              "type": "object"
             }
           },
           "required": [
             "enabled",
             "requiredPodAnnotations"
-          ]
+          ],
+          "type": "object"
+        },
+        "enabled": {
+          "type": "boolean"
         },
         "serviceMonitor": {
-          "type": "object",
           "additionalProperties": false,
           "properties": {
             "enabled": {
@@ -727,106 +729,119 @@
             "interval",
             "scrapeTimeout",
             "labels"
-          ]
+          ],
+          "type": "object"
         }
       },
       "required": [
         "enabled",
         "customMetrics",
         "serviceMonitor"
-      ]
+      ],
+      "type": "object"
     },
     "networkPolicy": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
+        "allowDns": {
+          "type": "boolean"
+        },
+        "allowMonitoringNamespace": {
+          "pattern": "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+          "type": "string"
+        },
+        "allowedEgressCIDRs": {
+          "items": {
+            "$ref": "#/$defs/cidr"
+          },
+          "type": "array"
+        },
         "dependencies": {
-          "type": "object",
           "additionalProperties": false,
           "properties": {
             "catalog": {
-              "type": "object",
               "additionalProperties": false,
               "properties": {
                 "enabled": {
                   "type": "boolean"
                 },
                 "ports": {
-                  "type": "array",
                   "items": {
-                    "type": "integer",
+                    "maximum": 65535,
                     "minimum": 1,
-                    "maximum": 65535
-                  }
+                    "type": "integer"
+                  },
+                  "type": "array"
                 }
               },
               "required": [
                 "enabled",
                 "ports"
-              ]
+              ],
+              "type": "object"
             },
             "minio": {
-              "type": "object",
               "additionalProperties": false,
               "properties": {
                 "enabled": {
                   "type": "boolean"
                 },
                 "ports": {
-                  "type": "array",
                   "items": {
-                    "type": "integer",
+                    "maximum": 65535,
                     "minimum": 1,
-                    "maximum": 65535
-                  }
+                    "type": "integer"
+                  },
+                  "type": "array"
                 }
               },
               "required": [
                 "enabled",
                 "ports"
-              ]
+              ],
+              "type": "object"
             },
             "otelCollector": {
-              "type": "object",
               "additionalProperties": false,
               "properties": {
                 "enabled": {
                   "type": "boolean"
                 },
                 "ports": {
-                  "type": "array",
                   "items": {
-                    "type": "integer",
+                    "maximum": 65535,
                     "minimum": 1,
-                    "maximum": 65535
-                  }
+                    "type": "integer"
+                  },
+                  "type": "array"
                 }
               },
               "required": [
                 "enabled",
                 "ports"
-              ]
+              ],
+              "type": "object"
             },
             "redis": {
-              "type": "object",
               "additionalProperties": false,
               "properties": {
                 "enabled": {
                   "type": "boolean"
                 },
                 "ports": {
-                  "type": "array",
                   "items": {
-                    "type": "integer",
+                    "maximum": 65535,
                     "minimum": 1,
-                    "maximum": 65535
-                  }
+                    "type": "integer"
+                  },
+                  "type": "array"
                 }
               },
               "required": [
                 "enabled",
                 "ports"
-              ]
+              ],
+              "type": "object"
             }
           },
           "required": [
@@ -834,86 +849,74 @@
             "minio",
             "catalog",
             "otelCollector"
-          ]
-        },
-        "allowDns": {
-          "type": "boolean"
-        },
-        "allowMonitoringNamespace": {
-          "type": "string",
-          "pattern": "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
-        },
-        "allowedEgressCIDRs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/cidr"
-          }
+          ],
+          "type": "object"
         },
         "egress": {
-          "type": "object",
           "additionalProperties": false,
           "properties": {
             "allowCidrs": {
-              "type": "array",
               "items": {
                 "$ref": "#/$defs/cidr"
-              }
+              },
+              "type": "array"
             },
             "allowDns": {
               "type": "boolean"
             },
             "allowNamespaces": {
-              "type": "array",
               "items": {
                 "$ref": "#/$defs/dnsLabel"
-              }
+              },
+              "type": "array"
             },
             "customRules": {
-              "type": "array",
               "items": {
                 "type": "object"
-              }
+              },
+              "type": "array"
             },
             "mode": {
-              "type": "string",
               "enum": [
                 "disabled",
                 "internet-only",
                 "cluster-aware",
                 "custom"
-              ]
+              ],
+              "type": "string"
             }
-          }
+          },
+          "type": "object"
         },
         "enabled": {
           "type": "boolean"
         },
         "ingress": {
-          "type": "object",
           "additionalProperties": false,
           "properties": {
             "allowNamespaces": {
-              "type": "array",
               "items": {
                 "$ref": "#/$defs/dnsLabel"
-              }
+              },
+              "type": "array"
             },
             "customRules": {
-              "type": "array",
               "items": {
                 "type": "object"
-              }
+              },
+              "type": "array"
             },
             "mode": {
-              "type": "string",
               "enum": [
                 "disabled",
                 "same-namespace",
                 "selected",
                 "custom"
-              ]
+              ],
+              "type": "string"
             }
-          }
+          },
+          "type": "object"
         }
       },
       "required": [
@@ -922,7 +925,8 @@
         "allowMonitoringNamespace",
         "allowedEgressCIDRs",
         "dependencies"
-      ]
+      ],
+      "type": "object"
     },
     "nodeLocalSsdProfile": {
       "type": "object"
@@ -934,94 +938,92 @@
       "type": "object"
     },
     "podSecurityContext": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
         "fsGroup": {
-          "type": "integer",
-          "minimum": 1
+          "minimum": 1,
+          "type": "integer"
         },
         "runAsGroup": {
-          "type": "integer",
-          "minimum": 1
+          "minimum": 1,
+          "type": "integer"
         },
         "runAsNonRoot": {
           "type": "boolean"
         },
         "runAsUser": {
-          "type": "integer",
-          "minimum": 1
+          "minimum": 1,
+          "type": "integer"
         }
       },
       "required": [
         "runAsNonRoot",
         "runAsUser"
-      ]
+      ],
+      "type": "object"
     },
     "priorityClassName": {
       "type": "string"
     },
     "probes": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
         "liveness": {
-          "type": "object",
           "additionalProperties": false,
           "properties": {
             "initialDelaySeconds": {
-              "type": "integer",
-              "minimum": 0
+              "minimum": 0,
+              "type": "integer"
             },
             "periodSeconds": {
-              "type": "integer",
-              "minimum": 1
+              "minimum": 1,
+              "type": "integer"
             }
           },
           "required": [
             "initialDelaySeconds",
             "periodSeconds"
-          ]
+          ],
+          "type": "object"
         },
         "readiness": {
-          "type": "object",
           "additionalProperties": false,
           "properties": {
             "initialDelaySeconds": {
-              "type": "integer",
-              "minimum": 0
+              "minimum": 0,
+              "type": "integer"
             },
             "periodSeconds": {
-              "type": "integer",
-              "minimum": 1
+              "minimum": 1,
+              "type": "integer"
             }
           },
           "required": [
             "initialDelaySeconds",
             "periodSeconds"
-          ]
+          ],
+          "type": "object"
         }
       },
       "required": [
         "liveness",
         "readiness"
-      ]
+      ],
+      "type": "object"
     },
     "replicaCount": {
-      "type": "integer",
-      "minimum": 1
+      "minimum": 1,
+      "type": "integer"
     },
     "resources": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
         "limits": {
-          "type": "object",
           "additionalProperties": false,
           "properties": {
             "cpu": {
-              "type": "string",
-              "pattern": "^\\d+m?$"
+              "pattern": "^\\d+m?$",
+              "type": "string"
             },
             "ephemeral-storage": {
               "$ref": "#/$defs/k8sQuantity"
@@ -1033,15 +1035,15 @@
           "required": [
             "cpu",
             "memory"
-          ]
+          ],
+          "type": "object"
         },
         "requests": {
-          "type": "object",
           "additionalProperties": false,
           "properties": {
             "cpu": {
-              "type": "string",
-              "pattern": "^\\d+m?$"
+              "pattern": "^\\d+m?$",
+              "type": "string"
             },
             "ephemeral-storage": {
               "$ref": "#/$defs/k8sQuantity"
@@ -1053,13 +1055,15 @@
           "required": [
             "cpu",
             "memory"
-          ]
+          ],
+          "type": "object"
         }
       },
       "required": [
         "requests",
         "limits"
-      ]
+      ],
+      "type": "object"
     },
     "rollout": {
       "type": "object"
@@ -1072,27 +1076,26 @@
       "type": "object"
     },
     "server": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
         "baseUrl": {
-          "type": "string",
-          "format": "uri"
+          "format": "uri",
+          "type": "string"
         },
         "cachedOnlyMode": {
           "type": "boolean"
         },
         "command": {
-          "type": "array",
           "items": {
-            "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "type": "string"
           },
-          "minItems": 1
+          "minItems": 1,
+          "type": "array"
         },
         "configSchemaVersion": {
-          "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "type": "string"
         },
         "enableDebugDatasets": {
           "type": "boolean"
@@ -1101,77 +1104,77 @@
           "type": "boolean"
         },
         "logLevel": {
-          "type": "string",
           "enum": [
             "trace",
             "debug",
             "info",
             "warn",
             "error"
-          ]
+          ],
+          "type": "string"
         },
         "maxBodyBytes": {
-          "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "type": "integer"
         },
         "maxSequenceBases": {
-          "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "type": "integer"
         },
         "port": {
-          "type": "integer",
+          "maximum": 65535,
           "minimum": 1,
-          "maximum": 65535
+          "type": "integer"
         },
         "readOnlyFsMode": {
           "type": "boolean"
         },
         "readinessProbePath": {
-          "type": "string",
-          "pattern": "^/"
+          "pattern": "^/",
+          "type": "string"
         },
         "readinessRequiresCatalog": {
           "type": "boolean"
         },
         "requestTimeoutMs": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "responseMaxBytes": {
-          "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "type": "integer"
         },
         "requestTimeoutSeconds": {
-          "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "type": "integer"
+        },
+        "responseMaxBytes": {
+          "minimum": 0,
+          "type": "integer"
         },
         "sequenceApiKeyRequiredBases": {
-          "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "type": "integer"
         },
         "sequenceTtlMs": {
-          "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "type": "integer"
         },
         "shutdownDrainMs": {
-          "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "type": "integer"
         },
         "shutdownGraceSeconds": {
-          "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "type": "integer"
         },
         "slowQueryThresholdMs": {
-          "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "type": "integer"
         },
         "sqlTimeoutMs": {
-          "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "type": "integer"
         },
         "startupProbePath": {
-          "type": "string",
-          "pattern": "^/"
+          "pattern": "^/",
+          "type": "string"
         }
       },
       "required": [
@@ -1193,44 +1196,44 @@
         "maxSequenceBases",
         "sequenceApiKeyRequiredBases",
         "sequenceTtlMs"
-      ]
+      ],
+      "type": "object"
     },
     "service": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
         "annotations": {
           "$ref": "#/$defs/stringMap"
         },
         "nodePort": {
+          "maximum": 65535,
+          "minimum": 1,
           "type": [
             "integer",
             "null"
-          ],
-          "minimum": 1,
-          "maximum": 65535
+          ]
         },
         "port": {
-          "type": "integer",
+          "maximum": 65535,
           "minimum": 1,
-          "maximum": 65535
+          "type": "integer"
         },
         "type": {
-          "type": "string",
           "enum": [
             "ClusterIP",
             "NodePort",
             "LoadBalancer"
-          ]
+          ],
+          "type": "string"
         }
       },
       "required": [
         "type",
         "port"
-      ]
+      ],
+      "type": "object"
     },
     "serviceMonitor": {
-      "type": "object",
       "additionalProperties": false,
       "description": "Deprecated alias for metrics.serviceMonitor. Prefer metrics.serviceMonitor for new values files.",
       "properties": {
@@ -1252,25 +1255,25 @@
         "interval",
         "scrapeTimeout",
         "labels"
-      ]
+      ],
+      "type": "object"
     },
     "store": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
         "credentialsSecretName": {
           "type": "string"
         },
         "endpoint": {
-          "type": "string",
-          "pattern": "^(|https?://.+)$"
+          "pattern": "^(|https?://.+)$",
+          "type": "string"
         },
         "manageCredentialsSecret": {
           "type": "boolean"
         },
         "s3PresignedBaseUrl": {
-          "type": "string",
-          "pattern": "^(|https?://.+)$"
+          "pattern": "^(|https?://.+)$",
+          "type": "string"
         }
       },
       "required": [
@@ -1278,14 +1281,17 @@
         "s3PresignedBaseUrl",
         "credentialsSecretName",
         "manageCredentialsSecret"
-      ]
+      ],
+      "type": "object"
     },
     "terminationGracePeriodSeconds": {
-      "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "type": "integer"
     },
     "tolerations": {
       "type": "array"
     }
-  }
+  },
+  "title": "bijux-atlas chart values",
+  "type": "object"
 }

@@ -8,6 +8,8 @@
 - Last changed: `2026-03-03`
 - Reason to exist: define how a release candidate moves to general availability.
 
+Related ops contracts: `OPS-ROOT-023`, `REL-SIGN-005`.
+
 ## Promotion Rules
 
 - A release candidate is not promotable until `ops evidence verify` and `release verify` both pass.

@@ -8,6 +8,8 @@
 - Last changed: `2026-03-03`
 - Reason to exist: define what a consumer is expected to trust when verifying a release bundle.
 
+Related ops contracts: `OPS-ROOT-023`, `REL-PROV-001`.
+
 ## Trust Root
 
 - `configs/rust/toolchain.json` is the canonical toolchain inventory for governed release generation.

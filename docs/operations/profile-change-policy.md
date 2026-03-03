@@ -7,6 +7,8 @@
 - Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 - Reason to exist: define what counts as a breaking profile change.
 
+Related ops contracts: `OPS-ROOT-023`, `OPS-LIFE-001`.
+
 ## Breaking Changes
 
 Treat any of the following as a breaking profile change:

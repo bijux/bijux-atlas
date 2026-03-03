@@ -13,6 +13,8 @@ Atlas profiles are named operational intents. The chart defaults remain the shar
 each profile overlay in `ops/k8s/values/` captures the toggles that must change for one specific
 environment.
 
+Related ops contracts: `OPS-ROOT-023`, `OPS-STACK-010`.
+
 ## Profiles
 
 ### CI
