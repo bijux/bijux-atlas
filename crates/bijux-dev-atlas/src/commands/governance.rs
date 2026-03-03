@@ -170,6 +170,7 @@ struct ChecksRegistryEntry {
     tags: Option<Vec<String>>,
     since_version: Option<String>,
     retries: Option<u64>,
+    overlaps_with: Option<Vec<String>>,
     requires_tools: Option<Vec<String>>,
     missing_tools_policy: Option<String>,
     suite_membership: Vec<String>,
@@ -177,6 +178,8 @@ struct ChecksRegistryEntry {
     stage: String,
     runtime_cost: String,
     determinism: String,
+    cpu_hint: Option<String>,
+    mem_hint: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -198,6 +201,7 @@ struct ContractsRegistryEntry {
     suite_membership: Vec<String>,
     tags: Option<Vec<String>>,
     retries: Option<u64>,
+    overlaps_with: Option<Vec<String>>,
     requires_tools: Option<Vec<String>>,
     missing_tools_policy: Option<String>,
 }
@@ -239,6 +243,36 @@ struct RegistryCompletenessPolicy {
     owner: String,
     required_field_coverage_percent: u64,
     required_rules: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct DefaultJobsPolicy {
+    schema_version: u64,
+    policy_id: String,
+    owner: String,
+    suites: Vec<DefaultJobsEntry>,
+}
+
+#[derive(Debug, Deserialize)]
+struct DefaultJobsEntry {
+    suite_id: String,
+    auto_jobs: u64,
+    low_core_cap: u64,
+}
+
+#[derive(Debug, Deserialize)]
+struct SuiteBaselinePolicy {
+    schema_version: u64,
+    baseline_id: String,
+    owner: String,
+    suites: Vec<SuiteBaselineEntry>,
+}
+
+#[derive(Debug, Deserialize)]
+struct SuiteBaselineEntry {
+    suite_id: String,
+    expected_total: u64,
+    minimum_group_counts: BTreeMap<String, u64>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -356,6 +390,22 @@ fn registry_completeness_policy_path(root: &Path) -> PathBuf {
 
 fn registry_completeness_policy_schema_path(root: &Path) -> PathBuf {
     root.join("configs/contracts/governance/registry-completeness-policy.schema.json")
+}
+
+fn default_jobs_policy_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/suites/default-jobs.json")
+}
+
+fn default_jobs_policy_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/contracts/governance/default-jobs.schema.json")
+}
+
+fn suite_baseline_policy_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/suites/baseline.json")
+}
+
+fn suite_baseline_policy_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/contracts/governance/suite-baseline.schema.json")
 }
 
 fn compatibility_policy_path(root: &Path) -> PathBuf {
@@ -787,6 +837,14 @@ fn read_json_file<T: for<'de> Deserialize<'de>>(path: &Path) -> Result<T, String
     .map_err(|err| format!("parse {} failed: {err}", path.display()))
 }
 
+fn read_yaml_file<T: for<'de> Deserialize<'de>>(path: &Path) -> Result<T, String> {
+    serde_yaml::from_str(
+        &fs::read_to_string(path)
+            .map_err(|err| format!("read {} failed: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("parse {} failed: {err}", path.display()))
+}
+
 fn owner_format_valid(owner: &str) -> bool {
     let owner = owner.trim();
     if let Some(team) = owner.strip_prefix("team:") {
@@ -901,6 +959,8 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     let _: serde_json::Value = read_json_value(&check_groups_schema_path(root))?;
     let _: serde_json::Value = read_json_value(&contract_groups_schema_path(root))?;
     let _: serde_json::Value = read_json_value(&registry_completeness_policy_schema_path(root))?;
+    let _: serde_json::Value = read_json_value(&default_jobs_policy_schema_path(root))?;
+    let _: serde_json::Value = read_json_value(&suite_baseline_policy_schema_path(root))?;
     if checks_suite_schema
         .get("properties")
         .and_then(|value| value.get("schema_version"))
@@ -945,9 +1005,18 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     let contract_groups: GroupRegistry = read_json_file(&contract_groups_path(root))?;
     let completeness_policy: RegistryCompletenessPolicy =
         read_json_file(&registry_completeness_policy_path(root))?;
+    let default_jobs_policy: DefaultJobsPolicy = read_json_file(&default_jobs_policy_path(root))?;
+    let suite_baseline_policy: SuiteBaselinePolicy =
+        read_json_file(&suite_baseline_policy_path(root))?;
+    let exceptions_registry: ExceptionsRegistry = read_yaml_file(&exceptions_registry_path(root))?;
+    let deprecations_registry: serde_yaml::Value =
+        read_yaml_file(&deprecations_registry_path(root))?;
     let checks_docs =
         fs::read_to_string(root.join("docs/_internal/governance/checks-and-contracts.md"))
             .map_err(|err| format!("read checks-and-contracts.md failed: {err}"))?;
+    let suite_membership_policy =
+        fs::read_to_string(root.join("docs/_internal/governance/suite-membership-policy.md"))
+            .map_err(|err| format!("read suite-membership-policy.md failed: {err}"))?;
 
     let mut errors = Vec::<String>::new();
     let mut check_ids = BTreeSet::new();
@@ -965,6 +1034,15 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
         .iter()
         .map(|group| group.id.clone())
         .collect::<BTreeSet<_>>();
+    let active_exception_scopes = exceptions_registry
+        .exceptions
+        .iter()
+        .map(|item| format!("{}:{}", item.scope.kind, item.scope.id))
+        .collect::<BTreeSet<_>>();
+    let deprecation_rows = deprecations_registry["deprecations"]
+        .as_sequence()
+        .cloned()
+        .unwrap_or_default();
     let resolvable_commands = known_commands(root)?;
     let expected_suite_files = [
         "checks.suite.json".to_string(),
@@ -1110,7 +1188,71 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             completeness_policy.owner
         ));
     }
-    if checks_schema_index.schema_version != 1 || checks_schema_index.index_id != "checks-schema-index" {
+    if default_jobs_policy.schema_version != 1
+        || default_jobs_policy.policy_id != "suite-default-jobs"
+    {
+        errors.push(
+            "default jobs policy must declare schema_version=1 and policy_id=suite-default-jobs"
+                .to_string(),
+        );
+    }
+    if !owner_format_valid(&default_jobs_policy.owner) {
+        errors.push(format!(
+            "default jobs policy owner `{}` has invalid format",
+            default_jobs_policy.owner
+        ));
+    }
+    for entry in &default_jobs_policy.suites {
+        if !matches!(entry.suite_id.as_str(), "checks" | "contracts") {
+            errors.push(format!(
+                "default jobs policy references unknown suite `{}`",
+                entry.suite_id
+            ));
+        }
+        if entry.low_core_cap > entry.auto_jobs {
+            errors.push(format!(
+                "default jobs policy for `{}` cannot set low_core_cap above auto_jobs",
+                entry.suite_id
+            ));
+        }
+    }
+    for required_suite in ["checks", "contracts"] {
+        if !default_jobs_policy
+            .suites
+            .iter()
+            .any(|entry| entry.suite_id == required_suite)
+        {
+            errors.push(format!(
+                "default jobs policy must declare suite `{required_suite}`"
+            ));
+        }
+        if !suite_baseline_policy
+            .suites
+            .iter()
+            .any(|entry| entry.suite_id == required_suite)
+        {
+            errors.push(format!(
+                "suite baseline policy must declare suite `{required_suite}`"
+            ));
+        }
+    }
+    if suite_baseline_policy.schema_version != 1
+        || suite_baseline_policy.baseline_id != "suite-baseline"
+    {
+        errors.push(
+            "suite baseline policy must declare schema_version=1 and baseline_id=suite-baseline"
+                .to_string(),
+        );
+    }
+    if !owner_format_valid(&suite_baseline_policy.owner) {
+        errors.push(format!(
+            "suite baseline policy owner `{}` has invalid format",
+            suite_baseline_policy.owner
+        ));
+    }
+    if checks_schema_index.schema_version != 1
+        || checks_schema_index.index_id != "checks-schema-index"
+    {
         errors.push(
             "check schema index must declare schema_version=1 and index_id=checks-schema-index"
                 .to_string(),
@@ -1325,6 +1467,14 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
                 ));
             }
         }
+        if let Some(overlaps_with) = &check.overlaps_with {
+            if overlaps_with.iter().any(|value| value.trim().is_empty()) {
+                errors.push(format!(
+                    "{} overlaps_with must not contain blank ids",
+                    check.check_id
+                ));
+            }
+        }
         if let Some(requires_tools) = &check.requires_tools {
             if requires_tools.iter().any(|value| value.trim().is_empty()) {
                 errors.push(format!(
@@ -1344,6 +1494,52 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
         if !check.suite_membership.iter().any(|suite| suite == "checks") {
             errors.push(format!(
                 "{} suite_membership must include `checks`",
+                check.check_id
+            ));
+        }
+        if check.suite_membership.len() != 1 {
+            errors.push(format!(
+                "{} suite_membership must remain singular; use overlaps_with for deliberate overlap",
+                check.check_id
+            ));
+        }
+        if let Some(cpu_hint) = &check.cpu_hint {
+            if !matches!(cpu_hint.as_str(), "light" | "moderate" | "heavy") {
+                errors.push(format!(
+                    "{} cpu_hint `{}` is invalid",
+                    check.check_id, cpu_hint
+                ));
+            }
+        } else {
+            errors.push(format!("{} missing cpu_hint", check.check_id));
+            missing_rows.push(
+                serde_json::json!({"kind":"check","id":check.check_id,"missing":["cpu_hint"]}),
+            );
+        }
+        if let Some(mem_hint) = &check.mem_hint {
+            if !matches!(mem_hint.as_str(), "low" | "medium" | "high") {
+                errors.push(format!(
+                    "{} mem_hint `{}` is invalid",
+                    check.check_id, mem_hint
+                ));
+            }
+        } else {
+            errors.push(format!("{} missing mem_hint", check.check_id));
+            missing_rows.push(
+                serde_json::json!({"kind":"check","id":check.check_id,"missing":["mem_hint"]}),
+            );
+        }
+        let has_flaky_tag = check
+            .tags
+            .as_ref()
+            .map(|tags| tags.iter().any(|tag| tag == "flaky"))
+            .unwrap_or(false);
+        if has_flaky_tag
+            && !active_exception_scopes.contains(&format!("check:{}", check.check_id))
+            && !active_exception_scopes.contains(&format!("contract:{}", check.check_id))
+        {
+            errors.push(format!(
+                "{} uses flaky tag without an active exception entry",
                 check.check_id
             ));
         }
@@ -1445,6 +1641,14 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
                 ));
             }
         }
+        if let Some(overlaps_with) = &contract.overlaps_with {
+            if overlaps_with.iter().any(|value| value.trim().is_empty()) {
+                errors.push(format!(
+                    "{} overlaps_with must not contain blank ids",
+                    contract.contract_id
+                ));
+            }
+        }
         if let Some(requires_tools) = &contract.requires_tools {
             if requires_tools.iter().any(|value| value.trim().is_empty()) {
                 errors.push(format!(
@@ -1471,6 +1675,12 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
                 contract.contract_id
             ));
         }
+        if contract.suite_membership.len() != 1 {
+            errors.push(format!(
+                "{} suite_membership must remain singular; use overlaps_with for deliberate overlap",
+                contract.contract_id
+            ));
+        }
     }
 
     if !checks_docs.contains("## Checks")
@@ -1488,6 +1698,22 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     if !checks_docs.contains("idempotent") {
         errors.push(
             "docs/_internal/governance/checks-and-contracts.md must define the idempotent checks rule"
+                .to_string(),
+        );
+    }
+    if !checks_docs.contains("## Suite Boundaries") || !checks_docs.contains("## Validation System")
+    {
+        errors.push(
+            "docs/_internal/governance/checks-and-contracts.md must define suite boundaries and the validation system table"
+                .to_string(),
+        );
+    }
+    if !suite_membership_policy.contains("## Membership boundary")
+        || !suite_membership_policy.contains("## Allowed overlap")
+        || !suite_membership_policy.contains("## How to move an entry")
+    {
+        errors.push(
+            "docs/_internal/governance/suite-membership-policy.md must define membership boundary, allowed overlap, and move procedure"
                 .to_string(),
         );
     }
@@ -1526,6 +1752,104 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     for id in &contract_ids {
         if !contracts_suite_ids.contains(id) {
             errors.push(format!("contracts suite missing registry id `{id}`"));
+        }
+    }
+    for check in &checks_registry.checks {
+        if let Some(overlaps_with) = &check.overlaps_with {
+            for overlap in overlaps_with {
+                if !check_ids.contains(overlap) && !contract_ids.contains(overlap) {
+                    errors.push(format!(
+                        "{} overlaps_with unknown id `{}`",
+                        check.check_id, overlap
+                    ));
+                }
+            }
+        }
+    }
+    for contract in &contracts_registry.contracts {
+        if let Some(overlaps_with) = &contract.overlaps_with {
+            for overlap in overlaps_with {
+                if !check_ids.contains(overlap) && !contract_ids.contains(overlap) {
+                    errors.push(format!(
+                        "{} overlaps_with unknown id `{}`",
+                        contract.contract_id, overlap
+                    ));
+                }
+            }
+        }
+    }
+    for baseline in &suite_baseline_policy.suites {
+        let (current_total, current_groups) = match baseline.suite_id.as_str() {
+            "checks" => (
+                checks_suite_ids.len() as u64,
+                checks_registry.checks.iter().fold(
+                    BTreeMap::<String, u64>::new(),
+                    |mut acc, check| {
+                        *acc.entry(check.group.clone()).or_insert(0) += 1;
+                        acc
+                    },
+                ),
+            ),
+            "contracts" => (
+                contracts_suite_ids.len() as u64,
+                contracts_registry.contracts.iter().fold(
+                    BTreeMap::<String, u64>::new(),
+                    |mut acc, contract| {
+                        *acc.entry(contract.group.clone()).or_insert(0) += 1;
+                        acc
+                    },
+                ),
+            ),
+            other => {
+                errors.push(format!("suite baseline references unknown suite `{other}`"));
+                continue;
+            }
+        };
+        if current_total < baseline.expected_total {
+            errors.push(format!(
+                "suite `{}` shrank below baseline: expected at least {}, found {}",
+                baseline.suite_id, baseline.expected_total, current_total
+            ));
+        }
+        for (group, minimum) in &baseline.minimum_group_counts {
+            let actual = current_groups.get(group).copied().unwrap_or(0);
+            if actual < *minimum {
+                errors.push(format!(
+                    "suite `{}` group `{}` fell below baseline minimum: expected at least {}, found {}",
+                    baseline.suite_id, group, minimum, actual
+                ));
+            }
+        }
+    }
+    for row in &deprecation_rows {
+        let Some(surface) = row.get("surface").and_then(serde_yaml::Value::as_str) else {
+            continue;
+        };
+        if surface != "check-id" {
+            continue;
+        }
+        let Some(old_name) = row.get("old_name").and_then(serde_yaml::Value::as_str) else {
+            continue;
+        };
+        let Some(removal_target) = row
+            .get("removal_target")
+            .and_then(serde_yaml::Value::as_str)
+        else {
+            continue;
+        };
+        if !is_iso_date(removal_target) {
+            errors.push(format!(
+                "check deprecation `{old_name}` has invalid removal_target `{removal_target}`"
+            ));
+            continue;
+        }
+        if old_name.starts_with("CHECK-")
+            && check_ids.contains(old_name)
+            && removal_target < "2026-03-03"
+        {
+            errors.push(format!(
+                "deprecated check `{old_name}` is past removal_target `{removal_target}` and must be removed or renewed"
+            ));
         }
     }
     for entry in &checks_suite.entries {

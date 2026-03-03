@@ -137,6 +137,14 @@
             "type": "integer",
             "minimum": 0
           },
+          "overlaps_with": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
           "requires_tools": {
             "type": "array",
             "items": {
@@ -193,6 +201,22 @@
               "strict",
               "bounded",
               "best-effort"
+            ]
+          },
+          "cpu_hint": {
+            "type": "string",
+            "enum": [
+              "light",
+              "moderate",
+              "heavy"
+            ]
+          },
+          "mem_hint": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
             ]
           }
         }

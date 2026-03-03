@@ -41,7 +41,10 @@
         "format",
         "rust"
       ],
-      "group": "rust"
+      "group": "rust",
+      "overlaps_with": [],
+      "cpu_hint": "light",
+      "mem_hint": "low"
     },
     {
       "check_id": "CHECK-RUST-CLIPPY-001",
@@ -82,7 +85,10 @@
         "lint",
         "rust"
       ],
-      "group": "rust"
+      "group": "rust",
+      "overlaps_with": [],
+      "cpu_hint": "moderate",
+      "mem_hint": "medium"
     },
     {
       "check_id": "CHECK-LINT-POLICY-001",
@@ -123,7 +129,10 @@
         "lint",
         "policy"
       ],
-      "group": "governance"
+      "group": "governance",
+      "overlaps_with": [],
+      "cpu_hint": "light",
+      "mem_hint": "low"
     },
     {
       "check_id": "CHECK-CONFIGS-LINT-001",
@@ -164,7 +173,10 @@
         "configs",
         "lint"
       ],
-      "group": "configs"
+      "group": "configs",
+      "overlaps_with": [],
+      "cpu_hint": "light",
+      "mem_hint": "low"
     },
     {
       "check_id": "CHECK-DOCS-VALIDATE-001",
@@ -204,7 +216,10 @@
         "docs",
         "validation"
       ],
-      "group": "docs"
+      "group": "docs",
+      "overlaps_with": [],
+      "cpu_hint": "light",
+      "mem_hint": "low"
     },
     {
       "check_id": "CHECK-K8S-VALIDATE-001",
@@ -247,7 +262,10 @@
         "k8s",
         "ops"
       ],
-      "group": "ops"
+      "group": "ops",
+      "overlaps_with": [],
+      "cpu_hint": "moderate",
+      "mem_hint": "high"
     },
     {
       "check_id": "CHECK-SUPPLY-CHAIN-DENY-001",
@@ -288,7 +306,10 @@
         "dependencies",
         "security"
       ],
-      "group": "security"
+      "group": "security",
+      "overlaps_with": [],
+      "cpu_hint": "moderate",
+      "mem_hint": "medium"
     },
     {
       "check_id": "CHECK-SUPPLY-CHAIN-AUDIT-001",
@@ -329,7 +350,10 @@
         "dependencies",
         "security"
       ],
-      "group": "security"
+      "group": "security",
+      "overlaps_with": [],
+      "cpu_hint": "moderate",
+      "mem_hint": "medium"
     },
     {
       "check_id": "CHECK-SUITE-CI-FAST-001",
@@ -370,7 +394,10 @@
         "governance",
         "suite"
       ],
-      "group": "governance"
+      "group": "governance",
+      "overlaps_with": [],
+      "cpu_hint": "light",
+      "mem_hint": "low"
     },
     {
       "check_id": "CHECK-SUITE-CI-PR-001",
@@ -411,7 +438,10 @@
         "governance",
         "suite"
       ],
-      "group": "governance"
+      "group": "governance",
+      "overlaps_with": [],
+      "cpu_hint": "moderate",
+      "mem_hint": "medium"
     },
     {
       "check_id": "CHECK-SUITE-CI-NIGHTLY-001",
@@ -453,7 +483,10 @@
         "nightly",
         "suite"
       ],
-      "group": "governance"
+      "group": "governance",
+      "overlaps_with": [],
+      "cpu_hint": "heavy",
+      "mem_hint": "high"
     },
     {
       "check_id": "CHECK-CONTRACTS-DOCS-REQUIRED-001",
@@ -493,7 +526,10 @@
         "contracts",
         "docs"
       ],
-      "group": "docs"
+      "group": "docs",
+      "overlaps_with": [],
+      "cpu_hint": "moderate",
+      "mem_hint": "medium"
     },
     {
       "check_id": "CHECK-CONTRACTS-CONFIGS-REQUIRED-001",
@@ -533,7 +569,10 @@
         "configs",
         "contracts"
       ],
-      "group": "configs"
+      "group": "configs",
+      "overlaps_with": [],
+      "cpu_hint": "moderate",
+      "mem_hint": "medium"
     },
     {
       "check_id": "CHECK-CONTRACTS-MAKE-REQUIRED-001",
@@ -574,7 +613,10 @@
         "governance",
         "make"
       ],
-      "group": "governance"
+      "group": "governance",
+      "overlaps_with": [],
+      "cpu_hint": "moderate",
+      "mem_hint": "medium"
     },
     {
       "check_id": "CHECK-CONTRACTS-REPO-REQUIRED-001",
@@ -615,7 +657,10 @@
         "governance",
         "repo"
       ],
-      "group": "governance"
+      "group": "governance",
+      "overlaps_with": [],
+      "cpu_hint": "heavy",
+      "mem_hint": "high"
     }
   ]
 }

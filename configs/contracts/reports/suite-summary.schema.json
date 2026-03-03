@@ -16,6 +16,8 @@
     "status",
     "summary",
     "failures",
+    "warnings",
+    "scheduling_plan",
     "tasks"
   ],
   "properties": {
@@ -30,6 +32,8 @@
     "status": { "type": "string" },
     "summary": { "type": "object" },
     "failures": { "type": "array" },
+    "warnings": { "type": "array" },
+    "scheduling_plan": { "type": "array" },
     "tasks": { "type": "array" }
   }
 }

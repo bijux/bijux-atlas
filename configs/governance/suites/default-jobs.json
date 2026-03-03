@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "policy_id": "suite-default-jobs",
+  "owner": "team:atlas-governance",
+  "suites": [
+    {
+      "suite_id": "checks",
+      "auto_jobs": 4,
+      "low_core_cap": 2,
+      "high_mem_parallelism": 1,
+      "effect_parallelism": 2
+    },
+    {
+      "suite_id": "contracts",
+      "auto_jobs": 3,
+      "low_core_cap": 2,
+      "high_mem_parallelism": 1,
+      "effect_parallelism": 1
+    }
+  ]
+}

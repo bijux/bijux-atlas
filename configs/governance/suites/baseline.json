@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "baseline_id": "suite-baseline",
+  "owner": "team:atlas-governance",
+  "suites": [
+    {
+      "suite_id": "checks",
+      "expected_total": 15,
+      "minimum_group_counts": {
+        "configs": 2,
+        "docs": 2,
+        "governance": 6,
+        "ops": 1,
+        "rust": 2,
+        "security": 2
+      }
+    },
+    {
+      "suite_id": "contracts",
+      "expected_total": 178,
+      "minimum_group_counts": {
+        "datasets": 14,
+        "e2e": 12,
+        "environment": 14,
+        "inventory": 38,
+        "kubernetes": 16,
+        "load": 13,
+        "observability": 13,
+        "reporting": 10,
+        "root": 33,
+        "stack": 15
+      }
+    }
+  ]
+}

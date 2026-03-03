@@ -90,6 +90,14 @@
             "type": "integer",
             "minimum": 0
           },
+          "overlaps_with": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
           "requires_tools": {
             "type": "array",
             "items": {

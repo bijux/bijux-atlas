@@ -69,8 +69,12 @@ struct CheckRegistryEntry {
     reports: Vec<String>,
     tags: Option<Vec<String>>,
     retries: Option<u64>,
+    overlaps_with: Option<Vec<String>>,
     requires_tools: Option<Vec<String>>,
     missing_tools_policy: Option<String>,
+    severity: String,
+    cpu_hint: Option<String>,
+    mem_hint: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -87,6 +91,7 @@ struct ContractRegistryEntry {
     reports: Vec<String>,
     tags: Option<Vec<String>>,
     retries: Option<u64>,
+    overlaps_with: Option<Vec<String>>,
     requires_tools: Option<Vec<String>>,
     missing_tools_policy: Option<String>,
 }
@@ -106,6 +111,9 @@ struct SuiteTask {
     retries: u64,
     requires_tools: Vec<String>,
     missing_tools_policy: String,
+    severity: String,
+    cpu_hint: String,
+    mem_hint: String,
 }
 
 #[derive(Clone, Debug)]
@@ -123,6 +131,7 @@ struct SuiteRunOptions {
     quiet: bool,
     verbose: bool,
     color: SuiteColorArg,
+    strict: bool,
     out: Option<PathBuf>,
 }
 
@@ -160,6 +169,33 @@ struct LatestRunsPointer {
 struct LatestSuiteRun {
     run_id: String,
     suite_root: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct DefaultJobsPolicy {
+    schema_version: u64,
+    policy_id: String,
+    suites: Vec<DefaultJobsEntry>,
+}
+
+#[derive(Debug, Deserialize)]
+struct DefaultJobsEntry {
+    suite_id: String,
+    auto_jobs: u64,
+    low_core_cap: u64,
+    high_mem_parallelism: u64,
+    effect_parallelism: u64,
+}
+
+#[derive(Clone, Debug)]
+struct SchedulingLane {
+    batch: usize,
+    id: String,
+    group: String,
+    mode: String,
+    severity: String,
+    cpu_hint: String,
+    mem_hint: String,
 }
 
 fn write_output_if_requested(out: Option<PathBuf>, rendered: &str) -> Result<(), String> {
@@ -203,6 +239,10 @@ fn contracts_registry_path(root: &Path) -> PathBuf {
 
 fn perf_budgets_path(root: &Path) -> PathBuf {
     root.join("configs/governance/perf-budgets.json")
+}
+
+fn default_jobs_policy_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/suites/default-jobs.json")
 }
 
 fn latest_runs_pointer_path(artifacts_root: &Path) -> PathBuf {
@@ -307,6 +347,9 @@ fn load_suite_tasks(root: &Path, suite_id: &str) -> Result<Vec<SuiteTask>, Strin
                         missing_tools_policy: entry
                             .missing_tools_policy
                             .unwrap_or_else(|| "fail".to_string()),
+                        severity: entry.severity,
+                        cpu_hint: entry.cpu_hint.unwrap_or_else(|| "light".to_string()),
+                        mem_hint: entry.mem_hint.unwrap_or_else(|| "low".to_string()),
                     })
                 })
                 .collect::<Vec<_>>()
@@ -340,6 +383,13 @@ fn load_suite_tasks(root: &Path, suite_id: &str) -> Result<Vec<SuiteTask>, Strin
                             missing_tools_policy: entry
                                 .missing_tools_policy
                                 .unwrap_or_else(|| "fail".to_string()),
+                            severity: "blocker".to_string(),
+                            cpu_hint: "moderate".to_string(),
+                            mem_hint: if suite_entry.mode == "effect" {
+                                "high".to_string()
+                            } else {
+                                "medium".to_string()
+                            },
                         })
                 })
                 .collect::<Vec<_>>()
@@ -371,12 +421,36 @@ fn normalized_contract_command(command: &str, mode: &str, contract_id: &str) -> 
     }
 }
 
-fn parse_jobs(raw: &str) -> Result<usize, String> {
+fn load_default_jobs_policy(root: &Path) -> Result<DefaultJobsPolicy, String> {
+    let policy: DefaultJobsPolicy = read_json_file(&default_jobs_policy_path(root))?;
+    if policy.schema_version != 1 || policy.policy_id != "suite-default-jobs" {
+        return Err(
+            "default jobs policy must declare schema_version=1 and policy_id=suite-default-jobs"
+                .to_string(),
+        );
+    }
+    Ok(policy)
+}
+
+fn parse_jobs(root: &Path, suite_id: &str, raw: &str) -> Result<usize, String> {
     if raw.eq_ignore_ascii_case("auto") {
-        let count = std::thread::available_parallelism()
+        let policy = load_default_jobs_policy(root)?;
+        let suite_policy = policy
+            .suites
+            .into_iter()
+            .find(|entry| entry.suite_id == suite_id)
+            .ok_or_else(|| format!("default jobs policy missing suite `{suite_id}`"))?;
+        let cores = std::thread::available_parallelism()
             .map(|value| value.get())
             .unwrap_or(1);
-        return Ok(count.min(8).max(1));
+        let low_core_cap = suite_policy.low_core_cap as usize;
+        let auto_jobs = suite_policy.auto_jobs as usize;
+        let jobs = if cores <= 2 {
+            cores.min(low_core_cap).max(1)
+        } else {
+            cores.min(auto_jobs).max(1)
+        };
+        return Ok(jobs);
     }
     let jobs = raw
         .parse::<usize>()
@@ -385,6 +459,26 @@ fn parse_jobs(raw: &str) -> Result<usize, String> {
         return Err("jobs must be at least 1".to_string());
     }
     Ok(jobs)
+}
+
+fn suite_effect_parallelism(root: &Path, suite_id: &str) -> Result<usize, String> {
+    let policy = load_default_jobs_policy(root)?;
+    let suite_policy = policy
+        .suites
+        .into_iter()
+        .find(|entry| entry.suite_id == suite_id)
+        .ok_or_else(|| format!("default jobs policy missing suite `{suite_id}`"))?;
+    Ok(suite_policy.effect_parallelism as usize)
+}
+
+fn suite_high_mem_parallelism(root: &Path, suite_id: &str) -> Result<usize, String> {
+    let policy = load_default_jobs_policy(root)?;
+    let suite_policy = policy
+        .suites
+        .into_iter()
+        .find(|entry| entry.suite_id == suite_id)
+        .ok_or_else(|| format!("default jobs policy missing suite `{suite_id}`"))?;
+    Ok(suite_policy.high_mem_parallelism as usize)
 }
 
 fn known_commands_local(root: &Path) -> Result<BTreeSet<String>, String> {
@@ -714,6 +808,82 @@ fn render_suite_describe(root: &Path, suite_id: &str, format: FormatArg) -> Resu
     }
 }
 
+fn render_suite_lint(root: &Path, format: FormatArg) -> Result<(String, i32), String> {
+    let checks = load_suite(root, "checks")?;
+    let contracts = load_suite(root, "contracts")?;
+    let checks_registry: ChecksRegistry = read_json_file(&checks_registry_path(root))?;
+    let contracts_registry: ContractsRegistry = read_json_file(&contracts_registry_path(root))?;
+    let allowed_overlaps = checks_registry
+        .checks
+        .into_iter()
+        .flat_map(|entry| {
+            entry
+                .overlaps_with
+                .unwrap_or_default()
+                .into_iter()
+                .map(move |overlap| (entry.check_id.clone(), overlap))
+        })
+        .chain(contracts_registry.contracts.into_iter().flat_map(|entry| {
+            entry
+                .overlaps_with
+                .unwrap_or_default()
+                .into_iter()
+                .map(move |overlap| (entry.contract_id.clone(), overlap))
+        }))
+        .collect::<BTreeSet<_>>();
+    let check_ids = checks
+        .entries
+        .into_iter()
+        .map(|entry| entry.id)
+        .collect::<BTreeSet<_>>();
+    let contract_ids = contracts
+        .entries
+        .into_iter()
+        .map(|entry| entry.id)
+        .collect::<BTreeSet<_>>();
+    let overlaps = check_ids
+        .intersection(&contract_ids)
+        .filter(|id| !allowed_overlaps.contains(&((*id).clone(), (*id).clone())))
+        .cloned()
+        .collect::<Vec<_>>();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "lint_id": "suite-membership-lint",
+        "summary": {
+            "duplicate_ids": overlaps.len(),
+        },
+        "duplicate_ids": overlaps,
+    });
+    let rendered = match format {
+        FormatArg::Text => {
+            if payload["summary"]["duplicate_ids"].as_u64().unwrap_or(0) == 0 {
+                "suite lint passed".to_string()
+            } else {
+                let mut lines =
+                    vec!["suite lint found duplicate ids across checks and contracts".to_string()];
+                lines.extend(
+                    payload["duplicate_ids"]
+                        .as_array()
+                        .into_iter()
+                        .flatten()
+                        .filter_map(serde_json::Value::as_str)
+                        .map(|value| format!("  {value}")),
+                );
+                lines.join("\n")
+            }
+        }
+        FormatArg::Json => serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode suite lint failed: {err}"))?,
+        FormatArg::Jsonl => Err("jsonl output is not supported for suites lint".to_string())?,
+    };
+    let exit = if payload["summary"]["duplicate_ids"].as_u64().unwrap_or(0) == 0 {
+        0
+    } else {
+        1
+    };
+    Ok((rendered, exit))
+}
+
 fn colorize(label: &str, color: SuiteColorArg, code: &str) -> String {
     if supports_color(color) {
         format!("\u{1b}[{code}m{label}\u{1b}[0m")
@@ -726,6 +896,7 @@ fn status_label(status: &str, color: SuiteColorArg) -> String {
     match status {
         "pass" => colorize("[PASS]", color, "32"),
         "fail" => colorize("[FAIL]", color, "31"),
+        "warn" => colorize("[WARN]", color, "33"),
         "skip" => colorize("[SKIP]", color, "33"),
         _ => format!("[{}]", status.to_ascii_uppercase()),
     }
@@ -793,7 +964,13 @@ fn human_suite_report(
         lines.push(format!("Group {group}"));
         for task in tasks {
             let status = task["status"].as_str().unwrap_or("unknown");
-            if quiet && status == "pass" {
+            let severity = task["severity"].as_str().unwrap_or("blocker");
+            let rendered_status = if status == "fail" && severity == "info" {
+                "warn"
+            } else {
+                status
+            };
+            if quiet && rendered_status == "pass" {
                 continue;
             }
             let task_id = task["id"].as_str().unwrap_or_default();
@@ -801,19 +978,26 @@ fn human_suite_report(
             let summary_text = task["summary"].as_str().unwrap_or_default();
             lines.push(format!(
                 "{} {} - {} ({})",
-                status_label(status, color),
+                status_label(rendered_status, color),
                 task_id,
                 summary_text,
                 format_duration_ms(duration_ms)
             ));
-            if status == "fail" {
+            if rendered_status == "fail" || rendered_status == "warn" {
                 let short_error = task["error_summary"].as_str().unwrap_or("command failed");
-                lines.push(format!("  error: {short_error}"));
+                lines.push(format!(
+                    "  {}: {short_error}",
+                    if rendered_status == "warn" {
+                        "warning"
+                    } else {
+                        "error"
+                    }
+                ));
                 let result_path = task["result_path"].as_str().unwrap_or_default();
                 if !result_path.is_empty() {
                     lines.push(format!("  artifacts: {result_path}"));
                 }
-                if verbose {
+                if verbose && rendered_status == "fail" {
                     let stderr_path = task["stderr_path"].as_str().unwrap_or_default();
                     if !stderr_path.is_empty() {
                         let tail = fs::read_to_string(stderr_path)
@@ -838,9 +1022,10 @@ fn human_suite_report(
         lines.extend(slowdown_rows.iter().map(|row| format!("  {row}")));
     }
     lines.push(format!(
-        "Totals pass={} fail={} skip={} total={} elapsed={} run_id={} artifacts={}",
+        "Totals pass={} fail={} warn={} skip={} total={} elapsed={} run_id={} artifacts={}",
         summary["summary"]["pass"].as_u64().unwrap_or(0),
         summary["summary"]["fail"].as_u64().unwrap_or(0),
+        summary["summary"]["warn"].as_u64().unwrap_or(0),
         summary["summary"]["skip"].as_u64().unwrap_or(0),
         summary["summary"]["total"].as_u64().unwrap_or(0),
         format_duration_ms(elapsed_ms),
@@ -941,6 +1126,108 @@ fn select_tasks(
     Ok(tasks)
 }
 
+fn can_share_batch(
+    suite_id: &str,
+    batch: &[SuiteTask],
+    candidate: &SuiteTask,
+    high_mem_parallelism: usize,
+    effect_parallelism: usize,
+) -> bool {
+    if batch.is_empty() {
+        return true;
+    }
+    let high_mem_in_batch = batch.iter().filter(|task| task.mem_hint == "high").count();
+    if candidate.mem_hint == "high" && high_mem_in_batch >= high_mem_parallelism.max(1) {
+        return false;
+    }
+    if suite_id == "contracts" && candidate.mode == "effect" {
+        let effect_in_batch = batch.iter().filter(|task| task.mode == "effect").count();
+        if effect_in_batch >= effect_parallelism.max(1) {
+            return false;
+        }
+    }
+    true
+}
+
+fn build_execution_plan(
+    root: &Path,
+    suite_id: &str,
+    tasks: Vec<SuiteTask>,
+    jobs: usize,
+) -> Result<(Vec<Vec<SuiteTask>>, Vec<SchedulingLane>), String> {
+    let high_mem_parallelism = suite_high_mem_parallelism(root, suite_id)?;
+    let effect_parallelism = suite_effect_parallelism(root, suite_id)?;
+    let ordered_tasks = if suite_id == "checks" {
+        let mut grouped = BTreeMap::<String, VecDeque<SuiteTask>>::new();
+        for task in tasks {
+            grouped
+                .entry(task.group.clone())
+                .or_default()
+                .push_back(task);
+        }
+        let mut round_robin = Vec::new();
+        loop {
+            let mut advanced = false;
+            for queue in grouped.values_mut() {
+                if let Some(task) = queue.pop_front() {
+                    round_robin.push(task);
+                    advanced = true;
+                }
+            }
+            if !advanced {
+                break;
+            }
+        }
+        round_robin
+    } else {
+        tasks
+    };
+    let mut batches = Vec::<Vec<SuiteTask>>::new();
+    let mut plan = Vec::<SchedulingLane>::new();
+    for task in ordered_tasks {
+        let mut placed = false;
+        for (batch_index, batch) in batches.iter_mut().enumerate() {
+            if batch.len() >= jobs {
+                continue;
+            }
+            if !can_share_batch(
+                suite_id,
+                batch,
+                &task,
+                high_mem_parallelism,
+                effect_parallelism,
+            ) {
+                continue;
+            }
+            batch.push(task.clone());
+            plan.push(SchedulingLane {
+                batch: batch_index,
+                id: task.id.clone(),
+                group: task.group.clone(),
+                mode: task.mode.clone(),
+                severity: task.severity.clone(),
+                cpu_hint: task.cpu_hint.clone(),
+                mem_hint: task.mem_hint.clone(),
+            });
+            placed = true;
+            break;
+        }
+        if !placed {
+            batches.push(vec![task.clone()]);
+            plan.push(SchedulingLane {
+                batch: batches.len() - 1,
+                id: task.id.clone(),
+                group: task.group.clone(),
+                mode: task.mode.clone(),
+                severity: task.severity.clone(),
+                cpu_hint: task.cpu_hint.clone(),
+                mem_hint: task.mem_hint.clone(),
+            });
+        }
+    }
+    Ok((batches, plan))
+}
+
 fn task_report_paths(task: &SuiteTask, task_root: &Path) -> Vec<String> {
     task.reports
         .iter()
@@ -998,9 +1285,10 @@ fn pinned_tool_version(repo_root: &Path, tool: &str) -> Option<String> {
     if tool == "bijux-dev-atlas" {
         return Some(git_sha(repo_root));
     }
-    let payload: serde_json::Value =
-        serde_json::from_str(&fs::read_to_string(repo_root.join("configs/ops/pins/tools.json")).ok()?)
-            .ok()?;
+    let payload: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(repo_root.join("configs/ops/pins/tools.json")).ok()?,
+    )
+    .ok()?;
     payload
         .get("tools")
         .and_then(|value| value.get(tool))
@@ -1027,11 +1315,7 @@ fn actual_tool_version(repo_root: &Path, tool: &str) -> Option<String> {
         .ok()
         .and_then(|output| {
             if output.status.success() {
-                Some(
-                    String::from_utf8_lossy(&output.stdout)
-                        .trim()
-                        .to_string(),
-                )
+                Some(String::from_utf8_lossy(&output.stdout).trim().to_string())
             } else {
                 None
             }
@@ -1039,7 +1323,8 @@ fn actual_tool_version(repo_root: &Path, tool: &str) -> Option<String> {
 }
 
 fn tool_version_rows(repo_root: &Path, tools: &[&str]) -> Vec<serde_json::Value> {
-    tools.iter()
+    tools
+        .iter()
         .map(|tool| {
             let expected = pinned_tool_version(repo_root, tool);
             let actual = actual_tool_version(repo_root, tool).or_else(|| expected.clone());
@@ -1080,8 +1365,9 @@ fn report_payload_for_check(
     });
     match report_id {
         "check-rustfmt" => {
-            let source = read_optional_text(&source_report_path(task_root, "fmt/suite-run/report.txt"))
-                .and_then(|text| extract_json_from_text(&text));
+            let source =
+                read_optional_text(&source_report_path(task_root, "fmt/suite-run/report.txt"))
+                    .and_then(|text| extract_json_from_text(&text));
             serde_json::json!({
                 "report_id": report_id,
                 "version": 1,
@@ -1101,7 +1387,8 @@ fn report_payload_for_check(
             })
         }
         "check-clippy" => {
-            let source = read_optional_json(&source_report_path(task_root, "lint/suite-run/report.json"));
+            let source =
+                read_optional_json(&source_report_path(task_root, "lint/suite-run/report.json"));
             let stderr_text = source
                 .as_ref()
                 .and_then(|value| value.get("stderr"))
@@ -1132,7 +1419,10 @@ fn report_payload_for_check(
         }
         "check-config-format" => {
             let source = if task.id == "CHECK-CONFIGS-LINT-001" {
-                read_optional_json(&source_report_path(task_root, "configs-lint/suite-run/report.json"))
+                read_optional_json(&source_report_path(
+                    task_root,
+                    "configs-lint/suite-run/report.json",
+                ))
             } else {
                 None
             };
@@ -1151,7 +1441,10 @@ fn report_payload_for_check(
             })
         }
         "check-docs-links" => {
-            let source = read_optional_json(&source_report_path(task_root, "docs-validate/suite-run/report.json"));
+            let source = read_optional_json(&source_report_path(
+                task_root,
+                "docs-validate/suite-run/report.json",
+            ));
             let links = source
                 .as_ref()
                 .and_then(|value| value.get("checks"))
@@ -1171,8 +1464,14 @@ fn report_payload_for_check(
             })
         }
         "check-helm-lint" | "check-kubeconform" => {
-            let source = read_optional_json(&source_report_path(task_root, "k8s-validate/suite-run/report.json"));
-            let summary = source.as_ref().and_then(|value| value.get("summary")).cloned();
+            let source = read_optional_json(&source_report_path(
+                task_root,
+                "k8s-validate/suite-run/report.json",
+            ));
+            let summary = source
+                .as_ref()
+                .and_then(|value| value.get("summary"))
+                .cloned();
             serde_json::json!({
                 "report_id": report_id,
                 "version": 1,
@@ -1249,8 +1548,9 @@ fn write_governed_check_reports(
 ) -> Result<Vec<String>, String> {
     let mut report_paths = Vec::new();
     for (report_id, report_rel) in task.report_ids.iter().zip(task.reports.iter()) {
-        let payload =
-            report_payload_for_check(repo_root, task_root, task, report_id, stdout, stderr, status);
+        let payload = report_payload_for_check(
+            repo_root, task_root, task, report_id, stdout, stderr, status,
+        );
         let unpinned_tools = payload
             .get("tool_versions")
             .and_then(serde_json::Value::as_array)
@@ -1479,6 +1779,9 @@ fn result_report(task_output: &TaskOutput) -> serde_json::Value {
         "duration_ms": task_output.duration_ms,
         "mode": task_output.task.mode,
         "group": task_output.task.group,
+        "severity": task_output.task.severity,
+        "cpu_hint": task_output.task.cpu_hint,
+        "mem_hint": task_output.task.mem_hint,
         "summary": task_output.task.summary,
         "report_paths": task_output.report_paths,
         "error_summary": task_output.error_summary,
@@ -1495,10 +1798,23 @@ fn summary_report(
     tasks: &[TaskOutput],
     artifacts_root: &Path,
     elapsed_ms: u64,
+    strict: bool,
+    scheduling_plan: &[SchedulingLane],
 ) -> serde_json::Value {
     let failures = tasks
         .iter()
-        .filter(|task| task.status == "fail")
+        .filter(|task| task.status == "fail" && (strict || task.task.severity != "info"))
+        .map(|task| {
+            serde_json::json!({
+                "id": task.task.id,
+                "group": task.task.group,
+                "error_summary": task.error_summary,
+            })
+        })
+        .collect::<Vec<_>>();
+    let warnings = tasks
+        .iter()
+        .filter(|task| task.status == "fail" && !strict && task.task.severity == "info")
         .map(|task| {
             serde_json::json!({
                 "id": task.task.id,
@@ -1508,7 +1824,14 @@ fn summary_report(
         })
         .collect::<Vec<_>>();
     let pass = tasks.iter().filter(|task| task.status == "pass").count();
-    let fail = tasks.iter().filter(|task| task.status == "fail").count();
+    let fail = tasks
+        .iter()
+        .filter(|task| task.status == "fail" && (strict || task.task.severity != "info"))
+        .count();
+    let warn = tasks
+        .iter()
+        .filter(|task| task.status == "fail" && !strict && task.task.severity == "info")
+        .count();
     let skip = tasks.iter().filter(|task| task.status == "skip").count();
     serde_json::json!({
         "report_id": "suite-summary",
@@ -1526,15 +1849,30 @@ fn summary_report(
         "summary": {
             "pass": pass,
             "fail": fail,
+            "warn": warn,
             "skip": skip,
             "total": tasks.len(),
+            "strict": strict,
         },
         "failures": failures,
+        "warnings": warnings,
+        "scheduling_plan": scheduling_plan.iter().map(|lane| serde_json::json!({
+            "batch": lane.batch,
+            "id": lane.id,
+            "group": lane.group,
+            "mode": lane.mode,
+            "severity": lane.severity,
+            "cpu_hint": lane.cpu_hint,
+            "mem_hint": lane.mem_hint,
+        })).collect::<Vec<_>>(),
         "tasks": tasks.iter().map(|task| serde_json::json!({
             "id": task.task.id,
             "status": task.status,
             "group": task.task.group,
             "mode": task.task.mode,
+            "severity": task.task.severity,
+            "cpu_hint": task.task.cpu_hint,
+            "mem_hint": task.task.mem_hint,
             "duration_ms": task.duration_ms,
             "summary": task.task.summary,
             "error_summary": task.error_summary,
@@ -1619,6 +1957,26 @@ fn run_tasks_parallel(
     }
 }
 
+fn execute_plan_batches(
+    repo_root: &Path,
+    suite_root: &Path,
+    batches: Vec<Vec<SuiteTask>>,
+    jobs: usize,
+    fail_fast: bool,
+) -> Result<Vec<TaskOutput>, String> {
+    let mut outputs = Vec::new();
+    for batch in batches {
+        let mut batch_outputs = run_tasks_parallel(repo_root, suite_root, batch, jobs, fail_fast)?;
+        let should_stop = fail_fast && batch_outputs.iter().any(|task| task.status == "fail");
+        outputs.append(&mut batch_outputs);
+        if should_stop {
+            break;
+        }
+    }
+    outputs.sort_by(|a, b| a.task.id.cmp(&b.task.id));
+    Ok(outputs)
+}
+
 fn render_suite_output(
     summary: &serde_json::Value,
     task_details: &[serde_json::Value],
@@ -1671,6 +2029,9 @@ fn suite_task_details(
                 "duration_ms": result["duration_ms"],
                 "mode": result["mode"],
                 "group": result["group"],
+                "severity": result["severity"],
+                "cpu_hint": result["cpu_hint"],
+                "mem_hint": result["mem_hint"],
                 "summary": result["summary"],
                 "error_summary": result["error_summary"],
                 "result_path": result_path.display().to_string(),
@@ -2037,7 +2398,7 @@ fn execute_suite_run(options: SuiteRunOptions) -> Result<(String, i32), String> 
     if options.fail_fast == Some(true) && options.fail_fast == Some(false) {
         return Err("invalid fail-fast state".to_string());
     }
-    let jobs = parse_jobs(&options.jobs)?;
+    let jobs = parse_jobs(&options.repo_root, &suite_id, &options.jobs)?;
     let tasks = select_tasks(
         &options.repo_root,
         &suite_id,
@@ -2098,17 +2459,27 @@ fn execute_suite_run(options: SuiteRunOptions) -> Result<(String, i32), String> 
         })
         .collect::<Result<Vec<_>, String>>()?;
 
-    let mut executed = run_tasks_parallel(
+    let (plan_batches, scheduling_plan) =
+        build_execution_plan(&options.repo_root, &suite_id, runnable, jobs)?;
+    let mut executed = execute_plan_batches(
         &options.repo_root,
         &suite_root,
-        runnable,
+        plan_batches,
         jobs,
         options.fail_fast.unwrap_or(false),
     )?;
     task_outputs.append(&mut executed);
     task_outputs.sort_by(|a, b| a.task.id.cmp(&b.task.id));
     let elapsed_ms = started.elapsed().as_millis() as u64;
-    let summary = summary_report(&suite_id, &run_id, &task_outputs, &suite_root, elapsed_ms);
+    let summary = summary_report(
+        &suite_id,
+        &run_id,
+        &task_outputs,
+        &suite_root,
+        elapsed_ms,
+        options.strict,
+        &scheduling_plan,
+    );
     validate_named_report(&options.repo_root, suite_summary_schema_name(), &summary)?;
     let summary_path = suite_root.join("suite-summary.json");
     let summary_text = serde_json::to_string_pretty(&summary)
@@ -2182,6 +2553,7 @@ pub(crate) fn run_registry_check_by_id(
         quiet: false,
         verbose: false,
         color: SuiteColorArg::Never,
+        strict: true,
         out: out.clone(),
     };
     let suite_id = normalize_suite_id(&options.suite);
@@ -2209,6 +2581,16 @@ pub(crate) fn run_registry_check_by_id(
         std::slice::from_ref(&output),
         &suite_root,
         output.duration_ms,
+        true,
+        &[SchedulingLane {
+            batch: 0,
+            id: output.task.id.clone(),
+            group: output.task.group.clone(),
+            mode: output.task.mode.clone(),
+            severity: output.task.severity.clone(),
+            cpu_hint: output.task.cpu_hint.clone(),
+            mem_hint: output.task.mem_hint.clone(),
+        }],
     );
     validate_named_report(&options.repo_root, suite_summary_schema_name(), &summary)?;
     let summary_text = serde_json::to_string_pretty(&summary)
@@ -2314,6 +2696,16 @@ pub(crate) fn run_registry_contract_by_id(
         std::slice::from_ref(&output),
         &suite_root,
         output.duration_ms,
+        true,
+        &[SchedulingLane {
+            batch: 0,
+            id: output.task.id.clone(),
+            group: output.task.group.clone(),
+            mode: output.task.mode.clone(),
+            severity: output.task.severity.clone(),
+            cpu_hint: output.task.cpu_hint.clone(),
+            mem_hint: output.task.mem_hint.clone(),
+        }],
     );
     validate_named_report(&root, suite_summary_schema_name(), &summary)?;
     let summary_text = serde_json::to_string_pretty(&summary)
@@ -2458,6 +2850,7 @@ pub(crate) fn run_suites_command(quiet: bool, command: SuitesCommand) -> i32 {
                 quiet,
                 verbose,
                 color,
+                strict,
                 out,
             } => {
                 if fail_fast && no_fail_fast {
@@ -2482,6 +2875,7 @@ pub(crate) fn run_suites_command(quiet: bool, command: SuitesCommand) -> i32 {
                     quiet,
                     verbose,
                     color,
+                    strict,
                     out,
                 })
             }
@@ -2507,6 +2901,16 @@ pub(crate) fn run_suites_command(quiet: bool, command: SuitesCommand) -> i32 {
                     format,
                     quiet,
                 )?;
+                write_output_if_requested(out, &rendered)?;
+                Ok((rendered, code))
+            }
+            SuitesCommand::Lint {
+                repo_root,
+                format,
+                out,
+            } => {
+                let root = resolve_repo_root(repo_root)?;
+                let (rendered, code) = render_suite_lint(&root, format)?;
                 write_output_if_requested(out, &rendered)?;
                 Ok((rendered, code))
             }
@@ -2613,7 +3017,15 @@ mod tests {
                     "commands":["git --version"],
                     "report_ids":["check-suite-summary"],
                     "reports":["check-git-version.json"],
-                    "tags":["rust"]
+                    "tags":["rust"],
+                    "suite_membership":["checks"],
+                    "severity":"blocker",
+                    "stage":"local",
+                    "runtime_cost":"low",
+                    "determinism":"strict",
+                    "overlaps_with":[],
+                    "cpu_hint":"light",
+                    "mem_hint":"low"
                 }]
             }),
         );
@@ -2629,8 +3041,34 @@ mod tests {
                     "group":"ops",
                     "runner":"git --version",
                     "reports":["contract-git-version.json"],
-                    "tags":["ops"]
+                    "suite_membership":["contracts"],
+                    "tags":["ops"],
+                    "overlaps_with":[]
                 }]
+            }),
+        );
+        write_json(
+            &dir.path()
+                .join("configs/governance/suites/default-jobs.json"),
+            &serde_json::json!({
+                "schema_version": 1,
+                "policy_id": "suite-default-jobs",
+                "suites": [
+                    {
+                        "suite_id": "checks",
+                        "auto_jobs": 2,
+                        "low_core_cap": 1,
+                        "high_mem_parallelism": 1,
+                        "effect_parallelism": 1
+                    },
+                    {
+                        "suite_id": "contracts",
+                        "auto_jobs": 2,
+                        "low_core_cap": 1,
+                        "high_mem_parallelism": 1,
+                        "effect_parallelism": 1
+                    }
+                ]
             }),
         );
         write_json(
@@ -2671,6 +3109,9 @@ mod tests {
                     "duration_ms":{"type":"integer"},
                     "mode":{"type":"string"},
                     "group":{"type":"string"},
+                    "severity":{"type":"string"},
+                    "cpu_hint":{"type":"string"},
+                    "mem_hint":{"type":"string"},
                     "summary":{"type":"string"},
                     "report_paths":{"type":"array"},
                     "artifacts":{"type":"object"}
@@ -2681,7 +3122,7 @@ mod tests {
             &dir.path()
                 .join("configs/contracts/reports/suite-summary.schema.json"),
             &serde_json::json!({
-                "required":["report_id","version","inputs","suite","run_id","run_timestamp","artifacts_root","elapsed_ms","status","summary","failures","tasks"],
+                "required":["report_id","version","inputs","suite","run_id","run_timestamp","artifacts_root","elapsed_ms","status","summary","failures","warnings","scheduling_plan","tasks"],
                 "properties":{
                     "report_id":{"const":"suite-summary"},
                     "version":{"const":1},
@@ -2694,6 +3135,8 @@ mod tests {
                     "status":{"type":"string"},
                     "summary":{"type":"object"},
                     "failures":{"type":"array"},
+                    "warnings":{"type":"array"},
+                    "scheduling_plan":{"type":"array"},
                     "tasks":{"type":"array"}
                 }
             }),
@@ -2816,6 +3259,7 @@ mod tests {
             quiet: false,
             verbose: false,
             color: SuiteColorArg::Never,
+            strict: false,
             out: None,
         })
         .expect("suite run");
@@ -2843,6 +3287,7 @@ mod tests {
             quiet: false,
             verbose: false,
             color: SuiteColorArg::Never,
+            strict: false,
             out: None,
         })
         .expect("suite run");

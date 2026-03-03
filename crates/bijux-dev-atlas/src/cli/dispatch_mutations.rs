@@ -19,7 +19,8 @@ pub(super) fn force_json_output(command: &mut Command) {
             crate::cli::SuitesCommand::List { format, .. }
             | crate::cli::SuitesCommand::Describe { format, .. }
             | crate::cli::SuitesCommand::Last { format, .. }
-            | crate::cli::SuitesCommand::History { format, .. } => *format = FormatArg::Json,
+            | crate::cli::SuitesCommand::History { format, .. }
+            | crate::cli::SuitesCommand::Lint { format, .. } => *format = FormatArg::Json,
         },
         Command::Contract { command } => match command {
             ContractCommand::Run { format, .. } => *format = FormatArg::Json,
@@ -944,7 +945,8 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | crate::cli::SuitesCommand::Last { repo_root, .. }
             | crate::cli::SuitesCommand::History { repo_root, .. }
             | crate::cli::SuitesCommand::Report { repo_root, .. }
-            | crate::cli::SuitesCommand::Diff { repo_root, .. } => *repo_root = Some(root.clone()),
+            | crate::cli::SuitesCommand::Diff { repo_root, .. }
+            | crate::cli::SuitesCommand::Lint { repo_root, .. } => *repo_root = Some(root.clone()),
         },
         Command::Contract { command } => match command {
             ContractCommand::Run { repo_root, .. } => *repo_root = Some(root.clone()),

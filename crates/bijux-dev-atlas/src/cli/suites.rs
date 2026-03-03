@@ -56,6 +56,8 @@ pub enum SuitesCommand {
         verbose: bool,
         #[arg(long, value_enum, default_value_t = SuiteColorArg::Auto)]
         color: SuiteColorArg,
+        #[arg(long, default_value_t = false)]
+        strict: bool,
         #[arg(long)]
         out: Option<PathBuf>,
     },
@@ -150,6 +152,14 @@ pub enum SuitesCommand {
         verbose: bool,
         #[arg(long, value_enum, default_value_t = SuiteColorArg::Auto)]
         color: SuiteColorArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Lint {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
         #[arg(long)]
         out: Option<PathBuf>,
     },

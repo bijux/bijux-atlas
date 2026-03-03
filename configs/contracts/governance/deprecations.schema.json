@@ -32,7 +32,7 @@
           },
           "surface": {
             "type": "string",
-            "enum": ["env-key", "chart-value", "profile-key", "report-schema", "docs-url"]
+            "enum": ["env-key", "chart-value", "profile-key", "report-schema", "docs-url", "check-id"]
           },
           "old_name": {
             "type": "string",
