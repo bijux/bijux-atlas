@@ -455,6 +455,14 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             crate::cli::OpsHelmCommand::Upgrade(args) => crate::ops_execution_runtime::run_ops_helm_upgrade(&args),
             crate::cli::OpsHelmCommand::Rollback(args) => crate::ops_execution_runtime::run_ops_helm_rollback(&args),
         },
+        OpsCommand::Evidence { command } => match command {
+            crate::cli::OpsEvidenceCommand::Collect(common) => {
+                crate::ops_execution_runtime::run_ops_evidence_collect(&common)
+            }
+            crate::cli::OpsEvidenceCommand::Verify(common) => {
+                crate::ops_execution_runtime::run_ops_evidence_verify(&common)
+            }
+        },
         OpsCommand::Install(args) => crate::ops_execution_runtime::run_ops_install(&args),
         OpsCommand::Smoke(args) => crate::ops_execution_runtime::run_ops_smoke(&args),
         OpsCommand::Status(args) => crate::ops_execution_runtime::run_ops_status(&args),

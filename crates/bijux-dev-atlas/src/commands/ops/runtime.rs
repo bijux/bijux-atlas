@@ -349,16 +349,6 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             action: "report-readiness".to_string(),
             common,
         },
-        OpsCommand::Evidence { command } => match command {
-            OpsEvidenceCommand::Collect(common) => OpsCommand::Explain {
-                action: "evidence-collect".to_string(),
-                common,
-            },
-            OpsEvidenceCommand::Verify(common) => OpsCommand::Explain {
-                action: "evidence-verify".to_string(),
-                common,
-            },
-        },
         other => other,
     };
 

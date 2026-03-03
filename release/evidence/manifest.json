@@ -1,0 +1,54 @@
+{
+  "chart_package": {
+    "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
+    "sha256": "e39a41f1ee524c41ccb3a1871e288c1de9af47dd1d7b79de552a3a54a85ff3b3"
+  },
+  "generated_by": "bijux dev atlas ops evidence collect",
+  "identity_path": "release/evidence/identity.json",
+  "image_artifacts": [
+    {
+      "digest": "",
+      "profile": "local",
+      "repository": "ghcr.io/bijux/bijux-atlas",
+      "source_path": "ops/k8s/values/local.yaml",
+      "tag": "0.1.0"
+    },
+    {
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "profile": "perf",
+      "repository": "",
+      "source_path": "ops/k8s/values/perf.yaml",
+      "tag": ""
+    },
+    {
+      "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "profile": "prod-airgap",
+      "repository": "registry.airgap.local/bijux-atlas",
+      "source_path": "ops/k8s/values/prod-airgap.yaml",
+      "tag": ""
+    },
+    {
+      "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "profile": "prod-ha",
+      "repository": "",
+      "source_path": "ops/k8s/values/prod-ha.yaml",
+      "tag": ""
+    },
+    {
+      "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "profile": "prod-minimal",
+      "repository": "",
+      "source_path": "ops/k8s/values/prod-minimal.yaml",
+      "tag": ""
+    }
+  ],
+  "reports": [
+    "ops/report/generated/historical-comparison.json",
+    "ops/report/generated/readiness-score.json",
+    "ops/report/generated/release-evidence-bundle.json",
+    "ops/report/generated/report-diff.json"
+  ],
+  "sboms": [],
+  "schema_version": 1,
+  "simulation_summaries": []
+}

@@ -833,6 +833,318 @@ fn build_lifecycle_evidence_bundle(
     }))
 }
 
+fn evidence_root(repo_root: &std::path::Path) -> Result<std::path::PathBuf, String> {
+    let path = repo_root.join("release/evidence");
+    std::fs::create_dir_all(&path)
+        .map_err(|err| format!("failed to create {}: {err}", path.display()))?;
+    Ok(path)
+}
+
+fn package_chart_for_evidence(
+    process: &OpsProcess,
+    repo_root: &std::path::Path,
+) -> Result<std::path::PathBuf, String> {
+    let evidence_root = evidence_root(repo_root)?;
+    let package_dir = evidence_root.join("packages");
+    std::fs::create_dir_all(&package_dir)
+        .map_err(|err| format!("failed to create {}: {err}", package_dir.display()))?;
+    let chart_path = simulation_current_chart_path(repo_root);
+    let argv = vec![
+        "package".to_string(),
+        chart_path.display().to_string(),
+        "--destination".to_string(),
+        package_dir.display().to_string(),
+    ];
+    process
+        .run_subprocess("helm", &argv, repo_root)
+        .map_err(|err| err.to_stable_message())?;
+    let mut packages = std::fs::read_dir(&package_dir)
+        .map_err(|err| format!("failed to read {}: {err}", package_dir.display()))?
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| path.extension().and_then(|v| v.to_str()) == Some("tgz"))
+        .collect::<Vec<_>>();
+    packages.sort();
+    packages
+        .pop()
+        .ok_or_else(|| format!("no chart package produced in {}", package_dir.display()))
+}
+
+fn collect_image_artifacts(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
+    let values_root = repo_root.join("ops/k8s/values");
+    let mut rows = std::fs::read_dir(&values_root)
+        .map_err(|err| format!("failed to read {}: {err}", values_root.display()))?
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| path.extension().and_then(|v| v.to_str()) == Some("yaml"))
+        .collect::<Vec<_>>();
+    rows.sort();
+    let mut artifacts = Vec::new();
+    for path in rows {
+        let value: serde_yaml::Value = serde_yaml::from_str(
+            &std::fs::read_to_string(&path)
+                .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+        )
+        .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+        let Some(image) = value.get("image") else {
+            continue;
+        };
+        let repository = image
+            .get("repository")
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or_default()
+            .to_string();
+        let digest = image
+            .get("digest")
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or_default()
+            .to_string();
+        let tag = image
+            .get("tag")
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or_default()
+            .to_string();
+        if repository.is_empty() && digest.is_empty() && tag.is_empty() {
+            continue;
+        }
+        let profile = path
+            .file_stem()
+            .and_then(|v| v.to_str())
+            .unwrap_or_default()
+            .to_string();
+        artifacts.push(serde_json::json!({
+            "source_path": path.strip_prefix(repo_root).unwrap_or(&path).display().to_string(),
+            "profile": profile,
+            "repository": repository,
+            "digest": digest,
+            "tag": tag
+        }));
+    }
+    Ok(artifacts)
+}
+
+fn collect_sboms(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
+    let mut paths = Vec::new();
+    let artifacts_root = repo_root.join("artifacts");
+    if !artifacts_root.exists() {
+        return Ok(paths);
+    }
+    let mut stack = vec![artifacts_root];
+    while let Some(path) = stack.pop() {
+        for entry in std::fs::read_dir(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?
+        {
+            let entry = entry.map_err(|err| format!("failed to read directory entry: {err}"))?;
+            let entry_path = entry.path();
+            if entry_path.is_dir() {
+                stack.push(entry_path);
+                continue;
+            }
+            let Some(name) = entry_path.file_name().and_then(|v| v.to_str()) else {
+                continue;
+            };
+            let format = if name.ends_with(".spdx.json") {
+                Some("spdx-json")
+            } else if name.ends_with(".cdx.json") || name.ends_with(".cyclonedx.json") {
+                Some("cyclonedx-json")
+            } else {
+                None
+            };
+            if let Some(format) = format {
+                paths.push(serde_json::json!({
+                    "path": entry_path.strip_prefix(repo_root).unwrap_or(&entry_path).display().to_string(),
+                    "format": format
+                }));
+            }
+        }
+    }
+    paths.sort_by(|a, b| a["path"].as_str().cmp(&b["path"].as_str()));
+    Ok(paths)
+}
+
+fn collect_report_paths(repo_root: &std::path::Path, run_id: &RunId) -> Result<Vec<String>, String> {
+    let mut paths = Vec::new();
+    for dir in [
+        repo_root.join("ops/report/generated"),
+        repo_root.join("artifacts/ops").join(run_id.as_str()).join("reports"),
+    ] {
+        if !dir.exists() {
+            continue;
+        }
+        for entry in std::fs::read_dir(&dir)
+            .map_err(|err| format!("failed to read {}: {err}", dir.display()))?
+        {
+            let entry = entry.map_err(|err| format!("failed to read directory entry: {err}"))?;
+            let path = entry.path();
+            if path.extension().and_then(|v| v.to_str()) != Some("json") {
+                continue;
+            }
+            paths.push(path.strip_prefix(repo_root).unwrap_or(&path).display().to_string());
+        }
+    }
+    paths.sort();
+    paths.dedup();
+    Ok(paths)
+}
+
+fn collect_simulation_summary_paths(repo_root: &std::path::Path, run_id: &RunId) -> Vec<String> {
+    let reports_dir = repo_root.join("artifacts/ops").join(run_id.as_str()).join("reports");
+    ["ops-simulation-summary.json", "ops-lifecycle-summary.json"]
+        .into_iter()
+        .map(|name| reports_dir.join(name))
+        .filter(|path| path.exists())
+        .map(|path| path.strip_prefix(repo_root).unwrap_or(&path).display().to_string())
+        .collect::<Vec<_>>()
+}
+
+fn git_head_sha(process: &OpsProcess, repo_root: &std::path::Path) -> Result<String, String> {
+    let argv = vec!["rev-parse".to_string(), "HEAD".to_string()];
+    let (stdout, _) = process
+        .run_subprocess("git", &argv, repo_root)
+        .map_err(|err| err.to_stable_message())?;
+    let sha = stdout.trim().to_string();
+    if sha.len() == 40 && sha.chars().all(|c| c.is_ascii_hexdigit()) {
+        Ok(sha)
+    } else {
+        Err(format!("unexpected git sha output `{sha}`"))
+    }
+}
+
+pub(crate) fn run_ops_evidence_collect(
+    common: &OpsCommonArgs,
+) -> Result<(String, i32), String> {
+    if !common.allow_subprocess {
+        return Err("evidence collect requires --allow-subprocess".to_string());
+    }
+    if !common.allow_write {
+        return Err("evidence collect requires --allow-write".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let process = OpsProcess::new(true);
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let git_sha = git_head_sha(&process, &repo_root)?;
+    let release_id = format!("{}-{}", run_id.as_str(), &git_sha[..12]);
+    let governance_version = format!("main@{git_sha}");
+    let evidence_root = evidence_root(&repo_root)?;
+    let chart_package = package_chart_for_evidence(&process, &repo_root)?;
+    let identity_path = evidence_root.join("identity.json");
+    let manifest_path = evidence_root.join("manifest.json");
+    let identity = serde_json::json!({
+        "schema_version": 1,
+        "release_id": release_id,
+        "git_sha": git_sha,
+        "governance_version": governance_version
+    });
+    std::fs::write(
+        &identity_path,
+        serde_json::to_string_pretty(&identity).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", identity_path.display()))?;
+    let manifest = serde_json::json!({
+        "schema_version": 1,
+        "generated_by": "bijux dev atlas ops evidence collect",
+        "identity_path": identity_path.strip_prefix(&repo_root).unwrap_or(&identity_path).display().to_string(),
+        "chart_package": {
+            "path": chart_package.strip_prefix(&repo_root).unwrap_or(&chart_package).display().to_string(),
+            "sha256": sha256_hex(&String::from_utf8_lossy(
+                &std::fs::read(&chart_package)
+                    .map_err(|err| format!("failed to read {}: {err}", chart_package.display()))?
+            ))
+        },
+        "image_artifacts": collect_image_artifacts(&repo_root)?,
+        "sboms": collect_sboms(&repo_root)?,
+        "reports": collect_report_paths(&repo_root, &run_id)?,
+        "simulation_summaries": collect_simulation_summary_paths(&repo_root, &run_id)
+    });
+    std::fs::write(
+        &manifest_path,
+        serde_json::to_string_pretty(&manifest).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", manifest_path.display()))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": "ok",
+        "text": format!("wrote release evidence {}", manifest_path.display()),
+        "rows": [{
+            "manifest_path": manifest_path.display().to_string(),
+            "identity_path": identity_path.display().to_string()
+        }],
+        "summary": {"total": 1, "errors": 0, "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, 0))
+}
+
+pub(crate) fn run_ops_evidence_verify(
+    common: &OpsCommonArgs,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let evidence_root = evidence_root(&repo_root)?;
+    let manifest_path = evidence_root.join("manifest.json");
+    let identity_path = evidence_root.join("identity.json");
+    let manifest: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(&manifest_path)
+            .map_err(|err| format!("failed to read {}: {err}", manifest_path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", manifest_path.display()))?;
+    let identity: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(&identity_path)
+            .map_err(|err| format!("failed to read {}: {err}", identity_path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", identity_path.display()))?;
+    let mut errors = Vec::new();
+    if manifest.get("schema_version").and_then(|v| v.as_i64()) != Some(1) {
+        errors.push("manifest schema_version must be 1".to_string());
+    }
+    if identity.get("schema_version").and_then(|v| v.as_i64()) != Some(1) {
+        errors.push("identity schema_version must be 1".to_string());
+    }
+    for rel in manifest
+        .get("reports")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .chain(
+            manifest
+                .get("simulation_summaries")
+                .and_then(|v| v.as_array())
+                .into_iter()
+                .flatten()
+                .filter_map(serde_json::Value::as_str),
+        )
+    {
+        if !repo_root.join(rel).exists() {
+            errors.push(format!("referenced artifact does not exist: {rel}"));
+        }
+    }
+    if let Some(path) = manifest
+        .get("chart_package")
+        .and_then(|v| v.get("path"))
+        .and_then(serde_json::Value::as_str)
+    {
+        if !repo_root.join(path).exists() {
+            errors.push(format!("chart package does not exist: {path}"));
+        }
+    } else {
+        errors.push("manifest chart_package.path must exist".to_string());
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": status,
+        "text": if status == "ok" { "release evidence verified" } else { "release evidence verification failed" },
+        "rows": [{
+            "manifest_path": manifest_path.display().to_string(),
+            "identity_path": identity_path.display().to_string(),
+            "errors": errors
+        }],
+        "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
 fn helm_release_manifest(
     process: &OpsProcess,
     repo_root: &std::path::Path,
