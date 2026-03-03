@@ -9,7 +9,11 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     domains
                         .iter()
                         .map(|(descriptor, registry)| {
-                            contracts::registry_snapshot_with_policy(&repo_root, descriptor.name, registry)
+                            contracts::registry_snapshot_with_policy(
+                                &repo_root,
+                                descriptor.name,
+                                registry,
+                            )
                         })
                         .collect::<Result<Vec<_>, _>>()?
                         .into_iter()
@@ -120,7 +124,10 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             });
             let rendered = serde_json::to_string_pretty(&payload)
                 .map_err(|e| format!("encode contracts snapshot failed: {e}"))?;
-            let out_path = args.out.clone().unwrap_or_else(|| repo_root.join(default_rel));
+            let out_path = args
+                .out
+                .clone()
+                .unwrap_or_else(|| repo_root.join(default_rel));
             if let Some(parent) = out_path.parent() {
                 fs::create_dir_all(parent)
                     .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
@@ -132,6 +139,11 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
 
         if let ContractsCommand::SelfCheck(args) = &command {
             let repo_root = resolve_repo_root(args.repo_root.clone())?;
+            let contract_modes =
+                bijux_dev_atlas::registry::ContractModesFile::validate(&repo_root)?;
+            if !contract_modes.errors.is_empty() {
+                return Ok((contract_modes.errors.join("\n"), 2));
+            }
             let format = common_format(args);
             let mut lints = registry_lints(&repo_root)?;
             let domains = all_domains(&repo_root)?;
@@ -148,13 +160,11 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                         "check": "contracts-self-check",
                         "lint_count": 0
                     }))
-                    .map_err(|e| format!("encode contracts self-check failed: {e}"))?,
+                    .map_err(|e| format!("encode contract self-check failed: {e}"))?,
                     ContractsFormatArg::Human
                     | ContractsFormatArg::Table
                     | ContractsFormatArg::Junit
-                    | ContractsFormatArg::Github => {
-                        "contracts self-check: PASS".to_string()
-                    }
+                    | ContractsFormatArg::Github => "contract self-check: PASS".to_string(),
                 };
                 return Ok((rendered, 0));
             }
@@ -163,6 +173,11 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
 
         if let ContractsCommand::Doctor(args) = &command {
             let repo_root = resolve_repo_root(args.repo_root.clone())?;
+            let contract_modes =
+                bijux_dev_atlas::registry::ContractModesFile::validate(&repo_root)?;
+            if !contract_modes.errors.is_empty() {
+                return Ok((contract_modes.errors.join("\n"), 2));
+            }
             let format = common_format(args);
             let domains = all_domains(&repo_root)?;
             let coverage_by_domain = domains
@@ -198,14 +213,18 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             });
             let rendered = match format {
                 ContractsFormatArg::Json => serde_json::to_string_pretty(&payload)
-                    .map_err(|e| format!("encode contracts doctor failed: {e}"))?,
+                    .map_err(|e| format!("encode contract doctor failed: {e}"))?,
                 ContractsFormatArg::Human
                 | ContractsFormatArg::Table
                 | ContractsFormatArg::Junit
                 | ContractsFormatArg::Github => {
                     let mut out = String::new();
-                    out.push_str("contracts doctor\n\ncoverage by domain:\n");
-                    for row in &payload["coverage_by_domain"].as_array().cloned().unwrap_or_default() {
+                    out.push_str("contract doctor\n\ncoverage by domain:\n");
+                    for row in &payload["coverage_by_domain"]
+                        .as_array()
+                        .cloned()
+                        .unwrap_or_default()
+                    {
                         out.push_str(&format!(
                             "- {}: {} contracts, {} tests\n",
                             row["domain"].as_str().unwrap_or("unknown"),
@@ -231,7 +250,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 fs::write(
                     &report_path,
                     serde_json::to_string_pretty(&payload)
-                        .map_err(|e| format!("encode contracts doctor artifact failed: {e}"))?,
+                        .map_err(|e| format!("encode contract doctor artifact failed: {e}"))?,
                 )
                 .map_err(|e| format!("write {} failed: {e}", report_path.display()))?;
             }
@@ -345,6 +364,10 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         apply_lane_policy(&mut common);
         apply_ci_policy(&mut common);
         validate_selection_patterns(&common).map_err(|err| format!("usage: {err}"))?;
+        let contract_modes = bijux_dev_atlas::registry::ContractModesFile::validate(&repo_root)?;
+        if !contract_modes.errors.is_empty() {
+            return Ok((contract_modes.errors.join("\n"), 2));
+        }
 
         let format = common_format(&common);
         let lints = registry_lints(&repo_root)?;
@@ -372,7 +395,9 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 let reason = if common.changed_only {
                     match &changed_paths {
                         Some(paths) => domain_change_reason(descriptor.name, paths)?,
-                        None => "changed-only merge-base unavailable; selected by fallback".to_string(),
+                        None => {
+                            "changed-only merge-base unavailable; selected by fallback".to_string()
+                        }
                     }
                 } else {
                     "selected by requested contracts domain".to_string()
@@ -409,7 +434,12 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         if !derived_lints.is_empty() {
             return Ok((render_registry_lints(&derived_lints, format)?, 2));
         }
-        forbid_skip_required(&repo_root, &selected_domains, &common, &contract_filter_override)?;
+        forbid_skip_required(
+            &repo_root,
+            &selected_domains,
+            &common,
+            &contract_filter_override,
+        )?;
         write_required_contract_artifact(&repo_root, &all_domains(&repo_root)?)?;
 
         if common.list || common.list_tests {
@@ -417,7 +447,10 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 .iter()
                 .map(|(descriptor, registry, _)| (*descriptor, registry.as_slice()))
                 .collect::<Vec<_>>();
-            return Ok((render_list(&repo_root, &list_domains, common.list_tests, format)?, 0));
+            return Ok((
+                render_list(&repo_root, &list_domains, common.list_tests, format)?,
+                0,
+            ));
         }
 
         if let Some(test_id) = &common.explain_test {
@@ -557,7 +590,9 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 descriptor,
                 &repo_root,
                 &run_common,
-                contract_filter_override.clone().or_else(|| common.filter_contract.clone()),
+                contract_filter_override
+                    .clone()
+                    .or_else(|| common.filter_contract.clone()),
             )?);
         }
 
@@ -731,7 +766,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             } else {
                 (err, 3)
             };
-            let _ = writeln!(io::stderr(), "bijux-dev-atlas contracts failed: {message}");
+            let _ = writeln!(io::stderr(), "bijux-dev-atlas contract failed: {message}");
             code
         }
     }
@@ -739,6 +774,4 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
 
 // Contracts CLI guardrails:
 // changed-only selection must use git merge-base and git diff --name-only.
-const _CHANGED_ONLY_SELECTION_SENTINEL: &[&str] = &[
-    "merge-base", "HEAD", "diff", "--name-only",
-];
+const _CHANGED_ONLY_SELECTION_SENTINEL: &[&str] = &["merge-base", "HEAD", "diff", "--name-only"];
