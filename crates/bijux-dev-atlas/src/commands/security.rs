@@ -186,6 +186,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let principals_path = root.join("configs/security/principals.yaml");
     let actions_path = root.join("configs/security/actions.yaml");
     let resources_path = root.join("configs/security/resources.yaml");
+    let policy_path = root.join("configs/security/policy.yaml");
     let asset_schema_path = root.join("configs/contracts/security/assets.schema.json");
     let threats_schema_path = root.join("configs/contracts/security/threats.schema.json");
     let mitigations_schema_path = root.join("configs/contracts/security/mitigations.schema.json");
@@ -194,6 +195,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let principals_schema_path = root.join("configs/contracts/security/principals.schema.json");
     let actions_schema_path = root.join("configs/contracts/security/actions.schema.json");
     let resources_schema_path = root.join("configs/contracts/security/resources.schema.json");
+    let policy_schema_path = root.join("configs/contracts/security/policy.schema.json");
     let secrets_schema_path = root.join("configs/contracts/security/secrets.schema.json");
     let redaction_schema_path = root.join("configs/contracts/security/redaction.schema.json");
     let forbidden_patterns_schema_path =
@@ -218,6 +220,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     ensure_json(&principals_schema_path)?;
     ensure_json(&actions_schema_path)?;
     ensure_json(&resources_schema_path)?;
+    ensure_json(&policy_schema_path)?;
     ensure_json(&secrets_schema_path)?;
     ensure_json(&redaction_schema_path)?;
     ensure_json(&forbidden_patterns_schema_path)?;
@@ -233,6 +236,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let principals = read_yaml(&principals_path)?;
     let actions = read_yaml(&actions_path)?;
     let resources = read_yaml(&resources_path)?;
+    let policy = read_yaml(&policy_path)?;
     let secrets = read_json(&secrets_path)?;
     let redaction = read_json(&redaction_path)?;
     let forbidden_patterns = read_json(&forbidden_patterns_path)?;
@@ -274,6 +278,11 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         .and_then(serde_yaml::Value::as_sequence)
         .cloned()
         .unwrap_or_default();
+    let policy_rows = policy
+        .get("rules")
+        .and_then(serde_yaml::Value::as_sequence)
+        .cloned()
+        .unwrap_or_default();
 
     let auth_default_stance = auth_model
         .get("default_stance")
@@ -312,6 +321,74 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         && !principal_rows.is_empty()
         && !action_rows.is_empty()
         && !resource_rows.is_empty();
+    let principal_ids = principal_rows
+        .iter()
+        .filter_map(|row| row.get("id").and_then(serde_yaml::Value::as_str))
+        .collect::<std::collections::BTreeSet<_>>();
+    let action_ids = action_rows
+        .iter()
+        .filter_map(|row| row.get("id").and_then(serde_yaml::Value::as_str))
+        .collect::<std::collections::BTreeSet<_>>();
+    let resource_ids = resource_rows
+        .iter()
+        .filter_map(|row| row.get("id").and_then(serde_yaml::Value::as_str))
+        .collect::<std::collections::BTreeSet<_>>();
+    let mut auth_policy_unknowns = Vec::new();
+    for row in &policy_rows {
+        let rule_id = row
+            .get("id")
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or("unknown-rule");
+        for principal in row
+            .get("principals")
+            .and_then(serde_yaml::Value::as_sequence)
+            .into_iter()
+            .flatten()
+            .filter_map(serde_yaml::Value::as_str)
+        {
+            if !principal_ids.contains(principal) {
+                auth_policy_unknowns.push(format!("{rule_id}:principal:{principal}"));
+            }
+        }
+        for action in row
+            .get("actions")
+            .and_then(serde_yaml::Value::as_sequence)
+            .into_iter()
+            .flatten()
+            .filter_map(serde_yaml::Value::as_str)
+        {
+            if !action_ids.contains(action) {
+                auth_policy_unknowns.push(format!("{rule_id}:action:{action}"));
+            }
+        }
+        for kind in row
+            .get("resources")
+            .and_then(|value| value.get("kinds"))
+            .and_then(serde_yaml::Value::as_sequence)
+            .into_iter()
+            .flatten()
+            .filter_map(serde_yaml::Value::as_str)
+        {
+            if !resource_ids.contains(kind) {
+                auth_policy_unknowns.push(format!("{rule_id}:resource:{kind}"));
+            }
+        }
+    }
+    let sec_auth_002 = !policy_rows.is_empty() && auth_policy_unknowns.is_empty();
+    let main_source = fs::read_to_string(root.join("crates/bijux-atlas-server/src/main.rs"))
+        .map_err(|err| format!("failed to read runtime main source: {err}"))?;
+    let runbook_text = fs::read_to_string(root.join(auth_docs_runbook))
+        .map_err(|err| format!("failed to read {}: {err}", auth_docs_runbook))?;
+    let auth_supports_disabled = auth_methods
+        .iter()
+        .filter_map(serde_yaml::Value::as_str)
+        .any(|value| value == "disabled");
+    let sec_auth_003 = main_source.contains("event_id = \"auth_mode_selected\"")
+        && main_source.contains("auth_disabled =");
+    let runbook_text_lower = runbook_text.to_ascii_lowercase();
+    let sec_auth_004 = !auth_supports_disabled
+        || runbook_text_lower.contains("reverse proxy")
+        || runbook_text_lower.contains("ingress auth proxy");
 
     let mitigation_ids = mitigation_rows
         .iter()
@@ -955,6 +1032,9 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             && sec_threat_004
             && sec_red_001
             && sec_red_002
+            && sec_auth_002
+            && sec_auth_003
+            && sec_auth_004
             && sec_deps_001
             && sec_deps_002
             && sec_images_001
@@ -970,6 +1050,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "principals": principal_rows.len(),
             "actions": action_rows.len(),
             "resources": resource_rows.len(),
+            "auth_policy_rules": policy_rows.len(),
             "declared_secrets": declared_secret_keys.len(),
             "prod_image_digests": prod_digests.len(),
             "sboms": sbom_rows.len(),
@@ -988,6 +1069,9 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "SEC-THREAT-003": sec_threat_003,
             "SEC-THREAT-004": sec_threat_004,
             "SEC-AUTH-001": sec_auth_001,
+            "SEC-AUTH-002": sec_auth_002,
+            "SEC-AUTH-003": sec_auth_003,
+            "SEC-AUTH-004": sec_auth_004,
             "SEC-RED-001": sec_red_001,
             "SEC-RED-002": sec_red_002,
             "SEC-DEPS-001": sec_deps_001,
@@ -1007,6 +1091,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             } else {
                 vec!["auth model, supporting registries, or linked docs are incomplete".to_string()]
             },
+            "auth_policy_unknowns": auth_policy_unknowns,
             "missing_mitigations": missing_mitigations,
             "missing_control_or_reason": missing_control_or_reason,
             "missing_docs_links": missing_docs_links,

@@ -14339,6 +14339,31 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "api-access-model",
+        "operations",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/api-access-model.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "api-access-model",
+        "operations",
+        "security"
+      ],
+      "title": "API Access Model",
+      "topic": "api-access-model"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "compliance",
         "operations",
         "security"

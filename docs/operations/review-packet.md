@@ -24,3 +24,8 @@
 - The matching `ops-drill-<name>.json` files used for the candidate review.
 - The latest release candidate checklist and upgrade guide.
 - The matching `artifacts/ingest/ingest-plan.json` and `artifacts/ingest/ingest-run.json` files.
+
+## Auth model review
+
+- Include `configs/security/auth-model.yaml` so reviewers can verify the declared trust boundary.
+- Include `configs/security/policy.yaml` so reviewers can inspect the governed principal/action/resource model.

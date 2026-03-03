@@ -18,8 +18,8 @@
 
 ## Longest Pages
 
-- `docs/_internal/generated/docs-inventory.md`: `734` lines
-- `docs/_internal/generated/topic-index.md`: `453` lines
+- `docs/_internal/generated/docs-inventory.md`: `736` lines
+- `docs/_internal/generated/topic-index.md`: `455` lines
 - `docs/reference/contracts/errors.md`: `435` lines
 - `docs/operations/reference/ops-surface.md`: `308` lines
 - `docs/reference/contracts/plugins/spec.md`: `191` lines

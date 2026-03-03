@@ -32,6 +32,7 @@
 | `adr-0005-security-defaults-and-enterprise-controls` | `docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md` |
 | `advisory-process` | `docs/operations/security/advisory-process.md` |
 | `alerts` | `docs/operations/observability/alerts.md` |
+| `api-access-model` | `docs/operations/security/api-access-model.md` |
 | `api-contract` | `crates/bijux-atlas-api/docs/api-contract.md` |
 | `api-stability` | `crates/bijux-atlas-api/docs/api-stability.md` |
 | `architecture` | `crates/bijux-atlas-api/docs/architecture.md, crates/bijux-atlas-cli/docs/architecture.md, crates/bijux-atlas-core/docs/architecture.md, crates/bijux-atlas-ingest/docs/architecture.md, crates/bijux-atlas-model/docs/architecture.md, crates/bijux-atlas-policies/docs/architecture.md, crates/bijux-atlas-query/docs/architecture.md, crates/bijux-atlas-server/docs/architecture.md, crates/bijux-atlas-store/docs/architecture.md, crates/bijux-dev-atlas/docs/architecture.md` |

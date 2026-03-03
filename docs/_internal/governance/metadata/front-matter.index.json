@@ -4757,6 +4757,14 @@
       "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/api-access-model.md",
+      "stability": "stable",
+      "title": "API Access Model"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-security",
       "path": "docs/operations/security/compliance.md",
       "stability": "stable",
       "title": "Security Compliance"

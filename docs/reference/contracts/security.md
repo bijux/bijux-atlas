@@ -14,6 +14,9 @@
 - `SEC-THREAT-003`: every mitigation maps to a concrete control or documented reason.
 - `SEC-THREAT-004`: high severity threats map to an executable check or explicit runbook.
 - `SEC-AUTH-001`: auth model policy validates and points to the canonical boundary docs.
+- `SEC-AUTH-002`: auth policy registry validates and references only known principals, actions, and resources.
+- `SEC-AUTH-003`: runtime startup logs declare whether auth is disabled or enforced.
+- `SEC-AUTH-004`: the auth-disabled stance keeps a mandatory reverse-proxy boundary in the canonical docs.
 
 ## Compliance checks
 
@@ -40,5 +43,6 @@
 - Threat model: `security/threat-model/*.md`, `security/threat-model/*.yaml`
 - Compliance: `security/compliance/*.yaml`
 - Secret policy: `configs/security/*.json`
+- Auth policy: `configs/security/*.yaml`
 - Signing policy: `release/signing/policy.yaml`
 - Schemas: `configs/contracts/security/*.json`

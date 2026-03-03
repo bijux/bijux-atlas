@@ -594,6 +594,7 @@
     "docs/operations/security-posture.md",
     "docs/operations/security/action-pin-refresh.md",
     "docs/operations/security/advisory-process.md",
+    "docs/operations/security/api-access-model.md",
     "docs/operations/security/compliance.md",
     "docs/operations/security/deploy-behind-auth-proxy.md",
     "docs/operations/security/incident-response.md",

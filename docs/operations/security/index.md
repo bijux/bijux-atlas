@@ -13,6 +13,7 @@
 - [Deploy Behind Auth Proxy](deploy-behind-auth-proxy.md)
 - [Security Posture](../security-posture.md)
 - [Security Compliance](compliance.md)
+- [API Access Model](api-access-model.md)
 - [Security Incident Response](incident-response.md)
 - [Security Key Rotation](key-rotation.md)
 - [Refresh Pinned GitHub Actions SHAs](action-pin-refresh.md)

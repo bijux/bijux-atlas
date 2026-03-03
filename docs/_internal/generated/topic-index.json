@@ -194,6 +194,9 @@
     "alerts": [
       "docs/operations/observability/alerts.md"
     ],
+    "api-access-model": [
+      "docs/operations/security/api-access-model.md"
+    ],
     "api-contract": [
       "crates/bijux-atlas-api/docs/api-contract.md"
     ],

@@ -7800,6 +7800,20 @@
     },
     {
       "keywords": [
+        "api-access-model",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/api-access-model.md",
+      "tags": [
+        "api-access-model",
+        "operations",
+        "security"
+      ],
+      "topic": "api-access-model"
+    },
+    {
+      "keywords": [
         "compliance",
         "operations",
         "security"

@@ -24,6 +24,24 @@ Concrete accepted patterns:
 
 Pass only the identity headers that the deployment has explicitly approved.
 
+### NGINX ingress example
+
+```yaml
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/auth-url: "https://auth.example.internal/check"
+    nginx.ingress.kubernetes.io/auth-signin: "https://auth.example.internal/start"
+    nginx.ingress.kubernetes.io/auth-response-headers: "X-Forwarded-User,X-Forwarded-Email"
+```
+
+### Traefik example
+
+```yaml
+metadata:
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: "atlas-forward-auth@kubernetescrd"
+```
+
 ## Verify
 
 - Confirm Atlas is not directly exposed on a public listener without the proxy.

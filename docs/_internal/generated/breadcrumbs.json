@@ -5253,6 +5253,15 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/api-access-model.md"
+      ],
+      "path": "docs/operations/security/api-access-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/compliance.md"
       ],
       "path": "docs/operations/security/compliance.md"
