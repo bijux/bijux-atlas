@@ -33,7 +33,7 @@
   },
   "chart_package": {
     "path": "release/evidence/packages/bijux-atlas-0.1.0.tgz",
-    "sha256": "604590e72bc115783301489d69b235434252a3ed6258b9bbdbbce0524c68ce86"
+    "sha256": "6ae92b244b990571f0791cc713c651d9b5b5e1289df8f7d158cc2ab8dabdb0f7"
   },
   "dataset_assets": [
     "configs/datasets/manifest.yaml",
@@ -60,7 +60,7 @@
   "drill_summaries": [],
   "evidence_tarball": {
     "path": "release/evidence/bundle.tar",
-    "sha256": "b8cd7c62a040719e19a2bc1d5690db7cfffa2f6fdf2721e326003fd10ab3a92a"
+    "sha256": "2499f9d02b1efcca31402bf8da1d757c05d8619996152d00411c60b27e2f1910"
   },
   "generated_by": "bijux dev atlas ops evidence collect",
   "governance_assets": {
@@ -167,7 +167,7 @@
   "policy_path": "release/evidence/policy.json",
   "provenance": {
     "path": "release/provenance.json",
-    "sha256": "24e26e285d6e6ff3ca1f6c629a3cc00f2115b044e4b02974ccff3610225b09e9"
+    "sha256": "3f4d71f0cb2b1d0fb90573bc1b1f64a4d74d4795852c161834da5978bde84c1a"
   },
   "redacted_logs": [],
   "reports": [
