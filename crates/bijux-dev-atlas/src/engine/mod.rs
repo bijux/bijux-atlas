@@ -8,6 +8,12 @@ use std::path::Path;
 
 use crate::model::engine::*;
 
+mod executor;
+mod reporting;
+
+pub use executor::*;
+pub use reporting::*;
+
 include!("selection.rs");
 include!("runner.rs");
 include!("rendering.rs");

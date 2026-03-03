@@ -416,6 +416,85 @@ pub struct RunReport {
     pub timings_ms: BTreeMap<CheckId, u64>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[serde(transparent)]
+pub struct RunnableId(String);
+
+impl RunnableId {
+    pub fn parse(value: &str) -> Result<Self, String> {
+        let raw = value.trim();
+        if raw.is_empty() {
+            return Err("runnable id cannot be empty".to_string());
+        }
+        if raw.contains(char::is_whitespace) {
+            return Err(format!("invalid runnable id `{raw}`: whitespace is not allowed"));
+        }
+        Ok(Self(raw.to_string()))
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+impl fmt::Display for RunnableId {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum RunnableKind {
+    Check,
+    Contract,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum RunnableMode {
+    Pure,
+    Effect,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RunnableEntry {
+    pub id: RunnableId,
+    pub suite: SuiteId,
+    pub kind: RunnableKind,
+    pub mode: RunnableMode,
+    pub summary: String,
+    pub owner: String,
+    pub group: String,
+    pub tags: Vec<Tag>,
+    pub commands: Vec<String>,
+    pub report_ids: Vec<String>,
+    pub reports: Vec<String>,
+    pub required_tools: Vec<String>,
+    pub missing_tools_policy: String,
+    pub effects_required: Vec<Effect>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SuiteEntry {
+    pub id: SuiteId,
+    pub runnables: Vec<RunnableId>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ReportRef {
+    pub report_id: String,
+    pub path: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RunnableSelection {
+    pub suite: Option<SuiteId>,
+    pub group: Option<String>,
+    pub tag: Option<Tag>,
+    pub id: Option<RunnableId>,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct OpsRunReport {
     #[serde(default = "schema_version")]

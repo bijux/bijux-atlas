@@ -7,6 +7,7 @@ pub use crate::ports::SystemClock as RealClock;
 pub use crate::ports::{AdapterError, Capabilities, Fs, FsWrite, Git, Network, ProcessRunner};
 
 mod bundles;
+pub mod entry;
 mod fs;
 mod process;
 mod workspace_root;
