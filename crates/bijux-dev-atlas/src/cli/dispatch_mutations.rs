@@ -60,6 +60,14 @@ fn force_json_demo(command: &mut crate::cli::DemoCommand) {
 
 fn force_json_ops(command: &mut OpsCommand) {
     match command {
+        OpsCommand::Logs { command }
+        | OpsCommand::Describe { command }
+        | OpsCommand::Events { command } => match command {
+            crate::cli::OpsCollectCommand::Collect(args) => args.common.format = FormatArg::Json,
+        },
+        OpsCommand::Resources { command } => match command {
+            crate::cli::OpsResourcesCommand::Snapshot(args) => args.common.format = FormatArg::Json,
+        },
         OpsCommand::Kind { command } => match command {
             crate::cli::OpsKindCommand::Up(common)
             | crate::cli::OpsKindCommand::Down(common)
@@ -451,6 +459,18 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     common.repo_root = Some(root.clone())
                 }
                 crate::cli::OpsKindCommand::PreloadImage(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+            },
+            OpsCommand::Logs { command }
+            | OpsCommand::Describe { command }
+            | OpsCommand::Events { command } => match command {
+                crate::cli::OpsCollectCommand::Collect(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+            },
+            OpsCommand::Resources { command } => match command {
+                crate::cli::OpsResourcesCommand::Snapshot(args) => {
                     args.common.repo_root = Some(root.clone())
                 }
             },

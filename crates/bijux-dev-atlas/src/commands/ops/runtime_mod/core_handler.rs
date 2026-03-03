@@ -423,6 +423,26 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             Ok((rendered, code))
         }
         OpsCommand::Render(args) => crate::ops_execution_runtime::run_ops_render(&args),
+        OpsCommand::Logs { command } => match command {
+            crate::cli::OpsCollectCommand::Collect(args) => {
+                crate::ops_execution_runtime::run_ops_logs_collect(&args)
+            }
+        },
+        OpsCommand::Describe { command } => match command {
+            crate::cli::OpsCollectCommand::Collect(args) => {
+                crate::ops_execution_runtime::run_ops_describe_collect(&args)
+            }
+        },
+        OpsCommand::Events { command } => match command {
+            crate::cli::OpsCollectCommand::Collect(args) => {
+                crate::ops_execution_runtime::run_ops_events_collect(&args)
+            }
+        },
+        OpsCommand::Resources { command } => match command {
+            crate::cli::OpsResourcesCommand::Snapshot(args) => {
+                crate::ops_execution_runtime::run_ops_resources_snapshot(&args)
+            }
+        },
         OpsCommand::Kind { command } => match command {
             crate::cli::OpsKindCommand::Up(common) => crate::ops_execution_runtime::run_ops_kind_up(&common),
             crate::cli::OpsKindCommand::Down(common) => crate::ops_execution_runtime::run_ops_kind_down(&common),

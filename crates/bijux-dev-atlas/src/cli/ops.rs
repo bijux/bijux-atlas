@@ -8,6 +8,22 @@ use super::FormatArg;
 
 #[derive(Subcommand, Debug, Clone)]
 pub enum OpsCommand {
+    Logs {
+        #[command(subcommand)]
+        command: OpsCollectCommand,
+    },
+    Describe {
+        #[command(subcommand)]
+        command: OpsCollectCommand,
+    },
+    Events {
+        #[command(subcommand)]
+        command: OpsCollectCommand,
+    },
+    Resources {
+        #[command(subcommand)]
+        command: OpsResourcesCommand,
+    },
     Kind {
         #[command(subcommand)]
         command: OpsKindCommand,
@@ -201,6 +217,16 @@ pub enum OpsKindCommand {
 pub enum OpsHelmCommand {
     Install(OpsHelmReleaseArgs),
     Uninstall(OpsHelmReleaseArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsCollectCommand {
+    Collect(OpsCollectArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsResourcesCommand {
+    Snapshot(OpsCollectArgs),
 }
 
 #[derive(Subcommand, Debug, Clone)]
@@ -487,6 +513,8 @@ pub struct OpsSmokeArgs {
     pub common: OpsCommonArgs,
     #[arg(long, value_enum, default_value_t = OpsClusterTarget::Kind)]
     pub cluster: OpsClusterTarget,
+    #[arg(long)]
+    pub namespace: Option<String>,
     #[arg(long, default_value_t = 8080)]
     pub local_port: u16,
 }
@@ -505,10 +533,20 @@ pub struct OpsHelmReleaseArgs {
     pub common: OpsCommonArgs,
     #[arg(long, value_enum, default_value_t = OpsClusterTarget::Kind)]
     pub cluster: OpsClusterTarget,
-    #[arg(long, default_value = "bijux-atlas")]
-    pub namespace: String,
+    #[arg(long)]
+    pub namespace: Option<String>,
     #[arg(long, default_value_t = 120)]
     pub timeout_seconds: u64,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsCollectArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long, value_enum, default_value_t = OpsClusterTarget::Kind)]
+    pub cluster: OpsClusterTarget,
+    #[arg(long)]
+    pub namespace: Option<String>,
 }
 
 #[derive(Args, Debug, Clone)]

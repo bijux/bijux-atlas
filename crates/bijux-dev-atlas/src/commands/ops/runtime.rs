@@ -2,11 +2,12 @@
 
 use crate::cli::OpsInstallArgs;
 use crate::cli::{
-    OpsCommonArgs, OpsDatasetsCommand, OpsE2eCommand, OpsEvidenceCommand, OpsGenerateCommand,
-    OpsHelmCommand, OpsHelmEnvArgs, OpsHelmReleaseArgs, OpsInventoryCommand, OpsK8sCommand,
-    OpsKindCommand, OpsKindPreloadArgs, OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand,
-    OpsObsDrillCommand, OpsPinsCommand, OpsProfilesCommand, OpsProfilesValidateArgs, OpsRenderArgs,
-    OpsRenderTarget, OpsReportCommand, OpsSchemaCommand, OpsStackCommand,
+    OpsCollectArgs, OpsCollectCommand, OpsCommonArgs, OpsDatasetsCommand, OpsE2eCommand,
+    OpsEvidenceCommand, OpsGenerateCommand, OpsHelmCommand, OpsHelmEnvArgs, OpsHelmReleaseArgs,
+    OpsInventoryCommand, OpsK8sCommand, OpsKindCommand, OpsKindPreloadArgs,
+    OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand, OpsObsDrillCommand, OpsPinsCommand,
+    OpsProfilesCommand, OpsProfilesValidateArgs, OpsRenderArgs, OpsRenderTarget,
+    OpsReportCommand, OpsResourcesCommand, OpsSchemaCommand, OpsStackCommand,
     OpsSuiteCommand, OpsToolsCommand,
 };
 use crate::ops_support::{
@@ -31,6 +32,14 @@ mod profile_handler;
 
 fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
     match command {
+        OpsCommand::Logs { command }
+        | OpsCommand::Describe { command }
+        | OpsCommand::Events { command } => match command {
+            OpsCollectCommand::Collect(OpsCollectArgs { common, .. }) => Some(common),
+        },
+        OpsCommand::Resources { command } => match command {
+            OpsResourcesCommand::Snapshot(OpsCollectArgs { common, .. }) => Some(common),
+        },
         OpsCommand::Kind { command } => match command {
             OpsKindCommand::Up(common)
             | OpsKindCommand::Down(common)
@@ -122,6 +131,10 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
     let command = match command {
         OpsCommand::Kind { command } => OpsCommand::Kind { command },
         OpsCommand::Helm { command } => OpsCommand::Helm { command },
+        OpsCommand::Logs { command } => OpsCommand::Logs { command },
+        OpsCommand::Describe { command } => OpsCommand::Describe { command },
+        OpsCommand::Events { command } => OpsCommand::Events { command },
+        OpsCommand::Resources { command } => OpsCommand::Resources { command },
         OpsCommand::Stack { command } => match command {
             OpsStackCommand::Plan(common) => OpsCommand::Plan(common),
             OpsStackCommand::Up(common) => OpsCommand::Up(common),

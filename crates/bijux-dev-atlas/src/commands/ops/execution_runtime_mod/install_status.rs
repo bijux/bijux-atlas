@@ -202,6 +202,165 @@ fn resolve_profile_values_file(
     }
 }
 
+fn simulation_namespace(profile: &str, override_namespace: Option<&str>) -> String {
+    override_namespace
+        .filter(|value| !value.trim().is_empty())
+        .map(str::to_string)
+        .unwrap_or_else(|| format!("bijux-atlas-{profile}"))
+}
+
+fn debug_artifact_path(
+    repo_root: &std::path::Path,
+    run_id: &RunId,
+    namespace: &str,
+    file_name: &str,
+) -> Result<std::path::PathBuf, String> {
+    let path = repo_root
+        .join("artifacts/ops")
+        .join(run_id.as_str())
+        .join("debug")
+        .join(namespace)
+        .join(file_name);
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
+    Ok(path)
+}
+
+fn write_debug_artifact(
+    repo_root: &std::path::Path,
+    run_id: &RunId,
+    namespace: &str,
+    file_name: &str,
+    content: &str,
+) -> Result<std::path::PathBuf, String> {
+    let path = debug_artifact_path(repo_root, run_id, namespace, file_name)?;
+    std::fs::write(&path, content)
+        .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
+    Ok(path)
+}
+
+fn load_profile_registry(
+    repo_root: &std::path::Path,
+    profile: &str,
+) -> Result<Option<serde_json::Value>, String> {
+    let path = repo_root.join("ops/k8s/values/profiles.json");
+    if !path.exists() {
+        return Ok(None);
+    }
+    let value: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    Ok(value
+        .get("profiles")
+        .and_then(|rows| rows.as_array())
+        .and_then(|rows| {
+            rows.iter()
+                .find(|row| row.get("id").and_then(|v| v.as_str()) == Some(profile))
+                .cloned()
+        }))
+}
+
+fn extract_configmap_env_keys(
+    repo_root: &std::path::Path,
+    run_id: &RunId,
+    profile: &str,
+) -> Result<Vec<String>, String> {
+    let render_path = install_render_path(repo_root, run_id.as_str(), profile);
+    if !render_path.exists() {
+        return Ok(Vec::new());
+    }
+    let rendered = std::fs::read_to_string(&render_path)
+        .map_err(|err| format!("failed to read {}: {err}", render_path.display()))?;
+    let mut keys = std::collections::BTreeSet::<String>::new();
+    for document in serde_yaml::Deserializer::from_str(&rendered) {
+        let value: serde_yaml::Value = match serde::Deserialize::deserialize(document) {
+            Ok(value) => value,
+            Err(_) => continue,
+        };
+        if value
+            .get("kind")
+            .and_then(serde_yaml::Value::as_str)
+            != Some("ConfigMap")
+        {
+            continue;
+        }
+        let data = match value.get("data").and_then(serde_yaml::Value::as_mapping) {
+            Some(data) => data,
+            None => continue,
+        };
+        for key in data.keys().filter_map(serde_yaml::Value::as_str) {
+            if key
+                .chars()
+                .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_')
+            {
+                keys.insert(key.to_string());
+            }
+        }
+    }
+    Ok(keys.into_iter().collect())
+}
+
+fn record_kubeconform_result(
+    process: &OpsProcess,
+    repo_root: &std::path::Path,
+    run_id: &RunId,
+    profile: &str,
+) -> serde_json::Value {
+    let render_path = install_render_path(repo_root, run_id.as_str(), profile);
+    let args = vec![
+        "-summary".to_string(),
+        render_path.display().to_string(),
+    ];
+    match process.run_subprocess("kubeconform", &args, repo_root) {
+        Ok((stdout, event)) => serde_json::json!({
+            "status": "ok",
+            "stdout": stdout,
+            "event": event,
+            "render_path": render_path.display().to_string()
+        }),
+        Err(err) => serde_json::json!({
+            "status": "failed",
+            "error": err.to_stable_message(),
+            "render_path": render_path.display().to_string()
+        }),
+    }
+}
+
+fn runtime_allowlist_status(repo_root: &std::path::Path) -> serde_json::Value {
+    let path = repo_root.join("configs/contracts/env.schema.json");
+    serde_json::json!({
+        "status": if path.exists() { "ok" } else { "failed" },
+        "path": path.display().to_string()
+    })
+}
+
+fn emit_debug_bundle_report(
+    repo_root: &std::path::Path,
+    run_id: &RunId,
+    namespace: &str,
+    category: &str,
+    files: &[std::path::PathBuf],
+) -> Result<std::path::PathBuf, String> {
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "cluster": "kind",
+        "namespace": namespace,
+        "category": category,
+        "status": "ok",
+        "files": files.iter().map(|path| path.display().to_string()).collect::<Vec<_>>()
+    });
+    write_simulation_report(
+        repo_root,
+        run_id,
+        &format!("ops-debug-bundle-{category}.json"),
+        &payload,
+    )
+}
+
 fn run_simulation_wait(
     process: &OpsProcess,
     repo_root: &std::path::Path,
@@ -595,6 +754,7 @@ pub(crate) fn run_ops_helm_install(
         .profile
         .clone()
         .unwrap_or_else(|| "kind".to_string());
+    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
     let values_file = resolve_profile_values_file(&repo_root, &profile)?;
     let chart_path = repo_root.join("ops/k8s/charts/bijux-atlas");
     let helm_args = vec![
@@ -603,7 +763,7 @@ pub(crate) fn run_ops_helm_install(
         "bijux-atlas".to_string(),
         chart_path.display().to_string(),
         "--namespace".to_string(),
-        args.namespace.clone(),
+        namespace.clone(),
         "--create-namespace".to_string(),
         "--values".to_string(),
         values_file.display().to_string(),
@@ -612,9 +772,9 @@ pub(crate) fn run_ops_helm_install(
         .run_subprocess("helm", &helm_args, &repo_root)
         .map_err(|err| err.to_stable_message())?;
     let (wait_rows, wait_errors, wait_ms) =
-        run_simulation_wait(&process, &repo_root, &args.namespace, args.timeout_seconds);
+        run_simulation_wait(&process, &repo_root, &namespace, args.timeout_seconds);
     let smoke_rows = if wait_errors.is_empty() {
-        run_smoke_checks(&repo_root, &args.namespace, 18080)?
+        run_smoke_checks(&repo_root, &namespace, 18080)?
     } else {
         Vec::new()
     };
@@ -638,7 +798,7 @@ pub(crate) fn run_ops_helm_install(
     let smoke_payload = serde_json::json!({
         "schema_version": 1,
         "cluster": "kind",
-        "namespace": args.namespace,
+        "namespace": namespace,
         "status": if wait_errors.is_empty() && smoke_errors.is_empty() { "ok" } else { "failed" },
         "checks": smoke_rows
     });
@@ -648,7 +808,7 @@ pub(crate) fn run_ops_helm_install(
         "schema_version": 1,
         "profile": profile,
         "cluster": "kind",
-        "namespace": args.namespace,
+        "namespace": namespace,
         "status": status,
         "details": {
             "helm": {
@@ -662,11 +822,15 @@ pub(crate) fn run_ops_helm_install(
                 "rows": wait_rows,
                 "errors": wait_errors
             },
+            "kubeconform": record_kubeconform_result(&process, &repo_root, &run_id, &profile),
+            "configmap_env_keys": extract_configmap_env_keys(&repo_root, &run_id, &profile)?,
+            "runtime_allowlist": runtime_allowlist_status(&repo_root),
             "smoke": {
                 "report_path": smoke_report_path.display().to_string(),
                 "checks": smoke_payload["checks"].clone()
             },
-            "profile_intent": load_profile_intent(&repo_root, &profile)?
+            "profile_intent": load_profile_intent(&repo_root, &profile)?,
+            "profile_metadata": load_profile_registry(&repo_root, &profile)?
         }
     });
     let report_path = write_simulation_report(&repo_root, &run_id, "ops-install.json", &payload)?;
@@ -712,11 +876,12 @@ pub(crate) fn run_ops_helm_uninstall(
         .profile
         .clone()
         .unwrap_or_else(|| "kind".to_string());
+    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
     let helm_args = vec![
         "uninstall".to_string(),
         "bijux-atlas".to_string(),
         "--namespace".to_string(),
-        args.namespace.clone(),
+        namespace.clone(),
     ];
     let (helm_stdout, helm_event) = process
         .run_subprocess("helm", &helm_args, &repo_root)
@@ -725,7 +890,7 @@ pub(crate) fn run_ops_helm_uninstall(
         "get".to_string(),
         "all".to_string(),
         "-n".to_string(),
-        args.namespace.clone(),
+        namespace.clone(),
         "-o".to_string(),
         "name".to_string(),
     ];
@@ -739,11 +904,20 @@ pub(crate) fn run_ops_helm_uninstall(
         .map(str::to_string)
         .collect::<Vec<_>>();
     let status = if leftovers.is_empty() { "ok" } else { "failed" };
+    let cleanup_payload = serde_json::json!({
+        "schema_version": 1,
+        "cluster": "kind",
+        "namespace": namespace,
+        "status": status,
+        "leftovers": leftovers
+    });
+    let cleanup_report_path =
+        write_simulation_report(&repo_root, &run_id, "ops-cleanup.json", &cleanup_payload)?;
     let payload = serde_json::json!({
         "schema_version": 1,
         "profile": profile,
         "cluster": "kind",
-        "namespace": args.namespace,
+        "namespace": cleanup_payload["namespace"].clone(),
         "status": status,
         "details": {
             "helm": {
@@ -751,7 +925,8 @@ pub(crate) fn run_ops_helm_uninstall(
                 "event": helm_event
             },
             "cleanup_check": {
-                "leftovers": leftovers,
+                "report_path": cleanup_report_path.display().to_string(),
+                "leftovers": cleanup_payload["leftovers"].clone(),
                 "event": cleanup_event
             }
         }
@@ -794,7 +969,12 @@ pub(crate) fn run_ops_smoke(args: &crate::cli::OpsSmokeArgs) -> Result<(String, 
     let process = OpsProcess::new(true);
     ensure_simulation_context(&process, common.force)?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let checks = run_smoke_checks(&repo_root, "bijux-atlas", args.local_port)?;
+    let profile = common
+        .profile
+        .clone()
+        .unwrap_or_else(|| "kind".to_string());
+    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
+    let checks = run_smoke_checks(&repo_root, &namespace, args.local_port)?;
     let errors = checks
         .iter()
         .filter(|row| row["status"].as_u64().unwrap_or(0) != 200)
@@ -810,7 +990,7 @@ pub(crate) fn run_ops_smoke(args: &crate::cli::OpsSmokeArgs) -> Result<(String, 
     let payload = serde_json::json!({
         "schema_version": 1,
         "cluster": "kind",
-        "namespace": "bijux-atlas",
+        "namespace": namespace,
         "status": status,
         "checks": checks
     });
@@ -821,7 +1001,7 @@ pub(crate) fn run_ops_smoke(args: &crate::cli::OpsSmokeArgs) -> Result<(String, 
         "rows": [{
             "schema_version": 1,
             "cluster": "kind",
-            "namespace": "bijux-atlas",
+            "namespace": payload["namespace"].clone(),
             "status": status,
             "checks": payload["checks"].clone(),
             "report_path": report_path.display().to_string()
@@ -830,6 +1010,154 @@ pub(crate) fn run_ops_smoke(args: &crate::cli::OpsSmokeArgs) -> Result<(String, 
     });
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
     Ok((rendered, if errors.is_empty() { 0 } else { 1 }))
+}
+
+fn run_collect_command(
+    args: &crate::cli::OpsCollectArgs,
+    category: &str,
+    file_name: &str,
+    argv: Vec<String>,
+) -> Result<(String, i32), String> {
+    let common = &args.common;
+    match args.cluster {
+        crate::cli::OpsClusterTarget::Kind => {}
+    }
+    if !common.allow_subprocess {
+        return Err(format!("{category} collect requires --allow-subprocess"));
+    }
+    if !common.allow_write {
+        return Err(format!("{category} collect requires --allow-write"));
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let process = OpsProcess::new(true);
+    ensure_simulation_context(&process, common.force)?;
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let profile = common
+        .profile
+        .clone()
+        .unwrap_or_else(|| "kind".to_string());
+    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
+    let (stdout, event) = process
+        .run_subprocess("kubectl", &argv, &repo_root)
+        .map_err(|err| err.to_stable_message())?;
+    let artifact_path = write_debug_artifact(&repo_root, &run_id, &namespace, file_name, &stdout)?;
+    let report_path = emit_debug_bundle_report(
+        &repo_root,
+        &run_id,
+        &namespace,
+        category,
+        std::slice::from_ref(&artifact_path),
+    )?;
+    let envelope = serde_json::json!({
+        "schema_version": 1,
+        "text": format!("{category} collected"),
+        "rows": [{
+            "schema_version": 1,
+            "cluster": "kind",
+            "namespace": namespace,
+            "category": category,
+            "status": "ok",
+            "files": [artifact_path.display().to_string()],
+            "report_path": report_path.display().to_string(),
+            "event": event
+        }],
+        "summary": {"total": 1, "errors": 0, "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
+    Ok((rendered, 0))
+}
+
+pub(crate) fn run_ops_logs_collect(
+    args: &crate::cli::OpsCollectArgs,
+) -> Result<(String, i32), String> {
+    let profile = args
+        .common
+        .profile
+        .clone()
+        .unwrap_or_else(|| "kind".to_string());
+    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
+    run_collect_command(
+        args,
+        "logs",
+        "pod-logs.txt",
+        vec![
+            "logs".to_string(),
+            "-n".to_string(),
+            namespace,
+            "deployment/bijux-atlas".to_string(),
+            "--tail=500".to_string(),
+        ],
+    )
+}
+
+pub(crate) fn run_ops_describe_collect(
+    args: &crate::cli::OpsCollectArgs,
+) -> Result<(String, i32), String> {
+    let profile = args
+        .common
+        .profile
+        .clone()
+        .unwrap_or_else(|| "kind".to_string());
+    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
+    run_collect_command(
+        args,
+        "describe",
+        "describe.txt",
+        vec![
+            "describe".to_string(),
+            "-n".to_string(),
+            namespace,
+            "deployment/bijux-atlas".to_string(),
+            "service/bijux-atlas".to_string(),
+        ],
+    )
+}
+
+pub(crate) fn run_ops_events_collect(
+    args: &crate::cli::OpsCollectArgs,
+) -> Result<(String, i32), String> {
+    let profile = args
+        .common
+        .profile
+        .clone()
+        .unwrap_or_else(|| "kind".to_string());
+    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
+    run_collect_command(
+        args,
+        "events",
+        "events.txt",
+        vec![
+            "get".to_string(),
+            "events".to_string(),
+            "-n".to_string(),
+            namespace,
+            "--sort-by=.metadata.creationTimestamp".to_string(),
+        ],
+    )
+}
+
+pub(crate) fn run_ops_resources_snapshot(
+    args: &crate::cli::OpsCollectArgs,
+) -> Result<(String, i32), String> {
+    let profile = args
+        .common
+        .profile
+        .clone()
+        .unwrap_or_else(|| "kind".to_string());
+    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
+    run_collect_command(
+        args,
+        "resources",
+        "resources.yaml",
+        vec![
+            "get".to_string(),
+            "all".to_string(),
+            "-n".to_string(),
+            namespace,
+            "-o".to_string(),
+            "yaml".to_string(),
+        ],
+    )
 }
 
 pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32), String> {
