@@ -36,13 +36,14 @@ contracts-release: _contracts_guard ## Run full release contracts matrix
 
 contracts-all: _contracts_guard ## Run the full contract suite without static skips
 	@mkdir -p $(ARTIFACT_ROOT)/contracts-all/$(RUN_ID)
-	@printf '%s\n' "contracts-all runs: contracts-root contracts-repo-effect contracts-crates contracts-runtime contracts-configs contracts-docs contracts-docker-effect contracts-make contracts-ops-effect"
+	@printf '%s\n' "contracts-all runs: contracts-root contracts-repo-effect contracts-crates contracts-runtime contracts-control-plane-effect contracts-configs contracts-docs contracts-docker-effect contracts-make contracts-ops-effect"
 	@printf '%s\n' \
 		"full-suite: contracts-all" \
 		"contracts-root (static)" \
 		"contracts-repo (effect)" \
 		"contracts-crates (static)" \
 		"contracts-runtime (static)" \
+		"contracts-control-plane (effect)" \
 		"contracts-configs (static)" \
 		"contracts-docs (static)" \
 		"contracts-docker (effect)" \
@@ -85,6 +86,7 @@ contracts-all: _contracts_guard ## Run the full contract suite without static sk
 	run_and_capture "repo" "effect" $(DEV_ATLAS) contracts repo $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT); \
 	run_and_capture "crates" "static" $(MAKE) -s contracts-crates; \
 	run_and_capture "runtime" "static" $(MAKE) -s contracts-runtime; \
+	run_and_capture "control-plane" "effect" $(DEV_ATLAS) contracts control-plane $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT); \
 	run_and_capture "configs" "static" $(MAKE) -s contracts-configs; \
 	run_and_capture "docs" "static" $(MAKE) -s contracts-docs; \
 	run_and_capture "docker" "effect" $(DEV_ATLAS) contracts docker $(CONTRACTS_EFFECT_FLAGS) --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT); \
