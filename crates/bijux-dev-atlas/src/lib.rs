@@ -12,6 +12,7 @@ pub mod adapters;
 pub(crate) mod commands;
 pub mod contracts;
 pub mod core;
+pub mod domains;
 pub mod docs;
 pub mod engine;
 pub mod model;
