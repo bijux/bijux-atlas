@@ -480,10 +480,12 @@ fn test_ops_helm_env_001_runtime_allowlist_subset(ctx: &RunContext) -> TestResul
     let config_maps = helm_env::extract_configmap_rows(&rendered.yaml_docs, "bijux-atlas");
     let env_keys = helm_env::extract_configmap_env_keys(&rendered.yaml_docs, "bijux-atlas");
     let report = helm_env::build_report(
-        &ctx.repo_root.join(chart_rel),
-        &[ctx.repo_root.join(values_rel)],
-        "bijux-atlas",
-        &helm_binary,
+        helm_env::build_inputs(
+            &ctx.repo_root.join(chart_rel),
+            &[ctx.repo_root.join(values_rel)],
+            "bijux-atlas",
+            &helm_binary,
+        ),
         &env_keys,
         &config_maps,
         true,

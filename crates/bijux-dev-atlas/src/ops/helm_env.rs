@@ -306,11 +306,25 @@ pub fn extract_configmap_env_keys(yaml_docs: &[YamlDoc], release_name: &str) -> 
         .collect()
 }
 
-pub fn build_report(
+pub fn build_inputs(
     chart_dir: &Path,
     values_files: &[PathBuf],
     release_name: &str,
     helm_binary: &str,
+) -> HelmEnvInputs {
+    HelmEnvInputs {
+        chart_dir: chart_dir.display().to_string(),
+        values_files: values_files
+            .iter()
+            .map(|path| path.display().to_string())
+            .collect(),
+        release_name: release_name.to_string(),
+        helm_binary: helm_binary.to_string(),
+    }
+}
+
+pub fn build_report(
+    inputs: HelmEnvInputs,
     env_keys: &BTreeSet<String>,
     config_maps: &[ConfigMapEnvRow],
     include_names: bool,
@@ -325,15 +339,7 @@ pub fn build_report(
         version: 1,
         schema_version: 1,
         kind: "ops_helm_env".to_string(),
-        inputs: HelmEnvInputs {
-            chart_dir: chart_dir.display().to_string(),
-            values_files: values_files
-                .iter()
-                .map(|path| path.display().to_string())
-                .collect(),
-            release_name: release_name.to_string(),
-            helm_binary: helm_binary.to_string(),
-        },
+        inputs,
         env_keys: env_keys.iter().cloned().collect(),
         config_maps,
         helm,
@@ -626,10 +632,12 @@ mod tests {
         let rows = extract_configmap_rows(&docs, "bijux-atlas");
         let keys = extract_configmap_env_keys(&docs, "bijux-atlas");
         let report = build_report(
-            Path::new("ops/k8s/charts/bijux-atlas"),
-            &[PathBuf::from("ops/k8s/charts/bijux-atlas/values.yaml")],
-            "bijux-atlas",
-            "helm",
+            build_inputs(
+                Path::new("ops/k8s/charts/bijux-atlas"),
+                &[PathBuf::from("ops/k8s/charts/bijux-atlas/values.yaml")],
+                "bijux-atlas",
+                "helm",
+            ),
             &keys,
             &rows,
             false,
@@ -706,10 +714,12 @@ mod tests {
         let rows = extract_configmap_rows(&docs, "bijux-atlas");
         let keys = extract_configmap_env_keys(&docs, "bijux-atlas");
         let report = build_report(
-            Path::new("ops/k8s/charts/bijux-atlas"),
-            &[PathBuf::from("ops/k8s/charts/bijux-atlas/values.yaml")],
-            "bijux-atlas",
-            "helm",
+            build_inputs(
+                Path::new("ops/k8s/charts/bijux-atlas"),
+                &[PathBuf::from("ops/k8s/charts/bijux-atlas/values.yaml")],
+                "bijux-atlas",
+                "helm",
+            ),
             &keys,
             &rows,
             true,

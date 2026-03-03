@@ -108,10 +108,12 @@ pub(super) fn render_helm_configmap_env_report(
         ));
     }
     let report = bijux_dev_atlas::ops::helm_env::build_report(
-        &args.chart,
-        &args.values_files,
-        &release_name,
-        &helm_binary,
+        bijux_dev_atlas::ops::helm_env::build_inputs(
+            &args.chart,
+            &args.values_files,
+            &release_name,
+            &helm_binary,
+        ),
         &env_keys,
         &config_maps,
         args.include_names,
