@@ -21,6 +21,8 @@ Provide governance rules that keep reader docs accurate, minimal, and stable.
 - [Docs Dashboard](docs-dashboard.md)
 - [Suites And Registries](suites-and-registries.md)
 - [Checks And Contracts](checks-and-contracts.md)
+- [Checks Taxonomy](checks-taxonomy.md)
+- [Check Rebase Decisions](check-rebase-decisions.md)
 - [Suite Membership Policy](suite-membership-policy.md)
 - [Registry Status Index](registry-status-index.md)
 - [Add A Check](add-check-template.md)

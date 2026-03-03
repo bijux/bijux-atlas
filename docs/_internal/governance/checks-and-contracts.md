@@ -33,6 +33,8 @@ Contracts are governance invariants. They define product or operational guarante
 
 Checks are product surfaces, not throwaway shell wrappers. A governed check must be interpretable by humans from its summary, owner, artifacts, and reference docs, and by machines from its stable id, report ids, and schema-validated JSON outputs.
 
+Detailed taxonomy and mode mapping are defined in `docs/_internal/governance/checks-taxonomy.md`.
+
 ## Suite Boundaries
 
 Checks are the quality gate layer. They answer whether a bounded engineering lane is healthy enough to proceed.

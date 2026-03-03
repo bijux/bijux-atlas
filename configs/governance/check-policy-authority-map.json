@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "owner": "team:atlas-governance",
+  "mappings": [
+    {
+      "topic": "root_markdown_surface",
+      "policy": "configs/layout/root-markdown-allowlist.json",
+      "applies_to": ["CHECK-DOCS-ROOT-*", "CHECK-OPS-ROOT-*"]
+    },
+    {
+      "topic": "markdown_outside_docs",
+      "policy": "docs/_internal/policies/allowed-non-docs-markdown.json",
+      "applies_to": ["CHECK-DOCS-OPS-*", "CHECK-DOCS-INDEX-*"]
+    },
+    {
+      "topic": "ops_markdown_classes",
+      "policy": "docs/_internal/policies/ops-docs-classes.json",
+      "applies_to": ["CHECK-OPS-DOCS-*", "CHECK-OPS-GOV-*"]
+    },
+    {
+      "topic": "generated_file_minification",
+      "policy": "configs/layout/generated-files.json",
+      "applies_to": ["CHECK-DOCS-GENERATED-*", "CHECK-CONFIGS-GENERATED-*"]
+    }
+  ]
+}

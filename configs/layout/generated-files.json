@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "owner": "team:atlas-governance",
+  "allowed_minified_files": [
+    "docs/_internal/generated/docs-quality-dashboard.json",
+    "docs/_internal/generated/docs-ledger.json"
+  ]
+}
