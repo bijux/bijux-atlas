@@ -343,6 +343,46 @@
       }
     },
     {
+      "oneOf": [
+        {
+          "properties": {
+            "pdb": {
+              "properties": {
+                "minAvailable": {
+                  "type": [
+                    "integer",
+                    "string"
+                  ]
+                },
+                "maxUnavailable": {
+                  "type": "null"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        {
+          "properties": {
+            "pdb": {
+              "properties": {
+                "maxUnavailable": {
+                  "type": [
+                    "integer",
+                    "string"
+                  ]
+                },
+                "minAvailable": {
+                  "type": "null"
+                }
+              },
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    {
       "description": "Exactly one image selector must be set: use a digest for immutable deploys or a tag for mutable/dev flows, never both.",
       "oneOf": [
         {
@@ -656,7 +696,89 @@
       },
       "type": "object"
     },
+    "envFromSecrets": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
     "extraEnv": {
+      "type": "array"
+    },
+    "extraAnnotations": {
+      "$ref": "#/$defs/stringMap"
+    },
+    "extraLabels": {
+      "$ref": "#/$defs/stringMap"
+    },
+    "extraVolumeMounts": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "mountPath": {
+            "pattern": "^/",
+            "type": "string"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "readOnly": {
+            "type": "boolean"
+          },
+          "subPath": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "mountPath"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "extraVolumes": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "configMap": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "type": "object"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "secret": {
+            "additionalProperties": false,
+            "properties": {
+              "secretName": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "secretName"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      },
       "type": "array"
     },
     "hpa": {
@@ -842,6 +964,43 @@
         "path"
       ],
       "type": "object"
+    },
+    "initContainers": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "command": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "env": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "pattern": "^[A-Z0-9_]+$"
+            },
+            "type": "object"
+          },
+          "image": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "image"
+        ],
+        "type": "object"
+      },
+      "type": "array"
     },
     "metrics": {
       "additionalProperties": false,
@@ -1115,9 +1274,32 @@
       "type": "object"
     },
     "nodeSelector": {
-      "type": "object"
+      "$ref": "#/$defs/stringMap"
     },
     "pdb": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "maxUnavailable": {
+          "type": [
+            "integer",
+            "string",
+            "null"
+          ]
+        },
+        "minAvailable": {
+          "type": [
+            "integer",
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "enabled"
+      ],
       "type": "object"
     },
     "podSecurityContext": {
@@ -1555,6 +1737,21 @@
       ],
       "type": "object"
     },
+    "serviceAccount": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "$ref": "#/$defs/stringMap"
+        },
+        "create": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "store": {
       "additionalProperties": false,
       "properties": {
@@ -1644,11 +1841,69 @@
       ],
       "type": "object"
     },
+    "configMounts": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "configMap": {
+            "type": "string"
+          },
+          "mountPath": {
+            "pattern": "^/",
+            "type": "string"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "secret": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "mountPath"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "rbac": {
+      "additionalProperties": false,
+      "properties": {
+        "create": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
     "terminationGracePeriodSeconds": {
       "minimum": 0,
       "type": "integer"
     },
     "tolerations": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "effect": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string"
+          },
+          "tolerationSeconds": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "type": "array"
     }
   },
