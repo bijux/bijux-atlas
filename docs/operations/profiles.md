@@ -101,3 +101,8 @@ helm lint ops/k8s/charts/bijux-atlas -f ops/k8s/values/prod-airgap.yaml
 
 Reapply the last known-good profile overlay and confirm the resulting toggles still match
 `ops/k8s/values/profiles.json` before you retry the rollout.
+
+## Related
+
+- [Profile Change Policy](profile-change-policy.md)
+- [Profile Ownership](profile-ownership.md)
