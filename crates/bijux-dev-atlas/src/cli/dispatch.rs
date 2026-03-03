@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{CheckCommand, CheckRegistryCommand, Cli, Command, FormatArg, GlobalFormatArg};
+use crate::cli::{
+    CheckCommand, CheckRegistryCommand, Cli, Command, FormatArg, GlobalFormatArg, ReportsCommand,
+};
 use crate::{
     plugin_metadata_json, run_artifacts_command, run_build_command, run_capabilities_command,
     run_check_doctor, run_check_explain, run_check_list, run_check_registry_doctor,
@@ -19,6 +21,7 @@ use bijux_dev_atlas::adapters::cli::{
 use bijux_dev_atlas::domains;
 use bijux_dev_atlas::model::exit_codes::{EXIT_FAILURE, EXIT_NOT_FOUND, EXIT_SUCCESS};
 use bijux_dev_atlas::model::{RunnableId, RunnableKind, RunnableMode};
+use bijux_dev_atlas::registry::ReportRegistry;
 use bijux_dev_atlas::registry::RunnableRegistry;
 use std::io::{self, Write};
 use std::process::Command as ProcessCommand;
@@ -504,6 +507,18 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         }
         Command::Registry { command } => run_registry_command(cli.quiet, command),
         Command::Suites { command } => run_suites_command(cli.quiet, command),
+        Command::Reports { command } => match run_reports_command(cli.format, command) {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    let _ = writeln!(io::stdout(), "{rendered}");
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas reports failed: {err}");
+                EXIT_FAILURE
+            }
+        },
         Command::List {
             repo_root,
             format,
@@ -578,6 +593,135 @@ fn effective_format(global: Option<GlobalFormatArg>, local: FormatArg) -> Global
         FormatArg::Text => GlobalFormatArg::Human,
         FormatArg::Json | FormatArg::Jsonl => GlobalFormatArg::Json,
     })
+}
+
+fn run_reports_command(
+    global: Option<GlobalFormatArg>,
+    command: ReportsCommand,
+) -> Result<(String, i32), String> {
+    match command {
+        ReportsCommand::List(args) => {
+            let repo_root = resolve_repo_root(args.repo_root)?;
+            let registry = ReportRegistry::load(&repo_root)?;
+            let catalog = ReportRegistry::validate_catalog(&repo_root)?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "reports_catalog",
+                "summary": {
+                    "report_count": catalog.report_count,
+                    "validation_errors": catalog.errors.len(),
+                },
+                "reports": registry.reports.iter().map(|entry| serde_json::json!({
+                    "report_id": entry.report_id,
+                    "version": entry.version,
+                    "schema_path": entry.schema_path,
+                    "example_path": entry.example_path,
+                })).collect::<Vec<_>>(),
+                "validation_errors": catalog.errors,
+            });
+            let rendered = match effective_format(global, args.format) {
+                GlobalFormatArg::Human => {
+                    let mut lines = vec!["Reports".to_string()];
+                    for report in payload["reports"].as_array().into_iter().flatten() {
+                        lines.push(format!(
+                            "- {} v{} -> {}",
+                            report["report_id"].as_str().unwrap_or_default(),
+                            report["version"].as_u64().unwrap_or(0),
+                            report["schema_path"].as_str().unwrap_or_default()
+                        ));
+                    }
+                    if let Some(errors) = payload["validation_errors"].as_array() {
+                        if !errors.is_empty() {
+                            lines.push(String::new());
+                            lines.push("Validation errors".to_string());
+                            for error in errors {
+                                lines.push(format!("- {}", error.as_str().unwrap_or_default()));
+                            }
+                        }
+                    }
+                    lines.join("\n")
+                }
+                GlobalFormatArg::Json => serde_json::to_string_pretty(&payload)
+                    .map_err(|err| format!("encode reports list failed: {err}"))?,
+                GlobalFormatArg::Both => format!(
+                    "{}\n{}",
+                    payload["reports"]
+                        .as_array()
+                        .map(|rows| rows
+                            .iter()
+                            .map(|row| format!(
+                                "{} v{}",
+                                row["report_id"].as_str().unwrap_or_default(),
+                                row["version"].as_u64().unwrap_or(0)
+                            ))
+                            .collect::<Vec<_>>()
+                            .join("\n"))
+                        .unwrap_or_default(),
+                    serde_json::to_string_pretty(&payload)
+                        .map_err(|err| format!("encode reports list failed: {err}"))?
+                ),
+            };
+            if let Some(path) = args.out {
+                std::fs::write(&path, format!("{rendered}\n"))
+                    .map_err(|err| format!("write {} failed: {err}", path.display()))?;
+            }
+            Ok((
+                rendered,
+                if catalog.errors.is_empty() {
+                    EXIT_SUCCESS
+                } else {
+                    EXIT_FAILURE
+                },
+            ))
+        }
+        ReportsCommand::Validate(args) => {
+            let repo_root = resolve_repo_root(args.repo_root)?;
+            let validation = ReportRegistry::validate_reports_dir(&repo_root, &args.dir)?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "reports_validation",
+                "summary": {
+                    "scanned_reports": validation.scanned_reports,
+                    "errors": validation.errors.len(),
+                },
+                "reports_dir": args.dir.display().to_string(),
+                "errors": validation.errors,
+            });
+            let rendered = match effective_format(global, args.format) {
+                GlobalFormatArg::Human => {
+                    let mut lines = vec![format!(
+                        "Validated {} reports in {}",
+                        payload["summary"]["scanned_reports"].as_u64().unwrap_or(0),
+                        args.dir.display()
+                    )];
+                    for error in payload["errors"].as_array().into_iter().flatten() {
+                        lines.push(format!("- {}", error.as_str().unwrap_or_default()));
+                    }
+                    lines.join("\n")
+                }
+                GlobalFormatArg::Json => serde_json::to_string_pretty(&payload)
+                    .map_err(|err| format!("encode reports validation failed: {err}"))?,
+                GlobalFormatArg::Both => format!(
+                    "Validated {} reports\n{}",
+                    payload["summary"]["scanned_reports"].as_u64().unwrap_or(0),
+                    serde_json::to_string_pretty(&payload)
+                        .map_err(|err| format!("encode reports validation failed: {err}"))?
+                ),
+            };
+            if let Some(path) = args.out {
+                std::fs::write(&path, format!("{rendered}\n"))
+                    .map_err(|err| format!("write {} failed: {err}", path.display()))?;
+            }
+            Ok((
+                rendered,
+                if validation.errors.is_empty() {
+                    EXIT_SUCCESS
+                } else {
+                    EXIT_FAILURE
+                },
+            ))
+        }
+    }
 }
 
 fn run_list_command(

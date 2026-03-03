@@ -96,6 +96,10 @@ pub enum Command {
         #[command(subcommand)]
         command: ArtifactsCommand,
     },
+    Reports {
+        #[command(subcommand)]
+        command: ReportsCommand,
+    },
     #[command(hide = true)]
     Make {
         #[command(subcommand)]

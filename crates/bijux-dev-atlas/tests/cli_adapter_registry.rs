@@ -35,6 +35,7 @@ fn command_routes_cover_top_level_runtime_commands() {
         "security",
         "release",
         "perf",
+        "reports",
     ] {
         assert_eq!(
             describe_command(command).expect("command metadata").domain,

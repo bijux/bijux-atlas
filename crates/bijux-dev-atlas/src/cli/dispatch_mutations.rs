@@ -3,7 +3,8 @@
 use crate::cli::{
     ArtifactsCommand, CheckCommand, CheckRegistryCommand, Command, ConfigsCommand, ContractCommand,
     ContractsCommand, DatasetsCommand, DocsCommand, FormatArg, IngestCommand, MakeCommand,
-    OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand, ReleaseCommand, SecurityCommand,
+    OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand, ReleaseCommand, ReportsCommand,
+    SecurityCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -37,6 +38,10 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Docs { command } => force_json_docs(command),
         Command::Make { command } => force_json_make(command),
         Command::Artifacts { command } => force_json_artifacts(command),
+        Command::Reports { command } => match command {
+            ReportsCommand::List(args) => args.format = FormatArg::Json,
+            ReportsCommand::Validate(args) => args.format = FormatArg::Json,
+        },
         Command::Demo { command } => force_json_demo(command),
         Command::Contracts { command } => force_json_contracts(command),
         Command::Configs { command } => force_json_configs(command),
@@ -572,6 +577,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     args.common.repo_root = Some(root.clone())
                 }
             },
+        },
+        Command::Reports { command } => match command {
+            ReportsCommand::List(args) => args.repo_root = Some(root.clone()),
+            ReportsCommand::Validate(args) => args.repo_root = Some(root.clone()),
         },
         Command::Ops { command } => match command {
             OpsCommand::Kind { command } => match command {

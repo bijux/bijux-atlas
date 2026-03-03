@@ -51,6 +51,11 @@ pub fn command_inventory() -> Vec<CommandDescriptor> {
             purpose: "Run grouped runnable suites",
         },
         CommandDescriptor {
+            name: "reports",
+            domain: "engine",
+            purpose: "List governed reports and validate report artifacts",
+        },
+        CommandDescriptor {
             name: "list",
             domain: "engine",
             purpose: "List domains, suites, and runnable ids",

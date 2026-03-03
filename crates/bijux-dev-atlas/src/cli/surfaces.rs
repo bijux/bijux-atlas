@@ -16,6 +16,34 @@ pub enum ArtifactsCommand {
     },
 }
 
+#[derive(Subcommand, Debug)]
+pub enum ReportsCommand {
+    List(ReportsListArgs),
+    Validate(ReportsValidateArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReportsListArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReportsValidateArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub dir: PathBuf,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
 #[derive(Args, Debug, Clone)]
 pub struct ArtifactsCommonArgs {
     #[arg(long)]

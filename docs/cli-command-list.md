@@ -10,6 +10,7 @@
 | `release` | `release` | Run release verification commands |
 | `perf` | `perf` | Run performance validation commands |
 | `suites` | `engine` | Run grouped runnable suites |
+| `reports` | `engine` | List governed reports and validate report artifacts |
 | `list` | `engine` | List domains, suites, and runnable ids |
 | `describe` | `engine` | Describe one runnable without executing it |
 | `run` | `engine` | Run one runnable by id |

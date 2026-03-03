@@ -10,7 +10,7 @@ pub fn route_name(command_name: &str) -> Option<&'static str> {
         "security" => Some("security"),
         "release" => Some("release"),
         "perf" => Some("perf"),
-        "suites" | "list" | "describe" | "run" => Some("engine"),
+        "suites" | "reports" | "list" | "describe" | "run" => Some("engine"),
         _ => None,
     }
 }
