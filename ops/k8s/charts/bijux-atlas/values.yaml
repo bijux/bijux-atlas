@@ -60,6 +60,13 @@ cache:
     image: ghcr.io/bijux/bijux-atlas:0.1.0
   cachedOnlyMode: false
   readinessRequiresCatalog: true
+  warmup:
+    enabled: false
+    lockTtlSeconds: 60
+    retry:
+      maxAttempts: 5
+      baseDelayMs: 250
+      maxDelayMs: 2000
 
 server:
   bindAddress: 0.0.0.0
@@ -123,10 +130,23 @@ catalog:
   breakerOpenMs: 5000
 
 store:
+  backend: local
   endpoint: ""
   s3PresignedBaseUrl: ""
   credentialsSecretName: ""
   manageCredentialsSecret: true
+  s3:
+    endpoint: ""
+    bucket: ""
+    region: us-east-1
+    pathStyle: false
+    credentials:
+      fromSecret: ""
+  http:
+    baseUrl: ""
+    timeoutMs: 5000
+  local:
+    path: /cache
 
 networkPolicy:
   enabled: true
