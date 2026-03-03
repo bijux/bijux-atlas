@@ -173,6 +173,13 @@ networkPolicy:
   enabled: true
   mode: internet-only
   ingressMode: same-namespace
+  cidrBudget:
+    maxAllowCidrs: 8
+  exceptions:
+    relaxedEgress: false
+    prodDisableAllowed: false
+    owner: ""
+    expiresOn: ""
   allowDns: true
   allowMonitoringNamespace: observability
   monitoring:

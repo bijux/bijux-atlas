@@ -17,6 +17,13 @@ cache:
 
 networkPolicy:
   enabled: true
+  mode: disabled
+  ingressMode: same-namespace
+  exceptions:
+    relaxedEgress: false
+    prodDisableAllowed: true
+    owner: bijux-atlas-operations
+    expiresOn: "2027-03-03"
   allowDns: false
   allowMonitoringNamespace: observability
   allowedEgressCIDRs: []

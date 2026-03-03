@@ -8,6 +8,15 @@ cache:
 
 networkPolicy:
   enabled: true
+  mode: cluster-aware
+  ingressMode: same-namespace
+  cidrBudget:
+    maxAllowCidrs: 4
+  exceptions:
+    relaxedEgress: false
+    prodDisableAllowed: false
+    owner: ""
+    expiresOn: ""
   allowDns: true
   allowedEgressCIDRs: []
   ingress:

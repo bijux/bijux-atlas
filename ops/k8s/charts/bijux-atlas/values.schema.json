@@ -1216,6 +1216,35 @@
           ],
           "type": "object"
         },
+        "exceptions": {
+          "additionalProperties": false,
+          "properties": {
+            "owner": {
+              "type": "string"
+            },
+            "expiresOn": {
+              "pattern": "^$|^\\d{4}-\\d{2}-\\d{2}$",
+              "type": "string"
+            },
+            "prodDisableAllowed": {
+              "type": "boolean"
+            },
+            "relaxedEgress": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "cidrBudget": {
+          "additionalProperties": false,
+          "properties": {
+            "maxAllowCidrs": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        },
         "ingressMode": {
           "description": "Top-level alias for networkPolicy.ingress.mode. Prefer this when you want a single explicit ingress policy selector.",
           "enum": [
