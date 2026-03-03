@@ -6,11 +6,11 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-#[path = "governance_objects_parts/collect.rs"]
+#[path = "governance_objects_parts/collect.inc"]
 mod collect;
-#[path = "governance_objects_parts/reports.rs"]
+#[path = "governance_objects_parts/reports.inc"]
 mod reports;
-#[path = "governance_objects_parts/validation.rs"]
+#[path = "governance_objects_parts/validation.inc"]
 mod validation;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

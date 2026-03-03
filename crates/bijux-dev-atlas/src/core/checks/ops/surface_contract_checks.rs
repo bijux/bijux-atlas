@@ -3,6 +3,22 @@
 use std::collections::BTreeMap;
 
 use super::*;
+use crate::ports::{Clock, SystemClock};
+
+fn current_utc_date_string() -> String {
+    let days = (SystemClock.now_unix_secs() / 86_400) as i64;
+    let z = days + 719_468;
+    let era = if z >= 0 { z } else { z - 146_096 } / 146_097;
+    let doe = z - era * 146_097;
+    let yoe = (doe - doe / 1_460 + doe / 36_524 - doe / 146_096) / 365;
+    let mut year = yoe + era * 400;
+    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    let mp = (5 * doy + 2) / 153;
+    let day = doy - (153 * mp + 2) / 5 + 1;
+    let month = mp + if mp < 10 { 3 } else { -9 };
+    year += if month <= 2 { 1 } else { 0 };
+    format!("{year:04}-{month:02}-{day:02}")
+}
 
 pub(super) fn checks_ops_makefile_routes_dev_atlas(
     ctx: &CheckContext<'_>,
@@ -230,23 +246,7 @@ pub(super) fn check_workflows_policy_exceptions_expiry(
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let value: serde_json::Value =
         serde_json::from_str(&text).map_err(|err| CheckError::Failed(err.to_string()))?;
-    let today = {
-        let duration = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .map_err(|err| CheckError::Failed(err.to_string()))?;
-        let days = (duration.as_secs() / 86_400) as i64;
-        let z = days + 719_468;
-        let era = if z >= 0 { z } else { z - 146_096 } / 146_097;
-        let doe = z - era * 146_097;
-        let yoe = (doe - doe / 1_460 + doe / 36_524 - doe / 146_096) / 365;
-        let mut year = yoe + era * 400;
-        let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
-        let mp = (5 * doy + 2) / 153;
-        let day = doy - (153 * mp + 2) / 5 + 1;
-        let month = mp + if mp < 10 { 3 } else { -9 };
-        year += if month <= 2 { 1 } else { 0 };
-        format!("{year:04}-{month:02}-{day:02}")
-    };
+    let today = current_utc_date_string();
     let mut violations = Vec::new();
     for entry in value["exceptions"].as_array().into_iter().flatten() {
         let policy_id = entry["policy_id"].as_str().unwrap_or("unknown");

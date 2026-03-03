@@ -270,7 +270,10 @@ metadata:
 "#;
         let payload = install_plan_inventory(manifest);
         assert_eq!(
-            payload["namespaces"].as_array().expect("namespaces").len(),
+            payload["namespaces"]
+                .as_array()
+                .unwrap_or_else(|| panic!("namespaces"))
+                .len(),
             1
         );
         assert_eq!(payload["has_rbac"].as_bool(), Some(false));
@@ -301,7 +304,9 @@ spec:
   type: NodePort
 "#;
         let payload = install_plan_inventory(manifest);
-        let forbidden = payload["forbidden_objects"].as_array().expect("forbidden");
+        let forbidden = payload["forbidden_objects"]
+            .as_array()
+            .unwrap_or_else(|| panic!("forbidden"));
         assert!(forbidden.iter().any(|row| row.as_str().is_some_and(|value| value.contains("ClusterRole"))));
         assert!(forbidden.iter().any(|row| row.as_str().is_some_and(|value| value.contains("NodePort"))));
         assert_eq!(payload["has_rbac"].as_bool(), Some(true));
@@ -320,16 +325,17 @@ spec:
 
     #[test]
     fn load_profile_intent_returns_selected_profile() {
-        let root = tempfile::tempdir().expect("tempdir");
-        std::fs::create_dir_all(root.path().join("ops/stack")).expect("mkdir");
+        let root = tempfile::tempdir().unwrap_or_else(|err| panic!("tempdir: {err}"));
+        std::fs::create_dir_all(root.path().join("ops/stack"))
+            .unwrap_or_else(|err| panic!("mkdir: {err}"));
         std::fs::write(
             root.path().join("ops/stack/profile-intent.json"),
             r#"{"schema_version":1,"profiles":[{"name":"ci","intended_usage":"ci","allowed_effects":["subprocess"],"required_dependencies":["kind-cluster"]}]}"#,
         )
-        .expect("intent");
+        .unwrap_or_else(|err| panic!("intent: {err}"));
         let intent = load_profile_intent(root.path(), "ci")
-            .expect("load")
-            .expect("profile");
+            .unwrap_or_else(|err| panic!("load: {err}"))
+            .unwrap_or_else(|| panic!("profile"));
         assert_eq!(intent["name"].as_str(), Some("ci"));
     }
 }

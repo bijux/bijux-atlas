@@ -1,5 +1,5 @@
 use super::*;
-#[path = "ci_registry.rs"]
+#[path = "runtime_entry_checks_surface_ci_registry.inc"]
 mod ci_registry;
 
 use ci_registry::{
