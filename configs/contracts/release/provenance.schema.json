@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/release/provenance.schema.json",
+  "title": "Release Provenance",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_by",
+    "release_id",
+    "git_sha",
+    "governance_version",
+    "toolchain_inventory",
+    "signing_policy_path",
+    "evidence_manifest_path"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "generated_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "release_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "git_sha": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "governance_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "toolchain_inventory": {
+      "type": "string",
+      "minLength": 1
+    },
+    "signing_policy_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_manifest_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "checksum_list_path": {
+      "type": "string"
+    }
+  }
+}

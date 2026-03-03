@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/release/release-verify.schema.json",
+  "title": "Release Verify Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "evidence_tarball",
+    "checksums_path",
+    "contracts",
+    "errors"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "failed"
+      ]
+    },
+    "evidence_tarball": {
+      "type": "string",
+      "minLength": 1
+    },
+    "checksums_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contracts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "REL-SIGN-001",
+        "REL-SIGN-002",
+        "REL-SIGN-003",
+        "REL-SIGN-004",
+        "REL-PROV-001"
+      ],
+      "properties": {
+        "REL-SIGN-001": {
+          "type": "boolean"
+        },
+        "REL-SIGN-002": {
+          "type": "boolean"
+        },
+        "REL-SIGN-003": {
+          "type": "boolean"
+        },
+        "REL-SIGN-004": {
+          "type": "boolean"
+        },
+        "REL-PROV-001": {
+          "type": "boolean"
+        }
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

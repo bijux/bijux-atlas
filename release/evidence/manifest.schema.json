@@ -9,6 +9,7 @@
     "generated_by",
     "identity_path",
     "policy_path",
+    "provenance",
     "chart_package",
     "image_artifacts",
     "docker_bases_lock",
@@ -41,6 +42,24 @@
     "policy_path": {
       "type": "string",
       "minLength": 1
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
     },
     "chart_package": {
       "type": "object",
