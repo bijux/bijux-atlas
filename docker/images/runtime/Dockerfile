@@ -19,6 +19,7 @@ COPY configs/rust/rustfmt.toml /workspace/configs/rust/rustfmt.toml
 COPY configs/rust/clippy.toml /workspace/configs/rust/clippy.toml
 COPY configs/contracts /workspace/configs/contracts
 COPY configs/security/deny.toml /workspace/configs/security/deny.toml
+COPY configs/security/policy.yaml /workspace/configs/security/policy.yaml
 COPY crates ./crates
 
 ENV CARGO_NET_GIT_FETCH_WITH_CLI=true \
