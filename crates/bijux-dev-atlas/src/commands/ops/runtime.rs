@@ -3,8 +3,9 @@
 use crate::cli::OpsInstallArgs;
 use crate::cli::{
     OpsCollectArgs, OpsCollectCommand, OpsCommonArgs, OpsDatasetsCommand, OpsE2eCommand,
-    OpsEvidenceCommand, OpsGenerateCommand, OpsHelmCommand, OpsHelmEnvArgs, OpsHelmReleaseArgs,
-    OpsInventoryCommand, OpsK8sCommand, OpsKindCommand, OpsKindPreloadArgs,
+    OpsEvidenceCommand, OpsGenerateCommand, OpsHelmCommand, OpsHelmEnvArgs, OpsHelmInstallArgs,
+    OpsHelmReleaseArgs, OpsHelmRollbackArgs, OpsHelmUpgradeArgs, OpsInventoryCommand,
+    OpsK8sCommand, OpsKindCommand, OpsKindPreloadArgs,
     OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand, OpsObsDrillCommand, OpsPinsCommand,
     OpsProfilesCommand, OpsProfilesValidateArgs, OpsRenderArgs, OpsRenderTarget,
     OpsReportCommand, OpsResourcesCommand, OpsSchemaCommand, OpsStackCommand,
@@ -47,8 +48,10 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
             OpsKindCommand::PreloadImage(OpsKindPreloadArgs { common, .. }) => Some(common),
         },
         OpsCommand::Helm { command } => match command {
-            OpsHelmCommand::Install(OpsHelmReleaseArgs { common, .. })
-            | OpsHelmCommand::Uninstall(OpsHelmReleaseArgs { common, .. }) => Some(common),
+            OpsHelmCommand::Install(OpsHelmInstallArgs { release, .. })
+            | OpsHelmCommand::Upgrade(OpsHelmUpgradeArgs { release, .. })
+            | OpsHelmCommand::Rollback(OpsHelmRollbackArgs { release, .. }) => Some(&release.common),
+            OpsHelmCommand::Uninstall(OpsHelmReleaseArgs { common, .. }) => Some(common),
         },
         OpsCommand::List(common)
         | OpsCommand::Doctor(common)

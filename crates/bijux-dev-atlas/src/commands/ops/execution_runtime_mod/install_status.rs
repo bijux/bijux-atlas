@@ -139,6 +139,14 @@ fn simulation_cluster_config(repo_root: &std::path::Path) -> std::path::PathBuf 
     repo_root.join("ops/k8s/kind/cluster.yaml")
 }
 
+fn simulation_current_chart_path(repo_root: &std::path::Path) -> std::path::PathBuf {
+    repo_root.join("ops/k8s/charts/bijux-atlas")
+}
+
+fn simulation_previous_chart_path(repo_root: &std::path::Path) -> std::path::PathBuf {
+    repo_root.join("artifacts/ops/chart-sources/previous/bijux-atlas.tgz")
+}
+
 fn simulation_report_path(
     repo_root: &std::path::Path,
     run_id: &RunId,
@@ -262,6 +270,92 @@ fn update_simulation_summary(
     )
     .map_err(|err| format!("failed to write {}: {err}", summary_path.display()))?;
     Ok(summary_path)
+}
+
+fn resolve_chart_source(
+    repo_root: &std::path::Path,
+    chart_source: crate::cli::OpsHelmChartSource,
+) -> Result<std::path::PathBuf, String> {
+    let path = match chart_source {
+        crate::cli::OpsHelmChartSource::Current => simulation_current_chart_path(repo_root),
+        crate::cli::OpsHelmChartSource::Previous => simulation_previous_chart_path(repo_root),
+    };
+    if path.exists() {
+        Ok(path)
+    } else {
+        Err(format!(
+            "missing chart source {}; current uses the working tree chart and previous uses artifacts/ops/chart-sources/previous/bijux-atlas.tgz",
+            path.display()
+        ))
+    }
+}
+
+fn manifest_diff_summary(before: &str, after: &str) -> serde_json::Value {
+    let before_lines = before.lines().collect::<Vec<_>>();
+    let after_lines = after.lines().collect::<Vec<_>>();
+    let shared = before_lines.len().min(after_lines.len());
+    let changed_lines = (0..shared)
+        .filter(|index| before_lines[*index] != after_lines[*index])
+        .count()
+        + before_lines.len().saturating_sub(shared)
+        + after_lines.len().saturating_sub(shared);
+    serde_json::json!({
+        "before_sha256": sha256_hex(before),
+        "after_sha256": sha256_hex(after),
+        "before_lines": before_lines.len(),
+        "after_lines": after_lines.len(),
+        "changed_lines": changed_lines
+    })
+}
+
+fn helm_release_manifest(
+    process: &OpsProcess,
+    repo_root: &std::path::Path,
+    namespace: &str,
+) -> Result<String, String> {
+    let argv = vec![
+        "get".to_string(),
+        "manifest".to_string(),
+        "bijux-atlas".to_string(),
+        "--namespace".to_string(),
+        namespace.to_string(),
+    ];
+    let (stdout, _) = process
+        .run_subprocess("helm", &argv, repo_root)
+        .map_err(|err| err.to_stable_message())?;
+    Ok(stdout)
+}
+
+fn prior_release_revision(
+    process: &OpsProcess,
+    repo_root: &std::path::Path,
+    namespace: &str,
+) -> Result<String, String> {
+    let argv = vec![
+        "history".to_string(),
+        "bijux-atlas".to_string(),
+        "--namespace".to_string(),
+        namespace.to_string(),
+        "-o".to_string(),
+        "json".to_string(),
+    ];
+    let (stdout, _) = process
+        .run_subprocess("helm", &argv, repo_root)
+        .map_err(|err| err.to_stable_message())?;
+    let rows: serde_json::Value =
+        serde_json::from_str(&stdout).map_err(|err| format!("failed to parse helm history: {err}"))?;
+    let history = rows
+        .as_array()
+        .ok_or_else(|| "helm history payload must be an array".to_string())?;
+    if history.len() < 2 {
+        return Err("rollback requires at least two release revisions".to_string());
+    }
+    history
+        .get(history.len() - 2)
+        .and_then(|row| row.get("revision"))
+        .and_then(serde_json::Value::as_i64)
+        .map(|revision| revision.to_string())
+        .ok_or_else(|| "helm history did not contain a usable previous revision".to_string())
 }
 
 fn ensure_simulation_context(process: &OpsProcess, force: bool) -> Result<(), String> {
@@ -824,10 +918,10 @@ pub(crate) fn run_ops_kind_preload(
 }
 
 pub(crate) fn run_ops_helm_install(
-    args: &crate::cli::OpsHelmReleaseArgs,
+    args: &crate::cli::OpsHelmInstallArgs,
 ) -> Result<(String, i32), String> {
-    let common = &args.common;
-    match args.cluster {
+    let common = &args.release.common;
+    match args.release.cluster {
         crate::cli::OpsClusterTarget::Kind => {}
     }
     if !common.allow_subprocess {
@@ -847,9 +941,9 @@ pub(crate) fn run_ops_helm_install(
         .profile
         .clone()
         .unwrap_or_else(|| "kind".to_string());
-    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
+    let namespace = simulation_namespace(&profile, args.release.namespace.as_deref());
     let values_file = resolve_profile_values_file(&repo_root, &profile)?;
-    let chart_path = repo_root.join("ops/k8s/charts/bijux-atlas");
+    let chart_path = resolve_chart_source(&repo_root, args.chart_source)?;
     let helm_args = vec![
         "upgrade".to_string(),
         "--install".to_string(),
@@ -865,7 +959,7 @@ pub(crate) fn run_ops_helm_install(
         .run_subprocess("helm", &helm_args, &repo_root)
         .map_err(|err| err.to_stable_message())?;
     let (wait_rows, wait_errors, wait_ms) =
-        run_simulation_wait(&process, &repo_root, &namespace, args.timeout_seconds);
+        run_simulation_wait(&process, &repo_root, &namespace, args.release.timeout_seconds);
     let smoke_rows = if wait_errors.is_empty() {
         run_smoke_checks(&repo_root, &namespace, 18080)?
     } else {
@@ -908,7 +1002,11 @@ pub(crate) fn run_ops_helm_install(
                 "stdout": helm_stdout,
                 "event": helm_event,
                 "values_file": values_file.display().to_string(),
-                "chart_path": chart_path.display().to_string()
+                "chart_path": chart_path.display().to_string(),
+                "chart_source": match args.chart_source {
+                    crate::cli::OpsHelmChartSource::Current => "current",
+                    crate::cli::OpsHelmChartSource::Previous => "previous"
+                }
             },
             "readiness_wait": {
                 "elapsed_ms": wait_ms,
@@ -1068,6 +1166,258 @@ pub(crate) fn run_ops_helm_uninstall(
     });
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+pub(crate) fn run_ops_helm_upgrade(
+    args: &crate::cli::OpsHelmUpgradeArgs,
+) -> Result<(String, i32), String> {
+    let common = &args.release.common;
+    match args.release.cluster {
+        crate::cli::OpsClusterTarget::Kind => {}
+    }
+    if !common.allow_subprocess {
+        return Err("helm upgrade requires --allow-subprocess".to_string());
+    }
+    if !common.allow_write {
+        return Err("helm upgrade requires --allow-write".to_string());
+    }
+    if !common.allow_network {
+        return Err("helm upgrade requires --allow-network".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let process = OpsProcess::new(true);
+    ensure_simulation_context(&process, common.force)?;
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let profile = common
+        .profile
+        .clone()
+        .unwrap_or_else(|| "kind".to_string());
+    let namespace = simulation_namespace(&profile, args.release.namespace.as_deref());
+    let values_file = resolve_profile_values_file(&repo_root, &profile)?;
+    let chart_path = match args.to {
+        crate::cli::OpsHelmTarget::Current => simulation_current_chart_path(&repo_root),
+        crate::cli::OpsHelmTarget::Previous => simulation_previous_chart_path(&repo_root),
+    };
+    if !chart_path.exists() {
+        return Err(format!(
+            "missing upgrade target {}; current uses the working tree chart and previous uses artifacts/ops/chart-sources/previous/bijux-atlas.tgz",
+            chart_path.display()
+        ));
+    }
+    let before_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
+    let helm_args = vec![
+        "upgrade".to_string(),
+        "bijux-atlas".to_string(),
+        chart_path.display().to_string(),
+        "--namespace".to_string(),
+        namespace.clone(),
+        "--values".to_string(),
+        values_file.display().to_string(),
+    ];
+    let (helm_stdout, helm_event) = process
+        .run_subprocess("helm", &helm_args, &repo_root)
+        .map_err(|err| err.to_stable_message())?;
+    let (wait_rows, wait_errors, wait_ms) =
+        run_simulation_wait(&process, &repo_root, &namespace, args.release.timeout_seconds);
+    let smoke_rows = if wait_errors.is_empty() {
+        run_smoke_checks(&repo_root, &namespace, 18080)?
+    } else {
+        Vec::new()
+    };
+    let smoke_errors = smoke_rows
+        .iter()
+        .filter(|row| row["status"].as_u64().unwrap_or(0) != 200)
+        .map(|row| {
+            format!(
+                "{} returned status {}",
+                row["path"].as_str().unwrap_or("unknown"),
+                row["status"].as_u64().unwrap_or(0)
+            )
+        })
+        .collect::<Vec<_>>();
+    let after_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
+    let diff_summary = manifest_diff_summary(&before_manifest, &after_manifest);
+    let errors = wait_errors
+        .iter()
+        .cloned()
+        .chain(smoke_errors.iter().cloned())
+        .collect::<Vec<_>>();
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let smoke_payload = serde_json::json!({
+        "schema_version": 1,
+        "cluster": "kind",
+        "namespace": namespace,
+        "status": if wait_errors.is_empty() && smoke_errors.is_empty() { "ok" } else { "failed" },
+        "checks": smoke_rows
+    });
+    let smoke_report_path =
+        write_simulation_report(&repo_root, &run_id, "ops-smoke.json", &smoke_payload)?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "profile": profile,
+        "cluster": "kind",
+        "namespace": namespace,
+        "status": status,
+        "details": {
+            "target": match args.to {
+                crate::cli::OpsHelmTarget::Current => "current",
+                crate::cli::OpsHelmTarget::Previous => "previous"
+            },
+            "helm": {
+                "stdout": helm_stdout,
+                "event": helm_event,
+                "values_file": values_file.display().to_string(),
+                "chart_path": chart_path.display().to_string(),
+                "upgrade_target": "current-working-tree-chart"
+            },
+            "diff_summary": diff_summary,
+            "readiness_wait": {
+                "elapsed_ms": wait_ms,
+                "rows": wait_rows,
+                "errors": wait_errors
+            },
+            "smoke": {
+                "report_path": smoke_report_path.display().to_string(),
+                "checks": smoke_payload["checks"].clone()
+            }
+        }
+    });
+    let report_path = write_simulation_report(&repo_root, &run_id, "ops-upgrade.json", &payload)?;
+    let envelope = serde_json::json!({
+        "schema_version": 1,
+        "text": if status == "ok" { "helm upgrade completed" } else { "helm upgrade failed" },
+        "rows": [{
+            "schema_version": 1,
+            "profile": payload["profile"].clone(),
+            "cluster": "kind",
+            "namespace": payload["namespace"].clone(),
+            "status": status,
+            "report_path": report_path.display().to_string(),
+            "details": payload["details"].clone()
+        }],
+        "summary": {"total": 1, "errors": errors.len(), "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
+    Ok((rendered, if errors.is_empty() { 0 } else { 1 }))
+}
+
+pub(crate) fn run_ops_helm_rollback(
+    args: &crate::cli::OpsHelmRollbackArgs,
+) -> Result<(String, i32), String> {
+    let common = &args.release.common;
+    match args.release.cluster {
+        crate::cli::OpsClusterTarget::Kind => {}
+    }
+    if !common.allow_subprocess {
+        return Err("helm rollback requires --allow-subprocess".to_string());
+    }
+    if !common.allow_write {
+        return Err("helm rollback requires --allow-write".to_string());
+    }
+    if !common.allow_network {
+        return Err("helm rollback requires --allow-network".to_string());
+    }
+    if !matches!(args.to, crate::cli::OpsHelmTarget::Previous) {
+        return Err("helm rollback currently supports only --to previous".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let process = OpsProcess::new(true);
+    ensure_simulation_context(&process, common.force)?;
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let profile = common
+        .profile
+        .clone()
+        .unwrap_or_else(|| "kind".to_string());
+    let namespace = simulation_namespace(&profile, args.release.namespace.as_deref());
+    let before_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
+    let revision = prior_release_revision(&process, &repo_root, &namespace)?;
+    let helm_args = vec![
+        "rollback".to_string(),
+        "bijux-atlas".to_string(),
+        revision.clone(),
+        "--namespace".to_string(),
+        namespace.clone(),
+    ];
+    let (helm_stdout, helm_event) = process
+        .run_subprocess("helm", &helm_args, &repo_root)
+        .map_err(|err| err.to_stable_message())?;
+    let (wait_rows, wait_errors, wait_ms) =
+        run_simulation_wait(&process, &repo_root, &namespace, args.release.timeout_seconds);
+    let smoke_rows = if wait_errors.is_empty() {
+        run_smoke_checks(&repo_root, &namespace, 18080)?
+    } else {
+        Vec::new()
+    };
+    let smoke_errors = smoke_rows
+        .iter()
+        .filter(|row| row["status"].as_u64().unwrap_or(0) != 200)
+        .map(|row| {
+            format!(
+                "{} returned status {}",
+                row["path"].as_str().unwrap_or("unknown"),
+                row["status"].as_u64().unwrap_or(0)
+            )
+        })
+        .collect::<Vec<_>>();
+    let after_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
+    let diff_summary = manifest_diff_summary(&before_manifest, &after_manifest);
+    let errors = wait_errors
+        .iter()
+        .cloned()
+        .chain(smoke_errors.iter().cloned())
+        .collect::<Vec<_>>();
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let smoke_payload = serde_json::json!({
+        "schema_version": 1,
+        "cluster": "kind",
+        "namespace": namespace,
+        "status": if wait_errors.is_empty() && smoke_errors.is_empty() { "ok" } else { "failed" },
+        "checks": smoke_rows
+    });
+    let smoke_report_path =
+        write_simulation_report(&repo_root, &run_id, "ops-smoke.json", &smoke_payload)?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "profile": profile,
+        "cluster": "kind",
+        "namespace": namespace,
+        "status": status,
+        "details": {
+            "target": "previous",
+            "helm": {
+                "stdout": helm_stdout,
+                "event": helm_event,
+                "revision": revision
+            },
+            "diff_summary": diff_summary,
+            "readiness_wait": {
+                "elapsed_ms": wait_ms,
+                "rows": wait_rows,
+                "errors": wait_errors
+            },
+            "smoke": {
+                "report_path": smoke_report_path.display().to_string(),
+                "checks": smoke_payload["checks"].clone()
+            }
+        }
+    });
+    let report_path = write_simulation_report(&repo_root, &run_id, "ops-rollback.json", &payload)?;
+    let envelope = serde_json::json!({
+        "schema_version": 1,
+        "text": if status == "ok" { "helm rollback completed" } else { "helm rollback failed" },
+        "rows": [{
+            "schema_version": 1,
+            "profile": payload["profile"].clone(),
+            "cluster": "kind",
+            "namespace": payload["namespace"].clone(),
+            "status": status,
+            "report_path": report_path.display().to_string(),
+            "details": payload["details"].clone()
+        }],
+        "summary": {"total": 1, "errors": errors.len(), "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
+    Ok((rendered, if errors.is_empty() { 0 } else { 1 }))
 }
 
 pub(crate) fn run_ops_smoke(args: &crate::cli::OpsSmokeArgs) -> Result<(String, i32), String> {

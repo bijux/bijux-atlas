@@ -452,6 +452,8 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
         OpsCommand::Helm { command } => match command {
             crate::cli::OpsHelmCommand::Install(args) => crate::ops_execution_runtime::run_ops_helm_install(&args),
             crate::cli::OpsHelmCommand::Uninstall(args) => crate::ops_execution_runtime::run_ops_helm_uninstall(&args),
+            crate::cli::OpsHelmCommand::Upgrade(args) => crate::ops_execution_runtime::run_ops_helm_upgrade(&args),
+            crate::cli::OpsHelmCommand::Rollback(args) => crate::ops_execution_runtime::run_ops_helm_rollback(&args),
         },
         OpsCommand::Install(args) => crate::ops_execution_runtime::run_ops_install(&args),
         OpsCommand::Smoke(args) => crate::ops_execution_runtime::run_ops_smoke(&args),

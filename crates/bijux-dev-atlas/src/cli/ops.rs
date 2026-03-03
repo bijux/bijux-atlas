@@ -215,8 +215,10 @@ pub enum OpsKindCommand {
 
 #[derive(Subcommand, Debug, Clone)]
 pub enum OpsHelmCommand {
-    Install(OpsHelmReleaseArgs),
+    Install(OpsHelmInstallArgs),
     Uninstall(OpsHelmReleaseArgs),
+    Upgrade(OpsHelmUpgradeArgs),
+    Rollback(OpsHelmRollbackArgs),
 }
 
 #[derive(Subcommand, Debug, Clone)]
@@ -540,6 +542,30 @@ pub struct OpsHelmReleaseArgs {
 }
 
 #[derive(Args, Debug, Clone)]
+pub struct OpsHelmInstallArgs {
+    #[command(flatten)]
+    pub release: OpsHelmReleaseArgs,
+    #[arg(long, value_enum, default_value_t = OpsHelmChartSource::Current)]
+    pub chart_source: OpsHelmChartSource,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsHelmUpgradeArgs {
+    #[command(flatten)]
+    pub release: OpsHelmReleaseArgs,
+    #[arg(long, value_enum, default_value_t = OpsHelmTarget::Current)]
+    pub to: OpsHelmTarget,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsHelmRollbackArgs {
+    #[command(flatten)]
+    pub release: OpsHelmReleaseArgs,
+    #[arg(long, value_enum, default_value_t = OpsHelmTarget::Previous)]
+    pub to: OpsHelmTarget,
+}
+
+#[derive(Args, Debug, Clone)]
 pub struct OpsCollectArgs {
     #[command(flatten)]
     pub common: OpsCommonArgs,
@@ -590,6 +616,18 @@ pub enum OpsStatusTarget {
 #[derive(Clone, Copy, Debug, ValueEnum)]
 pub enum OpsClusterTarget {
     Kind,
+}
+
+#[derive(Clone, Copy, Debug, ValueEnum)]
+pub enum OpsHelmChartSource {
+    Current,
+    Previous,
+}
+
+#[derive(Clone, Copy, Debug, ValueEnum)]
+pub enum OpsHelmTarget {
+    Current,
+    Previous,
 }
 
 #[derive(Args, Debug, Clone)]

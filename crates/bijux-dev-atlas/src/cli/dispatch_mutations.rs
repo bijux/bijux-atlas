@@ -75,8 +75,12 @@ fn force_json_ops(command: &mut OpsCommand) {
             crate::cli::OpsKindCommand::PreloadImage(args) => args.common.format = FormatArg::Json,
         },
         OpsCommand::Helm { command } => match command {
-            crate::cli::OpsHelmCommand::Install(args)
-            | crate::cli::OpsHelmCommand::Uninstall(args) => args.common.format = FormatArg::Json,
+            crate::cli::OpsHelmCommand::Install(args) => args.release.common.format = FormatArg::Json,
+            crate::cli::OpsHelmCommand::Uninstall(args) => args.common.format = FormatArg::Json,
+            crate::cli::OpsHelmCommand::Upgrade(args) => args.release.common.format = FormatArg::Json,
+            crate::cli::OpsHelmCommand::Rollback(args) => {
+                args.release.common.format = FormatArg::Json
+            }
         },
         OpsCommand::List(common)
         | OpsCommand::Doctor(common)
@@ -475,9 +479,15 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
             },
             OpsCommand::Helm { command } => match command {
-                crate::cli::OpsHelmCommand::Install(args)
-                | crate::cli::OpsHelmCommand::Uninstall(args) => {
-                    args.common.repo_root = Some(root.clone())
+                crate::cli::OpsHelmCommand::Install(args) => {
+                    args.release.common.repo_root = Some(root.clone())
+                }
+                crate::cli::OpsHelmCommand::Uninstall(args) => args.common.repo_root = Some(root.clone()),
+                crate::cli::OpsHelmCommand::Upgrade(args) => {
+                    args.release.common.repo_root = Some(root.clone())
+                }
+                crate::cli::OpsHelmCommand::Rollback(args) => {
+                    args.release.common.repo_root = Some(root.clone())
                 }
             },
             OpsCommand::List(common)
