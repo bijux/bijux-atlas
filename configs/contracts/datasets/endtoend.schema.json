@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/datasets/endtoend.schema.json",
+  "title": "End To End Ingest Query Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "dataset_id",
+    "store_verification",
+    "query_roundtrip",
+    "offline_mode",
+    "contracts"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "dataset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "store_verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_manifest_sha256",
+        "release_gene_index_sha256"
+      ],
+      "properties": {
+        "artifact_manifest_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "release_gene_index_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "query_roundtrip": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "route",
+        "result"
+      ],
+      "properties": {
+        "route": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "gene_id",
+            "count"
+          ],
+          "properties": {
+            "gene_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "offline_mode": {
+      "type": "boolean"
+    },
+    "contracts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "E2E-001",
+        "E2E-002"
+      ],
+      "properties": {
+        "E2E-001": {
+          "type": "boolean"
+        },
+        "E2E-002": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

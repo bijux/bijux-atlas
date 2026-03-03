@@ -206,6 +206,7 @@ pub enum DatasetsCommand {
 #[derive(Subcommand, Debug)]
 pub enum IngestCommand {
     DryRun(IngestDryRunArgs),
+    Run(IngestDryRunArgs),
 }
 
 #[derive(Subcommand, Debug)]

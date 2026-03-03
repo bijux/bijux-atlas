@@ -387,6 +387,7 @@ fn force_json_datasets(command: &mut DatasetsCommand) {
 fn force_json_ingest(command: &mut IngestCommand) {
     match command {
         IngestCommand::DryRun(args) => args.format = FormatArg::Json,
+        IngestCommand::Run(args) => args.format = FormatArg::Json,
     }
 }
 
@@ -818,6 +819,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         },
         Command::Ingest { command } => match command {
             IngestCommand::DryRun(args) => args.repo_root = Some(root.clone()),
+            IngestCommand::Run(args) => args.repo_root = Some(root.clone()),
         },
         Command::Perf { command } => match command {
             PerfCommand::Validate(args) => args.repo_root = Some(root.clone()),

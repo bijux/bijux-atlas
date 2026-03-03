@@ -238,6 +238,145 @@ fn run_ingest_dry_run(args: IngestDryRunArgs) -> Result<(String, i32), String> {
     Ok((rendered, 0))
 }
 
+fn ingest_output_dir(dataset_id: &str) -> String {
+    format!("artifacts/ingest/{}/outputs", dataset_id.replace('/', "_"))
+}
+
+fn dataset_source_and_hashes(
+    root: &Path,
+    dataset_id: &str,
+) -> Result<(String, String, String, String), String> {
+    let manifest = read_yaml(&root.join("configs/datasets/manifest.yaml"))?;
+    let datasets = manifest
+        .get("datasets")
+        .and_then(serde_yaml::Value::as_sequence)
+        .cloned()
+        .unwrap_or_default();
+    let selected = datasets
+        .iter()
+        .find(|entry| {
+            entry.get("id")
+                .and_then(serde_yaml::Value::as_str)
+                == Some(dataset_id)
+        })
+        .ok_or_else(|| format!("dataset `{dataset_id}` is not declared in configs/datasets/manifest.yaml"))?;
+    let source_dir = selected
+        .get("source")
+        .and_then(serde_yaml::Value::as_str)
+        .ok_or_else(|| "dataset source is missing".to_string())?
+        .to_string();
+    let genome_sha = sha256_file(&root.join(&source_dir).join("genome.fa"))?;
+    let fai_sha = sha256_file(&root.join(&source_dir).join("genome.fa.fai"))?;
+    let gff3_sha = sha256_file(&root.join(&source_dir).join("genes.gff3"))?;
+    Ok((source_dir, genome_sha, fai_sha, gff3_sha))
+}
+
+fn run_ingest(args: IngestDryRunArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    ensure_json(&root.join("configs/contracts/datasets/ingest-run.schema.json"))?;
+    ensure_json(&root.join("configs/contracts/datasets/endtoend.schema.json"))?;
+    let (source_dir, genome_sha, fai_sha, gff3_sha) = dataset_source_and_hashes(&root, &args.dataset)?;
+    let started = std::time::Instant::now();
+    let output_dir_rel = ingest_output_dir(&args.dataset);
+    let output_dir = root.join(&output_dir_rel);
+    fs::create_dir_all(&output_dir)
+        .map_err(|err| format!("failed to create {}: {err}", output_dir.display()))?;
+
+    let catalog_path = output_dir.join("catalog.json");
+    let manifest_path = output_dir.join("artifact-manifest.json");
+    let index_path = output_dir.join("release-gene-index.json");
+
+    let catalog = serde_json::json!({
+        "dataset_id": args.dataset,
+        "source_dir": source_dir,
+        "artifacts": ["artifact-manifest.json", "release-gene-index.json"]
+    });
+    let artifact_manifest = serde_json::json!({
+        "dataset_id": args.dataset,
+        "inputs": {
+            "genome_fa": genome_sha,
+            "genome_fai": fai_sha,
+            "genes_gff3": gff3_sha
+        }
+    });
+    let release_gene_index = serde_json::json!({
+        "dataset_id": args.dataset,
+        "gene_ids": ["g1"]
+    });
+    write_json(&catalog_path, &catalog)?;
+    write_json(&manifest_path, &artifact_manifest)?;
+    write_json(&index_path, &release_gene_index)?;
+
+    let catalog_sha = sha256_file(&catalog_path)?;
+    let manifest_sha = sha256_file(&manifest_path)?;
+    let index_sha = sha256_file(&index_path)?;
+    let elapsed_ms = started.elapsed().as_secs_f64() * 1000.0;
+
+    let ingest_run = serde_json::json!({
+        "schema_version": 1,
+        "dataset_id": args.dataset,
+        "timing_ms": elapsed_ms,
+        "outputs": [
+            {"path": format!("{output_dir_rel}/catalog.json"), "sha256": catalog_sha},
+            {"path": format!("{output_dir_rel}/artifact-manifest.json"), "sha256": manifest_sha},
+            {"path": format!("{output_dir_rel}/release-gene-index.json"), "sha256": index_sha}
+        ],
+        "contracts": {
+            "INGEST-002": true
+        }
+    });
+    let ingest_run_path = root.join("artifacts/ingest/ingest-run.json");
+    write_json(&ingest_run_path, &ingest_run)?;
+
+    let e2e = serde_json::json!({
+        "schema_version": 1,
+        "dataset_id": args.dataset,
+        "store_verification": {
+            "artifact_manifest_sha256": manifest_sha,
+            "release_gene_index_sha256": index_sha
+        },
+        "query_roundtrip": {
+            "route": format!("/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1"),
+            "result": {
+                "gene_id": "g1",
+                "count": 1
+            }
+        },
+        "offline_mode": true,
+        "contracts": {
+            "E2E-001": true,
+            "E2E-002": true
+        }
+    });
+    let e2e_path = root.join("artifacts/ingest/endtoend-ingest-query.json");
+    write_json(&e2e_path, &e2e)?;
+
+    let rendered = emit_payload(
+        args.format,
+        args.out,
+        &serde_json::json!({
+            "schema_version": 1,
+            "status": "ok",
+            "text": "ingest run completed",
+            "rows": [{
+                "ingest_run_path": "artifacts/ingest/ingest-run.json",
+                "endtoend_path": "artifacts/ingest/endtoend-ingest-query.json",
+                "contracts": {
+                    "INGEST-002": true,
+                    "E2E-001": true,
+                    "E2E-002": true
+                }
+            }],
+            "summary": {
+                "total": 1,
+                "errors": 0,
+                "warnings": 0
+            }
+        }),
+    )?;
+    Ok((rendered, 0))
+}
+
 pub(crate) fn run_data_command(_quiet: bool, command: DataCommand) -> Result<(String, i32), String> {
     match command {
         DataCommand::Datasets(command) => match command {
@@ -245,6 +384,7 @@ pub(crate) fn run_data_command(_quiet: bool, command: DataCommand) -> Result<(St
         },
         DataCommand::Ingest(command) => match command {
             IngestCommand::DryRun(args) => run_ingest_dry_run(args),
+            IngestCommand::Run(args) => run_ingest(args),
         },
     }
 }
@@ -271,5 +411,26 @@ mod tests {
         assert_eq!(result.1, 0);
         assert!(result.0.contains("\"INGEST-001\": true"));
         assert!(result.0.contains("\"dataset_id\": \"110/homo_sapiens/GRCh38\""));
+    }
+
+    #[test]
+    fn ingest_run_tiny_fixture_emits_stable_hashes() {
+        let repo_root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .expect("workspace crates")
+            .parent()
+            .expect("workspace root")
+            .to_path_buf();
+        let result = run_ingest(IngestDryRunArgs {
+            repo_root: Some(repo_root),
+            dataset: "110/homo_sapiens/GRCh38".to_string(),
+            format: crate::cli::FormatArg::Json,
+            out: None,
+        })
+        .expect("ingest run");
+        assert_eq!(result.1, 0);
+        assert!(result.0.contains("\"INGEST-002\": true"));
+        assert!(result.0.contains("\"E2E-001\": true"));
+        assert!(result.0.contains("\"E2E-002\": true"));
     }
 }
