@@ -1,4 +1,4 @@
-# Configs Reference
+# Config Groups Reference
 
 - Owner: `bijux-atlas-operations`
 - Tier: `generated`

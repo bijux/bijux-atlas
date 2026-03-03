@@ -1,6 +1,6 @@
 # Governance
 
-- Owner: `bijux-atlas-platform`
+- Owner: `docs-governance`
 - Audience: `contributors`
 - Scope: `repository governance`
 

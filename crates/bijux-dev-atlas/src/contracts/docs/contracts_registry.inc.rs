@@ -1,4 +1,4 @@
-const DOCS_ALLOWED_ROOT_DIRS: [&str; 10] = [
+const DOCS_ALLOWED_ROOT_DIRS: [&str; 11] = [
     "_assets",
     "_drafts",
     "_internal",
@@ -6,6 +6,7 @@ const DOCS_ALLOWED_ROOT_DIRS: [&str; 10] = [
     "architecture",
     "control-plane",
     "development",
+    "governance",
     "operations",
     "product",
     "reference",
