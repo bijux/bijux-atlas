@@ -32,6 +32,7 @@ This documentation set is organized around three audience paths and a shared rea
 - [API](api/index.md)
 - [Operations](operations/index.md)
 - [Development](development/index.md)
+- [Governance](governance/index.md)
 - [Reference](reference/index.md)
 - [Control-plane](control-plane/index.md)
 - [Glossary](glossary.md)
