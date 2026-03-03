@@ -133,21 +133,21 @@ checks: ## Run the fast non-test quality gate lane
 	@$(MAKE) -s configs-lint
 
 checks-all: ## Run the full non-test quality gates
-	@$(DEV_ATLAS) check run --suite deep --include-internal --include-slow --allow-subprocess --allow-git --allow-write --allow-network $(CHECK_FAIL_FAST_FLAG) --format text
+	@$(DEV_ATLAS) checks run --suite deep --include-internal --include-slow --allow-subprocess --allow-git --allow-write --allow-network $(CHECK_FAIL_FAST_FLAG) --format text
 
 checks-group: ## Run one checks suite group (GROUP=<name>)
 	@[ -n "$${GROUP:-}" ] || { echo "usage: make checks-group GROUP=<name>" >&2; exit 2; }
-	@$(DEV_ATLAS) check run --suite "$${GROUP}" --include-internal --include-slow --allow-subprocess --allow-git --allow-write --allow-network $(CHECK_FAIL_FAST_FLAG) --format text
+	@$(DEV_ATLAS) checks run --suite "$${GROUP}" --include-internal --include-slow --allow-subprocess --allow-git --allow-write --allow-network $(CHECK_FAIL_FAST_FLAG) --format text
 
 checks-tag: ## Run checks suite entries with a shared tag (TAG=<name>)
 	@[ -n "$${TAG:-}" ] || { echo "usage: make checks-tag TAG=<name>" >&2; exit 2; }
-	@$(DEV_ATLAS) check run --suite deep --include-internal --include-slow --tag "$${TAG}" --allow-subprocess --allow-git --allow-write --allow-network $(CHECK_FAIL_FAST_FLAG) --format text
+	@$(DEV_ATLAS) checks run --suite deep --include-internal --include-slow --tag "$${TAG}" --allow-subprocess --allow-git --allow-write --allow-network $(CHECK_FAIL_FAST_FLAG) --format text
 
 checks-pure: ## Run only pure checks suite entries
-	@$(DEV_ATLAS) check run --suite deep --include-internal --include-slow $(CHECK_FAIL_FAST_FLAG) --format text
+	@$(DEV_ATLAS) checks run --suite deep --include-internal --include-slow $(CHECK_FAIL_FAST_FLAG) --format text
 
 checks-effect: ## Run only effectful checks suite entries
-	@$(DEV_ATLAS) check run --suite deep --include-internal --include-slow --allow-subprocess --allow-git --allow-write --allow-network $(CHECK_FAIL_FAST_FLAG) --format text
+	@$(DEV_ATLAS) checks run --suite deep --include-internal --include-slow --allow-subprocess --allow-git --allow-write --allow-network $(CHECK_FAIL_FAST_FLAG) --format text
 
 suites-list: ## List suite ids exposed through the control plane
 	@$(DEV_ATLAS) suites list --format text

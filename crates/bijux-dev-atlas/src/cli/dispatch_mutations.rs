@@ -472,7 +472,10 @@ fn force_json_check(command: &mut CheckCommand) {
 
 fn force_json_checks(command: &mut ChecksCommand) {
     match command {
-        ChecksCommand::List { format, .. } | ChecksCommand::Explain { format, .. } => {
+        ChecksCommand::List { format, .. }
+        | ChecksCommand::Explain { format, .. }
+        | ChecksCommand::Doctor { format, .. }
+        | ChecksCommand::Run { format, .. } => {
             *format = FormatArg::Json
         }
     }
@@ -482,6 +485,9 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
     match command {
         Command::Check {
             command: CheckCommand::Run { fail_fast, .. },
+        } => *fail_fast = true,
+        Command::Checks {
+            command: ChecksCommand::Run { fail_fast, .. },
         } => *fail_fast = true,
         Command::Checks { .. } => {}
         Command::Contract { command } => match command {
@@ -976,9 +982,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | CheckCommand::RootSurfaceExplain { repo_root, .. } => *repo_root = Some(root.clone()),
         },
         Command::Checks { command } => match command {
-            ChecksCommand::List { repo_root, .. } | ChecksCommand::Explain { repo_root, .. } => {
-                *repo_root = Some(root.clone())
-            }
+            ChecksCommand::List { repo_root, .. }
+            | ChecksCommand::Explain { repo_root, .. }
+            | ChecksCommand::Doctor { repo_root, .. }
+            | ChecksCommand::Run { repo_root, .. } => *repo_root = Some(root.clone()),
         },
         Command::Suites { command } => match command {
             crate::cli::SuitesCommand::Run { repo_root, .. }
