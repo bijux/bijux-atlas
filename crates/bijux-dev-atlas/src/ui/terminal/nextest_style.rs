@@ -2,6 +2,7 @@
 //! Nextest-style contract runner formatting.
 
 use crate::model::engine::{CaseReport, CaseStatus, RunReport};
+use crate::ui::terminal::report::{render_status_line, LineStyle};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Status {
@@ -28,6 +29,15 @@ impl Status {
             Self::Skip => "SKIP",
         }
     }
+
+    pub fn line_style(self) -> LineStyle {
+        match self {
+            Self::Pass => LineStyle::Pass,
+            Self::Fail => LineStyle::Fail,
+            Self::Skip => LineStyle::Skip,
+            Self::Error => LineStyle::Error,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -43,28 +53,8 @@ pub struct PreflightSummary {
     pub missing_tools: Vec<String>,
 }
 
-fn status_label(status: Status, color: bool) -> &'static str {
-    if !color {
-        return status.label();
-    }
-    match status {
-        Status::Pass => "\u{1b}[32mPASS\u{1b}[0m",
-        Status::Fail | Status::Error => "\u{1b}[31mFAIL\u{1b}[0m",
-        Status::Skip => "\u{1b}[33mSKIP\u{1b}[0m",
-    }
-}
-
 fn contract_name(report: &RunReport, case: &CaseReport) -> String {
     format!("{}::{}", report.domain, case.contract_id)
-}
-
-fn time_block(duration_ms: u64) -> String {
-    format!("[{:>7.3}s]", duration_ms as f64 / 1_000.0)
-}
-
-fn counter_block(index: usize, total: usize) -> String {
-    let width = total.max(1).to_string().len();
-    format!("({:>width$}/{:>width$})", index, total, width = width)
 }
 
 pub fn render(
@@ -111,13 +101,14 @@ pub fn render(
     for (index, (report, case)) in cases.iter().enumerate() {
         let status = Status::from_case(case.status);
         let contract_name = contract_name(report, case);
-        let mut line = format!(
-            "{} {} {} {} {}",
-            status_label(status, options.color),
-            time_block(case.duration_ms),
-            counter_block(index + 1, total),
-            contract_name,
-            case.test_id
+        let mut line = render_status_line(
+            status.line_style(),
+            options.color,
+            case.duration_ms,
+            index + 1,
+            total,
+            &contract_name,
+            &case.test_id,
         );
         if matches!(status, Status::Skip) {
             if let Some(note) = &case.note {

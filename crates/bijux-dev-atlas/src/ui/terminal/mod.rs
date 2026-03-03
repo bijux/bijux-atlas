@@ -6,6 +6,7 @@ use crate::model::engine::RunReport;
 use crate::model::RunReport as ChecksRunReport;
 
 pub mod nextest_style;
+pub mod report;
 
 pub fn render_contracts(report: &RunReport) -> String {
     engine::to_pretty(report)
