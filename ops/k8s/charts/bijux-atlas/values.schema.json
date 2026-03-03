@@ -348,14 +348,14 @@
           "properties": {
             "pdb": {
               "properties": {
+                "maxUnavailable": {
+                  "type": "null"
+                },
                 "minAvailable": {
                   "type": [
                     "integer",
                     "string"
                   ]
-                },
-                "maxUnavailable": {
-                  "type": "null"
                 }
               },
               "type": "object"
@@ -476,11 +476,11 @@
               "pattern": "^/.+",
               "type": "string"
             },
-            "storageClassName": {
-              "type": "string"
-            },
             "size": {
               "$ref": "#/$defs/k8sQuantity"
+            },
+            "storageClassName": {
+              "type": "string"
             }
           },
           "required": [
@@ -611,6 +611,17 @@
         "readinessRequiresCatalog": {
           "type": "boolean"
         },
+        "startupWarmupJitterMaxMs": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "storageMode": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "tmpSize": {
+          "$ref": "#/$defs/k8sQuantity"
+        },
         "warmup": {
           "additionalProperties": false,
           "properties": {
@@ -652,17 +663,6 @@
             "retry"
           ],
           "type": "object"
-        },
-        "startupWarmupJitterMaxMs": {
-          "minimum": 0,
-          "type": "integer"
-        },
-        "storageMode": {
-          "minLength": 1,
-          "type": "string"
-        },
-        "tmpSize": {
-          "$ref": "#/$defs/k8sQuantity"
         },
         "warmupEnabled": {
           "type": "boolean"
@@ -728,6 +728,33 @@
       },
       "type": "object"
     },
+    "configMounts": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "configMap": {
+            "type": "string"
+          },
+          "mountPath": {
+            "pattern": "^/",
+            "type": "string"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "secret": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "mountPath"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
     "containerSecurityContext": {
       "allOf": [
         {
@@ -755,11 +782,11 @@
       },
       "type": "array"
     },
-    "extraEnv": {
-      "type": "array"
-    },
     "extraAnnotations": {
       "$ref": "#/$defs/stringMap"
+    },
+    "extraEnv": {
+      "type": "array"
     },
     "extraLabels": {
       "$ref": "#/$defs/stringMap"
@@ -940,12 +967,6 @@
     "ingress": {
       "additionalProperties": false,
       "properties": {
-        "className": {
-          "type": "string"
-        },
-        "enabled": {
-          "type": "boolean"
-        },
         "authProxy": {
           "additionalProperties": false,
           "properties": {
@@ -970,6 +991,12 @@
             "passThroughHeaders"
           ],
           "type": "object"
+        },
+        "className": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
         },
         "host": {
           "pattern": "^$|^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$",
@@ -1175,6 +1202,16 @@
           },
           "type": "array"
         },
+        "cidrBudget": {
+          "additionalProperties": false,
+          "properties": {
+            "maxAllowCidrs": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        },
         "dependencies": {
           "additionalProperties": false,
           "properties": {
@@ -1293,54 +1330,6 @@
           ],
           "type": "object"
         },
-        "exceptions": {
-          "additionalProperties": false,
-          "properties": {
-            "owner": {
-              "type": "string"
-            },
-            "expiresOn": {
-              "pattern": "^$|^\\d{4}-\\d{2}-\\d{2}$",
-              "type": "string"
-            },
-            "prodDisableAllowed": {
-              "type": "boolean"
-            },
-            "relaxedEgress": {
-              "type": "boolean"
-            }
-          },
-          "type": "object"
-        },
-        "cidrBudget": {
-          "additionalProperties": false,
-          "properties": {
-            "maxAllowCidrs": {
-              "minimum": 0,
-              "type": "integer"
-            }
-          },
-          "type": "object"
-        },
-        "ingressMode": {
-          "description": "Top-level alias for networkPolicy.ingress.mode. Prefer this when you want a single explicit ingress policy selector.",
-          "enum": [
-            "same-namespace",
-            "selected",
-            "custom"
-          ],
-          "type": "string"
-        },
-        "mode": {
-          "description": "Top-level alias for networkPolicy.egress.mode. Atlas treats NetworkPolicy as east-west isolation with optional internet egress limiting.",
-          "enum": [
-            "disabled",
-            "internet-only",
-            "cluster-aware",
-            "custom"
-          ],
-          "type": "string"
-        },
         "egress": {
           "additionalProperties": false,
           "properties": {
@@ -1380,13 +1369,21 @@
         "enabled": {
           "type": "boolean"
         },
-        "monitoring": {
+        "exceptions": {
           "additionalProperties": false,
-          "description": "Preferred home for the monitoring namespace selector; keep networkPolicy.allowMonitoringNamespace accepted during the compatibility window.",
           "properties": {
-            "allowNamespace": {
-              "pattern": "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+            "expiresOn": {
+              "pattern": "^$|^\\d{4}-\\d{2}-\\d{2}$",
               "type": "string"
+            },
+            "owner": {
+              "type": "string"
+            },
+            "prodDisableAllowed": {
+              "type": "boolean"
+            },
+            "relaxedEgress": {
+              "type": "boolean"
             }
           },
           "type": "object"
@@ -1413,6 +1410,36 @@
                 "selected",
                 "custom"
               ],
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "ingressMode": {
+          "description": "Top-level alias for networkPolicy.ingress.mode. Prefer this when you want a single explicit ingress policy selector.",
+          "enum": [
+            "same-namespace",
+            "selected",
+            "custom"
+          ],
+          "type": "string"
+        },
+        "mode": {
+          "description": "Top-level alias for networkPolicy.egress.mode. Atlas treats NetworkPolicy as east-west isolation with optional internet egress limiting.",
+          "enum": [
+            "disabled",
+            "internet-only",
+            "cluster-aware",
+            "custom"
+          ],
+          "type": "string"
+        },
+        "monitoring": {
+          "additionalProperties": false,
+          "description": "Preferred home for the monitoring namespace selector; keep networkPolicy.allowMonitoringNamespace accepted during the compatibility window.",
+          "properties": {
+            "allowNamespace": {
+              "pattern": "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
               "type": "string"
             }
           },
@@ -1553,6 +1580,27 @@
       },
       "type": "object"
     },
+    "rbac": {
+      "additionalProperties": false,
+      "properties": {
+        "auditLogReader": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "serviceAccountName": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "create": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
     "replicaCount": {
       "minimum": 1,
       "type": "integer"
@@ -1625,10 +1673,6 @@
     "server": {
       "additionalProperties": false,
       "properties": {
-        "baseUrl": {
-          "format": "uri",
-          "type": "string"
-        },
         "adminEndpoints": {
           "additionalProperties": false,
           "properties": {
@@ -1658,6 +1702,10 @@
             "mode"
           ],
           "type": "object"
+        },
+        "baseUrl": {
+          "format": "uri",
+          "type": "string"
         },
         "bindAddress": {
           "default": "0.0.0.0",
@@ -1794,10 +1842,6 @@
           "minimum": 0,
           "type": "integer"
         },
-        "shutdownDrainMs": {
-          "minimum": 0,
-          "type": "integer"
-        },
         "shutdown": {
           "additionalProperties": false,
           "properties": {
@@ -1807,6 +1851,10 @@
             }
           },
           "type": "object"
+        },
+        "shutdownDrainMs": {
+          "minimum": 0,
+          "type": "integer"
         },
         "shutdownGraceSeconds": {
           "minimum": 0,
@@ -1899,6 +1947,21 @@
       ],
       "type": "object"
     },
+    "serviceAccount": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "$ref": "#/$defs/stringMap"
+        },
+        "create": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "serviceMonitor": {
       "additionalProperties": false,
       "description": "Deprecated alias for metrics.serviceMonitor. Prefer metrics.serviceMonitor for new values files.",
@@ -1922,21 +1985,6 @@
         "scrapeTimeout",
         "labels"
       ],
-      "type": "object"
-    },
-    "serviceAccount": {
-      "additionalProperties": false,
-      "properties": {
-        "annotations": {
-          "$ref": "#/$defs/stringMap"
-        },
-        "create": {
-          "type": "boolean"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
       "type": "object"
     },
     "store": {
@@ -2026,54 +2074,6 @@
         "credentialsSecretName",
         "manageCredentialsSecret"
       ],
-      "type": "object"
-    },
-    "configMounts": {
-      "items": {
-        "additionalProperties": false,
-        "properties": {
-          "configMap": {
-            "type": "string"
-          },
-          "mountPath": {
-            "pattern": "^/",
-            "type": "string"
-          },
-          "name": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "secret": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "name",
-          "mountPath"
-        ],
-        "type": "object"
-      },
-      "type": "array"
-    },
-    "rbac": {
-      "additionalProperties": false,
-      "properties": {
-        "auditLogReader": {
-          "additionalProperties": false,
-          "properties": {
-            "enabled": {
-              "type": "boolean"
-            },
-            "serviceAccountName": {
-              "type": "string"
-            }
-          },
-          "type": "object"
-        },
-        "create": {
-          "type": "boolean"
-        }
-      },
       "type": "object"
     },
     "terminationGracePeriodSeconds": {

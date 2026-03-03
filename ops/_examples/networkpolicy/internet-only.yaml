@@ -19,9 +19,11 @@ spec:
     - Ingress
     - Egress
   ingress:
-    # same-namespace: permit only in-namespace clients, deny cross-namespace ingress by default.
+    # same-namespace: permit only callers from the release namespace, deny cross-namespace ingress by default.
     - from:
-        - podSelector: {}
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: "default"
       ports:
         - protocol: TCP
           port: 8080

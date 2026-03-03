@@ -19,9 +19,11 @@ spec:
     - Ingress
     - Egress
   ingress:
-    # same-namespace: permit only in-namespace clients, deny cross-namespace ingress by default.
+    # same-namespace: permit only callers from the release namespace, deny cross-namespace ingress by default.
     - from:
-        - podSelector: {}
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: "default"
       ports:
         - protocol: TCP
           port: 8080
@@ -50,7 +52,7 @@ spec:
           port: 53
         - protocol: TCP
           port: 53
-    # cluster-aware: permit dependency traffic by namespace selection, never by hardcoded service CIDRs.
+    # cluster-aware: permit dependency traffic by namespace selection and explicit pod selection, never by hardcoded service CIDRs.
     - to:
         - namespaceSelector:
             matchExpressions:
@@ -58,6 +60,7 @@ spec:
                 operator: In
                 values:
                   - "atlas-deps"
+          podSelector: {}
       ports:
         - protocol: TCP
           port: 6379
