@@ -18,6 +18,8 @@ Use this section to ship, verify, and recover Atlas releases.
 - [Release Trust Root](../release-trust-root.md)
 - [Release Promotion Policy](../release-promotion-policy.md)
 - [Release Consumer Checklist](../release-consumer-checklist.md)
+- [Institutional Packet](../institutional-packet.md)
+- [External Reviewer Guidance](../release-external-reviewer.md)
 - [Release Workflow](../release-workflow.md)
 - [Upgrade Procedure](upgrade-procedure.md)
 - [Rollback Procedure](rollback-procedure.md)
