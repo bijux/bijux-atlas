@@ -1864,6 +1864,7 @@ pub(crate) fn run_ops_evidence_collect(
     let policy_path = repo_root.join("release/evidence/policy.json");
     let identity_path = evidence_root.join("identity.json");
     let manifest_path = evidence_root.join("manifest.json");
+    let provenance_path = repo_root.join("release/provenance.json");
     let identity = serde_json::json!({
         "schema_version": 1,
         "release_id": release_id,
@@ -1878,16 +1879,36 @@ pub(crate) fn run_ops_evidence_collect(
     let docker_bases = repo_root.join("docker/bases.lock");
     let toolchain_inventory = repo_root.join("configs/rust/toolchain.json");
     let runtime_env_allowlist = repo_root.join("configs/contracts/env.schema.json");
+    let signing_policy = repo_root.join("release/signing/policy.yaml");
     let docs_site_summary = collect_docs_site_summary(&repo_root)?;
     let image_artifacts = collect_image_artifacts(&repo_root)?;
     let sboms = collect_sboms(&repo_root, &image_artifacts)?;
     let scan_reports = collect_scan_reports(&repo_root)?;
     let redacted_logs = collect_redacted_logs(&repo_root)?;
+    let provenance = serde_json::json!({
+        "schema_version": 1,
+        "generated_by": "bijux dev atlas ops evidence collect",
+        "release_id": identity["release_id"].clone(),
+        "git_sha": identity["git_sha"].clone(),
+        "governance_version": identity["governance_version"].clone(),
+        "toolchain_inventory": toolchain_inventory.strip_prefix(&repo_root).unwrap_or(&toolchain_inventory).display().to_string(),
+        "signing_policy_path": signing_policy.strip_prefix(&repo_root).unwrap_or(&signing_policy).display().to_string(),
+        "evidence_manifest_path": manifest_path.strip_prefix(&repo_root).unwrap_or(&manifest_path).display().to_string()
+    });
+    std::fs::write(
+        &provenance_path,
+        serde_json::to_string_pretty(&provenance).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", provenance_path.display()))?;
     let manifest = serde_json::json!({
         "schema_version": 1,
         "generated_by": "bijux dev atlas ops evidence collect",
         "identity_path": identity_path.strip_prefix(&repo_root).unwrap_or(&identity_path).display().to_string(),
         "policy_path": policy_path.strip_prefix(&repo_root).unwrap_or(&policy_path).display().to_string(),
+        "provenance": {
+            "path": provenance_path.strip_prefix(&repo_root).unwrap_or(&provenance_path).display().to_string(),
+            "sha256": sha256_file(&provenance_path)?
+        },
         "chart_package": {
             "path": chart_package.strip_prefix(&repo_root).unwrap_or(&chart_package).display().to_string(),
             "sha256": sha256_file(&chart_package)?

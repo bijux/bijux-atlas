@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{CheckCommand, CheckRegistryCommand, Cli, Command, FormatArg, ReleaseCommand};
+use crate::cli::{CheckCommand, CheckRegistryCommand, Cli, Command, FormatArg};
 use crate::{
     plugin_metadata_json, run_artifacts_command, run_build_command, run_capabilities_command,
     run_check_doctor, run_check_explain, run_check_list, run_check_registry_doctor,
@@ -8,7 +8,7 @@ use crate::{
     run_configs_command, run_contracts_command, run_demo_command, run_docker_command,
     run_docs_command, run_gates_command, run_governance_command, run_help_inventory_command,
     run_make_command, run_ops_command, run_policies_command, run_print_boundaries_command,
-    run_security_command, run_version_command, run_workflows_command,
+    run_release_command, run_security_command, run_version_command, run_workflows_command,
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
 use std::io::{self, Write};
@@ -255,102 +255,20 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                 1
             }
         }
-        Command::Release { command } => match command {
-            ReleaseCommand::Check(args) => {
-                let exe = match std::env::current_exe() {
-                    Ok(path) => path,
-                    Err(err) => {
-                        let _ =
-                            writeln!(io::stderr(), "bijux-dev-atlas release check failed: {err}");
-                        return 1;
-                    }
-                };
-
-                let mut validate_args = vec![
-                    "validate".to_string(),
-                    "--profile".to_string(),
-                    args.profile.clone(),
-                    "--format".to_string(),
-                    "json".to_string(),
-                ];
-                if let Some(root) = &args.repo_root {
-                    validate_args.push("--repo-root".to_string());
-                    validate_args.push(root.display().to_string());
-                }
-                let validate_out = match ProcessCommand::new(&exe).args(&validate_args).output() {
-                    Ok(v) => v,
-                    Err(err) => {
-                        let _ =
-                            writeln!(io::stderr(), "bijux-dev-atlas release check failed: {err}");
-                        return 1;
-                    }
-                };
-                let validate_payload: serde_json::Value =
-                    serde_json::from_slice(&validate_out.stdout).unwrap_or_else(|_| {
-                        serde_json::json!({"status":"failed","stderr": String::from_utf8_lossy(&validate_out.stderr)})
-                    });
-
-                let mut readiness_args = vec![
-                    "ops".to_string(),
-                    "validate".to_string(),
-                    "--profile".to_string(),
-                    args.profile.clone(),
-                    "--format".to_string(),
-                    "json".to_string(),
-                ];
-                if let Some(root) = &args.repo_root {
-                    readiness_args.push("--repo-root".to_string());
-                    readiness_args.push(root.display().to_string());
-                }
-                let readiness_out = match ProcessCommand::new(&exe).args(&readiness_args).output() {
-                    Ok(v) => v,
-                    Err(err) => {
-                        let _ =
-                            writeln!(io::stderr(), "bijux-dev-atlas release check failed: {err}");
-                        return 1;
-                    }
-                };
-                let readiness_payload: serde_json::Value =
-                    serde_json::from_slice(&readiness_out.stdout).unwrap_or_else(|_| {
-                        serde_json::json!({"status":"failed","stderr": String::from_utf8_lossy(&readiness_out.stderr)})
-                    });
-
-                let ok = validate_out.status.success() && readiness_out.status.success();
-                let payload = serde_json::json!({
-                    "schema_version": 1,
-                    "status": if ok { "ok" } else { "failed" },
-                    "text": if ok { "release check passed" } else { "release check failed" },
-                    "validate": validate_payload,
-                    "ops_validate": readiness_payload
-                });
-                let rendered = match args.format {
-                    FormatArg::Json => {
-                        serde_json::to_string_pretty(&payload).unwrap_or_else(|_| "{}".to_string())
-                    }
-                    FormatArg::Text => {
-                        if ok {
-                            "release check passed: validate + ops validate".to_string()
-                        } else {
-                            "release check failed: rerun with --format json for details".to_string()
-                        }
-                    }
-                    FormatArg::Jsonl => payload.to_string(),
-                };
-                if let Some(path) = args.out {
-                    if let Err(err) = std::fs::write(&path, format!("{rendered}\n")) {
-                        let _ =
-                            writeln!(io::stderr(), "bijux-dev-atlas release check failed: {err}");
-                        return 1;
-                    }
-                }
+        Command::Release { command } => match run_release_command(cli.quiet, command) {
+            Ok((rendered, code)) => {
                 if !cli.quiet && !rendered.is_empty() {
-                    let _ = writeln!(io::stdout(), "{rendered}");
+                    if code == 0 {
+                        let _ = writeln!(io::stdout(), "{rendered}");
+                    } else {
+                        let _ = writeln!(io::stderr(), "{rendered}");
+                    }
                 }
-                if ok {
-                    0
-                } else {
-                    1
-                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas release failed: {err}");
+                1
             }
         },
         Command::Check { command } => {

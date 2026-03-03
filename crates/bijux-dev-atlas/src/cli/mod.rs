@@ -167,6 +167,8 @@ pub enum Command {
 #[derive(Subcommand, Debug)]
 pub enum ReleaseCommand {
     Check(ReleaseCheckArgs),
+    Sign(ReleaseSignArgs),
+    Verify(ReleaseVerifyArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -241,6 +243,30 @@ pub struct ReleaseCheckArgs {
     pub repo_root: Option<PathBuf>,
     #[arg(long, default_value = "kind")]
     pub profile: String,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseSignArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, default_value = "release/evidence")]
+    pub evidence: PathBuf,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseVerifyArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub evidence: PathBuf,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]

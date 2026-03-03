@@ -18,8 +18,6 @@ mod control_plane_commands;
 mod docs_commands;
 #[path = "commands/governance.rs"]
 mod governance_commands;
-#[path = "commands/security.rs"]
-mod security_commands;
 #[cfg(test)]
 #[path = "../tests/support/main_cli_parser_tests.rs"]
 mod main_tests;
@@ -31,6 +29,10 @@ mod ops_commands;
 mod ops_execution_runtime;
 #[path = "commands/ops/support.rs"]
 mod ops_support;
+#[path = "commands/release.rs"]
+mod release_commands;
+#[path = "commands/security.rs"]
+mod security_commands;
 
 include!("runtime_entry.rs");
 

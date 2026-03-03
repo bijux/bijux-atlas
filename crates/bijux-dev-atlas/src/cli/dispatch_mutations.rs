@@ -24,6 +24,8 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Validate { format, .. } => *format = FormatArg::Json,
         Command::Release { command } => match command {
             ReleaseCommand::Check(args) => args.format = FormatArg::Json,
+            ReleaseCommand::Sign(args) => args.format = FormatArg::Json,
+            ReleaseCommand::Verify(args) => args.format = FormatArg::Json,
         },
         Command::Docker { .. }
         | Command::Build { .. }
@@ -76,9 +78,13 @@ fn force_json_ops(command: &mut OpsCommand) {
             crate::cli::OpsKindCommand::PreloadImage(args) => args.common.format = FormatArg::Json,
         },
         OpsCommand::Helm { command } => match command {
-            crate::cli::OpsHelmCommand::Install(args) => args.release.common.format = FormatArg::Json,
+            crate::cli::OpsHelmCommand::Install(args) => {
+                args.release.common.format = FormatArg::Json
+            }
             crate::cli::OpsHelmCommand::Uninstall(args) => args.common.format = FormatArg::Json,
-            crate::cli::OpsHelmCommand::Upgrade(args) => args.release.common.format = FormatArg::Json,
+            crate::cli::OpsHelmCommand::Upgrade(args) => {
+                args.release.common.format = FormatArg::Json
+            }
             crate::cli::OpsHelmCommand::Rollback(args) => {
                 args.release.common.format = FormatArg::Json
             }
@@ -497,7 +503,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 crate::cli::OpsHelmCommand::Install(args) => {
                     args.release.common.repo_root = Some(root.clone())
                 }
-                crate::cli::OpsHelmCommand::Uninstall(args) => args.common.repo_root = Some(root.clone()),
+                crate::cli::OpsHelmCommand::Uninstall(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
                 crate::cli::OpsHelmCommand::Upgrade(args) => {
                     args.release.common.repo_root = Some(root.clone())
                 }
@@ -566,7 +574,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
             },
             OpsCommand::Evidence { command } => match command {
-                crate::cli::OpsEvidenceCommand::Collect(common) => common.repo_root = Some(root.clone()),
+                crate::cli::OpsEvidenceCommand::Collect(common) => {
+                    common.repo_root = Some(root.clone())
+                }
                 crate::cli::OpsEvidenceCommand::Verify(args) => {
                     args.common.repo_root = Some(root.clone())
                 }
@@ -575,7 +585,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
             },
             OpsCommand::Drills { command } => match command {
-                crate::cli::OpsDrillsCommand::Run(args) => args.common.repo_root = Some(root.clone()),
+                crate::cli::OpsDrillsCommand::Run(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
             },
             OpsCommand::Datasets { command } => match command {
                 crate::cli::OpsDatasetsCommand::List(common)
@@ -827,6 +839,16 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         }
         Command::Release { command } => match command {
             ReleaseCommand::Check(args) => {
+                if args.repo_root.is_none() {
+                    args.repo_root = Some(root.clone());
+                }
+            }
+            ReleaseCommand::Sign(args) => {
+                if args.repo_root.is_none() {
+                    args.repo_root = Some(root.clone());
+                }
+            }
+            ReleaseCommand::Verify(args) => {
                 if args.repo_root.is_none() {
                     args.repo_root = Some(root.clone());
                 }
