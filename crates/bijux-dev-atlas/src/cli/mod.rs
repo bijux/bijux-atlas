@@ -201,12 +201,34 @@ pub enum GovernanceCommand {
 #[derive(Subcommand, Debug)]
 pub enum SecurityCommand {
     Validate(SecurityValidateArgs),
+    Compliance {
+        #[command(subcommand)]
+        command: SecurityComplianceCommand,
+    },
+    ScanArtifacts(SecurityScanArtifactsArgs),
 }
 
 #[derive(Args, Debug, Clone)]
 pub struct SecurityValidateArgs {
     #[arg(long)]
     pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum SecurityComplianceCommand {
+    Validate(SecurityValidateArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct SecurityScanArtifactsArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub dir: PathBuf,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]
