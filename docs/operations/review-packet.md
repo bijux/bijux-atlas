@@ -12,12 +12,15 @@
 - `release/evidence/manifest.json`
 - `release/evidence/identity.json`
 - `release/evidence/bundle.tar`
+- `configs/datasets/manifest.yaml`
 - `artifacts/ops/<run_id>/reports/ops-simulation-summary.json`
 - `artifacts/ops/<run_id>/reports/ops-lifecycle-summary.json`
 - `artifacts/ops/<run_id>/reports/ops-drills-summary.json`
 - `artifacts/ops/<run_id>/reports/ops-obs-verify.json`
+- `artifacts/ingest/endtoend-ingest-query.json`
 
 ## Recommended attachments
 
 - The matching `ops-drill-<name>.json` files used for the candidate review.
 - The latest release candidate checklist and upgrade guide.
+- The matching `artifacts/ingest/ingest-plan.json` and `artifacts/ingest/ingest-run.json` files.
