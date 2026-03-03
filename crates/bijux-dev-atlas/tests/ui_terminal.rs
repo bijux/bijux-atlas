@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_dev_atlas::model::{RunHistory, RunHistoryEntry};
+use std::collections::BTreeMap;
+
+use bijux_dev_atlas::model::{
+    CheckId, CheckResult, CheckStatus, RunHistory, RunHistoryEntry, RunId, RunReport, RunSummary,
+};
+use bijux_dev_atlas::ui::terminal::report::render_check_run_report;
 use bijux_dev_atlas::ui::terminal::{failure_hint, render_registry_status, render_suite_summary};
 
 #[test]
@@ -79,4 +84,70 @@ fn run_history_model_filters_by_suite() {
 fn failure_hints_cover_common_codes() {
     assert!(failure_hint("missing_tool").contains("install the required tool"));
     assert!(failure_hint("unknown").contains("inspect the generated artifact"));
+}
+
+#[test]
+fn check_run_renderer_uses_nextest_style_lines() {
+    let report = RunReport {
+        schema_version: 1,
+        run_id: RunId::parse("checks_run").expect("run id"),
+        repo_root: "/repo".to_string(),
+        command: "bijux dev atlas check run".to_string(),
+        selections: BTreeMap::new(),
+        capabilities: BTreeMap::new(),
+        results: vec![
+            CheckResult {
+                schema_version: 1,
+                id: CheckId::parse("checks_docs_index_links").expect("check id"),
+                status: CheckStatus::Pass,
+                skip_reason: None,
+                violations: Vec::new(),
+                duration_ms: 16,
+                evidence: Vec::new(),
+            },
+            CheckResult {
+                schema_version: 1,
+                id: CheckId::parse("checks_make_wrapper_commands").expect("check id"),
+                status: CheckStatus::Fail,
+                skip_reason: None,
+                violations: vec![bijux_dev_atlas::model::Violation {
+                    schema_version: 1,
+                    code: bijux_dev_atlas::model::ViolationId::parse("check_execution_error")
+                        .expect("violation id"),
+                    message: "wrapper drift".to_string(),
+                    hint: None,
+                    path: None,
+                    line: None,
+                    severity: bijux_dev_atlas::model::Severity::Error,
+                }],
+                duration_ms: 10123,
+                evidence: Vec::new(),
+            },
+        ],
+        durations_ms: BTreeMap::new(),
+        counts: RunSummary {
+            schema_version: 1,
+            passed: 1,
+            failed: 1,
+            skipped: 0,
+            errors: 0,
+            total: 2,
+        },
+        summary: RunSummary {
+            schema_version: 1,
+            passed: 1,
+            failed: 1,
+            skipped: 0,
+            errors: 0,
+            total: 2,
+        },
+        timings_ms: BTreeMap::new(),
+    };
+
+    let rendered = render_check_run_report(&report, false);
+    assert!(rendered.contains("check-run: run_id=checks_run total=2 fail-fast=false"));
+    assert!(rendered.contains("PASS [  0.016s] (1/2) checks::checks_docs_index_links main"));
+    assert!(rendered.contains("FAIL [ 10.123s] (2/2) checks::checks_make_wrapper_commands main (wrapper drift)"));
+    assert!(rendered.contains("check-summary: total=2 passed=1 failed=1 skipped=0 errors=0"));
+    assert!(rendered.contains("failed-tests:\nchecks::checks_make_wrapper_commands main"));
 }

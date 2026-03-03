@@ -348,7 +348,14 @@ pub(crate) fn run_check_run(options: CheckRunOptions) -> Result<(String, i32), S
         &run_options,
     )?;
     let rendered = match options.format {
-        FormatArg::Text => render_text_with_durations(&report, options.durations),
+        FormatArg::Text => {
+            let mut rendered = render_check_run_report(&report, false);
+            if options.durations > 0 {
+                rendered.push('\n');
+                rendered.push_str(&render_text_with_durations(&report, options.durations));
+            }
+            rendered
+        }
         FormatArg::Json => render_json(&report)?,
         FormatArg::Jsonl => render_jsonl(&report)?,
     };
