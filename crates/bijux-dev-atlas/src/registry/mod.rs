@@ -4,6 +4,7 @@
 //! This module consolidates registry-oriented logic that had been scattered between engine and
 //! configs contracts, while preserving existing callers through re-exports.
 
+pub mod configs;
 mod runnable;
 
 pub use crate::core::{
@@ -11,7 +12,3 @@ pub use crate::core::{
     validate_registry, Registry, RegistryDoctorReport, SuiteSpec, DEFAULT_REGISTRY_PATH,
 };
 pub use runnable::RunnableRegistry;
-
-pub mod configs {
-    pub use crate::contracts::configs::{generated_index_payload, graph_payload, list_payload};
-}
