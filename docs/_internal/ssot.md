@@ -2,7 +2,7 @@
 
 - Owner: `bijux-atlas-platform`
 - Audience: `contributors`
-- Status: `active`
+- Status: `stable`
 
 ## Canonical Boundaries
 

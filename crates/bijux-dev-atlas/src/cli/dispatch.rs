@@ -40,7 +40,6 @@ use std::io::{self, Write};
 use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command as ProcessCommand;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::cli::dispatch_mutations::{apply_fail_fast, force_json_output, propagate_repo_root};
 use crate::resolve_repo_root;
@@ -778,13 +777,7 @@ fn run_tests_run(
 ) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(repo_root)?;
     let artifacts_root = artifacts_root.unwrap_or_else(|| repo_root.join("artifacts"));
-    let run_id = run_id.unwrap_or_else(|| {
-        let ts = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .map(|d| d.as_secs())
-            .unwrap_or(0);
-        format!("tests-{ts}")
-    });
+    let run_id = run_id.unwrap_or_else(|| "tests-local".to_string());
     fs::create_dir_all(&artifacts_root)
         .map_err(|err| format!("create {} failed: {err}", artifacts_root.display()))?;
     let target = match mode {
