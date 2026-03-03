@@ -31,6 +31,24 @@ signed_items:
   - path: artifacts/governance/exceptions-churn.json
     kind: exceptions-churn
     required: true
+  - path: artifacts/governance/deprecations-summary.json
+    kind: deprecations-summary
+    required: true
+  - path: artifacts/governance/compat-warnings.json
+    kind: compat-warnings
+    required: true
+  - path: artifacts/governance/breaking-changes.json
+    kind: breaking-changes
+    required: true
+  - path: artifacts/governance/governance-doctor.json
+    kind: governance-doctor
+    required: true
+  - path: artifacts/governance/institutional-delta.md
+    kind: institutional-delta
+    required: true
+  - path: artifacts/governance/institutional-delta-inputs.json
+    kind: institutional-delta-inputs
+    required: true
   - path: configs/security/auth-model.yaml
     kind: auth-model-snapshot
     required: true
