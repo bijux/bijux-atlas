@@ -81,9 +81,6 @@
     },
     "security": {
       "kind": "dir"
-    },
-    "tools": {
-      "kind": "dir"
     }
   },
   "ssot_roots": [

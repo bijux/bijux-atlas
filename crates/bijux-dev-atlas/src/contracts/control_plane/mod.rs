@@ -358,7 +358,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
 pub fn contract_explain(contract_id: &str) -> String {
     match contract_id {
         "CONTROL-PLANE-001" => {
-            "Legacy automation directories such as scripts and xtask are forbidden."
+            "Legacy automation directories such as scripts, tools, and xtask are forbidden."
                 .to_string()
         }
         "CONTROL-PLANE-002" => {

@@ -3,7 +3,7 @@ use std::path::PathBuf;
 const ROOT_FORBIDDEN_BINARY_EXTENSIONS: [&str; 12] = [
     "bin", "dmg", "exe", "gz", "iso", "jar", "o", "so", "tar", "tgz", "war", "zip",
 ];
-const ROOT_DIRECTORY_BUDGET: usize = 12;
+const ROOT_DIRECTORY_BUDGET: usize = 11;
 const ROOT_FILE_SIZE_BUDGET_BYTES: u64 = 512 * 1024;
 
 fn test_root_001_surface_allowlist(ctx: &RunContext) -> TestResult {
@@ -152,7 +152,7 @@ fn test_root_002_allowed_markdown(ctx: &RunContext) -> TestResult {
 }
 
 fn test_root_003_no_legacy_script_dirs(ctx: &RunContext) -> TestResult {
-    let forbidden = ["scripts", "xtask"];
+    let forbidden = ["scripts", "tools", "xtask"];
     let mut violations = Vec::new();
     for name in forbidden {
         if ctx.repo_root.join(name).exists() {

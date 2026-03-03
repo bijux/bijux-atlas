@@ -19,7 +19,6 @@
     "make",
     "ops",
     "release",
-    "security",
-    "tools"
+    "security"
   ]
 }
