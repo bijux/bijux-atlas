@@ -13,6 +13,14 @@ success-output = "never"
 status-level = "slow"
 slow-timeout = { period = "90s", terminate-after = 2 }
 
+[[profile.default.overrides]]
+filter = "package(bijux-dev-atlas) and test(docs_links_and_images_follow_governance_rules)"
+slow-timeout = { period = "2s", terminate-after = 12 }
+
+[[profile.default.overrides]]
+filter = "package(bijux-dev-atlas) and test(build_bin_writes_manifest_when_effects_enabled)"
+slow-timeout = { period = "250ms", terminate-after = 960 }
+
 [store]
 dir = "artifacts/isolate/test/nextest-store"
 
