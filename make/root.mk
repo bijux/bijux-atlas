@@ -9,17 +9,17 @@ RUN_ID ?= local
 SUITE_FAIL_FAST_FLAG := $(if $(filter 1 true yes,$(FAIL_FAST)),--fail-fast,--no-fail-fast)
 CHECK_FAIL_FAST_FLAG := $(if $(filter 1 true yes,$(FAIL_FAST)),--fail-fast,)
 
+include make/build.mk
 include make/cargo.mk
+include make/ci.mk
 include make/configs.mk
-include make/docs.mk
+include make/dev.mk
 include make/docker.mk
+include make/docs.mk
+include make/k8s.mk
 include make/ops.mk
 include make/policies.mk
-include make/build.mk
-include make/ci.mk
-include make/dev.mk
 include make/runenv.mk
-include make/k8s.mk
 include make/verification.mk
 
 CURATED_TARGETS := \

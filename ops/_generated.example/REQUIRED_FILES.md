@@ -1,4 +1,13 @@
 # Required Files
 
-- This directory must keep `README.md`, `OWNER.md`, and `REQUIRED_FILES.md` committed.
-- Generated example artifacts remain curated evidence for governance checks.
+```yaml
+required_files:
+  - ops/_generated.example/README.md
+  - ops/_generated.example/OWNER.md
+  - ops/_generated.example/REQUIRED_FILES.md
+required_dirs:
+  - ops/_generated.example
+forbidden_patterns: []
+notes:
+  - authored_root:ops/_generated.example
+```

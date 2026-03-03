@@ -90,10 +90,10 @@ spec:
     #[test]
     fn load_profile_intent_returns_selected_profile() {
         let root = tempfile::tempdir().unwrap_or_else(|err| panic!("tempdir: {err}"));
-        std::fs::create_dir_all(root.path().join("ops/stack"))
+        std::fs::create_dir_all(root.path().join("artifacts/stack"))
             .unwrap_or_else(|err| panic!("mkdir: {err}"));
         std::fs::write(
-            root.path().join("ops/stack/profile-intent.json"),
+            root.path().join("artifacts/stack/profile-intent.json"),
             r#"{"schema_version":1,"profiles":[{"name":"ci","intended_usage":"ci","allowed_effects":["subprocess"],"required_dependencies":["kind-cluster"]}]}"#,
         )
         .unwrap_or_else(|err| panic!("intent: {err}"));

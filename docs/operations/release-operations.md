@@ -1,4 +1,4 @@
-# Release operations
+# Release Workflow Controls
 
 - Owner: `bijux-atlas-operations`
 - Type: `runbook`

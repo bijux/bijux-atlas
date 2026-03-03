@@ -285,17 +285,26 @@ fn checks_reports_schema_registry_ssot(
             if rel.extension().and_then(|v| v.to_str()) != Some("json") {
                 return None;
             }
+            if !rel
+                .file_name()
+                .and_then(|v| v.to_str())
+                .is_some_and(|name| name.ends_with(".schema.json"))
+            {
+                return None;
+            }
             let text = fs::read_to_string(&path).ok()?;
             let value: serde_json::Value = serde_json::from_str(&text).ok()?;
-            Some((
-                value.get("properties")
-                    .and_then(|v| v.get("report_id"))
-                    .and_then(|v| v.get("const"))
-                    .and_then(|v| v.as_str())
-                    .unwrap_or_default()
-                    .to_string(),
-                rel.display().to_string(),
-            ))
+            let report_id = value
+                .get("properties")
+                .and_then(|v| v.get("report_id"))
+                .and_then(|v| v.get("const"))
+                .and_then(|v| v.as_str())
+                .unwrap_or_default()
+                .to_string();
+            if report_id.is_empty() {
+                return None;
+            }
+            Some((report_id, rel.display().to_string()))
         })
         .collect::<Vec<_>>();
     actual.sort();
