@@ -93,6 +93,26 @@
       ]
     },
     {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "governance",
+      "owner": "atlas-governance",
+      "public_files": [
+        "configs/governance/*.json",
+        "configs/governance/*.yaml",
+        "configs/governance/suites/*.json"
+      ],
+      "schema_owner": "atlas-governance",
+      "schemas": [
+        "configs/contracts/governance/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas governance validate",
+        "bijux dev atlas registry doctor"
+      ]
+    },
+    {
       "generated_files": [
         "configs/_generated/configs-index.json"
       ],
@@ -233,6 +253,25 @@
     {
       "generated_files": [],
       "internal_files": [],
+      "name": "observability",
+      "owner": "bijux-atlas-operations",
+      "public_files": [
+        "configs/observability/*.json",
+        "configs/observability/*.yaml"
+      ],
+      "schema_owner": "bijux-atlas-operations",
+      "schemas": [
+        "configs/contracts/observability/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas security validate",
+        "bijux dev atlas release verify"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
       "name": "perf",
       "owner": "bijux-atlas-performance",
       "public_files": [
@@ -329,9 +368,11 @@
         "configs/schema/versioning-policy.schema.json",
         "configs/contracts/*.json",
         "configs/contracts/datasets/*.json",
+        "configs/contracts/governance/*.json",
         "configs/contracts/observability/*.json",
         "configs/contracts/perf/*.json",
         "configs/contracts/release/*.json",
+        "configs/contracts/reports/checks/*.json",
         "configs/contracts/reports/*.json",
         "configs/contracts/security/*.json"
       ],
@@ -357,8 +398,11 @@
         "configs/schema/reports/*.json",
         "configs/contracts/*.json",
         "configs/contracts/datasets/*.json",
+        "configs/contracts/governance/*.json",
         "configs/contracts/observability/*.json",
         "configs/contracts/perf/*.json",
+        "configs/contracts/reports/checks/*.json",
+        "configs/contracts/reports/*.json",
         "configs/contracts/release/*.json",
         "configs/contracts/security/*.json"
       ],
@@ -375,7 +419,8 @@
       "owner": "security",
       "public_files": [
         "configs/security/*.json",
-        "configs/security/*.toml"
+        "configs/security/*.toml",
+        "configs/security/*.yaml"
       ],
       "schema_owner": "security",
       "schemas": [
@@ -407,7 +452,7 @@
   ],
   "max_depth": 4,
   "max_group_depth": 2,
-  "max_groups": 18,
+  "max_groups": 20,
   "root_files": [
     "configs/CONSUMERS.json",
     "configs/CONTRACT.md",

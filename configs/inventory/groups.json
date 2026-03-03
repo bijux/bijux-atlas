@@ -9,6 +9,7 @@
     "docs",
     "examples",
     "gates",
+    "governance",
     "inventory",
     "layout",
     "make",
@@ -16,6 +17,7 @@
     "nextest",
     "openapi",
     "ops",
+    "observability",
     "owners",
     "perf",
     "policy",
@@ -28,6 +30,6 @@
     "shellcheck",
     "slo"
   ],
-  "max_top_level_dirs": 27,
+  "max_top_level_dirs": 29,
   "schema_version": 1
 }

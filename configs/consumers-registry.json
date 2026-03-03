@@ -67,6 +67,18 @@
       "bijux-dev-atlas",
       "ci"
     ],
+    "configs/governance/*.json": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/governance/*.yaml": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/governance/suites/*.json": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
     "configs/inventory.json": [
       "bijux-dev-atlas",
       "ci"
@@ -92,6 +104,10 @@
     ],
     "configs/nextest/*.toml": [
       "ci"
+    ],
+    "configs/observability/*.yaml": [
+      "bijux-dev-atlas",
+      "runtime"
     ],
     "configs/openapi/**/*.json": [
       "bijux-dev-atlas",
@@ -201,11 +217,19 @@
     "configs/security/*.toml": [
       "ci"
     ],
+    "configs/security/*.yaml": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
     "configs/security/dependency-source-policy.json": [
       "bijux-dev-atlas",
       "ci"
     ],
     "configs/security/forbidden-patterns.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/security/github-actions-exceptions.json": [
       "bijux-dev-atlas",
       "ci"
     ],
@@ -242,6 +266,10 @@
       "docs-build",
       "ci"
     ],
+    "governance": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
     "inventory": [
       "bijux-dev-atlas",
       "ci"
@@ -259,6 +287,10 @@
     ],
     "nextest": [
       "ci"
+    ],
+    "observability": [
+      "bijux-dev-atlas",
+      "runtime"
     ],
     "openapi": [
       "bijux-dev-atlas",

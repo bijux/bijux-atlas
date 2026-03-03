@@ -129,6 +129,45 @@
     },
     {
       "counts": {
+        "covered": 17,
+        "generated": 0,
+        "internal": 0,
+        "public": 17,
+        "schemas": 1
+      },
+      "files": [
+        "configs/governance/check-groups.json",
+        "configs/governance/checks.registry.json",
+        "configs/governance/compatibility.yaml",
+        "configs/governance/contract-groups.json",
+        "configs/governance/contracts.registry.json",
+        "configs/governance/deprecations.yaml",
+        "configs/governance/exceptions-archive.yaml",
+        "configs/governance/exceptions.yaml",
+        "configs/governance/perf-budgets.json",
+        "configs/governance/registry-completeness-policy.json",
+        "configs/governance/suites/baseline.json",
+        "configs/governance/suites/checks.suite.json",
+        "configs/governance/suites/contracts.suite.json",
+        "configs/governance/suites/default-jobs.json",
+        "configs/governance/suites/suites.index.json",
+        "configs/governance/suites/tests.suite.json",
+        "configs/governance/tags.json"
+      ],
+      "name": "governance",
+      "owner": "atlas-governance",
+      "schema_owner": "atlas-governance",
+      "schemas": [
+        "configs/contracts/governance/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas governance validate",
+        "bijux dev atlas registry doctor"
+      ]
+    },
+    {
+      "counts": {
         "covered": 6,
         "generated": 1,
         "internal": 0,
@@ -360,6 +399,34 @@
     },
     {
       "counts": {
+        "covered": 6,
+        "generated": 0,
+        "internal": 0,
+        "public": 6,
+        "schemas": 1
+      },
+      "files": [
+        "configs/observability/audit-log.schema.json",
+        "configs/observability/log-field-inventory.schema.json",
+        "configs/observability/log-safe-fields.schema.json",
+        "configs/observability/log-safe-fields.yaml",
+        "configs/observability/retention.schema.json",
+        "configs/observability/retention.yaml"
+      ],
+      "name": "observability",
+      "owner": "bijux-atlas-operations",
+      "schema_owner": "bijux-atlas-operations",
+      "schemas": [
+        "configs/contracts/observability/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas security validate",
+        "bijux dev atlas release verify"
+      ]
+    },
+    {
+      "counts": {
         "covered": 7,
         "generated": 0,
         "internal": 0,
@@ -496,11 +563,11 @@
     },
     {
       "counts": {
-        "covered": 95,
+        "covered": 141,
         "generated": 1,
-        "internal": 76,
+        "internal": 122,
         "public": 18,
-        "schemas": 9
+        "schemas": 12
       },
       "files": [
         "configs/contracts/ci-run-output.schema.json",
@@ -519,6 +586,21 @@
         "configs/contracts/dev-atlas-output.schema.json",
         "configs/contracts/docs-site-output.schema.json",
         "configs/contracts/env.schema.json",
+        "configs/contracts/governance/check-groups.schema.json",
+        "configs/contracts/governance/checks-registry.schema.json",
+        "configs/contracts/governance/compatibility.schema.json",
+        "configs/contracts/governance/contract-groups.schema.json",
+        "configs/contracts/governance/contracts-registry.schema.json",
+        "configs/contracts/governance/default-jobs.schema.json",
+        "configs/contracts/governance/deprecations.schema.json",
+        "configs/contracts/governance/exceptions-archive.schema.json",
+        "configs/contracts/governance/exceptions.schema.json",
+        "configs/contracts/governance/perf-budgets.schema.json",
+        "configs/contracts/governance/registry-completeness-policy.schema.json",
+        "configs/contracts/governance/suite-baseline.schema.json",
+        "configs/contracts/governance/suite.schema.json",
+        "configs/contracts/governance/suites-index.schema.json",
+        "configs/contracts/governance/tags.schema.json",
         "configs/contracts/inventory-budgets.schema.json",
         "configs/contracts/inventory-commands.schema.json",
         "configs/contracts/inventory-configs.schema.json",
@@ -547,19 +629,50 @@
         "configs/contracts/release/release-verify.schema.json",
         "configs/contracts/release/signing-policy.schema.json",
         "configs/contracts/reporting-ci-summary-output.schema.json",
+        "configs/contracts/reports/breaking-changes.schema.json",
+        "configs/contracts/reports/checks/check-clippy.schema.json",
+        "configs/contracts/reports/checks/check-config-format.schema.json",
+        "configs/contracts/reports/checks/check-deps.schema.json",
+        "configs/contracts/reports/checks/check-docs-links.schema.json",
+        "configs/contracts/reports/checks/check-helm-lint.schema.json",
+        "configs/contracts/reports/checks/check-kubeconform.schema.json",
+        "configs/contracts/reports/checks/check-rustfmt.schema.json",
+        "configs/contracts/reports/checks/check-suite-summary.schema.json",
+        "configs/contracts/reports/checks/schema-index.json",
         "configs/contracts/reports/closure-index.schema.json",
         "configs/contracts/reports/closure-summary.schema.json",
+        "configs/contracts/reports/compat-warnings.schema.json",
+        "configs/contracts/reports/deprecations-summary.schema.json",
         "configs/contracts/reports/docs-site-output.schema.json",
+        "configs/contracts/reports/exceptions-churn.schema.json",
+        "configs/contracts/reports/exceptions-expiry-warning.schema.json",
+        "configs/contracts/reports/exceptions-summary.schema.json",
+        "configs/contracts/reports/governance-doctor.schema.json",
         "configs/contracts/reports/governance-index.schema.json",
         "configs/contracts/reports/helm-env.schema.json",
+        "configs/contracts/reports/institutional-delta-inputs.schema.json",
         "configs/contracts/reports/ops-profiles.schema.json",
+        "configs/contracts/reports/registry-missing-fields.schema.json",
+        "configs/contracts/reports/registry-status.schema.json",
+        "configs/contracts/reports/suite-diff.schema.json",
+        "configs/contracts/reports/suite-history-entry.schema.json",
+        "configs/contracts/reports/suite-preflight.schema.json",
+        "configs/contracts/reports/suite-result.schema.json",
+        "configs/contracts/reports/suite-summary.schema.json",
+        "configs/contracts/security/actions.schema.json",
         "configs/contracts/security/assets.schema.json",
+        "configs/contracts/security/auth-model.schema.json",
         "configs/contracts/security/compliance-matrix.schema.json",
         "configs/contracts/security/controls.schema.json",
+        "configs/contracts/security/data-classification.schema.json",
         "configs/contracts/security/dependency-source-policy.schema.json",
         "configs/contracts/security/forbidden-patterns.schema.json",
+        "configs/contracts/security/github-actions-exceptions.schema.json",
         "configs/contracts/security/mitigations.schema.json",
+        "configs/contracts/security/policy.schema.json",
+        "configs/contracts/security/principals.schema.json",
         "configs/contracts/security/redaction.schema.json",
+        "configs/contracts/security/resources.schema.json",
         "configs/contracts/security/secrets.schema.json",
         "configs/contracts/security/threats.schema.json",
         "configs/contracts/tooling-doctor-output.schema.json",
@@ -608,8 +721,11 @@
         "configs/schema/reports/*.json",
         "configs/contracts/*.json",
         "configs/contracts/datasets/*.json",
+        "configs/contracts/governance/*.json",
         "configs/contracts/observability/*.json",
         "configs/contracts/perf/*.json",
+        "configs/contracts/reports/checks/*.json",
+        "configs/contracts/reports/*.json",
         "configs/contracts/release/*.json",
         "configs/contracts/security/*.json"
       ],
@@ -621,18 +737,25 @@
     },
     {
       "counts": {
-        "covered": 6,
+        "covered": 13,
         "generated": 0,
         "internal": 0,
-        "public": 6,
+        "public": 13,
         "schemas": 1
       },
       "files": [
+        "configs/security/actions.yaml",
         "configs/security/audit-allowlist.toml",
+        "configs/security/auth-model.yaml",
+        "configs/security/data-classification.yaml",
         "configs/security/deny.toml",
         "configs/security/dependency-source-policy.json",
         "configs/security/forbidden-patterns.json",
+        "configs/security/github-actions-exceptions.json",
+        "configs/security/policy.yaml",
+        "configs/security/principals.yaml",
         "configs/security/redaction.json",
+        "configs/security/resources.yaml",
         "configs/security/secrets.json"
       ],
       "name": "security",
@@ -673,7 +796,7 @@
   "kind": "configs-index",
   "max_depth": 4,
   "max_group_depth": 2,
-  "max_groups": 18,
+  "max_groups": 20,
   "registry_path": "configs/inventory/configs.json",
   "root_files": [
     "configs/CONSUMERS.json",

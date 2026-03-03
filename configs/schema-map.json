@@ -18,6 +18,8 @@
     "configs/docs/*.jsonc": "configs/contracts/inventory-configs.schema.json",
     "configs/docs/.markdownlint-cli2.jsonc": "configs/contracts/inventory-configs.schema.json",
     "configs/gates/*.json": "configs/contracts/inventory-commands.schema.json",
+    "configs/governance/*.json": "configs/contracts/governance/compatibility.schema.json",
+    "configs/governance/suites/*.json": "configs/contracts/governance/suite.schema.json",
     "configs/inventory.json": "configs/contracts/inventory-configs.schema.json",
     "configs/inventory/configs.json": "configs/contracts/inventory-configs.schema.json",
     "configs/inventory/consumers.json": "configs/schema/configs-consumer-map.schema.json",
@@ -46,6 +48,7 @@
     "configs/schema/versioning-policy.json": "configs/schema/versioning-policy.schema.json",
     "configs/security/dependency-source-policy.json": "configs/contracts/security/dependency-source-policy.schema.json",
     "configs/security/forbidden-patterns.json": "configs/contracts/security/forbidden-patterns.schema.json",
+    "configs/security/github-actions-exceptions.json": "configs/contracts/security/github-actions-exceptions.schema.json",
     "configs/security/redaction.json": "configs/contracts/security/redaction.schema.json",
     "configs/security/secrets.json": "configs/contracts/security/secrets.schema.json",
     "configs/slo/*.json": "configs/contracts/inventory-configs.schema.json"
