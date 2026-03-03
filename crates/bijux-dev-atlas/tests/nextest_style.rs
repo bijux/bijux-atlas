@@ -4,7 +4,16 @@ use bijux_dev_atlas::model::engine::{
     CaseReport, CaseStatus, ContractLane, ContractMode, ContractSummary, EffectKind, RunMetadata,
     RunReport, TestKind,
 };
-use bijux_dev_atlas::ui::terminal::nextest_style::{render, RenderOptions};
+use bijux_dev_atlas::ui::terminal::nextest_style::{render, PreflightSummary, RenderOptions};
+use std::fs;
+use std::path::PathBuf;
+
+fn golden_path(name: &str) -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("tests")
+        .join("goldens")
+        .join(name)
+}
 
 fn sample_report() -> RunReport {
     RunReport {
@@ -68,14 +77,84 @@ fn renders_nextest_style_contract_lines() {
         "static",
         "auto",
         false,
+        &PreflightSummary {
+            required_tools: vec!["sh".to_string()],
+            missing_tools: vec![],
+        },
         RenderOptions {
             color: false,
             quiet: false,
             verbose: false,
         },
     );
+    assert!(rendered.contains("preflight: required-tools=sh missing-tools=none"));
+    assert!(rendered.contains("planning: contracts=1 cases=2"));
     assert!(rendered.contains("FAIL [  0.023s] (1/2) docs::DOC-001 docs.root.links (broken links)"));
     assert!(rendered.contains("PASS [  0.016s] (2/2) docs::DOC-001 docs.root.surface"));
     assert!(rendered.contains("contract-summary: total=2 passed=1 failed=1 skipped=0"));
     assert!(rendered.contains("failed-tests:"));
+    assert!(!rendered.contains("\u{1b}["));
+}
+
+#[test]
+fn matches_no_ansi_golden_output() {
+    let rendered = render(
+        &[sample_report()],
+        "static",
+        "auto",
+        false,
+        &PreflightSummary {
+            required_tools: vec!["sh".to_string()],
+            missing_tools: vec![],
+        },
+        RenderOptions {
+            color: false,
+            quiet: false,
+            verbose: false,
+        },
+    );
+    let expected =
+        fs::read_to_string(golden_path("contract_runner_no_ansi.txt")).expect("read no-ansi golden");
+    assert_eq!(rendered, expected.trim_end());
+}
+
+#[test]
+fn matches_quiet_golden_output() {
+    let rendered = render(
+        &[sample_report()],
+        "static",
+        "auto",
+        false,
+        &PreflightSummary::default(),
+        RenderOptions {
+            color: false,
+            quiet: true,
+            verbose: false,
+        },
+    );
+    let expected =
+        fs::read_to_string(golden_path("contract_runner_quiet.txt")).expect("read quiet golden");
+    assert_eq!(rendered, expected.trim_end());
+}
+
+#[test]
+fn matches_verbose_golden_output() {
+    let rendered = render(
+        &[sample_report()],
+        "static",
+        "auto",
+        false,
+        &PreflightSummary {
+            required_tools: vec!["sh".to_string()],
+            missing_tools: vec![],
+        },
+        RenderOptions {
+            color: false,
+            quiet: false,
+            verbose: true,
+        },
+    );
+    let expected = fs::read_to_string(golden_path("contract_runner_verbose.txt"))
+        .expect("read verbose golden");
+    assert_eq!(rendered, expected.trim_end());
 }
