@@ -4,6 +4,7 @@
 use super::*;
 
 #[cfg(test)]
+#[allow(clippy::items_after_test_module)]
 mod install_status_tests {
     use super::{
         contains_common_secret_pattern, install_plan_inventory, install_render_path,

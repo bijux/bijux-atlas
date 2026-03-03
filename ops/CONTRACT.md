@@ -5,6 +5,7 @@
 - Governed surface: `ops/` and `ops/CONTRACT.md`.
 - SSOT = bijux-dev-atlas contracts runner.
 - Effects boundary: effect contracts require explicit runtime opt-in flags.
+- Legacy shell compatibility deadline: 2026-12-31.
 - Non-goals:
 - This document does not replace executable contract checks.
 - This document does not grant manual exception authority.

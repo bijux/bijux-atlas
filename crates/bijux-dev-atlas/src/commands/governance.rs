@@ -21,6 +21,7 @@ use serde::Deserialize;
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
+use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 
 #[derive(Debug, Deserialize)]
@@ -522,7 +523,7 @@ fn date_days(value: &str) -> Result<i64, String> {
 
 fn tracking_domain(url: &str) -> Option<&str> {
     let (_, rest) = url.split_once("://")?;
-    Some(rest.split('/').next()?.split(':').next()?)
+    rest.split('/').next()?.split(':').next()
 }
 
 fn write_pretty_json(path: &Path, value: &serde_json::Value) -> Result<(), String> {
@@ -3372,7 +3373,7 @@ pub(crate) fn run_governance_command(
                 .filter_map(|item| {
                     let removal = date_days(&item.removal_target).ok()?;
                     let days = removal - today;
-                    (days >= 0 && days < 30).then(|| {
+                    (0..30).contains(&days).then(|| {
                         serde_json::json!({
                             "kind": "upcoming-removal",
                             "id": item.id,
@@ -3613,15 +3614,15 @@ pub(crate) fn run_registry_command(quiet: bool, command: RegistryCommand) -> i32
         Ok((rendered, code)) => {
             if !quiet && !rendered.is_empty() {
                 if code == 0 {
-                    println!("{rendered}");
+                    let _ = writeln!(io::stdout(), "{rendered}");
                 } else {
-                    eprintln!("{rendered}");
+                    let _ = writeln!(io::stderr(), "{rendered}");
                 }
             }
             code
         }
         Err(err) => {
-            eprintln!("bijux-dev-atlas registry failed: {err}");
+            let _ = writeln!(io::stderr(), "bijux-dev-atlas registry failed: {err}");
             1
         }
     }

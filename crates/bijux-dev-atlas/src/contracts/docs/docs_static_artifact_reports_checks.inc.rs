@@ -328,10 +328,8 @@ fn test_docs_060_redirects_target_real_pages(ctx: &RunContext) -> TestResult {
             });
         }
     }
-    let redirect_map = match serde_json::from_str::<std::collections::BTreeMap<String, String>>(&contents) {
-        Ok(value) => value,
-        Err(_) => std::collections::BTreeMap::new(),
-    };
+    let redirect_map = serde_json::from_str::<std::collections::BTreeMap<String, String>>(&contents)
+        .unwrap_or_default();
     for source in redirect_map.keys() {
         let mut seen = std::collections::BTreeSet::new();
         let mut current = source.as_str();

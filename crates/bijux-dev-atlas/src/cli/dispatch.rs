@@ -3,41 +3,44 @@
 use crate::cli::{
     CheckCommand, CheckRegistryCommand, ChecksCommand, Cli, Command, ContractCommand,
     ContractEffectsPolicyArg, ContractRunModeArg, ContractsColorArg, FormatArg, GlobalFormatArg,
-    ReportsCommand,
+    ReportsCommand, TestsCommand, TestsModeArg,
 };
 use crate::{
     plugin_metadata_json, run_artifacts_command, run_build_command, run_capabilities_command,
     run_check_doctor, run_check_explain, run_check_list, run_check_registry_doctor,
     run_check_repo_doctor, run_check_root_surface_explain, run_check_run, run_check_tree_budgets,
     run_checks_catalog_explain, run_checks_catalog_list, run_configs_command,
-    run_contracts_command, run_data_command, run_demo_command,
-    run_docker_command, run_docs_command, run_gates_command, run_governance_command,
-    run_help_inventory_command, run_make_command, run_ops_command, run_perf_command,
-    run_policies_command, run_print_boundaries_command, run_registry_check_by_id,
-    run_registry_command, run_registry_contract_by_id, run_release_command, run_security_command,
-    run_suites_command, run_version_command, run_workflows_command,
+    run_contracts_command, run_data_command, run_demo_command, run_docker_command,
+    run_docs_command, run_gates_command, run_governance_command, run_help_inventory_command,
+    run_make_command, run_ops_command, run_perf_command, run_policies_command,
+    run_print_boundaries_command, run_registry_check_by_id, run_registry_command,
+    run_registry_contract_by_id, run_release_command, run_security_command, run_suites_command,
+    run_version_command, run_workflows_command,
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions, ChecksCatalogListOptions};
-use bijux_dev_atlas::runtime::cli_adapter::{
-    command_inventory_markdown, command_inventory_payload, route_name,
-};
 use bijux_dev_atlas::contracts;
 use bijux_dev_atlas::domains;
 use bijux_dev_atlas::engine;
-use bijux_dev_atlas::model::exit_codes::{EXIT_FAILURE, EXIT_NOT_FOUND, EXIT_SUCCESS};
 use bijux_dev_atlas::model::engine::{
     CaseStatus, ContractMode as EngineContractMode, Mode as EngineMode, RunOptions, TestKind,
 };
+use bijux_dev_atlas::model::exit_codes::{EXIT_FAILURE, EXIT_NOT_FOUND, EXIT_SUCCESS};
 use bijux_dev_atlas::model::{
     ContractCaseResult, ContractCaseStatus, ContractRunCounts, ContractRunPreflight,
     ContractRunSummary, ReportHeader, ReportRef, RunnableId, RunnableKind, RunnableMode,
 };
 use bijux_dev_atlas::registry::{ContractModesFile, ReportRegistry, RunnableRegistry};
+use bijux_dev_atlas::runtime::cli_adapter::{
+    command_inventory_markdown, command_inventory_payload, route_name,
+};
 use bijux_dev_atlas::ui::terminal::nextest_style::{self, PreflightSummary, RenderOptions};
 use std::collections::{BTreeMap, BTreeSet};
+use std::fs;
 use std::io::{self, Write};
 use std::path::Path;
+use std::path::PathBuf;
 use std::process::Command as ProcessCommand;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::cli::dispatch_mutations::{apply_fail_fast, force_json_output, propagate_repo_root};
 use crate::resolve_repo_root;
@@ -589,6 +592,55 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         },
         Command::Registry { command } => run_registry_command(cli.quiet, command),
         Command::Suites { command } => run_suites_command(cli.quiet, command),
+        Command::Tests { command } => {
+            let result = match command {
+                TestsCommand::List {
+                    repo_root,
+                    format,
+                    out,
+                } => run_tests_list(repo_root, format, out),
+                TestsCommand::Run {
+                    repo_root,
+                    artifacts_root,
+                    run_id,
+                    mode,
+                    fail_fast,
+                    format,
+                    out,
+                } => run_tests_run(
+                    repo_root,
+                    artifacts_root,
+                    run_id,
+                    mode,
+                    fail_fast,
+                    format,
+                    out,
+                ),
+                TestsCommand::Doctor {
+                    repo_root,
+                    artifacts_root,
+                    run_id,
+                    format,
+                    out,
+                } => run_tests_doctor(repo_root, artifacts_root, run_id, format, out),
+            };
+            match result {
+                Ok((rendered, code)) => {
+                    if !cli.quiet && !rendered.is_empty() {
+                        if code == 0 {
+                            let _ = writeln!(io::stdout(), "{rendered}");
+                        } else {
+                            let _ = writeln!(io::stderr(), "{rendered}");
+                        }
+                    }
+                    code
+                }
+                Err(err) => {
+                    let _ = writeln!(io::stderr(), "bijux-dev-atlas tests failed: {err}");
+                    1
+                }
+            }
+        }
         Command::Reports { command } => match run_reports_command(cli.output_format, command) {
             Ok((rendered, code)) => {
                 if !cli.quiet && !rendered.is_empty() {
@@ -670,6 +722,129 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
     exit
 }
 
+fn run_tests_list(
+    repo_root: Option<PathBuf>,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(repo_root)?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "suite": "tests",
+        "entries": [
+            {"id":"tests.fast","mode":"fast","target":"test"},
+            {"id":"tests.all","mode":"all","target":"test-all"}
+        ]
+    });
+    let rendered = match format {
+        FormatArg::Json => serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode tests list failed: {err}"))?,
+        FormatArg::Text | FormatArg::Jsonl => "tests.fast\ntests.all".to_string(),
+    };
+    if let Some(path) = out {
+        fs::write(&path, format!("{rendered}\n"))
+            .map_err(|err| format!("write {} failed: {err}", path.display()))?;
+    }
+    let _ = repo_root;
+    Ok((rendered, 0))
+}
+
+fn run_tests_doctor(
+    repo_root: Option<PathBuf>,
+    artifacts_root: Option<PathBuf>,
+    run_id: Option<String>,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    run_tests_run(
+        repo_root,
+        artifacts_root,
+        run_id,
+        TestsModeArg::Fast,
+        true,
+        format,
+        out,
+    )
+}
+
+fn run_tests_run(
+    repo_root: Option<PathBuf>,
+    artifacts_root: Option<PathBuf>,
+    run_id: Option<String>,
+    mode: TestsModeArg,
+    fail_fast: bool,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(repo_root)?;
+    let artifacts_root = artifacts_root.unwrap_or_else(|| repo_root.join("artifacts"));
+    let run_id = run_id.unwrap_or_else(|| {
+        let ts = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map(|d| d.as_secs())
+            .unwrap_or(0);
+        format!("tests-{ts}")
+    });
+    fs::create_dir_all(&artifacts_root)
+        .map_err(|err| format!("create {} failed: {err}", artifacts_root.display()))?;
+    let target = match mode {
+        TestsModeArg::Fast => "test",
+        TestsModeArg::All => "test-all",
+    };
+    let started = std::time::Instant::now();
+    let status = ProcessCommand::new("make")
+        .arg("-s")
+        .arg(target)
+        .env("ARTIFACT_ROOT", &artifacts_root)
+        .env("RUN_ID", &run_id)
+        .env("FAIL_FAST", if fail_fast { "1" } else { "0" })
+        .current_dir(&repo_root)
+        .status()
+        .map_err(|err| format!("run make {target} failed: {err}"))?;
+    let duration_ms = started.elapsed().as_millis() as u64;
+    let exit_code = status.code().unwrap_or(1);
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "suite": "tests",
+        "run_id": run_id,
+        "target": target,
+        "mode": match mode { TestsModeArg::Fast => "fast", TestsModeArg::All => "all" },
+        "status": if status.success() { "PASS" } else { "FAIL" },
+        "exit_code": exit_code,
+        "duration_ms": duration_ms,
+        "artifacts_root": artifacts_root.display().to_string()
+    });
+    let report_dir = artifacts_root
+        .join("tests")
+        .join(payload["run_id"].as_str().unwrap_or("local"));
+    fs::create_dir_all(&report_dir)
+        .map_err(|err| format!("create {} failed: {err}", report_dir.display()))?;
+    let report_path = report_dir.join("report.json");
+    fs::write(
+        &report_path,
+        serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode tests report failed: {err}"))?,
+    )
+    .map_err(|err| format!("write {} failed: {err}", report_path.display()))?;
+    let rendered = match format {
+        FormatArg::Json => serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode tests run output failed: {err}"))?,
+        FormatArg::Text | FormatArg::Jsonl => format!(
+            "tests-run: mode={} target={} status={} duration_ms={} report={}",
+            payload["mode"].as_str().unwrap_or("fast"),
+            target,
+            payload["status"].as_str().unwrap_or("FAIL"),
+            duration_ms,
+            report_path.display()
+        ),
+    };
+    if let Some(path) = out {
+        fs::write(&path, format!("{rendered}\n"))
+            .map_err(|err| format!("write {} failed: {err}", path.display()))?;
+    }
+    Ok((rendered, if status.success() { 0 } else { 1 }))
+}
+
 pub(crate) fn deprecated_contracts_warning() -> &'static str {
     "bijux-dev-atlas: `contracts` is deprecated; use `contract` instead"
 }
@@ -731,13 +906,22 @@ fn contract_domain_sources() -> [ContractDomainSource; 10] {
     ]
 }
 
-fn contract_mode_matches_engine(mode: ContractRunModeArg, contract_mode: EngineContractMode) -> bool {
+fn contract_mode_matches_engine(
+    mode: ContractRunModeArg,
+    contract_mode: EngineContractMode,
+) -> bool {
     match mode {
         ContractRunModeArg::Static => {
-            matches!(contract_mode, EngineContractMode::Static | EngineContractMode::Both)
+            matches!(
+                contract_mode,
+                EngineContractMode::Static | EngineContractMode::Both
+            )
         }
         ContractRunModeArg::Effect => {
-            matches!(contract_mode, EngineContractMode::Effect | EngineContractMode::Both)
+            matches!(
+                contract_mode,
+                EngineContractMode::Effect | EngineContractMode::Both
+            )
         }
         ContractRunModeArg::All => true,
     }
@@ -750,17 +934,18 @@ fn contract_effects_allowed(mode: ContractRunModeArg, policy: ContractEffectsPol
 
 fn collect_available_tools() -> BTreeSet<&'static str> {
     const COMMON_TOOLS: &[&str] = &[
-        "cargo", "docker", "git", "helm", "jq", "just", "kind", "kubectl", "make", "mkdocs",
-        "sh",
+        "cargo", "docker", "git", "helm", "jq", "just", "kind", "kubectl", "make", "mkdocs", "sh",
         "node", "npm", "python3", "rg", "rustc",
     ];
     COMMON_TOOLS
         .iter()
         .copied()
-        .filter(|tool| ProcessCommand::new("sh")
-            .args(["-lc", &format!("command -v {tool} >/dev/null 2>&1")])
-            .status()
-            .is_ok_and(|status| status.success()))
+        .filter(|tool| {
+            ProcessCommand::new("sh")
+                .args(["-lc", &format!("command -v {tool} >/dev/null 2>&1")])
+                .status()
+                .is_ok_and(|status| status.success())
+        })
         .collect()
 }
 
@@ -782,11 +967,13 @@ fn load_contract_catalog(
             rows.push((source.name, contract, mode));
         }
     }
-    rows.sort_by(|(left_domain, left_contract, _), (right_domain, right_contract, _)| {
-        left_domain
-            .cmp(right_domain)
-            .then_with(|| left_contract.id.0.cmp(&right_contract.id.0))
-    });
+    rows.sort_by(
+        |(left_domain, left_contract, _), (right_domain, right_contract, _)| {
+            left_domain
+                .cmp(right_domain)
+                .then_with(|| left_contract.id.0.cmp(&right_contract.id.0))
+        },
+    );
     Ok(rows)
 }
 
@@ -1068,7 +1255,11 @@ fn run_contract_run_command(
         .iter()
         .map(|value| value.trim().to_string())
         .collect::<BTreeSet<_>>();
-    let direct_id = args.id.as_deref().map(str::trim).filter(|value| !value.is_empty());
+    let direct_id = args
+        .id
+        .as_deref()
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
 
     let selected_ids = load_contract_catalog(&root)?
         .into_iter()
@@ -1077,17 +1268,15 @@ fn run_contract_run_command(
                 && (include.is_empty() || include.contains(contract.id.0.as_str()))
                 && !exclude.contains(contract.id.0.as_str())
                 && (direct_id.is_some() || contract_mode_matches_engine(args.mode, *mode))
-                && (domain_filter.is_empty() || domain_filter.contains(&domain.to_string()))
+                && (domain_filter.is_empty() || domain_filter.contains(*domain))
                 && (args.tags.is_empty()
                     || args.tags.iter().any(|tag| match tag.as_str() {
-                        "static" => matches!(
-                            mode,
-                            EngineContractMode::Static | EngineContractMode::Both
-                        ),
-                        "effect" | "slow" => matches!(
-                            mode,
-                            EngineContractMode::Effect | EngineContractMode::Both
-                        ),
+                        "static" => {
+                            matches!(mode, EngineContractMode::Static | EngineContractMode::Both)
+                        }
+                        "effect" | "slow" => {
+                            matches!(mode, EngineContractMode::Effect | EngineContractMode::Both)
+                        }
                         "ci" | "contracts" => true,
                         _ => false,
                     }))
@@ -1096,7 +1285,10 @@ fn run_contract_run_command(
         .collect::<BTreeSet<_>>();
 
     if selected_ids.is_empty() {
-        return Ok(("no contracts matched the requested selection".to_string(), EXIT_NOT_FOUND));
+        return Ok((
+            "no contracts matched the requested selection".to_string(),
+            EXIT_NOT_FOUND,
+        ));
     }
 
     let available_tools = collect_available_tools();
@@ -1182,19 +1374,18 @@ fn run_contract_run_command(
             if let Some(missing) = missing_tool_ids.get(&case.contract_id) {
                 case.status = CaseStatus::Skip;
                 case.note = Some(format!("missing tool: {}", missing.join(", ")));
-            } else if matches!(args.mode, ContractRunModeArg::Static)
-                && case.kind != TestKind::Pure
+            } else if case.kind != TestKind::Pure
+                && (matches!(args.mode, ContractRunModeArg::Static) || !allowed_effects)
             {
-                case.status = CaseStatus::Skip;
-                case.note = Some("disabled effect policy".to_string());
-            } else if !allowed_effects && case.kind != TestKind::Pure {
                 case.status = CaseStatus::Skip;
                 case.note = Some("disabled effect policy".to_string());
             }
         }
         reports.push(report);
         if fail_fast
-            && reports.iter().any(|report| report.fail_count() > 0 || report.error_count() > 0)
+            && reports
+                .iter()
+                .any(|report| report.fail_count() > 0 || report.error_count() > 0)
         {
             break;
         }
@@ -1275,7 +1466,11 @@ fn run_contract_run_command(
     }
     let _ = planned_cases;
     write_output(args.out, &rendered)?;
-    let exit = reports.iter().map(|report| report.exit_code()).max().unwrap_or(EXIT_SUCCESS);
+    let exit = reports
+        .iter()
+        .map(|report| report.exit_code())
+        .max()
+        .unwrap_or(EXIT_SUCCESS);
     Ok((rendered, exit))
 }
 
@@ -1301,7 +1496,10 @@ fn run_contract_report_command(
     let rendered = match effective_format(global, args.format) {
         GlobalFormatArg::Human => format!(
             "contract-summary: total={} passed={} failed={} skipped={}",
-            summary.counts.total, summary.counts.passed, summary.counts.failed, summary.counts.skipped
+            summary.counts.total,
+            summary.counts.passed,
+            summary.counts.failed,
+            summary.counts.skipped
         ),
         GlobalFormatArg::Json => serde_json::to_string_pretty(&summary)
             .map_err(|err| format!("encode contract report failed: {err}"))?,

@@ -483,16 +483,15 @@ fn test_ops_002_forbid_legacy_domain_docs(ctx: &RunContext) -> TestResult {
 
     for domain in DOMAIN_DIRS {
         let domain_root = ctx.repo_root.join("ops").join(domain);
-        for forbidden in ["INDEX.md"] {
-            let path = domain_root.join(forbidden);
-            if path.exists() {
-                violations.push(violation(
-                    contract_id,
-                    test_id,
-                    "legacy domain markdown docs are forbidden",
-                    Some(rel_to_root(&path, &ctx.repo_root)),
-                ));
-            }
+        let forbidden = "INDEX.md";
+        let path = domain_root.join(forbidden);
+        if path.exists() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "legacy domain markdown docs are forbidden",
+                Some(rel_to_root(&path, &ctx.repo_root)),
+            ));
         }
     }
 

@@ -5,6 +5,7 @@ use crate::{emit_payload, resolve_repo_root};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeSet;
 use std::fs;
+use std::io::{self, Write};
 use std::path::Path;
 
 pub(crate) enum DataCommand {
@@ -294,7 +295,8 @@ fn run_ingest(args: IngestDryRunArgs) -> Result<(String, i32), String> {
     let (source_dir, genome_sha, fai_sha, gff3_sha) =
         dataset_source_and_hashes(&root, &args.dataset)?;
     let started = std::time::Instant::now();
-    eprintln!(
+    let _ = writeln!(
+        io::stderr(),
         "{}",
         serde_json::json!({
             "event_id": "audit_ingest_started",
@@ -383,7 +385,8 @@ fn run_ingest(args: IngestDryRunArgs) -> Result<(String, i32), String> {
     });
     let e2e_path = root.join("artifacts/ingest/endtoend-ingest-query.json");
     write_json(&e2e_path, &e2e)?;
-    eprintln!(
+    let _ = writeln!(
+        io::stderr(),
         "{}",
         serde_json::json!({
             "event_id": "audit_ingest_completed",

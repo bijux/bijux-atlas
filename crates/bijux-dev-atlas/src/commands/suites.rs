@@ -12,12 +12,12 @@ use std::time::{Instant, SystemTime, UNIX_EPOCH};
 
 use crate::cli::{FormatArg, SuiteColorArg, SuiteModeArg, SuiteOutputFormatArg, SuitesCommand};
 use crate::resolve_repo_root;
+use bijux_dev_atlas::docs::site_output::{
+    validate_named_report, validate_report_value_against_schema,
+};
 use bijux_dev_atlas::engine::{
     ArtifactStore, CommandRunnableExecutor, EffectPolicy, RunStatus, RunnableExecutor,
     RunnableRunContext,
-};
-use bijux_dev_atlas::docs::site_output::{
-    validate_named_report, validate_report_value_against_schema,
 };
 use bijux_dev_atlas::model::{RunId, RunnableId, RunnableKind, RunnableSelection};
 use bijux_dev_atlas::registry::RunnableRegistry;
@@ -948,6 +948,7 @@ fn filter_summary_tasks(
         .collect::<Vec<_>>()
 }
 
+#[allow(clippy::too_many_arguments)]
 fn human_suite_report(
     summary: &serde_json::Value,
     task_details: &[serde_json::Value],
@@ -1986,6 +1987,7 @@ fn execute_plan_batches(
     Ok(outputs)
 }
 
+#[allow(clippy::too_many_arguments)]
 fn render_suite_output(
     summary: &serde_json::Value,
     task_details: &[serde_json::Value],
@@ -2074,6 +2076,7 @@ fn render_suite_last(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn run_report_command(
     artifacts_root: &Path,
     suite_id: &str,
@@ -2568,6 +2571,7 @@ pub(crate) fn run_registry_contract_by_id(
     )
 }
 
+#[allow(clippy::too_many_arguments)]
 fn run_registered_runnable(
     repo_root: &Path,
     artifacts_root: Option<PathBuf>,
@@ -2603,8 +2607,7 @@ fn run_registered_runnable(
     let effective_run_id = RunId::from_seed(
         &run_id.unwrap_or_else(|| format!("{}-{}", entry.suite.as_str(), entry.id.as_str())),
     );
-    let artifact_root = artifacts_root
-        .unwrap_or_else(|| repo_root.join("artifacts").join("run"));
+    let artifact_root = artifacts_root.unwrap_or_else(|| repo_root.join("artifacts").join("run"));
     let context = RunnableRunContext {
         repo_root: repo_root.to_path_buf(),
         run_id: effective_run_id.clone(),
@@ -2655,7 +2658,11 @@ fn run_registered_runnable(
             .map_err(|err| format!("encode runnable result failed: {err}"))?,
         FormatArg::Text => {
             let mut lines = vec![
-                format!("{} {}", payload["kind"].as_str().unwrap_or("runnable"), entry.id),
+                format!(
+                    "{} {}",
+                    payload["kind"].as_str().unwrap_or("runnable"),
+                    entry.id
+                ),
                 format!("status: {}", status),
                 format!("run_id: {}", effective_run_id.as_str()),
             ];
@@ -2665,13 +2672,20 @@ fn run_registered_runnable(
             if let Some(skipped) = result.skipped.as_ref() {
                 lines.push(format!("skip: {}", skipped.reason));
             }
-            lines.push(format!("artifacts: {}", context.artifact_store.root().display()));
+            lines.push(format!(
+                "artifacts: {}",
+                context.artifact_store.root().display()
+            ));
             lines.join("\n")
         }
         FormatArg::Jsonl => unreachable!(),
     };
     write_output_if_requested(out, &rendered)?;
-    let exit = if result.status == RunStatus::Pass { 0 } else { 1 };
+    let exit = if result.status == RunStatus::Pass {
+        0
+    } else {
+        1
+    };
     Ok((rendered, exit))
 }
 
@@ -2682,7 +2696,8 @@ fn normalized_contract_runner_from_entry(
         bijux_dev_atlas::model::RunnableMode::Pure => "pure",
         bijux_dev_atlas::model::RunnableMode::Effect => "effect",
     };
-    entry.commands
+    entry
+        .commands
         .iter()
         .map(|command| normalized_contract_command(command, mode, entry.id.as_str()))
         .collect()
