@@ -1,4 +1,9 @@
-fn build_lifecycle_evidence_bundle(
+// SPDX-License-Identifier: Apache-2.0
+//! Shared evidence helpers for install-status flows.
+
+use super::*;
+
+pub(super) fn build_lifecycle_evidence_bundle(
     repo_root: &std::path::Path,
     run_id: &RunId,
 ) -> Result<serde_json::Value, String> {
@@ -67,21 +72,21 @@ fn build_lifecycle_evidence_bundle(
     }))
 }
 
-fn evidence_root(repo_root: &std::path::Path) -> Result<std::path::PathBuf, String> {
+pub(super) fn evidence_root(repo_root: &std::path::Path) -> Result<std::path::PathBuf, String> {
     let path = repo_root.join("release/evidence");
     std::fs::create_dir_all(&path)
         .map_err(|err| format!("failed to create {}: {err}", path.display()))?;
     Ok(path)
 }
 
-fn sha256_file(path: &std::path::Path) -> Result<String, String> {
+pub(super) fn sha256_file(path: &std::path::Path) -> Result<String, String> {
     let bytes = std::fs::read(path)
         .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     use sha2::{Digest, Sha256};
     Ok(format!("{:x}", Sha256::digest(bytes)))
 }
 
-fn package_chart_for_evidence(
+pub(super) fn package_chart_for_evidence(
     process: &OpsProcess,
     repo_root: &std::path::Path,
 ) -> Result<std::path::PathBuf, String> {
@@ -111,7 +116,7 @@ fn package_chart_for_evidence(
         .ok_or_else(|| format!("no chart package produced in {}", package_dir.display()))
 }
 
-fn collect_image_artifacts(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
+pub(super) fn collect_image_artifacts(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
     let values_root = repo_root.join("ops/k8s/values");
     let mut rows = std::fs::read_dir(&values_root)
         .map_err(|err| format!("failed to read {}: {err}", values_root.display()))?
@@ -164,7 +169,7 @@ fn collect_image_artifacts(repo_root: &std::path::Path) -> Result<Vec<serde_json
     Ok(artifacts)
 }
 
-fn reset_directory(path: &std::path::Path) -> Result<(), String> {
+pub(super) fn reset_directory(path: &std::path::Path) -> Result<(), String> {
     if path.exists() {
         std::fs::remove_dir_all(path)
             .map_err(|err| format!("failed to clear {}: {err}", path.display()))?;
@@ -172,7 +177,7 @@ fn reset_directory(path: &std::path::Path) -> Result<(), String> {
     std::fs::create_dir_all(path).map_err(|err| format!("failed to create {}: {err}", path.display()))
 }
 
-fn image_ref_for_evidence(row: &serde_json::Value) -> Option<String> {
+pub(super) fn image_ref_for_evidence(row: &serde_json::Value) -> Option<String> {
     let repository = row
         .get("repository")
         .and_then(serde_json::Value::as_str)
@@ -190,7 +195,7 @@ fn image_ref_for_evidence(row: &serde_json::Value) -> Option<String> {
     }
 }
 
-fn collect_sboms(
+pub(super) fn collect_sboms(
     repo_root: &std::path::Path,
     image_artifacts: &[serde_json::Value],
 ) -> Result<Vec<serde_json::Value>, String> {
@@ -256,7 +261,7 @@ fn collect_sboms(
     Ok(rows)
 }
 
-fn collect_scan_reports(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
+pub(super) fn collect_scan_reports(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
     let scan_dir = evidence_root(repo_root)?.join("scans");
     if !scan_dir.exists() {
         return Ok(Vec::new());
@@ -289,7 +294,7 @@ fn collect_scan_reports(repo_root: &std::path::Path) -> Result<Vec<serde_json::V
     Ok(rows)
 }
 
-fn redact_sensitive_text(text: &str) -> String {
+pub(super) fn redact_sensitive_text(text: &str) -> String {
     let mut lines = Vec::new();
     for line in text.lines() {
         let upper = line.to_ascii_uppercase();
@@ -313,7 +318,7 @@ fn redact_sensitive_text(text: &str) -> String {
     }
 }
 
-fn contains_common_secret_pattern(text: &str) -> bool {
+pub(super) fn contains_common_secret_pattern(text: &str) -> bool {
     for line in text.lines() {
         let upper = line.to_ascii_uppercase();
         if let Some((prefix, value)) = line.split_once('=') {
@@ -331,7 +336,7 @@ fn contains_common_secret_pattern(text: &str) -> bool {
     false
 }
 
-fn collect_redacted_logs(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
+pub(super) fn collect_redacted_logs(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
     let source_root = repo_root.join("artifacts/ops");
     let redacted_root = evidence_root(repo_root)?.join("redacted-logs");
     reset_directory(&redacted_root)?;
@@ -378,7 +383,7 @@ fn collect_redacted_logs(repo_root: &std::path::Path) -> Result<Vec<String>, Str
     Ok(outputs)
 }
 
-fn render_evidence_index_html(
+pub(super) fn render_evidence_index_html(
     repo_root: &std::path::Path,
     manifest: &serde_json::Value,
 ) -> Result<serde_json::Value, String> {
@@ -419,7 +424,7 @@ fn render_evidence_index_html(
     }))
 }
 
-fn collect_observability_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
+pub(super) fn collect_observability_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
     let mut paths = Vec::new();
     for rel in [
         "configs/contracts/observability/log.schema.json",
@@ -443,7 +448,7 @@ fn collect_observability_assets(repo_root: &std::path::Path) -> Result<Vec<Strin
     Ok(paths)
 }
 
-fn collect_perf_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
+pub(super) fn collect_perf_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
     let mut paths = Vec::new();
     for rel in [
         "configs/perf/slo.yaml",
@@ -480,7 +485,7 @@ fn collect_perf_assets(repo_root: &std::path::Path) -> Result<Vec<String>, Strin
     Ok(paths)
 }
 
-fn collect_dataset_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
+pub(super) fn collect_dataset_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
     let mut paths = Vec::new();
     for rel in [
         "configs/datasets/manifest.yaml",
@@ -512,7 +517,7 @@ fn collect_dataset_assets(repo_root: &std::path::Path) -> Result<Vec<String>, St
     Ok(paths)
 }
 
-fn load_required_metric_names(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
+pub(super) fn load_required_metric_names(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
     let contract_path = repo_root.join("configs/contracts/observability/metrics.schema.json");
     let contract: serde_json::Value = serde_json::from_str(
         &std::fs::read_to_string(&contract_path)
@@ -532,7 +537,7 @@ fn load_required_metric_names(repo_root: &std::path::Path) -> Result<Vec<String>
     Ok(rows)
 }
 
-fn collect_governance_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
+pub(super) fn collect_governance_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
     let paths = [
         "configs/governance/exceptions.yaml",
         "configs/governance/exceptions-archive.yaml",
@@ -572,7 +577,7 @@ fn collect_governance_assets(repo_root: &std::path::Path) -> Result<Vec<String>,
     Ok(rows)
 }
 
-fn observability_contract_checks(
+pub(super) fn observability_contract_checks(
     repo_root: &std::path::Path,
     metrics_body: &str,
 ) -> Result<serde_json::Value, String> {
@@ -810,7 +815,7 @@ fn observability_contract_checks(
     }))
 }
 
-fn collect_report_paths(repo_root: &std::path::Path, run_id: &RunId) -> Result<Vec<String>, String> {
+pub(super) fn collect_report_paths(repo_root: &std::path::Path, run_id: &RunId) -> Result<Vec<String>, String> {
     let mut paths = Vec::new();
     for dir in [
         repo_root.join("ops/report/generated"),
@@ -835,7 +840,7 @@ fn collect_report_paths(repo_root: &std::path::Path, run_id: &RunId) -> Result<V
     Ok(paths)
 }
 
-fn collect_simulation_summary_paths(repo_root: &std::path::Path, run_id: &RunId) -> Vec<String> {
+pub(super) fn collect_simulation_summary_paths(repo_root: &std::path::Path, run_id: &RunId) -> Vec<String> {
     let reports_dir = repo_root.join("artifacts/ops").join(run_id.as_str()).join("reports");
     ["ops-simulation-summary.json", "ops-lifecycle-summary.json"]
         .into_iter()
@@ -845,7 +850,7 @@ fn collect_simulation_summary_paths(repo_root: &std::path::Path, run_id: &RunId)
         .collect::<Vec<_>>()
 }
 
-fn collect_drill_summary_paths(repo_root: &std::path::Path, run_id: &RunId) -> Vec<String> {
+pub(super) fn collect_drill_summary_paths(repo_root: &std::path::Path, run_id: &RunId) -> Vec<String> {
     let path = repo_root
         .join("artifacts/ops")
         .join(run_id.as_str())
@@ -858,7 +863,7 @@ fn collect_drill_summary_paths(repo_root: &std::path::Path, run_id: &RunId) -> V
     }
 }
 
-fn collect_docs_site_summary(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
+pub(super) fn collect_docs_site_summary(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
     let site_dir = repo_root.join("artifacts/docs/site");
     let mut file_count = 0usize;
     let mut stack = if site_dir.exists() {
@@ -891,7 +896,7 @@ fn collect_docs_site_summary(repo_root: &std::path::Path) -> Result<serde_json::
     }))
 }
 
-fn collect_supply_chain_inventory(
+pub(super) fn collect_supply_chain_inventory(
     repo_root: &std::path::Path,
 ) -> Result<Vec<serde_json::Value>, String> {
     let paths = [
@@ -914,7 +919,7 @@ fn collect_supply_chain_inventory(
     Ok(rows)
 }
 
-fn build_release_evidence_tarball(
+pub(super) fn build_release_evidence_tarball(
     repo_root: &std::path::Path,
 ) -> Result<std::path::PathBuf, String> {
     let evidence_root = evidence_root(repo_root)?;
@@ -1014,7 +1019,7 @@ with tarfile.open(tarball_path, "w") as archive:
     Ok(tarball_path)
 }
 
-fn tarball_contains_entry(
+pub(super) fn tarball_contains_entry(
     tarball: &std::path::Path,
     entry_name: &str,
 ) -> Result<bool, String> {
@@ -1037,7 +1042,7 @@ fn tarball_contains_entry(
     }))
 }
 
-fn tarball_member_checksums(
+pub(super) fn tarball_member_checksums(
     tarball: &std::path::Path,
 ) -> Result<std::collections::BTreeMap<String, String>, String> {
     let python = r#"import hashlib, json, pathlib, sys, tarfile

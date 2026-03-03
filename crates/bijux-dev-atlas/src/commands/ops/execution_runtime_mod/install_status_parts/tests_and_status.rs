@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+//! Status commands and local tests for install-status flows.
+
+use super::*;
+
 #[cfg(test)]
 mod install_status_tests {
     use super::{

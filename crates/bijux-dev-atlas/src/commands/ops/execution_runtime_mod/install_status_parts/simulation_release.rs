@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+//! Release lifecycle simulation commands for install-status flows.
+
+use super::*;
+
 pub(crate) fn run_ops_helm_upgrade(
     args: &crate::cli::OpsHelmUpgradeArgs,
 ) -> Result<(String, i32), String> {

@@ -1,3 +1,9 @@
+// SPDX-License-Identifier: Apache-2.0
+//! Kind and simulation-cluster operations for install-status flows.
+
+use super::*;
+use std::time::Duration;
+
 pub(crate) fn run_ops_obs_verify(common: &OpsCommonArgs) -> Result<(String, i32), String> {
     if !common.allow_subprocess {
         return Err("obs verify requires --allow-subprocess".to_string());
@@ -659,4 +665,3 @@ pub(crate) fn run_ops_helm_uninstall(
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
-

@@ -1,4 +1,12 @@
-fn git_head_sha(process: &OpsProcess, repo_root: &std::path::Path) -> Result<String, String> {
+// SPDX-License-Identifier: Apache-2.0
+//! Evidence collection commands for install-status flows.
+
+use super::*;
+use std::io::Read;
+use std::net::{Shutdown, TcpStream};
+use std::time::Duration;
+
+pub(super) fn git_head_sha(process: &OpsProcess, repo_root: &std::path::Path) -> Result<String, String> {
     let argv = vec!["rev-parse".to_string(), "HEAD".to_string()];
     let (stdout, _) = process
         .run_subprocess("git", &argv, repo_root)
@@ -11,7 +19,7 @@ fn git_head_sha(process: &OpsProcess, repo_root: &std::path::Path) -> Result<Str
     }
 }
 
-fn run_security_validate_for_evidence(
+pub(super) fn run_security_validate_for_evidence(
     process: &OpsProcess,
     repo_root: &std::path::Path,
 ) -> Result<(), String> {
@@ -39,7 +47,7 @@ fn run_security_validate_for_evidence(
     Ok(())
 }
 
-fn run_governance_exceptions_validate_for_evidence(
+pub(super) fn run_governance_exceptions_validate_for_evidence(
     process: &OpsProcess,
     repo_root: &std::path::Path,
 ) -> Result<(), String> {
@@ -68,7 +76,7 @@ fn run_governance_exceptions_validate_for_evidence(
     Ok(())
 }
 
-fn run_governance_doctor_for_evidence(
+pub(super) fn run_governance_doctor_for_evidence(
     process: &OpsProcess,
     repo_root: &std::path::Path,
 ) -> Result<(), String> {
@@ -884,7 +892,7 @@ pub(crate) fn run_ops_evidence_diff(
     Ok((rendered, 0))
 }
 
-fn helm_release_manifest(
+pub(super) fn helm_release_manifest(
     process: &OpsProcess,
     repo_root: &std::path::Path,
     namespace: &str,
@@ -902,7 +910,7 @@ fn helm_release_manifest(
     Ok(stdout)
 }
 
-fn prior_release_revision(
+pub(super) fn prior_release_revision(
     process: &OpsProcess,
     repo_root: &std::path::Path,
     namespace: &str,
@@ -934,7 +942,7 @@ fn prior_release_revision(
         .ok_or_else(|| "helm history did not contain a usable previous revision".to_string())
 }
 
-fn ensure_simulation_context(process: &OpsProcess, force: bool) -> Result<(), String> {
+pub(super) fn ensure_simulation_context(process: &OpsProcess, force: bool) -> Result<(), String> {
     let args = vec!["config".to_string(), "current-context".to_string()];
     let (stdout, _) = process
         .run_subprocess("kubectl", &args, std::path::Path::new("."))
@@ -950,7 +958,7 @@ fn ensure_simulation_context(process: &OpsProcess, force: bool) -> Result<(), St
     }
 }
 
-fn resolve_profile_values_file(
+pub(super) fn resolve_profile_values_file(
     repo_root: &std::path::Path,
     profile: &str,
 ) -> Result<std::path::PathBuf, String> {
@@ -965,14 +973,14 @@ fn resolve_profile_values_file(
     }
 }
 
-fn simulation_namespace(profile: &str, override_namespace: Option<&str>) -> String {
+pub(super) fn simulation_namespace(profile: &str, override_namespace: Option<&str>) -> String {
     override_namespace
         .filter(|value| !value.trim().is_empty())
         .map(str::to_string)
         .unwrap_or_else(|| format!("bijux-atlas-{profile}"))
 }
 
-fn debug_artifact_path(
+pub(super) fn debug_artifact_path(
     repo_root: &std::path::Path,
     run_id: &RunId,
     namespace: &str,
@@ -991,7 +999,7 @@ fn debug_artifact_path(
     Ok(path)
 }
 
-fn write_debug_artifact(
+pub(super) fn write_debug_artifact(
     repo_root: &std::path::Path,
     run_id: &RunId,
     namespace: &str,
@@ -1004,7 +1012,7 @@ fn write_debug_artifact(
     Ok(path)
 }
 
-fn load_profile_registry(
+pub(super) fn load_profile_registry(
     repo_root: &std::path::Path,
     profile: &str,
 ) -> Result<Option<serde_json::Value>, String> {
@@ -1027,7 +1035,7 @@ fn load_profile_registry(
         }))
 }
 
-fn extract_configmap_env_keys(
+pub(super) fn extract_configmap_env_keys(
     repo_root: &std::path::Path,
     run_id: &RunId,
     profile: &str,
@@ -1067,7 +1075,7 @@ fn extract_configmap_env_keys(
     Ok(keys.into_iter().collect())
 }
 
-fn record_kubeconform_result(
+pub(super) fn record_kubeconform_result(
     process: &OpsProcess,
     repo_root: &std::path::Path,
     run_id: &RunId,
@@ -1093,7 +1101,7 @@ fn record_kubeconform_result(
     }
 }
 
-fn runtime_allowlist_status(repo_root: &std::path::Path) -> serde_json::Value {
+pub(super) fn runtime_allowlist_status(repo_root: &std::path::Path) -> serde_json::Value {
     let path = repo_root.join("configs/contracts/env.schema.json");
     serde_json::json!({
         "status": if path.exists() { "ok" } else { "failed" },
@@ -1101,7 +1109,7 @@ fn runtime_allowlist_status(repo_root: &std::path::Path) -> serde_json::Value {
     })
 }
 
-fn emit_debug_bundle_report(
+pub(super) fn emit_debug_bundle_report(
     repo_root: &std::path::Path,
     run_id: &RunId,
     namespace: &str,
@@ -1124,7 +1132,7 @@ fn emit_debug_bundle_report(
     )
 }
 
-fn run_simulation_wait(
+pub(super) fn run_simulation_wait(
     process: &OpsProcess,
     repo_root: &std::path::Path,
     namespace: &str,
@@ -1173,7 +1181,7 @@ fn run_simulation_wait(
     (rows, errors, start.elapsed().as_millis())
 }
 
-fn wait_for_local_port(port: u16, timeout: Duration) -> Result<(), String> {
+pub(super) fn wait_for_local_port(port: u16, timeout: Duration) -> Result<(), String> {
     let start = Instant::now();
     while start.elapsed() < timeout {
         if TcpStream::connect(("127.0.0.1", port)).is_ok() {
@@ -1184,7 +1192,7 @@ fn wait_for_local_port(port: u16, timeout: Duration) -> Result<(), String> {
     Err(format!("timed out waiting for localhost:{port}"))
 }
 
-fn perform_http_check(local_port: u16, path: &str) -> Result<serde_json::Value, String> {
+pub(super) fn perform_http_check(local_port: u16, path: &str) -> Result<serde_json::Value, String> {
     let response = perform_http_request(local_port, path)?;
     Ok(serde_json::json!({
         "path": path,
@@ -1194,13 +1202,13 @@ fn perform_http_check(local_port: u16, path: &str) -> Result<serde_json::Value, 
     }))
 }
 
-struct HttpCheckResponse {
-    status: u16,
-    latency_ms: u128,
-    body: String,
+pub(super) struct HttpCheckResponse {
+    pub(super) status: u16,
+    pub(super) latency_ms: u128,
+    pub(super) body: String,
 }
 
-fn perform_http_request(local_port: u16, path: &str) -> Result<HttpCheckResponse, String> {
+pub(super) fn perform_http_request(local_port: u16, path: &str) -> Result<HttpCheckResponse, String> {
     let started = Instant::now();
     let mut stream =
         TcpStream::connect(("127.0.0.1", local_port)).map_err(|err| format!("connect failed: {err}"))?;
@@ -1241,7 +1249,7 @@ fn perform_http_request(local_port: u16, path: &str) -> Result<HttpCheckResponse
     })
 }
 
-fn run_smoke_checks(
+pub(super) fn run_smoke_checks(
     repo_root: &std::path::Path,
     namespace: &str,
     local_port: u16,

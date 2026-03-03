@@ -1,17 +1,16 @@
 // SPDX-License-Identifier: Apache-2.0
+//! Foundational helpers for install-status flows.
 
-use std::io::Read;
-use std::net::{Shutdown, TcpStream};
-use std::time::Duration;
+use super::*;
 
-fn install_render_path(repo_root: &std::path::Path, run_id: &str, profile: &str) -> std::path::PathBuf {
+pub(super) fn install_render_path(repo_root: &std::path::Path, run_id: &str, profile: &str) -> std::path::PathBuf {
     repo_root
         .join("artifacts/ops")
         .join(run_id)
         .join(format!("render/{profile}/helm/render.yaml"))
 }
 
-fn install_plan_inventory(rendered_manifest: &str) -> serde_json::Value {
+pub(super) fn install_plan_inventory(rendered_manifest: &str) -> serde_json::Value {
     let mut resources = Vec::<serde_json::Value>::new();
     let mut namespaces = std::collections::BTreeSet::<String>::new();
     let mut kinds = std::collections::BTreeMap::<String, u64>::new();
@@ -104,7 +103,7 @@ fn install_plan_inventory(rendered_manifest: &str) -> serde_json::Value {
     })
 }
 
-fn load_profile_intent(
+pub(super) fn load_profile_intent(
     repo_root: &std::path::Path,
     profile: &str,
 ) -> Result<Option<serde_json::Value>, String> {
@@ -127,27 +126,27 @@ fn load_profile_intent(
         }))
 }
 
-fn simulation_cluster_name() -> &'static str {
+pub(super) fn simulation_cluster_name() -> &'static str {
     "bijux-atlas-sim"
 }
 
-fn simulation_cluster_context() -> String {
+pub(super) fn simulation_cluster_context() -> String {
     format!("kind-{}", simulation_cluster_name())
 }
 
-fn simulation_cluster_config(repo_root: &std::path::Path) -> std::path::PathBuf {
+pub(super) fn simulation_cluster_config(repo_root: &std::path::Path) -> std::path::PathBuf {
     repo_root.join("ops/k8s/kind/cluster.yaml")
 }
 
-fn simulation_current_chart_path(repo_root: &std::path::Path) -> std::path::PathBuf {
+pub(super) fn simulation_current_chart_path(repo_root: &std::path::Path) -> std::path::PathBuf {
     repo_root.join("ops/k8s/charts/bijux-atlas")
 }
 
-fn simulation_previous_chart_path(repo_root: &std::path::Path) -> std::path::PathBuf {
+pub(super) fn simulation_previous_chart_path(repo_root: &std::path::Path) -> std::path::PathBuf {
     repo_root.join("artifacts/ops/chart-sources/previous/bijux-atlas.tgz")
 }
 
-fn simulation_report_path(
+pub(super) fn simulation_report_path(
     repo_root: &std::path::Path,
     run_id: &RunId,
     file_name: &str,
@@ -164,7 +163,7 @@ fn simulation_report_path(
     Ok(path)
 }
 
-fn readiness_baseline_path(repo_root: &std::path::Path) -> Result<std::path::PathBuf, String> {
+pub(super) fn readiness_baseline_path(repo_root: &std::path::Path) -> Result<std::path::PathBuf, String> {
     let path = repo_root.join("artifacts/ops/history/readiness-baselines.json");
     if let Some(parent) = path.parent() {
         std::fs::create_dir_all(parent)
@@ -173,7 +172,7 @@ fn readiness_baseline_path(repo_root: &std::path::Path) -> Result<std::path::Pat
     Ok(path)
 }
 
-fn write_simulation_report(
+pub(super) fn write_simulation_report(
     repo_root: &std::path::Path,
     run_id: &RunId,
     file_name: &str,
@@ -188,7 +187,7 @@ fn write_simulation_report(
     Ok(path)
 }
 
-fn load_drill_registry(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
+pub(super) fn load_drill_registry(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
     let path = repo_root.join("ops/drills/drills.json");
     let payload: serde_json::Value = serde_json::from_str(
         &std::fs::read_to_string(&path)
@@ -202,7 +201,7 @@ fn load_drill_registry(repo_root: &std::path::Path) -> Result<Vec<serde_json::Va
         .unwrap_or_default())
 }
 
-fn update_drill_summary(
+pub(super) fn update_drill_summary(
     repo_root: &std::path::Path,
     run_id: &RunId,
     drill: &str,
@@ -247,7 +246,7 @@ fn update_drill_summary(
     Ok(summary_path)
 }
 
-fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec<(&'static str, std::path::PathBuf)> {
+pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec<(&'static str, std::path::PathBuf)> {
     match drill {
         "warmup-pod-restart" => vec![
             ("warmup lock doc", repo_root.join("docs/operations/warmup-lock.md")),
@@ -336,16 +335,16 @@ fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec<(&'static 
     }
 }
 
-struct SimulationSummaryUpdate<'a> {
-    install_report_path: Option<&'a std::path::Path>,
-    install_status: Option<&'a str>,
-    smoke_report_path: Option<&'a std::path::Path>,
-    smoke_status: Option<&'a str>,
-    cleanup_report_path: Option<&'a std::path::Path>,
-    cleanup_status: Option<&'a str>,
+pub(super) struct SimulationSummaryUpdate<'a> {
+    pub(super) install_report_path: Option<&'a std::path::Path>,
+    pub(super) install_status: Option<&'a str>,
+    pub(super) smoke_report_path: Option<&'a std::path::Path>,
+    pub(super) smoke_status: Option<&'a str>,
+    pub(super) cleanup_report_path: Option<&'a std::path::Path>,
+    pub(super) cleanup_status: Option<&'a str>,
 }
 
-fn update_simulation_summary(
+pub(super) fn update_simulation_summary(
     repo_root: &std::path::Path,
     run_id: &RunId,
     profile: &str,
@@ -441,7 +440,7 @@ fn update_simulation_summary(
     Ok(summary_path)
 }
 
-fn resolve_chart_source(
+pub(super) fn resolve_chart_source(
     repo_root: &std::path::Path,
     chart_source: crate::cli::OpsHelmChartSource,
 ) -> Result<std::path::PathBuf, String> {
@@ -459,7 +458,7 @@ fn resolve_chart_source(
     }
 }
 
-fn manifest_diff_summary(before: &str, after: &str) -> serde_json::Value {
+pub(super) fn manifest_diff_summary(before: &str, after: &str) -> serde_json::Value {
     let before_lines = before.lines().collect::<Vec<_>>();
     let after_lines = after.lines().collect::<Vec<_>>();
     let shared = before_lines.len().min(after_lines.len());
@@ -477,7 +476,7 @@ fn manifest_diff_summary(before: &str, after: &str) -> serde_json::Value {
     })
 }
 
-fn configmap_env_keys_from_manifest(manifest: &str) -> Vec<String> {
+pub(super) fn configmap_env_keys_from_manifest(manifest: &str) -> Vec<String> {
     let mut keys = std::collections::BTreeSet::<String>::new();
     for document in serde_yaml::Deserializer::from_str(manifest) {
         let value: serde_yaml::Value = match serde::Deserialize::deserialize(document) {
@@ -506,7 +505,7 @@ fn configmap_env_keys_from_manifest(manifest: &str) -> Vec<String> {
     keys.into_iter().collect()
 }
 
-fn manifest_contract_summary(manifest: &str) -> serde_json::Value {
+pub(super) fn manifest_contract_summary(manifest: &str) -> serde_json::Value {
     let mut services = Vec::<serde_json::Value>::new();
     let mut pvcs = Vec::<serde_json::Value>::new();
     let mut ingresses = Vec::<serde_json::Value>::new();
@@ -639,7 +638,7 @@ fn manifest_contract_summary(manifest: &str) -> serde_json::Value {
     })
 }
 
-fn lifecycle_compatibility_checks(before_manifest: &str, after_manifest: &str) -> serde_json::Value {
+pub(super) fn lifecycle_compatibility_checks(before_manifest: &str, after_manifest: &str) -> serde_json::Value {
     let before = manifest_contract_summary(before_manifest);
     let after = manifest_contract_summary(after_manifest);
     let service_names_stable = before["services"]
@@ -707,7 +706,7 @@ fn lifecycle_compatibility_checks(before_manifest: &str, after_manifest: &str) -
     })
 }
 
-fn deployment_revision(
+pub(super) fn deployment_revision(
     process: &OpsProcess,
     repo_root: &std::path::Path,
     namespace: &str,
@@ -730,7 +729,7 @@ fn deployment_revision(
         .and_then(|value| value.parse::<i64>().ok())
 }
 
-fn rollout_history(
+pub(super) fn rollout_history(
     process: &OpsProcess,
     repo_root: &std::path::Path,
     namespace: &str,
@@ -755,7 +754,7 @@ fn rollout_history(
     }
 }
 
-fn pods_restart_count(
+pub(super) fn pods_restart_count(
     process: &OpsProcess,
     repo_root: &std::path::Path,
     namespace: &str,
@@ -791,7 +790,7 @@ fn pods_restart_count(
         .unwrap_or(0)
 }
 
-fn update_lifecycle_summary(
+pub(super) fn update_lifecycle_summary(
     repo_root: &std::path::Path,
     run_id: &RunId,
     profile: &str,
@@ -873,14 +872,14 @@ fn update_lifecycle_summary(
     Ok(summary_path)
 }
 
-struct LifecycleSummaryUpdate<'a> {
-    upgrade_report_path: Option<&'a std::path::Path>,
-    upgrade_status: Option<&'a str>,
-    rollback_report_path: Option<&'a std::path::Path>,
-    rollback_status: Option<&'a str>,
+pub(super) struct LifecycleSummaryUpdate<'a> {
+    pub(super) upgrade_report_path: Option<&'a std::path::Path>,
+    pub(super) upgrade_status: Option<&'a str>,
+    pub(super) rollback_report_path: Option<&'a std::path::Path>,
+    pub(super) rollback_status: Option<&'a str>,
 }
 
-fn load_readiness_baseline(
+pub(super) fn load_readiness_baseline(
     repo_root: &std::path::Path,
     profile: &str,
 ) -> Result<Option<u128>, String> {
@@ -902,7 +901,7 @@ fn load_readiness_baseline(
         .map(u128::from))
 }
 
-fn update_readiness_baseline(
+pub(super) fn update_readiness_baseline(
     repo_root: &std::path::Path,
     profile: &str,
     elapsed_ms: u128,
@@ -933,4 +932,3 @@ fn update_readiness_baseline(
     .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
     Ok(path)
 }
-
