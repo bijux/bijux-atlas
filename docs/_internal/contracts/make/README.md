@@ -1,6 +1,6 @@
 # Make contracts
 
-Make contracts are enforced by `bijux dev atlas contracts make --mode static`.
+Make contracts are enforced by `bijux dev atlas contract run --mode static --domain make`.
 
 Scope:
 - root `Makefile` minimalism

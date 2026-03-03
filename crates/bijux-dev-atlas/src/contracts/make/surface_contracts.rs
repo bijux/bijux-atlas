@@ -760,8 +760,18 @@ fn test_make_docker_001_docker_targets_use_contract_runner(ctx: &RunContext) -> 
 
 fn test_make_ssot_001_checks_delegate_to_contracts(ctx: &RunContext) -> TestResult {
     match read_text(&ctx.repo_root.join("make/checks.mk")) {
-        Ok(text) if text.contains("$(DEV_ATLAS) contracts make --mode static") && !text.contains("rg -n") => TestResult::Pass,
-        Ok(_) => failure("MAKE-SSOT-001", "make.ssot.checks_delegate_to_contracts", "make/checks.mk", "make/checks.mk must delegate contract authority to `bijux dev atlas contracts make` and avoid embedded grep logic"),
+        Ok(text)
+            if text.contains("$(DEV_ATLAS) contract run --mode static --domain make")
+                && !text.contains("rg -n") =>
+        {
+            TestResult::Pass
+        }
+        Ok(_) => failure(
+            "MAKE-SSOT-001",
+            "make.ssot.checks_delegate_to_contracts",
+            "make/checks.mk",
+            "make/checks.mk must delegate contract authority to `bijux dev atlas contract run --mode static --domain make` and avoid embedded grep logic",
+        ),
         Err(err) => failure("MAKE-SSOT-001", "make.ssot.checks_delegate_to_contracts", "make/checks.mk", err),
     }
 }

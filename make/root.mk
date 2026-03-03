@@ -61,12 +61,12 @@ artifacts-clean: ## Clean ephemeral artifacts through the control plane
 	@$(DEV_ATLAS) artifacts clean --allow-write --format text
 
 lint-make: ## Run make contracts through the control plane
-	@$(DEV_ATLAS) contracts make --mode static --format text
+	@$(DEV_ATLAS) contract run --mode static --domain make --format text
 
 make-fast: ## Run the fastest make-focused contract lane
-	@printf '%s\n' "run: $(DEV_ATLAS) contracts make --mode static --profile ci --format json"
+	@printf '%s\n' "run: $(DEV_ATLAS) contract run --mode static --domain make --format json"
 	@mkdir -p $(ARTIFACT_ROOT)/make-fast/$(RUN_ID)
-	@$(DEV_ATLAS) contracts make --mode static --profile ci --format json --out $(ARTIFACT_ROOT)/make-fast/$(RUN_ID)/report.json >/dev/null
+	@$(DEV_ATLAS) contract run --mode static --domain make --format json --out $(ARTIFACT_ROOT)/make-fast/$(RUN_ID)/report.json >/dev/null
 
 _internal-lint-make: ## Run make domain checks via control-plane registry
 	@$(DEV_ATLAS) check run --domain make --format json

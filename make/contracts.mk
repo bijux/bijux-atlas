@@ -126,8 +126,8 @@ contracts-docker: _contracts_guard ## Run docker contracts
 	@$(DEV_ATLAS) contracts docker --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-make: _contracts_guard ## Run make contracts
-	@printf '%s\n' "run: $(DEV_ATLAS) contracts make --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(DEV_ATLAS) contracts make --mode static --format human --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+	@printf '%s\n' "run: $(DEV_ATLAS) contract run --mode static --domain make --color always --format text --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
+	@$(DEV_ATLAS) contract run --mode static --domain make --color always --format text --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-make-required: _contracts_guard ## Run PR-required make suite in static mode
 	@printf '%s\n' "run: $(DEV_ATLAS) check run --suite make_required --include-internal --include-slow --format json"
