@@ -2667,6 +2667,21 @@
       "title": "stack offline profile policy contract"
     },
     {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.stack-reproducibility"
+      ],
+      "id": "OPS-STACK-010",
+      "mode": "static",
+      "pillar": "stack",
+      "static_only": true,
+      "test_ids": [
+        "ops.stack.profile_intent_registry_valid"
+      ],
+      "title": "stack profile intent registry contract"
+    },
+    {
       "command": "bijux dev atlas ops run",
       "effects_required": [
         "subprocess"

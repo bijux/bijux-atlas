@@ -1753,6 +1753,16 @@
       "title": "stack offline profile policy contract"
     },
     {
+      "id": "OPS-STACK-010",
+      "tests": [
+        {
+          "test_id": "ops.stack.profile_intent_registry_valid",
+          "title": "profile intent registry covers stack profiles with deterministic dependency declarations"
+        }
+      ],
+      "title": "stack profile intent registry contract"
+    },
+    {
       "id": "OPS-STACK-E-001",
       "tests": [
         {

@@ -1774,6 +1774,15 @@
       "static_only": true
     },
     {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-STACK-010",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.stack-reproducibility"
+      ],
+      "static_only": true
+    },
+    {
       "command": "bijux dev atlas ops run",
       "contract_id": "OPS-STACK-E-001",
       "effects_required": [

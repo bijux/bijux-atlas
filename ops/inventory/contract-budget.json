@@ -51,8 +51,8 @@
     },
     {
       "pillar": "stack",
-      "target": 14,
-      "max": 14,
+      "target": 15,
+      "max": 15,
       "required_classes": [
         "effect"
       ]
