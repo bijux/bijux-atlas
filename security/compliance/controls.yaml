@@ -1,0 +1,14 @@
+schema_version: 1
+controls:
+  - id: CTRL-LOG-001
+    category: logging
+    title: Structured logging is governed and reviewable.
+  - id: CTRL-EVID-001
+    category: provenance
+    title: Release evidence is reproducible and complete.
+  - id: CTRL-NP-001
+    category: network
+    title: Network policy posture is explicit and enforced.
+  - id: CTRL-OBS-001
+    category: observability
+    title: Metrics, logs, and error contracts are validated before release.

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/security/mitigations.schema.json",
+  "title": "Security Mitigation Register",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "mitigations"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "mitigations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "docs_page"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^MIT-[A-Z0-9-]+$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "control_check_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "docs_page": {
+            "type": "string",
+            "minLength": 1
+          },
+          "runbook_page": {
+            "type": "string",
+            "minLength": 1
+          },
+          "documented_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

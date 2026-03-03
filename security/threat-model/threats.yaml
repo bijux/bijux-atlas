@@ -1,0 +1,41 @@
+schema_version: 1
+threats:
+  - id: SEC-THREAT-RUNTIME-SPOOF
+    category: spoofing
+    title: Untrusted client attempts to impersonate an allowed caller at the HTTP boundary.
+    severity: high
+    likelihood: medium
+    affected_component: runtime_api
+    mitigations:
+      - MIT-HTTP-BOUNDARY
+      - MIT-OBS-EVIDENCE
+    residual_risk: Public endpoints still receive malformed traffic and depend on layered controls.
+  - id: SEC-THREAT-SECRETS-LEAK
+    category: information-disclosure
+    title: Secrets leak through logs, reports, or release evidence.
+    severity: high
+    likelihood: medium
+    affected_component: runtime_secrets
+    mitigations:
+      - MIT-SECRET-REDACTION
+      - MIT-EVIDENCE-SCAN
+    residual_risk: Operators can still introduce new secret formats before policies are updated.
+  - id: SEC-THREAT-ARTIFACT-TAMPER
+    category: tampering
+    title: Generated evidence or release artifacts are modified after creation.
+    severity: high
+    likelihood: low
+    affected_component: release_evidence
+    mitigations:
+      - MIT-EVIDENCE-INTEGRITY
+    residual_risk: Consumers must still verify evidence before deployment.
+  - id: SEC-THREAT-DEPENDENCY-OUTAGE
+    category: denial-of-service
+    title: Dependency failure causes readiness or serving degradation beyond documented behavior.
+    severity: medium
+    likelihood: medium
+    affected_component: dataset_cache
+    mitigations:
+      - MIT-READINESS-CONTRACT
+      - MIT-DRILL-COVERAGE
+    residual_risk: Infrastructure-level failures can still exceed local recovery budgets.

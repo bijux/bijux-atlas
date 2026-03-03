@@ -1,0 +1,27 @@
+schema_version: 1
+assets:
+  - id: runtime_api
+    type: endpoint
+    description: Public and in-cluster HTTP endpoints exposed by the atlas server.
+    sensitivity: medium
+    owner: bijux-atlas-runtime
+  - id: release_evidence
+    type: artifact
+    description: Release bundle, manifest, identity, and supporting evidence artifacts.
+    sensitivity: high
+    owner: bijux-atlas-operations
+  - id: runtime_secrets
+    type: credential
+    description: Runtime secret inputs passed through env or Kubernetes secret surfaces.
+    sensitivity: high
+    owner: bijux-atlas-security
+  - id: dataset_cache
+    type: data
+    description: Cached and pinned datasets served by the runtime and prewarm flows.
+    sensitivity: high
+    owner: bijux-atlas-data
+  - id: control_plane_reports
+    type: artifact
+    description: Generated reports under artifacts/ used for release, ops, and reviewer evidence.
+    sensitivity: medium
+    owner: bijux-atlas-operations

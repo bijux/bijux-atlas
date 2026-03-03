@@ -1,0 +1,37 @@
+schema_version: 1
+mitigations:
+  - id: MIT-HTTP-BOUNDARY
+    title: Governed HTTP boundary and health endpoint semantics.
+    control_check_id: OBS-004
+    docs_page: docs/reference/contracts/health-endpoints.md
+    runbook_page: docs/operations/upgrade.md
+  - id: MIT-OBS-EVIDENCE
+    title: Observability verification and governed evidence artifacts.
+    control_check_id: OBS-001
+    docs_page: docs/reference/contracts/observability.md
+  - id: MIT-SECRET-REDACTION
+    title: Redaction and no-secret evidence discipline.
+    control_check_id: SEC-RED-001
+    docs_page: docs/operations/log-redaction-policy.md
+  - id: MIT-EVIDENCE-SCAN
+    title: Evidence bundle scanning for forbidden secret patterns.
+    control_check_id: SEC-ART-001
+    docs_page: docs/operations/release-evidence.md
+  - id: MIT-EVIDENCE-INTEGRITY
+    title: Evidence manifest, checksums, and reproducible tarball generation.
+    control_check_id: REL-EVID-007
+    docs_page: docs/reference/contracts/release/evidence.md
+  - id: MIT-READINESS-CONTRACT
+    title: Deterministic readiness behavior under dependency loss.
+    control_check_id: OBS-003
+    docs_page: docs/reference/contracts/health-endpoints.md
+    runbook_page: docs/operations/upgrade.md
+  - id: MIT-DRILL-COVERAGE
+    title: Governed drills prove failure and recovery expectations.
+    control_check_id: DRILL-001
+    docs_page: docs/reference/contracts/drills.md
+    runbook_page: docs/operations/drills.md
+  - id: MIT-MANUAL-REVIEW
+    title: Human review remains required for new external integrations.
+    docs_page: docs/operations/review-packet.md
+    documented_reason: Some risk classes are documented and reviewed rather than fully automated.
