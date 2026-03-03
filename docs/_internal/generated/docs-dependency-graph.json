@@ -3933,11 +3933,6 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/_internal/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/datasets/CONTRACT.md"
     },
     {
@@ -4009,16 +4004,6 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/env/REQUIRED_FILES.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/governance/INDEX.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/governance/README.md"
     },
     {
       "crate": null,

@@ -790,7 +790,6 @@ License: Apache-2.0
 | `ops/_generated.example/README.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `ops/_generated.example/REQUIRED_FILES.md` | `concept` | `docs-governance` | `stable` |
 | `ops/_generated.example/control-plane.snapshot.md` | `concept` | `docs-governance` | `stable` |
-| `ops/_internal/README.md` | `concept` | `docs-governance` | `stable` |
 | `ops/datasets/CONTRACT.md` | `concept` | `bijux-atlas-data` | `stable` |
 | `ops/datasets/OWNER.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `ops/datasets/README.md` | `concept` | `bijux-atlas-data` | `stable` |
@@ -806,8 +805,6 @@ License: Apache-2.0
 | `ops/env/OWNER.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `ops/env/README.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `ops/env/REQUIRED_FILES.md` | `concept` | `docs-governance` | `stable` |
-| `ops/governance/INDEX.md` | `concept` | `docs-governance` | `stable` |
-| `ops/governance/README.md` | `concept` | `docs-governance` | `stable` |
 | `ops/inventory/CONTRACT.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `ops/inventory/OWNER.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `ops/inventory/README.md` | `concept` | `bijux-atlas-operations` | `stable` |

@@ -236,14 +236,6 @@
       "class": "spec"
     },
     {
-      "path": "ops/governance/INDEX.md",
-      "class": "spec"
-    },
-    {
-      "path": "ops/governance/README.md",
-      "class": "spec"
-    },
-    {
       "path": "ops/inventory/CONTRACT.md",
       "class": "spec"
     },

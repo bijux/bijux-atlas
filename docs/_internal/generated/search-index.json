@@ -10380,20 +10380,6 @@
     },
     {
       "keywords": [
-        "-internal",
-        "ops",
-        "readme"
-      ],
-      "path": "ops/_internal/README.md",
-      "tags": [
-        "-internal",
-        "ops",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
         "contract",
         "datasets",
         "ops"
@@ -10605,34 +10591,6 @@
         "required-files"
       ],
       "topic": "REQUIRED_FILES"
-    },
-    {
-      "keywords": [
-        "governance",
-        "index",
-        "ops"
-      ],
-      "path": "ops/governance/INDEX.md",
-      "tags": [
-        "governance",
-        "index",
-        "ops"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "governance",
-        "ops",
-        "readme"
-      ],
-      "path": "ops/governance/README.md",
-      "tags": [
-        "governance",
-        "ops",
-        "readme"
-      ],
-      "topic": "README"
     },
     {
       "keywords": [

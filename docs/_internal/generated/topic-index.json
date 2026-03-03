@@ -66,8 +66,7 @@
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/INDEX.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/INDEX.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/INDEX.md",
-      "ops/INDEX.md",
-      "ops/governance/INDEX.md"
+      "ops/INDEX.md"
     ],
     "LINT_POLICY": [
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/rust/LINT_POLICY.md"
@@ -174,13 +173,11 @@
       "make/_internal/contracts/README.md",
       "ops/README.md",
       "ops/_generated.example/README.md",
-      "ops/_internal/README.md",
       "ops/datasets/README.md",
       "ops/datasets/generated/README.md",
       "ops/e2e/README.md",
       "ops/e2e/generated/README.md",
       "ops/env/README.md",
-      "ops/governance/README.md",
       "ops/inventory/README.md",
       "ops/k8s/README.md",
       "ops/k8s/generated/README.md",

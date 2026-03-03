@@ -139,8 +139,7 @@
     "ops/THREAT_MODEL.md",
     "ops/WHAT_FAILS_WHEN.md",
     "ops/inventory/CONTRACT.md",
-    "ops/inventory/OWNER.md"
-    ,
+    "ops/inventory/OWNER.md",
     "ops/inventory/placeholder-dirs.json"
   ],
   "ignored_prefixes": [

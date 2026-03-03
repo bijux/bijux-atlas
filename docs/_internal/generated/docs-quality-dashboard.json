@@ -11,9 +11,9 @@
   "kind": "docs_quality_dashboard_v1",
   "pruning_suggestions": [
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `CONTRACT` appears 25 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `INDEX` appears 6 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `INDEX` appears 5 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `OWNER` appears 11 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 86 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 84 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `REQUIRED_FILES` appears 11 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `architecture` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `benchmarks` appears 10 times",
@@ -378,7 +378,7 @@
   "schema_version": 1,
   "summary": {
     "errors": 53,
-    "registered": 842,
+    "registered": 839,
     "warnings": 415
   }
 }

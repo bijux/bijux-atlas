@@ -15,4 +15,4 @@ This is the canonical governance index for repository-wide policy and SSOT bound
 
 ## Operational Governance
 
-Operational workflow governance remains under `ops/` and is indexed by `ops/governance/INDEX.md`.
+Operational governance artifacts remain under `ops/` and are indexed by `ops/INDEX.md`.

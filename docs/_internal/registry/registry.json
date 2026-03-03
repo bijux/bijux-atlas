@@ -19031,31 +19031,6 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-internal",
-        "ops",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "ops/_internal/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-internal",
-        "ops",
-        "readme"
-      ],
-      "title": "Ops Internal",
-      "topic": "README"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
         "contract",
         "datasets",
         "ops"
@@ -19427,56 +19402,6 @@
       ],
       "title": "Required Files",
       "topic": "REQUIRED_FILES"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "governance",
-        "index",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "ops/governance/INDEX.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "governance",
-        "index",
-        "ops"
-      ],
-      "title": "Ops Governance Index",
-      "topic": "INDEX"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "governance",
-        "ops",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "ops/governance/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "governance",
-        "ops",
-        "readme"
-      ],
-      "title": "Ops Governance Redirect",
-      "topic": "README"
     },
     {
       "area": "ops",

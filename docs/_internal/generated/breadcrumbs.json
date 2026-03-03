@@ -6910,14 +6910,6 @@
     {
       "breadcrumbs": [
         "ops",
-        "ops/_internal",
-        "ops/_internal/README.md"
-      ],
-      "path": "ops/_internal/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
         "ops/datasets",
         "ops/datasets/CONTRACT.md"
       ],
@@ -7036,22 +7028,6 @@
         "ops/env/REQUIRED_FILES.md"
       ],
       "path": "ops/env/REQUIRED_FILES.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/governance",
-        "ops/governance/INDEX.md"
-      ],
-      "path": "ops/governance/INDEX.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/governance",
-        "ops/governance/README.md"
-      ],
-      "path": "ops/governance/README.md"
     },
     {
       "breadcrumbs": [
