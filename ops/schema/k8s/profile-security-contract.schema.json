@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "rules": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "field": {
+            "const": "podSecurityContext.runAsNonRoot",
+            "type": "string"
+          },
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "profiles": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "required_value": {
+            "const": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "description",
+          "field",
+          "profiles",
+          "required_value"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "contract_version",
+    "rules"
+  ],
+  "title": "profile security contract",
+  "type": "object"
+}

@@ -1,0 +1,17 @@
+{
+  "contract_version": 1,
+  "rules": [
+    {
+      "id": "PROFILE-SEC-001",
+      "description": "Production-oriented profiles must keep podSecurityContext.runAsNonRoot enabled.",
+      "field": "podSecurityContext.runAsNonRoot",
+      "profiles": [
+        "prod",
+        "prod-minimal",
+        "prod-ha",
+        "prod-airgap"
+      ],
+      "required_value": true
+    }
+  ]
+}
