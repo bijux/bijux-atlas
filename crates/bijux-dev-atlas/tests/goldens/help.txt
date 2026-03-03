@@ -16,6 +16,7 @@ Commands:
   policies    
   ci          
   check       
+  checks      
   contract    
   registry    
   suites      
