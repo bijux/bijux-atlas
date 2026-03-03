@@ -3,6 +3,7 @@
 
 pub mod checks;
 pub mod contracts;
+pub mod runtime;
 
 use crate::domains::Domain;
 use crate::model::RunnableEntry;
@@ -20,7 +21,10 @@ impl Domain for OpsDomain {
     }
 
     fn docs_links(&self) -> &'static [&'static str] {
-        &["docs/reference/ops-surface.md", "docs/reference/contracts/ops/lifecycle.md"]
+        &[
+            "docs/reference/ops-surface.md",
+            "docs/reference/contracts/ops/lifecycle.md",
+        ]
     }
 
     fn required_tools(&self) -> &'static [&'static str] {

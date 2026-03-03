@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Performance domain registration.
 
+pub mod runtime;
+
 use crate::domains::Domain;
 use crate::model::RunnableEntry;
 use crate::registry::RunnableRegistry;
