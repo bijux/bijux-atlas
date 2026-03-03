@@ -4,7 +4,7 @@
 - Type: `runbook`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@0f088c31314aa61bc0ec69f1f5e683625b0d6bd5`
+- Last verified against: `main@c2daae9a6eb79ca94c4238bb885809f75af87caf`
 - Reason to exist: provide the release operator entrypoint.
 
 ## Why you are reading this
@@ -15,6 +15,9 @@ Use this section to ship, verify, and recover Atlas releases.
 
 - [Release operations](../release-operations.md)
 - [Release Signing](../release-signing.md)
+- [Release Trust Root](../release-trust-root.md)
+- [Release Promotion Policy](../release-promotion-policy.md)
+- [Release Consumer Checklist](../release-consumer-checklist.md)
 - [Release Workflow](../release-workflow.md)
 - [Upgrade Procedure](upgrade-procedure.md)
 - [Rollback Procedure](rollback-procedure.md)

@@ -14,6 +14,10 @@
 - `REL-SIGN-002`: checksum entries match the current contents of the referenced files.
 - `REL-SIGN-003`: the sign report validates and records every required signing target.
 - `REL-SIGN-004`: a freshly generated bundle passes release verification end-to-end.
+- `REL-SIGN-005`: the evidence manifest lists the governed signing artifacts explicitly.
+- `REL-SIGN-006`: the signing policy points only at existing artifacts.
+- `REL-TAR-001`: a freshly rebuilt normalized bundle matches the current bundle except for allowed self-referential generated files.
+- `REL-MAN-001`: the generated evidence manifest uses the same schema version declared by the governed manifest schema.
 - `REL-PROV-001`: `release/provenance.json` exists and matches the governed provenance schema.
 
 ## Validation Surface

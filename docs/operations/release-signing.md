@@ -53,6 +53,8 @@ This checks:
 
 The verification path is intentionally local-only. It does not require network access.
 
+Manifest schema compatibility is part of verification. If the manifest shape changes, the manifest schema version must be bumped and the generated manifest must match it.
+
 ## Rollback
 
 If signing verification fails:
@@ -66,3 +68,10 @@ If signing verification fails:
 
 - [Release Evidence](release-evidence.md)
 - [Release Signing Contracts](../reference/contracts/release-signing.md)
+- [Release Trust Root](release-trust-root.md)
+- [Release Signature Rotation](release-signature-rotation.md)
+- [Release Verification Failures](release-verification-failures.md)
+- [Release Artifact Retention](release-artifact-retention.md)
+- [Release Promotion Policy](release-promotion-policy.md)
+- [Add A Release Artifact](release-add-artifact.md)
+- [Release Consumer Checklist](release-consumer-checklist.md)
