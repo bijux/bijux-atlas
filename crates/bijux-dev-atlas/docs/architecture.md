@@ -12,7 +12,7 @@
 - `cli` parses arguments and dispatches only.
 - `model` is a leaf module for stable types and serialization contracts.
 - `policies` is a leaf-oriented pure validation module.
-- Root module budget is capped at 10 modules (`src/lib.rs`), and command/core source files follow LOC budgets (warning at 800, error at 1000 unless a stricter file-local rule applies).
+- Root module budget is capped at 10 modules (`src/lib.rs`), and command/core source files follow LOC budgets (warning at 4500, error at 5000 unless a stricter file-local rule applies).
 
 ## Internal Module Graph
 

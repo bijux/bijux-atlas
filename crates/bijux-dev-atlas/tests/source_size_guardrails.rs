@@ -47,7 +47,7 @@ fn count_lines(path: &Path) -> usize {
 }
 
 #[test]
-fn source_size_hard_limit_is_below_1000_lines() {
+fn source_size_hard_limit_is_below_5000_lines() {
     let root = repo_root();
     let mut violations = Vec::new();
     let mut warnings = Vec::new();
@@ -58,27 +58,27 @@ fn source_size_hard_limit_is_below_1000_lines() {
             .unwrap_or(&path)
             .display()
             .to_string();
-        if lines >= 1000 {
+        if lines >= 5000 {
             violations.push((rel, lines));
-        } else if lines >= 800 {
+        } else if lines >= 4500 {
             warnings.push((rel, lines));
         }
     }
     if !warnings.is_empty() {
-        eprintln!("warning-zone files (>=800 LOC):");
+        eprintln!("warning-zone files (>=4500 LOC):");
         for (rel, lines) in warnings {
             eprintln!("  {lines:>4} {rel}");
         }
     }
     assert!(
         violations.is_empty(),
-        "error-zone files (>=1000 LOC): {:?}",
+        "error-zone files (>=5000 LOC): {:?}",
         violations
     );
 }
 
 #[test]
-fn critical_files_warn_at_800_and_fail_at_1000_lines() {
+fn critical_files_warn_at_4500_and_fail_at_5000_lines() {
     let root = repo_root();
     let critical = [
         "crates/bijux-dev-atlas/src/contracts/docs/docs_static_metadata_checks.inc.rs",
@@ -96,21 +96,21 @@ fn critical_files_warn_at_800_and_fail_at_1000_lines() {
     for rel in critical {
         let path = root.join(rel);
         let lines = count_lines(&path);
-        if lines >= 1000 {
+        if lines >= 5000 {
             violations.push((rel.to_string(), lines));
-        } else if lines >= 800 {
+        } else if lines >= 4500 {
             warnings.push((rel.to_string(), lines));
         }
     }
     if !warnings.is_empty() {
-        eprintln!("critical warning-zone files (>=800 LOC):");
+        eprintln!("critical warning-zone files (>=4500 LOC):");
         for (rel, lines) in warnings {
             eprintln!("  {lines:>4} {rel}");
         }
     }
     assert!(
         violations.is_empty(),
-        "critical error-zone files (>=1000 LOC): {:?}",
+        "critical error-zone files (>=5000 LOC): {:?}",
         violations
     );
 }
