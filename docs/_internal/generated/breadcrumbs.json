@@ -3066,6 +3066,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/exception-inventory.md"
+      ],
+      "path": "docs/_internal/governance/exception-inventory.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/generated-content-policy.md"
       ],
       "path": "docs/_internal/governance/generated-content-policy.md"
@@ -4477,6 +4486,30 @@
         "docs/operations/fixture-dataset-ingest.md"
       ],
       "path": "docs/operations/fixture-dataset-ingest.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/governance-exception-closure.md"
+      ],
+      "path": "docs/operations/governance-exception-closure.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/governance-exception-review-checklist.md"
+      ],
+      "path": "docs/operations/governance-exception-review-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/governance-exceptions.md"
+      ],
+      "path": "docs/operations/governance-exceptions.md"
     },
     {
       "breadcrumbs": [

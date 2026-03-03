@@ -178,6 +178,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/docs-navigation-policy.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/docs-quality-policy.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/docs-style.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/exception-inventory.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/metadata/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/metadata/taxonomy-map.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/naming.md` has no inbound doc links",
@@ -225,6 +226,8 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/docs-as-runbooks.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/docs-convergence-policy.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/drills-program.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/governance-exception-closure.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/governance-exception-review-checklist.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/institutional-packet.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/k8s/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/kind-profile.md` has no inbound doc links",
@@ -306,7 +309,7 @@
   "schema_version": 1,
   "summary": {
     "errors": 46,
-    "registered": 742,
-    "warnings": 343
+    "registered": 746,
+    "warnings": 346
   }
 }

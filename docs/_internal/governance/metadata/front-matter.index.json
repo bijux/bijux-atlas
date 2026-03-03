@@ -2667,6 +2667,14 @@
     },
     {
       "area": "_internal",
+      "audience": "contributor",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/_internal/governance/exception-inventory.md",
+      "stability": "stable",
+      "title": "Exception Inventory"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/governance/generated-content-policy.md",
@@ -4024,6 +4032,30 @@
       "path": "docs/operations/fixture-dataset-ingest.md",
       "stability": "stable",
       "title": "Fixture Dataset Ingest"
+    },
+    {
+      "area": "operations",
+      "audience": "contributor",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/operations/governance-exception-closure.md",
+      "stability": "stable",
+      "title": "Exception Closure"
+    },
+    {
+      "area": "operations",
+      "audience": "reviewers",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/operations/governance-exception-review-checklist.md",
+      "stability": "stable",
+      "title": "Exception Review Checklist"
+    },
+    {
+      "area": "operations",
+      "audience": "contributor",
+      "owner": "bijux-atlas-governance",
+      "path": "docs/operations/governance-exceptions.md",
+      "stability": "stable",
+      "title": "Governance Exceptions"
     },
     {
       "area": "operations",

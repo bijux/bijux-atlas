@@ -210,6 +210,7 @@
 | `evidence-writing-style` | `docs/control-plane/evidence-writing-style.md` |
 | `evolution` | `crates/bijux-atlas-policies/docs/internal/evolution.md` |
 | `examples` | `crates/bijux-atlas-api/docs/examples.md, crates/bijux-atlas-cli/docs/examples.md, crates/bijux-atlas-core/docs/examples.md, crates/bijux-atlas-ingest/docs/examples.md, crates/bijux-atlas-model/docs/examples.md, crates/bijux-atlas-policies/docs/examples.md, crates/bijux-atlas-query/docs/examples.md, crates/bijux-atlas-server/docs/examples.md, crates/bijux-atlas-store/docs/examples.md, crates/bijux-dev-atlas/docs/examples.md` |
+| `exception-inventory` | `docs/_internal/governance/exception-inventory.md` |
 | `exit-codes` | `crates/bijux-atlas-cli/docs/exit-codes.md, crates/bijux-dev-atlas/docs/exit-codes.md` |
 | `export-audit-logs-to-siem` | `docs/operations/security/export-audit-logs-to-siem.md` |
 | `extensibility-and-stability-levels` | `docs/control-plane/extensibility-and-stability-levels.md` |
@@ -226,6 +227,9 @@
 | `generated-artifacts` | `docs/_internal/generated-artifacts.md, docs/_internal/meta/generated-artifacts.md, docs/reference/generated-artifacts.md` |
 | `generated-content-policy` | `docs/_internal/governance/generated-content-policy.md` |
 | `glossary` | `docs/glossary.md` |
+| `governance-exception-closure` | `docs/operations/governance-exception-closure.md` |
+| `governance-exception-review-checklist` | `docs/operations/governance-exception-review-checklist.md` |
+| `governance-exceptions` | `docs/operations/governance-exceptions.md` |
 | `governance-ssot` | `docs/_internal/governance/governance-ssot.md` |
 | `health-endpoints` | `docs/reference/contracts/health-endpoints.md` |
 | `helm-env-subset` | `docs/reference/contracts/ops/helm-env-subset.md` |

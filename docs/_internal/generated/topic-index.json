@@ -804,6 +804,9 @@
       "crates/bijux-atlas-store/docs/examples.md",
       "crates/bijux-dev-atlas/docs/examples.md"
     ],
+    "exception-inventory": [
+      "docs/_internal/governance/exception-inventory.md"
+    ],
     "exit-codes": [
       "crates/bijux-atlas-cli/docs/exit-codes.md",
       "crates/bijux-dev-atlas/docs/exit-codes.md"
@@ -858,6 +861,15 @@
     ],
     "glossary": [
       "docs/glossary.md"
+    ],
+    "governance-exception-closure": [
+      "docs/operations/governance-exception-closure.md"
+    ],
+    "governance-exception-review-checklist": [
+      "docs/operations/governance-exception-review-checklist.md"
+    ],
+    "governance-exceptions": [
+      "docs/operations/governance-exceptions.md"
     ],
     "governance-ssot": [
       "docs/_internal/governance/governance-ssot.md"

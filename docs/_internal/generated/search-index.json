@@ -4473,6 +4473,20 @@
     {
       "keywords": [
         "-internal",
+        "exception-inventory",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/exception-inventory.md",
+      "tags": [
+        "-internal",
+        "exception-inventory",
+        "governance"
+      ],
+      "topic": "exception-inventory"
+    },
+    {
+      "keywords": [
+        "-internal",
         "generated-content-policy",
         "governance"
       ],
@@ -6623,6 +6637,42 @@
         "operations"
       ],
       "topic": "fixture-dataset-ingest"
+    },
+    {
+      "keywords": [
+        "governance-exception-closure",
+        "operations"
+      ],
+      "path": "docs/operations/governance-exception-closure.md",
+      "tags": [
+        "governance-exception-closure",
+        "operations"
+      ],
+      "topic": "governance-exception-closure"
+    },
+    {
+      "keywords": [
+        "governance-exception-review-checklist",
+        "operations"
+      ],
+      "path": "docs/operations/governance-exception-review-checklist.md",
+      "tags": [
+        "governance-exception-review-checklist",
+        "operations"
+      ],
+      "topic": "governance-exception-review-checklist"
+    },
+    {
+      "keywords": [
+        "governance-exceptions",
+        "operations"
+      ],
+      "path": "docs/operations/governance-exceptions.md",
+      "tags": [
+        "governance-exceptions",
+        "operations"
+      ],
+      "topic": "governance-exceptions"
     },
     {
       "keywords": [

@@ -337,6 +337,7 @@ License: Apache-2.0
 | `docs/_internal/governance/docs-style.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-toolchain-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-versioning-model.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/exception-inventory.md` | `concept` | `bijux-atlas-governance` | `stable` |
 | `docs/_internal/governance/generated-content-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/governance-ssot.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/index.md` | `concept` | `platform` | `stable` |
@@ -507,6 +508,9 @@ License: Apache-2.0
 | `docs/operations/evidence-retention-policy.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/evidence-viewer.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/fixture-dataset-ingest.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/governance-exception-closure.md` | `concept` | `bijux-atlas-governance` | `stable` |
+| `docs/operations/governance-exception-review-checklist.md` | `concept` | `bijux-atlas-governance` | `stable` |
+| `docs/operations/governance-exceptions.md` | `concept` | `bijux-atlas-governance` | `stable` |
 | `docs/operations/incident-response.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/index.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/install-verification-checklist.md` | `concept` | `bijux-atlas-operations` | `stable` |

@@ -1668,6 +1668,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/exception-inventory.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/generated-content-policy.md"
     },
     {
@@ -2514,6 +2519,21 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/fixture-dataset-ingest.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/governance-exception-closure.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/governance-exception-review-checklist.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/governance-exceptions.md"
     },
     {
       "crate": null,
