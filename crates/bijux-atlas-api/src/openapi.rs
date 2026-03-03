@@ -3,7 +3,7 @@
 use serde_json::{json, Map, Value};
 
 pub const OPENAPI_V1_PINNED_SHA256: &str =
-    "29ff6cb0c45b2b9eb5472a3395575514d7db2e4e098510256d2290af25d2a9c8";
+    "6164ec58d997bf9193551abcd06957ed4b105ae8f73ac0c94376306e05232a11";
 
 #[must_use]
 pub fn openapi_v1_spec() -> Value {
