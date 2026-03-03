@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ArtifactsCommand, CheckCommand, CheckRegistryCommand, Command, ConfigsCommand,
+    ArtifactsCommand, CheckCommand, CheckRegistryCommand, Command, ConfigsCommand, ContractCommand,
     ContractsCommand, DatasetsCommand, DocsCommand, FormatArg, IngestCommand, MakeCommand,
     OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand, ReleaseCommand, ReportsCommand,
     SecurityCommand,
@@ -26,7 +26,7 @@ pub(super) fn force_json_output(command: &mut Command) {
             | crate::cli::SuitesCommand::History { format, .. }
             | crate::cli::SuitesCommand::Lint { format, .. } => *format = FormatArg::Json,
         },
-        Command::Contract { command } => force_json_contracts(command),
+        Command::Contract { command } => force_json_contract(command),
         Command::Registry { command } => match command {
             RegistryCommand::Status { format, .. } | RegistryCommand::Doctor { format, .. } => {
                 *format = FormatArg::Json
@@ -85,6 +85,14 @@ fn force_json_artifacts(command: &mut ArtifactsCommand) {
             crate::cli::ArtifactsReportCommand::Read(args) => args.common.format = FormatArg::Json,
             crate::cli::ArtifactsReportCommand::Diff(args) => args.common.format = FormatArg::Json,
         },
+    }
+}
+
+fn force_json_contract(command: &mut ContractCommand) {
+    match command {
+        ContractCommand::List(args) => args.format = FormatArg::Json,
+        ContractCommand::Describe(args) => args.format = FormatArg::Json,
+        ContractCommand::Run(args) => args.format = FormatArg::Json,
     }
 }
 
@@ -466,21 +474,11 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             command: CheckCommand::Run { fail_fast, .. },
         } => *fail_fast = true,
         Command::Contract { command } => match command {
-            ContractsCommand::All(args) => args.fail_fast = true,
-            ContractsCommand::Pr(args) => args.fail_fast = true,
-            ContractsCommand::Doctor(args) => args.fail_fast = true,
-            ContractsCommand::Root(args) => args.fail_fast = true,
-            ContractsCommand::Repo(args) => args.fail_fast = true,
-            ContractsCommand::Crates(args) => args.fail_fast = true,
-            ContractsCommand::Runtime(args) => args.fail_fast = true,
-            ContractsCommand::ControlPlane(args) => args.fail_fast = true,
-            ContractsCommand::Configs(args) => args.fail_fast = true,
-            ContractsCommand::Docs(args) => args.fail_fast = true,
-            ContractsCommand::Docker(args) => args.common.fail_fast = true,
-            ContractsCommand::Make(args) => args.common.fail_fast = true,
-            ContractsCommand::Ops(args) => args.common.fail_fast = true,
-            ContractsCommand::SelfCheck(args) => args.fail_fast = true,
-            ContractsCommand::Snapshot(_) => {}
+            ContractCommand::List(_) | ContractCommand::Describe(_) => {}
+            ContractCommand::Run(args) => {
+                args.fail_fast = true;
+                args.no_fail_fast = false;
+            }
         },
         Command::Suites {
             command:
@@ -977,21 +975,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | crate::cli::SuitesCommand::Lint { repo_root, .. } => *repo_root = Some(root.clone()),
         },
         Command::Contract { command } => match command {
-            ContractsCommand::All(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Pr(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Doctor(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Root(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Repo(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Crates(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Runtime(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::ControlPlane(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Configs(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Docs(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Docker(args) => args.common.repo_root = Some(root.clone()),
-            ContractsCommand::Make(args) => args.common.repo_root = Some(root.clone()),
-            ContractsCommand::Ops(args) => args.common.repo_root = Some(root.clone()),
-            ContractsCommand::SelfCheck(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Snapshot(args) => args.repo_root = Some(root.clone()),
+            ContractCommand::List(args) => args.repo_root = Some(root.clone()),
+            ContractCommand::Describe(args) => args.repo_root = Some(root.clone()),
+            ContractCommand::Run(args) => args.repo_root = Some(root.clone()),
         },
         Command::List { repo_root, .. }
         | Command::Describe { repo_root, .. }

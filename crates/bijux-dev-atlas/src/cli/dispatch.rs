@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    CheckCommand, CheckRegistryCommand, Cli, Command, FormatArg, GlobalFormatArg, ReportsCommand,
+    CheckCommand, CheckRegistryCommand, Cli, Command, ContractCommand, ContractEffectsPolicyArg,
+    ContractRunModeArg, ContractsColorArg, FormatArg, GlobalFormatArg, ReportsCommand,
 };
 use crate::{
     plugin_metadata_json, run_artifacts_command, run_build_command, run_capabilities_command,
@@ -18,12 +19,19 @@ use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
 use bijux_dev_atlas::adapters::cli::{
     command_inventory_markdown, command_inventory_payload, route_name,
 };
+use bijux_dev_atlas::contracts;
 use bijux_dev_atlas::domains;
+use bijux_dev_atlas::engine;
 use bijux_dev_atlas::model::exit_codes::{EXIT_FAILURE, EXIT_NOT_FOUND, EXIT_SUCCESS};
+use bijux_dev_atlas::model::engine::{
+    CaseStatus, ContractMode as EngineContractMode, Mode as EngineMode, RunOptions, TestKind,
+};
 use bijux_dev_atlas::model::{RunnableId, RunnableKind, RunnableMode};
-use bijux_dev_atlas::registry::ReportRegistry;
-use bijux_dev_atlas::registry::RunnableRegistry;
+use bijux_dev_atlas::registry::{ContractModesFile, ReportRegistry, RunnableRegistry};
+use bijux_dev_atlas::ui::terminal::nextest_style::{self, RenderOptions};
+use std::collections::{BTreeMap, BTreeSet};
 use std::io::{self, Write};
+use std::path::Path;
 use std::process::Command as ProcessCommand;
 
 use crate::cli::dispatch_mutations::{apply_fail_fast, force_json_output, propagate_repo_root};
@@ -477,7 +485,22 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                 }
             }
         }
-        Command::Contract { command } => run_contracts_command(cli.quiet, command),
+        Command::Contract { command } => match run_contract_command(cli.output_format, command) {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    if code == 0 {
+                        let _ = writeln!(io::stdout(), "{rendered}");
+                    } else {
+                        let _ = writeln!(io::stderr(), "{rendered}");
+                    }
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas contract failed: {err}");
+                EXIT_FAILURE
+            }
+        },
         Command::Registry { command } => run_registry_command(cli.quiet, command),
         Command::Suites { command } => run_suites_command(cli.quiet, command),
         Command::Reports { command } => match run_reports_command(cli.output_format, command) {
@@ -570,6 +593,453 @@ fn effective_format(global: Option<GlobalFormatArg>, local: FormatArg) -> Global
         FormatArg::Text => GlobalFormatArg::Human,
         FormatArg::Json | FormatArg::Jsonl => GlobalFormatArg::Json,
     })
+}
+
+struct ContractDomainSource {
+    name: &'static str,
+    load: fn(&Path) -> Result<Vec<contracts::Contract>, String>,
+}
+
+fn contract_domain_sources() -> [ContractDomainSource; 10] {
+    [
+        ContractDomainSource {
+            name: "root",
+            load: contracts::root::contracts,
+        },
+        ContractDomainSource {
+            name: "repo",
+            load: contracts::repo::contracts,
+        },
+        ContractDomainSource {
+            name: "crates",
+            load: contracts::crates::contracts,
+        },
+        ContractDomainSource {
+            name: "runtime",
+            load: contracts::runtime::contracts,
+        },
+        ContractDomainSource {
+            name: "control_plane",
+            load: contracts::control_plane::contracts,
+        },
+        ContractDomainSource {
+            name: "configs",
+            load: contracts::configs::contracts,
+        },
+        ContractDomainSource {
+            name: "docs",
+            load: contracts::docs::contracts,
+        },
+        ContractDomainSource {
+            name: "docker",
+            load: contracts::docker::contracts,
+        },
+        ContractDomainSource {
+            name: "make",
+            load: contracts::make::contracts,
+        },
+        ContractDomainSource {
+            name: "ops",
+            load: contracts::ops::contracts,
+        },
+    ]
+}
+
+fn contract_mode_matches_engine(mode: ContractRunModeArg, contract_mode: EngineContractMode) -> bool {
+    match mode {
+        ContractRunModeArg::Static => {
+            matches!(contract_mode, EngineContractMode::Static | EngineContractMode::Both)
+        }
+        ContractRunModeArg::Effect => {
+            matches!(contract_mode, EngineContractMode::Effect | EngineContractMode::Both)
+        }
+        ContractRunModeArg::All => true,
+    }
+}
+
+fn contract_effects_allowed(mode: ContractRunModeArg, policy: ContractEffectsPolicyArg) -> bool {
+    !matches!(mode, ContractRunModeArg::Effect | ContractRunModeArg::All)
+        || policy == ContractEffectsPolicyArg::Allow
+}
+
+fn collect_available_tools() -> BTreeSet<&'static str> {
+    const COMMON_TOOLS: &[&str] = &[
+        "cargo", "docker", "git", "helm", "jq", "just", "kind", "kubectl", "make", "mkdocs",
+        "node", "npm", "python3", "rg", "rustc",
+    ];
+    COMMON_TOOLS
+        .iter()
+        .copied()
+        .filter(|tool| ProcessCommand::new("sh")
+            .args(["-lc", &format!("command -v {tool} >/dev/null 2>&1")])
+            .status()
+            .is_ok_and(|status| status.success()))
+        .collect()
+}
+
+fn render_contract_list_human(rows: &[serde_json::Value]) -> String {
+    rows.iter()
+        .filter_map(|row| row.get("id").and_then(serde_json::Value::as_str))
+        .map(ToOwned::to_owned)
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+fn load_contract_catalog(
+    repo_root: &Path,
+) -> Result<Vec<(&'static str, contracts::Contract, EngineContractMode)>, String> {
+    let mut rows = Vec::new();
+    for source in contract_domain_sources() {
+        for contract in (source.load)(repo_root)? {
+            let mode = engine::contract_mode(&contract);
+            rows.push((source.name, contract, mode));
+        }
+    }
+    rows.sort_by(|(left_domain, left_contract, _), (right_domain, right_contract, _)| {
+        left_domain
+            .cmp(right_domain)
+            .then_with(|| left_contract.id.0.cmp(&right_contract.id.0))
+    });
+    Ok(rows)
+}
+
+fn write_output(path: Option<std::path::PathBuf>, rendered: &str) -> Result<(), String> {
+    if let Some(path) = path {
+        std::fs::write(&path, format!("{rendered}\n"))
+            .map_err(|err| format!("write {} failed: {err}", path.display()))?;
+    }
+    Ok(())
+}
+
+fn run_contract_command(
+    global: Option<GlobalFormatArg>,
+    command: ContractCommand,
+) -> Result<(String, i32), String> {
+    match command {
+        ContractCommand::List(args) => run_contract_list_command(global, args),
+        ContractCommand::Describe(args) => run_contract_describe_command(global, args),
+        ContractCommand::Run(args) => run_contract_run_command(global, args),
+    }
+}
+
+fn run_contract_list_command(
+    global: Option<GlobalFormatArg>,
+    args: crate::cli::ContractListArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let validation = ContractModesFile::validate(&root)?;
+    let rows = load_contract_catalog(&root)?
+        .into_iter()
+        .filter(|(_, _, mode)| contract_mode_matches_engine(args.mode, *mode))
+        .map(|(domain, contract, mode)| {
+            let tags = match mode {
+                EngineContractMode::Static => vec!["ci", "static"],
+                EngineContractMode::Effect => vec!["ci", "effect", "slow"],
+                EngineContractMode::Both => vec!["ci", "static", "effect", "slow"],
+            };
+            serde_json::json!({
+                "id": contract.id.0,
+                "mode": match mode {
+                    EngineContractMode::Static => "static",
+                    EngineContractMode::Effect => "effect",
+                    EngineContractMode::Both => "all",
+                },
+                "domain": domain,
+                "summary": contract.title,
+                "required_tools": Vec::<String>::new(),
+                "tags": tags,
+            })
+        })
+        .collect::<Vec<_>>();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "contract_list",
+        "mode": format!("{:?}", args.mode).to_ascii_lowercase(),
+        "summary": {
+            "contracts": rows.len(),
+            "validation_errors": validation.errors.len(),
+        },
+        "contracts": rows,
+        "validation_errors": validation.errors,
+    });
+    let rendered = match effective_format(global, args.format) {
+        GlobalFormatArg::Human => render_contract_list_human(&rows),
+        GlobalFormatArg::Json => serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode contract list failed: {err}"))?,
+        GlobalFormatArg::Both => format!(
+            "{}\n{}",
+            render_contract_list_human(&rows),
+            serde_json::to_string_pretty(&payload)
+                .map_err(|err| format!("encode contract list failed: {err}"))?
+        ),
+    };
+    write_output(args.out, &rendered)?;
+    Ok((
+        rendered,
+        if validation.errors.is_empty() {
+            EXIT_SUCCESS
+        } else {
+            EXIT_FAILURE
+        },
+    ))
+}
+
+fn run_contract_describe_command(
+    global: Option<GlobalFormatArg>,
+    args: crate::cli::ContractDescribeArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let validation = ContractModesFile::validate(&root)?;
+    let Some((domain, contract, mode)) = load_contract_catalog(&root)?
+        .into_iter()
+        .find(|(_, contract, _)| contract.id.0 == args.id)
+    else {
+        return Ok((format!("unknown contract `{}`", args.id), EXIT_NOT_FOUND));
+    };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "contract_description",
+        "id": contract.id.0,
+        "summary": contract.title,
+        "mode": match mode {
+            EngineContractMode::Static => "static",
+            EngineContractMode::Effect => "effect",
+            EngineContractMode::Both => "all",
+        },
+        "domain": domain,
+        "outputs": Vec::<String>::new(),
+        "effect_scope": contract.tests.iter().filter_map(|case| match case.kind {
+            TestKind::Pure => None,
+            TestKind::Subprocess => Some("subprocess"),
+            TestKind::Network => Some("network"),
+        }).collect::<BTreeSet<_>>().into_iter().collect::<Vec<_>>(),
+        "tags": match mode {
+            EngineContractMode::Static => vec!["ci", "static"],
+            EngineContractMode::Effect => vec!["ci", "effect", "slow"],
+            EngineContractMode::Both => vec!["ci", "static", "effect", "slow"],
+        },
+        "required_tools": Vec::<String>::new(),
+        "validation_errors": validation.errors,
+    });
+    let rendered = match effective_format(global, args.format) {
+        GlobalFormatArg::Human => format!(
+            "{}\nsummary: {}\nmode: {}\ndomain: {}\noutputs: {}\neffect-scope: {}",
+            payload["id"].as_str().unwrap_or_default(),
+            payload["summary"].as_str().unwrap_or_default(),
+            payload["mode"].as_str().unwrap_or_default(),
+            payload["domain"].as_str().unwrap_or_default(),
+            payload["outputs"]
+                .as_array()
+                .into_iter()
+                .flatten()
+                .filter_map(serde_json::Value::as_str)
+                .collect::<Vec<_>>()
+                .join(", "),
+            payload["effect_scope"]
+                .as_array()
+                .into_iter()
+                .flatten()
+                .filter_map(serde_json::Value::as_str)
+                .collect::<Vec<_>>()
+                .join(", ")
+        ),
+        GlobalFormatArg::Json => serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode contract description failed: {err}"))?,
+        GlobalFormatArg::Both => format!(
+            "{}\n{}",
+            payload["id"].as_str().unwrap_or_default(),
+            serde_json::to_string_pretty(&payload)
+                .map_err(|err| format!("encode contract description failed: {err}"))?
+        ),
+    };
+    write_output(args.out, &rendered)?;
+    Ok((
+        rendered,
+        if validation.errors.is_empty() {
+            EXIT_SUCCESS
+        } else {
+            EXIT_FAILURE
+        },
+    ))
+}
+
+fn run_contract_run_command(
+    global: Option<GlobalFormatArg>,
+    args: crate::cli::ContractRunArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let validation = ContractModesFile::validate(&root)?;
+    if !validation.errors.is_empty() {
+        return Ok((validation.errors.join("\n"), EXIT_FAILURE));
+    }
+
+    let allowed_effects = contract_effects_allowed(args.mode, args.effects_policy);
+    let domain_filter = args
+        .domains
+        .iter()
+        .map(|value| value.trim().to_ascii_lowercase())
+        .collect::<BTreeSet<_>>();
+    let include = args
+        .include
+        .iter()
+        .map(|value| value.trim().to_string())
+        .collect::<BTreeSet<_>>();
+    let exclude = args
+        .exclude
+        .iter()
+        .map(|value| value.trim().to_string())
+        .collect::<BTreeSet<_>>();
+    let direct_id = args.id.as_deref().map(str::trim).filter(|value| !value.is_empty());
+
+    let selected_ids = load_contract_catalog(&root)?
+        .into_iter()
+        .filter(|(domain, contract, mode)| {
+            direct_id.is_none_or(|id| contract.id.0 == id)
+                && (include.is_empty() || include.contains(contract.id.0.as_str()))
+                && !exclude.contains(contract.id.0.as_str())
+                && contract_mode_matches_engine(args.mode, *mode)
+                && (domain_filter.is_empty() || domain_filter.contains(&domain.to_string()))
+                && (args.tags.is_empty()
+                    || args.tags.iter().any(|tag| match tag.as_str() {
+                        "static" => matches!(
+                            mode,
+                            EngineContractMode::Static | EngineContractMode::Both
+                        ),
+                        "effect" | "slow" => matches!(
+                            mode,
+                            EngineContractMode::Effect | EngineContractMode::Both
+                        ),
+                        "ci" | "contracts" => true,
+                        _ => false,
+                    }))
+        })
+        .map(|(_, contract, _)| contract.id.0)
+        .collect::<BTreeSet<_>>();
+
+    if selected_ids.is_empty() {
+        return Ok(("no contracts matched the requested selection".to_string(), EXIT_NOT_FOUND));
+    }
+
+    let _available_tools = collect_available_tools();
+    let missing_tool_ids = BTreeMap::<String, Vec<String>>::new();
+
+    let mut reports = Vec::new();
+    let mut planned_cases = 0usize;
+    let fail_fast = args.fail_fast && !args.no_fail_fast;
+    for source in contract_domain_sources() {
+        let loaded = (source.load)(&root)?;
+        let selected = loaded
+            .into_iter()
+            .filter(|contract| selected_ids.contains(contract.id.0.as_str()))
+            .collect::<Vec<_>>();
+        if selected.is_empty() {
+            continue;
+        }
+        let options = RunOptions {
+            lane: contracts::ContractLane::Local,
+            mode: match args.mode {
+                ContractRunModeArg::Effect => EngineMode::Effect,
+                ContractRunModeArg::Static => EngineMode::Static,
+                ContractRunModeArg::All => EngineMode::Effect,
+            },
+            run_id: args.run_id.clone(),
+            required_only: false,
+            ci: false,
+            color_enabled: match args.color {
+                ContractsColorArg::Auto => !args.no_ansi,
+                ContractsColorArg::Always => !args.no_ansi,
+                ContractsColorArg::Never => false,
+            },
+            allow_subprocess: allowed_effects,
+            allow_network: allowed_effects,
+            allow_k8s: false,
+            allow_fs_write: true,
+            allow_docker_daemon: false,
+            deny_skip_required: false,
+            skip_missing_tools: true,
+            timeout_seconds: 300,
+            fail_fast,
+            contract_filter: None,
+            test_filter: None,
+            only_contracts: Vec::new(),
+            only_tests: Vec::new(),
+            skip_contracts: Vec::new(),
+            tags: Vec::new(),
+            list_only: false,
+            artifacts_root: args.artifacts_root.clone(),
+        };
+        let mut report = engine::run_selected(source.name, selected, &root, &options)?;
+        planned_cases += report.cases.len();
+        for case in &mut report.cases {
+            if let Some(missing) = missing_tool_ids.get(&case.contract_id) {
+                case.status = CaseStatus::Skip;
+                case.note = Some(format!("missing tool: {}", missing.join(", ")));
+            } else if matches!(args.mode, ContractRunModeArg::Static)
+                && case.kind != TestKind::Pure
+            {
+                case.status = CaseStatus::Skip;
+                case.note = Some("disabled effect policy".to_string());
+            } else if !allowed_effects && case.kind != TestKind::Pure {
+                case.status = CaseStatus::Skip;
+                case.note = Some("disabled effect policy".to_string());
+            }
+        }
+        reports.push(report);
+        if fail_fast
+            && reports.iter().any(|report| report.fail_count() > 0 || report.error_count() > 0)
+        {
+            break;
+        }
+    }
+
+    let payload = engine::to_json_all(&reports);
+    let rendered = match effective_format(global, args.format) {
+        GlobalFormatArg::Human => nextest_style::render(
+            &reports,
+            match args.mode {
+                ContractRunModeArg::Static => "static",
+                ContractRunModeArg::Effect => "effect",
+                ContractRunModeArg::All => "all",
+            },
+            &args.jobs,
+            fail_fast,
+            RenderOptions {
+                color: match args.color {
+                    ContractsColorArg::Auto => !args.no_ansi,
+                    ContractsColorArg::Always => !args.no_ansi,
+                    ContractsColorArg::Never => false,
+                },
+                quiet: args.quiet,
+                verbose: args.verbose,
+            },
+        ),
+        GlobalFormatArg::Json => serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode contract run summary failed: {err}"))?,
+        GlobalFormatArg::Both => format!(
+            "{}\n{}",
+            nextest_style::render(
+                &reports,
+                match args.mode {
+                    ContractRunModeArg::Static => "static",
+                    ContractRunModeArg::Effect => "effect",
+                    ContractRunModeArg::All => "all",
+                },
+                &args.jobs,
+                fail_fast,
+                RenderOptions {
+                    color: false,
+                    quiet: args.quiet,
+                    verbose: args.verbose,
+                },
+            ),
+            serde_json::to_string_pretty(&payload)
+                .map_err(|err| format!("encode contract run summary failed: {err}"))?
+        ),
+    };
+    let _ = planned_cases;
+    write_output(args.out, &rendered)?;
+    let exit = reports.iter().map(|report| report.exit_code()).max().unwrap_or(EXIT_SUCCESS);
+    Ok((rendered, exit))
 }
 
 fn run_reports_command(

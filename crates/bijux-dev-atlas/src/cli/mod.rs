@@ -181,7 +181,7 @@ pub enum Command {
     },
     Contract {
         #[command(subcommand)]
-        command: ContractsCommand,
+        command: ContractCommand,
     },
     Registry {
         #[command(subcommand)]

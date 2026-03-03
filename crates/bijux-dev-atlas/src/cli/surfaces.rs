@@ -425,6 +425,90 @@ pub enum ContractsCommand {
     Snapshot(ContractsSnapshotArgs),
 }
 
+#[derive(Subcommand, Debug)]
+pub enum ContractCommand {
+    List(ContractListArgs),
+    Describe(ContractDescribeArgs),
+    Run(ContractRunArgs),
+}
+
+#[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ContractEffectsPolicyArg {
+    Deny,
+    Allow,
+}
+
+#[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ContractRunModeArg {
+    Static,
+    Effect,
+    All,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ContractListArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = ContractRunModeArg::Static)]
+    pub mode: ContractRunModeArg,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ContractDescribeArgs {
+    pub id: String,
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ContractRunArgs {
+    pub id: Option<String>,
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub artifacts_root: Option<PathBuf>,
+    #[arg(long)]
+    pub run_id: Option<String>,
+    #[arg(long, value_enum, default_value_t = ContractRunModeArg::Static)]
+    pub mode: ContractRunModeArg,
+    #[arg(long = "domain")]
+    pub domains: Vec<String>,
+    #[arg(long = "tag")]
+    pub tags: Vec<String>,
+    #[arg(long = "include")]
+    pub include: Vec<String>,
+    #[arg(long = "exclude")]
+    pub exclude: Vec<String>,
+    #[arg(long, default_value_t = false)]
+    pub fail_fast: bool,
+    #[arg(long, default_value_t = false)]
+    pub no_fail_fast: bool,
+    #[arg(long, default_value = "auto")]
+    pub jobs: String,
+    #[arg(long, value_enum, default_value_t = ContractEffectsPolicyArg::Deny)]
+    pub effects_policy: ContractEffectsPolicyArg,
+    #[arg(long, default_value_t = false)]
+    pub no_ansi: bool,
+    #[arg(long, value_enum, default_value_t = ContractsColorArg::Auto)]
+    pub color: ContractsColorArg,
+    #[arg(long, default_value_t = false)]
+    pub quiet: bool,
+    #[arg(long, default_value_t = false)]
+    pub verbose: bool,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
 #[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ContractsModeArg {
     Static,

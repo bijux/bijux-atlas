@@ -254,6 +254,52 @@ mod tests {
     }
 
     #[test]
+    fn contract_subcommands_parse() {
+        let commands = [
+            vec!["bijux-dev-atlas", "contract", "list"],
+            vec![
+                "bijux-dev-atlas",
+                "contract",
+                "list",
+                "--mode",
+                "all",
+                "--format",
+                "json",
+            ],
+            vec!["bijux-dev-atlas", "contract", "describe", "ROOT-001"],
+            vec!["bijux-dev-atlas", "contract", "run", "--mode", "static"],
+            vec![
+                "bijux-dev-atlas",
+                "contract",
+                "run",
+                "DOC-001",
+                "--mode",
+                "effect",
+                "--effects-policy",
+                "allow",
+                "--domain",
+                "docs",
+                "--tag",
+                "contracts",
+                "--include",
+                "DOC-001",
+                "--exclude",
+                "DOC-999",
+                "--jobs",
+                "4",
+                "--no-ansi",
+            ],
+        ];
+        for argv in commands {
+            let cli = crate::Cli::try_parse_from(argv).expect("parse");
+            match cli.command {
+                Some(crate::cli::Command::Contract { .. }) => {}
+                _ => panic!("expected contract command"),
+            }
+        }
+    }
+
+    #[test]
     fn release_subcommands_parse() {
         let cli =
             crate::Cli::try_parse_from(vec!["bijux-dev-atlas", "release", "check"]).expect("parse");
