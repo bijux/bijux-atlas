@@ -164,6 +164,15 @@ fn simulation_report_path(
     Ok(path)
 }
 
+fn readiness_baseline_path(repo_root: &std::path::Path) -> Result<std::path::PathBuf, String> {
+    let path = repo_root.join("artifacts/ops/history/readiness-baselines.json");
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
+    Ok(path)
+}
+
 fn write_simulation_report(
     repo_root: &std::path::Path,
     run_id: &RunId,
@@ -699,6 +708,129 @@ fn update_lifecycle_summary(
     )
     .map_err(|err| format!("failed to write {}: {err}", summary_path.display()))?;
     Ok(summary_path)
+}
+
+fn load_readiness_baseline(
+    repo_root: &std::path::Path,
+    profile: &str,
+) -> Result<Option<u128>, String> {
+    let path = readiness_baseline_path(repo_root)?;
+    if !path.exists() {
+        return Ok(None);
+    }
+    let value: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    Ok(value
+        .get("profiles")
+        .and_then(|rows| rows.as_object())
+        .and_then(|rows| rows.get(profile))
+        .and_then(|row| row.get("baseline_elapsed_ms"))
+        .and_then(serde_json::Value::as_u64)
+        .map(u128::from))
+}
+
+fn update_readiness_baseline(
+    repo_root: &std::path::Path,
+    profile: &str,
+    elapsed_ms: u128,
+) -> Result<std::path::PathBuf, String> {
+    let path = readiness_baseline_path(repo_root)?;
+    let mut payload = if path.exists() {
+        serde_json::from_str::<serde_json::Value>(
+            &std::fs::read_to_string(&path)
+                .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+        )
+        .map_err(|err| format!("failed to parse {}: {err}", path.display()))?
+    } else {
+        serde_json::json!({
+            "schema_version": 1,
+            "profiles": {}
+        })
+    };
+    if !payload["profiles"].is_object() {
+        payload["profiles"] = serde_json::json!({});
+    }
+    payload["profiles"][profile] = serde_json::json!({
+        "baseline_elapsed_ms": elapsed_ms
+    });
+    std::fs::write(
+        &path,
+        serde_json::to_string_pretty(&payload).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
+    Ok(path)
+}
+
+fn build_lifecycle_evidence_bundle(
+    repo_root: &std::path::Path,
+    run_id: &RunId,
+) -> Result<serde_json::Value, String> {
+    let run_root = repo_root.join("artifacts/ops").join(run_id.as_str());
+    let evidence_dir = run_root.join("evidence");
+    std::fs::create_dir_all(&evidence_dir)
+        .map_err(|err| format!("failed to create {}: {err}", evidence_dir.display()))?;
+    let list_path = evidence_dir.join("ops-lifecycle-evidence.list");
+    let tar_path = evidence_dir.join("ops-lifecycle-evidence.tar");
+    let mut files = Vec::<String>::new();
+    for dir in [run_root.join("reports"), run_root.join("debug")] {
+        if !dir.exists() {
+            continue;
+        }
+        let mut stack = vec![dir];
+        while let Some(path) = stack.pop() {
+            let entries = std::fs::read_dir(&path)
+                .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+            for entry in entries {
+                let entry = entry.map_err(|err| format!("failed to read directory entry: {err}"))?;
+                let entry_path = entry.path();
+                if entry_path.is_dir() {
+                    stack.push(entry_path);
+                    continue;
+                }
+                let rel = entry_path
+                    .strip_prefix(repo_root)
+                    .map_err(|err| format!("failed to relativize {}: {err}", entry_path.display()))?
+                    .display()
+                    .to_string();
+                files.push(rel);
+            }
+        }
+    }
+    files.sort();
+    files.dedup();
+    std::fs::write(&list_path, files.join("\n"))
+        .map_err(|err| format!("failed to write {}: {err}", list_path.display()))?;
+    if files.is_empty() {
+        return Ok(serde_json::json!({
+            "status": "skipped",
+            "tar_path": tar_path.display().to_string(),
+            "list_path": list_path.display().to_string(),
+            "files": files
+        }));
+    }
+    let output = std::process::Command::new("tar")
+        .current_dir(repo_root)
+        .args([
+            "--sort=name",
+            "-cf",
+            &tar_path.display().to_string(),
+            "-T",
+            &list_path.display().to_string(),
+        ])
+        .output()
+        .map_err(|err| format!("failed to execute tar for lifecycle evidence bundle: {err}"))?;
+    let status = if output.status.success() { "ok" } else { "failed" };
+    Ok(serde_json::json!({
+        "status": status,
+        "tar_path": tar_path.display().to_string(),
+        "list_path": list_path.display().to_string(),
+        "files": files,
+        "stdout": String::from_utf8_lossy(&output.stdout).trim().to_string(),
+        "stderr": String::from_utf8_lossy(&output.stderr).trim().to_string()
+    }))
 }
 
 fn helm_release_manifest(
@@ -1635,6 +1767,11 @@ pub(crate) fn run_ops_helm_upgrade(
     let compatibility = lifecycle_compatibility_checks(&before_manifest, &after_manifest);
     let rollout_history = rollout_history(&process, &repo_root, &namespace);
     let pods_restarted = pods_restart_count(&process, &repo_root, &namespace);
+    let baseline_elapsed_ms = load_readiness_baseline(&repo_root, &profile)?;
+    let readiness_threshold_percent = 125u64;
+    let regression_ok = baseline_elapsed_ms
+        .map(|baseline| wait_ms.saturating_mul(100) <= baseline.saturating_mul(u128::from(readiness_threshold_percent)))
+        .unwrap_or(true);
     let errors = wait_errors
         .iter()
         .cloned()
@@ -1645,6 +1782,10 @@ pub(crate) fn run_ops_helm_upgrade(
                 .filter(|safe| !safe)
                 .map(|_| "immutable field compatibility check failed".to_string()),
         )
+        .chain((!regression_ok).then_some(format!(
+            "readiness regression exceeded {}% of baseline",
+            readiness_threshold_percent
+        )))
         .collect::<Vec<_>>();
     let status = if errors.is_empty() { "ok" } else { "failed" };
     let smoke_payload = serde_json::json!({
@@ -1692,6 +1833,12 @@ pub(crate) fn run_ops_helm_upgrade(
                 "rows": wait_rows,
                 "errors": wait_errors
             },
+            "readiness_regression": {
+                "threshold_percent": readiness_threshold_percent,
+                "baseline_elapsed_ms": baseline_elapsed_ms,
+                "current_elapsed_ms": wait_ms,
+                "status": if regression_ok { "ok" } else { "failed" }
+            },
             "rollout_history": rollout_history,
             "pods_restarted_count": pods_restarted,
             "smoke": {
@@ -1701,6 +1848,11 @@ pub(crate) fn run_ops_helm_upgrade(
         }
     });
     let report_path = write_simulation_report(&repo_root, &run_id, "ops-upgrade.json", &payload)?;
+    let baseline_path = if errors.is_empty() {
+        Some(update_readiness_baseline(&repo_root, &profile, wait_ms)?)
+    } else {
+        None
+    };
     let lifecycle_summary_path = update_lifecycle_summary(
         &repo_root,
         &run_id,
@@ -1711,6 +1863,7 @@ pub(crate) fn run_ops_helm_upgrade(
         None,
         None,
     )?;
+    let lifecycle_bundle = build_lifecycle_evidence_bundle(&repo_root, &run_id)?;
     let envelope = serde_json::json!({
         "schema_version": 1,
         "text": if status == "ok" { "helm upgrade completed" } else { "helm upgrade failed" },
@@ -1722,6 +1875,8 @@ pub(crate) fn run_ops_helm_upgrade(
             "status": status,
             "report_path": report_path.display().to_string(),
             "summary_report_path": lifecycle_summary_path.display().to_string(),
+            "baseline_history_path": baseline_path.map(|path| path.display().to_string()),
+            "evidence_bundle": lifecycle_bundle,
             "details": payload["details"].clone()
         }],
         "summary": {"total": 1, "errors": errors.len(), "warnings": 0}
@@ -1795,6 +1950,11 @@ pub(crate) fn run_ops_helm_rollback(
     let compatibility = lifecycle_compatibility_checks(&before_manifest, &after_manifest);
     let rollout_history = rollout_history(&process, &repo_root, &namespace);
     let pods_restarted = pods_restart_count(&process, &repo_root, &namespace);
+    let baseline_elapsed_ms = load_readiness_baseline(&repo_root, &profile)?;
+    let readiness_threshold_percent = 125u64;
+    let regression_ok = baseline_elapsed_ms
+        .map(|baseline| wait_ms.saturating_mul(100) <= baseline.saturating_mul(u128::from(readiness_threshold_percent)))
+        .unwrap_or(true);
     let errors = wait_errors
         .iter()
         .cloned()
@@ -1805,6 +1965,10 @@ pub(crate) fn run_ops_helm_rollback(
                 .filter(|safe| !safe)
                 .map(|_| "immutable field compatibility check failed".to_string()),
         )
+        .chain((!regression_ok).then_some(format!(
+            "readiness regression exceeded {}% of baseline",
+            readiness_threshold_percent
+        )))
         .collect::<Vec<_>>();
     let status = if errors.is_empty() { "ok" } else { "failed" };
     let smoke_payload = serde_json::json!({
@@ -1847,6 +2011,12 @@ pub(crate) fn run_ops_helm_rollback(
                 "rows": wait_rows,
                 "errors": wait_errors
             },
+            "readiness_regression": {
+                "threshold_percent": readiness_threshold_percent,
+                "baseline_elapsed_ms": baseline_elapsed_ms,
+                "current_elapsed_ms": wait_ms,
+                "status": if regression_ok { "ok" } else { "failed" }
+            },
             "rollout_history": rollout_history,
             "pods_restarted_count": pods_restarted,
             "service_healthy_after_rollback": wait_errors.is_empty() && smoke_errors.is_empty(),
@@ -1867,6 +2037,12 @@ pub(crate) fn run_ops_helm_rollback(
         Some(&report_path),
         Some(status),
     )?;
+    let baseline_path = if errors.is_empty() {
+        Some(update_readiness_baseline(&repo_root, &profile, wait_ms)?)
+    } else {
+        None
+    };
+    let lifecycle_bundle = build_lifecycle_evidence_bundle(&repo_root, &run_id)?;
     let envelope = serde_json::json!({
         "schema_version": 1,
         "text": if status == "ok" { "helm rollback completed" } else { "helm rollback failed" },
@@ -1878,6 +2054,8 @@ pub(crate) fn run_ops_helm_rollback(
             "status": status,
             "report_path": report_path.display().to_string(),
             "summary_report_path": lifecycle_summary_path.display().to_string(),
+            "baseline_history_path": baseline_path.map(|path| path.display().to_string()),
+            "evidence_bundle": lifecycle_bundle,
             "details": payload["details"].clone()
         }],
         "summary": {"total": 1, "errors": errors.len(), "warnings": 0}
