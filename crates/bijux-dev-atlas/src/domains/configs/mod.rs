@@ -3,14 +3,20 @@
 
 pub mod contracts;
 
+use crate::contracts::Contract;
 use crate::domains::Domain;
 use crate::model::RunnableEntry;
 use crate::registry::RunnableRegistry;
+use std::path::Path;
 
 pub struct ConfigsDomain;
 
 pub fn plugin() -> ConfigsDomain {
     ConfigsDomain
+}
+
+pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
+    crate::contracts::configs::contracts(repo_root)
 }
 
 impl Domain for ConfigsDomain {

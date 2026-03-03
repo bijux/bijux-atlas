@@ -3,14 +3,20 @@
 
 pub mod contracts;
 
+use crate::contracts::Contract;
 use crate::domains::Domain;
 use crate::model::RunnableEntry;
 use crate::registry::RunnableRegistry;
+use std::path::Path;
 
 pub struct DockerDomain;
 
 pub fn plugin() -> DockerDomain {
     DockerDomain
+}
+
+pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
+    crate::contracts::docker::contracts(repo_root)
 }
 
 impl Domain for DockerDomain {

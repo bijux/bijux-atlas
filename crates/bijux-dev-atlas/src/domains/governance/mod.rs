@@ -3,14 +3,23 @@
 
 pub mod contracts;
 
+use crate::contracts::Contract;
 use crate::domains::Domain;
 use crate::model::RunnableEntry;
 use crate::registry::RunnableRegistry;
+use std::path::Path;
 
 pub struct GovernanceDomain;
 
 pub fn plugin() -> GovernanceDomain {
     GovernanceDomain
+}
+
+pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
+    let mut rows = crate::contracts::repo::contracts(repo_root)?;
+    rows.extend(crate::contracts::root::contracts(repo_root)?);
+    rows.extend(crate::contracts::runtime::contracts(repo_root)?);
+    Ok(rows)
 }
 
 impl Domain for GovernanceDomain {

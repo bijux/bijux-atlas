@@ -4,14 +4,20 @@
 pub mod contracts;
 pub mod runtime;
 
+use crate::contracts::Contract;
 use crate::domains::Domain;
 use crate::model::RunnableEntry;
 use crate::registry::RunnableRegistry;
+use std::path::Path;
 
 pub struct DocsDomain;
 
 pub fn plugin() -> DocsDomain {
     DocsDomain
+}
+
+pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
+    crate::contracts::docs::contracts(repo_root)
 }
 
 impl Domain for DocsDomain {
