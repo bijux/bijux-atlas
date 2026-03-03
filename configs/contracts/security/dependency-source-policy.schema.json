@@ -75,6 +75,7 @@
       "required": [
         "workflow_dir",
         "toolchain_inventory",
+        "exceptions_path",
         "require_sha_pins"
       ],
       "properties": {
@@ -83,6 +84,10 @@
           "minLength": 1
         },
         "toolchain_inventory": {
+          "type": "string",
+          "minLength": 1
+        },
+        "exceptions_path": {
           "type": "string",
           "minLength": 1
         },

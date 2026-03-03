@@ -53,3 +53,21 @@ updates:
       docs-tooling-major:
         update-types:
           - "major"
+
+  - package-ecosystem: "pip"
+    directory: "/configs/docs"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:15"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(docs-python)"
+    groups:
+      docs-python-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+      docs-python-major:
+        update-types:
+          - "major"

@@ -14,6 +14,7 @@
 - [Security Compliance](compliance.md)
 - [Security Incident Response](incident-response.md)
 - [Security Key Rotation](key-rotation.md)
+- [Refresh Pinned GitHub Actions SHAs](action-pin-refresh.md)
 - [Security Review Checklist](review-checklist.md)
 - [Advisory Process](advisory-process.md)
 - [Incident Response](../incident-response.md)
