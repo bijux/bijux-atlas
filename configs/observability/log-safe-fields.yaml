@@ -1,0 +1,40 @@
+schema_version: 1
+fields:
+  - name: event_id
+    description: Stable audit event identifier.
+  - name: event_name
+    description: Human-readable audit event class.
+  - name: timestamp_policy
+    description: Timestamp interpretation contract.
+  - name: timestamp_unix_s
+    description: Runtime event timestamp in whole seconds.
+  - name: sink
+    description: Audit sink selected for the runtime.
+  - name: principal
+    description: Non-secret caller class or operator identity label.
+  - name: action
+    description: Governed action identifier.
+  - name: resource_kind
+    description: Governed resource vocabulary identifier.
+  - name: resource_id
+    description: Resource locator or dataset identifier.
+  - name: status
+    description: Result status for request-driven audit events.
+  - name: decision
+    description: Policy decision outcome when emitted.
+  - name: reason
+    description: Non-sensitive denial or routing reason.
+  - name: route
+    description: API route prefix or endpoint path.
+  - name: source
+    description: Component or subsystem origin.
+  - name: outcome
+    description: High-level operation result.
+  - name: auth_mode
+    description: Effective auth mode label.
+  - name: admin_endpoints_enabled
+    description: Whether debug or admin endpoints are enabled.
+  - name: audit_enabled
+    description: Whether audit logging is enabled.
+  - name: catalog_configured
+    description: Whether upstream catalog integration is configured.

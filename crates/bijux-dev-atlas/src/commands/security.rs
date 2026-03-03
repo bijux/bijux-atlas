@@ -186,6 +186,44 @@ fn write_json_lines(path: &Path, rows: &[serde_json::Value]) -> Result<(), Strin
     fs::write(path, buffer).map_err(|err| format!("failed to write {}: {err}", path.display()))
 }
 
+fn collect_source_json_fields(text: &str) -> std::collections::BTreeSet<String> {
+    let mut fields = std::collections::BTreeSet::new();
+    let mut in_audit_object = false;
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if trimmed.contains("\"event_id\": \"audit_") {
+            in_audit_object = true;
+        }
+        if !in_audit_object {
+            continue;
+        }
+        let Some(rest) = trimmed.strip_prefix('"') else {
+            if trimmed.starts_with("})") || trimmed.starts_with("});") {
+                in_audit_object = false;
+            }
+            continue;
+        };
+        let Some((key, suffix)) = rest.split_once('"') else {
+            if trimmed.starts_with("})") || trimmed.starts_with("});") {
+                in_audit_object = false;
+            }
+            continue;
+        };
+        if suffix.trim_start().starts_with(':')
+            && !key.is_empty()
+            && key
+                .chars()
+                .all(|ch| ch.is_ascii_lowercase() || ch.is_ascii_digit() || ch == '_')
+        {
+            fields.insert(key.to_string());
+        }
+        if trimmed.starts_with("})") || trimmed.starts_with("});") {
+            in_audit_object = false;
+        }
+    }
+    fields
+}
+
 pub(crate) fn run_security_command(
     _quiet: bool,
     command: SecurityCommand,
@@ -247,6 +285,25 @@ fn scan_matches(
     Ok(matches)
 }
 
+fn scan_file_matches(
+    root: &Path,
+    path: &Path,
+    patterns: &[String],
+) -> Result<Vec<serde_json::Value>, String> {
+    let content = fs::read_to_string(path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let mut matches = Vec::new();
+    for pattern in patterns {
+        if content.contains(pattern) {
+            matches.push(serde_json::json!({
+                "path": path.strip_prefix(root).unwrap_or(path).display().to_string(),
+                "pattern": pattern
+            }));
+        }
+    }
+    Ok(matches)
+}
+
 fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     let assets_path = root.join("security/threat-model/assets.yaml");
@@ -260,6 +317,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let policy_path = root.join("configs/security/policy.yaml");
     let data_classification_path = root.join("configs/security/data-classification.yaml");
     let audit_schema_path = root.join("configs/observability/audit-log.schema.json");
+    let log_safe_fields_path = root.join("configs/observability/log-safe-fields.yaml");
     let retention_path = root.join("configs/observability/retention.yaml");
     let asset_schema_path = root.join("configs/contracts/security/assets.schema.json");
     let threats_schema_path = root.join("configs/contracts/security/threats.schema.json");
@@ -272,6 +330,8 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let policy_schema_path = root.join("configs/contracts/security/policy.schema.json");
     let data_classification_schema_path =
         root.join("configs/contracts/security/data-classification.schema.json");
+    let log_safe_fields_schema_path =
+        root.join("configs/observability/log-safe-fields.schema.json");
     let secrets_schema_path = root.join("configs/contracts/security/secrets.schema.json");
     let redaction_schema_path = root.join("configs/contracts/security/redaction.schema.json");
     let forbidden_patterns_schema_path =
@@ -282,6 +342,8 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         root.join("configs/contracts/security/github-actions-exceptions.schema.json");
     let signing_policy_schema_path =
         root.join("configs/contracts/release/signing-policy.schema.json");
+    let log_field_inventory_schema_path =
+        root.join("configs/observability/log-field-inventory.schema.json");
     let retention_schema_path = root.join("configs/observability/retention.schema.json");
     let secrets_path = root.join("configs/security/secrets.json");
     let redaction_path = root.join("configs/security/redaction.json");
@@ -299,6 +361,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     ensure_json(&resources_schema_path)?;
     ensure_json(&policy_schema_path)?;
     ensure_json(&data_classification_schema_path)?;
+    ensure_json(&log_safe_fields_schema_path)?;
     ensure_json(&secrets_schema_path)?;
     ensure_json(&redaction_schema_path)?;
     ensure_json(&forbidden_patterns_schema_path)?;
@@ -306,6 +369,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     ensure_json(&github_actions_exceptions_schema_path)?;
     ensure_json(&signing_policy_schema_path)?;
     ensure_json(&audit_schema_path)?;
+    ensure_json(&log_field_inventory_schema_path)?;
     ensure_json(&retention_schema_path)?;
 
     let assets = read_yaml(&assets_path)?;
@@ -318,6 +382,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let resources = read_yaml(&resources_path)?;
     let policy = read_yaml(&policy_path)?;
     let data_classification = read_yaml(&data_classification_path)?;
+    let log_safe_fields = read_yaml(&log_safe_fields_path)?;
     let secrets = read_json(&secrets_path)?;
     let redaction = read_json(&redaction_path)?;
     let forbidden_patterns = read_json(&forbidden_patterns_path)?;
@@ -367,6 +432,11 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         .unwrap_or_default();
     let data_class_rows = data_classification
         .get("classes")
+        .and_then(serde_yaml::Value::as_sequence)
+        .cloned()
+        .unwrap_or_default();
+    let log_safe_field_rows = log_safe_fields
+        .get("fields")
         .and_then(serde_yaml::Value::as_sequence)
         .cloned()
         .unwrap_or_default();
@@ -485,6 +555,21 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         .iter()
         .filter_map(|row| row.get("id").and_then(serde_yaml::Value::as_str))
         .collect::<std::collections::BTreeSet<_>>();
+    let classified_field_names = data_class_rows
+        .iter()
+        .flat_map(|row| {
+            row.get("fields")
+                .and_then(serde_yaml::Value::as_sequence)
+                .cloned()
+                .unwrap_or_default()
+        })
+        .filter_map(|row| row.as_str().map(std::string::ToString::to_string))
+        .collect::<std::collections::BTreeSet<_>>();
+    let safe_field_names = log_safe_field_rows
+        .iter()
+        .filter_map(|row| row.get("name").and_then(serde_yaml::Value::as_str))
+        .map(std::string::ToString::to_string)
+        .collect::<std::collections::BTreeSet<_>>();
     let redaction_class_refs = redaction
         .get("classification_refs")
         .and_then(serde_json::Value::as_array)
@@ -505,6 +590,8 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     .map_err(|err| format!("failed to read request utils source: {err}"))?;
     let data_command_source = fs::read_to_string(root.join("crates/bijux-dev-atlas/src/commands/data.rs"))
         .map_err(|err| format!("failed to read data command source: {err}"))?;
+    let main_audit_source_fields = collect_source_json_fields(&main_source);
+    let data_audit_source_fields = collect_source_json_fields(&data_command_source);
     let audit_event_names = [
         "config_loaded",
         "startup",
@@ -622,6 +709,62 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             .get("schema_version")
             .and_then(serde_yaml::Value::as_i64)
             == Some(1);
+    let mut observed_audit_fields = std::collections::BTreeSet::from([
+        "event_id".to_string(),
+        "event_name".to_string(),
+        "timestamp_policy".to_string(),
+        "timestamp_unix_s".to_string(),
+        "sink".to_string(),
+        "principal".to_string(),
+        "action".to_string(),
+        "resource_kind".to_string(),
+        "resource_id".to_string(),
+        "status".to_string(),
+    ]);
+    observed_audit_fields.extend(main_audit_source_fields);
+    observed_audit_fields.extend(data_audit_source_fields);
+    for row in &audit_smoke_rows {
+        if let Some(object) = row.as_object() {
+            observed_audit_fields.extend(object.keys().cloned());
+        }
+    }
+    let mut unclassified_log_fields = Vec::new();
+    let mut log_field_inventory_rows = Vec::new();
+    let mut inventory_field_set = safe_field_names.clone();
+    inventory_field_set.extend(classified_field_names.iter().cloned());
+    inventory_field_set.extend(observed_audit_fields.iter().cloned());
+    for field in inventory_field_set {
+        let classification = if safe_field_names.contains(&field) {
+            "safe"
+        } else if classified_field_names.contains(&field) {
+            "sensitive"
+        } else {
+            unclassified_log_fields.push(field.clone());
+            "unknown"
+        };
+        log_field_inventory_rows.push(serde_json::json!({
+            "field": field.clone(),
+            "classification": classification,
+            "observed_in_code": observed_audit_fields.contains(&field)
+        }));
+    }
+    let log_field_inventory_report = serde_json::json!({
+        "schema_version": 1,
+        "status": if unclassified_log_fields.is_empty() { "ok" } else { "failed" },
+        "summary": {
+            "total": log_field_inventory_rows.len(),
+            "errors": unclassified_log_fields.len()
+        },
+        "rows": log_field_inventory_rows
+    });
+    let log_field_inventory_path = named_report_path(&root, "log-field-inventory.json")?;
+    fs::write(
+        &log_field_inventory_path,
+        serde_json::to_string_pretty(&log_field_inventory_report)
+            .map_err(|err| format!("encode log field inventory report failed: {err}"))?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", log_field_inventory_path.display()))?;
+    let obs_log_inv_001 = unclassified_log_fields.is_empty();
 
     let mitigation_ids = mitigation_rows
         .iter()
@@ -819,8 +962,13 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         .map(ToString::to_string)
         .collect::<Vec<_>>();
     let evidence_matches = scan_matches(&root, &default_scan_dir, &forbidden_literals)?;
+    let audit_log_matches = if audit_smoke_path.exists() {
+        scan_file_matches(&root, &audit_smoke_path, &forbidden_literals)?
+    } else {
+        Vec::new()
+    };
     let sec_red_001 = missing_redaction_keys.is_empty();
-    let sec_red_002 = evidence_matches.is_empty();
+    let sec_red_002 = evidence_matches.is_empty() && audit_log_matches.is_empty();
 
     let npm_allowed_registries = dependency_policy
         .get("npm")
@@ -1272,6 +1420,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             && obs_audit_001
             && obs_audit_002
             && obs_ret_001
+            && obs_log_inv_001
             && sec_deps_001
             && sec_deps_002
             && sec_images_001
@@ -1303,6 +1452,11 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
                 .strip_prefix(&root)
                 .unwrap_or(&audit_verify_report_path)
                 .display()
+                .to_string(),
+            "log_field_inventory": log_field_inventory_path
+                .strip_prefix(&root)
+                .unwrap_or(&log_field_inventory_path)
+                .display()
                 .to_string()
         },
         "contracts": {
@@ -1318,6 +1472,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "OBS-AUDIT-001": obs_audit_001,
             "OBS-AUDIT-002": obs_audit_002,
             "OBS-RET-001": obs_ret_001,
+            "OBS-LOG-INV-001": obs_log_inv_001,
             "SEC-RED-001": sec_red_001,
             "SEC-RED-002": sec_red_002,
             "SEC-DEPS-001": sec_deps_001,
@@ -1345,6 +1500,8 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "missing_redaction_keys": missing_redaction_keys,
             "redaction_class_refs": redaction_class_refs,
             "audit_verify_errors": audit_verify_errors,
+            "audit_log_matches": audit_log_matches,
+            "unclassified_log_fields": unclassified_log_fields,
             "evidence_secret_matches": evidence_matches,
             "disallowed_npm_sources": disallowed_npm_sources,
             "disallowed_python_indexes": disallowed_python_indexes,
