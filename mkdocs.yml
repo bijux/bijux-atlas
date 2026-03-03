@@ -44,7 +44,7 @@ plugins:
       fallback_to_build_date: false
       strict: false
   - redirects:
-      # redirect_maps generated from docs/redirects.json; run scripts/docs/sync_redirects.py
+      # redirect_maps generated from docs/redirects.json; run bijux-dev-atlas docs redirects sync --allow-write
       redirect_maps:
         _generated/governance-audit/index.md: _internal/generated/governance-audit/index.md
         _generated/topic-index.md: _internal/generated/topic-index.md

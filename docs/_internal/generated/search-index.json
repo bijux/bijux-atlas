@@ -7018,6 +7018,146 @@
     },
     {
       "keywords": [
+        "commands",
+        "operations",
+        "reference"
+      ],
+      "path": "docs/operations/reference/commands.md",
+      "tags": [
+        "commands",
+        "operations",
+        "reference"
+      ],
+      "topic": "commands"
+    },
+    {
+      "keywords": [
+        "drills",
+        "operations",
+        "reference"
+      ],
+      "path": "docs/operations/reference/drills.md",
+      "tags": [
+        "drills",
+        "operations",
+        "reference"
+      ],
+      "topic": "drills"
+    },
+    {
+      "keywords": [
+        "evidence-model",
+        "operations",
+        "reference"
+      ],
+      "path": "docs/operations/reference/evidence-model.md",
+      "tags": [
+        "evidence-model",
+        "operations",
+        "reference"
+      ],
+      "topic": "evidence-model"
+    },
+    {
+      "keywords": [
+        "gates",
+        "operations",
+        "reference"
+      ],
+      "path": "docs/operations/reference/gates.md",
+      "tags": [
+        "gates",
+        "operations",
+        "reference"
+      ],
+      "topic": "gates"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-surface",
+        "reference"
+      ],
+      "path": "docs/operations/reference/ops-surface.md",
+      "tags": [
+        "operations",
+        "ops-surface",
+        "reference"
+      ],
+      "topic": "ops-surface"
+    },
+    {
+      "keywords": [
+        "operations",
+        "pins",
+        "reference"
+      ],
+      "path": "docs/operations/reference/pins.md",
+      "tags": [
+        "operations",
+        "pins",
+        "reference"
+      ],
+      "topic": "pins"
+    },
+    {
+      "keywords": [
+        "operations",
+        "reference",
+        "schema-index"
+      ],
+      "path": "docs/operations/reference/schema-index.md",
+      "tags": [
+        "operations",
+        "reference",
+        "schema-index"
+      ],
+      "topic": "schema-index"
+    },
+    {
+      "keywords": [
+        "operations",
+        "reference",
+        "toolchain"
+      ],
+      "path": "docs/operations/reference/toolchain.md",
+      "tags": [
+        "operations",
+        "reference",
+        "toolchain"
+      ],
+      "topic": "toolchain"
+    },
+    {
+      "keywords": [
+        "operations",
+        "reference",
+        "tools"
+      ],
+      "path": "docs/operations/reference/tools.md",
+      "tags": [
+        "operations",
+        "reference",
+        "tools"
+      ],
+      "topic": "tools"
+    },
+    {
+      "keywords": [
+        "operations",
+        "reference",
+        "what-breaks-if-removed"
+      ],
+      "path": "docs/operations/reference/what-breaks-if-removed.md",
+      "tags": [
+        "operations",
+        "reference",
+        "what-breaks-if-removed"
+      ],
+      "topic": "what-breaks-if-removed"
+    },
+    {
+      "keywords": [
         "operations",
         "release-add-artifact"
       ],
@@ -8483,6 +8623,18 @@
         "reproducibility"
       ],
       "topic": "reproducibility"
+    },
+    {
+      "keywords": [
+        "make-targets",
+        "reference"
+      ],
+      "path": "docs/reference/make-targets.md",
+      "tags": [
+        "make-targets",
+        "reference"
+      ],
+      "topic": "make-targets"
     },
     {
       "keywords": [

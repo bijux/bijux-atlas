@@ -539,6 +539,16 @@ License: Apache-2.0
 | `docs/operations/profiles-matrix.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/profiles.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/promotion-record.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/reference/commands.md` | `reference` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/reference/drills.md` | `reference` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/reference/evidence-model.md` | `reference` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/reference/gates.md` | `reference` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/reference/ops-surface.md` | `reference` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/reference/pins.md` | `reference` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/reference/schema-index.md` | `reference` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/reference/toolchain.md` | `reference` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/reference/tools.md` | `reference` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/reference/what-breaks-if-removed.md` | `reference` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release-add-artifact.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release-artifact-retention.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release-candidate-checklist.md` | `concept` | `bijux-atlas-operations` | `stable` |
@@ -649,6 +659,7 @@ License: Apache-2.0
 | `docs/reference/generated-artifacts.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/ingest/reproducibility.md` | `reference` | `platform` | `stable` |
+| `docs/reference/make-targets.md` | `reference` | `bijux-atlas-operations` | `stable` |
 | `docs/reference/make.md` | `reference` | `bijux-atlas-operations` | `stable` |
 | `docs/reference/ops-schema/budget-exceptions.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/ops-schema/budget-policy.md` | `reference` | `docs-governance` | `stable` |

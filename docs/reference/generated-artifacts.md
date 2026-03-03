@@ -10,7 +10,7 @@
 
 | Artifact | Source |
 | --- | --- |
-| `docs/reference/repo-map.md` | `bijux-dev-atlas docs repo-map --allow-write` |
+| `docs/reference/repo-map.md` | `bijux-dev-atlas docs reference generate --allow-subprocess --allow-write` |
 | `docs/_internal/generated/*` | control-plane and docs generation commands |
 | `ops/_examples/networkpolicy/*.yaml` | Helm render snapshots validated by tests |
 

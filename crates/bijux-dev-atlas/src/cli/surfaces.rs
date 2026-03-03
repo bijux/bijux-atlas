@@ -105,9 +105,16 @@ pub enum DocsCommand {
     Inventory(DocsCommonArgs),
     ShrinkReport(DocsCommonArgs),
     Grep(DocsGrepArgs),
+    HealthDashboard(DocsCommonArgs),
+    LifecycleSummaryTable(DocsTableRenderArgs),
+    DrillSummaryTable(DocsTableRenderArgs),
     Reference {
         #[command(subcommand)]
         command: DocsReferenceCommand,
+    },
+    Redirects {
+        #[command(subcommand)]
+        command: DocsRedirectsCommand,
     },
     Registry {
         #[command(subcommand)]
@@ -125,6 +132,11 @@ pub enum DocsRegistryCommand {
 pub enum DocsReferenceCommand {
     Generate(DocsCommonArgs),
     Check(DocsCommonArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum DocsRedirectsCommand {
+    Sync(DocsCommonArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -168,6 +180,16 @@ pub struct DocsGrepArgs {
     #[command(flatten)]
     pub common: DocsCommonArgs,
     pub pattern: String,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct DocsTableRenderArgs {
+    #[command(flatten)]
+    pub common: DocsCommonArgs,
+    #[arg(long)]
+    pub input: PathBuf,
+    #[arg(long)]
+    pub output: PathBuf,
 }
 
 #[derive(Args, Debug, Clone)]

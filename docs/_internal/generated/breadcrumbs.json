@@ -4743,6 +4743,96 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/reference",
+        "docs/operations/reference/commands.md"
+      ],
+      "path": "docs/operations/reference/commands.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reference",
+        "docs/operations/reference/drills.md"
+      ],
+      "path": "docs/operations/reference/drills.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reference",
+        "docs/operations/reference/evidence-model.md"
+      ],
+      "path": "docs/operations/reference/evidence-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reference",
+        "docs/operations/reference/gates.md"
+      ],
+      "path": "docs/operations/reference/gates.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reference",
+        "docs/operations/reference/ops-surface.md"
+      ],
+      "path": "docs/operations/reference/ops-surface.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reference",
+        "docs/operations/reference/pins.md"
+      ],
+      "path": "docs/operations/reference/pins.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reference",
+        "docs/operations/reference/schema-index.md"
+      ],
+      "path": "docs/operations/reference/schema-index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reference",
+        "docs/operations/reference/toolchain.md"
+      ],
+      "path": "docs/operations/reference/toolchain.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reference",
+        "docs/operations/reference/tools.md"
+      ],
+      "path": "docs/operations/reference/tools.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reference",
+        "docs/operations/reference/what-breaks-if-removed.md"
+      ],
+      "path": "docs/operations/reference/what-breaks-if-removed.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/release-add-artifact.md"
       ],
       "path": "docs/operations/release-add-artifact.md"
@@ -5694,6 +5784,14 @@
         "docs/reference/ingest/reproducibility.md"
       ],
       "path": "docs/reference/ingest/reproducibility.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/make-targets.md"
+      ],
+      "path": "docs/reference/make-targets.md"
     },
     {
       "breadcrumbs": [

@@ -2677,6 +2677,56 @@
     },
     {
       "crate": null,
+      "doc_type": "reference",
+      "from": "docs/operations/reference/commands.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/operations/reference/drills.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/operations/reference/evidence-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/operations/reference/gates.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/operations/reference/ops-surface.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/operations/reference/pins.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/operations/reference/schema-index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/operations/reference/toolchain.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/operations/reference/tools.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/operations/reference/what-breaks-if-removed.md"
+    },
+    {
+      "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/release-add-artifact.md"
     },
@@ -3224,6 +3274,11 @@
       "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/ingest/reproducibility.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/make-targets.md"
     },
     {
       "crate": null,

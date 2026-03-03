@@ -12903,6 +12903,256 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "commands",
+        "operations",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/commands.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "commands",
+        "operations",
+        "reference"
+      ],
+      "title": "Command Surface Reference",
+      "topic": "commands"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "drills",
+        "operations",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/drills.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "drills",
+        "operations",
+        "reference"
+      ],
+      "title": "Drills Reference",
+      "topic": "drills"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "evidence-model",
+        "operations",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/evidence-model.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "evidence-model",
+        "operations",
+        "reference"
+      ],
+      "title": "Evidence Model Reference",
+      "topic": "evidence-model"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "gates",
+        "operations",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/gates.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "gates",
+        "operations",
+        "reference"
+      ],
+      "title": "Gates Reference",
+      "topic": "gates"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-surface",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/ops-surface.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-surface",
+        "reference"
+      ],
+      "title": "Ops Surface Reference",
+      "topic": "ops-surface"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "pins",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/pins.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "pins",
+        "reference"
+      ],
+      "title": "Pins Reference",
+      "topic": "pins"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "reference",
+        "schema-index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/schema-index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "reference",
+        "schema-index"
+      ],
+      "title": "Schema Index Reference",
+      "topic": "schema-index"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "reference",
+        "toolchain"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/toolchain.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "reference",
+        "toolchain"
+      ],
+      "title": "Toolchain Reference",
+      "topic": "toolchain"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "reference",
+        "tools"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/tools.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "reference",
+        "tools"
+      ],
+      "title": "Tools Reference",
+      "topic": "tools"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "reference",
+        "what-breaks-if-removed"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/what-breaks-if-removed.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "reference",
+        "what-breaks-if-removed"
+      ],
+      "title": "What Breaks If Removed Reference",
+      "topic": "what-breaks-if-removed"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -14471,7 +14721,7 @@
     },
     {
       "area": "reference",
-      "audience": "user",
+      "audience": "operators",
       "crate": null,
       "doc_type": "reference",
       "doc_version": "v1",
@@ -14489,7 +14739,7 @@
         "commands",
         "reference"
       ],
-      "title": "Commands reference",
+      "title": "Commands Reference",
       "topic": "commands"
     },
     {
@@ -14617,7 +14867,7 @@
     },
     {
       "area": "reference",
-      "audience": "user",
+      "audience": "operators",
       "crate": null,
       "doc_type": "reference",
       "doc_version": "v1",
@@ -14635,7 +14885,7 @@
         "configs",
         "reference"
       ],
-      "title": "Configs reference",
+      "title": "Configs Reference",
       "topic": "configs"
     },
     {
@@ -15581,6 +15831,29 @@
     },
     {
       "area": "reference",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "make-targets",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/make-targets.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "make-targets",
+        "reference"
+      ],
+      "title": "Make Targets Reference",
+      "topic": "make-targets"
+    },
+    {
+      "area": "reference",
       "audience": "user",
       "crate": null,
       "doc_type": "reference",
@@ -16077,7 +16350,7 @@
     },
     {
       "area": "reference",
-      "audience": "contributor",
+      "audience": "operators",
       "crate": null,
       "doc_type": "reference",
       "doc_version": "v1",
@@ -16173,7 +16446,7 @@
     },
     {
       "area": "reference",
-      "audience": "user",
+      "audience": "operators",
       "crate": null,
       "doc_type": "reference",
       "doc_version": "v1",

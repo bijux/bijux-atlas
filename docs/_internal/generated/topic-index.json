@@ -349,6 +349,7 @@
     "commands": [
       "crates/bijux-dev-atlas/docs/commands.md",
       "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/commands.md",
+      "docs/operations/reference/commands.md",
       "docs/reference/commands.md"
     ],
     "common-failure-catalog": [
@@ -663,6 +664,7 @@
     ],
     "drills": [
       "docs/operations/drills.md",
+      "docs/operations/reference/drills.md",
       "docs/reference/contracts/drills.md"
     ],
     "drills-program": [
@@ -733,6 +735,9 @@
     "evidence": [
       "docs/reference/contracts/release/evidence.md"
     ],
+    "evidence-model": [
+      "docs/operations/reference/evidence-model.md"
+    ],
     "evidence-retention-policy": [
       "docs/operations/evidence-retention-policy.md"
     ],
@@ -794,6 +799,9 @@
     ],
     "formatting": [
       "crates/bijux-atlas-core/docs/formatting.md"
+    ],
+    "gates": [
+      "docs/operations/reference/gates.md"
     ],
     "generated-artifacts": [
       "docs/_internal/generated-artifacts.md",
@@ -969,7 +977,8 @@
       "docs/reference/make.md"
     ],
     "make-targets": [
-      "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/make-targets.md"
+      "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/make-targets.md",
+      "docs/reference/make-targets.md"
     ],
     "minimal-production-overrides": [
       "docs/operations/minimal-production-overrides.md"
@@ -1035,6 +1044,7 @@
       "docs/operations/ops-map.md"
     ],
     "ops-surface": [
+      "docs/operations/reference/ops-surface.md",
       "docs/reference/ops-surface.md"
     ],
     "optional-fields": [
@@ -1085,6 +1095,9 @@
     ],
     "performance-model": [
       "docs/architecture/performance-model.md"
+    ],
+    "pins": [
+      "docs/operations/reference/pins.md"
     ],
     "placement": [
       "docs/_internal/governance/style/placement.md"
@@ -1340,6 +1353,9 @@
     "schema-evolution-notes": [
       "crates/bijux-atlas-model/docs/internal/schema-evolution-notes.md"
     ],
+    "schema-index": [
+      "docs/operations/reference/schema-index.md"
+    ],
     "schema-overview": [
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/schema-overview.md"
     ],
@@ -1480,10 +1496,14 @@
       "crates/bijux-dev-atlas/docs/testing.md"
     ],
     "toolchain": [
-      "docs/development/toolchain.md"
+      "docs/development/toolchain.md",
+      "docs/operations/reference/toolchain.md"
     ],
     "tooling-dependencies": [
       "docs/control-plane/tooling-dependencies.md"
+    ],
+    "tools": [
+      "docs/operations/reference/tools.md"
     ],
     "tracing": [
       "docs/operations/observability/tracing.md"
@@ -1557,6 +1577,9 @@
     ],
     "what-belongs-where": [
       "docs/architecture/what-belongs-where.md"
+    ],
+    "what-breaks-if-removed": [
+      "docs/operations/reference/what-breaks-if-removed.md"
     ],
     "what-is-bijux-atlas": [
       "docs/product/what-is-bijux-atlas.md"

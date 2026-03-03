@@ -74,6 +74,311 @@ fn render_concept_registry_markdown(rows: &[DocsConceptRow]) -> String {
     out
 }
 
+fn docs_sync_redirects(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
+    let mkdocs_path = repo_root.join("mkdocs.yml");
+    let redirects_path = repo_root.join("docs/redirects.json");
+    let start = "      # redirect_maps generated from docs/redirects.json; run bijux-dev-atlas docs redirects sync --allow-write";
+    let end = "      # end generated redirect_maps";
+
+    let mapping: serde_json::Map<String, serde_json::Value> = serde_json::from_str(
+        &fs::read_to_string(&redirects_path)
+            .map_err(|e| format!("read {} failed: {e}", redirects_path.display()))?,
+    )
+    .map_err(|e| format!("parse {} failed: {e}", redirects_path.display()))?;
+
+    let filtered = mapping
+        .into_iter()
+        .filter_map(|(key, value)| {
+            let value = value.as_str()?.to_string();
+            if key.ends_with(".md") && value.ends_with(".md") {
+                Some((key, value))
+            } else {
+                None
+            }
+        })
+        .collect::<std::collections::BTreeMap<_, _>>();
+
+    let mut block = String::from(start);
+    block.push('\n');
+    block.push_str("      redirect_maps:\n");
+    for (key, value) in &filtered {
+        let key = key
+            .strip_prefix("docs/")
+            .ok_or_else(|| format!("redirect key must start with docs/: {key}"))?;
+        let value = value
+            .strip_prefix("docs/")
+            .ok_or_else(|| format!("redirect value must start with docs/: {value}"))?;
+        block.push_str(&format!("        {key}: {value}\n"));
+    }
+    block.push_str(end);
+
+    let mkdocs_text =
+        fs::read_to_string(&mkdocs_path).map_err(|e| format!("read {} failed: {e}", mkdocs_path.display()))?;
+    let start_index = mkdocs_text
+        .find(start)
+        .ok_or_else(|| format!("{} missing redirect start marker", mkdocs_path.display()))?;
+    let end_marker_index = mkdocs_text[start_index..]
+        .find(end)
+        .map(|idx| start_index + idx)
+        .ok_or_else(|| format!("{} missing redirect end marker", mkdocs_path.display()))?;
+    let end_line_index = mkdocs_text[end_marker_index..]
+        .find('\n')
+        .map(|idx| end_marker_index + idx)
+        .unwrap_or(mkdocs_text.len());
+    let new_text = format!(
+        "{}{}{}",
+        &mkdocs_text[..start_index],
+        block,
+        &mkdocs_text[end_line_index..]
+    );
+    let changed = new_text != mkdocs_text;
+    fs::write(&mkdocs_path, new_text)
+        .map_err(|e| format!("write {} failed: {e}", mkdocs_path.display()))?;
+
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "status": "ok",
+        "text": "mkdocs redirect_maps synchronized",
+        "changed": changed,
+        "redirect_count": filtered.len(),
+        "output": mkdocs_path.display().to_string(),
+    }))
+}
+
+fn render_summary_table(
+    rows: &[serde_json::Value],
+    title: &str,
+    empty_row: &str,
+    line_builder: impl Fn(&serde_json::Value) -> String,
+) -> String {
+    let mut lines = vec![
+        format!("# {title}"),
+        String::new(),
+    ];
+    if rows.is_empty() {
+        lines.push(empty_row.to_string());
+    } else {
+        for row in rows {
+            lines.push(line_builder(row));
+        }
+    }
+    lines.push(String::new());
+    lines.join("\n")
+}
+
+fn docs_write_summary_table(
+    input: &std::path::Path,
+    output: &std::path::Path,
+    field: &str,
+    content: impl Fn(Vec<serde_json::Value>) -> String,
+) -> Result<serde_json::Value, String> {
+    let rows = if input.exists() {
+        let payload: serde_json::Value = serde_json::from_str(
+            &fs::read_to_string(input).map_err(|e| format!("read {} failed: {e}", input.display()))?,
+        )
+        .map_err(|e| format!("parse {} failed: {e}", input.display()))?;
+        payload[field].as_array().cloned().unwrap_or_default()
+    } else {
+        Vec::new()
+    };
+    if let Some(parent) = output.parent() {
+        fs::create_dir_all(parent).map_err(|e| format!("create {} failed: {e}", parent.display()))?;
+    }
+    fs::write(output, content(rows.clone()))
+        .map_err(|e| format!("write {} failed: {e}", output.display()))?;
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "status": "ok",
+        "input": input.display().to_string(),
+        "output": output.display().to_string(),
+        "row_count": rows.len(),
+    }))
+}
+
+fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
+    let docs_root = repo_root.join("docs");
+    let output_path = docs_root.join("_internal/generated/docs-health-dashboard.md");
+    let allowlist_path = repo_root.join("configs/docs/external-link-allowlist.json");
+    let allowlist: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(&allowlist_path)
+            .map_err(|e| format!("read {} failed: {e}", allowlist_path.display()))?,
+    )
+    .map_err(|e| format!("parse {} failed: {e}", allowlist_path.display()))?;
+    let allowed_domains = allowlist["allowed_domains"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(|v| v.as_str())
+        .collect::<std::collections::BTreeSet<_>>();
+    let link_re = regex::Regex::new(r"\[[^\]]+\]\(([^)]+)\)").map_err(|e| e.to_string())?;
+
+    let mut docs_files = docs_markdown_files(&docs_root, true);
+    docs_files.sort();
+    let mut external_urls = Vec::<String>::new();
+    let mut linked_local = std::collections::BTreeSet::<String>::new();
+    let mut missing_verified = Vec::<String>::new();
+    let mut page_lengths = Vec::<(usize, String)>::new();
+    let mut single_line_offenders = Vec::<(usize, String)>::new();
+
+    for path in &docs_files {
+        let rel = path
+            .strip_prefix(repo_root)
+            .unwrap_or(path)
+            .display()
+            .to_string();
+        let text = fs::read_to_string(path).map_err(|e| format!("read {} failed: {e}", path.display()))?;
+        let lines = text.lines().collect::<Vec<_>>();
+        if !text.contains("Last verified against:") {
+            missing_verified.push(rel.clone());
+        }
+        page_lengths.push((lines.len(), rel.clone()));
+        let longest_line = lines.iter().map(|line| line.len()).max().unwrap_or(0);
+        if longest_line > 140 {
+            single_line_offenders.push((longest_line, rel.clone()));
+        }
+        for capture in link_re.captures_iter(&text) {
+            let target = capture.get(1).map(|m| m.as_str()).unwrap_or_default();
+            if target.starts_with("http://") || target.starts_with("https://") {
+                external_urls.push(target.to_string());
+                continue;
+            }
+            if target.starts_with('#') || target.starts_with("mailto:") {
+                continue;
+            }
+            let target_path = target.split('#').next().unwrap_or_default().trim();
+            if target_path.is_empty() {
+                continue;
+            }
+            let resolved = path.parent().unwrap_or(&docs_root).join(target_path);
+            if let Ok(rel_target) = resolved.strip_prefix(&docs_root) {
+                let mut normalized = rel_target.display().to_string();
+                if rel_target.extension().is_none() {
+                    let index = rel_target.join("index.md");
+                    if docs_root.join(&index).exists() {
+                        normalized = index.display().to_string();
+                    }
+                }
+                linked_local.insert(normalized);
+            }
+        }
+    }
+
+    let mut orphan_pages = Vec::<String>::new();
+    for path in &docs_files {
+        let rel = path
+            .strip_prefix(&docs_root)
+            .unwrap_or(path)
+            .display()
+            .to_string();
+        if rel.starts_with("_internal/")
+            || rel == "index.md"
+            || rel.ends_with("/index.md")
+            || rel == "start-here.md"
+        {
+            continue;
+        }
+        if !linked_local.contains(&rel) {
+            orphan_pages.push(format!("docs/{rel}"));
+        }
+    }
+
+    page_lengths.sort_by(|a, b| b.cmp(a));
+    single_line_offenders.sort_by(|a, b| b.cmp(a));
+    let domains = external_urls
+        .iter()
+        .filter_map(|url| {
+            let parsed = url.split("://").nth(1)?;
+            Some(parsed.split('/').next().unwrap_or_default().to_string())
+        })
+        .collect::<Vec<_>>();
+    let unique_domains = domains
+        .iter()
+        .cloned()
+        .collect::<std::collections::BTreeSet<_>>();
+    let covered_domains = unique_domains
+        .iter()
+        .filter(|domain| allowed_domains.contains(domain.as_str()))
+        .count();
+
+    let mut lines = vec![
+        "# Docs Health Dashboard".to_string(),
+        String::new(),
+        "- Owner: `docs-governance`".to_string(),
+        "- Review cadence: `quarterly`".to_string(),
+        "- Type: `generated`".to_string(),
+        "- Audience: `contributor`".to_string(),
+        "- Stability: `stable`".to_string(),
+        "- Generated by: `bijux-dev-atlas docs health-dashboard --allow-write`".to_string(),
+        "- Do not edit by hand: regenerate with the control-plane command.".to_string(),
+        String::new(),
+        "## Summary".to_string(),
+        String::new(),
+        format!("- External links: `{}`", external_urls.len()),
+        format!("- Unique external domains: `{}`", unique_domains.len()),
+        format!(
+            "- Allowlist-covered external domains: `{covered_domains}/{}`",
+            unique_domains.len()
+        ),
+        format!("- Orphan pages: `{}`", orphan_pages.len()),
+        format!(
+            "- Pages missing `Last verified against`: `{}`",
+            missing_verified.len()
+        ),
+        String::new(),
+        "## Longest Pages".to_string(),
+        String::new(),
+    ];
+    for (length, path) in page_lengths.iter().take(10) {
+        lines.push(format!("- `{path}`: `{length}` lines"));
+    }
+    lines.push(String::new());
+    lines.push("## Single-Line Offenders".to_string());
+    lines.push(String::new());
+    if single_line_offenders.is_empty() {
+        lines.push("- None".to_string());
+    } else {
+        for (length, path) in single_line_offenders.iter().take(10) {
+            lines.push(format!("- `{path}`: longest line `{length}` characters"));
+        }
+    }
+    lines.push(String::new());
+    lines.push("## Missing Verification Markers".to_string());
+    lines.push(String::new());
+    if missing_verified.is_empty() {
+        lines.push("- None".to_string());
+    } else {
+        for path in missing_verified.iter().take(20) {
+            lines.push(format!("- `{path}`"));
+        }
+    }
+    lines.push(String::new());
+    lines.push("## Orphan Pages".to_string());
+    lines.push(String::new());
+    if orphan_pages.is_empty() {
+        lines.push("- None".to_string());
+    } else {
+        for path in orphan_pages.iter().take(20) {
+            lines.push(format!("- `{path}`"));
+        }
+    }
+    lines.push(String::new());
+
+    if let Some(parent) = output_path.parent() {
+        fs::create_dir_all(parent).map_err(|e| format!("create {} failed: {e}", parent.display()))?;
+    }
+    fs::write(&output_path, lines.join("\n"))
+        .map_err(|e| format!("write {} failed: {e}", output_path.display()))?;
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "status": "ok",
+        "text": "docs health dashboard generated",
+        "output": output_path.display().to_string(),
+        "external_links": external_urls.len(),
+        "orphan_pages": orphan_pages.len(),
+        "missing_verified": missing_verified.len(),
+    }))
+}
+
 include!("docs_command_router_registry.inc.rs");
 
 pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
@@ -220,6 +525,93 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 let code = if payload["status"] == "pass" { 0 } else { 1 };
                 Ok((emit_payload(common.format, common.out, &payload)?, code))
             }
+            DocsCommand::HealthDashboard(common) => {
+                if !common.allow_write {
+                    return Err("docs health-dashboard requires --allow-write".to_string());
+                }
+                let ctx = docs_context(&common)?;
+                let mut payload = docs_generate_health_dashboard(&ctx.repo_root)?;
+                payload["run_id"] = serde_json::json!(ctx.run_id.as_str());
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                Ok((emit_payload(common.format, common.out, &payload)?, 0))
+            }
+            DocsCommand::LifecycleSummaryTable(args) => {
+                if !args.common.allow_write {
+                    return Err("docs lifecycle-summary-table requires --allow-write".to_string());
+                }
+                let mut payload = docs_write_summary_table(
+                    &args.input,
+                    &args.output,
+                    "profiles",
+                    |mut rows| {
+                        rows.sort_by_key(|row| row["profile"].as_str().unwrap_or_default().to_string());
+                        let header = vec![
+                            "<!-- Generated by bijux-dev-atlas docs lifecycle-summary-table --allow-write. Do not edit by hand. -->".to_string(),
+                            String::new(),
+                            "# Lifecycle Summary Table".to_string(),
+                            String::new(),
+                            "| Profile | Namespace | Upgrade | Rollback |".to_string(),
+                            "| --- | --- | --- | --- |".to_string(),
+                        ];
+                        let table = render_summary_table(
+                            &rows,
+                            "",
+                            "| none | none | not-run | not-run |",
+                            |row| {
+                                format!(
+                                    "| {} | {} | {} | {} |",
+                                    row["profile"].as_str().unwrap_or_default(),
+                                    row["namespace"].as_str().unwrap_or_default(),
+                                    row["upgrade_status"].as_str().unwrap_or("not-run"),
+                                    row["rollback_status"].as_str().unwrap_or("not-run")
+                                )
+                            },
+                        );
+                        let mut lines = header;
+                        lines.extend(table.lines().skip(2).map(str::to_string));
+                        lines.join("\n")
+                    },
+                )?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                Ok((emit_payload(args.common.format, args.common.out, &payload)?, 0))
+            }
+            DocsCommand::DrillSummaryTable(args) => {
+                if !args.common.allow_write {
+                    return Err("docs drill-summary-table requires --allow-write".to_string());
+                }
+                let mut payload = docs_write_summary_table(
+                    &args.input,
+                    &args.output,
+                    "drills",
+                    |mut rows| {
+                        rows.sort_by_key(|row| row["name"].as_str().unwrap_or_default().to_string());
+                        let lines = vec![
+                            "# Drill Summary".to_string(),
+                            String::new(),
+                            "| Drill | Status | Report |".to_string(),
+                            "| --- | --- | --- |".to_string(),
+                        ];
+                        let table = render_summary_table(
+                            &rows,
+                            "",
+                            "| (none) | n/a | n/a |",
+                            |row| {
+                                format!(
+                                    "| {} | {} | `{}` |",
+                                    row["name"].as_str().unwrap_or_default(),
+                                    row["status"].as_str().unwrap_or_default(),
+                                    row["report_path"].as_str().unwrap_or_default()
+                                )
+                            },
+                        );
+                        let mut out = lines;
+                        out.extend(table.lines().skip(2).map(str::to_string));
+                        out.join("\n")
+                    },
+                )?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                Ok((emit_payload(args.common.format, args.common.out, &payload)?, 0))
+            }
             DocsCommand::Reference { command } => match command {
                 crate::cli::DocsReferenceCommand::Generate(common) => {
                     let ctx = docs_context(&common)?;
@@ -249,6 +641,18 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         "duration_ms": started.elapsed().as_millis() as u64,
                     });
                     Ok((emit_payload(common.format, common.out, &payload)?, code))
+                }
+            },
+            DocsCommand::Redirects { command } => match command {
+                crate::cli::DocsRedirectsCommand::Sync(common) => {
+                    if !common.allow_write {
+                        return Err("docs redirects sync requires --allow-write".to_string());
+                    }
+                    let ctx = docs_context(&common)?;
+                    let mut payload = docs_sync_redirects(&ctx.repo_root)?;
+                    payload["run_id"] = serde_json::json!(ctx.run_id.as_str());
+                    payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                    Ok((emit_payload(common.format, common.out, &payload)?, 0))
                 }
             },
             DocsCommand::Registry { command } => run_docs_registry_command(&started, command),

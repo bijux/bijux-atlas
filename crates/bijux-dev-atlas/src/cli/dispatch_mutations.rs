@@ -275,9 +275,16 @@ fn force_json_docs(command: &mut DocsCommand) {
         | DocsCommand::Links(common)
         | DocsCommand::ExternalLinks(crate::cli::DocsExternalLinksArgs { common, .. })
         | DocsCommand::Inventory(common)
-        | DocsCommand::ShrinkReport(common) => common.format = FormatArg::Json,
+        | DocsCommand::ShrinkReport(common)
+        | DocsCommand::HealthDashboard(common) => common.format = FormatArg::Json,
         DocsCommand::Serve(args) => args.common.format = FormatArg::Json,
         DocsCommand::Grep(args) => args.common.format = FormatArg::Json,
+        DocsCommand::LifecycleSummaryTable(args) | DocsCommand::DrillSummaryTable(args) => {
+            args.common.format = FormatArg::Json
+        }
+        DocsCommand::Redirects { command } => match command {
+            crate::cli::DocsRedirectsCommand::Sync(common) => common.format = FormatArg::Json,
+        },
         DocsCommand::Registry { command } => match command {
             crate::cli::DocsRegistryCommand::Build(common)
             | crate::cli::DocsRegistryCommand::Validate(common) => common.format = FormatArg::Json,
@@ -428,7 +435,13 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | DocsCommand::Clean(_)
             | DocsCommand::Inventory(_)
             | DocsCommand::ShrinkReport(_)
-            | DocsCommand::Grep(_) => {}
+            | DocsCommand::Grep(_)
+            | DocsCommand::HealthDashboard(_)
+            | DocsCommand::LifecycleSummaryTable(_)
+            | DocsCommand::DrillSummaryTable(_) => {}
+            DocsCommand::Redirects { command } => match command {
+                crate::cli::DocsRedirectsCommand::Sync(_) => {}
+            },
             DocsCommand::Registry { command } => match command {
                 crate::cli::DocsRegistryCommand::Build(_)
                 | crate::cli::DocsRegistryCommand::Validate(_) => {}
@@ -768,9 +781,18 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | DocsCommand::Links(common)
             | DocsCommand::ExternalLinks(crate::cli::DocsExternalLinksArgs { common, .. })
             | DocsCommand::Inventory(common)
-            | DocsCommand::ShrinkReport(common) => common.repo_root = Some(root.clone()),
+            | DocsCommand::ShrinkReport(common)
+            | DocsCommand::HealthDashboard(common) => common.repo_root = Some(root.clone()),
             DocsCommand::Serve(args) => args.common.repo_root = Some(root.clone()),
             DocsCommand::Grep(args) => args.common.repo_root = Some(root.clone()),
+            DocsCommand::LifecycleSummaryTable(args) | DocsCommand::DrillSummaryTable(args) => {
+                args.common.repo_root = Some(root.clone())
+            }
+            DocsCommand::Redirects { command } => match command {
+                crate::cli::DocsRedirectsCommand::Sync(common) => {
+                    common.repo_root = Some(root.clone())
+                }
+            },
             DocsCommand::Registry { command } => match command {
                 crate::cli::DocsRegistryCommand::Build(common)
                 | crate::cli::DocsRegistryCommand::Validate(common) => {

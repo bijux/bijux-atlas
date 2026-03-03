@@ -4283,6 +4283,86 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/commands.md",
+      "stability": "stable",
+      "title": "Command Surface Reference"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/drills.md",
+      "stability": "stable",
+      "title": "Drills Reference"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/evidence-model.md",
+      "stability": "stable",
+      "title": "Evidence Model Reference"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/gates.md",
+      "stability": "stable",
+      "title": "Gates Reference"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/ops-surface.md",
+      "stability": "stable",
+      "title": "Ops Surface Reference"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/pins.md",
+      "stability": "stable",
+      "title": "Pins Reference"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/schema-index.md",
+      "stability": "stable",
+      "title": "Schema Index Reference"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/toolchain.md",
+      "stability": "stable",
+      "title": "Toolchain Reference"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/tools.md",
+      "stability": "stable",
+      "title": "Tools Reference"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/reference/what-breaks-if-removed.md",
+      "stability": "stable",
+      "title": "What Breaks If Removed Reference"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/release-add-artifact.md",
@@ -4811,11 +4891,11 @@
     },
     {
       "area": "reference",
-      "audience": "user",
+      "audience": "operators",
       "owner": "bijux-atlas-operations",
       "path": "docs/reference/commands.md",
       "stability": "stable",
-      "title": "Commands reference"
+      "title": "Commands Reference"
     },
     {
       "area": "reference",
@@ -4859,11 +4939,11 @@
     },
     {
       "area": "reference",
-      "audience": "user",
+      "audience": "operators",
       "owner": "bijux-atlas-operations",
       "path": "docs/reference/configs.md",
       "stability": "stable",
-      "title": "Configs reference"
+      "title": "Configs Reference"
     },
     {
       "area": "reference",
@@ -5163,6 +5243,14 @@
     },
     {
       "area": "reference",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/make-targets.md",
+      "stability": "stable",
+      "title": "Make Targets Reference"
+    },
+    {
+      "area": "reference",
       "audience": "user",
       "owner": "bijux-atlas-operations",
       "path": "docs/reference/make.md",
@@ -5323,7 +5411,7 @@
     },
     {
       "area": "reference",
-      "audience": "contributor",
+      "audience": "operators",
       "owner": "bijux-atlas-operations",
       "path": "docs/reference/repo-map.md",
       "stability": "stable",
@@ -5355,7 +5443,7 @@
     },
     {
       "area": "reference",
-      "audience": "user",
+      "audience": "operators",
       "owner": "bijux-atlas-operations",
       "path": "docs/reference/schemas.md",
       "stability": "stable",
