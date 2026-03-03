@@ -9,8 +9,11 @@ fn docs_reference_generate_or_check(
     for (rel, content) in targets {
         let path = repo_root.join(rel);
         generated.push(rel.to_string());
-        let existing = std::fs::read_to_string(&path)
-            .map_err(|e| format!("read {} failed: {e}", path.display()))?;
+        let existing = match std::fs::read_to_string(&path) {
+            Ok(value) => value,
+            Err(err) if allow_write && err.kind() == std::io::ErrorKind::NotFound => String::new(),
+            Err(err) => return Err(format!("read {} failed: {err}", path.display())),
+        };
         if existing != content {
             changed.push(rel.to_string());
             if allow_write {

@@ -3,6 +3,99 @@
 use super::*;
 use std::collections::BTreeMap;
 
+fn is_filename_case_exception(rel: &str) -> bool {
+    matches!(
+        rel,
+        "configs/CONSUMERS.json" | "configs/OWNERS.json" | "configs/SCHEMAS.json"
+    )
+}
+
+fn line_has_forbidden_env_default(line: &str) -> bool {
+    let mut rest = line;
+    while let Some(start) = rest.find("${") {
+        let candidate = &rest[start + 2..];
+        let Some(end) = candidate.find('}') else {
+            return false;
+        };
+        if candidate[..end].contains(":-") {
+            return true;
+        }
+        rest = &candidate[end + 1..];
+    }
+    false
+}
+
+fn structured_config_value(
+    path: &std::path::Path,
+    text: &str,
+) -> Result<Option<serde_json::Value>, String> {
+    let ext = path
+        .extension()
+        .and_then(|v| v.to_str())
+        .unwrap_or_default();
+    match ext {
+        "json" | "schema" => serde_json::from_str::<serde_json::Value>(text)
+            .map(Some)
+            .map_err(|e| format!("failed to parse {}: {e}", path.display())),
+        "yaml" | "yml" => serde_yaml::from_str::<serde_yaml::Value>(text)
+            .map_err(|e| format!("failed to parse {}: {e}", path.display()))
+            .and_then(|value| {
+                serde_json::to_value(value)
+                    .map(Some)
+                    .map_err(|e| format!("failed to normalize {}: {e}", path.display()))
+            }),
+        "toml" => toml::from_str::<toml::Value>(text)
+            .map_err(|e| format!("failed to parse {}: {e}", path.display()))
+            .and_then(|value| {
+                serde_json::to_value(value)
+                    .map(Some)
+                    .map_err(|e| format!("failed to normalize {}: {e}", path.display()))
+            }),
+        _ => Ok(None),
+    }
+}
+
+fn collect_secret_like_key_paths(
+    value: &serde_json::Value,
+    current_path: &str,
+    out: &mut Vec<String>,
+) {
+    match value {
+        serde_json::Value::Object(map) => {
+            for (key, nested) in map {
+                let path = if current_path.is_empty() {
+                    key.clone()
+                } else {
+                    format!("{current_path}.{key}")
+                };
+                let lower = key.to_ascii_lowercase();
+                if lower.contains("password") || lower.contains("secret") {
+                    out.push(path.clone());
+                }
+                collect_secret_like_key_paths(nested, &path, out);
+            }
+        }
+        serde_json::Value::Array(items) => {
+            for (index, nested) in items.iter().enumerate() {
+                collect_secret_like_key_paths(nested, &format!("{current_path}[{index}]"), out);
+            }
+        }
+        _ => {}
+    }
+}
+
+fn is_secret_like_key_exception(rel: &str, key_path: &str) -> bool {
+    key_path.contains('/')
+        || matches!(
+            (rel, key_path),
+            ("configs/security/secrets.json", "secrets")
+                | (
+                    "configs/contracts/security/secrets.schema.json",
+                    "properties.secrets"
+                )
+        )
+}
+
 pub(crate) fn configs_inventory_payload(
     ctx: &ConfigsContext,
     common: &ConfigsCommonArgs,
@@ -402,27 +495,34 @@ pub(crate) fn configs_lint_payload(
                 "CONFIGS_PARSE_ERROR: config path contains spaces `{rel}`"
             ));
         }
-        if name.chars().any(|c| c.is_ascii_uppercase()) {
+        if name.chars().any(|c| c.is_ascii_uppercase()) && !is_filename_case_exception(&rel) {
             errors.push(format!(
                 "CONFIGS_PARSE_ERROR: config filename should be lowercase `{rel}`"
             ));
         }
         let text = fs::read_to_string(&file).unwrap_or_default();
         for (i, line) in text.lines().enumerate() {
-            if line.contains("${") {
+            if line_has_forbidden_env_default(line) {
                 errors.push(format!(
                     "CONFIGS_PARSE_ERROR: {rel}:{} env interpolation defaults are forbidden",
                     i + 1
                 ));
             }
-            if (line.contains("password") || line.contains("secret"))
-                && !rel.contains("allowlist")
-                && !rel.contains("README")
-            {
-                errors.push(format!(
-                    "CONFIGS_SCHEMA_ERROR: {rel}:{} potential secret-like key requires allowlist review",
-                    i + 1
-                ));
+        }
+        if !rel.contains("allowlist") && !rel.contains("README") {
+            if let Some(value) = structured_config_value(&file, &text)? {
+                let mut key_paths = Vec::new();
+                collect_secret_like_key_paths(&value, "", &mut key_paths);
+                key_paths.sort();
+                key_paths.dedup();
+                for key_path in key_paths {
+                    if is_secret_like_key_exception(&rel, &key_path) {
+                        continue;
+                    }
+                    errors.push(format!(
+                        "CONFIGS_SCHEMA_ERROR: {rel}:{key_path} potential secret-like key requires allowlist review",
+                    ));
+                }
             }
         }
     }

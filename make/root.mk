@@ -24,8 +24,8 @@ CURATED_TARGETS := \
 	artifacts-clean build checks-all clean contracts contracts-all contracts-changed contracts-ci contracts-configs contracts-crates contracts-docker contracts-docs contracts-fast contracts-help contracts-json contracts-make contracts-merge contracts-ops contracts-pr contracts-release contracts-repo contracts-root contracts-runtime \
 	docker docker-contracts docker-contracts-effect docker-gate doctor \
 	help \
-	kind-down kind-reset kind-status kind-up \
 	k8s-render k8s-validate \
+	kind-down kind-reset kind-status kind-up \
 	lint-make make-fast make-target-list \
 	ops-contracts ops-contracts-effect ops-fast ops-nightly ops-pr \
 	root-surface-explain \
@@ -87,9 +87,9 @@ k8s-render: ## Render Kubernetes manifests through dev-atlas
 	@$(DEV_ATLAS) ops k8s render --profile $(PROFILE) --format json --out $(ARTIFACT_ROOT)/k8s-render/$(RUN_ID)/report.json >/dev/null
 
 k8s-validate: ## Validate Kubernetes manifests through dev-atlas
-	@printf '%s\n' "run: $(DEV_ATLAS) ops k8s validate --profile $(PROFILE) --format json"
+	@printf '%s\n' "run: $(DEV_ATLAS) ops k8s validate --profile $(PROFILE) --allow-subprocess --format json"
 	@mkdir -p $(ARTIFACT_ROOT)/k8s-validate/$(RUN_ID)
-	@$(DEV_ATLAS) ops k8s validate --profile $(PROFILE) --format json --out $(ARTIFACT_ROOT)/k8s-validate/$(RUN_ID)/report.json >/dev/null
+	@$(DEV_ATLAS) ops k8s validate --profile $(PROFILE) --allow-subprocess --format json --out $(ARTIFACT_ROOT)/k8s-validate/$(RUN_ID)/report.json >/dev/null
 
 stack-up: ## Start local ops stack through dev-atlas
 	@printf '%s\n' "run: $(DEV_ATLAS) ops stack up --profile $(PROFILE) --allow-subprocess --allow-write --format text"

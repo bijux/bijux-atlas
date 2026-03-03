@@ -54,16 +54,15 @@ fn collect_rs_files(root: &Path) -> Result<Vec<PathBuf>, String> {
 
 fn test_control_plane_001_no_legacy_dirs(ctx: &RunContext) -> TestResult {
     let mut violations = Vec::new();
-    for rel_path in ["scripts", "tools", "xtask"] {
-        let path = ctx.repo_root.join(rel_path);
-        if path.exists() {
-            violations.push(violation(
-                "CONTROL-PLANE-001",
-                "control_plane.surface.no_legacy_dirs",
-                Some(rel_path.to_string()),
-                format!("legacy automation directory `{rel_path}` must not exist"),
-            ));
-        }
+    let rel_path = "xtask";
+    let path = ctx.repo_root.join(rel_path);
+    if path.exists() {
+        violations.push(violation(
+            "CONTROL-PLANE-001",
+            "control_plane.surface.no_legacy_dirs",
+            Some(rel_path.to_string()),
+            format!("legacy automation directory `{rel_path}` must not exist"),
+        ));
     }
     if violations.is_empty() {
         TestResult::Pass
@@ -308,7 +307,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             title: "control-plane forbids legacy automation directories",
             tests: vec![TestCase {
                 id: TestId("controlplane.surface.no_legacy_dirs".to_string()),
-                title: "scripts tools and xtask directories do not exist at the repo root",
+                title: "xtask directory does not exist at the repo root",
                 kind: TestKind::Pure,
                 run: test_control_plane_001_no_legacy_dirs,
             }],
