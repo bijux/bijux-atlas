@@ -12,3 +12,9 @@ Required static gate entrypoints:
 - `make contracts-docs-required`
 - `make contracts-configs-required`
 - `make contracts-make-required`
+
+Suite-scoped contract entrypoints:
+- `make contracts-group GROUP=<name>`
+- `make contracts-tag TAG=<name>`
+- `make contracts-pure`
+- `make contracts-effect`

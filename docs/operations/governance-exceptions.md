@@ -36,6 +36,7 @@
 
 ## Governance dashboard inputs
 
+- Executable ops linkage: `OPS-ROOT-023` keeps operations policy docs tied to executable contract ids.
 - Summary report: `artifacts/governance/exceptions-summary.json`
 - Read-only table: `artifacts/governance/exceptions-table.md`
 - Expiry warning report: `artifacts/governance/exceptions-expiry-warning.json`

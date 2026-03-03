@@ -180,10 +180,9 @@
       "breadcrumbs": [
         "configs",
         "configs/governance",
-        "configs/governance/suites",
-        "configs/governance/suites/README.md"
+        "configs/governance/README.md"
       ],
-      "path": "configs/governance/suites/README.md"
+      "path": "configs/governance/README.md"
     },
     {
       "breadcrumbs": [
@@ -224,6 +223,14 @@
         "configs/nextest/README.md"
       ],
       "path": "configs/nextest/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
+        "configs/observability",
+        "configs/observability/README.md"
+      ],
+      "path": "configs/observability/README.md"
     },
     {
       "breadcrumbs": [
@@ -2716,6 +2723,24 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/add-check-template.md"
+      ],
+      "path": "docs/_internal/governance/add-check-template.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/add-contract-template.md"
+      ],
+      "path": "docs/_internal/governance/add-contract-template.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/adrs",
         "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md"
       ],
@@ -3277,6 +3302,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/registry-status-index.md"
+      ],
+      "path": "docs/_internal/governance/registry-status-index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/rename-chart-keys-safely.md"
       ],
       "path": "docs/_internal/governance/rename-chart-keys-safely.md"
@@ -3406,6 +3440,33 @@
         "docs/_internal/governance/style/structure-templates.md"
       ],
       "path": "docs/_internal/governance/style/structure-templates.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/suite-membership-policy.md"
+      ],
+      "path": "docs/_internal/governance/suite-membership-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/suites-and-registries.md"
+      ],
+      "path": "docs/_internal/governance/suites-and-registries.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/triage-validation-failures.md"
+      ],
+      "path": "docs/_internal/governance/triage-validation-failures.md"
     },
     {
       "breadcrumbs": [
@@ -5698,6 +5759,15 @@
       "breadcrumbs": [
         "docs",
         "docs/reference",
+        "docs/reference/checks",
+        "docs/reference/checks/index.md"
+      ],
+      "path": "docs/reference/checks/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
         "docs/reference/command-inventory.md"
       ],
       "path": "docs/reference/command-inventory.md"
@@ -6308,6 +6378,16 @@
         "docs/reference/repo-map.md"
       ],
       "path": "docs/reference/repo-map.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/reports",
+        "docs/reference/reports/checks",
+        "docs/reference/reports/checks/index.md"
+      ],
+      "path": "docs/reference/reports/checks/index.md"
     },
     {
       "breadcrumbs": [

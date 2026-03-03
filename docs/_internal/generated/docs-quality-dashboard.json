@@ -12,7 +12,7 @@
   "pruning_suggestions": [
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `CONTRACT` appears 25 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `INDEX` appears 4 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 78 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 79 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `architecture` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `benchmarks` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `caching` appears 3 times",
@@ -36,7 +36,7 @@
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `failure-modes` appears 4 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `generated-artifacts` appears 3 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `incident-response` appears 2 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `index` appears 51 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `index` appears 53 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `make-targets` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `make` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `networkpolicy` appears 2 times",
@@ -167,7 +167,6 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/checks-and-contracts.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/checks/docs-checks.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/checks/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/closure-checks.md` has no inbound doc links",
@@ -269,6 +268,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/product/sequence-v1.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/product/transcripts-v1.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/product/user-stories.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/checks/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/compatibility/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/contracts/compatibility.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/contracts/contract-diff.md` has no inbound doc links",
@@ -316,7 +316,7 @@
   "schema_version": 1,
   "summary": {
     "errors": 47,
-    "registered": 757,
+    "registered": 766,
     "warnings": 353
   }
 }

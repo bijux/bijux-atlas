@@ -123,7 +123,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "configs/governance/suites/README.md"
+      "from": "configs/governance/README.md"
     },
     {
       "crate": null,
@@ -149,6 +149,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "configs/nextest/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "configs/observability/README.md"
     },
     {
       "crate": null,
@@ -1478,6 +1483,16 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/add-check-template.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/add-contract-template.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md"
     },
     {
@@ -1783,6 +1798,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/registry-status-index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/rename-chart-keys-safely.md"
     },
     {
@@ -1849,6 +1869,21 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/_internal/governance/style/structure-templates.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/suite-membership-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/suites-and-registries.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/triage-validation-failures.md"
     },
     {
       "crate": null,
@@ -3233,6 +3268,11 @@
     {
       "crate": null,
       "doc_type": "reference",
+      "from": "docs/reference/checks/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
       "from": "docs/reference/command-inventory.md"
     },
     {
@@ -3569,6 +3609,11 @@
       "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/repo-map.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/reports/checks/index.md"
     },
     {
       "crate": null,

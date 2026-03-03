@@ -304,15 +304,13 @@
       "keywords": [
         "configs",
         "governance",
-        "readme",
-        "suites"
+        "readme"
       ],
-      "path": "configs/governance/suites/README.md",
+      "path": "configs/governance/README.md",
       "tags": [
         "configs",
         "governance",
-        "readme",
-        "suites"
+        "readme"
       ],
       "topic": "README"
     },
@@ -382,6 +380,20 @@
       "tags": [
         "configs",
         "nextest",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "observability",
+        "readme"
+      ],
+      "path": "configs/observability/README.md",
+      "tags": [
+        "configs",
+        "observability",
         "readme"
       ],
       "topic": "README"
@@ -3927,6 +3939,34 @@
     {
       "keywords": [
         "-internal",
+        "add-check-template",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/add-check-template.md",
+      "tags": [
+        "-internal",
+        "add-check-template",
+        "governance"
+      ],
+      "topic": "add-check-template"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "add-contract-template",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/add-contract-template.md",
+      "tags": [
+        "-internal",
+        "add-contract-template",
+        "governance"
+      ],
+      "topic": "add-contract-template"
+    },
+    {
+      "keywords": [
+        "-internal",
         "adr-0001-workspace-boundaries-and-effects",
         "adrs",
         "governance"
@@ -4806,6 +4846,20 @@
       "keywords": [
         "-internal",
         "governance",
+        "registry-status-index"
+      ],
+      "path": "docs/_internal/governance/registry-status-index.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "registry-status-index"
+      ],
+      "topic": "registry-status-index"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
         "rename-chart-keys-safely"
       ],
       "path": "docs/_internal/governance/rename-chart-keys-safely.md",
@@ -5015,6 +5069,48 @@
         "style"
       ],
       "topic": "structure-templates"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "suite-membership-policy"
+      ],
+      "path": "docs/_internal/governance/suite-membership-policy.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "suite-membership-policy"
+      ],
+      "topic": "suite-membership-policy"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "suites-and-registries"
+      ],
+      "path": "docs/_internal/governance/suites-and-registries.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "suites-and-registries"
+      ],
+      "topic": "suites-and-registries"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "triage-validation-failures"
+      ],
+      "path": "docs/_internal/governance/triage-validation-failures.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "triage-validation-failures"
+      ],
+      "topic": "triage-validation-failures"
     },
     {
       "keywords": [
@@ -8486,6 +8582,20 @@
     },
     {
       "keywords": [
+        "checks",
+        "index",
+        "reference"
+      ],
+      "path": "docs/reference/checks/index.md",
+      "tags": [
+        "checks",
+        "index",
+        "reference"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
         "command-inventory",
         "reference"
       ],
@@ -9437,6 +9547,22 @@
         "repo-map"
       ],
       "topic": "repo-map"
+    },
+    {
+      "keywords": [
+        "checks",
+        "index",
+        "reference",
+        "reports"
+      ],
+      "path": "docs/reference/reports/checks/index.md",
+      "tags": [
+        "checks",
+        "index",
+        "reference",
+        "reports"
+      ],
+      "topic": "index"
     },
     {
       "keywords": [

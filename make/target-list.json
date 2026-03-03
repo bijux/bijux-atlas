@@ -1,4 +1,6 @@
 {
+  "schema_version": 1,
+  "source": "make/root.mk:CURATED_TARGETS",
   "public_targets": [
     "artifacts-clean",
     "build",
@@ -14,15 +16,18 @@
     "contracts-changed",
     "contracts-ci",
     "contracts-configs",
+    "contracts-configs-required",
     "contracts-crates",
     "contracts-docker",
     "contracts-docs",
+    "contracts-docs-required",
     "contracts-effect",
     "contracts-fast",
     "contracts-group",
     "contracts-help",
     "contracts-json",
     "contracts-make",
+    "contracts-make-required",
     "contracts-merge",
     "contracts-ops",
     "contracts-pr",
@@ -59,7 +64,5 @@
     "suites-all",
     "suites-list",
     "tests-all"
-  ],
-  "schema_version": 1,
-  "source": "make/root.mk:CURATED_TARGETS"
+  ]
 }

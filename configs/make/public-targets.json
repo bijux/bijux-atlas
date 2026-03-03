@@ -1,6 +1,6 @@
 {
-  "max_public_targets": 50,
-  "target_public_targets": 48,
+  "max_public_targets": 64,
+  "target_public_targets": 62,
   "public_targets": [
     {
       "name": "artifacts-clean",
@@ -32,6 +32,42 @@
     {
       "name": "checks-all",
       "description": "Run deterministic non-test quality gates",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
+    },
+    {
+      "name": "checks-effect",
+      "description": "Run checks-effect through the governed make surface",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
+    },
+    {
+      "name": "checks-group",
+      "description": "Run checks-group through the governed make surface",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
+    },
+    {
+      "name": "checks-pure",
+      "description": "Run checks-pure through the governed make surface",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
+    },
+    {
+      "name": "checks-tag",
+      "description": "Run checks-tag through the governed make surface",
       "lanes": [
         "dev",
         "ci"
@@ -93,6 +129,15 @@
       "area": "contracts"
     },
     {
+      "name": "contracts-configs-required",
+      "description": "Run contracts-configs-required through the governed make surface",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
       "name": "contracts-crates",
       "description": "Run crate contracts",
       "lanes": [
@@ -120,8 +165,35 @@
       "area": "contracts"
     },
     {
+      "name": "contracts-docs-required",
+      "description": "Run contracts-docs-required through the governed make surface",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-effect",
+      "description": "Run contracts-effect through the governed make surface",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
       "name": "contracts-fast",
       "description": "Run contracts gate target",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-group",
+      "description": "Run contracts-group through the governed make surface",
       "lanes": [
         "dev",
         "ci"
@@ -156,6 +228,15 @@
       "area": "contracts"
     },
     {
+      "name": "contracts-make-required",
+      "description": "Run contracts-make-required through the governed make surface",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
       "name": "contracts-merge",
       "description": "Run merge contracts lane",
       "lanes": [
@@ -179,6 +260,15 @@
       "lanes": [
         "pr",
         "merge"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-pure",
+      "description": "Run contracts-pure through the governed make surface",
+      "lanes": [
+        "dev",
+        "ci"
       ],
       "area": "contracts"
     },
@@ -211,6 +301,15 @@
     {
       "name": "contracts-runtime",
       "description": "Run runtime contracts",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-tag",
+      "description": "Run contracts-tag through the governed make surface",
       "lanes": [
         "dev",
         "ci"
@@ -397,6 +496,15 @@
       "area": "ops"
     },
     {
+      "name": "registry-doctor",
+      "description": "Run registry-doctor through the governed make surface",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
+    },
+    {
       "name": "root-surface-explain",
       "description": "Explain why each root file and directory exists",
       "lanes": [
@@ -422,6 +530,24 @@
         "ci"
       ],
       "area": "ops"
+    },
+    {
+      "name": "suites-all",
+      "description": "Run suites-all through the governed make surface",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
+    },
+    {
+      "name": "suites-list",
+      "description": "Run suites-list through the governed make surface",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
     },
     {
       "name": "tests-all",

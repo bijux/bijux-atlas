@@ -503,6 +503,10 @@ fn test_make_contracts_002_target_surface(ctx: &RunContext) -> TestResult {
         "contracts-make-required",
         "contracts-ops",
         "contracts-help",
+        "contracts-group",
+        "contracts-tag",
+        "contracts-pure",
+        "contracts-effect",
     ]);
     let mut found_public = BTreeSet::new();
     let mut violations = Vec::new();
@@ -570,14 +574,18 @@ fn test_make_contracts_003_delegate_only(ctx: &RunContext) -> TestResult {
         if !trimmed.starts_with("@$(DEV_ATLAS)") && !trimmed.starts_with("@CI=1 $(DEV_ATLAS)") {
             continue;
         }
-        if !(trimmed.contains(" contracts ") || trimmed.contains(" check run --suite ")) {
+        if !(trimmed.contains(" contracts ")
+            || trimmed.contains(" suites run --suite contracts")
+            || trimmed.contains(" registry doctor ")
+            || trimmed.contains(" check run --suite "))
+        {
             violations.push(Violation {
                 contract_id: contract_id.to_string(),
                 test_id: test_id.to_string(),
                 file: Some(rel(&path, &ctx.repo_root)),
                 line: Some(index + 1),
                 message:
-                    "contracts targets must delegate only to bijux-dev-atlas contracts commands or required-suite check entrypoints"
+                    "contracts targets must delegate only to bijux-dev-atlas contract commands, contract suite runners, registry preflight, or required-suite check entrypoints"
                         .to_string(),
                 evidence: Some(trimmed.to_string()),
             });

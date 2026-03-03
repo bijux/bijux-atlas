@@ -30,6 +30,9 @@ Commands:
   policies
   ci
   check
+  contract
+  registry
+  suites
   validate
 ```
 

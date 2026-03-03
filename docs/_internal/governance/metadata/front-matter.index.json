@@ -197,9 +197,9 @@
       "area": "configs",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "configs/governance/suites/README.md",
+      "path": "configs/governance/README.md",
       "stability": "stable",
-      "title": "Governance Suites"
+      "title": "Governance Configs"
     },
     {
       "area": "configs",
@@ -240,6 +240,14 @@
       "path": "configs/nextest/README.md",
       "stability": "stable",
       "title": "Nextest configs"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "configs/observability/README.md",
+      "stability": "stable",
+      "title": "Observability Configs"
     },
     {
       "area": "configs",

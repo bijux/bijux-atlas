@@ -573,22 +573,20 @@
       "keywords": [
         "configs",
         "governance",
-        "readme",
-        "suites"
+        "readme"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "configs/governance/suites/README.md",
+      "path": "configs/governance/README.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
         "configs",
         "governance",
-        "readme",
-        "suites"
+        "readme"
       ],
-      "title": "Governance Suites",
+      "title": "Governance Configs",
       "topic": "README"
     },
     {
@@ -714,6 +712,31 @@
         "readme"
       ],
       "title": "Nextest configs",
+      "topic": "README"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "configs",
+        "observability",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/observability/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "observability",
+        "readme"
+      ],
+      "title": "Observability Configs",
       "topic": "README"
     },
     {
@@ -7182,7 +7205,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "team:bijux-atlas-governance",
+      "owner": "team:atlas-governance",
       "path": "docs/_internal/governance/add-check-template.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7207,7 +7230,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "team:bijux-atlas-governance",
+      "owner": "team:atlas-governance",
       "path": "docs/_internal/governance/add-contract-template.md",
       "review_due": "2026-08-24",
       "stability": "stable",

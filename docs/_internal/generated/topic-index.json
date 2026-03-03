@@ -70,12 +70,13 @@
       "configs/docs/README.md",
       "configs/examples/README.md",
       "configs/gates/README.md",
-      "configs/governance/suites/README.md",
+      "configs/governance/README.md",
       "configs/inventory/README.md",
       "configs/layout/README.md",
       "configs/make/README.md",
       "configs/meta/README.md",
       "configs/nextest/README.md",
+      "configs/observability/README.md",
       "configs/openapi/README.md",
       "configs/ops/README.md",
       "configs/owners/README.md",
@@ -158,6 +159,12 @@
     ],
     "add-a-redirect": [
       "docs/_internal/governance/add-a-redirect.md"
+    ],
+    "add-check-template": [
+      "docs/_internal/governance/add-check-template.md"
+    ],
+    "add-contract-template": [
+      "docs/_internal/governance/add-contract-template.md"
     ],
     "add-dataset-type": [
       "docs/development/add-dataset-type.md"
@@ -965,6 +972,7 @@
       "docs/operations/runbooks/index.md",
       "docs/operations/security/index.md",
       "docs/product/index.md",
+      "docs/reference/checks/index.md",
       "docs/reference/compatibility/index.md",
       "docs/reference/contracts/artifacts/index.md",
       "docs/reference/contracts/examples/index.md",
@@ -976,6 +984,7 @@
       "docs/reference/ops-schema/index.md",
       "docs/reference/querying/index.md",
       "docs/reference/registry/index.md",
+      "docs/reference/reports/checks/index.md",
       "docs/reference/reports/index.md",
       "docs/reference/reports/migrations/index.md",
       "docs/reference/store/index.md"
@@ -1301,6 +1310,9 @@
     "registry-federation-model": [
       "docs/architecture/registry-federation-model.md"
     ],
+    "registry-status-index": [
+      "docs/_internal/governance/registry-status-index.md"
+    ],
     "release-add-artifact": [
       "docs/operations/release-add-artifact.md"
     ],
@@ -1566,8 +1578,14 @@
     "style-lints": [
       "docs/_internal/governance/style-lints.md"
     ],
+    "suite-membership-policy": [
+      "docs/_internal/governance/suite-membership-policy.md"
+    ],
     "suites": [
       "docs/operations/load/suites.md"
+    ],
+    "suites-and-registries": [
+      "docs/_internal/governance/suites-and-registries.md"
     ],
     "supply-chain-policies": [
       "docs/operations/supply-chain-policies.md"
@@ -1621,6 +1639,9 @@
     ],
     "transcripts-v1": [
       "docs/product/transcripts-v1.md"
+    ],
+    "triage-validation-failures": [
+      "docs/_internal/governance/triage-validation-failures.md"
     ],
     "troubleshooting": [
       "docs/api/troubleshooting.md"

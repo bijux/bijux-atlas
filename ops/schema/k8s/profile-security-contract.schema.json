@@ -1,5 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schemas/k8s/profile-security-contract.schema.json",
   "additionalProperties": false,
   "properties": {
     "contract_version": {

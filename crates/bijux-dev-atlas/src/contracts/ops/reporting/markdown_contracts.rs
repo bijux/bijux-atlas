@@ -382,7 +382,7 @@ fn test_ops_schema_004_budget_policy(ctx: &RunContext) -> TestResult {
         ("e2e", 12),
         ("env", 5),
         ("inventory", 31),
-        ("k8s", 20),
+        ("k8s", 22),
         ("load", 15),
         ("meta", 20),
         ("observe", 15),

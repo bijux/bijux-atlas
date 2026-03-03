@@ -28,12 +28,13 @@ License: Apache-2.0
 | `configs/docs/README.md` | `concept` | `docs-governance` | `stable` |
 | `configs/examples/README.md` | `concept` | `docs-governance` | `stable` |
 | `configs/gates/README.md` | `concept` | `platform` | `stable` |
-| `configs/governance/suites/README.md` | `concept` | `docs-governance` | `stable` |
+| `configs/governance/README.md` | `concept` | `docs-governance` | `stable` |
 | `configs/inventory/README.md` | `concept` | `platform` | `stable` |
 | `configs/layout/README.md` | `concept` | `platform` | `stable` |
 | `configs/make/README.md` | `concept` | `platform` | `stable` |
 | `configs/meta/README.md` | `concept` | `platform` | `stable` |
 | `configs/nextest/README.md` | `concept` | `platform` | `stable` |
+| `configs/observability/README.md` | `concept` | `docs-governance` | `stable` |
 | `configs/openapi/README.md` | `concept` | `platform` | `stable` |
 | `configs/ops/README.md` | `concept` | `ops` | `stable` |
 | `configs/owners/README.md` | `concept` | `platform` | `stable` |
@@ -299,6 +300,8 @@ License: Apache-2.0
 | `docs/_internal/contracts/repo-laws.md` | `spec` | `docs-governance` | `stable` |
 | `docs/_internal/generated-artifacts.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/add-a-redirect.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/add-check-template.md` | `concept` | `team:atlas-governance` | `stable` |
+| `docs/_internal/governance/add-contract-template.md` | `concept` | `team:atlas-governance` | `stable` |
 | `docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md` | `concept` | `docs-governance` | `stable` |
@@ -360,6 +363,7 @@ License: Apache-2.0
 | `docs/_internal/governance/redirects-contract.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/redirects-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/regenerate-committed-artifacts.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/registry-status-index.md` | `concept` | `team:atlas-governance` | `stable` |
 | `docs/_internal/governance/rename-chart-keys-safely.md` | `concept` | `bijux-atlas-governance` | `stable` |
 | `docs/_internal/governance/rename-doc-page.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/rename-env-keys-safely.md` | `concept` | `bijux-atlas-governance` | `stable` |
@@ -374,6 +378,9 @@ License: Apache-2.0
 | `docs/_internal/governance/style/placement.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/style/stability-levels.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/style/structure-templates.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/suite-membership-policy.md` | `concept` | `team:atlas-governance` | `stable` |
+| `docs/_internal/governance/suites-and-registries.md` | `concept` | `team:atlas-governance` | `stable` |
+| `docs/_internal/governance/triage-validation-failures.md` | `concept` | `team:atlas-governance` | `stable` |
 | `docs/_internal/governance/verification-metadata.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/index.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/meta/docs-build-model.md` | `concept` | `docs-governance` | `stable` |
@@ -650,6 +657,7 @@ License: Apache-2.0
 | `docs/product/transcripts-v1.md` | `concept` | `bijux-atlas-query` | `stable` |
 | `docs/product/user-stories.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/what-is-bijux-atlas.md` | `concept` | `bijux-atlas-product` | `stable` |
+| `docs/reference/checks/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/command-inventory.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/commands.md` | `reference` | `bijux-atlas-operations` | `stable` |
 | `docs/reference/compatibility/bijux-dna-atlas.md` | `reference` | `docs-governance` | `stable` |
@@ -718,6 +726,7 @@ License: Apache-2.0
 | `docs/reference/registry/security-response-coordination.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/registry/shared-core-extraction.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/repo-map.md` | `reference` | `bijux-atlas-operations` | `stable` |
+| `docs/reference/reports/checks/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/reports/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/reports/migrations/index.md` | `reference` | `bijux-atlas-governance` | `stable` |
 | `docs/reference/runtime/config.md` | `reference` | `bijux-atlas-server` | `stable` |
