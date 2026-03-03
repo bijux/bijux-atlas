@@ -16,6 +16,21 @@ verification:
     - verification reads only local evidence files
     - consumers should compare checksums before promoting artifacts
 signed_items:
+  - path: configs/governance/exceptions.yaml
+    kind: exceptions-registry
+    required: true
+  - path: configs/governance/exceptions-archive.yaml
+    kind: exceptions-archive
+    required: true
+  - path: artifacts/governance/exceptions-summary.json
+    kind: exceptions-summary
+    required: true
+  - path: artifacts/governance/exceptions-expiry-warning.json
+    kind: exceptions-expiry-warning
+    required: true
+  - path: artifacts/governance/exceptions-churn.json
+    kind: exceptions-churn
+    required: true
   - path: configs/security/auth-model.yaml
     kind: auth-model-snapshot
     required: true

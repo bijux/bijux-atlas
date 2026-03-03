@@ -166,6 +166,17 @@ fn collect_tarball_members(
         }
     }
     for rel in manifest
+        .get("governance_assets")
+        .and_then(serde_json::Value::as_object)
+        .into_iter()
+        .flat_map(|rows| rows.values())
+        .filter_map(|row| row.get("path").and_then(serde_json::Value::as_str))
+    {
+        if root.join(rel).exists() {
+            files.push(rel.to_string());
+        }
+    }
+    for rel in manifest
         .get("auth_policy")
         .and_then(serde_json::Value::as_object)
         .into_iter()
@@ -183,6 +194,17 @@ fn collect_tarball_members(
         .into_iter()
         .flatten()
         .filter_map(|row| row.get("path").and_then(serde_json::Value::as_str))
+    {
+        if root.join(rel).exists() {
+            files.push(rel.to_string());
+        }
+    }
+    for rel in manifest
+        .get("signature_artifacts")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
     {
         if root.join(rel).exists() {
             files.push(rel.to_string());

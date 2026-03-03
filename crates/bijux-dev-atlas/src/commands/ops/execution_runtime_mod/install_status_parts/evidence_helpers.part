@@ -532,6 +532,31 @@ fn load_required_metric_names(repo_root: &std::path::Path) -> Result<Vec<String>
     Ok(rows)
 }
 
+fn collect_governance_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
+    let paths = [
+        "configs/governance/exceptions.yaml",
+        "configs/governance/exceptions-archive.yaml",
+        "configs/contracts/governance/exceptions.schema.json",
+        "configs/contracts/governance/exceptions-archive.schema.json",
+        "configs/contracts/reports/exceptions-summary.schema.json",
+        "configs/contracts/reports/exceptions-expiry-warning.schema.json",
+        "configs/contracts/reports/exceptions-churn.schema.json",
+        "artifacts/governance/exceptions-summary.json",
+        "artifacts/governance/exceptions-expiry-warning.json",
+        "artifacts/governance/exceptions-churn.json",
+        "artifacts/governance/exceptions-table.md",
+    ];
+    let mut rows = Vec::new();
+    for relative in paths {
+        let path = repo_root.join(relative);
+        if !path.exists() {
+            return Err(format!("missing governance asset {}", path.display()));
+        }
+        rows.push(relative.to_string());
+    }
+    Ok(rows)
+}
+
 fn observability_contract_checks(
     repo_root: &std::path::Path,
     metrics_body: &str,
@@ -910,6 +935,7 @@ fn build_release_evidence_tarball(
     files.extend(collect_observability_assets(repo_root)?);
     files.extend(collect_perf_assets(repo_root)?);
     files.extend(collect_dataset_assets(repo_root)?);
+    files.extend(collect_governance_assets(repo_root)?);
     if repo_root.join("artifacts/security/security-github-actions.json").exists() {
         files.push("artifacts/security/security-github-actions.json".to_string());
     }

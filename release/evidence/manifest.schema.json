@@ -21,6 +21,7 @@
     "sboms",
     "scan_reports",
     "audit_assets",
+    "governance_assets",
     "reports",
     "simulation_summaries",
     "drill_summaries",
@@ -414,6 +415,64 @@
             "path",
             "sha256"
           ],
+          "properties": {
+            "path": { "type": "string", "minLength": 1 },
+            "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          }
+        }
+      }
+    },
+    "governance_assets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exceptions_registry",
+        "exceptions_archive",
+        "exceptions_summary",
+        "exceptions_expiry_warning",
+        "exceptions_churn"
+      ],
+      "properties": {
+        "exceptions_registry": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256"],
+          "properties": {
+            "path": { "type": "string", "minLength": 1 },
+            "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          }
+        },
+        "exceptions_archive": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256"],
+          "properties": {
+            "path": { "type": "string", "minLength": 1 },
+            "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          }
+        },
+        "exceptions_summary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256"],
+          "properties": {
+            "path": { "type": "string", "minLength": 1 },
+            "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          }
+        },
+        "exceptions_expiry_warning": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256"],
+          "properties": {
+            "path": { "type": "string", "minLength": 1 },
+            "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          }
+        },
+        "exceptions_churn": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256"],
           "properties": {
             "path": { "type": "string", "minLength": 1 },
             "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }

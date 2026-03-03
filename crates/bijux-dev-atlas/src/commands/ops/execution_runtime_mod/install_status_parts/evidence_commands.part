@@ -39,6 +39,35 @@ fn run_security_validate_for_evidence(
     Ok(())
 }
 
+fn run_governance_exceptions_validate_for_evidence(
+    process: &OpsProcess,
+    repo_root: &std::path::Path,
+) -> Result<(), String> {
+    let argv = vec![
+        "run".to_string(),
+        "-q".to_string(),
+        "-p".to_string(),
+        "bijux-dev-atlas".to_string(),
+        "--".to_string(),
+        "governance".to_string(),
+        "exceptions".to_string(),
+        "validate".to_string(),
+        "--format".to_string(),
+        "json".to_string(),
+    ];
+    let _ = process
+        .run_subprocess("cargo", &argv, repo_root)
+        .map_err(|err| err.to_stable_message())?;
+    let report_path = repo_root.join("artifacts/governance/exceptions-summary.json");
+    if !report_path.exists() {
+        return Err(format!(
+            "governance exceptions validate completed without writing {}",
+            report_path.display()
+        ));
+    }
+    Ok(())
+}
+
 pub(crate) fn run_ops_evidence_collect(
     common: &OpsCommonArgs,
 ) -> Result<(String, i32), String> {
@@ -56,6 +85,7 @@ pub(crate) fn run_ops_evidence_collect(
     let governance_version = format!("main@{git_sha}");
     let evidence_root = evidence_root(&repo_root)?;
     run_security_validate_for_evidence(&process, &repo_root)?;
+    run_governance_exceptions_validate_for_evidence(&process, &repo_root)?;
     let chart_package = package_chart_for_evidence(&process, &repo_root)?;
     let policy_path = repo_root.join("release/evidence/policy.json");
     let identity_path = evidence_root.join("identity.json");
@@ -84,6 +114,11 @@ pub(crate) fn run_ops_evidence_collect(
     let runtime_env_allowlist = repo_root.join("configs/contracts/env.schema.json");
     let signing_policy = repo_root.join("release/signing/policy.yaml");
     let action_pins_report = repo_root.join("artifacts/security/security-github-actions.json");
+    let exceptions_registry = repo_root.join("configs/governance/exceptions.yaml");
+    let exceptions_archive = repo_root.join("configs/governance/exceptions-archive.yaml");
+    let exceptions_summary = repo_root.join("artifacts/governance/exceptions-summary.json");
+    let exceptions_warning = repo_root.join("artifacts/governance/exceptions-expiry-warning.json");
+    let exceptions_churn = repo_root.join("artifacts/governance/exceptions-churn.json");
     let docs_site_summary = collect_docs_site_summary(&repo_root)?;
     let supply_chain_inventory = collect_supply_chain_inventory(&repo_root)?;
     let image_artifacts = collect_image_artifacts(&repo_root)?;
@@ -171,6 +206,28 @@ pub(crate) fn run_ops_evidence_collect(
             "log_field_inventory": {
                 "path": log_field_inventory.strip_prefix(&repo_root).unwrap_or(&log_field_inventory).display().to_string(),
                 "sha256": sha256_file(&log_field_inventory)?
+            }
+        },
+        "governance_assets": {
+            "exceptions_registry": {
+                "path": exceptions_registry.strip_prefix(&repo_root).unwrap_or(&exceptions_registry).display().to_string(),
+                "sha256": sha256_file(&exceptions_registry)?
+            },
+            "exceptions_archive": {
+                "path": exceptions_archive.strip_prefix(&repo_root).unwrap_or(&exceptions_archive).display().to_string(),
+                "sha256": sha256_file(&exceptions_archive)?
+            },
+            "exceptions_summary": {
+                "path": exceptions_summary.strip_prefix(&repo_root).unwrap_or(&exceptions_summary).display().to_string(),
+                "sha256": sha256_file(&exceptions_summary)?
+            },
+            "exceptions_expiry_warning": {
+                "path": exceptions_warning.strip_prefix(&repo_root).unwrap_or(&exceptions_warning).display().to_string(),
+                "sha256": sha256_file(&exceptions_warning)?
+            },
+            "exceptions_churn": {
+                "path": exceptions_churn.strip_prefix(&repo_root).unwrap_or(&exceptions_churn).display().to_string(),
+                "sha256": sha256_file(&exceptions_churn)?
             }
         },
         "reports": collect_report_paths(&repo_root, &run_id)?,
@@ -340,6 +397,35 @@ pub(crate) fn run_ops_evidence_verify(
         }
     } else {
         errors.push("manifest must include auth_policy.access_policy".to_string());
+    }
+    if let Some(row) = manifest
+        .get("governance_assets")
+        .and_then(serde_json::Value::as_object)
+    {
+        for (name, item) in row {
+            let path = item
+                .get("path")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
+            let abs = repo_root.join(path);
+            if path.is_empty() || !abs.exists() {
+                errors.push(format!("governance asset does not exist for {name}: {path}"));
+                continue;
+            }
+            if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+                errors.push(format!("evidence tarball missing governance asset for {name}: {path}"));
+            }
+            if let Some(expected) = item.get("sha256").and_then(serde_json::Value::as_str) {
+                let actual = sha256_file(&abs)?;
+                if actual != expected {
+                    errors.push(format!(
+                        "governance asset checksum does not match manifest for {name}: {path}"
+                    ));
+                }
+            }
+        }
+    } else {
+        errors.push("manifest must include governance_assets".to_string());
     }
     if let Some(row) = manifest
         .get("supply_chain")
