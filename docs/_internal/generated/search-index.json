@@ -870,6 +870,90 @@
     },
     {
       "keywords": [
+        "bijux-atlas-benchmark",
+        "contract"
+      ],
+      "path": "crates/bijux-atlas-benchmark/CONTRACT.md",
+      "tags": [
+        "bijux-atlas-benchmark",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-benchmark",
+        "readme"
+      ],
+      "path": "crates/bijux-atlas-benchmark/README.md",
+      "tags": [
+        "bijux-atlas-benchmark",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "benchmark-architecture",
+        "bijux-atlas-benchmark"
+      ],
+      "path": "crates/bijux-atlas-benchmark/docs/benchmark-architecture.md",
+      "tags": [
+        "benchmark-architecture",
+        "bijux-atlas-benchmark"
+      ],
+      "topic": "benchmark-architecture"
+    },
+    {
+      "keywords": [
+        "benchmark-roadmap",
+        "bijux-atlas-benchmark"
+      ],
+      "path": "crates/bijux-atlas-benchmark/docs/benchmark-roadmap.md",
+      "tags": [
+        "benchmark-roadmap",
+        "bijux-atlas-benchmark"
+      ],
+      "topic": "benchmark-roadmap"
+    },
+    {
+      "keywords": [
+        "benchmark-troubleshooting",
+        "bijux-atlas-benchmark"
+      ],
+      "path": "crates/bijux-atlas-benchmark/docs/benchmark-troubleshooting.md",
+      "tags": [
+        "benchmark-troubleshooting",
+        "bijux-atlas-benchmark"
+      ],
+      "topic": "benchmark-troubleshooting"
+    },
+    {
+      "keywords": [
+        "benchmark-usage",
+        "bijux-atlas-benchmark"
+      ],
+      "path": "crates/bijux-atlas-benchmark/docs/benchmark-usage.md",
+      "tags": [
+        "benchmark-usage",
+        "bijux-atlas-benchmark"
+      ],
+      "topic": "benchmark-usage"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-benchmark",
+        "index"
+      ],
+      "path": "crates/bijux-atlas-benchmark/docs/index.md",
+      "tags": [
+        "bijux-atlas-benchmark",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
         "bijux-atlas-cli",
         "contract"
       ],
@@ -1493,6 +1577,90 @@
     {
       "keywords": [
         "bijux-atlas-ingest",
+        "ingest-benchmark-ci"
+      ],
+      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-ci.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "ingest-benchmark-ci"
+      ],
+      "topic": "ingest-benchmark-ci"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-ingest",
+        "ingest-benchmark-dashboard"
+      ],
+      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-dashboard.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "ingest-benchmark-dashboard"
+      ],
+      "topic": "ingest-benchmark-dashboard"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-ingest",
+        "ingest-benchmark-examples"
+      ],
+      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-examples.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "ingest-benchmark-examples"
+      ],
+      "topic": "ingest-benchmark-examples"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-ingest",
+        "ingest-benchmark-golden-results"
+      ],
+      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-golden-results.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "ingest-benchmark-golden-results"
+      ],
+      "topic": "ingest-benchmark-golden-results"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-ingest",
+        "ingest-benchmark-regression"
+      ],
+      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-regression.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "ingest-benchmark-regression"
+      ],
+      "topic": "ingest-benchmark-regression"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-ingest",
+        "ingest-benchmark-scenarios"
+      ],
+      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-scenarios.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "ingest-benchmark-scenarios"
+      ],
+      "topic": "ingest-benchmark-scenarios"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-ingest",
+        "ingest-benchmark-summary"
+      ],
+      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-summary.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "ingest-benchmark-summary"
+      ],
+      "topic": "ingest-benchmark-summary"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-ingest",
         "ingest-contract"
       ],
       "path": "crates/bijux-atlas-ingest/docs/ingest-contract.md",
@@ -1501,6 +1669,66 @@
         "ingest-contract"
       ],
       "topic": "ingest-contract"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-ingest",
+        "ingest-performance-architecture"
+      ],
+      "path": "crates/bijux-atlas-ingest/docs/ingest-performance-architecture.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "ingest-performance-architecture"
+      ],
+      "topic": "ingest-performance-architecture"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-ingest",
+        "ingest-performance-baseline"
+      ],
+      "path": "crates/bijux-atlas-ingest/docs/ingest-performance-baseline.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "ingest-performance-baseline"
+      ],
+      "topic": "ingest-performance-baseline"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-ingest",
+        "ingest-performance-metrics"
+      ],
+      "path": "crates/bijux-atlas-ingest/docs/ingest-performance-metrics.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "ingest-performance-metrics"
+      ],
+      "topic": "ingest-performance-metrics"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-ingest",
+        "ingest-performance-troubleshooting"
+      ],
+      "path": "crates/bijux-atlas-ingest/docs/ingest-performance-troubleshooting.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "ingest-performance-troubleshooting"
+      ],
+      "topic": "ingest-performance-troubleshooting"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-ingest",
+        "ingest-performance-tuning"
+      ],
+      "path": "crates/bijux-atlas-ingest/docs/ingest-performance-tuning.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "ingest-performance-tuning"
+      ],
+      "topic": "ingest-performance-tuning"
     },
     {
       "keywords": [
@@ -2389,6 +2617,54 @@
         "query-language-spec"
       ],
       "topic": "query-language-spec"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-query",
+        "query-performance-architecture"
+      ],
+      "path": "crates/bijux-atlas-query/docs/query-performance-architecture.md",
+      "tags": [
+        "bijux-atlas-query",
+        "query-performance-architecture"
+      ],
+      "topic": "query-performance-architecture"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-query",
+        "query-performance"
+      ],
+      "path": "crates/bijux-atlas-query/docs/query-performance.md",
+      "tags": [
+        "bijux-atlas-query",
+        "query-performance"
+      ],
+      "topic": "query-performance"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-query",
+        "query-profiling-guide"
+      ],
+      "path": "crates/bijux-atlas-query/docs/query-profiling-guide.md",
+      "tags": [
+        "bijux-atlas-query",
+        "query-profiling-guide"
+      ],
+      "topic": "query-profiling-guide"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-query",
+        "query-tuning-guide"
+      ],
+      "path": "crates/bijux-atlas-query/docs/query-tuning-guide.md",
+      "tags": [
+        "bijux-atlas-query",
+        "query-tuning-guide"
+      ],
+      "topic": "query-tuning-guide"
     },
     {
       "keywords": [
@@ -5903,6 +6179,30 @@
     {
       "keywords": [
         "architecture",
+        "cluster-membership-lifecycle"
+      ],
+      "path": "docs/architecture/cluster-membership-lifecycle.md",
+      "tags": [
+        "architecture",
+        "cluster-membership-lifecycle"
+      ],
+      "topic": "cluster-membership-lifecycle"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "cluster-topology"
+      ],
+      "path": "docs/architecture/cluster-topology.md",
+      "tags": [
+        "architecture",
+        "cluster-topology"
+      ],
+      "topic": "cluster-topology"
+    },
+    {
+      "keywords": [
+        "architecture",
         "common-failure-catalog"
       ],
       "path": "docs/architecture/common-failure-catalog.md",
@@ -5923,6 +6223,32 @@
         "components"
       ],
       "topic": "components"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "components",
+        "index"
+      ],
+      "path": "docs/architecture/components/index.md",
+      "tags": [
+        "architecture",
+        "components",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "consistency-contract"
+      ],
+      "path": "docs/architecture/consistency-contract.md",
+      "tags": [
+        "architecture",
+        "consistency-contract"
+      ],
+      "topic": "consistency-contract"
     },
     {
       "keywords": [
@@ -6011,6 +6337,298 @@
     {
       "keywords": [
         "architecture",
+        "artifact-lifecycle",
+        "diagrams"
+      ],
+      "path": "docs/architecture/diagrams/artifact-lifecycle.md",
+      "tags": [
+        "architecture",
+        "artifact-lifecycle",
+        "diagrams"
+      ],
+      "topic": "artifact-lifecycle"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "cluster-membership-architecture",
+        "diagrams"
+      ],
+      "path": "docs/architecture/diagrams/cluster-membership-architecture.md",
+      "tags": [
+        "architecture",
+        "cluster-membership-architecture",
+        "diagrams"
+      ],
+      "topic": "cluster-membership-architecture"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "control-plane",
+        "diagrams"
+      ],
+      "path": "docs/architecture/diagrams/control-plane.md",
+      "tags": [
+        "architecture",
+        "control-plane",
+        "diagrams"
+      ],
+      "topic": "control-plane"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "data-flow",
+        "diagrams"
+      ],
+      "path": "docs/architecture/diagrams/data-flow.md",
+      "tags": [
+        "architecture",
+        "data-flow",
+        "diagrams"
+      ],
+      "topic": "data-flow"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "deployment",
+        "diagrams"
+      ],
+      "path": "docs/architecture/diagrams/deployment.md",
+      "tags": [
+        "architecture",
+        "deployment",
+        "diagrams"
+      ],
+      "topic": "deployment"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "diagrams",
+        "failure-flow"
+      ],
+      "path": "docs/architecture/diagrams/failure-flow.md",
+      "tags": [
+        "architecture",
+        "diagrams",
+        "failure-flow"
+      ],
+      "topic": "failure-flow"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "diagrams",
+        "index"
+      ],
+      "path": "docs/architecture/diagrams/index.md",
+      "tags": [
+        "architecture",
+        "diagrams",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "diagrams",
+        "ingest-pipeline"
+      ],
+      "path": "docs/architecture/diagrams/ingest-pipeline.md",
+      "tags": [
+        "architecture",
+        "diagrams",
+        "ingest-pipeline"
+      ],
+      "topic": "ingest-pipeline"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "diagrams",
+        "ops-governance"
+      ],
+      "path": "docs/architecture/diagrams/ops-governance.md",
+      "tags": [
+        "architecture",
+        "diagrams",
+        "ops-governance"
+      ],
+      "topic": "ops-governance"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "diagrams",
+        "query-execution"
+      ],
+      "path": "docs/architecture/diagrams/query-execution.md",
+      "tags": [
+        "architecture",
+        "diagrams",
+        "query-execution"
+      ],
+      "topic": "query-execution"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "diagrams",
+        "replication-architecture"
+      ],
+      "path": "docs/architecture/diagrams/replication-architecture.md",
+      "tags": [
+        "architecture",
+        "diagrams",
+        "replication-architecture"
+      ],
+      "topic": "replication-architecture"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "diagrams",
+        "replication-flow"
+      ],
+      "path": "docs/architecture/diagrams/replication-flow.md",
+      "tags": [
+        "architecture",
+        "diagrams",
+        "replication-flow"
+      ],
+      "topic": "replication-flow"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "diagrams",
+        "repository-structure"
+      ],
+      "path": "docs/architecture/diagrams/repository-structure.md",
+      "tags": [
+        "architecture",
+        "diagrams",
+        "repository-structure"
+      ],
+      "topic": "repository-structure"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "diagrams",
+        "resilience-architecture"
+      ],
+      "path": "docs/architecture/diagrams/resilience-architecture.md",
+      "tags": [
+        "architecture",
+        "diagrams",
+        "resilience-architecture"
+      ],
+      "topic": "resilience-architecture"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "diagrams",
+        "runtime-system"
+      ],
+      "path": "docs/architecture/diagrams/runtime-system.md",
+      "tags": [
+        "architecture",
+        "diagrams",
+        "runtime-system"
+      ],
+      "topic": "runtime-system"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "diagrams",
+        "shard-architecture"
+      ],
+      "path": "docs/architecture/diagrams/shard-architecture.md",
+      "tags": [
+        "architecture",
+        "diagrams",
+        "shard-architecture"
+      ],
+      "topic": "shard-architecture"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "diagrams",
+        "shard-query-flow"
+      ],
+      "path": "docs/architecture/diagrams/shard-query-flow.md",
+      "tags": [
+        "architecture",
+        "diagrams",
+        "shard-query-flow"
+      ],
+      "topic": "shard-query-flow"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "diagrams",
+        "shard-routing-visualization"
+      ],
+      "path": "docs/architecture/diagrams/shard-routing-visualization.md",
+      "tags": [
+        "architecture",
+        "diagrams",
+        "shard-routing-visualization"
+      ],
+      "topic": "shard-routing-visualization"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "diagrams",
+        "style-guide"
+      ],
+      "path": "docs/architecture/diagrams/style-guide.md",
+      "tags": [
+        "architecture",
+        "diagrams",
+        "style-guide"
+      ],
+      "topic": "style-guide"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "diagrams",
+        "system-topology"
+      ],
+      "path": "docs/architecture/diagrams/system-topology.md",
+      "tags": [
+        "architecture",
+        "diagrams",
+        "system-topology"
+      ],
+      "topic": "system-topology"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "distributed-cluster-foundation"
+      ],
+      "path": "docs/architecture/distributed-cluster-foundation.md",
+      "tags": [
+        "architecture",
+        "distributed-cluster-foundation"
+      ],
+      "topic": "distributed-cluster-foundation"
+    },
+    {
+      "keywords": [
+        "architecture",
         "effects"
       ],
       "path": "docs/architecture/effects.md",
@@ -6023,6 +6641,18 @@
     {
       "keywords": [
         "architecture",
+        "engineering-philosophy"
+      ],
+      "path": "docs/architecture/engineering-philosophy.md",
+      "tags": [
+        "architecture",
+        "engineering-philosophy"
+      ],
+      "topic": "engineering-philosophy"
+    },
+    {
+      "keywords": [
+        "architecture",
         "error-model"
       ],
       "path": "docs/architecture/error-model.md",
@@ -6031,6 +6661,18 @@
         "error-model"
       ],
       "topic": "error-model"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "evolution"
+      ],
+      "path": "docs/architecture/evolution.md",
+      "tags": [
+        "architecture",
+        "evolution"
+      ],
+      "topic": "evolution"
     },
     {
       "keywords": [
@@ -6095,6 +6737,18 @@
     {
       "keywords": [
         "architecture",
+        "internal-architecture"
+      ],
+      "path": "docs/architecture/internal-architecture.md",
+      "tags": [
+        "architecture",
+        "internal-architecture"
+      ],
+      "topic": "internal-architecture"
+    },
+    {
+      "keywords": [
+        "architecture",
         "layering-rules"
       ],
       "path": "docs/architecture/layering-rules.md",
@@ -6103,6 +6757,18 @@
         "layering-rules"
       ],
       "topic": "layering-rules"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "overview"
+      ],
+      "path": "docs/architecture/overview.md",
+      "tags": [
+        "architecture",
+        "overview"
+      ],
+      "topic": "overview"
     },
     {
       "keywords": [
@@ -6131,6 +6797,18 @@
     {
       "keywords": [
         "architecture",
+        "query-performance-architecture"
+      ],
+      "path": "docs/architecture/query-performance-architecture.md",
+      "tags": [
+        "architecture",
+        "query-performance-architecture"
+      ],
+      "topic": "query-performance-architecture"
+    },
+    {
+      "keywords": [
+        "architecture",
         "registry-federation-model"
       ],
       "path": "docs/architecture/registry-federation-model.md",
@@ -6139,6 +6817,54 @@
         "registry-federation-model"
       ],
       "topic": "registry-federation-model"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "replica-lifecycle"
+      ],
+      "path": "docs/architecture/replica-lifecycle.md",
+      "tags": [
+        "architecture",
+        "replica-lifecycle"
+      ],
+      "topic": "replica-lifecycle"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "replication-architecture"
+      ],
+      "path": "docs/architecture/replication-architecture.md",
+      "tags": [
+        "architecture",
+        "replication-architecture"
+      ],
+      "topic": "replication-architecture"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "replication-model"
+      ],
+      "path": "docs/architecture/replication-model.md",
+      "tags": [
+        "architecture",
+        "replication-model"
+      ],
+      "topic": "replication-model"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "resilience-model"
+      ],
+      "path": "docs/architecture/resilience-model.md",
+      "tags": [
+        "architecture",
+        "resilience-model"
+      ],
+      "topic": "resilience-model"
     },
     {
       "keywords": [
@@ -6167,6 +6893,20 @@
     {
       "keywords": [
         "architecture",
+        "attack-surface-analysis",
+        "security"
+      ],
+      "path": "docs/architecture/security/attack-surface-analysis.md",
+      "tags": [
+        "architecture",
+        "attack-surface-analysis",
+        "security"
+      ],
+      "topic": "attack-surface-analysis"
+    },
+    {
+      "keywords": [
+        "architecture",
         "auth-model",
         "security"
       ],
@@ -6177,6 +6917,306 @@
         "security"
       ],
       "topic": "auth-model"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "authentication-strategy",
+        "security"
+      ],
+      "path": "docs/architecture/security/authentication-strategy.md",
+      "tags": [
+        "architecture",
+        "authentication-strategy",
+        "security"
+      ],
+      "topic": "authentication-strategy"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "authorization-architecture-diagrams",
+        "security"
+      ],
+      "path": "docs/architecture/security/authorization-architecture-diagrams.md",
+      "tags": [
+        "architecture",
+        "authorization-architecture-diagrams",
+        "security"
+      ],
+      "topic": "authorization-architecture-diagrams"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "authorization-model",
+        "security"
+      ],
+      "path": "docs/architecture/security/authorization-model.md",
+      "tags": [
+        "architecture",
+        "authorization-model",
+        "security"
+      ],
+      "topic": "authorization-model"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "data-protection-strategy",
+        "security"
+      ],
+      "path": "docs/architecture/security/data-protection-strategy.md",
+      "tags": [
+        "architecture",
+        "data-protection-strategy",
+        "security"
+      ],
+      "topic": "data-protection-strategy"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "encryption-architecture-diagrams",
+        "security"
+      ],
+      "path": "docs/architecture/security/encryption-architecture-diagrams.md",
+      "tags": [
+        "architecture",
+        "encryption-architecture-diagrams",
+        "security"
+      ],
+      "topic": "encryption-architecture-diagrams"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "encryption-model",
+        "security"
+      ],
+      "path": "docs/architecture/security/encryption-model.md",
+      "tags": [
+        "architecture",
+        "encryption-model",
+        "security"
+      ],
+      "topic": "encryption-model"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "identity-access-data-models",
+        "security"
+      ],
+      "path": "docs/architecture/security/identity-access-data-models.md",
+      "tags": [
+        "architecture",
+        "identity-access-data-models",
+        "security"
+      ],
+      "topic": "identity-access-data-models"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "index",
+        "security"
+      ],
+      "path": "docs/architecture/security/index.md",
+      "tags": [
+        "architecture",
+        "index",
+        "security"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "network-and-transport-security",
+        "security"
+      ],
+      "path": "docs/architecture/security/network-and-transport-security.md",
+      "tags": [
+        "architecture",
+        "network-and-transport-security",
+        "security"
+      ],
+      "topic": "network-and-transport-security"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "rbac-flow-diagrams",
+        "security"
+      ],
+      "path": "docs/architecture/security/rbac-flow-diagrams.md",
+      "tags": [
+        "architecture",
+        "rbac-flow-diagrams",
+        "security"
+      ],
+      "topic": "rbac-flow-diagrams"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "rbac-structure",
+        "security"
+      ],
+      "path": "docs/architecture/security/rbac-structure.md",
+      "tags": [
+        "architecture",
+        "rbac-structure",
+        "security"
+      ],
+      "topic": "rbac-structure"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "secrets-credentials-and-key-management",
+        "security"
+      ],
+      "path": "docs/architecture/security/secrets-credentials-and-key-management.md",
+      "tags": [
+        "architecture",
+        "secrets-credentials-and-key-management",
+        "security"
+      ],
+      "topic": "secrets-credentials-and-key-management"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "security",
+        "security-architecture"
+      ],
+      "path": "docs/architecture/security/security-architecture.md",
+      "tags": [
+        "architecture",
+        "security",
+        "security-architecture"
+      ],
+      "topic": "security-architecture"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "security",
+        "security-configuration-contract"
+      ],
+      "path": "docs/architecture/security/security-configuration-contract.md",
+      "tags": [
+        "architecture",
+        "security",
+        "security-configuration-contract"
+      ],
+      "topic": "security-configuration-contract"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "security",
+        "security-design-principles"
+      ],
+      "path": "docs/architecture/security/security-design-principles.md",
+      "tags": [
+        "architecture",
+        "security",
+        "security-design-principles"
+      ],
+      "topic": "security-design-principles"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "security",
+        "security-testing-strategy"
+      ],
+      "path": "docs/architecture/security/security-testing-strategy.md",
+      "tags": [
+        "architecture",
+        "security",
+        "security-testing-strategy"
+      ],
+      "topic": "security-testing-strategy"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "security",
+        "threat-model-scope"
+      ],
+      "path": "docs/architecture/security/threat-model-scope.md",
+      "tags": [
+        "architecture",
+        "security",
+        "threat-model-scope"
+      ],
+      "topic": "threat-model-scope"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "security",
+        "trust-boundaries"
+      ],
+      "path": "docs/architecture/security/trust-boundaries.md",
+      "tags": [
+        "architecture",
+        "security",
+        "trust-boundaries"
+      ],
+      "topic": "trust-boundaries"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "shard-design-principles"
+      ],
+      "path": "docs/architecture/shard-design-principles.md",
+      "tags": [
+        "architecture",
+        "shard-design-principles"
+      ],
+      "topic": "shard-design-principles"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "shard-model"
+      ],
+      "path": "docs/architecture/shard-model.md",
+      "tags": [
+        "architecture",
+        "shard-model"
+      ],
+      "topic": "shard-model"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "shard-routing-foundation"
+      ],
+      "path": "docs/architecture/shard-routing-foundation.md",
+      "tags": [
+        "architecture",
+        "shard-routing-foundation"
+      ],
+      "topic": "shard-routing-foundation"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "shard-routing-strategy"
+      ],
+      "path": "docs/architecture/shard-routing-strategy.md",
+      "tags": [
+        "architecture",
+        "shard-routing-strategy"
+      ],
+      "topic": "shard-routing-strategy"
     },
     {
       "keywords": [
@@ -6201,6 +7241,30 @@
         "store-integrity-model"
       ],
       "topic": "store-integrity-model"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "summary"
+      ],
+      "path": "docs/architecture/summary.md",
+      "tags": [
+        "architecture",
+        "summary"
+      ],
+      "topic": "summary"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "system-architecture-specification"
+      ],
+      "path": "docs/architecture/system-architecture-specification.md",
+      "tags": [
+        "architecture",
+        "system-architecture-specification"
+      ],
+      "topic": "system-architecture-specification"
     },
     {
       "keywords": [
@@ -7076,6 +8140,90 @@
     },
     {
       "keywords": [
+        "cluster-deployment-models",
+        "operations"
+      ],
+      "path": "docs/operations/cluster-deployment-models.md",
+      "tags": [
+        "cluster-deployment-models",
+        "operations"
+      ],
+      "topic": "cluster-deployment-models"
+    },
+    {
+      "keywords": [
+        "cluster-membership-protocol",
+        "operations"
+      ],
+      "path": "docs/operations/cluster-membership-protocol.md",
+      "tags": [
+        "cluster-membership-protocol",
+        "operations"
+      ],
+      "topic": "cluster-membership-protocol"
+    },
+    {
+      "keywords": [
+        "cluster-node-health-monitoring",
+        "operations"
+      ],
+      "path": "docs/operations/cluster-node-health-monitoring.md",
+      "tags": [
+        "cluster-node-health-monitoring",
+        "operations"
+      ],
+      "topic": "cluster-node-health-monitoring"
+    },
+    {
+      "keywords": [
+        "cluster-node-lifecycle-states",
+        "operations"
+      ],
+      "path": "docs/operations/cluster-node-lifecycle-states.md",
+      "tags": [
+        "cluster-node-lifecycle-states",
+        "operations"
+      ],
+      "topic": "cluster-node-lifecycle-states"
+    },
+    {
+      "keywords": [
+        "cluster-node-maintenance-procedures",
+        "operations"
+      ],
+      "path": "docs/operations/cluster-node-maintenance-procedures.md",
+      "tags": [
+        "cluster-node-maintenance-procedures",
+        "operations"
+      ],
+      "topic": "cluster-node-maintenance-procedures"
+    },
+    {
+      "keywords": [
+        "cluster-troubleshooting-guide",
+        "operations"
+      ],
+      "path": "docs/operations/cluster-troubleshooting-guide.md",
+      "tags": [
+        "cluster-troubleshooting-guide",
+        "operations"
+      ],
+      "topic": "cluster-troubleshooting-guide"
+    },
+    {
+      "keywords": [
+        "cluster-upgrade-and-compatibility",
+        "operations"
+      ],
+      "path": "docs/operations/cluster-upgrade-and-compatibility.md",
+      "tags": [
+        "cluster-upgrade-and-compatibility",
+        "operations"
+      ],
+      "topic": "cluster-upgrade-and-compatibility"
+    },
+    {
+      "keywords": [
         "config",
         "operations"
       ],
@@ -7532,6 +8680,90 @@
     },
     {
       "keywords": [
+        "architecture-diagram",
+        "load",
+        "operations"
+      ],
+      "path": "docs/operations/load/architecture-diagram.md",
+      "tags": [
+        "architecture-diagram",
+        "load",
+        "operations"
+      ],
+      "topic": "architecture-diagram"
+    },
+    {
+      "keywords": [
+        "comparison-tools",
+        "load",
+        "operations"
+      ],
+      "path": "docs/operations/load/comparison-tools.md",
+      "tags": [
+        "comparison-tools",
+        "load",
+        "operations"
+      ],
+      "topic": "comparison-tools"
+    },
+    {
+      "keywords": [
+        "dashboards",
+        "load",
+        "operations"
+      ],
+      "path": "docs/operations/load/dashboards.md",
+      "tags": [
+        "dashboards",
+        "load",
+        "operations"
+      ],
+      "topic": "dashboards"
+    },
+    {
+      "keywords": [
+        "documentation",
+        "load",
+        "operations"
+      ],
+      "path": "docs/operations/load/documentation.md",
+      "tags": [
+        "documentation",
+        "load",
+        "operations"
+      ],
+      "topic": "documentation"
+    },
+    {
+      "keywords": [
+        "example-configs",
+        "load",
+        "operations"
+      ],
+      "path": "docs/operations/load/example-configs.md",
+      "tags": [
+        "example-configs",
+        "load",
+        "operations"
+      ],
+      "topic": "example-configs"
+    },
+    {
+      "keywords": [
+        "harness-and-generators",
+        "load",
+        "operations"
+      ],
+      "path": "docs/operations/load/harness-and-generators.md",
+      "tags": [
+        "harness-and-generators",
+        "load",
+        "operations"
+      ],
+      "topic": "harness-and-generators"
+    },
+    {
+      "keywords": [
         "index",
         "load",
         "operations"
@@ -7559,6 +8791,48 @@
     {
       "keywords": [
         "load",
+        "metrics",
+        "operations"
+      ],
+      "path": "docs/operations/load/metrics.md",
+      "tags": [
+        "load",
+        "metrics",
+        "operations"
+      ],
+      "topic": "metrics"
+    },
+    {
+      "keywords": [
+        "load",
+        "operations",
+        "quickstart"
+      ],
+      "path": "docs/operations/load/quickstart.md",
+      "tags": [
+        "load",
+        "operations",
+        "quickstart"
+      ],
+      "topic": "quickstart"
+    },
+    {
+      "keywords": [
+        "load",
+        "operations",
+        "strategy"
+      ],
+      "path": "docs/operations/load/strategy.md",
+      "tags": [
+        "load",
+        "operations",
+        "strategy"
+      ],
+      "topic": "strategy"
+    },
+    {
+      "keywords": [
+        "load",
         "operations",
         "suites"
       ],
@@ -7569,6 +8843,34 @@
         "suites"
       ],
       "topic": "suites"
+    },
+    {
+      "keywords": [
+        "load",
+        "operations",
+        "summary-report"
+      ],
+      "path": "docs/operations/load/summary-report.md",
+      "tags": [
+        "load",
+        "operations",
+        "summary-report"
+      ],
+      "topic": "summary-report"
+    },
+    {
+      "keywords": [
+        "load",
+        "operations",
+        "troubleshooting"
+      ],
+      "path": "docs/operations/load/troubleshooting.md",
+      "tags": [
+        "load",
+        "operations",
+        "troubleshooting"
+      ],
+      "topic": "troubleshooting"
     },
     {
       "keywords": [
@@ -7656,6 +8958,34 @@
     },
     {
       "keywords": [
+        "alert-rule-examples",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/alert-rule-examples.md",
+      "tags": [
+        "alert-rule-examples",
+        "observability",
+        "operations"
+      ],
+      "topic": "alert-rule-examples"
+    },
+    {
+      "keywords": [
+        "alerting-configuration-guide",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/alerting-configuration-guide.md",
+      "tags": [
+        "alerting-configuration-guide",
+        "observability",
+        "operations"
+      ],
+      "topic": "alerting-configuration-guide"
+    },
+    {
+      "keywords": [
         "alerts",
         "observability",
         "operations"
@@ -7667,6 +8997,34 @@
         "operations"
       ],
       "topic": "alerts"
+    },
+    {
+      "keywords": [
+        "cardinality-policy",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/cardinality-policy.md",
+      "tags": [
+        "cardinality-policy",
+        "observability",
+        "operations"
+      ],
+      "topic": "cardinality-policy"
+    },
+    {
+      "keywords": [
+        "cluster-membership-observability",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/cluster-membership-observability.md",
+      "tags": [
+        "cluster-membership-observability",
+        "observability",
+        "operations"
+      ],
+      "topic": "cluster-membership-observability"
     },
     {
       "keywords": [
@@ -7684,6 +9042,76 @@
     },
     {
       "keywords": [
+        "debug-commands",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/debug-commands.md",
+      "tags": [
+        "debug-commands",
+        "observability",
+        "operations"
+      ],
+      "topic": "debug-commands"
+    },
+    {
+      "keywords": [
+        "diagnostics-outputs",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/diagnostics-outputs.md",
+      "tags": [
+        "diagnostics-outputs",
+        "observability",
+        "operations"
+      ],
+      "topic": "diagnostics-outputs"
+    },
+    {
+      "keywords": [
+        "failure-analysis-examples",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/failure-analysis-examples.md",
+      "tags": [
+        "failure-analysis-examples",
+        "observability",
+        "operations"
+      ],
+      "topic": "failure-analysis-examples"
+    },
+    {
+      "keywords": [
+        "grafana-dashboard-examples",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/grafana-dashboard-examples.md",
+      "tags": [
+        "grafana-dashboard-examples",
+        "observability",
+        "operations"
+      ],
+      "topic": "grafana-dashboard-examples"
+    },
+    {
+      "keywords": [
+        "health-endpoint-semantics",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/health-endpoint-semantics.md",
+      "tags": [
+        "health-endpoint-semantics",
+        "observability",
+        "operations"
+      ],
+      "topic": "health-endpoint-semantics"
+    },
+    {
+      "keywords": [
         "index",
         "observability",
         "operations"
@@ -7695,6 +9123,524 @@
         "operations"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "log-analysis-query-examples",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/log-analysis-query-examples.md",
+      "tags": [
+        "log-analysis-query-examples",
+        "observability",
+        "operations"
+      ],
+      "topic": "log-analysis-query-examples"
+    },
+    {
+      "keywords": [
+        "log-analysis-workflows",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/log-analysis-workflows.md",
+      "tags": [
+        "log-analysis-workflows",
+        "observability",
+        "operations"
+      ],
+      "topic": "log-analysis-workflows"
+    },
+    {
+      "keywords": [
+        "log-correlation-ids",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/log-correlation-ids.md",
+      "tags": [
+        "log-correlation-ids",
+        "observability",
+        "operations"
+      ],
+      "topic": "log-correlation-ids"
+    },
+    {
+      "keywords": [
+        "log-levels",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/log-levels.md",
+      "tags": [
+        "log-levels",
+        "observability",
+        "operations"
+      ],
+      "topic": "log-levels"
+    },
+    {
+      "keywords": [
+        "log-metadata-fields",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/log-metadata-fields.md",
+      "tags": [
+        "log-metadata-fields",
+        "observability",
+        "operations"
+      ],
+      "topic": "log-metadata-fields"
+    },
+    {
+      "keywords": [
+        "logging-aggregation-examples",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/logging-aggregation-examples.md",
+      "tags": [
+        "logging-aggregation-examples",
+        "observability",
+        "operations"
+      ],
+      "topic": "logging-aggregation-examples"
+    },
+    {
+      "keywords": [
+        "logging-architecture",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/logging-architecture.md",
+      "tags": [
+        "logging-architecture",
+        "observability",
+        "operations"
+      ],
+      "topic": "logging-architecture"
+    },
+    {
+      "keywords": [
+        "logging-best-practices",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/logging-best-practices.md",
+      "tags": [
+        "logging-best-practices",
+        "observability",
+        "operations"
+      ],
+      "topic": "logging-best-practices"
+    },
+    {
+      "keywords": [
+        "logging-dashboard-examples",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/logging-dashboard-examples.md",
+      "tags": [
+        "logging-dashboard-examples",
+        "observability",
+        "operations"
+      ],
+      "topic": "logging-dashboard-examples"
+    },
+    {
+      "keywords": [
+        "logging-debugging-guide",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/logging-debugging-guide.md",
+      "tags": [
+        "logging-debugging-guide",
+        "observability",
+        "operations"
+      ],
+      "topic": "logging-debugging-guide"
+    },
+    {
+      "keywords": [
+        "logging-ingestion-examples",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/logging-ingestion-examples.md",
+      "tags": [
+        "logging-ingestion-examples",
+        "observability",
+        "operations"
+      ],
+      "topic": "logging-ingestion-examples"
+    },
+    {
+      "keywords": [
+        "logging-privacy-policy",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/logging-privacy-policy.md",
+      "tags": [
+        "logging-privacy-policy",
+        "observability",
+        "operations"
+      ],
+      "topic": "logging-privacy-policy"
+    },
+    {
+      "keywords": [
+        "logging-redaction-policy",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/logging-redaction-policy.md",
+      "tags": [
+        "logging-redaction-policy",
+        "observability",
+        "operations"
+      ],
+      "topic": "logging-redaction-policy"
+    },
+    {
+      "keywords": [
+        "logging-rotation-policy",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/logging-rotation-policy.md",
+      "tags": [
+        "logging-rotation-policy",
+        "observability",
+        "operations"
+      ],
+      "topic": "logging-rotation-policy"
+    },
+    {
+      "keywords": [
+        "logging-sampling-policy",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/logging-sampling-policy.md",
+      "tags": [
+        "logging-sampling-policy",
+        "observability",
+        "operations"
+      ],
+      "topic": "logging-sampling-policy"
+    },
+    {
+      "keywords": [
+        "metric-labels",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/metric-labels.md",
+      "tags": [
+        "metric-labels",
+        "observability",
+        "operations"
+      ],
+      "topic": "metric-labels"
+    },
+    {
+      "keywords": [
+        "metric-retention-policy",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/metric-retention-policy.md",
+      "tags": [
+        "metric-retention-policy",
+        "observability",
+        "operations"
+      ],
+      "topic": "metric-retention-policy"
+    },
+    {
+      "keywords": [
+        "metric-types",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/metric-types.md",
+      "tags": [
+        "metric-types",
+        "observability",
+        "operations"
+      ],
+      "topic": "metric-types"
+    },
+    {
+      "keywords": [
+        "metrics-architecture",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/metrics-architecture.md",
+      "tags": [
+        "metrics-architecture",
+        "observability",
+        "operations"
+      ],
+      "topic": "metrics-architecture"
+    },
+    {
+      "keywords": [
+        "metrics-naming-conventions",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/metrics-naming-conventions.md",
+      "tags": [
+        "metrics-naming-conventions",
+        "observability",
+        "operations"
+      ],
+      "topic": "metrics-naming-conventions"
+    },
+    {
+      "keywords": [
+        "monitoring-setup-guide",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/monitoring-setup-guide.md",
+      "tags": [
+        "monitoring-setup-guide",
+        "observability",
+        "operations"
+      ],
+      "topic": "monitoring-setup-guide"
+    },
+    {
+      "keywords": [
+        "observability",
+        "observability-architecture-diagram",
+        "operations"
+      ],
+      "path": "docs/operations/observability/observability-architecture-diagram.md",
+      "tags": [
+        "observability",
+        "observability-architecture-diagram",
+        "operations"
+      ],
+      "topic": "observability-architecture-diagram"
+    },
+    {
+      "keywords": [
+        "observability",
+        "observability-faq",
+        "operations"
+      ],
+      "path": "docs/operations/observability/observability-faq.md",
+      "tags": [
+        "observability",
+        "observability-faq",
+        "operations"
+      ],
+      "topic": "observability-faq"
+    },
+    {
+      "keywords": [
+        "observability",
+        "observability-future-roadmap",
+        "operations"
+      ],
+      "path": "docs/operations/observability/observability-future-roadmap.md",
+      "tags": [
+        "observability",
+        "observability-future-roadmap",
+        "operations"
+      ],
+      "topic": "observability-future-roadmap"
+    },
+    {
+      "keywords": [
+        "observability",
+        "observability-glossary",
+        "operations"
+      ],
+      "path": "docs/operations/observability/observability-glossary.md",
+      "tags": [
+        "observability",
+        "observability-glossary",
+        "operations"
+      ],
+      "topic": "observability-glossary"
+    },
+    {
+      "keywords": [
+        "observability",
+        "observability-performance-considerations",
+        "operations"
+      ],
+      "path": "docs/operations/observability/observability-performance-considerations.md",
+      "tags": [
+        "observability",
+        "observability-performance-considerations",
+        "operations"
+      ],
+      "topic": "observability-performance-considerations"
+    },
+    {
+      "keywords": [
+        "observability",
+        "observability-quickstart",
+        "operations"
+      ],
+      "path": "docs/operations/observability/observability-quickstart.md",
+      "tags": [
+        "observability",
+        "observability-quickstart",
+        "operations"
+      ],
+      "topic": "observability-quickstart"
+    },
+    {
+      "keywords": [
+        "observability",
+        "observability-troubleshooting-guide",
+        "operations"
+      ],
+      "path": "docs/operations/observability/observability-troubleshooting-guide.md",
+      "tags": [
+        "observability",
+        "observability-troubleshooting-guide",
+        "operations"
+      ],
+      "topic": "observability-troubleshooting-guide"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operational-troubleshooting-guide",
+        "operations"
+      ],
+      "path": "docs/operations/observability/operational-troubleshooting-guide.md",
+      "tags": [
+        "observability",
+        "operational-troubleshooting-guide",
+        "operations"
+      ],
+      "topic": "operational-troubleshooting-guide"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "production-debugging-guide"
+      ],
+      "path": "docs/operations/observability/production-debugging-guide.md",
+      "tags": [
+        "observability",
+        "operations",
+        "production-debugging-guide"
+      ],
+      "topic": "production-debugging-guide"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "production-monitoring-checklist"
+      ],
+      "path": "docs/operations/observability/production-monitoring-checklist.md",
+      "tags": [
+        "observability",
+        "operations",
+        "production-monitoring-checklist"
+      ],
+      "topic": "production-monitoring-checklist"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "prometheus-query-examples"
+      ],
+      "path": "docs/operations/observability/prometheus-query-examples.md",
+      "tags": [
+        "observability",
+        "operations",
+        "prometheus-query-examples"
+      ],
+      "topic": "prometheus-query-examples"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "query-benchmark-dashboards"
+      ],
+      "path": "docs/operations/observability/query-benchmark-dashboards.md",
+      "tags": [
+        "observability",
+        "operations",
+        "query-benchmark-dashboards"
+      ],
+      "topic": "query-benchmark-dashboards"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "readiness-semantics"
+      ],
+      "path": "docs/operations/observability/readiness-semantics.md",
+      "tags": [
+        "observability",
+        "operations",
+        "readiness-semantics"
+      ],
+      "topic": "readiness-semantics"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "runtime-diagnostics"
+      ],
+      "path": "docs/operations/observability/runtime-diagnostics.md",
+      "tags": [
+        "observability",
+        "operations",
+        "runtime-diagnostics"
+      ],
+      "topic": "runtime-diagnostics"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "runtime-inspection-examples"
+      ],
+      "path": "docs/operations/observability/runtime-inspection-examples.md",
+      "tags": [
+        "observability",
+        "operations",
+        "runtime-inspection-examples"
+      ],
+      "topic": "runtime-inspection-examples"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "runtime-introspection"
+      ],
+      "path": "docs/operations/observability/runtime-introspection.md",
+      "tags": [
+        "observability",
+        "operations",
+        "runtime-introspection"
+      ],
+      "topic": "runtime-introspection"
     },
     {
       "keywords": [
@@ -7723,6 +9669,146 @@
         "slos-with-promql"
       ],
       "topic": "slos-with-promql"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "system-state-visualization"
+      ],
+      "path": "docs/operations/observability/system-state-visualization.md",
+      "tags": [
+        "observability",
+        "operations",
+        "system-state-visualization"
+      ],
+      "topic": "system-state-visualization"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "trace-dashboard-examples"
+      ],
+      "path": "docs/operations/observability/trace-dashboard-examples.md",
+      "tags": [
+        "observability",
+        "operations",
+        "trace-dashboard-examples"
+      ],
+      "topic": "trace-dashboard-examples"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "trace-exporters"
+      ],
+      "path": "docs/operations/observability/trace-exporters.md",
+      "tags": [
+        "observability",
+        "operations",
+        "trace-exporters"
+      ],
+      "topic": "trace-exporters"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "trace-fields"
+      ],
+      "path": "docs/operations/observability/trace-fields.md",
+      "tags": [
+        "observability",
+        "operations",
+        "trace-fields"
+      ],
+      "topic": "trace-fields"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "trace-sampling-policy"
+      ],
+      "path": "docs/operations/observability/trace-sampling-policy.md",
+      "tags": [
+        "observability",
+        "operations",
+        "trace-sampling-policy"
+      ],
+      "topic": "trace-sampling-policy"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "trace-timeline-examples"
+      ],
+      "path": "docs/operations/observability/trace-timeline-examples.md",
+      "tags": [
+        "observability",
+        "operations",
+        "trace-timeline-examples"
+      ],
+      "topic": "trace-timeline-examples"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "trace-troubleshooting"
+      ],
+      "path": "docs/operations/observability/trace-troubleshooting.md",
+      "tags": [
+        "observability",
+        "operations",
+        "trace-troubleshooting"
+      ],
+      "topic": "trace-troubleshooting"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "tracing-architecture"
+      ],
+      "path": "docs/operations/observability/tracing-architecture.md",
+      "tags": [
+        "observability",
+        "operations",
+        "tracing-architecture"
+      ],
+      "topic": "tracing-architecture"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "tracing-dashboard-examples"
+      ],
+      "path": "docs/operations/observability/tracing-dashboard-examples.md",
+      "tags": [
+        "observability",
+        "operations",
+        "tracing-dashboard-examples"
+      ],
+      "topic": "tracing-dashboard-examples"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
+        "tracing-spans"
+      ],
+      "path": "docs/operations/observability/tracing-spans.md",
+      "tags": [
+        "observability",
+        "operations",
+        "tracing-spans"
+      ],
+      "topic": "tracing-spans"
     },
     {
       "keywords": [
@@ -7801,6 +9887,18 @@
     {
       "keywords": [
         "operations",
+        "performance-architecture-diagrams"
+      ],
+      "path": "docs/operations/performance-architecture-diagrams.md",
+      "tags": [
+        "operations",
+        "performance-architecture-diagrams"
+      ],
+      "topic": "performance-architecture-diagrams"
+    },
+    {
+      "keywords": [
+        "operations",
         "performance-baseline"
       ],
       "path": "docs/operations/performance-baseline.md",
@@ -7809,6 +9907,174 @@
         "performance-baseline"
       ],
       "topic": "performance-baseline"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance-ci-operations"
+      ],
+      "path": "docs/operations/performance-ci-operations.md",
+      "tags": [
+        "operations",
+        "performance-ci-operations"
+      ],
+      "topic": "performance-ci-operations"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance-dashboard-guide"
+      ],
+      "path": "docs/operations/performance-dashboard-guide.md",
+      "tags": [
+        "operations",
+        "performance-dashboard-guide"
+      ],
+      "topic": "performance-dashboard-guide"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance-design-principles"
+      ],
+      "path": "docs/operations/performance-design-principles.md",
+      "tags": [
+        "operations",
+        "performance-design-principles"
+      ],
+      "topic": "performance-design-principles"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance-faq"
+      ],
+      "path": "docs/operations/performance-faq.md",
+      "tags": [
+        "operations",
+        "performance-faq"
+      ],
+      "topic": "performance-faq"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance-glossary"
+      ],
+      "path": "docs/operations/performance-glossary.md",
+      "tags": [
+        "operations",
+        "performance-glossary"
+      ],
+      "topic": "performance-glossary"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance-metrics-reference"
+      ],
+      "path": "docs/operations/performance-metrics-reference.md",
+      "tags": [
+        "operations",
+        "performance-metrics-reference"
+      ],
+      "topic": "performance-metrics-reference"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance-optimization-guidelines"
+      ],
+      "path": "docs/operations/performance-optimization-guidelines.md",
+      "tags": [
+        "operations",
+        "performance-optimization-guidelines"
+      ],
+      "topic": "performance-optimization-guidelines"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance-philosophy"
+      ],
+      "path": "docs/operations/performance-philosophy.md",
+      "tags": [
+        "operations",
+        "performance-philosophy"
+      ],
+      "topic": "performance-philosophy"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance-regression-guide"
+      ],
+      "path": "docs/operations/performance-regression-guide.md",
+      "tags": [
+        "operations",
+        "performance-regression-guide"
+      ],
+      "topic": "performance-regression-guide"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance-regression-monitoring"
+      ],
+      "path": "docs/operations/performance-regression-monitoring.md",
+      "tags": [
+        "operations",
+        "performance-regression-monitoring"
+      ],
+      "topic": "performance-regression-monitoring"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance-regression-policy"
+      ],
+      "path": "docs/operations/performance-regression-policy.md",
+      "tags": [
+        "operations",
+        "performance-regression-policy"
+      ],
+      "topic": "performance-regression-policy"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance-roadmap"
+      ],
+      "path": "docs/operations/performance-roadmap.md",
+      "tags": [
+        "operations",
+        "performance-roadmap"
+      ],
+      "topic": "performance-roadmap"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance-testing-tutorial"
+      ],
+      "path": "docs/operations/performance-testing-tutorial.md",
+      "tags": [
+        "operations",
+        "performance-testing-tutorial"
+      ],
+      "topic": "performance-testing-tutorial"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance-troubleshooting-guide"
+      ],
+      "path": "docs/operations/performance-troubleshooting-guide.md",
+      "tags": [
+        "operations",
+        "performance-troubleshooting-guide"
+      ],
+      "topic": "performance-troubleshooting-guide"
     },
     {
       "keywords": [
@@ -7920,6 +10186,30 @@
     },
     {
       "keywords": [
+        "operations",
+        "query-benchmark-summary-report"
+      ],
+      "path": "docs/operations/query-benchmark-summary-report.md",
+      "tags": [
+        "operations",
+        "query-benchmark-summary-report"
+      ],
+      "topic": "query-benchmark-summary-report"
+    },
+    {
+      "keywords": [
+        "operations",
+        "query-performance-benchmarks"
+      ],
+      "path": "docs/operations/query-performance-benchmarks.md",
+      "tags": [
+        "operations",
+        "query-performance-benchmarks"
+      ],
+      "topic": "query-performance-benchmarks"
+    },
+    {
+      "keywords": [
         "commands",
         "operations",
         "reference"
@@ -7973,6 +10263,20 @@
         "reference"
       ],
       "topic": "gates"
+    },
+    {
+      "keywords": [
+        "index",
+        "operations",
+        "reference"
+      ],
+      "path": "docs/operations/reference/index.md",
+      "tags": [
+        "index",
+        "operations",
+        "reference"
+      ],
+      "topic": "index"
     },
     {
       "keywords": [
@@ -8366,6 +10670,272 @@
     },
     {
       "keywords": [
+        "delivery-summary",
+        "operations",
+        "replication"
+      ],
+      "path": "docs/operations/replication/delivery-summary.md",
+      "tags": [
+        "delivery-summary",
+        "operations",
+        "replication"
+      ],
+      "topic": "delivery-summary"
+    },
+    {
+      "keywords": [
+        "failover-process",
+        "operations",
+        "replication"
+      ],
+      "path": "docs/operations/replication/failover-process.md",
+      "tags": [
+        "failover-process",
+        "operations",
+        "replication"
+      ],
+      "topic": "failover-process"
+    },
+    {
+      "keywords": [
+        "failure-scenarios",
+        "operations",
+        "replication"
+      ],
+      "path": "docs/operations/replication/failure-scenarios.md",
+      "tags": [
+        "failure-scenarios",
+        "operations",
+        "replication"
+      ],
+      "topic": "failure-scenarios"
+    },
+    {
+      "keywords": [
+        "metrics-dashboards",
+        "operations",
+        "replication"
+      ],
+      "path": "docs/operations/replication/metrics-dashboards.md",
+      "tags": [
+        "metrics-dashboards",
+        "operations",
+        "replication"
+      ],
+      "topic": "metrics-dashboards"
+    },
+    {
+      "keywords": [
+        "operations",
+        "performance-benchmarks",
+        "replication"
+      ],
+      "path": "docs/operations/replication/performance-benchmarks.md",
+      "tags": [
+        "operations",
+        "performance-benchmarks",
+        "replication"
+      ],
+      "topic": "performance-benchmarks"
+    },
+    {
+      "keywords": [
+        "operations",
+        "policy",
+        "replication"
+      ],
+      "path": "docs/operations/replication/policy.md",
+      "tags": [
+        "operations",
+        "policy",
+        "replication"
+      ],
+      "topic": "policy"
+    },
+    {
+      "keywords": [
+        "operations",
+        "replication",
+        "roadmap"
+      ],
+      "path": "docs/operations/replication/roadmap.md",
+      "tags": [
+        "operations",
+        "replication",
+        "roadmap"
+      ],
+      "topic": "roadmap"
+    },
+    {
+      "keywords": [
+        "operations",
+        "replication",
+        "scaling-strategy"
+      ],
+      "path": "docs/operations/replication/scaling-strategy.md",
+      "tags": [
+        "operations",
+        "replication",
+        "scaling-strategy"
+      ],
+      "topic": "scaling-strategy"
+    },
+    {
+      "keywords": [
+        "operations",
+        "replication",
+        "security-considerations"
+      ],
+      "path": "docs/operations/replication/security-considerations.md",
+      "tags": [
+        "operations",
+        "replication",
+        "security-considerations"
+      ],
+      "topic": "security-considerations"
+    },
+    {
+      "keywords": [
+        "operations",
+        "replication",
+        "troubleshooting"
+      ],
+      "path": "docs/operations/replication/troubleshooting.md",
+      "tags": [
+        "operations",
+        "replication",
+        "troubleshooting"
+      ],
+      "topic": "troubleshooting"
+    },
+    {
+      "keywords": [
+        "completion-report",
+        "operations",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/completion-report.md",
+      "tags": [
+        "completion-report",
+        "operations",
+        "resilience"
+      ],
+      "topic": "completion-report"
+    },
+    {
+      "keywords": [
+        "dashboard-examples",
+        "operations",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/dashboard-examples.md",
+      "tags": [
+        "dashboard-examples",
+        "operations",
+        "resilience"
+      ],
+      "topic": "dashboard-examples"
+    },
+    {
+      "keywords": [
+        "disaster-recovery-plan",
+        "operations",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/disaster-recovery-plan.md",
+      "tags": [
+        "disaster-recovery-plan",
+        "operations",
+        "resilience"
+      ],
+      "topic": "disaster-recovery-plan"
+    },
+    {
+      "keywords": [
+        "failure-injection-guide",
+        "operations",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/failure-injection-guide.md",
+      "tags": [
+        "failure-injection-guide",
+        "operations",
+        "resilience"
+      ],
+      "topic": "failure-injection-guide"
+    },
+    {
+      "keywords": [
+        "failure-scenarios",
+        "operations",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/failure-scenarios.md",
+      "tags": [
+        "failure-scenarios",
+        "operations",
+        "resilience"
+      ],
+      "topic": "failure-scenarios"
+    },
+    {
+      "keywords": [
+        "operations",
+        "recovery-timeline-examples",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/recovery-timeline-examples.md",
+      "tags": [
+        "operations",
+        "recovery-timeline-examples",
+        "resilience"
+      ],
+      "topic": "recovery-timeline-examples"
+    },
+    {
+      "keywords": [
+        "operations",
+        "recovery-workflow",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/recovery-workflow.md",
+      "tags": [
+        "operations",
+        "recovery-workflow",
+        "resilience"
+      ],
+      "topic": "recovery-workflow"
+    },
+    {
+      "keywords": [
+        "operations",
+        "recovery-workflows",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/recovery-workflows.md",
+      "tags": [
+        "operations",
+        "recovery-workflows",
+        "resilience"
+      ],
+      "topic": "recovery-workflows"
+    },
+    {
+      "keywords": [
+        "operations",
+        "resilience",
+        "runbooks"
+      ],
+      "path": "docs/operations/resilience/runbooks.md",
+      "tags": [
+        "operations",
+        "resilience",
+        "runbooks"
+      ],
+      "topic": "runbooks"
+    },
+    {
+      "keywords": [
         "operations",
         "retention-and-gc"
       ],
@@ -8614,6 +11184,20 @@
     },
     {
       "keywords": [
+        "administrative-access-model",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/administrative-access-model.md",
+      "tags": [
+        "administrative-access-model",
+        "operations",
+        "security"
+      ],
+      "topic": "administrative-access-model"
+    },
+    {
+      "keywords": [
         "advisory-process",
         "operations",
         "security"
@@ -8639,6 +11223,48 @@
         "security"
       ],
       "topic": "api-access-model"
+    },
+    {
+      "keywords": [
+        "api-key-usage",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/api-key-usage.md",
+      "tags": [
+        "api-key-usage",
+        "operations",
+        "security"
+      ],
+      "topic": "api-key-usage"
+    },
+    {
+      "keywords": [
+        "artifact-integrity-verification",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/artifact-integrity-verification.md",
+      "tags": [
+        "artifact-integrity-verification",
+        "operations",
+        "security"
+      ],
+      "topic": "artifact-integrity-verification"
+    },
+    {
+      "keywords": [
+        "audit-and-security-event-classification",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/audit-and-security-event-classification.md",
+      "tags": [
+        "audit-and-security-event-classification",
+        "operations",
+        "security"
+      ],
+      "topic": "audit-and-security-event-classification"
     },
     {
       "keywords": [
@@ -8698,6 +11324,76 @@
     },
     {
       "keywords": [
+        "authentication-examples",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/authentication-examples.md",
+      "tags": [
+        "authentication-examples",
+        "operations",
+        "security"
+      ],
+      "topic": "authentication-examples"
+    },
+    {
+      "keywords": [
+        "authentication-troubleshooting",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/authentication-troubleshooting.md",
+      "tags": [
+        "authentication-troubleshooting",
+        "operations",
+        "security"
+      ],
+      "topic": "authentication-troubleshooting"
+    },
+    {
+      "keywords": [
+        "authorization-examples",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/authorization-examples.md",
+      "tags": [
+        "authorization-examples",
+        "operations",
+        "security"
+      ],
+      "topic": "authorization-examples"
+    },
+    {
+      "keywords": [
+        "authorization-reference",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/authorization-reference.md",
+      "tags": [
+        "authorization-reference",
+        "operations",
+        "security"
+      ],
+      "topic": "authorization-reference"
+    },
+    {
+      "keywords": [
+        "authorization-troubleshooting",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/authorization-troubleshooting.md",
+      "tags": [
+        "authorization-troubleshooting",
+        "operations",
+        "security"
+      ],
+      "topic": "authorization-troubleshooting"
+    },
+    {
+      "keywords": [
         "compliance",
         "operations",
         "security"
@@ -8712,6 +11408,20 @@
     },
     {
       "keywords": [
+        "data-classification-model",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/data-classification-model.md",
+      "tags": [
+        "data-classification-model",
+        "operations",
+        "security"
+      ],
+      "topic": "data-classification-model"
+    },
+    {
+      "keywords": [
         "data-deletion-requests",
         "operations",
         "security"
@@ -8723,6 +11433,118 @@
         "security"
       ],
       "topic": "data-deletion-requests"
+    },
+    {
+      "keywords": [
+        "data-protection-best-practices",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/data-protection-best-practices.md",
+      "tags": [
+        "data-protection-best-practices",
+        "operations",
+        "security"
+      ],
+      "topic": "data-protection-best-practices"
+    },
+    {
+      "keywords": [
+        "data-protection-summary-report",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/data-protection-summary-report.md",
+      "tags": [
+        "data-protection-summary-report",
+        "operations",
+        "security"
+      ],
+      "topic": "data-protection-summary-report"
+    },
+    {
+      "keywords": [
+        "data-retention-policy",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/data-retention-policy.md",
+      "tags": [
+        "data-retention-policy",
+        "operations",
+        "security"
+      ],
+      "topic": "data-retention-policy"
+    },
+    {
+      "keywords": [
+        "dataset-access-policies",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/dataset-access-policies.md",
+      "tags": [
+        "dataset-access-policies",
+        "operations",
+        "security"
+      ],
+      "topic": "dataset-access-policies"
+    },
+    {
+      "keywords": [
+        "dataset-security-guarantees",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/dataset-security-guarantees.md",
+      "tags": [
+        "dataset-security-guarantees",
+        "operations",
+        "security"
+      ],
+      "topic": "dataset-security-guarantees"
+    },
+    {
+      "keywords": [
+        "dependency-risk-scoring",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/dependency-risk-scoring.md",
+      "tags": [
+        "dependency-risk-scoring",
+        "operations",
+        "security"
+      ],
+      "topic": "dependency-risk-scoring"
+    },
+    {
+      "keywords": [
+        "dependency-security-scanning",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/dependency-security-scanning.md",
+      "tags": [
+        "dependency-security-scanning",
+        "operations",
+        "security"
+      ],
+      "topic": "dependency-security-scanning"
+    },
+    {
+      "keywords": [
+        "dependency-version-monitoring",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/dependency-version-monitoring.md",
+      "tags": [
+        "dependency-version-monitoring",
+        "operations",
+        "security"
+      ],
+      "topic": "dependency-version-monitoring"
     },
     {
       "keywords": [
@@ -8881,6 +11703,34 @@
     {
       "keywords": [
         "operations",
+        "role-configuration-examples",
+        "security"
+      ],
+      "path": "docs/operations/security/role-configuration-examples.md",
+      "tags": [
+        "operations",
+        "role-configuration-examples",
+        "security"
+      ],
+      "topic": "role-configuration-examples"
+    },
+    {
+      "keywords": [
+        "operations",
+        "runtime-security-monitoring",
+        "security"
+      ],
+      "path": "docs/operations/security/runtime-security-monitoring.md",
+      "tags": [
+        "operations",
+        "runtime-security-monitoring",
+        "security"
+      ],
+      "topic": "runtime-security-monitoring"
+    },
+    {
+      "keywords": [
+        "operations",
         "safe-logging-guidelines",
         "security"
       ],
@@ -8891,6 +11741,194 @@
         "security"
       ],
       "topic": "safe-logging-guidelines"
+    },
+    {
+      "keywords": [
+        "operations",
+        "secure-deployment-guidelines",
+        "security"
+      ],
+      "path": "docs/operations/security/secure-deployment-guidelines.md",
+      "tags": [
+        "operations",
+        "secure-deployment-guidelines",
+        "security"
+      ],
+      "topic": "secure-deployment-guidelines"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "security-deployment-examples"
+      ],
+      "path": "docs/operations/security/security-deployment-examples.md",
+      "tags": [
+        "operations",
+        "security",
+        "security-deployment-examples"
+      ],
+      "topic": "security-deployment-examples"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "security-testing-and-monitoring"
+      ],
+      "path": "docs/operations/security/security-testing-and-monitoring.md",
+      "tags": [
+        "operations",
+        "security",
+        "security-testing-and-monitoring"
+      ],
+      "topic": "security-testing-and-monitoring"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "sensitive-data-handling-rules"
+      ],
+      "path": "docs/operations/security/sensitive-data-handling-rules.md",
+      "tags": [
+        "operations",
+        "security",
+        "sensitive-data-handling-rules"
+      ],
+      "topic": "sensitive-data-handling-rules"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "static-analysis-security-rules"
+      ],
+      "path": "docs/operations/security/static-analysis-security-rules.md",
+      "tags": [
+        "operations",
+        "security",
+        "static-analysis-security-rules"
+      ],
+      "topic": "static-analysis-security-rules"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "tls-configuration-examples"
+      ],
+      "path": "docs/operations/security/tls-configuration-examples.md",
+      "tags": [
+        "operations",
+        "security",
+        "tls-configuration-examples"
+      ],
+      "topic": "tls-configuration-examples"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "tls-configuration"
+      ],
+      "path": "docs/operations/security/tls-configuration.md",
+      "tags": [
+        "operations",
+        "security",
+        "tls-configuration"
+      ],
+      "topic": "tls-configuration"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "token-authentication-flow"
+      ],
+      "path": "docs/operations/security/token-authentication-flow.md",
+      "tags": [
+        "operations",
+        "security",
+        "token-authentication-flow"
+      ],
+      "topic": "token-authentication-flow"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "vulnerability-scanning-policy"
+      ],
+      "path": "docs/operations/security/vulnerability-scanning-policy.md",
+      "tags": [
+        "operations",
+        "security",
+        "vulnerability-scanning-policy"
+      ],
+      "topic": "vulnerability-scanning-policy"
+    },
+    {
+      "keywords": [
+        "operations",
+        "shard-debugging-guide"
+      ],
+      "path": "docs/operations/shard-debugging-guide.md",
+      "tags": [
+        "operations",
+        "shard-debugging-guide"
+      ],
+      "topic": "shard-debugging-guide"
+    },
+    {
+      "keywords": [
+        "operations",
+        "shard-distribution-guide"
+      ],
+      "path": "docs/operations/shard-distribution-guide.md",
+      "tags": [
+        "operations",
+        "shard-distribution-guide"
+      ],
+      "topic": "shard-distribution-guide"
+    },
+    {
+      "keywords": [
+        "operations",
+        "shard-failure-scenarios"
+      ],
+      "path": "docs/operations/shard-failure-scenarios.md",
+      "tags": [
+        "operations",
+        "shard-failure-scenarios"
+      ],
+      "topic": "shard-failure-scenarios"
+    },
+    {
+      "keywords": [
+        "operations",
+        "shard-rebalance-workflow"
+      ],
+      "path": "docs/operations/shard-rebalance-workflow.md",
+      "tags": [
+        "operations",
+        "shard-rebalance-workflow"
+      ],
+      "topic": "shard-rebalance-workflow"
+    },
+    {
+      "keywords": [
+        "index",
+        "operations",
+        "simulation"
+      ],
+      "path": "docs/operations/simulation/index.md",
+      "tags": [
+        "index",
+        "operations",
+        "simulation"
+      ],
+      "topic": "index"
     },
     {
       "keywords": [
@@ -8989,6 +12027,18 @@
         "warmup-lock"
       ],
       "topic": "warmup-lock"
+    },
+    {
+      "keywords": [
+        "operations",
+        "workflows"
+      ],
+      "path": "docs/operations/workflows.md",
+      "tags": [
+        "operations",
+        "workflows"
+      ],
+      "topic": "workflows"
     },
     {
       "keywords": [
@@ -9145,6 +12195,20 @@
         "what-is-bijux-atlas"
       ],
       "topic": "what-is-bijux-atlas"
+    },
+    {
+      "keywords": [
+        "api",
+        "index",
+        "reference"
+      ],
+      "path": "docs/reference/api/index.md",
+      "tags": [
+        "api",
+        "index",
+        "reference"
+      ],
+      "topic": "index"
     },
     {
       "keywords": [
@@ -9365,6 +12429,20 @@
     {
       "keywords": [
         "contracts",
+        "index",
+        "reference"
+      ],
+      "path": "docs/reference/contracts/docs/index.md",
+      "tags": [
+        "contracts",
+        "index",
+        "reference"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "contracts",
         "reference",
         "site-output"
       ],
@@ -9505,6 +12583,22 @@
         "reference"
       ],
       "topic": "helm-env-subset"
+    },
+    {
+      "keywords": [
+        "contracts",
+        "index",
+        "ops",
+        "reference"
+      ],
+      "path": "docs/reference/contracts/ops/index.md",
+      "tags": [
+        "contracts",
+        "index",
+        "ops",
+        "reference"
+      ],
+      "topic": "index"
     },
     {
       "keywords": [
@@ -9711,6 +12805,22 @@
         "contracts",
         "index",
         "reference",
+        "release"
+      ],
+      "path": "docs/reference/contracts/release/index.md",
+      "tags": [
+        "contracts",
+        "index",
+        "reference",
+        "release"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "contracts",
+        "index",
+        "reference",
         "schemas"
       ],
       "path": "docs/reference/contracts/schemas/index.md",
@@ -9764,6 +12874,258 @@
     },
     {
       "keywords": [
+        "artifact-identifiers",
+        "datasets",
+        "reference"
+      ],
+      "path": "docs/reference/datasets/artifact-identifiers.md",
+      "tags": [
+        "artifact-identifiers",
+        "datasets",
+        "reference"
+      ],
+      "topic": "artifact-identifiers"
+    },
+    {
+      "keywords": [
+        "artifact-structure",
+        "datasets",
+        "reference"
+      ],
+      "path": "docs/reference/datasets/artifact-structure.md",
+      "tags": [
+        "artifact-structure",
+        "datasets",
+        "reference"
+      ],
+      "topic": "artifact-structure"
+    },
+    {
+      "keywords": [
+        "dataset-compatibility",
+        "datasets",
+        "reference"
+      ],
+      "path": "docs/reference/datasets/dataset-compatibility.md",
+      "tags": [
+        "dataset-compatibility",
+        "datasets",
+        "reference"
+      ],
+      "topic": "dataset-compatibility"
+    },
+    {
+      "keywords": [
+        "dataset-deletion",
+        "datasets",
+        "reference"
+      ],
+      "path": "docs/reference/datasets/dataset-deletion.md",
+      "tags": [
+        "dataset-deletion",
+        "datasets",
+        "reference"
+      ],
+      "topic": "dataset-deletion"
+    },
+    {
+      "keywords": [
+        "dataset-identifiers",
+        "datasets",
+        "reference"
+      ],
+      "path": "docs/reference/datasets/dataset-identifiers.md",
+      "tags": [
+        "dataset-identifiers",
+        "datasets",
+        "reference"
+      ],
+      "topic": "dataset-identifiers"
+    },
+    {
+      "keywords": [
+        "dataset-lifecycle",
+        "datasets",
+        "reference"
+      ],
+      "path": "docs/reference/datasets/dataset-lifecycle.md",
+      "tags": [
+        "dataset-lifecycle",
+        "datasets",
+        "reference"
+      ],
+      "topic": "dataset-lifecycle"
+    },
+    {
+      "keywords": [
+        "dataset-manifests",
+        "datasets",
+        "reference"
+      ],
+      "path": "docs/reference/datasets/dataset-manifests.md",
+      "tags": [
+        "dataset-manifests",
+        "datasets",
+        "reference"
+      ],
+      "topic": "dataset-manifests"
+    },
+    {
+      "keywords": [
+        "dataset-metadata",
+        "datasets",
+        "reference"
+      ],
+      "path": "docs/reference/datasets/dataset-metadata.md",
+      "tags": [
+        "dataset-metadata",
+        "datasets",
+        "reference"
+      ],
+      "topic": "dataset-metadata"
+    },
+    {
+      "keywords": [
+        "dataset-promotion",
+        "datasets",
+        "reference"
+      ],
+      "path": "docs/reference/datasets/dataset-promotion.md",
+      "tags": [
+        "dataset-promotion",
+        "datasets",
+        "reference"
+      ],
+      "topic": "dataset-promotion"
+    },
+    {
+      "keywords": [
+        "dataset-storage-model",
+        "datasets",
+        "reference"
+      ],
+      "path": "docs/reference/datasets/dataset-storage-model.md",
+      "tags": [
+        "dataset-storage-model",
+        "datasets",
+        "reference"
+      ],
+      "topic": "dataset-storage-model"
+    },
+    {
+      "keywords": [
+        "dataset-versioning",
+        "datasets",
+        "reference"
+      ],
+      "path": "docs/reference/datasets/dataset-versioning.md",
+      "tags": [
+        "dataset-versioning",
+        "datasets",
+        "reference"
+      ],
+      "topic": "dataset-versioning"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "deterministic-output-model",
+        "reference"
+      ],
+      "path": "docs/reference/datasets/deterministic-output-model.md",
+      "tags": [
+        "datasets",
+        "deterministic-output-model",
+        "reference"
+      ],
+      "topic": "deterministic-output-model"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "index",
+        "reference"
+      ],
+      "path": "docs/reference/datasets/index.md",
+      "tags": [
+        "datasets",
+        "index",
+        "reference"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "ingestion-policies",
+        "reference"
+      ],
+      "path": "docs/reference/datasets/ingestion-policies.md",
+      "tags": [
+        "datasets",
+        "ingestion-policies",
+        "reference"
+      ],
+      "topic": "ingestion-policies"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "reference",
+        "reproducibility-guarantees"
+      ],
+      "path": "docs/reference/datasets/reproducibility-guarantees.md",
+      "tags": [
+        "datasets",
+        "reference",
+        "reproducibility-guarantees"
+      ],
+      "topic": "reproducibility-guarantees"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "reference",
+        "schema-evolution"
+      ],
+      "path": "docs/reference/datasets/schema-evolution.md",
+      "tags": [
+        "datasets",
+        "reference",
+        "schema-evolution"
+      ],
+      "topic": "schema-evolution"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "reference",
+        "shard-layout"
+      ],
+      "path": "docs/reference/datasets/shard-layout.md",
+      "tags": [
+        "datasets",
+        "reference",
+        "shard-layout"
+      ],
+      "topic": "shard-layout"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "reference",
+        "validation-policies"
+      ],
+      "path": "docs/reference/datasets/validation-policies.md",
+      "tags": [
+        "datasets",
+        "reference",
+        "validation-policies"
+      ],
+      "topic": "validation-policies"
+    },
+    {
+      "keywords": [
         "errors-and-exit-codes",
         "reference"
       ],
@@ -9788,6 +13150,104 @@
     },
     {
       "keywords": [
+        "api-request-examples",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/api-request-examples.md",
+      "tags": [
+        "api-request-examples",
+        "examples",
+        "reference"
+      ],
+      "topic": "api-request-examples"
+    },
+    {
+      "keywords": [
+        "api-response-examples",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/api-response-examples.md",
+      "tags": [
+        "api-response-examples",
+        "examples",
+        "reference"
+      ],
+      "topic": "api-response-examples"
+    },
+    {
+      "keywords": [
+        "api-usage-examples",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/api-usage-examples.md",
+      "tags": [
+        "api-usage-examples",
+        "examples",
+        "reference"
+      ],
+      "topic": "api-usage-examples"
+    },
+    {
+      "keywords": [
+        "architecture-diagrams-example",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/architecture-diagrams-example.md",
+      "tags": [
+        "architecture-diagrams-example",
+        "examples",
+        "reference"
+      ],
+      "topic": "architecture-diagrams-example"
+    },
+    {
+      "keywords": [
+        "artifact-inspection-walkthrough",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/artifact-inspection-walkthrough.md",
+      "tags": [
+        "artifact-inspection-walkthrough",
+        "examples",
+        "reference"
+      ],
+      "topic": "artifact-inspection-walkthrough"
+    },
+    {
+      "keywords": [
+        "artifact-layout-example",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/artifact-layout-example.md",
+      "tags": [
+        "artifact-layout-example",
+        "examples",
+        "reference"
+      ],
+      "topic": "artifact-layout-example"
+    },
+    {
+      "keywords": [
+        "artifact-promotion-example",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/artifact-promotion-example.md",
+      "tags": [
+        "artifact-promotion-example",
+        "examples",
+        "reference"
+      ],
+      "topic": "artifact-promotion-example"
+    },
+    {
+      "keywords": [
         "catalog-example",
         "examples",
         "reference"
@@ -9802,6 +13262,216 @@
     },
     {
       "keywords": [
+        "ci-outputs-example",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/ci-outputs-example.md",
+      "tags": [
+        "ci-outputs-example",
+        "examples",
+        "reference"
+      ],
+      "topic": "ci-outputs-example"
+    },
+    {
+      "keywords": [
+        "ci-pipeline-example",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/ci-pipeline-example.md",
+      "tags": [
+        "ci-pipeline-example",
+        "examples",
+        "reference"
+      ],
+      "topic": "ci-pipeline-example"
+    },
+    {
+      "keywords": [
+        "cli-usage-examples",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/cli-usage-examples.md",
+      "tags": [
+        "cli-usage-examples",
+        "examples",
+        "reference"
+      ],
+      "topic": "cli-usage-examples"
+    },
+    {
+      "keywords": [
+        "cli-walkthrough",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/cli-walkthrough.md",
+      "tags": [
+        "cli-walkthrough",
+        "examples",
+        "reference"
+      ],
+      "topic": "cli-walkthrough"
+    },
+    {
+      "keywords": [
+        "contract-reports-example",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/contract-reports-example.md",
+      "tags": [
+        "contract-reports-example",
+        "examples",
+        "reference"
+      ],
+      "topic": "contract-reports-example"
+    },
+    {
+      "keywords": [
+        "data-lineage-example",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/data-lineage-example.md",
+      "tags": [
+        "data-lineage-example",
+        "examples",
+        "reference"
+      ],
+      "topic": "data-lineage-example"
+    },
+    {
+      "keywords": [
+        "dataset-evolution-example",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/dataset-evolution-example.md",
+      "tags": [
+        "dataset-evolution-example",
+        "examples",
+        "reference"
+      ],
+      "topic": "dataset-evolution-example"
+    },
+    {
+      "keywords": [
+        "dataset-manifest-example",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/dataset-manifest-example.md",
+      "tags": [
+        "dataset-manifest-example",
+        "examples",
+        "reference"
+      ],
+      "topic": "dataset-manifest-example"
+    },
+    {
+      "keywords": [
+        "dataset-recovery-example",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/dataset-recovery-example.md",
+      "tags": [
+        "dataset-recovery-example",
+        "examples",
+        "reference"
+      ],
+      "topic": "dataset-recovery-example"
+    },
+    {
+      "keywords": [
+        "debugging-workflow-example",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/debugging-workflow-example.md",
+      "tags": [
+        "debugging-workflow-example",
+        "examples",
+        "reference"
+      ],
+      "topic": "debugging-workflow-example"
+    },
+    {
+      "keywords": [
+        "deployment-configuration-example",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/deployment-configuration-example.md",
+      "tags": [
+        "deployment-configuration-example",
+        "examples",
+        "reference"
+      ],
+      "topic": "deployment-configuration-example"
+    },
+    {
+      "keywords": [
+        "docker-usage-example",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/docker-usage-example.md",
+      "tags": [
+        "docker-usage-example",
+        "examples",
+        "reference"
+      ],
+      "topic": "docker-usage-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "failure-analysis-example",
+        "reference"
+      ],
+      "path": "docs/reference/examples/failure-analysis-example.md",
+      "tags": [
+        "examples",
+        "failure-analysis-example",
+        "reference"
+      ],
+      "topic": "failure-analysis-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "glossary-examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/glossary-examples.md",
+      "tags": [
+        "examples",
+        "glossary-examples",
+        "reference"
+      ],
+      "topic": "glossary-examples"
+    },
+    {
+      "keywords": [
+        "examples",
+        "governance-reports-example",
+        "reference"
+      ],
+      "path": "docs/reference/examples/governance-reports-example.md",
+      "tags": [
+        "examples",
+        "governance-reports-example",
+        "reference"
+      ],
+      "topic": "governance-reports-example"
+    },
+    {
+      "keywords": [
         "examples",
         "index",
         "reference"
@@ -9813,6 +13483,272 @@
         "reference"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "examples",
+        "ingest-command-example",
+        "reference"
+      ],
+      "path": "docs/reference/examples/ingest-command-example.md",
+      "tags": [
+        "examples",
+        "ingest-command-example",
+        "reference"
+      ],
+      "topic": "ingest-command-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "ingest-pipeline-walkthrough",
+        "reference"
+      ],
+      "path": "docs/reference/examples/ingest-pipeline-walkthrough.md",
+      "tags": [
+        "examples",
+        "ingest-pipeline-walkthrough",
+        "reference"
+      ],
+      "topic": "ingest-pipeline-walkthrough"
+    },
+    {
+      "keywords": [
+        "examples",
+        "local-development-setup-example",
+        "reference"
+      ],
+      "path": "docs/reference/examples/local-development-setup-example.md",
+      "tags": [
+        "examples",
+        "local-development-setup-example",
+        "reference"
+      ],
+      "topic": "local-development-setup-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "ops-report-example",
+        "reference"
+      ],
+      "path": "docs/reference/examples/ops-report-example.md",
+      "tags": [
+        "examples",
+        "ops-report-example",
+        "reference"
+      ],
+      "topic": "ops-report-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "performance-benchmarking-examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/performance-benchmarking-examples.md",
+      "tags": [
+        "examples",
+        "performance-benchmarking-examples",
+        "reference"
+      ],
+      "topic": "performance-benchmarking-examples"
+    },
+    {
+      "keywords": [
+        "examples",
+        "performance-metrics-example",
+        "reference"
+      ],
+      "path": "docs/reference/examples/performance-metrics-example.md",
+      "tags": [
+        "examples",
+        "performance-metrics-example",
+        "reference"
+      ],
+      "topic": "performance-metrics-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "policy-violation-example",
+        "reference"
+      ],
+      "path": "docs/reference/examples/policy-violation-example.md",
+      "tags": [
+        "examples",
+        "policy-violation-example",
+        "reference"
+      ],
+      "topic": "policy-violation-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "query-benchmark-examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/query-benchmark-examples.md",
+      "tags": [
+        "examples",
+        "query-benchmark-examples",
+        "reference"
+      ],
+      "topic": "query-benchmark-examples"
+    },
+    {
+      "keywords": [
+        "examples",
+        "query-benchmark-summary-report",
+        "reference"
+      ],
+      "path": "docs/reference/examples/query-benchmark-summary-report.md",
+      "tags": [
+        "examples",
+        "query-benchmark-summary-report",
+        "reference"
+      ],
+      "topic": "query-benchmark-summary-report"
+    },
+    {
+      "keywords": [
+        "examples",
+        "query-command-example",
+        "reference"
+      ],
+      "path": "docs/reference/examples/query-command-example.md",
+      "tags": [
+        "examples",
+        "query-command-example",
+        "reference"
+      ],
+      "topic": "query-command-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "query-debugging-walkthrough",
+        "reference"
+      ],
+      "path": "docs/reference/examples/query-debugging-walkthrough.md",
+      "tags": [
+        "examples",
+        "query-debugging-walkthrough",
+        "reference"
+      ],
+      "topic": "query-debugging-walkthrough"
+    },
+    {
+      "keywords": [
+        "examples",
+        "reference",
+        "release-artifact-example"
+      ],
+      "path": "docs/reference/examples/release-artifact-example.md",
+      "tags": [
+        "examples",
+        "reference",
+        "release-artifact-example"
+      ],
+      "topic": "release-artifact-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "reference",
+        "schema-evolution-example"
+      ],
+      "path": "docs/reference/examples/schema-evolution-example.md",
+      "tags": [
+        "examples",
+        "reference",
+        "schema-evolution-example"
+      ],
+      "topic": "schema-evolution-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "reference",
+        "system-audit-example"
+      ],
+      "path": "docs/reference/examples/system-audit-example.md",
+      "tags": [
+        "examples",
+        "reference",
+        "system-audit-example"
+      ],
+      "topic": "system-audit-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "reference",
+        "system-lifecycle-example"
+      ],
+      "path": "docs/reference/examples/system-lifecycle-example.md",
+      "tags": [
+        "examples",
+        "reference",
+        "system-lifecycle-example"
+      ],
+      "topic": "system-lifecycle-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "reference",
+        "system-logs-example"
+      ],
+      "path": "docs/reference/examples/system-logs-example.md",
+      "tags": [
+        "examples",
+        "reference",
+        "system-logs-example"
+      ],
+      "topic": "system-logs-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "reference",
+        "system-run-example"
+      ],
+      "path": "docs/reference/examples/system-run-example.md",
+      "tags": [
+        "examples",
+        "reference",
+        "system-run-example"
+      ],
+      "topic": "system-run-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "reference",
+        "system-validation-example"
+      ],
+      "path": "docs/reference/examples/system-validation-example.md",
+      "tags": [
+        "examples",
+        "reference",
+        "system-validation-example"
+      ],
+      "topic": "system-validation-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "reference",
+        "validation-reports-example"
+      ],
+      "path": "docs/reference/examples/validation-reports-example.md",
+      "tags": [
+        "examples",
+        "reference",
+        "validation-reports-example"
+      ],
+      "topic": "validation-reports-example"
     },
     {
       "keywords": [
@@ -9834,6 +13770,20 @@
       "path": "docs/reference/index.md",
       "tags": [
         "index",
+        "reference"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "index",
+        "ingest",
+        "reference"
+      ],
+      "path": "docs/reference/ingest/index.md",
+      "tags": [
+        "index",
+        "ingest",
         "reference"
       ],
       "topic": "index"
@@ -9974,6 +13924,48 @@
     },
     {
       "keywords": [
+        "cursor-usage",
+        "querying",
+        "reference"
+      ],
+      "path": "docs/reference/querying/cursor-usage.md",
+      "tags": [
+        "cursor-usage",
+        "querying",
+        "reference"
+      ],
+      "topic": "cursor-usage"
+    },
+    {
+      "keywords": [
+        "error-responses",
+        "querying",
+        "reference"
+      ],
+      "path": "docs/reference/querying/error-responses.md",
+      "tags": [
+        "error-responses",
+        "querying",
+        "reference"
+      ],
+      "topic": "error-responses"
+    },
+    {
+      "keywords": [
+        "filtering",
+        "querying",
+        "reference"
+      ],
+      "path": "docs/reference/querying/filtering.md",
+      "tags": [
+        "filtering",
+        "querying",
+        "reference"
+      ],
+      "topic": "filtering"
+    },
+    {
+      "keywords": [
         "index",
         "querying",
         "reference"
@@ -9999,6 +13991,48 @@
         "reference"
       ],
       "topic": "pagination"
+    },
+    {
+      "keywords": [
+        "projections",
+        "querying",
+        "reference"
+      ],
+      "path": "docs/reference/querying/projections.md",
+      "tags": [
+        "projections",
+        "querying",
+        "reference"
+      ],
+      "topic": "projections"
+    },
+    {
+      "keywords": [
+        "query-parameters",
+        "querying",
+        "reference"
+      ],
+      "path": "docs/reference/querying/query-parameters.md",
+      "tags": [
+        "query-parameters",
+        "querying",
+        "reference"
+      ],
+      "topic": "query-parameters"
+    },
+    {
+      "keywords": [
+        "querying",
+        "reference",
+        "retry-logic"
+      ],
+      "path": "docs/reference/querying/retry-logic.md",
+      "tags": [
+        "querying",
+        "reference",
+        "retry-logic"
+      ],
+      "topic": "retry-logic"
     },
     {
       "keywords": [
@@ -10228,6 +14262,20 @@
     },
     {
       "keywords": [
+        "index",
+        "reference",
+        "runtime"
+      ],
+      "path": "docs/reference/runtime/index.md",
+      "tags": [
+        "index",
+        "reference",
+        "runtime"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
         "reference",
         "schema-versioning-policy"
       ],
@@ -10321,6 +14369,124 @@
         "structure-index"
       ],
       "topic": "structure-index"
+    },
+    {
+      "keywords": [
+        "debug-pipeline",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/debug-pipeline.md",
+      "tags": [
+        "debug-pipeline",
+        "tutorials"
+      ],
+      "topic": "debug-pipeline"
+    },
+    {
+      "keywords": [
+        "end-to-end-tutorial",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/end-to-end-tutorial.md",
+      "tags": [
+        "end-to-end-tutorial",
+        "tutorials"
+      ],
+      "topic": "end-to-end-tutorial"
+    },
+    {
+      "keywords": [
+        "faq",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/faq.md",
+      "tags": [
+        "faq",
+        "tutorials"
+      ],
+      "topic": "faq"
+    },
+    {
+      "keywords": [
+        "index",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/index.md",
+      "tags": [
+        "index",
+        "tutorials"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "ingest-dataset",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/ingest-dataset.md",
+      "tags": [
+        "ingest-dataset",
+        "tutorials"
+      ],
+      "topic": "ingest-dataset"
+    },
+    {
+      "keywords": [
+        "inspect-artifacts",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/inspect-artifacts.md",
+      "tags": [
+        "inspect-artifacts",
+        "tutorials"
+      ],
+      "topic": "inspect-artifacts"
+    },
+    {
+      "keywords": [
+        "query-dataset",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/query-dataset.md",
+      "tags": [
+        "query-dataset",
+        "tutorials"
+      ],
+      "topic": "query-dataset"
+    },
+    {
+      "keywords": [
+        "troubleshooting-guide",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/troubleshooting-guide.md",
+      "tags": [
+        "troubleshooting-guide",
+        "tutorials"
+      ],
+      "topic": "troubleshooting-guide"
+    },
+    {
+      "keywords": [
+        "tutorials",
+        "validate-dataset"
+      ],
+      "path": "docs/tutorials/validate-dataset.md",
+      "tags": [
+        "tutorials",
+        "validate-dataset"
+      ],
+      "topic": "validate-dataset"
+    },
+    {
+      "keywords": [
+        "what-is-atlas"
+      ],
+      "path": "docs/what-is-atlas.md",
+      "tags": [
+        "what-is-atlas"
+      ],
+      "topic": "what-is-atlas"
     },
     {
       "keywords": [
@@ -10981,6 +15147,22 @@
         "required-files"
       ],
       "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
+        "artifacts",
+        "load",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/load/artifacts/README.md",
+      "tags": [
+        "artifacts",
+        "load",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
     },
     {
       "keywords": [

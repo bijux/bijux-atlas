@@ -397,6 +397,123 @@
         "topic": "versioning"
       }
     ],
+    "bijux-atlas-benchmark": [
+      {
+        "area": "bijux-atlas-benchmark",
+        "audience": "contributors",
+        "crate": "bijux-atlas-benchmark",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmark-architecture",
+          "bijux-atlas-benchmark"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-benchmark/docs/benchmark-architecture.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmark-architecture",
+          "bijux-atlas-benchmark"
+        ],
+        "title": "Benchmark Architecture",
+        "topic": "benchmark-architecture"
+      },
+      {
+        "area": "bijux-atlas-benchmark",
+        "audience": "contributors",
+        "crate": "bijux-atlas-benchmark",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmark-roadmap",
+          "bijux-atlas-benchmark"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-benchmark/docs/benchmark-roadmap.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmark-roadmap",
+          "bijux-atlas-benchmark"
+        ],
+        "title": "Benchmark Roadmap",
+        "topic": "benchmark-roadmap"
+      },
+      {
+        "area": "bijux-atlas-benchmark",
+        "audience": "contributors",
+        "crate": "bijux-atlas-benchmark",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmark-troubleshooting",
+          "bijux-atlas-benchmark"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-benchmark/docs/benchmark-troubleshooting.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmark-troubleshooting",
+          "bijux-atlas-benchmark"
+        ],
+        "title": "Benchmark Troubleshooting",
+        "topic": "benchmark-troubleshooting"
+      },
+      {
+        "area": "bijux-atlas-benchmark",
+        "audience": "contributors",
+        "crate": "bijux-atlas-benchmark",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmark-usage",
+          "bijux-atlas-benchmark"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-benchmark/docs/benchmark-usage.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmark-usage",
+          "bijux-atlas-benchmark"
+        ],
+        "title": "Benchmark Usage",
+        "topic": "benchmark-usage"
+      },
+      {
+        "area": "bijux-atlas-benchmark",
+        "audience": "contributors",
+        "crate": "bijux-atlas-benchmark",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-benchmark",
+          "index"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-benchmark/docs/index.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-benchmark",
+          "index"
+        ],
+        "title": "Benchmark crate docs",
+        "topic": "index"
+      }
+    ],
     "bijux-atlas-cli": [
       {
         "area": "bijux-atlas-cli",
@@ -1405,6 +1522,167 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-ingest",
+          "ingest-benchmark-ci"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-ci.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "ingest-benchmark-ci"
+        ],
+        "title": "Ingest Benchmark CI",
+        "topic": "ingest-benchmark-ci"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "ingest-benchmark-dashboard"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-dashboard.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "ingest-benchmark-dashboard"
+        ],
+        "title": "Ingest Benchmark Dashboard",
+        "topic": "ingest-benchmark-dashboard"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "ingest-benchmark-examples"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-examples.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "ingest-benchmark-examples"
+        ],
+        "title": "Ingest Benchmark Examples",
+        "topic": "ingest-benchmark-examples"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "ingest-benchmark-golden-results"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-golden-results.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "ingest-benchmark-golden-results"
+        ],
+        "title": "Ingest Benchmark Golden Results",
+        "topic": "ingest-benchmark-golden-results"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "ingest-benchmark-regression"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-regression.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "ingest-benchmark-regression"
+        ],
+        "title": "Ingest Benchmark Regression Guard",
+        "topic": "ingest-benchmark-regression"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "ingest-benchmark-scenarios"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-scenarios.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "ingest-benchmark-scenarios"
+        ],
+        "title": "Ingest Benchmark Scenarios",
+        "topic": "ingest-benchmark-scenarios"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "ingest-benchmark-summary"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-summary.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "ingest-benchmark-summary"
+        ],
+        "title": "Ingest Benchmark Summary",
+        "topic": "ingest-benchmark-summary"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
           "ingest-contract"
         ],
         "last_reviewed": "2026-02-25",
@@ -1419,6 +1697,121 @@
         ],
         "title": "Ingest Contract",
         "topic": "ingest-contract"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "ingest-performance-architecture"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/ingest-performance-architecture.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "ingest-performance-architecture"
+        ],
+        "title": "Ingest Performance Architecture",
+        "topic": "ingest-performance-architecture"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "ingest-performance-baseline"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/ingest-performance-baseline.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "ingest-performance-baseline"
+        ],
+        "title": "Ingest Performance Baseline",
+        "topic": "ingest-performance-baseline"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "ingest-performance-metrics"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/ingest-performance-metrics.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "ingest-performance-metrics"
+        ],
+        "title": "Ingest Performance Metrics",
+        "topic": "ingest-performance-metrics"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "ingest-performance-troubleshooting"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/ingest-performance-troubleshooting.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "ingest-performance-troubleshooting"
+        ],
+        "title": "Ingest Performance Troubleshooting",
+        "topic": "ingest-performance-troubleshooting"
+      },
+      {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
+        "crate": "bijux-atlas-ingest",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-ingest",
+          "ingest-performance-tuning"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-ingest/docs/ingest-performance-tuning.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-ingest",
+          "ingest-performance-tuning"
+        ],
+        "title": "Ingest Performance Tuning Guide",
+        "topic": "ingest-performance-tuning"
       },
       {
         "area": "bijux-atlas-ingest",
@@ -2754,6 +3147,98 @@
         ],
         "title": "Query Language Spec",
         "topic": "query-language-spec"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-query",
+          "query-performance-architecture"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-query",
+        "path": "crates/bijux-atlas-query/docs/query-performance-architecture.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-query",
+          "query-performance-architecture"
+        ],
+        "title": "Query Performance Architecture",
+        "topic": "query-performance-architecture"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-query",
+          "query-performance"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-query",
+        "path": "crates/bijux-atlas-query/docs/query-performance.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-query",
+          "query-performance"
+        ],
+        "title": "Query Performance",
+        "topic": "query-performance"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-query",
+          "query-profiling-guide"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-query",
+        "path": "crates/bijux-atlas-query/docs/query-profiling-guide.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-query",
+          "query-profiling-guide"
+        ],
+        "title": "Query Profiling Guide",
+        "topic": "query-profiling-guide"
+      },
+      {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
+        "crate": "bijux-atlas-query",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-query",
+          "query-tuning-guide"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-atlas-query",
+        "path": "crates/bijux-atlas-query/docs/query-tuning-guide.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-query",
+          "query-tuning-guide"
+        ],
+        "title": "Query Tuning Guide",
+        "topic": "query-tuning-guide"
       },
       {
         "area": "bijux-atlas-query",

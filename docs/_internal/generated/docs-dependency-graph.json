@@ -338,6 +338,41 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "crates/bijux-atlas-benchmark/CONTRACT.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-benchmark/README.md"
+    },
+    {
+      "crate": "bijux-atlas-benchmark",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-benchmark/docs/benchmark-architecture.md"
+    },
+    {
+      "crate": "bijux-atlas-benchmark",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-benchmark/docs/benchmark-roadmap.md"
+    },
+    {
+      "crate": "bijux-atlas-benchmark",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-benchmark/docs/benchmark-troubleshooting.md"
+    },
+    {
+      "crate": "bijux-atlas-benchmark",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-benchmark/docs/benchmark-usage.md"
+    },
+    {
+      "crate": "bijux-atlas-benchmark",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-benchmark/docs/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "crates/bijux-atlas-cli/CONTRACT.md"
     },
     {
@@ -593,7 +628,67 @@
     {
       "crate": "bijux-atlas-ingest",
       "doc_type": "concept",
+      "from": "crates/bijux-atlas-ingest/docs/ingest-benchmark-ci.md"
+    },
+    {
+      "crate": "bijux-atlas-ingest",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-ingest/docs/ingest-benchmark-dashboard.md"
+    },
+    {
+      "crate": "bijux-atlas-ingest",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-ingest/docs/ingest-benchmark-examples.md"
+    },
+    {
+      "crate": "bijux-atlas-ingest",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-ingest/docs/ingest-benchmark-golden-results.md"
+    },
+    {
+      "crate": "bijux-atlas-ingest",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-ingest/docs/ingest-benchmark-regression.md"
+    },
+    {
+      "crate": "bijux-atlas-ingest",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-ingest/docs/ingest-benchmark-scenarios.md"
+    },
+    {
+      "crate": "bijux-atlas-ingest",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-ingest/docs/ingest-benchmark-summary.md"
+    },
+    {
+      "crate": "bijux-atlas-ingest",
+      "doc_type": "concept",
       "from": "crates/bijux-atlas-ingest/docs/ingest-contract.md"
+    },
+    {
+      "crate": "bijux-atlas-ingest",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-ingest/docs/ingest-performance-architecture.md"
+    },
+    {
+      "crate": "bijux-atlas-ingest",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-ingest/docs/ingest-performance-baseline.md"
+    },
+    {
+      "crate": "bijux-atlas-ingest",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-ingest/docs/ingest-performance-metrics.md"
+    },
+    {
+      "crate": "bijux-atlas-ingest",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-ingest/docs/ingest-performance-troubleshooting.md"
+    },
+    {
+      "crate": "bijux-atlas-ingest",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-ingest/docs/ingest-performance-tuning.md"
     },
     {
       "crate": "bijux-atlas-ingest",
@@ -944,6 +1039,26 @@
       "crate": "bijux-atlas-query",
       "doc_type": "concept",
       "from": "crates/bijux-atlas-query/docs/query-language-spec.md"
+    },
+    {
+      "crate": "bijux-atlas-query",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-query/docs/query-performance-architecture.md"
+    },
+    {
+      "crate": "bijux-atlas-query",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-query/docs/query-performance.md"
+    },
+    {
+      "crate": "bijux-atlas-query",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-query/docs/query-profiling-guide.md"
+    },
+    {
+      "crate": "bijux-atlas-query",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-query/docs/query-tuning-guide.md"
     },
     {
       "crate": "bijux-atlas-query",
@@ -2188,12 +2303,32 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/cluster-membership-lifecycle.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/cluster-topology.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/common-failure-catalog.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
       "from": "docs/architecture/components.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/components/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/consistency-contract.md"
     },
     {
       "crate": null,
@@ -2233,12 +2368,127 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/diagrams/artifact-lifecycle.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/cluster-membership-architecture.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/control-plane.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/data-flow.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/deployment.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/failure-flow.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/ingest-pipeline.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/ops-governance.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/query-execution.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/replication-architecture.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/replication-flow.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/repository-structure.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/resilience-architecture.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/runtime-system.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/shard-architecture.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/shard-query-flow.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/shard-routing-visualization.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/style-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/diagrams/system-topology.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/distributed-cluster-foundation.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/effects.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/engineering-philosophy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/error-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/evolution.md"
     },
     {
       "crate": null,
@@ -2268,7 +2518,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/internal-architecture.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/layering-rules.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/overview.md"
     },
     {
       "crate": null,
@@ -2283,7 +2543,32 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/query-performance-architecture.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/registry-federation-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/replica-lifecycle.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/replication-architecture.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/replication-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/resilience-model.md"
     },
     {
       "crate": null,
@@ -2298,7 +2583,122 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/security/attack-surface-analysis.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/security/auth-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/authentication-strategy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/authorization-architecture-diagrams.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/authorization-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/data-protection-strategy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/encryption-architecture-diagrams.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/encryption-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/identity-access-data-models.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/network-and-transport-security.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/rbac-flow-diagrams.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/rbac-structure.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/secrets-credentials-and-key-management.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/security-architecture.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/security-configuration-contract.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/security-design-principles.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/security-testing-strategy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/threat-model-scope.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/trust-boundaries.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/shard-design-principles.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/shard-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/shard-routing-foundation.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/shard-routing-strategy.md"
     },
     {
       "crate": null,
@@ -2309,6 +2709,16 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/architecture/store-integrity-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/summary.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/system-architecture-specification.md"
     },
     {
       "crate": null,
@@ -2678,6 +3088,41 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/cluster-deployment-models.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/cluster-membership-protocol.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/cluster-node-health-monitoring.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/cluster-node-lifecycle-states.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/cluster-node-maintenance-procedures.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/cluster-troubleshooting-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/cluster-upgrade-and-compatibility.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/config.md"
     },
     {
@@ -2863,6 +3308,36 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/load/architecture-diagram.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/load/comparison-tools.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/load/dashboards.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/load/documentation.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/load/example-configs.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/load/harness-and-generators.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/load/index.md"
     },
     {
@@ -2873,7 +3348,32 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/load/metrics.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/load/quickstart.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/load/strategy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/load/suites.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/load/summary-report.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/load/troubleshooting.md"
     },
     {
       "crate": null,
@@ -2913,7 +3413,27 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/observability/alert-rule-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/alerting-configuration-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/observability/alerts.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/cardinality-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/cluster-membership-observability.md"
     },
     {
       "crate": null,
@@ -2923,7 +3443,217 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/observability/debug-commands.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/diagnostics-outputs.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/failure-analysis-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/grafana-dashboard-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/health-endpoint-semantics.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/observability/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/log-analysis-query-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/log-analysis-workflows.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/log-correlation-ids.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/log-levels.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/log-metadata-fields.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/logging-aggregation-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/logging-architecture.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/logging-best-practices.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/logging-dashboard-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/logging-debugging-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/logging-ingestion-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/logging-privacy-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/logging-redaction-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/logging-rotation-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/logging-sampling-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/metric-labels.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/metric-retention-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/metric-types.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/metrics-architecture.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/metrics-naming-conventions.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/monitoring-setup-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/observability-architecture-diagram.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/observability-faq.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/observability-future-roadmap.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/observability-glossary.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/observability-performance-considerations.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/observability-quickstart.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/observability-troubleshooting-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/operational-troubleshooting-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/production-debugging-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/production-monitoring-checklist.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/prometheus-query-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/query-benchmark-dashboards.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/readiness-semantics.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/runtime-diagnostics.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/runtime-inspection-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/runtime-introspection.md"
     },
     {
       "crate": null,
@@ -2934,6 +3664,56 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/observability/slos-with-promql.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/system-state-visualization.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/trace-dashboard-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/trace-exporters.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/trace-fields.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/trace-sampling-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/trace-timeline-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/trace-troubleshooting.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/tracing-architecture.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/tracing-dashboard-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/observability/tracing-spans.md"
     },
     {
       "crate": null,
@@ -2968,7 +3748,82 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/performance-architecture-diagrams.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/performance-baseline.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/performance-ci-operations.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/performance-dashboard-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/performance-design-principles.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/performance-faq.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/performance-glossary.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/performance-metrics-reference.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/performance-optimization-guidelines.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/performance-philosophy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/performance-regression-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/performance-regression-monitoring.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/performance-regression-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/performance-roadmap.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/performance-testing-tutorial.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/performance-troubleshooting-guide.md"
     },
     {
       "crate": null,
@@ -3017,6 +3872,16 @@
     },
     {
       "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/query-benchmark-summary-report.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/query-performance-benchmarks.md"
+    },
+    {
+      "crate": null,
       "doc_type": "reference",
       "from": "docs/operations/reference/commands.md"
     },
@@ -3034,6 +3899,11 @@
       "crate": null,
       "doc_type": "reference",
       "from": "docs/operations/reference/gates.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/operations/reference/index.md"
     },
     {
       "crate": null,
@@ -3188,6 +4058,101 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/replication/delivery-summary.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/replication/failover-process.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/replication/failure-scenarios.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/replication/metrics-dashboards.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/replication/performance-benchmarks.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/replication/policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/replication/roadmap.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/replication/scaling-strategy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/replication/security-considerations.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/replication/troubleshooting.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/resilience/completion-report.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/resilience/dashboard-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/resilience/disaster-recovery-plan.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/resilience/failure-injection-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/resilience/failure-scenarios.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/resilience/recovery-timeline-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/resilience/recovery-workflow.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/resilience/recovery-workflows.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/resilience/runbooks.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/retention-and-gc.md"
     },
     {
@@ -3283,12 +4248,32 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/security/administrative-access-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/security/advisory-process.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/security/api-access-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/api-key-usage.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/artifact-integrity-verification.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/audit-and-security-event-classification.md"
     },
     {
       "crate": null,
@@ -3313,12 +4298,82 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/security/authentication-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/authentication-troubleshooting.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/authorization-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/authorization-reference.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/authorization-troubleshooting.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/security/compliance.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/security/data-classification-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/security/data-deletion-requests.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/data-protection-best-practices.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/data-protection-summary-report.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/data-retention-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/dataset-access-policies.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/dataset-security-guarantees.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/dependency-risk-scoring.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/dependency-security-scanning.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/dependency-version-monitoring.md"
     },
     {
       "crate": null,
@@ -3378,7 +4433,87 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/security/role-configuration-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/runtime-security-monitoring.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/security/safe-logging-guidelines.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/secure-deployment-guidelines.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/security-deployment-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/security-testing-and-monitoring.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/sensitive-data-handling-rules.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/static-analysis-security-rules.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/tls-configuration-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/tls-configuration.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/token-authentication-flow.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/vulnerability-scanning-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/shard-debugging-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/shard-distribution-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/shard-failure-scenarios.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/shard-rebalance-workflow.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/simulation/index.md"
     },
     {
       "crate": null,
@@ -3419,6 +4554,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/warmup-lock.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/workflows.md"
     },
     {
       "crate": null,
@@ -3484,6 +4624,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/product/what-is-bijux-atlas.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/api/index.md"
     },
     {
       "crate": null,
@@ -3568,6 +4713,11 @@
     {
       "crate": null,
       "doc_type": "spec",
+      "from": "docs/reference/contracts/docs/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "spec",
       "from": "docs/reference/contracts/docs/site-output.md"
     },
     {
@@ -3614,6 +4764,11 @@
       "crate": null,
       "doc_type": "spec",
       "from": "docs/reference/contracts/ops/helm-env-subset.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "spec",
+      "from": "docs/reference/contracts/ops/index.md"
     },
     {
       "crate": null,
@@ -3683,6 +4838,11 @@
     {
       "crate": null,
       "doc_type": "spec",
+      "from": "docs/reference/contracts/release/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "spec",
       "from": "docs/reference/contracts/schemas/index.md"
     },
     {
@@ -3703,6 +4863,96 @@
     {
       "crate": null,
       "doc_type": "reference",
+      "from": "docs/reference/datasets/artifact-identifiers.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/artifact-structure.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/dataset-compatibility.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/dataset-deletion.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/dataset-identifiers.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/dataset-lifecycle.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/dataset-manifests.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/dataset-metadata.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/dataset-promotion.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/dataset-storage-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/dataset-versioning.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/deterministic-output-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/ingestion-policies.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/reproducibility-guarantees.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/schema-evolution.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/shard-layout.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/datasets/validation-policies.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
       "from": "docs/reference/errors-and-exit-codes.md"
     },
     {
@@ -3713,12 +4963,217 @@
     {
       "crate": null,
       "doc_type": "reference",
+      "from": "docs/reference/examples/api-request-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/api-response-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/api-usage-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/architecture-diagrams-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/artifact-inspection-walkthrough.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/artifact-layout-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/artifact-promotion-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
       "from": "docs/reference/examples/catalog-example.md"
     },
     {
       "crate": null,
       "doc_type": "reference",
+      "from": "docs/reference/examples/ci-outputs-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/ci-pipeline-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/cli-usage-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/cli-walkthrough.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/contract-reports-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/data-lineage-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/dataset-evolution-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/dataset-manifest-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/dataset-recovery-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/debugging-workflow-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/deployment-configuration-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/docker-usage-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/failure-analysis-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/glossary-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/governance-reports-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
       "from": "docs/reference/examples/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/ingest-command-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/ingest-pipeline-walkthrough.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/local-development-setup-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/ops-report-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/performance-benchmarking-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/performance-metrics-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/policy-violation-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/query-benchmark-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/query-benchmark-summary-report.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/query-command-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/query-debugging-walkthrough.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/release-artifact-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/schema-evolution-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/system-audit-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/system-lifecycle-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/system-logs-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/system-run-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/system-validation-example.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/examples/validation-reports-example.md"
     },
     {
       "crate": null,
@@ -3729,6 +5184,11 @@
       "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/ingest/index.md"
     },
     {
       "crate": null,
@@ -3783,12 +5243,42 @@
     {
       "crate": null,
       "doc_type": "reference",
+      "from": "docs/reference/querying/cursor-usage.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/querying/error-responses.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/querying/filtering.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
       "from": "docs/reference/querying/index.md"
     },
     {
       "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/querying/pagination.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/querying/projections.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/querying/query-parameters.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/querying/retry-logic.md"
     },
     {
       "crate": null,
@@ -3873,6 +5363,11 @@
     {
       "crate": null,
       "doc_type": "reference",
+      "from": "docs/reference/runtime/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
       "from": "docs/reference/schema-versioning-policy.md"
     },
     {
@@ -3909,6 +5404,56 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/structure-index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/debug-pipeline.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/end-to-end-tutorial.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/faq.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/ingest-dataset.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/inspect-artifacts.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/query-dataset.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/troubleshooting-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/validate-dataset.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/what-is-atlas.md"
     },
     {
       "crate": null,
@@ -4149,6 +5694,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/load/REQUIRED_FILES.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/load/artifacts/README.md"
     },
     {
       "crate": null,

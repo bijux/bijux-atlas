@@ -6,6 +6,7 @@
 | Crate | Public API Doc |
 |---|---|
 | `bijux-atlas-api` | `crates/bijux-atlas-api/docs/public-api.md` |
+| `bijux-atlas-benchmark` | `missing` |
 | `bijux-atlas-cli` | `crates/bijux-atlas-cli/docs/public-api.md` |
 | `bijux-atlas-core` | `crates/bijux-atlas-core/docs/public-api.md` |
 | `bijux-atlas-ingest` | `crates/bijux-atlas-ingest/docs/public-api.md` |
