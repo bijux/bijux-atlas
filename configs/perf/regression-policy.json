@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "policy_id": "performance-regression-governance",
+  "regression_policy": {
+    "comparison_window_runs": 10,
+    "minimum_candidate_runs": 3,
+    "required_profiles": ["query-benchmark-baseline", "system-load-baseline"],
+    "blocking_conditions": [
+      "p95_latency_regression",
+      "p99_latency_regression",
+      "error_rate_regression",
+      "memory_growth_regression"
+    ]
+  },
+  "thresholds": {
+    "latency_regression_ratio_max": 0.1,
+    "throughput_regression_ratio_max": 0.08,
+    "error_rate_regression_abs_max": 0.01,
+    "memory_growth_bytes_max": 268435456
+  },
+  "budgets": {
+    "regression_triage_minutes_max": 120,
+    "benchmark_run_minutes_max": 30,
+    "nightly_regression_count_max": 3
+  },
+  "ci_rules": {
+    "block_on_regression": true,
+    "required_artifacts": [
+      "ops/report/generated/performance-regression-report.json",
+      "ops/report/generated/performance-history.json",
+      "ops/report/generated/performance-trend.json"
+    ],
+    "required_tests": [
+      "load_suite_coverage",
+      "load_reproducibility_regression"
+    ]
+  },
+  "alerting_policy": {
+    "channels": ["github-check", "ops-report"],
+    "severity_mapping": {
+      "critical": ["p99_latency_regression", "error_rate_regression"],
+      "warning": ["p95_latency_regression", "throughput_regression"]
+    }
+  }
+}
