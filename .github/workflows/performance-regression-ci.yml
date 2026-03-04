@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: Validate policy and generated assets
         run: |
@@ -46,23 +46,24 @@ jobs:
           jq . ops/report/generated/performance-completion-report.json > /dev/null
           jq . configs/contracts/perf/performance-metadata.schema.json > /dev/null
 
-      - name: Run regression detector and report generator
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
+
+      - name: Run regression detector and validation via control-plane
         run: |
-          ops/load/tools/detect-performance-regression.sh \
-            ops/load/baselines/system-load-baseline.json \
-            ops/load/baselines/system-load-baseline.json > /tmp/perf-regressions.json
-          ops/load/tools/generate-regression-report.sh \
+          cargo run -p bijux-dev-atlas -- \
+            perf diff \
             ops/load/baselines/system-load-baseline.json \
             ops/load/baselines/system-load-baseline.json \
-            /tmp/performance-regression-report.json
+            --format json > /tmp/perf-regressions.json
+          cargo run -p bijux-dev-atlas -- \
+            perf validate \
+            --format json > /tmp/performance-regression-report.json
           jq . /tmp/perf-regressions.json > /dev/null
           jq . /tmp/performance-regression-report.json > /dev/null
 
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-
       - name: Run performance regression asset tests
-        run: cargo test -p bijux-dev-atlas --test performance_regression_assets -- --nocapture
+        run: cargo test -p bijux-dev-atlas --test performance_regression_assets --locked -- --nocapture
 
       - name: Publish step summary
         run: |

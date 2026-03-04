@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: Validate load JSON contracts
         run: |
@@ -32,17 +32,20 @@ jobs:
           jq . ops/load/generated/load-drift-report.json > /dev/null
           jq . ops/load/generated/system-load-summary.json > /dev/null
 
-      - name: Validate load comparison tool
-        run: |
-          ops/load/tools/compare-load-report.sh \
-            ops/load/baselines/system-load-baseline.json \
-            ops/load/baselines/system-load-baseline.json > /dev/null
-
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
+
+      - name: Validate load comparison via control-plane command
+        run: |
+          cargo run -p bijux-dev-atlas -- \
+            perf diff \
+            ops/load/baselines/system-load-baseline.json \
+            ops/load/baselines/system-load-baseline.json \
+            --format json > /tmp/load-diff.json
+          jq . /tmp/load-diff.json > /dev/null
 
       - name: Run load suite coverage regression test
-        run: cargo test -p bijux-dev-atlas --test load_suite_coverage -- --nocapture
+        run: cargo test -p bijux-dev-atlas --test load_suite_coverage --locked -- --nocapture
 
       - name: Run load reproducibility regression test
-        run: cargo test -p bijux-dev-atlas --test load_reproducibility_regression -- --nocapture
+        run: cargo test -p bijux-dev-atlas --test load_reproducibility_regression --locked -- --nocapture

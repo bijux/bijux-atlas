@@ -15,4 +15,4 @@
 
 - Re-run the same scenario twice locally.
 - Validate machine load is stable.
-- Use `ops/perf/visualization/benchmark_diff_plot.py` to inspect metric deltas.
+- Use `bijux-dev-atlas perf diff <report-a> <report-b> --format json` to inspect metric deltas.
