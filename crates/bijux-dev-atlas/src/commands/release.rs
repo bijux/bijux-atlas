@@ -13,7 +13,6 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
 use std::process::Command as ProcessCommand;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 fn sha256_file(path: &Path) -> Result<String, String> {
     let bytes =
@@ -36,6 +35,10 @@ fn read_yaml(path: &Path) -> Result<serde_yaml::Value, String> {
             .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", path.display()))
+}
+
+fn env_var_text(key: &str) -> Option<String> {
+    std::env::var_os(key).and_then(|value| value.into_string().ok())
 }
 
 fn ensure_json(path: &Path) -> Result<(), String> {
@@ -1075,12 +1078,7 @@ fn create_release_manifest(root: &Path, version: &str) -> Result<serde_json::Val
         .map(|s| s.trim().to_string())
         .filter(|s| !s.is_empty())
         .unwrap_or_else(|| "unknown".to_string());
-    let build_time = std::env::var("SOURCE_DATE_EPOCH").unwrap_or_else(|_| {
-        SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .map(|d| d.as_secs().to_string())
-            .unwrap_or_else(|_| "0".to_string())
-    });
+    let build_time = env_var_text("SOURCE_DATE_EPOCH").unwrap_or_else(|| "0".to_string());
     let docs_hash = source
         .get("docs_site_summary")
         .and_then(|v| v.get("sha256"))
@@ -1159,7 +1157,7 @@ fn create_release_manifest(root: &Path, version: &str) -> Result<serde_json::Val
         "build_metadata": {
             "os": std::env::consts::OS,
             "architecture": std::env::consts::ARCH,
-            "cargo_profile": std::env::var("PROFILE").unwrap_or_else(|_| "release".to_string()),
+            "cargo_profile": env_var_text("PROFILE").unwrap_or_else(|| "release".to_string()),
             "toolchain_versions": collect_toolchain_versions(root)
         },
         "artifact_list": [],
@@ -1647,7 +1645,7 @@ fn run_release_reproducibility_report(
     let mut errors = Vec::<String>::new();
     for (key, expected) in required_env {
         let expected_value = expected.as_str().unwrap_or_default().to_string();
-        let actual_value = std::env::var(&key).unwrap_or_default();
+        let actual_value = env_var_text(&key).unwrap_or_default();
         let ok = actual_value == expected_value;
         if !ok {
             errors.push(format!(
@@ -1813,8 +1811,7 @@ fn run_release_version_check(args: ReleaseVersionCheckArgs) -> Result<(String, i
         .version
         .unwrap_or_else(|| default_release_version(&root));
     let tag = args.tag.or_else(|| {
-        std::env::var("GITHUB_REF")
-            .ok()
+        env_var_text("GITHUB_REF")
             .and_then(|v| v.strip_prefix("refs/tags/").map(str::to_string))
     });
     let mut errors = Vec::<String>::new();
@@ -2106,13 +2103,12 @@ pub(crate) fn run_release_command(
 mod tests {
     use super::*;
     use std::path::PathBuf;
-    use std::time::{SystemTime, UNIX_EPOCH};
+    use std::sync::atomic::{AtomicU64, Ordering};
+
+    static TEST_REPO_SEQUENCE: AtomicU64 = AtomicU64::new(1);
 
     fn create_release_test_repo(changelog: &str, policy: &str) -> PathBuf {
-        let stamp = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .expect("time must be monotonic for tests")
-            .as_nanos();
+        let stamp = TEST_REPO_SEQUENCE.fetch_add(1, Ordering::Relaxed);
         let root = std::env::temp_dir().join(format!("bijux-release-tests-{stamp}"));
         fs::create_dir_all(root.join("configs/release")).expect("create release config directory");
         fs::write(root.join("CHANGELOG.md"), changelog).expect("write changelog");

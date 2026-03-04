@@ -348,28 +348,43 @@ pub(super) fn run_profile_validation_pipeline(
     repo_root: &Path,
     ops_root: &Path,
 ) -> Result<(serde_json::Value, i32), String> {
-    if !common.allow_subprocess {
-        return Err("ops validate requires --allow-subprocess".to_string());
-    }
-    let report = bijux_dev_atlas::ops::profiles_matrix::validate_profiles(
-        repo_root,
-        &bijux_dev_atlas::ops::profiles_matrix::ValidateProfilesOptions {
-            chart_dir: ops_root.join("k8s/charts/bijux-atlas"),
-            values_root: ops_root.join("k8s/values"),
-            schema_path: ops_root.join("k8s/charts/bijux-atlas/values.schema.json"),
-            dataset_manifest_path: ops_root.join("datasets/manifest.json"),
-            install_matrix_path: ops_root.join("k8s/install-matrix.json"),
-            rollout_safety_path: ops_root.join("k8s/rollout-safety-contract.json"),
-            profile: common.profile.clone(),
-            profile_set: None,
-            timeout_seconds: 30,
-            run_kubeconform: true,
-        },
-    )?;
+    let report = if common.allow_subprocess {
+        bijux_dev_atlas::ops::profiles_matrix::validate_profiles(
+            repo_root,
+            &bijux_dev_atlas::ops::profiles_matrix::ValidateProfilesOptions {
+                chart_dir: ops_root.join("k8s/charts/bijux-atlas"),
+                values_root: ops_root.join("k8s/values"),
+                schema_path: ops_root.join("k8s/charts/bijux-atlas/values.schema.json"),
+                dataset_manifest_path: ops_root.join("datasets/manifest.json"),
+                install_matrix_path: ops_root.join("k8s/install-matrix.json"),
+                rollout_safety_path: ops_root.join("k8s/rollout-safety-contract.json"),
+                profile: common.profile.clone(),
+                profile_set: None,
+                timeout_seconds: 30,
+                run_kubeconform: true,
+            },
+        )?
+    } else {
+        bijux_dev_atlas::ops::profiles_matrix::validate_profiles(
+            repo_root,
+            &bijux_dev_atlas::ops::profiles_matrix::ValidateProfilesOptions {
+                chart_dir: ops_root.join("k8s/charts/bijux-atlas"),
+                values_root: ops_root.join("k8s/values"),
+                schema_path: ops_root.join("k8s/charts/bijux-atlas/values.schema.json"),
+                dataset_manifest_path: ops_root.join("datasets/manifest.json"),
+                install_matrix_path: ops_root.join("k8s/install-matrix.json"),
+                rollout_safety_path: ops_root.join("k8s/rollout-safety-contract.json"),
+                profile: common.profile.clone(),
+                profile_set: None,
+                timeout_seconds: 30,
+                run_kubeconform: false,
+            },
+        )?
+    };
 
     let rows = load_profile_values_rows(repo_root, ops_root, common.profile.as_deref())?;
     let hpa_policy_path = ops_root.join("stack/hpa-policy.json");
-    let hpa_policy_json = std::fs::read_to_string(&hpa_policy_path)
+    let hpa_policy_json = fs::read_to_string(&hpa_policy_path)
         .map_err(|err| format!("failed to read {}: {err}", hpa_policy_path.display()))?;
     let hpa_policy_value: serde_json::Value = serde_json::from_str(&hpa_policy_json)
         .map_err(|err| format!("failed to parse {}: {err}", hpa_policy_path.display()))?;
@@ -524,7 +539,7 @@ fn load_profile_values_rows(
         crate::ops_support::load_profile_registry(ops_root).map_err(|e| e.to_stable_message())?;
     registry.profiles.sort_by(|a, b| a.id.cmp(&b.id));
     let chart_values_path = ops_root.join("k8s/charts/bijux-atlas/values.yaml");
-    let chart_values = std::fs::read_to_string(&chart_values_path)
+    let chart_values = fs::read_to_string(&chart_values_path)
         .map_err(|err| format!("failed to read {}: {err}", chart_values_path.display()))?;
     let base_values_yaml: serde_yaml::Value = serde_yaml::from_str(&chart_values)
         .map_err(|err| format!("failed to parse {}: {err}", chart_values_path.display()))?;
@@ -558,7 +573,7 @@ fn load_profile_values_rows(
                     profile.id
                 )
             })?;
-        let overlay_text = std::fs::read_to_string(&overlay_path)
+        let overlay_text = fs::read_to_string(&overlay_path)
             .map_err(|err| format!("failed to read {}: {err}", overlay_path.display()))?;
         let overlay_yaml: serde_yaml::Value = serde_yaml::from_str(&overlay_text)
             .map_err(|err| format!("failed to parse {}: {err}", overlay_path.display()))?;
@@ -793,7 +808,7 @@ fn validate_profile_static_mode(
 ) -> Result<(String, i32), String> {
     let rows = load_profile_values_rows(repo_root, ops_root, args.common.profile.as_deref())?;
     let hpa_policy_path = ops_root.join("stack/hpa-policy.json");
-    let hpa_policy_json = std::fs::read_to_string(&hpa_policy_path)
+    let hpa_policy_json = fs::read_to_string(&hpa_policy_path)
         .map_err(|err| format!("failed to read {}: {err}", hpa_policy_path.display()))?;
     let hpa_policy_value: serde_json::Value = serde_json::from_str(&hpa_policy_json)
         .map_err(|err| format!("failed to parse {}: {err}", hpa_policy_path.display()))?;

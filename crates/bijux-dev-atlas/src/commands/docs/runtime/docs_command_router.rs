@@ -320,8 +320,8 @@ fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_j
     let mut orphan_pages = Vec::<String>::new();
     let mut allowlisted_orphans = Vec::<String>::new();
     let mut orphan_allowlist_expired = Vec::<String>::new();
-    let today = std::env::var("BIJUX_DOCS_ORPHAN_AUDIT_DATE")
-        .ok()
+    let today = std::env::var_os("BIJUX_DOCS_ORPHAN_AUDIT_DATE")
+        .and_then(|value| value.into_string().ok())
         .filter(|value| !value.trim().is_empty())
         .unwrap_or_else(|| "9999-12-31".to_string());
     for path in &docs_files {
