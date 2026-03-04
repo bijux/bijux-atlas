@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ops/e2e/scenarios/result-schema.json",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "schema_ref",
+    "runner_version",
+    "scenario_id",
+    "run_id",
+    "mode",
+    "status",
+    "started_at_utc",
+    "completed_at_utc",
+    "metrics",
+    "evidence",
+    "pointers"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "schema_ref": {"type": "string"},
+    "runner_version": {"type": "string"},
+    "scenario_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "run_id": {"type": "string", "pattern": "^[a-f0-9]{12}$"},
+    "mode": {"type": "string", "enum": ["plan", "execute", "evidence"]},
+    "status": {"type": "string", "enum": ["pass", "fail"]},
+    "started_at_utc": {"type": "string"},
+    "completed_at_utc": {"type": "string"},
+    "summary": {"type": "string"},
+    "prerequisites": {"type": "array", "items": {"type": "string"}},
+    "metrics": {
+      "type": "object",
+      "required": ["duration_ms", "checks_passed", "checks_failed"],
+      "properties": {
+        "duration_ms": {"type": "integer", "minimum": 0},
+        "checks_passed": {"type": "integer", "minimum": 0},
+        "checks_failed": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["directory", "files"],
+      "properties": {
+        "directory": {"type": "string"},
+        "files": {"type": "array", "minItems": 2, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "pointers": {
+      "type": "object",
+      "required": ["report_json", "report_markdown"],
+      "properties": {
+        "report_json": {"type": "string"},
+        "report_markdown": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

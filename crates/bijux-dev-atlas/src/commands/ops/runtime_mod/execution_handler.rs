@@ -277,6 +277,13 @@ pub(super) fn dispatch_execution(
                             .to_string(),
                     );
                 }
+                let result_schema_path = repo_root.join("ops/e2e/scenarios/result-schema.json");
+                if !result_schema_path.exists() {
+                    return Err(
+                        "missing prerequisite `ops/e2e/scenarios/result-schema.json` for scenario runner"
+                            .to_string(),
+                    );
+                }
                 let mode = if args.plan {
                     "plan"
                 } else if args.evidence {
@@ -308,6 +315,7 @@ pub(super) fn dispatch_execution(
                     let now = "1970-01-01T00:00:00Z";
                     let result = serde_json::json!({
                         "schema_version": 1,
+                        "schema_ref": "ops/e2e/scenarios/result-schema.json",
                         "runner_version": "1.0",
                         "scenario_id": scenario.id,
                         "run_id": run_id,
@@ -316,8 +324,10 @@ pub(super) fn dispatch_execution(
                         "started_at_utc": now,
                         "completed_at_utc": now,
                         "summary": "scenario completed in deterministic evidence mode",
-                        "prerequisites": ["ops/e2e/scenarios/scenarios.json", "ops/e2e/scenarios/version-compatibility.json"],
-                        "evidence": {"directory": evidence_dir_rel, "files": evidence_files}
+                        "prerequisites": ["ops/e2e/scenarios/scenarios.json", "ops/e2e/scenarios/version-compatibility.json", "ops/e2e/scenarios/result-schema.json"],
+                        "metrics": {"duration_ms": 0, "checks_passed": 1, "checks_failed": 0},
+                        "evidence": {"directory": evidence_dir_rel, "files": evidence_files},
+                        "pointers": {"report_json": format!("{evidence_dir_rel}/result.json"), "report_markdown": format!("{evidence_dir_rel}/summary.md")}
                     });
                     let result_path = evidence_dir.join("result.json");
                     let summary_path = evidence_dir.join("summary.md");
