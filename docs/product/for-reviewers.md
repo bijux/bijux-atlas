@@ -1,6 +1,6 @@
 ---
 title: For Reviewers
-audience: contributor
+audience: reviewers
 type: guide
 stability: stable
 owner: docs-governance
@@ -20,5 +20,13 @@ Use these evidence entrypoints first:
 - [Checks and contracts](../_internal/governance/checks-and-contracts.md)
 - [How this repo enforces itself](how-this-repo-enforces-itself.md)
 - [Production-ready boundaries](production-ready-boundaries.md)
+- [Reviewer onboarding checklist](reviewer-onboarding-checklist.md)
 - `docs/_internal/generated/docs-contract-coverage.json`
 - `docs/_internal/generated/docs-quality-dashboard.json`
+
+Generated map pages:
+
+- [Repository surface map](../_internal/generated/repo-surface-map.md)
+- [Contracts surface](../_internal/generated/contracts-surface.md)
+- [Checks surface](../_internal/generated/checks-surface.md)
+- [Commands surface](../_internal/generated/commands-surface.md)
