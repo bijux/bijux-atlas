@@ -3,6 +3,8 @@ name: docs-deploy
 on:
   push:
     branches: [main]
+    tags:
+      - "v*"
     paths:
       - "docs/**"
       - "mkdocs.yml"
@@ -36,14 +38,36 @@ jobs:
         with:
           toolchain: 1.84.1
 
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: configs/docs/requirements.lock.txt
+
       - name: Configure Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
+
+      - name: Validate docs output directory contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+import pathlib
+import yaml
+mkdocs = yaml.safe_load(pathlib.Path("mkdocs.yml").read_text())
+site_dir = mkdocs.get("site_dir", "site")
+exclude_docs = mkdocs.get("exclude_docs", "")
+if site_dir != "artifacts/docs/site":
+    raise SystemExit(f"mkdocs site_dir must be artifacts/docs/site, got: {site_dir}")
+if "_drafts/**" not in exclude_docs:
+    raise SystemExit("mkdocs exclude_docs must include _drafts/**")
+PY
 
       - name: Install docs toolchain
         shell: bash
         run: |
           set -euo pipefail
-          python3 -m pip install --upgrade pip
           python3 -m pip install -r configs/docs/requirements.lock.txt
           npm ci --prefix configs/docs
 
