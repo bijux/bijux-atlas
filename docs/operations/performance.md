@@ -11,12 +11,29 @@ checks, cold-start timing, regression comparison, and the kind-backed perf valid
 
 Related ops contracts: `OPS-ROOT-023`, `PERF-KIND-001`.
 
+## Benchmark Philosophy
+
+- Benchmark evidence is first-class release evidence, not ad hoc local output.
+- Every benchmark run must use committed dataset metadata and committed configuration.
+- Results are comparable only when isolation and reproducibility settings are identical.
+
+## Target Definitions
+
+- Latency metrics use `milliseconds` and are reported as `p50`, `p95`, and `p99`.
+- Throughput metrics use `operations_per_second`.
+- Dataset scale tiers are explicit: `small`, `medium`, `large`, `x_large`.
+
 ## Governing Sources
 
 - `configs/perf/slo.yaml`
 - `configs/perf/budgets.yaml`
 - `configs/perf/benches.json`
 - `configs/perf/exceptions.json`
+- `configs/perf/benchmark-config.json`
+- `configs/perf/benchmark-datasets.json`
+- `configs/contracts/perf/benchmark-config.schema.json`
+- `configs/contracts/perf/benchmark-datasets.schema.json`
+- `configs/contracts/perf/benchmark-result.schema.json`
 - `ops/report/gene-lookup-baseline.json`
 - `the built-in gene-lookup scenario embedded in bijux-dev-atlas`
 
