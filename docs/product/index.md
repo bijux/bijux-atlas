@@ -36,6 +36,7 @@ Provide the canonical product story: what Atlas is, who it serves, and the promi
 ## What You Will Find Here
 
 - [What is Bijux Atlas](what-is-bijux-atlas.md)
+- [What we built](what-we-built.md)
 - [Compatibility promise](compatibility-promise.md)
 - [Non-goals](non-goals.md)
 - [Release model](release-model.md)
