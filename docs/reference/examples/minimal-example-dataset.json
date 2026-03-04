@@ -1,0 +1,25 @@
+{
+  "dataset_id": {
+    "release": "110",
+    "species": "homo_sapiens",
+    "assembly": "GRCh38"
+  },
+  "records": [
+    {
+      "gene_id": "ENSG00000139618",
+      "symbol": "BRCA2",
+      "chromosome": "13",
+      "start": 32315474,
+      "end": 32400266,
+      "biotype": "protein_coding"
+    },
+    {
+      "gene_id": "ENSG00000012048",
+      "symbol": "BRCA1",
+      "chromosome": "17",
+      "start": 43044295,
+      "end": 43170245,
+      "biotype": "protein_coding"
+    }
+  ]
+}
