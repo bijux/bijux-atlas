@@ -5,6 +5,7 @@ pub mod cluster_state;
 pub mod config;
 pub mod distributed;
 pub mod distributed_config;
+pub mod membership;
 pub mod time;
 
 pub use canonical::{sha256, sha256_hex, Hash256};
@@ -19,4 +20,8 @@ pub use distributed_config::{
     ClusterConfigFile, ClusterDiscoveryConfig, ClusterHealthConfig, ClusterHealthQuorumConfig,
     NodeConfigFile, NodeShutdownConfig, default_metadata_store, load_cluster_config_from_path,
     load_node_config_from_path,
+};
+pub use membership::{
+    HeartbeatMessage, MembershipMetrics, MembershipPolicy, MembershipRegistry, MembershipState,
+    NodeMembershipRecord,
 };

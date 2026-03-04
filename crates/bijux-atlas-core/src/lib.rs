@@ -16,11 +16,12 @@ pub use crate::domain::time;
 pub use crate::domain::{
     BootstrapPolicy, ClusterConfigFile, ClusterDescriptor, ClusterDiscoveryConfig, ClusterHealth,
     ClusterHealthConfig, ClusterHealthQuorumConfig, ClusterMetadataStore, ClusterStateRegistry,
-    ClusterStatusSnapshot, CompatibilityPolicy, DiscoveryStrategy, HealthPolicy, MetadataBackend,
-    NodeConfigFile, NodeDescriptor, NodeIdentity, NodeMetadata, NodeRole, NodeShutdownConfig,
-    NodeState, ReadinessPolicy, ShutdownPolicy, TopologyMode, default_metadata_store,
-    load_cluster_config_from_path, load_node_config_from_path, resolve_bijux_cache_dir,
-    resolve_bijux_config_path, sha256, sha256_hex, Hash256,
+    ClusterStatusSnapshot, CompatibilityPolicy, DiscoveryStrategy, HeartbeatMessage, HealthPolicy,
+    MembershipMetrics, MembershipPolicy, MembershipRegistry, MembershipState, MetadataBackend,
+    NodeConfigFile, NodeDescriptor, NodeIdentity, NodeMembershipRecord, NodeMetadata, NodeRole,
+    NodeShutdownConfig, NodeState, ReadinessPolicy, ShutdownPolicy, TopologyMode,
+    default_metadata_store, load_cluster_config_from_path, load_node_config_from_path,
+    resolve_bijux_cache_dir, resolve_bijux_config_path, sha256, sha256_hex, Hash256,
 };
 pub use crate::errors::{
     ConfigPathScope, ERROR_CODES, Error, ErrorCode, ErrorContext, ExitCode, MachineError, Result,
