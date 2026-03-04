@@ -5,7 +5,9 @@ use std::fs;
 use std::path::Path;
 
 use crate::core::{check_runner, Selectors};
-use crate::model::{CheckId, CheckSpec, DomainId, Effect, SuiteId, Tag, Visibility};
+use crate::model::{
+    CheckId, CheckMode, CheckSeverity, CheckSpec, DomainId, Effect, SuiteId, Tag, Visibility,
+};
 use serde::Deserialize;
 
 pub const DEFAULT_REGISTRY_PATH: &str = "ops/inventory/registry.toml";
@@ -48,6 +50,12 @@ struct RawCheck {
     domain: String,
     title: String,
     docs: String,
+    owner: Option<String>,
+    severity: Option<String>,
+    mode: Option<String>,
+    rationale: Option<String>,
+    fix_hint: Option<String>,
+    evidence_paths: Option<Vec<String>>,
     tags: Vec<String>,
     suites: Vec<String>,
     effects_required: Option<Vec<String>>,
@@ -102,6 +110,25 @@ fn parse_visibility(raw: &str) -> Result<Visibility, String> {
     }
 }
 
+fn parse_check_mode(raw: &str) -> Result<CheckMode, String> {
+    match raw.trim() {
+        "static" => Ok(CheckMode::Static),
+        "effect" => Ok(CheckMode::Effect),
+        other => Err(format!("invalid check mode `{other}`")),
+    }
+}
+
+fn parse_check_severity(raw: &str) -> Result<CheckSeverity, String> {
+    match raw.trim() {
+        "blocker" => Ok(CheckSeverity::Blocker),
+        "high" => Ok(CheckSeverity::High),
+        "medium" => Ok(CheckSeverity::Medium),
+        "low" => Ok(CheckSeverity::Low),
+        "info" => Ok(CheckSeverity::Info),
+        other => Err(format!("invalid check severity `{other}`")),
+    }
+}
+
 pub fn load_registry(repo_root: &Path) -> Result<Registry, String> {
     let path = repo_root.join(DEFAULT_REGISTRY_PATH);
     let text = fs::read_to_string(&path)
@@ -116,11 +143,58 @@ pub fn load_registry(repo_root: &Path) -> Result<Registry, String> {
             let effects = row
                 .effects_required
                 .ok_or_else(|| format!("{}: missing effects_required", row.id))?;
+            let inferred_mode = if effects.iter().any(|effect| effect != "fs_read") {
+                CheckMode::Effect
+            } else {
+                CheckMode::Static
+            };
+            let owner = row
+                .owner
+                .as_deref()
+                .map(str::trim)
+                .filter(|value| !value.is_empty())
+                .unwrap_or("team:atlas-governance")
+                .to_string();
+            let severity = row
+                .severity
+                .as_deref()
+                .map(parse_check_severity)
+                .transpose()?
+                .unwrap_or(CheckSeverity::Medium);
+            let mode = row
+                .mode
+                .as_deref()
+                .map(parse_check_mode)
+                .transpose()?
+                .unwrap_or(inferred_mode);
+            let rationale = row
+                .rationale
+                .as_deref()
+                .map(str::trim)
+                .filter(|value| !value.is_empty())
+                .unwrap_or(row.title.trim())
+                .to_string();
+            let fix_hint = row
+                .fix_hint
+                .as_deref()
+                .map(str::trim)
+                .filter(|value| !value.is_empty())
+                .unwrap_or("review the check violations and align the referenced policy surface")
+                .to_string();
+            let evidence_paths = row
+                .evidence_paths
+                .unwrap_or_else(|| vec![format!("artifacts/checks/by-id/{}.json", row.id.trim())]);
             Ok(CheckSpec {
                 id: CheckId::parse(&row.id)?,
                 domain: parse_domain(&row.domain)?,
                 title: row.title.trim().to_string(),
                 docs: row.docs.trim().to_string(),
+                owner,
+                severity,
+                mode,
+                rationale,
+                fix_hint,
+                evidence_paths,
                 tags: row
                     .tags
                     .iter()
@@ -221,6 +295,18 @@ pub fn validate_registry(registry: &Registry) -> Vec<String> {
         }
         if check.budget_ms == 0 {
             errors.push(format!("{}: budget_ms must be > 0", check.id));
+        }
+        if check.owner.trim().is_empty() {
+            errors.push(format!("{}: owner must be declared", check.id));
+        }
+        if check.rationale.trim().is_empty() {
+            errors.push(format!("{}: rationale must be declared", check.id));
+        }
+        if check.fix_hint.trim().is_empty() {
+            errors.push(format!("{}: fix_hint must be declared", check.id));
+        }
+        if check.evidence_paths.is_empty() {
+            errors.push(format!("{}: evidence_paths must be declared", check.id));
         }
         if check.effects_required.is_empty() {
             errors.push(format!("{}: effects_required must be declared", check.id));
@@ -345,9 +431,23 @@ pub fn select_checks(registry: &Registry, selectors: &Selectors) -> Result<Vec<C
         .filter(|check| selectors.domain.is_none_or(|domain| check.domain == domain))
         .filter(|check| {
             selectors
+                .severity
+                .is_none_or(|severity| check.severity == severity)
+        })
+        .filter(|check| selectors.mode.is_none_or(|mode| check.mode == mode))
+        .filter(|check| {
+            selectors
                 .tag
                 .as_ref()
                 .is_none_or(|tag| check.tags.iter().any(|ctag| ctag == tag))
+        })
+        .filter(|check| {
+            selectors.title_substring.as_ref().is_none_or(|needle| {
+                check
+                    .title
+                    .to_ascii_lowercase()
+                    .contains(&needle.to_ascii_lowercase())
+            })
         })
         .filter(|check| {
             selectors
@@ -364,7 +464,12 @@ pub fn select_checks(registry: &Registry, selectors: &Selectors) -> Result<Vec<C
 pub fn list_output(checks: &[CheckSpec]) -> String {
     checks
         .iter()
-        .map(|check| format!("{}\t{}", check.id, check.title))
+        .map(|check| {
+            format!(
+                "{}\t{:?}\t{:?}\towner={}\t{}",
+                check.id, check.severity, check.mode, check.owner, check.title
+            )
+        })
         .collect::<Vec<_>>()
         .join("\n")
 }
@@ -393,12 +498,19 @@ pub fn explain_output(registry: &Registry, check_id: &CheckId) -> Result<String,
         .map(|v| format!("{v:?}").to_lowercase())
         .collect::<Vec<_>>()
         .join(",");
+    let evidence_paths = check.evidence_paths.join(",");
     Ok(format!(
-        "id: {}\ndomain: {:?}\ntitle: {}\ndocs: {}\ntags: {}\nsuites: {}\neffects_required: {}\nbudget_ms: {}\nvisibility: {:?}",
+        "id: {}\ndomain: {:?}\ntitle: {}\ndocs: {}\nowner: {}\nseverity: {:?}\nmode: {:?}\nrationale: {}\nfix_hint: {}\nevidence_paths: {}\ntags: {}\nsuites: {}\neffects_required: {}\nbudget_ms: {}\nvisibility: {:?}",
         check.id,
         check.domain,
         check.title,
         check.docs,
+        check.owner,
+        check.severity,
+        check.mode,
+        check.rationale,
+        check.fix_hint,
+        evidence_paths,
         tags,
         suites,
         effects,

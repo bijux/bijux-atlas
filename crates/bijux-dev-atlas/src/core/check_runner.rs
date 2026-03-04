@@ -115,8 +115,11 @@ impl<'a> CheckRunner<'a> {
     fn selected_checks(&self, registry: &Registry) -> Result<Vec<BuiltinCheck>, String> {
         let effective_selectors = Selectors {
             domain: self.selectors.domain.or(self.request.domain),
+            severity: self.selectors.severity,
+            mode: self.selectors.mode,
             include_internal: self.selectors.include_internal,
             include_slow: self.selectors.include_slow,
+            title_substring: self.selectors.title_substring.clone(),
             id_glob: self.selectors.id_glob.clone(),
             tag: self.selectors.tag.clone(),
             suite: self.selectors.suite.clone(),
@@ -251,8 +254,11 @@ impl<'a> CheckRunner<'a> {
 
         let effective_selectors = Selectors {
             domain: self.selectors.domain.or(self.request.domain),
+            severity: self.selectors.severity,
+            mode: self.selectors.mode,
             include_internal: self.selectors.include_internal,
             include_slow: self.selectors.include_slow,
+            title_substring: self.selectors.title_substring.clone(),
             id_glob: self.selectors.id_glob.clone(),
             tag: self.selectors.tag.clone(),
             suite: self.selectors.suite.clone(),

@@ -304,12 +304,35 @@ pub enum Visibility {
     Internal,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckMode {
+    Static,
+    Effect,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckSeverity {
+    Blocker,
+    High,
+    Medium,
+    Low,
+    Info,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CheckSpec {
     pub id: CheckId,
     pub domain: DomainId,
     pub title: String,
     pub docs: String,
+    pub owner: String,
+    pub severity: CheckSeverity,
+    pub mode: CheckMode,
+    pub rationale: String,
+    pub fix_hint: String,
+    pub evidence_paths: Vec<String>,
     pub tags: Vec<Tag>,
     pub suites: Vec<SuiteId>,
     pub effects_required: Vec<Effect>,

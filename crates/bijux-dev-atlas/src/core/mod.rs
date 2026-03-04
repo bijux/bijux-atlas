@@ -13,8 +13,8 @@ use std::path::{Path, PathBuf};
 #[cfg(test)]
 use crate::model::Visibility;
 use crate::model::{
-    ArtifactsRoot, CheckId, CheckResult, CheckSpec, CheckStatus, DomainId, Effect, RunId,
-    RunReport, Severity, SuiteId, Tag, Violation,
+    ArtifactsRoot, CheckId, CheckMode, CheckResult, CheckSeverity, CheckSpec, CheckStatus,
+    DomainId, Effect, RunId, RunReport, Severity, SuiteId, Tag, Violation,
 };
 use std::borrow::Cow;
 
@@ -49,7 +49,10 @@ pub struct RunRequest {
 #[derive(Debug, Clone, Default)]
 pub struct Selectors {
     pub id_glob: Option<String>,
+    pub title_substring: Option<String>,
     pub domain: Option<DomainId>,
+    pub severity: Option<CheckSeverity>,
+    pub mode: Option<CheckMode>,
     pub tag: Option<Tag>,
     pub suite: Option<SuiteId>,
     pub include_internal: bool,

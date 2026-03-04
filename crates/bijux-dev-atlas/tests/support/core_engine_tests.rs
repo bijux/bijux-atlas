@@ -169,7 +169,8 @@ fn list_output_shape_is_stable() {
     let registry = load_registry(&root()).expect("registry");
     let selected = select_checks(&registry, &Selectors::default()).expect("select");
     let rendered = list_output(&selected);
-    assert!(rendered.contains("checks_ops_surface_manifest\tops surface manifest consistency"));
+    assert!(rendered.contains("checks_ops_surface_manifest"));
+    assert!(rendered.contains("ops surface manifest consistency"));
 }
 
 #[test]
@@ -200,6 +201,14 @@ fn doctor_detects_missing_implementation_for_registered_check() {
         domain: DomainId::Ops,
         title: "sample unimplemented".to_string(),
         docs: "ops/CONTRACT.md".to_string(),
+        owner: "team:atlas-governance".to_string(),
+        severity: crate::model::CheckSeverity::Medium,
+        mode: crate::model::CheckMode::Static,
+        rationale: "sample unimplemented".to_string(),
+        fix_hint: "implement the missing check".to_string(),
+        evidence_paths: vec![
+            "artifacts/checks/by-id/checks_ops_sample_unimplemented.json".to_string(),
+        ],
         tags: vec![Tag::parse("lint").expect("tag")],
         suites: vec![SuiteId::parse("deep").expect("suite")],
         effects_required: vec![Effect::FsRead],
