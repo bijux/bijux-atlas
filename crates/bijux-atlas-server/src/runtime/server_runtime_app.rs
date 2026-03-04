@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 impl AppState {
+    fn init_request_metrics() -> Arc<RequestMetrics> {
+        Arc::new(RequestMetrics::default())
+    }
+
     fn derive_runtime_policy_hash(api: &ApiConfig, limits: &QueryLimits) -> String {
         let payload = serde_json::json!({
             "api": api,
@@ -70,7 +74,7 @@ impl AppState {
                 },
                 "api_key",
             )),
-            metrics: Arc::new(RequestMetrics::default()),
+            metrics: Self::init_request_metrics(),
             request_id_seed: Arc::new(AtomicU64::new(1)),
             accepting_requests: Arc::new(AtomicBool::new(true)),
             coalescer: Arc::new(cache::coalesce::QueryCoalescer::new()),

@@ -32,6 +32,16 @@ async fn finalize_genes_success_response<R>(ctx: GenesResponseFinalizeContext<'_
         coalesce_key,
         request_id,
     } = ctx;
+    if let Some(rows) = payload
+        .get("data")
+        .and_then(|d| d.get("rows"))
+        .and_then(serde_json::Value::as_array)
+    {
+        state
+            .metrics
+            .observe_query_row_count("/v1/genes", rows.len())
+            .await;
+    }
     let serialize_started = Instant::now();
     let bytes = match info_span!("serialize_response").in_scope(|| {
         super::handlers::serialize_payload_with_capacity(

@@ -347,6 +347,7 @@ pub(crate) async fn genes_handler(
     if class == QueryClass::Heavy || class == QueryClass::Cheap {
         let mut cache = state.hot_query_cache.lock().await;
         if let Some(entry) = cache.get(&coalesce_key) {
+            state.metrics.observe_query_cache_hit();
             let mut resp = Response::builder()
                 .status(StatusCode::OK)
                 .body(Body::from(entry.body))
@@ -366,6 +367,7 @@ pub(crate) async fn genes_handler(
                 .await;
             return super::handlers::with_request_id(resp, &request_id);
         }
+        state.metrics.observe_query_cache_miss();
     }
     let _coalesce_guard = if class == QueryClass::Heavy || class == QueryClass::Cheap {
         Some(state.coalescer.acquire(&coalesce_key).await)
@@ -384,6 +386,7 @@ pub(crate) async fn genes_handler(
         let deadline = Instant::now() + state.api.sql_timeout;
         c.conn
             .progress_handler(1_000, Some(move || Instant::now() > deadline));
+        let query_plan_started = Instant::now();
         let shard_candidates = if req.filter.region.is_some() {
             Some(
                 state
@@ -397,6 +400,10 @@ pub(crate) async fn genes_handler(
         } else {
             None
         };
+        state
+            .metrics
+            .observe_stage("query_plan", query_plan_started.elapsed())
+            .await;
         let query_started = Instant::now();
         let query_span = info_span!("sqlite_query", class = %format!("{class:?}").to_lowercase());
         let result = query_span.in_scope(|| {

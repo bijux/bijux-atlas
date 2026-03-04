@@ -177,11 +177,14 @@ struct RequestMetrics {
     latency_ns: Mutex<HashMap<String, Vec<u64>>>,
     sqlite_latency_ns: Mutex<HashMap<String, Vec<u64>>>,
     stage_latency_ns: Mutex<HashMap<String, Vec<u64>>>,
+    query_row_count: Mutex<HashMap<String, Vec<u64>>>,
     request_size_bytes: Mutex<HashMap<String, Vec<u64>>>,
     response_size_bytes: Mutex<HashMap<String, Vec<u64>>>,
     heavy_latency_recent_ns: Mutex<VecDeque<u64>>,
     exemplars: Mutex<HashMap<RequestMetricKey, RequestExemplar>>,
     client_fingerprint_counts: Mutex<HashMap<(String, String), u64>>,
+    query_cache_hits_total: AtomicU64,
+    query_cache_misses_total: AtomicU64,
 }
 
 type RequestMetricKey = (String, String, u16, String);
@@ -286,6 +289,21 @@ impl RequestMetrics {
         m.entry(route.to_string())
             .or_insert_with(Vec::new)
             .push(bytes as u64);
+    }
+
+    pub(crate) async fn observe_query_row_count(&self, route: &str, rows: usize) {
+        let mut m = self.query_row_count.lock().await;
+        m.entry(route.to_string())
+            .or_insert_with(Vec::new)
+            .push(rows as u64);
+    }
+
+    pub(crate) fn observe_query_cache_hit(&self) {
+        self.query_cache_hits_total.fetch_add(1, Ordering::Relaxed);
+    }
+
+    pub(crate) fn observe_query_cache_miss(&self) {
+        self.query_cache_misses_total.fetch_add(1, Ordering::Relaxed);
     }
 
     pub(crate) async fn should_shed_heavy(&self, min_samples: usize, threshold_ms: u64) -> bool {
@@ -504,4 +522,25 @@ pub struct AppState {
     pub(crate) queued_requests: Arc<AtomicU64>,
     pub runtime_policy_hash: Arc<String>,
     pub runtime_policy_mode: Arc<String>,
+}
+
+#[cfg(test)]
+mod metrics_tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn request_metrics_track_query_cache_hits_misses_and_row_count() {
+        let metrics = RequestMetrics::default();
+        metrics.observe_query_cache_hit();
+        metrics.observe_query_cache_hit();
+        metrics.observe_query_cache_miss();
+        metrics.observe_query_row_count("/v1/genes", 12).await;
+
+        assert_eq!(metrics.query_cache_hits_total.load(Ordering::Relaxed), 2);
+        assert_eq!(metrics.query_cache_misses_total.load(Ordering::Relaxed), 1);
+
+        let rows = metrics.query_row_count.lock().await;
+        let samples = rows.get("/v1/genes").expect("row count samples must exist");
+        assert_eq!(samples.as_slice(), &[12]);
+    }
 }
