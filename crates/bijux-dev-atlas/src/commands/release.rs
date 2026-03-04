@@ -1139,6 +1139,7 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
     let root = resolve_repo_root(args.repo_root.clone())?;
     let policy = read_publish_policy(&root)?;
     let feature_policy = read_json(&root.join("configs/release/feature-policy.json"))?;
+    let missing_docs_policy = read_json(&root.join("configs/release/missing-docs-policy.json"))?;
     let feature_doc = fs::read_to_string(root.join("docs/reference/crate-feature-flags.md"))
         .map_err(|err| format!("failed to read docs/reference/crate-feature-flags.md: {err}"))?;
     let workspace_manifest: toml::Value = toml::from_str(
@@ -1169,6 +1170,16 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
         errors.push("missing CHANGELOG.md".to_string());
     }
     for crate_name in publishable.iter().filter_map(serde_json::Value::as_str) {
+        let docs_entry = missing_docs_policy
+            .get("crate_policy")
+            .and_then(serde_json::Value::as_object)
+            .and_then(|entries| entries.get(crate_name))
+            .cloned();
+        if docs_entry.is_none() {
+            errors.push(format!(
+                "missing docs policy entry for crate `{crate_name}` in configs/release/missing-docs-policy.json"
+            ));
+        }
         let manifest_path = root.join("crates").join(crate_name).join("Cargo.toml");
         let readme_path = root.join("crates").join(crate_name).join("README.md");
         let text = fs::read_to_string(&manifest_path)
