@@ -364,10 +364,12 @@ License: Apache-2.0
 | `docs/_internal/governance/docs-build-publish-model.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-change-classification.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-charter.md` | `concept` | `bijux-atlas-docs` | `stable` |
+| `docs/_internal/governance/docs-compression-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-consolidation.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-contract.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-dashboard.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-debt-backlog.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/docs-deletion-safety-checklist.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-drift-dashboard.md` | `concept` | `bijux-atlas-platform` | `stable` |
 | `docs/_internal/governance/docs-inventory-taxonomy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-lint-rules.md` | `concept` | `docs-governance` | `stable` |
@@ -459,6 +461,7 @@ License: Apache-2.0
 | `docs/api/deprecation.md` | `concept` | `api-contracts` | `stable` |
 | `docs/api/errors.md` | `concept` | `api-contracts` | `stable` |
 | `docs/api/index.md` | `concept` | `api-contracts` | `stable` |
+| `docs/api/lifecycle.md` | `concept` | `docs-governance` | `stable` |
 | `docs/api/openapi-generation.md` | `concept` | `api-contracts` | `stable` |
 | `docs/api/pagination.md` | `concept` | `api-contracts` | `stable` |
 | `docs/api/performance-expectations.md` | `concept` | `api-contracts` | `stable` |
@@ -579,6 +582,7 @@ License: Apache-2.0
 | `docs/control-plane/control-plane-architecture.md` | `concept` | `platform` | `stable` |
 | `docs/control-plane/debug-failing-checks.md` | `concept` | `platform` | `stable` |
 | `docs/control-plane/evidence-writing-style.md` | `concept` | `platform` | `stable` |
+| `docs/control-plane/extend-control-plane.md` | `concept` | `docs-governance` | `stable` |
 | `docs/control-plane/extensibility-and-stability-levels.md` | `concept` | `platform` | `stable` |
 | `docs/control-plane/how-suites-work.md` | `concept` | `platform` | `stable` |
 | `docs/control-plane/index.md` | `concept` | `platform` | `stable` |
@@ -646,6 +650,7 @@ License: Apache-2.0
 | `docs/operations/dataset-workflow.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/deploy-kind.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/deploy-kubernetes-minimal.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/deploy-kubernetes.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/deploy.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/deprecation-lifecycle-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/docs-as-runbooks.md` | `concept` | `bijux-atlas-operations` | `stable` |
@@ -781,6 +786,7 @@ License: Apache-2.0
 | `docs/operations/performance-testing-tutorial.md` | `concept` | `platform` | `stable` |
 | `docs/operations/performance-troubleshooting-guide.md` | `concept` | `platform` | `stable` |
 | `docs/operations/performance.md` | `concept` | `platform` | `stable` |
+| `docs/operations/prerequisites.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/profile-change-policy.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/profile-ownership.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/profile-rollback.md` | `concept` | `bijux-atlas-operations` | `stable` |
@@ -791,7 +797,7 @@ License: Apache-2.0
 | `docs/operations/promotion-record.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/query-benchmark-summary-report.md` | `concept` | `platform` | `stable` |
 | `docs/operations/query-performance-benchmarks.md` | `concept` | `platform` | `stable` |
-| `docs/operations/reference/commands.md` | `reference` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/reference/commands.md` | `reference` | `docs-governance` | `stable` |
 | `docs/operations/reference/drills.md` | `reference` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/reference/evidence-model.md` | `reference` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/reference/gates.md` | `reference` | `bijux-atlas-operations` | `stable` |
@@ -809,6 +815,7 @@ License: Apache-2.0
 | `docs/operations/release-evidence.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release-external-reviewer.md` | `concept` | `platform` | `stable` |
 | `docs/operations/release-operations.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/release-process.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/release-promotion-policy.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release-provenance.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release-signature-rotation.md` | `concept` | `bijux-atlas-operations` | `stable` |
@@ -940,10 +947,16 @@ License: Apache-2.0
 | `docs/operations/warmup-lock.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/workflows.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/product/compatibility-promise.md` | `concept` | `docs-governance` | `stable` |
+| `docs/product/deep-work-highlights.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/diffs-v1.md` | `concept` | `bijux-atlas-query` | `stable` |
+| `docs/product/faq.md` | `concept` | `docs-governance` | `stable` |
+| `docs/product/for-reviewers.md` | `concept` | `docs-governance` | `stable` |
+| `docs/product/how-this-repo-enforces-itself.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/immutability-and-aliases.md` | `concept` | `bijux-atlas-store` + `bijux-atlas-api` | `stable` |
 | `docs/product/index.md` | `concept` | `product` | `stable` |
 | `docs/product/non-goals.md` | `concept` | `docs-governance` | `stable` |
+| `docs/product/not-done-yet.md` | `concept` | `docs-governance` | `stable` |
+| `docs/product/production-ready-boundaries.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/release-contract-checklist.md` | `concept` | `bijux-atlas-product` | `stable` |
 | `docs/product/release-model.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/sequence-threat-model.md` | `concept` | `docs-governance` | `stable` |
@@ -1020,7 +1033,7 @@ License: Apache-2.0
 | `docs/reference/datasets/shard-layout.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/datasets/validation-policies.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/errors-and-exit-codes.md` | `reference` | `bijux-atlas-platform` | `stable` |
-| `docs/reference/errors.md` | `reference` | `bijux-atlas-operations` | `stable` |
+| `docs/reference/errors.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/examples/api-request-examples.md` | `reference` | `api-contracts` | `stable` |
 | `docs/reference/examples/api-response-examples.md` | `reference` | `api-contracts` | `stable` |
 | `docs/reference/examples/api-usage-examples.md` | `reference` | `api-contracts` | `stable` |

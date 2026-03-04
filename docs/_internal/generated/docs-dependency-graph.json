@@ -1788,6 +1788,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-compression-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/docs-consolidation.md"
     },
     {
@@ -1804,6 +1809,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/_internal/governance/docs-debt-backlog.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-deletion-safety-checklist.md"
     },
     {
       "crate": null,
@@ -2259,6 +2269,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/api/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/api/lifecycle.md"
     },
     {
       "crate": null,
@@ -2863,6 +2878,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/control-plane/extend-control-plane.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/control-plane/extensibility-and-stability-levels.md"
     },
     {
@@ -3194,6 +3214,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/deploy-kubernetes-minimal.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/deploy-kubernetes.md"
     },
     {
       "crate": null,
@@ -3873,6 +3898,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/prerequisites.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/profile-change-policy.md"
     },
     {
@@ -4009,6 +4039,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/release-operations.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/release-process.md"
     },
     {
       "crate": null,
@@ -4668,7 +4703,27 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/product/deep-work-highlights.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/product/diffs-v1.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/product/faq.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/product/for-reviewers.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/product/how-this-repo-enforces-itself.md"
     },
     {
       "crate": null,
@@ -4684,6 +4739,16 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/product/non-goals.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/product/not-done-yet.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/product/production-ready-boundaries.md"
     },
     {
       "crate": null,

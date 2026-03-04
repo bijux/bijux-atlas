@@ -3276,6 +3276,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/docs-compression-policy.md"
+      ],
+      "path": "docs/_internal/governance/docs-compression-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/docs-consolidation.md"
       ],
       "path": "docs/_internal/governance/docs-consolidation.md"
@@ -3306,6 +3315,15 @@
         "docs/_internal/governance/docs-debt-backlog.md"
       ],
       "path": "docs/_internal/governance/docs-debt-backlog.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-deletion-safety-checklist.md"
+      ],
+      "path": "docs/_internal/governance/docs-deletion-safety-checklist.md"
     },
     {
       "breadcrumbs": [
@@ -4124,6 +4142,14 @@
         "docs/api/index.md"
       ],
       "path": "docs/api/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/lifecycle.md"
+      ],
+      "path": "docs/api/lifecycle.md"
     },
     {
       "breadcrumbs": [
@@ -5131,6 +5157,14 @@
       "breadcrumbs": [
         "docs",
         "docs/control-plane",
+        "docs/control-plane/extend-control-plane.md"
+      ],
+      "path": "docs/control-plane/extend-control-plane.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
         "docs/control-plane/extensibility-and-stability-levels.md"
       ],
       "path": "docs/control-plane/extensibility-and-stability-levels.md"
@@ -5662,6 +5696,14 @@
         "docs/operations/deploy-kubernetes-minimal.md"
       ],
       "path": "docs/operations/deploy-kubernetes-minimal.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/deploy-kubernetes.md"
+      ],
+      "path": "docs/operations/deploy-kubernetes.md"
     },
     {
       "breadcrumbs": [
@@ -6829,6 +6871,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/prerequisites.md"
+      ],
+      "path": "docs/operations/prerequisites.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/profile-change-policy.md"
       ],
       "path": "docs/operations/profile-change-policy.md"
@@ -7059,6 +7109,14 @@
         "docs/operations/release-operations.md"
       ],
       "path": "docs/operations/release-operations.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-process.md"
+      ],
+      "path": "docs/operations/release-process.md"
     },
     {
       "breadcrumbs": [
@@ -8213,9 +8271,41 @@
       "breadcrumbs": [
         "docs",
         "docs/product",
+        "docs/product/deep-work-highlights.md"
+      ],
+      "path": "docs/product/deep-work-highlights.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/product",
         "docs/product/diffs-v1.md"
       ],
       "path": "docs/product/diffs-v1.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/product",
+        "docs/product/faq.md"
+      ],
+      "path": "docs/product/faq.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/product",
+        "docs/product/for-reviewers.md"
+      ],
+      "path": "docs/product/for-reviewers.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/product",
+        "docs/product/how-this-repo-enforces-itself.md"
+      ],
+      "path": "docs/product/how-this-repo-enforces-itself.md"
     },
     {
       "breadcrumbs": [
@@ -8240,6 +8330,22 @@
         "docs/product/non-goals.md"
       ],
       "path": "docs/product/non-goals.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/product",
+        "docs/product/not-done-yet.md"
+      ],
+      "path": "docs/product/not-done-yet.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/product",
+        "docs/product/production-ready-boundaries.md"
+      ],
+      "path": "docs/product/production-ready-boundaries.md"
     },
     {
       "breadcrumbs": [

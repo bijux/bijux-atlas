@@ -4763,6 +4763,20 @@
     {
       "keywords": [
         "-internal",
+        "docs-compression-policy",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-compression-policy.md",
+      "tags": [
+        "-internal",
+        "docs-compression-policy",
+        "governance"
+      ],
+      "topic": "docs-compression-policy"
+    },
+    {
+      "keywords": [
+        "-internal",
         "docs-consolidation",
         "governance"
       ],
@@ -4815,6 +4829,20 @@
         "governance"
       ],
       "topic": "docs-debt-backlog"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-deletion-safety-checklist",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-deletion-safety-checklist.md",
+      "tags": [
+        "-internal",
+        "docs-deletion-safety-checklist",
+        "governance"
+      ],
+      "topic": "docs-deletion-safety-checklist"
     },
     {
       "keywords": [
@@ -6087,6 +6115,18 @@
         "index"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "api",
+        "lifecycle"
+      ],
+      "path": "docs/api/lifecycle.md",
+      "tags": [
+        "api",
+        "lifecycle"
+      ],
+      "topic": "lifecycle"
     },
     {
       "keywords": [
@@ -7615,6 +7655,18 @@
     {
       "keywords": [
         "control-plane",
+        "extend-control-plane"
+      ],
+      "path": "docs/control-plane/extend-control-plane.md",
+      "tags": [
+        "control-plane",
+        "extend-control-plane"
+      ],
+      "topic": "extend-control-plane"
+    },
+    {
+      "keywords": [
+        "control-plane",
         "extensibility-and-stability-levels"
       ],
       "path": "docs/control-plane/extensibility-and-stability-levels.md",
@@ -8415,6 +8467,18 @@
         "operations"
       ],
       "topic": "deploy-kubernetes-minimal"
+    },
+    {
+      "keywords": [
+        "deploy-kubernetes",
+        "operations"
+      ],
+      "path": "docs/operations/deploy-kubernetes.md",
+      "tags": [
+        "deploy-kubernetes",
+        "operations"
+      ],
+      "topic": "deploy-kubernetes"
     },
     {
       "keywords": [
@@ -10201,6 +10265,18 @@
     {
       "keywords": [
         "operations",
+        "prerequisites"
+      ],
+      "path": "docs/operations/prerequisites.md",
+      "tags": [
+        "operations",
+        "prerequisites"
+      ],
+      "topic": "prerequisites"
+    },
+    {
+      "keywords": [
+        "operations",
         "profile-change-policy"
       ],
       "path": "docs/operations/profile-change-policy.md",
@@ -10555,6 +10631,18 @@
         "release-operations"
       ],
       "topic": "release-operations"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release-process"
+      ],
+      "path": "docs/operations/release-process.md",
+      "tags": [
+        "operations",
+        "release-process"
+      ],
+      "topic": "release-process"
     },
     {
       "keywords": [
@@ -12332,6 +12420,18 @@
     },
     {
       "keywords": [
+        "deep-work-highlights",
+        "product"
+      ],
+      "path": "docs/product/deep-work-highlights.md",
+      "tags": [
+        "deep-work-highlights",
+        "product"
+      ],
+      "topic": "deep-work-highlights"
+    },
+    {
+      "keywords": [
         "diffs-v1",
         "product"
       ],
@@ -12341,6 +12441,42 @@
         "product"
       ],
       "topic": "diffs-v1"
+    },
+    {
+      "keywords": [
+        "faq",
+        "product"
+      ],
+      "path": "docs/product/faq.md",
+      "tags": [
+        "faq",
+        "product"
+      ],
+      "topic": "faq"
+    },
+    {
+      "keywords": [
+        "for-reviewers",
+        "product"
+      ],
+      "path": "docs/product/for-reviewers.md",
+      "tags": [
+        "for-reviewers",
+        "product"
+      ],
+      "topic": "for-reviewers"
+    },
+    {
+      "keywords": [
+        "how-this-repo-enforces-itself",
+        "product"
+      ],
+      "path": "docs/product/how-this-repo-enforces-itself.md",
+      "tags": [
+        "how-this-repo-enforces-itself",
+        "product"
+      ],
+      "topic": "how-this-repo-enforces-itself"
     },
     {
       "keywords": [
@@ -12377,6 +12513,30 @@
         "product"
       ],
       "topic": "non-goals"
+    },
+    {
+      "keywords": [
+        "not-done-yet",
+        "product"
+      ],
+      "path": "docs/product/not-done-yet.md",
+      "tags": [
+        "not-done-yet",
+        "product"
+      ],
+      "topic": "not-done-yet"
+    },
+    {
+      "keywords": [
+        "product",
+        "production-ready-boundaries"
+      ],
+      "path": "docs/product/production-ready-boundaries.md",
+      "tags": [
+        "product",
+        "production-ready-boundaries"
+      ],
+      "topic": "production-ready-boundaries"
     },
     {
       "keywords": [

@@ -8695,6 +8695,31 @@
       "doc_version": "v1",
       "keywords": [
         "-internal",
+        "docs-compression-policy",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-compression-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-compression-policy",
+        "governance"
+      ],
+      "title": "Docs Compression Policy",
+      "topic": "docs-compression-policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
         "docs-consolidation",
         "governance"
       ],
@@ -8786,6 +8811,31 @@
       ],
       "title": "Docs debt backlog",
       "topic": "docs-debt-backlog"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-deletion-safety-checklist",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-deletion-safety-checklist.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-deletion-safety-checklist",
+        "governance"
+      ],
+      "title": "Docs Deletion Safety Checklist",
+      "topic": "docs-deletion-safety-checklist"
     },
     {
       "area": "_internal",
@@ -11059,6 +11109,29 @@
       ],
       "title": "API",
       "topic": "index"
+    },
+    {
+      "area": "api",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "api",
+        "lifecycle"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/api/lifecycle.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "api",
+        "lifecycle"
+      ],
+      "title": "API Lifecycle",
+      "topic": "lifecycle"
     },
     {
       "area": "api",
@@ -13906,6 +13979,29 @@
     },
     {
       "area": "control-plane",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "control-plane",
+        "extend-control-plane"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/control-plane/extend-control-plane.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "control-plane",
+        "extend-control-plane"
+      ],
+      "title": "Extend the Control-plane",
+      "topic": "extend-control-plane"
+    },
+    {
+      "area": "control-plane",
       "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
@@ -15444,6 +15540,29 @@
       ],
       "title": "Deploy to Kubernetes (prod minimal)",
       "topic": "deploy-kubernetes-minimal"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "deploy-kubernetes",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/deploy-kubernetes.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "deploy-kubernetes",
+        "operations"
+      ],
+      "title": "Deploy to Kubernetes",
+      "topic": "deploy-kubernetes"
     },
     {
       "area": "operations",
@@ -18714,6 +18833,29 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "prerequisites"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/prerequisites.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "prerequisites"
+      ],
+      "title": "Operations Prerequisites",
+      "topic": "prerequisites"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -18955,7 +19097,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
+      "owner": "docs-governance",
       "path": "docs/operations/reference/commands.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -19377,6 +19519,29 @@
       ],
       "title": "Release Workflow Controls",
       "topic": "release-operations"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "release-process"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/release-process.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "release-process"
+      ],
+      "title": "Release Process",
+      "topic": "release-process"
     },
     {
       "area": "operations",
@@ -22600,6 +22765,29 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "deep-work-highlights",
+        "product"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/product/deep-work-highlights.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "deep-work-highlights",
+        "product"
+      ],
+      "title": "Deep Work Highlights",
+      "topic": "deep-work-highlights"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "diffs-v1",
         "product"
       ],
@@ -22615,6 +22803,75 @@
       ],
       "title": "Diffs v1",
       "topic": "diffs-v1"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "faq",
+        "product"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/product/faq.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "faq",
+        "product"
+      ],
+      "title": "Product FAQ",
+      "topic": "faq"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "for-reviewers",
+        "product"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/product/for-reviewers.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "for-reviewers",
+        "product"
+      ],
+      "title": "For Reviewers",
+      "topic": "for-reviewers"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "how-this-repo-enforces-itself",
+        "product"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/product/how-this-repo-enforces-itself.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "how-this-repo-enforces-itself",
+        "product"
+      ],
+      "title": "How This Repo Enforces Itself",
+      "topic": "how-this-repo-enforces-itself"
     },
     {
       "area": "product",
@@ -22684,6 +22941,52 @@
       ],
       "title": "Non Goals",
       "topic": "non-goals"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "not-done-yet",
+        "product"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/product/not-done-yet.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "not-done-yet",
+        "product"
+      ],
+      "title": "Not Done Yet",
+      "topic": "not-done-yet"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "product",
+        "production-ready-boundaries"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/product/production-ready-boundaries.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "product",
+        "production-ready-boundaries"
+      ],
+      "title": "Production-ready Boundaries",
+      "topic": "production-ready-boundaries"
     },
     {
       "area": "product",
@@ -24583,7 +24886,7 @@
     },
     {
       "area": "reference",
-      "audience": "user",
+      "audience": "mixed",
       "crate": null,
       "doc_type": "reference",
       "doc_version": "v1",
@@ -24593,7 +24896,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
+      "owner": "docs-governance",
       "path": "docs/reference/errors.md",
       "review_due": "2026-08-24",
       "stability": "stable",

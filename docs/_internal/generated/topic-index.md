@@ -245,6 +245,7 @@
 | `debugging-locally` | `docs/development/debugging-locally.md` |
 | `debugging-workflow-example` | `docs/reference/examples/debugging-workflow-example.md` |
 | `decision-template` | `docs/_internal/governance/decision-template.md, docs/architecture/decision-template.md` |
+| `deep-work-highlights` | `docs/product/deep-work-highlights.md` |
 | `default-field-set` | `docs/api/default-field-set.md` |
 | `delivery-summary` | `docs/operations/replication/delivery-summary.md` |
 | `dependency-risk-scoring` | `docs/operations/security/dependency-risk-scoring.md` |
@@ -253,6 +254,7 @@
 | `deploy` | `docs/operations/deploy.md` |
 | `deploy-behind-auth-proxy` | `docs/operations/security/deploy-behind-auth-proxy.md` |
 | `deploy-kind` | `docs/operations/deploy-kind.md` |
+| `deploy-kubernetes` | `docs/operations/deploy-kubernetes.md` |
 | `deploy-kubernetes-minimal` | `docs/operations/deploy-kubernetes-minimal.md` |
 | `deployment` | `docs/architecture/diagrams/deployment.md` |
 | `deployment-configuration-example` | `docs/reference/examples/deployment-configuration-example.md` |
@@ -279,11 +281,13 @@
 | `docs-change-process` | `docs/_internal/meta/docs-change-process.md` |
 | `docs-charter` | `docs/_internal/governance/docs-charter.md` |
 | `docs-checks` | `docs/_internal/governance/checks/docs-checks.md` |
+| `docs-compression-policy` | `docs/_internal/governance/docs-compression-policy.md` |
 | `docs-consolidation` | `docs/_internal/governance/docs-consolidation.md` |
 | `docs-contract` | `docs/_internal/governance/docs-contract.md` |
 | `docs-convergence-policy` | `docs/operations/docs-convergence-policy.md` |
 | `docs-dashboard` | `docs/_internal/governance/docs-dashboard.md` |
 | `docs-debt-backlog` | `docs/_internal/governance/docs-debt-backlog.md` |
+| `docs-deletion-safety-checklist` | `docs/_internal/governance/docs-deletion-safety-checklist.md` |
 | `docs-drift-dashboard` | `docs/_internal/governance/docs-drift-dashboard.md` |
 | `docs-governance` | `.github/PULL_REQUEST_TEMPLATE/docs-governance.md` |
 | `docs-inventory-taxonomy` | `docs/_internal/governance/docs-inventory-taxonomy.md` |
@@ -347,6 +351,7 @@
 | `exception-inventory` | `docs/_internal/governance/exception-inventory.md` |
 | `exit-codes` | `crates/bijux-atlas-cli/docs/exit-codes.md, crates/bijux-dev-atlas/docs/exit-codes.md` |
 | `export-audit-logs-to-siem` | `docs/operations/security/export-audit-logs-to-siem.md` |
+| `extend-control-plane` | `docs/control-plane/extend-control-plane.md` |
 | `extensibility-and-stability-levels` | `docs/control-plane/extensibility-and-stability-levels.md` |
 | `extension-guide` | `crates/bijux-atlas-policies/docs/extension-guide.md` |
 | `failover-process` | `docs/operations/replication/failover-process.md` |
@@ -357,13 +362,14 @@
 | `failure-modes` | `crates/bijux-atlas-ingest/docs/failure-modes.md, crates/bijux-atlas-server/docs/failure-modes.md, crates/bijux-atlas-store/docs/failure-modes.md, crates/bijux-dev-atlas/docs/failure-modes.md` |
 | `failure-modes-reference` | `crates/bijux-atlas-server/docs/internal/failure-modes-reference.md, crates/bijux-atlas-store/docs/internal/failure-modes-reference.md` |
 | `failure-scenarios` | `docs/operations/replication/failure-scenarios.md, docs/operations/resilience/failure-scenarios.md` |
-| `faq` | `docs/architecture/faq.md, docs/tutorials/faq.md` |
+| `faq` | `docs/architecture/faq.md, docs/product/faq.md, docs/tutorials/faq.md` |
 | `features` | `crates/bijux-atlas-core/docs/features.md` |
 | `federation-semantics` | `docs/reference/registry/federation-semantics.md` |
 | `filtering` | `docs/reference/querying/filtering.md` |
 | `final-readiness-checklist` | `docs/operations/final-readiness-checklist.md` |
 | `fixture-dataset-ingest` | `docs/operations/fixture-dataset-ingest.md` |
 | `fixtures` | `docs/operations/e2e/fixtures.md` |
+| `for-reviewers` | `docs/product/for-reviewers.md` |
 | `formatting` | `crates/bijux-atlas-core/docs/formatting.md` |
 | `gates` | `docs/operations/reference/gates.md` |
 | `generated-artifacts` | `docs/_internal/generated-artifacts.md, docs/_internal/meta/generated-artifacts.md, docs/reference/generated-artifacts.md` |
@@ -384,6 +390,7 @@
 | `hot-path-checklist` | `crates/bijux-atlas-server/docs/internal/hot-path-checklist.md` |
 | `hot-paths` | `docs/architecture/hot-paths.md` |
 | `how-suites-work` | `docs/control-plane/how-suites-work.md` |
+| `how-this-repo-enforces-itself` | `docs/product/how-this-repo-enforces-itself.md` |
 | `how-to-add-a-new-crate` | `docs/architecture/how-to-add-a-new-crate.md` |
 | `how-to-add-cli-command` | `docs/development/how-to-add-cli-command.md` |
 | `how-to-change-docs` | `docs/development/how-to-change-docs.md` |
@@ -435,7 +442,7 @@
 | `latest-release-alias-policy` | `docs/reference/registry/latest-release-alias-policy.md` |
 | `layering-rules` | `docs/architecture/layering-rules.md` |
 | `layers` | `docs/_internal/architecture/layers.md` |
-| `lifecycle` | `docs/reference/contracts/ops/lifecycle.md` |
+| `lifecycle` | `docs/api/lifecycle.md, docs/reference/contracts/ops/lifecycle.md` |
 | `linking` | `docs/_internal/linking.md` |
 | `load-failure-triage` | `docs/operations/runbooks/load-failure-triage.md` |
 | `local-development-setup-example` | `docs/reference/examples/local-development-setup-example.md` |
@@ -480,6 +487,7 @@
 | `no-dna-dependency-policy` | `docs/reference/registry/no-dna-dependency-policy.md` |
 | `non-goals` | `docs/product/non-goals.md` |
 | `normalized-format` | `docs/reference/contracts/normalized-format.md` |
+| `not-done-yet` | `docs/product/not-done-yet.md` |
 | `not-in-model` | `crates/bijux-atlas-model/docs/not-in-model.md` |
 | `observability` | `docs/reference/contracts/observability.md` |
 | `observability-architecture-diagram` | `docs/operations/observability/observability-architecture-diagram.md` |
@@ -553,9 +561,11 @@
 | `policy-authoring-guide` | `crates/bijux-atlas-policies/docs/policy-authoring-guide.md` |
 | `policy-enforcement-mapping` | `docs/_internal/governance/policy-enforcement-mapping.md` |
 | `policy-violation-example` | `docs/reference/examples/policy-violation-example.md` |
+| `prerequisites` | `docs/operations/prerequisites.md` |
 | `privacy-stance` | `docs/operations/security/privacy-stance.md` |
 | `production-debugging-guide` | `docs/operations/observability/production-debugging-guide.md` |
 | `production-monitoring-checklist` | `docs/operations/observability/production-monitoring-checklist.md` |
+| `production-ready-boundaries` | `docs/product/production-ready-boundaries.md` |
 | `profile-change-policy` | `docs/operations/profile-change-policy.md` |
 | `profile-invariants` | `docs/operations/k8s/profile-invariants.md` |
 | `profile-matrix` | `docs/reference/contracts/ops/profile-matrix.md` |
@@ -618,6 +628,7 @@
 | `release-model` | `docs/product/release-model.md` |
 | `release-notes-template` | `.github/release-notes-template.md` |
 | `release-operations` | `docs/operations/release-operations.md` |
+| `release-process` | `docs/operations/release-process.md` |
 | `release-promotion-policy` | `docs/operations/release-promotion-policy.md` |
 | `release-provenance` | `docs/operations/release-provenance.md` |
 | `release-signature-rotation` | `docs/operations/release-signature-rotation.md` |

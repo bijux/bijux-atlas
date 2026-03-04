@@ -2861,6 +2861,14 @@
       "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-compression-policy.md",
+      "stability": "stable",
+      "title": "Docs Compression Policy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
       "path": "docs/_internal/governance/docs-consolidation.md",
       "stability": "stable",
       "title": "Docs Consolidation"
@@ -2888,6 +2896,14 @@
       "path": "docs/_internal/governance/docs-debt-backlog.md",
       "stability": "stable",
       "title": "Docs debt backlog"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-deletion-safety-checklist.md",
+      "stability": "stable",
+      "title": "Docs Deletion Safety Checklist"
     },
     {
       "area": "_internal",
@@ -3616,6 +3632,14 @@
       "path": "docs/api/index.md",
       "stability": "stable",
       "title": "API"
+    },
+    {
+      "area": "api",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/api/lifecycle.md",
+      "stability": "stable",
+      "title": "API Lifecycle"
     },
     {
       "area": "api",
@@ -4579,6 +4603,14 @@
     },
     {
       "area": "control-plane",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/control-plane/extend-control-plane.md",
+      "stability": "stable",
+      "title": "Extend the Control-plane"
+    },
+    {
+      "area": "control-plane",
       "audience": "contributor",
       "owner": "platform",
       "path": "docs/control-plane/extensibility-and-stability-levels.md",
@@ -5112,6 +5144,14 @@
       "path": "docs/operations/deploy-kubernetes-minimal.md",
       "stability": "stable",
       "title": "Deploy to Kubernetes (prod minimal)"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/deploy-kubernetes.md",
+      "stability": "stable",
+      "title": "Deploy to Kubernetes"
     },
     {
       "area": "operations",
@@ -6195,6 +6235,14 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/prerequisites.md",
+      "stability": "stable",
+      "title": "Operations Prerequisites"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/profile-change-policy.md",
@@ -6276,7 +6324,7 @@
     {
       "area": "operations",
       "audience": "operators",
-      "owner": "bijux-atlas-operations",
+      "owner": "docs-governance",
       "path": "docs/operations/reference/commands.md",
       "stability": "stable",
       "title": "Command Surface Reference"
@@ -6416,6 +6464,14 @@
       "path": "docs/operations/release-operations.md",
       "stability": "stable",
       "title": "Release Workflow Controls"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/release-process.md",
+      "stability": "stable",
+      "title": "Release Process"
     },
     {
       "area": "operations",
@@ -7468,10 +7524,42 @@
     {
       "area": "product",
       "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/product/deep-work-highlights.md",
+      "stability": "stable",
+      "title": "Deep Work Highlights"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
       "owner": "bijux-atlas-query",
       "path": "docs/product/diffs-v1.md",
       "stability": "stable",
       "title": "Diffs v1"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/product/faq.md",
+      "stability": "stable",
+      "title": "Product FAQ"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/product/for-reviewers.md",
+      "stability": "stable",
+      "title": "For Reviewers"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/product/how-this-repo-enforces-itself.md",
+      "stability": "stable",
+      "title": "How This Repo Enforces Itself"
     },
     {
       "area": "product",
@@ -7496,6 +7584,22 @@
       "path": "docs/product/non-goals.md",
       "stability": "stable",
       "title": "Non Goals"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/product/not-done-yet.md",
+      "stability": "stable",
+      "title": "Not Done Yet"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/product/production-ready-boundaries.md",
+      "stability": "stable",
+      "title": "Production-ready Boundaries"
     },
     {
       "area": "product",
@@ -8107,8 +8211,8 @@
     },
     {
       "area": "reference",
-      "audience": "user",
-      "owner": "bijux-atlas-operations",
+      "audience": "mixed",
+      "owner": "docs-governance",
       "path": "docs/reference/errors.md",
       "stability": "stable",
       "title": "Errors reference"
