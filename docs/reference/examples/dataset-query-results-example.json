@@ -1,0 +1,18 @@
+{
+  "data": [
+    {
+      "gene_id": "ENSG00000139618",
+      "symbol": "BRCA2",
+      "chromosome": "13"
+    },
+    {
+      "gene_id": "ENSG00000012048",
+      "symbol": "BRCA1",
+      "chromosome": "17"
+    }
+  ],
+  "page": {
+    "limit": 2,
+    "next_cursor": "opaque-cursor-token"
+  }
+}
