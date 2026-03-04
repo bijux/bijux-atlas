@@ -1,7 +1,7 @@
 {
-  "artifact_root": "artifacts/release/0.1.2",
+  "artifact_root": "artifacts/release/0.1.0",
   "kind": "release_metadata",
-  "manifest_path": "artifacts/release/0.1.2/manifest.json",
+  "manifest_path": "artifacts/release/0.1.0/manifest.json",
   "schema_version": 1,
-  "version": "0.1.2"
+  "version": "0.1.0"
 }

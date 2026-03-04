@@ -139,12 +139,47 @@ Current release plan keeps a multi-crate workspace with shared governance gates.
 - Ops artifacts reference: [`docs/reference/ops.md`](docs/reference/ops.md)
 - Docker reference: [`docs/reference/docker.md`](docs/reference/docker.md)
 - Governance reference: [`docs/reference/governance.md`](docs/reference/governance.md)
+- Release planning reference: [`docs/reference/release-plan.md`](docs/reference/release-plan.md)
+- Crate release policy: [`docs/reference/crate-release-policy.md`](docs/reference/crate-release-policy.md)
 - Contributor safety guide: [`docs/development/contributor-onboarding-rubric.md`](docs/development/contributor-onboarding-rubric.md)
 - How to add checks and contracts: [`docs/control-plane/extend-control-plane.md`](docs/control-plane/extend-control-plane.md)
 
 ## Support Policy
 
 Support is provided for governed, documented surfaces on `main` and release tags. Experimental surfaces may change with notice in docs and release notes.
+
+## Security Posture
+
+Security controls and operating rules are documented in [`docs/control-plane/security-posture.md`](docs/control-plane/security-posture.md) and linked operational runbooks under [`docs/operations/security`](docs/operations/security).
+
+## Ops Reproducibility Posture
+
+Release and ops reproducibility policy is governed by:
+
+- [`configs/release/reproducibility-policy.json`](configs/release/reproducibility-policy.json)
+- [`docs/operations/upgrade-compatibility-guide.md`](docs/operations/upgrade-compatibility-guide.md)
+- `bijux dev atlas release reproducibility report`
+
+## Institutional Readiness
+
+Institutional release evidence and readiness inputs are documented in:
+
+- [`docs/operations/institutional-packet.md`](docs/operations/institutional-packet.md)
+- [`docs/operations/institutional-readiness-checklist.md`](docs/operations/institutional-readiness-checklist.md)
+
+## Changelog Discipline
+
+`CHANGELOG.md` structure and release note sections are contract-validated through `configs/release/version-policy.json` and `bijux dev atlas release validate`.
+
+## Contact And Governance Owners
+
+Primary ownership surfaces:
+
+- Product and docs governance: `docs-governance`
+- Runtime and release operations: `platform` and `bijux-atlas-operations`
+- Control-plane governance tooling: `bijux-dev-atlas`
+
+See ownership metadata in [`docs/_internal/governance/metadata/front-matter.index.json`](docs/_internal/governance/metadata/front-matter.index.json).
 
 ## Next Reading
 

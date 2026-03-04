@@ -38,6 +38,8 @@ Facts live here. Procedures do not. Use this section for stable names, keys, sch
 - Config governance facts: [Schema versioning policy](schema-versioning-policy.md), [Config keys reference](config-keys-reference.md)
 - Contracts and registries: [Contracts](contracts/index.md), [Reports](reports/index.md), [Dataset operations](dataset-operations.md), [Ingest reproducibility](ingest/reproducibility.md)
 - Governance facts: [Governance reference](governance.md)
+- Release planning: [Release planning reference](release-plan.md)
+- Crate release policy: [Crate release policy](crate-release-policy.md)
 - Query semantics: [Querying reference](querying/index.md), [Pagination](querying/pagination.md)
 - Dataset semantics: [Dataset and artifact reference](datasets/index.md)
 - Working examples: [Examples index](examples/index.md)
