@@ -63,3 +63,15 @@ Route-level request metrics may also include:
 - query plan generation latency histogram
 - query row count histogram
 - query cache hits and misses
+
+## Required runtime capacity metrics
+
+- ingest throughput and ingest pipeline stage latency
+- dataset load duration
+- shard load, evictions, hit rate, and miss rate
+- cache memory usage and entry count
+- process memory, CPU usage ratio, and open file descriptors
+- thread pool usage ratio
+- runtime queue depth and task backlog
+- slow query counter
+- dataset query distribution
