@@ -533,12 +533,19 @@ fn force_json_system(command: &mut crate::cli::SystemCommand) {
             | crate::cli::SystemClusterCommand::Status(args)
             | crate::cli::SystemClusterCommand::Diagnostics(args)
             | crate::cli::SystemClusterCommand::Membership(args)
-            | crate::cli::SystemClusterCommand::NodeHealth(args) => {
+            | crate::cli::SystemClusterCommand::NodeHealth(args)
+            | crate::cli::SystemClusterCommand::ShardRouting(args)
+            | crate::cli::SystemClusterCommand::ShardList(args)
+            | crate::cli::SystemClusterCommand::ShardDistribution(args)
+            | crate::cli::SystemClusterCommand::ShardDiagnostics(args) => {
                 args.format = FormatArg::Json
             }
             crate::cli::SystemClusterCommand::NodeDrain(args)
             | crate::cli::SystemClusterCommand::NodeMaintenance(args)
             | crate::cli::SystemClusterCommand::NodeDiagnostics(args) => {
+                args.common.format = FormatArg::Json
+            }
+            crate::cli::SystemClusterCommand::ShardRebalance(args) => {
                 args.common.format = FormatArg::Json
             }
         }
@@ -1160,12 +1167,19 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 | crate::cli::SystemClusterCommand::Status(args)
                 | crate::cli::SystemClusterCommand::Diagnostics(args)
                 | crate::cli::SystemClusterCommand::Membership(args)
-                | crate::cli::SystemClusterCommand::NodeHealth(args) => {
+                | crate::cli::SystemClusterCommand::NodeHealth(args)
+                | crate::cli::SystemClusterCommand::ShardRouting(args)
+                | crate::cli::SystemClusterCommand::ShardList(args)
+                | crate::cli::SystemClusterCommand::ShardDistribution(args)
+                | crate::cli::SystemClusterCommand::ShardDiagnostics(args) => {
                     args.repo_root = Some(root.clone())
                 }
                 crate::cli::SystemClusterCommand::NodeDrain(args)
                 | crate::cli::SystemClusterCommand::NodeMaintenance(args)
                 | crate::cli::SystemClusterCommand::NodeDiagnostics(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+                crate::cli::SystemClusterCommand::ShardRebalance(args) => {
                     args.common.repo_root = Some(root.clone())
                 }
             },

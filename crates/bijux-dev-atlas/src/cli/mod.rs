@@ -509,6 +509,11 @@ pub enum SystemClusterCommand {
     NodeDrain(SystemClusterNodeActionArgs),
     NodeMaintenance(SystemClusterNodeActionArgs),
     NodeDiagnostics(SystemClusterNodeActionArgs),
+    ShardRouting(SystemClusterArgs),
+    ShardList(SystemClusterArgs),
+    ShardDistribution(SystemClusterArgs),
+    ShardDiagnostics(SystemClusterArgs),
+    ShardRebalance(SystemClusterShardActionArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -597,6 +602,16 @@ pub struct SystemClusterNodeActionArgs {
     pub common: SystemClusterArgs,
     #[arg(long)]
     pub node_id: String,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct SystemClusterShardActionArgs {
+    #[command(flatten)]
+    pub common: SystemClusterArgs,
+    #[arg(long)]
+    pub shard_id: Option<String>,
+    #[arg(long)]
+    pub target_node_id: Option<String>,
 }
 
 #[derive(Args, Debug, Clone)]

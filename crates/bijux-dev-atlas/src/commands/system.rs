@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    SystemClusterArgs, SystemClusterCommand, SystemClusterNodeActionArgs, SystemCommand, SystemDebugCommand,
+    SystemClusterArgs, SystemClusterCommand, SystemClusterNodeActionArgs,
+    SystemClusterShardActionArgs, SystemCommand, SystemDebugCommand,
     SystemSimulateCommand,
 };
 use crate::{emit_payload, resolve_repo_root};
@@ -325,6 +326,101 @@ fn run_cluster_command(command: SystemClusterCommand) -> Result<(String, i32), S
             let payload = run_node_action(args, "diagnostics")?;
             Ok(payload)
         }
+        SystemClusterCommand::ShardRouting(args) => {
+            let (_cluster, _node) = load_cluster_inputs(&args)?;
+            let root = resolve_repo_root(args.repo_root.clone())?;
+            let shard_meta_path = root.join("configs/ops/runtime/shard-metadata.example.json");
+            let shard_meta: serde_json::Value = read_json_file(&shard_meta_path)?;
+            let key = "chr1:100-200";
+            let mut registry = bijux_atlas_core::ShardRegistry::new();
+            let owners = vec!["node-a".to_string(), "node-b".to_string()];
+            registry.assign_round_robin("atlas-default", 4, &owners);
+            let selected = registry
+                .route_by_hash(key)
+                .map(|record| record.metadata.shard_id.clone())
+                .unwrap_or_else(|| "none".to_string());
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "system_cluster_shard_routing",
+                "route_key": key,
+                "selected_shard_id": selected,
+                "metadata_contract": shard_meta
+            });
+            let rendered = emit_payload(args.format, args.out, &payload)?;
+            Ok((rendered, 0))
+        }
+        SystemClusterCommand::ShardList(args) => {
+            let (_cluster, _node) = load_cluster_inputs(&args)?;
+            let mut registry = bijux_atlas_core::ShardRegistry::new();
+            let owners = vec!["node-a".to_string(), "node-b".to_string()];
+            registry.assign_round_robin("atlas-default", 4, &owners);
+            let shards = registry
+                .all()
+                .into_iter()
+                .map(|record| {
+                    serde_json::json!({
+                        "shard_id": record.metadata.shard_id,
+                        "owner_node_id": record.metadata.owner_node_id,
+                        "key_range_start": record.metadata.key_range_start,
+                        "key_range_end": record.metadata.key_range_end
+                    })
+                })
+                .collect::<Vec<_>>();
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "system_cluster_shard_list",
+                "shards": shards
+            });
+            let rendered = emit_payload(args.format, args.out, &payload)?;
+            Ok((rendered, 0))
+        }
+        SystemClusterCommand::ShardDistribution(args) => {
+            let (_cluster, _node) = load_cluster_inputs(&args)?;
+            let mut registry = bijux_atlas_core::ShardRegistry::new();
+            let owners = vec![
+                "node-a".to_string(),
+                "node-b".to_string(),
+                "node-c".to_string(),
+            ];
+            registry.assign_round_robin("atlas-default", 6, &owners);
+            let distribution = owners
+                .iter()
+                .map(|owner| {
+                    serde_json::json!({
+                        "node_id": owner,
+                        "shard_count": registry.shards_for_owner(owner).len()
+                    })
+                })
+                .collect::<Vec<_>>();
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "system_cluster_shard_distribution",
+                "distribution": distribution
+            });
+            let rendered = emit_payload(args.format, args.out, &payload)?;
+            Ok((rendered, 0))
+        }
+        SystemClusterCommand::ShardDiagnostics(args) => {
+            let (_cluster, _node) = load_cluster_inputs(&args)?;
+            let mut registry = bijux_atlas_core::ShardRegistry::new();
+            let owners = vec!["node-a".to_string()];
+            let assigned = registry.assign_round_robin("atlas-default", 2, &owners);
+            for shard_id in assigned {
+                registry.record_access(&shard_id, 18, true);
+                registry.record_access(&shard_id, 22, false);
+            }
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "system_cluster_shard_diagnostics",
+                "metrics": registry.metrics()
+            });
+            let rendered = emit_payload(args.format, args.out, &payload)?;
+            Ok((rendered, 0))
+        }
+        SystemClusterCommand::ShardRebalance(args) => {
+            let payload = run_shard_action(args, "rebalance")?;
+            Ok(payload)
+        }
     }
 }
 
@@ -341,6 +437,40 @@ fn run_node_action(
         "configured_node_id": node.node_id,
         "generation": node.generation,
         "status": if action == "diagnostics" { "report-ready" } else { "accepted" }
+    });
+    let rendered = emit_payload(args.common.format, args.common.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_shard_action(
+    args: SystemClusterShardActionArgs,
+    action: &str,
+) -> Result<(String, i32), String> {
+    let (_cluster, _node) = load_cluster_inputs(&args.common)?;
+    let mut registry = bijux_atlas_core::ShardRegistry::new();
+    let owners = vec![
+        "node-a".to_string(),
+        "node-b".to_string(),
+        "node-c".to_string(),
+    ];
+    let assigned = registry.assign_round_robin("atlas-default", 6, &owners);
+    if action == "rebalance" {
+        registry.rebalance(&owners);
+    }
+    if let (Some(shard_id), Some(target_node_id)) = (&args.shard_id, &args.target_node_id) {
+        let _ = registry.relocate_shard(shard_id, target_node_id);
+    } else if let Some(shard_id) = &args.shard_id {
+        let _ = registry.transfer_ownership(shard_id, "node-z");
+    } else if let Some(first) = assigned.first() {
+        let _ = registry.transfer_ownership(first, "node-z");
+    }
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "system_cluster_shard_action",
+        "action": action,
+        "shard_id": args.shard_id,
+        "target_node_id": args.target_node_id,
+        "metrics": registry.metrics()
     });
     let rendered = emit_payload(args.common.format, args.common.out, &payload)?;
     Ok((rendered, 0))
