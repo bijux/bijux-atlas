@@ -32,3 +32,4 @@ related:
 - [Data Protection Strategy](data-protection-strategy.md)
 - [Encryption Model](encryption-model.md)
 - [Encryption Architecture Diagrams](encryption-architecture-diagrams.md)
+- [Security Testing Strategy](security-testing-strategy.md)
