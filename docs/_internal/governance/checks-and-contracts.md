@@ -50,3 +50,10 @@ The same implementation detail may appear in both layers only as a documented co
 | `tests-all` | executable behavioral verification | unit, integration, and fixture-backed code tests | yes |
 | `checks-all` | quality gate verification | fmt, lint, docs, config, supply-chain, and fast control-plane lanes | yes, except `severity=info` unless `--strict` |
 | `contract all` | governance invariant verification | schema, policy, release, docs, and operational contracts | yes |
+
+## Linking Policy Authority
+
+- Canonical linking boundaries are defined in `docs/_internal/linking.md`.
+- `docs/**` may link to stable operational specifications in `ops/**`.
+- `ops/**` must not use `docs/_internal/**` as canonical user guidance.
+- Generated and example operational paths are never SSOT targets for docs links.
