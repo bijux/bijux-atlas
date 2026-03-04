@@ -417,6 +417,46 @@ fn embedded_policy_allows(
     default_allow
 }
 
+fn embedded_authorization_allows(
+    principal: &str,
+    action: &str,
+    resource_kind: &str,
+    route: &str,
+) -> bool {
+    static ENGINE: std::sync::OnceLock<bijux_atlas_core::AuthorizationEngine> =
+        std::sync::OnceLock::new();
+    let engine = ENGINE.get_or_init(|| {
+        let permissions: bijux_atlas_core::PermissionCatalog = serde_yaml::from_str(include_str!(
+            "../../../../configs/security/permissions.yaml"
+        ))
+        .unwrap_or_else(|err| panic!("embedded permission catalog: {err}"));
+        let roles: bijux_atlas_core::RoleCatalog =
+            serde_yaml::from_str(include_str!("../../../../configs/security/roles.yaml"))
+                .unwrap_or_else(|err| panic!("embedded role catalog: {err}"));
+        let policy: bijux_atlas_core::AuthorizationPolicy =
+            serde_yaml::from_str(include_str!("../../../../configs/security/policy.yaml"))
+                .unwrap_or_else(|err| panic!("embedded authorization policy: {err}"));
+        let evaluator = bijux_atlas_core::PermissionEvaluator::new(permissions);
+        let mut registry = bijux_atlas_core::RoleRegistry::new();
+        for role in roles.roles {
+            registry.upsert_role(role);
+        }
+        for (principal_id, role_id) in [
+            ("user", "role.user.readonly"),
+            ("service-account", "role.service.readonly"),
+            ("operator", "role.operator.admin"),
+            ("ci", "role.automation.release"),
+        ] {
+            registry.assign_role(principal_id, role_id);
+        }
+        bijux_atlas_core::AuthorizationEngine::new(registry, evaluator, policy)
+    });
+    matches!(
+        engine.evaluate(principal, action, resource_kind, route),
+        bijux_atlas_core::AuthorizationDecision::Allow
+    )
+}
+
 fn emit_auth_policy_decision(
     auth_mode: crate::config::AuthMode,
     principal: &str,
@@ -809,6 +849,22 @@ async fn record_auth_failure(state: &AppState, reason: &str, route: &str) {
     }
 }
 
+async fn record_authorization_denial(state: &AppState, route: &str, action: &str, resource_kind: &str) {
+    record_policy_violation(state, "authorization.denied").await;
+    let mut by = state.cache.metrics.policy_violations_by_policy.lock().await;
+    let count = by.entry("authorization.denied".to_string()).or_insert(0);
+    *count += 1;
+    warn!(
+        event_id = "authorization_denied",
+        event = "authorization_denied",
+        route = route,
+        action = action,
+        resource_kind = resource_kind,
+        denial_count = *count,
+        "authorization denied"
+    );
+}
+
 pub(crate) async fn record_shed_reason(state: &AppState, reason: &str) {
     let mut by = state.cache.metrics.shed_total_by_reason.lock().await;
     *by.entry(reason.to_string()).or_insert(0) += 1;
@@ -1052,12 +1108,28 @@ async fn security_middleware(
         }
     };
     let principal = auth_context.principal;
-    let policy_allowed = embedded_policy_allows(
+    info!(
+        event_id = "authorization_evaluation_started",
+        event = "authorization_evaluation_started",
+        principal = principal,
+        action = route_action_id(&route),
+        resource_kind = route_resource_kind(&route),
+        route = route.as_str(),
+        "authorization evaluation started"
+    );
+    let policy_allowed = embedded_authorization_allows(
         principal,
         route_action_id(&route),
         route_resource_kind(&route),
         &route,
     );
+    let policy_allowed = policy_allowed
+        && embedded_policy_allows(
+            principal,
+            route_action_id(&route),
+            route_resource_kind(&route),
+            &route,
+        );
     info!(
         event_id = "authentication_context",
         event = "authentication_context",
@@ -1071,7 +1143,24 @@ async fn security_middleware(
     );
     emit_auth_policy_decision(state.api.auth_mode, principal, &route, policy_allowed);
     if !policy_allowed {
-        record_policy_violation(&state, "auth_policy_denied").await;
+        record_authorization_denial(
+            &state,
+            &route,
+            route_action_id(&route),
+            route_resource_kind(&route),
+        )
+        .await;
+        if state.api.audit.enabled {
+            emit_audit_event(
+                &state.api.audit,
+                "authorization_denied",
+                Some(principal),
+                route_action_id(&route),
+                route_resource_kind(&route),
+                &route,
+                &[("decision", "deny"), ("reason", "policy_denied"), ("route", route.as_str())],
+            );
+        }
         let err = Json(ApiError::new(
             auth_error_code(StatusCode::FORBIDDEN),
             "request denied by access policy",
@@ -1257,6 +1346,22 @@ mod tests {
         assert_eq!(event["status"].as_str(), Some("200"));
         assert!(event.get("authorization").is_none());
         assert!(event.get("unknown_field").is_none());
+    }
+
+    #[test]
+    fn embedded_authorization_enforces_operator_admin_boundary() {
+        assert!(embedded_authorization_allows(
+            "operator",
+            "ops.admin",
+            "namespace",
+            "/debug/runtime-config"
+        ));
+        assert!(!embedded_authorization_allows(
+            "user",
+            "ops.admin",
+            "namespace",
+            "/debug/runtime-config"
+        ));
     }
 
     fn signed_token(payload: serde_json::Value, secret: &str) -> String {
