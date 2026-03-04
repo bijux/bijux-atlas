@@ -98,6 +98,7 @@ pub(crate) fn plugin_metadata_json() -> String {
     .to_string()
 }
 
+#[allow(clippy::too_many_arguments)]
 fn parse_selectors(
     suite: Option<String>,
     domain: Option<DomainArg>,
