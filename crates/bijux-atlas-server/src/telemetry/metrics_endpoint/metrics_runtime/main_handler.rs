@@ -753,6 +753,44 @@ bijux_warmup_lock_wait_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}
             METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, dataset_bucket, count
         ));
     }
+    let membership_metrics = state.membership.lock().await.metrics();
+    body.push_str(&format!(
+        "atlas_membership_nodes_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_membership_active_nodes{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_membership_timed_out_nodes{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_membership_quarantined_nodes{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_membership_maintenance_nodes{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_membership_draining_nodes{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_membership_average_load_percent{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        membership_metrics.total_nodes,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        membership_metrics.active_nodes,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        membership_metrics.timed_out_nodes,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        membership_metrics.quarantined_nodes,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        membership_metrics.maintenance_nodes,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        membership_metrics.draining_nodes,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        membership_metrics.average_load_percent
+    ));
     body.push_str(&format!(
         "bijux_registry_invalidation_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_registry_freeze_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",

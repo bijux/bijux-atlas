@@ -651,6 +651,12 @@ pub(crate) async fn cluster_nodes_handler(State(state): State<AppState>) -> impl
         "nodes": nodes,
         "metrics": membership.metrics()
     });
+    tracing::info!(
+        event_id = "cluster_membership_nodes_view",
+        route = "/debug/cluster/nodes",
+        node_count = payload["nodes"].as_array().map_or(0, |rows| rows.len()),
+        "cluster membership node status snapshot"
+    );
     let response = Json(payload).into_response();
     state
         .metrics
@@ -703,6 +709,13 @@ pub(crate) async fn cluster_register_handler(
     let mut membership = state.membership.lock().await;
     membership.join_node(descriptor, now_unix_ms);
     membership.activate_node(&req.node_id);
+    tracing::info!(
+        event_id = "cluster_membership_register",
+        route = "/debug/cluster/register",
+        node_id = %req.node_id,
+        generation = req.generation,
+        "cluster membership node registered"
+    );
 
     let response = Json(json!({
         "schema_version": 1,
@@ -733,12 +746,20 @@ pub(crate) async fn cluster_heartbeat_handler(
     membership.apply_heartbeat(bijux_atlas_core::HeartbeatMessage {
         identity: bijux_atlas_core::NodeIdentity {
             cluster_id: req.cluster_id,
-            node_id: req.node_id,
+            node_id: req.node_id.clone(),
             generation: req.generation.max(1),
         },
         sent_at_unix_ms: chrono_like_unix_millis() as u64,
         load_percent: req.load_percent.min(100),
     });
+    tracing::info!(
+        event_id = "cluster_membership_heartbeat",
+        route = "/debug/cluster/heartbeat",
+        node_id = %req.node_id,
+        generation = req.generation,
+        load_percent = req.load_percent,
+        "cluster membership heartbeat accepted"
+    );
     let response = Json(json!({
         "schema_version": 1,
         "kind": "cluster_node_heartbeat_result",
@@ -778,6 +799,13 @@ pub(crate) async fn cluster_mode_handler(
         "remove" => membership.remove_node(&req.node_id),
         _ => {}
     }
+    tracing::info!(
+        event_id = "cluster_membership_mode_change",
+        route = "/debug/cluster/mode",
+        node_id = %req.node_id,
+        mode = %req.mode,
+        "cluster membership mode change applied"
+    );
     let response = Json(json!({
         "schema_version": 1,
         "kind": "cluster_node_mode_result",
