@@ -6,6 +6,7 @@ pub mod config;
 pub mod distributed;
 pub mod distributed_config;
 pub mod membership;
+pub mod resilience;
 pub mod replication;
 pub mod sharding;
 pub mod time;
@@ -26,6 +27,10 @@ pub use distributed_config::{
 pub use membership::{
     HeartbeatMessage, MembershipMetrics, MembershipPolicy, MembershipRegistry, MembershipState,
     NodeMembershipRecord,
+};
+pub use resilience::{
+    FailureCategory, FailureDetectionPolicy, FailureEvent, FailureRecoveryRegistry,
+    RecoveryDiagnostics, RecoveryEvent, RecoveryPolicy, ResilienceGuarantees, ResilienceMetrics,
 };
 pub use replication::{
     ConsistencyGuarantee, ConsistencyLevel, ReplicaDiagnostics, ReplicaHealth, ReplicaMetadata,
