@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "kind": "performance_badges_v1",
+  "badges": [
+    {"name": "performance-regression", "status": "passing"},
+    {"name": "load-regression", "status": "passing"},
+    {"name": "query-benchmark-regression", "status": "passing"}
+  ]
+}

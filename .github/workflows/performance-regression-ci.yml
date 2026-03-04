@@ -1,0 +1,72 @@
+name: Performance Regression CI
+
+on:
+  pull_request:
+    paths:
+      - "configs/perf/**"
+      - "ops/load/**"
+      - "ops/report/generated/**"
+      - "docs/operations/performance-*.md"
+      - ".github/workflows/performance-regression-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "configs/perf/**"
+      - "ops/load/**"
+      - "ops/report/generated/**"
+      - "docs/operations/performance-*.md"
+      - ".github/workflows/performance-regression-ci.yml"
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  performance-regression-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate policy and generated assets
+        run: |
+          jq . configs/perf/regression-policy.json > /dev/null
+          jq . configs/perf/regression-notifications.json > /dev/null
+          jq . ops/report/generated/performance-regression-report.json > /dev/null
+          jq . ops/report/generated/performance-history.json > /dev/null
+          jq . ops/report/generated/performance-trend.json > /dev/null
+          jq . ops/report/generated/performance-anomalies.json > /dev/null
+          jq . ops/report/generated/performance-dashboard.json > /dev/null
+          jq . ops/report/generated/performance-ci-artifacts.json > /dev/null
+          jq . ops/report/generated/performance-ci-summary.json > /dev/null
+          jq . ops/report/generated/performance-badges.json > /dev/null
+          jq . ops/report/generated/performance-trend-graph.json > /dev/null
+
+      - name: Run regression detector and report generator
+        run: |
+          ops/load/tools/detect-performance-regression.sh \
+            ops/load/baselines/system-load-baseline.json \
+            ops/load/baselines/system-load-baseline.json > /tmp/perf-regressions.json
+          ops/load/tools/generate-regression-report.sh \
+            ops/load/baselines/system-load-baseline.json \
+            ops/load/baselines/system-load-baseline.json \
+            /tmp/performance-regression-report.json
+          jq . /tmp/perf-regressions.json > /dev/null
+          jq . /tmp/performance-regression-report.json > /dev/null
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Run performance regression asset tests
+        run: cargo test -p bijux-dev-atlas --test performance_regression_assets -- --nocapture
+
+      - name: Publish step summary
+        run: |
+          {
+            echo "## Performance Regression CI"
+            echo ""
+            echo "- Policy: configs/perf/regression-policy.json"
+            echo "- Notifications: configs/perf/regression-notifications.json"
+            echo "- Report: ops/report/generated/performance-regression-report.json"
+            echo "- History: ops/report/generated/performance-history.json"
+            echo "- Trend: ops/report/generated/performance-trend.json"
+          } >> "${GITHUB_STEP_SUMMARY}"

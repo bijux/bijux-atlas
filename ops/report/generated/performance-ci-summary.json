@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "kind": "performance_ci_summary_v1",
+  "summary": {
+    "regressions": 0,
+    "critical": 0,
+    "warning": 0,
+    "info": 0,
+    "status": "pass"
+  }
+}

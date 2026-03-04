@@ -57,11 +57,12 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 25. [Query benchmark summary report](query-benchmark-summary-report.md)
 26. [Performance regression policy](performance-regression-policy.md)
 27. [Performance regression monitoring](performance-regression-monitoring.md)
-28. [Dataset update](dataset-update.md)
-29. [Dataset deprecation](dataset-deprecation.md)
-30. [Data retention policy](data-retention-policy.md)
-31. [Data access model](data-access-model.md)
-32. [Scientific defensibility](scientific-defensibility.md)
+28. [Performance CI operations](performance-ci-operations.md)
+29. [Dataset update](dataset-update.md)
+30. [Dataset deprecation](dataset-deprecation.md)
+31. [Data retention policy](data-retention-policy.md)
+32. [Data access model](data-access-model.md)
+33. [Scientific defensibility](scientific-defensibility.md)
 
 ## What This Page Is Not
 
