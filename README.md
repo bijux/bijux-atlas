@@ -140,3 +140,46 @@ A platform team needs to publish an updated human genome annotation release:
 - `docs/`: user-facing and internal documentation.
 - `release/`: release-related schemas, workflows, and supporting assets.
 - `artifacts/`: generated evidence, reports, and reproducibility outputs.
+
+## System Architecture
+Bijux Atlas uses a layered architecture:
+- Source ingestion and transformation layers produce canonical dataset artifacts.
+- Query and API layers consume immutable dataset artifacts.
+- Ops, release, and audit layers produce runtime and institutional evidence artifacts.
+- A single control plane orchestrates validations and enforces cross-domain contracts.
+- Policy and contract definitions remain externalized in governed config surfaces.
+
+## Data Flow
+1. Source datasets enter ingest pipelines with schema and integrity validation.
+2. Ingest outputs produce versioned artifacts and manifests.
+3. Query/API services load approved artifacts and expose deterministic response surfaces.
+4. Ops workflows render and validate deployment resources from governed profiles.
+5. Release workflows package artifacts into verifiable bundles and generate audit evidence.
+
+## Architecture Diagram
+```mermaid
+flowchart TD
+    S[Source Data] --> I[Ingest Validation and Transform]
+    I --> M[Dataset Manifest]
+    I --> A[Versioned Data Artifacts]
+    A --> Q[Query Engine]
+    Q --> API[API and CLI Query Surfaces]
+    A --> O[Ops Profiles and Rendered Resources]
+    A --> R[Release Bundle Assembly]
+    O --> E[Operational Evidence]
+    R --> B[Release and Audit Bundles]
+    P[Policies and Contracts] --> I
+    P --> Q
+    P --> O
+    P --> R
+```
+
+## Workflow Diagram
+```mermaid
+flowchart LR
+    D[Develop and Configure] --> T[Run Checks and Contracts]
+    T --> G[Generate and Validate Artifacts]
+    G --> V[Verify Reproducibility]
+    V --> P[Package Release Bundle]
+    P --> U[Publish and Operate]
+```
