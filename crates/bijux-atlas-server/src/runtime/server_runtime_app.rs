@@ -42,6 +42,40 @@ impl AppState {
         registry
     }
 
+    fn init_replica_registry() -> bijux_atlas_core::ReplicaRegistry {
+        let mut registry = bijux_atlas_core::ReplicaRegistry::new(
+            bijux_atlas_core::ReplicationPolicy {
+                replication_factor: 2,
+                primary_required: true,
+                max_replication_lag_ms: 2_000,
+            },
+            bijux_atlas_core::ConsistencyGuarantee {
+                read_consistency: bijux_atlas_core::ConsistencyLevel::Quorum,
+                write_consistency: bijux_atlas_core::ConsistencyLevel::Quorum,
+            },
+        );
+        registry.upsert_replica(bijux_atlas_core::ReplicaRecord {
+            metadata: bijux_atlas_core::ReplicaMetadata {
+                dataset_id: "atlas-default".to_string(),
+                shard_id: "atlas-default-s001".to_string(),
+                primary_node_id: "node-a".to_string(),
+                replica_node_ids: vec!["node-b".to_string()],
+            },
+            sync: bijux_atlas_core::ReplicaSyncState {
+                last_applied_lsn: 1_000,
+                primary_lsn: 1_020,
+                lag_ms: 15,
+                sync_throughput_rows_per_second: 12_000,
+            },
+            health: bijux_atlas_core::ReplicaHealth {
+                healthy: true,
+                failed_checks: 0,
+                last_failure_reason: None,
+            },
+        });
+        registry
+    }
+
     #[must_use]
     pub fn new(cache: Arc<DatasetCacheManager>) -> Self {
         Self::with_config(cache, ApiConfig::default(), QueryLimits::default())
@@ -116,6 +150,7 @@ impl AppState {
             queued_requests: Arc::new(AtomicU64::new(0)),
             membership: Arc::new(Mutex::new(Self::init_membership_registry())),
             shard_registry: Arc::new(Mutex::new(Self::init_shard_registry())),
+            replica_registry: Arc::new(Mutex::new(Self::init_replica_registry())),
             runtime_policy_hash,
             runtime_policy_mode: Arc::new("strict".to_string()),
             api,
@@ -237,6 +272,22 @@ pub fn build_router(state: AppState) -> Router {
             .route(
                 "/debug/cluster/mode",
                 post(http::handlers::cluster_mode_handler),
+            )
+            .route(
+                "/debug/cluster/replicas",
+                get(http::handlers::cluster_replica_list_handler),
+            )
+            .route(
+                "/debug/cluster/replicas/health",
+                get(http::handlers::cluster_replica_health_handler),
+            )
+            .route(
+                "/debug/cluster/replicas/failover",
+                post(http::handlers::cluster_replica_failover_handler),
+            )
+            .route(
+                "/debug/cluster/replicas/diagnostics",
+                get(http::handlers::cluster_replica_diagnostics_handler),
             )
             .route("/v1/_debug/echo", get(http::handlers::debug_echo_handler));
     }

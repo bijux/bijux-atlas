@@ -392,6 +392,7 @@ bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} 
     let process_open_fds = current_open_fd_count();
     let process_cpu_usage_ratio = 0.0_f64;
     let shard_registry_metrics = state.shard_registry.lock().await.metrics();
+    let replication_metrics = state.replica_registry.lock().await.metrics();
     let thread_pool_usage = if state.api.heavy_worker_pool_size == 0 {
         0.0
     } else {
@@ -625,7 +626,12 @@ atlas_shard_healthy_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n
 atlas_shard_access_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 atlas_shard_cache_hits_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 atlas_shard_cache_misses_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
-atlas_shard_latency_avg_ms{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+atlas_shard_latency_avg_ms{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_replica_groups_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_replica_healthy_groups_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_replication_lag_ms_avg{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_replication_throughput_rows_per_second{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_replica_failures_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
@@ -649,7 +655,27 @@ atlas_shard_latency_avg_ms{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
-        shard_registry_metrics.average_latency_ms
+        shard_registry_metrics.average_latency_ms,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        replication_metrics.replica_groups_total,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        replication_metrics.healthy_replica_groups_total,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        replication_metrics.average_lag_ms,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        replication_metrics.total_sync_throughput_rows_per_second,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        replication_metrics.replica_failures_total
     ));
     push_histogram_from_samples(
         &mut body,
