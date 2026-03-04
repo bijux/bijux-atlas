@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use std::collections::BTreeMap;
 use std::path::PathBuf;
 
 use super::*;
@@ -77,6 +78,20 @@ fn validates_report_against_schema_shape() {
                 },
             },
             rendered_resources: 1,
+            rendered_resource_kind_summary: BTreeMap::from([(String::from("Deployment"), 1)]),
+            rendered_resource_refs: vec!["Deployment:default/atlas".to_string()],
+            rollout_safety: StatusReport {
+                status: "pass".to_string(),
+                note: String::new(),
+                errors: Vec::new(),
+                event: ToolInvocationReport {
+                    binary: "rollout-safety-rules".to_string(),
+                    args: vec!["ci".to_string()],
+                    cwd: ".".to_string(),
+                    status: "pass".to_string(),
+                    stderr: String::new(),
+                },
+            },
         }],
         ProfilesMatrixInputs {
             chart_dir: "ops/k8s/charts/bijux-atlas".to_string(),
@@ -144,4 +159,40 @@ fn accepts_valid_pinned_dataset_ids() {
         dataset_validation_status(&repo_root, &manifest_path, &manifest_ids, &merged_values);
     assert_eq!(status.status, "pass");
     assert!(status.errors.is_empty());
+}
+
+#[test]
+fn rendered_resource_details_capture_kind_summary_and_refs() {
+    let rendered = r#"
+apiVersion: v1
+kind: Service
+metadata:
+  name: atlas-svc
+  namespace: bijux-atlas
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atlas-api
+"#;
+    let (count, kind_summary, refs) = rendered_resource_details(rendered);
+    assert_eq!(count, 2);
+    assert_eq!(kind_summary.get("Service"), Some(&1usize));
+    assert_eq!(kind_summary.get("Deployment"), Some(&1usize));
+    assert!(refs.contains(&"Service:bijux-atlas/atlas-svc".to_string()));
+    assert!(refs.contains(&"Deployment:<cluster-scope>/atlas-api".to_string()));
+}
+
+#[test]
+fn rollout_safety_requires_prod_replicas_strategy_and_pdb() {
+    let repo_root = PathBuf::from(".");
+    let kind_summary = BTreeMap::new();
+    let merged_values = serde_json::json!({
+        "replicaCount": 1,
+        "rollout": {"strategy": "Recreate"},
+        "podDisruptionBudget": {"enabled": false}
+    });
+    let status = rollout_safety_status(&repo_root, "prod", &kind_summary, &merged_values);
+    assert_eq!(status.status, "fail");
+    assert_eq!(status.errors.len(), 3);
 }

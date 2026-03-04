@@ -43,6 +43,9 @@ pub struct ProfileMatrixRow {
     pub dataset_validation: StatusReport,
     pub kubeconform: StatusReport,
     pub rendered_resources: usize,
+    pub rendered_resource_kind_summary: BTreeMap<String, usize>,
+    pub rendered_resource_refs: Vec<String>,
+    pub rollout_safety: StatusReport,
 }
 
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
@@ -280,6 +283,104 @@ fn selected_profiles(
         return Ok(selected);
     }
     Ok(rows)
+}
+
+fn rendered_resource_details(rendered_yaml: &str) -> (usize, BTreeMap<String, usize>, Vec<String>) {
+    let mut count = 0usize;
+    let mut kind_summary = BTreeMap::new();
+    let mut refs = Vec::new();
+    for document in serde_yaml::Deserializer::from_str(rendered_yaml) {
+        let Ok(value) = serde_yaml::Value::deserialize(document) else {
+            continue;
+        };
+        let Some(root) = value.as_mapping() else {
+            continue;
+        };
+        let kind = root
+            .get(serde_yaml::Value::String("kind".to_string()))
+            .and_then(serde_yaml::Value::as_str)
+            .map(ToOwned::to_owned)
+            .unwrap_or_else(|| "Unknown".to_string());
+        let metadata = root
+            .get(serde_yaml::Value::String("metadata".to_string()))
+            .and_then(serde_yaml::Value::as_mapping);
+        let name = metadata
+            .and_then(|map| map.get(serde_yaml::Value::String("name".to_string())))
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or("<missing-name>");
+        let namespace = metadata
+            .and_then(|map| map.get(serde_yaml::Value::String("namespace".to_string())))
+            .and_then(serde_yaml::Value::as_str)
+            .unwrap_or("<cluster-scope>");
+        count += 1;
+        *kind_summary.entry(kind.clone()).or_insert(0) += 1;
+        refs.push(format!("{kind}:{namespace}/{name}"));
+    }
+    refs.sort();
+    (count, kind_summary, refs)
+}
+
+fn rollout_safety_status(
+    repo_root: &Path,
+    profile_name: &str,
+    kind_summary: &BTreeMap<String, usize>,
+    merged_values: &serde_json::Value,
+) -> StatusReport {
+    let replicas = merged_values
+        .pointer("/replicaCount")
+        .and_then(serde_json::Value::as_u64);
+    let strategy_type = merged_values
+        .pointer("/rollout/strategy")
+        .or_else(|| merged_values.pointer("/strategy/type"))
+        .and_then(serde_json::Value::as_str)
+        .map(ToOwned::to_owned);
+    let pdb_enabled = merged_values
+        .pointer("/podDisruptionBudget/enabled")
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
+
+    let mut errors = Vec::new();
+    if profile_name == "prod" || profile_name == "perf" {
+        if replicas.unwrap_or(0) < 2 {
+            errors
+                .push("$.replicaCount: prod-class profiles require replicaCount >= 2".to_string());
+        }
+        if strategy_type.as_deref() != Some("RollingUpdate") {
+            errors.push(
+                "$.rollout.strategy: prod-class profiles require RollingUpdate strategy"
+                    .to_string(),
+            );
+        }
+        if !pdb_enabled
+            && kind_summary
+                .get("PodDisruptionBudget")
+                .copied()
+                .unwrap_or(0)
+                == 0
+        {
+            errors.push(
+                "$.podDisruptionBudget.enabled: prod-class profiles require a PodDisruptionBudget"
+                    .to_string(),
+            );
+        }
+    }
+    let status = if errors.is_empty() { "pass" } else { "fail" };
+    StatusReport {
+        status: status.to_string(),
+        note: if errors.is_empty() {
+            "rollout safety rules satisfied".to_string()
+        } else {
+            "rollout safety rule violations found".to_string()
+        },
+        errors,
+        event: ToolInvocationReport {
+            binary: "rollout-safety-rules".to_string(),
+            args: vec![profile_name.to_string()],
+            cwd: repo_root.display().to_string(),
+            status: status.to_string(),
+            stderr: String::new(),
+        },
+    }
 }
 
 fn compile_values_schema(schema_path: &Path) -> Result<serde_json::Value, String> {
@@ -520,67 +621,112 @@ pub fn validate_profiles(
             options.timeout_seconds,
         );
 
-        let (kubeconform, rendered_resources) = if helm_template.status == "pass" {
-            match template_profile_output(
-                repo_root,
-                &helm_binary,
-                &options.chart_dir,
-                &values_path,
-                &profile.name,
-                options.timeout_seconds,
-            ) {
-                Ok((rendered_yaml, _stderr)) => {
-                    let rendered_resources =
-                        serde_yaml::Deserializer::from_str(&rendered_yaml).count();
-                    let staged_manifest = stage_kubeconform_manifest(repo_root, &rendered_yaml);
-                    (
-                        kubeconform_profile(
+        let (kubeconform, rendered_resources, kind_summary, resource_refs, rollout_safety) =
+            if helm_template.status == "pass" {
+                match template_profile_output(
+                    repo_root,
+                    &helm_binary,
+                    &options.chart_dir,
+                    &values_path,
+                    &profile.name,
+                    options.timeout_seconds,
+                ) {
+                    Ok((rendered_yaml, _stderr)) => {
+                        let (rendered_resources, kind_summary, resource_refs) =
+                            rendered_resource_details(&rendered_yaml);
+                        let staged_manifest = stage_kubeconform_manifest(repo_root, &rendered_yaml);
+                        let rollout_safety = rollout_safety_status(
                             repo_root,
-                            staged_manifest,
-                            options.timeout_seconds,
-                            options.run_kubeconform,
-                        ),
-                        rendered_resources,
-                    )
-                }
-                Err(message) => (
-                    StatusReport {
-                        status: "fail".to_string(),
-                        note: "helm render replay failure".to_string(),
-                        errors: vec![message.clone()],
-                        event: ToolInvocationReport {
-                            binary: helm_binary.clone(),
-                            args: vec!["template".to_string()],
-                            cwd: repo_root.display().to_string(),
+                            &profile.name,
+                            &kind_summary,
+                            &merged_values,
+                        );
+                        (
+                            kubeconform_profile(
+                                repo_root,
+                                staged_manifest,
+                                options.timeout_seconds,
+                                options.run_kubeconform,
+                            ),
+                            rendered_resources,
+                            kind_summary,
+                            resource_refs,
+                            rollout_safety,
+                        )
+                    }
+                    Err(message) => (
+                        StatusReport {
                             status: "fail".to_string(),
-                            stderr: message,
+                            note: "helm render replay failure".to_string(),
+                            errors: vec![message.clone()],
+                            event: ToolInvocationReport {
+                                binary: helm_binary.clone(),
+                                args: vec!["template".to_string()],
+                                cwd: repo_root.display().to_string(),
+                                status: "fail".to_string(),
+                                stderr: message.clone(),
+                            },
+                        },
+                        0,
+                        BTreeMap::new(),
+                        Vec::new(),
+                        StatusReport {
+                            status: "fail".to_string(),
+                            note: "rollout safety skipped because render replay failed".to_string(),
+                            errors: vec![message],
+                            event: ToolInvocationReport {
+                                binary: "rollout-safety-rules".to_string(),
+                                args: vec![profile.name.clone()],
+                                cwd: repo_root.display().to_string(),
+                                status: "fail".to_string(),
+                                stderr: String::new(),
+                            },
+                        },
+                    ),
+                }
+            } else {
+                (
+                    StatusReport {
+                        status: "skipped".to_string(),
+                        note: "kubeconform skipped because helm template failed".to_string(),
+                        errors: Vec::new(),
+                        event: ToolInvocationReport {
+                            binary: "kubeconform".to_string(),
+                            args: {
+                                let mut args = vec![
+                                    "-strict".to_string(),
+                                    "-summary".to_string(),
+                                    "-ignore-missing-schemas".to_string(),
+                                ];
+                                args.push("-schema-location".to_string());
+                                args.push("default".to_string());
+                                args.push("-schema-location".to_string());
+                                args.push("https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/{{.NormalizedKubernetesVersion}}-standalone{{.StrictSuffix}}/{{.ResourceKind}}{{.KindSuffix}}.json".to_string());
+                                args.push("<rendered-manifest>".to_string());
+                                args
+                            },
+                            cwd: repo_root.display().to_string(),
+                            status: "skipped".to_string(),
+                            stderr: String::new(),
                         },
                     },
                     0,
-                ),
-            }
-        } else {
-            (
-                StatusReport {
-                    status: "skipped".to_string(),
-                    note: "kubeconform skipped because helm template failed".to_string(),
-                    errors: Vec::new(),
-                    event: ToolInvocationReport {
-                        binary: "kubeconform".to_string(),
-                        args: vec![
-                            "-strict".to_string(),
-                            "-summary".to_string(),
-                            "-ignore-missing-schemas".to_string(),
-                            "<rendered-manifest>".to_string(),
-                        ],
-                        cwd: repo_root.display().to_string(),
+                    BTreeMap::new(),
+                    Vec::new(),
+                    StatusReport {
                         status: "skipped".to_string(),
-                        stderr: String::new(),
+                        note: "rollout safety skipped because helm template failed".to_string(),
+                        errors: Vec::new(),
+                        event: ToolInvocationReport {
+                            binary: "rollout-safety-rules".to_string(),
+                            args: vec![profile.name.clone()],
+                            cwd: repo_root.display().to_string(),
+                            status: "skipped".to_string(),
+                            stderr: String::new(),
+                        },
                     },
-                },
-                0,
-            )
-        };
+                )
+            };
 
         rows.push(ProfileMatrixRow {
             profile: profile.name,
@@ -590,6 +736,9 @@ pub fn validate_profiles(
             dataset_validation,
             kubeconform,
             rendered_resources,
+            rendered_resource_kind_summary: kind_summary,
+            rendered_resource_refs: resource_refs,
+            rollout_safety,
         });
     }
     rows.sort_by(|left, right| left.profile.cmp(&right.profile));

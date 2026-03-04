@@ -2,6 +2,13 @@
 
 use super::*;
 
+fn kubeconform_schema_locations() -> Vec<String> {
+    vec![
+        "default".to_string(),
+        "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/{{.NormalizedKubernetesVersion}}-standalone{{.StrictSuffix}}/{{.ResourceKind}}{{.KindSuffix}}.json".to_string(),
+    ]
+}
+
 pub(super) fn validate_values_file(
     validator: &serde_json::Value,
     merged_values: &serde_json::Value,
@@ -146,12 +153,16 @@ pub(super) fn kubeconform_profile(
     timeout_seconds: u64,
     run_kubeconform: bool,
 ) -> StatusReport {
-    let args = vec![
+    let mut args = vec![
         "-strict".to_string(),
         "-summary".to_string(),
         "-ignore-missing-schemas".to_string(),
-        "<rendered-manifest>".to_string(),
     ];
+    for schema_location in kubeconform_schema_locations() {
+        args.push("-schema-location".to_string());
+        args.push(schema_location);
+    }
+    args.push("<rendered-manifest>".to_string());
     let event_base = ToolInvocationReport {
         binary: "kubeconform".to_string(),
         args,
@@ -190,12 +201,16 @@ pub(super) fn kubeconform_profile(
             };
         }
     };
-    let exec_args = vec![
+    let mut exec_args = vec![
         "-strict".to_string(),
         "-summary".to_string(),
         "-ignore-missing-schemas".to_string(),
-        rendered_path.display().to_string(),
     ];
+    for schema_location in kubeconform_schema_locations() {
+        exec_args.push("-schema-location".to_string());
+        exec_args.push(schema_location);
+    }
+    exec_args.push(rendered_path.display().to_string());
     match run_with_timeout("kubeconform", &exec_args, repo_root, timeout_seconds) {
         Ok(output) if output.status.success() => StatusReport {
             status: "pass".to_string(),

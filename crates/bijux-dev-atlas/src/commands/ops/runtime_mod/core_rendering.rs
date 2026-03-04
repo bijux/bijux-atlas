@@ -245,7 +245,8 @@ pub(super) fn validate_profile_mode(
                         "profile": row.profile,
                         "status": row.kubeconform.status,
                         "errors": row.kubeconform.errors,
-                        "resource_kind_summary": {"rendered": row.rendered_resources}
+                        "resource_kind_summary": row.rendered_resource_kind_summary,
+                        "resource_refs": row.rendered_resource_refs,
                     })
                 })
                 .collect::<Vec<_>>();
@@ -262,18 +263,22 @@ pub(super) fn validate_profile_mode(
                 .map(|row| {
                     serde_json::json!({
                         "profile": row.profile,
-                        "status": if row.helm_template.status == "pass" && row.values_schema.status == "pass" && row.kubeconform.status == "pass" { "pass" } else { "fail" },
+                        "status": row.rollout_safety.status,
+                        "errors": row.rollout_safety.errors,
                         "helm_template": row.helm_template.status,
                         "values_schema": row.values_schema.status,
-                        "kubeconform": row.kubeconform.status
+                        "kubeconform": row.kubeconform.status,
+                        "resource_kind_summary": row.rendered_resource_kind_summary,
                     })
                 })
                 .collect::<Vec<_>>();
             (
                 rows,
-                report.summary.helm_failures
-                    + report.summary.schema_failures
-                    + report.summary.kubeconform_failures,
+                report
+                    .rows
+                    .iter()
+                    .filter(|row| row.rollout_safety.status == "fail")
+                    .count(),
                 "ops_rollout_safety_validate",
             )
         }
