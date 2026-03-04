@@ -24,10 +24,9 @@ fn write_output_if_requested(out: Option<PathBuf>, rendered: &str) -> Result<(),
 
 fn check_report_color_enabled() -> bool {
     let no_color = std::env::var_os("NO_COLOR").is_some();
-    let force_color = std::env::var("FORCE_COLOR")
-        .ok()
-        .map(|value| value != "0")
-        .unwrap_or(false);
+    let force_color = std::env::var_os("FORCE_COLOR")
+        .and_then(|value| value.into_string().ok())
+        .is_some_and(|value| value != "0");
     if force_color {
         true
     } else if no_color {
