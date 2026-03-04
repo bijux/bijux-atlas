@@ -50,7 +50,9 @@
     "ops/policy/proof-level-checks.json",
     "ops/policy/required-contracts-change.json",
     "ops/policy/required-contracts.json",
-    "ops/report/gene-lookup-baseline.json"
+    "ops/report/gene-lookup-baseline.json",
+    "ops/stack/hpa-policy.json",
+    "ops/stack/profile-registry.json"
   ],
   "derived_paths": [
     "ops/inventory/contracts.json"

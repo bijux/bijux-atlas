@@ -203,8 +203,20 @@
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
+      "path": "ops/stack/hpa-policy.json",
+      "schema": "ops/schema/stack/hpa-policy.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
       "path": "ops/stack/profile-intent.json",
       "schema": "ops/schema/stack/profile-intent.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/stack/profile-registry.json",
+      "schema": "ops/schema/stack/profile-registry.schema.json",
       "generator": "manual",
       "consumer": "checks_ops_inventory_contract_integrity"
     },

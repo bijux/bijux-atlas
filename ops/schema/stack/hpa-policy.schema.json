@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ops/schema/stack/hpa-policy.schema.json",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "max_replicas_by_class"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "max_replicas_by_class": {
+      "type": "object",
+      "required": [
+        "dev",
+        "stage",
+        "prod"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "dev": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "stage": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "prod": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

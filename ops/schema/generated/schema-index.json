@@ -135,8 +135,10 @@
     "ops/schema/stack/artifact-metadata.schema.json",
     "ops/schema/stack/dependency-graph.schema.json",
     "ops/schema/stack/evolution-policy.schema.json",
+    "ops/schema/stack/hpa-policy.schema.json",
     "ops/schema/stack/profile-intent.schema.json",
     "ops/schema/stack/profile-manifest.schema.json",
+    "ops/schema/stack/profile-registry.schema.json",
     "ops/schema/stack/service-dependency-contract.schema.json",
     "ops/schema/stack/version-manifest.schema.json"
   ],
