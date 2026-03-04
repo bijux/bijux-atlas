@@ -394,6 +394,20 @@ fn run_release_plan(args: ReleasePlanArgs) -> Result<(String, i32), String> {
 fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let policy = read_publish_policy(&root)?;
+    let workspace_manifest: toml::Value = toml::from_str(
+        &fs::read_to_string(root.join("Cargo.toml"))
+            .map_err(|err| format!("failed to read root Cargo.toml: {err}"))?,
+    )
+    .map_err(|err| format!("failed to parse root Cargo.toml: {err}"))?;
+    let workspace_rust_version = workspace_manifest
+        .get("workspace")
+        .and_then(toml::Value::as_table)
+        .and_then(|workspace| workspace.get("package"))
+        .and_then(toml::Value::as_table)
+        .and_then(|pkg| pkg.get("rust-version"))
+        .and_then(toml::Value::as_str)
+        .unwrap_or_default()
+        .to_string();
     let publishable = policy["publishable_crates"]
         .as_array()
         .cloned()
@@ -439,8 +453,50 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
                 ));
             }
         }
+        let rust_version_ok = pkg
+            .and_then(|v| v.get("rust-version"))
+            .is_some_and(|value| match value {
+                toml::Value::String(text) => text == &workspace_rust_version,
+                toml::Value::Table(table) => table
+                    .get("workspace")
+                    .and_then(toml::Value::as_bool)
+                    .unwrap_or(false),
+                _ => false,
+            });
+        if !rust_version_ok {
+            errors.push(format!(
+                "{} must set package.rust-version to workspace policy `{}`",
+                manifest_path.display(),
+                workspace_rust_version
+            ));
+        }
         if !readme_path.exists() {
             errors.push(format!("missing crate README: {}", readme_path.display()));
+        }
+        let examples_dir = root.join("crates").join(crate_name).join("examples");
+        if examples_dir.exists() {
+            let has_examples = fs::read_dir(&examples_dir)
+                .map_err(|err| format!("failed to read {}: {err}", examples_dir.display()))?
+                .filter_map(Result::ok)
+                .any(|entry| {
+                    entry
+                        .path()
+                        .extension()
+                        .and_then(|ext| ext.to_str())
+                        .is_some_and(|ext| ext == "rs")
+                });
+            if has_examples {
+                let status = ProcessCommand::new("cargo")
+                    .args(["check", "-p", crate_name, "--examples", "--locked"])
+                    .current_dir(&root)
+                    .status()
+                    .map_err(|err| format!("failed to run cargo check examples for {crate_name}: {err}"))?;
+                if !status.success() {
+                    errors.push(format!(
+                        "example compilation failed for crate `{crate_name}`"
+                    ));
+                }
+            }
         }
         checked_crates.push(crate_name.to_string());
     }
