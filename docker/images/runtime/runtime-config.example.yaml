@@ -1,0 +1,12 @@
+schema_version: 1
+server:
+  bind: 0.0.0.0:8080
+  request_timeout_ms: 30000
+datasets:
+  catalog_path: /data/catalog.json
+  default_release: "110"
+  default_species: homo_sapiens
+  default_assembly: GRCh38
+telemetry:
+  log_level: info
+  metrics_path: /metrics
