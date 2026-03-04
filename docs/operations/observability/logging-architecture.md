@@ -47,3 +47,11 @@ Common metadata fields:
 - Target filtering: `ATLAS_LOG_FILTER_TARGETS`
 - Sampling: `ATLAS_LOG_SAMPLING_RATE`
 - Redaction toggle: `ATLAS_LOG_REDACTION_ENABLED`
+- Rotation bytes: `ATLAS_LOG_ROTATION_MAX_BYTES`
+- Rotation files: `ATLAS_LOG_ROTATION_MAX_FILES`
+
+## Next
+
+- [Logging debugging guide](logging-debugging-guide.md)
+- [Logging best practices](logging-best-practices.md)
+- [Logging sampling policy](logging-sampling-policy.md)
