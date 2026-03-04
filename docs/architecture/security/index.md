@@ -15,6 +15,7 @@ related:
 # Architecture Security
 
 - [Auth Model](auth-model.md)
+- [Authentication Strategy](authentication-strategy.md)
 - [Security Architecture](security-architecture.md)
 - [Threat Model Scope](threat-model-scope.md)
 - [Trust Boundaries](trust-boundaries.md)
