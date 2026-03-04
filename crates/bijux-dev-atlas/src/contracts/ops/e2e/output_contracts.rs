@@ -1625,3 +1625,124 @@ fn test_ops_e2e_026_failure_contract_policy_linkage_valid(ctx: &RunContext) -> T
         TestResult::Fail(violations)
     }
 }
+
+fn test_ops_e2e_027_failure_evidence_contains_logs_metrics_config(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-E2E-027";
+    let test_id = "ops.e2e.failure_evidence_contains_logs_metrics_config";
+    let rel = "ops/e2e/scenarios/failure/contracts.json";
+    let Some(policy) = read_json(&ctx.repo_root.join(rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "failure contracts policy must be valid json",
+            Some(rel.to_string()),
+        )]);
+    };
+    let required: BTreeSet<String> = policy
+        .get("required_evidence")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(|v| v.as_str().map(str::to_string))
+        .collect();
+    let mut violations = Vec::new();
+    for name in ["logs-snapshot.txt", "metrics-snapshot.json", "config-snapshot.json"] {
+        if !required.contains(name) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "failure evidence policy must include logs, metrics snapshot, and config snapshot",
+                Some(rel.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_e2e_028_diagnose_schema_version_and_redaction_policy_declared(
+    ctx: &RunContext,
+) -> TestResult {
+    let contract_id = "OPS-E2E-028";
+    let test_id = "ops.e2e.diagnose_schema_version_and_redaction_policy_declared";
+    let rel = "crates/bijux-dev-atlas/src/commands/ops/execution_runtime_mod/install_status_parts/diagnose_commands.rs";
+    let Ok(source) = fs::read_to_string(ctx.repo_root.join(rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "diagnose commands source must be readable",
+            Some(rel.to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    for token in [
+        "\"schema_version\": 1",
+        "\"ops_diagnose_bundle\"",
+        "redaction_policy",
+        "\"password\"",
+        "\"secret\"",
+        "\"token\"",
+        "\"api_key\"",
+    ] {
+        if !source.contains(token) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "diagnose bundle schema and redaction policy tokens must be declared",
+                Some(rel.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_e2e_029_failure_fixtures_are_present_and_parseable(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-E2E-029";
+    let test_id = "ops.e2e.failure_fixtures_are_present_and_parseable";
+    let fixtures = [
+        "ops/e2e/scenarios/failure/fixtures/corrupted-shard-sample.json",
+        "ops/e2e/scenarios/failure/fixtures/invalid-config-sample.json",
+        "ops/e2e/scenarios/failure/fixtures/missing-artifact-sample.json",
+        "ops/e2e/scenarios/failure/fixtures/disk-full-simulation-wrapper.json",
+    ];
+    let mut violations = Vec::new();
+    for rel in fixtures {
+        let Some(value) = read_json(&ctx.repo_root.join(rel)) else {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "failure fixture must be valid json",
+                Some(rel.to_string()),
+            ));
+            continue;
+        };
+        if value.get("schema_version").and_then(|v| v.as_i64()) != Some(1) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "failure fixture schema_version must be 1",
+                Some(rel.to_string()),
+            ));
+        }
+        if value.get("fixture_id").and_then(|v| v.as_str()).is_none() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "failure fixture must declare fixture_id",
+                Some(rel.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}

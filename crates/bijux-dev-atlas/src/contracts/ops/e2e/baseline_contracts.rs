@@ -288,5 +288,35 @@ fn e2e_contracts() -> Vec<Contract> {
                 run: test_ops_e2e_026_failure_contract_policy_linkage_valid,
             }],
         },
+        Contract {
+            id: ContractId("OPS-E2E-027".to_string()),
+            title: "failure evidence completeness contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.failure_evidence_contains_logs_metrics_config".to_string()),
+                title: "failure evidence policy requires logs, metrics snapshot, and config snapshot",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_027_failure_evidence_contains_logs_metrics_config,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-028".to_string()),
+            title: "diagnose schema and redaction contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.diagnose_schema_version_and_redaction_policy_declared".to_string()),
+                title: "diagnose commands declare schema versioned bundles and explicit redaction keys",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_028_diagnose_schema_version_and_redaction_policy_declared,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-029".to_string()),
+            title: "failure fixture catalog contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.failure_fixtures_are_present_and_parseable".to_string()),
+                title: "failure fixture samples exist for corruption, invalid config, missing artifact, and disk-full simulation",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_029_failure_fixtures_are_present_and_parseable,
+            }],
+        },
     ]
 }
