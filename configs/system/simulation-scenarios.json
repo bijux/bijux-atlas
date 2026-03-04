@@ -6,60 +6,70 @@
       "id": "fresh-install",
       "description": "Install the platform from an empty environment.",
       "command": "bijux-dev-atlas system simulate install",
+      "time_budget_seconds": 60,
       "injections": []
     },
     {
       "id": "upgrade-previous-release",
       "description": "Upgrade an existing environment from the previous release.",
       "command": "bijux-dev-atlas system simulate upgrade",
+      "time_budget_seconds": 90,
       "injections": ["network-latency"]
     },
     {
       "id": "rollback-after-failed-upgrade",
       "description": "Rollback to the previous state when an upgrade fails.",
       "command": "bijux-dev-atlas system simulate rollback",
+      "time_budget_seconds": 90,
       "injections": ["container-restart"]
     },
     {
       "id": "offline-mode",
       "description": "Validate runtime behavior without external network dependencies.",
       "command": "bijux-dev-atlas system simulate offline-mode",
+      "time_budget_seconds": 45,
       "injections": []
     },
     {
       "id": "degraded-dependency",
       "description": "Validate resilience when a dependency is degraded.",
       "command": "bijux-dev-atlas system simulate suite",
+      "time_budget_seconds": 90,
       "injections": ["network-latency"]
     },
     {
       "id": "network-isolation",
       "description": "Validate behavior under strict network isolation.",
       "command": "bijux-dev-atlas system simulate suite",
+      "time_budget_seconds": 90,
       "injections": ["network-latency"]
     },
     {
       "id": "storage-unavailable",
       "description": "Validate behavior when storage is unavailable.",
       "command": "bijux-dev-atlas system simulate suite",
+      "time_budget_seconds": 90,
       "injections": ["disk-pressure"]
     },
     {
       "id": "resource-saturation",
       "description": "Validate under sustained CPU and memory saturation.",
       "command": "bijux-dev-atlas system simulate suite",
+      "time_budget_seconds": 120,
       "injections": ["disk-pressure"]
     },
     {
       "id": "concurrency-stress",
       "description": "Validate concurrent operations and contention handling.",
       "command": "bijux-dev-atlas system simulate suite",
+      "time_budget_seconds": 120,
       "injections": ["container-restart"]
     },
     {
       "id": "large-dataset",
       "description": "Validate installation and runtime with large dataset state.",
       "command": "bijux-dev-atlas system simulate suite",
+      "time_budget_seconds": 180,
       "injections": ["config-corruption"]
     }
   ]

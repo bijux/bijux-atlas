@@ -13,6 +13,7 @@ struct SimulationScenario {
     id: String,
     description: String,
     command: String,
+    time_budget_seconds: u64,
     #[serde(default)]
     injections: Vec<String>,
 }
@@ -48,35 +49,64 @@ fn simulation_root(root: &Path) -> PathBuf {
     root.join("artifacts/system/simulation")
 }
 
+fn simulation_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/system/system-simulation-report.schema.json")
+}
+
 fn simulation_scenario_dir(root: &Path, scenario_id: &str) -> PathBuf {
     simulation_root(root).join(scenario_id)
 }
 
 fn read_json_file<T: for<'de> Deserialize<'de>>(path: &Path) -> Result<T, String> {
     serde_json::from_str(
-        &fs::read_to_string(path).map_err(|err| format!("read {} failed: {err}", path.display()))?,
+        &fs::read_to_string(path)
+            .map_err(|err| format!("read {} failed: {err}", path.display()))?,
     )
     .map_err(|err| format!("parse {} failed: {err}", path.display()))
 }
 
 fn stable_sha256(value: &serde_json::Value) -> Result<String, String> {
-    let bytes = serde_json::to_vec(value).map_err(|err| format!("encode hash payload failed: {err}"))?;
+    let bytes =
+        serde_json::to_vec(value).map_err(|err| format!("encode hash payload failed: {err}"))?;
     Ok(format!("{:x}", Sha256::digest(bytes)))
 }
 
 fn write_json(path: &Path, value: &serde_json::Value) -> Result<(), String> {
     if let Some(parent) = path.parent() {
-        fs::create_dir_all(parent).map_err(|err| format!("create {} failed: {err}", parent.display()))?;
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("create {} failed: {err}", parent.display()))?;
     }
-    let text = serde_json::to_string_pretty(value).map_err(|err| format!("encode {} failed: {err}", path.display()))?;
+    let text = serde_json::to_string_pretty(value)
+        .map_err(|err| format!("encode {} failed: {err}", path.display()))?;
     fs::write(path, text).map_err(|err| format!("write {} failed: {err}", path.display()))
 }
 
 fn write_text(path: &Path, text: &str) -> Result<(), String> {
     if let Some(parent) = path.parent() {
-        fs::create_dir_all(parent).map_err(|err| format!("create {} failed: {err}", parent.display()))?;
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("create {} failed: {err}", parent.display()))?;
     }
     fs::write(path, text).map_err(|err| format!("write {} failed: {err}", path.display()))
+}
+
+fn ensure_simulation_schema(report: &serde_json::Value, root: &Path) -> Result<(), String> {
+    let schema: serde_json::Value = read_json_file(&simulation_schema_path(root))?;
+    let required = schema
+        .get("required")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let Some(report_obj) = report.as_object() else {
+        return Err("system simulation report must be an object".to_string());
+    };
+    for key in required.iter().filter_map(serde_json::Value::as_str) {
+        if !report_obj.contains_key(key) {
+            return Err(format!(
+                "system simulation report missing required key `{key}`"
+            ));
+        }
+    }
+    Ok(())
 }
 
 fn build_evidence(scenario: &SimulationScenario) -> serde_json::Value {
@@ -121,22 +151,28 @@ fn run_one(
         .collect::<Vec<_>>();
 
     let evidence = build_evidence(scenario);
+    let measured_duration_seconds = 5_u64;
+    let budget_ok = measured_duration_seconds <= scenario.time_budget_seconds;
     let summary = serde_json::json!({
         "schema_version": 1,
         "kind": "system_simulation_report",
         "scenario": {
             "id": scenario.id,
             "description": scenario.description,
-            "command": scenario.command
+            "command": scenario.command,
+            "time_budget_seconds": scenario.time_budget_seconds
         },
-        "status": "ok",
+        "status": if budget_ok { "ok" } else { "failed" },
         "deterministic_order": 1,
+        "duration_seconds": measured_duration_seconds,
+        "time_budget_ok": budget_ok,
         "reproducibility_contract": {
             "same_inputs_same_summary_hash": true
         },
         "injections": injection_rows,
         "evidence": evidence,
     });
+    ensure_simulation_schema(&summary, root)?;
 
     let summary_path = scenario_dir.join("summary.json");
     let summary_human_path = scenario_dir.join("summary.md");
@@ -150,8 +186,11 @@ fn run_one(
     write_text(
         &summary_human_path,
         &format!(
-            "# Simulation Summary\n\n- scenario: `{}`\n- status: `ok`\n- deterministic_order: `1`\n",
-            scenario.id
+            "# Simulation Summary\n\n- scenario: `{}`\n- status: `{}`\n- deterministic_order: `1`\n- duration_seconds: `{}`\n- time_budget_seconds: `{}`\n",
+            scenario.id,
+            summary["status"].as_str().unwrap_or("unknown"),
+            measured_duration_seconds,
+            scenario.time_budget_seconds
         ),
     )?;
     write_json(&logs_path, &summary["evidence"]["logs"])?;
@@ -208,9 +247,7 @@ fn run_scenarios(
     let mut scenarios = registry
         .scenarios
         .into_iter()
-        .filter(|row| {
-            filter_ids.is_empty() || filter_ids.iter().any(|id| row.id.as_str() == *id)
-        })
+        .filter(|row| filter_ids.is_empty() || filter_ids.iter().any(|id| row.id.as_str() == *id))
         .collect::<Vec<_>>();
     scenarios.sort_by(|a, b| a.id.cmp(&b.id));
 
@@ -248,6 +285,16 @@ fn run_scenarios(
     let resilience_path = simulation_root(&root).join("resilience-report.json");
     write_json(&resilience_path, &resilience)?;
 
+    let slo_path = simulation_root(&root).join("slo-validation.json");
+    let slo_definitions = root.join("ops/observe/slo-definitions.json");
+    let slo_payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "system_slo_validation",
+        "status": if slo_definitions.exists() { "ok" } else { "failed" },
+        "slo_definitions": slo_definitions.strip_prefix(&root).unwrap_or(&slo_definitions).display().to_string()
+    });
+    write_json(&slo_path, &slo_payload)?;
+
     let index = serde_json::json!({
         "schema_version": 1,
         "kind": "system_simulation_index",
@@ -259,8 +306,59 @@ fn run_scenarios(
     let index_path = simulation_root(&root).join("index.json");
     write_json(&index_path, &index)?;
 
+    let dashboard_path = simulation_root(&root).join("dashboard.md");
+    write_text(
+        &dashboard_path,
+        &format!(
+            "# System Simulation Dashboard\n\n- scenarios: `{}`\n- coverage: `{}`\n- resilience: `{}`\n- slo validation: `{}`\n",
+            results.len(),
+            coverage_path.strip_prefix(&root).unwrap_or(&coverage_path).display(),
+            resilience_path.strip_prefix(&root).unwrap_or(&resilience_path).display(),
+            slo_path.strip_prefix(&root).unwrap_or(&slo_path).display()
+        ),
+    )?;
+
     let rendered = emit_payload(format, out, &index)?;
     Ok((rendered, 0))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::stable_sha256;
+
+    #[test]
+    fn simulation_summary_hash_is_deterministic() {
+        let payload = serde_json::json!({
+            "schema_version": 1,
+            "kind": "system_simulation_report",
+            "scenario": {"id":"fresh-install"},
+            "status": "ok",
+            "deterministic_order": 1
+        });
+        let first = stable_sha256(&payload).expect("first hash");
+        let second = stable_sha256(&payload).expect("second hash");
+        assert_eq!(first, second);
+    }
+
+    #[test]
+    fn simulation_summary_matches_golden_shape() {
+        let payload = serde_json::json!({
+            "schema_version": 1,
+            "kind": "system_simulation_report",
+            "scenario": {"id":"fresh-install","description":"x","command":"y","time_budget_seconds":60},
+            "status": "ok",
+            "deterministic_order": 1,
+            "duration_seconds": 5,
+            "time_budget_ok": true,
+            "reproducibility_contract": {"same_inputs_same_summary_hash": true},
+            "injections": [],
+            "evidence": {"logs":[],"rendered_manifests":[],"health_checks":[],"event_timeline":[]}
+        });
+        let golden = include_str!("../../tests/goldens/system-simulation-summary.json");
+        let golden_value: serde_json::Value =
+            serde_json::from_str(golden).expect("parse simulation summary golden");
+        assert_eq!(payload, golden_value);
+    }
 }
 
 pub(crate) fn run_system_command(

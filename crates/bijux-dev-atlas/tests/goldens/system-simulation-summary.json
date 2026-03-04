@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "kind": "system_simulation_report",
+  "scenario": {
+    "id": "fresh-install",
+    "description": "x",
+    "command": "y",
+    "time_budget_seconds": 60
+  },
+  "status": "ok",
+  "deterministic_order": 1,
+  "duration_seconds": 5,
+  "time_budget_ok": true,
+  "reproducibility_contract": {
+    "same_inputs_same_summary_hash": true
+  },
+  "injections": [],
+  "evidence": {
+    "logs": [],
+    "rendered_manifests": [],
+    "health_checks": [],
+    "event_timeline": []
+  }
+}
