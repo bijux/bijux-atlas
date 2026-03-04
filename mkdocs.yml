@@ -1,8 +1,9 @@
 site_name: bijux-atlas
 site_description: bijux-atlas reference documentation
+site_url: https://bijux.github.io/bijux-atlas/
 repo_name: bijux/bijux-atlas
 repo_url: https://github.com/bijux/bijux-atlas
-edit_uri: edit/main/
+edit_uri: edit/main/docs/
 strict: true
 docs_dir: docs
 site_dir: artifacts/docs/site
@@ -17,6 +18,7 @@ exclude_docs: |
 theme:
   name: material
   features:
+    - announce.dismiss
     - navigation.sections
     - navigation.top
     - content.code.copy
@@ -126,6 +128,9 @@ plugins:
         style.md: _internal/governance/docs-style.md
       # end generated redirect_maps
 
+extra:
+  announcement: "This site is generated from main or a release tag."
+
 not_in_nav: |
   _assets/**
   _drafts/**
@@ -175,6 +180,7 @@ nav:
       - Docs Dashboard: _internal/governance/docs-dashboard.md
   - Tutorials: tutorials/index.md
   - Reference: reference/index.md
+  - Build Info: reference/build-info.md
   - Errors and Exit Codes: reference/errors-and-exit-codes.md
   - Ops Reference: reference/ops/index.md
   - Configs Reference: reference/configs/index.md
