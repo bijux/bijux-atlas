@@ -34,6 +34,8 @@
 - [Restart Loop](restart-loop.md)
 - [Capacity Planning](capacity-planning.md)
 - [Safe Upgrade Procedure](safe-upgrade-procedure.md)
+- [Rollback Procedure](rollback-procedure.md)
+- [Incident Triage Workflow](incident-triage-workflow.md)
 
 ## Runbook-to-alert mapping
 

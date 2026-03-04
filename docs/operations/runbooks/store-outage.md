@@ -66,3 +66,7 @@ Readiness returns, store-facing alerts stop paging, and core read traffic succee
 
 - [Store backend error spike](slo-store-backend-error-spike.md)
 - [Rollback playbook](rollback-playbook.md)
+
+## Evidence
+- Required evidence bundle: release/evidence/bundle.tar
+- Contract reports: artifacts/ops/ops_run/observe/*.json

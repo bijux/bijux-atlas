@@ -1,0 +1,42 @@
+{
+  "uid": "atlas-slo",
+  "title": "Atlas SLO Overview",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "API Availability",
+      "targets": [
+        {
+          "expr": "sum(rate(bijux_http_requests_total{subsystem=\"atlas\",status!~\"5..\"}[5m])) / clamp_min(sum(rate(bijux_http_requests_total{subsystem=\"atlas\"}[5m])),1)",
+          "legendFormat": "availability"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "P95 Latency",
+      "targets": [
+        {
+          "expr": "max(bijux_http_request_latency_p95_seconds{subsystem=\"atlas\"})",
+          "legendFormat": "p95 latency"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Ingest Throughput",
+      "targets": [
+        {
+          "expr": "sum(rate(atlas_ingest_records_total{subsystem=\"atlas\"}[5m]))",
+          "legendFormat": "records/s"
+        }
+      ]
+    }
+  ]
+}

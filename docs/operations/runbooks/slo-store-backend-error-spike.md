@@ -65,3 +65,7 @@ Error-rate burn returns to baseline and the alert clears without rolling into a 
 
 - [Store outage](store-outage.md)
 - [Traffic spike](traffic-spike.md)
+
+## Evidence
+- Required evidence bundle: release/evidence/bundle.tar
+- Contract reports: artifacts/ops/ops_run/observe/*.json
