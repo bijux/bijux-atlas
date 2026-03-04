@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "owner": "bijux-atlas-platform",
+  "policy": "Root markdown allowlist",
+  "files": [
+    "README.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "CONTRACT.md",
+    "CHANGELOG.md"
+  ],
+  "change_rule": "New root markdown requires allowlist update in the same change."
+}
