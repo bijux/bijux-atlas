@@ -4861,6 +4861,20 @@
     {
       "keywords": [
         "-internal",
+        "docs-merge-plan",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-merge-plan.md",
+      "tags": [
+        "-internal",
+        "docs-merge-plan",
+        "governance"
+      ],
+      "topic": "docs-merge-plan"
+    },
+    {
+      "keywords": [
+        "-internal",
         "docs-metadata-contract",
         "governance"
       ],
@@ -12476,6 +12490,18 @@
     },
     {
       "keywords": [
+        "audience-legend",
+        "reference"
+      ],
+      "path": "docs/reference/audience-legend.md",
+      "tags": [
+        "audience-legend",
+        "reference"
+      ],
+      "topic": "audience-legend"
+    },
+    {
+      "keywords": [
         "build-info",
         "reference"
       ],
@@ -14573,6 +14599,18 @@
         "schemas"
       ],
       "topic": "schemas"
+    },
+    {
+      "keywords": [
+        "reference",
+        "stability-legend"
+      ],
+      "path": "docs/reference/stability-legend.md",
+      "tags": [
+        "reference",
+        "stability-legend"
+      ],
+      "topic": "stability-legend"
     },
     {
       "keywords": [

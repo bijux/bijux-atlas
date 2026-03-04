@@ -350,6 +350,9 @@
     "attack-surface-maps": [
       "docs/architecture/security/attack-surface-maps.md"
     ],
+    "audience-legend": [
+      "docs/reference/audience-legend.md"
+    ],
     "audit-and-security-event-classification": [
       "docs/operations/security/audit-and-security-event-classification.md"
     ],
@@ -1019,6 +1022,9 @@
     ],
     "docs-lint-rules": [
       "docs/_internal/governance/docs-lint-rules.md"
+    ],
+    "docs-merge-plan": [
+      "docs/_internal/governance/docs-merge-plan.md"
     ],
     "docs-metadata-contract": [
       "docs/_internal/governance/docs-metadata-contract.md"
@@ -2544,6 +2550,9 @@
     ],
     "ssot-model": [
       "docs/_internal/ssot-model.md"
+    ],
+    "stability-legend": [
+      "docs/reference/stability-legend.md"
     ],
     "stability-levels": [
       "docs/_internal/governance/style/stability-levels.md"

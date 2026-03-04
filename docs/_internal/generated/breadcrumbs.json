@@ -3339,6 +3339,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/docs-merge-plan.md"
+      ],
+      "path": "docs/_internal/governance/docs-merge-plan.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/docs-metadata-contract.md"
       ],
       "path": "docs/_internal/governance/docs-metadata-contract.md"
@@ -8309,6 +8318,14 @@
       "breadcrumbs": [
         "docs",
         "docs/reference",
+        "docs/reference/audience-legend.md"
+      ],
+      "path": "docs/reference/audience-legend.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
         "docs/reference/build-info.md"
       ],
       "path": "docs/reference/build-info.md"
@@ -9657,6 +9674,14 @@
         "docs/reference/schemas.md"
       ],
       "path": "docs/reference/schemas.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/stability-legend.md"
+      ],
+      "path": "docs/reference/stability-legend.md"
     },
     {
       "breadcrumbs": [

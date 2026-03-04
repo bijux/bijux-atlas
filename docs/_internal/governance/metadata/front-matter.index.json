@@ -2917,6 +2917,14 @@
       "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-merge-plan.md",
+      "stability": "stable",
+      "title": "Docs Merge Plan"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
       "path": "docs/_internal/governance/docs-metadata-contract.md",
       "stability": "stable",
       "title": "Docs Metadata Contract"
@@ -7565,6 +7573,14 @@
       "area": "reference",
       "audience": "mixed",
       "owner": "docs-governance",
+      "path": "docs/reference/audience-legend.md",
+      "stability": "stable",
+      "title": "Audience Legend"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
       "path": "docs/reference/build-info.md",
       "stability": "stable",
       "title": "Docs Build Info"
@@ -8760,6 +8776,14 @@
       "path": "docs/reference/schemas.md",
       "stability": "stable",
       "title": "Schemas Reference"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/stability-legend.md",
+      "stability": "stable",
+      "title": "Stability Legend"
     },
     {
       "area": "reference",

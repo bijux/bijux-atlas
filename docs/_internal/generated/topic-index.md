@@ -74,6 +74,7 @@
 | `attack-surface-analysis` | `docs/architecture/security/attack-surface-analysis.md` |
 | `attack-surface-budget` | `crates/bijux-atlas-store/docs/internal/attack-surface-budget.md` |
 | `attack-surface-maps` | `docs/architecture/security/attack-surface-maps.md` |
+| `audience-legend` | `docs/reference/audience-legend.md` |
 | `audit-and-security-event-classification` | `docs/operations/security/audit-and-security-event-classification.md` |
 | `audit-log-access` | `docs/operations/security/audit-log-access.md` |
 | `audit-log-rotation` | `docs/operations/security/audit-log-rotation.md` |
@@ -287,6 +288,7 @@
 | `docs-governance` | `.github/PULL_REQUEST_TEMPLATE/docs-governance.md` |
 | `docs-inventory-taxonomy` | `docs/_internal/governance/docs-inventory-taxonomy.md` |
 | `docs-lint-rules` | `docs/_internal/governance/docs-lint-rules.md` |
+| `docs-merge-plan` | `docs/_internal/governance/docs-merge-plan.md` |
 | `docs-metadata-contract` | `docs/_internal/governance/docs-metadata-contract.md` |
 | `docs-navigation-policy` | `docs/_internal/governance/docs-navigation-policy.md` |
 | `docs-operating-model` | `docs/_internal/governance/docs-operating-model.md, docs/_internal/meta/docs-operating-model.md` |
@@ -745,6 +747,7 @@
 | `spec` | `docs/reference/contracts/plugins/spec.md, ops/_templates/spec.md` |
 | `ssot` | `docs/_internal/ssot.md` |
 | `ssot-model` | `docs/_internal/ssot-model.md` |
+| `stability-legend` | `docs/reference/stability-legend.md` |
 | `stability-levels` | `docs/_internal/governance/style/stability-levels.md` |
 | `start-here` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/start-here.md, docs/start-here.md` |
 | `static-analysis-security-rules` | `docs/operations/security/static-analysis-security-rules.md` |

@@ -8870,6 +8870,31 @@
       "doc_version": "v1",
       "keywords": [
         "-internal",
+        "docs-merge-plan",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-merge-plan.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-merge-plan",
+        "governance"
+      ],
+      "title": "Docs Merge Plan",
+      "topic": "docs-merge-plan"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
         "docs-metadata-contract",
         "governance"
       ],
@@ -22876,6 +22901,29 @@
       "doc_type": "reference",
       "doc_version": "v1",
       "keywords": [
+        "audience-legend",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/audience-legend.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "audience-legend",
+        "reference"
+      ],
+      "title": "Audience Legend",
+      "topic": "audience-legend"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
         "build-info",
         "reference"
       ],
@@ -26618,6 +26666,29 @@
       ],
       "title": "Schemas Reference",
       "topic": "schemas"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "reference",
+        "stability-legend"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/stability-legend.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "reference",
+        "stability-legend"
+      ],
+      "title": "Stability Legend",
+      "topic": "stability-legend"
     },
     {
       "area": "reference",

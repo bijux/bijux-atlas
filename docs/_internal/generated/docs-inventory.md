@@ -371,6 +371,7 @@ License: Apache-2.0
 | `docs/_internal/governance/docs-drift-dashboard.md` | `concept` | `bijux-atlas-platform` | `stable` |
 | `docs/_internal/governance/docs-inventory-taxonomy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-lint-rules.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/docs-merge-plan.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-metadata-contract.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-navigation-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-operating-model.md` | `concept` | `docs-governance` | `stable` |
@@ -952,6 +953,7 @@ License: Apache-2.0
 | `docs/product/user-stories.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/what-is-bijux-atlas.md` | `concept` | `bijux-atlas-product` | `stable` |
 | `docs/reference/api/index.md` | `reference` | `docs-governance` | `stable` |
+| `docs/reference/audience-legend.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/build-info.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/checks/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/command-inventory.md` | `reference` | `docs-governance` | `stable` |
@@ -1102,6 +1104,7 @@ License: Apache-2.0
 | `docs/reference/runtime/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/schema-versioning-policy.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/schemas.md` | `reference` | `bijux-atlas-operations` | `stable` |
+| `docs/reference/stability-legend.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/store/immutability-guarantee.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/store/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/store/integrity-model.md` | `reference` | `docs-governance` | `stable` |

@@ -1823,6 +1823,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-merge-plan.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/docs-metadata-contract.md"
     },
     {
@@ -4728,6 +4733,11 @@
     {
       "crate": null,
       "doc_type": "reference",
+      "from": "docs/reference/audience-legend.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
       "from": "docs/reference/build-info.md"
     },
     {
@@ -5474,6 +5484,11 @@
       "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/schemas.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/stability-legend.md"
     },
     {
       "crate": null,
