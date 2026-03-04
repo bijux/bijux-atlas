@@ -30,3 +30,5 @@ related:
 - [Authorization Architecture Diagrams](authorization-architecture-diagrams.md)
 - [RBAC Flow Diagrams](rbac-flow-diagrams.md)
 - [Data Protection Strategy](data-protection-strategy.md)
+- [Encryption Model](encryption-model.md)
+- [Encryption Architecture Diagrams](encryption-architecture-diagrams.md)
