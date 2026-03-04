@@ -1143,6 +1143,21 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             ContractsCommand::Snapshot(args) => args.repo_root = Some(root.clone()),
         },
         Command::Ci { command } | Command::Workflows { command } => match command {
+            crate::cli::WorkflowsCommand::Lanes { command } => match command {
+                crate::cli::CiLanesCommand::List { repo_root, .. }
+                | crate::cli::CiLanesCommand::Explain { repo_root, .. }
+                | crate::cli::CiLanesCommand::Validate { repo_root, .. } => {
+                    *repo_root = Some(root.clone())
+                }
+            },
+            crate::cli::WorkflowsCommand::Simulate { repo_root, .. } => {
+                *repo_root = Some(root.clone())
+            }
+            crate::cli::WorkflowsCommand::EnvContract { command } => match command {
+                crate::cli::CiEnvContractCommand::Validate { repo_root, .. } => {
+                    *repo_root = Some(root.clone())
+                }
+            },
             crate::cli::WorkflowsCommand::Validate { repo_root, .. }
             | crate::cli::WorkflowsCommand::Doctor { repo_root, .. }
             | crate::cli::WorkflowsCommand::Surface { repo_root, .. }

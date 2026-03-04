@@ -3,48 +3,143 @@
   "lanes": [
     {
       "id": "ci-pr-fast",
-      "workflow": ".github/workflows/ci-pr.yml",
-      "summary_hint": "ci-fast"
+      "description": "Fast pull request validation",
+      "mode": "verify",
+      "required_env": [
+        "CARGO_TERM_COLOR"
+      ],
+      "artifacts_expected": [
+        "reports/governance-validate.json",
+        "reports/governance-coverage-diff.json"
+      ],
+      "timeout_class": "medium",
+      "concurrency_class": "medium",
+      "command": "bijux dev atlas ci verify workflow-policy --format json"
     },
     {
       "id": "ci-pr-full",
-      "workflow": ".github/workflows/ci-pr.yml",
-      "summary_hint": "ci-pr"
+      "description": "Full pull request policy and workflow checks",
+      "mode": "verify",
+      "required_env": [
+        "CARGO_TERM_COLOR"
+      ],
+      "artifacts_expected": [
+        "reports/ci-pr.json",
+        "reports/docs-ssot-reference-drift.json",
+        "reports/repo-write-drift.json"
+      ],
+      "timeout_class": "large",
+      "concurrency_class": "large",
+      "command": "bijux dev atlas ci verify workflow-lint --format json"
     },
     {
       "id": "ci-nightly",
-      "workflow": ".github/workflows/ci-nightly.yml",
-      "summary_hint": "ci-nightly"
+      "description": "Nightly extended validation lane",
+      "mode": "verify",
+      "required_env": [
+        "CARGO_TERM_COLOR"
+      ],
+      "artifacts_expected": [
+        "reports/ci-nightly.json",
+        "reports/docs-reference-generate.json"
+      ],
+      "timeout_class": "large",
+      "concurrency_class": "large",
+      "command": "bijux dev atlas ci report --kind lane-parity --format json"
     },
     {
       "id": "docs-only",
-      "workflow": ".github/workflows/docs-only.yml",
-      "summary_hint": "docs"
+      "description": "Documentation-only verification lane",
+      "mode": "verify",
+      "required_env": [
+        "CARGO_TERM_COLOR"
+      ],
+      "artifacts_expected": [
+        "reports/docs.json",
+        "reports/docs-diff-summary.json",
+        "reports/docs-test-coverage.json"
+      ],
+      "timeout_class": "small",
+      "concurrency_class": "small",
+      "command": "bijux dev atlas ci verify docs-preview --allow-subprocess --allow-write --format json"
     },
     {
       "id": "docs-audit",
-      "workflow": ".github/workflows/docs-audit.yml",
-      "summary_hint": "docs-audit"
+      "description": "Documentation audit and policy enforcement lane",
+      "mode": "verify",
+      "required_env": [
+        "CARGO_TERM_COLOR"
+      ],
+      "artifacts_expected": [
+        "reports/docs.json",
+        "reports/docs-audit.json",
+        "reports/docs-test-coverage.json"
+      ],
+      "timeout_class": "medium",
+      "concurrency_class": "small",
+      "command": "bijux dev atlas ci verify docs-preview --allow-subprocess --allow-write --format json"
     },
     {
       "id": "ops-validate",
-      "workflow": ".github/workflows/ops-validate.yml",
-      "summary_hint": "ops-validate"
+      "description": "Operations manifest validation lane",
+      "mode": "verify",
+      "required_env": [
+        "CARGO_TERM_COLOR"
+      ],
+      "artifacts_expected": [
+        "reports/ops-validate.json",
+        "reports/ops-k8s-render.json",
+        "reports/ops-inventory-validate.json"
+      ],
+      "timeout_class": "medium",
+      "concurrency_class": "medium",
+      "command": "bijux dev atlas ci report --kind lane-parity --format json"
     },
     {
       "id": "ops-kind-integration",
-      "workflow": ".github/workflows/ops-integration-kind.yml",
-      "summary_hint": "ops-kind"
+      "description": "Kind integration and smoke lane",
+      "mode": "effect",
+      "required_env": [
+        "KUBECONFIG"
+      ],
+      "artifacts_expected": [
+        "reports/ops-kind-up.json",
+        "reports/ops-k8s-smoke.json",
+        "reports/ops-kind-down.json"
+      ],
+      "timeout_class": "large",
+      "concurrency_class": "large",
+      "command": "bijux dev atlas ci verify workflow-policy --format json"
     },
     {
       "id": "release-candidate",
-      "workflow": ".github/workflows/release-candidate.yml",
-      "summary_hint": "release-candidate"
+      "description": "Release candidate contract lane",
+      "mode": "verify",
+      "required_env": [
+        "GITHUB_REF"
+      ],
+      "artifacts_expected": [
+        "reports/release-check.json",
+        "reports/release-candidate.json",
+        "reports/ops-readiness.json"
+      ],
+      "timeout_class": "large",
+      "concurrency_class": "medium",
+      "command": "bijux dev atlas ci verify release-candidate --allow-git --format json"
     },
     {
       "id": "dependency-lock",
-      "workflow": ".github/workflows/dependency-lock.yml",
-      "summary_hint": "dependency-lock"
+      "description": "Dependency lock discipline lane",
+      "mode": "verify",
+      "required_env": [
+        "CARGO_TERM_COLOR"
+      ],
+      "artifacts_expected": [
+        "reports/dependency-lock-verify.json"
+      ],
+      "timeout_class": "small",
+      "concurrency_class": "small",
+      "command": "bijux dev atlas ci verify dependency-lock --allow-git --format json"
     }
   ]
 }

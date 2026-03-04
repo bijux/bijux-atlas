@@ -3,8 +3,8 @@ use super::*;
 mod ci_registry;
 
 use ci_registry::{
-    ci_registry_unplanned_entries, load_ci_lane_surface, load_ci_policy_registry,
-    workflow_step_rows,
+    ci_registry_unplanned_entries, load_ci_lane_surface, load_ci_lanes_registry,
+    load_ci_policy_registry, workflow_step_rows,
 };
 
 struct CiVerifyRunOptions {
@@ -77,6 +77,205 @@ fn render_ci_explain(
     });
     let rendered = emit_payload(format, out, &payload)?;
     Ok((rendered, 0))
+}
+
+fn render_ci_lanes_list(
+    repo_root: &Path,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let mut lanes = load_ci_lanes_registry(repo_root)?.lanes;
+    lanes.sort_by(|a, b| a.id.cmp(&b.id));
+    let rows = lanes
+        .into_iter()
+        .map(|lane| {
+            serde_json::json!({
+                "id": lane.id,
+                "description": lane.description,
+                "mode": lane.mode,
+                "timeout_class": lane.timeout_class,
+                "concurrency_class": lane.concurrency_class
+            })
+        })
+        .collect::<Vec<_>>();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "ci_lanes_list",
+        "status": "ok",
+        "rows": rows
+    });
+    let rendered = emit_payload(format, out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn render_ci_lanes_explain(
+    repo_root: &Path,
+    lane_id: &str,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let lanes = load_ci_lanes_registry(repo_root)?;
+    let Some(lane) = lanes.lanes.into_iter().find(|row| row.id == lane_id) else {
+        let payload = serde_json::json!({
+            "schema_version": 1,
+            "kind": "ci_lanes_explain",
+            "status": "not_found",
+            "lane_id": lane_id
+        });
+        let rendered = emit_payload(format, out, &payload)?;
+        return Ok((rendered, 1));
+    };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "ci_lanes_explain",
+        "status": "ok",
+        "lane": lane
+    });
+    let rendered = emit_payload(format, out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn validate_ci_lanes_registry(repo_root: &Path) -> Result<serde_json::Value, String> {
+    let registry = load_ci_lanes_registry(repo_root)?;
+    let mut errors = Vec::<String>::new();
+    let mut seen = std::collections::BTreeSet::<String>::new();
+    let mut ordered = Vec::<String>::new();
+    for lane in &registry.lanes {
+        if !seen.insert(lane.id.clone()) {
+            errors.push(format!("duplicate lane id `{}`", lane.id));
+        }
+        ordered.push(lane.id.clone());
+        if lane.description.trim().is_empty() {
+            errors.push(format!("lane `{}` is missing description", lane.id));
+        }
+        if lane.artifacts_expected.is_empty() {
+            errors.push(format!("lane `{}` must declare artifacts_expected", lane.id));
+        }
+        if !lane.command.starts_with("bijux dev atlas ") {
+            errors.push(format!(
+                "lane `{}` command must start with `bijux dev atlas `",
+                lane.id
+            ));
+        }
+    }
+    let mut sorted = ordered.clone();
+    sorted.sort();
+    if ordered != sorted {
+        errors.push("lane ids must be deterministically ordered".to_string());
+    }
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "kind": "ci_lanes_validate",
+        "status": if errors.is_empty() { "ok" } else { "failed" },
+        "errors": errors,
+        "summary": {
+            "lanes": registry.lanes.len()
+        }
+    }))
+}
+
+fn render_ci_lanes_validate(
+    repo_root: &Path,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let payload = validate_ci_lanes_registry(repo_root)?;
+    let code = if payload["status"] == "ok" { 0 } else { 1 };
+    let rendered = emit_payload(format, out, &payload)?;
+    Ok((rendered, code))
+}
+
+fn render_ci_env_contract_validate(
+    repo_root: &Path,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let path = repo_root.join("configs/ci/env-contract.json");
+    let text =
+        fs::read_to_string(&path).map_err(|err| format!("read {} failed: {err}", path.display()))?;
+    let value: serde_json::Value =
+        serde_json::from_str(&text).map_err(|err| format!("parse {} failed: {err}", path.display()))?;
+    let status = if value
+        .get("required_job_env_keys")
+        .and_then(|v| v.as_array())
+        .is_some()
+    {
+        "ok"
+    } else {
+        "failed"
+    };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "ci_env_contract_validate",
+        "status": status,
+        "path": "configs/ci/env-contract.json"
+    });
+    let code = if status == "ok" { 0 } else { 1 };
+    let rendered = emit_payload(format, out, &payload)?;
+    Ok((rendered, code))
+}
+
+fn render_ci_simulate(
+    repo_root: &Path,
+    lane: Option<String>,
+    matrix: bool,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let registry = load_ci_lanes_registry(repo_root)?;
+    let selected = if matrix {
+        registry.lanes
+    } else if let Some(id) = lane {
+        let Some(row) = registry.lanes.into_iter().find(|row| row.id == id) else {
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "ci_simulate",
+                "status": "not_found",
+                "lane": id
+            });
+            let rendered = emit_payload(format, out, &payload)?;
+            return Ok((rendered, 1));
+        };
+        vec![row]
+    } else {
+        return Err("ci simulate requires --lane <id> or --matrix".to_string());
+    };
+    let mut rows = Vec::<serde_json::Value>::new();
+    let mut missing_artifacts = Vec::<String>::new();
+    for row in selected {
+        let mut missing = Vec::<String>::new();
+        for artifact in &row.artifacts_expected {
+            if !repo_root.join(artifact).exists() {
+                missing.push(artifact.clone());
+            }
+        }
+        if !missing.is_empty() {
+            missing_artifacts.extend(missing.iter().map(|item| format!("{}:{item}", row.id)));
+        }
+        rows.push(serde_json::json!({
+            "lane": row.id,
+            "mode": row.mode,
+            "command": row.command,
+            "artifacts_expected": row.artifacts_expected,
+            "missing_artifacts": missing,
+            "status": if missing.is_empty() { "ok" } else { "missing_artifacts" }
+        }));
+    }
+    rows.sort_by(|a, b| a["lane"].as_str().cmp(&b["lane"].as_str()));
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "ci_simulate",
+        "status": if missing_artifacts.is_empty() { "ok" } else { "failed" },
+        "rows": rows,
+        "summary": {
+            "lanes": rows.len(),
+            "missing_artifacts": missing_artifacts.len()
+        },
+        "missing_artifacts": missing_artifacts
+    });
+    let code = if payload["status"] == "ok" { 0 } else { 1 };
+    let rendered = emit_payload(format, out, &payload)?;
+    Ok((rendered, code))
 }
 
 fn render_ci_report(
@@ -489,6 +688,115 @@ fn run_ci_verify_gate(
 
 pub(super) fn run_workflows_command(quiet: bool, command: WorkflowsCommand) -> i32 {
     match command {
+        WorkflowsCommand::Lanes { command } => match command {
+            crate::cli::CiLanesCommand::List {
+                repo_root,
+                format,
+                out,
+            } => match resolve_repo_root(repo_root)
+                .and_then(|root| render_ci_lanes_list(&root, format, out))
+            {
+                Ok((rendered, code)) => {
+                    if !quiet && !rendered.is_empty() {
+                        let _ = writeln!(io::stdout(), "{rendered}");
+                    }
+                    code
+                }
+                Err(err) => {
+                    let _ = writeln!(io::stderr(), "bijux-dev-atlas ci lanes list failed: {err}");
+                    1
+                }
+            },
+            crate::cli::CiLanesCommand::Explain {
+                lane_id,
+                repo_root,
+                format,
+                out,
+            } => match resolve_repo_root(repo_root)
+                .and_then(|root| render_ci_lanes_explain(&root, &lane_id, format, out))
+            {
+                Ok((rendered, code)) => {
+                    if !quiet && !rendered.is_empty() {
+                        let _ = writeln!(io::stdout(), "{rendered}");
+                    }
+                    code
+                }
+                Err(err) => {
+                    let _ = writeln!(io::stderr(), "bijux-dev-atlas ci lanes explain failed: {err}");
+                    1
+                }
+            },
+            crate::cli::CiLanesCommand::Validate {
+                repo_root,
+                format,
+                out,
+            } => match resolve_repo_root(repo_root)
+                .and_then(|root| render_ci_lanes_validate(&root, format, out))
+            {
+                Ok((rendered, code)) => {
+                    if !quiet && !rendered.is_empty() {
+                        if code == 0 {
+                            let _ = writeln!(io::stdout(), "{rendered}");
+                        } else {
+                            let _ = writeln!(io::stderr(), "{rendered}");
+                        }
+                    }
+                    code
+                }
+                Err(err) => {
+                    let _ = writeln!(io::stderr(), "bijux-dev-atlas ci lanes validate failed: {err}");
+                    1
+                }
+            },
+        },
+        WorkflowsCommand::Simulate {
+            repo_root,
+            lane,
+            matrix,
+            format,
+            out,
+        } => match resolve_repo_root(repo_root)
+            .and_then(|root| render_ci_simulate(&root, lane, matrix, format, out))
+        {
+            Ok((rendered, code)) => {
+                if !quiet && !rendered.is_empty() {
+                    if code == 0 {
+                        let _ = writeln!(io::stdout(), "{rendered}");
+                    } else {
+                        let _ = writeln!(io::stderr(), "{rendered}");
+                    }
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas ci simulate failed: {err}");
+                1
+            }
+        },
+        WorkflowsCommand::EnvContract { command } => match command {
+            crate::cli::CiEnvContractCommand::Validate {
+                repo_root,
+                format,
+                out,
+            } => match resolve_repo_root(repo_root)
+                .and_then(|root| render_ci_env_contract_validate(&root, format, out))
+            {
+                Ok((rendered, code)) => {
+                    if !quiet && !rendered.is_empty() {
+                        if code == 0 {
+                            let _ = writeln!(io::stdout(), "{rendered}");
+                        } else {
+                            let _ = writeln!(io::stderr(), "{rendered}");
+                        }
+                    }
+                    code
+                }
+                Err(err) => {
+                    let _ = writeln!(io::stderr(), "bijux-dev-atlas ci env-contract validate failed: {err}");
+                    1
+                }
+            },
+        },
         WorkflowsCommand::Validate {
             repo_root,
             format,

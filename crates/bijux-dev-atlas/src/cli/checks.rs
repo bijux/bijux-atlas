@@ -244,6 +244,26 @@ pub enum CheckModeArg {
 
 #[derive(Subcommand, Debug)]
 pub enum WorkflowsCommand {
+    Lanes {
+        #[command(subcommand)]
+        command: CiLanesCommand,
+    },
+    Simulate {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long)]
+        lane: Option<String>,
+        #[arg(long, default_value_t = false)]
+        matrix: bool,
+        #[arg(long, value_enum, default_value_t = FormatArg::Json)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    EnvContract {
+        #[command(subcommand)]
+        command: CiEnvContractCommand,
+    },
     Validate {
         #[arg(long)]
         repo_root: Option<PathBuf>,
@@ -315,6 +335,47 @@ pub enum WorkflowsCommand {
         allow_write: bool,
         #[arg(long, default_value_t = false)]
         allow_network: bool,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum CiLanesCommand {
+    List {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Json)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Explain {
+        lane_id: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Json)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Validate {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Json)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum CiEnvContractCommand {
+    Validate {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Json)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
     },
 }
 

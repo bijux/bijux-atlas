@@ -136,6 +136,31 @@ pub(super) fn load_ci_lane_surface(repo_root: &Path) -> Result<CiLaneSurfaceRegi
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub(super) struct CiLaneRegistry {
+    pub(super) schema_version: u64,
+    pub(super) lanes: Vec<CiLaneRegistryEntry>,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub(super) struct CiLaneRegistryEntry {
+    pub(super) id: String,
+    pub(super) description: String,
+    pub(super) mode: String,
+    pub(super) required_env: Vec<String>,
+    pub(super) artifacts_expected: Vec<String>,
+    pub(super) timeout_class: String,
+    pub(super) concurrency_class: String,
+    pub(super) command: String,
+}
+
+pub(super) fn load_ci_lanes_registry(repo_root: &Path) -> Result<CiLaneRegistry, String> {
+    let path = repo_root.join("configs/ci/lanes.json");
+    let text = fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
+}
+
 fn load_workflow_step_patterns(repo_root: &Path) -> Result<WorkflowStepPatterns, String> {
     let path = repo_root.join("configs/ci/workflow-step-patterns.json");
     let text = fs::read_to_string(&path)
