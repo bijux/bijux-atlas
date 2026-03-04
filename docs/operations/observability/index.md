@@ -16,12 +16,21 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - [Alerts](alerts.md): alert-to-runbook routing and severity model
 - [Dashboards](dashboards.md): dashboard set for incident triage
 - [Metrics architecture](metrics-architecture.md): naming, labels, cardinality, and required runtime metrics
+- [Metrics naming conventions](metrics-naming-conventions.md): canonical naming and unit suffix rules
+- [Metric types](metric-types.md): counter, gauge, and histogram selection rules
+- [Metric labels](metric-labels.md): stable label vocabulary
+- [Cardinality policy](cardinality-policy.md): label cardinality controls
+- [Metric retention policy](metric-retention-policy.md): retention tiers and budget alignment
 - [Logging architecture](logging-architecture.md): structured schema, levels, and metadata policy
 - [Logging debugging guide](logging-debugging-guide.md): request and query log triage flow
 - [Logging ingestion examples](logging-ingestion-examples.md): parser and field mapping patterns
 - [Logging aggregation examples](logging-aggregation-examples.md): incident-oriented aggregation slices
 - [Logging dashboard examples](logging-dashboard-examples.md): operator panel ideas from logs
 - [Logging best practices](logging-best-practices.md): stable authoring conventions
+- [Log levels](log-levels.md): operational severity policy
+- [Log metadata fields](log-metadata-fields.md): stable structured field contract
+- [Log correlation IDs](log-correlation-ids.md): cross-signal request correlation flow
+- [Log analysis workflows](log-analysis-workflows.md): repeatable triage flows
 - [Logging sampling policy](logging-sampling-policy.md): deterministic log volume control
 - [Logging redaction policy](logging-redaction-policy.md): masking and safe-field rules
 - [Logging privacy policy](logging-privacy-policy.md): privacy constraints for runtime logs
@@ -30,6 +39,9 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - [Observability setup](../observability-setup.md): minimum metrics, logs, and trace wiring
 - [Tracing](tracing.md): trace-first diagnosis flow
 - [Tracing architecture](tracing-architecture.md): runtime span model, propagation, and exporter setup
+- [Tracing spans](tracing-spans.md): required span coverage surface
+- [Trace fields](trace-fields.md): required trace identity and attributes
+- [Trace exporters](trace-exporters.md): supported exporter modes and fallback
 - [Trace sampling policy](trace-sampling-policy.md): sampling defaults and change rules
 - [Trace timeline examples](trace-timeline-examples.md): healthy and failure span sequences
 - [Trace dashboard examples](trace-dashboard-examples.md): practical dashboard panels and filters
