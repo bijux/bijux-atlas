@@ -18,6 +18,14 @@ fn bundle_path(root: &Path) -> PathBuf {
     root.join("artifacts/audit/bundle.json")
 }
 
+fn bundle_summary_path(root: &Path) -> PathBuf {
+    root.join("artifacts/audit/bundle-summary.json")
+}
+
+fn bundle_hash_path(root: &Path) -> PathBuf {
+    root.join("artifacts/audit/bundle.sha256")
+}
+
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
     serde_json::from_str(
         &fs::read_to_string(path)
@@ -39,6 +47,12 @@ fn write_json(path: &Path, value: &serde_json::Value) -> Result<(), String> {
 fn sha256_file(path: &Path) -> Result<String, String> {
     let data = fs::read(path).map_err(|err| format!("read {} failed: {err}", path.display()))?;
     Ok(format!("{:x}", Sha256::digest(data)))
+}
+
+fn sha256_json(value: &serde_json::Value) -> Result<String, String> {
+    let bytes =
+        serde_json::to_vec(value).map_err(|err| format!("encode audit bundle hash failed: {err}"))?;
+    Ok(format!("{:x}", Sha256::digest(bytes)))
 }
 
 fn bundle_generate(
@@ -79,8 +93,26 @@ fn bundle_generate(
         "artifacts": artifacts,
         "missing": missing,
         "checklist": checklist_path(&root).strip_prefix(&root).unwrap_or(&checklist_path(&root)).display().to_string(),
+        "metadata": {
+            "generator": "bijux-dev-atlas audit bundle generate",
+            "control_plane_version": env!("CARGO_PKG_VERSION"),
+        },
     });
+    let hash = sha256_json(&bundle)?;
+    let summary = serde_json::json!({
+        "schema_version": 1,
+        "kind": "audit_bundle_summary",
+        "status": bundle["status"],
+        "artifact_count": bundle["artifacts"].as_array().map_or(0, |rows| rows.len()),
+        "missing_count": bundle["missing"].as_array().map_or(0, |rows| rows.len()),
+        "bundle_hash_sha256": hash,
+        "bundle_path": bundle_path(&root).strip_prefix(&root).unwrap_or(&bundle_path(&root)).display().to_string(),
+    });
+
     write_json(&bundle_path(&root), &bundle)?;
+    write_json(&bundle_summary_path(&root), &summary)?;
+    fs::write(bundle_hash_path(&root), format!("{hash}\n"))
+        .map_err(|err| format!("write {} failed: {err}", bundle_hash_path(&root).display()))?;
     let rendered = emit_payload(format, out, &bundle)?;
     let code = if bundle["status"] == "ok" { 0 } else { 1 };
     Ok((rendered, code))
@@ -108,11 +140,24 @@ fn bundle_validate(
             errors.push(format!("audit bundle missing required key `{key}`"));
         }
     }
+    if bundle["missing"].as_array().is_some_and(|rows| !rows.is_empty()) {
+        errors.push("audit bundle must contain all required artifacts".to_string());
+    }
+    let computed_hash = sha256_json(&bundle)?;
+    let stored_hash = fs::read_to_string(bundle_hash_path(&root))
+        .ok()
+        .map(|text| text.trim().to_string())
+        .unwrap_or_default();
+    if !stored_hash.is_empty() && stored_hash != computed_hash {
+        errors.push("audit bundle hash does not match bundle content".to_string());
+    }
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "audit_bundle_validate",
         "status": if errors.is_empty() {"ok"} else {"failed"},
         "bundle": bundle_path(&root).strip_prefix(&root).unwrap_or(&bundle_path(&root)).display().to_string(),
+        "bundle_summary": bundle_summary_path(&root).strip_prefix(&root).unwrap_or(&bundle_summary_path(&root)).display().to_string(),
+        "bundle_hash": bundle_hash_path(&root).strip_prefix(&root).unwrap_or(&bundle_hash_path(&root)).display().to_string(),
         "errors": errors,
     });
     let rendered = emit_payload(format, out, &payload)?;

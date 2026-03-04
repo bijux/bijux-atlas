@@ -8,7 +8,8 @@
     "status": {"type": "string"},
     "artifacts": {"type": "array"},
     "missing": {"type": "array"},
-    "checklist": {"type": "string"}
+    "checklist": {"type": "string"},
+    "metadata": {"type": "object"}
   },
-  "required": ["schema_version", "kind", "status", "artifacts", "missing", "checklist"]
+  "required": ["schema_version", "kind", "status", "artifacts", "missing", "checklist", "metadata"]
 }
