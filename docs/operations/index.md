@@ -75,6 +75,8 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 43. [Data retention policy](data-retention-policy.md)
 44. [Data access model](data-access-model.md)
 45. [Scientific defensibility](scientific-defensibility.md)
+46. [Cluster deployment models](cluster-deployment-models.md)
+47. [Cluster upgrade and compatibility](cluster-upgrade-and-compatibility.md)
 
 ## What This Page Is Not
 
