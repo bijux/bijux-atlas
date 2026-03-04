@@ -259,6 +259,9 @@ pub enum Command {
 #[derive(Subcommand, Debug)]
 pub enum ReleaseCommand {
     Plan(ReleasePlanArgs),
+    CompatibilityCheck(ReleaseCompatibilityCheckArgs),
+    UpgradePlan(ReleaseTransitionPlanArgs),
+    RollbackPlan(ReleaseTransitionPlanArgs),
     Validate(ReleaseValidateArgs),
     Tag(ReleaseVersionCheckArgs),
     Notes(ReleaseChangelogGenerateArgs),
@@ -291,6 +294,34 @@ pub enum ReleaseCommand {
     Verify(ReleaseVerifyArgs),
     Diff(ReleaseDiffArgs),
     Packet(ReleasePacketArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseCompatibilityCheckArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub from_version: Option<String>,
+    #[arg(long)]
+    pub to_version: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseTransitionPlanArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub from_version: Option<String>,
+    #[arg(long)]
+    pub to_version: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
 }
 
 #[derive(Args, Debug, Clone)]

@@ -3,8 +3,9 @@
 use crate::cli::{
     FormatArg, ReleaseBundleBuildArgs, ReleaseBundleHashArgs, ReleaseBundleVerifyArgs,
     ReleaseChangelogGenerateArgs, ReleaseChangelogValidateArgs, ReleaseCheckArgs, ReleaseCommand,
-    ReleaseDiffArgs, ReleaseManifestGenerateArgs, ReleaseManifestValidateArgs, ReleasePacketArgs,
-    ReleasePlanArgs, ReleaseRebuildVerifyArgs, ReleaseReproducibilityReportArgs, ReleaseSignArgs,
+    ReleaseCompatibilityCheckArgs, ReleaseDiffArgs, ReleaseManifestGenerateArgs,
+    ReleaseManifestValidateArgs, ReleasePacketArgs, ReleasePlanArgs, ReleaseRebuildVerifyArgs,
+    ReleaseReproducibilityReportArgs, ReleaseSignArgs, ReleaseTransitionPlanArgs,
     ReleaseValidateArgs, ReleaseVerifyArgs, ReleaseVersionCheckArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
@@ -389,6 +390,91 @@ fn run_release_plan(args: ReleasePlanArgs) -> Result<(String, i32), String> {
         "versioning_strategy": strategy,
         "publishable_crates": publishable,
         "blocked_crates": blocked
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn normalize_transition_versions(
+    from_version: Option<String>,
+    to_version: Option<String>,
+) -> (String, String) {
+    (
+        from_version.unwrap_or_else(|| "0.1.0".to_string()),
+        to_version.unwrap_or_else(|| "0.1.1".to_string()),
+    )
+}
+
+fn run_release_compatibility_check(
+    args: ReleaseCompatibilityCheckArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let table_rel = "ops/e2e/scenarios/upgrade/version-compatibility.json";
+    let table = read_json(&root.join(table_rel))?;
+    let (from_version, to_version) = normalize_transition_versions(args.from_version, args.to_version);
+    let rows = table
+        .get("compatibility")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let matching = rows.into_iter().find(|row| {
+        row.get("from").and_then(serde_json::Value::as_str) == Some(from_version.as_str())
+            && row.get("to").and_then(serde_json::Value::as_str) == Some(to_version.as_str())
+    });
+    let mut errors = Vec::<String>::new();
+    let status = if let Some(row) = matching {
+        if row
+            .get("supported")
+            .and_then(serde_json::Value::as_bool)
+            .unwrap_or(false)
+        {
+            "ok"
+        } else {
+            errors.push("transition exists but is marked unsupported".to_string());
+            "failed"
+        }
+    } else {
+        errors.push("transition not found in compatibility table".to_string());
+        "failed"
+    };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_compatibility_check",
+        "status": status,
+        "from_version": from_version,
+        "to_version": to_version,
+        "compatibility_table": table_rel,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_transition_plan(
+    args: ReleaseTransitionPlanArgs,
+    mode: &str,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let (from_version, to_version) = normalize_transition_versions(args.from_version, args.to_version);
+    let scenario_id = if mode == "rollback" {
+        "rollback-after-successful-upgrade"
+    } else {
+        "upgrade-patch"
+    };
+    let scenario_rel = format!("ops/e2e/scenarios/upgrade/{scenario_id}.json");
+    let spec = read_json(&root.join(&scenario_rel))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": format!("release_{}_plan", mode),
+        "status": "ok",
+        "from_version": from_version,
+        "to_version": to_version,
+        "scenario_id": scenario_id,
+        "steps": spec.get("steps").cloned().unwrap_or_else(|| serde_json::json!([])),
+        "artifacts": {
+            "compatibility_table": "ops/e2e/scenarios/upgrade/version-compatibility.json",
+            "contracts": "ops/e2e/scenarios/upgrade/contracts.json"
+        }
     });
     let rendered = emit_payload(args.format, args.out, &payload)?;
     Ok((rendered, 0))
@@ -2217,6 +2303,9 @@ pub(crate) fn run_release_command(
 ) -> Result<(String, i32), String> {
     match command {
         ReleaseCommand::Plan(args) => run_release_plan(args),
+        ReleaseCommand::CompatibilityCheck(args) => run_release_compatibility_check(args),
+        ReleaseCommand::UpgradePlan(args) => run_release_transition_plan(args, "upgrade"),
+        ReleaseCommand::RollbackPlan(args) => run_release_transition_plan(args, "rollback"),
         ReleaseCommand::Validate(args) => run_release_validate(args),
         ReleaseCommand::Tag(args) => run_release_version_check(args),
         ReleaseCommand::Notes(args) => run_release_changelog_generate(args),

@@ -59,6 +59,9 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Validate { format, .. } => *format = FormatArg::Json,
         Command::Release { command } => match command {
             ReleaseCommand::Plan(args) => args.format = FormatArg::Json,
+            ReleaseCommand::CompatibilityCheck(args) => args.format = FormatArg::Json,
+            ReleaseCommand::UpgradePlan(args) => args.format = FormatArg::Json,
+            ReleaseCommand::RollbackPlan(args) => args.format = FormatArg::Json,
             ReleaseCommand::Validate(args) => args.format = FormatArg::Json,
             ReleaseCommand::Tag(args) => args.format = FormatArg::Json,
             ReleaseCommand::Notes(args) => args.format = FormatArg::Json,
@@ -1464,6 +1467,21 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         }
         Command::Release { command } => match command {
             ReleaseCommand::Plan(args) => {
+                if args.repo_root.is_none() {
+                    args.repo_root = Some(root.clone());
+                }
+            }
+            ReleaseCommand::CompatibilityCheck(args) => {
+                if args.repo_root.is_none() {
+                    args.repo_root = Some(root.clone());
+                }
+            }
+            ReleaseCommand::UpgradePlan(args) => {
+                if args.repo_root.is_none() {
+                    args.repo_root = Some(root.clone());
+                }
+            }
+            ReleaseCommand::RollbackPlan(args) => {
                 if args.repo_root.is_none() {
                     args.repo_root = Some(root.clone());
                 }
