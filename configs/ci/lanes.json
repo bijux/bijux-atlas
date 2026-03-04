@@ -12,6 +12,7 @@
         "reports/governance-validate.json",
         "reports/governance-coverage-diff.json"
       ],
+      "evidence_bundle": "artifacts/ci/evidence/ci-pr-fast.json",
       "timeout_class": "medium",
       "concurrency_class": "medium",
       "command": "bijux dev atlas ci verify workflow-policy --format json"
@@ -28,6 +29,7 @@
         "reports/docs-ssot-reference-drift.json",
         "reports/repo-write-drift.json"
       ],
+      "evidence_bundle": "artifacts/ci/evidence/ci-pr-full.json",
       "timeout_class": "large",
       "concurrency_class": "large",
       "command": "bijux dev atlas ci verify workflow-lint --format json"
@@ -43,6 +45,7 @@
         "reports/ci-nightly.json",
         "reports/docs-reference-generate.json"
       ],
+      "evidence_bundle": "artifacts/ci/evidence/ci-nightly.json",
       "timeout_class": "large",
       "concurrency_class": "large",
       "command": "bijux dev atlas ci report --kind lane-parity --format json"
@@ -59,6 +62,7 @@
         "reports/docs-diff-summary.json",
         "reports/docs-test-coverage.json"
       ],
+      "evidence_bundle": "artifacts/ci/evidence/docs-only.json",
       "timeout_class": "small",
       "concurrency_class": "small",
       "command": "bijux dev atlas ci verify docs-preview --allow-subprocess --allow-write --format json"
@@ -75,6 +79,7 @@
         "reports/docs-audit.json",
         "reports/docs-test-coverage.json"
       ],
+      "evidence_bundle": "artifacts/ci/evidence/docs-audit.json",
       "timeout_class": "medium",
       "concurrency_class": "small",
       "command": "bijux dev atlas ci verify docs-preview --allow-subprocess --allow-write --format json"
@@ -91,6 +96,7 @@
         "reports/ops-k8s-render.json",
         "reports/ops-inventory-validate.json"
       ],
+      "evidence_bundle": "artifacts/ci/evidence/ops-validate.json",
       "timeout_class": "medium",
       "concurrency_class": "medium",
       "command": "bijux dev atlas ci report --kind lane-parity --format json"
@@ -107,6 +113,7 @@
         "reports/ops-k8s-smoke.json",
         "reports/ops-kind-down.json"
       ],
+      "evidence_bundle": "artifacts/ci/evidence/ops-kind-integration.json",
       "timeout_class": "large",
       "concurrency_class": "large",
       "command": "bijux dev atlas ci verify workflow-policy --format json"
@@ -123,6 +130,7 @@
         "reports/release-candidate.json",
         "reports/ops-readiness.json"
       ],
+      "evidence_bundle": "artifacts/ci/evidence/release-candidate.json",
       "timeout_class": "large",
       "concurrency_class": "medium",
       "command": "bijux dev atlas ci verify release-candidate --allow-git --format json"
@@ -137,6 +145,7 @@
       "artifacts_expected": [
         "reports/dependency-lock-verify.json"
       ],
+      "evidence_bundle": "artifacts/ci/evidence/dependency-lock.json",
       "timeout_class": "small",
       "concurrency_class": "small",
       "command": "bijux dev atlas ci verify dependency-lock --allow-git --format json"

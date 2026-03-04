@@ -149,6 +149,7 @@ pub(super) struct CiLaneRegistryEntry {
     pub(super) mode: String,
     pub(super) required_env: Vec<String>,
     pub(super) artifacts_expected: Vec<String>,
+    pub(super) evidence_bundle: String,
     pub(super) timeout_class: String,
     pub(super) concurrency_class: String,
     pub(super) command: String,

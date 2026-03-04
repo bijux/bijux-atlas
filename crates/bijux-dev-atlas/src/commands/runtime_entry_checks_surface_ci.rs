@@ -151,6 +151,15 @@ fn validate_ci_lanes_registry(repo_root: &Path) -> Result<serde_json::Value, Str
         if lane.artifacts_expected.is_empty() {
             errors.push(format!("lane `{}` must declare artifacts_expected", lane.id));
         }
+        if lane.evidence_bundle.trim().is_empty() {
+            errors.push(format!("lane `{}` must declare evidence_bundle", lane.id));
+        }
+        if !lane.evidence_bundle.starts_with("artifacts/") {
+            errors.push(format!(
+                "lane `{}` evidence_bundle must live under artifacts/: `{}`",
+                lane.id, lane.evidence_bundle
+            ));
+        }
         if !lane.command.starts_with("bijux dev atlas ") {
             errors.push(format!(
                 "lane `{}` command must start with `bijux dev atlas `",
@@ -242,12 +251,17 @@ fn render_ci_simulate(
     };
     let mut rows = Vec::<serde_json::Value>::new();
     let mut missing_artifacts = Vec::<String>::new();
+    let mut missing_evidence_bundles = Vec::<String>::new();
     for row in selected {
         let mut missing = Vec::<String>::new();
         for artifact in &row.artifacts_expected {
             if !repo_root.join(artifact).exists() {
                 missing.push(artifact.clone());
             }
+        }
+        let evidence_missing = !repo_root.join(&row.evidence_bundle).exists();
+        if evidence_missing {
+            missing_evidence_bundles.push(format!("{}:{}", row.id, row.evidence_bundle));
         }
         if !missing.is_empty() {
             missing_artifacts.extend(missing.iter().map(|item| format!("{}:{item}", row.id)));
@@ -257,21 +271,27 @@ fn render_ci_simulate(
             "mode": row.mode,
             "command": row.command,
             "artifacts_expected": row.artifacts_expected,
+            "evidence_bundle": row.evidence_bundle,
             "missing_artifacts": missing,
-            "status": if missing.is_empty() { "ok" } else { "missing_artifacts" }
+            "missing_evidence_bundle": evidence_missing,
+            "status": if missing.is_empty() && !evidence_missing { "ok" } else { "incomplete" }
         }));
     }
     rows.sort_by(|a, b| a["lane"].as_str().cmp(&b["lane"].as_str()));
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "ci_simulate",
-        "status": if missing_artifacts.is_empty() { "ok" } else { "failed" },
+        "status": if missing_artifacts.is_empty() && missing_evidence_bundles.is_empty() { "ok" } else { "failed" },
         "rows": rows,
         "summary": {
             "lanes": rows.len(),
-            "missing_artifacts": missing_artifacts.len()
+            "missing_artifacts": missing_artifacts.len(),
+            "missing_evidence_bundles": missing_evidence_bundles.len()
         },
-        "missing_artifacts": missing_artifacts
+        "artifact_completeness": {
+            "missing_artifacts": missing_artifacts,
+            "missing_evidence_bundles": missing_evidence_bundles
+        }
     });
     let code = if payload["status"] == "ok" { 0 } else { 1 };
     let rendered = emit_payload(format, out, &payload)?;
