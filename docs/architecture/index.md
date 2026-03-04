@@ -28,6 +28,9 @@ Describe how Atlas is structured so contributors and operators share one durable
 
 ## What You Will Find Here
 
+- [Architecture Overview](overview.md)
+- [Component Documentation](components/index.md)
+- [Architecture Diagrams](diagrams/index.md)
 - [Dataflow](dataflow.md)
 - [Boundaries](boundaries.md)
 - [Crates map](crates-map.md)
