@@ -391,6 +391,7 @@ bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} 
     let process_memory_bytes = current_process_rss_bytes();
     let process_open_fds = current_open_fd_count();
     let process_cpu_usage_ratio = 0.0_f64;
+    let shard_registry_metrics = state.shard_registry.lock().await.metrics();
     let thread_pool_usage = if state.api.heavy_worker_pool_size == 0 {
         0.0
     } else {
@@ -617,6 +618,38 @@ atlas_slow_queries_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n"
         METRIC_VERSION,
         METRIC_DATASET_ALL,
         state.metrics.slow_queries_total(),
+    ));
+    body.push_str(&format!(
+        "atlas_shard_registry_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_shard_healthy_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_shard_access_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_shard_cache_hits_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_shard_cache_misses_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_shard_latency_avg_ms{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        shard_registry_metrics.shard_count,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        shard_registry_metrics.healthy_shard_count,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        shard_registry_metrics.total_access_count,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        shard_registry_metrics.total_cache_hits,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        shard_registry_metrics.total_cache_misses,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        shard_registry_metrics.average_latency_ms
     ));
     push_histogram_from_samples(
         &mut body,

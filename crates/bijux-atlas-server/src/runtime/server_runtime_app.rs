@@ -32,6 +32,16 @@ impl AppState {
         bijux_atlas_core::MembershipRegistry::new(policy)
     }
 
+    fn init_shard_registry() -> bijux_atlas_core::ShardRegistry {
+        let mut registry = bijux_atlas_core::ShardRegistry::new();
+        let owners = vec!["node-a".to_string(), "node-b".to_string()];
+        let assigned = registry.assign_round_robin("atlas-default", 4, &owners);
+        for (idx, shard_id) in assigned.iter().enumerate() {
+            registry.record_access(shard_id, 10 + idx as u64, idx % 2 == 0);
+        }
+        registry
+    }
+
     #[must_use]
     pub fn new(cache: Arc<DatasetCacheManager>) -> Self {
         Self::with_config(cache, ApiConfig::default(), QueryLimits::default())
@@ -105,6 +115,7 @@ impl AppState {
                 .map(Arc::new),
             queued_requests: Arc::new(AtomicU64::new(0)),
             membership: Arc::new(Mutex::new(Self::init_membership_registry())),
+            shard_registry: Arc::new(Mutex::new(Self::init_shard_registry())),
             runtime_policy_hash,
             runtime_policy_mode: Arc::new("strict".to_string()),
             api,
