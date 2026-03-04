@@ -726,6 +726,161 @@ pub(super) fn dispatch_execution(
                     Ok((rendered, 0))
                 }
             }
+            OpsGenerateCommand::ChartDependencySbom { check, common } => {
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let run_id = run_id_or_default(common.run_id.clone())?;
+                let chart_yaml_path = repo_root.join("ops/k8s/charts/bijux-atlas/Chart.yaml");
+                let chart_yaml_text = std::fs::read_to_string(&chart_yaml_path).map_err(|err| {
+                    format!("failed to read {}: {err}", chart_yaml_path.display())
+                })?;
+                let chart_yaml: serde_yaml::Value = serde_yaml::from_str(&chart_yaml_text)
+                    .map_err(|err| {
+                        format!("failed to parse {}: {err}", chart_yaml_path.display())
+                    })?;
+                let dependencies = chart_yaml
+                    .as_mapping()
+                    .and_then(|map| map.get(serde_yaml::Value::String("dependencies".to_string())))
+                    .and_then(serde_yaml::Value::as_sequence)
+                    .cloned()
+                    .unwrap_or_default();
+                let mut rows = Vec::new();
+                let mut errors = Vec::new();
+                for dep in dependencies {
+                    let Some(dep_map) = dep.as_mapping() else {
+                        errors.push("Chart.yaml dependencies entries must be objects".to_string());
+                        continue;
+                    };
+                    let name = dep_map
+                        .get(serde_yaml::Value::String("name".to_string()))
+                        .and_then(serde_yaml::Value::as_str)
+                        .unwrap_or_default()
+                        .to_string();
+                    let version = dep_map
+                        .get(serde_yaml::Value::String("version".to_string()))
+                        .and_then(serde_yaml::Value::as_str)
+                        .unwrap_or_default()
+                        .to_string();
+                    let repository = dep_map
+                        .get(serde_yaml::Value::String("repository".to_string()))
+                        .and_then(serde_yaml::Value::as_str)
+                        .unwrap_or_default()
+                        .to_string();
+                    if version.contains('^')
+                        || version.contains('~')
+                        || version.contains('>')
+                        || version.contains('<')
+                        || version.contains('*')
+                        || version.contains('x')
+                    {
+                        errors.push(format!(
+                            "dependency `{name}` must pin an exact version, found `{version}`"
+                        ));
+                    }
+                    rows.push(serde_json::json!({
+                        "name": name,
+                        "version": version,
+                        "repository": repository
+                    }));
+                }
+                rows.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
+
+                let chart_lock_path = repo_root.join("ops/k8s/charts/bijux-atlas/Chart.lock");
+                let lock_exists = chart_lock_path.is_file();
+                if !rows.is_empty() && !lock_exists {
+                    errors.push(format!(
+                        "Chart.lock is required when Chart.yaml declares dependencies: {}",
+                        chart_lock_path.display()
+                    ));
+                }
+                if lock_exists {
+                    let lock_text = std::fs::read_to_string(&chart_lock_path).map_err(|err| {
+                        format!("failed to read {}: {err}", chart_lock_path.display())
+                    })?;
+                    let lock_yaml: serde_yaml::Value =
+                        serde_yaml::from_str(&lock_text).map_err(|err| {
+                            format!("failed to parse {}: {err}", chart_lock_path.display())
+                        })?;
+                    let lock_rows = lock_yaml
+                        .as_mapping()
+                        .and_then(|map| {
+                            map.get(serde_yaml::Value::String("dependencies".to_string()))
+                        })
+                        .and_then(serde_yaml::Value::as_sequence)
+                        .cloned()
+                        .unwrap_or_default();
+                    let mut lock_set = std::collections::BTreeSet::new();
+                    for dep in lock_rows {
+                        let Some(dep_map) = dep.as_mapping() else {
+                            continue;
+                        };
+                        let name = dep_map
+                            .get(serde_yaml::Value::String("name".to_string()))
+                            .and_then(serde_yaml::Value::as_str)
+                            .unwrap_or_default()
+                            .to_string();
+                        let version = dep_map
+                            .get(serde_yaml::Value::String("version".to_string()))
+                            .and_then(serde_yaml::Value::as_str)
+                            .unwrap_or_default()
+                            .to_string();
+                        lock_set.insert((name, version));
+                    }
+                    let mut chart_set = std::collections::BTreeSet::new();
+                    for row in &rows {
+                        chart_set.insert((
+                            row["name"].as_str().unwrap_or_default().to_string(),
+                            row["version"].as_str().unwrap_or_default().to_string(),
+                        ));
+                    }
+                    if chart_set != lock_set {
+                        errors.push(
+                            "Chart.lock dependencies must match Chart.yaml dependency name/version pairs"
+                                .to_string(),
+                        );
+                    }
+                }
+
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "kind": "ops_chart_dependency_sbom",
+                    "chart": "ops/k8s/charts/bijux-atlas",
+                    "dependencies": rows,
+                    "lock_file": {
+                        "path": "ops/k8s/charts/bijux-atlas/Chart.lock",
+                        "exists": lock_exists
+                    },
+                    "summary": {
+                        "total": rows.len(),
+                        "errors": errors.len(),
+                        "warnings": 0
+                    },
+                    "errors": errors
+                });
+                let exit = if payload["summary"]["errors"].as_u64().unwrap_or(0) == 0 {
+                    ops_exit::PASS
+                } else {
+                    ops_exit::FAIL
+                };
+                if check {
+                    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+                    return Ok((rendered, exit));
+                }
+                let fs_adapter = OpsFs::new(repo_root.clone(), repo_root.join("ops"));
+                let out = fs_adapter
+                    .write_artifact_json(&run_id, "generate/chart-dependencies-sbom.json", &payload)
+                    .map_err(|e| e.to_stable_message())?;
+                let rendered = emit_payload(
+                    common.format,
+                    common.out.clone(),
+                    &serde_json::json!({
+                        "schema_version": 1,
+                        "text": format!("generated chart dependency sbom at {}", out.display()),
+                        "rows": [payload],
+                        "summary": {"total": 1, "errors": if exit == ops_exit::PASS { 0 } else { 1 }, "warnings": 0}
+                    }),
+                )?;
+                Ok((rendered, exit))
+            }
         },
         OpsCommand::Stack { .. }
         | OpsCommand::K8s { .. }

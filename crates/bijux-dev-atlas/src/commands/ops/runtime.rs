@@ -142,7 +142,8 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
         OpsCommand::Generate { command } => match command {
             OpsGenerateCommand::PinsIndex { common, .. }
             | OpsGenerateCommand::SurfaceList { common, .. }
-            | OpsGenerateCommand::Runbook { common, .. } => Some(common),
+            | OpsGenerateCommand::Runbook { common, .. }
+            | OpsGenerateCommand::ChartDependencySbom { common, .. } => Some(common),
         },
         OpsCommand::Evidence { command } => match command {
             OpsEvidenceCommand::Collect(common) => Some(common),

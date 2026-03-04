@@ -236,7 +236,8 @@ fn force_json_ops(command: &mut OpsCommand) {
         OpsCommand::Generate { command } => match command {
             crate::cli::OpsGenerateCommand::PinsIndex { common, .. }
             | crate::cli::OpsGenerateCommand::SurfaceList { common, .. }
-            | crate::cli::OpsGenerateCommand::Runbook { common, .. } => {
+            | crate::cli::OpsGenerateCommand::Runbook { common, .. }
+            | crate::cli::OpsGenerateCommand::ChartDependencySbom { common, .. } => {
                 common.format = FormatArg::Json
             }
         },
@@ -809,7 +810,8 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             OpsCommand::Generate { command } => match command {
                 crate::cli::OpsGenerateCommand::PinsIndex { common, .. }
                 | crate::cli::OpsGenerateCommand::SurfaceList { common, .. }
-                | crate::cli::OpsGenerateCommand::Runbook { common, .. } => {
+                | crate::cli::OpsGenerateCommand::Runbook { common, .. }
+                | crate::cli::OpsGenerateCommand::ChartDependencySbom { common, .. } => {
                     common.repo_root = Some(root.clone())
                 }
             },

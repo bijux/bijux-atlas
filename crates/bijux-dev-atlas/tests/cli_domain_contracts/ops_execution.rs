@@ -258,3 +258,24 @@ fn ops_generate_surface_list_check_supports_json_format() {
         Some(0)
     );
 }
+
+#[test]
+fn ops_generate_chart_dependency_sbom_check_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "generate",
+            "chart-dependency-sbom",
+            "--check",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("ops generate chart dependency sbom check");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload["kind"], "ops_chart_dependency_sbom");
+    assert_eq!(payload["summary"]["errors"].as_u64(), Some(0));
+}

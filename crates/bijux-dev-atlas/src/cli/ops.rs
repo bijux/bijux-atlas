@@ -534,6 +534,12 @@ pub enum OpsGenerateCommand {
         #[command(flatten)]
         common: OpsCommonArgs,
     },
+    ChartDependencySbom {
+        #[arg(long, default_value_t = false)]
+        check: bool,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
 }
 
 #[derive(Args, Debug, Clone)]
