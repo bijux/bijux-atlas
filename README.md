@@ -30,9 +30,8 @@ Atlas exists to keep genomics dataset delivery reproducible for operators and re
 
 ## Quick Start
 1. Install Rust and the pinned toolchain defined by the repository.
-2. Run `make check` for fast local quality gates.
-3. Run `make test` for the default test gate.
-4. Use `bijux dev atlas contract run --domain <domain>` for targeted contract verification.
+2. Open [`docs/start-here.md`](docs/start-here.md) and follow the onboarding flow.
+3. Use the command examples in that guide for local verification and validation.
 
 ## Quick System Overview
 Bijux Atlas is built around a Rust control plane (`bijux-dev-atlas`) that enforces contracts and executes workflows. Operational and release outputs are treated as governed artifacts, not ad-hoc side effects.

@@ -35,7 +35,7 @@ Atlas documentation is organized by system understanding first, then execution d
 - Architecture: [Architecture Index](architecture/index.md)
 - API: [API Surface Index](api/index.md)
 - Ops: [Operations Index](operations/index.md)
-- Dev: [Development Tooling](development/tooling/index.md)
+- Dev: [Development Index](development/index.md)
 - Control-plane: [Control-plane Index](control-plane/index.md)
 - Reference: [Reference Index](reference/index.md)
 

@@ -169,8 +169,10 @@ nav:
   - Development:
       - Development Overview: development/index.md
       - Tooling: development/tooling/index.md
+      - Governance Index: governance/index.md
       - Docs governance: _internal/governance/index.md
       - Docs Dashboard: _internal/governance/docs-dashboard.md
+  - Tutorials: tutorials/index.md
   - Reference: reference/index.md
   - Errors and Exit Codes: reference/errors-and-exit-codes.md
   - Ops Reference: reference/ops/index.md

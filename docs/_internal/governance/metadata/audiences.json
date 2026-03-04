@@ -40,6 +40,7 @@
     "root": "contributors",
     "science": "mixed",
     "security": "mixed",
-    "start": "mixed"
+    "start": "mixed",
+    "tutorials": "mixed"
   }
 }
