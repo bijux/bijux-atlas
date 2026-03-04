@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    SecurityCommand, SecurityPolicyInspectArgs, SecurityScanArtifactsArgs, SecurityValidateArgs,
+    SecurityAuthenticationCommand, SecurityCommand, SecurityPolicyInspectArgs,
+    SecurityScanArtifactsArgs, SecurityTokenInspectArgs, SecurityValidateArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
+use base64::Engine as _;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -336,6 +338,16 @@ pub(crate) fn run_security_command(
         SecurityCommand::Diagnostics(args) => run_security_diagnostics(args),
         SecurityCommand::PolicyInspect(args) => run_security_policy_inspect(args),
         SecurityCommand::Audit(args) => run_security_audit(args),
+        SecurityCommand::Authentication { command } => match command {
+            SecurityAuthenticationCommand::ApiKeys(args) => run_security_auth_api_keys(args),
+            SecurityAuthenticationCommand::TokenInspect(args) => {
+                run_security_auth_token_inspect(args)
+            }
+            SecurityAuthenticationCommand::Diagnostics(args) => run_security_auth_diagnostics(args),
+            SecurityAuthenticationCommand::PolicyValidate(args) => {
+                run_security_auth_policy_validate(args)
+            }
+        },
         SecurityCommand::Compliance { command } => match command {
             crate::cli::SecurityComplianceCommand::Validate(args) => {
                 run_security_compliance_validate(args)
@@ -343,6 +355,111 @@ pub(crate) fn run_security_command(
         },
         SecurityCommand::ScanArtifacts(args) => run_security_scan_artifacts(args),
     }
+}
+
+fn run_security_auth_api_keys(args: SecurityValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let auth_model = read_yaml(&root.join("configs/security/auth-model.yaml"))?;
+    let methods = auth_model
+        .get("methods")
+        .and_then(serde_yaml::Value::as_sequence)
+        .map_or(0, std::vec::Vec::len);
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "authentication_api_key_management_report",
+        "status": "ok",
+        "api_key_generation": "runtime helper and deterministic hashing",
+        "api_key_storage": "hashed entries in ATLAS_ALLOWED_API_KEYS",
+        "api_key_rotation": "supports overlap windows with not_before markers",
+        "api_key_expiration": "ATLAS_API_KEY_EXPIRATION_DAYS",
+        "auth_model_method_count": methods
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn parse_token_payload(token: &str) -> Result<serde_json::Value, String> {
+    let parts = token.split('.').collect::<Vec<_>>();
+    if parts.len() != 3 {
+        return Err("token must have exactly three dot-separated segments".to_string());
+    }
+    let raw = base64::engine::general_purpose::URL_SAFE_NO_PAD
+        .decode(parts[1])
+        .map_err(|err| format!("invalid token payload encoding: {err}"))?;
+    serde_json::from_slice(&raw).map_err(|err| format!("invalid token payload json: {err}"))
+}
+
+fn run_security_auth_token_inspect(
+    args: SecurityTokenInspectArgs,
+) -> Result<(String, i32), String> {
+    let payload = parse_token_payload(&args.token)?;
+    let scopes = payload
+        .get("scope")
+        .and_then(serde_json::Value::as_str)
+        .map(|text| {
+            text.split(' ')
+                .map(str::trim)
+                .filter(|scope| !scope.is_empty())
+                .map(ToString::to_string)
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    let report = serde_json::json!({
+        "schema_version": 1,
+        "kind": "authentication_token_inspection_report",
+        "status": "ok",
+        "subject": payload.get("sub").and_then(serde_json::Value::as_str),
+        "issuer": payload.get("iss").and_then(serde_json::Value::as_str),
+        "audience": payload.get("aud").and_then(serde_json::Value::as_str),
+        "expires_unix_s": payload.get("exp").and_then(serde_json::Value::as_u64),
+        "token_id": payload.get("jti").and_then(serde_json::Value::as_str),
+        "scopes": scopes
+    });
+    let rendered = emit_payload(args.format, args.out, &report)?;
+    Ok((rendered, 0))
+}
+
+fn run_security_auth_diagnostics(args: SecurityValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let config = bijux_atlas_core::load_security_config_from_path(
+        &root.join("configs/security/runtime-security.yaml"),
+    )?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "authentication_diagnostics_report",
+        "status": "ok",
+        "auth_mode": config.auth.mode,
+        "auth_required": config.auth.required,
+        "audit_enabled": config.audit.enabled,
+        "audit_sink": config.audit.sink,
+        "event_classes": config.events.classes
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_security_auth_policy_validate(args: SecurityValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let auth_model = read_yaml(&root.join("configs/security/auth-model.yaml"))?;
+    let policy = read_yaml(&root.join("configs/security/policy.yaml"))?;
+    let method_count = auth_model
+        .get("methods")
+        .and_then(serde_yaml::Value::as_sequence)
+        .map_or(0, std::vec::Vec::len);
+    let rule_count = policy
+        .get("rules")
+        .and_then(serde_yaml::Value::as_sequence)
+        .map_or(0, std::vec::Vec::len);
+    let ok = method_count > 0 && rule_count > 0;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "authentication_policy_validation_report",
+        "status": if ok { "ok" } else { "failed" },
+        "auth_methods": method_count,
+        "policy_rules": rule_count
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if ok { 0 } else { 2 }))
 }
 
 fn run_security_config_validate(args: SecurityValidateArgs) -> Result<(String, i32), String> {
@@ -380,7 +497,10 @@ fn run_security_diagnostics(args: SecurityValidateArgs) -> Result<(String, i32),
                     .and_then(serde_yaml::Value::as_str)
                     .unwrap_or("security policy")
                     .to_string(),
-                enabled: row.get("enabled").and_then(serde_yaml::Value::as_bool).unwrap_or(true),
+                enabled: row
+                    .get("enabled")
+                    .and_then(serde_yaml::Value::as_bool)
+                    .unwrap_or(true),
             });
         }
     }
@@ -2365,10 +2485,14 @@ fn run_security_scan_artifacts(args: SecurityScanArtifactsArgs) -> Result<(Strin
 #[cfg(test)]
 mod tests {
     use super::{
-        run_security_audit, run_security_config_validate, run_security_diagnostics,
-        run_security_policy_inspect,
+        run_security_audit, run_security_auth_api_keys, run_security_auth_diagnostics,
+        run_security_auth_policy_validate, run_security_auth_token_inspect,
+        run_security_config_validate, run_security_diagnostics, run_security_policy_inspect,
     };
-    use crate::cli::{FormatArg, SecurityPolicyInspectArgs, SecurityValidateArgs};
+    use crate::cli::{
+        FormatArg, SecurityPolicyInspectArgs, SecurityTokenInspectArgs, SecurityValidateArgs,
+    };
+    use base64::Engine as _;
     use std::fs;
 
     fn write_minimal_security_files(root: &std::path::Path) {
@@ -2412,6 +2536,18 @@ events:
 "#,
         )
         .expect("write policy.yaml");
+        fs::write(
+            config_dir.join("auth-model.yaml"),
+            r#"default_stance: zero-trust
+auth_support: supported
+methods: [api-key, token, oidc, mtls]
+runtime_auth_mode_env: ATLAS_AUTH_MODE
+docs:
+  model: docs/architecture/security/authentication-strategy.md
+  runbook: docs/operations/security/deploy-behind-auth-proxy.md
+"#,
+        )
+        .expect("write auth-model.yaml");
     }
 
     #[test]
@@ -2479,5 +2615,68 @@ events:
         let value: serde_json::Value = serde_json::from_str(&rendered).expect("parse rendered");
         assert_eq!(value["kind"], "security_audit_report");
         assert_eq!(value["artifacts_present"], false);
+    }
+
+    #[test]
+    fn security_authentication_commands_emit_expected_reports() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        write_minimal_security_files(temp.path());
+
+        let (api_keys, code) = run_security_auth_api_keys(SecurityValidateArgs {
+            repo_root: Some(temp.path().to_path_buf()),
+            format: FormatArg::Json,
+            out: None,
+        })
+        .expect("run api key management");
+        assert_eq!(code, 0);
+        let api_keys_value: serde_json::Value =
+            serde_json::from_str(&api_keys).expect("parse api keys report");
+        assert_eq!(
+            api_keys_value["kind"],
+            "authentication_api_key_management_report"
+        );
+
+        let claims = base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(
+            r#"{"sub":"svc-a","iss":"atlas-auth","aud":"atlas-api","exp":4102444800,"jti":"t1","scope":"dataset.read"}"#,
+        );
+        let (token, code) = run_security_auth_token_inspect(SecurityTokenInspectArgs {
+            repo_root: Some(temp.path().to_path_buf()),
+            token: format!("a.{claims}.b"),
+            format: FormatArg::Json,
+            out: None,
+        })
+        .expect("run token inspection");
+        assert_eq!(code, 0);
+        let token_value: serde_json::Value =
+            serde_json::from_str(&token).expect("parse token report");
+        assert_eq!(
+            token_value["kind"],
+            "authentication_token_inspection_report"
+        );
+
+        let (diag, code) = run_security_auth_diagnostics(SecurityValidateArgs {
+            repo_root: Some(temp.path().to_path_buf()),
+            format: FormatArg::Json,
+            out: None,
+        })
+        .expect("run auth diagnostics");
+        assert_eq!(code, 0);
+        let diag_value: serde_json::Value =
+            serde_json::from_str(&diag).expect("parse diagnostics report");
+        assert_eq!(diag_value["kind"], "authentication_diagnostics_report");
+
+        let (policy, code) = run_security_auth_policy_validate(SecurityValidateArgs {
+            repo_root: Some(temp.path().to_path_buf()),
+            format: FormatArg::Json,
+            out: None,
+        })
+        .expect("run auth policy validate");
+        assert_eq!(code, 0);
+        let policy_value: serde_json::Value =
+            serde_json::from_str(&policy).expect("parse policy report");
+        assert_eq!(
+            policy_value["kind"],
+            "authentication_policy_validation_report"
+        );
     }
 }

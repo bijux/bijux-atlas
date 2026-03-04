@@ -506,6 +506,16 @@ fn force_json_security(command: &mut SecurityCommand) {
         | SecurityCommand::Diagnostics(args)
         | SecurityCommand::Audit(args) => args.format = FormatArg::Json,
         SecurityCommand::PolicyInspect(args) => args.format = FormatArg::Json,
+        SecurityCommand::Authentication { command } => match command {
+            crate::cli::SecurityAuthenticationCommand::ApiKeys(args)
+            | crate::cli::SecurityAuthenticationCommand::Diagnostics(args)
+            | crate::cli::SecurityAuthenticationCommand::PolicyValidate(args) => {
+                args.format = FormatArg::Json
+            }
+            crate::cli::SecurityAuthenticationCommand::TokenInspect(args) => {
+                args.format = FormatArg::Json
+            }
+        },
         SecurityCommand::Compliance { command } => match command {
             crate::cli::SecurityComplianceCommand::Validate(args) => args.format = FormatArg::Json,
         },
@@ -527,9 +537,7 @@ fn force_json_system(command: &mut crate::cli::SystemCommand) {
             | crate::cli::SystemDebugCommand::MetricsSnapshot(args)
             | crate::cli::SystemDebugCommand::HealthChecks(args)
             | crate::cli::SystemDebugCommand::RuntimeState(args)
-            | crate::cli::SystemDebugCommand::TraceSampling(args) => {
-                args.format = FormatArg::Json
-            }
+            | crate::cli::SystemDebugCommand::TraceSampling(args) => args.format = FormatArg::Json,
         },
         crate::cli::SystemCommand::Cluster { command } => match command {
             crate::cli::SystemClusterCommand::Topology(args)
@@ -564,7 +572,7 @@ fn force_json_system(command: &mut crate::cli::SystemCommand) {
             | crate::cli::SystemClusterCommand::ChaosTest(args) => {
                 args.common.format = FormatArg::Json
             }
-        }
+        },
     }
 }
 
@@ -1155,6 +1163,16 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | SecurityCommand::Diagnostics(args)
             | SecurityCommand::Audit(args) => args.repo_root = Some(root.clone()),
             SecurityCommand::PolicyInspect(args) => args.repo_root = Some(root.clone()),
+            SecurityCommand::Authentication { command } => match command {
+                crate::cli::SecurityAuthenticationCommand::ApiKeys(args)
+                | crate::cli::SecurityAuthenticationCommand::Diagnostics(args)
+                | crate::cli::SecurityAuthenticationCommand::PolicyValidate(args) => {
+                    args.repo_root = Some(root.clone())
+                }
+                crate::cli::SecurityAuthenticationCommand::TokenInspect(args) => {
+                    args.repo_root = Some(root.clone())
+                }
+            },
             SecurityCommand::Compliance { command } => match command {
                 crate::cli::SecurityComplianceCommand::Validate(args) => {
                     args.repo_root = Some(root.clone())

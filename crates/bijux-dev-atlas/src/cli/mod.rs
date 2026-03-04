@@ -461,11 +461,23 @@ pub enum SecurityCommand {
     Diagnostics(SecurityValidateArgs),
     PolicyInspect(SecurityPolicyInspectArgs),
     Audit(SecurityValidateArgs),
+    Authentication {
+        #[command(subcommand)]
+        command: SecurityAuthenticationCommand,
+    },
     Compliance {
         #[command(subcommand)]
         command: SecurityComplianceCommand,
     },
     ScanArtifacts(SecurityScanArtifactsArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum SecurityAuthenticationCommand {
+    ApiKeys(SecurityValidateArgs),
+    TokenInspect(SecurityTokenInspectArgs),
+    Diagnostics(SecurityValidateArgs),
+    PolicyValidate(SecurityValidateArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -602,7 +614,10 @@ pub struct SystemClusterArgs {
     pub format: FormatArg,
     #[arg(long)]
     pub out: Option<PathBuf>,
-    #[arg(long, default_value = "configs/ops/runtime/cluster-config.example.json")]
+    #[arg(
+        long,
+        default_value = "configs/ops/runtime/cluster-config.example.json"
+    )]
     pub cluster_config: PathBuf,
     #[arg(long, default_value = "configs/ops/runtime/node-config.example.json")]
     pub node_config: PathBuf,
@@ -685,6 +700,18 @@ pub struct SecurityPolicyInspectArgs {
     pub out: Option<PathBuf>,
     #[arg(long)]
     pub policy_id: Option<String>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct SecurityTokenInspectArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub token: String,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
 }
 
 #[derive(Args, Debug, Clone)]
