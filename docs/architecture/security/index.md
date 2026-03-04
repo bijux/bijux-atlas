@@ -17,6 +17,7 @@ related:
 - [Auth Model](auth-model.md)
 - [Authentication Strategy](authentication-strategy.md)
 - [Authorization Model](authorization-model.md)
+- [RBAC Structure](rbac-structure.md)
 - [Security Architecture](security-architecture.md)
 - [Threat Model Scope](threat-model-scope.md)
 - [Trust Boundaries](trust-boundaries.md)
@@ -26,3 +27,5 @@ related:
 - [Secrets Credentials And Key Management](secrets-credentials-and-key-management.md)
 - [Network And Transport Security](network-and-transport-security.md)
 - [Security Design Principles](security-design-principles.md)
+- [Authorization Architecture Diagrams](authorization-architecture-diagrams.md)
+- [RBAC Flow Diagrams](rbac-flow-diagrams.md)
