@@ -165,6 +165,20 @@ fn force_json_ops(command: &mut OpsCommand) {
                     ..
                 }),
         }
+        | OpsCommand::Profiles {
+            command:
+                crate::cli::OpsProfilesCommand::SchemaValidate(crate::cli::OpsProfileValidationArgs {
+                    common,
+                    ..
+                })
+                | crate::cli::OpsProfilesCommand::Kubeconform(crate::cli::OpsProfileValidationArgs {
+                    common,
+                    ..
+                })
+                | crate::cli::OpsProfilesCommand::RolloutSafetyValidate(
+                    crate::cli::OpsProfileValidationArgs { common, .. },
+                ),
+        }
         | OpsCommand::Profile {
             command: crate::cli::OpsProfileCommand::List(common),
         }
@@ -692,6 +706,19 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                         common,
                         ..
                     }),
+            }
+            | OpsCommand::Profiles {
+                command:
+                    crate::cli::OpsProfilesCommand::SchemaValidate(
+                        crate::cli::OpsProfileValidationArgs { common, .. },
+                    )
+                    | crate::cli::OpsProfilesCommand::Kubeconform(crate::cli::OpsProfileValidationArgs {
+                        common,
+                        ..
+                    })
+                    | crate::cli::OpsProfilesCommand::RolloutSafetyValidate(
+                        crate::cli::OpsProfileValidationArgs { common, .. },
+                    ),
             }
             | OpsCommand::Profile {
                 command: crate::cli::OpsProfileCommand::List(common),

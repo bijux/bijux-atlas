@@ -79,7 +79,16 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
         | OpsCommand::K8sEnvSurface(common)
         | OpsCommand::K8sValidateProfiles(common)
         | OpsCommand::Profiles {
-            command: OpsProfilesCommand::Validate(OpsProfilesValidateArgs { common, .. }),
+            command:
+                OpsProfilesCommand::Validate(OpsProfilesValidateArgs { common, .. })
+                | OpsProfilesCommand::SchemaValidate(crate::cli::OpsProfileValidationArgs {
+                    common, ..
+                })
+                | OpsProfilesCommand::Kubeconform(crate::cli::OpsProfileValidationArgs { common, .. })
+                | OpsProfilesCommand::RolloutSafetyValidate(crate::cli::OpsProfileValidationArgs {
+                    common,
+                    ..
+                }),
         }
         | OpsCommand::Profile {
             command: OpsProfileCommand::List(common),
@@ -207,6 +216,15 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
         OpsCommand::Profiles { command } => match command {
             OpsProfilesCommand::Validate(args) => OpsCommand::Profiles {
                 command: OpsProfilesCommand::Validate(args),
+            },
+            OpsProfilesCommand::SchemaValidate(args) => OpsCommand::Profiles {
+                command: OpsProfilesCommand::SchemaValidate(args),
+            },
+            OpsProfilesCommand::Kubeconform(args) => OpsCommand::Profiles {
+                command: OpsProfilesCommand::Kubeconform(args),
+            },
+            OpsProfilesCommand::RolloutSafetyValidate(args) => OpsCommand::Profiles {
+                command: OpsProfilesCommand::RolloutSafetyValidate(args),
             },
         },
         OpsCommand::Profile { command } => OpsCommand::Profile { command },

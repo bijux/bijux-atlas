@@ -5,6 +5,7 @@ use super::*;
 mod core_rendering;
 use core_rendering::{
     render_helm_configmap_env_report, render_helm_env_surface, validate_helm_profile_matrix,
+    validate_profile_mode, ProfileValidationMode,
 };
 
 pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String, i32), String> {
@@ -100,6 +101,15 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
         }
         OpsCommand::Profiles { command } => match command {
             crate::cli::OpsProfilesCommand::Validate(args) => validate_helm_profile_matrix(&args),
+            crate::cli::OpsProfilesCommand::SchemaValidate(args) => {
+                validate_profile_mode(&args, ProfileValidationMode::SchemaOnly)
+            }
+            crate::cli::OpsProfilesCommand::Kubeconform(args) => {
+                validate_profile_mode(&args, ProfileValidationMode::KubeconformOnly)
+            }
+            crate::cli::OpsProfilesCommand::RolloutSafetyValidate(args) => {
+                validate_profile_mode(&args, ProfileValidationMode::RolloutSafety)
+            }
         },
         OpsCommand::Obs { command } => match command {
             crate::cli::OpsObsCommand::Verify(common) => {

@@ -2,6 +2,13 @@
 
 use super::*;
 
+#[derive(Clone, Copy)]
+pub(super) enum ProfileValidationMode {
+    SchemaOnly,
+    KubeconformOnly,
+    RolloutSafety,
+}
+
 pub(super) fn render_helm_env_surface(common: &OpsCommonArgs) -> Result<(String, i32), String> {
     if !common.allow_subprocess {
         return Err("ops k8s env-surface requires --allow-subprocess".to_string());
@@ -184,6 +191,115 @@ pub(super) fn validate_helm_profile_matrix(
         ops_exit::FAIL
     };
     Ok((rendered, exit))
+}
+
+pub(super) fn validate_profile_mode(
+    args: &crate::cli::OpsProfileValidationArgs,
+    mode: ProfileValidationMode,
+) -> Result<(String, i32), String> {
+    if !args.common.allow_subprocess {
+        return Err("ops profile validation requires --allow-subprocess".to_string());
+    }
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let ops_root = resolve_ops_root(&repo_root, args.common.ops_root.clone())
+        .map_err(|e| e.to_stable_message())?;
+    let profile_set =
+        matches!(mode, ProfileValidationMode::RolloutSafety).then(|| "rollout-safety".to_string());
+    let report = bijux_dev_atlas::ops::profiles_matrix::validate_profiles(
+        &repo_root,
+        &bijux_dev_atlas::ops::profiles_matrix::ValidateProfilesOptions {
+            chart_dir: ops_root.join("k8s/charts/bijux-atlas"),
+            values_root: ops_root.join("k8s/values"),
+            schema_path: ops_root.join("k8s/charts/bijux-atlas/values.schema.json"),
+            dataset_manifest_path: ops_root.join("datasets/manifest.json"),
+            install_matrix_path: ops_root.join("k8s/install-matrix.json"),
+            rollout_safety_path: ops_root.join("k8s/rollout-safety-contract.json"),
+            profile: args.common.profile.clone(),
+            profile_set,
+            timeout_seconds: args.timeout_seconds,
+            run_kubeconform: true,
+        },
+    )?;
+
+    let (rows, failures, kind) = match mode {
+        ProfileValidationMode::SchemaOnly => {
+            let rows = report
+                .rows
+                .iter()
+                .map(|row| {
+                    serde_json::json!({
+                        "profile": row.profile,
+                        "status": row.values_schema.status,
+                        "errors": row.values_schema.errors
+                    })
+                })
+                .collect::<Vec<_>>();
+            (rows, report.summary.schema_failures, "ops_schema_validate")
+        }
+        ProfileValidationMode::KubeconformOnly => {
+            let rows = report
+                .rows
+                .iter()
+                .map(|row| {
+                    serde_json::json!({
+                        "profile": row.profile,
+                        "status": row.kubeconform.status,
+                        "errors": row.kubeconform.errors,
+                        "resource_kind_summary": {"rendered": row.rendered_resources}
+                    })
+                })
+                .collect::<Vec<_>>();
+            (
+                rows,
+                report.summary.kubeconform_failures,
+                "ops_kubeconform_validate",
+            )
+        }
+        ProfileValidationMode::RolloutSafety => {
+            let rows = report
+                .rows
+                .iter()
+                .map(|row| {
+                    serde_json::json!({
+                        "profile": row.profile,
+                        "status": if row.helm_template.status == "pass" && row.values_schema.status == "pass" && row.kubeconform.status == "pass" { "pass" } else { "fail" },
+                        "helm_template": row.helm_template.status,
+                        "values_schema": row.values_schema.status,
+                        "kubeconform": row.kubeconform.status
+                    })
+                })
+                .collect::<Vec<_>>();
+            (
+                rows,
+                report.summary.helm_failures
+                    + report.summary.schema_failures
+                    + report.summary.kubeconform_failures,
+                "ops_rollout_safety_validate",
+            )
+        }
+    };
+
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": kind,
+        "profile_selector": report.inputs.profile_selector,
+        "tooling": report.tooling,
+        "rows": rows,
+        "summary": {
+            "total": report.rows.len(),
+            "failures": failures,
+            "status": if failures == 0 { "ok" } else { "failed" }
+        }
+    });
+    let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
+    Ok((
+        rendered,
+        if failures == 0 {
+            ops_exit::PASS
+        } else {
+            ops_exit::FAIL
+        },
+    ))
 }
 
 fn collect_rendered_env_keys(rendered_yaml: &str) -> std::collections::BTreeSet<String> {

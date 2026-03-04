@@ -242,6 +242,17 @@ pub enum OpsResourcesCommand {
 #[derive(Subcommand, Debug, Clone)]
 pub enum OpsProfilesCommand {
     Validate(OpsProfilesValidateArgs),
+    SchemaValidate(OpsProfileValidationArgs),
+    Kubeconform(OpsProfileValidationArgs),
+    RolloutSafetyValidate(OpsProfileValidationArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsProfileValidationArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long, default_value_t = 30)]
+    pub timeout_seconds: u64,
 }
 
 #[derive(Subcommand, Debug, Clone)]
