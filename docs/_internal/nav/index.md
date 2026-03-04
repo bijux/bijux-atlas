@@ -2,5 +2,5 @@
 
 Navigation is defined only in `mkdocs.yml`.
 
-- Top-level navigation labels are fixed: Home, Start Here, Product, Architecture, API, Operations, Control-plane, Development, Reference, Errors and Exit Codes, Ops Reference, Configs Reference
-- Top-level navigation order is fixed: Home -> Start Here -> Product -> Architecture -> API -> Operations -> Control-plane -> Development -> Reference -> Errors and Exit Codes -> Ops Reference -> Configs Reference
+- Top-level navigation labels are fixed: Home, Start Here, Product, Architecture, API, Operations, Control-plane, Development, Tutorials, Reference, Errors and Exit Codes, Ops Reference, Configs Reference
+- Top-level navigation order is fixed: Home -> Start Here -> Product -> Architecture -> API -> Operations -> Control-plane -> Development -> Tutorials -> Reference -> Errors and Exit Codes -> Ops Reference -> Configs Reference
