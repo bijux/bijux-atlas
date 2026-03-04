@@ -45,3 +45,4 @@ tags:
 - Consolidation keeps one canonical page per concept and uses redirects for compatibility.
 - Each major domain keeps one canonical `index.md`.
 - New duplicate narrative pages are not allowed when an existing canonical page exists.
+- Canonical merge decisions are tracked in `docs/_internal/governance/docs-merge-plan.md`.

@@ -34,3 +34,4 @@ Supplemental canonical entrypoints:
 - Top-level navigation categories are capped at `13`.
 - New top-level navigation categories require docs-governance approval.
 - Internal pages must stay under `docs/_internal/`.
+- Reference pages must live under `docs/reference/`.
