@@ -362,6 +362,56 @@
       "run_in": ["hpa-validation", "nightly", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
       "thresholds": {"p95_ms_max": 2200, "p99_ms_max": 3500, "error_rate_max": 0.15}
+    },
+    {
+      "name": "security-penetration-simulation",
+      "purpose": "simulate adversarial but legal HTTP probing and verify bounded secure responses",
+      "kind": "k6",
+      "scenario": "security-penetration-simulation.json",
+      "must_pass": true,
+      "run_in": ["nightly", "load-nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
+      "thresholds": {"p95_ms_max": 1600, "p99_ms_max": 2800, "error_rate_max": 0.15}
+    },
+    {
+      "name": "security-regression-suite",
+      "purpose": "regression guard for known secure-response baselines across critical endpoints",
+      "kind": "k6",
+      "scenario": "security-regression-suite.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly", "load-nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
+      "thresholds": {"p95_ms_max": 1500, "p99_ms_max": 2600, "error_rate_max": 0.12}
+    },
+    {
+      "name": "security-malicious-input-suite",
+      "purpose": "validate parser and validation resilience against malformed and hostile payloads",
+      "kind": "k6",
+      "scenario": "security-malicious-input-suite.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly", "load-nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
+      "thresholds": {"p95_ms_max": 1500, "p99_ms_max": 2800, "error_rate_max": 0.2}
+    },
+    {
+      "name": "security-injection-suite",
+      "purpose": "validate defenses against query and header injection probes",
+      "kind": "k6",
+      "scenario": "security-injection-suite.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly", "load-nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
+      "thresholds": {"p95_ms_max": 1500, "p99_ms_max": 2800, "error_rate_max": 0.2}
+    },
+    {
+      "name": "security-dos-resilience-suite",
+      "purpose": "validate overload shedding and bounded failure behavior under pressure",
+      "kind": "k6",
+      "scenario": "security-dos-resilience-suite.json",
+      "must_pass": true,
+      "run_in": ["nightly", "load-nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
+      "thresholds": {"p95_ms_max": 2200, "p99_ms_max": 3800, "error_rate_max": 0.3}
     }
   ]
 }
