@@ -32,6 +32,8 @@ related:
 - [Shard Routing Visualization](shard-routing-visualization.md)
 - [Replication Architecture](replication-architecture.md)
 - [Replication Flow](replication-flow.md)
+- [Resilience Architecture](resilience-architecture.md)
+- [Failure Flow](failure-flow.md)
 - [Diagram Style Guide](style-guide.md)
 
 ## Legacy and supporting diagrams

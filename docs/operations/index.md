@@ -93,6 +93,13 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 61. [Replication scaling strategy](replication/scaling-strategy.md)
 62. [Resilience recovery workflow](resilience/recovery-workflow.md)
 63. [Resilience failure injection guide](resilience/failure-injection-guide.md)
+64. [Resilience failure scenarios](resilience/failure-scenarios.md)
+65. [Resilience recovery workflows](resilience/recovery-workflows.md)
+66. [Resilience runbooks](resilience/runbooks.md)
+67. [Disaster recovery plan](resilience/disaster-recovery-plan.md)
+68. [Resilience recovery timeline examples](resilience/recovery-timeline-examples.md)
+69. [Resilience dashboard examples](resilience/dashboard-examples.md)
+70. [Resilience completion report](resilience/completion-report.md)
 
 ## What This Page Is Not
 
