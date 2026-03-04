@@ -166,12 +166,18 @@ impl FailureRecoveryRegistry {
     pub fn metrics(&self) -> ResilienceMetrics {
         let failure_events_total = self.failures.len() as u64;
         let recovery_events_total = self.recoveries.len() as u64;
-        let successful_recoveries_total = self.recoveries.values().filter(|e| e.success).count() as u64;
-        let failed_recoveries_total = recovery_events_total.saturating_sub(successful_recoveries_total);
+        let successful_recoveries_total =
+            self.recoveries.values().filter(|e| e.success).count() as u64;
+        let failed_recoveries_total =
+            recovery_events_total.saturating_sub(successful_recoveries_total);
         let total_latency_ms = self
             .recoveries
             .values()
-            .map(|event| event.completed_at_unix_ms.saturating_sub(event.started_at_unix_ms))
+            .map(|event| {
+                event
+                    .completed_at_unix_ms
+                    .saturating_sub(event.started_at_unix_ms)
+            })
             .sum::<u64>();
         let recovery_latency_avg_ms = if recovery_events_total == 0 {
             0
@@ -270,7 +276,12 @@ mod tests {
     #[test]
     fn resilience_failure_recovery_sequence_records_expected_counts() {
         let mut registry = registry();
-        registry.record_failure(FailureCategory::ShardCorruption, "atlas-default-s001", 10, "corruption");
+        registry.record_failure(
+            FailureCategory::ShardCorruption,
+            "atlas-default-s001",
+            10,
+            "corruption",
+        );
         registry.record_recovery("atlas-default-s001", "shard_failover", 11, 20, true);
         let metrics = registry.metrics();
         assert_eq!(metrics.failure_events_total, 1);
@@ -307,7 +318,12 @@ mod tests {
     fn resilience_stress_records_many_failure_and_recovery_events() {
         let mut registry = registry();
         for i in 0..1_000_u64 {
-            registry.record_failure(FailureCategory::Unknown, format!("target-{i}"), i, "load test");
+            registry.record_failure(
+                FailureCategory::Unknown,
+                format!("target-{i}"),
+                i,
+                "load test",
+            );
             registry.record_recovery(
                 format!("target-{i}"),
                 "automatic_recovery",

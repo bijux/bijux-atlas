@@ -77,7 +77,11 @@ impl ApiKeyStore {
         now_unix_s: u64,
     ) -> Result<&ApiKeyRecord, AuthValidationError> {
         let hashed = hash_api_key(raw_key);
-        let Some(record) = self.records.values().find(|record| record.key_hash == hashed) else {
+        let Some(record) = self
+            .records
+            .values()
+            .find(|record| record.key_hash == hashed)
+        else {
             return Err(AuthValidationError::ApiKeyInvalid);
         };
         if record.revoked_at_unix_s.is_some() {
@@ -317,9 +321,9 @@ fn unix_now_s() -> u64 {
 #[cfg(test)]
 mod tests {
     use super::{
-        ApiKeyRecord, ApiKeyStore, AuthValidationError, TokenClaims, TokenValidationPolicy,
         authentication_context_from_token, extract_request_identity, hash_api_key,
-        mint_signed_token, rotate_api_key, validate_signed_token,
+        mint_signed_token, rotate_api_key, validate_signed_token, ApiKeyRecord, ApiKeyStore,
+        AuthValidationError, TokenClaims, TokenValidationPolicy,
     };
     use std::collections::{BTreeMap, BTreeSet};
 
@@ -355,7 +359,14 @@ mod tests {
             expires_at_unix_s: None,
             revoked_at_unix_s: None,
         });
-        let new_key = rotate_api_key(&mut store, "atlas-key-a", "atlas-key-b", "svc:query", 300, 1_000);
+        let new_key = rotate_api_key(
+            &mut store,
+            "atlas-key-a",
+            "atlas-key-b",
+            "svc:query",
+            300,
+            1_000,
+        );
         assert!(store.validate_raw_key(&new_key, 1_001).is_ok());
         let active = store.list_active_ids(1_100);
         assert!(active.iter().any(|id| id == "atlas-key-a"));

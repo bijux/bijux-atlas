@@ -49,8 +49,9 @@ impl BenchmarkConfig {
             return Err("reproducibility.min_repeat_runs must be >= 2".to_string());
         }
         if !(0.0..=10.0).contains(&self.reproducibility.max_relative_delta_percent) {
-            return Err("reproducibility.max_relative_delta_percent must be between 0 and 10"
-                .to_string());
+            return Err(
+                "reproducibility.max_relative_delta_percent must be between 0 and 10".to_string(),
+            );
         }
         Ok(())
     }

@@ -164,7 +164,10 @@ impl SecurityPolicyRegistry {
 
     #[must_use]
     pub fn enabled_count(&self) -> usize {
-        self.policies.values().filter(|policy| policy.enabled).count()
+        self.policies
+            .values()
+            .filter(|policy| policy.enabled)
+            .count()
     }
 }
 
@@ -176,10 +179,16 @@ pub fn validate_security_config(config: &SecurityConfig) -> Vec<String> {
     if config.identity.principal_source.trim().is_empty() {
         errors.push("identity.principal_source must not be empty".to_string());
     }
-    if !matches!(config.auth.mode.as_str(), "disabled" | "api-key" | "oidc" | "mtls") {
+    if !matches!(
+        config.auth.mode.as_str(),
+        "disabled" | "api-key" | "oidc" | "mtls"
+    ) {
         errors.push("auth.mode must be one of: disabled, api-key, oidc, mtls".to_string());
     }
-    if !matches!(config.authorization.default_decision.as_str(), "allow" | "deny") {
+    if !matches!(
+        config.authorization.default_decision.as_str(),
+        "allow" | "deny"
+    ) {
         errors.push("authorization.default_decision must be allow or deny".to_string());
     }
     if config.secrets.provider.trim().is_empty() {
@@ -203,10 +212,10 @@ pub fn validate_security_config(config: &SecurityConfig) -> Vec<String> {
 #[cfg(test)]
 mod tests {
     use super::{
-        KeyManager, KeyRecord, SecurityAuthConfig, SecurityAuditConfig, SecurityAuthorizationConfig,
-        SecurityConfig, SecurityEventConfig, SecurityIdentityConfig, SecurityKeyConfig,
-        SecurityPolicy, SecurityPolicyRegistry, SecuritySecretsConfig, SecurityTransportConfig,
-        StaticSecretsProvider, validate_security_config,
+        validate_security_config, KeyManager, KeyRecord, SecurityAuditConfig, SecurityAuthConfig,
+        SecurityAuthorizationConfig, SecurityConfig, SecurityEventConfig, SecurityIdentityConfig,
+        SecurityKeyConfig, SecurityPolicy, SecurityPolicyRegistry, SecuritySecretsConfig,
+        SecurityTransportConfig, StaticSecretsProvider,
     };
     use crate::domain::security_runtime::SecretsProvider;
 
@@ -242,7 +251,10 @@ mod tests {
                 sink: "stdout".to_string(),
             },
             events: SecurityEventConfig {
-                classes: vec!["auth.failure".to_string(), "authorization.denied".to_string()],
+                classes: vec![
+                    "auth.failure".to_string(),
+                    "authorization.denied".to_string(),
+                ],
             },
         }
     }
@@ -250,7 +262,10 @@ mod tests {
     #[test]
     fn security_config_validation_passes_for_valid_config() {
         let errors = validate_security_config(&sample_config());
-        assert!(errors.is_empty(), "unexpected validation errors: {errors:?}");
+        assert!(
+            errors.is_empty(),
+            "unexpected validation errors: {errors:?}"
+        );
     }
 
     #[test]
@@ -290,7 +305,10 @@ mod tests {
             },
         ]);
         assert!(manager.rotate("atlas-key-1"));
-        assert_eq!(manager.active_key().map(|key| key.key_id.clone()), Some("atlas-key-1".to_string()));
+        assert_eq!(
+            manager.active_key().map(|key| key.key_id.clone()),
+            Some("atlas-key-1".to_string())
+        );
     }
 
     #[test]

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas_query::{normalized_query_hash_ssot, query_genes, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits};
+use bijux_atlas_query::{
+    normalized_query_hash_ssot, query_genes, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits,
+};
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use rusqlite::Connection;
 use std::cell::Cell;
@@ -117,7 +119,10 @@ fn bench_query_cache(c: &mut Criterion) {
         let key = normalized_query_hash_ssot(&req).expect("hash");
         let response = query_genes(&conn, &req, &limits, b"bench-secret").expect("warm query");
         let mut cache: HashMap<String, Vec<u8>> = HashMap::new();
-        cache.insert(key.clone(), serde_json::to_vec(&response).expect("serialize"));
+        cache.insert(
+            key.clone(),
+            serde_json::to_vec(&response).expect("serialize"),
+        );
 
         b.iter(|| {
             let payload = cache.get(black_box(&key)).expect("cache hit");

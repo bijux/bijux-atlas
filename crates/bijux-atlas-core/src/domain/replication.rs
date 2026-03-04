@@ -178,7 +178,10 @@ impl ReplicaRegistry {
         }
         let old_primary = replica.metadata.primary_node_id.clone();
         replica.metadata.primary_node_id = promote_node_id.to_string();
-        replica.metadata.replica_node_ids.retain(|node| node != promote_node_id);
+        replica
+            .metadata
+            .replica_node_ids
+            .retain(|node| node != promote_node_id);
         replica.metadata.replica_node_ids.push(old_primary);
         replica.health.healthy = true;
         replica.health.last_failure_reason = None;
@@ -188,11 +191,12 @@ impl ReplicaRegistry {
 
     #[must_use]
     pub fn diagnostics(&self, dataset_id: &str, shard_id: &str) -> Option<ReplicaDiagnostics> {
-        self.get(dataset_id, shard_id).map(|replica| ReplicaDiagnostics {
-            replica: replica.clone(),
-            consistency: self.consistency.clone(),
-            policy: self.policy.clone(),
-        })
+        self.get(dataset_id, shard_id)
+            .map(|replica| ReplicaDiagnostics {
+                replica: replica.clone(),
+                consistency: self.consistency.clone(),
+                policy: self.policy.clone(),
+            })
     }
 
     #[must_use]

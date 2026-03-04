@@ -94,7 +94,10 @@ impl MembershipRegistry {
             if record.descriptor.identity.generation == message.identity.generation {
                 record.last_heartbeat_unix_ms = message.sent_at_unix_ms;
                 record.load_percent = message.load_percent.min(100);
-                if matches!(record.state, MembershipState::Joining | MembershipState::Recovering) {
+                if matches!(
+                    record.state,
+                    MembershipState::Joining | MembershipState::Recovering
+                ) {
                     record.state = MembershipState::Active;
                 }
             }
@@ -122,10 +125,15 @@ impl MembershipRegistry {
     pub fn detect_timeouts(&mut self, now_unix_ms: u64) -> Vec<String> {
         let mut timed_out = Vec::new();
         for (node_id, record) in &mut self.nodes {
-            if matches!(record.state, MembershipState::Removed | MembershipState::Quarantined) {
+            if matches!(
+                record.state,
+                MembershipState::Removed | MembershipState::Quarantined
+            ) {
                 continue;
             }
-            if now_unix_ms.saturating_sub(record.last_heartbeat_unix_ms) > self.policy.node_timeout_ms {
+            if now_unix_ms.saturating_sub(record.last_heartbeat_unix_ms)
+                > self.policy.node_timeout_ms
+            {
                 record.state = MembershipState::TimedOut;
                 timed_out.push(node_id.clone());
             }
@@ -221,7 +229,9 @@ impl MembershipRegistry {
 #[cfg(test)]
 mod tests {
     use super::{HeartbeatMessage, MembershipPolicy, MembershipRegistry, MembershipState};
-    use crate::domain::distributed::{NodeDescriptor, NodeIdentity, NodeRole, ReadinessPolicy, ShutdownPolicy};
+    use crate::domain::distributed::{
+        NodeDescriptor, NodeIdentity, NodeRole, ReadinessPolicy, ShutdownPolicy,
+    };
 
     fn descriptor() -> NodeDescriptor {
         NodeDescriptor {

@@ -52,7 +52,11 @@ impl ClusterStateRegistry {
     pub fn snapshot(&self) -> ClusterStatusSnapshot {
         let health = if self.nodes.is_empty() {
             ClusterHealth::Unavailable
-        } else if self.nodes.values().any(|node| node.state == NodeState::Failed) {
+        } else if self
+            .nodes
+            .values()
+            .any(|node| node.state == NodeState::Failed)
+        {
             ClusterHealth::Degraded
         } else {
             ClusterHealth::Healthy
@@ -129,6 +133,9 @@ mod tests {
         registry.register_node(node);
         let snapshot = registry.snapshot();
         assert_eq!(snapshot.node_count, 1);
-        assert_eq!(snapshot.health, crate::domain::distributed::ClusterHealth::Healthy);
+        assert_eq!(
+            snapshot.health,
+            crate::domain::distributed::ClusterHealth::Healthy
+        );
     }
 }

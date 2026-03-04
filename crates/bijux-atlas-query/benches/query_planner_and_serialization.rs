@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use bijux_atlas_query::{
-    parse_gene_query_request, plan_gene_query, query_genes, normalized_query_hash_ssot,
-    GeneFields, GeneFilter, GeneQueryRequest, QueryLimits, RegionFilter,
+    normalized_query_hash_ssot, parse_gene_query_request, plan_gene_query, query_genes, GeneFields,
+    GeneFilter, GeneQueryRequest, QueryLimits, RegionFilter,
 };
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use rusqlite::Connection;

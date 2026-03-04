@@ -111,7 +111,9 @@ impl ShardRegistry {
     #[must_use]
     pub fn shards_for_owner(&self, node_id: &str) -> Vec<&ShardRecord> {
         let ids = self.owners.get(node_id).cloned().unwrap_or_default();
-        ids.into_iter().filter_map(|id| self.shards.get(&id)).collect()
+        ids.into_iter()
+            .filter_map(|id| self.shards.get(&id))
+            .collect()
     }
 
     #[must_use]
@@ -305,13 +307,22 @@ mod tests {
         let assigned = registry.assign_round_robin("ds2", 2, &owners);
         let shard = assigned[0].clone();
         assert!(registry.transfer_ownership(&shard, "node-z"));
-        assert_eq!(registry.get(&shard).expect("shard").metadata.owner_node_id, "node-z");
+        assert_eq!(
+            registry.get(&shard).expect("shard").metadata.owner_node_id,
+            "node-z"
+        );
         assert!(registry.relocate_shard(&shard, "node-y"));
-        assert_eq!(registry.get(&shard).expect("shard").metadata.owner_node_id, "node-y");
+        assert_eq!(
+            registry.get(&shard).expect("shard").metadata.owner_node_id,
+            "node-y"
+        );
         registry.rebalance(&owners);
-        assert!(owners
-            .iter()
-            .any(|owner| registry.get(&shard).expect("shard").metadata.owner_node_id == *owner));
+        assert!(owners.iter().any(|owner| registry
+            .get(&shard)
+            .expect("shard")
+            .metadata
+            .owner_node_id
+            == *owner));
     }
 
     #[test]

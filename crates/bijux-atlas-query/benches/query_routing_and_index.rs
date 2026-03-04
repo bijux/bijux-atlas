@@ -2,7 +2,7 @@
 
 use bijux_atlas_model::ShardCatalog;
 use bijux_atlas_query::{
-    explain_query_plan, query_genes, query_genes_fanout, query_gene_id_name_json_minimal_fast,
+    explain_query_plan, query_gene_id_name_json_minimal_fast, query_genes, query_genes_fanout,
     select_shards_for_request, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits, RegionFilter,
 };
 use criterion::{black_box, criterion_group, criterion_main, Criterion};

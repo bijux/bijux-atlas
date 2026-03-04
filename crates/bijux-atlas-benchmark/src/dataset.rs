@@ -39,10 +39,16 @@ impl DatasetRegistry {
                 return Err("dataset id must not be empty".to_string());
             }
             if spec.row_count == 0 {
-                return Err(format!("dataset `{}` row_count must be greater than zero", spec.id));
+                return Err(format!(
+                    "dataset `{}` row_count must be greater than zero",
+                    spec.id
+                ));
             }
             if spec.shard_count == 0 {
-                return Err(format!("dataset `{}` shard_count must be greater than zero", spec.id));
+                return Err(format!(
+                    "dataset `{}` shard_count must be greater than zero",
+                    spec.id
+                ));
             }
         }
         Ok(())
