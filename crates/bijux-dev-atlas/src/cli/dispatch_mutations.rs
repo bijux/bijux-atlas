@@ -514,7 +514,8 @@ fn force_json_system(command: &mut crate::cli::SystemCommand) {
             crate::cli::SystemSimulateCommand::Install(args)
             | crate::cli::SystemSimulateCommand::Upgrade(args)
             | crate::cli::SystemSimulateCommand::Rollback(args)
-            | crate::cli::SystemSimulateCommand::OfflineMode(args) => {
+            | crate::cli::SystemSimulateCommand::OfflineMode(args)
+            | crate::cli::SystemSimulateCommand::Suite(args) => {
                 args.format = FormatArg::Json
             }
         },
@@ -1101,7 +1102,8 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 crate::cli::SystemSimulateCommand::Install(args)
                 | crate::cli::SystemSimulateCommand::Upgrade(args)
                 | crate::cli::SystemSimulateCommand::Rollback(args)
-                | crate::cli::SystemSimulateCommand::OfflineMode(args) => {
+                | crate::cli::SystemSimulateCommand::OfflineMode(args)
+                | crate::cli::SystemSimulateCommand::Suite(args) => {
                     args.repo_root = Some(root.clone())
                 }
             },

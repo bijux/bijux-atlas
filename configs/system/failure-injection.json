@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "injections": [
+    {
+      "id": "network-latency",
+      "description": "Inject high network latency and packet delay into service paths."
+    },
+    {
+      "id": "container-restart",
+      "description": "Inject runtime container restart events during scenario execution."
+    },
+    {
+      "id": "config-corruption",
+      "description": "Inject controlled configuration corruption and validate recovery logic."
+    },
+    {
+      "id": "disk-pressure",
+      "description": "Inject disk pressure and low storage conditions."
+    }
+  ]
+}

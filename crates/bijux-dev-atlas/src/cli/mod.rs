@@ -474,6 +474,7 @@ pub enum SystemSimulateCommand {
     Upgrade(SystemSimulateArgs),
     Rollback(SystemSimulateArgs),
     OfflineMode(SystemSimulateArgs),
+    Suite(SystemSimulateArgs),
 }
 
 #[derive(Args, Debug, Clone)]
