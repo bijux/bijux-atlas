@@ -236,6 +236,8 @@ impl ReplicaRegistry {
 
 #[cfg(test)]
 mod tests {
+    use std::time::{Duration, Instant};
+
     use super::{
         ConsistencyGuarantee, ConsistencyLevel, ReplicaHealth, ReplicaMetadata, ReplicaRecord,
         ReplicaRegistry, ReplicaSyncState, ReplicationPolicy,
@@ -318,5 +320,79 @@ mod tests {
         assert_eq!(metrics.average_lag_ms, 25);
         assert_eq!(metrics.total_sync_throughput_rows_per_second, 15_000);
         assert_eq!(metrics.replica_failures_total, 1);
+    }
+
+    #[test]
+    fn replication_failover_rejects_non_replica_promotion_target() {
+        let mut registry = registry();
+        registry.upsert_replica(record());
+        let promoted = registry.failover("atlas-default", "atlas-default-s001", "node-z");
+        assert!(!promoted);
+        let current = registry
+            .get("atlas-default", "atlas-default-s001")
+            .expect("replica should exist");
+        assert_eq!(current.metadata.primary_node_id, "node-a");
+    }
+
+    #[test]
+    fn replication_sync_updates_lsn_lag_and_throughput() {
+        let mut registry = registry();
+        registry.upsert_replica(record());
+        let updated = registry.update_sync_progress(
+            "atlas-default",
+            "atlas-default-s001",
+            2_000,
+            1_980,
+            8,
+            22_500,
+        );
+        assert!(updated);
+        let current = registry
+            .get("atlas-default", "atlas-default-s001")
+            .expect("replica should exist");
+        assert_eq!(current.sync.primary_lsn, 2_000);
+        assert_eq!(current.sync.last_applied_lsn, 1_980);
+        assert_eq!(current.sync.lag_ms, 8);
+        assert_eq!(current.sync.sync_throughput_rows_per_second, 22_500);
+    }
+
+    #[test]
+    fn replication_diagnostics_expose_consistency_contract() {
+        let mut registry = registry();
+        registry.upsert_replica(record());
+        let diagnostics = registry
+            .diagnostics("atlas-default", "atlas-default-s001")
+            .expect("diagnostics should exist");
+        assert_eq!(
+            diagnostics.consistency.read_consistency,
+            ConsistencyLevel::Quorum
+        );
+        assert_eq!(
+            diagnostics.consistency.write_consistency,
+            ConsistencyLevel::Quorum
+        );
+        assert_eq!(diagnostics.policy.replication_factor, 2);
+    }
+
+    #[test]
+    fn replication_registry_update_path_meets_basic_performance_budget() {
+        let mut registry = registry();
+        registry.upsert_replica(record());
+        let started = Instant::now();
+        for i in 0..10_000_u64 {
+            let _ = registry.update_sync_progress(
+                "atlas-default",
+                "atlas-default-s001",
+                10_000 + i,
+                9_900 + i,
+                i % 50,
+                10_000 + (i % 1_000),
+            );
+        }
+        let elapsed = started.elapsed();
+        assert!(
+            elapsed < Duration::from_secs(2),
+            "replication update loop exceeded budget: {elapsed:?}"
+        );
     }
 }
