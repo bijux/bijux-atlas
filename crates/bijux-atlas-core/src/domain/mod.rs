@@ -8,6 +8,7 @@ pub mod distributed_config;
 pub mod membership;
 pub mod resilience;
 pub mod replication;
+pub mod security_runtime;
 pub mod sharding;
 pub mod time;
 
@@ -35,6 +36,13 @@ pub use resilience::{
 pub use replication::{
     ConsistencyGuarantee, ConsistencyLevel, ReplicaDiagnostics, ReplicaHealth, ReplicaMetadata,
     ReplicaRecord, ReplicaRegistry, ReplicaSyncState, ReplicationMetrics, ReplicationPolicy,
+};
+pub use security_runtime::{
+    EnvSecretsProvider, KeyManager, KeyRecord, SecretsProvider, SecurityAuthConfig,
+    SecurityAuditConfig, SecurityAuthorizationConfig, SecurityConfig, SecurityEventConfig,
+    SecurityIdentityConfig, SecurityKeyConfig, SecurityPolicy, SecurityPolicyRegistry,
+    SecuritySecretsConfig, SecurityTransportConfig, StaticSecretsProvider,
+    load_security_config_from_path, validate_security_config,
 };
 pub use sharding::{
     DatasetShardLayout, ShardHealth, ShardKeyStrategy, ShardMetadata, ShardOwnershipRule,

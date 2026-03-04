@@ -17,6 +17,7 @@ serde = ["dep:serde_json"]
 base64 = "0.22"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", optional = true }
+serde_yaml = "0.9"
 sha2 = "0.10"
 
 [dev-dependencies]
