@@ -1,5 +1,5 @@
 # Scope: ops area wrappers only.
-# Public targets: ops, ops-contracts, ops-contracts-effect, ops-help, ops-doctor, ops-validate, ops-artifact-root-check, ops-render, ops-install-plan, ops-up, ops-down, ops-clean, ops-reset, ops-status, ops-kind-up, ops-kind-down, ops-tools-verify, ops-pins-check, ops-pins-update, ops-stack, ops-k8s, ops-e2e, ops-load, ops-load-plan, ops-load-run, ops-observability
+# Public targets: ops, ops-contracts, ops-contracts-effect, ops-help, ops-doctor, ops-validate, ops-artifact-root-check, ops-render, ops-install-plan, ops-up, ops-down, ops-clean, ops-reset, ops-status, ops-kind-up, ops-kind-down, ops-tools-verify, ops-pins-check, ops-pins-update, ops-stack, ops-k8s, ops-e2e, ops-load, ops-load-plan, ops-load-run, ops-observability, ops-traces-check, ops-trace-debug
 # All external tools are invoked through bijux dev atlas command surfaces.
 SHELL := /bin/sh
 BIJUX ?= bijux
@@ -77,6 +77,12 @@ ops-load-run: ## Execute load suite through canonical control plane
 ops-observability: ## Run observability verification wrapper through grouped ops namespace
 	@$(DEV_ATLAS) ops observe verify --profile $(PROFILE) --format $(FORMAT)
 
+ops-traces-check: ## Run trace surface checks through grouped ops namespace
+	@$(DEV_ATLAS) ops observe verify --profile $(PROFILE) --format $(FORMAT)
+
+ops-trace-debug: ## Run trace diagnostics in verbose mode
+	@$(DEV_ATLAS) ops observe verify --profile $(PROFILE) --format $(FORMAT) --verbose
+
 ops-tools-verify: ## Verify required ops external tools
 	@$(DEV_ATLAS) ops verify-tools --allow-subprocess --format $(FORMAT)
 
@@ -86,4 +92,4 @@ ops-pins-check: ## Validate unified reproducibility pins
 ops-pins-update: ## Refresh unified reproducibility pins
 	@$(DEV_ATLAS) ops pins update --i-know-what-im-doing --allow-subprocess --format $(FORMAT)
 
-.PHONY: ops ops-contracts ops-contracts-effect ops-help ops-doctor ops-validate ops-artifact-root-check ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-kind-up ops-kind-down ops-status ops-stack ops-k8s ops-e2e ops-load ops-load-plan ops-load-run ops-observability ops-tools-verify ops-pins-check ops-pins-update
+.PHONY: ops ops-contracts ops-contracts-effect ops-help ops-doctor ops-validate ops-artifact-root-check ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-kind-up ops-kind-down ops-status ops-stack ops-k8s ops-e2e ops-load ops-load-plan ops-load-run ops-observability ops-traces-check ops-trace-debug ops-tools-verify ops-pins-check ops-pins-update
