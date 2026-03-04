@@ -9,6 +9,18 @@ Runtime HTTP service for `bijux-atlas`.
 - Health: `GET /healthz`
 - Readiness: `GET /readyz`
 
+## Runtime entrypoints
+
+- Binary: `atlas-server` (`src/main.rs`)
+- Config loading: `runtime --config <path>` (TOML/YAML validated at boot)
+- Telemetry contracts exposed via `CONTRACT_METRIC_NAMES` and `CONTRACT_TRACE_SPAN_NAMES`
+
+## Quick example
+
+```rust
+assert!(!bijux_atlas_server::CONTRACT_METRIC_NAMES.is_empty());
+```
+
 ## Config
 - Environment schema contract: `configs/contracts/env.schema.json`
 - Startup config validation is fail-fast at process boot.

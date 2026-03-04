@@ -15,6 +15,16 @@ This crate defines low-level contracts. Public API changes require deliberate ve
 - invariant identifiers (`DatasetId`, `ShardId`, `RunId`)
 - effect boundary traits (`FsPort`, `ClockPort`, `NetPort`, `ProcessPort`)
 
+## Quick example
+
+```rust
+use bijux_atlas_core::DatasetId;
+
+let dataset = DatasetId::new("110/homo_sapiens/GRCh38")?;
+assert_eq!(dataset.as_str(), "110/homo_sapiens/GRCh38");
+# Ok::<(), bijux_atlas_core::Error>(())
+```
+
 ## Do Not
 
 - add runtime effects to pure domain logic

@@ -12,6 +12,12 @@ This crate owns:
 - severity taxonomy (`PolicySeverity`)
 - repository budget evaluation (`RepositoryMetrics`)
 
+## Quick example
+
+```rust
+assert_eq!(bijux_atlas_policies::CRATE_NAME, "bijux-atlas-policies");
+```
+
 ## Extend Policies
 
 1. Add data fields in `configs/policy/policy.json` and schema updates in `configs/policy/policy.schema.json`.
