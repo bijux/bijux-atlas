@@ -1,0 +1,5 @@
+ops evidence summarize should emit:
+- manifest path
+- schema_version
+- artifact counts
+- zero errors when manifest is valid

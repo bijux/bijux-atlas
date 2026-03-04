@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "ops_evidence_bundle",
+  "run_id": "fixture-run",
+  "install_evidence": {"path": "artifacts/ops/evidence/fixture-run/install-evidence.json", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+  "render_evidence": {"path": "artifacts/ops/evidence/fixture-run/render-evidence.json", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+  "validate_evidence": {"path": "artifacts/ops/evidence/fixture-run/validate-evidence.json", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+  "install_matrix_report": {"path": "artifacts/ops/evidence/fixture-run/install-matrix-report.json", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+  "render_matrix_report": {"path": "artifacts/ops/evidence/fixture-run/render-matrix-report.json", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+  "schema_coverage_report": {"path": "artifacts/ops/evidence/fixture-run/schema-coverage-report.json", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+  "network_policy_coverage_report": {"path": "artifacts/ops/evidence/fixture-run/network-policy-coverage-report.json", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+  "rbac_coverage_report": {"path": "artifacts/ops/evidence/fixture-run/rbac-coverage-report.json", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+  "inventory_snapshot": {"path": "artifacts/ops/evidence/fixture-run/inventory-snapshot.json", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+  "tool_versions": {"path": "artifacts/ops/evidence/fixture-run/tool-versions.json", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+  "redaction_secret_keys": ["password", "secret", "token", "api_key"]
+}
