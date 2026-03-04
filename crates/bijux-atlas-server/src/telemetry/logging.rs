@@ -7,6 +7,8 @@ pub struct LoggingConfig {
     pub filter_targets: Option<String>,
     pub sampling_rate: f64,
     pub redaction_enabled: bool,
+    pub rotation_max_bytes: u64,
+    pub rotation_max_files: u32,
 }
 
 impl LoggingConfig {
@@ -64,6 +66,8 @@ mod tests {
             filter_targets: Some("atlas=debug,hyper=warn".to_string()),
             sampling_rate: 1.0,
             redaction_enabled: true,
+            rotation_max_bytes: 10_485_760,
+            rotation_max_files: 5,
         };
         assert_eq!(cfg.default_filter_directive(), "info,atlas=debug,hyper=warn");
     }
@@ -76,9 +80,18 @@ mod tests {
             filter_targets: None,
             sampling_rate: 0.5,
             redaction_enabled: true,
+            rotation_max_bytes: 10_485_760,
+            rotation_max_files: 5,
         };
         let a = cfg.should_emit_sampled("req-123");
         let b = cfg.should_emit_sampled("req-123");
         assert_eq!(a, b);
+    }
+
+    #[test]
+    fn redaction_masks_secret_like_values() {
+        assert_eq!(redact_if_needed(true, "api_token=abc"), "[redacted]");
+        assert_eq!(redact_if_needed(true, "safe-value"), "safe-value");
+        assert_eq!(redact_if_needed(false, "api_token=abc"), "api_token=abc");
     }
 }

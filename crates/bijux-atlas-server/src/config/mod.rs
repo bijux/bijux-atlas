@@ -126,6 +126,8 @@ pub struct RuntimeConfig {
     pub log_filter_targets: Option<String>,
     pub log_sampling_rate: f64,
     pub log_redaction_enabled: bool,
+    pub log_rotation_max_bytes: u64,
+    pub log_rotation_max_files: u32,
     pub otel_enabled: bool,
     pub trace_sampling_ratio: f64,
     pub trace_exporter: String,
@@ -534,6 +536,16 @@ fn validate_runtime_config_contract(runtime: &RuntimeConfig) -> Result<(), Runti
             message: "ATLAS_LOG_SAMPLING_RATE must be in [0.0, 1.0]".to_string(),
         });
     }
+    if runtime.log_rotation_max_bytes == 0 {
+        return Err(RuntimeConfigError::InvalidValue {
+            message: "ATLAS_LOG_ROTATION_MAX_BYTES must be > 0".to_string(),
+        });
+    }
+    if runtime.log_rotation_max_files == 0 {
+        return Err(RuntimeConfigError::InvalidValue {
+            message: "ATLAS_LOG_ROTATION_MAX_FILES must be > 0".to_string(),
+        });
+    }
     if !matches!(
         runtime.log_level.to_ascii_lowercase().as_str(),
         "trace" | "debug" | "info" | "warn" | "error"
@@ -873,6 +885,8 @@ impl RuntimeConfig {
             log_filter_targets: std::env::var("ATLAS_LOG_FILTER_TARGETS").ok(),
             log_sampling_rate: env_f64("ATLAS_LOG_SAMPLING_RATE", 1.0)?,
             log_redaction_enabled: env_bool("ATLAS_LOG_REDACTION_ENABLED", true)?,
+            log_rotation_max_bytes: env_u64("ATLAS_LOG_ROTATION_MAX_BYTES", 10_485_760)?,
+            log_rotation_max_files: env_u64("ATLAS_LOG_ROTATION_MAX_FILES", 5)? as u32,
             otel_enabled: env_bool("ATLAS_OTEL_ENABLED", false)?,
             trace_sampling_ratio: env_f64("ATLAS_TRACE_SAMPLING_RATIO", 1.0)?,
             trace_exporter: std::env::var("ATLAS_TRACE_EXPORTER")

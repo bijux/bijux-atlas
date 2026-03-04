@@ -308,6 +308,8 @@ fn runtime_config_accepts_logging_configuration() {
             );
             assert_eq!(runtime.log_sampling_rate, 0.75);
             assert!(!runtime.log_redaction_enabled);
+            assert_eq!(runtime.log_rotation_max_bytes, 10_485_760);
+            assert_eq!(runtime.log_rotation_max_files, 5);
         },
     );
 }
@@ -327,6 +329,29 @@ fn runtime_config_rejects_invalid_log_level_and_sampling() {
             assert!(
                 msg.contains("ATLAS_LOG_LEVEL must be one of")
                     || msg.contains("ATLAS_LOG_SAMPLING_RATE must be in [0.0, 1.0]")
+            );
+        },
+    );
+}
+
+#[test]
+fn runtime_config_rejects_invalid_log_rotation_limits() {
+    with_runtime_env(
+        &[
+            ("ATLAS_LOG_ROTATION_MAX_BYTES", "0"),
+            ("ATLAS_LOG_ROTATION_MAX_FILES", "0"),
+        ],
+        || {
+            let startup = RuntimeStartupConfig {
+                bind_addr: DEFAULT_BIND_ADDR.to_string(),
+                store_root: PathBuf::from(DEFAULT_STORE_ROOT),
+                cache_root: PathBuf::from(DEFAULT_CACHE_ROOT),
+            };
+            let err = RuntimeConfig::from_env(startup).expect_err("invalid log rotation config");
+            let msg = err.to_string();
+            assert!(
+                msg.contains("ATLAS_LOG_ROTATION_MAX_BYTES must be > 0")
+                    || msg.contains("ATLAS_LOG_ROTATION_MAX_FILES must be > 0")
             );
         },
     );

@@ -402,6 +402,8 @@ async fn main() -> Result<(), String> {
             filter_targets: runtime.log_filter_targets.clone(),
             sampling_rate: runtime.log_sampling_rate,
             redaction_enabled: runtime.log_redaction_enabled,
+            rotation_max_bytes: runtime.log_rotation_max_bytes,
+            rotation_max_files: runtime.log_rotation_max_files,
         },
         otel_enabled: runtime.otel_enabled,
         sampling_ratio: runtime.trace_sampling_ratio,
