@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "stable",
   "suite_count": 7,
-  "scenario_count": 20,
+  "scenario_count": 27,
   "suite_ids": [
     "fixture-medium",
     "k8s-suite",
@@ -30,8 +30,15 @@
     "readonly-mode",
     "realdata",
     "restart-resume",
+    "rollback-after-failed-upgrade",
+    "rollback-after-successful-upgrade",
     "schema-evolution",
     "smoke",
+    "upgrade-config-migration",
+    "upgrade-existing-datasets",
+    "upgrade-feature-default-change",
+    "upgrade-minor",
+    "upgrade-patch",
     "warm-start"
   ],
   "generated_by": "bijux dev atlas ops generate"

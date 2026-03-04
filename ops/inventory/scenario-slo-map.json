@@ -1,25 +1,338 @@
 {
   "schema_version": 1,
   "mappings": [
-    {"scenario_id": "artifact-integrity", "slo_ids": ["api.availability"], "drill_ids": ["ops.drill.rollback"], "load_suites": []},
-    {"scenario_id": "cold-start", "slo_ids": ["api.availability", "api.p95_latency"], "drill_ids": ["ops.drill.store_outage"], "load_suites": ["cold-start", "warm-steady-state-p99"]},
-    {"scenario_id": "high-concurrency", "slo_ids": ["api.availability", "api.p95_latency"], "drill_ids": ["ops.drill.overload"], "load_suites": ["mixed-workload", "spike"]},
-    {"scenario_id": "ingest-retry", "slo_ids": ["ingest.success_rate"], "drill_ids": ["ops.drill.store_outage"], "load_suites": ["ingest-query-workload"]},
-    {"scenario_id": "k8s-suite", "slo_ids": ["api.availability"], "drill_ids": ["ops.drill.pod_churn", "ops.drill.upgrade"], "load_suites": []},
-    {"scenario_id": "low-resource", "slo_ids": ["api.availability", "api.p95_latency"], "drill_ids": ["ops.drill.memory_growth"], "load_suites": ["cheap-only-survival", "cpu-saturation"]},
-    {"scenario_id": "medium-single-node", "slo_ids": ["api.availability"], "drill_ids": ["ops.drill.store_outage"], "load_suites": ["mixed"]},
-    {"scenario_id": "minimal-single-node", "slo_ids": ["api.availability"], "drill_ids": ["ops.drill.store_outage"], "load_suites": ["mixed"]},
-    {"scenario_id": "mixed-load", "slo_ids": ["api.availability", "api.p95_latency", "ingest.success_rate"], "drill_ids": ["ops.drill.overload"], "load_suites": ["mixed-workload", "ingest-query-workload"]},
-    {"scenario_id": "multi-dataset", "slo_ids": ["api.availability"], "drill_ids": ["ops.drill.rollback"], "load_suites": ["multi-dataset-hotset"]},
-    {"scenario_id": "offline-mode", "slo_ids": ["api.availability"], "drill_ids": ["ops.drill.store_outage"], "load_suites": []},
-    {"scenario_id": "perf-e2e", "slo_ids": ["api.availability", "api.p95_latency"], "drill_ids": ["ops.drill.overload", "ops.drill.memory_growth"], "load_suites": ["mixed-workload", "heavy-query-workload", "long-running-stability"]},
-    {"scenario_id": "query-filter-projection", "slo_ids": ["api.availability"], "drill_ids": [], "load_suites": ["mixed"]},
-    {"scenario_id": "query-pagination", "slo_ids": ["api.availability"], "drill_ids": [], "load_suites": ["cursor-stress"]},
-    {"scenario_id": "readonly-mode", "slo_ids": ["api.availability"], "drill_ids": ["ops.drill.store_outage"], "load_suites": ["read-heavy-workload"]},
-    {"scenario_id": "realdata", "slo_ids": ["api.availability"], "drill_ids": ["ops.drill.rollback", "ops.drill.store_outage"], "load_suites": ["multi-release", "diff-heavy"]},
-    {"scenario_id": "restart-resume", "slo_ids": ["api.availability"], "drill_ids": ["ops.drill.pod_churn"], "load_suites": ["pod-churn"]},
-    {"scenario_id": "schema-evolution", "slo_ids": ["api.availability"], "drill_ids": ["ops.drill.upgrade"], "load_suites": ["multi-release"]},
-    {"scenario_id": "smoke", "slo_ids": ["api.availability", "api.p95_latency"], "drill_ids": ["ops.drill.store_outage"], "load_suites": ["mixed", "cheap-only-survival"]},
-    {"scenario_id": "warm-start", "slo_ids": ["api.availability", "api.p95_latency"], "drill_ids": ["ops.drill.pod_churn"], "load_suites": ["warm-steady-state-p99"]}
+    {
+      "scenario_id": "artifact-integrity",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.rollback"
+      ],
+      "load_suites": []
+    },
+    {
+      "scenario_id": "cold-start",
+      "slo_ids": [
+        "api.availability",
+        "api.p95_latency"
+      ],
+      "drill_ids": [
+        "ops.drill.store_outage"
+      ],
+      "load_suites": [
+        "cold-start",
+        "warm-steady-state-p99"
+      ]
+    },
+    {
+      "scenario_id": "high-concurrency",
+      "slo_ids": [
+        "api.availability",
+        "api.p95_latency"
+      ],
+      "drill_ids": [
+        "ops.drill.overload"
+      ],
+      "load_suites": [
+        "mixed-workload",
+        "spike"
+      ]
+    },
+    {
+      "scenario_id": "ingest-retry",
+      "slo_ids": [
+        "ingest.success_rate"
+      ],
+      "drill_ids": [
+        "ops.drill.store_outage"
+      ],
+      "load_suites": [
+        "ingest-query-workload"
+      ]
+    },
+    {
+      "scenario_id": "k8s-suite",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.pod_churn",
+        "ops.drill.upgrade"
+      ],
+      "load_suites": []
+    },
+    {
+      "scenario_id": "low-resource",
+      "slo_ids": [
+        "api.availability",
+        "api.p95_latency"
+      ],
+      "drill_ids": [
+        "ops.drill.memory_growth"
+      ],
+      "load_suites": [
+        "cheap-only-survival",
+        "cpu-saturation"
+      ]
+    },
+    {
+      "scenario_id": "medium-single-node",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.store_outage"
+      ],
+      "load_suites": [
+        "mixed"
+      ]
+    },
+    {
+      "scenario_id": "minimal-single-node",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.store_outage"
+      ],
+      "load_suites": [
+        "mixed"
+      ]
+    },
+    {
+      "scenario_id": "mixed-load",
+      "slo_ids": [
+        "api.availability",
+        "api.p95_latency",
+        "ingest.success_rate"
+      ],
+      "drill_ids": [
+        "ops.drill.overload"
+      ],
+      "load_suites": [
+        "mixed-workload",
+        "ingest-query-workload"
+      ]
+    },
+    {
+      "scenario_id": "multi-dataset",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.rollback"
+      ],
+      "load_suites": [
+        "multi-dataset-hotset"
+      ]
+    },
+    {
+      "scenario_id": "offline-mode",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.store_outage"
+      ],
+      "load_suites": []
+    },
+    {
+      "scenario_id": "perf-e2e",
+      "slo_ids": [
+        "api.availability",
+        "api.p95_latency"
+      ],
+      "drill_ids": [
+        "ops.drill.overload",
+        "ops.drill.memory_growth"
+      ],
+      "load_suites": [
+        "mixed-workload",
+        "heavy-query-workload",
+        "long-running-stability"
+      ]
+    },
+    {
+      "scenario_id": "query-filter-projection",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [],
+      "load_suites": [
+        "mixed"
+      ]
+    },
+    {
+      "scenario_id": "query-pagination",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [],
+      "load_suites": [
+        "cursor-stress"
+      ]
+    },
+    {
+      "scenario_id": "readonly-mode",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.store_outage"
+      ],
+      "load_suites": [
+        "read-heavy-workload"
+      ]
+    },
+    {
+      "scenario_id": "realdata",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.rollback",
+        "ops.drill.store_outage"
+      ],
+      "load_suites": [
+        "multi-release",
+        "diff-heavy"
+      ]
+    },
+    {
+      "scenario_id": "restart-resume",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.pod_churn"
+      ],
+      "load_suites": [
+        "pod-churn"
+      ]
+    },
+    {
+      "scenario_id": "rollback-after-failed-upgrade",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.rollback"
+      ],
+      "load_suites": [
+        "load-under-rollback"
+      ]
+    },
+    {
+      "scenario_id": "rollback-after-successful-upgrade",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.rollback"
+      ],
+      "load_suites": [
+        "load-under-rollback"
+      ]
+    },
+    {
+      "scenario_id": "schema-evolution",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.upgrade"
+      ],
+      "load_suites": [
+        "multi-release"
+      ]
+    },
+    {
+      "scenario_id": "smoke",
+      "slo_ids": [
+        "api.availability",
+        "api.p95_latency"
+      ],
+      "drill_ids": [
+        "ops.drill.store_outage"
+      ],
+      "load_suites": [
+        "mixed",
+        "cheap-only-survival"
+      ]
+    },
+    {
+      "scenario_id": "upgrade-config-migration",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.upgrade"
+      ],
+      "load_suites": [
+        "multi-release"
+      ]
+    },
+    {
+      "scenario_id": "upgrade-existing-datasets",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.upgrade"
+      ],
+      "load_suites": [
+        "multi-dataset-hotset"
+      ]
+    },
+    {
+      "scenario_id": "upgrade-feature-default-change",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.upgrade"
+      ],
+      "load_suites": [
+        "mixed-workload"
+      ]
+    },
+    {
+      "scenario_id": "upgrade-minor",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.upgrade"
+      ],
+      "load_suites": [
+        "multi-release"
+      ]
+    },
+    {
+      "scenario_id": "upgrade-patch",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.upgrade"
+      ],
+      "load_suites": [
+        "load-under-rollout"
+      ]
+    },
+    {
+      "scenario_id": "warm-start",
+      "slo_ids": [
+        "api.availability",
+        "api.p95_latency"
+      ],
+      "drill_ids": [
+        "ops.drill.pod_churn"
+      ],
+      "load_suites": [
+        "warm-steady-state-p99"
+      ]
+    }
   ]
 }

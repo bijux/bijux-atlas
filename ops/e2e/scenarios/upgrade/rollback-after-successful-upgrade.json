@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "id": "rollback-after-successful-upgrade",
+  "from_version": "0.2.0",
+  "to_version": "0.1.0",
+  "kind": "rollback",
+  "failure_expected": false,
+  "steps": ["versioned-install", "upgrade", "rollback", "verify-restored"]
+}

@@ -2,102 +2,17 @@
   "schema_version": 1,
   "scenarios": [
     {
-      "id": "smoke",
-      "description": "Local e2e smoke composition using stack, observability, datasets, and load smoke checks.",
-      "action_id": "ops.root.smoke",
-      "entrypoint": "make ops-e2e-smoke",
-      "compose": {"stack": true, "observe": true, "datasets": true, "load": true},
-      "intent": "smoke",
-      "evidence_class": "fast"
-    },
-    {
-      "id": "k8s-suite",
-      "description": "Kubernetes invariant suite composed with stack and observability dependencies.",
+      "id": "artifact-integrity",
+      "description": "Artifact checksum verification enforces integrity before serve.",
       "action_id": "ops.e2e.run",
-      "entrypoint": "make ops-k8s-suite",
-      "compose": {"stack": true, "observe": true, "datasets": false, "load": false},
-      "intent": "compatibility",
-      "evidence_class": "slow"
-    },
-    {
-      "id": "realdata",
-      "description": "Realdata regression scenarios with dataset and observability checks.",
-      "action_id": "ops.e2e.run",
-      "entrypoint": "make ops-realdata",
-      "compose": {"stack": true, "observe": true, "datasets": true, "load": false},
-      "intent": "regression",
-      "evidence_class": "slow"
-    },
-    {
-      "id": "perf-e2e",
-      "description": "Perf-oriented end-to-end scenario composing load suites with stack and datasets.",
-      "action_id": "ops.load.run",
-      "entrypoint": "make ops-up",
-      "compose": {"stack": true, "observe": true, "datasets": true, "load": true},
-      "intent": "performance",
-      "evidence_class": "slow"
-    },
-    {
-      "id": "minimal-single-node",
-      "description": "Small dataset end-to-end on a single node and single shard.",
-      "action_id": "ops.e2e.run",
-      "entrypoint": "bijux dev atlas ops scenario run --scenario minimal-single-node",
-      "compose": {"stack": true, "observe": false, "datasets": true, "load": false},
-      "intent": "baseline",
-      "evidence_class": "fast"
-    },
-    {
-      "id": "medium-single-node",
-      "description": "Medium dataset scenario with multiple shards on one node.",
-      "action_id": "ops.e2e.run",
-      "entrypoint": "bijux dev atlas ops scenario run --scenario medium-single-node",
-      "compose": {"stack": true, "observe": true, "datasets": true, "load": false},
-      "intent": "baseline",
-      "evidence_class": "slow"
-    },
-    {
-      "id": "multi-dataset",
-      "description": "Two datasets loaded with shared index query validation.",
-      "action_id": "ops.e2e.run",
-      "entrypoint": "bijux dev atlas ops scenario run --scenario multi-dataset",
-      "compose": {"stack": true, "observe": true, "datasets": true, "load": false},
-      "intent": "consistency",
-      "evidence_class": "slow"
-    },
-    {
-      "id": "schema-evolution",
-      "description": "Dataset schema evolves from v1 to v2 with compatibility verification.",
-      "action_id": "ops.e2e.run",
-      "entrypoint": "bijux dev atlas ops scenario run --scenario schema-evolution",
-      "compose": {"stack": true, "observe": true, "datasets": true, "load": false},
-      "intent": "compatibility",
-      "evidence_class": "slow"
-    },
-    {
-      "id": "ingest-retry",
-      "description": "Transient ingest parse error followed by retry and success.",
-      "action_id": "ops.e2e.run",
-      "entrypoint": "bijux dev atlas ops scenario run --scenario ingest-retry",
-      "compose": {"stack": true, "observe": true, "datasets": true, "load": false},
-      "intent": "resilience",
-      "evidence_class": "fast"
-    },
-    {
-      "id": "query-pagination",
-      "description": "Cursor pagination invariants remain stable across pages.",
-      "action_id": "ops.e2e.run",
-      "entrypoint": "bijux dev atlas ops scenario run --scenario query-pagination",
-      "compose": {"stack": true, "observe": false, "datasets": true, "load": false},
-      "intent": "correctness",
-      "evidence_class": "fast"
-    },
-    {
-      "id": "query-filter-projection",
-      "description": "Filters and projection semantics produce deterministic outputs.",
-      "action_id": "ops.e2e.run",
-      "entrypoint": "bijux dev atlas ops scenario run --scenario query-filter-projection",
-      "compose": {"stack": true, "observe": false, "datasets": true, "load": false},
-      "intent": "correctness",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario artifact-integrity",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "security",
       "evidence_class": "fast"
     },
     {
@@ -105,62 +20,13 @@
       "description": "Empty cache cold-start behavior and first-request latency.",
       "action_id": "ops.e2e.run",
       "entrypoint": "bijux dev atlas ops scenario run --scenario cold-start",
-      "compose": {"stack": true, "observe": true, "datasets": true, "load": true},
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": true
+      },
       "intent": "performance",
-      "evidence_class": "slow"
-    },
-    {
-      "id": "warm-start",
-      "description": "Warm cache startup behavior and query latency stability.",
-      "action_id": "ops.e2e.run",
-      "entrypoint": "bijux dev atlas ops scenario run --scenario warm-start",
-      "compose": {"stack": true, "observe": true, "datasets": true, "load": true},
-      "intent": "performance",
-      "evidence_class": "slow"
-    },
-    {
-      "id": "restart-resume",
-      "description": "Runtime restart resumes expected state without corruption.",
-      "action_id": "ops.e2e.run",
-      "entrypoint": "bijux dev atlas ops scenario run --scenario restart-resume",
-      "compose": {"stack": true, "observe": true, "datasets": true, "load": false},
-      "intent": "resilience",
-      "evidence_class": "slow"
-    },
-    {
-      "id": "artifact-integrity",
-      "description": "Artifact checksum verification enforces integrity before serve.",
-      "action_id": "ops.e2e.run",
-      "entrypoint": "bijux dev atlas ops scenario run --scenario artifact-integrity",
-      "compose": {"stack": true, "observe": true, "datasets": true, "load": false},
-      "intent": "security",
-      "evidence_class": "fast"
-    },
-    {
-      "id": "readonly-mode",
-      "description": "Read-only mode serves queries while ingest remains disabled.",
-      "action_id": "ops.e2e.run",
-      "entrypoint": "bijux dev atlas ops scenario run --scenario readonly-mode",
-      "compose": {"stack": true, "observe": false, "datasets": true, "load": false},
-      "intent": "safety",
-      "evidence_class": "fast"
-    },
-    {
-      "id": "offline-mode",
-      "description": "Offline execution path with prefetched artifacts and no network access.",
-      "action_id": "ops.e2e.run",
-      "entrypoint": "bijux dev atlas ops scenario run --scenario offline-mode",
-      "compose": {"stack": true, "observe": false, "datasets": true, "load": false},
-      "intent": "offline",
-      "evidence_class": "fast"
-    },
-    {
-      "id": "low-resource",
-      "description": "Resource-constrained profile validates graceful degradation behavior.",
-      "action_id": "ops.e2e.run",
-      "entrypoint": "bijux dev atlas ops scenario run --scenario low-resource",
-      "compose": {"stack": true, "observe": true, "datasets": true, "load": true},
-      "intent": "resilience",
       "evidence_class": "slow"
     },
     {
@@ -168,16 +34,348 @@
       "description": "High parallel query load verifies concurrency correctness and stability.",
       "action_id": "ops.e2e.run",
       "entrypoint": "bijux dev atlas ops scenario run --scenario high-concurrency",
-      "compose": {"stack": true, "observe": true, "datasets": true, "load": true},
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": true
+      },
       "intent": "performance",
       "evidence_class": "slow"
+    },
+    {
+      "id": "ingest-retry",
+      "description": "Transient ingest parse error followed by retry and success.",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario ingest-retry",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "resilience",
+      "evidence_class": "fast"
+    },
+    {
+      "id": "k8s-suite",
+      "description": "Kubernetes invariant suite composed with stack and observability dependencies.",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "make ops-k8s-suite",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": false,
+        "load": false
+      },
+      "intent": "compatibility",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "low-resource",
+      "description": "Resource-constrained profile validates graceful degradation behavior.",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario low-resource",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": true
+      },
+      "intent": "resilience",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "medium-single-node",
+      "description": "Medium dataset scenario with multiple shards on one node.",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario medium-single-node",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "baseline",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "minimal-single-node",
+      "description": "Small dataset end-to-end on a single node and single shard.",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario minimal-single-node",
+      "compose": {
+        "stack": true,
+        "observe": false,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "baseline",
+      "evidence_class": "fast"
     },
     {
       "id": "mixed-load",
       "description": "Concurrent ingest and query traffic validates mixed-workload behavior.",
       "action_id": "ops.e2e.run",
       "entrypoint": "bijux dev atlas ops scenario run --scenario mixed-load",
-      "compose": {"stack": true, "observe": true, "datasets": true, "load": true},
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": true
+      },
+      "intent": "performance",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "multi-dataset",
+      "description": "Two datasets loaded with shared index query validation.",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario multi-dataset",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "consistency",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "offline-mode",
+      "description": "Offline execution path with prefetched artifacts and no network access.",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario offline-mode",
+      "compose": {
+        "stack": true,
+        "observe": false,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "offline",
+      "evidence_class": "fast"
+    },
+    {
+      "id": "perf-e2e",
+      "description": "Perf-oriented end-to-end scenario composing load suites with stack and datasets.",
+      "action_id": "ops.load.run",
+      "entrypoint": "make ops-up",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": true
+      },
+      "intent": "performance",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "query-filter-projection",
+      "description": "Filters and projection semantics produce deterministic outputs.",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario query-filter-projection",
+      "compose": {
+        "stack": true,
+        "observe": false,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "correctness",
+      "evidence_class": "fast"
+    },
+    {
+      "id": "query-pagination",
+      "description": "Cursor pagination invariants remain stable across pages.",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario query-pagination",
+      "compose": {
+        "stack": true,
+        "observe": false,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "correctness",
+      "evidence_class": "fast"
+    },
+    {
+      "id": "readonly-mode",
+      "description": "Read-only mode serves queries while ingest remains disabled.",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario readonly-mode",
+      "compose": {
+        "stack": true,
+        "observe": false,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "safety",
+      "evidence_class": "fast"
+    },
+    {
+      "id": "realdata",
+      "description": "Realdata regression scenarios with dataset and observability checks.",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "make ops-realdata",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "regression",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "restart-resume",
+      "description": "Runtime restart resumes expected state without corruption.",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario restart-resume",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "resilience",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "rollback-after-failed-upgrade",
+      "description": "Rollback after a failed upgrade and confirm baseline restoration.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario rollback-after-failed-upgrade",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "resilience",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "rollback-after-successful-upgrade",
+      "description": "Rollback after successful upgrade and validate restoration.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario rollback-after-successful-upgrade",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "resilience",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "schema-evolution",
+      "description": "Dataset schema evolves from v1 to v2 with compatibility verification.",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario schema-evolution",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "compatibility",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "smoke",
+      "description": "Local e2e smoke composition using stack, observability, datasets, and load smoke checks.",
+      "action_id": "ops.root.smoke",
+      "entrypoint": "make ops-e2e-smoke",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": true
+      },
+      "intent": "smoke",
+      "evidence_class": "fast"
+    },
+    {
+      "id": "upgrade-config-migration",
+      "description": "Upgrade with config schema migration and compatibility validation.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario upgrade-config-migration",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "compatibility",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "upgrade-existing-datasets",
+      "description": "Upgrade while preserving existing datasets and artifacts.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario upgrade-existing-datasets",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "compatibility",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "upgrade-feature-default-change",
+      "description": "Upgrade with changed feature default and behavior verification.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario upgrade-feature-default-change",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "compatibility",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "upgrade-minor",
+      "description": "Upgrade across minor version with compatibility checks.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario upgrade-minor",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "compatibility",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "upgrade-patch",
+      "description": "Upgrade within patch version and verify compatibility gates.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario upgrade-patch",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "compatibility",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "warm-start",
+      "description": "Warm cache startup behavior and query latency stability.",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario warm-start",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": true
+      },
       "intent": "performance",
       "evidence_class": "slow"
     }

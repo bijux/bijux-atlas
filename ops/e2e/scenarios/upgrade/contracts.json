@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "upgrade_contract": {
+    "id": "upgrade-stability",
+    "description": "Upgrade must preserve query behavior, dataset availability, and operational telemetry continuity.",
+    "required_invariants": [
+      "api-surface-compatible",
+      "dataset-registry-preserved",
+      "metrics-surface-preserved",
+      "config-migration-explicit"
+    ]
+  },
+  "rollback_contract": {
+    "id": "rollback-clean-revert",
+    "description": "Rollback must restore the previous release behavior and leave no partial runtime state.",
+    "required_invariants": [
+      "previous-release-restored",
+      "query-correctness-restored",
+      "validation-report-generated",
+      "no-partial-release-state"
+    ]
+  }
+}
