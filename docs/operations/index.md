@@ -53,11 +53,12 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 21. [Institutional readiness checklist](institutional-readiness-checklist.md)
 22. [Review packet](review-packet.md)
 23. [Performance operations](performance.md)
-24. [Dataset update](dataset-update.md)
-25. [Dataset deprecation](dataset-deprecation.md)
-26. [Data retention policy](data-retention-policy.md)
-27. [Data access model](data-access-model.md)
-28. [Scientific defensibility](scientific-defensibility.md)
+24. [Query performance benchmarks](query-performance-benchmarks.md)
+25. [Dataset update](dataset-update.md)
+26. [Dataset deprecation](dataset-deprecation.md)
+27. [Data retention policy](data-retention-policy.md)
+28. [Data access model](data-access-model.md)
+29. [Scientific defensibility](scientific-defensibility.md)
 
 ## What This Page Is Not
 

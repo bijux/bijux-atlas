@@ -36,6 +36,7 @@ Related ops contracts: `OPS-ROOT-023`, `PERF-KIND-001`.
 - `configs/contracts/perf/benchmark-result.schema.json`
 - `ops/report/gene-lookup-baseline.json`
 - `the built-in gene-lookup scenario embedded in bijux-dev-atlas`
+- `docs/operations/query-performance-benchmarks.md`
 
 ## Reproducibility Rules
 
