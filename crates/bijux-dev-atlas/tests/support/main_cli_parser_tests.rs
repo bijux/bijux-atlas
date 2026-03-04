@@ -392,6 +392,7 @@ mod tests {
             vec!["bijux-dev-atlas", "docs", "where"],
             vec!["bijux-dev-atlas", "docs", "spine", "validate"],
             vec!["bijux-dev-atlas", "docs", "spine", "report"],
+            vec!["bijux-dev-atlas", "docs", "merge", "validate"],
             vec!["bijux-dev-atlas", "docs", "check", "--allow-subprocess"],
             vec!["bijux-dev-atlas", "docs", "verify-contracts"],
             vec!["bijux-dev-atlas", "docs", "validate"],
@@ -399,6 +400,10 @@ mod tests {
             vec!["bijux-dev-atlas", "docs", "lint"],
             vec!["bijux-dev-atlas", "docs", "links"],
             vec!["bijux-dev-atlas", "docs", "inventory"],
+            vec!["bijux-dev-atlas", "docs", "graph"],
+            vec!["bijux-dev-atlas", "docs", "top", "--limit", "20"],
+            vec!["bijux-dev-atlas", "docs", "dead"],
+            vec!["bijux-dev-atlas", "docs", "duplicates"],
             vec!["bijux-dev-atlas", "docs", "grep", "bijux dev atlas"],
             vec![
                 "bijux-dev-atlas",

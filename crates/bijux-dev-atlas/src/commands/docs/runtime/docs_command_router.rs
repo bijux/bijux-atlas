@@ -407,6 +407,224 @@ fn docs_spine_validate_payload(
     }))
 }
 
+fn build_docs_link_graph(
+    ctx: &DocsContext,
+    common: &DocsCommonArgs,
+) -> Result<std::collections::BTreeMap<String, usize>, String> {
+    let docs_root = ctx.repo_root.join("docs");
+    let markdown_files = docs_markdown_files(&docs_root, common.include_drafts);
+    let link_re = regex::Regex::new(r"\[[^\]]+\]\(([^)]+)\)").map_err(|e| e.to_string())?;
+    let mut inbound = std::collections::BTreeMap::<String, usize>::new();
+    for file in &markdown_files {
+        let rel = file
+            .strip_prefix(&docs_root)
+            .unwrap_or(file)
+            .display()
+            .to_string();
+        if rel.starts_with("_internal/") || rel.starts_with("_assets/") {
+            continue;
+        }
+        inbound.entry(rel).or_insert(0);
+    }
+    for file in &markdown_files {
+        let src_rel = file
+            .strip_prefix(&docs_root)
+            .unwrap_or(file)
+            .display()
+            .to_string();
+        if src_rel.starts_with("_internal/") || src_rel.starts_with("_assets/") {
+            continue;
+        }
+        let text =
+            fs::read_to_string(file).map_err(|e| format!("failed to read {}: {e}", file.display()))?;
+        for capture in link_re.captures_iter(&text) {
+            let target = capture.get(1).map(|m| m.as_str()).unwrap_or_default();
+            if target.starts_with("http://")
+                || target.starts_with("https://")
+                || target.starts_with("mailto:")
+                || target.starts_with('#')
+            {
+                continue;
+            }
+            let target_path = target.split('#').next().unwrap_or_default().trim();
+            if target_path.is_empty() {
+                continue;
+            }
+            let resolved = file.parent().unwrap_or(&docs_root).join(target_path);
+            if let Ok(rel_target) = resolved.strip_prefix(&docs_root) {
+                let mut normalized = rel_target.display().to_string();
+                if rel_target.extension().is_none() {
+                    let index = rel_target.join("index.md");
+                    if docs_root.join(&index).exists() {
+                        normalized = index.display().to_string();
+                    }
+                }
+                if let Some(count) = inbound.get_mut(&normalized) {
+                    *count += 1;
+                }
+            }
+        }
+    }
+    Ok(inbound)
+}
+
+fn docs_graph_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Result<serde_json::Value, String> {
+    let inbound = build_docs_link_graph(ctx, common)?;
+    let rows = inbound
+        .iter()
+        .map(|(path, count)| serde_json::json!({"path": path, "inbound_links": count}))
+        .collect::<Vec<_>>();
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "run_id": ctx.run_id.as_str(),
+        "text": "docs graph",
+        "rows": rows
+    }))
+}
+
+fn docs_top_payload(
+    ctx: &DocsContext,
+    common: &DocsCommonArgs,
+    limit: usize,
+) -> Result<serde_json::Value, String> {
+    let inbound = build_docs_link_graph(ctx, common)?;
+    let mut rows = inbound
+        .into_iter()
+        .map(|(path, count)| (count, path))
+        .collect::<Vec<_>>();
+    rows.sort_by(|a, b| b.cmp(a));
+    let capped = rows
+        .into_iter()
+        .take(limit)
+        .map(|(count, path)| serde_json::json!({"path": path, "inbound_links": count}))
+        .collect::<Vec<_>>();
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "run_id": ctx.run_id.as_str(),
+        "text": "docs top",
+        "limit": limit,
+        "rows": capped
+    }))
+}
+
+fn docs_dead_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Result<serde_json::Value, String> {
+    let inbound = build_docs_link_graph(ctx, common)?;
+    let rows = inbound
+        .into_iter()
+        .filter(|(path, count)| {
+            *count == 0 && path != "index.md" && path != "start-here.md" && !path.ends_with("/index.md")
+        })
+        .map(|(path, count)| serde_json::json!({"path": path, "inbound_links": count}))
+        .collect::<Vec<_>>();
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "run_id": ctx.run_id.as_str(),
+        "text": "docs dead pages",
+        "rows": rows
+    }))
+}
+
+fn docs_duplicates_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Result<serde_json::Value, String> {
+    let docs_root = ctx.repo_root.join("docs");
+    let mut heading_map = std::collections::BTreeMap::<String, Vec<String>>::new();
+    for file in docs_markdown_files(&docs_root, common.include_drafts) {
+        let rel = file
+            .strip_prefix(&docs_root)
+            .unwrap_or(&file)
+            .display()
+            .to_string();
+        if rel.starts_with("_internal/") || rel.starts_with("_assets/") {
+            continue;
+        }
+        let text = fs::read_to_string(&file).unwrap_or_default();
+        let key = text
+            .lines()
+            .filter_map(|line| line.trim_start().strip_prefix('#').map(str::trim))
+            .filter(|line| !line.is_empty())
+            .map(|line| line.to_lowercase())
+            .take(8)
+            .collect::<Vec<_>>()
+            .join("|");
+        if !key.is_empty() {
+            heading_map.entry(key).or_default().push(rel);
+        }
+    }
+    let mut rows = Vec::<serde_json::Value>::new();
+    for (signature, pages) in heading_map {
+        if pages.len() > 1 {
+            rows.push(serde_json::json!({"signature": signature, "pages": pages}));
+        }
+    }
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "run_id": ctx.run_id.as_str(),
+        "text": "docs duplicates",
+        "rows": rows
+    }))
+}
+
+fn docs_merge_validate_payload(
+    ctx: &DocsContext,
+    _common: &DocsCommonArgs,
+) -> Result<serde_json::Value, String> {
+    let redirects_path = ctx.repo_root.join("docs/redirects.json");
+    let redirects_text = fs::read_to_string(&redirects_path)
+        .map_err(|e| format!("failed to read {}: {e}", redirects_path.display()))?;
+    let redirects: std::collections::BTreeMap<String, String> = serde_json::from_str(&redirects_text)
+        .map_err(|e| format!("failed to parse {}: {e}", redirects_path.display()))?;
+    let merge_plan_path = ctx
+        .repo_root
+        .join("docs/_internal/governance/docs-merge-plan.md");
+    let merge_plan_text = fs::read_to_string(&merge_plan_path)
+        .map_err(|e| format!("failed to read {}: {e}", merge_plan_path.display()))?;
+    let mut source_paths = Vec::<String>::new();
+    for line in merge_plan_text.lines() {
+        let trimmed = line.trim();
+        if !trimmed.starts_with('|') {
+            continue;
+        }
+        let cols = trimmed
+            .split('|')
+            .map(str::trim)
+            .filter(|v| !v.is_empty())
+            .collect::<Vec<_>>();
+        if cols.len() < 3 || cols[0] == "Source page" {
+            continue;
+        }
+        for token in cols[0].split('+') {
+            let value = token.trim().trim_matches('`');
+            if value.starts_with("docs/") {
+                source_paths.push(value.to_string());
+            }
+        }
+    }
+    let mut issues = Vec::<String>::new();
+    let mut checks = Vec::<serde_json::Value>::new();
+    source_paths.sort();
+    source_paths.dedup();
+    for source in source_paths {
+        let source_exists = ctx.repo_root.join(&source).is_file();
+        let redirected = redirects.contains_key(&source);
+        if source_exists && !redirected {
+            issues.push(format!(
+                "merge source exists without redirect mapping: {source}"
+            ));
+        }
+        checks.push(serde_json::json!({
+            "source": source,
+            "source_exists": source_exists,
+            "redirected": redirected
+        }));
+    }
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "run_id": ctx.run_id.as_str(),
+        "text": if issues.is_empty() { "docs merge validate passed" } else { "docs merge validate failed" },
+        "errors": issues,
+        "checks": checks
+    }))
+}
+
 fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
     let docs_root = repo_root.join("docs");
     let output_path = docs_root.join("_internal/generated/docs-health-dashboard.md");
@@ -832,6 +1050,30 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 Ok((emit_payload(common.format, common.out, &payload)?, 0))
             }
+            DocsCommand::Graph(common) => {
+                let ctx = docs_context(&common)?;
+                let mut payload = docs_graph_payload(&ctx, &common)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                Ok((emit_payload(common.format, common.out, &payload)?, 0))
+            }
+            DocsCommand::Top(args) => {
+                let ctx = docs_context(&args.common)?;
+                let mut payload = docs_top_payload(&ctx, &args.common, args.limit)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                Ok((emit_payload(args.common.format, args.common.out, &payload)?, 0))
+            }
+            DocsCommand::Dead(common) => {
+                let ctx = docs_context(&common)?;
+                let mut payload = docs_dead_payload(&ctx, &common)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                Ok((emit_payload(common.format, common.out, &payload)?, 0))
+            }
+            DocsCommand::Duplicates(common) => {
+                let ctx = docs_context(&common)?;
+                let mut payload = docs_duplicates_payload(&ctx, &common)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                Ok((emit_payload(common.format, common.out, &payload)?, 0))
+            }
             DocsCommand::ShrinkReport(common) => {
                 let ctx = docs_context(&common)?;
                 let mut payload = docs_shrink_report_payload(&ctx, &common)?;
@@ -983,6 +1225,22 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     payload["run_id"] = serde_json::json!(ctx.run_id.as_str());
                     payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                     Ok((emit_payload(common.format, common.out, &payload)?, 0))
+                }
+            },
+            DocsCommand::Merge { command } => match command {
+                crate::cli::DocsMergeCommand::Validate(common) => {
+                    let ctx = docs_context(&common)?;
+                    let mut payload = docs_merge_validate_payload(&ctx, &common)?;
+                    payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                    let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
+                        1
+                    } else {
+                        0
+                    };
+                    if code != 0 {
+                        payload["error_code"] = serde_json::json!("DOCS_MERGE_ERROR");
+                    }
+                    Ok((emit_payload(common.format, common.out, &payload)?, code))
                 }
             },
             DocsCommand::Spine { command } => match command {

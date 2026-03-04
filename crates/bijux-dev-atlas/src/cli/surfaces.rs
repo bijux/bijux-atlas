@@ -136,6 +136,10 @@ pub enum DocsCommand {
     Links(DocsCommonArgs),
     ExternalLinks(DocsExternalLinksArgs),
     Inventory(DocsCommonArgs),
+    Graph(DocsCommonArgs),
+    Top(DocsTopArgs),
+    Dead(DocsCommonArgs),
+    Duplicates(DocsCommonArgs),
     ShrinkReport(DocsCommonArgs),
     Grep(DocsGrepArgs),
     HealthDashboard(DocsCommonArgs),
@@ -148,6 +152,10 @@ pub enum DocsCommand {
     Redirects {
         #[command(subcommand)]
         command: DocsRedirectsCommand,
+    },
+    Merge {
+        #[command(subcommand)]
+        command: DocsMergeCommand,
     },
     Spine {
         #[command(subcommand)]
@@ -180,6 +188,11 @@ pub enum DocsReferenceCommand {
 #[derive(Subcommand, Debug)]
 pub enum DocsRedirectsCommand {
     Sync(DocsCommonArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum DocsMergeCommand {
+    Validate(DocsCommonArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -251,6 +264,14 @@ pub struct DocsPagesSmokeArgs {
     pub url: Option<String>,
     #[arg(long, default_value = "Docs Build Info")]
     pub marker: String,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct DocsTopArgs {
+    #[command(flatten)]
+    pub common: DocsCommonArgs,
+    #[arg(long, default_value_t = 50)]
+    pub limit: usize,
 }
 
 #[derive(Subcommand, Debug)]

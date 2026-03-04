@@ -396,8 +396,12 @@ fn force_json_docs(command: &mut DocsCommand) {
         | DocsCommand::Links(common)
         | DocsCommand::ExternalLinks(crate::cli::DocsExternalLinksArgs { common, .. })
         | DocsCommand::Inventory(common)
+        | DocsCommand::Graph(common)
+        | DocsCommand::Dead(common)
+        | DocsCommand::Duplicates(common)
         | DocsCommand::ShrinkReport(common)
         | DocsCommand::HealthDashboard(common) => common.format = FormatArg::Json,
+        DocsCommand::Top(args) => args.common.format = FormatArg::Json,
         DocsCommand::PagesSmoke(args) => args.common.format = FormatArg::Json,
         DocsCommand::Serve(args) => args.common.format = FormatArg::Json,
         DocsCommand::Grep(args) => args.common.format = FormatArg::Json,
@@ -406,6 +410,9 @@ fn force_json_docs(command: &mut DocsCommand) {
         }
         DocsCommand::Redirects { command } => match command {
             crate::cli::DocsRedirectsCommand::Sync(common) => common.format = FormatArg::Json,
+        },
+        DocsCommand::Merge { command } => match command {
+            crate::cli::DocsMergeCommand::Validate(common) => common.format = FormatArg::Json,
         },
         DocsCommand::Spine { command } => match command {
             crate::cli::DocsSpineCommand::Validate(common)
@@ -705,12 +712,16 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | DocsCommand::Lint(common)
             | DocsCommand::Links(common)
             | DocsCommand::ExternalLinks(crate::cli::DocsExternalLinksArgs { common, .. })
+            | DocsCommand::Graph(common)
+            | DocsCommand::Dead(common)
+            | DocsCommand::Duplicates(common)
             | DocsCommand::VerifyContracts(common) => common.strict = true,
             DocsCommand::Build(_)
             | DocsCommand::Serve(_)
             | DocsCommand::PagesSmoke(_)
             | DocsCommand::Clean(_)
             | DocsCommand::Inventory(_)
+            | DocsCommand::Top(_)
             | DocsCommand::ShrinkReport(_)
             | DocsCommand::Grep(_)
             | DocsCommand::HealthDashboard(_)
@@ -719,6 +730,9 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | DocsCommand::Where(_) => {}
             DocsCommand::Redirects { command } => match command {
                 crate::cli::DocsRedirectsCommand::Sync(_) => {}
+            },
+            DocsCommand::Merge { command } => match command {
+                crate::cli::DocsMergeCommand::Validate(_) => {}
             },
             DocsCommand::Spine { command } => match command {
                 crate::cli::DocsSpineCommand::Validate(_) | crate::cli::DocsSpineCommand::Report(_) => {}
@@ -1119,8 +1133,12 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | DocsCommand::Links(common)
             | DocsCommand::ExternalLinks(crate::cli::DocsExternalLinksArgs { common, .. })
             | DocsCommand::Inventory(common)
+            | DocsCommand::Graph(common)
+            | DocsCommand::Dead(common)
+            | DocsCommand::Duplicates(common)
             | DocsCommand::ShrinkReport(common)
             | DocsCommand::HealthDashboard(common) => common.repo_root = Some(root.clone()),
+            DocsCommand::Top(args) => args.common.repo_root = Some(root.clone()),
             DocsCommand::PagesSmoke(args) => args.common.repo_root = Some(root.clone()),
             DocsCommand::Serve(args) => args.common.repo_root = Some(root.clone()),
             DocsCommand::Grep(args) => args.common.repo_root = Some(root.clone()),
@@ -1129,6 +1147,11 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             }
             DocsCommand::Redirects { command } => match command {
                 crate::cli::DocsRedirectsCommand::Sync(common) => {
+                    common.repo_root = Some(root.clone())
+                }
+            },
+            DocsCommand::Merge { command } => match command {
+                crate::cli::DocsMergeCommand::Validate(common) => {
                     common.repo_root = Some(root.clone())
                 }
             },
