@@ -84,4 +84,30 @@ mod tests {
         assert_eq!(trace.traceparent, None);
         assert_eq!(trace.request_origin, None);
     }
+
+    #[test]
+    fn trace_extraction_overhead_stays_within_budget() {
+        let mut headers = HeaderMap::new();
+        headers.insert("x-request-id", HeaderValue::from_static("req-budget"));
+        headers.insert(
+            "traceparent",
+            HeaderValue::from_static("00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00"),
+        );
+        headers.insert("x-request-origin", HeaderValue::from_static("perf-test"));
+
+        let state = crate::AppState::new(crate::DatasetCacheManager::new(
+            crate::DatasetCacheConfig::default(),
+            std::sync::Arc::new(crate::FakeStore::default()),
+        ));
+        let started = std::time::Instant::now();
+        for _ in 0..10_000 {
+            let trace = extract_request_trace(&headers, &state);
+            assert_eq!(trace.request_id, "req-budget");
+        }
+        let elapsed = started.elapsed();
+        assert!(
+            elapsed < std::time::Duration::from_secs(2),
+            "trace extraction overhead exceeded budget: {elapsed:?}"
+        );
+    }
 }
