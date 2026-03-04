@@ -518,6 +518,10 @@ pub enum SystemClusterCommand {
     ReplicaHealth(SystemClusterArgs),
     ReplicaFailover(SystemClusterReplicaFailoverArgs),
     ReplicaDiagnostics(SystemClusterArgs),
+    Failover(SystemClusterFailureActionArgs),
+    RecoveryRun(SystemClusterArgs),
+    ChaosTest(SystemClusterFailureActionArgs),
+    ResilienceDiagnostics(SystemClusterArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -628,6 +632,16 @@ pub struct SystemClusterReplicaFailoverArgs {
     pub shard_id: String,
     #[arg(long)]
     pub promote_node_id: String,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct SystemClusterFailureActionArgs {
+    #[command(flatten)]
+    pub common: SystemClusterArgs,
+    #[arg(long)]
+    pub target_id: Option<String>,
+    #[arg(long, default_value = "node_crash")]
+    pub fault_kind: String,
 }
 
 #[derive(Args, Debug, Clone)]

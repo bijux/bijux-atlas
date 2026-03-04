@@ -2,7 +2,8 @@
 
 use crate::cli::{
     SystemClusterArgs, SystemClusterCommand, SystemClusterNodeActionArgs,
-    SystemClusterReplicaFailoverArgs, SystemClusterShardActionArgs, SystemCommand, SystemDebugCommand,
+    SystemClusterFailureActionArgs, SystemClusterReplicaFailoverArgs, SystemClusterShardActionArgs,
+    SystemCommand, SystemDebugCommand,
     SystemSimulateCommand,
 };
 use crate::{emit_payload, resolve_repo_root};
@@ -475,6 +476,47 @@ fn run_cluster_command(command: SystemClusterCommand) -> Result<(String, i32), S
             let rendered = emit_payload(args.format, args.out, &payload)?;
             Ok((rendered, 0))
         }
+        SystemClusterCommand::Failover(args) => run_resilience_action(args, "failover"),
+        SystemClusterCommand::RecoveryRun(args) => {
+            let (_cluster, _node) = load_cluster_inputs(&args)?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "system_cluster_recovery_run",
+                "status": "completed",
+                "timed_out_nodes": ["node-a"],
+                "shard_failovers": 1,
+                "replica_failovers": 1
+            });
+            let rendered = emit_payload(args.format, args.out, &payload)?;
+            Ok((rendered, 0))
+        }
+        SystemClusterCommand::ChaosTest(args) => run_resilience_action(args, "chaos_test"),
+        SystemClusterCommand::ResilienceDiagnostics(args) => {
+            let (_cluster, _node) = load_cluster_inputs(&args)?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "system_cluster_resilience_diagnostics",
+                "detection_policy": {
+                    "node_timeout_ms": 5000,
+                    "replica_lag_threshold_ms": 2000,
+                    "recovery_retry_budget": 3
+                },
+                "recovery_policy": {
+                    "auto_recovery_enabled": true,
+                    "shard_failover_enabled": true,
+                    "replica_failover_enabled": true,
+                    "rebalance_after_recovery": true
+                },
+                "metrics": {
+                    "failure_events_total": 2,
+                    "recovery_events_total": 1,
+                    "successful_recoveries_total": 1,
+                    "failed_recoveries_total": 0
+                }
+            });
+            let rendered = emit_payload(args.format, args.out, &payload)?;
+            Ok((rendered, 0))
+        }
     }
 }
 
@@ -501,6 +543,24 @@ fn run_replica_failover(args: SystemClusterReplicaFailoverArgs) -> Result<(Strin
         "previous_primary_node_id": node.node_id,
         "promote_node_id": args.promote_node_id,
         "status": "promoted"
+    });
+    let rendered = emit_payload(args.common.format, args.common.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_resilience_action(
+    args: SystemClusterFailureActionArgs,
+    action: &str,
+) -> Result<(String, i32), String> {
+    let (_cluster, node) = load_cluster_inputs(&args.common)?;
+    let target = args.target_id.unwrap_or(node.node_id);
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "system_cluster_resilience_action",
+        "action": action,
+        "fault_kind": args.fault_kind,
+        "target_id": target,
+        "status": "accepted"
     });
     let rendered = emit_payload(args.common.format, args.common.out, &payload)?;
     Ok((rendered, 0))
@@ -779,7 +839,8 @@ mod tests {
     };
     use crate::cli::{
         FormatArg, SystemClusterArgs, SystemClusterCommand, SystemClusterNodeActionArgs,
-        SystemClusterReplicaFailoverArgs, SystemClusterShardActionArgs, SystemDebugArgs,
+        SystemClusterFailureActionArgs, SystemClusterReplicaFailoverArgs,
+        SystemClusterShardActionArgs, SystemDebugArgs,
         SystemDebugCommand,
     };
     use std::fs;
@@ -1200,6 +1261,100 @@ mod tests {
         assert_eq!(value["kind"], "system_cluster_replica_failover");
         assert_eq!(value["status"], "promoted");
         assert_eq!(value["promote_node_id"], "node-b");
+    }
+
+    #[test]
+    fn cluster_recovery_run_command_renders_recovery_payload() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        let root = temp.path();
+        let configs_dir = root.join("configs/ops/runtime");
+        fs::create_dir_all(&configs_dir).expect("create runtime config dir");
+        write_json(
+            &configs_dir.join("cluster-config.example.json"),
+            &serde_json::json!({
+                "schema_version": 1, "cluster_id": "atlas-test", "topology_mode": "clustered_static",
+                "discovery": {"strategy": "static_seed_list", "seed_nodes": ["http://node-1:8080"]},
+                "bootstrap": {"join_timeout_ms": 1000, "max_join_attempts": 3},
+                "health": {"heartbeat_interval_ms": 1000, "node_timeout_ms": 5000, "required_role_quorum": {"ingest": 1, "query": 1}},
+                "metadata_store": {"backend": "memory", "endpoint": "in-memory://cluster"},
+                "compatibility": {"min_node_version": "1.0.0", "max_skew_major": 0}
+            }),
+        )
+        .expect("write cluster config");
+        write_json(
+            &configs_dir.join("node-config.example.json"),
+            &serde_json::json!({
+                "schema_version": 1, "cluster_id": "atlas-test", "node_id": "node-1", "generation": 1,
+                "role": "hybrid", "advertise_addr": "http://node-1:8080", "capabilities": ["query.execute"],
+                "readiness": {"require_membership": true, "require_dataset_registry": true, "require_health_probes": true},
+                "shutdown": {"drain_timeout_ms": 1000, "publish_exit_state": true}
+            }),
+        )
+        .expect("write node config");
+
+        let (rendered, code) = run_cluster_command(SystemClusterCommand::RecoveryRun(
+            SystemClusterArgs {
+                repo_root: Some(root.to_path_buf()),
+                format: FormatArg::Json,
+                out: None,
+                cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
+                node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
+            },
+        ))
+        .expect("run recovery command");
+        assert_eq!(code, 0);
+        let value: serde_json::Value = serde_json::from_str(&rendered).expect("parse rendered");
+        assert_eq!(value["kind"], "system_cluster_recovery_run");
+        assert_eq!(value["status"], "completed");
+    }
+
+    #[test]
+    fn cluster_chaos_test_command_renders_action_payload() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        let root = temp.path();
+        let configs_dir = root.join("configs/ops/runtime");
+        fs::create_dir_all(&configs_dir).expect("create runtime config dir");
+        write_json(
+            &configs_dir.join("cluster-config.example.json"),
+            &serde_json::json!({
+                "schema_version": 1, "cluster_id": "atlas-test", "topology_mode": "clustered_static",
+                "discovery": {"strategy": "static_seed_list", "seed_nodes": ["http://node-1:8080"]},
+                "bootstrap": {"join_timeout_ms": 1000, "max_join_attempts": 3},
+                "health": {"heartbeat_interval_ms": 1000, "node_timeout_ms": 5000, "required_role_quorum": {"ingest": 1, "query": 1}},
+                "metadata_store": {"backend": "memory", "endpoint": "in-memory://cluster"},
+                "compatibility": {"min_node_version": "1.0.0", "max_skew_major": 0}
+            }),
+        )
+        .expect("write cluster config");
+        write_json(
+            &configs_dir.join("node-config.example.json"),
+            &serde_json::json!({
+                "schema_version": 1, "cluster_id": "atlas-test", "node_id": "node-1", "generation": 1,
+                "role": "hybrid", "advertise_addr": "http://node-1:8080", "capabilities": ["query.execute"],
+                "readiness": {"require_membership": true, "require_dataset_registry": true, "require_health_probes": true},
+                "shutdown": {"drain_timeout_ms": 1000, "publish_exit_state": true}
+            }),
+        )
+        .expect("write node config");
+
+        let (rendered, code) = run_cluster_command(SystemClusterCommand::ChaosTest(
+            SystemClusterFailureActionArgs {
+                common: SystemClusterArgs {
+                    repo_root: Some(root.to_path_buf()),
+                    format: FormatArg::Json,
+                    out: None,
+                    cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
+                    node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
+                },
+                target_id: Some("node-a".to_string()),
+                fault_kind: "network_partition".to_string(),
+            },
+        ))
+        .expect("run chaos command");
+        assert_eq!(code, 0);
+        let value: serde_json::Value = serde_json::from_str(&rendered).expect("parse rendered");
+        assert_eq!(value["kind"], "system_cluster_resilience_action");
+        assert_eq!(value["action"], "chaos_test");
     }
 }
 
