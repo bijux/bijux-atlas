@@ -247,6 +247,65 @@ struct RegistryCompletenessPolicy {
 }
 
 #[derive(Debug, Deserialize)]
+struct GovernanceRegistry {
+    schema_version: u64,
+    governance_version: u64,
+    compatibility_policy: String,
+    contract_evolution_policy: ContractEvolutionPolicy,
+    components: GovernanceComponents,
+    policy_authority_mappings: PolicyAuthorityMappings,
+    policies: Vec<GovernancePolicy>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ContractEvolutionPolicy {
+    authority: String,
+    compatibility_mode: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct GovernanceComponents {
+    policies_registry: String,
+    contracts_registry: String,
+    checks_registry: String,
+    exceptions_registry: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct PolicyAuthorityMappings {
+    checks: String,
+    contracts: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct GovernancePolicy {
+    id: String,
+    authority: String,
+    enforcement: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct GovernanceVersionHistory {
+    schema_version: u64,
+    current: u64,
+    versions: Vec<u64>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ContractPolicyAuthorityMap {
+    schema_version: u64,
+    owner: String,
+    mappings: Vec<ContractPolicyAuthorityMapping>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ContractPolicyAuthorityMapping {
+    contract_id: String,
+    policy_id: String,
+    authority: String,
+}
+
+#[derive(Debug, Deserialize)]
 struct DefaultJobsPolicy {
     schema_version: u64,
     policy_id: String,
@@ -311,6 +370,22 @@ fn checks_schema_index_path(root: &Path) -> PathBuf {
 
 fn suite_schema_path(root: &Path) -> PathBuf {
     root.join("configs/contracts/governance/suite.schema.json")
+}
+
+fn governance_registry_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/governance.json")
+}
+
+fn governance_registry_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/governance.schema.json")
+}
+
+fn governance_version_history_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/governance-version-history.json")
+}
+
+fn contract_policy_authority_map_path(root: &Path) -> PathBuf {
+    root.join("configs/governance/contract-policy-authority-map.json")
 }
 
 fn checks_registry_path(root: &Path) -> PathBuf {
@@ -840,6 +915,179 @@ fn read_yaml_file<T: for<'de> Deserialize<'de>>(path: &Path) -> Result<T, String
             .map_err(|err| format!("read {} failed: {err}", path.display()))?,
     )
     .map_err(|err| format!("parse {} failed: {err}", path.display()))
+}
+
+fn governance_version_value(root: &Path) -> Result<u64, String> {
+    let registry: GovernanceRegistry = read_json_file(&governance_registry_path(root))?;
+    Ok(registry.governance_version)
+}
+
+fn validate_governance_registry(root: &Path) -> Result<Vec<String>, String> {
+    let mut errors = Vec::new();
+    let schema_path = governance_registry_schema_path(root);
+    let schema = read_json_value(&schema_path)?;
+    let required = schema
+        .get("required")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let registry_value = read_json_value(&governance_registry_path(root))?;
+    let Some(registry_obj) = registry_value.as_object() else {
+        return Ok(vec!["governance registry must be a JSON object".to_string()]);
+    };
+    for key in required.iter().filter_map(serde_json::Value::as_str) {
+        if !registry_obj.contains_key(key) {
+            errors.push(format!("governance registry missing required key `{key}`"));
+        }
+    }
+    let registry: GovernanceRegistry =
+        serde_json::from_value(registry_value.clone()).map_err(|err| {
+            format!(
+                "parse {} failed: {err}",
+                governance_registry_path(root).display()
+            )
+        })?;
+    if registry.schema_version != 1 {
+        errors.push("governance schema_version must be 1".to_string());
+    }
+    if registry.governance_version == 0 {
+        errors.push("governance version must exist and be greater than zero".to_string());
+    }
+
+    let version_history: GovernanceVersionHistory =
+        read_json_file(&governance_version_history_path(root))?;
+    if version_history.schema_version != 1 {
+        errors.push("governance version history schema_version must be 1".to_string());
+    }
+    if version_history.current != registry.governance_version {
+        errors.push(format!(
+            "governance version history current `{}` must equal governance version `{}`",
+            version_history.current, registry.governance_version
+        ));
+    }
+    if version_history.versions.is_empty() {
+        errors.push("governance version history must include at least one version".to_string());
+    } else {
+        let mut prev = 0_u64;
+        for version in &version_history.versions {
+            if *version <= prev {
+                errors.push("governance versions must be strictly increasing".to_string());
+                break;
+            }
+            prev = *version;
+        }
+        if version_history.versions.last().copied().unwrap_or_default()
+            != registry.governance_version
+        {
+            errors.push(
+                "governance version must be monotonic and end at current version".to_string(),
+            );
+        }
+    }
+
+    let compatibility_path = root.join(&registry.compatibility_policy);
+    if !compatibility_path.exists() {
+        errors.push(format!(
+            "compatibility policy path missing: {}",
+            registry.compatibility_policy
+        ));
+    }
+    if registry
+        .contract_evolution_policy
+        .authority
+        .trim()
+        .is_empty()
+        || registry
+            .contract_evolution_policy
+            .compatibility_mode
+            .trim()
+            .is_empty()
+    {
+        errors.push(
+            "contract evolution policy must include authority and compatibility_mode".to_string(),
+        );
+    }
+
+    for component in [
+        &registry.components.policies_registry,
+        &registry.components.contracts_registry,
+        &registry.components.checks_registry,
+        &registry.components.exceptions_registry,
+    ] {
+        if !root.join(component).exists() {
+            errors.push(format!("governance component path missing: {component}"));
+        }
+    }
+
+    let check_map_path = root.join(&registry.policy_authority_mappings.checks);
+    let check_map = read_json_value(&check_map_path)?;
+    let check_mappings = check_map
+        .get("mappings")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    if check_mappings.is_empty() {
+        errors.push("checks-to-policy authority mappings must not be empty".to_string());
+    }
+
+    let contract_map_path = if registry.policy_authority_mappings.contracts
+        == "configs/governance/contract-policy-authority-map.json"
+    {
+        contract_policy_authority_map_path(root)
+    } else {
+        root.join(&registry.policy_authority_mappings.contracts)
+    };
+    let contract_map: ContractPolicyAuthorityMap = read_json_file(&contract_map_path)?;
+    if contract_map.schema_version != 1 {
+        errors.push("contract policy authority map schema_version must be 1".to_string());
+    }
+    if !owner_format_valid(&contract_map.owner) {
+        errors.push(format!(
+            "contract policy authority map owner `{}` has invalid format",
+            contract_map.owner
+        ));
+    }
+    let policy_ids: BTreeSet<&str> = registry
+        .policies
+        .iter()
+        .map(|policy| policy.id.as_str())
+        .collect();
+    if policy_ids.is_empty() {
+        errors.push("governance policies registry must declare at least one policy".to_string());
+    }
+    for policy in &registry.policies {
+        if policy.authority.trim().is_empty() {
+            errors.push(format!("policy `{}` must declare authority", policy.id));
+        }
+        if policy.enforcement.is_empty() {
+            errors.push(format!(
+                "policy `{}` must declare at least one enforcement mechanism",
+                policy.id
+            ));
+        }
+    }
+    let known_contract_ids = known_contract_ids(root)?;
+    for mapping in &contract_map.mappings {
+        if !policy_ids.contains(mapping.policy_id.as_str()) {
+            errors.push(format!(
+                "contract policy mapping references unknown policy `{}`",
+                mapping.policy_id
+            ));
+        }
+        if mapping.authority.trim().is_empty() {
+            errors.push(format!(
+                "contract policy mapping for `{}` must declare authority",
+                mapping.contract_id
+            ));
+        }
+        if !known_contract_ids.contains(&mapping.contract_id) {
+            errors.push(format!(
+                "contract policy mapping references unknown contract `{}`",
+                mapping.contract_id
+            ));
+        }
+    }
+    Ok(errors)
 }
 
 fn owner_format_valid(owner: &str) -> bool {
@@ -2250,6 +2498,23 @@ pub(crate) fn run_governance_command(
     command: GovernanceCommand,
 ) -> Result<(String, i32), String> {
     match command {
+        GovernanceCommand::Version {
+            repo_root,
+            format,
+            out,
+        } => {
+            let root = resolve_repo_root(repo_root)?;
+            let version = governance_version_value(&root)?;
+            let source_path = governance_registry_path(&root);
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "governance_version",
+                "governance_version": version,
+                "source": source_path.strip_prefix(&root).unwrap_or(&source_path).display().to_string(),
+            });
+            let rendered = emit_payload(format, out, &payload)?;
+            Ok((rendered, 0))
+        }
         GovernanceCommand::List {
             repo_root,
             format,
@@ -2398,6 +2663,7 @@ pub(crate) fn run_governance_command(
                     .flatten()
                     .filter_map(|value| value.as_str().map(ToString::to_string)),
             );
+            governance_errors.extend(validate_governance_registry(&root)?);
 
             let payload = serde_json::json!({
                 "schema_version": 1,

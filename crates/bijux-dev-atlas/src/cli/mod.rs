@@ -346,6 +346,14 @@ pub enum PerfBenchesCommand {
 
 #[derive(Subcommand, Debug)]
 pub enum GovernanceCommand {
+    Version {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
     List {
         #[arg(long)]
         repo_root: Option<PathBuf>,
