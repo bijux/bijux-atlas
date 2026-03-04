@@ -18,6 +18,30 @@
       "configs/docs/requirements.lock.txt"
     ]
   },
+  "dependency_lock_posture": {
+    "rust": {
+      "required": true,
+      "lockfile_path": "Cargo.lock"
+    },
+    "npm": {
+      "required": true,
+      "lockfile_paths": [
+        "configs/docs/package-lock.json"
+      ]
+    },
+    "python": {
+      "required": true,
+      "lockfile_paths": [
+        "configs/docs/requirements.lock.txt"
+      ]
+    },
+    "helm": {
+      "required": false,
+      "lockfile_paths": [
+        "ops/k8s/charts/bijux-atlas/Chart.lock"
+      ]
+    }
+  },
   "github_actions": {
     "workflow_dir": ".github/workflows",
     "toolchain_inventory": "ops/inventory/toolchain.json",

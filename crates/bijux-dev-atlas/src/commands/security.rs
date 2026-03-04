@@ -91,6 +91,72 @@ fn parse_requirement_indexes(text: &str) -> Vec<String> {
         .collect()
 }
 
+fn parse_python_lock_rows(text: &str) -> Vec<String> {
+    let mut rows = Vec::new();
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() || trimmed.starts_with('#') || trimmed.starts_with("--") {
+            continue;
+        }
+        if let Some((name, version)) = trimmed.split_once("==") {
+            let package = name.trim();
+            let pinned = version.trim();
+            if !package.is_empty() && !pinned.is_empty() {
+                rows.push(format!("{package}=={pinned}"));
+            }
+        }
+    }
+    rows.sort();
+    rows.dedup();
+    rows
+}
+
+fn parse_cargo_lock_rows(text: &str) -> Vec<String> {
+    let Ok(value) = text.parse::<toml::Value>() else {
+        return Vec::new();
+    };
+    let mut rows = Vec::new();
+    if let Some(packages) = value.get("package").and_then(toml::Value::as_array) {
+        for pkg in packages {
+            let Some(name) = pkg.get("name").and_then(toml::Value::as_str) else {
+                continue;
+            };
+            let Some(version) = pkg.get("version").and_then(toml::Value::as_str) else {
+                continue;
+            };
+            rows.push(format!("{name}@{version}"));
+        }
+    }
+    rows.sort();
+    rows.dedup();
+    rows
+}
+
+fn parse_helm_lock_rows(path: &Path) -> Result<Vec<String>, String> {
+    if !path.exists() {
+        return Ok(Vec::new());
+    }
+    let value = read_yaml(path)?;
+    let mut rows = Vec::new();
+    if let Some(deps) = value
+        .get("dependencies")
+        .and_then(serde_yaml::Value::as_sequence)
+    {
+        for row in deps {
+            let Some(name) = row.get("name").and_then(serde_yaml::Value::as_str) else {
+                continue;
+            };
+            let Some(version) = row.get("version").and_then(serde_yaml::Value::as_str) else {
+                continue;
+            };
+            rows.push(format!("{name}@{version}"));
+        }
+    }
+    rows.sort();
+    rows.dedup();
+    Ok(rows)
+}
+
 fn is_full_sha(value: &str) -> bool {
     value.len() == 40 && value.chars().all(|ch| ch.is_ascii_hexdigit())
 }
@@ -1103,6 +1169,108 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         disallowed_python_indexes.push("python-default-index:not-allowlisted".to_string());
     }
 
+    let lock_posture = dependency_policy
+        .get("dependency_lock_posture")
+        .cloned()
+        .unwrap_or_else(|| serde_json::json!({}));
+    let mut dependency_lock_gaps = Vec::new();
+
+    let rust_lock_required = lock_posture
+        .get("rust")
+        .and_then(|value| value.get("required"))
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
+    let rust_lockfile_path = lock_posture
+        .get("rust")
+        .and_then(|value| value.get("lockfile_path"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("Cargo.lock");
+    let rust_lock_text = fs::read_to_string(root.join(rust_lockfile_path)).ok();
+    if rust_lock_required && rust_lock_text.is_none() {
+        dependency_lock_gaps.push(format!("rust:missing:{rust_lockfile_path}"));
+    }
+
+    let npm_lock_required = lock_posture
+        .get("npm")
+        .and_then(|value| value.get("required"))
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
+    let npm_lock_paths = lock_posture
+        .get("npm")
+        .and_then(|value| value.get("lockfile_paths"))
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .collect::<Vec<_>>();
+    let mut npm_missing_locks = Vec::new();
+    for lockfile in &npm_lock_paths {
+        if !root.join(lockfile).exists() {
+            npm_missing_locks.push((*lockfile).to_string());
+        }
+    }
+    if npm_lock_required && !npm_missing_locks.is_empty() {
+        dependency_lock_gaps.extend(
+            npm_missing_locks
+                .into_iter()
+                .map(|path| format!("npm:missing:{path}")),
+        );
+    }
+
+    let python_lock_required = lock_posture
+        .get("python")
+        .and_then(|value| value.get("required"))
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
+    let python_lock_paths = lock_posture
+        .get("python")
+        .and_then(|value| value.get("lockfile_paths"))
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .collect::<Vec<_>>();
+    let mut python_missing_locks = Vec::new();
+    for lockfile in &python_lock_paths {
+        if !root.join(lockfile).exists() {
+            python_missing_locks.push((*lockfile).to_string());
+        }
+    }
+    if python_lock_required && !python_missing_locks.is_empty() {
+        dependency_lock_gaps.extend(
+            python_missing_locks
+                .into_iter()
+                .map(|path| format!("python:missing:{path}")),
+        );
+    }
+
+    let helm_lock_required = lock_posture
+        .get("helm")
+        .and_then(|value| value.get("required"))
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
+    let helm_lock_paths = lock_posture
+        .get("helm")
+        .and_then(|value| value.get("lockfile_paths"))
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .collect::<Vec<_>>();
+    let mut helm_missing_locks = Vec::new();
+    for lockfile in &helm_lock_paths {
+        if !root.join(lockfile).exists() {
+            helm_missing_locks.push((*lockfile).to_string());
+        }
+    }
+    if helm_lock_required && !helm_missing_locks.is_empty() {
+        dependency_lock_gaps.extend(
+            helm_missing_locks
+                .into_iter()
+                .map(|path| format!("helm:missing:{path}")),
+        );
+    }
+
     let workflow_dir = dependency_policy
         .get("github_actions")
         .and_then(|value| value.get("workflow_dir"))
@@ -1402,6 +1570,92 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     }
     let sec_sbom_001 = sbom_gaps.is_empty();
 
+    let mut rust_rows = rust_lock_text
+        .as_deref()
+        .map(parse_cargo_lock_rows)
+        .unwrap_or_default();
+    let mut npm_rows = Vec::new();
+    for lockfile in &npm_lock_paths {
+        let lockfile_path = root.join(lockfile);
+        if !lockfile_path.exists() {
+            continue;
+        }
+        let lock_json = read_json(&lockfile_path)?;
+        if let Some(packages) = lock_json
+            .get("packages")
+            .and_then(serde_json::Value::as_object)
+        {
+            for (name, value) in packages {
+                let version = value
+                    .get("version")
+                    .and_then(serde_json::Value::as_str)
+                    .unwrap_or("");
+                if name.is_empty() || version.is_empty() {
+                    continue;
+                }
+                npm_rows.push(format!("{name}@{version}"));
+            }
+        }
+    }
+    npm_rows.sort();
+    npm_rows.dedup();
+
+    let mut python_rows = Vec::new();
+    for lockfile in &python_lock_paths {
+        let lockfile_path = root.join(lockfile);
+        if !lockfile_path.exists() {
+            continue;
+        }
+        let text = fs::read_to_string(&lockfile_path)
+            .map_err(|err| format!("failed to read {}: {err}", lockfile_path.display()))?;
+        python_rows.extend(parse_python_lock_rows(&text));
+    }
+    python_rows.sort();
+    python_rows.dedup();
+
+    let mut helm_rows = Vec::new();
+    for lockfile in &helm_lock_paths {
+        helm_rows.extend(parse_helm_lock_rows(&root.join(lockfile))?);
+    }
+    helm_rows.sort();
+    helm_rows.dedup();
+
+    rust_rows.sort();
+    rust_rows.dedup();
+
+    let sec_deps_003 = dependency_lock_gaps.is_empty();
+    let dependency_inventory_report = serde_json::json!({
+        "schema_version": 1,
+        "status": if sec_deps_003 { "ok" } else { "failed" },
+        "summary": {
+            "rust_dependencies": rust_rows.len(),
+            "npm_dependencies": npm_rows.len(),
+            "python_dependencies": python_rows.len(),
+            "helm_dependencies": helm_rows.len(),
+            "lock_gaps": dependency_lock_gaps.len()
+        },
+        "lock_posture": lock_posture,
+        "rows": {
+            "rust": rust_rows,
+            "npm": npm_rows,
+            "python": python_rows,
+            "helm": helm_rows
+        },
+        "gaps": dependency_lock_gaps
+    });
+    let dependency_inventory_report_path = named_report_path(&root, "dependency-inventory.json")?;
+    fs::write(
+        &dependency_inventory_report_path,
+        serde_json::to_string_pretty(&dependency_inventory_report)
+            .map_err(|err| format!("encode dependency inventory report failed: {err}"))?,
+    )
+    .map_err(|err| {
+        format!(
+            "failed to write {}: {err}",
+            dependency_inventory_report_path.display()
+        )
+    })?;
+
     let signing_items = signing_policy
         .get("signed_items")
         .and_then(serde_yaml::Value::as_sequence)
@@ -1492,6 +1746,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             && rel_audit_002
             && sec_deps_001
             && sec_deps_002
+            && sec_deps_003
             && sec_images_001
             && sec_actions_001
             && sec_sbom_001
@@ -1512,6 +1767,11 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "signed_items": signing_items.len()
         },
         "reports": {
+            "dependency_inventory": dependency_inventory_report_path
+                .strip_prefix(&root)
+                .unwrap_or(&dependency_inventory_report_path)
+                .display()
+                .to_string(),
             "github_actions": github_actions_report_path
                 .strip_prefix(&root)
                 .unwrap_or(&github_actions_report_path)
@@ -1549,6 +1809,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "SEC-RED-002": sec_red_002,
             "SEC-DEPS-001": sec_deps_001,
             "SEC-DEPS-002": sec_deps_002,
+            "SEC-DEPS-003": sec_deps_003,
             "SEC-IMAGES-001": sec_images_001,
             "SEC-ACTIONS-001": sec_actions_001,
             "SEC-SBOM-001": sec_sbom_001
@@ -1582,6 +1843,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "evidence_secret_matches": evidence_matches,
             "disallowed_npm_sources": disallowed_npm_sources,
             "disallowed_python_indexes": disallowed_python_indexes,
+            "dependency_lock_gaps": dependency_lock_gaps,
             "workflow_pin_gaps": workflow_pin_gaps,
             "invalid_action_exceptions": invalid_action_exceptions,
             "image_evidence_gaps": image_evidence_gaps,
