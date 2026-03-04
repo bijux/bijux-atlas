@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/cluster/node-config.schema.json",
+  "title": "Cluster Node Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "cluster_id",
+    "node_id",
+    "generation",
+    "role",
+    "advertise_addr",
+    "capabilities",
+    "readiness",
+    "shutdown"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "cluster_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,62}$"
+    },
+    "node_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,62}$"
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "role": {
+      "type": "string",
+      "enum": ["ingest", "query", "hybrid"]
+    },
+    "advertise_addr": {
+      "type": "string",
+      "format": "uri"
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_.-]+$"
+      },
+      "uniqueItems": true
+    },
+    "readiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["require_membership", "require_dataset_registry", "require_health_probes"],
+      "properties": {
+        "require_membership": {
+          "type": "boolean"
+        },
+        "require_dataset_registry": {
+          "type": "boolean"
+        },
+        "require_health_probes": {
+          "type": "boolean"
+        }
+      }
+    },
+    "shutdown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["drain_timeout_ms", "publish_exit_state"],
+      "properties": {
+        "drain_timeout_ms": {
+          "type": "integer",
+          "minimum": 100
+        },
+        "publish_exit_state": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

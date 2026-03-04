@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/cluster/cluster-config.schema.json",
+  "title": "Cluster Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "cluster_id",
+    "topology_mode",
+    "discovery",
+    "bootstrap",
+    "health",
+    "metadata_store",
+    "compatibility"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "cluster_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,62}$"
+    },
+    "topology_mode": {
+      "type": "string",
+      "enum": ["single_node", "clustered_static"]
+    },
+    "discovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strategy", "seed_nodes"],
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": ["static_seed_list"]
+        },
+        "seed_nodes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      }
+    },
+    "bootstrap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["join_timeout_ms", "max_join_attempts"],
+      "properties": {
+        "join_timeout_ms": {
+          "type": "integer",
+          "minimum": 100
+        },
+        "max_join_attempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      }
+    },
+    "health": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["heartbeat_interval_ms", "node_timeout_ms", "required_role_quorum"],
+      "properties": {
+        "heartbeat_interval_ms": {
+          "type": "integer",
+          "minimum": 100
+        },
+        "node_timeout_ms": {
+          "type": "integer",
+          "minimum": 500
+        },
+        "required_role_quorum": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["ingest", "query"],
+          "properties": {
+            "ingest": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "query": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "metadata_store": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["backend", "endpoint"],
+      "properties": {
+        "backend": {
+          "type": "string",
+          "enum": ["sqlite", "postgres", "memory"]
+        },
+        "endpoint": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min_node_version", "max_skew_major"],
+      "properties": {
+        "min_node_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "max_skew_major": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    }
+  }
+}

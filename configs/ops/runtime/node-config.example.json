@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "cluster_id": "atlas-prod-eu1",
+  "node_id": "atlas-node-1",
+  "generation": 1,
+  "role": "hybrid",
+  "advertise_addr": "http://atlas-node-1.internal:8080",
+  "capabilities": [
+    "ingest.pipeline",
+    "query.execute",
+    "query.cache",
+    "shard.rebalance"
+  ],
+  "readiness": {
+    "require_membership": true,
+    "require_dataset_registry": true,
+    "require_health_probes": true
+  },
+  "shutdown": {
+    "drain_timeout_ms": 10000,
+    "publish_exit_state": true
+  }
+}
