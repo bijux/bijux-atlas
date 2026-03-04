@@ -12,3 +12,6 @@
 - [Pagination](pagination.md)
 - [Filtering](filtering.md)
 - [Projections](projections.md)
+- [Cursor Usage](cursor-usage.md)
+- [Error Responses](error-responses.md)
+- [Retry Logic](retry-logic.md)
