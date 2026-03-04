@@ -461,6 +461,8 @@ pub enum SecurityCommand {
     Diagnostics(SecurityValidateArgs),
     PolicyInspect(SecurityPolicyInspectArgs),
     Audit(SecurityValidateArgs),
+    VulnerabilityReport(SecurityValidateArgs),
+    IncidentReport(SecurityIncidentReportArgs),
     Authentication {
         #[command(subcommand)]
         command: SecurityAuthenticationCommand,
@@ -735,6 +737,26 @@ pub struct SecurityRoleAssignArgs {
     pub principal: String,
     #[arg(long)]
     pub role_id: String,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct SecurityIncidentReportArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub incident_id: String,
+    #[arg(long)]
+    pub severity: String,
+    #[arg(long)]
+    pub summary: String,
+    #[arg(long)]
+    pub status: String,
+    #[arg(long)]
+    pub runbook: Option<String>,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]

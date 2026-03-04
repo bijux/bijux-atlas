@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ops/schema/report/security-incident-report.schema.json",
+  "title": "Security Incident Report",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "kind",
+    "incident_id",
+    "severity",
+    "summary",
+    "status",
+    "timestamp_unix_s",
+    "generated_by"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "kind": { "type": "string", "const": "security_incident_report" },
+    "incident_id": { "type": "string", "minLength": 3 },
+    "severity": { "type": "string", "enum": ["critical", "high", "medium", "low"] },
+    "summary": { "type": "string", "minLength": 8 },
+    "status": { "type": "string", "enum": ["open", "contained", "mitigated", "resolved"] },
+    "runbook": { "type": ["string", "null"] },
+    "timestamp_unix_s": { "type": "integer", "minimum": 0 },
+    "generated_by": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": false
+}

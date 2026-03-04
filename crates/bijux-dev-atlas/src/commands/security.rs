@@ -2,8 +2,8 @@
 
 use crate::cli::{
     SecurityAuthenticationCommand, SecurityAuthorizationCommand, SecurityCommand,
-    SecurityPolicyInspectArgs, SecurityRoleAssignArgs, SecurityScanArtifactsArgs,
-    SecurityTokenInspectArgs, SecurityValidateArgs,
+    SecurityIncidentReportArgs, SecurityPolicyInspectArgs, SecurityRoleAssignArgs,
+    SecurityScanArtifactsArgs, SecurityTokenInspectArgs, SecurityValidateArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
 use base64::Engine as _;
@@ -339,6 +339,8 @@ pub(crate) fn run_security_command(
         SecurityCommand::Diagnostics(args) => run_security_diagnostics(args),
         SecurityCommand::PolicyInspect(args) => run_security_policy_inspect(args),
         SecurityCommand::Audit(args) => run_security_audit(args),
+        SecurityCommand::VulnerabilityReport(args) => run_security_vulnerability_report(args),
+        SecurityCommand::IncidentReport(args) => run_security_incident_report(args),
         SecurityCommand::Authentication { command } => match command {
             SecurityAuthenticationCommand::ApiKeys(args) => run_security_auth_api_keys(args),
             SecurityAuthenticationCommand::TokenInspect(args) => {
@@ -759,6 +761,78 @@ fn run_security_audit(args: SecurityValidateArgs) -> Result<(String, i32), Strin
         ]
     });
     let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_security_vulnerability_report(args: SecurityValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    // Reuse security validation as report generator so policy checks and scan aggregation stay canonical.
+    let _ = run_security_validate(args.clone())?;
+    let path = root.join("artifacts/security/security-vulnerability-scan.json");
+    let payload = read_json(&path)?;
+    let rendered = emit_payload(
+        args.format,
+        args.out,
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "security_vulnerability_report",
+            "status": payload.get("status").cloned().unwrap_or_else(|| serde_json::Value::String("unknown".to_string())),
+            "report_path": path.strip_prefix(&root).unwrap_or(&path).display().to_string(),
+            "report": payload
+        }),
+    )?;
+    Ok((rendered, 0))
+}
+
+fn run_security_incident_report(args: SecurityIncidentReportArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let allowed = ["critical", "high", "medium", "low"];
+    if !allowed.iter().any(|s| *s == args.severity) {
+        return Err(format!(
+            "severity must be one of: {}",
+            allowed.join(", ")
+        ));
+    }
+    let status_allowed = ["open", "contained", "mitigated", "resolved"];
+    if !status_allowed.iter().any(|s| *s == args.status) {
+        return Err(format!(
+            "status must be one of: {}",
+            status_allowed.join(", ")
+        ));
+    }
+    let path = named_report_path(&root, &format!("security-incident-{}.json", args.incident_id))?;
+    let timestamp_utc = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_err(|err| format!("system clock error: {err}"))?
+        .as_secs();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "security_incident_report",
+        "incident_id": args.incident_id,
+        "severity": args.severity,
+        "summary": args.summary,
+        "status": args.status,
+        "runbook": args.runbook,
+        "timestamp_unix_s": timestamp_utc,
+        "generated_by": "bijux dev atlas security incident-report"
+    });
+    fs::write(
+        &path,
+        serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode incident report failed: {err}"))?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
+    let rendered = emit_payload(
+        args.format,
+        args.out,
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "security_incident_report_result",
+            "status": "ok",
+            "report_path": path.strip_prefix(&root).unwrap_or(&path).display().to_string(),
+            "report": payload
+        }),
+    )?;
     Ok((rendered, 0))
 }
 

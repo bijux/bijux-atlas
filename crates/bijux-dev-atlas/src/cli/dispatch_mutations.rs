@@ -504,8 +504,10 @@ fn force_json_security(command: &mut SecurityCommand) {
         SecurityCommand::Validate(args)
         | SecurityCommand::ConfigValidate(args)
         | SecurityCommand::Diagnostics(args)
-        | SecurityCommand::Audit(args) => args.format = FormatArg::Json,
+        | SecurityCommand::Audit(args)
+        | SecurityCommand::VulnerabilityReport(args) => args.format = FormatArg::Json,
         SecurityCommand::PolicyInspect(args) => args.format = FormatArg::Json,
+        SecurityCommand::IncidentReport(args) => args.format = FormatArg::Json,
         SecurityCommand::Authentication { command } => match command {
             crate::cli::SecurityAuthenticationCommand::ApiKeys(args)
             | crate::cli::SecurityAuthenticationCommand::Diagnostics(args)
@@ -1170,8 +1172,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             SecurityCommand::Validate(args)
             | SecurityCommand::ConfigValidate(args)
             | SecurityCommand::Diagnostics(args)
-            | SecurityCommand::Audit(args) => args.repo_root = Some(root.clone()),
+            | SecurityCommand::Audit(args)
+            | SecurityCommand::VulnerabilityReport(args) => args.repo_root = Some(root.clone()),
             SecurityCommand::PolicyInspect(args) => args.repo_root = Some(root.clone()),
+            SecurityCommand::IncidentReport(args) => args.repo_root = Some(root.clone()),
             SecurityCommand::Authentication { command } => match command {
                 crate::cli::SecurityAuthenticationCommand::ApiKeys(args)
                 | crate::cli::SecurityAuthenticationCommand::Diagnostics(args)
