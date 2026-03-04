@@ -14,6 +14,9 @@ pub use crate::domain::canonical;
 pub use crate::domain::time;
 // export contract: pub use crate::domain::{resolve_bijux_cache_dir, resolve_bijux_config_path, sha256, sha256_hex, Hash256}
 pub use crate::domain::{
+    BootstrapPolicy, ClusterDescriptor, ClusterHealth, ClusterMetadataStore, CompatibilityPolicy,
+    DiscoveryStrategy, HealthPolicy, MetadataBackend, NodeDescriptor, NodeIdentity, NodeRole,
+    NodeState, ReadinessPolicy, ShutdownPolicy, TopologyMode,
     resolve_bijux_cache_dir, resolve_bijux_config_path, sha256, sha256_hex, Hash256,
 };
 pub use crate::errors::{
