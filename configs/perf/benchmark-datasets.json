@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "latency_metrics": [
+    "latency_p50_ms",
+    "latency_p95_ms",
+    "latency_p99_ms"
+  ],
+  "throughput_metrics": [
+    "throughput_ops_per_sec"
+  ],
+  "dataset_tiers": [
+    {
+      "tier": "small",
+      "max_rows": 100000
+    },
+    {
+      "tier": "medium",
+      "max_rows": 5000000
+    },
+    {
+      "tier": "large",
+      "max_rows": 50000000
+    },
+    {
+      "tier": "x_large",
+      "max_rows": 500000000
+    }
+  ],
+  "datasets": [
+    {
+      "id": "genes-mini",
+      "tier": "small",
+      "row_count": 10000,
+      "shard_count": 1,
+      "bytes_uncompressed": 8000000,
+      "format": "sqlite"
+    },
+    {
+      "id": "genes-medium",
+      "tier": "medium",
+      "row_count": 1000000,
+      "shard_count": 8,
+      "bytes_uncompressed": 720000000,
+      "format": "sqlite"
+    },
+    {
+      "id": "genes-large",
+      "tier": "large",
+      "row_count": 25000000,
+      "shard_count": 32,
+      "bytes_uncompressed": 18000000000,
+      "format": "sqlite"
+    }
+  ]
+}

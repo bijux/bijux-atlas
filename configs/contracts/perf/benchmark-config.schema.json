@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Benchmark Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "namespace",
+    "latency_unit",
+    "throughput_unit",
+    "isolation",
+    "reproducibility"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "namespace": {
+      "type": "string",
+      "pattern": "^atlas_[a-z0-9_]+$"
+    },
+    "latency_unit": {
+      "type": "string",
+      "const": "milliseconds"
+    },
+    "throughput_unit": {
+      "type": "string",
+      "const": "operations_per_second"
+    },
+    "isolation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cpu_set", "memory_limit_mb"],
+      "properties": {
+        "cpu_set": {
+          "type": "string",
+          "minLength": 1
+        },
+        "memory_limit_mb": {
+          "type": "integer",
+          "minimum": 256
+        }
+      }
+    },
+    "reproducibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fixed_seed", "min_repeat_runs", "max_relative_delta_percent"],
+      "properties": {
+        "fixed_seed": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "min_repeat_runs": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "max_relative_delta_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
+        }
+      }
+    }
+  }
+}

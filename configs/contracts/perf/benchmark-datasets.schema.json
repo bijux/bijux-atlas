@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Benchmark Dataset Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "latency_metrics",
+    "throughput_metrics",
+    "dataset_tiers",
+    "datasets"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "latency_metrics": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "throughput_metrics": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "dataset_tiers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["tier", "max_rows"],
+        "properties": {
+          "tier": {
+            "type": "string",
+            "enum": ["small", "medium", "large", "x_large"]
+          },
+          "max_rows": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "datasets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tier",
+          "row_count",
+          "shard_count",
+          "bytes_uncompressed",
+          "format"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "tier": {
+            "type": "string",
+            "enum": ["small", "medium", "large", "x_large"]
+          },
+          "row_count": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "shard_count": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "bytes_uncompressed": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "format": {
+            "type": "string",
+            "enum": ["sqlite", "jsonl", "parquet"]
+          }
+        }
+      },
+      "minItems": 1
+    }
+  }
+}
