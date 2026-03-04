@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "kind": "performance_baseline_verification_v1",
+  "status": "pass",
+  "baseline_profile": "system-load-baseline",
+  "checks": [
+    "baseline_profile_present",
+    "suite_count_matches_manifest",
+    "thresholds_match_policy_limits"
+  ]
+}

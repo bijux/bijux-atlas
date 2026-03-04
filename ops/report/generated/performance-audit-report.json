@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "kind": "performance_audit_report_v1",
+  "status": "pass",
+  "audited_assets": [
+    "configs/perf/regression-policy.json",
+    "configs/perf/regression-notifications.json",
+    "ops/report/generated/performance-regression-report.json",
+    "ops/report/generated/performance-history.json",
+    "ops/report/generated/performance-trend.json",
+    "ops/report/generated/performance-metadata.json"
+  ],
+  "notes": [
+    "all required performance governance artifacts are present",
+    "baseline verification asset is present",
+    "regression detector report is parseable"
+  ]
+}
