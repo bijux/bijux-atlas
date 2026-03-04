@@ -369,11 +369,23 @@ fn run_docs_registry_command(
                                 "kind": "docs_quality_dashboard_v1",
                                 "summary": registry_checks["summary"].clone(),
                                 "canonical_references": registry_checks["canonical_references"].clone(),
-                                "pruning_suggestions": registry_checks["pruning_suggestions"].clone()
+                                "pruning_suggestions": registry_checks["pruning_suggestions"].clone(),
+                                "stale_pages": registry_checks["stale_pages"].clone()
                             }))
                             .map_err(|e| format!("docs quality dashboard encode failed: {e}"))?,
                         )
                         .map_err(|e| format!("write docs quality dashboard failed: {e}"))?;
+                        fs::write(
+                            generated_dir.join("docs-stale-pages.json"),
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "schema_version": 1,
+                                "kind": "docs_stale_pages_v1",
+                                "reference_date": registry_checks["summary"]["reference_date"].clone(),
+                                "rows": registry_checks["stale_pages"].clone()
+                            }))
+                            .map_err(|e| format!("docs stale pages encode failed: {e}"))?,
+                        )
+                        .map_err(|e| format!("write docs stale pages report failed: {e}"))?;
                         let docs_contract_coverage = serde_json::json!({
                             "schema_version": 1,
                             "kind": "docs_contract_coverage_v1",
@@ -458,6 +470,7 @@ fn run_docs_registry_command(
                             "command_index": "docs/_internal/generated/command-index.json",
                             "schema_index": "docs/_internal/generated/schema-index.json",
                             "docs_quality_dashboard": "docs/_internal/generated/docs-quality-dashboard.json",
+                            "docs_stale_pages": "docs/_internal/generated/docs-stale-pages.json",
                             "docs_contract_coverage": "docs/_internal/generated/docs-contract-coverage.json",
                             "concept_registry": "docs/_internal/generated/concept-registry.json",
                             "concept_registry_page": "docs/_internal/generated/concept-registry.md",

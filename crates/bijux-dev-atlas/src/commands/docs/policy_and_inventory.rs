@@ -3,6 +3,12 @@
 pub(crate) struct DocsQualityPolicy {
     #[serde(default = "default_stale_days")]
     pub(crate) stale_days: i64,
+    #[serde(default = "default_stale_fail_grace_days")]
+    pub(crate) stale_fail_grace_days: i64,
+    #[serde(default = "default_reference_date")]
+    pub(crate) reference_date: String,
+    #[serde(default = "default_stale_override_policy_path")]
+    pub(crate) stale_override_policy_path: String,
     #[serde(default = "default_area_budget")]
     pub(crate) default_area_budget: usize,
     #[serde(default)]
@@ -61,6 +67,18 @@ fn default_stale_days() -> i64 {
     90
 }
 
+fn default_stale_fail_grace_days() -> i64 {
+    30
+}
+
+fn default_reference_date() -> String {
+    "2026-02-25".to_string()
+}
+
+fn default_stale_override_policy_path() -> String {
+    "docs/_internal/policies/stale-page-overrides.json".to_string()
+}
+
 fn default_area_budget() -> usize {
     10
 }
@@ -77,6 +95,9 @@ impl Default for DocsQualityPolicy {
     fn default() -> Self {
         Self {
             stale_days: default_stale_days(),
+            stale_fail_grace_days: default_stale_fail_grace_days(),
+            reference_date: default_reference_date(),
+            stale_override_policy_path: default_stale_override_policy_path(),
             default_area_budget: default_area_budget(),
             area_budgets: BTreeMap::new(),
             naming: NamingPolicy::default(),

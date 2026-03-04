@@ -402,6 +402,24 @@ fn date_diff_days(older: &str, newer: &str) -> Option<i64> {
     Some(days_from_civil(y2, m2, d2) - days_from_civil(y1, m1, d1))
 }
 
+#[derive(Debug, Clone, serde::Deserialize)]
+struct StalePageOverride {
+    path: String,
+    reason: String,
+    owner: String,
+    expires_on: String,
+    #[serde(default)]
+    section: Option<String>,
+}
+
+fn load_stale_page_overrides(repo_root: &Path, policy: &DocsQualityPolicy) -> Vec<StalePageOverride> {
+    let path = repo_root.join(&policy.stale_override_policy_path);
+    let Ok(text) = fs::read_to_string(path) else {
+        return Vec::new();
+    };
+    serde_json::from_str::<Vec<StalePageOverride>>(&text).unwrap_or_default()
+}
+
 pub(crate) fn has_required_section(text: &str, section: &str) -> bool {
     let needle = format!("## {section}");
     text.lines().any(|line| line.trim() == needle)
@@ -428,9 +446,11 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
         .cloned()
         .unwrap_or_default();
     let policy = load_quality_policy(&ctx.repo_root);
+    let stale_overrides = load_stale_page_overrides(&ctx.repo_root, &policy);
     let audience_policy = load_audience_policy(&ctx.repo_root);
     let mut errors = Vec::new();
     let mut warnings = Vec::new();
+    let mut stale_pages = Vec::<serde_json::Value>::new();
     let mut seen_paths = BTreeSet::new();
     let mut seen_topics = BTreeMap::<String, usize>::new();
     let mut seen_titles = BTreeMap::<String, usize>::new();
@@ -474,12 +494,58 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
             ));
         }
         if let Some(last_reviewed) = entry["last_reviewed"].as_str() {
-            if let Some(age_days) = date_diff_days(last_reviewed, "2026-02-25") {
+            if let Some(age_days) = date_diff_days(last_reviewed, &policy.reference_date) {
                 if age_days > policy.stale_days {
-                    warnings.push(format!(
-                        "DOCS_REGISTRY_OUTDATED: `{path}` last_reviewed={last_reviewed} age_days={age_days}"
-                    ));
+                    let section = path.split('/').nth(1).unwrap_or("unknown").to_string();
+                    let override_entry = stale_overrides.iter().find(|item| {
+                        item.path == path
+                            && item.expires_on >= policy.reference_date
+                            && item.reason.trim().len() >= 8
+                            && item.owner.trim().len() >= 3
+                            && item
+                                .section
+                                .as_ref()
+                                .is_none_or(|candidate| candidate == &section)
+                    });
+                    let fail_after_days = policy.stale_days + policy.stale_fail_grace_days;
+                    if override_entry.is_none() && age_days > fail_after_days {
+                        errors.push(format!(
+                            "DOCS_REGISTRY_STALE_PAGE_ERROR: `{path}` last_reviewed={last_reviewed} age_days={age_days} exceeds fail threshold={fail_after_days}"
+                        ));
+                        stale_pages.push(serde_json::json!({
+                            "path": path,
+                            "last_reviewed": last_reviewed,
+                            "age_days": age_days,
+                            "status": "fail",
+                            "reason": "stale beyond grace period",
+                            "section": section
+                        }));
+                    } else {
+                        let warn_text = if let Some(override_row) = override_entry {
+                            format!(
+                                "DOCS_REGISTRY_OUTDATED_OVERRIDE: `{path}` last_reviewed={last_reviewed} age_days={age_days} override_owner={} expires_on={}",
+                                override_row.owner, override_row.expires_on
+                            )
+                        } else {
+                            format!(
+                                "DOCS_REGISTRY_OUTDATED: `{path}` last_reviewed={last_reviewed} age_days={age_days}"
+                            )
+                        };
+                        warnings.push(warn_text);
+                        stale_pages.push(serde_json::json!({
+                            "path": path,
+                            "last_reviewed": last_reviewed,
+                            "age_days": age_days,
+                            "status": if override_entry.is_some() { "override" } else { "warn" },
+                            "reason": if override_entry.is_some() { "stale override active" } else { "stale in grace window" },
+                            "section": section
+                        }));
+                    }
                 }
+            } else {
+                errors.push(format!(
+                    "DOCS_REGISTRY_LAST_REVIEWED_INVALID: `{path}` has invalid date `{last_reviewed}`"
+                ));
             }
         } else {
             warnings.push(format!("DOCS_REGISTRY_MISSING_LAST_REVIEWED: `{path}`"));
@@ -646,13 +712,16 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
         "schema_version": 1,
         "errors": errors,
         "warnings": warnings,
+        "stale_pages": stale_pages,
         "crate_docs": crate_rows,
         "pruning_suggestions": pruning,
         "canonical_references": canonical_summary,
         "summary": {
             "registered": docs.len(),
             "errors": errors.len(),
-            "warnings": warnings.len()
+            "warnings": warnings.len(),
+            "stale_pages": stale_pages.len(),
+            "reference_date": policy.reference_date
         }
     }))
 }
