@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "kind": "performance_anomalies_v1",
+  "detector": "regression-threshold-detector",
+  "rows": []
+}

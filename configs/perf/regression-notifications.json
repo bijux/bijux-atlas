@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "kind": "performance_regression_notifications_v1",
+  "routes": [
+    {
+      "channel": "github-check",
+      "severity": ["critical", "warning"],
+      "enabled": true
+    },
+    {
+      "channel": "ops-report",
+      "severity": ["critical", "warning", "info"],
+      "enabled": true
+    }
+  ],
+  "deduplication_window_minutes": 30
+}

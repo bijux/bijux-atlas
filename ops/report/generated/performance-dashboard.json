@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "performance_dashboard_v1",
+  "panels": [
+    "latency_trend_p95",
+    "latency_trend_p99",
+    "throughput_trend",
+    "error_rate_trend",
+    "regression_count",
+    "anomaly_count"
+  ],
+  "source_reports": [
+    "ops/report/generated/performance-regression-report.json",
+    "ops/report/generated/performance-trend.json"
+  ]
+}
