@@ -395,7 +395,8 @@
         "configs/contracts/release/*.json",
         "configs/contracts/reports/checks/*.json",
         "configs/contracts/reports/*.json",
-        "configs/contracts/security/*.json"
+        "configs/contracts/security/*.json",
+        "configs/contracts/cluster/*.json"
       ],
       "name": "schema",
       "owner": "platform",
@@ -426,7 +427,8 @@
         "configs/contracts/reports/checks/*.json",
         "configs/contracts/reports/*.json",
         "configs/contracts/release/*.json",
-        "configs/contracts/security/*.json"
+        "configs/contracts/security/*.json",
+        "configs/contracts/cluster/*.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [

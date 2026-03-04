@@ -59,7 +59,9 @@
     "configs/security/redaction.json": "configs/contracts/security/redaction.schema.json",
     "configs/security/secrets.json": "configs/contracts/security/secrets.schema.json",
     "configs/slo/*.json": "configs/contracts/inventory-configs.schema.json",
+    "configs/system/chaos-scenarios.json": "configs/contracts/inventory-ops.schema.json",
     "configs/system/failure-injection.json": "configs/contracts/inventory-ops.schema.json",
+    "configs/system/resilience-policy.example.json": "configs/contracts/inventory-ops.schema.json",
     "configs/system/simulation-scenarios.json": "configs/contracts/inventory-ops.schema.json"
   },
   "schema_version": 1

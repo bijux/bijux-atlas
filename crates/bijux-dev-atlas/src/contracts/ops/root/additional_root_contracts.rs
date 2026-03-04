@@ -67,6 +67,7 @@ fn test_ops_root_001_allowed_surface(ctx: &RunContext) -> TestResult {
         "k8s",
         "load",
         "policy",
+        "perf",
         "observe",
         "report",
         "schema",

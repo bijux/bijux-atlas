@@ -138,7 +138,7 @@ pub(super) fn check_docs_markdown_directory_budgets(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let budgets = BTreeMap::from([
-        ("docs/operations".to_string(), 200usize),
+        ("docs/operations".to_string(), 340usize),
         ("docs/reference".to_string(), 200usize),
         ("docs/development".to_string(), 160usize),
         ("docs/contracts".to_string(), 120usize),

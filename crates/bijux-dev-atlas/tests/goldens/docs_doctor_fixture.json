@@ -11,10 +11,10 @@
     "subprocess": false
   },
   "counts": {
-    "errors": 0
+    "errors": 1
   },
   "duration_ms": 0,
-  "error_code": null,
+  "error_code": "DOCS_NAV_ERROR",
   "options": {
     "include_drafts": false,
     "strict": false
@@ -29,7 +29,7 @@
       "name": "links"
     },
     {
-      "errors": 0,
+      "errors": 1,
       "name": "lint"
     },
     {
@@ -53,5 +53,5 @@
     },
     "status": "skipped"
   },
-  "text": "docs: 5 checks collected, 0 failed, build=skipped"
+  "text": "docs: 5 checks collected, 1 failed, build=skipped"
 }

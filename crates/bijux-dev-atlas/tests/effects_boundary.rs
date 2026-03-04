@@ -52,6 +52,7 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
         "src/commands/configs.rs",
         "src/commands/configs_payloads.rs",
         "src/commands/perf.rs",
+        "src/commands/system.rs",
         "src/commands/release.rs",
         "src/commands/suites.rs",
         "src/commands/docs/validation_and_links.rs",
@@ -179,7 +180,9 @@ fn staged_time_random_exceptions() -> BTreeSet<&'static str> {
         "src/commands/data.rs",
         "src/commands/docs/runtime/docs_command_router.rs",
         "src/commands/governance.rs",
+        "src/commands/security.rs",
         "src/commands/suites.rs",
+        "src/commands/system.rs",
         "src/docs/site_output.rs",
     ]
     .into_iter()

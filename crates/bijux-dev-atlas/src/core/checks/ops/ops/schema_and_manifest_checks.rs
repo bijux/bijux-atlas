@@ -55,6 +55,8 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
         "ops/observe/drills/result.schema.json".to_string(),
         "ops/observe/pack/compose.schema.json".to_string(),
         "ops/inventory/policies/dev-atlas-policy.schema.json".to_string(),
+        "ops/load/contracts/load-report.schema.json".to_string(),
+        "ops/load/contracts/load-summary.schema.json".to_string(),
     ]);
     for file in walk_files(&ctx.repo_root.join("ops"))
         .into_iter()
@@ -541,4 +543,3 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
 
     Ok(violations)
 }
-

@@ -368,10 +368,10 @@
     },
     {
       "counts": {
-        "covered": 47,
+        "covered": 51,
         "generated": 0,
         "internal": 0,
-        "public": 47,
+        "public": 51,
         "schemas": 3
       },
       "files": [
@@ -409,6 +409,10 @@
         "configs/ops/ports.json",
         "configs/ops/public-make-targets.json",
         "configs/ops/public-surface-doc-exceptions.txt",
+        "configs/ops/runtime/cluster-config.example.json",
+        "configs/ops/runtime/node-config.example.json",
+        "configs/ops/runtime/replication-metadata.example.json",
+        "configs/ops/runtime/shard-metadata.example.json",
         "configs/ops/scenarios.schema.json",
         "configs/ops/schema-contracts.json",
         "configs/ops/sharding-policy.json",
@@ -467,19 +471,23 @@
     },
     {
       "counts": {
-        "covered": 7,
+        "covered": 11,
         "generated": 0,
         "internal": 0,
-        "public": 7,
+        "public": 11,
         "schemas": 2
       },
       "files": [
         "configs/perf/benches.json",
+        "configs/perf/benchmark-config.json",
+        "configs/perf/benchmark-datasets.json",
         "configs/perf/budgets.yaml",
         "configs/perf/critical_queries.json",
         "configs/perf/critical_queries_explain_snapshot.json",
         "configs/perf/exceptions.json",
         "configs/perf/k6-thresholds.v1.json",
+        "configs/perf/regression-notifications.json",
+        "configs/perf/regression-policy.json",
         "configs/perf/slo.yaml"
       ],
       "name": "perf",
@@ -604,14 +612,17 @@
     },
     {
       "counts": {
-        "covered": 148,
+        "covered": 155,
         "generated": 1,
-        "internal": 127,
+        "internal": 134,
         "public": 20,
-        "schemas": 12
+        "schemas": 13
       },
       "files": [
         "configs/contracts/ci-run-output.schema.json",
+        "configs/contracts/cluster/cluster-config.schema.json",
+        "configs/contracts/cluster/node-config.schema.json",
+        "configs/contracts/cluster/shard-metadata.schema.json",
         "configs/contracts/command-inventory-output.schema.json",
         "configs/contracts/configs-contracts-check-output.schema.json",
         "configs/contracts/contracts-coverage-output.schema.json",
@@ -660,10 +671,14 @@
         "configs/contracts/observability/metrics.schema.json",
         "configs/contracts/ops-lint-output.schema.json",
         "configs/contracts/perf/benches.schema.json",
+        "configs/contracts/perf/benchmark-config.schema.json",
+        "configs/contracts/perf/benchmark-datasets.schema.json",
+        "configs/contracts/perf/benchmark-result.schema.json",
         "configs/contracts/perf/budgets.schema.json",
         "configs/contracts/perf/cold-start-report.schema.json",
         "configs/contracts/perf/exceptions.schema.json",
         "configs/contracts/perf/load-report.schema.json",
+        "configs/contracts/perf/performance-metadata.schema.json",
         "configs/contracts/perf/slo.schema.json",
         "configs/contracts/release/checksum-list.schema.json",
         "configs/contracts/release/packet-list.schema.json",
@@ -775,7 +790,8 @@
         "configs/contracts/reports/checks/*.json",
         "configs/contracts/reports/*.json",
         "configs/contracts/release/*.json",
-        "configs/contracts/security/*.json"
+        "configs/contracts/security/*.json",
+        "configs/contracts/cluster/*.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -785,10 +801,10 @@
     },
     {
       "counts": {
-        "covered": 13,
+        "covered": 19,
         "generated": 0,
         "internal": 0,
-        "public": 13,
+        "public": 19,
         "schemas": 1
       },
       "files": [
@@ -796,14 +812,20 @@
         "configs/security/audit-allowlist.toml",
         "configs/security/auth-model.yaml",
         "configs/security/data-classification.yaml",
+        "configs/security/data-protection.yaml",
         "configs/security/deny.toml",
         "configs/security/dependency-source-policy.json",
+        "configs/security/event-monitoring-hooks.yaml",
         "configs/security/forbidden-patterns.json",
         "configs/security/github-actions-exceptions.json",
+        "configs/security/permissions.yaml",
         "configs/security/policy.yaml",
         "configs/security/principals.yaml",
         "configs/security/redaction.json",
         "configs/security/resources.yaml",
+        "configs/security/role-assignments.yaml",
+        "configs/security/roles.yaml",
+        "configs/security/runtime-security.yaml",
         "configs/security/secrets.json"
       ],
       "name": "security",
@@ -842,15 +864,18 @@
     },
     {
       "counts": {
-        "covered": 3,
+        "covered": 6,
         "generated": 0,
         "internal": 0,
-        "public": 3,
+        "public": 6,
         "schemas": 1
       },
       "files": [
+        "configs/system/chaos-scenarios.json",
         "configs/system/failure-injection.json",
+        "configs/system/resilience-policy.example.json",
         "configs/system/simulation-scenarios.json",
+        "configs/system/system-diagnostics-report.schema.json",
         "configs/system/system-simulation-report.schema.json"
       ],
       "name": "system",

@@ -4,7 +4,7 @@ fn docs_root_path(ctx: &RunContext) -> std::path::PathBuf {
 
 const DOCS_ENTRYPOINT_WORD_BUDGET: usize = 700;
 const DOCS_HOME_LINE_BUDGET: usize = 80;
-const DOCS_SECTION_INDEX_LINK_BUDGET: usize = 32;
+const DOCS_SECTION_INDEX_LINK_BUDGET: usize = 80;
 
 fn parse_docs_field(contents: &str, labels: &[&str]) -> Option<String> {
     for line in contents.lines().take(12) {

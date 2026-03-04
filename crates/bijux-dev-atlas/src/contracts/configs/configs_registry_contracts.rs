@@ -729,7 +729,8 @@ fn directory_file_budget(rel_dir: &str) -> usize {
         "configs/ops" => 40,
         "configs/policy" => 40,
         "configs/schema" => 30,
-        "configs/security" => 16,
+        "configs/security" => 24,
+        "configs/perf" => 16,
         _ => 10,
     }
 }

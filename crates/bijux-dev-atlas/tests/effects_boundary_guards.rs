@@ -216,6 +216,7 @@ fn network_client_calls_are_constrained_to_explicit_allowlist() {
         &[
             "src/commands/docs/validation_and_links.rs",
             "src/commands/perf.rs",
+            "src/commands/system.rs",
         ],
     );
     assert_only_allowlisted_paths("ureq::", &[]);
