@@ -9,6 +9,7 @@ pub(crate) struct RequestTrace {
     pub correlation_id: Option<String>,
     pub run_id: Option<String>,
     pub traceparent: Option<String>,
+    pub request_origin: Option<String>,
 }
 
 #[must_use]
@@ -27,6 +28,12 @@ pub(crate) fn extract_request_trace(headers: &HeaderMap, state: &AppState) -> Re
         .map(ToString::to_string);
     let traceparent = headers
         .get("traceparent")
+        .and_then(|v| v.to_str().ok())
+        .map(str::trim)
+        .filter(|v| !v.is_empty())
+        .map(ToString::to_string);
+    let request_origin = headers
+        .get("x-request-origin")
         .and_then(|v| v.to_str().ok())
         .map(str::trim)
         .filter(|v| !v.is_empty())
@@ -50,6 +57,7 @@ pub(crate) fn extract_request_trace(headers: &HeaderMap, state: &AppState) -> Re
         correlation_id,
         run_id,
         traceparent,
+        request_origin,
     }
 }
 
@@ -74,5 +82,6 @@ mod tests {
         assert_eq!(trace.correlation_id.as_deref(), Some("corr-1"));
         assert_eq!(trace.run_id.as_deref(), Some("run-1"));
         assert_eq!(trace.traceparent, None);
+        assert_eq!(trace.request_origin, None);
     }
 }

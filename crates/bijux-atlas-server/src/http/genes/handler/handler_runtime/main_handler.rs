@@ -351,7 +351,12 @@ pub(crate) async fn genes_handler(
     state.metrics.observe_dataset_query(&dataset_key).await;
     if class == QueryClass::Heavy || class == QueryClass::Cheap {
         let mut cache = state.hot_query_cache.lock().await;
-        if let Some(entry) = info_span!("cache_lookup_hot_query").in_scope(|| cache.get(&coalesce_key))
+        if let Some(entry) = info_span!(
+            "cache_lookup_hot_query",
+            dataset_id = %dataset.canonical_string(),
+            query_type = "genes"
+        )
+        .in_scope(|| cache.get(&coalesce_key))
         {
             state.metrics.observe_query_cache_hit();
             let mut resp = Response::builder()
@@ -393,7 +398,12 @@ pub(crate) async fn genes_handler(
         c.conn
             .progress_handler(1_000, Some(move || Instant::now() > deadline));
         let query_plan_started = Instant::now();
-        let shard_candidates = info_span!("query_plan").in_scope(|| async {
+        let shard_candidates = info_span!(
+            "query_plan",
+            dataset_id = %dataset.canonical_string(),
+            query_type = "genes"
+        )
+        .in_scope(|| async {
             if req.filter.region.is_some() {
                 Ok::<_, CacheError>(Some(
                     state
@@ -417,7 +427,12 @@ pub(crate) async fn genes_handler(
         let query_span = info_span!(
             "query_execution",
             class = %format!("{class:?}").to_lowercase(),
-            dataset = %dataset.canonical_string()
+            dataset_id = %dataset.canonical_string(),
+            query_type = "genes",
+            request_origin = headers
+                .get("x-request-origin")
+                .and_then(|v| v.to_str().ok())
+                .unwrap_or("")
         );
         let result = query_span.in_scope(|| {
             if let Some(gene_id) = exact_gene_id.as_ref() {
@@ -463,7 +478,12 @@ pub(crate) async fn genes_handler(
                 });
             }
             if req.filter.region.is_some() {
-                let _shard_routing_span = info_span!("shard_routing").entered();
+                let _shard_routing_span = info_span!(
+                    "shard_routing",
+                    dataset_id = %dataset.canonical_string(),
+                    shard_id = tracing::field::Empty
+                )
+                .entered();
                 let catalog_path = bijux_atlas_model::artifact_paths(
                     state.cache.disk_root(),
                     &dataset,
@@ -488,6 +508,8 @@ pub(crate) async fn genes_handler(
                                 .into_iter()
                                 .take(state.cache.max_open_shards_per_pod())
                             {
+                                tracing::Span::current()
+                                    .record("shard_id", tracing::field::display(shard.display()));
                                 permits.push(state.cache.try_acquire_shard_permit()?);
                                 let conn = crate::effect_adapters::sqlite_adapters::open_readonly_no_mutex(&shard)?;
                                 let (cache_kib, shard_mmap) =
@@ -539,7 +561,12 @@ pub(crate) async fn genes_handler(
                 .await;
             state.metrics.observe_stage("query", query_elapsed).await;
             let provenance = super::handlers::dataset_provenance(&state, &dataset).await;
-            info_span!("cursor_generation").in_scope(|| {
+            info_span!(
+                "cursor_generation",
+                dataset_id = %dataset.canonical_string(),
+                query_type = "genes"
+            )
+            .in_scope(|| {
                 genes_response::build_success_payload(
                 &dataset,
                 &req,

@@ -335,6 +335,41 @@ async fn request_tracing_preserves_explicit_request_id() {
 }
 
 #[tokio::test]
+async fn request_tracing_propagates_trace_and_origin_headers() {
+    let store = Arc::new(FakeStore::default());
+    let tmp = tempdir().expect("tempdir");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..Default::default()
+        },
+        store,
+    );
+    let app = build_router(AppState::new(mgr));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, headers, _body) = send_raw_with_headers(
+        addr,
+        "/healthz",
+        &[
+            ("x-request-id", "req-client-trace"),
+            ("traceparent", "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00"),
+            ("x-request-origin", "integration-test"),
+        ],
+    )
+    .await;
+    assert_eq!(status, 200);
+    let lower = headers.to_ascii_lowercase();
+    assert!(lower.contains("x-request-id: req-client-trace"));
+    assert!(lower.contains("traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00"));
+    assert!(lower.contains("x-request-origin: integration-test"));
+}
+
+#[tokio::test]
 async fn generated_metrics_contract_covers_ops_metrics_contract_and_owners() {
     let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .parent()
