@@ -16,6 +16,20 @@ related:
 
 ## Diagram catalog
 
+- [System Topology](system-topology.md)
+- [Ingest Pipeline](ingest-pipeline.md)
+- [Query Execution](query-execution.md)
+- [Artifact Lifecycle](artifact-lifecycle.md)
+- [Repository Structure](repository-structure.md)
+- [Deployment](deployment.md)
+- [Data Flow](data-flow.md)
+- [Control Plane](control-plane.md)
+- [Runtime System](runtime-system.md)
+- [Ops Governance](ops-governance.md)
+- [Diagram Style Guide](style-guide.md)
+
+## Legacy and supporting diagrams
+
 - [Architecture Map](../architecture-map.md)
 - [System Graph Explained](../system-graph-explained.md)
 - [Dataflow](../dataflow.md)
