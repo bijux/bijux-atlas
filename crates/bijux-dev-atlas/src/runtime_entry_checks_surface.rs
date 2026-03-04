@@ -322,6 +322,9 @@ pub(crate) struct CheckRunOptions {
 struct DocsPageRow {
     path: String,
     in_nav: bool,
+    owner: Option<String>,
+    stability: Option<String>,
+    last_reviewed: Option<String>,
 }
 
 #[derive(Debug)]

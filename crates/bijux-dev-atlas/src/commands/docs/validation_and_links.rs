@@ -133,6 +133,10 @@ pub(crate) fn docs_validate_payload(
     let mut body_hashes = BTreeMap::<String, Vec<String>>::new();
     let mut docs_pages = BTreeSet::<String>::new();
     let mut indexed_links = BTreeSet::<String>::new();
+    let enforce_frontmatter_metadata = ctx
+        .repo_root
+        .join("docs/_internal/governance/metadata/front-matter.index.json")
+        .exists();
     let link_re = Regex::new(r"\[[^\]]+\]\(([^)]+)\)").map_err(|e| e.to_string())?;
     for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
         let rel = file
@@ -148,6 +152,46 @@ pub(crate) fn docs_validate_payload(
             ));
         }
         let text = fs::read_to_string(&file).unwrap_or_default();
+        let frontmatter = extract_frontmatter_map(&text);
+        if enforce_frontmatter_metadata
+            && !rel.starts_with("_internal/")
+            && !rel.starts_with("_drafts/")
+            && !rel.starts_with("_assets/")
+        {
+            for key in ["owner", "stability", "last_reviewed"] {
+                if !frontmatter.contains_key(key) {
+                    issues.warnings.push(format!(
+                        "DOCS_METADATA_ERROR: `{rel}` is missing required front matter key `{key}`"
+                    ));
+                }
+            }
+        }
+        if let Some(stability) = frontmatter.get("stability").map(String::as_str) {
+            if !matches!(
+                stability,
+                "stable" | "experimental" | "deprecated" | "internal"
+            ) {
+                issues.warnings.push(format!(
+                    "DOCS_METADATA_ERROR: `{rel}` has invalid stability `{stability}` (allowed: stable, experimental, deprecated, internal)"
+                ));
+            }
+        }
+        if !rel.starts_with("reference/") {
+            let stem = std::path::Path::new(&rel)
+                .file_stem()
+                .and_then(|v| v.to_str())
+                .unwrap_or_default();
+            if stem == "reference"
+                || stem.ends_with("-reference")
+                || frontmatter
+                    .get("type")
+                    .is_some_and(|value| value.eq_ignore_ascii_case("reference"))
+            {
+                issues.warnings.push(format!(
+                    "DOCS_REFERENCE_LOCATION_ERROR: reference-like page `{rel}` must live under docs/reference/"
+                ));
+            }
+        }
         if rel.ends_with("INDEX.md") || rel == "INDEX.md" || rel == "index.md" {
             for cap in link_re.captures_iter(&text) {
                 let target = cap.get(1).map(|m| m.as_str()).unwrap_or_default();
@@ -253,6 +297,48 @@ pub(crate) fn docs_validate_payload(
             ));
         }
     }
+    let mut directories = BTreeMap::<String, BTreeSet<String>>::new();
+    for rel in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
+        let rel = rel
+            .strip_prefix(&ctx.docs_root)
+            .unwrap_or(&rel)
+            .display()
+            .to_string();
+        if rel.starts_with("_internal/") || rel.starts_with("_drafts/") {
+            continue;
+        }
+        let path = std::path::Path::new(&rel);
+        let parent = path
+            .parent()
+            .map(|p| p.display().to_string())
+            .unwrap_or_else(|| ".".to_string());
+        let file = path
+            .file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or_default()
+            .to_string();
+        directories.entry(parent).or_default().insert(file);
+    }
+    for (dir, files) in directories {
+        if !files.contains("index.md") {
+            continue;
+        }
+        let basename = if dir == "." {
+            None
+        } else {
+            std::path::Path::new(&dir)
+                .file_name()
+                .and_then(|name| name.to_str())
+                .map(|name| format!("{name}.md"))
+        };
+        if let Some(candidate) = basename {
+            if files.contains(&candidate) {
+                issues.warnings.push(format!(
+                    "DOCS_DUPLICATE_INDEX_ERROR: `{dir}/index.md` duplicates domain entrypoint `{dir}/{candidate}`"
+                ));
+            }
+        }
+    }
     let inv = docs_inventory_payload(ctx, common)?;
     for dup in inv["duplicate_nav_titles"].as_array().into_iter().flatten() {
         if let Some(title) = dup.as_str() {
@@ -286,6 +372,30 @@ pub(crate) fn docs_validate_payload(
         "capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},
         "options": {"strict": common.strict, "include_drafts": common.include_drafts}
     }))
+}
+
+fn extract_frontmatter_map(text: &str) -> BTreeMap<String, String> {
+    let mut out = BTreeMap::new();
+    let mut lines = text.lines();
+    if lines.next().map(str::trim) != Some("---") {
+        return out;
+    }
+    for line in lines {
+        let trimmed = line.trim();
+        if trimmed == "---" {
+            break;
+        }
+        let Some((key, value)) = trimmed.split_once(':') else {
+            continue;
+        };
+        let key = key.trim();
+        if key.is_empty() {
+            continue;
+        }
+        let value = value.trim().trim_matches('"').trim_matches('\'');
+        out.insert(key.to_string(), value.to_string());
+    }
+    out
 }
 
 fn markdown_anchors(text: &str) -> std::collections::BTreeSet<String> {

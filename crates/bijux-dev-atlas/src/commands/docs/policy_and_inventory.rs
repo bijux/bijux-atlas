@@ -265,11 +265,18 @@ pub(crate) fn docs_inventory_payload(
         .filter_map(|p| {
             p.strip_prefix(&ctx.docs_root)
                 .ok()
-                .map(|r| r.display().to_string())
+                .map(|r| (p.clone(), r.display().to_string()))
         })
-        .map(|rel| DocsPageRow {
-            in_nav: nav_set.contains(&rel),
-            path: rel,
+        .map(|(path, rel)| {
+            let (owner, stability, last_reviewed) =
+                extract_frontmatter_docs_metadata(&path).unwrap_or((None, None, None));
+            DocsPageRow {
+                in_nav: nav_set.contains(&rel),
+                path: rel,
+                owner,
+                stability,
+                last_reviewed,
+            }
         })
         .collect::<Vec<_>>();
     let orphan_pages = rows
@@ -304,6 +311,37 @@ pub(crate) fn docs_inventory_payload(
         "orphan_pages": orphan_pages,
         "duplicate_nav_titles": duplicate_titles
     }))
+}
+
+fn extract_frontmatter_docs_metadata(
+    path: &Path,
+) -> Result<(Option<String>, Option<String>, Option<String>), String> {
+    let text = fs::read_to_string(path).map_err(|e| format!("read {}: {e}", path.display()))?;
+    let mut lines = text.lines();
+    if lines.next().map(str::trim) != Some("---") {
+        return Ok((None, None, None));
+    }
+    let mut owner = None;
+    let mut stability = None;
+    let mut last_reviewed = None;
+    for line in lines {
+        let trimmed = line.trim();
+        if trimmed == "---" {
+            break;
+        }
+        let Some((key, value)) = trimmed.split_once(':') else {
+            continue;
+        };
+        let key = key.trim();
+        let value = value.trim().trim_matches('"').trim_matches('\'').to_string();
+        match key {
+            "owner" if !value.is_empty() => owner = Some(value),
+            "stability" if !value.is_empty() => stability = Some(value),
+            "last_reviewed" if !value.is_empty() => last_reviewed = Some(value),
+            _ => {}
+        }
+    }
+    Ok((owner, stability, last_reviewed))
 }
 
 fn scan_registry_markdown_files(repo_root: &Path) -> Vec<PathBuf> {
