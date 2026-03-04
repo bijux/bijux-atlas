@@ -195,6 +195,7 @@
 | `docs-governance` | `.github/PULL_REQUEST_TEMPLATE/docs-governance.md` |
 | `docs-inventory-taxonomy` | `docs/_internal/governance/docs-inventory-taxonomy.md` |
 | `docs-lint-rules` | `docs/_internal/governance/docs-lint-rules.md` |
+| `docs-metadata-contract` | `docs/_internal/governance/docs-metadata-contract.md` |
 | `docs-navigation-policy` | `docs/_internal/governance/docs-navigation-policy.md` |
 | `docs-operating-model` | `docs/_internal/governance/docs-operating-model.md, docs/_internal/meta/docs-operating-model.md` |
 | `docs-ownership` | `docs/_internal/governance/docs-ownership.md` |

@@ -4529,6 +4529,20 @@
     {
       "keywords": [
         "-internal",
+        "docs-metadata-contract",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-metadata-contract.md",
+      "tags": [
+        "-internal",
+        "docs-metadata-contract",
+        "governance"
+      ],
+      "topic": "docs-metadata-contract"
+    },
+    {
+      "keywords": [
+        "-internal",
         "docs-navigation-policy",
         "governance"
       ],

@@ -8235,6 +8235,31 @@
     },
     {
       "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-metadata-contract",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-metadata-contract.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-metadata-contract",
+        "governance"
+      ],
+      "title": "Docs Metadata Contract",
+      "topic": "docs-metadata-contract"
+    },
+    {
+      "area": "_internal",
       "audience": "contributor",
       "crate": null,
       "doc_type": "concept",

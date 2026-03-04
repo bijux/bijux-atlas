@@ -344,6 +344,7 @@ License: Apache-2.0
 | `docs/_internal/governance/docs-drift-dashboard.md` | `concept` | `bijux-atlas-platform` | `stable` |
 | `docs/_internal/governance/docs-inventory-taxonomy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-lint-rules.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/docs-metadata-contract.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-navigation-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-operating-model.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-ownership.md` | `concept` | `docs-governance` | `stable` |

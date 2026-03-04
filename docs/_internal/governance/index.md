@@ -51,6 +51,7 @@ Provide governance rules that keep reader docs accurate, minimal, and stable.
 - [How To Deprecate A Doc Page](deprecate-doc-page.md)
 - [How To Rename A Doc Page](rename-doc-page.md)
 - [Docs Inventory Taxonomy](docs-inventory-taxonomy.md)
+- [Docs Metadata Contract](docs-metadata-contract.md)
 - [Docs Toolchain Policy](docs-toolchain-policy.md)
 - [Docs Contract](docs-contract.md)
 - [Docs Review Checklist](docs-review-checklist.md)

@@ -3101,6 +3101,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/docs-metadata-contract.md"
+      ],
+      "path": "docs/_internal/governance/docs-metadata-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/docs-navigation-policy.md"
       ],
       "path": "docs/_internal/governance/docs-navigation-policy.md"

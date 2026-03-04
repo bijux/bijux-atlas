@@ -263,6 +263,8 @@ fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_j
         .filter_map(|v| v.as_str())
         .collect::<std::collections::BTreeSet<_>>();
     let link_re = regex::Regex::new(r"\[[^\]]+\]\(([^)]+)\)").map_err(|e| e.to_string())?;
+    let orphan_allowlist_path = docs_root.join("_internal/policies/orphan-allowlist.json");
+    let orphan_allowlist = load_orphan_allowlist(&orphan_allowlist_path)?;
 
     let mut docs_files = docs_markdown_files(&docs_root, true);
     docs_files.sort();
@@ -316,6 +318,12 @@ fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_j
     }
 
     let mut orphan_pages = Vec::<String>::new();
+    let mut allowlisted_orphans = Vec::<String>::new();
+    let mut orphan_allowlist_expired = Vec::<String>::new();
+    let today = std::env::var("BIJUX_DOCS_ORPHAN_AUDIT_DATE")
+        .ok()
+        .filter(|value| !value.trim().is_empty())
+        .unwrap_or_else(|| "9999-12-31".to_string());
     for path in &docs_files {
         let rel = path
             .strip_prefix(&docs_root)
@@ -330,7 +338,22 @@ fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_j
             continue;
         }
         if !linked_local.contains(&rel) {
-            orphan_pages.push(format!("docs/{rel}"));
+            let full_path = format!("docs/{rel}");
+            let entry = orphan_allowlist.iter().find(|item| item.path == full_path);
+            match entry {
+                Some(allowlisted) => {
+                    if allowlisted.expires_on >= today {
+                        allowlisted_orphans.push(full_path);
+                    } else {
+                        orphan_allowlist_expired.push(format!(
+                            "{} (expired {}, owner {})",
+                            allowlisted.path, allowlisted.expires_on, allowlisted.owner
+                        ));
+                        orphan_pages.push(allowlisted.path.clone());
+                    }
+                }
+                None => orphan_pages.push(full_path),
+            }
         }
     }
 
@@ -372,6 +395,11 @@ fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_j
             unique_domains.len()
         ),
         format!("- Orphan pages: `{}`", orphan_pages.len()),
+        format!("- Allowlisted orphan pages: `{}`", allowlisted_orphans.len()),
+        format!(
+            "- Expired orphan allowlist entries: `{}`",
+            orphan_allowlist_expired.len()
+        ),
         format!(
             "- Pages missing `Last verified against`: `{}`",
             missing_verified.len()
@@ -414,6 +442,26 @@ fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_j
         }
     }
     lines.push(String::new());
+    lines.push("## Allowlisted Orphan Pages".to_string());
+    lines.push(String::new());
+    if allowlisted_orphans.is_empty() {
+        lines.push("- None".to_string());
+    } else {
+        for path in allowlisted_orphans.iter().take(20) {
+            lines.push(format!("- `{path}`"));
+        }
+    }
+    lines.push(String::new());
+    lines.push("## Expired Orphan Allowlist Entries".to_string());
+    lines.push(String::new());
+    if orphan_allowlist_expired.is_empty() {
+        lines.push("- None".to_string());
+    } else {
+        for row in orphan_allowlist_expired.iter().take(20) {
+            lines.push(format!("- `{row}`"));
+        }
+    }
+    lines.push(String::new());
 
     if let Some(parent) = output_path.parent() {
         fs::create_dir_all(parent).map_err(|e| format!("create {} failed: {e}", parent.display()))?;
@@ -427,8 +475,73 @@ fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_j
         "output": output_path.display().to_string(),
         "external_links": external_urls.len(),
         "orphan_pages": orphan_pages.len(),
+        "allowlisted_orphans": allowlisted_orphans.len(),
+        "expired_orphan_allowlist_entries": orphan_allowlist_expired.len(),
         "missing_verified": missing_verified.len(),
     }))
+}
+
+#[derive(serde::Deserialize)]
+struct OrphanAllowlistRoot {
+    entries: Vec<OrphanAllowlistEntry>,
+}
+
+#[derive(serde::Deserialize)]
+struct OrphanAllowlistEntry {
+    path: String,
+    owner: String,
+    justification: String,
+    expires_on: String,
+}
+
+fn load_orphan_allowlist(path: &std::path::Path) -> Result<Vec<OrphanAllowlistEntry>, String> {
+    if !path.exists() {
+        return Ok(Vec::new());
+    }
+    let value: OrphanAllowlistRoot = serde_json::from_str(
+        &fs::read_to_string(path).map_err(|e| format!("read {} failed: {e}", path.display()))?,
+    )
+    .map_err(|e| format!("parse {} failed: {e}", path.display()))?;
+    let mut errors = Vec::new();
+    for entry in &value.entries {
+        if !entry.path.starts_with("docs/") {
+            errors.push(format!(
+                "orphan allowlist path must start with docs/: {}",
+                entry.path
+            ));
+        }
+        if entry.justification.trim().is_empty() {
+            errors.push(format!(
+                "orphan allowlist entry must include non-empty justification: {}",
+                entry.path
+            ));
+        }
+        if entry.owner.trim().is_empty() {
+            errors.push(format!(
+                "orphan allowlist entry must include owner: {}",
+                entry.path
+            ));
+        }
+        let is_iso = entry.expires_on.len() == 10
+            && entry.expires_on.chars().enumerate().all(|(idx, ch)| {
+                if idx == 4 || idx == 7 {
+                    ch == '-'
+                } else {
+                    ch.is_ascii_digit()
+                }
+            });
+        if !is_iso {
+            errors.push(format!(
+                "orphan allowlist entry must use ISO date YYYY-MM-DD: {} -> {}",
+                entry.path, entry.expires_on
+            ));
+        }
+    }
+    if errors.is_empty() {
+        Ok(value.entries)
+    } else {
+        Err(errors.join("; "))
+    }
 }
 
 include!("docs_command_router_registry.inc.rs");

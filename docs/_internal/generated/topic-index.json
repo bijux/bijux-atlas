@@ -736,6 +736,9 @@
     "docs-lint-rules": [
       "docs/_internal/governance/docs-lint-rules.md"
     ],
+    "docs-metadata-contract": [
+      "docs/_internal/governance/docs-metadata-contract.md"
+    ],
     "docs-navigation-policy": [
       "docs/_internal/governance/docs-navigation-policy.md"
     ],

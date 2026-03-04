@@ -2699,6 +2699,14 @@
     },
     {
       "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-metadata-contract.md",
+      "stability": "stable",
+      "title": "Docs Metadata Contract"
+    },
+    {
+      "area": "_internal",
       "audience": "contributor",
       "owner": "docs-governance",
       "path": "docs/_internal/governance/docs-navigation-policy.md",
