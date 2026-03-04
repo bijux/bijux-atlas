@@ -22,6 +22,12 @@ Document the load harness and request generators used by Atlas load suites.
 - Query-oriented generator through query endpoint scenarios
 - Ingest-oriented generator through ingest endpoint scenarios
 
+Concrete reusable generator scripts:
+
+- `ops/load/k6/suites/http-request-generator.js`
+- `ops/load/k6/suites/query-load-generator.js`
+- `ops/load/k6/suites/ingest-load-generator.js`
+
 ## Commands
 
 ```bash
