@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "fixture_id": "rollback-restores-baseline",
+  "baseline_scenario": "rollback-after-successful-upgrade",
+  "expected_result": "restored",
+  "required_contract": "OPS-E2E-022"
+}

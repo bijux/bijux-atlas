@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "policy_id": "schema-evolution",
+  "allowed_patch": [
+    "add-optional-field",
+    "tighten-description"
+  ],
+  "allowed_minor": [
+    "add-required-field-with-default",
+    "deprecate-field-with-alias"
+  ],
+  "forbidden_without_major": [
+    "remove-required-field",
+    "change-field-type",
+    "rename-field-without-alias"
+  ]
+}

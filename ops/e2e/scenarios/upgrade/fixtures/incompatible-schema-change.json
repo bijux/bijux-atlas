@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "fixture_id": "incompatible-schema-change",
+  "change_kind": "remove-required-field",
+  "expected_result": "fail",
+  "required_contract": "OPS-E2E-020"
+}

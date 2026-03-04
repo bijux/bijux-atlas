@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "boundaries": [
+    {
+      "from_tag": "v0.1.0",
+      "to_tag": "v0.1.1",
+      "kind": "patch",
+      "breaking_changes": []
+    },
+    {
+      "from_tag": "v0.1.1",
+      "to_tag": "v0.2.0",
+      "kind": "minor",
+      "breaking_changes": []
+    }
+  ]
+}

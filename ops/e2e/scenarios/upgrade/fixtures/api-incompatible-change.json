@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "fixture_id": "api-incompatible-change",
+  "change_kind": "remove-endpoint",
+  "expected_result": "fail",
+  "required_contract": "OPS-E2E-021"
+}

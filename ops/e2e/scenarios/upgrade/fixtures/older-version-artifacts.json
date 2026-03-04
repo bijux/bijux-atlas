@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "fixture_id": "older-version-artifacts",
+  "version": "0.1.0",
+  "artifacts": [
+    "artifacts/release/0.1.0/release-manifest.json",
+    "artifacts/release/0.1.0/reproducibility-report.json",
+    "artifacts/release/0.1.0/ops-bundle-manifest.json"
+  ]
+}

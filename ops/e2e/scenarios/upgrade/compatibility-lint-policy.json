@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "policy_id": "compatibility-lint",
+  "description": "Incompatible compatibility-table changes are allowed only when the target major version increases.",
+  "enforcement": {
+    "block_on_incompatible_patch_or_minor": true,
+    "allow_incompatible_major": true,
+    "requires_semver_bump": true
+  }
+}

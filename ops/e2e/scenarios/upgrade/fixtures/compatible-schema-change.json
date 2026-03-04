@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "fixture_id": "compatible-schema-change",
+  "change_kind": "add-optional-field",
+  "expected_result": "pass",
+  "required_contract": "OPS-E2E-020"
+}

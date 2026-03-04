@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "policy_id": "api-evolution",
+  "allowed_patch": [
+    "add-response-field-optional",
+    "add-non-breaking-header"
+  ],
+  "allowed_minor": [
+    "add-endpoint",
+    "add-query-parameter-optional"
+  ],
+  "forbidden_without_major": [
+    "remove-endpoint",
+    "change-status-code-contract",
+    "remove-required-response-field"
+  ]
+}
