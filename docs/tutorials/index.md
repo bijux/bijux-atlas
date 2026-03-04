@@ -30,4 +30,6 @@ related:
 - [Query dataset](query-dataset.md)
 - [Inspect artifacts](inspect-artifacts.md)
 - [Debug pipeline](debug-pipeline.md)
+- [Troubleshooting guide](troubleshooting-guide.md)
+- [User FAQ](faq.md)
 - [Operational workflow definitions](../operations/workflows.md)
