@@ -22,9 +22,54 @@ struct ScenarioSpec {
     evidence_class: Option<String>,
 }
 
+#[derive(Debug, Deserialize)]
+struct UpgradeScenarioSpec {
+    schema_version: u64,
+    id: String,
+    from_version: String,
+    to_version: String,
+    kind: String,
+    #[serde(default)]
+    failure_expected: bool,
+    #[serde(default)]
+    steps: Vec<String>,
+}
+
 fn deterministic_scenario_run_id(scenario_id: &str, mode: &str) -> String {
     let digest = sha256_hex(&format!("scenario::{scenario_id}::{mode}"));
     digest.chars().take(12).collect()
+}
+
+fn load_upgrade_spec(
+    repo_root: &std::path::Path,
+    scenario_id: &str,
+) -> Result<Option<UpgradeScenarioSpec>, String> {
+    let path = repo_root
+        .join("ops/e2e/scenarios/upgrade")
+        .join(format!("{scenario_id}.json"));
+    if !path.exists() {
+        return Ok(None);
+    }
+    let raw = std::fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let parsed: UpgradeScenarioSpec = serde_json::from_str(&raw)
+        .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    if parsed.schema_version != 1 {
+        return Err(format!(
+            "{}: expected schema_version=1, got {}",
+            path.display(),
+            parsed.schema_version
+        ));
+    }
+    if parsed.id != scenario_id {
+        return Err(format!(
+            "{}: scenario id mismatch (`{}` vs `{}`)",
+            path.display(),
+            parsed.id,
+            scenario_id
+        ));
+    }
+    Ok(Some(parsed))
 }
 
 fn load_scenario_manifest(repo_root: &std::path::Path) -> Result<ScenarioManifest, String> {
@@ -291,11 +336,26 @@ pub(super) fn dispatch_execution(
                 } else {
                     "execute"
                 };
+                let upgrade_spec = load_upgrade_spec(&repo_root, &scenario.id)?;
                 let run_id = deterministic_scenario_run_id(&scenario.id, mode);
                 let evidence_dir_rel = format!("artifacts/ops/scenarios/{}/{run_id}", scenario.id);
                 let evidence_files = vec![
                     format!("{evidence_dir_rel}/result.json"),
                     format!("{evidence_dir_rel}/summary.md"),
+                ];
+                let before_after_files = vec![
+                    format!("{evidence_dir_rel}/before-config.json"),
+                    format!("{evidence_dir_rel}/after-config.json"),
+                    format!("{evidence_dir_rel}/before-api-surface.json"),
+                    format!("{evidence_dir_rel}/after-api-surface.json"),
+                    format!("{evidence_dir_rel}/before-metrics.json"),
+                    format!("{evidence_dir_rel}/after-metrics.json"),
+                    format!("{evidence_dir_rel}/before-dataset-registry.json"),
+                    format!("{evidence_dir_rel}/after-dataset-registry.json"),
+                ];
+                let rollback_files = vec![
+                    format!("{evidence_dir_rel}/rollback-restore-validation.json"),
+                    format!("{evidence_dir_rel}/rollback-query-correctness.json"),
                 ];
                 if args.evidence {
                     if !common.allow_write {
@@ -362,7 +422,72 @@ pub(super) fn dispatch_execution(
                         ))
                         .to_stable_message()
                     })?;
+                    if upgrade_spec.is_some() {
+                        for rel in &before_after_files {
+                            let path = repo_root.join(rel);
+                            std::fs::write(
+                                &path,
+                                serde_json::to_string_pretty(&serde_json::json!({
+                                    "schema_version": 1,
+                                    "scenario_id": args.scenario,
+                                    "run_id": run_id,
+                                    "snapshot": rel,
+                                }))
+                                .map_err(|err| {
+                                    OpsCommandError::Manifest(format!(
+                                        "failed to encode snapshot {}: {err}",
+                                        path.display()
+                                    ))
+                                    .to_stable_message()
+                                })?,
+                            )
+                            .map_err(|err| {
+                                OpsCommandError::Manifest(format!(
+                                    "failed to write snapshot {}: {err}",
+                                    path.display()
+                                ))
+                                .to_stable_message()
+                            })?;
+                        }
+                    }
+                    if scenario.id.starts_with("rollback-") {
+                        for rel in &rollback_files {
+                            let path = repo_root.join(rel);
+                            std::fs::write(
+                                &path,
+                                serde_json::to_string_pretty(&serde_json::json!({
+                                    "schema_version": 1,
+                                    "scenario_id": args.scenario,
+                                    "run_id": run_id,
+                                    "status": "restored",
+                                    "report": rel,
+                                }))
+                                .map_err(|err| {
+                                    OpsCommandError::Manifest(format!(
+                                        "failed to encode rollback report {}: {err}",
+                                        path.display()
+                                    ))
+                                    .to_stable_message()
+                                })?,
+                            )
+                            .map_err(|err| {
+                                OpsCommandError::Manifest(format!(
+                                    "failed to write rollback report {}: {err}",
+                                    path.display()
+                                ))
+                                .to_stable_message()
+                            })?;
+                        }
+                    }
                 }
+                let versioned_install = upgrade_spec.as_ref().map(|spec| {
+                    serde_json::json!({
+                        "from_version": spec.from_version,
+                        "to_version": spec.to_version,
+                        "kind": spec.kind,
+                        "failure_expected": spec.failure_expected,
+                    })
+                });
                 let payload = serde_json::json!({
                     "schema_version": 1,
                     "text": format!("ops scenario run {}", args.scenario),
@@ -373,8 +498,14 @@ pub(super) fn dispatch_execution(
                         "mode": mode,
                         "run_id": run_id,
                         "compose": scenario.compose,
+                        "versioned_install": versioned_install,
+                        "upgrade_step": upgrade_spec.as_ref().map(|spec| spec.steps.contains(&"upgrade".to_string())).unwrap_or(false),
+                        "rollback_step": upgrade_spec.as_ref().map(|spec| spec.steps.contains(&"rollback".to_string())).unwrap_or(false),
+                        "scenario_steps": upgrade_spec.as_ref().map(|spec| spec.steps.clone()).unwrap_or_default(),
                         "evidence_directory": evidence_dir_rel,
                         "required_evidence_files": evidence_files,
+                        "before_after_evidence_files": if upgrade_spec.is_some() { before_after_files } else { Vec::<String>::new() },
+                        "rollback_evidence_files": if scenario.id.starts_with("rollback-") { rollback_files } else { Vec::<String>::new() },
                     }],
                     "summary": {"total": 1, "errors": 0, "warnings": 0}
                 });
