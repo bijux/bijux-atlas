@@ -16,7 +16,7 @@ fn write_executable(path: &Path, content: &str) {
 }
 
 #[test]
-fn umbrella_dispatches_to_bijux_atlas_plugin() {
+fn slow_umbrella_dispatches_to_bijux_atlas_plugin() {
     let temp = TempDir::new().expect("tempdir");
     let plugin_path = temp.path().join("bijux-atlas");
     fs::copy(env!("CARGO_BIN_EXE_bijux-atlas"), &plugin_path).expect("copy plugin binary");

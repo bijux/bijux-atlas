@@ -372,7 +372,7 @@ fn contracts_invalid_test_filter_pattern_is_usage_error() {
 
 #[test]
 #[ignore = "legacy docs contracts topology"]
-fn contracts_ci_human_output_disables_ansi_color() {
+fn slow_contracts_ci_human_output_disables_ansi_color() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .env("NO_COLOR", "1")
@@ -404,7 +404,7 @@ fn contracts_configs_runs_and_reports_summary() {
 
 #[test]
 #[ignore = "legacy docs contracts topology"]
-fn contracts_docs_runs_and_reports_summary() {
+fn slow_contracts_docs_runs_and_reports_summary() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["contracts", "docs", "--format", "json"])
@@ -419,7 +419,7 @@ fn contracts_docs_runs_and_reports_summary() {
 
 #[test]
 #[ignore = "legacy docs contracts topology"]
-fn contracts_docs_writes_report_artifacts() {
+fn slow_contracts_docs_writes_report_artifacts() {
     let artifacts_root = repo_root().join("artifacts/tests/contracts-docs-report");
     fs::create_dir_all(&artifacts_root).expect("mkdir artifacts");
     let report_paths = [

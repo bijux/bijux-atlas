@@ -109,7 +109,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
 
 #[test]
 #[ignore = "slow"]
-fn registry_list_matches_registry_snapshot_and_explain_output() {
+fn slow_registry_list_matches_registry_snapshot_and_explain_output() {
     for domain in ["configs", "docs", "docker", "make", "ops", "root"] {
         let rows = contract_rows_for_domain(domain);
         let listed = contracts_list_json(domain);

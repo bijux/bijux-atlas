@@ -312,7 +312,7 @@ fn contracts_ops_ci_uses_default_artifacts_root() {
 }
 
 #[test]
-fn contracts_profile_changes_default_artifacts_root_segment() {
+fn slow_contracts_profile_changes_default_artifacts_root_segment() {
     fn collect_candidates(dir: &std::path::Path, out: &mut Vec<std::path::PathBuf>) {
         let Ok(entries) = fs::read_dir(dir) else {
             return;

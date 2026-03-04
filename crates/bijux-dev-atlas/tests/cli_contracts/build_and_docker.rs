@@ -92,7 +92,7 @@ fn build_bin_requires_effect_flags() {
 
 #[test]
 #[ignore = "slow"]
-fn build_bin_writes_manifest_when_effects_enabled() {
+fn slow_build_bin_writes_manifest_when_effects_enabled() {
     let repo = repo_root();
     let manifest = repo.join("artifacts/dist/bin/manifest.json");
     let _ = fs::remove_file(&manifest);
