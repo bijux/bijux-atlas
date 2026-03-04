@@ -7,9 +7,9 @@ use crate::cli::{
     OpsEvidenceVerifyArgs, OpsGenerateCommand, OpsHelmCommand, OpsHelmEnvArgs, OpsHelmInstallArgs,
     OpsHelmReleaseArgs, OpsHelmRollbackArgs, OpsHelmUpgradeArgs, OpsInventoryCommand,
     OpsK8sCommand, OpsKindCommand, OpsKindPreloadArgs, OpsLoadBaselineCommand, OpsLoadCommand,
-    OpsObsCommand, OpsObsDrillCommand, OpsPinsCommand, OpsProfilesCommand, OpsProfilesValidateArgs,
-    OpsRenderArgs, OpsRenderTarget, OpsReportCommand, OpsResourcesCommand, OpsSchemaCommand,
-    OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
+    OpsObsCommand, OpsObsDrillCommand, OpsPinsCommand, OpsProfileCommand, OpsProfilesCommand,
+    OpsProfilesValidateArgs, OpsRenderArgs, OpsRenderTarget, OpsReportCommand, OpsResourcesCommand,
+    OpsSchemaCommand, OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
 };
 use crate::ops_support::{
     build_ops_run_report, load_load_manifest, load_stack_manifest, load_stack_pins,
@@ -81,12 +81,17 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
         | OpsCommand::Profiles {
             command: OpsProfilesCommand::Validate(OpsProfilesValidateArgs { common, .. }),
         }
+        | OpsCommand::Profile {
+            command: OpsProfileCommand::List(common),
+        }
         | OpsCommand::K8sDryRun(common)
         | OpsCommand::K8sPorts(common)
         | OpsCommand::K8sConformance(common) => Some(common),
-        OpsCommand::Explain { common, .. } | OpsCommand::ExplainProfile { common, .. } => {
-            Some(common)
-        }
+        OpsCommand::Explain { common, .. }
+        | OpsCommand::ExplainProfile { common, .. }
+        | OpsCommand::Profile {
+            command: OpsProfileCommand::Explain { common, .. },
+        } => Some(common),
         OpsCommand::LoadPlan { common, .. }
         | OpsCommand::LoadRun { common, .. }
         | OpsCommand::LoadReport { common, .. } => Some(common),
@@ -204,6 +209,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 command: OpsProfilesCommand::Validate(args),
             },
         },
+        OpsCommand::Profile { command } => OpsCommand::Profile { command },
         OpsCommand::Load { command } => match command {
             OpsLoadCommand::Plan { suite, common } => OpsCommand::LoadPlan { suite, common },
             OpsLoadCommand::Run { suite, common } => OpsCommand::LoadRun { suite, common },

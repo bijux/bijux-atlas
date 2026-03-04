@@ -165,13 +165,19 @@ fn force_json_ops(command: &mut OpsCommand) {
                     ..
                 }),
         }
+        | OpsCommand::Profile {
+            command: crate::cli::OpsProfileCommand::List(common),
+        }
         | OpsCommand::K8sDryRun(common)
         | OpsCommand::K8sPorts(common)
         | OpsCommand::K8sConformance(common)
         | OpsCommand::LoadPlan { common, .. }
         | OpsCommand::LoadRun { common, .. }
         | OpsCommand::LoadReport { common, .. } => common.format = FormatArg::Json,
-        OpsCommand::Explain { common, .. } => common.format = FormatArg::Json,
+        OpsCommand::Explain { common, .. }
+        | OpsCommand::Profile {
+            command: crate::cli::OpsProfileCommand::Explain { common, .. },
+        } => common.format = FormatArg::Json,
         OpsCommand::Render(args) => args.common.format = FormatArg::Json,
         OpsCommand::Install(args) => args.common.format = FormatArg::Json,
         OpsCommand::Smoke(args) => args.common.format = FormatArg::Json,
@@ -687,13 +693,19 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                         ..
                     }),
             }
+            | OpsCommand::Profile {
+                command: crate::cli::OpsProfileCommand::List(common),
+            }
             | OpsCommand::K8sDryRun(common)
             | OpsCommand::K8sPorts(common)
             | OpsCommand::K8sConformance(common) => common.repo_root = Some(root.clone()),
             OpsCommand::LoadPlan { common, .. }
             | OpsCommand::LoadRun { common, .. }
             | OpsCommand::LoadReport { common, .. } => common.repo_root = Some(root.clone()),
-            OpsCommand::Explain { common, .. } => common.repo_root = Some(root.clone()),
+            OpsCommand::Explain { common, .. }
+            | OpsCommand::Profile {
+                command: crate::cli::OpsProfileCommand::Explain { common, .. },
+            } => common.repo_root = Some(root.clone()),
             OpsCommand::Render(args) => args.common.repo_root = Some(root.clone()),
             OpsCommand::Install(args) => args.common.repo_root = Some(root.clone()),
             OpsCommand::Smoke(args) => args.common.repo_root = Some(root.clone()),

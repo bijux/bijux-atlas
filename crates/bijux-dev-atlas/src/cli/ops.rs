@@ -50,6 +50,10 @@ pub enum OpsCommand {
         #[command(subcommand)]
         command: OpsProfilesCommand,
     },
+    Profile {
+        #[command(subcommand)]
+        command: OpsProfileCommand,
+    },
     Load {
         #[command(subcommand)]
         command: OpsLoadCommand,
@@ -238,6 +242,16 @@ pub enum OpsResourcesCommand {
 #[derive(Subcommand, Debug, Clone)]
 pub enum OpsProfilesCommand {
     Validate(OpsProfilesValidateArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsProfileCommand {
+    List(OpsCommonArgs),
+    Explain {
+        id: String,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
 }
 
 #[derive(Args, Debug, Clone)]

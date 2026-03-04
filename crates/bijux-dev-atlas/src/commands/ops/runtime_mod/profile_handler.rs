@@ -1,9 +1,80 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
+use crate::ops_support::load_profile_registry;
 pub(super) fn dispatch_profiles(command: OpsCommand, debug: bool) -> Result<(String, i32), String> {
     let _ = debug;
     match command {
+        OpsCommand::Profile { command } => match command {
+            OpsProfileCommand::List(common) => {
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                    .map_err(|e| e.to_stable_message())?;
+                let mut registry =
+                    load_profile_registry(&ops_root).map_err(|e| e.to_stable_message())?;
+                registry.profiles.sort_by(|a, b| a.id.cmp(&b.id));
+                let rows = registry
+                    .profiles
+                    .iter()
+                    .map(|profile| {
+                        serde_json::json!({
+                            "id": profile.id,
+                            "class": profile.class_name,
+                            "safety_level": profile.safety_level,
+                            "doc_link": profile.doc_link
+                        })
+                    })
+                    .collect::<Vec<_>>();
+                let text = registry
+                    .profiles
+                    .iter()
+                    .map(|profile| {
+                        format!(
+                            "{} {} {}",
+                            profile.id, profile.class_name, profile.safety_level
+                        )
+                    })
+                    .collect::<Vec<_>>()
+                    .join("\n");
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "text": text,
+                    "rows": rows,
+                    "summary": {"total": registry.profiles.len(), "errors": 0, "warnings": 0}
+                });
+                let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+                Ok((rendered, ops_exit::PASS))
+            }
+            OpsProfileCommand::Explain { id, common } => {
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                    .map_err(|e| e.to_stable_message())?;
+                let mut registry =
+                    load_profile_registry(&ops_root).map_err(|e| e.to_stable_message())?;
+                registry.profiles.sort_by(|a, b| a.id.cmp(&b.id));
+                let profile = registry
+                    .profiles
+                    .into_iter()
+                    .find(|profile| profile.id == id)
+                    .ok_or_else(|| format!("OPS_PROFILE_ERROR: unknown profile id `{id}`"))?;
+                let text = format!(
+                    "profile={} class={} safety={} required_tools={} required_services={}",
+                    profile.id,
+                    profile.class_name,
+                    profile.safety_level,
+                    profile.required_tools.join(","),
+                    profile.required_services.join(",")
+                );
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "text": text,
+                    "rows": [profile],
+                    "summary": {"total": 1, "errors": 0, "warnings": 0}
+                });
+                let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+                Ok((rendered, ops_exit::PASS))
+            }
+        },
         OpsCommand::Suite { command } => match command {
             OpsSuiteCommand::List(common) => {
                 let mut suites = ["e2e", "k8s", "load", "obs"];

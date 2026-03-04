@@ -9,6 +9,27 @@ pub(crate) struct StackProfiles {
 }
 
 #[derive(Debug, Deserialize, Clone)]
+pub(crate) struct OpsProfileRegistry {
+    pub(crate) schema_version: u64,
+    pub(crate) profiles: Vec<OpsProfileSpec>,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub(crate) struct OpsProfileSpec {
+    pub(crate) id: String,
+    pub(crate) description: String,
+    #[serde(rename = "class")]
+    pub(crate) class_name: String,
+    pub(crate) safety_level: String,
+    pub(crate) required_tools: Vec<String>,
+    pub(crate) allowed_namespaces: Vec<String>,
+    pub(crate) required_services: Vec<String>,
+    pub(crate) optional_components: Vec<String>,
+    pub(crate) doc_link: String,
+    pub(crate) config_source_paths: Vec<String>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
 pub(crate) struct StackManifestToml {
     pub(crate) profiles: BTreeMap<String, StackManifestProfile>,
 }

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use super::domain_support::OpsProfileRegistry;
 use crate::ops_support::StackManifestToml;
 use crate::*;
 use serde::{Deserialize, Serialize};
@@ -56,6 +57,25 @@ pub(crate) fn load_profiles(ops_root: &Path) -> Result<Vec<StackProfile>, OpsCom
         OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
     })?;
     Ok(payload.profiles)
+}
+
+pub(crate) fn load_profile_registry(
+    ops_root: &Path,
+) -> Result<OpsProfileRegistry, OpsCommandError> {
+    let path = ops_root.join("stack/profile-registry.json");
+    let text = std::fs::read_to_string(&path).map_err(|err| {
+        OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
+    })?;
+    let payload: OpsProfileRegistry = serde_json::from_str(&text).map_err(|err| {
+        OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
+    })?;
+    if payload.schema_version == 0 {
+        return Err(OpsCommandError::Schema(format!(
+            "invalid {}: schema_version must be >=1",
+            path.display()
+        )));
+    }
+    Ok(payload)
 }
 
 fn load_toolchain_inventory(ops_root: &Path) -> Result<ToolchainInventory, OpsCommandError> {

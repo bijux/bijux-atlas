@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "profiles": [
+    {
+      "id": "ci",
+      "description": "Fast validation profile for deterministic CI runs.",
+      "class": "dev",
+      "safety_level": "restricted",
+      "required_tools": ["helm", "kubeconform"],
+      "allowed_namespaces": ["atlas-dev"],
+      "required_services": ["api", "query"],
+      "optional_components": ["metrics"],
+      "doc_link": "docs/operations/k8s/profile-invariants.md",
+      "config_source_paths": [
+        "ops/stack/profiles.json",
+        "ops/k8s/install-matrix.json",
+        "ops/k8s/values/ci.yaml"
+      ]
+    },
+    {
+      "id": "dev",
+      "description": "Default local development profile for iterative work.",
+      "class": "dev",
+      "safety_level": "standard",
+      "required_tools": ["helm", "kubeconform", "kind", "kubectl"],
+      "allowed_namespaces": ["atlas-dev", "atlas-deps"],
+      "required_services": ["api", "query", "redis"],
+      "optional_components": ["metrics", "grafana"],
+      "doc_link": "docs/operations/k8s/profile-invariants.md",
+      "config_source_paths": [
+        "ops/stack/profiles.json",
+        "ops/k8s/install-matrix.json",
+        "ops/k8s/values/dev.yaml"
+      ]
+    },
+    {
+      "id": "developer",
+      "description": "Developer baseline profile with local cluster defaults.",
+      "class": "dev",
+      "safety_level": "standard",
+      "required_tools": ["helm", "kubeconform", "kind", "kubectl"],
+      "allowed_namespaces": ["atlas-dev", "atlas-deps"],
+      "required_services": ["api", "query", "redis"],
+      "optional_components": ["metrics"],
+      "doc_link": "docs/operations/k8s/profile-invariants.md",
+      "config_source_paths": [
+        "ops/stack/profiles.json",
+        "ops/k8s/install-matrix.json",
+        "ops/k8s/values/kind.yaml"
+      ]
+    },
+    {
+      "id": "kind",
+      "description": "Kind profile used by local cluster simulations.",
+      "class": "dev",
+      "safety_level": "standard",
+      "required_tools": ["helm", "kubeconform", "kind", "kubectl"],
+      "allowed_namespaces": ["atlas-dev", "atlas-deps"],
+      "required_services": ["api", "query", "redis"],
+      "optional_components": ["metrics"],
+      "doc_link": "docs/operations/kind-simulation.md",
+      "config_source_paths": [
+        "ops/stack/profiles.json",
+        "ops/k8s/install-matrix.json",
+        "ops/k8s/values/kind.yaml"
+      ]
+    },
+    {
+      "id": "minimal",
+      "description": "Minimal profile for lightweight local verification.",
+      "class": "dev",
+      "safety_level": "restricted",
+      "required_tools": ["helm", "kubeconform", "kind", "kubectl"],
+      "allowed_namespaces": ["atlas-dev"],
+      "required_services": ["api"],
+      "optional_components": [],
+      "doc_link": "docs/operations/k8s/profile-invariants.md",
+      "config_source_paths": [
+        "ops/stack/profiles.json",
+        "ops/k8s/install-matrix.json",
+        "ops/k8s/values/profile-baseline.yaml"
+      ]
+    },
+    {
+      "id": "perf",
+      "description": "Performance profile with autoscaling and heavier load settings.",
+      "class": "stage",
+      "safety_level": "strict",
+      "required_tools": ["helm", "kubeconform", "kind", "kubectl"],
+      "allowed_namespaces": ["atlas-dev", "atlas-deps", "atlas-observe"],
+      "required_services": ["api", "query", "redis", "metrics"],
+      "optional_components": ["prometheus", "grafana"],
+      "doc_link": "docs/operations/k8s/profile-invariants.md",
+      "config_source_paths": [
+        "ops/stack/profiles.json",
+        "ops/k8s/install-matrix.json",
+        "ops/k8s/values/perf.yaml"
+      ]
+    },
+    {
+      "id": "small",
+      "description": "Small footprint local profile for constrained environments.",
+      "class": "dev",
+      "safety_level": "restricted",
+      "required_tools": ["helm", "kubeconform", "kind", "kubectl"],
+      "allowed_namespaces": ["atlas-dev"],
+      "required_services": ["api", "query"],
+      "optional_components": [],
+      "doc_link": "docs/operations/k8s/profile-invariants.md",
+      "config_source_paths": [
+        "ops/stack/profiles.json",
+        "ops/k8s/install-matrix.json",
+        "ops/k8s/values/profile-baseline.yaml"
+      ]
+    }
+  ]
+}
