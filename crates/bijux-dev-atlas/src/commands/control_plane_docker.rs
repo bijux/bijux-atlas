@@ -558,6 +558,65 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                 });
                 emit(&args.common, payload, code)
             }
+            DockerCommand::ReleasePlan(common) => {
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let policy: serde_json::Value = serde_json::from_str(
+                    &fs::read_to_string(repo_root.join("docker/policy.json"))
+                        .map_err(|e| format!("cannot read docker/policy.json: {e}"))?,
+                )
+                .map_err(|e| format!("cannot parse docker/policy.json: {e}"))?;
+                let push_policy: serde_json::Value = serde_json::from_str(
+                    &fs::read_to_string(repo_root.join("docker/push-policy.json"))
+                        .map_err(|e| format!("cannot read docker/push-policy.json: {e}"))?,
+                )
+                .map_err(|e| format!("cannot parse docker/push-policy.json: {e}"))?;
+                let manifest: serde_json::Value = serde_json::from_str(
+                    &fs::read_to_string(repo_root.join("docker/images.manifest.json"))
+                        .map_err(|e| format!("cannot read docker/images.manifest.json: {e}"))?,
+                )
+                .map_err(|e| format!("cannot parse docker/images.manifest.json: {e}"))?;
+                let matrix: serde_json::Value = serde_json::from_str(
+                    &fs::read_to_string(repo_root.join("docker/build-matrix.json"))
+                        .map_err(|e| format!("cannot read docker/build-matrix.json: {e}"))?,
+                )
+                .map_err(|e| format!("cannot parse docker/build-matrix.json: {e}"))?;
+                let images = manifest
+                    .get("images")
+                    .and_then(serde_json::Value::as_array)
+                    .cloned()
+                    .unwrap_or_default();
+                let matrix_images = matrix
+                    .get("images")
+                    .and_then(serde_json::Value::as_array)
+                    .cloned()
+                    .unwrap_or_default();
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "kind": "docker_release_plan",
+                    "text": "docker release plan generated",
+                    "images": images,
+                    "build_matrix": matrix_images,
+                    "tags": {
+                        "release": "vX.Y.Z",
+                        "immutable": "sha-<short>",
+                        "floating": "latest (optional policy)"
+                    },
+                    "registries": push_policy.get("allowed_registries").cloned().unwrap_or(serde_json::Value::Null),
+                    "required_oci_labels": policy.get("required_oci_labels").cloned().unwrap_or(serde_json::Value::Null),
+                    "requires_sbom": policy.pointer("/sbom/required_for_release").cloned().unwrap_or(serde_json::Value::Bool(false)),
+                    "requires_provenance": push_policy.get("require_provenance_bundle").cloned().unwrap_or(serde_json::Value::Bool(false)),
+                    "artifacts": [
+                        "artifacts/docker-publish/sbom.spdx.json",
+                        "artifacts/docker-publish/sbom.cyclonedx.json",
+                        "artifacts/docker-publish/scan.trivy.json",
+                        "artifacts/docker-publish/provenance-bundle.json",
+                        "artifacts/docker-publish/image-digests.json"
+                    ],
+                    "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
+                    "duration_ms": started.elapsed().as_millis() as u64
+                });
+                emit(&common, payload, 0)
+            }
             DockerCommand::Release(args) => {
                 if !args.i_know_what_im_doing {
                     return Err("docker release requires --i-know-what-im-doing".to_string());

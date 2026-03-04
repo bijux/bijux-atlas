@@ -122,6 +122,7 @@ pub enum OpsCommand {
     VerifyTools(OpsCommonArgs),
     ListActions(OpsCommonArgs),
     Plan(OpsCommonArgs),
+    ReleasePlan(OpsCommonArgs),
     InstallPlan(OpsCommonArgs),
     Up(OpsCommonArgs),
     Down(OpsCommonArgs),

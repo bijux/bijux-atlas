@@ -77,6 +77,7 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
         | OpsCommand::VerifyTools(common)
         | OpsCommand::ListActions(common)
         | OpsCommand::Plan(common)
+        | OpsCommand::ReleasePlan(common)
         | OpsCommand::InstallPlan(common)
         | OpsCommand::Up(common)
         | OpsCommand::Down(common)
@@ -234,6 +235,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             plan: true,
             dry_run: "none".to_string(),
         }),
+        OpsCommand::ReleasePlan(common) => OpsCommand::ReleasePlan(common),
         OpsCommand::K8s { command } => match command {
             OpsK8sCommand::Render(args) => OpsCommand::Render(args),
             OpsK8sCommand::Validate(common) => OpsCommand::Render(OpsRenderArgs {

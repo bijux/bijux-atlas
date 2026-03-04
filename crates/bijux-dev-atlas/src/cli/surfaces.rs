@@ -342,6 +342,7 @@ pub struct ConfigsExplainArgs {
 
 #[derive(Subcommand, Debug)]
 pub enum DockerCommand {
+    ReleasePlan(DockerCommonArgs),
     Contracts(DockerCommonArgs),
     Gates(DockerCommonArgs),
     Doctor(DockerCommonArgs),

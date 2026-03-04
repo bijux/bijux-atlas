@@ -330,6 +330,56 @@ pub(super) fn dispatch_profiles(command: OpsCommand, debug: bool) -> Result<(Str
                 },
             ))
         }
+        OpsCommand::ReleasePlan(common) => {
+            let repo_root = resolve_repo_root(common.repo_root.clone())?;
+            let manifest = load_stack_manifest(&repo_root).map_err(|e| e.to_stable_message())?;
+            let stack_errors = validate_stack_manifest(&repo_root, &manifest)
+                .map_err(|e| e.to_stable_message())?;
+            let chart_yaml = repo_root.join("ops/k8s/charts/bijux-atlas/Chart.yaml");
+            let install_matrix = repo_root.join("ops/k8s/install-matrix.json");
+            let profile_bundle_members = vec![
+                "ops/k8s/values/prod.yaml",
+                "ops/k8s/values/prod-minimal.yaml",
+                "ops/k8s/values/prod-ha.yaml",
+                "ops/k8s/values/prod-airgap.yaml",
+                "ops/k8s/values/offline.yaml",
+                "ops/k8s/install-matrix.json",
+            ];
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "ops_release_plan",
+                "status": if stack_errors.is_empty() { "ok" } else { "failed" },
+                "text": "ops release plan generated",
+                "distribution_format": "oci-helm-and-release-bundle",
+                "distribution_policy": "configs/release/ops-distribution-policy.json",
+                "chart": {
+                    "path": chart_yaml.strip_prefix(&repo_root).unwrap_or(&chart_yaml).display().to_string(),
+                    "exists": chart_yaml.exists()
+                },
+                "profiles_bundle": {
+                    "members": profile_bundle_members,
+                    "install_matrix": install_matrix.strip_prefix(&repo_root).unwrap_or(&install_matrix).display().to_string(),
+                    "install_matrix_exists": install_matrix.exists()
+                },
+                "report_artifacts": [
+                    "artifacts/ops/release-plan.json",
+                    "artifacts/ops/profiles-bundle-manifest.json",
+                    "artifacts/ops/install-matrix-report.json"
+                ],
+                "stack_profiles": manifest.profiles.keys().cloned().collect::<Vec<_>>(),
+                "summary": {"total": 1, "errors": stack_errors.len(), "warnings": 0},
+                "errors": stack_errors
+            });
+            let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+            Ok((
+                rendered,
+                if payload["summary"]["errors"] == serde_json::json!(0) {
+                    ops_exit::PASS
+                } else {
+                    ops_exit::FAIL
+                },
+            ))
+        }
         _ => Err("__UNHANDLED__".to_string()),
     }
 }
