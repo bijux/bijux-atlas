@@ -18,6 +18,8 @@ source:
 
 # Glossary
 
+## Core system definitions
+
 - `Atlas`: Deterministic genomics serving platform with contract-governed interfaces.
 - `Contract`: Executable or documented rule that defines stable behavior and compatibility expectations.
 - `Reader spine`: Small set of entrypoint pages every reader starts from.
@@ -27,6 +29,9 @@ source:
 - `Reproducibility`: Property that repeated runs with the same inputs produce stable outputs.
 - `Release`: Coordinated lane that publishes validated artifacts.
 - `Dataset`: Versioned artifact set consumed by API and runtime surfaces.
+
+## Operations and delivery definitions
+
 - `Stack`: Local or cluster runtime composition used for operations workflows.
 - `K8s`: Kubernetes deployment surface for Atlas runtime workloads.
 - `Load`: Performance and stress validation workflow and reports.

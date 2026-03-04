@@ -14,6 +14,16 @@ related:
 
 # Component Documentation
 
+## Component index
+
+- Ingest subsystem
+- Query subsystem
+- Storage and artifact subsystem
+- API subsystem
+- CLI/control-plane subsystem
+- Policy and governance subsystem
+- Operations and release subsystem
+
 ## Component surfaces
 
 - [Components](../components.md)
