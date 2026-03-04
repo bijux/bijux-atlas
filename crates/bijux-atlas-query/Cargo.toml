@@ -47,5 +47,9 @@ harness = false
 name = "query_cache"
 harness = false
 
+[[bench]]
+name = "query_routing_and_index"
+harness = false
+
 [lib]
 path = "src/lib.rs"
