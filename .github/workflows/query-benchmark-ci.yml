@@ -1,0 +1,23 @@
+name: Query Benchmark CI
+
+on:
+  pull_request:
+    paths:
+      - "crates/bijux-atlas-query/**"
+      - ".github/workflows/query-benchmark-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "crates/bijux-atlas-query/**"
+      - ".github/workflows/query-benchmark-ci.yml"
+
+jobs:
+  query-benchmark-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Run query benchmark regression fixture tests
+        run: cargo test -p bijux-atlas-query query_benchmark_regression -- --nocapture
