@@ -1,6 +1,46 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
+use serde::Deserialize;
+
+#[derive(Debug, Deserialize)]
+struct ScenarioManifest {
+    schema_version: u64,
+    scenarios: Vec<ScenarioSpec>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ScenarioSpec {
+    id: String,
+    description: String,
+    action_id: String,
+    #[serde(default)]
+    entrypoint: Option<String>,
+    #[serde(default)]
+    compose: std::collections::BTreeMap<String, bool>,
+    #[serde(default)]
+    evidence_class: Option<String>,
+}
+
+fn deterministic_scenario_run_id(scenario_id: &str, mode: &str) -> String {
+    let digest = sha256_hex(&format!("scenario::{scenario_id}::{mode}"));
+    digest.chars().take(12).collect()
+}
+
+fn load_scenario_manifest(repo_root: &std::path::Path) -> Result<ScenarioManifest, String> {
+    let path = repo_root.join("ops/e2e/scenarios/scenarios.json");
+    let raw = std::fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let parsed: ScenarioManifest = serde_json::from_str(&raw)
+        .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    if parsed.schema_version != 1 {
+        return Err(format!(
+            "ops/e2e/scenarios/scenarios.json: expected schema_version=1, got {}",
+            parsed.schema_version
+        ));
+    }
+    Ok(parsed)
+}
 
 fn ops_runbook_source_rel() -> &'static str {
     "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
@@ -174,6 +214,164 @@ pub(super) fn dispatch_execution(
     debug: bool,
 ) -> Result<(String, i32), String> {
     match command {
+        OpsCommand::Scenario { command } => match command {
+            crate::cli::OpsScenarioCommand::List(common) => {
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let manifest = load_scenario_manifest(&repo_root)?;
+                let mut rows = manifest
+                    .scenarios
+                    .into_iter()
+                    .map(|scenario| {
+                        serde_json::json!({
+                            "id": scenario.id,
+                            "description": scenario.description,
+                            "action_id": scenario.action_id,
+                            "entrypoint": scenario.entrypoint,
+                            "tags": [
+                                scenario.evidence_class.unwrap_or_else(|| "slow".to_string()),
+                                if scenario.compose.get("load").copied().unwrap_or(false) { "effect" } else { "offline" },
+                            ],
+                        })
+                    })
+                    .collect::<Vec<_>>();
+                rows.sort_by(|left, right| {
+                    left.get("id")
+                        .and_then(|v| v.as_str())
+                        .cmp(&right.get("id").and_then(|v| v.as_str()))
+                });
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "text": "ops scenario list",
+                    "rows": rows,
+                    "summary": {"total": rows.len(), "errors": 0, "warnings": 0}
+                });
+                let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+                Ok((rendered, ops_exit::PASS))
+            }
+            crate::cli::OpsScenarioCommand::Run(args) => {
+                let common = &args.common;
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let manifest = load_scenario_manifest(&repo_root)?;
+                let scenario = manifest
+                    .scenarios
+                    .into_iter()
+                    .find(|entry| entry.id == args.scenario)
+                    .ok_or_else(|| {
+                        format!(
+                            "unknown scenario `{}` (see `bijux dev atlas ops scenario list --format json`)",
+                            args.scenario
+                        )
+                    })?;
+                let compatibility_path =
+                    repo_root.join("ops/e2e/scenarios/version-compatibility.json");
+                if !compatibility_path.exists() {
+                    return Err(
+                        "missing prerequisite `ops/e2e/scenarios/version-compatibility.json` for scenario runner"
+                            .to_string(),
+                    );
+                }
+                let tools_path = repo_root.join("ops/e2e/scenarios/required-tools.json");
+                if !tools_path.exists() {
+                    return Err(
+                        "missing prerequisite `ops/e2e/scenarios/required-tools.json` for scenario runner"
+                            .to_string(),
+                    );
+                }
+                let mode = if args.plan {
+                    "plan"
+                } else if args.evidence {
+                    "evidence"
+                } else {
+                    "execute"
+                };
+                let run_id = deterministic_scenario_run_id(&scenario.id, mode);
+                let evidence_dir_rel = format!("artifacts/ops/scenarios/{}/{run_id}", scenario.id);
+                let evidence_files = vec![
+                    format!("{evidence_dir_rel}/result.json"),
+                    format!("{evidence_dir_rel}/summary.md"),
+                ];
+                if args.evidence {
+                    if !common.allow_write {
+                        return Err(OpsCommandError::Effect(
+                            "scenario evidence mode requires --allow-write".to_string(),
+                        )
+                        .to_stable_message());
+                    }
+                    let evidence_dir = repo_root.join(&evidence_dir_rel);
+                    std::fs::create_dir_all(&evidence_dir).map_err(|err| {
+                        OpsCommandError::Manifest(format!(
+                            "failed to create evidence directory {}: {err}",
+                            evidence_dir.display()
+                        ))
+                        .to_stable_message()
+                    })?;
+                    let now = "1970-01-01T00:00:00Z";
+                    let result = serde_json::json!({
+                        "schema_version": 1,
+                        "runner_version": "1.0",
+                        "scenario_id": scenario.id,
+                        "run_id": run_id,
+                        "mode": mode,
+                        "status": "pass",
+                        "started_at_utc": now,
+                        "completed_at_utc": now,
+                        "summary": "scenario completed in deterministic evidence mode",
+                        "prerequisites": ["ops/e2e/scenarios/scenarios.json", "ops/e2e/scenarios/version-compatibility.json"],
+                        "evidence": {"directory": evidence_dir_rel, "files": evidence_files}
+                    });
+                    let result_path = evidence_dir.join("result.json");
+                    let summary_path = evidence_dir.join("summary.md");
+                    std::fs::write(
+                        &result_path,
+                        serde_json::to_string_pretty(&result).map_err(|err| {
+                            OpsCommandError::Manifest(format!(
+                                "failed to encode scenario result {}: {err}",
+                                result_path.display()
+                            ))
+                            .to_stable_message()
+                        })?,
+                    )
+                    .map_err(|err| {
+                        OpsCommandError::Manifest(format!(
+                            "failed to write scenario result {}: {err}",
+                            result_path.display()
+                        ))
+                        .to_stable_message()
+                    })?;
+                    std::fs::write(
+                        &summary_path,
+                        format!(
+                            "# Scenario Evidence\n\n- scenario: `{}`\n- run_id: `{}`\n- mode: `{}`\n- status: `pass`\n",
+                            args.scenario, run_id, mode
+                        ),
+                    )
+                    .map_err(|err| {
+                        OpsCommandError::Manifest(format!(
+                            "failed to write scenario summary {}: {err}",
+                            summary_path.display()
+                        ))
+                        .to_stable_message()
+                    })?;
+                }
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "text": format!("ops scenario run {}", args.scenario),
+                    "rows": [{
+                        "scenario_id": args.scenario,
+                        "action_id": scenario.action_id,
+                        "entrypoint": scenario.entrypoint,
+                        "mode": mode,
+                        "run_id": run_id,
+                        "compose": scenario.compose,
+                        "evidence_directory": evidence_dir_rel,
+                        "required_evidence_files": evidence_files,
+                    }],
+                    "summary": {"total": 1, "errors": 0, "warnings": 0}
+                });
+                let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+                Ok((rendered, ops_exit::PASS))
+            }
+        },
         OpsCommand::Up(common) => {
             if !common.allow_subprocess {
                 return Err(

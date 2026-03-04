@@ -66,6 +66,10 @@ pub enum OpsCommand {
         #[command(subcommand)]
         command: OpsE2eCommand,
     },
+    Scenario {
+        #[command(subcommand)]
+        command: OpsScenarioCommand,
+    },
     Obs {
         #[command(subcommand)]
         command: OpsObsCommand,
@@ -376,6 +380,24 @@ pub enum OpsE2eCommand {
     Smoke(OpsCommonArgs),
     Realdata(OpsCommonArgs),
     ListSuites(OpsCommonArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsScenarioCommand {
+    Run(OpsScenarioRunArgs),
+    List(OpsCommonArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsScenarioRunArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long)]
+    pub scenario: String,
+    #[arg(long, default_value_t = false)]
+    pub plan: bool,
+    #[arg(long, default_value_t = false)]
+    pub evidence: bool,
 }
 
 #[derive(Subcommand, Debug, Clone)]

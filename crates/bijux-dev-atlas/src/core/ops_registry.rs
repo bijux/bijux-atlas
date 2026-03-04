@@ -257,6 +257,18 @@ pub fn builtin_ops_registry() -> Vec<OpsCommandSpec> {
             tags: &[OpsTag::Fast, OpsTag::Offline],
         },
         OpsCommandSpec {
+            domain: "scenario",
+            verb: "run",
+            subverb: None,
+            tags: &[OpsTag::Slow, OpsTag::Offline],
+        },
+        OpsCommandSpec {
+            domain: "scenario",
+            verb: "list",
+            subverb: None,
+            tags: &[OpsTag::Fast, OpsTag::Offline],
+        },
+        OpsCommandSpec {
             domain: "schema",
             verb: "validate",
             subverb: None,

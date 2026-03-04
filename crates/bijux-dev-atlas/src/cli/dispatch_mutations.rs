@@ -372,6 +372,10 @@ fn force_json_ops(command: &mut OpsCommand) {
             | crate::cli::OpsE2eCommand::Realdata(common)
             | crate::cli::OpsE2eCommand::ListSuites(common) => common.format = FormatArg::Json,
         },
+        OpsCommand::Scenario { command } => match command {
+            crate::cli::OpsScenarioCommand::Run(args) => args.common.format = FormatArg::Json,
+            crate::cli::OpsScenarioCommand::List(common) => common.format = FormatArg::Json,
+        },
         OpsCommand::Obs { command } => match command {
             crate::cli::OpsObsCommand::Up(common)
             | crate::cli::OpsObsCommand::Down(common)
@@ -740,7 +744,8 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
                 crate::cli::DocsMergeCommand::Validate(_) => {}
             },
             DocsCommand::Spine { command } => match command {
-                crate::cli::DocsSpineCommand::Validate(_) | crate::cli::DocsSpineCommand::Report(_) => {}
+                crate::cli::DocsSpineCommand::Validate(_)
+                | crate::cli::DocsSpineCommand::Report(_) => {}
             },
             DocsCommand::Registry { command } => match command {
                 crate::cli::DocsRegistryCommand::Build(_)
@@ -1106,6 +1111,14 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 | crate::cli::OpsE2eCommand::Smoke(common)
                 | crate::cli::OpsE2eCommand::Realdata(common)
                 | crate::cli::OpsE2eCommand::ListSuites(common) => {
+                    common.repo_root = Some(root.clone())
+                }
+            },
+            OpsCommand::Scenario { command } => match command {
+                crate::cli::OpsScenarioCommand::Run(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+                crate::cli::OpsScenarioCommand::List(common) => {
                     common.repo_root = Some(root.clone())
                 }
             },

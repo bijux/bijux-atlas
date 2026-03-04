@@ -9,7 +9,8 @@ use crate::cli::{
     OpsK8sCommand, OpsKindCommand, OpsKindPreloadArgs, OpsLoadBaselineCommand, OpsLoadCommand,
     OpsObsCommand, OpsObsDrillCommand, OpsPinsCommand, OpsProfileCommand, OpsProfilesCommand,
     OpsProfilesValidateArgs, OpsRenderArgs, OpsRenderTarget, OpsReportCommand, OpsResourcesCommand,
-    OpsSchemaCommand, OpsSmokeArgs, OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
+    OpsScenarioCommand, OpsSchemaCommand, OpsSmokeArgs, OpsStackCommand, OpsSuiteCommand,
+    OpsToolsCommand,
 };
 use crate::ops_support::{
     build_ops_run_report, load_load_manifest, load_stack_manifest, load_stack_pins,
@@ -129,6 +130,10 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
         | OpsCommand::LoadRun { common, .. }
         | OpsCommand::LoadReport { common, .. } => Some(common),
         OpsCommand::Render(args) => Some(&args.common),
+        OpsCommand::Scenario { command } => match command {
+            OpsScenarioCommand::Run(args) => Some(&args.common),
+            OpsScenarioCommand::List(common) => Some(common),
+        },
         OpsCommand::Install(args) => Some(&args.common),
         OpsCommand::Smoke(args) => Some(&args.common),
         OpsCommand::Status(args) => Some(&args.common),
@@ -201,6 +206,14 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 command: OpsHelmCommand::Rollback(args),
             },
             OpsKindCommand::Smoke(args) => OpsCommand::Smoke(args),
+        },
+        OpsCommand::Scenario { command } => match command {
+            OpsScenarioCommand::Run(args) => OpsCommand::Scenario {
+                command: OpsScenarioCommand::Run(args),
+            },
+            OpsScenarioCommand::List(common) => OpsCommand::Scenario {
+                command: OpsScenarioCommand::List(common),
+            },
         },
         OpsCommand::Helm { command } => OpsCommand::Helm { command },
         OpsCommand::Drills { command } => OpsCommand::Drills { command },
