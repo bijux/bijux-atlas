@@ -39,6 +39,7 @@ Describe how Atlas is structured so contributors and operators share one durable
 - [Boundaries](boundaries.md)
 - [Crates map](crates-map.md)
 - [Runtime data model](runtime-data-model.md)
+- [Distributed cluster foundation](distributed-cluster-foundation.md)
 - [Storage](storage.md)
 - [Security auth model](security/auth-model.md)
 - [Performance model](performance-model.md)
