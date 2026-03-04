@@ -1,0 +1,19 @@
+name: ingest-benchmark-ci
+
+on:
+  pull_request:
+    paths:
+      - "crates/bijux-atlas-ingest/**"
+      - ".github/workflows/ingest-benchmark-ci.yml"
+  workflow_dispatch:
+
+jobs:
+  ingest-benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build ingest benchmark executables
+        run: cargo bench -p bijux-atlas-ingest --features bench-ingest-throughput --no-run
+      - name: Run ingest benchmark regression fixture tests
+        run: cargo test -p bijux-atlas-ingest ingest_benchmark_regression -- --nocapture

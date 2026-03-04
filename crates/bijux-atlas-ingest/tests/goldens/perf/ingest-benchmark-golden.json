@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "profile": "ingest-benchmark-golden",
+  "checks": {
+    "anomaly_overhead_enabled": true,
+    "validation_overhead_enabled": true,
+    "hashing_overhead_enabled": true,
+    "shard_generation_overhead_enabled": true,
+    "catalog_generation_enabled": true,
+    "parallelism_scaling_enabled": true,
+    "thread_pool_scaling_enabled": true,
+    "shard_distribution_enabled": true,
+    "artifact_size_enabled": true,
+    "artifact_compression_enabled": true
+  }
+}
