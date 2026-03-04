@@ -124,6 +124,7 @@ pub enum DocsCommand {
     Check(DocsCommonArgs),
     VerifyContracts(DocsCommonArgs),
     Doctor(DocsCommonArgs),
+    Where(DocsCommonArgs),
     SiteDir(DocsCommonArgs),
     Validate(DocsCommonArgs),
     Build(DocsCommonArgs),

@@ -15,6 +15,32 @@ fn docs_build_or_serve_subprocess(
     if label == "docs build" {
         fs::create_dir_all(&output_dir)
             .map_err(|e| format!("failed to create {}: {e}", output_dir.display()))?;
+        if common.allow_write {
+            let stamp_path = ctx
+                .repo_root
+                .join("docs")
+                .join("_internal")
+                .join("generated")
+                .join("build-info.md");
+            if let Some(parent) = stamp_path.parent() {
+                fs::create_dir_all(parent).map_err(|e| {
+                    format!("failed to create build stamp dir {}: {e}", parent.display())
+                })?;
+            }
+            let commit = std::env::var("GITHUB_SHA").unwrap_or_else(|_| "local".to_string());
+            let build_time = std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .map(|duration| duration.as_secs())
+                .unwrap_or(0);
+            fs::write(
+                &stamp_path,
+                format!(
+                    "# Docs Build Info\n\n- Commit: `{commit}`\n- Build Unix Time: `{build_time}`\n- Site Output: `{}`\n",
+                    site_paths.site_dir.display()
+                ),
+            )
+            .map_err(|e| format!("failed to write build stamp {}: {e}", stamp_path.display()))?;
+        }
     }
     let mut cmd = ProcessCommand::new("mkdocs");
     cmd.args(args).current_dir(&ctx.repo_root);

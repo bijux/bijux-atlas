@@ -870,6 +870,25 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     0,
                 ))
             }
+            DocsCommand::Where(common) => {
+                let ctx = docs_context(&common)?;
+                let site_paths =
+                    bijux_dev_atlas::docs::site_output::parse_mkdocs_site_paths(&ctx.repo_root)?;
+                let pages_url = std::env::var("BIJUX_DOCS_SITE_URL")
+                    .unwrap_or_else(|_| "https://bijux.github.io/bijux-atlas/".to_string());
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "run_id": ctx.run_id.as_str(),
+                    "text": format!("docs site: {pages_url}"),
+                    "rows": [{
+                        "pages_url": pages_url,
+                        "site_dir": site_paths.site_dir.display().to_string(),
+                        "docs_dir": site_paths.docs_dir.display().to_string()
+                    }],
+                    "duration_ms": started.elapsed().as_millis() as u64
+                });
+                Ok((emit_payload(common.format, common.out, &payload)?, 0))
+            }
             DocsCommand::SiteDir(common) => {
                 let ctx = docs_context(&common)?;
                 let mut payload = bijux_dev_atlas::docs::site_output::site_output_report(&ctx.repo_root)?;

@@ -221,6 +221,58 @@ fn run_boundary_docs_output_dir_check(ctx: &RunContext) -> (serde_json::Value, V
     }
 
     let site_root = ctx.repo_root.join(&site_dir);
+    let deploy_workflow_rel = ".github/workflows/docs-deploy.yml";
+    let deploy_workflow_path = ctx.repo_root.join(deploy_workflow_rel);
+    let mut deploy_workflow_exists = false;
+    let mut deploy_workflow_uses_site_dir = false;
+    let mut deploy_workflow_validates_site_dir = false;
+    if deploy_workflow_path.is_file() {
+        deploy_workflow_exists = true;
+        match fs::read_to_string(&deploy_workflow_path) {
+            Ok(workflow_text) => {
+                deploy_workflow_uses_site_dir =
+                    workflow_text.contains(&format!("path: {site_dir}"));
+                deploy_workflow_validates_site_dir =
+                    workflow_text.contains("Validate docs output directory contract")
+                        && workflow_text.contains("artifacts/docs/site");
+            }
+            Err(err) => {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    Some(deploy_workflow_rel.to_string()),
+                    format!("failed to read docs deploy workflow: {err}"),
+                ));
+            }
+        }
+    } else {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            Some(deploy_workflow_rel.to_string()),
+            "docs deploy workflow must exist at .github/workflows/docs-deploy.yml",
+        ));
+    }
+
+    if deploy_workflow_exists && !deploy_workflow_uses_site_dir {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            Some(deploy_workflow_rel.to_string()),
+            format!(
+                "docs deploy workflow must upload Pages artifact from mkdocs site_dir: {site_dir}"
+            ),
+        ));
+    }
+    if deploy_workflow_exists && !deploy_workflow_validates_site_dir {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            Some(deploy_workflow_rel.to_string()),
+            "docs deploy workflow must assert mkdocs site_dir contract before build",
+        ));
+    }
+
     let site_output = match crate::docs::site_output::collect_site_output_status(&ctx.repo_root) {
         Ok(value) => value,
         Err(err) => {
@@ -291,9 +343,15 @@ fn run_boundary_docs_output_dir_check(ctx: &RunContext) -> (serde_json::Value, V
             {"id": "DOCS-SITE-001", "pass": site_output.site_dir_exists},
             {"id": "DOCS-SITE-002", "pass": index_exists},
             {"id": "DOCS-SITE-003", "pass": assets_exists},
+            {"id": "DOCS-SITE-004", "pass": deploy_workflow_exists},
+            {"id": "DOCS-SITE-005", "pass": deploy_workflow_uses_site_dir},
+            {"id": "DOCS-SITE-006", "pass": deploy_workflow_validates_site_dir},
         ],
         "index_exists": index_exists,
         "assets_exists": assets_exists,
+        "deploy_workflow_exists": deploy_workflow_exists,
+        "deploy_workflow_uses_site_dir": deploy_workflow_uses_site_dir,
+        "deploy_workflow_validates_site_dir": deploy_workflow_validates_site_dir,
         "internal_dir_exists": internal_dir_exists,
         "redirect_output_exists": redirect_output_exists,
         "file_count": file_count,

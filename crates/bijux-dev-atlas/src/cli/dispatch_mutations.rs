@@ -386,6 +386,7 @@ fn force_json_docs(command: &mut DocsCommand) {
         DocsCommand::Check(common)
         | DocsCommand::VerifyContracts(common)
         | DocsCommand::Doctor(common)
+        | DocsCommand::Where(common)
         | DocsCommand::SiteDir(common)
         | DocsCommand::Validate(common)
         | DocsCommand::Build(common)
@@ -706,7 +707,8 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | DocsCommand::Grep(_)
             | DocsCommand::HealthDashboard(_)
             | DocsCommand::LifecycleSummaryTable(_)
-            | DocsCommand::DrillSummaryTable(_) => {}
+            | DocsCommand::DrillSummaryTable(_)
+            | DocsCommand::Where(_) => {}
             DocsCommand::Redirects { command } => match command {
                 crate::cli::DocsRedirectsCommand::Sync(_) => {}
             },
@@ -1096,6 +1098,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             DocsCommand::Check(common)
             | DocsCommand::VerifyContracts(common)
             | DocsCommand::Doctor(common)
+            | DocsCommand::Where(common)
             | DocsCommand::SiteDir(common)
             | DocsCommand::Validate(common)
             | DocsCommand::Build(common)
