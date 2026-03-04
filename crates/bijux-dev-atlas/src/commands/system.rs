@@ -404,7 +404,8 @@ fn run_scenarios(
 
 #[cfg(test)]
 mod tests {
-    use super::{ensure_diagnostics_schema, stable_sha256, write_json};
+    use super::{ensure_diagnostics_schema, run_debug_command, stable_sha256, write_json};
+    use crate::cli::{FormatArg, SystemDebugArgs, SystemDebugCommand};
     use std::fs;
 
     #[test]
@@ -461,6 +462,31 @@ mod tests {
             "duration_ms": 12
         });
         ensure_diagnostics_schema(&report, root).expect("report should match schema");
+    }
+
+    #[test]
+    fn debug_command_writes_diagnostics_artifact_even_on_connection_error() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        let root = temp.path();
+        let schema_dir = root.join("configs/system");
+        fs::create_dir_all(&schema_dir).expect("create schema dir");
+        let schema = serde_json::json!({
+            "required": ["schema_version", "kind", "command", "url", "http_status", "duration_ms"]
+        });
+        write_json(&schema_dir.join("system-diagnostics-report.schema.json"), &schema)
+            .expect("write schema");
+        let args = SystemDebugArgs {
+            repo_root: Some(root.to_path_buf()),
+            format: FormatArg::Json,
+            out: None,
+            base_url: "http://127.0.0.1:1".to_string(),
+            timeout_seconds: 1,
+        };
+        let (_rendered, code) = run_debug_command(SystemDebugCommand::Diagnostics(args))
+            .expect("debug command should emit structured failure payload");
+        assert_eq!(code, 0);
+        let artifact = root.join("artifacts/system/diagnostics/diagnostics.json");
+        assert!(artifact.is_file(), "expected diagnostics artifact at {artifact:?}");
     }
 }
 
