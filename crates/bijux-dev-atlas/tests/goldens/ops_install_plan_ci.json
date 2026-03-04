@@ -1,0 +1,44 @@
+{
+  "rows": [
+    {
+      "dry_run": "none",
+      "install_plan": {
+        "forbidden_objects": [],
+        "has_crds": false,
+        "has_rbac": false,
+        "missing_render_path": "/Users/bijan/bijux/bijux-atlas/artifacts/ops/ops_run/render/ci/helm/render.yaml",
+        "namespace_isolated": true,
+        "namespaces": [],
+        "resource_kinds": {},
+        "resources": []
+      },
+      "kind_context_expected": "kind-small",
+      "plan_mode": true,
+      "profile": "ci",
+      "profile_intent": {
+        "allowed_effects": [
+          "subprocess",
+          "fs_write"
+        ],
+        "intended_usage": "minimal deterministic validation in CI",
+        "name": "ci",
+        "required_dependencies": [
+          "kind-cluster",
+          "rendered-manifests"
+        ]
+      },
+      "run_id": "ops_run",
+      "schema_version": 1,
+      "steps": [
+        "validate-only"
+      ]
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "errors": 0,
+    "total": 1,
+    "warnings": 0
+  },
+  "text": "install plan generated for profile `ci`"
+}

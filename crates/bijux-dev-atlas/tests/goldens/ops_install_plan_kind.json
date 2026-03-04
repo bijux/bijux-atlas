@@ -1,0 +1,46 @@
+{
+  "rows": [
+    {
+      "dry_run": "none",
+      "install_plan": {
+        "forbidden_objects": [],
+        "has_crds": false,
+        "has_rbac": false,
+        "missing_render_path": "/Users/bijan/bijux/bijux-atlas/artifacts/ops/ops_run/render/kind/helm/render.yaml",
+        "namespace_isolated": true,
+        "namespaces": [],
+        "resource_kinds": {},
+        "resources": []
+      },
+      "kind_context_expected": "kind-normal",
+      "plan_mode": true,
+      "profile": "kind",
+      "profile_intent": {
+        "allowed_effects": [
+          "subprocess",
+          "fs_write",
+          "network"
+        ],
+        "intended_usage": "baseline local cluster installation and smoke checks",
+        "name": "kind",
+        "required_dependencies": [
+          "kind-cluster",
+          "rendered-manifests",
+          "health-endpoint"
+        ]
+      },
+      "run_id": "ops_run",
+      "schema_version": 1,
+      "steps": [
+        "validate-only"
+      ]
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "errors": 0,
+    "total": 1,
+    "warnings": 0
+  },
+  "text": "install plan generated for profile `kind`"
+}
