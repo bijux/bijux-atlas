@@ -298,6 +298,18 @@ pub enum ReleaseCommand {
         #[command(subcommand)]
         command: ReleaseCratesCommand,
     },
+    ApiSurface {
+        #[command(subcommand)]
+        command: ReleaseApiSurfaceCommand,
+    },
+    Semver {
+        #[command(subcommand)]
+        command: ReleaseSemverCommand,
+    },
+    Msrv {
+        #[command(subcommand)]
+        command: ReleaseMsrvCommand,
+    },
 }
 
 #[derive(Subcommand, Debug)]
@@ -305,6 +317,23 @@ pub enum ReleaseCratesCommand {
     List(ReleaseCratesListArgs),
     ValidateMetadata(ReleaseCratesValidateArgs),
     ValidatePublishFlags(ReleaseCratesValidateArgs),
+    DryRun(ReleaseCratesDryRunArgs),
+    PublishPlan(ReleaseCratesListArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ReleaseApiSurfaceCommand {
+    Snapshot(ReleaseApiSurfaceSnapshotArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ReleaseSemverCommand {
+    Check(ReleaseSemverCheckArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ReleaseMsrvCommand {
+    Verify(ReleaseMsrvVerifyArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -1029,6 +1058,56 @@ pub struct ReleaseCratesListArgs {
 
 #[derive(Args, Debug, Clone)]
 pub struct ReleaseCratesValidateArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseCratesDryRunArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    pub enforce_size_budget: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseApiSurfaceSnapshotArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub crate_name: Option<String>,
+    #[arg(long, default_value_t = false)]
+    pub all: bool,
+    #[arg(long, default_value_t = false)]
+    pub write_golden: bool,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseSemverCheckArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub version: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseMsrvVerifyArgs {
     #[arg(long)]
     pub repo_root: Option<PathBuf>,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]

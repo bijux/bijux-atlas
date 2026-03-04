@@ -1,0 +1,27 @@
+{
+  "crate": "bijux-atlas-query",
+  "items": [
+    "const:CRATE_NAME",
+    "fn:explain_query_plan",
+    "fn:explain_transcript_query_plan",
+    "fn:query_gene_by_id_fast",
+    "fn:query_gene_id_name_json_minimal_fast",
+    "fn:query_genes",
+    "fn:query_genes_fanout",
+    "fn:query_normalization_hash",
+    "fn:query_transcript_by_id",
+    "fn:query_transcripts",
+    "use:cost",
+    "use:cursor",
+    "use:db",
+    "use:executor",
+    "use:filters",
+    "use:limits",
+    "use:normalize",
+    "use:parser",
+    "use:planner",
+    "use:query_error",
+    "use:row_decode"
+  ],
+  "schema_version": 1
+}

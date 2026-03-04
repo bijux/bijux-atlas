@@ -1,15 +1,20 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    FormatArg, ReleaseBundleBuildArgs, ReleaseBundleHashArgs, ReleaseBundleVerifyArgs,
+    FormatArg, ReleaseApiSurfaceCommand, ReleaseApiSurfaceSnapshotArgs, ReleaseBundleBuildArgs,
+    ReleaseBundleHashArgs, ReleaseBundleVerifyArgs,
     ReleaseChangelogGenerateArgs, ReleaseChangelogValidateArgs, ReleaseCheckArgs, ReleaseCommand,
-    ReleaseCompatibilityCheckArgs, ReleaseDiffArgs, ReleaseManifestGenerateArgs,
-    ReleaseCratesCommand, ReleaseCratesListArgs, ReleaseCratesValidateArgs,
-    ReleaseManifestValidateArgs, ReleasePacketArgs, ReleasePlanArgs, ReleaseRebuildVerifyArgs,
-    ReleaseReproducibilityReportArgs, ReleaseSignArgs, ReleaseTransitionPlanArgs,
-    ReleaseValidateArgs, ReleaseVerifyArgs, ReleaseVersionCheckArgs,
+    ReleaseCompatibilityCheckArgs, ReleaseCratesCommand, ReleaseCratesDryRunArgs,
+    ReleaseCratesListArgs, ReleaseCratesValidateArgs, ReleaseDiffArgs,
+    ReleaseManifestGenerateArgs,
+    ReleaseManifestValidateArgs, ReleaseMsrvCommand, ReleaseMsrvVerifyArgs, ReleasePacketArgs,
+    ReleasePlanArgs, ReleaseRebuildVerifyArgs, ReleaseReproducibilityReportArgs,
+    ReleaseSemverCommand,
+    ReleaseSemverCheckArgs, ReleaseSignArgs, ReleaseTransitionPlanArgs, ReleaseValidateArgs,
+    ReleaseVerifyArgs, ReleaseVersionCheckArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
+use regex::Regex;
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
@@ -572,6 +577,454 @@ fn run_release_crates_validate_publish_flags(
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
+fn workspace_version(root: &Path) -> Result<String, String> {
+    let manifest: toml::Value = toml::from_str(
+        &fs::read_to_string(root.join("Cargo.toml"))
+            .map_err(|err| format!("failed to read root Cargo.toml: {err}"))?,
+    )
+    .map_err(|err| format!("failed to parse root Cargo.toml: {err}"))?;
+    manifest
+        .get("workspace")
+        .and_then(toml::Value::as_table)
+        .and_then(|workspace| workspace.get("package"))
+        .and_then(toml::Value::as_table)
+        .and_then(|pkg| pkg.get("version"))
+        .and_then(toml::Value::as_str)
+        .map(ToOwned::to_owned)
+        .ok_or_else(|| "workspace.package.version not found in root Cargo.toml".to_string())
+}
+
+fn parse_semver_triplet(version: &str) -> Option<(u64, u64, u64)> {
+    let mut parts = version.split('.');
+    let major = parts.next()?.parse::<u64>().ok()?;
+    let minor = parts.next()?.parse::<u64>().ok()?;
+    let patch = parts.next()?.parse::<u64>().ok()?;
+    Some((major, minor, patch))
+}
+
+fn collect_api_surface_entries(root: &Path, crate_name: &str) -> Result<Vec<String>, String> {
+    let lib = root.join("crates").join(crate_name).join("src/lib.rs");
+    let text = fs::read_to_string(&lib)
+        .map_err(|err| format!("failed to read {}: {err}", lib.display()))?;
+    let re = Regex::new(
+        r#"^\s*pub\s+(mod|use|fn|struct|enum|trait|const|type)\s+([A-Za-z0-9_]+)?"#,
+    )
+    .map_err(|err| format!("failed to build api surface regex: {err}"))?;
+    let mut entries = text
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.starts_with("//"))
+        .filter_map(|line| {
+            re.captures(line).map(|caps| {
+                let kind = caps.get(1).map(|m| m.as_str()).unwrap_or("item");
+                let name = caps.get(2).map(|m| m.as_str()).unwrap_or("_");
+                format!("{kind}:{name}")
+            })
+        })
+        .collect::<Vec<_>>();
+    entries.sort();
+    entries.dedup();
+    Ok(entries)
+}
+
+fn run_release_api_surface_snapshot(
+    args: ReleaseApiSurfaceSnapshotArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let spec = read_crates_release_spec(&root)?;
+    let (allow, _) = release_spec_allow_deny(&spec);
+    let selected = if args.all {
+        allow
+    } else if let Some(crate_name) = args.crate_name.clone() {
+        vec![crate_name]
+    } else {
+        return Err("release api-surface snapshot requires --all or --crate-name".to_string());
+    };
+    let mut rows = Vec::<serde_json::Value>::new();
+    for crate_name in selected {
+        let entries = collect_api_surface_entries(&root, &crate_name)?;
+        let current_path = root
+            .join("release/api-surface/current")
+            .join(format!("{crate_name}.json"));
+        if let Some(parent) = current_path.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+        }
+        write_json(
+            &current_path,
+            &serde_json::json!({
+                "schema_version": 1,
+                "crate": crate_name,
+                "items": entries
+            }),
+        )?;
+        let mut row = serde_json::json!({
+            "crate": crate_name,
+            "current_snapshot": repo_rel(&root, &current_path),
+        });
+        if args.write_golden {
+            let golden_path = root
+                .join("release/api-surface/golden")
+                .join(format!("{crate_name}.json"));
+            if let Some(parent) = golden_path.parent() {
+                fs::create_dir_all(parent)
+                    .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+            }
+            fs::copy(&current_path, &golden_path).map_err(|err| {
+                format!(
+                    "failed to copy snapshot {} -> {}: {err}",
+                    current_path.display(),
+                    golden_path.display()
+                )
+            })?;
+            row["golden_snapshot"] = serde_json::json!(repo_rel(&root, &golden_path));
+        }
+        rows.push(row);
+    }
+    rows.sort_by(|a, b| {
+        a["crate"]
+            .as_str()
+            .unwrap_or_default()
+            .cmp(b["crate"].as_str().unwrap_or_default())
+    });
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_api_surface_snapshot",
+        "status": "ok",
+        "rows": rows
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_release_semver_check(args: ReleaseSemverCheckArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let policy = read_json(&root.join("configs/release/semver-api-policy.json"))?;
+    let current_version = args.version.unwrap_or(workspace_version(&root)?);
+    let (major, _, _) = parse_semver_triplet(&current_version)
+        .ok_or_else(|| format!("invalid semver version: {current_version}"))?;
+    let baseline_version = policy
+        .get("baseline_version")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("0.1.0")
+        .to_string();
+    let (baseline_major, _, _) = parse_semver_triplet(&baseline_version)
+        .ok_or_else(|| format!("invalid baseline version in policy: {baseline_version}"))?;
+    let spec = read_crates_release_spec(&root)?;
+    let (publishable, _) = release_spec_allow_deny(&spec);
+    let mut errors = Vec::<String>::new();
+    let mut crate_reports = Vec::<serde_json::Value>::new();
+    for crate_name in publishable {
+        let current = collect_api_surface_entries(&root, &crate_name)?;
+        let golden_path = root
+            .join("release/api-surface/golden")
+            .join(format!("{crate_name}.json"));
+        if !golden_path.exists() {
+            errors.push(format!(
+                "missing golden API surface snapshot for crate `{crate_name}`"
+            ));
+            continue;
+        }
+        let golden = read_json(&golden_path)?;
+        let previous = golden
+            .get("items")
+            .and_then(serde_json::Value::as_array)
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+            .collect::<BTreeSet<_>>();
+        let current_set = current.iter().cloned().collect::<BTreeSet<_>>();
+        let removed = previous
+            .difference(&current_set)
+            .cloned()
+            .collect::<Vec<_>>();
+        let added = current_set
+            .difference(&previous)
+            .cloned()
+            .collect::<Vec<_>>();
+        let requires_semver_bump = !removed.is_empty();
+        if requires_semver_bump && major <= baseline_major {
+            errors.push(format!(
+                "crate `{crate_name}` removed public API items but version `{current_version}` does not increase major above baseline `{baseline_version}`"
+            ));
+        }
+        crate_reports.push(serde_json::json!({
+            "crate": crate_name,
+            "removed": removed,
+            "added": added,
+            "requires_semver_bump": requires_semver_bump,
+            "semver_rule_evaluated": true
+        }));
+    }
+    crate_reports.sort_by(|a, b| {
+        a["crate"]
+            .as_str()
+            .unwrap_or_default()
+            .cmp(b["crate"].as_str().unwrap_or_default())
+    });
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_semver_check",
+        "status": status,
+        "version": current_version,
+        "baseline_version": baseline_version,
+        "rules": policy.get("rules").cloned().unwrap_or_else(|| serde_json::json!([])),
+        "crates": crate_reports,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_msrv_verify(args: ReleaseMsrvVerifyArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let cargo = toml::from_str::<toml::Value>(
+        &fs::read_to_string(root.join("Cargo.toml"))
+            .map_err(|err| format!("failed to read root Cargo.toml: {err}"))?,
+    )
+    .map_err(|err| format!("failed to parse root Cargo.toml: {err}"))?;
+    let workspace_msrv = cargo
+        .get("workspace")
+        .and_then(toml::Value::as_table)
+        .and_then(|w| w.get("package"))
+        .and_then(toml::Value::as_table)
+        .and_then(|p| p.get("rust-version"))
+        .and_then(toml::Value::as_str)
+        .unwrap_or_default()
+        .to_string();
+    let toolchain = toml::from_str::<toml::Value>(
+        &fs::read_to_string(root.join("rust-toolchain.toml"))
+            .map_err(|err| format!("failed to read rust-toolchain.toml: {err}"))?,
+    )
+    .map_err(|err| format!("failed to parse rust-toolchain.toml: {err}"))?;
+    let toolchain_channel = toolchain
+        .get("toolchain")
+        .and_then(toml::Value::as_table)
+        .and_then(|t| t.get("channel"))
+        .and_then(toml::Value::as_str)
+        .unwrap_or_default()
+        .to_string();
+    let msrv_doc = fs::read_to_string(root.join("docs/reference/msrv-policy.md"))
+        .map_err(|err| format!("failed to read docs/reference/msrv-policy.md: {err}"))?;
+    let mut errors = Vec::<String>::new();
+    if workspace_msrv != toolchain_channel {
+        errors.push(format!(
+            "workspace rust-version `{workspace_msrv}` does not match rust-toolchain channel `{toolchain_channel}`"
+        ));
+    }
+    if !msrv_doc.contains(&workspace_msrv) {
+        errors.push(format!(
+            "docs/reference/msrv-policy.md does not mention workspace MSRV `{workspace_msrv}`"
+        ));
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_msrv_verify",
+        "status": status,
+        "workspace_msrv": workspace_msrv,
+        "toolchain_channel": toolchain_channel,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_crates_publish_plan(args: ReleaseCratesListArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let spec = read_crates_release_spec(&root)?;
+    let (mut publishable, _) = release_spec_allow_deny(&spec);
+    publishable.sort();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_crates_publish_plan",
+        "status": "ok",
+        "deterministic_ordering": true,
+        "release_line": spec.get("release_line").and_then(toml::Value::as_str).unwrap_or("v0.1"),
+        "crates": publishable
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn package_policy(root: &Path) -> Result<serde_json::Value, String> {
+    read_json(&root.join("configs/release/crate-package-policy.json"))
+}
+
+fn run_release_crates_dry_run(args: ReleaseCratesDryRunArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let spec = read_crates_release_spec(&root)?;
+    let policy = package_policy(&root)?;
+    let (mut publishable, _) = release_spec_allow_deny(&spec);
+    publishable.sort();
+    let deny_patterns = policy
+        .get("deny_patterns")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+        .collect::<Vec<_>>();
+    let max_bytes = policy
+        .get("size_budget_bytes")
+        .and_then(serde_json::Value::as_u64)
+        .unwrap_or(1_500_000);
+    let require_changelog = policy
+        .get("require_changelog_in_package")
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
+    let mut errors = Vec::<String>::new();
+    let mut warnings = Vec::<String>::new();
+    let mut rows = Vec::<serde_json::Value>::new();
+    let mut dependency_audit_rows = Vec::<serde_json::Value>::new();
+    let version = workspace_version(&root)?;
+    for crate_name in publishable {
+        let output = ProcessCommand::new("cargo")
+            .args(["package", "-p", &crate_name, "--allow-dirty", "--list"])
+            .current_dir(&root)
+            .output()
+            .map_err(|err| format!("failed to run cargo package --list for `{crate_name}`: {err}"))?;
+        if !output.status.success() {
+            errors.push(format!(
+                "cargo package --list failed for `{crate_name}`: {}",
+                String::from_utf8_lossy(&output.stderr).trim()
+            ));
+            continue;
+        }
+        let members = String::from_utf8_lossy(&output.stdout)
+            .lines()
+            .map(str::trim)
+            .filter(|line| !line.is_empty())
+            .map(ToOwned::to_owned)
+            .collect::<Vec<_>>();
+        let has_license = members
+            .iter()
+            .any(|m| m.ends_with("LICENSE") || m.ends_with("LICENSE.txt"));
+        let has_readme = members.iter().any(|m| m.ends_with("README.md"));
+        let has_changelog = members.iter().any(|m| m.ends_with("CHANGELOG.md"));
+        if !has_license {
+            errors.push(format!("crate `{crate_name}` package list missing LICENSE"));
+        }
+        if !has_readme {
+            errors.push(format!("crate `{crate_name}` package list missing README.md"));
+        }
+        if require_changelog && !has_changelog {
+            errors.push(format!(
+                "crate `{crate_name}` package list missing CHANGELOG.md required by policy"
+            ));
+        }
+        for pattern in &deny_patterns {
+            if members.iter().any(|m| m.contains(pattern)) {
+                errors.push(format!(
+                    "crate `{crate_name}` package contains denied pattern `{pattern}`"
+                ));
+            }
+        }
+        let prefix = format!("{crate_name}-{version}/");
+        let crate_root = root.join("crates").join(&crate_name);
+        let mut size_bytes = 0_u64;
+        for member in &members {
+            let member_rel = member.strip_prefix(&prefix).unwrap_or(member);
+            let path = crate_root.join(member_rel);
+            if path.exists() {
+                size_bytes = size_bytes.saturating_add(
+                    fs::metadata(&path)
+                        .map_err(|err| format!("failed to stat {}: {err}", path.display()))?
+                        .len(),
+                );
+            }
+        }
+        if size_bytes > max_bytes {
+            let message = format!(
+                "crate `{crate_name}` package size {} exceeds budget {} bytes",
+                size_bytes, max_bytes
+            );
+            if args.enforce_size_budget {
+                errors.push(message);
+            } else {
+                warnings.push(message);
+            }
+        }
+        let manifest_raw: toml::Value = toml::from_str(
+            &fs::read_to_string(root.join("crates").join(&crate_name).join("Cargo.toml"))
+                .map_err(|err| format!("failed to read {crate_name} manifest: {err}"))?,
+        )
+        .map_err(|err| format!("failed to parse {crate_name} manifest: {err}"))?;
+        let deps = manifest_raw
+            .get("dependencies")
+            .and_then(toml::Value::as_table)
+            .cloned()
+            .unwrap_or_default();
+        let mut network = Vec::<String>::new();
+        let mut native = Vec::<String>::new();
+        let mut high_risk = Vec::<String>::new();
+        for dep_name in deps.keys() {
+            match dep_name.as_str() {
+                "reqwest" | "redis" | "tokio" | "opentelemetry-otlp" => {
+                    network.push(dep_name.clone());
+                }
+                "rusqlite" | "libsqlite3-sys" | "tikv-jemallocator" => {
+                    native.push(dep_name.clone());
+                }
+                _ => {}
+            }
+            if dep_name == "reqwest" || dep_name == "redis" {
+                high_risk.push(dep_name.clone());
+            }
+        }
+        network.sort();
+        native.sort();
+        high_risk.sort();
+        dependency_audit_rows.push(serde_json::json!({
+            "crate": crate_name,
+            "direct_dependency_count": deps.len(),
+            "risk_categories": {
+                "network": network,
+                "native": native,
+                "high_risk_review": high_risk
+            }
+        }));
+        rows.push(serde_json::json!({
+            "crate": crate_name,
+            "has_license": has_license,
+            "has_readme": has_readme,
+            "has_changelog": has_changelog,
+            "member_count": members.len(),
+            "size_bytes": size_bytes
+        }));
+    }
+    dependency_audit_rows.sort_by(|a, b| {
+        a["crate"]
+            .as_str()
+            .unwrap_or_default()
+            .cmp(b["crate"].as_str().unwrap_or_default())
+    });
+    let audit_path = root.join("artifacts/release/crates/dependency-audit.json");
+    write_json(
+        &audit_path,
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "crate_dependency_audit",
+            "rows": dependency_audit_rows
+        }),
+    )?;
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_crates_dry_run",
+        "status": status,
+        "size_budget_bytes": max_bytes,
+        "dependency_audit_report": repo_rel(&root, &audit_path),
+        "rows": rows,
+        "warnings": warnings,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
 fn run_release_plan(args: ReleasePlanArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let policy = read_publish_policy(&root)?;
@@ -685,6 +1138,9 @@ fn run_release_transition_plan(
 fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let policy = read_publish_policy(&root)?;
+    let feature_policy = read_json(&root.join("configs/release/feature-policy.json"))?;
+    let feature_doc = fs::read_to_string(root.join("docs/reference/crate-feature-flags.md"))
+        .map_err(|err| format!("failed to read docs/reference/crate-feature-flags.md: {err}"))?;
     let workspace_manifest: toml::Value = toml::from_str(
         &fs::read_to_string(root.join("Cargo.toml"))
             .map_err(|err| format!("failed to read root Cargo.toml: {err}"))?,
@@ -757,6 +1213,129 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
         }
         if !readme_path.exists() {
             errors.push(format!("missing crate README: {}", readme_path.display()));
+        }
+        if let Some(deps) = manifest.get("dependencies").and_then(toml::Value::as_table) {
+            for (dep_name, value) in deps {
+                if dep_name == "bijux-atlas-core"
+                    || dep_name.starts_with("bijux-atlas-")
+                    || dep_name == "bijux-dev-atlas"
+                {
+                    if value
+                        .as_table()
+                        .and_then(|table| table.get("path"))
+                        .is_some()
+                    {
+                        errors.push(format!(
+                            "{} dependency `{dep_name}` uses path, forbidden for publishable crate manifests",
+                            manifest_path.display()
+                        ));
+                    }
+                }
+                if value
+                    .as_table()
+                    .and_then(|table| table.get("git"))
+                    .is_some()
+                {
+                    errors.push(format!(
+                        "{} dependency `{dep_name}` uses git source, forbidden for publishable crates",
+                        manifest_path.display()
+                    ));
+                }
+            }
+        }
+        let dev_deps = manifest
+            .get("dev-dependencies")
+            .and_then(toml::Value::as_table)
+            .cloned()
+            .unwrap_or_default();
+        let deps = manifest
+            .get("dependencies")
+            .and_then(toml::Value::as_table)
+            .cloned()
+            .unwrap_or_default();
+        let duplicates = deps
+            .iter()
+            .filter_map(|(name, dep_value)| {
+                if !dev_deps.contains_key(name) {
+                    return None;
+                }
+                let optional = dep_value
+                    .as_table()
+                    .and_then(|table| table.get("optional"))
+                    .and_then(toml::Value::as_bool)
+                    .unwrap_or(false);
+                if optional {
+                    None
+                } else {
+                    Some(name.clone())
+                }
+            })
+            .collect::<Vec<_>>();
+        if !duplicates.is_empty() {
+            errors.push(format!(
+                "crate `{crate_name}` duplicates dependencies in [dependencies] and [dev-dependencies]: {}",
+                duplicates.join(", ")
+            ));
+        }
+        let features = manifest
+            .get("features")
+            .and_then(toml::Value::as_table)
+            .cloned()
+            .unwrap_or_default();
+        for feature_name in features.keys() {
+            if feature_name == "default" {
+                continue;
+            }
+            if !feature_doc.contains(&format!("`{crate_name}`"))
+                || !feature_doc.contains(&format!("`{feature_name}`"))
+            {
+                errors.push(format!(
+                    "crate `{crate_name}` feature `{feature_name}` is not documented in docs/reference/crate-feature-flags.md"
+                ));
+            }
+        }
+        let allow_empty_features = feature_policy
+            .get("allow_empty_features")
+            .and_then(serde_json::Value::as_array)
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+            .collect::<BTreeSet<_>>();
+        for (feature_name, definition) in &features {
+            if feature_name == "default" {
+                continue;
+            }
+            let is_empty = definition
+                .as_array()
+                .is_some_and(|items| items.is_empty());
+            if is_empty && !allow_empty_features.contains(feature_name) {
+                errors.push(format!(
+                    "crate `{crate_name}` feature `{feature_name}` has no dependencies and is not allowed by policy"
+                ));
+            }
+        }
+        let default_feature_allow = feature_policy
+            .get("allowed_default_features")
+            .and_then(serde_json::Value::as_object)
+            .cloned()
+            .unwrap_or_default();
+        if let Some(defaults) = features.get("default").and_then(toml::Value::as_array) {
+            let allowed = default_feature_allow
+                .get(crate_name)
+                .and_then(serde_json::Value::as_array)
+                .cloned()
+                .unwrap_or_default()
+                .into_iter()
+                .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+                .collect::<BTreeSet<_>>();
+            for feature in defaults.iter().filter_map(toml::Value::as_str) {
+                if !allowed.contains(feature) {
+                    errors.push(format!(
+                        "crate `{crate_name}` default feature `{feature}` is not allowed by configs/release/feature-policy.json"
+                    ));
+                }
+            }
         }
         let examples_dir = root.join("crates").join(crate_name).join("examples");
         if examples_dir.exists() {
@@ -2576,6 +3155,17 @@ pub(crate) fn run_release_command(
             ReleaseCratesCommand::ValidatePublishFlags(args) => {
                 run_release_crates_validate_publish_flags(args)
             }
+            ReleaseCratesCommand::DryRun(args) => run_release_crates_dry_run(args),
+            ReleaseCratesCommand::PublishPlan(args) => run_release_crates_publish_plan(args),
+        },
+        ReleaseCommand::ApiSurface { command } => match command {
+            ReleaseApiSurfaceCommand::Snapshot(args) => run_release_api_surface_snapshot(args),
+        },
+        ReleaseCommand::Semver { command } => match command {
+            ReleaseSemverCommand::Check(args) => run_release_semver_check(args),
+        },
+        ReleaseCommand::Msrv { command } => match command {
+            ReleaseMsrvCommand::Verify(args) => run_release_msrv_verify(args),
         },
     }
 }

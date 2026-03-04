@@ -1,0 +1,7 @@
+{
+  "crate": "bijux-atlas-server",
+  "items": [
+    "use:crate"
+  ],
+  "schema_version": 1
+}

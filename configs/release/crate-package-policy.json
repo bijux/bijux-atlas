@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "size_budget_bytes": 1500000,
+  "deny_patterns": [
+    "/fixtures/",
+    "/.github/",
+    "ops/datasets/",
+    "target/"
+  ],
+  "require_changelog_in_package": false
+}

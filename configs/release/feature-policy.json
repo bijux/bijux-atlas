@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "allow_empty_features": [
+    "backend-local",
+    "bench-ingest-throughput"
+  ],
+  "allowed_default_features": {
+    "bijux-atlas-core": [
+      "serde"
+    ],
+    "bijux-atlas-store": [
+      "backend-local"
+    ],
+    "bijux-atlas-ingest": [],
+    "bijux-atlas-server": [],
+    "bijux-atlas-api": [],
+    "bijux-atlas-cli": [],
+    "bijux-atlas-model": [],
+    "bijux-atlas-policies": [],
+    "bijux-atlas-query": []
+  }
+}

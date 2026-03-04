@@ -1,0 +1,13 @@
+{
+  "crate": "bijux-atlas-policies",
+  "items": [
+    "const:CRATE_NAME",
+    "use:adapters",
+    "use:evaluation",
+    "use:limits",
+    "use:policy_set",
+    "use:schema",
+    "use:validate"
+  ],
+  "schema_version": 1
+}

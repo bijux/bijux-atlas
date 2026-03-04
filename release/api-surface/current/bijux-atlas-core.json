@@ -1,0 +1,17 @@
+{
+  "crate": "bijux-atlas-core",
+  "items": [
+    "const:CRATE_NAME",
+    "const:ENV_BIJUX_CACHE_DIR",
+    "const:ENV_BIJUX_LOG_LEVEL",
+    "const:NO_RANDOMNESS_POLICY",
+    "const:fn",
+    "mod:domain",
+    "mod:effects",
+    "mod:errors",
+    "mod:ports",
+    "mod:types",
+    "use:crate"
+  ],
+  "schema_version": 1
+}

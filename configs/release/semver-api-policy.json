@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "baseline_version": "0.1.0",
+  "rules": [
+    {
+      "id": "SEMVER-API-001",
+      "description": "Removing a public API item is a breaking change and requires semver major bump evaluation"
+    },
+    {
+      "id": "SEMVER-API-002",
+      "description": "Adding API items is non-breaking by default"
+    }
+  ]
+}

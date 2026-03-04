@@ -1,0 +1,25 @@
+{
+  "crate": "bijux-atlas-api",
+  "items": [
+    "const:API_POLICY_LATEST_ALIAS",
+    "const:API_POLICY_NO_IMPLICIT_DEFAULT_DATASET",
+    "const:CRATE_NAME",
+    "fn:dataset_route_key",
+    "mod:compat",
+    "mod:convert",
+    "mod:dto",
+    "mod:error_mapping",
+    "mod:errors",
+    "mod:openapi",
+    "mod:params",
+    "mod:responses",
+    "mod:wire",
+    "use:dto",
+    "use:errors",
+    "use:openapi",
+    "use:params",
+    "use:responses",
+    "use:wire"
+  ],
+  "schema_version": 1
+}

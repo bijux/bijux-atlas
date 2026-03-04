@@ -1,0 +1,14 @@
+{
+  "crate": "bijux-atlas-model",
+  "items": [
+    "const:CRATE_NAME",
+    "mod:serde_helpers",
+    "use:dataset",
+    "use:diff",
+    "use:gene",
+    "use:manifest",
+    "use:policy",
+    "use:version"
+  ],
+  "schema_version": 1
+}

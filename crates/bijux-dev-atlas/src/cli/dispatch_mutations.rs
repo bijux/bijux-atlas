@@ -4,7 +4,8 @@ use crate::cli::{
     ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand, Command,
     ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, FormatArg,
     IngestCommand, MakeCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand,
-    ReleaseCommand, ReleaseCratesCommand, ReportsCommand, SecurityCommand, TestsCommand,
+    ReleaseApiSurfaceCommand, ReleaseCommand, ReleaseCratesCommand, ReleaseMsrvCommand,
+    ReleaseSemverCommand, ReportsCommand, SecurityCommand, TestsCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -102,6 +103,17 @@ pub(super) fn force_json_output(command: &mut Command) {
                 ReleaseCratesCommand::List(args) => args.format = FormatArg::Json,
                 ReleaseCratesCommand::ValidateMetadata(args) => args.format = FormatArg::Json,
                 ReleaseCratesCommand::ValidatePublishFlags(args) => args.format = FormatArg::Json,
+                ReleaseCratesCommand::DryRun(args) => args.format = FormatArg::Json,
+                ReleaseCratesCommand::PublishPlan(args) => args.format = FormatArg::Json,
+            },
+            ReleaseCommand::ApiSurface { command } => match command {
+                ReleaseApiSurfaceCommand::Snapshot(args) => args.format = FormatArg::Json,
+            },
+            ReleaseCommand::Semver { command } => match command {
+                ReleaseSemverCommand::Check(args) => args.format = FormatArg::Json,
+            },
+            ReleaseCommand::Msrv { command } => match command {
+                ReleaseMsrvCommand::Verify(args) => args.format = FormatArg::Json,
             },
         },
         Command::Docker { .. }
@@ -1655,6 +1667,37 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     }
                 }
                 ReleaseCratesCommand::ValidatePublishFlags(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+                ReleaseCratesCommand::DryRun(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+                ReleaseCratesCommand::PublishPlan(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+            },
+            ReleaseCommand::ApiSurface { command } => match command {
+                ReleaseApiSurfaceCommand::Snapshot(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+            },
+            ReleaseCommand::Semver { command } => match command {
+                ReleaseSemverCommand::Check(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+            },
+            ReleaseCommand::Msrv { command } => match command {
+                ReleaseMsrvCommand::Verify(args) => {
                     if args.repo_root.is_none() {
                         args.repo_root = Some(root.clone());
                     }
