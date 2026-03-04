@@ -47,6 +47,10 @@ bijux dev atlas ops scenario run --scenario minimal-single-node --evidence --all
 
 - [Kubernetes tests](k8s-tests.md)
 - [Fixture taxonomy](fixtures.md)
+- [Scenarios as evidence](scenarios-evidence.md)
+- [Scenario spec reference](scenario-spec-reference.md)
+- [Scenario artifact layout](scenario-artifact-layout.md)
+- [Scenario matrix](scenario-matrix.md)
 
 ## Next
 
