@@ -8,6 +8,8 @@ description = "Storage contracts and backends for atlas artifacts"
 repository.workspace = true
 homepage.workspace = true
 documentation = "https://docs.rs/bijux-atlas-store"
+readme = "README.md"
+categories = ["database", "science"]
 keywords = ["atlas", "storage", "s3", "contracts", "artifacts"]
 
 [features]

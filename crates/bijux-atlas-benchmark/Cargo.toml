@@ -8,6 +8,7 @@ description = "Benchmark harness primitives and reproducible performance dataset
 repository.workspace = true
 homepage.workspace = true
 keywords = ["atlas", "benchmark", "performance", "deterministic", "harness"]
+publish = false
 
 [dependencies]
 serde = { workspace = true, features = ["derive"] }

@@ -8,6 +8,8 @@ description = "Policy evaluation rules and violation contracts for atlas"
 repository.workspace = true
 homepage.workspace = true
 documentation = "https://docs.rs/bijux-atlas-policies"
+readme = "README.md"
+categories = ["config", "science"]
 keywords = ["atlas", "policy", "validation", "rules", "contracts"]
 
 [dependencies]

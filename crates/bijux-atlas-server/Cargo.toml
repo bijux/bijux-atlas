@@ -8,6 +8,8 @@ description = "Runtime HTTP service implementing atlas API contracts"
 repository.workspace = true
 homepage.workspace = true
 documentation = "https://docs.rs/bijux-atlas-server"
+readme = "README.md"
+categories = ["web-programming::http-server", "science"]
 keywords = ["atlas", "server", "http", "axum", "genomics"]
 
 [dependencies]

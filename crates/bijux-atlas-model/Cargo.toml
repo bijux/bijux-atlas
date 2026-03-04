@@ -8,6 +8,8 @@ description = "Persisted atlas data models and serde contracts"
 repository.workspace = true
 homepage.workspace = true
 documentation = "https://docs.rs/bijux-atlas-model"
+readme = "README.md"
+categories = ["data-structures", "science"]
 keywords = ["atlas", "model", "serde", "contracts", "genomics"]
 
 [dependencies]

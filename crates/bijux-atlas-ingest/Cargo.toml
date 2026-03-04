@@ -8,6 +8,8 @@ description = "Deterministic ingestion pipeline for atlas artifacts"
 repository.workspace = true
 homepage.workspace = true
 documentation = "https://docs.rs/bijux-atlas-ingest"
+readme = "README.md"
+categories = ["science", "database"]
 keywords = ["atlas", "ingest", "gff", "fasta", "deterministic"]
 
 [features]

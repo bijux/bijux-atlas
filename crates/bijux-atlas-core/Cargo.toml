@@ -8,6 +8,8 @@ description = "Domain primitives and deterministic core contracts for bijux-atla
 repository.workspace = true
 homepage.workspace = true
 documentation = "https://docs.rs/bijux-atlas-core"
+readme = "README.md"
+categories = ["data-structures", "science"]
 keywords = ["atlas", "core", "contracts", "deterministic", "genomics"]
 
 [features]
