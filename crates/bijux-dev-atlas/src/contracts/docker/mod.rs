@@ -353,9 +353,9 @@ fn exported_contract_effects(contract: &Contract) -> Vec<&'static str> {
 pub fn contract_gate_command(contract: &Contract) -> String {
     let effects = exported_contract_effects(contract);
     if effects.is_empty() {
-        return "bijux dev atlas contracts docker --mode static".to_string();
+        return "bijux dev atlas contract run --mode static --domain docker".to_string();
     }
-    let mut flags = vec!["bijux dev atlas contracts docker --mode effect".to_string()];
+    let mut flags = vec!["bijux dev atlas contract run --mode effect --domain docker".to_string()];
     if effects.contains(&super::EffectKind::Subprocess.as_str()) {
         flags.push("--allow-subprocess".to_string());
     }
@@ -409,7 +409,7 @@ pub fn render_contract_markdown(repo_root: &Path) -> Result<String, String> {
     let mut out = String::new();
     out.push_str("# Docker Contract\n\n");
     out.push_str("- Owner: `bijux-atlas-platform`\n");
-    out.push_str("- Enforced by: `bijux dev atlas contracts docker`\n\n");
+    out.push_str("- Enforced by: `bijux dev atlas contract run --domain docker`\n\n");
     out.push_str("## Contract Registry\n\n");
     for contract in &rows {
         out.push_str(&format!("### {} {}\n\n", contract.id.0, contract.title));
@@ -490,8 +490,10 @@ pub fn contract_explain(contract_id: &str) -> String {
             "Do not copy rustfmt.toml, clippy.toml, or deny.toml from legacy root-level paths.",
         ]
         .join("\n"),
-        _ => "Fix violations listed for this contract and rerun `bijux dev atlas contracts docker`."
-            .to_string(),
+        _ => {
+            "Fix violations listed for this contract and rerun `bijux dev atlas contract run --domain docker`"
+                .to_string()
+        }
     }
 }
 

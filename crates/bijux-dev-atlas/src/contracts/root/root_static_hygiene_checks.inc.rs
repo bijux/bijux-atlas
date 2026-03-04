@@ -334,13 +334,15 @@ fn test_root_036_docker_wrappers_delegate(ctx: &RunContext) -> TestResult {
         Err(result) => return result,
     };
     let mut violations = Vec::new();
-    if !contents.contains("contracts docker --mode static") || !contents.contains("contracts docker --mode effect") {
+    if !contents.contains("contract run --mode static --domain docker")
+        || !contents.contains("contract run --mode effect --domain docker")
+    {
         push_root_violation(
             &mut violations,
             "ROOT-036",
             "root.make.docker_wrappers_delegate",
             Some("make/docker.mk".to_string()),
-            "docker make wrappers must delegate both static and effect lanes to `bijux dev atlas contracts docker`",
+            "docker make wrappers must delegate both static and effect lanes to `bijux dev atlas contract run --domain docker`",
         );
     }
     if contents.lines().any(|line| line.trim_start().starts_with("@docker ")) {

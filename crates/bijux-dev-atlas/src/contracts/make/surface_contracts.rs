@@ -742,7 +742,8 @@ fn test_make_docker_001_docker_targets_use_contract_runner(ctx: &RunContext) -> 
             );
         };
         if recipes.iter().all(|recipe| {
-            recipe.contains("$(DEV_ATLAS) contracts docker")
+            recipe.contains("$(DEV_ATLAS) contract run --mode static --domain docker")
+                || recipe.contains("$(DEV_ATLAS) contract run --mode effect --domain docker")
                 || recipe.contains("$(MAKE)")
                 || is_auxiliary_recipe(recipe)
         }) {
@@ -752,7 +753,9 @@ fn test_make_docker_001_docker_targets_use_contract_runner(ctx: &RunContext) -> 
             "MAKE-DOCKER-001",
             "make.docker.contract_runner_only",
             file,
-            format!("target {name} must delegate through $(DEV_ATLAS) contracts docker"),
+            format!(
+                "target {name} must delegate through $(DEV_ATLAS) contract run --domain docker"
+            ),
         );
     }
     TestResult::Pass
