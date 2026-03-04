@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{SystemCommand, SystemSimulateCommand};
+use crate::cli::{SystemCommand, SystemDebugCommand, SystemSimulateCommand};
 use crate::{emit_payload, resolve_repo_root};
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
@@ -51,6 +51,10 @@ fn simulation_root(root: &Path) -> PathBuf {
 
 fn simulation_schema_path(root: &Path) -> PathBuf {
     root.join("configs/system/system-simulation-report.schema.json")
+}
+
+fn diagnostics_schema_path(root: &Path) -> PathBuf {
+    root.join("configs/system/system-diagnostics-report.schema.json")
 }
 
 fn simulation_scenario_dir(root: &Path, scenario_id: &str) -> PathBuf {
@@ -107,6 +111,82 @@ fn ensure_simulation_schema(report: &serde_json::Value, root: &Path) -> Result<(
         }
     }
     Ok(())
+}
+
+fn ensure_diagnostics_schema(report: &serde_json::Value, root: &Path) -> Result<(), String> {
+    let schema: serde_json::Value = read_json_file(&diagnostics_schema_path(root))?;
+    let required = schema
+        .get("required")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let Some(report_obj) = report.as_object() else {
+        return Err("system diagnostics report must be an object".to_string());
+    };
+    for key in required.iter().filter_map(serde_json::Value::as_str) {
+        if !report_obj.contains_key(key) {
+            return Err(format!(
+                "system diagnostics report missing required key `{key}`"
+            ));
+        }
+    }
+    Ok(())
+}
+
+fn run_debug_command(command: SystemDebugCommand) -> Result<(String, i32), String> {
+    let (args, kind, path) = match command {
+        SystemDebugCommand::Diagnostics(args) => (args, "diagnostics", "/debug/diagnostics"),
+        SystemDebugCommand::MetricsSnapshot(args) => (args, "metrics_snapshot", "/metrics"),
+        SystemDebugCommand::HealthChecks(args) => (args, "health_checks", "/ready"),
+        SystemDebugCommand::RuntimeState(args) => (args, "runtime_state", "/debug/runtime-stats"),
+        SystemDebugCommand::TraceSampling(args) => {
+            (args, "trace_sampling", "/debug/system-info")
+        }
+    };
+    let root = resolve_repo_root(args.repo_root)?;
+    let base = args.base_url.trim_end_matches('/');
+    let url = format!("{base}{path}");
+    let client = reqwest::blocking::Client::builder()
+        .timeout(std::time::Duration::from_secs(args.timeout_seconds))
+        .build()
+        .map_err(|err| format!("build debug client failed: {err}"))?;
+    let started = std::time::Instant::now();
+    let result = client.get(&url).send();
+    let elapsed_ms = started.elapsed().as_millis() as u64;
+    let payload = match result {
+        Ok(response) => {
+            let status = response.status().as_u16();
+            let body_text = response
+                .text()
+                .unwrap_or_else(|err| format!("read response failed: {err}"));
+            serde_json::json!({
+                "schema_version": 1,
+                "kind": "system_debug_report",
+                "command": kind,
+                "url": url,
+                "http_status": status,
+                "duration_ms": elapsed_ms,
+                "response": body_text,
+            })
+        }
+        Err(err) => serde_json::json!({
+            "schema_version": 1,
+            "kind": "system_debug_report",
+            "command": kind,
+            "url": url,
+            "http_status": 0,
+            "duration_ms": elapsed_ms,
+            "error": format!("{err}"),
+        }),
+    };
+    ensure_diagnostics_schema(&payload, &root)?;
+    let artifact_dir = root.join("artifacts/system/diagnostics");
+    fs::create_dir_all(&artifact_dir)
+        .map_err(|err| format!("create {} failed: {err}", artifact_dir.display()))?;
+    let artifact_path = artifact_dir.join(format!("{kind}.json"));
+    write_json(&artifact_path, &payload)?;
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
 }
 
 fn build_evidence(scenario: &SimulationScenario) -> serde_json::Value {
@@ -324,7 +404,8 @@ fn run_scenarios(
 
 #[cfg(test)]
 mod tests {
-    use super::stable_sha256;
+    use super::{ensure_diagnostics_schema, stable_sha256, write_json};
+    use std::fs;
 
     #[test]
     fn simulation_summary_hash_is_deterministic() {
@@ -359,6 +440,28 @@ mod tests {
             serde_json::from_str(golden).expect("parse simulation summary golden");
         assert_eq!(payload, golden_value);
     }
+
+    #[test]
+    fn diagnostics_report_schema_validation_accepts_required_shape() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        let root = temp.path();
+        let schema_dir = root.join("configs/system");
+        fs::create_dir_all(&schema_dir).expect("create schema dir");
+        let schema = serde_json::json!({
+            "required": ["schema_version", "kind", "command", "url", "http_status", "duration_ms"]
+        });
+        write_json(&schema_dir.join("system-diagnostics-report.schema.json"), &schema)
+            .expect("write schema");
+        let report = serde_json::json!({
+            "schema_version": 1,
+            "kind": "system_debug_report",
+            "command": "diagnostics",
+            "url": "http://127.0.0.1:8080/debug/diagnostics",
+            "http_status": 200,
+            "duration_ms": 12
+        });
+        ensure_diagnostics_schema(&report, root).expect("report should match schema");
+    }
 }
 
 pub(crate) fn run_system_command(
@@ -389,5 +492,6 @@ pub(crate) fn run_system_command(
                 run_scenarios(args.repo_root, args.format, args.out, &[])
             }
         },
+        SystemCommand::Debug { command } => run_debug_command(command),
     }
 }

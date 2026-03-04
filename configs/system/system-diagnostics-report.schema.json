@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "command": {
+      "type": "string"
+    },
+    "duration_ms": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "error": {
+      "type": "string"
+    },
+    "http_status": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "kind": {
+      "const": "system_debug_report",
+      "type": "string"
+    },
+    "response": {},
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "command",
+    "url",
+    "http_status",
+    "duration_ms"
+  ],
+  "title": "system-diagnostics-report",
+  "type": "object"
+}

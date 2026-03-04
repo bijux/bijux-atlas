@@ -518,6 +518,15 @@ fn force_json_system(command: &mut crate::cli::SystemCommand) {
             | crate::cli::SystemSimulateCommand::OfflineMode(args)
             | crate::cli::SystemSimulateCommand::Suite(args) => args.format = FormatArg::Json,
         },
+        crate::cli::SystemCommand::Debug { command } => match command {
+            crate::cli::SystemDebugCommand::Diagnostics(args)
+            | crate::cli::SystemDebugCommand::MetricsSnapshot(args)
+            | crate::cli::SystemDebugCommand::HealthChecks(args)
+            | crate::cli::SystemDebugCommand::RuntimeState(args)
+            | crate::cli::SystemDebugCommand::TraceSampling(args) => {
+                args.format = FormatArg::Json
+            }
+        },
     }
 }
 
@@ -1118,6 +1127,15 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 | crate::cli::SystemSimulateCommand::Rollback(args)
                 | crate::cli::SystemSimulateCommand::OfflineMode(args)
                 | crate::cli::SystemSimulateCommand::Suite(args) => {
+                    args.repo_root = Some(root.clone())
+                }
+            },
+            crate::cli::SystemCommand::Debug { command } => match command {
+                crate::cli::SystemDebugCommand::Diagnostics(args)
+                | crate::cli::SystemDebugCommand::MetricsSnapshot(args)
+                | crate::cli::SystemDebugCommand::HealthChecks(args)
+                | crate::cli::SystemDebugCommand::RuntimeState(args)
+                | crate::cli::SystemDebugCommand::TraceSampling(args) => {
                     args.repo_root = Some(root.clone())
                 }
             },

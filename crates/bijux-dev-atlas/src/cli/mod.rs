@@ -470,6 +470,10 @@ pub enum SystemCommand {
         #[command(subcommand)]
         command: SystemSimulateCommand,
     },
+    Debug {
+        #[command(subcommand)]
+        command: SystemDebugCommand,
+    },
 }
 
 #[derive(Subcommand, Debug)]
@@ -479,6 +483,15 @@ pub enum SystemSimulateCommand {
     Rollback(SystemSimulateArgs),
     OfflineMode(SystemSimulateArgs),
     Suite(SystemSimulateArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum SystemDebugCommand {
+    Diagnostics(SystemDebugArgs),
+    MetricsSnapshot(SystemDebugArgs),
+    HealthChecks(SystemDebugArgs),
+    RuntimeState(SystemDebugArgs),
+    TraceSampling(SystemDebugArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -531,6 +544,20 @@ pub struct SystemSimulateArgs {
     pub format: FormatArg,
     #[arg(long)]
     pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct SystemDebugArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long, default_value = "http://127.0.0.1:8080")]
+    pub base_url: String,
+    #[arg(long, default_value_t = 5)]
+    pub timeout_seconds: u64,
 }
 
 #[derive(Args, Debug, Clone)]
