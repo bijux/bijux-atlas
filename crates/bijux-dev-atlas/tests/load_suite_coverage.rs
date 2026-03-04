@@ -20,10 +20,8 @@ fn load_suite_manifest_includes_system_load_profiles() {
             .expect("parse suites");
 
     let suites = value["suites"].as_array().expect("suites array");
-    let names: std::collections::BTreeSet<&str> = suites
-        .iter()
-        .filter_map(|v| v["name"].as_str())
-        .collect();
+    let names: std::collections::BTreeSet<&str> =
+        suites.iter().filter_map(|v| v["name"].as_str()).collect();
 
     for suite in [
         "mixed-workload",

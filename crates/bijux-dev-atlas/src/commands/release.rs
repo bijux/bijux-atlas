@@ -1811,8 +1811,7 @@ fn run_release_version_check(args: ReleaseVersionCheckArgs) -> Result<(String, i
         .version
         .unwrap_or_else(|| default_release_version(&root));
     let tag = args.tag.or_else(|| {
-        env_var_text("GITHUB_REF")
-            .and_then(|v| v.strip_prefix("refs/tags/").map(str::to_string))
+        env_var_text("GITHUB_REF").and_then(|v| v.strip_prefix("refs/tags/").map(str::to_string))
     });
     let mut errors = Vec::<String>::new();
     let Some(parsed) = parse_semver_like(&version) else {

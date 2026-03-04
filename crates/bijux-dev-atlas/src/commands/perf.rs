@@ -480,7 +480,8 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
     let report_path = root.join(format!("artifacts/perf/{}-load.json", args.scenario));
     write_json(&report_path, &report)?;
     let benchmark_artifacts_root = root.join("artifacts/benchmarks");
-    let benchmark_report_path = benchmark_artifacts_root.join(format!("{}-result.json", args.scenario));
+    let benchmark_report_path =
+        benchmark_artifacts_root.join(format!("{}-result.json", args.scenario));
     write_json(&benchmark_report_path, &report)?;
     let benchmark_csv_path = benchmark_artifacts_root.join(format!("{}-result.csv", args.scenario));
     write_csv(

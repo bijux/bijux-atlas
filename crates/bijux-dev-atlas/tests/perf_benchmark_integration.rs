@@ -18,7 +18,14 @@ fn perf_run_writes_benchmark_artifacts() {
     let root = repo_root();
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)
-        .args(["perf", "run", "--scenario", "gene-lookup", "--format", "json"])
+        .args([
+            "perf",
+            "run",
+            "--scenario",
+            "gene-lookup",
+            "--format",
+            "json",
+        ])
         .output()
         .expect("run perf command");
 
@@ -39,7 +46,11 @@ fn perf_run_writes_benchmark_artifacts() {
         &benchmark_summary,
         &benchmark_history,
     ] {
-        assert!(path.exists(), "expected artifact missing: {}", path.display());
+        assert!(
+            path.exists(),
+            "expected artifact missing: {}",
+            path.display()
+        );
     }
 
     let summary_value: serde_json::Value = serde_json::from_str(

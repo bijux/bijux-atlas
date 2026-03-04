@@ -62,8 +62,8 @@ fn sha256_file(path: &Path) -> Result<String, String> {
 }
 
 fn sha256_json(value: &serde_json::Value) -> Result<String, String> {
-    let bytes =
-        serde_json::to_vec(value).map_err(|err| format!("encode audit bundle hash failed: {err}"))?;
+    let bytes = serde_json::to_vec(value)
+        .map_err(|err| format!("encode audit bundle hash failed: {err}"))?;
     Ok(format!("{:x}", Sha256::digest(bytes)))
 }
 
@@ -152,7 +152,10 @@ fn bundle_validate(
             errors.push(format!("audit bundle missing required key `{key}`"));
         }
     }
-    if bundle["missing"].as_array().is_some_and(|rows| !rows.is_empty()) {
+    if bundle["missing"]
+        .as_array()
+        .is_some_and(|rows| !rows.is_empty())
+    {
         errors.push("audit bundle must contain all required artifacts".to_string());
     }
     let computed_hash = sha256_json(&bundle)?;

@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    SystemClusterArgs, SystemClusterCommand, SystemClusterNodeActionArgs,
-    SystemClusterFailureActionArgs, SystemClusterReplicaFailoverArgs, SystemClusterShardActionArgs,
-    SystemCommand, SystemDebugCommand,
-    SystemSimulateCommand,
+    SystemClusterArgs, SystemClusterCommand, SystemClusterFailureActionArgs,
+    SystemClusterNodeActionArgs, SystemClusterReplicaFailoverArgs, SystemClusterShardActionArgs,
+    SystemCommand, SystemDebugCommand, SystemSimulateCommand,
 };
 use crate::{emit_payload, resolve_repo_root};
 use serde::Deserialize;
@@ -144,9 +143,7 @@ fn run_debug_command(command: SystemDebugCommand) -> Result<(String, i32), Strin
         SystemDebugCommand::MetricsSnapshot(args) => (args, "metrics_snapshot", "/metrics"),
         SystemDebugCommand::HealthChecks(args) => (args, "health_checks", "/ready"),
         SystemDebugCommand::RuntimeState(args) => (args, "runtime_state", "/debug/runtime-stats"),
-        SystemDebugCommand::TraceSampling(args) => {
-            (args, "trace_sampling", "/debug/system-info")
-        }
+        SystemDebugCommand::TraceSampling(args) => (args, "trace_sampling", "/debug/system-info"),
     };
     let root = resolve_repo_root(args.repo_root)?;
     let base = args.base_url.trim_end_matches('/');
@@ -838,10 +835,9 @@ mod tests {
         write_json,
     };
     use crate::cli::{
-        FormatArg, SystemClusterArgs, SystemClusterCommand, SystemClusterNodeActionArgs,
-        SystemClusterFailureActionArgs, SystemClusterReplicaFailoverArgs,
-        SystemClusterShardActionArgs, SystemDebugArgs,
-        SystemDebugCommand,
+        FormatArg, SystemClusterArgs, SystemClusterCommand, SystemClusterFailureActionArgs,
+        SystemClusterNodeActionArgs, SystemClusterReplicaFailoverArgs,
+        SystemClusterShardActionArgs, SystemDebugArgs, SystemDebugCommand,
     };
     use std::fs;
     use std::path::PathBuf;
@@ -889,8 +885,11 @@ mod tests {
         let schema = serde_json::json!({
             "required": ["schema_version", "kind", "command", "url", "http_status", "duration_ms"]
         });
-        write_json(&schema_dir.join("system-diagnostics-report.schema.json"), &schema)
-            .expect("write schema");
+        write_json(
+            &schema_dir.join("system-diagnostics-report.schema.json"),
+            &schema,
+        )
+        .expect("write schema");
         let report = serde_json::json!({
             "schema_version": 1,
             "kind": "system_debug_report",
@@ -911,8 +910,11 @@ mod tests {
         let schema = serde_json::json!({
             "required": ["schema_version", "kind", "command", "url", "http_status", "duration_ms"]
         });
-        write_json(&schema_dir.join("system-diagnostics-report.schema.json"), &schema)
-            .expect("write schema");
+        write_json(
+            &schema_dir.join("system-diagnostics-report.schema.json"),
+            &schema,
+        )
+        .expect("write schema");
         let args = SystemDebugArgs {
             repo_root: Some(root.to_path_buf()),
             format: FormatArg::Json,
@@ -924,7 +926,10 @@ mod tests {
             .expect("debug command should emit structured failure payload");
         assert_eq!(code, 0);
         let artifact = root.join("artifacts/system/diagnostics/diagnostics.json");
-        assert!(artifact.is_file(), "expected diagnostics artifact at {artifact:?}");
+        assert!(
+            artifact.is_file(),
+            "expected diagnostics artifact at {artifact:?}"
+        );
     }
 
     #[test]
@@ -963,16 +968,15 @@ mod tests {
         )
         .expect("write node config");
 
-        let (rendered, code) = run_cluster_command(SystemClusterCommand::Topology(
-            SystemClusterArgs {
+        let (rendered, code) =
+            run_cluster_command(SystemClusterCommand::Topology(SystemClusterArgs {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
                 cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
                 node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
-            },
-        ))
-        .expect("run topology command");
+            }))
+            .expect("run topology command");
         assert_eq!(code, 0);
         let value: serde_json::Value =
             serde_json::from_str(&rendered).expect("parse rendered json");
@@ -1021,7 +1025,9 @@ mod tests {
                     repo_root: Some(root.to_path_buf()),
                     format: FormatArg::Json,
                     out: None,
-                    cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
+                    cluster_config: PathBuf::from(
+                        "configs/ops/runtime/cluster-config.example.json",
+                    ),
                     node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
                 },
                 node_id: "node-1".to_string(),
@@ -1081,16 +1087,15 @@ mod tests {
         )
         .expect("write shard metadata");
 
-        let (rendered, code) = run_cluster_command(SystemClusterCommand::ShardRouting(
-            SystemClusterArgs {
+        let (rendered, code) =
+            run_cluster_command(SystemClusterCommand::ShardRouting(SystemClusterArgs {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
                 cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
                 node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
-            },
-        ))
-        .expect("run shard routing command");
+            }))
+            .expect("run shard routing command");
         assert_eq!(code, 0);
         let value: serde_json::Value = serde_json::from_str(&rendered).expect("parse rendered");
         assert_eq!(value["kind"], "system_cluster_shard_routing");
@@ -1139,7 +1144,9 @@ mod tests {
                     repo_root: Some(root.to_path_buf()),
                     format: FormatArg::Json,
                     out: None,
-                    cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
+                    cluster_config: PathBuf::from(
+                        "configs/ops/runtime/cluster-config.example.json",
+                    ),
                     node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
                 },
                 shard_id: None,
@@ -1189,20 +1196,21 @@ mod tests {
         )
         .expect("write node config");
 
-        let (rendered, code) = run_cluster_command(SystemClusterCommand::ReplicaList(
-            SystemClusterArgs {
+        let (rendered, code) =
+            run_cluster_command(SystemClusterCommand::ReplicaList(SystemClusterArgs {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
                 cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
                 node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
-            },
-        ))
-        .expect("run replica list command");
+            }))
+            .expect("run replica list command");
         assert_eq!(code, 0);
         let value: serde_json::Value = serde_json::from_str(&rendered).expect("parse rendered");
         assert_eq!(value["kind"], "system_cluster_replica_list");
-        assert!(value["replicas"].as_array().is_some_and(|rows| !rows.is_empty()));
+        assert!(value["replicas"]
+            .as_array()
+            .is_some_and(|rows| !rows.is_empty()));
     }
 
     #[test]
@@ -1247,7 +1255,9 @@ mod tests {
                     repo_root: Some(root.to_path_buf()),
                     format: FormatArg::Json,
                     out: None,
-                    cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
+                    cluster_config: PathBuf::from(
+                        "configs/ops/runtime/cluster-config.example.json",
+                    ),
                     node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
                 },
                 dataset_id: "atlas-default".to_string(),
@@ -1292,16 +1302,15 @@ mod tests {
         )
         .expect("write node config");
 
-        let (rendered, code) = run_cluster_command(SystemClusterCommand::RecoveryRun(
-            SystemClusterArgs {
+        let (rendered, code) =
+            run_cluster_command(SystemClusterCommand::RecoveryRun(SystemClusterArgs {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
                 cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
                 node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
-            },
-        ))
-        .expect("run recovery command");
+            }))
+            .expect("run recovery command");
         assert_eq!(code, 0);
         let value: serde_json::Value = serde_json::from_str(&rendered).expect("parse rendered");
         assert_eq!(value["kind"], "system_cluster_recovery_run");
@@ -1343,7 +1352,9 @@ mod tests {
                     repo_root: Some(root.to_path_buf()),
                     format: FormatArg::Json,
                     out: None,
-                    cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
+                    cluster_config: PathBuf::from(
+                        "configs/ops/runtime/cluster-config.example.json",
+                    ),
                     node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
                 },
                 target_id: Some("node-a".to_string()),
@@ -1392,7 +1403,9 @@ mod tests {
                     repo_root: Some(root.to_path_buf()),
                     format: FormatArg::Json,
                     out: None,
-                    cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
+                    cluster_config: PathBuf::from(
+                        "configs/ops/runtime/cluster-config.example.json",
+                    ),
                     node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
                 },
                 target_id: Some("node-a".to_string()),
