@@ -487,11 +487,29 @@ pub enum AuditCommand {
         #[command(subcommand)]
         command: AuditBundleCommand,
     },
+    Compliance {
+        #[command(subcommand)]
+        command: AuditComplianceCommand,
+    },
+    Readiness {
+        #[command(subcommand)]
+        command: AuditReadinessCommand,
+    },
 }
 
 #[derive(Subcommand, Debug)]
 pub enum AuditBundleCommand {
     Generate(AuditBundleArgs),
+    Validate(AuditBundleArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum AuditComplianceCommand {
+    Report(AuditBundleArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum AuditReadinessCommand {
     Validate(AuditBundleArgs),
 }
 

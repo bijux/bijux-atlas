@@ -527,6 +527,12 @@ fn force_json_audit(command: &mut AuditCommand) {
             crate::cli::AuditBundleCommand::Generate(args)
             | crate::cli::AuditBundleCommand::Validate(args) => args.format = FormatArg::Json,
         },
+        AuditCommand::Compliance { command } => match command {
+            crate::cli::AuditComplianceCommand::Report(args) => args.format = FormatArg::Json,
+        },
+        AuditCommand::Readiness { command } => match command {
+            crate::cli::AuditReadinessCommand::Validate(args) => args.format = FormatArg::Json,
+        },
     }
 }
 
@@ -1120,6 +1126,16 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             AuditCommand::Bundle { command } => match command {
                 crate::cli::AuditBundleCommand::Generate(args)
                 | crate::cli::AuditBundleCommand::Validate(args) => {
+                    args.repo_root = Some(root.clone())
+                }
+            },
+            AuditCommand::Compliance { command } => match command {
+                crate::cli::AuditComplianceCommand::Report(args) => {
+                    args.repo_root = Some(root.clone())
+                }
+            },
+            AuditCommand::Readiness { command } => match command {
+                crate::cli::AuditReadinessCommand::Validate(args) => {
                     args.repo_root = Some(root.clone())
                 }
             },

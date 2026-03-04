@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{AuditBundleCommand, AuditCommand};
+use crate::cli::{AuditBundleCommand, AuditCommand, AuditComplianceCommand, AuditReadinessCommand};
 use crate::{emit_payload, resolve_repo_root};
 use sha2::{Digest, Sha256};
 use std::fs;
@@ -24,6 +24,18 @@ fn bundle_summary_path(root: &Path) -> PathBuf {
 
 fn bundle_hash_path(root: &Path) -> PathBuf {
     root.join("artifacts/audit/bundle.sha256")
+}
+
+fn compliance_matrix_path(root: &Path) -> PathBuf {
+    root.join("configs/audit/compliance-matrix-template.json")
+}
+
+fn compliance_report_path(root: &Path) -> PathBuf {
+    root.join("artifacts/audit/compliance-coverage.json")
+}
+
+fn readiness_report_path(root: &Path) -> PathBuf {
+    root.join("artifacts/audit/readiness-report.json")
 }
 
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
@@ -165,6 +177,115 @@ fn bundle_validate(
     Ok((rendered, code))
 }
 
+fn compliance_report(
+    repo_root: Option<PathBuf>,
+    format: crate::cli::FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let matrix = read_json(&compliance_matrix_path(&root))?;
+    let controls = matrix
+        .get("controls")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let mut uncovered = Vec::new();
+    let mut rows = Vec::new();
+    for row in controls {
+        let id = row
+            .get("id")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let contracts = row
+            .get("contracts")
+            .and_then(serde_json::Value::as_array)
+            .map_or(0, |v| v.len());
+        let checks = row
+            .get("checks")
+            .and_then(serde_json::Value::as_array)
+            .map_or(0, |v| v.len());
+        let lanes = row
+            .get("lanes")
+            .and_then(serde_json::Value::as_array)
+            .map_or(0, |v| v.len());
+        let covered = contracts + checks + lanes > 0;
+        if !covered {
+            uncovered.push(id.to_string());
+        }
+        if row.get("critical").and_then(serde_json::Value::as_bool) == Some(true) && !covered {
+            uncovered.push(format!("critical:{id}"));
+        }
+        rows.push(serde_json::json!({
+            "id": id,
+            "critical": row.get("critical").and_then(serde_json::Value::as_bool).unwrap_or(false),
+            "covered": covered,
+            "contracts": contracts,
+            "checks": checks,
+            "lanes": lanes
+        }));
+    }
+    let report = serde_json::json!({
+        "schema_version": 1,
+        "kind": "audit_compliance_coverage",
+        "status": if uncovered.is_empty() {"ok"} else {"failed"},
+        "matrix": compliance_matrix_path(&root).strip_prefix(&root).unwrap_or(&compliance_matrix_path(&root)).display().to_string(),
+        "rows": rows,
+        "uncovered": uncovered,
+    });
+    write_json(&compliance_report_path(&root), &report)?;
+    let rendered = emit_payload(format, out, &report)?;
+    let code = if report["status"] == "ok" { 0 } else { 1 };
+    Ok((rendered, code))
+}
+
+fn readiness_validate(
+    repo_root: Option<PathBuf>,
+    format: crate::cli::FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let bundle = read_json(&bundle_path(&root))?;
+    if !compliance_report_path(&root).exists() {
+        let _ = compliance_report(Some(root.clone()), crate::cli::FormatArg::Json, None)?;
+    }
+    let compliance = read_json(&compliance_report_path(&root))?;
+    let mut errors = Vec::new();
+    if bundle["status"] != "ok" {
+        errors.push("audit bundle must be ok".to_string());
+    }
+    if compliance["status"] != "ok" {
+        errors.push("compliance coverage must be ok".to_string());
+    }
+    for path in [
+        "docs/operations/audit-procedure.md",
+        "docs/operations/institutional-support-policy.md",
+        "docs/operations/long-term-support-policy.md",
+        "docs/operations/backward-compatibility-guarantee.md",
+        "docs/operations/deprecation-lifecycle-policy.md",
+        "docs/operations/security-disclosure-policy.md",
+        "docs/operations/upgrade-compatibility-guide.md",
+        "docs/operations/release-support-window-policy.md",
+        "docs/operations/maintenance-policy.md",
+        "docs/operations/final-readiness-checklist.md",
+    ] {
+        if !root.join(path).exists() {
+            errors.push(format!("missing required readiness document `{path}`"));
+        }
+    }
+    let report = serde_json::json!({
+        "schema_version": 1,
+        "kind": "audit_readiness_validate",
+        "status": if errors.is_empty() {"ok"} else {"failed"},
+        "bundle": bundle_path(&root).strip_prefix(&root).unwrap_or(&bundle_path(&root)).display().to_string(),
+        "compliance": compliance_report_path(&root).strip_prefix(&root).unwrap_or(&compliance_report_path(&root)).display().to_string(),
+        "errors": errors,
+    });
+    write_json(&readiness_report_path(&root), &report)?;
+    let rendered = emit_payload(format, out, &report)?;
+    let code = if report["status"] == "ok" { 0 } else { 1 };
+    Ok((rendered, code))
+}
+
 pub(crate) fn run_audit_command(
     _quiet: bool,
     command: AuditCommand,
@@ -176,6 +297,16 @@ pub(crate) fn run_audit_command(
             }
             AuditBundleCommand::Validate(args) => {
                 bundle_validate(args.repo_root, args.format, args.out)
+            }
+        },
+        AuditCommand::Compliance { command } => match command {
+            AuditComplianceCommand::Report(args) => {
+                compliance_report(args.repo_root, args.format, args.out)
+            }
+        },
+        AuditCommand::Readiness { command } => match command {
+            AuditReadinessCommand::Validate(args) => {
+                readiness_validate(args.repo_root, args.format, args.out)
             }
         },
     }

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "controls": [
+    {
+      "id": "CTRL-RELEASE-BUNDLE",
+      "critical": true,
+      "contracts": ["OPS-STACK-007"],
+      "checks": ["checks_ops_manifest_integrity"],
+      "lanes": ["release-bundle"]
+    },
+    {
+      "id": "CTRL-GOVERNANCE-POLICY",
+      "critical": true,
+      "contracts": ["OPS-INV-003"],
+      "checks": ["checks_ops_docs_governance"],
+      "lanes": ["governance-validate"]
+    },
+    {
+      "id": "CTRL-SIMULATION-EVIDENCE",
+      "critical": true,
+      "contracts": ["OPS-E2E-006"],
+      "checks": ["checks_ops_evidence_bundle_discipline"],
+      "lanes": ["system-simulation"]
+    }
+  ]
+}
