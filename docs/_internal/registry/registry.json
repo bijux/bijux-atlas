@@ -23173,6 +23173,29 @@
       "topic": "what-is-bijux-atlas"
     },
     {
+      "area": "product",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "product",
+        "what-we-built"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/product/what-we-built.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "product",
+        "what-we-built"
+      ],
+      "title": "What We Built",
+      "topic": "what-we-built"
+    },
+    {
       "area": "reference",
       "audience": "mixed",
       "crate": null,
