@@ -39,6 +39,14 @@
           "script": {
             "type": "string"
           },
+          "intent": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "evidence_class": {
+            "type": "string",
+            "enum": ["fast", "slow"]
+          },
           "compose": {
             "type": "object",
             "required": [
@@ -48,18 +56,10 @@
               "load"
             ],
             "properties": {
-              "stack": {
-                "type": "boolean"
-              },
-              "observe": {
-                "type": "boolean"
-              },
-              "datasets": {
-                "type": "boolean"
-              },
-              "load": {
-                "type": "boolean"
-              }
+              "stack": {"type": "boolean"},
+              "observe": {"type": "boolean"},
+              "datasets": {"type": "boolean"},
+              "load": {"type": "boolean"}
             },
             "additionalProperties": false
           }

@@ -1,9 +1,25 @@
 {
   "schema_version": 1,
   "expectations": [
-    {"scenario_id": "smoke", "must_pass": true, "max_duration_seconds": 300},
+    {"scenario_id": "artifact-integrity", "must_pass": true, "max_duration_seconds": 600},
+    {"scenario_id": "cold-start", "must_pass": true, "max_duration_seconds": 1200},
+    {"scenario_id": "high-concurrency", "must_pass": true, "max_duration_seconds": 1800},
+    {"scenario_id": "ingest-retry", "must_pass": true, "max_duration_seconds": 600},
     {"scenario_id": "k8s-suite", "must_pass": true, "max_duration_seconds": 900},
+    {"scenario_id": "low-resource", "must_pass": true, "max_duration_seconds": 1200},
+    {"scenario_id": "medium-single-node", "must_pass": true, "max_duration_seconds": 1200},
+    {"scenario_id": "minimal-single-node", "must_pass": true, "max_duration_seconds": 600},
+    {"scenario_id": "mixed-load", "must_pass": true, "max_duration_seconds": 1800},
+    {"scenario_id": "multi-dataset", "must_pass": true, "max_duration_seconds": 1200},
+    {"scenario_id": "offline-mode", "must_pass": true, "max_duration_seconds": 600},
+    {"scenario_id": "perf-e2e", "must_pass": true, "max_duration_seconds": 2400},
+    {"scenario_id": "query-filter-projection", "must_pass": true, "max_duration_seconds": 600},
+    {"scenario_id": "query-pagination", "must_pass": true, "max_duration_seconds": 600},
+    {"scenario_id": "readonly-mode", "must_pass": true, "max_duration_seconds": 600},
     {"scenario_id": "realdata", "must_pass": true, "max_duration_seconds": 1800},
-    {"scenario_id": "perf-e2e", "must_pass": true, "max_duration_seconds": 2400}
+    {"scenario_id": "restart-resume", "must_pass": true, "max_duration_seconds": 1200},
+    {"scenario_id": "schema-evolution", "must_pass": true, "max_duration_seconds": 900},
+    {"scenario_id": "smoke", "must_pass": true, "max_duration_seconds": 300},
+    {"scenario_id": "warm-start", "must_pass": true, "max_duration_seconds": 1200}
   ]
 }

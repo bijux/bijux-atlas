@@ -12,13 +12,36 @@
 ```bash
 make k8s-validate
 make ops-k8s-tests
+bijux dev atlas ops scenario list --format json
+bijux dev atlas ops scenario run --scenario minimal-single-node --plan --format json
+bijux dev atlas ops scenario run --scenario minimal-single-node --evidence --allow-write --format json
 ```
 
 ## Expected outputs
 
 - Validation and test summaries in command output.
 - Evidence artifacts under `artifacts/evidence/k8s/`.
+- Scenario evidence artifacts under `artifacts/ops/scenarios/<scenario-id>/<run-id>/`.
 - No failing checks in release gate reports.
+
+## Scenario spec reference
+
+- Source of truth: `ops/e2e/scenarios/scenarios.json`.
+- Compatibility table: `ops/e2e/scenarios/version-compatibility.json`.
+- Required tools registry: `ops/e2e/scenarios/required-tools.json`.
+- Scenario contract schema: `ops/schema/e2e-scenarios.schema.json`.
+
+## Scenario artifact layout
+
+- `artifacts/ops/scenarios/<scenario-id>/<run-id>/result.json`: machine-readable scenario report.
+- `artifacts/ops/scenarios/<scenario-id>/<run-id>/summary.md`: human report summary.
+- `run-id` is deterministic (`sha256(scenario-id + mode)` truncated to 12 hex chars).
+
+## Scenario matrix
+
+- CI fast coverage: `smoke`, `query-pagination`, `query-filter-projection`, `artifact-integrity`.
+- CI slow coverage: `k8s-suite`, `realdata`, `perf-e2e`, `high-concurrency`.
+- Manual operator drills: `low-resource`, `offline-mode`, `restart-resume`, `mixed-load`.
 
 ## Core guides
 

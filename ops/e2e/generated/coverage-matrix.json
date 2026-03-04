@@ -1,40 +1,26 @@
 {
   "schema_version": 1,
   "rows": [
-    {
-      "scenario_id": "k8s-suite",
-      "covers": [
-        "k8s",
-        "observe",
-        "stack"
-      ]
-    },
-    {
-      "scenario_id": "perf-e2e",
-      "covers": [
-        "datasets",
-        "load",
-        "observe",
-        "stack"
-      ]
-    },
-    {
-      "scenario_id": "realdata",
-      "covers": [
-        "datasets",
-        "observe",
-        "stack"
-      ]
-    },
-    {
-      "scenario_id": "smoke",
-      "covers": [
-        "datasets",
-        "load",
-        "observe",
-        "stack"
-      ]
-    }
+    {"scenario_id": "artifact-integrity", "covers": ["datasets", "observe", "stack"]},
+    {"scenario_id": "cold-start", "covers": ["datasets", "load", "observe", "stack"]},
+    {"scenario_id": "high-concurrency", "covers": ["datasets", "load", "observe", "stack"]},
+    {"scenario_id": "ingest-retry", "covers": ["datasets", "observe", "stack"]},
+    {"scenario_id": "k8s-suite", "covers": ["k8s", "observe", "stack"]},
+    {"scenario_id": "low-resource", "covers": ["datasets", "load", "observe", "stack"]},
+    {"scenario_id": "medium-single-node", "covers": ["datasets", "observe", "stack"]},
+    {"scenario_id": "minimal-single-node", "covers": ["datasets", "stack"]},
+    {"scenario_id": "mixed-load", "covers": ["datasets", "load", "observe", "stack"]},
+    {"scenario_id": "multi-dataset", "covers": ["datasets", "observe", "stack"]},
+    {"scenario_id": "offline-mode", "covers": ["datasets", "stack"]},
+    {"scenario_id": "perf-e2e", "covers": ["datasets", "load", "observe", "stack"]},
+    {"scenario_id": "query-filter-projection", "covers": ["datasets", "stack"]},
+    {"scenario_id": "query-pagination", "covers": ["datasets", "stack"]},
+    {"scenario_id": "readonly-mode", "covers": ["datasets", "stack"]},
+    {"scenario_id": "realdata", "covers": ["datasets", "observe", "stack"]},
+    {"scenario_id": "restart-resume", "covers": ["datasets", "observe", "stack"]},
+    {"scenario_id": "schema-evolution", "covers": ["datasets", "observe", "stack"]},
+    {"scenario_id": "smoke", "covers": ["datasets", "load", "observe", "stack"]},
+    {"scenario_id": "warm-start", "covers": ["datasets", "load", "observe", "stack"]}
   ],
   "missing_domains": [],
   "generated_by": "bijux dev atlas ops generate"

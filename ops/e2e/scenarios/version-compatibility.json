@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "runner_version": "1.0",
+  "supported_spec_versions": [1],
+  "compatibility_table": [
+    {"spec_version": 1, "runner_versions": ["1.x"]}
+  ]
+}

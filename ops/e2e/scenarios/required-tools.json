@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "tools": [
+    {"scenario_id": "minimal-single-node", "required_tools": ["bijux-dev-atlas"]},
+    {"scenario_id": "medium-single-node", "required_tools": ["bijux-dev-atlas"]},
+    {"scenario_id": "multi-dataset", "required_tools": ["bijux-dev-atlas"]},
+    {"scenario_id": "schema-evolution", "required_tools": ["bijux-dev-atlas"]},
+    {"scenario_id": "ingest-retry", "required_tools": ["bijux-dev-atlas"]},
+    {"scenario_id": "query-pagination", "required_tools": ["bijux-dev-atlas"]},
+    {"scenario_id": "query-filter-projection", "required_tools": ["bijux-dev-atlas"]},
+    {"scenario_id": "cold-start", "required_tools": ["bijux-dev-atlas", "k6"]},
+    {"scenario_id": "warm-start", "required_tools": ["bijux-dev-atlas", "k6"]},
+    {"scenario_id": "restart-resume", "required_tools": ["bijux-dev-atlas"]},
+    {"scenario_id": "artifact-integrity", "required_tools": ["bijux-dev-atlas"]},
+    {"scenario_id": "readonly-mode", "required_tools": ["bijux-dev-atlas"]},
+    {"scenario_id": "offline-mode", "required_tools": ["bijux-dev-atlas"]},
+    {"scenario_id": "low-resource", "required_tools": ["bijux-dev-atlas", "k6"]},
+    {"scenario_id": "high-concurrency", "required_tools": ["bijux-dev-atlas", "k6"]},
+    {"scenario_id": "mixed-load", "required_tools": ["bijux-dev-atlas", "k6"]}
+  ]
+}

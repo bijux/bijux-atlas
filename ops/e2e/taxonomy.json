@@ -4,6 +4,11 @@
     {"id": "smoke", "description": "fast contract checks"},
     {"id": "kubernetes", "description": "cluster and deployment conformance"},
     {"id": "realdata", "description": "release and data regression coverage"},
-    {"id": "performance", "description": "load-composed end-to-end coverage"}
+    {"id": "performance", "description": "load-composed end-to-end coverage"},
+    {"id": "correctness", "description": "query and response correctness invariants"},
+    {"id": "resilience", "description": "restart, retry, and constrained-resource survivability"},
+    {"id": "security", "description": "artifact integrity and tamper resistance"},
+    {"id": "offline", "description": "execution without network dependencies"},
+    {"id": "compatibility", "description": "schema and runtime compatibility behavior"}
   ]
 }

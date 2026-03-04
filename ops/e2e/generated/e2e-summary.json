@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "stable",
   "suite_count": 7,
-  "scenario_count": 4,
+  "scenario_count": 20,
   "suite_ids": [
     "fixture-medium",
     "k8s-suite",
@@ -13,10 +13,26 @@
     "upgrade-drill"
   ],
   "scenario_ids": [
+    "artifact-integrity",
+    "cold-start",
+    "high-concurrency",
+    "ingest-retry",
     "k8s-suite",
+    "low-resource",
+    "medium-single-node",
+    "minimal-single-node",
+    "mixed-load",
+    "multi-dataset",
+    "offline-mode",
     "perf-e2e",
+    "query-filter-projection",
+    "query-pagination",
+    "readonly-mode",
     "realdata",
-    "smoke"
+    "restart-resume",
+    "schema-evolution",
+    "smoke",
+    "warm-start"
   ],
   "generated_by": "bijux dev atlas ops generate"
 }
