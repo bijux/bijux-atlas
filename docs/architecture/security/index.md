@@ -33,3 +33,6 @@ related:
 - [Encryption Model](encryption-model.md)
 - [Encryption Architecture Diagrams](encryption-architecture-diagrams.md)
 - [Security Testing Strategy](security-testing-strategy.md)
+- [Security Architecture Diagrams](security-architecture-diagrams.md)
+- [Threat Model Diagrams](threat-model-diagrams.md)
+- [Attack Surface Maps](attack-surface-maps.md)
