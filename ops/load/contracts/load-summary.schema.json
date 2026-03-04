@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Atlas load summary schema",
+  "type": "object",
+  "required": ["schema_version", "suite_manifest", "deterministic_seed", "query_pack", "suites", "scenario_coverage", "generated_by"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "suite_manifest": {"type": "string"},
+    "deterministic_seed": {"type": "integer"},
+    "query_pack": {"type": "string"},
+    "suites": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "scenario_coverage": {
+      "type": "object",
+      "required": ["covered", "missing"],
+      "properties": {
+        "covered": {"type": "array", "items": {"type": "string"}},
+        "missing": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "generated_by": {"type": "string"}
+  },
+  "additionalProperties": true
+}

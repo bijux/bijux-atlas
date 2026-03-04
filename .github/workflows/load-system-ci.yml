@@ -1,0 +1,38 @@
+name: Load System CI
+
+on:
+  pull_request:
+    paths:
+      - "ops/load/**"
+      - "docs/operations/load/**"
+      - "crates/bijux-dev-atlas/tests/load_suite_coverage.rs"
+      - ".github/workflows/load-system-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "ops/load/**"
+      - "docs/operations/load/**"
+      - "crates/bijux-dev-atlas/tests/load_suite_coverage.rs"
+      - ".github/workflows/load-system-ci.yml"
+
+jobs:
+  load-contracts-and-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate load JSON contracts
+        run: |
+          jq . ops/load/suites/suites.json > /dev/null
+          jq . ops/load/contracts/k6-thresholds.v1.json > /dev/null
+          jq . ops/load/contracts/load-report.schema.json > /dev/null
+          jq . ops/load/contracts/load-summary.schema.json > /dev/null
+          jq . ops/load/generated/load-summary.json > /dev/null
+          jq . ops/load/generated/load-drift-report.json > /dev/null
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Run load suite coverage regression test
+        run: cargo test -p bijux-dev-atlas --test load_suite_coverage -- --nocapture

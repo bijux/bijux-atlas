@@ -17,6 +17,7 @@
 
 - [k6 execution](k6.md)
 - [Suite catalog](suites.md)
+- [Load dashboards](dashboards.md)
 - [Load testing strategy](strategy.md)
 - [Load test metrics](metrics.md)
 - [Load harness and generators](harness-and-generators.md)
