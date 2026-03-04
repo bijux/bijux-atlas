@@ -255,6 +255,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "bijux-atlas-benchmark"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "bijux-atlas-cli"
 version = "0.1.0"
 dependencies = [
