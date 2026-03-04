@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{SystemCommand, SystemDebugCommand, SystemSimulateCommand};
+use crate::cli::{
+    SystemClusterArgs, SystemClusterCommand, SystemCommand, SystemDebugCommand,
+    SystemSimulateCommand,
+};
 use crate::{emit_payload, resolve_repo_root};
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
@@ -187,6 +190,99 @@ fn run_debug_command(command: SystemDebugCommand) -> Result<(String, i32), Strin
     write_json(&artifact_path, &payload)?;
     let rendered = emit_payload(args.format, args.out, &payload)?;
     Ok((rendered, 0))
+}
+
+fn load_cluster_inputs(
+    args: &SystemClusterArgs,
+) -> Result<
+    (
+        bijux_atlas_core::ClusterConfigFile,
+        bijux_atlas_core::NodeConfigFile,
+    ),
+    String,
+> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let cluster_path = root.join(&args.cluster_config);
+    let node_path = root.join(&args.node_config);
+    let cluster = bijux_atlas_core::load_cluster_config_from_path(&cluster_path)?;
+    let node = bijux_atlas_core::load_node_config_from_path(&node_path)?;
+    Ok((cluster, node))
+}
+
+fn run_cluster_command(command: SystemClusterCommand) -> Result<(String, i32), String> {
+    match command {
+        SystemClusterCommand::Topology(args) => {
+            let (cluster, _node) = load_cluster_inputs(&args)?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "system_cluster_topology",
+                "cluster_id": cluster.cluster_id,
+                "topology_mode": cluster.topology_mode,
+                "discovery_strategy": cluster.discovery.strategy,
+                "seed_nodes": cluster.discovery.seed_nodes,
+                "metadata_store": cluster.metadata_store,
+            });
+            let rendered = emit_payload(args.format, args.out, &payload)?;
+            Ok((rendered, 0))
+        }
+        SystemClusterCommand::NodeList(args) => {
+            let (_cluster, node) = load_cluster_inputs(&args)?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "system_cluster_node_list",
+                "nodes": [
+                    {
+                        "node_id": node.node_id,
+                        "cluster_id": node.cluster_id,
+                        "generation": node.generation,
+                        "role": node.role,
+                        "advertise_addr": node.advertise_addr,
+                        "capabilities": node.capabilities
+                    }
+                ]
+            });
+            let rendered = emit_payload(args.format, args.out, &payload)?;
+            Ok((rendered, 0))
+        }
+        SystemClusterCommand::Status(args) => {
+            let (cluster, node) = load_cluster_inputs(&args)?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "system_cluster_status",
+                "cluster_id": cluster.cluster_id,
+                "topology_mode": cluster.topology_mode,
+                "health": "healthy",
+                "node_count": 1,
+                "ready_nodes": 1,
+                "quorum": cluster.health.required_role_quorum,
+                "active_node": {
+                    "node_id": node.node_id,
+                    "role": node.role
+                }
+            });
+            let rendered = emit_payload(args.format, args.out, &payload)?;
+            Ok((rendered, 0))
+        }
+        SystemClusterCommand::Diagnostics(args) => {
+            let (cluster, node) = load_cluster_inputs(&args)?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "system_cluster_diagnostics",
+                "cluster_id": cluster.cluster_id,
+                "topology_mode": cluster.topology_mode,
+                "compatibility": cluster.compatibility,
+                "health_policy": cluster.health,
+                "node": {
+                    "node_id": node.node_id,
+                    "generation": node.generation,
+                    "readiness": node.readiness,
+                    "shutdown": node.shutdown
+                }
+            });
+            let rendered = emit_payload(args.format, args.out, &payload)?;
+            Ok((rendered, 0))
+        }
+    }
 }
 
 fn build_evidence(scenario: &SimulationScenario) -> serde_json::Value {
@@ -404,9 +500,15 @@ fn run_scenarios(
 
 #[cfg(test)]
 mod tests {
-    use super::{ensure_diagnostics_schema, run_debug_command, stable_sha256, write_json};
-    use crate::cli::{FormatArg, SystemDebugArgs, SystemDebugCommand};
+    use super::{
+        ensure_diagnostics_schema, run_cluster_command, run_debug_command, stable_sha256,
+        write_json,
+    };
+    use crate::cli::{
+        FormatArg, SystemClusterArgs, SystemClusterCommand, SystemDebugArgs, SystemDebugCommand,
+    };
     use std::fs;
+    use std::path::PathBuf;
 
     #[test]
     fn simulation_summary_hash_is_deterministic() {
@@ -488,6 +590,58 @@ mod tests {
         let artifact = root.join("artifacts/system/diagnostics/diagnostics.json");
         assert!(artifact.is_file(), "expected diagnostics artifact at {artifact:?}");
     }
+
+    #[test]
+    fn cluster_topology_command_renders_cluster_shape() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        let root = temp.path();
+        let configs_dir = root.join("configs/ops/runtime");
+        fs::create_dir_all(&configs_dir).expect("create runtime config dir");
+        write_json(
+            &configs_dir.join("cluster-config.example.json"),
+            &serde_json::json!({
+                "schema_version": 1,
+                "cluster_id": "atlas-test",
+                "topology_mode": "clustered_static",
+                "discovery": {"strategy": "static_seed_list", "seed_nodes": ["http://node-1:8080"]},
+                "bootstrap": {"join_timeout_ms": 1000, "max_join_attempts": 3},
+                "health": {"heartbeat_interval_ms": 1000, "node_timeout_ms": 5000, "required_role_quorum": {"ingest": 1, "query": 1}},
+                "metadata_store": {"backend": "memory", "endpoint": "in-memory://cluster"},
+                "compatibility": {"min_node_version": "1.0.0", "max_skew_major": 0}
+            }),
+        )
+        .expect("write cluster config");
+        write_json(
+            &configs_dir.join("node-config.example.json"),
+            &serde_json::json!({
+                "schema_version": 1,
+                "cluster_id": "atlas-test",
+                "node_id": "node-1",
+                "generation": 1,
+                "role": "hybrid",
+                "advertise_addr": "http://node-1:8080",
+                "capabilities": ["query.execute"],
+                "readiness": {"require_membership": true, "require_dataset_registry": true, "require_health_probes": true},
+                "shutdown": {"drain_timeout_ms": 1000, "publish_exit_state": true}
+            }),
+        )
+        .expect("write node config");
+
+        let (rendered, code) = run_cluster_command(SystemClusterCommand::Topology(
+            SystemClusterArgs {
+                repo_root: Some(root.to_path_buf()),
+                format: FormatArg::Json,
+                out: None,
+                cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
+                node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
+            },
+        ))
+        .expect("run topology command");
+        assert_eq!(code, 0);
+        let value: serde_json::Value =
+            serde_json::from_str(&rendered).expect("parse rendered json");
+        assert_eq!(value["kind"], "system_cluster_topology");
+    }
 }
 
 pub(crate) fn run_system_command(
@@ -519,5 +673,6 @@ pub(crate) fn run_system_command(
             }
         },
         SystemCommand::Debug { command } => run_debug_command(command),
+        SystemCommand::Cluster { command } => run_cluster_command(command),
     }
 }

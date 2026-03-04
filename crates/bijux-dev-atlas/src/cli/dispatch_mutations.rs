@@ -527,6 +527,14 @@ fn force_json_system(command: &mut crate::cli::SystemCommand) {
                 args.format = FormatArg::Json
             }
         },
+        crate::cli::SystemCommand::Cluster { command } => match command {
+            crate::cli::SystemClusterCommand::Topology(args)
+            | crate::cli::SystemClusterCommand::NodeList(args)
+            | crate::cli::SystemClusterCommand::Status(args)
+            | crate::cli::SystemClusterCommand::Diagnostics(args) => {
+                args.format = FormatArg::Json
+            }
+        }
     }
 }
 
@@ -1136,6 +1144,14 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 | crate::cli::SystemDebugCommand::HealthChecks(args)
                 | crate::cli::SystemDebugCommand::RuntimeState(args)
                 | crate::cli::SystemDebugCommand::TraceSampling(args) => {
+                    args.repo_root = Some(root.clone())
+                }
+            },
+            crate::cli::SystemCommand::Cluster { command } => match command {
+                crate::cli::SystemClusterCommand::Topology(args)
+                | crate::cli::SystemClusterCommand::NodeList(args)
+                | crate::cli::SystemClusterCommand::Status(args)
+                | crate::cli::SystemClusterCommand::Diagnostics(args) => {
                     args.repo_root = Some(root.clone())
                 }
             },

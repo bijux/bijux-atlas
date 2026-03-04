@@ -474,6 +474,10 @@ pub enum SystemCommand {
         #[command(subcommand)]
         command: SystemDebugCommand,
     },
+    Cluster {
+        #[command(subcommand)]
+        command: SystemClusterCommand,
+    },
 }
 
 #[derive(Subcommand, Debug)]
@@ -492,6 +496,14 @@ pub enum SystemDebugCommand {
     HealthChecks(SystemDebugArgs),
     RuntimeState(SystemDebugArgs),
     TraceSampling(SystemDebugArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum SystemClusterCommand {
+    Topology(SystemClusterArgs),
+    NodeList(SystemClusterArgs),
+    Status(SystemClusterArgs),
+    Diagnostics(SystemClusterArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -558,6 +570,20 @@ pub struct SystemDebugArgs {
     pub base_url: String,
     #[arg(long, default_value_t = 5)]
     pub timeout_seconds: u64,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct SystemClusterArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long, default_value = "configs/ops/runtime/cluster-config.example.json")]
+    pub cluster_config: PathBuf,
+    #[arg(long, default_value = "configs/ops/runtime/node-config.example.json")]
+    pub node_config: PathBuf,
 }
 
 #[derive(Args, Debug, Clone)]
