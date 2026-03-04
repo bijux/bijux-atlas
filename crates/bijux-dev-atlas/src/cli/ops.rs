@@ -90,6 +90,10 @@ pub enum OpsCommand {
         #[command(subcommand)]
         command: OpsEvidenceCommand,
     },
+    Diagnose {
+        #[command(subcommand)]
+        command: OpsDiagnoseCommand,
+    },
     Drills {
         #[command(subcommand)]
         command: OpsDrillsCommand,
@@ -447,8 +451,16 @@ pub enum OpsReportCommand {
 #[derive(Subcommand, Debug, Clone)]
 pub enum OpsEvidenceCommand {
     Collect(OpsCommonArgs),
+    Summarize(OpsEvidenceSummarizeArgs),
     Verify(OpsEvidenceVerifyArgs),
     Diff(OpsEvidenceDiffArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsDiagnoseCommand {
+    Bundle(OpsDiagnoseBundleArgs),
+    Explain(OpsDiagnoseExplainArgs),
+    Redact(OpsDiagnoseRedactArgs),
 }
 
 #[derive(Subcommand, Debug, Clone)]
@@ -465,6 +477,14 @@ pub struct OpsEvidenceVerifyArgs {
 }
 
 #[derive(Args, Debug, Clone)]
+pub struct OpsEvidenceSummarizeArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg()]
+    pub manifest: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
 pub struct OpsEvidenceDiffArgs {
     #[command(flatten)]
     pub common: OpsCommonArgs,
@@ -472,6 +492,30 @@ pub struct OpsEvidenceDiffArgs {
     pub tarball_a: PathBuf,
     #[arg()]
     pub tarball_b: PathBuf,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsDiagnoseBundleArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long)]
+    pub scenario: Option<String>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsDiagnoseExplainArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg()]
+    pub bundle: PathBuf,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsDiagnoseRedactArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg()]
+    pub bundle: PathBuf,
 }
 
 #[derive(Args, Debug, Clone)]
@@ -513,6 +557,8 @@ pub struct OpsRenderArgs {
     pub stdout: bool,
     #[arg(long, default_value_t = false)]
     pub diff: bool,
+    #[arg(long, default_value_t = false)]
+    pub evidence: bool,
     #[arg(long)]
     pub helm_binary: Option<String>,
 }
@@ -563,6 +609,12 @@ pub enum OpsGenerateCommand {
         #[command(flatten)]
         common: OpsCommonArgs,
     },
+    ResilienceReport {
+        #[arg(long, default_value_t = false)]
+        check: bool,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
 }
 
 #[derive(Args, Debug, Clone)]
@@ -595,6 +647,8 @@ pub struct OpsCommonArgs {
     pub allow_network: bool,
     #[arg(long, default_value_t = false)]
     pub force: bool,
+    #[arg(long, default_value_t = false)]
+    pub evidence: bool,
     #[arg(long = "tool")]
     pub tool_overrides: Vec<String>,
 }
@@ -611,6 +665,8 @@ pub struct OpsInstallArgs {
     pub plan: bool,
     #[arg(long, default_value = "none")]
     pub dry_run: String,
+    #[arg(long, default_value_t = false)]
+    pub evidence: bool,
 }
 
 #[derive(Args, Debug, Clone)]

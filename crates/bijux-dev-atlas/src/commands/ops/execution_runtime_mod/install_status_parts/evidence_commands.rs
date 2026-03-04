@@ -366,6 +366,42 @@ pub(crate) fn run_ops_evidence_collect(
     Ok((rendered, 0))
 }
 
+pub(crate) fn run_ops_evidence_summarize(
+    args: &crate::cli::OpsEvidenceSummarizeArgs,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let manifest_path = args
+        .manifest
+        .clone()
+        .map(|path| {
+            if path.is_absolute() {
+                path
+            } else {
+                repo_root.join(path)
+            }
+        })
+        .unwrap_or_else(|| repo_root.join("release/evidence/manifest.json"));
+    let raw = std::fs::read_to_string(&manifest_path)
+        .map_err(|err| format!("failed to read {}: {err}", manifest_path.display()))?;
+    let manifest: serde_json::Value = serde_json::from_str(&raw)
+        .map_err(|err| format!("failed to parse {}: {err}", manifest_path.display()))?;
+    let summary = serde_json::json!({
+        "schema_version": 1,
+        "text": "ops evidence summarize",
+        "rows": [{
+            "manifest": manifest_path.strip_prefix(&repo_root).unwrap_or(&manifest_path).display().to_string(),
+            "schema_version": manifest.get("schema_version").and_then(|v| v.as_i64()).unwrap_or_default(),
+            "image_artifact_count": manifest.get("image_artifacts").and_then(|v| v.as_array()).map(|v| v.len()).unwrap_or(0),
+            "sbom_count": manifest.get("sboms").and_then(|v| v.as_array()).map(|v| v.len()).unwrap_or(0),
+            "scan_report_count": manifest.get("scan_reports").and_then(|v| v.as_array()).map(|v| v.len()).unwrap_or(0),
+            "redacted_log_count": manifest.get("redacted_logs").and_then(|v| v.as_array()).map(|v| v.len()).unwrap_or(0)
+        }],
+        "summary": {"total": 1, "errors": 0, "warnings": 0}
+    });
+    let rendered = emit_payload(args.common.format, args.common.out.clone(), &summary)?;
+    Ok((rendered, 0))
+}
+
 pub(crate) fn run_ops_evidence_verify(
     args: &crate::cli::OpsEvidenceVerifyArgs,
 ) -> Result<(String, i32), String> {

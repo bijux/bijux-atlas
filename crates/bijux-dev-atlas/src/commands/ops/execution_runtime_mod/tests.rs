@@ -93,6 +93,7 @@ mod tests {
             allow_subprocess: false,
             allow_write: false,
             allow_network: false,
+            evidence: false,
             force: false,
             tool_overrides: Vec::new(),
         };
@@ -146,6 +147,7 @@ mod tests {
             allow_subprocess: false,
             allow_write: false,
             allow_network: false,
+            evidence: false,
             force: false,
             tool_overrides: Vec::new(),
         };

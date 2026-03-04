@@ -2,12 +2,13 @@
 
 use crate::cli::OpsInstallArgs;
 use crate::cli::{
-    OpsCollectArgs, OpsCollectCommand, OpsCommonArgs, OpsDatasetsCommand, OpsDrillRunArgs,
-    OpsDrillsCommand, OpsE2eCommand, OpsEvidenceCommand, OpsEvidenceDiffArgs,
+    OpsCollectArgs, OpsCollectCommand, OpsCommonArgs, OpsDatasetsCommand, OpsDiagnoseCommand,
+    OpsDiagnoseExplainArgs, OpsDiagnoseRedactArgs, OpsDrillRunArgs, OpsDrillsCommand,
+    OpsE2eCommand, OpsEvidenceCommand, OpsEvidenceDiffArgs, OpsEvidenceSummarizeArgs,
     OpsEvidenceVerifyArgs, OpsGenerateCommand, OpsHelmCommand, OpsHelmEnvArgs, OpsHelmInstallArgs,
     OpsHelmReleaseArgs, OpsHelmRollbackArgs, OpsHelmUpgradeArgs, OpsInventoryCommand,
-    OpsK8sCommand, OpsKindCommand, OpsKindPreloadArgs, OpsLoadBaselineCommand, OpsLoadCommand,
-    OpsObsCommand, OpsObsDrillCommand, OpsPinsCommand, OpsProfileCommand, OpsProfilesCommand,
+    OpsK8sCommand, OpsKindCommand, OpsKindPreloadArgs, OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand,
+    OpsObsDrillCommand, OpsPinsCommand, OpsProfileCommand, OpsProfilesCommand,
     OpsProfilesValidateArgs, OpsRenderArgs, OpsRenderTarget, OpsReportCommand, OpsResourcesCommand,
     OpsScenarioCommand, OpsSchemaCommand, OpsSmokeArgs, OpsStackCommand, OpsSuiteCommand,
     OpsToolsCommand,
@@ -149,12 +150,19 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
             OpsGenerateCommand::PinsIndex { common, .. }
             | OpsGenerateCommand::SurfaceList { common, .. }
             | OpsGenerateCommand::Runbook { common, .. }
-            | OpsGenerateCommand::ChartDependencySbom { common, .. } => Some(common),
+            | OpsGenerateCommand::ChartDependencySbom { common, .. }
+            | OpsGenerateCommand::ResilienceReport { common, .. } => Some(common),
         },
         OpsCommand::Evidence { command } => match command {
             OpsEvidenceCommand::Collect(common) => Some(common),
+            OpsEvidenceCommand::Summarize(OpsEvidenceSummarizeArgs { common, .. }) => Some(common),
             OpsEvidenceCommand::Verify(OpsEvidenceVerifyArgs { common, .. }) => Some(common),
             OpsEvidenceCommand::Diff(OpsEvidenceDiffArgs { common, .. }) => Some(common),
+        },
+        OpsCommand::Diagnose { command } => match command {
+            OpsDiagnoseCommand::Bundle(args) => Some(&args.common),
+            OpsDiagnoseCommand::Explain(OpsDiagnoseExplainArgs { common, .. }) => Some(common),
+            OpsDiagnoseCommand::Redact(OpsDiagnoseRedactArgs { common, .. }) => Some(common),
         },
         OpsCommand::Drills { command } => match command {
             OpsDrillsCommand::Run(OpsDrillRunArgs { common, .. }) => Some(common),
@@ -247,6 +255,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             apply: false,
             plan: true,
             dry_run: "none".to_string(),
+            evidence: false,
         }),
         OpsCommand::ReleasePlan(common) => OpsCommand::ReleasePlan(common),
         OpsCommand::K8s { command } => match command {
@@ -258,6 +267,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 write: false,
                 stdout: false,
                 diff: false,
+                evidence: false,
                 helm_binary: None,
             }),
             OpsK8sCommand::EnvSurface(common) => OpsCommand::K8sEnvSurface(common),

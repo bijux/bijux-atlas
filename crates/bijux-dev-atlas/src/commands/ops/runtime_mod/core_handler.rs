@@ -643,11 +643,25 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             crate::cli::OpsEvidenceCommand::Collect(common) => {
                 crate::ops_execution_runtime::run_ops_evidence_collect(&common)
             }
+            crate::cli::OpsEvidenceCommand::Summarize(args) => {
+                crate::ops_execution_runtime::run_ops_evidence_summarize(&args)
+            }
             crate::cli::OpsEvidenceCommand::Verify(args) => {
                 crate::ops_execution_runtime::run_ops_evidence_verify(&args)
             }
             crate::cli::OpsEvidenceCommand::Diff(args) => {
                 crate::ops_execution_runtime::run_ops_evidence_diff(&args)
+            }
+        },
+        OpsCommand::Diagnose { command } => match command {
+            crate::cli::OpsDiagnoseCommand::Bundle(args) => {
+                crate::ops_execution_runtime::run_ops_diagnose_bundle(&args)
+            }
+            crate::cli::OpsDiagnoseCommand::Explain(args) => {
+                crate::ops_execution_runtime::run_ops_diagnose_explain(&args)
+            }
+            crate::cli::OpsDiagnoseCommand::Redact(args) => {
+                crate::ops_execution_runtime::run_ops_diagnose_redact(&args)
             }
         },
         OpsCommand::Install(args) => crate::ops_execution_runtime::run_ops_install(&args),

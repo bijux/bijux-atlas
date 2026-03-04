@@ -275,14 +275,23 @@ fn force_json_ops(command: &mut OpsCommand) {
             crate::cli::OpsGenerateCommand::PinsIndex { common, .. }
             | crate::cli::OpsGenerateCommand::SurfaceList { common, .. }
             | crate::cli::OpsGenerateCommand::Runbook { common, .. }
-            | crate::cli::OpsGenerateCommand::ChartDependencySbom { common, .. } => {
+            | crate::cli::OpsGenerateCommand::ChartDependencySbom { common, .. }
+            | crate::cli::OpsGenerateCommand::ResilienceReport { common, .. } => {
                 common.format = FormatArg::Json
             }
         },
         OpsCommand::Evidence { command } => match command {
             crate::cli::OpsEvidenceCommand::Collect(common) => common.format = FormatArg::Json,
+            crate::cli::OpsEvidenceCommand::Summarize(args) => {
+                args.common.format = FormatArg::Json
+            }
             crate::cli::OpsEvidenceCommand::Verify(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsEvidenceCommand::Diff(args) => args.common.format = FormatArg::Json,
+        },
+        OpsCommand::Diagnose { command } => match command {
+            crate::cli::OpsDiagnoseCommand::Bundle(args) => args.common.format = FormatArg::Json,
+            crate::cli::OpsDiagnoseCommand::Explain(args) => args.common.format = FormatArg::Json,
+            crate::cli::OpsDiagnoseCommand::Redact(args) => args.common.format = FormatArg::Json,
         },
         OpsCommand::Drills { command } => match command {
             crate::cli::OpsDrillsCommand::Run(args) => args.common.format = FormatArg::Json,
@@ -977,7 +986,8 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 crate::cli::OpsGenerateCommand::PinsIndex { common, .. }
                 | crate::cli::OpsGenerateCommand::SurfaceList { common, .. }
                 | crate::cli::OpsGenerateCommand::Runbook { common, .. }
-                | crate::cli::OpsGenerateCommand::ChartDependencySbom { common, .. } => {
+                | crate::cli::OpsGenerateCommand::ChartDependencySbom { common, .. }
+                | crate::cli::OpsGenerateCommand::ResilienceReport { common, .. } => {
                     common.repo_root = Some(root.clone())
                 }
             },
@@ -985,10 +995,24 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 crate::cli::OpsEvidenceCommand::Collect(common) => {
                     common.repo_root = Some(root.clone())
                 }
+                crate::cli::OpsEvidenceCommand::Summarize(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
                 crate::cli::OpsEvidenceCommand::Verify(args) => {
                     args.common.repo_root = Some(root.clone())
                 }
                 crate::cli::OpsEvidenceCommand::Diff(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+            },
+            OpsCommand::Diagnose { command } => match command {
+                crate::cli::OpsDiagnoseCommand::Bundle(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+                crate::cli::OpsDiagnoseCommand::Explain(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+                crate::cli::OpsDiagnoseCommand::Redact(args) => {
                     args.common.repo_root = Some(root.clone())
                 }
             },

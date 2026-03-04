@@ -6,6 +6,8 @@ mod foundations;
 mod evidence_helpers;
 #[path = "install_status_parts/evidence_commands.rs"]
 mod evidence_commands;
+#[path = "install_status_parts/diagnose_commands.rs"]
+mod diagnose_commands;
 #[path = "install_status_parts/simulation_cluster.rs"]
 mod simulation_cluster;
 #[path = "install_status_parts/simulation_release.rs"]
@@ -14,6 +16,7 @@ mod simulation_release;
 mod tests_and_status;
 
 pub(crate) use self::evidence_commands::*;
+pub(crate) use self::diagnose_commands::*;
 use self::evidence_helpers::*;
 use self::foundations::*;
 pub(crate) use self::simulation_cluster::*;
