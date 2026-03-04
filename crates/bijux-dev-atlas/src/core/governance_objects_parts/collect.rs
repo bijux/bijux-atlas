@@ -152,7 +152,7 @@ pub(super) fn collect_governance_objects(
                 id: format!("ops:contract:{}", contract_id.to_ascii_lowercase()),
                 domain: "ops".to_string(),
                 owner: "bijux-atlas-operations".to_string(),
-                consumers: vec!["bijux dev atlas contracts ops".to_string()],
+                consumers: vec!["bijux dev atlas contract run --domain ops".to_string()],
                 lifecycle: "stable".to_string(),
                 evidence: vec!["artifacts/governance/ops/contracts.json".to_string()],
                 links: ops_contract_paths.clone(),
@@ -233,7 +233,7 @@ pub(super) fn collect_governance_objects(
                 id: format!("docker:image:{}", name.to_ascii_lowercase()),
                 domain: "docker".to_string(),
                 owner: "platform".to_string(),
-                consumers: vec!["bijux dev atlas contracts docker".to_string()],
+                consumers: vec!["bijux dev atlas contract run --domain docker".to_string()],
                 lifecycle: "stable".to_string(),
                 evidence: vec!["artifacts/governance/docker/images.json".to_string()],
                 links: vec![
