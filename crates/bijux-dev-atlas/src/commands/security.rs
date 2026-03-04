@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{SecurityCommand, SecurityScanArtifactsArgs, SecurityValidateArgs};
+use crate::cli::{
+    SecurityCommand, SecurityPolicyInspectArgs, SecurityScanArtifactsArgs, SecurityValidateArgs,
+};
 use crate::{emit_payload, resolve_repo_root};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -330,6 +332,10 @@ pub(crate) fn run_security_command(
 ) -> Result<(String, i32), String> {
     match command {
         SecurityCommand::Validate(args) => run_security_validate(args),
+        SecurityCommand::ConfigValidate(args) => run_security_config_validate(args),
+        SecurityCommand::Diagnostics(args) => run_security_diagnostics(args),
+        SecurityCommand::PolicyInspect(args) => run_security_policy_inspect(args),
+        SecurityCommand::Audit(args) => run_security_audit(args),
         SecurityCommand::Compliance { command } => match command {
             crate::cli::SecurityComplianceCommand::Validate(args) => {
                 run_security_compliance_validate(args)
@@ -337,6 +343,112 @@ pub(crate) fn run_security_command(
         },
         SecurityCommand::ScanArtifacts(args) => run_security_scan_artifacts(args),
     }
+}
+
+fn run_security_config_validate(args: SecurityValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let path = root.join("configs/security/runtime-security.yaml");
+    let config = bijux_atlas_core::load_security_config_from_path(&path)?;
+    let errors = bijux_atlas_core::validate_security_config(&config);
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "security_config_validation_report",
+        "config_path": path.strip_prefix(&root).unwrap_or(&path).display().to_string(),
+        "status": if errors.is_empty() { "ok" } else { "failed" },
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_security_diagnostics(args: SecurityValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let config_path = root.join("configs/security/runtime-security.yaml");
+    let config = bijux_atlas_core::load_security_config_from_path(&config_path)?;
+    let mut registry = bijux_atlas_core::SecurityPolicyRegistry::new();
+    let policy_rows = read_yaml(&root.join("configs/security/policy.yaml"))?
+        .get("rules")
+        .and_then(serde_yaml::Value::as_sequence)
+        .cloned()
+        .unwrap_or_default();
+    for row in policy_rows {
+        if let Some(policy_id) = row.get("id").and_then(serde_yaml::Value::as_str) {
+            registry.register(bijux_atlas_core::SecurityPolicy {
+                policy_id: policy_id.to_string(),
+                description: row
+                    .get("description")
+                    .and_then(serde_yaml::Value::as_str)
+                    .unwrap_or("security policy")
+                    .to_string(),
+                enabled: row.get("enabled").and_then(serde_yaml::Value::as_bool).unwrap_or(true),
+            });
+        }
+    }
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "security_diagnostics_report",
+        "auth_mode": config.auth.mode,
+        "tls_required": config.transport.tls_required,
+        "audit_enabled": config.audit.enabled,
+        "policy_count": registry.list().len(),
+        "enabled_policy_count": registry.enabled_count(),
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_security_policy_inspect(args: SecurityPolicyInspectArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let policy = read_yaml(&root.join("configs/security/policy.yaml"))?;
+    let rules = policy
+        .get("rules")
+        .and_then(serde_yaml::Value::as_sequence)
+        .cloned()
+        .unwrap_or_default();
+    let rows = rules
+        .into_iter()
+        .filter(|row| {
+            if let Some(filter_id) = &args.policy_id {
+                row.get("id")
+                    .and_then(serde_yaml::Value::as_str)
+                    .is_some_and(|id| id == filter_id)
+            } else {
+                true
+            }
+        })
+        .map(|row| serde_json::to_value(row).unwrap_or(serde_json::Value::Null))
+        .collect::<Vec<_>>();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "security_policy_inspection_report",
+        "policy_filter": args.policy_id,
+        "policies": rows
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_security_audit(args: SecurityValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let report_file = root.join("artifacts/security/security-threat-model.json");
+    let report = if report_file.exists() {
+        read_json(&report_file)?
+    } else {
+        serde_json::json!({"status":"missing"})
+    };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "security_audit_report",
+        "threat_model_status": report.get("status").cloned().unwrap_or(serde_json::Value::String("unknown".to_string())),
+        "artifacts_present": report_file.exists(),
+        "audit_scope": [
+            "security configuration",
+            "policy inventory",
+            "threat model artifact"
+        ]
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
 }
 
 fn list_files_recursive(dir: &Path) -> Result<Vec<PathBuf>, String> {

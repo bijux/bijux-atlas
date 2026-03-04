@@ -1,0 +1,31 @@
+schema_version: 1
+identity:
+  principal_source: ingress
+  trust_header: x-atlas-principal
+auth:
+  mode: api-key
+  required: true
+authorization:
+  default_decision: deny
+  policy_source: configs/security/policy.yaml
+secrets:
+  provider: env
+  references:
+    - ATLAS_API_KEY
+keys:
+  active_key_id: atlas-key-1
+  key_ring:
+    - atlas-key-1
+    - atlas-key-0
+transport:
+  tls_required: true
+  min_tls_version: "1.2"
+audit:
+  enabled: true
+  sink: stdout
+events:
+  classes:
+    - auth.success
+    - auth.failure
+    - authorization.denied
+    - integrity.violation
