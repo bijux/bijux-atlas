@@ -765,6 +765,11 @@ pub(super) fn observability_contract_checks(
                         "bijux_store_download_failure_total",
                         "bijux_dataset_hits",
                         "bijux_dataset_misses",
+                        "atlas_ingest_failure_total",
+                        "atlas_shard_integrity_violation_total",
+                        "atlas_disk_free_bytes",
+                        "kube_pod_container_status_restarts_total",
+                        "atlas_loaded_datasets",
                     ]
                     .iter()
                     .any(|name| expr.contains(name));

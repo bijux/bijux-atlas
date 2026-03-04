@@ -97,24 +97,72 @@
       "runbook_id": "store-outage",
       "severity_tier": "warn",
       "slo_or_invariant": "store-download-reliability"
+    },
+    "BijuxAtlasIngestFailures": {
+      "drill_id": "ingest-crash-partial-state",
+      "owner": "bijux-atlas-operations",
+      "runbook_id": "ingest-failures",
+      "severity_tier": "page",
+      "slo_or_invariant": "ingest-reliability"
+    },
+    "BijuxAtlasQueryErrorSpike": {
+      "drill_id": "slow-query-warning-metric",
+      "owner": "bijux-atlas-operations",
+      "runbook_id": "high-error-rate",
+      "severity_tier": "page",
+      "slo_or_invariant": "query-error-rate"
+    },
+    "BijuxAtlasShardIntegrityViolation": {
+      "drill_id": "corrupted-shard-isolation",
+      "owner": "bijux-atlas-operations",
+      "runbook_id": "integrity-violation",
+      "severity_tier": "page",
+      "slo_or_invariant": "artifact-integrity"
+    },
+    "BijuxAtlasDiskSpaceLow": {
+      "drill_id": "disk-full-controlled-failure",
+      "owner": "bijux-atlas-operations",
+      "runbook_id": "disk-pressure",
+      "severity_tier": "warn",
+      "slo_or_invariant": "disk-availability"
+    },
+    "BijuxAtlasRestartLoop": {
+      "drill_id": "restart-resume",
+      "owner": "bijux-atlas-operations",
+      "runbook_id": "restart-loop",
+      "severity_tier": "page",
+      "slo_or_invariant": "runtime-stability"
+    },
+    "BijuxAtlasNoDatasetsLoaded": {
+      "drill_id": "readonly-mode",
+      "owner": "bijux-atlas-operations",
+      "runbook_id": "ingest-failures",
+      "severity_tier": "warn",
+      "slo_or_invariant": "dataset-presence"
     }
   },
   "contract_git_sha": "REQUIRED_AT_BUILD",
   "required_alerts": [
-    "BijuxAtlasHigh5xxRate",
-    "BijuxAtlasP95LatencyRegression",
-    "BijuxAtlasStoreDownloadFailures",
-    "BijuxAtlasCacheThrash",
     "AtlasOverloadSustained",
+    "BijuxAtlasCacheThrash",
     "BijuxAtlasCheapSloBurnFast",
     "BijuxAtlasCheapSloBurnMedium",
     "BijuxAtlasCheapSloBurnSlow",
+    "BijuxAtlasDiskSpaceLow",
+    "BijuxAtlasHigh5xxRate",
+    "BijuxAtlasIngestFailures",
+    "BijuxAtlasNoDatasetsLoaded",
+    "BijuxAtlasOverloadSurvivalViolated",
+    "BijuxAtlasP95LatencyRegression",
+    "BijuxAtlasQueryErrorSpike",
+    "BijuxAtlasRegistryRefreshStale",
+    "BijuxAtlasRestartLoop",
+    "BijuxAtlasShardIntegrityViolation",
     "BijuxAtlasStandardSloBurnFast",
     "BijuxAtlasStandardSloBurnMedium",
     "BijuxAtlasStandardSloBurnSlow",
-    "BijuxAtlasOverloadSurvivalViolated",
-    "BijuxAtlasRegistryRefreshStale",
-    "BijuxAtlasStoreBackendErrorSpike"
+    "BijuxAtlasStoreBackendErrorSpike",
+    "BijuxAtlasStoreDownloadFailures"
   ],
-  "schema_version": 3
+  "schema_version": 4
 }
