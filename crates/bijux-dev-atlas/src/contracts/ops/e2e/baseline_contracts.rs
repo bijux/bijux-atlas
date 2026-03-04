@@ -248,5 +248,45 @@ fn e2e_contracts() -> Vec<Contract> {
                 run: test_ops_e2e_022_rollback_baseline_fixture_valid,
             }],
         },
+        Contract {
+            id: ContractId("OPS-E2E-023".to_string()),
+            title: "failure injection catalog contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.failure_injection_catalog_valid".to_string()),
+                title: "failure injection catalog contains canonical mechanisms and expected behavior",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_023_failure_injection_catalog_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-024".to_string()),
+            title: "failure scenario specification contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.failure_scenarios_are_present_and_parseable".to_string()),
+                title: "failure scenario specifications are committed and structurally valid",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_024_failure_scenarios_are_present_and_parseable,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-025".to_string()),
+            title: "failure evidence output contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.failure_evidence_requirements_declared".to_string()),
+                title: "scenario runner declares deterministic failure evidence and operator guidance fields",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_025_failure_evidence_requirements_declared,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-026".to_string()),
+            title: "failure contracts policy linkage",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.failure_contract_policy_linkage_valid".to_string()),
+                title: "failure contracts file lists required evidence and fields for failure scenarios",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_026_failure_contract_policy_linkage_valid,
+            }],
+        },
     ]
 }

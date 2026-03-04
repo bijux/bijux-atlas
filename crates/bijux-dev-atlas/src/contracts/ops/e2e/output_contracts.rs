@@ -1392,3 +1392,236 @@ fn test_ops_e2e_022_rollback_baseline_fixture_valid(ctx: &RunContext) -> TestRes
         TestResult::Fail(violations)
     }
 }
+
+fn test_ops_e2e_023_failure_injection_catalog_valid(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-E2E-023";
+    let test_id = "ops.e2e.failure_injection_catalog_valid";
+    let rel = "ops/e2e/scenarios/failure/injection-catalog.json";
+    let Some(catalog) = read_json(&ctx.repo_root.join(rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "failure injection catalog must be valid json",
+            Some(rel.to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    if catalog.get("schema_version").and_then(|v| v.as_i64()) != Some(1) {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "failure injection catalog schema_version must be 1",
+            Some(rel.to_string()),
+        ));
+    }
+    let expected: BTreeSet<String> = BTreeSet::from([
+        "kill-process-mid-ingest".to_string(),
+        "kill-process-mid-query".to_string(),
+        "corrupt-shard-file".to_string(),
+        "simulate-disk-full".to_string(),
+        "simulate-read-only-filesystem".to_string(),
+        "simulate-network-partition".to_string(),
+        "simulate-downstream-timeout".to_string(),
+        "simulate-config-parse-error".to_string(),
+        "simulate-missing-artifact".to_string(),
+        "simulate-out-of-memory".to_string(),
+    ]);
+    let actual: BTreeSet<String> = catalog
+        .get("mechanisms")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(|v| v.get("id").and_then(|id| id.as_str()).map(str::to_string))
+        .collect();
+    if actual != expected {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "failure injection mechanism set must match canonical IDs",
+            Some(rel.to_string()),
+        ));
+    }
+    for mechanism in catalog
+        .get("mechanisms")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+    {
+        if mechanism
+            .get("expected_behavior")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default()
+            .is_empty()
+        {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "each failure injection mechanism must define expected_behavior",
+                Some(rel.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_e2e_024_failure_scenarios_are_present_and_parseable(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-E2E-024";
+    let test_id = "ops.e2e.failure_scenarios_are_present_and_parseable";
+    let scenario_specs = [
+        "ops/e2e/scenarios/failure/ingest-crash-partial-state.json",
+        "ops/e2e/scenarios/failure/query-crash-cache-integrity.json",
+        "ops/e2e/scenarios/failure/boot-invalid-config.json",
+        "ops/e2e/scenarios/failure/boot-missing-artifact.json",
+        "ops/e2e/scenarios/failure/corrupted-shard-isolation.json",
+        "ops/e2e/scenarios/failure/disk-full-controlled-failure.json",
+        "ops/e2e/scenarios/failure/repeated-bad-requests-rate-limited.json",
+        "ops/e2e/scenarios/failure/slow-query-warning-metric.json",
+        "ops/e2e/scenarios/failure/out-of-memory-crash-report.json",
+    ];
+    let mut violations = Vec::new();
+    for rel in scenario_specs {
+        let Some(spec) = read_json(&ctx.repo_root.join(rel)) else {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "failure scenario spec must be valid json",
+                Some(rel.to_string()),
+            ));
+            continue;
+        };
+        if spec.get("schema_version").and_then(|v| v.as_i64()) != Some(1) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "failure scenario spec schema_version must be 1",
+                Some(rel.to_string()),
+            ));
+        }
+        for key in [
+            "id",
+            "failure_mode",
+            "failure_expected",
+            "expected_behavior",
+            "recommended_action",
+        ] {
+            if spec.get(key).is_none() {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    "failure scenario spec must define required keys",
+                    Some(rel.to_string()),
+                ));
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_e2e_025_failure_evidence_requirements_declared(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-E2E-025";
+    let test_id = "ops.e2e.failure_evidence_requirements_declared";
+    let rel = "crates/bijux-dev-atlas/src/commands/ops/runtime_mod/execution_handler.rs";
+    let Ok(source) = fs::read_to_string(ctx.repo_root.join(rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "scenario execution handler must be readable",
+            Some(rel.to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    for token in [
+        "failure_mode",
+        "failure_expected",
+        "recommended_action",
+        "failure-classification.json",
+        "metrics-snapshot.json",
+        "config-snapshot.json",
+        "logs-snapshot.txt",
+    ] {
+        if !source.contains(token) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "failure evidence and guidance fields must be declared in scenario runner",
+                Some(rel.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_e2e_026_failure_contract_policy_linkage_valid(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-E2E-026";
+    let test_id = "ops.e2e.failure_contract_policy_linkage_valid";
+    let rel = "ops/e2e/scenarios/failure/contracts.json";
+    let Some(policy) = read_json(&ctx.repo_root.join(rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "failure contracts policy must be valid json",
+            Some(rel.to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    let required_evidence: BTreeSet<String> = policy
+        .get("required_evidence")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(|v| v.as_str().map(str::to_string))
+        .collect();
+    let expected_evidence = BTreeSet::from([
+        "result.json".to_string(),
+        "summary.md".to_string(),
+        "failure-classification.json".to_string(),
+        "metrics-snapshot.json".to_string(),
+        "config-snapshot.json".to_string(),
+        "logs-snapshot.txt".to_string(),
+    ]);
+    if required_evidence != expected_evidence {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "failure contracts policy required_evidence must match canonical evidence set",
+            Some(rel.to_string()),
+        ));
+    }
+    let required_fields: BTreeSet<String> = policy
+        .get("required_fields")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(|v| v.as_str().map(str::to_string))
+        .collect();
+    let expected_fields = BTreeSet::from([
+        "failure_expected".to_string(),
+        "failure_mode".to_string(),
+        "recommended_action".to_string(),
+    ]);
+    if required_fields != expected_fields {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "failure contracts policy required_fields must match canonical field set",
+            Some(rel.to_string()),
+        ));
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}

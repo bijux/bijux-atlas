@@ -35,8 +35,8 @@
     },
     {
       "pillar": "e2e",
-      "target": 24,
-      "max": 24,
+      "target": 28,
+      "max": 28,
       "required_classes": [
         "effect"
       ]
