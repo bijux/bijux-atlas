@@ -2,8 +2,9 @@
 
 use crate::cli::{
     FormatArg, ReleaseBundleBuildArgs, ReleaseBundleHashArgs, ReleaseBundleVerifyArgs,
-    ReleaseCheckArgs, ReleaseCommand, ReleaseDiffArgs, ReleaseManifestGenerateArgs,
-    ReleaseManifestValidateArgs, ReleasePacketArgs, ReleaseSignArgs, ReleaseVerifyArgs,
+    ReleaseChangelogGenerateArgs, ReleaseChangelogValidateArgs, ReleaseCheckArgs, ReleaseCommand,
+    ReleaseDiffArgs, ReleaseManifestGenerateArgs, ReleaseManifestValidateArgs, ReleasePacketArgs,
+    ReleaseSignArgs, ReleaseVerifyArgs, ReleaseVersionCheckArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
 use sha2::{Digest, Sha256};
@@ -1534,12 +1535,289 @@ fn run_release_bundle_verify(args: ReleaseBundleVerifyArgs) -> Result<(String, i
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
+#[derive(Debug, Clone)]
+struct SemverLike {
+    major: u64,
+    minor: u64,
+    patch: u64,
+    prerelease: Option<String>,
+}
+
+fn parse_semver_like(value: &str) -> Option<SemverLike> {
+    let mut base_and_pre = value.splitn(2, '-');
+    let base = base_and_pre.next()?.trim();
+    let prerelease = base_and_pre.next().map(str::to_string);
+    let mut parts = base.split('.');
+    let major = parts.next()?.parse::<u64>().ok()?;
+    let minor = parts.next()?.parse::<u64>().ok()?;
+    let patch = parts.next()?.parse::<u64>().ok()?;
+    if parts.next().is_some() {
+        return None;
+    }
+    Some(SemverLike {
+        major,
+        minor,
+        patch,
+        prerelease,
+    })
+}
+
+fn version_from_tag(value: &str) -> String {
+    value.strip_prefix('v').unwrap_or(value).to_string()
+}
+
+fn extract_changelog_versions(changelog: &str) -> Vec<String> {
+    changelog
+        .lines()
+        .map(str::trim)
+        .filter_map(|line| line.strip_prefix("## "))
+        .map(|line| line.trim())
+        .filter_map(|line| line.strip_prefix('v'))
+        .map(str::to_string)
+        .collect()
+}
+
+fn release_manifest_version(root: &Path, expected: &str) -> Option<String> {
+    let path = release_manifest_path(root, expected);
+    if !path.exists() {
+        return None;
+    }
+    read_json(&path).ok().and_then(|value| {
+        value
+            .get("version")
+            .and_then(serde_json::Value::as_str)
+            .map(str::to_string)
+    })
+}
+
+fn run_release_version_check(args: ReleaseVersionCheckArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let policy_path = root.join("configs/release/version-policy.json");
+    let policy = read_json(&policy_path)?;
+    let version = args
+        .version
+        .unwrap_or_else(|| default_release_version(&root));
+    let tag = args.tag.or_else(|| {
+        std::env::var("GITHUB_REF")
+            .ok()
+            .and_then(|v| v.strip_prefix("refs/tags/").map(str::to_string))
+    });
+    let mut errors = Vec::<String>::new();
+    let Some(parsed) = parse_semver_like(&version) else {
+        let payload = serde_json::json!({
+            "schema_version": 1,
+            "kind": "release_version_check",
+            "status": "failed",
+            "version": version,
+            "errors": ["version is not valid semver"]
+        });
+        let rendered = emit_payload(args.format, args.out, &payload)?;
+        return Ok((rendered, 1));
+    };
+
+    let allow_tags = policy
+        .get("versioning")
+        .and_then(|v| v.get("allow_prerelease_tags"))
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|row| row.as_str().map(str::to_string))
+        .collect::<BTreeSet<_>>();
+    if let Some(pre) = &parsed.prerelease {
+        let token = pre.split('.').next().unwrap_or_default().to_string();
+        if !allow_tags.contains(token.as_str()) {
+            errors.push(format!("prerelease tag `{token}` is not allowed"));
+        }
+    }
+
+    if let Some(tag_value) = &tag {
+        let require_v = policy
+            .get("versioning")
+            .and_then(|v| v.get("require_v_prefix_for_tags"))
+            .and_then(serde_json::Value::as_bool)
+            .unwrap_or(true);
+        if require_v && !tag_value.starts_with('v') {
+            errors.push(format!("release tag `{tag_value}` must start with `v`"));
+        }
+        let tag_version = version_from_tag(tag_value);
+        if tag_version != version {
+            errors.push(format!(
+                "release tag `{tag_value}` does not match version `{version}`"
+            ));
+        }
+    }
+
+    if let Some(manifest_version) = release_manifest_version(&root, &version) {
+        if manifest_version != version {
+            errors.push(format!(
+                "release manifest version `{manifest_version}` does not match `{version}`"
+            ));
+        }
+    }
+
+    let changelog_path = policy
+        .get("changelog")
+        .and_then(|v| v.get("path"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("CHANGELOG.md");
+    let changelog_text = fs::read_to_string(root.join(changelog_path))
+        .map_err(|err| format!("failed to read {changelog_path}: {err}"))?;
+    let versions = extract_changelog_versions(&changelog_text);
+    if !versions.iter().any(|v| v == &version) {
+        errors.push(format!("changelog must contain version `{version}`"));
+    }
+    if let Some(idx) = versions.iter().position(|v| v == &version) {
+        if idx + 1 < versions.len() {
+            if let (Some(prev), Some(cur)) = (
+                parse_semver_like(&versions[idx + 1]),
+                parse_semver_like(&version),
+            ) {
+                if (cur.major, cur.minor, cur.patch) <= (prev.major, prev.minor, prev.patch) {
+                    errors.push("version bump cannot skip or move backwards".to_string());
+                }
+            }
+        }
+    }
+
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_version_check",
+        "status": status,
+        "version": version,
+        "tag": tag,
+        "policy_path": repo_rel(&root, &policy_path),
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_changelog_generate(
+    args: ReleaseChangelogGenerateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let version = args
+        .version
+        .unwrap_or_else(|| default_release_version(&root));
+    let changelog_path = root.join("CHANGELOG.md");
+    let mut body = fs::read_to_string(&changelog_path)
+        .map_err(|err| format!("read CHANGELOG.md failed: {err}"))?;
+    if !body.contains(&format!("## v{version}")) {
+        let insertion = format!(
+            "## v{version}\n\n### Added\n- \n\n### Changed\n- \n\n### Fixed\n- \n\n### Breaking Changes\n- none\n\n"
+        );
+        if let Some(pos) = body.find('\n') {
+            body.insert_str(pos + 1, &format!("\n{insertion}"));
+        } else {
+            body.push_str(&format!("\n{insertion}"));
+        }
+        fs::write(&changelog_path, body)
+            .map_err(|err| format!("write {} failed: {err}", changelog_path.display()))?;
+    }
+    let rendered = emit_payload(
+        args.format,
+        args.out,
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "release_changelog_generate",
+            "status": "ok",
+            "version": version,
+            "path": "CHANGELOG.md"
+        }),
+    )?;
+    Ok((rendered, 0))
+}
+
+fn run_release_changelog_validate(
+    args: ReleaseChangelogValidateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let version = args
+        .version
+        .unwrap_or_else(|| default_release_version(&root));
+    let policy_path = root.join("configs/release/version-policy.json");
+    let policy = read_json(&policy_path)?;
+    let required_sections = policy
+        .get("changelog")
+        .and_then(|v| v.get("required_sections"))
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|row| row.as_str().map(str::to_string))
+        .collect::<Vec<_>>();
+    let changelog = fs::read_to_string(root.join("CHANGELOG.md"))
+        .map_err(|err| format!("failed to read CHANGELOG.md: {err}"))?;
+    let mut errors = Vec::<String>::new();
+    let marker = format!("## v{version}");
+    let Some(start) = changelog.find(&marker) else {
+        errors.push(format!("missing changelog entry for version `{version}`"));
+        let payload = serde_json::json!({
+            "schema_version": 1,
+            "kind": "release_changelog_validate",
+            "status": "failed",
+            "version": version,
+            "errors": errors
+        });
+        let rendered = emit_payload(args.format, args.out, &payload)?;
+        return Ok((rendered, 1));
+    };
+    let tail = &changelog[start..];
+    let next = tail.find("\n## ").unwrap_or(tail.len());
+    let entry = &tail[..next];
+    for section in required_sections {
+        if !entry.contains(&format!("### {section}")) {
+            errors.push(format!("changelog entry missing section `{section}`"));
+        }
+    }
+    if policy
+        .get("changelog")
+        .and_then(|v| v.get("require_breaking_section"))
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(true)
+        && !entry.contains("### Breaking Changes")
+    {
+        errors.push("changelog entry must include breaking changes section".to_string());
+    }
+    if let Some(tag) = args.tag {
+        let tag_version = version_from_tag(&tag);
+        if tag_version != version {
+            errors.push(format!(
+                "release tag `{tag}` does not match changelog version `{version}`"
+            ));
+        }
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_changelog_validate",
+        "status": status,
+        "version": version,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
 pub(crate) fn run_release_command(
     _quiet: bool,
     command: ReleaseCommand,
 ) -> Result<(String, i32), String> {
     match command {
         ReleaseCommand::Check(args) => run_release_check(args),
+        ReleaseCommand::Version { command } => match command {
+            crate::cli::ReleaseVersionCommand::Check(args) => run_release_version_check(args),
+        },
+        ReleaseCommand::Changelog { command } => match command {
+            crate::cli::ReleaseChangelogCommand::Generate(args) => {
+                run_release_changelog_generate(args)
+            }
+            crate::cli::ReleaseChangelogCommand::Validate(args) => {
+                run_release_changelog_validate(args)
+            }
+        },
         ReleaseCommand::Manifest { command } => match command {
             crate::cli::ReleaseManifestCommand::Generate(args) => {
                 run_release_manifest_generate(args)

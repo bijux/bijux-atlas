@@ -57,6 +57,17 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Validate { format, .. } => *format = FormatArg::Json,
         Command::Release { command } => match command {
             ReleaseCommand::Check(args) => args.format = FormatArg::Json,
+            ReleaseCommand::Version { command } => match command {
+                crate::cli::ReleaseVersionCommand::Check(args) => args.format = FormatArg::Json,
+            },
+            ReleaseCommand::Changelog { command } => match command {
+                crate::cli::ReleaseChangelogCommand::Generate(args) => {
+                    args.format = FormatArg::Json
+                }
+                crate::cli::ReleaseChangelogCommand::Validate(args) => {
+                    args.format = FormatArg::Json
+                }
+            },
             ReleaseCommand::Manifest { command } => match command {
                 crate::cli::ReleaseManifestCommand::Generate(args) => args.format = FormatArg::Json,
                 crate::cli::ReleaseManifestCommand::Validate(args) => args.format = FormatArg::Json,
@@ -1187,6 +1198,25 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     args.repo_root = Some(root.clone());
                 }
             }
+            ReleaseCommand::Version { command } => match command {
+                crate::cli::ReleaseVersionCommand::Check(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+            },
+            ReleaseCommand::Changelog { command } => match command {
+                crate::cli::ReleaseChangelogCommand::Generate(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+                crate::cli::ReleaseChangelogCommand::Validate(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+            },
             ReleaseCommand::Manifest { command } => match command {
                 crate::cli::ReleaseManifestCommand::Generate(args) => {
                     if args.repo_root.is_none() {

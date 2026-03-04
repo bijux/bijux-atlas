@@ -251,6 +251,14 @@ pub enum Command {
 #[derive(Subcommand, Debug)]
 pub enum ReleaseCommand {
     Check(ReleaseCheckArgs),
+    Version {
+        #[command(subcommand)]
+        command: ReleaseVersionCommand,
+    },
+    Changelog {
+        #[command(subcommand)]
+        command: ReleaseChangelogCommand,
+    },
     Manifest {
         #[command(subcommand)]
         command: ReleaseManifestCommand,
@@ -269,6 +277,17 @@ pub enum ReleaseCommand {
 pub enum ReleaseManifestCommand {
     Generate(ReleaseManifestGenerateArgs),
     Validate(ReleaseManifestValidateArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ReleaseVersionCommand {
+    Check(ReleaseVersionCheckArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ReleaseChangelogCommand {
+    Generate(ReleaseChangelogGenerateArgs),
+    Validate(ReleaseChangelogValidateArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -435,6 +454,46 @@ pub struct ReleaseCheckArgs {
     pub repo_root: Option<PathBuf>,
     #[arg(long, default_value = "kind")]
     pub profile: String,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseVersionCheckArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub version: Option<String>,
+    #[arg(long)]
+    pub tag: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseChangelogGenerateArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub version: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseChangelogValidateArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub version: Option<String>,
+    #[arg(long)]
+    pub tag: Option<String>,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]
