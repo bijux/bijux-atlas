@@ -514,6 +514,10 @@ pub enum SystemClusterCommand {
     ShardDistribution(SystemClusterArgs),
     ShardDiagnostics(SystemClusterArgs),
     ShardRebalance(SystemClusterShardActionArgs),
+    ReplicaList(SystemClusterArgs),
+    ReplicaHealth(SystemClusterArgs),
+    ReplicaFailover(SystemClusterReplicaFailoverArgs),
+    ReplicaDiagnostics(SystemClusterArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -612,6 +616,18 @@ pub struct SystemClusterShardActionArgs {
     pub shard_id: Option<String>,
     #[arg(long)]
     pub target_node_id: Option<String>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct SystemClusterReplicaFailoverArgs {
+    #[command(flatten)]
+    pub common: SystemClusterArgs,
+    #[arg(long)]
+    pub dataset_id: String,
+    #[arg(long)]
+    pub shard_id: String,
+    #[arg(long)]
+    pub promote_node_id: String,
 }
 
 #[derive(Args, Debug, Clone)]

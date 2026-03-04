@@ -537,7 +537,10 @@ fn force_json_system(command: &mut crate::cli::SystemCommand) {
             | crate::cli::SystemClusterCommand::ShardRouting(args)
             | crate::cli::SystemClusterCommand::ShardList(args)
             | crate::cli::SystemClusterCommand::ShardDistribution(args)
-            | crate::cli::SystemClusterCommand::ShardDiagnostics(args) => {
+            | crate::cli::SystemClusterCommand::ShardDiagnostics(args)
+            | crate::cli::SystemClusterCommand::ReplicaList(args)
+            | crate::cli::SystemClusterCommand::ReplicaHealth(args)
+            | crate::cli::SystemClusterCommand::ReplicaDiagnostics(args) => {
                 args.format = FormatArg::Json
             }
             crate::cli::SystemClusterCommand::NodeDrain(args)
@@ -546,6 +549,9 @@ fn force_json_system(command: &mut crate::cli::SystemCommand) {
                 args.common.format = FormatArg::Json
             }
             crate::cli::SystemClusterCommand::ShardRebalance(args) => {
+                args.common.format = FormatArg::Json
+            }
+            crate::cli::SystemClusterCommand::ReplicaFailover(args) => {
                 args.common.format = FormatArg::Json
             }
         }
@@ -1171,7 +1177,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 | crate::cli::SystemClusterCommand::ShardRouting(args)
                 | crate::cli::SystemClusterCommand::ShardList(args)
                 | crate::cli::SystemClusterCommand::ShardDistribution(args)
-                | crate::cli::SystemClusterCommand::ShardDiagnostics(args) => {
+                | crate::cli::SystemClusterCommand::ShardDiagnostics(args)
+                | crate::cli::SystemClusterCommand::ReplicaList(args)
+                | crate::cli::SystemClusterCommand::ReplicaHealth(args)
+                | crate::cli::SystemClusterCommand::ReplicaDiagnostics(args) => {
                     args.repo_root = Some(root.clone())
                 }
                 crate::cli::SystemClusterCommand::NodeDrain(args)
@@ -1180,6 +1189,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     args.common.repo_root = Some(root.clone())
                 }
                 crate::cli::SystemClusterCommand::ShardRebalance(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+                crate::cli::SystemClusterCommand::ReplicaFailover(args) => {
                     args.common.repo_root = Some(root.clone())
                 }
             },
