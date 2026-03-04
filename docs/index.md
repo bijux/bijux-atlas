@@ -25,7 +25,7 @@ Atlas documentation is organized by system understanding first, then execution d
 - System understanding: [Architecture Overview](architecture/overview.md)
 - Runtime operation: [Deploy Overview](operations/deploy.md)
 - API consumer path: [API v1 Surface](api/v1-surface.md)
-- Contributor path: [Development Index](development/index.md)
+- Contributor path: [Contributor Onboarding Rubric](development/contributor-onboarding-rubric.md)
 
 ## Docs Spine
 
