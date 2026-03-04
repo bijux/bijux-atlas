@@ -1837,3 +1837,58 @@ pub(crate) fn run_release_command(
         ReleaseCommand::Packet(args) => run_release_packet(args),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::path::PathBuf;
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    fn create_release_test_repo(changelog: &str, policy: &str) -> PathBuf {
+        let stamp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("time must be monotonic for tests")
+            .as_nanos();
+        let root = std::env::temp_dir().join(format!("bijux-release-tests-{stamp}"));
+        fs::create_dir_all(root.join("configs/release")).expect("create release config directory");
+        fs::write(root.join("CHANGELOG.md"), changelog).expect("write changelog");
+        fs::write(root.join("configs/release/version-policy.json"), policy).expect("write policy");
+        root
+    }
+
+    #[test]
+    fn release_version_check_rejects_disallowed_prerelease_tag() {
+        let root = create_release_test_repo(
+            "# Changelog\n\n## v0.2.0-rc.1\n\n### Added\n- x\n\n### Changed\n- x\n\n### Fixed\n- x\n\n### Breaking Changes\n- none\n",
+            "{\n  \"schema_version\": 1,\n  \"versioning\": {\n    \"scheme\": \"semver\",\n    \"allow_prerelease_tags\": [\"beta\"],\n    \"require_v_prefix_for_tags\": true\n  },\n  \"changelog\": {\n    \"path\": \"CHANGELOG.md\",\n    \"required_sections\": [\"Added\", \"Changed\", \"Fixed\", \"Breaking Changes\"],\n    \"require_breaking_section\": true\n  }\n}",
+        );
+        let args = ReleaseVersionCheckArgs {
+            repo_root: Some(root.clone()),
+            version: Some("0.2.0-rc.1".to_string()),
+            tag: None,
+            format: FormatArg::Json,
+            out: None,
+        };
+        let (_, exit_code) = run_release_version_check(args).expect("version check should run");
+        assert_eq!(exit_code, 1, "disallowed prerelease tag must fail");
+        fs::remove_dir_all(root).expect("cleanup test repo");
+    }
+
+    #[test]
+    fn release_version_check_rejects_non_monotonic_version_progression() {
+        let root = create_release_test_repo(
+            "# Changelog\n\n## v0.1.0\n\n### Added\n- x\n\n### Changed\n- x\n\n### Fixed\n- x\n\n### Breaking Changes\n- none\n\n## v0.2.0\n\n### Added\n- x\n\n### Changed\n- x\n\n### Fixed\n- x\n\n### Breaking Changes\n- none\n",
+            "{\n  \"schema_version\": 1,\n  \"versioning\": {\n    \"scheme\": \"semver\",\n    \"allow_prerelease_tags\": [\"rc\"],\n    \"require_v_prefix_for_tags\": true\n  },\n  \"changelog\": {\n    \"path\": \"CHANGELOG.md\",\n    \"required_sections\": [\"Added\", \"Changed\", \"Fixed\", \"Breaking Changes\"],\n    \"require_breaking_section\": true\n  }\n}",
+        );
+        let args = ReleaseVersionCheckArgs {
+            repo_root: Some(root.clone()),
+            version: Some("0.1.0".to_string()),
+            tag: Some("v0.1.0".to_string()),
+            format: FormatArg::Json,
+            out: None,
+        };
+        let (_, exit_code) = run_release_version_check(args).expect("version check should run");
+        assert_eq!(exit_code, 1, "version progression must be monotonic");
+        fs::remove_dir_all(root).expect("cleanup test repo");
+    }
+}
