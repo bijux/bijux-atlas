@@ -1029,6 +1029,29 @@ fn validate_governance_registry(root: &Path) -> Result<Vec<String>, String> {
     if check_mappings.is_empty() {
         errors.push("checks-to-policy authority mappings must not be empty".to_string());
     }
+    let known_check_ids = known_check_ids(root)?;
+    let check_patterns = check_mappings
+        .iter()
+        .flat_map(|entry| {
+            entry
+                .get("applies_to")
+                .and_then(serde_json::Value::as_array)
+                .into_iter()
+                .flatten()
+                .filter_map(serde_json::Value::as_str)
+                .map(ToString::to_string)
+        })
+        .collect::<Vec<_>>();
+    for check_id in &known_check_ids {
+        if !check_patterns
+            .iter()
+            .any(|pattern| wildcard_match(check_id, pattern))
+        {
+            errors.push(format!(
+                "check `{check_id}` must cite policy authority via check-policy-authority-map"
+            ));
+        }
+    }
 
     let contract_map_path = if registry.policy_authority_mappings.contracts
         == "configs/governance/contract-policy-authority-map.json"
@@ -1080,10 +1103,22 @@ fn validate_governance_registry(root: &Path) -> Result<Vec<String>, String> {
                 mapping.contract_id
             ));
         }
-        if !known_contract_ids.contains(&mapping.contract_id) {
+        if !mapping.contract_id.contains('*') && !known_contract_ids.contains(&mapping.contract_id)
+        {
             errors.push(format!(
                 "contract policy mapping references unknown contract `{}`",
                 mapping.contract_id
+            ));
+        }
+    }
+    for contract_id in &known_contract_ids {
+        if !contract_map
+            .mappings
+            .iter()
+            .any(|mapping| wildcard_match(contract_id, &mapping.contract_id))
+        {
+            errors.push(format!(
+                "contract `{contract_id}` must cite policy authority via contract-policy-authority-map"
             ));
         }
     }
@@ -1105,6 +1140,38 @@ fn owner_format_valid(owner: &str) -> bool {
                 .all(|ch| ch.is_ascii_alphanumeric() || matches!(ch, '-' | '_' | '.'));
     }
     false
+}
+
+fn wildcard_match(value: &str, pattern: &str) -> bool {
+    if pattern == "*" {
+        return true;
+    }
+    if !pattern.contains('*') {
+        return value == pattern;
+    }
+    let mut remainder = value;
+    let mut first = true;
+    for part in pattern.split('*') {
+        if part.is_empty() {
+            continue;
+        }
+        if first {
+            if !remainder.starts_with(part) {
+                return false;
+            }
+            remainder = &remainder[part.len()..];
+            first = false;
+            continue;
+        }
+        let Some(index) = remainder.find(part) else {
+            return false;
+        };
+        remainder = &remainder[index + part.len()..];
+    }
+    if !pattern.ends_with('*') && !remainder.is_empty() {
+        return false;
+    }
+    true
 }
 
 fn validate_command_order(commands: &[String]) -> bool {

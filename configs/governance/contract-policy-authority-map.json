@@ -11,6 +11,11 @@
       "contract_id": "OPS-STACK-007",
       "policy_id": "release-bundle-integrity",
       "authority": "docs/reference/contracts/release/evidence.md"
+    },
+    {
+      "contract_id": "OPS-*",
+      "policy_id": "ops-profile-safety",
+      "authority": "docs/reference/contracts/ops/profile-matrix.md"
     }
   ]
 }

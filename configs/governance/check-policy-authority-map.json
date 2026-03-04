@@ -21,6 +21,11 @@
       "topic": "generated_file_minification",
       "policy": "configs/layout/generated-files.json",
       "applies_to": ["CHECK-DOCS-GENERATED-*", "CHECK-CONFIGS-GENERATED-*"]
+    },
+    {
+      "topic": "global_governance_enforcement",
+      "policy": "configs/governance/governance.json",
+      "applies_to": ["*"]
     }
   ]
 }
