@@ -8,6 +8,7 @@ pub mod distributed_config;
 pub mod membership;
 pub mod resilience;
 pub mod replication;
+pub mod security_auth;
 pub mod security_runtime;
 pub mod sharding;
 pub mod time;
@@ -36,6 +37,12 @@ pub use resilience::{
 pub use replication::{
     ConsistencyGuarantee, ConsistencyLevel, ReplicaDiagnostics, ReplicaHealth, ReplicaMetadata,
     ReplicaRecord, ReplicaRegistry, ReplicaSyncState, ReplicationMetrics, ReplicationPolicy,
+};
+pub use security_auth::{
+    ApiKeyRecord, ApiKeyStore, AuthValidationError, AuthenticationContext, RequestIdentity,
+    TokenClaims, TokenValidationPolicy, authentication_context_from_api_key,
+    authentication_context_from_token, extract_request_identity, generate_api_key, hash_api_key,
+    mint_signed_token, rotate_api_key, validate_signed_token,
 };
 pub use security_runtime::{
     EnvSecretsProvider, KeyManager, KeyRecord, SecretsProvider, SecurityAuthConfig,
