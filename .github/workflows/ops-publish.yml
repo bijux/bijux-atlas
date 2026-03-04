@@ -1,0 +1,104 @@
+name: ops-publish
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: ops-publish-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish-ops-artifacts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      CHART_PATH: ops/k8s/charts/bijux-atlas
+      ARTIFACT_ROOT: artifacts/ops-publish
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+
+      - name: Derive release version
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF_TYPE:-}" == "tag" ]]; then
+            version="${GITHUB_REF_NAME#v}"
+          else
+            version="0.0.0-dev.${GITHUB_RUN_NUMBER}"
+          fi
+          echo "RELEASE_VERSION=${version}" >> "${GITHUB_ENV}"
+
+      - name: Install Helm
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -sSfL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+          helm version
+
+      - name: Package Helm chart
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${ARTIFACT_ROOT}/charts"
+          helm dependency update "${CHART_PATH}" || true
+          helm package "${CHART_PATH}" \
+            --destination "${ARTIFACT_ROOT}/charts" \
+            --version "${RELEASE_VERSION}" \
+            --app-version "${RELEASE_VERSION}"
+
+      - name: Push Helm chart to GHCR OCI
+        shell: bash
+        run: |
+          set -euo pipefail
+          chart="$(ls -1 ${ARTIFACT_ROOT}/charts/*.tgz | head -n1)"
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
+          helm push "${chart}" "oci://ghcr.io/${{ github.repository_owner }}/charts"
+
+      - name: Build profiles bundle and manifests
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${ARTIFACT_ROOT}/bundle"
+          cp -v ops/k8s/install-matrix.json "${ARTIFACT_ROOT}/bundle/"
+          cp -v ops/k8s/charts/bijux-atlas/values.schema.json "${ARTIFACT_ROOT}/bundle/"
+          jq -n '{
+            schema_version:1,
+            kubernetes:{minimum_version:"1.28"},
+            helm:{minimum_version:"3.14.0"},
+            storage:{require_default_storage_class:true},
+            network:{require_cluster_dns:true},
+            security:{require_rbac:true,require_network_policy_support:true}
+          }' > "${ARTIFACT_ROOT}/bundle/cluster-prerequisites.json"
+          mkdir -p "${ARTIFACT_ROOT}/bundle/values"
+          cp -v ops/k8s/values/*.yaml "${ARTIFACT_ROOT}/bundle/values/"
+          tar -czf "${ARTIFACT_ROOT}/profiles-bundle-${RELEASE_VERSION}.tar.gz" -C "${ARTIFACT_ROOT}/bundle" .
+          jq -n \
+            --arg version "${RELEASE_VERSION}" \
+            --arg chart "$(basename "$(ls -1 ${ARTIFACT_ROOT}/charts/*.tgz | head -n1)")" \
+            --arg bundle "profiles-bundle-${RELEASE_VERSION}.tar.gz" \
+            --arg install_matrix "install-matrix.json" \
+            '{schema_version:1,version:$version,chart_package:$chart,profiles_bundle:$bundle,install_matrix:$install_matrix}' \
+            > "${ARTIFACT_ROOT}/ops-bundle-manifest.json"
+          sha256sum "${ARTIFACT_ROOT}/profiles-bundle-${RELEASE_VERSION}.tar.gz" \
+            | awk '{print $1}' \
+            | jq -R -s '{schema_version:1,bundle_sha256:(split("\n")[0])}' \
+            > "${ARTIFACT_ROOT}/ops-bundle-checksums.json"
+          jq -n \
+            --argjson matrix "$(cat ops/k8s/install-matrix.json)" \
+            '{schema_version:1,profile_count:($matrix.profiles|length),profiles:($matrix.profiles|map({name:.name,namespace:.namespace}))}' \
+            > "${ARTIFACT_ROOT}/install-matrix-report.json"
+
+      - name: Upload ops publish artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ops-publish-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/ops-publish
+          retention-days: 14

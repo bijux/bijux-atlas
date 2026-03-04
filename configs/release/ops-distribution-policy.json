@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "distribution": "oci-helm-and-versioned-bundle",
+  "chart": {
+    "oci_registry": "ghcr.io/<owner>/charts",
+    "chart_name": "bijux-atlas",
+    "version_source": "release version"
+  },
+  "bundle": {
+    "required_members": [
+      "install-matrix.json",
+      "values.schema.json",
+      "cluster-prerequisites.json",
+      "values/*.yaml"
+    ]
+  }
+}
