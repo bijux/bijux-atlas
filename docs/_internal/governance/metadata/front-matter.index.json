@@ -8771,7 +8771,7 @@
     },
     {
       "area": "tutorials",
-      "audience": "contributors",
+      "audience": "mixed",
       "owner": "docs-governance",
       "path": "docs/tutorials/debug-pipeline.md",
       "stability": "stable",
@@ -8779,7 +8779,7 @@
     },
     {
       "area": "tutorials",
-      "audience": "contributors",
+      "audience": "mixed",
       "owner": "docs-governance",
       "path": "docs/tutorials/end-to-end-tutorial.md",
       "stability": "stable",
@@ -8787,7 +8787,7 @@
     },
     {
       "area": "tutorials",
-      "audience": "contributors",
+      "audience": "mixed",
       "owner": "docs-governance",
       "path": "docs/tutorials/faq.md",
       "stability": "stable",
@@ -8795,7 +8795,7 @@
     },
     {
       "area": "tutorials",
-      "audience": "contributors",
+      "audience": "mixed",
       "owner": "docs-governance",
       "path": "docs/tutorials/index.md",
       "stability": "stable",
@@ -8803,7 +8803,7 @@
     },
     {
       "area": "tutorials",
-      "audience": "contributors",
+      "audience": "mixed",
       "owner": "docs-governance",
       "path": "docs/tutorials/ingest-dataset.md",
       "stability": "stable",
@@ -8811,7 +8811,7 @@
     },
     {
       "area": "tutorials",
-      "audience": "contributors",
+      "audience": "mixed",
       "owner": "docs-governance",
       "path": "docs/tutorials/inspect-artifacts.md",
       "stability": "stable",
@@ -8819,7 +8819,7 @@
     },
     {
       "area": "tutorials",
-      "audience": "contributors",
+      "audience": "mixed",
       "owner": "docs-governance",
       "path": "docs/tutorials/query-dataset.md",
       "stability": "stable",
@@ -8827,7 +8827,7 @@
     },
     {
       "area": "tutorials",
-      "audience": "contributors",
+      "audience": "mixed",
       "owner": "docs-governance",
       "path": "docs/tutorials/troubleshooting-guide.md",
       "stability": "stable",
@@ -8835,7 +8835,7 @@
     },
     {
       "area": "tutorials",
-      "audience": "contributors",
+      "audience": "mixed",
       "owner": "docs-governance",
       "path": "docs/tutorials/validate-dataset.md",
       "stability": "stable",
