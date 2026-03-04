@@ -891,6 +891,19 @@ async fn security_middleware(
         "authentication evaluation started"
     );
     let auth_exempt = route_auth_exempt(&route);
+    if state.api.require_https {
+        let forwarded_proto = normalized_header_value(req.headers(), "x-forwarded-proto", 16);
+        if !bijux_atlas_core::https_enforced(forwarded_proto.as_deref(), true) {
+            record_policy_violation(&state, "https_required").await;
+            let err = Json(ApiError::new(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "https is required",
+                serde_json::json!({"class": "transport", "reason": "https_required"}),
+                "req-unknown",
+            ));
+            return (StatusCode::UPGRADE_REQUIRED, err).into_response();
+        }
+    }
     if route_is_admin_endpoint(&route) && !state.api.enable_admin_endpoints {
         emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
         let err = Json(ApiError::new(
@@ -1362,6 +1375,12 @@ mod tests {
             "namespace",
             "/debug/runtime-config"
         ));
+    }
+
+    #[test]
+    fn https_enforcement_requires_https_proto_header() {
+        assert!(bijux_atlas_core::https_enforced(Some("https"), true));
+        assert!(!bijux_atlas_core::https_enforced(Some("http"), true));
     }
 
     fn signed_token(payload: serde_json::Value, secret: &str) -> String {

@@ -434,6 +434,19 @@ fn runtime_config_accepts_token_auth_mode() {
 }
 
 #[test]
+fn runtime_config_accepts_require_https_flag() {
+    with_runtime_env(&[("ATLAS_REQUIRE_HTTPS", "true")], || {
+        let startup = RuntimeStartupConfig {
+            bind_addr: DEFAULT_BIND_ADDR.to_string(),
+            store_root: PathBuf::from(DEFAULT_STORE_ROOT),
+            cache_root: PathBuf::from(DEFAULT_CACHE_ROOT),
+        };
+        let runtime = RuntimeConfig::from_env(startup).expect("runtime");
+        assert!(runtime.api.require_https);
+    });
+}
+
+#[test]
 fn runtime_config_admin_endpoints_are_disabled_by_default() {
     with_runtime_env(&[], || {
         let startup = RuntimeStartupConfig {
