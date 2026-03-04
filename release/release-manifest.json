@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "manifest_name": "release-surfaces",
+  "versioning": {
+    "workspace_version": "0.1.0",
+    "policy": "configs/release/version-policy.json"
+  },
+  "artifacts": {
+    "docs_site": "artifacts/docs/site",
+    "release_evidence_manifest": "release/evidence/manifest.json",
+    "release_packet": "release/packet/packet.json",
+    "release_signing": "release/signing/release-sign.json",
+    "release_verification": "release/signing/release-verify.json"
+  },
+  "distribution": {
+    "crates_io": "selected workspace crates",
+    "ghcr": "runtime and supporting images",
+    "github_pages": "docs site"
+  }
+}

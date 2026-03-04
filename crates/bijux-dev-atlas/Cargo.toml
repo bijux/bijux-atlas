@@ -8,6 +8,7 @@ description = "Development control-plane binary for bijux-atlas"
 repository.workspace = true
 homepage.workspace = true
 keywords = ["bijux", "control-plane", "cli", "devops", "policy"]
+publish = false
 
 [features]
 kind_integration = []

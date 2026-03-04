@@ -7,6 +7,7 @@ rust-version.workspace = true
 description = "Typed query parsing, planning, and execution for atlas"
 repository.workspace = true
 homepage.workspace = true
+documentation = "https://docs.rs/bijux-atlas-query"
 keywords = ["atlas", "query", "planner", "sqlite", "deterministic"]
 
 [dependencies]

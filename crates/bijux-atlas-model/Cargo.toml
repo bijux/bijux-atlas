@@ -7,6 +7,7 @@ rust-version.workspace = true
 description = "Persisted atlas data models and serde contracts"
 repository.workspace = true
 homepage.workspace = true
+documentation = "https://docs.rs/bijux-atlas-model"
 keywords = ["atlas", "model", "serde", "contracts", "genomics"]
 
 [dependencies]

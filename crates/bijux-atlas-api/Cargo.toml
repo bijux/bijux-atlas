@@ -7,6 +7,7 @@ rust-version.workspace = true
 description = "OpenAPI and wire contract crate for atlas APIs"
 repository.workspace = true
 homepage.workspace = true
+documentation = "https://docs.rs/bijux-atlas-api"
 keywords = ["atlas", "api", "openapi", "contracts", "serde"]
 
 [dependencies]
