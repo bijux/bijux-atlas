@@ -21,6 +21,11 @@
 - [Load testing strategy](strategy.md)
 - [Load test metrics](metrics.md)
 - [Load harness and generators](harness-and-generators.md)
+- [Load testing documentation](documentation.md)
+- [Load testing quickstart](quickstart.md)
+- [Load testing troubleshooting](troubleshooting.md)
+- [Load architecture diagram](architecture-diagram.md)
+- [Load example configs](example-configs.md)
 - [Load Failure Triage](../runbooks/load-failure-triage.md)
 
 ## Threshold interpretation

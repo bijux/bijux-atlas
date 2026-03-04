@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "suite": "mixed-workload",
+  "run_id": "ops_run_example",
+  "base_url": "http://127.0.0.1:8080",
+  "k6_env": {
+    "RATE": "200",
+    "DURATION": "120s",
+    "PRE_ALLOCATED_VUS": "64",
+    "MAX_VUS": "256"
+  },
+  "artifact_root": "artifacts/ops/ops_run_example/load/mixed-workload"
+}
