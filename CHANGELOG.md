@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.1.2
+
+### Added
+- 
+
+### Changed
+- 
+
+### Fixed
+- 
+
+### Breaking Changes
+- none
+
+
 ## v0.1.1
 
 ### Added

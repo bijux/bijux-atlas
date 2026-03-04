@@ -1765,6 +1765,46 @@ fn release_manifest_version(root: &Path, expected: &str) -> Option<String> {
     })
 }
 
+fn generate_release_docs_artifacts(
+    root: &Path,
+    version: &str,
+    versions: &[String],
+) -> Result<(), String> {
+    let generated_dir = root.join("docs/_internal/generated");
+    fs::create_dir_all(&generated_dir)
+        .map_err(|err| format!("failed to create {}: {err}", generated_dir.display()))?;
+    let metadata_path = generated_dir.join("release-metadata.json");
+    let metadata = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_metadata",
+        "version": version,
+        "artifact_root": format!("artifacts/release/{version}"),
+        "manifest_path": format!("artifacts/release/{version}/manifest.json")
+    });
+    write_json(&metadata_path, &metadata)?;
+
+    let mut index = String::from("# Release Index\n\n");
+    for v in versions {
+        index.push_str(&format!("- v{v}: `artifacts/release/{v}/manifest.json`\n"));
+    }
+    fs::write(generated_dir.join("release-index.md"), index)
+        .map_err(|err| format!("failed to write release index page: {err}"))?;
+
+    let mut feed = String::from(
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\"><channel>\n",
+    );
+    feed.push_str("<title>bijux-atlas releases</title>\n");
+    for v in versions {
+        feed.push_str(&format!(
+            "<item><title>v{v}</title><link>artifacts/release/{v}/manifest.json</link></item>\n"
+        ));
+    }
+    feed.push_str("</channel></rss>\n");
+    fs::write(generated_dir.join("release-feed.xml"), feed)
+        .map_err(|err| format!("failed to write release feed: {err}"))?;
+    Ok(())
+}
+
 fn run_release_version_check(args: ReleaseVersionCheckArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     let policy_path = root.join("configs/release/version-policy.json");
@@ -1804,6 +1844,13 @@ fn run_release_version_check(args: ReleaseVersionCheckArgs) -> Result<(String, i
         if !allow_tags.contains(token.as_str()) {
             errors.push(format!("prerelease tag `{token}` is not allowed"));
         }
+        if token == "rc"
+            && tag
+                .as_ref()
+                .is_some_and(|tag_value| !tag_value.contains("-rc"))
+        {
+            errors.push("release candidate versions must use release-candidate tags".to_string());
+        }
     }
 
     if let Some(tag_value) = &tag {
@@ -1820,6 +1867,9 @@ fn run_release_version_check(args: ReleaseVersionCheckArgs) -> Result<(String, i
             errors.push(format!(
                 "release tag `{tag_value}` does not match version `{version}`"
             ));
+        }
+        if !version.contains("-rc") && tag_value.contains("-rc") {
+            errors.push("release candidate tags require release candidate versions".to_string());
         }
     }
 
@@ -1852,6 +1902,19 @@ fn run_release_version_check(args: ReleaseVersionCheckArgs) -> Result<(String, i
                     errors.push("version bump cannot skip or move backwards".to_string());
                 }
             }
+        }
+    }
+    if release_root(&root, &version).exists() {
+        let contract_payload = run_release_bundle_verify(ReleaseBundleVerifyArgs {
+            repo_root: Some(root.clone()),
+            version: Some(version.clone()),
+            format: FormatArg::Json,
+            out: None,
+        })?;
+        let contract: serde_json::Value =
+            serde_json::from_str(&contract_payload.0).unwrap_or_else(|_| serde_json::json!({}));
+        if contract.get("status").and_then(serde_json::Value::as_str) != Some("ok") {
+            errors.push("version bump only allowed if release contract passes".to_string());
         }
     }
 
@@ -1891,6 +1954,11 @@ fn run_release_changelog_generate(
         fs::write(&changelog_path, body)
             .map_err(|err| format!("write {} failed: {err}", changelog_path.display()))?;
     }
+    let versions = extract_changelog_versions(
+        &fs::read_to_string(&changelog_path)
+            .map_err(|err| format!("read CHANGELOG.md failed: {err}"))?,
+    );
+    generate_release_docs_artifacts(&root, &version, &versions)?;
     let rendered = emit_payload(
         args.format,
         args.out,
@@ -1963,6 +2031,19 @@ fn run_release_changelog_validate(
                 "release tag `{tag}` does not match changelog version `{version}`"
             ));
         }
+    }
+    let metadata_path = root.join("docs/_internal/generated/release-metadata.json");
+    if metadata_path.exists() {
+        let metadata = read_json(&metadata_path)?;
+        let artifact_root = metadata
+            .get("artifact_root")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        if artifact_root != format!("artifacts/release/{version}") {
+            errors.push("release docs reference incorrect artifact version".to_string());
+        }
+    } else {
+        errors.push("release metadata page is missing".to_string());
     }
     let status = if errors.is_empty() { "ok" } else { "failed" };
     let payload = serde_json::json!({
