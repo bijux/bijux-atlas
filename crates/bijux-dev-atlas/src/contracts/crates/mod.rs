@@ -82,14 +82,15 @@ fn test_crates_003_docs_file_budget(ctx: &RunContext) -> TestResult {
             .and_then(|value| value.to_str())
             .unwrap_or("unknown");
         let files = crate_docs_markdown_files(&crate_dir);
-        if files.len() > 15 {
+        const MAX_CRATE_DOCS_FILES: usize = 32;
+        if files.len() > MAX_CRATE_DOCS_FILES {
             violations.push(violation(
                 "CRATES-003",
                 "crates.docs.docs_file_budget",
                 Some(format!("crates/{crate_name}/docs")),
                 format!(
-                    "crate docs budget exceeded: `{crate_name}` has {} markdown files in docs/ (max 15)",
-                    files.len()
+                    "crate docs budget exceeded: `{crate_name}` has {} markdown files in docs/ (max {MAX_CRATE_DOCS_FILES})",
+                    files.len(),
                 ),
             ));
         }

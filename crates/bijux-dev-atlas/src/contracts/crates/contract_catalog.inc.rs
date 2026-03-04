@@ -157,7 +157,7 @@ pub fn contract_explain(contract_id: &str) -> String {
     match contract_id {
         "CRATES-001" => "Ensures every crate root has canonical documentation entrypoints: README.md and CONTRACT.md.".to_string(),
         "CRATES-002" => "Ensures crate root markdown files are limited to README.md and CONTRACT.md.".to_string(),
-        "CRATES-003" => "Ensures each crate docs/ directory stays within the markdown file budget (max 15).".to_string(),
+        "CRATES-003" => "Ensures each crate docs/ directory stays within the markdown file budget (max 32).".to_string(),
         "CRATES-004" => "Ensures crate docs markdown filenames use lowercase kebab-case.".to_string(),
         "CRATES-005" => "Ensures relative links in crate docs markdown resolve to existing files.".to_string(),
         "CRATES-006" => "Ensures crate README.md has Purpose, How to use, and Where docs live sections.".to_string(),

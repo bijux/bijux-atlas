@@ -8,6 +8,12 @@
       "diagram_count": 3
     },
     {
+      "crate": "bijux-atlas-benchmark",
+      "root_doc_count": 2,
+      "docs_dir_count": 5,
+      "diagram_count": 0
+    },
+    {
       "crate": "bijux-atlas-cli",
       "root_doc_count": 2,
       "docs_dir_count": 16,
@@ -22,7 +28,7 @@
     {
       "crate": "bijux-atlas-ingest",
       "root_doc_count": 2,
-      "docs_dir_count": 16,
+      "docs_dir_count": 28,
       "diagram_count": 3
     },
     {
@@ -40,7 +46,7 @@
     {
       "crate": "bijux-atlas-query",
       "root_doc_count": 2,
-      "docs_dir_count": 17,
+      "docs_dir_count": 21,
       "diagram_count": 3
     },
     {

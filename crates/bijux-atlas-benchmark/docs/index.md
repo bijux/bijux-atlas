@@ -7,3 +7,6 @@
 - [Benchmark Troubleshooting](benchmark-troubleshooting.md)
 - [Benchmark Architecture](benchmark-architecture.md)
 - [Benchmark Roadmap](benchmark-roadmap.md)
+
+- Central docs index: ../../../docs/index.md
+- Crate README: ../README.md
