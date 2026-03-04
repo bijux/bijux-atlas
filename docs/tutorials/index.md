@@ -22,3 +22,12 @@ related:
 - [Deploy to kind](../operations/deploy-kind.md)
 - [Deploy to Kubernetes](../operations/deploy-kubernetes-minimal.md)
 - [Validate entrypoints](../operations/validation-entrypoints.md)
+
+## User workflow tutorials
+
+- [Ingest dataset](ingest-dataset.md)
+- [Validate dataset](validate-dataset.md)
+- [Query dataset](query-dataset.md)
+- [Inspect artifacts](inspect-artifacts.md)
+- [Debug pipeline](debug-pipeline.md)
+- [Operational workflow definitions](../operations/workflows.md)
