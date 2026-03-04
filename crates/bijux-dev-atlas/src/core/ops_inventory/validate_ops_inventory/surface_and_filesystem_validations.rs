@@ -78,6 +78,7 @@ fn validate_surface_and_filesystem_policies(
         "_generated.example",
         "_meta",
         "_examples",
+        "_templates",
         "atlas-dev",
         "datasets",
         "docs",
