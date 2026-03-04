@@ -853,6 +853,10 @@ fn package_policy(root: &Path) -> Result<serde_json::Value, String> {
     read_json(&root.join("configs/release/crate-package-policy.json"))
 }
 
+fn dependency_policy(root: &Path) -> Result<serde_json::Value, String> {
+    read_json(&root.join("configs/release/dependency-policy.json"))
+}
+
 fn run_release_crates_dry_run(args: ReleaseCratesDryRunArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let spec = read_crates_release_spec(&root)?;
@@ -1140,6 +1144,7 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
     let policy = read_publish_policy(&root)?;
     let feature_policy = read_json(&root.join("configs/release/feature-policy.json"))?;
     let missing_docs_policy = read_json(&root.join("configs/release/missing-docs-policy.json"))?;
+    let dependency_policy = dependency_policy(&root)?;
     let feature_doc = fs::read_to_string(root.join("docs/reference/crate-feature-flags.md"))
         .map_err(|err| format!("failed to read docs/reference/crate-feature-flags.md: {err}"))?;
     let workspace_manifest: toml::Value = toml::from_str(
@@ -1162,6 +1167,7 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
         .unwrap_or_default();
 
     let mut errors = Vec::<String>::new();
+    let mut warnings = Vec::<String>::new();
     let mut checked_crates = Vec::<String>::new();
     if !root.join("LICENSE").exists() {
         errors.push("missing root LICENSE file".to_string());
@@ -1187,6 +1193,24 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
         let manifest: toml::Value = toml::from_str(&text)
             .map_err(|err| format!("failed to parse {}: {err}", manifest_path.display()))?;
         let pkg = manifest.get("package").and_then(toml::Value::as_table);
+        let forbidden_licenses = dependency_policy
+            .get("forbidden_licenses")
+            .and_then(serde_json::Value::as_array)
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+            .collect::<BTreeSet<_>>();
+        let package_license = pkg
+            .and_then(|table| table.get("license"))
+            .and_then(toml::Value::as_str)
+            .unwrap_or_default()
+            .to_string();
+        if forbidden_licenses.contains(&package_license) {
+            errors.push(format!(
+                "crate `{crate_name}` uses forbidden license `{package_license}`"
+            ));
+        }
         let missing = |key: &str| {
             let Some(value) = pkg.and_then(|v| v.get(key)) else {
                 return true;
@@ -1225,7 +1249,10 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
         if !readme_path.exists() {
             errors.push(format!("missing crate README: {}", readme_path.display()));
         }
-        if let Some(deps) = manifest.get("dependencies").and_then(toml::Value::as_table) {
+        for section in ["dependencies", "build-dependencies", "dev-dependencies"] {
+            let Some(deps) = manifest.get(section).and_then(toml::Value::as_table) else {
+                continue;
+            };
             for (dep_name, value) in deps {
                 if dep_name == "bijux-atlas-core"
                     || dep_name.starts_with("bijux-atlas-")
@@ -1237,8 +1264,8 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
                         .is_some()
                     {
                         errors.push(format!(
-                            "{} dependency `{dep_name}` uses path, forbidden for publishable crate manifests",
-                            manifest_path.display()
+                            "{} section `{section}` dependency `{dep_name}` uses path, forbidden for publishable crate manifests",
+                            manifest_path.display(),
                         ));
                     }
                 }
@@ -1248,8 +1275,8 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
                     .is_some()
                 {
                     errors.push(format!(
-                        "{} dependency `{dep_name}` uses git source, forbidden for publishable crates",
-                        manifest_path.display()
+                        "{} section `{section}` dependency `{dep_name}` uses git source, forbidden for publishable crates",
+                        manifest_path.display(),
                     ));
                 }
             }
@@ -1377,6 +1404,116 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
         }
         checked_crates.push(crate_name.to_string());
     }
+
+    let duplicate_threshold = dependency_policy
+        .get("duplicate_dependency_threshold")
+        .and_then(serde_json::Value::as_u64)
+        .unwrap_or(30) as usize;
+    let duplicate_output = ProcessCommand::new("cargo")
+        .args(["tree", "-d", "--workspace", "--prefix", "none"])
+        .current_dir(&root)
+        .output();
+    match duplicate_output {
+        Ok(output) if output.status.success() => {
+            let mut duplicates = BTreeSet::<String>::new();
+            for line in String::from_utf8_lossy(&output.stdout).lines() {
+                let trimmed = line.trim();
+                if trimmed.is_empty() {
+                    continue;
+                }
+                if let Some(name) = trimmed.split_whitespace().next() {
+                    duplicates.insert(name.to_string());
+                }
+            }
+            if duplicates.len() > duplicate_threshold {
+                warnings.push(format!(
+                    "duplicate dependency count {} exceeds threshold {}",
+                    duplicates.len(),
+                    duplicate_threshold
+                ));
+            }
+        }
+        Ok(output) => warnings.push(format!(
+            "cargo tree duplicate dependency scan failed: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        )),
+        Err(err) => warnings.push(format!("failed to run cargo tree duplicate scan: {err}")),
+    }
+
+    let cargo_deny_required = dependency_policy
+        .get("cargo_deny")
+        .and_then(serde_json::Value::as_object)
+        .and_then(|row| row.get("required"))
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
+    let cargo_deny_enabled = dependency_policy
+        .get("cargo_deny")
+        .and_then(serde_json::Value::as_object)
+        .and_then(|row| row.get("enabled"))
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
+    if cargo_deny_enabled {
+        match ProcessCommand::new("cargo")
+            .args(["deny", "check", "licenses", "bans", "sources"])
+            .current_dir(&root)
+            .output()
+        {
+            Ok(output) if output.status.success() => {}
+            Ok(output) => {
+                let message = format!(
+                    "cargo deny check failed: {}",
+                    String::from_utf8_lossy(&output.stderr).trim()
+                );
+                if cargo_deny_required {
+                    errors.push(message);
+                } else {
+                    warnings.push(message);
+                }
+            }
+            Err(err) => {
+                let message = format!("cargo deny is not available: {err}");
+                if cargo_deny_required {
+                    errors.push(message);
+                } else {
+                    warnings.push(message);
+                }
+            }
+        }
+    }
+
+    let examples_runtime_dir = root.join("configs/examples/runtime");
+    if !examples_runtime_dir.exists() {
+        errors.push("missing configs/examples/runtime directory".to_string());
+    } else {
+        let mut has_toml = false;
+        for entry in fs::read_dir(&examples_runtime_dir)
+            .map_err(|err| format!("failed to read {}: {err}", examples_runtime_dir.display()))?
+        {
+            let entry = entry.map_err(|err| format!("failed to read runtime config entry: {err}"))?;
+            let path = entry.path();
+            if path.extension().and_then(|ext| ext.to_str()) != Some("toml") {
+                continue;
+            }
+            has_toml = true;
+            let text = fs::read_to_string(&path)
+                .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+            let parsed: toml::Value = toml::from_str(&text)
+                .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+            let has_server = parsed
+                .get("server")
+                .and_then(toml::Value::as_table)
+                .is_some();
+            if !has_server {
+                errors.push(format!(
+                    "{} missing required [server] table",
+                    path.display()
+                ));
+            }
+        }
+        if !has_toml {
+            errors.push("no runtime TOML examples found under configs/examples/runtime".to_string());
+        }
+    }
     let changelog_validate = run_release_changelog_validate(ReleaseChangelogValidateArgs {
         repo_root: Some(root.clone()),
         version: args.version.clone(),
@@ -1394,6 +1531,7 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
         "kind": "release_validate",
         "repo_root": root.display().to_string(),
         "checked_crates": checked_crates,
+        "warnings": warnings,
         "errors": errors,
         "changelog_validation": changelog_payload
     });

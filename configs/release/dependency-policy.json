@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "forbidden_licenses": [
+    "GPL-3.0-only",
+    "AGPL-3.0-only"
+  ],
+  "duplicate_dependency_threshold": 30,
+  "cargo_deny": {
+    "enabled": true,
+    "required": false
+  }
+}
