@@ -50,6 +50,35 @@ fn write_json(path: &Path, value: &serde_json::Value) -> Result<(), String> {
     .map_err(|err| format!("failed to write {}: {err}", path.display()))
 }
 
+fn write_csv(path: &Path, header: &str, row: &str) -> Result<(), String> {
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
+    fs::write(path, format!("{header}\n{row}\n"))
+        .map_err(|err| format!("failed to write {}: {err}", path.display()))
+}
+
+fn validate_benchmark_result_shape(report: &serde_json::Value) -> bool {
+    report
+        .get("schema_version")
+        .and_then(serde_json::Value::as_i64)
+        == Some(1)
+        && report
+            .get("scenario")
+            .and_then(serde_json::Value::as_str)
+            .is_some()
+        && report
+            .get("latency_ms")
+            .and_then(|value| value.get("p99"))
+            .and_then(serde_json::Value::as_f64)
+            .is_some()
+        && report
+            .get("throughput_rps")
+            .and_then(serde_json::Value::as_f64)
+            .is_some()
+}
+
 fn load_perf_scenario(name: &str) -> Result<serde_json::Value, String> {
     match name {
         "gene-lookup" => Ok(serde_json::json!({
@@ -445,14 +474,72 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
         }
     });
 
+    ensure_json(&root.join("configs/contracts/perf/benchmark-result.schema.json"))?;
+    let benchmark_result_valid = validate_benchmark_result_shape(&report);
+
     let report_path = root.join(format!("artifacts/perf/{}-load.json", args.scenario));
     write_json(&report_path, &report)?;
-    let baseline_path = root.join(format!("ops/report/{}-baseline.json", args.scenario));
+    let benchmark_artifacts_root = root.join("artifacts/benchmarks");
+    let benchmark_report_path = benchmark_artifacts_root.join(format!("{}-result.json", args.scenario));
+    write_json(&benchmark_report_path, &report)?;
+    let benchmark_csv_path = benchmark_artifacts_root.join(format!("{}-result.csv", args.scenario));
+    write_csv(
+        &benchmark_csv_path,
+        "scenario,latency_p50_ms,latency_p95_ms,latency_p99_ms,throughput_rps,error_rate_percent,rss_mb,cpu_percent",
+        &format!(
+            "{},{:.3},{:.3},{:.3},{:.3},{:.3},{:.3},{:.3}",
+            args.scenario,
+            percentile_ms(&samples, 0.50),
+            percentile_ms(&samples, 0.95),
+            p99,
+            throughput_rps,
+            error_rate_percent,
+            rss_mb,
+            cpu_percent
+        ),
+    )?;
     let history_runs = budgets
         .get("regression_window")
         .and_then(|value| value.get("history_runs"))
         .and_then(serde_yaml::Value::as_i64)
         .unwrap_or(5);
+    let summary_path = benchmark_artifacts_root.join(format!("{}-summary.json", args.scenario));
+    let summary = serde_json::json!({
+        "schema_version": 1,
+        "scenario": args.scenario,
+        "report_path": format!("artifacts/benchmarks/{}-result.json", args.scenario),
+        "csv_path": format!("artifacts/benchmarks/{}-result.csv", args.scenario),
+        "status": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 && perf_cpu_001 && benchmark_result_valid { "ok" } else { "failed" },
+        "latency_p99_ms": p99,
+        "throughput_rps": throughput_rps,
+        "regression_window_runs": history_runs
+    });
+    write_json(&summary_path, &summary)?;
+    let history_path = benchmark_artifacts_root.join(format!("{}-history.json", args.scenario));
+    let mut history_entries = if history_path.exists() {
+        read_json(&history_path)?
+            .get("runs")
+            .and_then(serde_json::Value::as_array)
+            .cloned()
+            .unwrap_or_default()
+    } else {
+        Vec::new()
+    };
+    history_entries.push(serde_json::json!({
+        "run_index": history_entries.len() + 1,
+        "latency_p99_ms": p99,
+        "throughput_rps": throughput_rps,
+        "error_rate_percent": error_rate_percent
+    }));
+    write_json(
+        &history_path,
+        &serde_json::json!({
+            "schema_version": 1,
+            "scenario": args.scenario,
+            "runs": history_entries
+        }),
+    )?;
+    let baseline_path = root.join(format!("ops/report/{}-baseline.json", args.scenario));
     let rendered = emit_payload(
         args.format,
         args.out,
@@ -462,10 +549,17 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
             "text": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 && perf_cpu_001 { "perf run passed" } else { "perf run failed" },
             "rows": [{
                 "report_path": format!("artifacts/perf/{}-load.json", args.scenario),
+                "benchmark_report_path": format!("artifacts/benchmarks/{}-result.json", args.scenario),
+                "benchmark_csv_path": format!("artifacts/benchmarks/{}-result.csv", args.scenario),
+                "benchmark_summary_path": format!("artifacts/benchmarks/{}-summary.json", args.scenario),
+                "benchmark_history_path": format!("artifacts/benchmarks/{}-history.json", args.scenario),
                 "scenario": args.scenario,
                 "baseline_path": format!("ops/report/{}-baseline.json", args.scenario),
                 "regression_window_runs": history_runs,
                 "contracts": report["contracts"].clone(),
+                "benchmark_contracts": {
+                    "PERF-BENCH-RESULT-001": benchmark_result_valid
+                },
                 "latency_ms": report["latency_ms"].clone(),
                 "memory_mb": report["memory_mb"].clone(),
                 "cpu_percent": report["cpu_percent"].clone(),
@@ -474,7 +568,7 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
             }],
             "summary": {
                 "total": 1,
-                "errors": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 && perf_cpu_001 { 0 } else { 1 },
+                "errors": if report_valid && perf_load_002 && perf_load_003 && perf_load_004 && perf_mem_001 && perf_cpu_001 && benchmark_result_valid { 0 } else { 1 },
                 "warnings": 0
             }
         }),
@@ -488,6 +582,7 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
             && perf_load_004
             && perf_mem_001
             && perf_cpu_001
+            && benchmark_result_valid
         {
             0
         } else {
