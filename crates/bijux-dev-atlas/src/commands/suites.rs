@@ -419,7 +419,7 @@ impl<T> Pipe for T {}
 fn normalized_contract_command(command: &str, mode: &str, contract_id: &str) -> String {
     if command == "bijux dev atlas ops check" {
         format!(
-            "bijux dev atlas contracts ops --mode {} --only {}",
+            "bijux dev atlas contract run --domain ops --mode {} --only {}",
             if mode == "effect" { "effect" } else { "static" },
             contract_id
         )
@@ -499,10 +499,10 @@ fn known_commands_local(root: &Path) -> Result<BTreeSet<String>, String> {
         .collect::<BTreeSet<_>>();
     let mut commands = targets;
     commands.extend([
-        "bijux dev atlas contracts ops --mode static".to_string(),
-        "bijux dev atlas contracts ops --mode effect".to_string(),
-        "bijux dev atlas contracts ops --mode static --only".to_string(),
-        "bijux dev atlas contracts ops --mode effect --only".to_string(),
+        "bijux dev atlas contract run --domain ops --mode static".to_string(),
+        "bijux dev atlas contract run --domain ops --mode effect".to_string(),
+        "bijux dev atlas contract run --domain ops --mode static --only".to_string(),
+        "bijux dev atlas contract run --domain ops --mode effect --only".to_string(),
     ]);
     let checks_registry: serde_json::Value = read_json_file(&checks_registry_path(root))?;
     for check in checks_registry["checks"].as_array().into_iter().flatten() {

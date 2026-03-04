@@ -11,11 +11,11 @@ OPS_CONTRACTS_ARTIFACT_ROOT ?= $(ARTIFACT_ROOT)/ops-contracts/$(RUN_ID)
 ops: ## Canonical ops gate
 	@$(DEV_ATLAS) ops doctor --profile $(PROFILE) --format $(FORMAT)
 
-ops-contracts: ## Run static ops contracts via dev-atlas contracts runner
-	@mkdir -p $(OPS_CONTRACTS_ARTIFACT_ROOT) && printf '%s\n' "run: $(DEV_ATLAS) contracts ops --mode static --artifacts-root $(OPS_CONTRACTS_ARTIFACT_ROOT)" && $(DEV_ATLAS) contracts ops --mode static --artifacts-root $(OPS_CONTRACTS_ARTIFACT_ROOT)
+ops-contracts: ## Run static ops contracts via dev-atlas contract runner
+	@mkdir -p $(OPS_CONTRACTS_ARTIFACT_ROOT) && printf '%s\n' "run: $(DEV_ATLAS) contract run --mode static --domain ops --artifacts-root $(OPS_CONTRACTS_ARTIFACT_ROOT)" && $(DEV_ATLAS) contract run --mode static --domain ops --artifacts-root $(OPS_CONTRACTS_ARTIFACT_ROOT)
 
-ops-contracts-effect: ## Run effect ops contracts via dev-atlas contracts runner
-	@mkdir -p $(OPS_CONTRACTS_ARTIFACT_ROOT) && printf '%s\n' "run: $(DEV_ATLAS) contracts ops --mode effect --allow-subprocess --allow-network --artifacts-root $(OPS_CONTRACTS_ARTIFACT_ROOT)" && $(DEV_ATLAS) contracts ops --mode effect --allow-subprocess --allow-network --artifacts-root $(OPS_CONTRACTS_ARTIFACT_ROOT)
+ops-contracts-effect: ## Run effect ops contracts via dev-atlas contract runner
+	@mkdir -p $(OPS_CONTRACTS_ARTIFACT_ROOT) && printf '%s\n' "run: $(DEV_ATLAS) contract run --mode effect --domain ops --allow-subprocess --allow-network --artifacts-root $(OPS_CONTRACTS_ARTIFACT_ROOT)" && $(DEV_ATLAS) contract run --mode effect --domain ops --allow-subprocess --allow-network --artifacts-root $(OPS_CONTRACTS_ARTIFACT_ROOT)
 
 ops-help: ## Show ops control-plane command surface
 	@$(DEV_ATLAS) ops --help

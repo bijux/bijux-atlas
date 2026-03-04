@@ -274,7 +274,7 @@ pub(super) fn domain_descriptor(name: &str) -> Option<DomainDescriptor> {
             name: "docker",
             contracts_fn: contracts::docker::contracts,
             explain_fn: contracts::docker::contract_explain,
-            gate_fn: |_id| "bijux dev atlas contracts docker --mode static",
+            gate_fn: |_id| "bijux dev atlas contract run --domain docker --mode static",
         }),
         "make" => Some(DomainDescriptor {
             name: "make",
