@@ -44,6 +44,7 @@ Facts live here. Procedures do not. Use this section for stable names, keys, sch
 - Crate feature flags: [Crate feature flags](crate-feature-flags.md)
 - Crate dependency graph: [Crate dependency graph](crate-dependency-graph.md)
 - Breaking change checklist: [Breaking change checklist](breaking-change-checklist.md)
+- Release bundle index: [Release bundle index](release-bundle-index.md)
 - Query semantics: [Querying reference](querying/index.md), [Pagination](querying/pagination.md)
 - Dataset semantics: [Dataset and artifact reference](datasets/index.md)
 - Working examples: [Examples index](examples/index.md)

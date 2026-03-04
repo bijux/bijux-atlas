@@ -41,3 +41,7 @@ Images should carry OCI labels for source, revision, version, and license.
 - [Runtime image contract](../operations/runtime-image-contract.md)
 - [Image security update policy](../operations/image-security-update-policy.md)
 - [Docker build network policy](../operations/docker-build-network-policy.md)
+- [GHCR usage](../operations/ghcr-usage.md)
+- [Image compatibility policy](../operations/image-compatibility-policy.md)
+- [Image tag deprecation policy](../operations/image-tag-deprecation-policy.md)
+- [Local docker build policy](../operations/local-docker-build-policy.md)
