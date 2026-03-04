@@ -133,6 +133,24 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             crate::cli::OpsObsCommand::Validate(common) => {
                 crate::ops_execution_runtime::run_ops_obs_verify(&common)
             }
+            crate::cli::OpsObsCommand::Slo { command } => match command {
+                crate::cli::OpsObsSloCommand::List(common) => {
+                    crate::ops_execution_runtime::run_ops_observe_slo_list(&common)
+                }
+                crate::cli::OpsObsSloCommand::Verify(common) => {
+                    crate::ops_execution_runtime::run_ops_observe_slo_verify(&common)
+                }
+            },
+            crate::cli::OpsObsCommand::Alerts { command } => match command {
+                crate::cli::OpsObsAlertsCommand::Verify(common) => {
+                    crate::ops_execution_runtime::run_ops_observe_alerts_verify(&common)
+                }
+            },
+            crate::cli::OpsObsCommand::Runbooks { command } => match command {
+                crate::cli::OpsObsRunbooksCommand::Verify(common) => {
+                    crate::ops_execution_runtime::run_ops_observe_runbooks_verify(&common)
+                }
+            },
             crate::cli::OpsObsCommand::Drill {
                 command: crate::cli::OpsObsDrillCommand::Run(common),
             } => crate::ops_execution_runtime::run_ops_drill(&crate::cli::OpsDrillRunArgs {
@@ -154,6 +172,16 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                     | crate::cli::OpsObsCommand::Down(common)
                     | crate::cli::OpsObsCommand::Snapshot(common)
                     | crate::cli::OpsObsCommand::Dashboards(common) => common,
+                    crate::cli::OpsObsCommand::Slo { command } => match command {
+                        crate::cli::OpsObsSloCommand::List(common)
+                        | crate::cli::OpsObsSloCommand::Verify(common) => common,
+                    },
+                    crate::cli::OpsObsCommand::Alerts { command } => match command {
+                        crate::cli::OpsObsAlertsCommand::Verify(common) => common,
+                    },
+                    crate::cli::OpsObsCommand::Runbooks { command } => match command {
+                        crate::cli::OpsObsRunbooksCommand::Verify(common) => common,
+                    },
                     crate::cli::OpsObsCommand::Drill {
                         command: crate::cli::OpsObsDrillCommand::Run(common),
                     } => common,
@@ -632,6 +660,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             };
             Ok((rendered, code))
         }
+        OpsCommand::Readiness(common) => crate::ops_execution_runtime::run_ops_observe_readiness(&common),
         OpsCommand::Render(args) => crate::ops_execution_runtime::run_ops_render(&args),
         OpsCommand::Logs { command } => match command {
             crate::cli::OpsCollectCommand::Collect(args) => {

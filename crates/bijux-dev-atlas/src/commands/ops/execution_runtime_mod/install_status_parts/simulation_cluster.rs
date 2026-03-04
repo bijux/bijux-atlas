@@ -4,6 +4,389 @@
 use super::*;
 use std::time::Duration;
 
+fn write_observe_contract_report(
+    repo_root: &std::path::Path,
+    run_id: &RunId,
+    file_name: &str,
+    payload: &serde_json::Value,
+) -> Result<String, String> {
+    let out_dir = repo_root.join("artifacts/ops").join(run_id.as_str()).join("observe");
+    std::fs::create_dir_all(&out_dir)
+        .map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
+    let out_path = out_dir.join(file_name);
+    std::fs::write(
+        &out_path,
+        serde_json::to_string_pretty(payload).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
+    Ok(out_path
+        .strip_prefix(repo_root)
+        .unwrap_or(&out_path)
+        .display()
+        .to_string())
+}
+
+pub(crate) fn run_ops_observe_slo_list(common: &OpsCommonArgs) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let slo_path = repo_root.join("ops/observe/slo-definitions.json");
+    let slo: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(&slo_path)
+            .map_err(|err| format!("failed to read {}: {err}", slo_path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", slo_path.display()))?;
+    let rows = slo
+        .get("slos")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "text": "observe slo list",
+        "rows": rows,
+        "summary": {"total": rows.len(), "errors": 0, "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, 0))
+}
+
+pub(crate) fn run_ops_observe_slo_verify(common: &OpsCommonArgs) -> Result<(String, i32), String> {
+    if !common.allow_write {
+        return Err("observe slo verify requires --allow-write".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let slo: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(repo_root.join("ops/observe/slo-definitions.json"))
+            .map_err(|err| format!("failed to read slo-definitions.json: {err}"))?,
+    )
+    .map_err(|err| format!("failed to parse slo-definitions.json: {err}"))?;
+    let measurement: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(repo_root.join("ops/observe/slo-measurement.json"))
+            .map_err(|err| format!("failed to read slo-measurement.json: {err}"))?,
+    )
+    .map_err(|err| format!("failed to parse slo-measurement.json: {err}"))?;
+    let metric_map: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(repo_root.join("ops/observe/slo-metric-map.json"))
+            .map_err(|err| format!("failed to read slo-metric-map.json: {err}"))?,
+    )
+    .map_err(|err| format!("failed to parse slo-metric-map.json: {err}"))?;
+    let mut errors = Vec::new();
+    let slos = slo
+        .get("slos")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let measurement_obj = measurement
+        .get("measurement_method")
+        .and_then(serde_json::Value::as_object)
+        .cloned()
+        .unwrap_or_default();
+    let map_rows = metric_map
+        .get("slo_metric_map")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    for slo_row in &slos {
+        let Some(id) = slo_row.get("id").and_then(serde_json::Value::as_str) else {
+            errors.push("slo missing id".to_string());
+            continue;
+        };
+        if !measurement_obj.contains_key(id) {
+            errors.push(format!("measurement method missing for slo `{id}`"));
+        }
+        let map_exists = map_rows.iter().any(|row| {
+            row.get("slo_id")
+                .and_then(serde_json::Value::as_str)
+                .is_some_and(|value| value == id)
+        });
+        if !map_exists {
+            errors.push(format!("metric map missing for slo `{id}`"));
+        }
+    }
+    let report = serde_json::json!({
+        "schema_version": 1,
+        "status": if errors.is_empty() { "ok" } else { "failed" },
+        "slos_total": slos.len(),
+        "errors": errors,
+    });
+    let report_rel = write_observe_contract_report(&repo_root, &run_id, "slo-contract-report.json", &report)?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": report["status"].clone(),
+        "text": "observe slo verify",
+        "rows": [{"report_path": report_rel, "errors": report["errors"].clone()}],
+        "summary": {"total": 1, "errors": report["errors"].as_array().map(|v| v.len()).unwrap_or(0), "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, if errors.is_empty() { 0 } else { 1 }))
+}
+
+pub(crate) fn run_ops_observe_alerts_verify(common: &OpsCommonArgs) -> Result<(String, i32), String> {
+    if !common.allow_write {
+        return Err("observe alerts verify requires --allow-write".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let contract: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(repo_root.join("ops/observe/contracts/alerts-contract.json"))
+            .map_err(|err| format!("failed to read alerts-contract.json: {err}"))?,
+    )
+    .map_err(|err| format!("failed to parse alerts-contract.json: {err}"))?;
+    let required = contract
+        .get("required_alerts")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|row| row.as_str().map(ToString::to_string))
+        .collect::<std::collections::BTreeSet<_>>();
+    let mut observed = std::collections::BTreeSet::new();
+    let mut errors = Vec::new();
+    for alerts_file in [
+        "ops/observe/alerts/atlas-alert-rules.yaml",
+        "ops/observe/alerts/slo-burn-rules.yaml",
+    ] {
+        let alerts_path = repo_root.join(alerts_file);
+        let alert_rules: serde_yaml::Value = serde_yaml::from_str(
+            &std::fs::read_to_string(&alerts_path)
+                .map_err(|err| format!("failed to read {}: {err}", alerts_path.display()))?,
+        )
+        .map_err(|err| format!("failed to parse {}: {err}", alerts_path.display()))?;
+        let groups = alert_rules
+            .get("spec")
+            .and_then(|row| row.get("groups"))
+            .and_then(serde_yaml::Value::as_sequence)
+            .cloned()
+            .unwrap_or_default();
+        for group in &groups {
+            let rules = group
+                .get("rules")
+                .and_then(serde_yaml::Value::as_sequence)
+                .cloned()
+                .unwrap_or_default();
+            for rule in rules {
+                if let Some(name) = rule.get("alert").and_then(serde_yaml::Value::as_str) {
+                    observed.insert(name.to_string());
+                }
+                let labels = rule
+                    .get("labels")
+                    .and_then(serde_yaml::Value::as_mapping)
+                    .cloned()
+                    .unwrap_or_default();
+                for required_label in ["severity", "subsystem", "alert_contract_version"] {
+                    let key = serde_yaml::Value::String(required_label.to_string());
+                    if !labels.contains_key(&key) {
+                        errors.push(format!("alert missing label `{required_label}` in {alerts_file}"));
+                    }
+                }
+                let runbook = rule
+                    .get("annotations")
+                    .and_then(|row| row.get("runbook"))
+                    .and_then(serde_yaml::Value::as_str)
+                    .unwrap_or_default();
+                if runbook.is_empty() {
+                    errors.push(format!("alert missing annotations.runbook in {alerts_file}"));
+                }
+            }
+        }
+    }
+    for alert in required {
+        if !observed.contains(&alert) {
+            errors.push(format!("required alert missing from alert rules: `{alert}`"));
+        }
+    }
+    let report = serde_json::json!({
+        "schema_version": 1,
+        "status": if errors.is_empty() { "ok" } else { "failed" },
+        "alerts_total": observed.len(),
+        "errors": errors
+    });
+    let report_rel =
+        write_observe_contract_report(&repo_root, &run_id, "alerts-contract-report.json", &report)?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": report["status"].clone(),
+        "text": "observe alerts verify",
+        "rows": [{"report_path": report_rel, "errors": report["errors"].clone()}],
+        "summary": {"total": 1, "errors": report["errors"].as_array().map(|v| v.len()).unwrap_or(0), "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, if report["errors"].as_array().is_some_and(|v| v.is_empty()) { 0 } else { 1 }))
+}
+
+pub(crate) fn run_ops_observe_runbooks_verify(common: &OpsCommonArgs) -> Result<(String, i32), String> {
+    if !common.allow_write {
+        return Err("observe runbooks verify requires --allow-write".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let mut errors = Vec::new();
+    let mut checked = 0usize;
+    for alerts_file in [
+        "ops/observe/alerts/atlas-alert-rules.yaml",
+        "ops/observe/alerts/slo-burn-rules.yaml",
+    ] {
+        let alerts_path = repo_root.join(alerts_file);
+        let alert_rules: serde_yaml::Value = serde_yaml::from_str(
+            &std::fs::read_to_string(&alerts_path)
+                .map_err(|err| format!("failed to read {}: {err}", alerts_path.display()))?,
+        )
+        .map_err(|err| format!("failed to parse {}: {err}", alerts_path.display()))?;
+        let groups = alert_rules
+            .get("spec")
+            .and_then(|row| row.get("groups"))
+            .and_then(serde_yaml::Value::as_sequence)
+            .cloned()
+            .unwrap_or_default();
+        for group in &groups {
+            let rules = group
+                .get("rules")
+                .and_then(serde_yaml::Value::as_sequence)
+                .cloned()
+                .unwrap_or_default();
+            for rule in rules {
+                let runbook = rule
+                    .get("annotations")
+                    .and_then(|row| row.get("runbook"))
+                    .and_then(serde_yaml::Value::as_str)
+                    .unwrap_or_default();
+                if runbook.is_empty() {
+                    errors.push(format!("alert missing runbook path in {alerts_file}"));
+                    continue;
+                }
+                let runbook_path = repo_root.join(runbook);
+                checked += 1;
+                if !runbook_path.exists() {
+                    errors.push(format!("runbook file does not exist: {runbook}"));
+                    continue;
+                }
+                let content = std::fs::read_to_string(&runbook_path)
+                    .map_err(|err| format!("failed to read {}: {err}", runbook_path.display()))?;
+                if !content.to_ascii_lowercase().contains("evidence") {
+                    errors.push(format!("runbook does not describe required evidence bundle: {runbook}"));
+                }
+            }
+        }
+    }
+    let report = serde_json::json!({
+        "schema_version": 1,
+        "status": if errors.is_empty() { "ok" } else { "failed" },
+        "runbooks_checked": checked,
+        "errors": errors
+    });
+    let report_rel = write_observe_contract_report(
+        &repo_root,
+        &run_id,
+        "runbooks-contract-report.json",
+        &report,
+    )?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": report["status"].clone(),
+        "text": "observe runbooks verify",
+        "rows": [{"report_path": report_rel, "errors": report["errors"].clone()}],
+        "summary": {"total": 1, "errors": report["errors"].as_array().map(|v| v.len()).unwrap_or(0), "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, if report["errors"].as_array().is_some_and(|v| v.is_empty()) { 0 } else { 1 }))
+}
+
+pub(crate) fn run_ops_observe_readiness(common: &OpsCommonArgs) -> Result<(String, i32), String> {
+    if !common.allow_write {
+        return Err("observe readiness requires --allow-write".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let base = repo_root.join("artifacts/ops").join(run_id.as_str()).join("observe");
+    let read_report = |name: &str| -> serde_json::Value {
+        let path = base.join(name);
+        std::fs::read_to_string(&path)
+            .ok()
+            .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
+            .unwrap_or_else(|| serde_json::json!({
+                "status":"missing",
+                "errors":[format!("missing report {}", path.display())]
+            }))
+    };
+    let slo = read_report("slo-contract-report.json");
+    let alerts = read_report("alerts-contract-report.json");
+    let runbooks = read_report("runbooks-contract-report.json");
+    let checks = [slo.clone(), alerts.clone(), runbooks.clone()];
+    let passed = checks
+        .iter()
+        .filter(|row| row.get("status").and_then(serde_json::Value::as_str) == Some("ok"))
+        .count();
+    let total = checks.len();
+    let completeness = if total == 0 { 0.0 } else { passed as f64 / total as f64 };
+    let threshold = 1.0f64;
+    let status = if completeness >= threshold { "ok" } else { "failed" };
+    let report = serde_json::json!({
+        "schema_version": 1,
+        "status": status,
+        "completeness": completeness,
+        "threshold": threshold,
+        "reports": {
+            "slo": format!("artifacts/ops/{}/observe/slo-contract-report.json", run_id.as_str()),
+            "alerts": format!("artifacts/ops/{}/observe/alerts-contract-report.json", run_id.as_str()),
+            "runbooks": format!("artifacts/ops/{}/observe/runbooks-contract-report.json", run_id.as_str())
+        }
+    });
+    let report_rel = write_observe_contract_report(
+        &repo_root,
+        &run_id,
+        "operational-readiness-report.json",
+        &report,
+    )?;
+    let human_rel = {
+        let out_dir = repo_root.join("artifacts/ops").join(run_id.as_str()).join("observe");
+        std::fs::create_dir_all(&out_dir)
+            .map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
+        let out_path = out_dir.join("operational-readiness-report.md");
+        let lines = vec![
+            "# Operational Readiness Report".to_string(),
+            format!("- Status: {}", status),
+            format!("- Completeness: {:.2}", completeness),
+            format!("- Threshold: {:.2}", threshold),
+            format!(
+                "- SLO report: artifacts/ops/{}/observe/slo-contract-report.json",
+                run_id.as_str()
+            ),
+            format!(
+                "- Alerts report: artifacts/ops/{}/observe/alerts-contract-report.json",
+                run_id.as_str()
+            ),
+            format!(
+                "- Runbooks report: artifacts/ops/{}/observe/runbooks-contract-report.json",
+                run_id.as_str()
+            ),
+        ];
+        std::fs::write(&out_path, lines.join("\n") + "\n")
+            .map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
+        out_path
+            .strip_prefix(&repo_root)
+            .unwrap_or(&out_path)
+            .display()
+            .to_string()
+    };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": status,
+        "text": "observe readiness report",
+        "rows": [{
+            "report_path": report_rel,
+            "human_report_path": human_rel,
+            "completeness": completeness,
+            "threshold": threshold,
+            "slo": slo,
+            "alerts": alerts,
+            "runbooks": runbooks
+        }],
+        "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
 pub(crate) fn run_ops_obs_verify(common: &OpsCommonArgs) -> Result<(String, i32), String> {
     if !common.allow_subprocess {
         return Err("obs verify requires --allow-subprocess".to_string());

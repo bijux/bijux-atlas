@@ -404,6 +404,15 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 action: "observe-dashboards".to_string(),
                 common,
             },
+            OpsObsCommand::Slo { command } => OpsCommand::Obs {
+                command: OpsObsCommand::Slo { command },
+            },
+            OpsObsCommand::Alerts { command } => OpsCommand::Obs {
+                command: OpsObsCommand::Alerts { command },
+            },
+            OpsObsCommand::Runbooks { command } => OpsCommand::Obs {
+                command: OpsObsCommand::Runbooks { command },
+            },
             OpsObsCommand::Drill { command } => match command {
                 OpsObsDrillCommand::Run(common) => OpsCommand::Explain {
                     action: "obs-drill-run".to_string(),
@@ -455,10 +464,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 action: "report-diff".to_string(),
                 common,
             },
-            OpsReportCommand::Readiness(common) => OpsCommand::Explain {
-                action: "report-readiness".to_string(),
-                common,
-            },
+            OpsReportCommand::Readiness(common) => OpsCommand::Readiness(common),
             OpsReportCommand::Bundle(common) => OpsCommand::Explain {
                 action: "report-bundle".to_string(),
                 common,
@@ -469,10 +475,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             common,
         },
         OpsCommand::DocsVerify(common) => OpsCommand::Docs(common),
-        OpsCommand::Readiness(common) => OpsCommand::Explain {
-            action: "report-readiness".to_string(),
-            common,
-        },
+        OpsCommand::Readiness(common) => OpsCommand::Readiness(common),
         other => other,
     };
 

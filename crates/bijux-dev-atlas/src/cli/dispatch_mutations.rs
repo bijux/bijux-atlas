@@ -395,6 +395,16 @@ fn force_json_ops(command: &mut OpsCommand) {
             | crate::cli::OpsObsCommand::Snapshot(common)
             | crate::cli::OpsObsCommand::Dashboards(common)
             | crate::cli::OpsObsCommand::Verify(common) => common.format = FormatArg::Json,
+            crate::cli::OpsObsCommand::Slo { command } => match command {
+                crate::cli::OpsObsSloCommand::List(common)
+                | crate::cli::OpsObsSloCommand::Verify(common) => common.format = FormatArg::Json,
+            },
+            crate::cli::OpsObsCommand::Alerts { command } => match command {
+                crate::cli::OpsObsAlertsCommand::Verify(common) => common.format = FormatArg::Json,
+            },
+            crate::cli::OpsObsCommand::Runbooks { command } => match command {
+                crate::cli::OpsObsRunbooksCommand::Verify(common) => common.format = FormatArg::Json,
+            },
             crate::cli::OpsObsCommand::Drill { command } => match command {
                 crate::cli::OpsObsDrillCommand::Run(common) => common.format = FormatArg::Json,
             },
@@ -1158,6 +1168,22 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 | crate::cli::OpsObsCommand::Verify(common) => {
                     common.repo_root = Some(root.clone())
                 }
+                crate::cli::OpsObsCommand::Slo { command } => match command {
+                    crate::cli::OpsObsSloCommand::List(common)
+                    | crate::cli::OpsObsSloCommand::Verify(common) => {
+                        common.repo_root = Some(root.clone())
+                    }
+                },
+                crate::cli::OpsObsCommand::Alerts { command } => match command {
+                    crate::cli::OpsObsAlertsCommand::Verify(common) => {
+                        common.repo_root = Some(root.clone())
+                    }
+                },
+                crate::cli::OpsObsCommand::Runbooks { command } => match command {
+                    crate::cli::OpsObsRunbooksCommand::Verify(common) => {
+                        common.repo_root = Some(root.clone())
+                    }
+                },
                 crate::cli::OpsObsCommand::Drill { command } => match command {
                     crate::cli::OpsObsDrillCommand::Run(common) => {
                         common.repo_root = Some(root.clone())

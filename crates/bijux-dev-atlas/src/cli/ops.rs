@@ -70,6 +70,7 @@ pub enum OpsCommand {
         #[command(subcommand)]
         command: OpsScenarioCommand,
     },
+    #[command(alias = "observe")]
     Obs {
         #[command(subcommand)]
         command: OpsObsCommand,
@@ -409,6 +410,18 @@ pub enum OpsObsCommand {
     Validate(OpsCommonArgs),
     Snapshot(OpsCommonArgs),
     Dashboards(OpsCommonArgs),
+    Slo {
+        #[command(subcommand)]
+        command: OpsObsSloCommand,
+    },
+    Alerts {
+        #[command(subcommand)]
+        command: OpsObsAlertsCommand,
+    },
+    Runbooks {
+        #[command(subcommand)]
+        command: OpsObsRunbooksCommand,
+    },
     Drill {
         #[command(subcommand)]
         command: OpsObsDrillCommand,
@@ -419,6 +432,22 @@ pub enum OpsObsCommand {
 #[derive(Subcommand, Debug, Clone)]
 pub enum OpsObsDrillCommand {
     Run(OpsCommonArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsObsSloCommand {
+    List(OpsCommonArgs),
+    Verify(OpsCommonArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsObsAlertsCommand {
+    Verify(OpsCommonArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsObsRunbooksCommand {
+    Verify(OpsCommonArgs),
 }
 
 #[derive(Subcommand, Debug, Clone)]
