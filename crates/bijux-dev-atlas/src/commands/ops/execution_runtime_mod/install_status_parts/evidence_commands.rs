@@ -6,6 +6,49 @@ use std::io::Read;
 use std::net::{Shutdown, TcpStream};
 use std::time::Duration;
 
+fn read_json_value(path: &std::path::Path) -> Result<serde_json::Value, String> {
+    serde_json::from_str(
+        &std::fs::read_to_string(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", path.display()))
+}
+
+fn write_evidence_artifact(
+    repo_root: &std::path::Path,
+    relative_path: &str,
+    value: &serde_json::Value,
+) -> Result<serde_json::Value, String> {
+    let path = repo_root.join(relative_path);
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
+    std::fs::write(
+        &path,
+        serde_json::to_string_pretty(value).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
+    Ok(serde_json::json!({
+        "path": relative_path,
+        "sha256": sha256_file(&path)?
+    }))
+}
+
+fn rendered_manifest_from_evidence(
+    repo_root: &std::path::Path,
+    run_id: &str,
+) -> Option<String> {
+    let render_evidence_path = repo_root.join(format!("artifacts/ops/evidence/{run_id}/render-evidence.json"));
+    let render_evidence = read_json_value(&render_evidence_path).ok()?;
+    let render_rel = render_evidence
+        .get("render_index_files")
+        .and_then(serde_json::Value::as_array)
+        .and_then(|rows| rows.first())
+        .and_then(|row| row.get("path"))
+        .and_then(serde_json::Value::as_str)?;
+    std::fs::read_to_string(repo_root.join("artifacts/ops").join(run_id).join(render_rel)).ok()
+}
+
 pub(super) fn git_head_sha(process: &OpsProcess, repo_root: &std::path::Path) -> Result<String, String> {
     let argv = vec!["rev-parse".to_string(), "HEAD".to_string()];
     let (stdout, _) = process
@@ -211,6 +254,105 @@ pub(crate) fn run_ops_evidence_collect(
         serde_json::to_string_pretty(&provenance).map_err(|err| err.to_string())?,
     )
     .map_err(|err| format!("failed to write {}: {err}", provenance_path.display()))?;
+    let install_evidence_path = format!("artifacts/ops/evidence/{}/install-evidence.json", run_id.as_str());
+    let render_evidence_path = format!("artifacts/ops/evidence/{}/render-evidence.json", run_id.as_str());
+    let validate_evidence_path = format!("artifacts/ops/evidence/{}/validate-evidence.json", run_id.as_str());
+    let _install_evidence = read_json_value(&repo_root.join(&install_evidence_path))?;
+    let render_evidence = read_json_value(&repo_root.join(&render_evidence_path))?;
+    let validate_evidence = read_json_value(&repo_root.join(&validate_evidence_path))?;
+    let install_matrix = read_json_value(&repo_root.join("ops/k8s/install-matrix.json"))?;
+    let validated_profiles = install_matrix
+        .get("profiles")
+        .and_then(serde_json::Value::as_array)
+        .map(|rows| {
+            rows.iter()
+                .filter_map(|row| row.get("name").and_then(serde_json::Value::as_str))
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    let install_matrix_artifact = write_evidence_artifact(
+        &repo_root,
+        &format!("artifacts/ops/evidence/{}/install-matrix-report.json", run_id.as_str()),
+        &serde_json::json!({
+            "schema_version": 1,
+            "run_id": run_id.as_str(),
+            "validated_profiles": validated_profiles,
+            "source_install_matrix": "ops/k8s/install-matrix.json"
+        }),
+    )?;
+    let render_matrix_artifact = write_evidence_artifact(
+        &repo_root,
+        &format!("artifacts/ops/evidence/{}/render-matrix-report.json", run_id.as_str()),
+        &serde_json::json!({
+            "schema_version": 1,
+            "run_id": run_id.as_str(),
+            "target": render_evidence.get("target").and_then(serde_json::Value::as_str).unwrap_or("unknown"),
+            "profile": render_evidence.get("profile").and_then(serde_json::Value::as_str).unwrap_or("unknown"),
+            "render_index_files": render_evidence.get("render_index_files").cloned().unwrap_or_else(|| serde_json::json!([]))
+        }),
+    )?;
+    let schema_coverage_artifact = write_evidence_artifact(
+        &repo_root,
+        &format!("artifacts/ops/evidence/{}/schema-coverage-report.json", run_id.as_str()),
+        &serde_json::json!({
+            "schema_version": 1,
+            "run_id": run_id.as_str(),
+            "ops_schema_validate": validate_evidence.pointer("/pipeline/rows")
+                .and_then(serde_json::Value::as_array)
+                .and_then(|rows| rows.iter().find(|row| row.get("name").and_then(serde_json::Value::as_str) == Some("ops_schema_validate")))
+                .cloned()
+                .unwrap_or_else(|| serde_json::json!({"status":"unknown"})),
+            "values_schema_source": "ops/k8s/charts/bijux-atlas/values.schema.json"
+        }),
+    )?;
+    let rendered_manifest = rendered_manifest_from_evidence(&repo_root, run_id.as_str()).unwrap_or_default();
+    let network_policy_count = rendered_manifest.matches("kind: NetworkPolicy").count();
+    let rbac_count = ["kind: Role\n", "kind: ClusterRole\n", "kind: RoleBinding\n", "kind: ClusterRoleBinding\n"]
+        .iter()
+        .map(|needle| rendered_manifest.matches(needle).count())
+        .sum::<usize>();
+    let network_policy_artifact = write_evidence_artifact(
+        &repo_root,
+        &format!("artifacts/ops/evidence/{}/network-policy-coverage-report.json", run_id.as_str()),
+        &serde_json::json!({
+            "schema_version": 1,
+            "run_id": run_id.as_str(),
+            "network_policy_resources": network_policy_count,
+            "render_source": render_evidence_path
+        }),
+    )?;
+    let rbac_coverage_artifact = write_evidence_artifact(
+        &repo_root,
+        &format!("artifacts/ops/evidence/{}/rbac-coverage-report.json", run_id.as_str()),
+        &serde_json::json!({
+            "schema_version": 1,
+            "run_id": run_id.as_str(),
+            "rbac_resources": rbac_count,
+            "render_source": render_evidence_path
+        }),
+    )?;
+    let inventory_snapshot_artifact = write_evidence_artifact(
+        &repo_root,
+        &format!("artifacts/ops/evidence/{}/inventory-snapshot.json", run_id.as_str()),
+        &serde_json::json!({
+            "schema_version": 1,
+            "run_id": run_id.as_str(),
+            "registry": "ops/inventory/registry.toml",
+            "profiles": validated_profiles,
+            "contracts": "ops/inventory/contracts.json",
+            "toolchain": "ops/inventory/toolchain.json"
+        }),
+    )?;
+    let toolchain_snapshot = read_json_value(&repo_root.join("ops/inventory/toolchain.json"))?;
+    let tool_versions_artifact = write_evidence_artifact(
+        &repo_root,
+        &format!("artifacts/ops/evidence/{}/tool-versions.json", run_id.as_str()),
+        &serde_json::json!({
+            "schema_version": 1,
+            "run_id": run_id.as_str(),
+            "tools": toolchain_snapshot.get("tools").cloned().unwrap_or_else(|| serde_json::json!({}))
+        }),
+    )?;
     let manifest = serde_json::json!({
         "schema_version": 2,
         "generated_by": "bijux dev atlas ops evidence collect",
@@ -328,6 +470,28 @@ pub(crate) fn run_ops_evidence_collect(
         "reports": collect_report_paths(&repo_root, &run_id)?,
         "simulation_summaries": collect_simulation_summary_paths(&repo_root, &run_id),
         "drill_summaries": collect_drill_summary_paths(&repo_root, &run_id),
+        "ops_evidence": {
+            "install_evidence": {
+                "path": install_evidence_path,
+                "sha256": sha256_file(&repo_root.join(format!("artifacts/ops/evidence/{}/install-evidence.json", run_id.as_str())))?
+            },
+            "render_evidence": {
+                "path": render_evidence_path,
+                "sha256": sha256_file(&repo_root.join(format!("artifacts/ops/evidence/{}/render-evidence.json", run_id.as_str())))?
+            },
+            "validate_evidence": {
+                "path": validate_evidence_path,
+                "sha256": sha256_file(&repo_root.join(format!("artifacts/ops/evidence/{}/validate-evidence.json", run_id.as_str())))?
+            },
+            "install_matrix_report": install_matrix_artifact,
+            "render_matrix_report": render_matrix_artifact,
+            "schema_coverage_report": schema_coverage_artifact,
+            "network_policy_coverage_report": network_policy_artifact,
+            "rbac_coverage_report": rbac_coverage_artifact,
+            "inventory_snapshot": inventory_snapshot_artifact,
+            "tool_versions": tool_versions_artifact,
+            "redaction_secret_keys": ["password", "secret", "token", "api_key"]
+        },
         "redacted_logs": redacted_logs,
         "observability_assets": collect_observability_assets(&repo_root)?,
         "perf_assets": collect_perf_assets(&repo_root)?,
@@ -582,6 +746,52 @@ pub(crate) fn run_ops_evidence_verify(
         }
     } else {
         errors.push("manifest must include supply_chain.action_pins_report".to_string());
+    }
+    if let Some(row) = manifest
+        .get("ops_evidence")
+        .and_then(serde_json::Value::as_object)
+    {
+        for (name, item) in row {
+            if name == "redaction_secret_keys" {
+                continue;
+            }
+            let path = item
+                .get("path")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
+            let abs = repo_root.join(path);
+            if path.is_empty() || !abs.exists() {
+                errors.push(format!("ops evidence artifact missing for {name}: {path}"));
+                continue;
+            }
+            if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+                errors.push(format!("evidence tarball missing ops evidence artifact for {name}: {path}"));
+            }
+            if let Some(expected) = item.get("sha256").and_then(serde_json::Value::as_str) {
+                let actual = sha256_file(&abs)?;
+                if actual != expected {
+                    errors.push(format!("ops evidence artifact checksum mismatch for {name}: {path}"));
+                }
+            }
+            let content = std::fs::read_to_string(&abs)
+                .map_err(|err| format!("failed to read {}: {err}", abs.display()))?;
+            if contains_common_secret_pattern(&content) {
+                errors.push(format!("ops evidence artifact contains secret-like content for {name}: {path}"));
+            }
+        }
+    } else {
+        errors.push("manifest must include ops_evidence".to_string());
+    }
+    if let Some(secret_keys) = manifest
+        .get("ops_evidence")
+        .and_then(|v| v.get("redaction_secret_keys"))
+        .and_then(serde_json::Value::as_array)
+    {
+        if secret_keys.is_empty() {
+            errors.push("ops evidence redaction secret keys must not be empty".to_string());
+        }
+    } else {
+        errors.push("manifest must include ops_evidence.redaction_secret_keys".to_string());
     }
     for rel in manifest
         .get("reports")
@@ -906,6 +1116,18 @@ pub(crate) fn run_ops_evidence_diff(
         }
     }
     let differences = !added.is_empty() || !removed.is_empty() || !changed.is_empty();
+    let high_risk_changed = changed
+        .iter()
+        .filter_map(|row| row.get("path").and_then(serde_json::Value::as_str))
+        .filter(|path| {
+            path.contains("rbac")
+                || path.contains("network-policy")
+                || path.contains("NetworkPolicy")
+                || path.contains("service")
+                || path.contains("Service")
+        })
+        .map(ToString::to_string)
+        .collect::<Vec<_>>();
     let payload = serde_json::json!({
         "schema_version": 1,
         "status": "ok",
@@ -915,7 +1137,8 @@ pub(crate) fn run_ops_evidence_diff(
             "tarball_b": tarball_b.display().to_string(),
             "added": added,
             "removed": removed,
-            "changed": changed
+            "changed": changed,
+            "high_risk_changed_paths": high_risk_changed
         }],
         "summary": {
             "total": 1,
