@@ -26,6 +26,14 @@
 - [Traffic Spike](traffic-spike.md)
 - [Load Failure Triage](load-failure-triage.md)
 - [Rollback Playbook](rollback-playbook.md)
+- [High Error Rate](high-error-rate.md)
+- [High Latency](high-latency.md)
+- [Ingest Failures](ingest-failures.md)
+- [Integrity Violation](integrity-violation.md)
+- [Disk Pressure](disk-pressure.md)
+- [Restart Loop](restart-loop.md)
+- [Capacity Planning](capacity-planning.md)
+- [Safe Upgrade Procedure](safe-upgrade-procedure.md)
 
 ## Runbook-to-alert mapping
 
