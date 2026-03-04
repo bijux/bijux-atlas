@@ -14690,16 +14690,6 @@
     },
     {
       "keywords": [
-        "what-is-atlas"
-      ],
-      "path": "docs/what-is-atlas.md",
-      "tags": [
-        "what-is-atlas"
-      ],
-      "topic": "what-is-atlas"
-    },
-    {
-      "keywords": [
         "what-to-read-next"
       ],
       "path": "docs/what-to-read-next.md",
@@ -15357,22 +15347,6 @@
         "required-files"
       ],
       "topic": "REQUIRED_FILES"
-    },
-    {
-      "keywords": [
-        "artifacts",
-        "load",
-        "ops",
-        "readme"
-      ],
-      "path": "ops/load/artifacts/README.md",
-      "tags": [
-        "artifacts",
-        "load",
-        "ops",
-        "readme"
-      ],
-      "topic": "README"
     },
     {
       "keywords": [

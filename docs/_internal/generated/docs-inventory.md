@@ -1112,7 +1112,6 @@ License: Apache-2.0
 | `docs/tutorials/query-dataset.md` | `concept` | `docs-governance` | `stable` |
 | `docs/tutorials/troubleshooting-guide.md` | `concept` | `docs-governance` | `stable` |
 | `docs/tutorials/validate-dataset.md` | `concept` | `docs-governance` | `stable` |
-| `docs/what-is-atlas.md` | `concept` | `docs-governance` | `stable` |
 | `docs/what-to-read-next.md` | `concept` | `docs-governance` | `stable` |
 | `make/CONTRACT.md` | `concept` | `docs-governance` | `stable` |
 | `make/README.md` | `concept` | `docs-governance` | `stable` |
@@ -1161,7 +1160,6 @@ License: Apache-2.0
 | `ops/load/OWNER.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `ops/load/README.md` | `concept` | `bijux-atlas-performance` | `stable` |
 | `ops/load/REQUIRED_FILES.md` | `concept` | `docs-governance` | `stable` |
-| `ops/load/artifacts/README.md` | `concept` | `bijux-atlas-performance` | `stable` |
 | `ops/observe/CONTRACT.md` | `concept` | `bijux-atlas-observability` | `stable` |
 | `ops/observe/OWNER.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `ops/observe/README.md` | `concept` | `bijux-atlas-observability` | `stable` |

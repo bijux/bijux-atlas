@@ -13,7 +13,7 @@
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `CONTRACT` appears 26 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `INDEX` appears 5 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `OWNER` appears 11 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 86 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 85 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `REQUIRED_FILES` appears 11 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `architecture` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `benchmarks` appears 10 times",
@@ -89,7 +89,6 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-api/docs/contracts.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-api/docs/effect-boundary-map.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-api/docs/examples.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-benchmark/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-benchmark/docs/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-cli/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-cli/docs/benchmarks.md` has no inbound doc links",
@@ -243,10 +242,13 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/contract-runtime-mapping.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/contracts-model.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/decision-template.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/evolution.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/faq.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/hot-paths.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/query-performance-architecture.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/scripting.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/security/index.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/system-graph-explained.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/why-effects-are-gated.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/cli-command-list.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/contract.md` has no inbound doc links",
@@ -412,10 +414,10 @@
   "schema_version": 1,
   "stale_pages": [],
   "summary": {
-    "errors": 58,
+    "errors": 57,
     "reference_date": "2026-02-25",
-    "registered": 1176,
+    "registered": 1174,
     "stale_pages": 0,
-    "warnings": 455
+    "warnings": 456
   }
 }

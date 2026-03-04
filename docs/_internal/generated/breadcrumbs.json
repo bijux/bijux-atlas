@@ -9738,13 +9738,6 @@
     {
       "breadcrumbs": [
         "docs",
-        "docs/what-is-atlas.md"
-      ],
-      "path": "docs/what-is-atlas.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
         "docs/what-to-read-next.md"
       ],
       "path": "docs/what-to-read-next.md"
@@ -10120,15 +10113,6 @@
         "ops/load/REQUIRED_FILES.md"
       ],
       "path": "ops/load/REQUIRED_FILES.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/load",
-        "ops/load/artifacts",
-        "ops/load/artifacts/README.md"
-      ],
-      "path": "ops/load/artifacts/README.md"
     },
     {
       "breadcrumbs": [

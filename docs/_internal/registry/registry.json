@@ -25947,7 +25947,7 @@
         "querying",
         "reference"
       ],
-      "title": "Pagination",
+      "title": "Query Pagination Reference",
       "topic": "pagination"
     },
     {
@@ -26842,27 +26842,6 @@
       ],
       "title": "Tutorial: Validate Dataset",
       "topic": "validate-dataset"
-    },
-    {
-      "area": "what-is-atlas.md",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "what-is-atlas"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/what-is-atlas.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "what-is-atlas"
-      ],
-      "title": "What Is Atlas",
-      "topic": "what-is-atlas"
     },
     {
       "area": "what-to-read-next.md",
@@ -28051,33 +28030,6 @@
       ],
       "title": "Required Files",
       "topic": "REQUIRED_FILES"
-    },
-    {
-      "area": "ops",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "artifacts",
-        "load",
-        "ops",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-performance",
-      "path": "ops/load/artifacts/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "artifacts",
-        "load",
-        "ops",
-        "readme"
-      ],
-      "title": "Load Artifact Storage",
-      "topic": "README"
     },
     {
       "area": "ops",

@@ -225,7 +225,6 @@
     "CRATE_DOC_FRESHNESS_WARN: `bijux-atlas-server` has no `Last Reviewed:` metadata in crate docs",
     "CRATE_DOC_FRESHNESS_WARN: `bijux-atlas-store` has no `Last Reviewed:` metadata in crate docs",
     "CRATE_DOC_FRESHNESS_WARN: `bijux-dev-atlas` has no `Last Reviewed:` metadata in crate docs",
-    "CRATE_DOC_LINK_WARN: `bijux-atlas-benchmark` README.md should link to crate docs/",
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-api` owner metadata present in 18/19 docs",
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-benchmark` owner metadata present in 1/7 docs",
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-cli` owner metadata present in 8/18 docs",

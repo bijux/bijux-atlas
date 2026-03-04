@@ -5528,11 +5528,6 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "docs/what-is-atlas.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "docs/what-to-read-next.md"
     },
     {
@@ -5769,11 +5764,6 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/load/REQUIRED_FILES.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/load/artifacts/README.md"
     },
     {
       "crate": null,

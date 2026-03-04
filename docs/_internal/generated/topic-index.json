@@ -164,7 +164,6 @@
       "ops/k8s/README.md",
       "ops/k8s/kind/README.md",
       "ops/load/README.md",
-      "ops/load/artifacts/README.md",
       "ops/observe/README.md",
       "ops/report/README.md",
       "ops/schema/README.md",
@@ -2801,9 +2800,6 @@
     ],
     "what-breaks-if-removed": [
       "docs/operations/reference/what-breaks-if-removed.md"
-    ],
-    "what-is-atlas": [
-      "docs/what-is-atlas.md"
     ],
     "what-is-bijux-atlas": [
       "docs/product/what-is-bijux-atlas.md"
