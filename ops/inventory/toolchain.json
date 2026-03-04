@@ -16,13 +16,13 @@
       "ref": "v5",
       "sha": "983d7736d9b0ae728b81ab479565c72886d7745b"
     },
-    "actions/deploy-pages": {
-      "ref": "v4",
-      "sha": "d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e"
-    },
     "actions/dependency-review-action": {
       "ref": "v4.8.3",
       "sha": "05fe4576374b728f0c523d6a13d64c25081e0803"
+    },
+    "actions/deploy-pages": {
+      "ref": "v4",
+      "sha": "d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e"
     },
     "actions/upload-artifact": {
       "ref": "v4",
