@@ -224,3 +224,31 @@ Releases are manifest-based and artifact-centric. A release is defined by determ
 - Digest-pinned artifacts and governed dependency posture for release workflows.
 - Structured audit evidence for controls, checks, and contract enforcement.
 - Explicit disclosure, upgrade, and maintenance policy documentation in operations docs.
+
+## Roadmap
+- Strengthen architecture and workflow documentation for external reviewers.
+- Expand simulation and audit demonstrations for institutional readiness.
+- Continue reducing ambiguity in CLI, docs, and release surfaces.
+- Keep governance and runtime evidence tightly coupled and reproducible.
+
+## Project Status
+Active development with enforced contracts/checks and deterministic release governance. Current focus is improving system clarity and architectural communication for maintainers and reviewers.
+
+## Why This Exists
+Bijux Atlas exists to make genomics data infrastructure reproducible, reviewable, and operable at institutional quality bars, without relying on undocumented manual process.
+
+## Comparison With Alternatives
+- Compared to ad-hoc pipelines, Atlas enforces executable contracts across repository and runtime surfaces.
+- Compared to documentation-only governance, Atlas fails builds on policy and evidence drift.
+- Compared to loosely versioned release processes, Atlas treats release composition and verification as deterministic artifacts.
+
+## Contributing
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for contribution workflow, standards, and review expectations.
+
+## License
+Licensed under Apache-2.0. See [`LICENSE`](LICENSE).
+
+## CI Status
+[![CI PR](https://github.com/bijux/bijux-atlas/actions/workflows/ci-pr.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/ci-pr.yml)
+[![Docs Audit](https://github.com/bijux/bijux-atlas/actions/workflows/docs-audit.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/docs-audit.yml)
+[![Ops Validate](https://github.com/bijux/bijux-atlas/actions/workflows/ops-validate.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/ops-validate.yml)
