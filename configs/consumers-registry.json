@@ -16,6 +16,10 @@
       "bijux-dev-atlas",
       "ci"
     ],
+    "configs/audit/*.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
     "configs/ci/*.json": [
       "ci"
     ],
@@ -260,9 +264,18 @@
     "configs/slo/*.json": [
       "bijux-dev-atlas",
       "runtime"
+    ],
+    "configs/system/*.json": [
+      "bijux-dev-atlas",
+      "runtime",
+      "ci"
     ]
   },
   "groups": {
+    "audit": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
     "ci": [
       "ci"
     ],
@@ -339,6 +352,11 @@
     "slo": [
       "bijux-dev-atlas",
       "runtime"
+    ],
+    "system": [
+      "bijux-dev-atlas",
+      "runtime",
+      "ci"
     ]
   },
   "schema_version": 1

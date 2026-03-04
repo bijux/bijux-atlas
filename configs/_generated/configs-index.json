@@ -16,6 +16,31 @@
   "groups": [
     {
       "counts": {
+        "covered": 3,
+        "generated": 0,
+        "internal": 0,
+        "public": 3,
+        "schemas": 1
+      },
+      "files": [
+        "configs/audit/audit-artifact-checklist.json",
+        "configs/audit/audit-bundle.schema.json",
+        "configs/audit/compliance-matrix-template.json"
+      ],
+      "name": "audit",
+      "owner": "atlas-governance",
+      "schema_owner": "atlas-governance",
+      "schemas": [
+        "configs/audit/audit-bundle.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas audit bundle generate",
+        "bijux dev atlas audit bundle validate"
+      ]
+    },
+    {
+      "counts": {
         "covered": 7,
         "generated": 0,
         "internal": 0,
@@ -129,10 +154,10 @@
     },
     {
       "counts": {
-        "covered": 20,
+        "covered": 24,
         "generated": 0,
         "internal": 0,
-        "public": 20,
+        "public": 24,
         "schemas": 1
       },
       "files": [
@@ -143,10 +168,14 @@
         "configs/governance/compatibility.yaml",
         "configs/governance/contract-groups.json",
         "configs/governance/contract-modes.json",
+        "configs/governance/contract-policy-authority-map.json",
         "configs/governance/contracts.registry.json",
         "configs/governance/deprecations.yaml",
         "configs/governance/exceptions-archive.yaml",
         "configs/governance/exceptions.yaml",
+        "configs/governance/governance-version-history.json",
+        "configs/governance/governance.json",
+        "configs/governance/governance.schema.json",
         "configs/governance/perf-budgets.json",
         "configs/governance/registry-completeness-policy.json",
         "configs/governance/suites/baseline.json",
@@ -810,12 +839,37 @@
       "tool_entrypoints": [
         "bijux dev atlas ops report readiness"
       ]
+    },
+    {
+      "counts": {
+        "covered": 3,
+        "generated": 0,
+        "internal": 0,
+        "public": 3,
+        "schemas": 1
+      },
+      "files": [
+        "configs/system/failure-injection.json",
+        "configs/system/simulation-scenarios.json",
+        "configs/system/system-simulation-report.schema.json"
+      ],
+      "name": "system",
+      "owner": "bijux-atlas-operations",
+      "schema_owner": "bijux-atlas-operations",
+      "schemas": [
+        "configs/system/system-simulation-report.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas system simulate suite",
+        "bijux dev atlas system simulate install"
+      ]
     }
   ],
   "kind": "configs-index",
   "max_depth": 4,
   "max_group_depth": 2,
-  "max_groups": 20,
+  "max_groups": 24,
   "registry_path": "configs/inventory/configs.json",
   "root_files": [
     "configs/CONSUMERS.json",

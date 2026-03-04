@@ -41,6 +41,8 @@
     "configs/OWNERS.json",
     "configs/SCHEMAS.json",
     "configs/_generated/configs-index.json",
+    "configs/audit/audit-artifact-checklist.json",
+    "configs/audit/compliance-matrix-template.json",
     "configs/ci/env-contract.json",
     "configs/ci/lane-surface.json",
     "configs/ci/lanes.json",
@@ -93,7 +95,9 @@
     "configs/security/github-actions-exceptions.json",
     "configs/security/redaction.json",
     "configs/security/secrets.json",
-    "configs/slo/*.json"
+    "configs/slo/*.json",
+    "configs/system/failure-injection.json",
+    "configs/system/simulation-scenarios.json"
   ],
   "orphan_input_schemas": [
     "configs/schema/config-compiler-report.schema.json",

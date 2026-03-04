@@ -1,6 +1,7 @@
 {
   "allowed_groups": [
     "_internal",
+    "audit",
     "ci",
     "cli",
     "contracts",
@@ -29,8 +30,9 @@
     "schema",
     "security",
     "shellcheck",
-    "slo"
+    "slo",
+    "system"
   ],
-  "max_top_level_dirs": 30,
+  "max_top_level_dirs": 40,
   "schema_version": 1
 }

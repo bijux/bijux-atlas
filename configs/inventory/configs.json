@@ -17,6 +17,24 @@
     {
       "generated_files": [],
       "internal_files": [],
+      "name": "audit",
+      "owner": "atlas-governance",
+      "public_files": [
+        "configs/audit/*.json"
+      ],
+      "schema_owner": "atlas-governance",
+      "schemas": [
+        "configs/audit/audit-bundle.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas audit bundle generate",
+        "bijux dev atlas audit bundle validate"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
       "name": "ci",
       "owner": "platform",
       "public_files": [
@@ -452,11 +470,29 @@
       "tool_entrypoints": [
         "bijux dev atlas ops report readiness"
       ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "system",
+      "owner": "bijux-atlas-operations",
+      "public_files": [
+        "configs/system/*.json"
+      ],
+      "schema_owner": "bijux-atlas-operations",
+      "schemas": [
+        "configs/system/system-simulation-report.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas system simulate suite",
+        "bijux dev atlas system simulate install"
+      ]
     }
   ],
   "max_depth": 4,
   "max_group_depth": 2,
-  "max_groups": 20,
+  "max_groups": 24,
   "root_files": [
     "configs/CONSUMERS.json",
     "configs/CONTRACT.md",

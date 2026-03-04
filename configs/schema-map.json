@@ -4,6 +4,8 @@
     "configs/OWNERS.json": "configs/schema/configs-owner-map.schema.json",
     "configs/SCHEMAS.json": "configs/schema/configs-schema-map.schema.json",
     "configs/_generated/configs-index.json": "configs/schema/configs-index.schema.json",
+    "configs/audit/audit-artifact-checklist.json": "configs/contracts/inventory-configs.schema.json",
+    "configs/audit/compliance-matrix-template.json": "configs/contracts/inventory-configs.schema.json",
     "configs/ci/env-contract.json": "configs/contracts/env.schema.json",
     "configs/ci/lane-surface.json": "configs/schema/ci/lane-surface.schema.json",
     "configs/ci/lanes.json": "configs/contracts/inventory-commands.schema.json",
@@ -56,7 +58,9 @@
     "configs/security/github-actions-exceptions.json": "configs/contracts/security/github-actions-exceptions.schema.json",
     "configs/security/redaction.json": "configs/contracts/security/redaction.schema.json",
     "configs/security/secrets.json": "configs/contracts/security/secrets.schema.json",
-    "configs/slo/*.json": "configs/contracts/inventory-configs.schema.json"
+    "configs/slo/*.json": "configs/contracts/inventory-configs.schema.json",
+    "configs/system/failure-injection.json": "configs/contracts/inventory-ops.schema.json",
+    "configs/system/simulation-scenarios.json": "configs/contracts/inventory-ops.schema.json"
   },
   "schema_version": 1
 }
