@@ -60,6 +60,7 @@ fn route_is_admin_endpoint(route: &str) -> bool {
             | "/debug/shard-map"
             | "/debug/query-planner-stats"
             | "/debug/cache-stats"
+            | "/debug/cluster-status"
             | "/v1/_debug/echo"
     )
 }

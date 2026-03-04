@@ -190,6 +190,10 @@ pub fn build_router(state: AppState) -> Router {
                 "/debug/cache-stats",
                 get(http::handlers::cache_stats_dump_handler),
             )
+            .route(
+                "/debug/cluster-status",
+                get(http::handlers::cluster_status_handler),
+            )
             .route("/v1/_debug/echo", get(http::handlers::debug_echo_handler));
     }
     router

@@ -522,6 +522,71 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
     with_request_id(response, &request_id)
 }
 
+pub(crate) async fn cluster_status_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let request_id = make_request_id(&state);
+    let started = Instant::now();
+    let cluster_path =
+        std::env::var("ATLAS_CLUSTER_CONFIG_PATH").unwrap_or_else(|_| {
+            "configs/ops/runtime/cluster-config.example.json".to_string()
+        });
+    let node_path =
+        std::env::var("ATLAS_NODE_CONFIG_PATH").unwrap_or_else(|_| {
+            "configs/ops/runtime/node-config.example.json".to_string()
+        });
+
+    let mut response_status = StatusCode::OK;
+    let payload = match (
+        bijux_atlas_core::load_cluster_config_from_path(std::path::Path::new(&cluster_path)),
+        bijux_atlas_core::load_node_config_from_path(std::path::Path::new(&node_path)),
+    ) {
+        (Ok(cluster_cfg), Ok(node_cfg)) => {
+            let cluster = cluster_cfg.to_descriptor();
+            let node = node_cfg.to_descriptor();
+            let mut registry = bijux_atlas_core::ClusterStateRegistry::new(cluster.clone());
+            registry.register_node(bijux_atlas_core::NodeMetadata {
+                descriptor: node,
+                state: bijux_atlas_core::NodeState::Ready,
+                last_heartbeat_unix_ms: chrono_like_unix_millis() as u64,
+            });
+            let snapshot = registry.snapshot();
+            json!({
+                "cluster_id": cluster.cluster_id,
+                "topology_mode": cluster.topology_mode,
+                "discovery_strategy": cluster.discovery_strategy,
+                "seed_nodes": cluster.seed_nodes,
+                "metadata_store": cluster.metadata_store,
+                "health": snapshot.health,
+                "topology_version": snapshot.topology_version,
+                "node_count": snapshot.node_count
+            })
+        }
+        (cluster_result, node_result) => {
+            response_status = StatusCode::SERVICE_UNAVAILABLE;
+            json!({
+                "cluster_id": Value::Null,
+                "health": "unavailable",
+                "error": {
+                    "cluster_config": cluster_result.err().unwrap_or_default(),
+                    "node_config": node_result.err().unwrap_or_default()
+                }
+            })
+        }
+    };
+
+    let mut response = Json(payload).into_response();
+    *response.status_mut() = response_status;
+    state
+        .metrics
+        .observe_request_with_trace(
+            "/debug/cluster-status",
+            response_status,
+            started.elapsed(),
+            Some(&request_id),
+        )
+        .await;
+    with_request_id(response, &request_id)
+}
+
 pub(crate) async fn openapi_handler(State(state): State<AppState>) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
