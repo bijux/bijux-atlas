@@ -49,7 +49,10 @@ fn structured_log_schema_minimum_fields_present() {
     assert!(sample.get("timestamp").is_some());
     assert!(sample.get("level").is_some());
     assert!(sample.get("target").is_some());
-    assert!(sample.get("fields").and_then(|v| v.get("message")).is_some());
+    assert!(sample
+        .get("fields")
+        .and_then(|v| v.get("message"))
+        .is_some());
 }
 
 #[test]

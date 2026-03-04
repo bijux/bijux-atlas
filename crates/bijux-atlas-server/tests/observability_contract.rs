@@ -357,7 +357,10 @@ async fn request_tracing_propagates_trace_and_origin_headers() {
         "/healthz",
         &[
             ("x-request-id", "req-client-trace"),
-            ("traceparent", "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00"),
+            (
+                "traceparent",
+                "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00",
+            ),
             ("x-request-origin", "integration-test"),
         ],
     )

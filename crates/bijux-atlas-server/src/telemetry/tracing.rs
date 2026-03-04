@@ -50,10 +50,11 @@ pub fn init_tracing(config: &TraceConfig) -> Result<(), String> {
                 let sampler = opentelemetry_sdk::trace::Sampler::TraceIdRatioBased(
                     config.sampling_ratio.clamp(0.0, 1.0),
                 );
-                let resource = opentelemetry_sdk::Resource::new(vec![opentelemetry::KeyValue::new(
-                    "service.name",
-                    config.service_name.clone(),
-                )]);
+                let resource =
+                    opentelemetry_sdk::Resource::new(vec![opentelemetry::KeyValue::new(
+                        "service.name",
+                        config.service_name.clone(),
+                    )]);
                 let tracer = opentelemetry_sdk::trace::TracerProvider::builder()
                     .with_sampler(sampler)
                     .with_resource(resource)
@@ -84,10 +85,11 @@ pub fn init_tracing(config: &TraceConfig) -> Result<(), String> {
                 let sampler = opentelemetry_sdk::trace::Sampler::TraceIdRatioBased(
                     config.sampling_ratio.clamp(0.0, 1.0),
                 );
-                let resource = opentelemetry_sdk::Resource::new(vec![opentelemetry::KeyValue::new(
-                    "service.name",
-                    config.service_name.clone(),
-                )]);
+                let resource =
+                    opentelemetry_sdk::Resource::new(vec![opentelemetry::KeyValue::new(
+                        "service.name",
+                        config.service_name.clone(),
+                    )]);
                 let tracer = opentelemetry_sdk::trace::TracerProvider::builder()
                     .with_sampler(sampler)
                     .with_resource(resource)

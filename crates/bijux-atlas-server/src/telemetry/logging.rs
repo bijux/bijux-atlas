@@ -69,7 +69,10 @@ mod tests {
             rotation_max_bytes: 10_485_760,
             rotation_max_files: 5,
         };
-        assert_eq!(cfg.default_filter_directive(), "info,atlas=debug,hyper=warn");
+        assert_eq!(
+            cfg.default_filter_directive(),
+            "info,atlas=debug,hyper=warn"
+        );
     }
 
     #[test]
