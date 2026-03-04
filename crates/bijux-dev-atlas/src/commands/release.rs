@@ -376,7 +376,10 @@ fn run_release_plan(args: ReleasePlanArgs) -> Result<(String, i32), String> {
         .as_array()
         .cloned()
         .unwrap_or_default();
-    let blocked = policy["blocked_crates"].as_array().cloned().unwrap_or_default();
+    let blocked = policy["blocked_crates"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
     let strategy = policy["versioning_strategy"]
         .as_str()
         .unwrap_or("workspace-unified");
@@ -421,10 +424,7 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
     if !root.join("CHANGELOG.md").exists() {
         errors.push("missing CHANGELOG.md".to_string());
     }
-    for crate_name in publishable
-        .iter()
-        .filter_map(serde_json::Value::as_str)
-    {
+    for crate_name in publishable.iter().filter_map(serde_json::Value::as_str) {
         let manifest_path = root.join("crates").join(crate_name).join("Cargo.toml");
         let readme_path = root.join("crates").join(crate_name).join("README.md");
         let text = fs::read_to_string(&manifest_path)
@@ -447,10 +447,7 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
         };
         for key in ["description", "license", "repository", "documentation"] {
             if missing(key) {
-                errors.push(format!(
-                    "{} missing package.{key}",
-                    manifest_path.display()
-                ));
+                errors.push(format!("{} missing package.{key}", manifest_path.display()));
             }
         }
         let rust_version_ok = pkg
@@ -490,7 +487,9 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
                     .args(["check", "-p", crate_name, "--examples", "--locked"])
                     .current_dir(&root)
                     .status()
-                    .map_err(|err| format!("failed to run cargo check examples for {crate_name}: {err}"))?;
+                    .map_err(|err| {
+                        format!("failed to run cargo check examples for {crate_name}: {err}")
+                    })?;
                 if !status.success() {
                     errors.push(format!(
                         "example compilation failed for crate `{crate_name}`"

@@ -33,10 +33,7 @@ fn load_reproducibility_and_baseline_assets_are_present() {
     )
     .expect("parse baseline");
     assert_eq!(baseline["metadata"]["schema_version"], serde_json::json!(1));
-    assert_eq!(
-        baseline["name"],
-        serde_json::json!("system-load-baseline")
-    );
+    assert_eq!(baseline["name"], serde_json::json!("system-load-baseline"));
     for suite in [
         "mixed-workload",
         "ingest-query-workload",

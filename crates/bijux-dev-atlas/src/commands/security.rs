@@ -788,10 +788,7 @@ fn run_security_incident_report(args: SecurityIncidentReportArgs) -> Result<(Str
     let root = resolve_repo_root(args.repo_root)?;
     let allowed = ["critical", "high", "medium", "low"];
     if !allowed.iter().any(|s| *s == args.severity) {
-        return Err(format!(
-            "severity must be one of: {}",
-            allowed.join(", ")
-        ));
+        return Err(format!("severity must be one of: {}", allowed.join(", ")));
     }
     let status_allowed = ["open", "contained", "mitigated", "resolved"];
     if !status_allowed.iter().any(|s| *s == args.status) {
@@ -800,7 +797,10 @@ fn run_security_incident_report(args: SecurityIncidentReportArgs) -> Result<(Str
             status_allowed.join(", ")
         ));
     }
-    let path = named_report_path(&root, &format!("security-incident-{}.json", args.incident_id))?;
+    let path = named_report_path(
+        &root,
+        &format!("security-incident-{}.json", args.incident_id),
+    )?;
     let timestamp_utc = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map_err(|err| format!("system clock error: {err}"))?

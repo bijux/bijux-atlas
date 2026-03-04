@@ -232,9 +232,9 @@ fn run_boundary_docs_output_dir_check(ctx: &RunContext) -> (serde_json::Value, V
             Ok(workflow_text) => {
                 deploy_workflow_uses_site_dir =
                     workflow_text.contains(&format!("path: {site_dir}"));
-                deploy_workflow_validates_site_dir =
-                    workflow_text.contains("Validate docs output directory contract")
-                        && workflow_text.contains("artifacts/docs/site");
+                deploy_workflow_validates_site_dir = workflow_text
+                    .contains("Validate docs output directory contract")
+                    && workflow_text.contains("artifacts/docs/site");
             }
             Err(err) => {
                 violations.push(violation(
