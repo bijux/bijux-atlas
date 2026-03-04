@@ -130,10 +130,7 @@ pub(super) fn check_ops_no_behavior_source_files(
         return Ok(Vec::new());
     }
     let mut violations = Vec::new();
-    let allowlisted_prefixes = [
-        Path::new("ops/datasets/fixtures"),
-        Path::new("ops/e2e/fixtures"),
-    ];
+    let allowlisted_prefixes = [Path::new("ops/datasets/fixtures"), Path::new("ops/e2e/fixtures")];
     for file in walk_files(&ops_root) {
         let ext = file
             .extension()

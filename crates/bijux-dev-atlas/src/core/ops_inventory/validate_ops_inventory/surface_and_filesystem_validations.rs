@@ -89,6 +89,7 @@ fn validate_surface_and_filesystem_policies(
         "inventory",
         "k8s",
         "load",
+        "perf",
         "observe",
         "policy",
         "report",
