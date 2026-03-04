@@ -1,5 +1,7 @@
 # Deprecation Lifecycle Policy
 
+Related ops contracts: `OPS-ROOT-023`.
+
 Deprecations require a formal announcement in release notes and the operations index.
 Each notice must include replacement behavior and migration commands with examples.
 The owning team must declare target removal version and minimum grace period duration.

@@ -1,5 +1,7 @@
 # Backward Compatibility Guarantee
 
+Related ops contracts: `OPS-ROOT-023`.
+
 Backward compatibility is the default for APIs, manifests, and operator workflows.
 Breaking changes require explicit governance approval before merge and before release tagging.
 Each approved break must include a migration guide, affected surface list, and rollback path.
