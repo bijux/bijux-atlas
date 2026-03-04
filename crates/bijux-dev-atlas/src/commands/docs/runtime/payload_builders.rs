@@ -10,6 +10,50 @@ fn docs_verify_contracts_payload(
     let scripts_areas = format!("{}/{}", "scripts", "areas");
     let x_task = ["x", "task"].join("");
     let forbidden = [x_task, scripts_areas];
+    let policy = load_quality_policy(&ctx.repo_root);
+    let tags_allowlist_path = ctx
+        .repo_root
+        .join("configs/docs/tag-vocabulary.json");
+    let allowed_tags = if tags_allowlist_path.exists() {
+        let value: serde_json::Value = serde_json::from_str(
+            &fs::read_to_string(&tags_allowlist_path).map_err(|e| {
+                format!(
+                    "failed to read {}: {e}",
+                    tags_allowlist_path.display()
+                )
+            })?,
+        )
+        .map_err(|e| format!("invalid {}: {e}", tags_allowlist_path.display()))?;
+        value["allowed_tags"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(|v| v.as_str())
+            .map(str::to_string)
+            .collect::<std::collections::BTreeSet<_>>()
+    } else {
+        std::collections::BTreeSet::new()
+    };
+    let expected_frontmatter_order = [
+        "title",
+        "audience",
+        "type",
+        "stability",
+        "owner",
+        "last_reviewed",
+        "tags",
+        "related",
+    ];
+    let review_window_stable_days = 365i64;
+    let review_window_experimental_days = 180i64;
+    let canonical_index_links = [
+        "start-here.md",
+        "product/index.md",
+        "operations/index.md",
+        "development/index.md",
+        "control-plane/index.md",
+        "reference/index.md",
+    ];
 
     for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
         scanned_files += 1;
@@ -26,6 +70,115 @@ fn docs_verify_contracts_payload(
                 errors.push(format!(
                     "DOCS_CONTRACT_ERROR: forbidden `{needle}` reference in `{rel}`"
                 ));
+            }
+        }
+        if rel.starts_with("docs/_internal/generated/") || rel.starts_with("docs/_assets/") {
+            continue;
+        }
+        let frontmatter = parse_frontmatter_contract_fields(&text);
+        let owner = frontmatter
+            .values
+            .get("owner")
+            .map(String::as_str)
+            .unwrap_or_default()
+            .trim();
+        let stability = frontmatter
+            .values
+            .get("stability")
+            .map(String::as_str)
+            .unwrap_or_default()
+            .trim();
+        let last_reviewed = frontmatter
+            .values
+            .get("last_reviewed")
+            .map(String::as_str)
+            .unwrap_or_default()
+            .trim();
+
+        let enforce_contract_surface = rel == "docs/index.md"
+            || rel == "docs/start-here.md"
+            || rel == "docs/product/index.md"
+            || rel == "docs/operations/index.md"
+            || rel == "docs/development/index.md"
+            || rel == "docs/control-plane/index.md"
+            || rel == "docs/reference/index.md";
+
+        if enforce_contract_surface && owner.is_empty() {
+            errors.push(format!(
+                "DOCS_OWNER_REQUIRED: `{rel}` must declare front matter owner"
+            ));
+        }
+        if enforce_contract_surface
+            && !matches!(stability, "stable" | "experimental" | "deprecated" | "internal")
+        {
+            errors.push(format!(
+                "DOCS_STABILITY_INVALID: `{rel}` uses unsupported stability `{stability}`"
+            ));
+        }
+        if enforce_contract_surface && matches!(stability, "stable" | "experimental") {
+            if let Some(age_days) = date_diff_days(last_reviewed, &policy.reference_date) {
+                let max_age = if stability == "stable" {
+                    review_window_stable_days
+                } else {
+                    review_window_experimental_days
+                };
+                if age_days > max_age {
+                    errors.push(format!(
+                        "DOCS_REVIEW_WINDOW_EXCEEDED: `{rel}` stability=`{stability}` last_reviewed={last_reviewed} age_days={age_days} budget_days={max_age}"
+                    ));
+                }
+            } else {
+                errors.push(format!(
+                    "DOCS_LAST_REVIEWED_INVALID: `{rel}` must use YYYY-MM-DD in `last_reviewed`"
+                ));
+            }
+        }
+        let lower = text.to_ascii_lowercase();
+        if enforce_contract_surface && lower.contains("production-ready") && stability == "experimental" {
+            errors.push(format!(
+                "DOCS_PRODUCTION_CLAIM_MISMATCH: `{rel}` claims production-ready while stability is experimental"
+            ));
+        }
+        if enforce_contract_surface && stability == "stable" && (text.contains("TODO") || text.contains("TBD")) {
+            errors.push(format!(
+                "DOCS_STABLE_PLACEHOLDER_FORBIDDEN: `{rel}` contains TODO/TBD while stability=stable"
+            ));
+        }
+        if enforce_contract_surface && !frontmatter.keys.is_empty() {
+            let filtered = frontmatter
+                .keys
+                .iter()
+                .filter(|k| expected_frontmatter_order.contains(&k.as_str()))
+                .cloned()
+                .collect::<Vec<_>>();
+            let expected = expected_frontmatter_order
+                .iter()
+                .filter(|k| filtered.iter().any(|seen| seen == *k))
+                .map(|k| (*k).to_string())
+                .collect::<Vec<_>>();
+            if filtered != expected {
+                errors.push(format!(
+                    "DOCS_FRONTMATTER_ORDER_ERROR: `{rel}` must follow key order `{}`",
+                    expected_frontmatter_order.join(", ")
+                ));
+            }
+        }
+        if enforce_contract_surface && !allowed_tags.is_empty() {
+            for tag in &frontmatter.tags {
+                if !allowed_tags.contains(tag) {
+                    errors.push(format!(
+                        "DOCS_TAG_VOCABULARY_ERROR: `{rel}` uses disallowed tag `{tag}`"
+                    ));
+                }
+            }
+        }
+        if rel == "docs/index.md" {
+            for needle in canonical_index_links {
+                if !text.contains(needle) {
+                    errors.push(format!(
+                        "DOCS_INDEX_CANONICAL_LINK_REQUIRED: `docs/index.md` missing canonical link `{needle}`"
+                    ));
+                }
             }
         }
     }
@@ -60,6 +213,47 @@ fn docs_verify_contracts_payload(
         "capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},
         "options": {"strict": common.strict, "include_drafts": common.include_drafts}
     }))
+}
+
+#[derive(Default)]
+struct FrontmatterContractFields {
+    keys: Vec<String>,
+    values: std::collections::BTreeMap<String, String>,
+    tags: Vec<String>,
+}
+
+fn parse_frontmatter_contract_fields(text: &str) -> FrontmatterContractFields {
+    let mut result = FrontmatterContractFields::default();
+    let mut lines = text.lines();
+    if lines.next().map(str::trim) != Some("---") {
+        return result;
+    }
+    let mut active_key: Option<String> = None;
+    for line in lines {
+        let trimmed = line.trim_end();
+        if trimmed.trim() == "---" {
+            break;
+        }
+        if let Some((key, value)) = trimmed.split_once(':') {
+            let key = key.trim().to_string();
+            if !key.is_empty() {
+                result.keys.push(key.clone());
+                result
+                    .values
+                    .insert(key.clone(), value.trim().trim_matches('"').trim_matches('\'').to_string());
+                active_key = Some(key);
+            }
+            continue;
+        }
+        if trimmed.trim_start().starts_with("- ")
+            && active_key.as_deref() == Some("tags")
+        {
+            result
+                .tags
+                .push(trimmed.trim_start().trim_start_matches("- ").trim().to_string());
+        }
+    }
+    result
 }
 
 pub(crate) fn docs_lint_payload(
