@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "required_artifacts": [
+    {"id": "release_manifest", "path": "release/evidence/manifest.json"},
+    {"id": "sbom", "path": "release/evidence/sboms/prod-airgap.spdx.json"},
+    {"id": "provenance", "path": "release/provenance.json"},
+    {"id": "governance_report", "path": "artifacts/governance/governance-summary.md"},
+    {"id": "policy_coverage_report", "path": "artifacts/governance/policy-surface-map.json"},
+    {"id": "contract_coverage_report", "path": "artifacts/governance/contract-coverage-map.json"},
+    {"id": "checks_coverage_report", "path": "artifacts/governance/checks-inventory.json"},
+    {"id": "ci_lane_registry", "path": "configs/ci/lanes.json"},
+    {"id": "docs_health_report", "path": "docs/_internal/generated/docs-health.md"},
+    {"id": "ops_profile_registry", "path": "ops/stack/profiles.json"},
+    {"id": "simulation_results", "path": "artifacts/system/simulation/index.json"}
+  ]
+}

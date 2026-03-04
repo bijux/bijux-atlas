@@ -8,6 +8,8 @@
 mod app;
 #[path = "commands/artifacts.rs"]
 mod artifacts_commands;
+#[path = "commands/audit.rs"]
+mod audit_commands;
 #[path = "commands/build.rs"]
 mod build_commands;
 mod cli;
@@ -38,10 +40,10 @@ mod perf_commands;
 mod release_commands;
 #[path = "commands/security.rs"]
 mod security_commands;
-#[path = "commands/system.rs"]
-mod system_commands;
 #[path = "commands/suites.rs"]
 mod suites_commands;
+#[path = "commands/system.rs"]
+mod system_commands;
 
 include!("runtime_entry.rs");
 

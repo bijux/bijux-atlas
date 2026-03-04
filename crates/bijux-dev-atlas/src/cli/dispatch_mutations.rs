@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ArtifactsCommand, CheckCommand, CheckRegistryCommand, ChecksCommand, Command, ConfigsCommand,
-    ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, FormatArg, IngestCommand,
-    MakeCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand, ReleaseCommand,
-    ReportsCommand, SecurityCommand, TestsCommand,
+    ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand, Command,
+    ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, FormatArg,
+    IngestCommand, MakeCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand,
+    ReleaseCommand, ReportsCommand, SecurityCommand, TestsCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -49,6 +49,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Governance { command } => force_json_governance(command),
         Command::Security { command } => force_json_security(command),
         Command::System { command } => force_json_system(command),
+        Command::Audit { command } => force_json_audit(command),
         Command::Datasets { command } => force_json_datasets(command),
         Command::Ingest { command } => force_json_ingest(command),
         Command::Perf { command } => force_json_perf(command),
@@ -515,9 +516,16 @@ fn force_json_system(command: &mut crate::cli::SystemCommand) {
             | crate::cli::SystemSimulateCommand::Upgrade(args)
             | crate::cli::SystemSimulateCommand::Rollback(args)
             | crate::cli::SystemSimulateCommand::OfflineMode(args)
-            | crate::cli::SystemSimulateCommand::Suite(args) => {
-                args.format = FormatArg::Json
-            }
+            | crate::cli::SystemSimulateCommand::Suite(args) => args.format = FormatArg::Json,
+        },
+    }
+}
+
+fn force_json_audit(command: &mut AuditCommand) {
+    match command {
+        AuditCommand::Bundle { command } => match command {
+            crate::cli::AuditBundleCommand::Generate(args)
+            | crate::cli::AuditBundleCommand::Validate(args) => args.format = FormatArg::Json,
         },
     }
 }
@@ -1104,6 +1112,14 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 | crate::cli::SystemSimulateCommand::Rollback(args)
                 | crate::cli::SystemSimulateCommand::OfflineMode(args)
                 | crate::cli::SystemSimulateCommand::Suite(args) => {
+                    args.repo_root = Some(root.clone())
+                }
+            },
+        },
+        Command::Audit { command } => match command {
+            AuditCommand::Bundle { command } => match command {
+                crate::cli::AuditBundleCommand::Generate(args)
+                | crate::cli::AuditBundleCommand::Validate(args) => {
                     args.repo_root = Some(root.clone())
                 }
             },

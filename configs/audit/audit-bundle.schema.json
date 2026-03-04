@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "audit_bundle",
+  "type": "object",
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "kind": {"type": "string", "const": "audit_bundle"},
+    "status": {"type": "string"},
+    "artifacts": {"type": "array"},
+    "missing": {"type": "array"},
+    "checklist": {"type": "string"}
+  },
+  "required": ["schema_version", "kind", "status", "artifacts", "missing", "checklist"]
+}

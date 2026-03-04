@@ -130,6 +130,10 @@ pub enum Command {
         #[command(subcommand)]
         command: SystemCommand,
     },
+    Audit {
+        #[command(subcommand)]
+        command: AuditCommand,
+    },
     Security {
         #[command(subcommand)]
         command: SecurityCommand,
@@ -475,6 +479,30 @@ pub enum SystemSimulateCommand {
     Rollback(SystemSimulateArgs),
     OfflineMode(SystemSimulateArgs),
     Suite(SystemSimulateArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum AuditCommand {
+    Bundle {
+        #[command(subcommand)]
+        command: AuditBundleCommand,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum AuditBundleCommand {
+    Generate(AuditBundleArgs),
+    Validate(AuditBundleArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct AuditBundleArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
 }
 
 #[derive(Args, Debug, Clone)]
