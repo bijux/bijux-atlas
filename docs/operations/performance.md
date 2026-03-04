@@ -53,6 +53,16 @@ Related ops contracts: `OPS-ROOT-023`, `PERF-KIND-001`.
 4. `bijux-dev-atlas perf cold-start --format json`
 5. `bijux-dev-atlas perf kind --profile perf --format json`
 6. `bijux-dev-atlas perf benches list --format json`
+7. `cargo bench -p bijux-atlas-query --no-run`
+8. `cargo test -p bijux-atlas-query --test query_benchmark_regression -- --nocapture`
+
+## Query Benchmark References
+
+- Query performance docs: `crates/bijux-atlas-query/docs/query-performance.md`
+- Query tuning guide: `crates/bijux-atlas-query/docs/query-tuning-guide.md`
+- Query profiling guide: `crates/bijux-atlas-query/docs/query-profiling-guide.md`
+- Query benchmark dashboards: `docs/operations/observability/query-benchmark-dashboards.md`
+- Query benchmark examples: `docs/reference/examples/query-benchmark-examples.md`
 
 ## Triage
 

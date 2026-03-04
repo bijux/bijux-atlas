@@ -15,6 +15,7 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 
 - [Alerts](alerts.md): alert-to-runbook routing and severity model
 - [Dashboards](dashboards.md): dashboard set for incident triage
+- [Query benchmark dashboards](query-benchmark-dashboards.md): benchmark-focused latency and throughput panels
 - [Metrics architecture](metrics-architecture.md): naming, labels, cardinality, and required runtime metrics
 - [Metrics naming conventions](metrics-naming-conventions.md): canonical naming and unit suffix rules
 - [Metric types](metric-types.md): counter, gauge, and histogram selection rules

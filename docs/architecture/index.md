@@ -43,6 +43,7 @@ Describe how Atlas is structured so contributors and operators share one durable
 - [Security auth model](security/auth-model.md)
 - [Performance model](performance-model.md)
 - [Query model](query-model.md)
+- [Query performance architecture](query-performance-architecture.md)
 - [Ingest and QC model](ingest-qc-model.md)
 - [System graph explained](system-graph-explained.md)
 - [Internal Architecture](internal-architecture.md)

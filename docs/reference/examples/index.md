@@ -38,6 +38,8 @@ Curated examples for contracts and reference surfaces.
 ## Infrastructure and release examples
 
 - [Performance Metrics Example](performance-metrics-example.md)
+- [Query Benchmark Examples](query-benchmark-examples.md)
+- [Query Benchmark Summary Report Example](query-benchmark-summary-report.md)
 - [Architecture Diagrams Example](architecture-diagrams-example.md)
 - [Deployment Configuration Example](deployment-configuration-example.md)
 - [Docker Usage Example](docker-usage-example.md)
