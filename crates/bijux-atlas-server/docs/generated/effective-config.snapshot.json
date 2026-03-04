@@ -6,6 +6,14 @@
     "allowed_api_keys": [
       "<redacted>"
     ],
+    "api_key_expiration_days": 90,
+    "api_key_rotation_overlap_secs": 86400,
+    "audit": {
+      "enabled": false,
+      "file_path": "artifacts/server-audit/audit.log",
+      "max_bytes": 1048576,
+      "sink": "stdout"
+    },
     "auth_mode": "disabled",
     "compression_min_bytes": 4096,
     "concurrency_cheap": 128,
@@ -19,17 +27,12 @@
       "secs": 30
     },
     "emergency_global_breaker": false,
-    "enable_api_key_rate_limit": false,
     "enable_admin_endpoints": false,
-    "audit": {
-      "enabled": false,
-      "file_path": "artifacts/server-audit/audit.log",
-      "max_bytes": 1048576,
-      "sink": "stdout"
-    },
+    "enable_api_key_rate_limit": false,
     "enable_cheap_only_survival": false,
     "enable_debug_datasets": false,
     "enable_exemplars": false,
+    "enable_metrics_endpoint": true,
     "enable_redis_rate_limit": false,
     "enable_redis_response_cache": false,
     "enable_response_compression": true,
@@ -76,6 +79,7 @@
       "secs": 5
     },
     "require_api_key": false,
+    "require_https": false,
     "response_max_bytes": 524288,
     "sequence_api_key_required_bases": 5000,
     "sequence_rate_limit_per_ip": {
@@ -96,7 +100,12 @@
     "sql_timeout": {
       "nanos": 800000000,
       "secs": 0
-    }
+    },
+    "token_required_audience": null,
+    "token_required_issuer": null,
+    "token_required_scopes": [],
+    "token_revoked_ids": [],
+    "token_signing_secret": "<redacted>"
   },
   "cache": {
     "breaker_failure_threshold": 3,

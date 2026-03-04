@@ -168,6 +168,13 @@ fn effective_config_snapshot_matches_generated() {
 
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let snapshot_path = root.join("docs/generated/effective-config.snapshot.json");
+    if std::env::var_os("UPDATE_GOLDEN").is_some() {
+        let encoded =
+            serde_json::to_string_pretty(&payload).expect("encode effective config snapshot");
+        std::fs::write(&snapshot_path, format!("{encoded}\n"))
+            .expect("write effective config snapshot");
+        return;
+    }
     let expected: serde_json::Value = serde_json::from_slice(
         &std::fs::read(&snapshot_path).expect("read effective config snapshot"),
     )

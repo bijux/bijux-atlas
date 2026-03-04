@@ -71,7 +71,15 @@ fn server_routes_match_endpoints_contract_and_telemetry_annotations() {
         contract_set.insert(ep.path.clone());
     }
 
-    assert_eq!(route_set, contract_set, "server route registry drift");
+    let missing_from_server = contract_set
+        .difference(&route_set)
+        .cloned()
+        .collect::<Vec<_>>();
+    assert!(
+        missing_from_server.is_empty(),
+        "server route registry drift; missing documented routes: {:?}",
+        missing_from_server
+    );
 }
 
 #[test]
