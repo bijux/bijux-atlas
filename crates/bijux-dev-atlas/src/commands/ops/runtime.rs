@@ -255,7 +255,6 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             apply: false,
             plan: true,
             dry_run: "none".to_string(),
-            evidence: false,
         }),
         OpsCommand::ReleasePlan(common) => OpsCommand::ReleasePlan(common),
         OpsCommand::K8s { command } => match command {
@@ -267,7 +266,6 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 write: false,
                 stdout: false,
                 diff: false,
-                evidence: false,
                 helm_binary: None,
             }),
             OpsK8sCommand::EnvSurface(common) => OpsCommand::K8sEnvSurface(common),

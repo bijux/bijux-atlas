@@ -400,8 +400,6 @@ pub struct OpsScenarioRunArgs {
     pub scenario: String,
     #[arg(long, default_value_t = false)]
     pub plan: bool,
-    #[arg(long, default_value_t = false)]
-    pub evidence: bool,
 }
 
 #[derive(Subcommand, Debug, Clone)]
@@ -557,8 +555,6 @@ pub struct OpsRenderArgs {
     pub stdout: bool,
     #[arg(long, default_value_t = false)]
     pub diff: bool,
-    #[arg(long, default_value_t = false)]
-    pub evidence: bool,
     #[arg(long)]
     pub helm_binary: Option<String>,
 }
@@ -665,8 +661,6 @@ pub struct OpsInstallArgs {
     pub plan: bool,
     #[arg(long, default_value = "none")]
     pub dry_run: String,
-    #[arg(long, default_value_t = false)]
-    pub evidence: bool,
 }
 
 #[derive(Args, Debug, Clone)]

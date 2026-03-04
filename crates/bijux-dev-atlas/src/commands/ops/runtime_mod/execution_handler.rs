@@ -374,7 +374,7 @@ pub(super) fn dispatch_execution(
                 }
                 let mode = if args.plan {
                     "plan"
-                } else if args.evidence {
+                } else if args.common.evidence {
                     "evidence"
                 } else {
                     "execute"
@@ -407,7 +407,7 @@ pub(super) fn dispatch_execution(
                     format!("{evidence_dir_rel}/config-snapshot.json"),
                     format!("{evidence_dir_rel}/logs-snapshot.txt"),
                 ];
-                if args.evidence {
+                if args.common.evidence {
                     if !common.allow_write {
                         return Err(OpsCommandError::Effect(
                             "scenario evidence mode requires --allow-write".to_string(),
@@ -647,7 +647,6 @@ pub(super) fn dispatch_execution(
                 kind: true,
                 apply: true,
                 plan: false,
-                evidence: false,
                 dry_run: "none".to_string(),
             };
             match crate::ops_execution_runtime::run_ops_install(&args) {

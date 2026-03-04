@@ -689,6 +689,7 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
         "schema_version": 1,
         "profile": profile.name,
         "run_id": run_id.as_str(),
+        "evidence_mode": common.evidence,
         "plan_mode": args.plan,
         "dry_run": args.dry_run,
         "steps": steps,
@@ -696,6 +697,42 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
         "profile_intent": profile_intent,
         "install_plan": render_inventory,
     });
+    if common.evidence {
+        if !common.allow_write {
+            return Err(OpsCommandError::Effect(
+                "ops install --evidence requires --allow-write".to_string(),
+            )
+            .to_stable_message());
+        }
+        let evidence_rel = format!("artifacts/ops/evidence/{}/install-evidence.json", run_id.as_str());
+        let evidence_path = repo_root.join(&evidence_rel);
+        if let Some(parent) = evidence_path.parent() {
+            fs::create_dir_all(parent).map_err(|err| {
+                OpsCommandError::Manifest(format!("failed to create {}: {err}", parent.display()))
+                    .to_stable_message()
+            })?;
+        }
+        let evidence_payload = serde_json::json!({
+            "schema_version": 1,
+            "kind": "ops_install_evidence",
+            "run_id": run_id.as_str(),
+            "profile": profile.name,
+            "dry_run": args.dry_run,
+            "plan_mode": args.plan,
+            "steps": payload["steps"],
+            "install_plan": payload["install_plan"],
+            "kind_context_expected": payload["kind_context_expected"],
+            "profile_intent": payload["profile_intent"],
+        });
+        fs::write(
+            &evidence_path,
+            serde_json::to_string_pretty(&evidence_payload).map_err(|e| e.to_string())?,
+        )
+        .map_err(|err| {
+            OpsCommandError::Manifest(format!("failed to write {}: {err}", evidence_path.display()))
+                .to_stable_message()
+        })?;
+    }
     let text = if args.plan {
         format!("install plan generated for profile `{}`", profile.name)
     } else {

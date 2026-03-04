@@ -231,16 +231,17 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
             "cluster_config": profile.cluster_config,
             "run_id": run_id.as_str(),
             "target": target_name,
+            "evidence_mode": common.evidence,
             "write_enabled": write_enabled,
             "check_only": args.check,
             "stdout_mode": args.stdout,
             "diff_mode": args.diff,
             "diff_result": diff,
-            "written_files": written_files,
-            "render_index_files": rows,
-            "validation_errors": validation_errors,
-            "kubeconform": kubeconform_result,
-            "subprocess_events": subprocess_events
+            "written_files": written_files.clone(),
+            "render_index_files": rows.clone(),
+            "validation_errors": validation_errors.clone(),
+            "kubeconform": kubeconform_result.clone(),
+            "subprocess_events": subprocess_events.clone()
         }],
         "summary": {
             "total": 1,
@@ -248,6 +249,41 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
             "warnings": 0
         }
     });
+    if common.evidence {
+        if !common.allow_write {
+            return Err(OpsCommandError::Effect(
+                "ops render --evidence requires --allow-write".to_string(),
+            )
+            .to_stable_message());
+        }
+        let evidence_rel = format!("artifacts/ops/evidence/{}/render-evidence.json", run_id.as_str());
+        let evidence_path = repo_root.join(&evidence_rel);
+        if let Some(parent) = evidence_path.parent() {
+            fs::create_dir_all(parent).map_err(|err| {
+                OpsCommandError::Manifest(format!("failed to create {}: {err}", parent.display()))
+                    .to_stable_message()
+            })?;
+        }
+        let evidence_payload = serde_json::json!({
+            "schema_version": 1,
+            "kind": "ops_render_evidence",
+            "run_id": run_id.as_str(),
+            "profile": profile.name,
+            "target": target_name,
+            "render_index_files": rows,
+            "validation_errors": validation_errors,
+            "kubeconform": payload["rows"][0]["kubeconform"],
+            "written_files": written_files,
+        });
+        fs::write(
+            &evidence_path,
+            serde_json::to_string_pretty(&evidence_payload).map_err(|e| e.to_string())?,
+        )
+        .map_err(|err| {
+            OpsCommandError::Manifest(format!("failed to write {}: {err}", evidence_path.display()))
+                .to_stable_message()
+        })?;
+    }
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     let exit = if validation_errors.is_empty() { 0 } else { 1 };
     Ok((rendered, exit))

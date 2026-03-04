@@ -339,6 +339,60 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                 },
                 "pipeline_summary": pipeline_summary
             });
+            if common.evidence {
+                if !common.allow_write {
+                    return Err(
+                        OpsCommandError::Effect(
+                            "ops validate --evidence requires --allow-write".to_string(),
+                        )
+                        .to_stable_message(),
+                    );
+                }
+                let run_id = common
+                    .run_id
+                    .clone()
+                    .unwrap_or_else(|| "local-ops-validate".to_string());
+                let evidence_rel = format!("artifacts/ops/evidence/{run_id}/validate-evidence.json");
+                let evidence_path = repo_root.join(&evidence_rel);
+                if let Some(parent) = evidence_path.parent() {
+                    std::fs::create_dir_all(parent).map_err(|err| {
+                        format!(
+                            "ops validate failed to create evidence directory {}: {err}",
+                            parent.display()
+                        )
+                    })?;
+                }
+                let install_matrix_snapshot = std::fs::read_to_string(
+                    ops_root.join("k8s/install-matrix.json"),
+                )
+                .ok()
+                .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
+                .unwrap_or_else(|| serde_json::json!({}));
+                let evidence_payload = serde_json::json!({
+                    "schema_version": 1,
+                    "kind": "ops_validate_evidence",
+                    "run_id": run_id,
+                    "status": status,
+                    "checks_exit": checks_exit,
+                    "pipeline_exit": pipeline_exit,
+                    "inventory_errors": inventory_errors,
+                    "inventory_snapshot": summary,
+                    "install_matrix": install_matrix_snapshot,
+                    "checks_output": checks_rendered,
+                    "pipeline": pipeline_payload,
+                    "pipeline_summary": pipeline_summary,
+                });
+                std::fs::write(
+                    &evidence_path,
+                    serde_json::to_string_pretty(&evidence_payload).map_err(|e| e.to_string())?,
+                )
+                .map_err(|err| {
+                    format!(
+                        "ops validate failed to write evidence file {}: {err}",
+                        evidence_path.display()
+                    )
+                })?;
+            }
             let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
             let exit = if failed == 0 {
                 ops_exit::PASS
