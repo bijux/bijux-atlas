@@ -12,6 +12,7 @@
     "configs/owners-registry.json": "platform",
     "configs/perf/budgets.yaml": "bijux-atlas-performance",
     "configs/perf/slo.yaml": "bijux-atlas-performance",
+    "configs/release/reproducibility-policy.json": "platform",
     "configs/release/version-policy.json": "platform",
     "configs/schema-map.json": "platform",
     "configs/security/dependency-source-policy.json": "security",

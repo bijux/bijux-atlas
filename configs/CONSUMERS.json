@@ -170,6 +170,10 @@
       "bijux-dev-atlas",
       "ci"
     ],
+    "configs/release/reproducibility-policy.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
     "configs/release/version-policy.json": [
       "bijux-dev-atlas",
       "ci"

@@ -365,6 +365,7 @@
         "configs/schema/layer-relaxations.schema.json",
         "configs/schema/ops-lint-relaxations.schema.json",
         "configs/schema/policy-relaxations.schema.json",
+        "configs/schema/release-reproducibility-policy.schema.json",
         "configs/schema/target-renames.schema.json",
         "configs/schema/tool-versions.schema.json",
         "configs/schema/versioning-policy.schema.json",

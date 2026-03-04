@@ -4,7 +4,8 @@ use crate::cli::{
     FormatArg, ReleaseBundleBuildArgs, ReleaseBundleHashArgs, ReleaseBundleVerifyArgs,
     ReleaseChangelogGenerateArgs, ReleaseChangelogValidateArgs, ReleaseCheckArgs, ReleaseCommand,
     ReleaseDiffArgs, ReleaseManifestGenerateArgs, ReleaseManifestValidateArgs, ReleasePacketArgs,
-    ReleaseSignArgs, ReleaseVerifyArgs, ReleaseVersionCheckArgs,
+    ReleaseRebuildVerifyArgs, ReleaseReproducibilityReportArgs, ReleaseSignArgs, ReleaseVerifyArgs,
+    ReleaseVersionCheckArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
 use sha2::{Digest, Sha256};
@@ -304,13 +305,42 @@ fn run_release_check(args: ReleaseCheckArgs) -> Result<(String, i32), String> {
             serde_json::json!({"status":"failed","stderr": String::from_utf8_lossy(&readiness_out.stderr)})
         });
 
-    let ok = validate_out.status.success() && readiness_out.status.success();
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let policy = read_reproducibility_policy(&root)?;
+    let evidence_rel = policy
+        .get("evidence_report_path")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("artifacts/release/reproducibility-report.json");
+    let evidence_path = root.join(evidence_rel);
+    let evidence_payload = if evidence_path.exists() {
+        read_json(&evidence_path).unwrap_or_else(|_| serde_json::json!({"status":"failed"}))
+    } else {
+        serde_json::json!({
+            "status": "failed",
+            "errors": ["missing reproducibility evidence report"]
+        })
+    };
+    let require_evidence = policy
+        .get("require_evidence_before_release")
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(true);
+    let evidence_ok = !require_evidence
+        || evidence_payload
+            .get("status")
+            .and_then(serde_json::Value::as_str)
+            == Some("ok");
+    let ok = validate_out.status.success() && readiness_out.status.success() && evidence_ok;
     let payload = serde_json::json!({
         "schema_version": 1,
         "status": if ok { "ok" } else { "failed" },
         "text": if ok { "release check passed" } else { "release check failed" },
         "validate": validate_payload,
-        "ops_validate": readiness_payload
+        "ops_validate": readiness_payload,
+        "reproducibility_evidence": {
+            "path": evidence_rel,
+            "status": evidence_payload.get("status").cloned().unwrap_or(serde_json::json!("failed")),
+            "report": evidence_payload
+        }
     });
     let rendered = match args.format {
         FormatArg::Json => {
@@ -1021,6 +1051,19 @@ fn collect_manifest_source(root: &Path) -> Result<serde_json::Value, String> {
     read_json(&root.join("release/evidence/manifest.json"))
 }
 
+fn collect_toolchain_versions(root: &Path) -> serde_json::Value {
+    let path = root.join("configs/rust/toolchain.json");
+    let value = read_json(&path).unwrap_or(serde_json::Value::Null);
+    value
+        .get("versions")
+        .cloned()
+        .unwrap_or(serde_json::Value::Null)
+}
+
+fn read_reproducibility_policy(root: &Path) -> Result<serde_json::Value, String> {
+    read_json(&root.join("configs/release/reproducibility-policy.json"))
+}
+
 fn create_release_manifest(root: &Path, version: &str) -> Result<serde_json::Value, String> {
     let source = collect_manifest_source(root)?;
     let git_sha = ProcessCommand::new("git")
@@ -1032,10 +1075,12 @@ fn create_release_manifest(root: &Path, version: &str) -> Result<serde_json::Val
         .map(|s| s.trim().to_string())
         .filter(|s| !s.is_empty())
         .unwrap_or_else(|| "unknown".to_string());
-    let build_time = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map(|d| d.as_secs().to_string())
-        .unwrap_or_else(|_| "0".to_string());
+    let build_time = std::env::var("SOURCE_DATE_EPOCH").unwrap_or_else(|_| {
+        SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map(|d| d.as_secs().to_string())
+            .unwrap_or_else(|_| "0".to_string())
+    });
     let docs_hash = source
         .get("docs_site_summary")
         .and_then(|v| v.get("sha256"))
@@ -1111,6 +1156,12 @@ fn create_release_manifest(root: &Path, version: &str) -> Result<serde_json::Val
             "path": chart_path,
             "sha256": chart_digest
         },
+        "build_metadata": {
+            "os": std::env::consts::OS,
+            "architecture": std::env::consts::ARCH,
+            "cargo_profile": std::env::var("PROFILE").unwrap_or_else(|_| "release".to_string()),
+            "toolchain_versions": collect_toolchain_versions(root)
+        },
         "artifact_list": [],
         "security_advisories": []
     });
@@ -1175,6 +1226,7 @@ fn validate_release_manifest(root: &Path, version: &str) -> Result<serde_json::V
         "sbom_digests",
         "container_image_digests",
         "chart",
+        "build_metadata",
     ] {
         if manifest.get(key).is_none() {
             errors.push(format!("missing required key `{key}`"));
@@ -1535,6 +1587,129 @@ fn run_release_bundle_verify(args: ReleaseBundleVerifyArgs) -> Result<(String, i
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
+fn run_release_rebuild_verify(args: ReleaseRebuildVerifyArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let version = args
+        .version
+        .unwrap_or_else(|| default_release_version(&root));
+    let manifest = read_json(&release_manifest_path(&root, &version))?;
+    let declared_hash = manifest
+        .get("bundle_hash")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default()
+        .to_string();
+    let hash_payload = run_release_bundle_hash(ReleaseBundleHashArgs {
+        repo_root: Some(root.clone()),
+        version: Some(version.clone()),
+        format: FormatArg::Json,
+        out: None,
+    })?;
+    let computed: serde_json::Value =
+        serde_json::from_str(&hash_payload.0).unwrap_or_else(|_| serde_json::json!({}));
+    let computed_hash = computed
+        .get("bundle_hash")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default()
+        .to_string();
+    let mut errors = Vec::<String>::new();
+    if declared_hash.is_empty() {
+        errors.push("manifest is missing bundle_hash".to_string());
+    } else if declared_hash != computed_hash {
+        errors.push("rebuild hash must equal original bundle hash".to_string());
+    }
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_rebuild_verify",
+        "status": if errors.is_empty() { "ok" } else { "failed" },
+        "version": version,
+        "declared_bundle_hash": declared_hash,
+        "computed_bundle_hash": computed_hash,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if payload["status"] == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_reproducibility_report(
+    args: ReleaseReproducibilityReportArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let version = args
+        .version
+        .unwrap_or_else(|| default_release_version(&root));
+    let policy = read_reproducibility_policy(&root)?;
+    let required_env = policy
+        .get("required_env")
+        .and_then(serde_json::Value::as_object)
+        .cloned()
+        .unwrap_or_default();
+    let mut env_results = Vec::<serde_json::Value>::new();
+    let mut errors = Vec::<String>::new();
+    for (key, expected) in required_env {
+        let expected_value = expected.as_str().unwrap_or_default().to_string();
+        let actual_value = std::env::var(&key).unwrap_or_default();
+        let ok = actual_value == expected_value;
+        if !ok {
+            errors.push(format!(
+                "build environment mismatch for `{key}`: expected `{expected_value}`, got `{actual_value}`"
+            ));
+        }
+        env_results.push(serde_json::json!({
+            "key": key,
+            "expected": expected_value,
+            "actual": actual_value,
+            "status": if ok { "ok" } else { "failed" }
+        }));
+    }
+
+    let manifest = read_json(&release_manifest_path(&root, &version))?;
+    let has_build_metadata = manifest
+        .get("build_metadata")
+        .and_then(serde_json::Value::as_object)
+        .is_some();
+    if !has_build_metadata {
+        errors.push("release manifest is missing build_metadata".to_string());
+    }
+
+    let rebuild_payload = run_release_rebuild_verify(ReleaseRebuildVerifyArgs {
+        repo_root: Some(root.clone()),
+        version: Some(version.clone()),
+        format: FormatArg::Json,
+        out: None,
+    })?;
+    let rebuild_report: serde_json::Value =
+        serde_json::from_str(&rebuild_payload.0).unwrap_or_else(|_| serde_json::json!({}));
+    if policy
+        .get("require_rebuild_hash_match")
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(true)
+        && rebuild_report
+            .get("status")
+            .and_then(serde_json::Value::as_str)
+            != Some("ok")
+    {
+        errors.push("rebuild hash must equal original bundle hash".to_string());
+    }
+
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let report = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_reproducibility_report",
+        "status": status,
+        "version": version,
+        "environment": env_results,
+        "rebuild": rebuild_report,
+        "manifest_build_metadata_present": has_build_metadata,
+        "errors": errors
+    });
+    let report_path = root.join("artifacts/release/reproducibility-report.json");
+    write_json(&report_path, &report)?;
+    let mut response = report.clone();
+    response["path"] = serde_json::json!(repo_rel(&root, &report_path));
+    let rendered = emit_payload(args.format, args.out, &response)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
 #[derive(Debug, Clone)]
 struct SemverLike {
     major: u64,
@@ -1807,6 +1982,14 @@ pub(crate) fn run_release_command(
 ) -> Result<(String, i32), String> {
     match command {
         ReleaseCommand::Check(args) => run_release_check(args),
+        ReleaseCommand::Rebuild { command } => match command {
+            crate::cli::ReleaseRebuildCommand::Verify(args) => run_release_rebuild_verify(args),
+        },
+        ReleaseCommand::Reproducibility { command } => match command {
+            crate::cli::ReleaseReproducibilityCommand::Report(args) => {
+                run_release_reproducibility_report(args)
+            }
+        },
         ReleaseCommand::Version { command } => match command {
             crate::cli::ReleaseVersionCommand::Check(args) => run_release_version_check(args),
         },

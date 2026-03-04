@@ -203,10 +203,10 @@
     },
     {
       "counts": {
-        "covered": 22,
+        "covered": 23,
         "generated": 0,
         "internal": 0,
-        "public": 22,
+        "public": 23,
         "schemas": 1
       },
       "files": [
@@ -222,6 +222,7 @@
         "configs/product/README.md",
         "configs/product/artifact-manifest.schema.json",
         "configs/product/external-tools-manifest.json",
+        "configs/release/reproducibility-policy.json",
         "configs/release/version-policy.json",
         "configs/repo/generated-path-allowlist.json",
         "configs/repo/root-file-allowlist.json",
@@ -574,9 +575,9 @@
     },
     {
       "counts": {
-        "covered": 147,
+        "covered": 148,
         "generated": 1,
-        "internal": 126,
+        "internal": 127,
         "public": 20,
         "schemas": 12
       },
@@ -718,6 +719,7 @@
         "configs/schema/ops-lint-relaxations.schema.json",
         "configs/schema/policy-relaxations.schema.json",
         "configs/schema/public-surface.schema.json",
+        "configs/schema/release-reproducibility-policy.schema.json",
         "configs/schema/release-version-policy.schema.json",
         "configs/schema/reports/check-report-map.schema.json",
         "configs/schema/reports/ownership.schema.json",

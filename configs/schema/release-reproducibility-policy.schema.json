@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "evidence_report_path": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "require_evidence_before_release": {
+      "type": "boolean"
+    },
+    "require_rebuild_hash_match": {
+      "type": "boolean"
+    },
+    "required_env": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "type": "object"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "required_env",
+    "require_rebuild_hash_match",
+    "require_evidence_before_release",
+    "evidence_report_path"
+  ],
+  "title": "Release Reproducibility Policy",
+  "type": "object"
+}

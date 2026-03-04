@@ -1,0 +1,10 @@
+{
+  "evidence_report_path": "artifacts/release/reproducibility-report.json",
+  "require_evidence_before_release": true,
+  "require_rebuild_hash_match": true,
+  "required_env": {
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "schema_version": 1
+}

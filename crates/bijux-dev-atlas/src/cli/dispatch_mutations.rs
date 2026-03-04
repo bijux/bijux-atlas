@@ -57,6 +57,14 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Validate { format, .. } => *format = FormatArg::Json,
         Command::Release { command } => match command {
             ReleaseCommand::Check(args) => args.format = FormatArg::Json,
+            ReleaseCommand::Rebuild { command } => match command {
+                crate::cli::ReleaseRebuildCommand::Verify(args) => args.format = FormatArg::Json,
+            },
+            ReleaseCommand::Reproducibility { command } => match command {
+                crate::cli::ReleaseReproducibilityCommand::Report(args) => {
+                    args.format = FormatArg::Json
+                }
+            },
             ReleaseCommand::Version { command } => match command {
                 crate::cli::ReleaseVersionCommand::Check(args) => args.format = FormatArg::Json,
             },
@@ -1198,6 +1206,20 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     args.repo_root = Some(root.clone());
                 }
             }
+            ReleaseCommand::Rebuild { command } => match command {
+                crate::cli::ReleaseRebuildCommand::Verify(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+            },
+            ReleaseCommand::Reproducibility { command } => match command {
+                crate::cli::ReleaseReproducibilityCommand::Report(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+            },
             ReleaseCommand::Version { command } => match command {
                 crate::cli::ReleaseVersionCommand::Check(args) => {
                     if args.repo_root.is_none() {

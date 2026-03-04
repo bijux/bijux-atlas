@@ -251,6 +251,14 @@ pub enum Command {
 #[derive(Subcommand, Debug)]
 pub enum ReleaseCommand {
     Check(ReleaseCheckArgs),
+    Rebuild {
+        #[command(subcommand)]
+        command: ReleaseRebuildCommand,
+    },
+    Reproducibility {
+        #[command(subcommand)]
+        command: ReleaseReproducibilityCommand,
+    },
     Version {
         #[command(subcommand)]
         command: ReleaseVersionCommand,
@@ -277,6 +285,16 @@ pub enum ReleaseCommand {
 pub enum ReleaseManifestCommand {
     Generate(ReleaseManifestGenerateArgs),
     Validate(ReleaseManifestValidateArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ReleaseRebuildCommand {
+    Verify(ReleaseRebuildVerifyArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ReleaseReproducibilityCommand {
+    Report(ReleaseReproducibilityReportArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -454,6 +472,30 @@ pub struct ReleaseCheckArgs {
     pub repo_root: Option<PathBuf>,
     #[arg(long, default_value = "kind")]
     pub profile: String,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseRebuildVerifyArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub version: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseReproducibilityReportArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub version: Option<String>,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]

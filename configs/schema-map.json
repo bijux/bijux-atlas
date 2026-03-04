@@ -39,6 +39,7 @@
     "configs/perf/*.json": "configs/contracts/inventory-configs.schema.json",
     "configs/policy/*.json": "configs/policy/policy.schema.json",
     "configs/product/*.json": "configs/product/artifact-manifest.schema.json",
+    "configs/release/reproducibility-policy.json": "configs/schema/release-reproducibility-policy.schema.json",
     "configs/release/version-policy.json": "configs/schema/release-version-policy.schema.json",
     "configs/repo/*.json": "configs/schema/public-surface.schema.json",
     "configs/reports/check-report-map.json": "configs/schema/reports/check-report-map.schema.json",
