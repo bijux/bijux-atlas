@@ -34,6 +34,12 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - [Trace timeline examples](trace-timeline-examples.md): healthy and failure span sequences
 - [Trace dashboard examples](trace-dashboard-examples.md): practical dashboard panels and filters
 - [Trace troubleshooting](trace-troubleshooting.md): exporter and propagation triage
+- [Runtime diagnostics](runtime-diagnostics.md): debug endpoint contract and capture flow
+- [Operational troubleshooting guide](operational-troubleshooting-guide.md): ordered incident diagnosis workflow
+- [Production debugging guide](production-debugging-guide.md): safe runtime investigation procedure
+- [Runtime inspection examples](runtime-inspection-examples.md): command examples for stable evidence capture
+- [Failure analysis examples](failure-analysis-examples.md): common incident patterns and required checks
+- [System state visualization](system-state-visualization.md): stable panel model for incident dashboards
 - [SLO policy](slo-policy.md): target objectives and burn policy
 - [SLOs with PromQL](slos-with-promql.md): practical query patterns for burn analysis
 - Alert rule source: `ops/observe/alerts/atlas-alert-rules.yaml`
