@@ -126,6 +126,8 @@ pub struct RuntimeConfig {
     pub trace_sampling_ratio: f64,
     pub trace_exporter: String,
     pub trace_otlp_endpoint: Option<String>,
+    pub trace_jaeger_endpoint: Option<String>,
+    pub trace_file_path: Option<String>,
     pub trace_service_name: String,
     pub trace_context_propagation_enabled: bool,
     pub warm_coordination_enabled: bool,
@@ -528,9 +530,12 @@ fn validate_runtime_config_contract(runtime: &RuntimeConfig) -> Result<(), Runti
             message: "ATLAS_TRACE_SAMPLING_RATIO must be in [0.0, 1.0]".to_string(),
         });
     }
-    if !matches!(runtime.trace_exporter.as_str(), "otlp" | "none") {
+    if !matches!(
+        runtime.trace_exporter.as_str(),
+        "otlp" | "jaeger" | "file" | "none"
+    ) {
         return Err(RuntimeConfigError::InvalidValue {
-            message: "ATLAS_TRACE_EXPORTER must be one of: otlp, none".to_string(),
+            message: "ATLAS_TRACE_EXPORTER must be one of: otlp, jaeger, file, none".to_string(),
         });
     }
     if runtime.env_name.eq_ignore_ascii_case("prod") {
@@ -851,6 +856,8 @@ impl RuntimeConfig {
             trace_exporter: std::env::var("ATLAS_TRACE_EXPORTER")
                 .unwrap_or_else(|_| "otlp".to_string()),
             trace_otlp_endpoint: std::env::var("ATLAS_TRACE_OTLP_ENDPOINT").ok(),
+            trace_jaeger_endpoint: std::env::var("ATLAS_TRACE_JAEGER_ENDPOINT").ok(),
+            trace_file_path: std::env::var("ATLAS_TRACE_FILE_PATH").ok(),
             trace_service_name: std::env::var("ATLAS_TRACE_SERVICE_NAME")
                 .unwrap_or_else(|_| "bijux-atlas-server".to_string()),
             trace_context_propagation_enabled: env_bool(

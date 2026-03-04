@@ -390,6 +390,8 @@ async fn main() -> Result<(), String> {
     )
     .map_err(|err| err.to_string())?;
     let trace_exporter = match runtime.trace_exporter.as_str() {
+        "jaeger" => TraceExporterKind::Jaeger,
+        "file" => TraceExporterKind::File,
         "none" => TraceExporterKind::None,
         _ => TraceExporterKind::Otlp,
     };
@@ -399,6 +401,8 @@ async fn main() -> Result<(), String> {
         sampling_ratio: runtime.trace_sampling_ratio,
         exporter: trace_exporter,
         otlp_endpoint: runtime.trace_otlp_endpoint.clone(),
+        jaeger_endpoint: runtime.trace_jaeger_endpoint.clone(),
+        trace_file_path: runtime.trace_file_path.clone(),
         service_name: runtime.trace_service_name.clone(),
     };
     init_tracing(&trace_cfg)?;

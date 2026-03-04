@@ -256,6 +256,36 @@ fn runtime_config_accepts_catalog_required_mode() {
 }
 
 #[test]
+fn runtime_config_accepts_trace_exporter_matrix() {
+    for exporter in ["otlp", "jaeger", "file", "none"] {
+        with_runtime_env(&[("ATLAS_TRACE_EXPORTER", exporter)], || {
+            let startup = RuntimeStartupConfig {
+                bind_addr: DEFAULT_BIND_ADDR.to_string(),
+                store_root: PathBuf::from(DEFAULT_STORE_ROOT),
+                cache_root: PathBuf::from(DEFAULT_CACHE_ROOT),
+            };
+            let runtime = RuntimeConfig::from_env(startup).expect("valid trace exporter");
+            assert_eq!(runtime.trace_exporter, exporter);
+        });
+    }
+}
+
+#[test]
+fn runtime_config_rejects_unknown_trace_exporter() {
+    with_runtime_env(&[("ATLAS_TRACE_EXPORTER", "zipkin")], || {
+        let startup = RuntimeStartupConfig {
+            bind_addr: DEFAULT_BIND_ADDR.to_string(),
+            store_root: PathBuf::from(DEFAULT_STORE_ROOT),
+            cache_root: PathBuf::from(DEFAULT_CACHE_ROOT),
+        };
+        let err = RuntimeConfig::from_env(startup).expect_err("invalid trace exporter");
+        assert!(err
+            .to_string()
+            .contains("ATLAS_TRACE_EXPORTER must be one of: otlp, jaeger, file, none"));
+    });
+}
+
+#[test]
 fn runtime_config_rejects_invalid_auth_mode() {
     with_runtime_env(&[("ATLAS_AUTH_MODE", "hmac")], || {
         let startup = RuntimeStartupConfig {
