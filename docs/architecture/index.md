@@ -28,6 +28,7 @@ Describe how Atlas is structured so contributors and operators share one durable
 
 ## What You Will Find Here
 
+- [System Architecture Specification](system-architecture-specification.md)
 - [Architecture Summary](summary.md)
 - [Architecture Overview](overview.md)
 - [Design Principles](design-principles.md)

@@ -139,6 +139,7 @@ nav:
   - Product: product/index.md
   - Architecture:
       - Architecture Index: architecture/index.md
+      - System Architecture Specification: architecture/system-architecture-specification.md
       - Architecture Summary: architecture/summary.md
       - Architecture Overview: architecture/overview.md
       - Design Principles: architecture/design-principles.md

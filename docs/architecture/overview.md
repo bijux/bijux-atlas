@@ -27,6 +27,7 @@ Atlas architecture is organized around deterministic data movement and explicit 
 
 ## Entry points
 
+- [System Architecture Specification](system-architecture-specification.md)
 - [Architecture Index](index.md)
 - [System Dataflow](dataflow.md)
 - [Component Documentation](components/index.md)
