@@ -77,6 +77,11 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 45. [Scientific defensibility](scientific-defensibility.md)
 46. [Cluster deployment models](cluster-deployment-models.md)
 47. [Cluster upgrade and compatibility](cluster-upgrade-and-compatibility.md)
+48. [Cluster membership protocol](cluster-membership-protocol.md)
+49. [Cluster node lifecycle states](cluster-node-lifecycle-states.md)
+50. [Cluster node health monitoring](cluster-node-health-monitoring.md)
+51. [Cluster node maintenance procedures](cluster-node-maintenance-procedures.md)
+52. [Cluster troubleshooting guide](cluster-troubleshooting-guide.md)
 
 ## What This Page Is Not
 

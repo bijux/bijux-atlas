@@ -73,6 +73,7 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - [Observability troubleshooting guide](observability-troubleshooting-guide.md): failure-mode focused fixes
 - [Observability performance considerations](observability-performance-considerations.md): runtime cost guardrails
 - [Observability future roadmap](observability-future-roadmap.md): planned maturity upgrades
+- [Cluster membership observability](cluster-membership-observability.md): metrics, traces, logs, and dashboards for node lifecycle
 - [SLO policy](slo-policy.md): target objectives and burn policy
 - [SLOs with PromQL](slos-with-promql.md): practical query patterns for burn analysis
 - Alert rule source: `ops/observe/alerts/atlas-alert-rules.yaml`

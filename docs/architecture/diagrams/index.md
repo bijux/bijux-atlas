@@ -26,6 +26,7 @@ related:
 - [Control Plane](control-plane.md)
 - [Runtime System](runtime-system.md)
 - [Ops Governance](ops-governance.md)
+- [Cluster Membership Architecture](cluster-membership-architecture.md)
 - [Diagram Style Guide](style-guide.md)
 
 ## Legacy and supporting diagrams
