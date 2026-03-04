@@ -137,6 +137,71 @@ fn ops_install_plan_supports_json_format() {
 }
 
 #[test]
+fn ops_install_plan_alias_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "install-plan", "--format", "json"])
+        .output()
+        .expect("ops install-plan");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let row = payload["rows"]
+        .as_array()
+        .and_then(|rows| rows.first())
+        .expect("row");
+    assert_eq!(row["plan_mode"].as_bool(), Some(true));
+}
+
+#[test]
+fn ops_kind_install_routes_to_install_surface() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "kind", "install", "--format", "json"])
+        .output()
+        .expect("ops kind install");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("--allow-subprocess"));
+}
+
+#[test]
+fn ops_kind_upgrade_routes_to_helm_upgrade_surface() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "kind", "upgrade", "--format", "json"])
+        .output()
+        .expect("ops kind upgrade");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("--allow-subprocess"));
+}
+
+#[test]
+fn ops_kind_rollback_routes_to_helm_rollback_surface() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "kind", "rollback", "--format", "json"])
+        .output()
+        .expect("ops kind rollback");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("--allow-subprocess"));
+}
+
+#[test]
+fn ops_kind_smoke_routes_to_smoke_surface() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "kind", "smoke", "--format", "json"])
+        .output()
+        .expect("ops kind smoke");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("--allow-subprocess"));
+}
+
+#[test]
 fn ops_status_pods_requires_allow_subprocess() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())

@@ -122,6 +122,7 @@ pub enum OpsCommand {
     VerifyTools(OpsCommonArgs),
     ListActions(OpsCommonArgs),
     Plan(OpsCommonArgs),
+    InstallPlan(OpsCommonArgs),
     Up(OpsCommonArgs),
     Down(OpsCommonArgs),
     Clean(OpsCommonArgs),
@@ -219,6 +220,14 @@ pub enum OpsKindCommand {
     Down(OpsCommonArgs),
     Status(OpsCommonArgs),
     PreloadImage(OpsKindPreloadArgs),
+    #[command(hide = true)]
+    Install(OpsInstallArgs),
+    #[command(hide = true)]
+    Upgrade(OpsHelmUpgradeArgs),
+    #[command(hide = true)]
+    Rollback(OpsHelmRollbackArgs),
+    #[command(hide = true)]
+    Smoke(OpsSmokeArgs),
 }
 
 #[derive(Subcommand, Debug, Clone)]

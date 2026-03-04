@@ -527,6 +527,18 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             crate::cli::OpsKindCommand::PreloadImage(args) => {
                 crate::ops_execution_runtime::run_ops_kind_preload(&args)
             }
+            crate::cli::OpsKindCommand::Install(args) => {
+                crate::ops_execution_runtime::run_ops_install(&args)
+            }
+            crate::cli::OpsKindCommand::Upgrade(args) => {
+                crate::ops_execution_runtime::run_ops_helm_upgrade(&args)
+            }
+            crate::cli::OpsKindCommand::Rollback(args) => {
+                crate::ops_execution_runtime::run_ops_helm_rollback(&args)
+            }
+            crate::cli::OpsKindCommand::Smoke(args) => {
+                crate::ops_execution_runtime::run_ops_smoke(&args)
+            }
         },
         OpsCommand::Helm { command } => match command {
             crate::cli::OpsHelmCommand::Install(args) => {

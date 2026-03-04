@@ -254,6 +254,50 @@ fn deployment_template_rejects_invalid_image_reference_shape() {
 }
 
 #[test]
+fn offline_profile_uses_digest_pinned_image_and_no_external_egress() {
+    let root = repo_root();
+    let offline = load_yaml(&root.join("ops/k8s/values/offline.yaml"));
+    let image = offline
+        .as_mapping()
+        .and_then(|map| map.get(YamlValue::String("image".to_string())))
+        .and_then(YamlValue::as_mapping)
+        .expect("offline image block");
+    let tag = image
+        .get(YamlValue::String("tag".to_string()))
+        .and_then(YamlValue::as_str)
+        .unwrap_or_default();
+    let digest = image
+        .get(YamlValue::String("digest".to_string()))
+        .and_then(YamlValue::as_str)
+        .unwrap_or_default();
+    assert!(
+        tag.is_empty(),
+        "offline profile must not rely on tag-only image"
+    );
+    assert!(
+        digest.starts_with("sha256:") && digest.len() == 71,
+        "offline profile must use a pinned image digest"
+    );
+
+    let network_policy = offline
+        .as_mapping()
+        .and_then(|map| map.get(YamlValue::String("networkPolicy".to_string())))
+        .and_then(YamlValue::as_mapping)
+        .expect("offline networkPolicy");
+    let egress = network_policy
+        .get(YamlValue::String("egress".to_string()))
+        .and_then(YamlValue::as_mapping)
+        .expect("offline egress");
+    assert_eq!(
+        egress
+            .get(YamlValue::String("mode".to_string()))
+            .and_then(YamlValue::as_str),
+        Some("disabled"),
+        "offline profile must disable egress mode"
+    );
+}
+
+#[test]
 fn helm_lint_passes_for_the_canonical_chart() {
     let root = repo_root();
     let output = Command::new("helm")

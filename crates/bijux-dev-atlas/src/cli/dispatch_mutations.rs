@@ -122,6 +122,14 @@ fn force_json_ops(command: &mut OpsCommand) {
             | crate::cli::OpsKindCommand::Down(common)
             | crate::cli::OpsKindCommand::Status(common) => common.format = FormatArg::Json,
             crate::cli::OpsKindCommand::PreloadImage(args) => args.common.format = FormatArg::Json,
+            crate::cli::OpsKindCommand::Install(args) => args.common.format = FormatArg::Json,
+            crate::cli::OpsKindCommand::Upgrade(args) => {
+                args.release.common.format = FormatArg::Json
+            }
+            crate::cli::OpsKindCommand::Rollback(args) => {
+                args.release.common.format = FormatArg::Json
+            }
+            crate::cli::OpsKindCommand::Smoke(args) => args.common.format = FormatArg::Json,
         },
         OpsCommand::Helm { command } => match command {
             crate::cli::OpsHelmCommand::Install(args) => {
@@ -151,6 +159,7 @@ fn force_json_ops(command: &mut OpsCommand) {
         | OpsCommand::VerifyTools(common)
         | OpsCommand::ListActions(common)
         | OpsCommand::Plan(common)
+        | OpsCommand::InstallPlan(common)
         | OpsCommand::Up(common)
         | OpsCommand::Down(common)
         | OpsCommand::Clean(common)
@@ -669,6 +678,18 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 crate::cli::OpsKindCommand::PreloadImage(args) => {
                     args.common.repo_root = Some(root.clone())
                 }
+                crate::cli::OpsKindCommand::Install(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+                crate::cli::OpsKindCommand::Upgrade(args) => {
+                    args.release.common.repo_root = Some(root.clone())
+                }
+                crate::cli::OpsKindCommand::Rollback(args) => {
+                    args.release.common.repo_root = Some(root.clone())
+                }
+                crate::cli::OpsKindCommand::Smoke(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
             },
             OpsCommand::Logs { command }
             | OpsCommand::Describe { command }
@@ -711,6 +732,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | OpsCommand::VerifyTools(common)
             | OpsCommand::ListActions(common)
             | OpsCommand::Plan(common)
+            | OpsCommand::InstallPlan(common)
             | OpsCommand::Up(common)
             | OpsCommand::Down(common)
             | OpsCommand::Clean(common)

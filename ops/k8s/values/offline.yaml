@@ -1,3 +1,7 @@
+image:
+  tag: ""
+  digest: "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+
 server:
   cachedOnlyMode: true
   readinessRequiresCatalog: false

@@ -9,7 +9,7 @@ use crate::cli::{
     OpsK8sCommand, OpsKindCommand, OpsKindPreloadArgs, OpsLoadBaselineCommand, OpsLoadCommand,
     OpsObsCommand, OpsObsDrillCommand, OpsPinsCommand, OpsProfileCommand, OpsProfilesCommand,
     OpsProfilesValidateArgs, OpsRenderArgs, OpsRenderTarget, OpsReportCommand, OpsResourcesCommand,
-    OpsSchemaCommand, OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
+    OpsSchemaCommand, OpsSmokeArgs, OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
 };
 use crate::ops_support::{
     build_ops_run_report, load_load_manifest, load_stack_manifest, load_stack_pins,
@@ -46,6 +46,12 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
             | OpsKindCommand::Down(common)
             | OpsKindCommand::Status(common) => Some(common),
             OpsKindCommand::PreloadImage(OpsKindPreloadArgs { common, .. }) => Some(common),
+            OpsKindCommand::Install(OpsInstallArgs { common, .. }) => Some(common),
+            OpsKindCommand::Upgrade(OpsHelmUpgradeArgs { release, .. })
+            | OpsKindCommand::Rollback(OpsHelmRollbackArgs { release, .. }) => {
+                Some(&release.common)
+            }
+            OpsKindCommand::Smoke(OpsSmokeArgs { common, .. }) => Some(common),
         },
         OpsCommand::Helm { command } => match command {
             OpsHelmCommand::Install(OpsHelmInstallArgs { release, .. })
@@ -71,6 +77,7 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
         | OpsCommand::VerifyTools(common)
         | OpsCommand::ListActions(common)
         | OpsCommand::Plan(common)
+        | OpsCommand::InstallPlan(common)
         | OpsCommand::Up(common)
         | OpsCommand::Down(common)
         | OpsCommand::Clean(common)
@@ -167,7 +174,32 @@ fn command_run_id(command: &OpsCommand) -> String {
 
 pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
     let command = match command {
-        OpsCommand::Kind { command } => OpsCommand::Kind { command },
+        OpsCommand::Kind { command } => match command {
+            OpsKindCommand::Up(common) => OpsCommand::Kind {
+                command: OpsKindCommand::Up(common),
+            },
+            OpsKindCommand::Down(common) => OpsCommand::Kind {
+                command: OpsKindCommand::Down(common),
+            },
+            OpsKindCommand::Status(common) => OpsCommand::Kind {
+                command: OpsKindCommand::Status(common),
+            },
+            OpsKindCommand::PreloadImage(args) => OpsCommand::Kind {
+                command: OpsKindCommand::PreloadImage(args),
+            },
+            OpsKindCommand::Install(mut args) => {
+                args.kind = true;
+                args.apply = true;
+                OpsCommand::Install(args)
+            }
+            OpsKindCommand::Upgrade(args) => OpsCommand::Helm {
+                command: OpsHelmCommand::Upgrade(args),
+            },
+            OpsKindCommand::Rollback(args) => OpsCommand::Helm {
+                command: OpsHelmCommand::Rollback(args),
+            },
+            OpsKindCommand::Smoke(args) => OpsCommand::Smoke(args),
+        },
         OpsCommand::Helm { command } => OpsCommand::Helm { command },
         OpsCommand::Drills { command } => OpsCommand::Drills { command },
         OpsCommand::Logs { command } => OpsCommand::Logs { command },
@@ -194,6 +226,13 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             }
             OpsStackCommand::Reset(args) => OpsCommand::Reset(args),
         },
+        OpsCommand::InstallPlan(common) => OpsCommand::Install(OpsInstallArgs {
+            common,
+            kind: false,
+            apply: false,
+            plan: true,
+            dry_run: "none".to_string(),
+        }),
         OpsCommand::K8s { command } => match command {
             OpsK8sCommand::Render(args) => OpsCommand::Render(args),
             OpsK8sCommand::Validate(common) => OpsCommand::Render(OpsRenderArgs {
