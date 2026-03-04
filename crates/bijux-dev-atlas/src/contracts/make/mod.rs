@@ -578,7 +578,8 @@ fn test_make_contracts_003_delegate_only(ctx: &RunContext) -> TestResult {
             || trimmed.contains(" contract ")
             || trimmed.contains(" suites run --suite contracts")
             || trimmed.contains(" registry doctor ")
-            || trimmed.contains(" check run --suite "))
+            || trimmed.contains(" check run --suite ")
+            || trimmed.contains(" checks run --suite "))
         {
             violations.push(Violation {
                 contract_id: contract_id.to_string(),

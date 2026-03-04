@@ -42,16 +42,16 @@ contracts: ## Deprecated alias for make contract
 	@$(MAKE) -s contract JOBS="$(JOBS)" FAIL_FAST="$(FAIL_FAST)" NO_ANSI="$(NO_ANSI)" FORMAT="$(FORMAT)"
 
 contracts-pr: _contracts_guard ## Run required and static contracts for pull requests
-	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) contracts all --lane pr --format $(CONTRACTS_FORMAT) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@CI=1 $(DEV_ATLAS) contracts all --lane pr --format $(CONTRACTS_FORMAT) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode static --jobs $(JOBS) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
+	@CI=1 $(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode static --jobs $(JOBS) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-merge: _contracts_guard ## Run required and effect contracts for merge gating
-	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) contracts all --lane merge --format $(CONTRACTS_FORMAT) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@CI=1 $(DEV_ATLAS) contracts all --lane merge --format $(CONTRACTS_FORMAT) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode all --effects-policy allow --jobs $(JOBS) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
+	@CI=1 $(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode all --effects-policy allow --jobs $(JOBS) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-release: _contracts_guard ## Run full release contracts matrix
-	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) contracts all --lane release --format $(CONTRACTS_FORMAT) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@CI=1 $(DEV_ATLAS) contracts all --lane release --format $(CONTRACTS_FORMAT) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode all --effects-policy allow --jobs $(JOBS) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
+	@CI=1 $(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode all --effects-policy allow --jobs $(JOBS) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-all: ## Deprecated alias for make contract-all
 	@printf '%s\n' "deprecated: use \`make contract-all\`"
@@ -77,16 +77,16 @@ contracts-fast: ## Deprecated alias for make contract
 	@$(MAKE) -s contract JOBS="$(JOBS)" FAIL_FAST="$(FAIL_FAST)" NO_ANSI="$(NO_ANSI)" FORMAT="$(FORMAT)"
 
 contracts-changed: _contracts_guard ## Run changed-only contracts
-	@printf '%s\n' "run: $(DEV_ATLAS) contracts all --mode static --changed-only --format $(CONTRACTS_FORMAT) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(DEV_ATLAS) contracts all --mode static --changed-only --format $(CONTRACTS_FORMAT) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+	@printf '%s\n' "run: $(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode static --jobs $(JOBS) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
+	@$(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode static --jobs $(JOBS) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-json: _contracts_guard ## Run all contracts and emit json
 	@printf '%s\n' "run: $(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode static --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
 	@$(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode static --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-ci: _contracts_guard ## Run strict CI contracts lane
-	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) contracts all $(CONTRACTS_EFFECT_FLAGS) --format $(CONTRACTS_FORMAT) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@CI=1 $(DEV_ATLAS) contracts all $(CONTRACTS_EFFECT_FLAGS) --format $(CONTRACTS_FORMAT) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode all --effects-policy allow --jobs $(JOBS) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
+	@CI=1 $(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode all --effects-policy allow --jobs $(JOBS) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-root: _contracts_guard ## Run root contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contract run --mode static --domain root --color always --format $(FORMAT) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
@@ -109,16 +109,16 @@ contracts-configs: _contracts_guard ## Run configs contracts
 	@$(DEV_ATLAS) contract run --mode static --domain configs --color always --format $(FORMAT) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-configs-required: _contracts_guard ## Run PR-required configs suite in static mode
-	@printf '%s\n' "run: $(DEV_ATLAS) check run --suite configs_required --include-internal --include-slow --format $(FORMAT)"
-	@$(DEV_ATLAS) check run --suite configs_required --include-internal --include-slow --format $(FORMAT)
+	@printf '%s\n' "run: $(DEV_ATLAS) checks run --suite configs_required --include-internal --include-slow --format $(FORMAT)"
+	@$(DEV_ATLAS) checks run --suite configs_required --include-internal --include-slow --format $(FORMAT)
 
 contracts-docs: _contracts_guard ## Run docs contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contract run --mode static --domain docs --color always --format $(FORMAT) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
 	@$(DEV_ATLAS) contract run --mode static --domain docs --color always --format $(FORMAT) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-docs-required: _contracts_guard ## Run PR-required docs suite in static mode
-	@printf '%s\n' "run: $(DEV_ATLAS) check run --suite docs_required --include-internal --include-slow --format $(FORMAT)"
-	@$(DEV_ATLAS) check run --suite docs_required --include-internal --include-slow --format $(FORMAT)
+	@printf '%s\n' "run: $(DEV_ATLAS) checks run --suite docs_required --include-internal --include-slow --format $(FORMAT)"
+	@$(DEV_ATLAS) checks run --suite docs_required --include-internal --include-slow --format $(FORMAT)
 
 contracts-docker: _contracts_guard ## Run docker contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contract run --mode static --domain docker --color always --format $(FORMAT) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
@@ -129,8 +129,8 @@ contracts-make: _contracts_guard ## Run make contracts
 	@$(DEV_ATLAS) contract run --mode static --domain make --color always --format $(FORMAT) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-make-required: _contracts_guard ## Run PR-required make suite in static mode
-	@printf '%s\n' "run: $(DEV_ATLAS) check run --suite make_required --include-internal --include-slow --format $(FORMAT)"
-	@$(DEV_ATLAS) check run --suite make_required --include-internal --include-slow --format $(FORMAT)
+	@printf '%s\n' "run: $(DEV_ATLAS) checks run --suite make_required --include-internal --include-slow --format $(FORMAT)"
+	@$(DEV_ATLAS) checks run --suite make_required --include-internal --include-slow --format $(FORMAT)
 
 contracts-ops: _contracts_guard ## Run ops contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contract run --mode static --domain ops --color always --format $(FORMAT) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
