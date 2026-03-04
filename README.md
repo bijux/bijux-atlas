@@ -98,8 +98,58 @@ generated artifacts + checks/contracts + publishable evidence
 
 Repository constitution: [`CONTRACT.md`](CONTRACT.md)
 
+## Architecture
+
+Repository architecture entrypoint: [`ARCHITECTURE.md`](ARCHITECTURE.md)
+
+## Version And Compatibility
+
+![Version](https://img.shields.io/badge/version-workspace--managed-blue)
+![Compatibility](https://img.shields.io/badge/compatibility-contract--governed-brightgreen)
+
+Compatibility promise: [`docs/product/compatibility-promise.md`](docs/product/compatibility-promise.md)
+
+## Docs Site
+
+![Docs](https://img.shields.io/badge/docs-github%20pages-blue)
+
+Published by workflow: [`.github/workflows/docs-deploy.yml`](.github/workflows/docs-deploy.yml)
+
+## Crate Versions
+
+- `bijux-atlas-api`: workspace-managed version, API model surface
+- `bijux-atlas-cli`: workspace-managed version, user CLI
+- `bijux-atlas-core`: workspace-managed version, domain core
+- `bijux-atlas-ingest`: workspace-managed version, ingest pipeline
+- `bijux-atlas-model`: workspace-managed version, model semantics
+- `bijux-atlas-policies`: workspace-managed version, policy engine
+- `bijux-atlas-query`: workspace-managed version, query primitives
+- `bijux-atlas-server`: workspace-managed version, runtime server
+- `bijux-atlas-store`: workspace-managed version, storage abstractions
+- `bijux-dev-atlas`: workspace-managed version, control-plane tooling
+
+Crate details: [`docs/reference/crates.md`](docs/reference/crates.md)
+
+## Crate Publishing Strategy
+
+Current release plan keeps a multi-crate workspace with shared governance gates. We keep separate crates to preserve clear runtime boundaries and avoid collapsing public API, ops tooling, and control-plane concerns into a single package.
+
+## Governance And Operations References
+
+- Ops artifacts reference: [`docs/reference/ops.md`](docs/reference/ops.md)
+- Docker reference: [`docs/reference/docker.md`](docs/reference/docker.md)
+- Governance reference: [`docs/reference/governance.md`](docs/reference/governance.md)
+- Contributor safety guide: [`docs/development/contributor-onboarding-rubric.md`](docs/development/contributor-onboarding-rubric.md)
+- How to add checks and contracts: [`docs/control-plane/extend-control-plane.md`](docs/control-plane/extend-control-plane.md)
+
+## Support Policy
+
+Support is provided for governed, documented surfaces on `main` and release tags. Experimental surfaces may change with notice in docs and release notes.
+
 ## Next Reading
 
 - Product narrative: [`docs/product/what-is-bijux-atlas.md`](docs/product/what-is-bijux-atlas.md)
 - What we built: [`docs/product/what-we-built.md`](docs/product/what-we-built.md)
 - Why trust this: [`docs/product/how-this-repo-enforces-itself.md`](docs/product/how-this-repo-enforces-itself.md)
+- Reliability boundaries: [`docs/product/reliability-boundaries.md`](docs/product/reliability-boundaries.md)
+- Reviewer onboarding: [`docs/product/reviewer-onboarding-checklist.md`](docs/product/reviewer-onboarding-checklist.md)

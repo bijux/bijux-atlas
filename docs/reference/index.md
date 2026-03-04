@@ -33,9 +33,11 @@ Facts live here. Procedures do not. Use this section for stable names, keys, sch
 ## Categories
 
 - Commands and automation: [Commands](commands.md), [Command inventory](command-inventory.md)
+- Distribution and package surfaces: [Crates reference](crates.md), [Docker reference](docker.md), [Ops artifacts reference](ops.md)
 - Runtime definitions: [Configs reference](configs.md), [Runtime config](runtime/config.md), [Errors reference](errors.md), [Schemas reference](schemas.md)
 - Config governance facts: [Schema versioning policy](schema-versioning-policy.md), [Config keys reference](config-keys-reference.md)
 - Contracts and registries: [Contracts](contracts/index.md), [Reports](reports/index.md), [Dataset operations](dataset-operations.md), [Ingest reproducibility](ingest/reproducibility.md)
+- Governance facts: [Governance reference](governance.md)
 - Query semantics: [Querying reference](querying/index.md), [Pagination](querying/pagination.md)
 - Dataset semantics: [Dataset and artifact reference](datasets/index.md)
 - Working examples: [Examples index](examples/index.md)
