@@ -343,6 +343,162 @@ pub(super) fn validate_profile_mode(
     ))
 }
 
+pub(super) fn run_profile_validation_pipeline(
+    common: &OpsCommonArgs,
+    repo_root: &Path,
+    ops_root: &Path,
+) -> Result<(serde_json::Value, i32), String> {
+    if !common.allow_subprocess {
+        return Err("ops validate requires --allow-subprocess".to_string());
+    }
+    let report = bijux_dev_atlas::ops::profiles_matrix::validate_profiles(
+        repo_root,
+        &bijux_dev_atlas::ops::profiles_matrix::ValidateProfilesOptions {
+            chart_dir: ops_root.join("k8s/charts/bijux-atlas"),
+            values_root: ops_root.join("k8s/values"),
+            schema_path: ops_root.join("k8s/charts/bijux-atlas/values.schema.json"),
+            dataset_manifest_path: ops_root.join("datasets/manifest.json"),
+            install_matrix_path: ops_root.join("k8s/install-matrix.json"),
+            rollout_safety_path: ops_root.join("k8s/rollout-safety-contract.json"),
+            profile: common.profile.clone(),
+            profile_set: None,
+            timeout_seconds: 30,
+            run_kubeconform: true,
+        },
+    )?;
+
+    let rows = load_profile_values_rows(repo_root, ops_root, common.profile.as_deref())?;
+    let hpa_policy_path = ops_root.join("stack/hpa-policy.json");
+    let hpa_policy_json = std::fs::read_to_string(&hpa_policy_path)
+        .map_err(|err| format!("failed to read {}: {err}", hpa_policy_path.display()))?;
+    let hpa_policy_value: serde_json::Value = serde_json::from_str(&hpa_policy_json)
+        .map_err(|err| format!("failed to parse {}: {err}", hpa_policy_path.display()))?;
+    let mut max_by_class = std::collections::BTreeMap::new();
+    if let Some(obj) = hpa_policy_value["max_replicas_by_class"].as_object() {
+        for (class_name, value) in obj {
+            if let Some(max) = value.as_u64() {
+                max_by_class.insert(class_name.clone(), max);
+            }
+        }
+    }
+
+    let mut stages = vec![
+        (
+            "ops_render_validate".to_string(),
+            report
+                .rows
+                .iter()
+                .filter(|row| row.helm_template.status == "fail")
+                .count(),
+            report.rows.len(),
+        ),
+        (
+            "ops_schema_validate".to_string(),
+            report.summary.schema_failures,
+            report.rows.len(),
+        ),
+        (
+            "ops_kubeconform_validate".to_string(),
+            report.summary.kubeconform_failures,
+            report.rows.len(),
+        ),
+        (
+            "ops_rollout_safety_validate".to_string(),
+            report
+                .rows
+                .iter()
+                .filter(|row| row.rollout_safety.status == "fail")
+                .count(),
+            report.rows.len(),
+        ),
+    ];
+    let policy_failures = rows
+        .iter()
+        .filter(|profile| !validate_policy_rules(profile).is_empty())
+        .count();
+    stages.push((
+        "ops_policy_validate".to_string(),
+        policy_failures,
+        rows.len(),
+    ));
+    let resource_failures = rows
+        .iter()
+        .filter(|profile| !validate_resource_rules(profile).is_empty())
+        .count();
+    stages.push((
+        "ops_resource_validate".to_string(),
+        resource_failures,
+        rows.len(),
+    ));
+    let security_failures = rows
+        .iter()
+        .filter(|profile| !validate_security_context_rules(profile).is_empty())
+        .count();
+    stages.push((
+        "ops_securitycontext_validate".to_string(),
+        security_failures,
+        rows.len(),
+    ));
+    let service_monitor_failures = rows
+        .iter()
+        .filter(|profile| !validate_service_monitor_rules(profile).is_empty())
+        .count();
+    stages.push((
+        "ops_service_monitor_validate".to_string(),
+        service_monitor_failures,
+        rows.len(),
+    ));
+    let hpa_failures = rows
+        .iter()
+        .filter(|profile| !validate_hpa_rules(profile, &max_by_class).is_empty())
+        .count();
+    stages.push(("ops_hpa_validate".to_string(), hpa_failures, rows.len()));
+
+    let total = stages.len();
+    let failed = stages
+        .iter()
+        .filter(|(_, failures, _)| *failures > 0)
+        .count();
+    let passed = total.saturating_sub(failed);
+    let mut lines = Vec::new();
+    let width = total.to_string().len().max(2);
+    for (index, (name, failures, profile_total)) in stages.iter().enumerate() {
+        let status = if *failures == 0 { "PASS" } else { "FAIL" };
+        lines.push(format!(
+            "{status:>4} [  0.000s] ({:>width$}/{total}) {name} profiles={profile_total} failures={failures}",
+            index + 1,
+            width = width
+        ));
+    }
+    lines.push(format!(
+        "ops-validate-summary: total={total} passed={passed} failed={failed} skipped=0"
+    ));
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "ops_validate_pipeline",
+        "profile_selector": report.inputs.profile_selector,
+        "rows": stages.iter().map(|(name, failures, profile_total)| serde_json::json!({
+            "name": name,
+            "status": if *failures == 0 {"pass"} else {"fail"},
+            "profile_total": profile_total,
+            "failures": failures
+        })).collect::<Vec<_>>(),
+        "summary": {
+            "total": total,
+            "passed": passed,
+            "failed": failed,
+            "skipped": 0
+        },
+        "text": lines.join("\n")
+    });
+    let exit = if failed == 0 {
+        ops_exit::PASS
+    } else {
+        ops_exit::FAIL
+    };
+    Ok((payload, exit))
+}
+
 fn merge_values(base: &mut serde_json::Value, overlay: serde_json::Value) {
     match (base, overlay) {
         (serde_json::Value::Object(base_obj), serde_json::Value::Object(overlay_obj)) => {
