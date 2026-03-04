@@ -266,4 +266,58 @@ mod tests {
         assert_eq!(diagnostics.recent_failures.len(), 1);
         assert_eq!(diagnostics.recent_failures[0].target_id, "node-b");
     }
+
+    #[test]
+    fn resilience_failure_recovery_sequence_records_expected_counts() {
+        let mut registry = registry();
+        registry.record_failure(FailureCategory::ShardCorruption, "atlas-default-s001", 10, "corruption");
+        registry.record_recovery("atlas-default-s001", "shard_failover", 11, 20, true);
+        let metrics = registry.metrics();
+        assert_eq!(metrics.failure_events_total, 1);
+        assert_eq!(metrics.recovery_events_total, 1);
+    }
+
+    #[test]
+    fn resilience_recovery_correctness_tracks_failed_recovery() {
+        let mut registry = registry();
+        registry.record_failure(FailureCategory::NodeUnreachable, "node-a", 100, "timeout");
+        registry.record_recovery("node-a", "node_recovery", 101, 190, false);
+        let metrics = registry.metrics();
+        assert_eq!(metrics.failed_recoveries_total, 1);
+        assert_eq!(metrics.successful_recoveries_total, 0);
+    }
+
+    #[test]
+    fn resilience_network_partition_event_is_captured() {
+        let mut registry = registry();
+        registry.record_failure(
+            FailureCategory::NetworkPartition,
+            "node-b",
+            1_000,
+            "partition between node-a and node-b",
+        );
+        let diagnostics = registry.diagnostics();
+        assert!(diagnostics
+            .recent_failures
+            .iter()
+            .any(|event| event.target_id == "node-b"));
+    }
+
+    #[test]
+    fn resilience_stress_records_many_failure_and_recovery_events() {
+        let mut registry = registry();
+        for i in 0..1_000_u64 {
+            registry.record_failure(FailureCategory::Unknown, format!("target-{i}"), i, "load test");
+            registry.record_recovery(
+                format!("target-{i}"),
+                "automatic_recovery",
+                i,
+                i.saturating_add(5),
+                true,
+            );
+        }
+        let metrics = registry.metrics();
+        assert_eq!(metrics.failure_events_total, 1_000);
+        assert_eq!(metrics.recovery_events_total, 1_000);
+    }
 }
