@@ -203,10 +203,10 @@
     },
     {
       "counts": {
-        "covered": 20,
+        "covered": 21,
         "generated": 0,
         "internal": 0,
-        "public": 20,
+        "public": 21,
         "schemas": 1
       },
       "files": [
@@ -218,6 +218,7 @@
         "configs/layout/inventory-budgets.json",
         "configs/layout/ops-markdown-naming-policy.json",
         "configs/layout/root-markdown-allowlist.json",
+        "configs/layout/root_markdown_allowlist.json",
         "configs/product/README.md",
         "configs/product/artifact-manifest.schema.json",
         "configs/product/external-tools-manifest.json",
