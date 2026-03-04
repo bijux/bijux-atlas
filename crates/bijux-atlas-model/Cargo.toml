@@ -10,6 +10,7 @@ homepage.workspace = true
 documentation = "https://docs.rs/bijux-atlas-model"
 readme = "README.md"
 categories = ["data-structures", "science"]
+exclude = ["tests/fixtures/**"]
 keywords = ["atlas", "model", "serde", "contracts", "genomics"]
 
 [dependencies]
@@ -19,7 +20,6 @@ serde_json.workspace = true
 [dev-dependencies]
 criterion = "0.5"
 proptest = "1"
-serde_json.workspace = true
 
 [lib]
 path = "src/lib.rs"

@@ -10,6 +10,7 @@ homepage.workspace = true
 documentation = "https://docs.rs/bijux-atlas-policies"
 readme = "README.md"
 categories = ["config", "science"]
+exclude = ["tests/fixtures/**"]
 keywords = ["atlas", "policy", "validation", "rules", "contracts"]
 
 [dependencies]
@@ -18,7 +19,6 @@ serde_json.workspace = true
 
 [dev-dependencies]
 criterion = "0.5"
-serde_json.workspace = true
 
 [lib]
 path = "src/lib.rs"

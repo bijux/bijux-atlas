@@ -10,6 +10,7 @@ homepage.workspace = true
 documentation = "https://docs.rs/bijux-atlas-cli"
 readme = "README.md"
 categories = ["command-line-utilities", "science"]
+exclude = ["tests/fixtures/**"]
 keywords = ["atlas", "cli", "datasets", "query", "contracts"]
 
 [dependencies]

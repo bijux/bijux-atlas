@@ -10,6 +10,7 @@ homepage.workspace = true
 documentation = "https://docs.rs/bijux-atlas-query"
 readme = "README.md"
 categories = ["database", "science"]
+exclude = ["tests/fixtures/**"]
 keywords = ["atlas", "query", "planner", "sqlite", "deterministic"]
 
 [dependencies]

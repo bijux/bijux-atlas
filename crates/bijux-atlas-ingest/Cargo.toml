@@ -10,6 +10,7 @@ homepage.workspace = true
 documentation = "https://docs.rs/bijux-atlas-ingest"
 readme = "README.md"
 categories = ["science", "database"]
+exclude = ["tests/fixtures/**"]
 keywords = ["atlas", "ingest", "gff", "fasta", "deterministic"]
 
 [features]
