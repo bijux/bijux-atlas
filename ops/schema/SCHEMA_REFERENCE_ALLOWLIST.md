@@ -126,6 +126,7 @@
 - `ops/schema/report/readiness-score.schema.json`: governed schema reference
 - `ops/schema/report/release-evidence-bundle.schema.json`: governed schema reference
 - `ops/schema/report/report-diff.schema.json`: governed schema reference
+- `ops/schema/report/security-incident-report.schema.json`: governed schema reference
 - `ops/schema/report/stack-contract.schema.json`: governed schema reference
 - `ops/schema/report/stack-drift-report.schema.json`: governed schema reference
 - `ops/schema/report/stack-health-report.schema.json`: governed schema reference
@@ -135,7 +136,9 @@
 - `ops/schema/stack/artifact-metadata.schema.json`: governed schema reference
 - `ops/schema/stack/dependency-graph.schema.json`: governed schema reference
 - `ops/schema/stack/evolution-policy.schema.json`: governed schema reference
+- `ops/schema/stack/hpa-policy.schema.json`: governed schema reference
 - `ops/schema/stack/profile-intent.schema.json`: governed schema reference
 - `ops/schema/stack/profile-manifest.schema.json`: governed schema reference
+- `ops/schema/stack/profile-registry.schema.json`: governed schema reference
 - `ops/schema/stack/service-dependency-contract.schema.json`: governed schema reference
 - `ops/schema/stack/version-manifest.schema.json`: governed schema reference

@@ -1,11 +1,11 @@
 {
-  "schema_version": 1,
-  "kind": "performance_ci_artifacts_v1",
   "artifacts": [
     "ops/report/generated/performance-regression-report.json",
     "ops/report/generated/performance-history.json",
     "ops/report/generated/performance-trend.json",
     "ops/report/generated/performance-dashboard.json",
     "ops/report/generated/performance-anomalies.json"
-  ]
+  ],
+  "kind": "performance_ci_artifacts_v1",
+  "schema_version": 1
 }

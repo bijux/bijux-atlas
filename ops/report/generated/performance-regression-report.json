@@ -1,14 +1,14 @@
 {
-  "schema_version": 1,
-  "kind": "performance_regression_report_v1",
   "baseline_path": "ops/load/baselines/system-load-baseline.json",
   "candidate_path": "ops/load/baselines/system-load-baseline.json",
   "generated_at_utc": "2026-03-04T16:45:57Z",
+  "kind": "performance_regression_report_v1",
+  "regressions": [],
+  "schema_version": 1,
   "summary": {
-    "total_regressions": 0,
     "critical": 0,
-    "warning": 0,
-    "info": 0
-  },
-  "regressions": []
+    "info": 0,
+    "total_regressions": 0,
+    "warning": 0
+  }
 }

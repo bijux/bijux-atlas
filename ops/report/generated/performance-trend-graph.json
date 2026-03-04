@@ -1,10 +1,22 @@
 {
-  "schema_version": 1,
-  "kind": "performance_trend_graph_v1",
   "graphs": [
-    {"id": "latency-p95", "source": "ops/report/generated/performance-trend.json"},
-    {"id": "latency-p99", "source": "ops/report/generated/performance-trend.json"},
-    {"id": "error-rate", "source": "ops/report/generated/performance-trend.json"},
-    {"id": "throughput", "source": "ops/report/generated/performance-trend.json"}
-  ]
+    {
+      "id": "latency-p95",
+      "source": "ops/report/generated/performance-trend.json"
+    },
+    {
+      "id": "latency-p99",
+      "source": "ops/report/generated/performance-trend.json"
+    },
+    {
+      "id": "error-rate",
+      "source": "ops/report/generated/performance-trend.json"
+    },
+    {
+      "id": "throughput",
+      "source": "ops/report/generated/performance-trend.json"
+    }
+  ],
+  "kind": "performance_trend_graph_v1",
+  "schema_version": 1
 }

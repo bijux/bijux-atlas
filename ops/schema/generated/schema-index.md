@@ -128,6 +128,7 @@
 | `ops/schema/report/readiness-score.schema.json` |
 | `ops/schema/report/release-evidence-bundle.schema.json` |
 | `ops/schema/report/report-diff.schema.json` |
+| `ops/schema/report/security-incident-report.schema.json` |
 | `ops/schema/report/stack-contract.schema.json` |
 | `ops/schema/report/stack-drift-report.schema.json` |
 | `ops/schema/report/stack-health-report.schema.json` |

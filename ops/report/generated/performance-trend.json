@@ -1,14 +1,22 @@
 {
-  "schema_version": 1,
   "kind": "performance_trend_v1",
+  "schema_version": 1,
   "series": {
-    "p95_ms": [1100],
-    "p99_ms": [2100],
-    "error_rate": [0.04],
-    "throughput_ops_per_sec": [1000]
+    "error_rate": [
+      0.04
+    ],
+    "p95_ms": [
+      1100
+    ],
+    "p99_ms": [
+      2100
+    ],
+    "throughput_ops_per_sec": [
+      1000
+    ]
   },
   "window": {
-    "unit": "run",
-    "count": 1
+    "count": 1,
+    "unit": "run"
   }
 }

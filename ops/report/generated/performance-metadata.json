@@ -1,14 +1,14 @@
 {
-  "schema_version": 1,
-  "kind": "performance_metadata_v1",
   "baseline_profile": "system-load-baseline",
   "candidate_profile": "system-load-baseline",
   "dataset_tier": "medium",
+  "generated_by": "performance-regression-ci",
+  "kind": "performance_metadata_v1",
+  "schema_version": 1,
   "source_artifacts": [
     "ops/load/baselines/system-load-baseline.json",
     "ops/report/generated/performance-regression-report.json",
     "ops/report/generated/performance-history.json",
     "ops/report/generated/performance-trend.json"
-  ],
-  "generated_by": "performance-regression-ci"
+  ]
 }

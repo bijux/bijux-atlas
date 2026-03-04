@@ -1,13 +1,13 @@
 {
-  "schema_version": 1,
   "kind": "performance_completion_report_v1",
-  "status": "complete",
   "range_completed": "401-600",
+  "schema_version": 1,
+  "status": "complete",
   "summary": {
     "benchmark_infrastructure": "complete",
     "ingest_performance": "complete",
+    "performance_regression_protection": "complete",
     "query_performance": "complete",
-    "system_load_testing": "complete",
-    "performance_regression_protection": "complete"
+    "system_load_testing": "complete"
   }
 }
