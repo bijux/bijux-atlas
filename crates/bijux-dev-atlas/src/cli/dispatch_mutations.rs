@@ -516,6 +516,15 @@ fn force_json_security(command: &mut SecurityCommand) {
                 args.format = FormatArg::Json
             }
         },
+        SecurityCommand::Authorization { command } => match command {
+            crate::cli::SecurityAuthorizationCommand::Roles(args)
+            | crate::cli::SecurityAuthorizationCommand::Permissions(args)
+            | crate::cli::SecurityAuthorizationCommand::Diagnostics(args)
+            | crate::cli::SecurityAuthorizationCommand::Validate(args) => {
+                args.format = FormatArg::Json
+            }
+            crate::cli::SecurityAuthorizationCommand::Assign(args) => args.format = FormatArg::Json,
+        },
         SecurityCommand::Compliance { command } => match command {
             crate::cli::SecurityComplianceCommand::Validate(args) => args.format = FormatArg::Json,
         },
@@ -1170,6 +1179,17 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     args.repo_root = Some(root.clone())
                 }
                 crate::cli::SecurityAuthenticationCommand::TokenInspect(args) => {
+                    args.repo_root = Some(root.clone())
+                }
+            },
+            SecurityCommand::Authorization { command } => match command {
+                crate::cli::SecurityAuthorizationCommand::Roles(args)
+                | crate::cli::SecurityAuthorizationCommand::Permissions(args)
+                | crate::cli::SecurityAuthorizationCommand::Diagnostics(args)
+                | crate::cli::SecurityAuthorizationCommand::Validate(args) => {
+                    args.repo_root = Some(root.clone())
+                }
+                crate::cli::SecurityAuthorizationCommand::Assign(args) => {
                     args.repo_root = Some(root.clone())
                 }
             },

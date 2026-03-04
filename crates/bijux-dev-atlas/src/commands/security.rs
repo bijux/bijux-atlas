@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    SecurityAuthenticationCommand, SecurityCommand, SecurityPolicyInspectArgs,
-    SecurityScanArtifactsArgs, SecurityTokenInspectArgs, SecurityValidateArgs,
+    SecurityAuthenticationCommand, SecurityAuthorizationCommand, SecurityCommand,
+    SecurityPolicyInspectArgs, SecurityRoleAssignArgs, SecurityScanArtifactsArgs,
+    SecurityTokenInspectArgs, SecurityValidateArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
 use base64::Engine as _;
@@ -348,6 +349,19 @@ pub(crate) fn run_security_command(
                 run_security_auth_policy_validate(args)
             }
         },
+        SecurityCommand::Authorization { command } => match command {
+            SecurityAuthorizationCommand::Roles(args) => run_security_authorization_roles(args),
+            SecurityAuthorizationCommand::Permissions(args) => {
+                run_security_authorization_permissions(args)
+            }
+            SecurityAuthorizationCommand::Diagnostics(args) => {
+                run_security_authorization_diagnostics(args)
+            }
+            SecurityAuthorizationCommand::Assign(args) => run_security_authorization_assign(args),
+            SecurityAuthorizationCommand::Validate(args) => {
+                run_security_authorization_validate(args)
+            }
+        },
         SecurityCommand::Compliance { command } => match command {
             crate::cli::SecurityComplianceCommand::Validate(args) => {
                 run_security_compliance_validate(args)
@@ -457,6 +471,183 @@ fn run_security_auth_policy_validate(args: SecurityValidateArgs) -> Result<(Stri
         "status": if ok { "ok" } else { "failed" },
         "auth_methods": method_count,
         "policy_rules": rule_count
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if ok { 0 } else { 2 }))
+}
+
+fn run_security_authorization_roles(args: SecurityValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let roles = read_yaml(&root.join("configs/security/roles.yaml"))?;
+    let rows = roles
+        .get("roles")
+        .and_then(serde_yaml::Value::as_sequence)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|row| serde_json::to_value(row).unwrap_or(serde_json::Value::Null))
+        .collect::<Vec<_>>();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "authorization_role_management_report",
+        "status": "ok",
+        "role_count": rows.len(),
+        "roles": rows
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_security_authorization_permissions(
+    args: SecurityValidateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let permissions = read_yaml(&root.join("configs/security/permissions.yaml"))?;
+    let rows = permissions
+        .get("permissions")
+        .and_then(serde_yaml::Value::as_sequence)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|row| serde_json::to_value(row).unwrap_or(serde_json::Value::Null))
+        .collect::<Vec<_>>();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "authorization_permission_inspection_report",
+        "status": "ok",
+        "permission_count": rows.len(),
+        "permissions": rows
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_security_authorization_diagnostics(
+    args: SecurityValidateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let roles = read_yaml(&root.join("configs/security/roles.yaml"))?;
+    let permissions = read_yaml(&root.join("configs/security/permissions.yaml"))?;
+    let policy = read_yaml(&root.join("configs/security/policy.yaml"))?;
+    let role_count = roles
+        .get("roles")
+        .and_then(serde_yaml::Value::as_sequence)
+        .map_or(0, std::vec::Vec::len);
+    let permission_count = permissions
+        .get("permissions")
+        .and_then(serde_yaml::Value::as_sequence)
+        .map_or(0, std::vec::Vec::len);
+    let policy_rules = policy
+        .get("rules")
+        .and_then(serde_yaml::Value::as_sequence)
+        .map_or(0, std::vec::Vec::len);
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "authorization_diagnostics_report",
+        "status": "ok",
+        "role_count": role_count,
+        "permission_count": permission_count,
+        "policy_rule_count": policy_rules
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_security_authorization_assign(
+    args: SecurityRoleAssignArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let path = root.join("configs/security/role-assignments.yaml");
+    let mut assignments = if path.exists() {
+        read_yaml(&path)?
+    } else {
+        serde_yaml::from_str("schema_version: 1\nassignments: []\n")
+            .map_err(|err| format!("build default assignments: {err}"))?
+    };
+    let Some(array) = assignments
+        .get_mut("assignments")
+        .and_then(serde_yaml::Value::as_sequence_mut)
+    else {
+        return Err(format!("{} missing assignments sequence", path.display()));
+    };
+    array.push(serde_yaml::Value::Mapping({
+        let mut map = serde_yaml::Mapping::new();
+        map.insert(
+            serde_yaml::Value::String("principal".to_string()),
+            serde_yaml::Value::String(args.principal.clone()),
+        );
+        map.insert(
+            serde_yaml::Value::String("role_id".to_string()),
+            serde_yaml::Value::String(args.role_id.clone()),
+        );
+        map
+    }));
+    fs::write(
+        &path,
+        serde_yaml::to_string(&assignments).map_err(|err| format!("encode assignments: {err}"))?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "authorization_role_assignment_report",
+        "status": "ok",
+        "principal": args.principal,
+        "role_id": args.role_id,
+        "path": path.strip_prefix(&root).unwrap_or(&path).display().to_string()
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_security_authorization_validate(
+    args: SecurityValidateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let roles: bijux_atlas_core::RoleCatalog = serde_yaml::from_str(
+        &fs::read_to_string(root.join("configs/security/roles.yaml"))
+            .map_err(|err| format!("failed to read role catalog: {err}"))?,
+    )
+    .map_err(|err| format!("parse role catalog failed: {err}"))?;
+    let permissions: bijux_atlas_core::PermissionCatalog = serde_yaml::from_str(
+        &fs::read_to_string(root.join("configs/security/permissions.yaml"))
+            .map_err(|err| format!("failed to read permission catalog: {err}"))?,
+    )
+    .map_err(|err| format!("parse permission catalog failed: {err}"))?;
+    let mut role_ids = std::collections::BTreeSet::new();
+    for role in &roles.roles {
+        role_ids.insert(role.id.clone());
+    }
+    let mut permission_ids = std::collections::BTreeSet::new();
+    for permission in &permissions.permissions {
+        permission_ids.insert(permission.id.clone());
+    }
+    let mut errors = Vec::new();
+    for role in &roles.roles {
+        for inherited in &role.inherits {
+            if !role_ids.contains(inherited) {
+                errors.push(format!(
+                    "unknown inherited role: {} -> {}",
+                    role.id, inherited
+                ));
+            }
+        }
+        for permission in &role.permissions {
+            if !permission_ids.contains(permission) {
+                errors.push(format!(
+                    "unknown permission reference: {} -> {}",
+                    role.id, permission
+                ));
+            }
+        }
+    }
+    let ok = errors.is_empty();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "authorization_permission_validation_report",
+        "status": if ok { "ok" } else { "failed" },
+        "errors": errors,
+        "role_count": roles.roles.len(),
+        "permission_count": permissions.permissions.len()
     });
     let rendered = emit_payload(args.format, args.out, &payload)?;
     Ok((rendered, if ok { 0 } else { 2 }))
@@ -2487,10 +2678,14 @@ mod tests {
     use super::{
         run_security_audit, run_security_auth_api_keys, run_security_auth_diagnostics,
         run_security_auth_policy_validate, run_security_auth_token_inspect,
-        run_security_config_validate, run_security_diagnostics, run_security_policy_inspect,
+        run_security_authorization_assign, run_security_authorization_diagnostics,
+        run_security_authorization_permissions, run_security_authorization_roles,
+        run_security_authorization_validate, run_security_config_validate,
+        run_security_diagnostics, run_security_policy_inspect,
     };
     use crate::cli::{
-        FormatArg, SecurityPolicyInspectArgs, SecurityTokenInspectArgs, SecurityValidateArgs,
+        FormatArg, SecurityPolicyInspectArgs, SecurityRoleAssignArgs, SecurityTokenInspectArgs,
+        SecurityValidateArgs,
     };
     use base64::Engine as _;
     use std::fs;
@@ -2548,6 +2743,28 @@ docs:
 "#,
         )
         .expect("write auth-model.yaml");
+        fs::write(
+            config_dir.join("roles.yaml"),
+            r#"schema_version: 1
+roles:
+  - id: role.user.readonly
+    description: readonly
+    permissions: [perm.catalog.read]
+    inherits: []
+"#,
+        )
+        .expect("write roles.yaml");
+        fs::write(
+            config_dir.join("permissions.yaml"),
+            r#"schema_version: 1
+permissions:
+  - id: perm.catalog.read
+    action: catalog.read
+    resource_kind: namespace
+    description: read catalog
+"#,
+        )
+        .expect("write permissions.yaml");
     }
 
     #[test]
@@ -2677,6 +2894,60 @@ docs:
         assert_eq!(
             policy_value["kind"],
             "authentication_policy_validation_report"
+        );
+    }
+
+    #[test]
+    fn security_authorization_commands_emit_expected_reports() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        write_minimal_security_files(temp.path());
+
+        let common = SecurityValidateArgs {
+            repo_root: Some(temp.path().to_path_buf()),
+            format: FormatArg::Json,
+            out: None,
+        };
+
+        let (roles, code) = run_security_authorization_roles(common.clone()).expect("roles");
+        assert_eq!(code, 0);
+        let roles_value: serde_json::Value = serde_json::from_str(&roles).expect("roles json");
+        assert_eq!(roles_value["kind"], "authorization_role_management_report");
+
+        let (permissions, code) =
+            run_security_authorization_permissions(common.clone()).expect("permissions");
+        assert_eq!(code, 0);
+        let permissions_value: serde_json::Value =
+            serde_json::from_str(&permissions).expect("permissions json");
+        assert_eq!(
+            permissions_value["kind"],
+            "authorization_permission_inspection_report"
+        );
+
+        let (diag, code) =
+            run_security_authorization_diagnostics(common.clone()).expect("diagnostics");
+        assert_eq!(code, 0);
+        let diag_value: serde_json::Value = serde_json::from_str(&diag).expect("diag json");
+        assert_eq!(diag_value["kind"], "authorization_diagnostics_report");
+
+        let (assign, code) = run_security_authorization_assign(SecurityRoleAssignArgs {
+            repo_root: Some(temp.path().to_path_buf()),
+            principal: "user".to_string(),
+            role_id: "role.user.readonly".to_string(),
+            format: FormatArg::Json,
+            out: None,
+        })
+        .expect("assign");
+        assert_eq!(code, 0);
+        let assign_value: serde_json::Value = serde_json::from_str(&assign).expect("assign json");
+        assert_eq!(assign_value["kind"], "authorization_role_assignment_report");
+
+        let (validate, code) = run_security_authorization_validate(common).expect("validate");
+        assert_eq!(code, 0);
+        let validate_value: serde_json::Value =
+            serde_json::from_str(&validate).expect("validate json");
+        assert_eq!(
+            validate_value["kind"],
+            "authorization_permission_validation_report"
         );
     }
 }

@@ -465,6 +465,10 @@ pub enum SecurityCommand {
         #[command(subcommand)]
         command: SecurityAuthenticationCommand,
     },
+    Authorization {
+        #[command(subcommand)]
+        command: SecurityAuthorizationCommand,
+    },
     Compliance {
         #[command(subcommand)]
         command: SecurityComplianceCommand,
@@ -478,6 +482,15 @@ pub enum SecurityAuthenticationCommand {
     TokenInspect(SecurityTokenInspectArgs),
     Diagnostics(SecurityValidateArgs),
     PolicyValidate(SecurityValidateArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum SecurityAuthorizationCommand {
+    Roles(SecurityValidateArgs),
+    Permissions(SecurityValidateArgs),
+    Diagnostics(SecurityValidateArgs),
+    Assign(SecurityRoleAssignArgs),
+    Validate(SecurityValidateArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -708,6 +721,20 @@ pub struct SecurityTokenInspectArgs {
     pub repo_root: Option<PathBuf>,
     #[arg(long)]
     pub token: String,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct SecurityRoleAssignArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub principal: String,
+    #[arg(long)]
+    pub role_id: String,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]
