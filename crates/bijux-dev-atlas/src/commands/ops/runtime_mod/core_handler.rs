@@ -110,6 +110,21 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             crate::cli::OpsProfilesCommand::RolloutSafetyValidate(args) => {
                 validate_profile_mode(&args, ProfileValidationMode::RolloutSafety)
             }
+            crate::cli::OpsProfilesCommand::PolicyValidate(args) => {
+                validate_profile_mode(&args, ProfileValidationMode::Policy)
+            }
+            crate::cli::OpsProfilesCommand::ResourceValidate(args) => {
+                validate_profile_mode(&args, ProfileValidationMode::Resources)
+            }
+            crate::cli::OpsProfilesCommand::SecuritycontextValidate(args) => {
+                validate_profile_mode(&args, ProfileValidationMode::SecurityContext)
+            }
+            crate::cli::OpsProfilesCommand::ServiceMonitorValidate(args) => {
+                validate_profile_mode(&args, ProfileValidationMode::ServiceMonitor)
+            }
+            crate::cli::OpsProfilesCommand::HpaValidate(args) => {
+                validate_profile_mode(&args, ProfileValidationMode::Hpa)
+            }
         },
         OpsCommand::Obs { command } => match command {
             crate::cli::OpsObsCommand::Verify(common) => {

@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "max_replicas_by_class": {
+    "dev": 10,
+    "stage": 30,
+    "prod": 40
+  }
+}

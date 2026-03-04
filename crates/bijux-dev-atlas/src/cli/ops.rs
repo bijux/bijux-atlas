@@ -245,6 +245,11 @@ pub enum OpsProfilesCommand {
     SchemaValidate(OpsProfileValidationArgs),
     Kubeconform(OpsProfileValidationArgs),
     RolloutSafetyValidate(OpsProfileValidationArgs),
+    PolicyValidate(OpsProfileValidationArgs),
+    ResourceValidate(OpsProfileValidationArgs),
+    SecuritycontextValidate(OpsProfileValidationArgs),
+    ServiceMonitorValidate(OpsProfileValidationArgs),
+    HpaValidate(OpsProfileValidationArgs),
 }
 
 #[derive(Args, Debug, Clone)]

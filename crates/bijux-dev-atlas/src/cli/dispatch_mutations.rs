@@ -177,7 +177,25 @@ fn force_json_ops(command: &mut OpsCommand) {
                 })
                 | crate::cli::OpsProfilesCommand::RolloutSafetyValidate(
                     crate::cli::OpsProfileValidationArgs { common, .. },
-                ),
+                )
+                | crate::cli::OpsProfilesCommand::PolicyValidate(crate::cli::OpsProfileValidationArgs {
+                    common,
+                    ..
+                })
+                | crate::cli::OpsProfilesCommand::ResourceValidate(crate::cli::OpsProfileValidationArgs {
+                    common,
+                    ..
+                })
+                | crate::cli::OpsProfilesCommand::SecuritycontextValidate(
+                    crate::cli::OpsProfileValidationArgs { common, .. },
+                )
+                | crate::cli::OpsProfilesCommand::ServiceMonitorValidate(
+                    crate::cli::OpsProfileValidationArgs { common, .. },
+                )
+                | crate::cli::OpsProfilesCommand::HpaValidate(crate::cli::OpsProfileValidationArgs {
+                    common,
+                    ..
+                }),
         }
         | OpsCommand::Profile {
             command: crate::cli::OpsProfileCommand::List(common),
@@ -718,7 +736,23 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     })
                     | crate::cli::OpsProfilesCommand::RolloutSafetyValidate(
                         crate::cli::OpsProfileValidationArgs { common, .. },
-                    ),
+                    )
+                    | crate::cli::OpsProfilesCommand::PolicyValidate(
+                        crate::cli::OpsProfileValidationArgs { common, .. },
+                    )
+                    | crate::cli::OpsProfilesCommand::ResourceValidate(
+                        crate::cli::OpsProfileValidationArgs { common, .. },
+                    )
+                    | crate::cli::OpsProfilesCommand::SecuritycontextValidate(
+                        crate::cli::OpsProfileValidationArgs { common, .. },
+                    )
+                    | crate::cli::OpsProfilesCommand::ServiceMonitorValidate(
+                        crate::cli::OpsProfileValidationArgs { common, .. },
+                    )
+                    | crate::cli::OpsProfilesCommand::HpaValidate(crate::cli::OpsProfileValidationArgs {
+                        common,
+                        ..
+                    }),
             }
             | OpsCommand::Profile {
                 command: crate::cli::OpsProfileCommand::List(common),

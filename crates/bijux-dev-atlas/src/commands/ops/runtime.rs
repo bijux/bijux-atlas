@@ -88,7 +88,23 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
                 | OpsProfilesCommand::RolloutSafetyValidate(crate::cli::OpsProfileValidationArgs {
                     common,
                     ..
-                }),
+                })
+                | OpsProfilesCommand::PolicyValidate(crate::cli::OpsProfileValidationArgs {
+                    common, ..
+                })
+                | OpsProfilesCommand::ResourceValidate(crate::cli::OpsProfileValidationArgs {
+                    common,
+                    ..
+                })
+                | OpsProfilesCommand::SecuritycontextValidate(crate::cli::OpsProfileValidationArgs {
+                    common,
+                    ..
+                })
+                | OpsProfilesCommand::ServiceMonitorValidate(crate::cli::OpsProfileValidationArgs {
+                    common,
+                    ..
+                })
+                | OpsProfilesCommand::HpaValidate(crate::cli::OpsProfileValidationArgs { common, .. }),
         }
         | OpsCommand::Profile {
             command: OpsProfileCommand::List(common),
@@ -225,6 +241,21 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             },
             OpsProfilesCommand::RolloutSafetyValidate(args) => OpsCommand::Profiles {
                 command: OpsProfilesCommand::RolloutSafetyValidate(args),
+            },
+            OpsProfilesCommand::PolicyValidate(args) => OpsCommand::Profiles {
+                command: OpsProfilesCommand::PolicyValidate(args),
+            },
+            OpsProfilesCommand::ResourceValidate(args) => OpsCommand::Profiles {
+                command: OpsProfilesCommand::ResourceValidate(args),
+            },
+            OpsProfilesCommand::SecuritycontextValidate(args) => OpsCommand::Profiles {
+                command: OpsProfilesCommand::SecuritycontextValidate(args),
+            },
+            OpsProfilesCommand::ServiceMonitorValidate(args) => OpsCommand::Profiles {
+                command: OpsProfilesCommand::ServiceMonitorValidate(args),
+            },
+            OpsProfilesCommand::HpaValidate(args) => OpsCommand::Profiles {
+                command: OpsProfilesCommand::HpaValidate(args),
             },
         },
         OpsCommand::Profile { command } => OpsCommand::Profile { command },
