@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "system_load_summary_v1",
+  "status": "stable",
+  "baseline_profile": "system-load-baseline",
+  "candidate_profile": "system-load-baseline",
+  "summary": {
+    "suites_total": 15,
+    "regressions": 0,
+    "notes": [
+      "baseline results are committed",
+      "comparison tool produces deterministic deltas",
+      "all required system load suites are represented"
+    ]
+  }
+}

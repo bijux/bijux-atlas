@@ -26,6 +26,8 @@
 - [Load testing troubleshooting](troubleshooting.md)
 - [Load architecture diagram](architecture-diagram.md)
 - [Load example configs](example-configs.md)
+- [Load comparison tools](comparison-tools.md)
+- [Load summary report](summary-report.md)
 - [Load Failure Triage](../runbooks/load-failure-triage.md)
 
 ## Threshold interpretation

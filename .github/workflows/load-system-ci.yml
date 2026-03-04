@@ -30,9 +30,19 @@ jobs:
           jq . ops/load/contracts/load-summary.schema.json > /dev/null
           jq . ops/load/generated/load-summary.json > /dev/null
           jq . ops/load/generated/load-drift-report.json > /dev/null
+          jq . ops/load/generated/system-load-summary.json > /dev/null
+
+      - name: Validate load comparison tool
+        run: |
+          ops/load/tools/compare-load-report.sh \
+            ops/load/baselines/system-load-baseline.json \
+            ops/load/baselines/system-load-baseline.json > /dev/null
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
       - name: Run load suite coverage regression test
         run: cargo test -p bijux-dev-atlas --test load_suite_coverage -- --nocapture
+
+      - name: Run load reproducibility regression test
+        run: cargo test -p bijux-dev-atlas --test load_reproducibility_regression -- --nocapture
