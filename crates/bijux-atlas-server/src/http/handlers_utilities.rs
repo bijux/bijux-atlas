@@ -981,6 +981,7 @@ pub(crate) async fn cluster_replica_diagnostics_handler(
     with_request_id(response, &request_id)
 }
 
+#[tracing::instrument(skip(state))]
 pub(crate) async fn cluster_recovery_run_handler(State(state): State<AppState>) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
@@ -1090,6 +1091,7 @@ pub(crate) async fn cluster_recovery_run_handler(State(state): State<AppState>) 
     with_request_id(response, &request_id)
 }
 
+#[tracing::instrument(skip(state))]
 pub(crate) async fn recovery_diagnostics_handler(State(state): State<AppState>) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
@@ -1112,6 +1114,7 @@ pub(crate) async fn recovery_diagnostics_handler(State(state): State<AppState>) 
     with_request_id(response, &request_id)
 }
 
+#[tracing::instrument(skip(state))]
 pub(crate) async fn failure_injection_handler(
     State(state): State<AppState>,
     Json(req): Json<FailureInjectionRequest>,
@@ -1171,6 +1174,7 @@ pub(crate) async fn failure_injection_handler(
     with_request_id(response, &request_id)
 }
 
+#[tracing::instrument(skip(state))]
 pub(crate) async fn chaos_run_handler(
     State(state): State<AppState>,
     Json(req): Json<FailureInjectionRequest>,
