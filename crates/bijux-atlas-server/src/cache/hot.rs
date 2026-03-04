@@ -46,4 +46,15 @@ impl HotQueryCache {
         }
         self.entries.insert(key, value);
     }
+
+    pub fn entry_count(&self) -> usize {
+        self.entries.len()
+    }
+
+    pub fn approximate_memory_bytes(&self) -> usize {
+        self.entries
+            .iter()
+            .map(|(k, v)| k.len() + v.etag.len() + v.body.len())
+            .sum()
+    }
 }

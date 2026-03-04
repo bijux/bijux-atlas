@@ -344,6 +344,11 @@ pub(crate) async fn genes_handler(
         normalized,
         super::handlers::wants_pretty(&params)
     );
+    let dataset_key = {
+        let hash = bijux_atlas_core::sha256_hex(dataset.canonical_string().as_bytes());
+        format!("ds-{}", &hash[..12])
+    };
+    state.metrics.observe_dataset_query(&dataset_key).await;
     if class == QueryClass::Heavy || class == QueryClass::Cheap {
         let mut cache = state.hot_query_cache.lock().await;
         if let Some(entry) = cache.get(&coalesce_key) {
@@ -504,6 +509,7 @@ pub(crate) async fn genes_handler(
         })?;
         let query_elapsed = query_started.elapsed();
         if query_elapsed > state.api.slow_query_threshold {
+            state.metrics.observe_slow_query();
             warn!(
                 request_id = %request_id,
                 dataset = %format!("{}/{}/{}", dataset.release, dataset.species, dataset.assembly),

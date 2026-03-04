@@ -185,6 +185,8 @@ struct RequestMetrics {
     client_fingerprint_counts: Mutex<HashMap<(String, String), u64>>,
     query_cache_hits_total: AtomicU64,
     query_cache_misses_total: AtomicU64,
+    slow_queries_total: AtomicU64,
+    dataset_query_distribution: Mutex<HashMap<String, u64>>,
 }
 
 type RequestMetricKey = (String, String, u16, String);
@@ -304,6 +306,23 @@ impl RequestMetrics {
 
     pub(crate) fn observe_query_cache_miss(&self) {
         self.query_cache_misses_total.fetch_add(1, Ordering::Relaxed);
+    }
+
+    pub(crate) fn observe_slow_query(&self) {
+        self.slow_queries_total.fetch_add(1, Ordering::Relaxed);
+    }
+
+    pub(crate) fn slow_queries_total(&self) -> u64 {
+        self.slow_queries_total.load(Ordering::Relaxed)
+    }
+
+    pub(crate) async fn observe_dataset_query(&self, dataset_key: &str) {
+        let mut m = self.dataset_query_distribution.lock().await;
+        *m.entry(dataset_key.to_string()).or_insert(0) += 1;
+    }
+
+    pub(crate) async fn dataset_query_distribution_snapshot(&self) -> HashMap<String, u64> {
+        self.dataset_query_distribution.lock().await.clone()
     }
 
     pub(crate) async fn should_shed_heavy(&self, min_samples: usize, threshold_ms: u64) -> bool {
@@ -542,5 +561,19 @@ mod metrics_tests {
         let rows = metrics.query_row_count.lock().await;
         let samples = rows.get("/v1/genes").expect("row count samples must exist");
         assert_eq!(samples.as_slice(), &[12]);
+    }
+
+    #[tokio::test]
+    async fn request_metrics_track_slow_queries_and_dataset_distribution() {
+        let metrics = RequestMetrics::default();
+        metrics.observe_slow_query();
+        metrics.observe_dataset_query("ds-abc123").await;
+        metrics.observe_dataset_query("ds-abc123").await;
+        metrics.observe_dataset_query("ds-def456").await;
+
+        assert_eq!(metrics.slow_queries_total.load(Ordering::Relaxed), 1);
+        let dist = metrics.dataset_query_distribution.lock().await;
+        assert_eq!(dist.get("ds-abc123"), Some(&2));
+        assert_eq!(dist.get("ds-def456"), Some(&1));
     }
 }

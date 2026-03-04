@@ -9,6 +9,38 @@ use metrics_helpers::{
     with_request_id, METRIC_DATASET_ALL, METRIC_SUBSYSTEM, METRIC_VERSION,
 };
 
+#[cfg(target_os = "linux")]
+fn current_process_rss_bytes() -> u64 {
+    let page_size = 4096_u64;
+    std::fs::read_to_string("/proc/self/statm")
+        .ok()
+        .and_then(|raw| {
+            let mut parts = raw.split_whitespace();
+            let _size_pages = parts.next()?;
+            let resident_pages = parts.next()?.parse::<u64>().ok()?;
+            Some(resident_pages.saturating_mul(page_size))
+        })
+        .unwrap_or(0)
+}
+
+#[cfg(not(target_os = "linux"))]
+fn current_process_rss_bytes() -> u64 {
+    0
+}
+
+#[cfg(target_os = "linux")]
+fn current_open_fd_count() -> u64 {
+    std::fs::read_dir("/proc/self/fd")
+        .ok()
+        .map(|entries| entries.count() as u64)
+        .unwrap_or(0)
+}
+
+#[cfg(not(target_os = "linux"))]
+fn current_open_fd_count() -> u64 {
+    0
+}
+
 pub(crate) async fn metrics_handler(State(state): State<AppState>) -> impl IntoResponse {
     if !state.api.enable_metrics_endpoint {
         return with_request_id(
@@ -331,6 +363,41 @@ bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} 
         .metrics
         .policy_violations_total
         .load(Ordering::Relaxed);
+    let invariants_total: u64 = state
+        .cache
+        .metrics
+        .invariant_violations_by_name
+        .lock()
+        .await
+        .values()
+        .copied()
+        .sum();
+    let cache_hits = state.cache.metrics.dataset_hits.load(Ordering::Relaxed);
+    let cache_misses = state.cache.metrics.dataset_misses.load(Ordering::Relaxed);
+    let shard_hit_rate = if cache_hits + cache_misses == 0 {
+        0.0
+    } else {
+        cache_hits as f64 / (cache_hits + cache_misses) as f64
+    };
+    let shard_miss_rate = if cache_hits + cache_misses == 0 {
+        0.0
+    } else {
+        cache_misses as f64 / (cache_hits + cache_misses) as f64
+    };
+    let hot_cache = state.hot_query_cache.lock().await;
+    let cache_memory_usage_bytes = hot_cache.approximate_memory_bytes() as u64;
+    let cache_entries = hot_cache.entry_count() as u64;
+    drop(hot_cache);
+    let process_memory_bytes = current_process_rss_bytes();
+    let process_open_fds = current_open_fd_count();
+    let process_cpu_usage_ratio = 0.0_f64;
+    let thread_pool_usage = if state.api.heavy_worker_pool_size == 0 {
+        0.0
+    } else {
+        (state.api.heavy_worker_pool_size - state.heavy_workers.available_permits()) as f64
+            / state.api.heavy_worker_pool_size as f64
+    };
+    let task_backlog = queue_depth;
     let disk_io_p95 = {
         let mut v = state.cache.metrics.disk_io_latency_ns.lock().await.clone();
         if v.is_empty() {
@@ -459,6 +526,118 @@ bijux_fs_space_pressure_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"
             .fs_space_pressure_events_total
             .load(Ordering::Relaxed)
     ));
+    body.push_str(&format!(
+        "atlas_ingest_throughput_bytes_per_second{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {:.3}\n\
+atlas_ingest_rows_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_ingest_rejections_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_ingest_anomalies_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_dataset_load_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {:.6}\n\
+atlas_shard_load_current{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_shard_evictions_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_shard_hit_rate{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {:.6}\n\
+atlas_shard_miss_rate{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {:.6}\n\
+atlas_cache_memory_usage_bytes{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_cache_entry_count{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_process_memory_bytes{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_process_cpu_usage_ratio{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {:.6}\n\
+atlas_process_open_fds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_thread_pool_usage_ratio{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",pool=\"heavy_workers\"}} {:.6}\n\
+atlas_runtime_queue_depth{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_task_backlog{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_slow_queries_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        throughput_bps,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        0,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        policy_violations_total,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        invariants_total,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        percentile_ns(&open_lat, 0.95) as f64 / 1_000_000_000.0,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        heavy_inflight,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state.cache.metrics.cache_evictions_total.load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        shard_hit_rate,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        shard_miss_rate,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        cache_memory_usage_bytes,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        cache_entries,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        process_memory_bytes,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        process_cpu_usage_ratio,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        process_open_fds,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        thread_pool_usage,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        queue_depth,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        task_backlog,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state.metrics.slow_queries_total(),
+    ));
+    push_histogram_from_samples(
+        &mut body,
+        "atlas_ingest_pipeline_stage_duration_seconds",
+        &format!(
+            "subsystem=\"{}\",version=\"{}\",dataset=\"{}\",stage=\"artifact_open\"",
+            METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL
+        ),
+        &open_lat,
+        &[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5],
+    );
+    push_histogram_from_samples(
+        &mut body,
+        "atlas_ingest_pipeline_stage_duration_seconds",
+        &format!(
+            "subsystem=\"{}\",version=\"{}\",dataset=\"{}\",stage=\"artifact_download\"",
+            METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL
+        ),
+        &download_lat,
+        &[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0],
+    );
     let warmup_lock_wait_p95_ns = {
         let mut v = state.cache.metrics.warmup_lock_wait_ns.lock().await.clone();
         if v.is_empty() {
@@ -559,6 +738,19 @@ bijux_warmup_lock_wait_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}
             reason,
             shed_reason_class(&reason),
             count
+        ));
+    }
+    let mut dataset_distribution = state
+        .metrics
+        .dataset_query_distribution_snapshot()
+        .await
+        .into_iter()
+        .collect::<Vec<_>>();
+    dataset_distribution.sort_by(|a, b| a.0.cmp(&b.0));
+    for (dataset_bucket, count) in dataset_distribution {
+        body.push_str(&format!(
+            "atlas_dataset_query_distribution_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",dataset_bucket=\"{}\"}} {}\n",
+            METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, dataset_bucket, count
         ));
     }
     body.push_str(&format!(
