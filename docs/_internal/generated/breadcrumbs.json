@@ -4668,6 +4668,15 @@
         "docs",
         "docs/architecture",
         "docs/architecture/security",
+        "docs/architecture/security/attack-surface-maps.md"
+      ],
+      "path": "docs/architecture/security/attack-surface-maps.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/security",
         "docs/architecture/security/auth-model.md"
       ],
       "path": "docs/architecture/security/auth-model.md"
@@ -4785,6 +4794,15 @@
         "docs",
         "docs/architecture",
         "docs/architecture/security",
+        "docs/architecture/security/security-architecture-diagrams.md"
+      ],
+      "path": "docs/architecture/security/security-architecture-diagrams.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/security",
         "docs/architecture/security/security-architecture.md"
       ],
       "path": "docs/architecture/security/security-architecture.md"
@@ -4815,6 +4833,15 @@
         "docs/architecture/security/security-testing-strategy.md"
       ],
       "path": "docs/architecture/security/security-testing-strategy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/security",
+        "docs/architecture/security/threat-model-diagrams.md"
+      ],
+      "path": "docs/architecture/security/threat-model-diagrams.md"
     },
     {
       "breadcrumbs": [
@@ -7733,6 +7760,15 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/incident-response-process.md"
+      ],
+      "path": "docs/operations/security/incident-response-process.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/incident-response.md"
       ],
       "path": "docs/operations/security/incident-response.md"
@@ -7841,6 +7877,24 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/secure-development-practices.md"
+      ],
+      "path": "docs/operations/security/secure-development-practices.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/security-completion-report.md"
+      ],
+      "path": "docs/operations/security/security-completion-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/security-deployment-examples.md"
       ],
       "path": "docs/operations/security/security-deployment-examples.md"
@@ -7850,9 +7904,81 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/security-faq.md"
+      ],
+      "path": "docs/operations/security/security-faq.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/security-glossary.md"
+      ],
+      "path": "docs/operations/security/security-glossary.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/security-patch-policy.md"
+      ],
+      "path": "docs/operations/security/security-patch-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/security-readiness-checklist.md"
+      ],
+      "path": "docs/operations/security/security-readiness-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/security-release-checklist.md"
+      ],
+      "path": "docs/operations/security/security-release-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/security-roadmap.md"
+      ],
+      "path": "docs/operations/security/security-roadmap.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/security-runbooks.md"
+      ],
+      "path": "docs/operations/security/security-runbooks.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/security-testing-and-monitoring.md"
       ],
       "path": "docs/operations/security/security-testing-and-monitoring.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/security-troubleshooting-guide.md"
+      ],
+      "path": "docs/operations/security/security-troubleshooting-guide.md"
     },
     {
       "breadcrumbs": [
@@ -7898,6 +8024,15 @@
         "docs/operations/security/token-authentication-flow.md"
       ],
       "path": "docs/operations/security/token-authentication-flow.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/vulnerability-reporting-policy.md"
+      ],
+      "path": "docs/operations/security/vulnerability-reporting-policy.md"
     },
     {
       "breadcrumbs": [

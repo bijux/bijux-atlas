@@ -2588,6 +2588,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/security/attack-surface-maps.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/security/auth-model.md"
     },
     {
@@ -2653,6 +2658,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/security/security-architecture-diagrams.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/security/security-architecture.md"
     },
     {
@@ -2669,6 +2679,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/architecture/security/security-testing-strategy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/security/threat-model-diagrams.md"
     },
     {
       "crate": null,
@@ -4393,6 +4408,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/security/incident-response-process.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/security/incident-response.md"
     },
     {
@@ -4453,12 +4473,62 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/security/secure-development-practices.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/security-completion-report.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/security/security-deployment-examples.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/security/security-faq.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/security-glossary.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/security-patch-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/security-readiness-checklist.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/security-release-checklist.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/security-roadmap.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/security-runbooks.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/security/security-testing-and-monitoring.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/security-troubleshooting-guide.md"
     },
     {
       "crate": null,
@@ -4484,6 +4554,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/security/token-authentication-flow.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security/vulnerability-reporting-policy.md"
     },
     {
       "crate": null,

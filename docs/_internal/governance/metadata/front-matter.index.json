@@ -4139,6 +4139,14 @@
     },
     {
       "area": "architecture",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/architecture/security/attack-surface-maps.md",
+      "stability": "stable",
+      "title": "Attack Surface Maps"
+    },
+    {
+      "area": "architecture",
       "audience": "contributor",
       "owner": "bijux-atlas-security",
       "path": "docs/architecture/security/auth-model.md",
@@ -4245,6 +4253,14 @@
       "area": "architecture",
       "audience": "contributors",
       "owner": "docs-governance",
+      "path": "docs/architecture/security/security-architecture-diagrams.md",
+      "stability": "stable",
+      "title": "Security Architecture Diagrams"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributors",
+      "owner": "docs-governance",
       "path": "docs/architecture/security/security-architecture.md",
       "stability": "stable",
       "title": "Security Architecture"
@@ -4272,6 +4288,14 @@
       "path": "docs/architecture/security/security-testing-strategy.md",
       "stability": "stable",
       "title": "Security Testing Strategy"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/architecture/security/threat-model-diagrams.md",
+      "stability": "stable",
+      "title": "Threat Model Diagrams"
     },
     {
       "area": "architecture",
@@ -7027,6 +7051,14 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/incident-response-process.md",
+      "stability": "stable",
+      "title": "Incident Response Process"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-security",
       "path": "docs/operations/security/incident-response.md",
@@ -7125,9 +7157,81 @@
       "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/secure-development-practices.md",
+      "stability": "stable",
+      "title": "Secure Development Practices"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-completion-report.md",
+      "stability": "stable",
+      "title": "Security Completion Report"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-security",
       "path": "docs/operations/security/security-deployment-examples.md",
       "stability": "stable",
       "title": "Security Deployment Examples"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-faq.md",
+      "stability": "stable",
+      "title": "Security FAQ"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-glossary.md",
+      "stability": "stable",
+      "title": "Security Glossary"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-patch-policy.md",
+      "stability": "stable",
+      "title": "Security Patch Policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-readiness-checklist.md",
+      "stability": "stable",
+      "title": "Security Readiness Checklist"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-release-checklist.md",
+      "stability": "stable",
+      "title": "Security Release Checklist"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-roadmap.md",
+      "stability": "stable",
+      "title": "Security Roadmap"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-runbooks.md",
+      "stability": "stable",
+      "title": "Security Runbooks"
     },
     {
       "area": "operations",
@@ -7136,6 +7240,14 @@
       "path": "docs/operations/security/security-testing-and-monitoring.md",
       "stability": "stable",
       "title": "Security Testing And Monitoring"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-troubleshooting-guide.md",
+      "stability": "stable",
+      "title": "Security Troubleshooting Guide"
     },
     {
       "area": "operations",
@@ -7176,6 +7288,14 @@
       "path": "docs/operations/security/token-authentication-flow.md",
       "stability": "stable",
       "title": "Token Authentication Flow"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/vulnerability-reporting-policy.md",
+      "stability": "stable",
+      "title": "Vulnerability Reporting Policy"
     },
     {
       "area": "operations",

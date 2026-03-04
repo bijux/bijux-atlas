@@ -73,6 +73,7 @@
 | `artifacts` | `crates/bijux-dev-atlas/docs/internal/artifacts.md` |
 | `attack-surface-analysis` | `docs/architecture/security/attack-surface-analysis.md` |
 | `attack-surface-budget` | `crates/bijux-atlas-store/docs/internal/attack-surface-budget.md` |
+| `attack-surface-maps` | `docs/architecture/security/attack-surface-maps.md` |
 | `audit-and-security-event-classification` | `docs/operations/security/audit-and-security-event-classification.md` |
 | `audit-log-access` | `docs/operations/security/audit-log-access.md` |
 | `audit-log-rotation` | `docs/operations/security/audit-log-rotation.md` |
@@ -384,6 +385,7 @@
 | `immutability-guarantee` | `docs/reference/store/immutability-guarantee.md` |
 | `incident-playbook` | `docs/operations/runbooks/incident-playbook.md` |
 | `incident-response` | `docs/operations/incident-response.md, docs/operations/security/incident-response.md` |
+| `incident-response-process` | `docs/operations/security/incident-response-process.md` |
 | `index` | `crates/bijux-atlas-api/docs/index.md, crates/bijux-atlas-benchmark/docs/index.md, crates/bijux-atlas-cli/docs/index.md, crates/bijux-atlas-core/docs/index.md, crates/bijux-atlas-ingest/docs/index.md, crates/bijux-atlas-model/docs/index.md, crates/bijux-atlas-policies/docs/index.md, crates/bijux-atlas-query/docs/index.md, crates/bijux-atlas-server/docs/index.md, crates/bijux-atlas-store/docs/index.md, crates/bijux-dev-atlas/docs/index.md, crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/index.md, docs/_assets/index.md, docs/_internal/governance/adrs/index.md, docs/_internal/governance/checks/index.md, docs/_internal/governance/index.md, docs/_internal/governance/metadata/index.md, docs/_internal/governance/policies/index.md, docs/_internal/governance/style/index.md, docs/_internal/index.md, docs/_internal/meta/index.md, docs/_internal/meta/internal/index.md, docs/_internal/nav/index.md, docs/api/index.md, docs/architecture/components/index.md, docs/architecture/diagrams/index.md, docs/architecture/index.md, docs/architecture/security/index.md, docs/control-plane/index.md, docs/development/index.md, docs/development/tooling/index.md, docs/governance/index.md, docs/index.md, docs/operations/e2e/index.md, docs/operations/index.md, docs/operations/k8s/index.md, docs/operations/load/index.md, docs/operations/observability/index.md, docs/operations/reference/index.md, docs/operations/release/index.md, docs/operations/runbooks/index.md, docs/operations/security/index.md, docs/operations/simulation/index.md, docs/product/index.md, docs/reference/api/index.md, docs/reference/checks/index.md, docs/reference/compatibility/index.md, docs/reference/configs/index.md, docs/reference/contracts/artifacts/index.md, docs/reference/contracts/docs/index.md, docs/reference/contracts/examples/index.md, docs/reference/contracts/index.md, docs/reference/contracts/ops/index.md, docs/reference/contracts/plugins/index.md, docs/reference/contracts/release/index.md, docs/reference/contracts/schemas/index.md, docs/reference/datasets/index.md, docs/reference/examples/index.md, docs/reference/index.md, docs/reference/ingest/index.md, docs/reference/ops-schema/index.md, docs/reference/ops/index.md, docs/reference/querying/index.md, docs/reference/registry/index.md, docs/reference/reports/checks/index.md, docs/reference/reports/index.md, docs/reference/reports/migrations/index.md, docs/reference/runtime/index.md, docs/reference/store/index.md, docs/tutorials/index.md` |
 | `ingest-benchmark-ci` | `crates/bijux-atlas-ingest/docs/ingest-benchmark-ci.md` |
 | `ingest-benchmark-dashboard` | `crates/bijux-atlas-ingest/docs/ingest-benchmark-dashboard.md` |
@@ -689,17 +691,28 @@
 | `sdk-strategy` | `docs/api/sdk-strategy.md` |
 | `secrets-credentials-and-key-management` | `docs/architecture/security/secrets-credentials-and-key-management.md` |
 | `secure-deployment-guidelines` | `docs/operations/security/secure-deployment-guidelines.md` |
+| `secure-development-practices` | `docs/operations/security/secure-development-practices.md` |
 | `security` | `docs/reference/contracts/security.md` |
 | `security-architecture` | `docs/architecture/security/security-architecture.md` |
+| `security-architecture-diagrams` | `docs/architecture/security/security-architecture-diagrams.md` |
+| `security-completion-report` | `docs/operations/security/security-completion-report.md` |
 | `security-configuration-contract` | `docs/architecture/security/security-configuration-contract.md` |
 | `security-considerations` | `docs/operations/replication/security-considerations.md` |
 | `security-deployment-examples` | `docs/operations/security/security-deployment-examples.md` |
 | `security-design-principles` | `docs/architecture/security/security-design-principles.md` |
 | `security-disclosure-policy` | `docs/operations/security-disclosure-policy.md` |
+| `security-faq` | `docs/operations/security/security-faq.md` |
+| `security-glossary` | `docs/operations/security/security-glossary.md` |
+| `security-patch-policy` | `docs/operations/security/security-patch-policy.md` |
 | `security-posture` | `docs/control-plane/security-posture.md, docs/operations/security-posture.md` |
+| `security-readiness-checklist` | `docs/operations/security/security-readiness-checklist.md` |
+| `security-release-checklist` | `docs/operations/security/security-release-checklist.md` |
 | `security-response-coordination` | `docs/reference/registry/security-response-coordination.md` |
+| `security-roadmap` | `docs/operations/security/security-roadmap.md` |
+| `security-runbooks` | `docs/operations/security/security-runbooks.md` |
 | `security-testing-and-monitoring` | `docs/operations/security/security-testing-and-monitoring.md` |
 | `security-testing-strategy` | `docs/architecture/security/security-testing-strategy.md` |
+| `security-troubleshooting-guide` | `docs/operations/security/security-troubleshooting-guide.md` |
 | `sensitive-data-handling-rules` | `docs/operations/security/sensitive-data-handling-rules.md` |
 | `sequence-threat-model` | `docs/product/sequence-threat-model.md` |
 | `sequence-v1` | `docs/product/sequence-v1.md` |
@@ -760,6 +773,7 @@
 | `telemetry` | `crates/bijux-atlas-server/docs/internal/telemetry.md, docs/reference/contracts/telemetry.md` |
 | `telemetry-model` | `docs/architecture/telemetry-model.md` |
 | `testing` | `crates/bijux-atlas-api/docs/testing.md, crates/bijux-atlas-cli/docs/testing.md, crates/bijux-atlas-core/docs/testing.md, crates/bijux-atlas-ingest/docs/testing.md, crates/bijux-atlas-model/docs/testing.md, crates/bijux-atlas-policies/docs/testing.md, crates/bijux-atlas-query/docs/testing.md, crates/bijux-atlas-server/docs/testing.md, crates/bijux-atlas-store/docs/testing.md, crates/bijux-dev-atlas/docs/testing.md` |
+| `threat-model-diagrams` | `docs/architecture/security/threat-model-diagrams.md` |
 | `threat-model-scope` | `docs/architecture/security/threat-model-scope.md` |
 | `tls-configuration` | `docs/operations/security/tls-configuration.md` |
 | `tls-configuration-examples` | `docs/operations/security/tls-configuration-examples.md` |
@@ -803,6 +817,7 @@
 | `verification-metadata` | `docs/_internal/governance/verification-metadata.md` |
 | `versioning` | `crates/bijux-atlas-api/docs/versioning.md, crates/bijux-atlas-cli/docs/versioning.md, crates/bijux-atlas-core/docs/versioning.md, crates/bijux-atlas-ingest/docs/versioning.md, crates/bijux-atlas-model/docs/versioning.md, crates/bijux-atlas-policies/docs/versioning.md, crates/bijux-atlas-query/docs/versioning.md, crates/bijux-atlas-server/docs/versioning.md, crates/bijux-atlas-store/docs/versioning.md, crates/bijux-dev-atlas/docs/versioning.md, docs/api/versioning.md` |
 | `versioning-policy` | `docs/reference/ops-schema/versioning-policy.md` |
+| `vulnerability-reporting-policy` | `docs/operations/security/vulnerability-reporting-policy.md` |
 | `vulnerability-scanning-policy` | `docs/operations/security/vulnerability-scanning-policy.md` |
 | `warmup-lock` | `docs/operations/warmup-lock.md` |
 | `what-belongs-where` | `docs/architecture/what-belongs-where.md` |

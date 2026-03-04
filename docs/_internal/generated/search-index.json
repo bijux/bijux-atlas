@@ -6907,6 +6907,20 @@
     {
       "keywords": [
         "architecture",
+        "attack-surface-maps",
+        "security"
+      ],
+      "path": "docs/architecture/security/attack-surface-maps.md",
+      "tags": [
+        "architecture",
+        "attack-surface-maps",
+        "security"
+      ],
+      "topic": "attack-surface-maps"
+    },
+    {
+      "keywords": [
+        "architecture",
         "auth-model",
         "security"
       ],
@@ -7090,6 +7104,20 @@
       "keywords": [
         "architecture",
         "security",
+        "security-architecture-diagrams"
+      ],
+      "path": "docs/architecture/security/security-architecture-diagrams.md",
+      "tags": [
+        "architecture",
+        "security",
+        "security-architecture-diagrams"
+      ],
+      "topic": "security-architecture-diagrams"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "security",
         "security-architecture"
       ],
       "path": "docs/architecture/security/security-architecture.md",
@@ -7141,6 +7169,20 @@
         "security-testing-strategy"
       ],
       "topic": "security-testing-strategy"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "security",
+        "threat-model-diagrams"
+      ],
+      "path": "docs/architecture/security/threat-model-diagrams.md",
+      "tags": [
+        "architecture",
+        "security",
+        "threat-model-diagrams"
+      ],
+      "topic": "threat-model-diagrams"
     },
     {
       "keywords": [
@@ -11590,6 +11632,20 @@
     },
     {
       "keywords": [
+        "incident-response-process",
+        "operations",
+        "security"
+      ],
+      "path": "docs/operations/security/incident-response-process.md",
+      "tags": [
+        "incident-response-process",
+        "operations",
+        "security"
+      ],
+      "topic": "incident-response-process"
+    },
+    {
+      "keywords": [
         "incident-response",
         "operations",
         "security"
@@ -11759,6 +11815,34 @@
     {
       "keywords": [
         "operations",
+        "secure-development-practices",
+        "security"
+      ],
+      "path": "docs/operations/security/secure-development-practices.md",
+      "tags": [
+        "operations",
+        "secure-development-practices",
+        "security"
+      ],
+      "topic": "secure-development-practices"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "security-completion-report"
+      ],
+      "path": "docs/operations/security/security-completion-report.md",
+      "tags": [
+        "operations",
+        "security",
+        "security-completion-report"
+      ],
+      "topic": "security-completion-report"
+    },
+    {
+      "keywords": [
+        "operations",
         "security",
         "security-deployment-examples"
       ],
@@ -11774,6 +11858,104 @@
       "keywords": [
         "operations",
         "security",
+        "security-faq"
+      ],
+      "path": "docs/operations/security/security-faq.md",
+      "tags": [
+        "operations",
+        "security",
+        "security-faq"
+      ],
+      "topic": "security-faq"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "security-glossary"
+      ],
+      "path": "docs/operations/security/security-glossary.md",
+      "tags": [
+        "operations",
+        "security",
+        "security-glossary"
+      ],
+      "topic": "security-glossary"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "security-patch-policy"
+      ],
+      "path": "docs/operations/security/security-patch-policy.md",
+      "tags": [
+        "operations",
+        "security",
+        "security-patch-policy"
+      ],
+      "topic": "security-patch-policy"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "security-readiness-checklist"
+      ],
+      "path": "docs/operations/security/security-readiness-checklist.md",
+      "tags": [
+        "operations",
+        "security",
+        "security-readiness-checklist"
+      ],
+      "topic": "security-readiness-checklist"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "security-release-checklist"
+      ],
+      "path": "docs/operations/security/security-release-checklist.md",
+      "tags": [
+        "operations",
+        "security",
+        "security-release-checklist"
+      ],
+      "topic": "security-release-checklist"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "security-roadmap"
+      ],
+      "path": "docs/operations/security/security-roadmap.md",
+      "tags": [
+        "operations",
+        "security",
+        "security-roadmap"
+      ],
+      "topic": "security-roadmap"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "security-runbooks"
+      ],
+      "path": "docs/operations/security/security-runbooks.md",
+      "tags": [
+        "operations",
+        "security",
+        "security-runbooks"
+      ],
+      "topic": "security-runbooks"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
         "security-testing-and-monitoring"
       ],
       "path": "docs/operations/security/security-testing-and-monitoring.md",
@@ -11783,6 +11965,20 @@
         "security-testing-and-monitoring"
       ],
       "topic": "security-testing-and-monitoring"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "security-troubleshooting-guide"
+      ],
+      "path": "docs/operations/security/security-troubleshooting-guide.md",
+      "tags": [
+        "operations",
+        "security",
+        "security-troubleshooting-guide"
+      ],
+      "topic": "security-troubleshooting-guide"
     },
     {
       "keywords": [
@@ -11853,6 +12049,20 @@
         "token-authentication-flow"
       ],
       "topic": "token-authentication-flow"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security",
+        "vulnerability-reporting-policy"
+      ],
+      "path": "docs/operations/security/vulnerability-reporting-policy.md",
+      "tags": [
+        "operations",
+        "security",
+        "vulnerability-reporting-policy"
+      ],
+      "topic": "vulnerability-reporting-policy"
     },
     {
       "keywords": [

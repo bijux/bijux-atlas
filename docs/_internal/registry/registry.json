@@ -12593,6 +12593,31 @@
     },
     {
       "area": "architecture",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "architecture",
+        "attack-surface-maps",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/architecture/security/attack-surface-maps.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "attack-surface-maps",
+        "security"
+      ],
+      "title": "Attack Surface Maps",
+      "topic": "attack-surface-maps"
+    },
+    {
+      "area": "architecture",
       "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
@@ -12925,6 +12950,31 @@
       "keywords": [
         "architecture",
         "security",
+        "security-architecture-diagrams"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/architecture/security/security-architecture-diagrams.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "security",
+        "security-architecture-diagrams"
+      ],
+      "title": "Security Architecture Diagrams",
+      "topic": "security-architecture-diagrams"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "architecture",
+        "security",
         "security-architecture"
       ],
       "last_reviewed": "2026-02-25",
@@ -13015,6 +13065,31 @@
       ],
       "title": "Security Testing Strategy",
       "topic": "security-testing-strategy"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "architecture",
+        "security",
+        "threat-model-diagrams"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/architecture/security/threat-model-diagrams.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "security",
+        "threat-model-diagrams"
+      ],
+      "title": "Threat Model Diagrams",
+      "topic": "threat-model-diagrams"
     },
     {
       "area": "architecture",
@@ -21248,6 +21323,31 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "incident-response-process",
+        "operations",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/incident-response-process.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "incident-response-process",
+        "operations",
+        "security"
+      ],
+      "title": "Incident Response Process",
+      "topic": "incident-response-process"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -21554,6 +21654,56 @@
       "doc_version": "v1",
       "keywords": [
         "operations",
+        "secure-development-practices",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/secure-development-practices.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "secure-development-practices",
+        "security"
+      ],
+      "title": "Secure Development Practices",
+      "topic": "secure-development-practices"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "security",
+        "security-completion-report"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-completion-report.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "security",
+        "security-completion-report"
+      ],
+      "title": "Security Completion Report",
+      "topic": "security-completion-report"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
         "security",
         "security-deployment-examples"
       ],
@@ -21570,6 +21720,181 @@
       ],
       "title": "Security Deployment Examples",
       "topic": "security-deployment-examples"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "security",
+        "security-faq"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-faq.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "security",
+        "security-faq"
+      ],
+      "title": "Security FAQ",
+      "topic": "security-faq"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "security",
+        "security-glossary"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-glossary.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "security",
+        "security-glossary"
+      ],
+      "title": "Security Glossary",
+      "topic": "security-glossary"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "security",
+        "security-patch-policy"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-patch-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "security",
+        "security-patch-policy"
+      ],
+      "title": "Security Patch Policy",
+      "topic": "security-patch-policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "security",
+        "security-readiness-checklist"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-readiness-checklist.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "security",
+        "security-readiness-checklist"
+      ],
+      "title": "Security Readiness Checklist",
+      "topic": "security-readiness-checklist"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "security",
+        "security-release-checklist"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-release-checklist.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "security",
+        "security-release-checklist"
+      ],
+      "title": "Security Release Checklist",
+      "topic": "security-release-checklist"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "security",
+        "security-roadmap"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-roadmap.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "security",
+        "security-roadmap"
+      ],
+      "title": "Security Roadmap",
+      "topic": "security-roadmap"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "security",
+        "security-runbooks"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-runbooks.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "security",
+        "security-runbooks"
+      ],
+      "title": "Security Runbooks",
+      "topic": "security-runbooks"
     },
     {
       "area": "operations",
@@ -21595,6 +21920,31 @@
       ],
       "title": "Security Testing And Monitoring",
       "topic": "security-testing-and-monitoring"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "security",
+        "security-troubleshooting-guide"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/security-troubleshooting-guide.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "security",
+        "security-troubleshooting-guide"
+      ],
+      "title": "Security Troubleshooting Guide",
+      "topic": "security-troubleshooting-guide"
     },
     {
       "area": "operations",
@@ -21720,6 +22070,31 @@
       ],
       "title": "Token Authentication Flow",
       "topic": "token-authentication-flow"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "security",
+        "vulnerability-reporting-policy"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/security/vulnerability-reporting-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "security",
+        "vulnerability-reporting-policy"
+      ],
+      "title": "Vulnerability Reporting Policy",
+      "topic": "vulnerability-reporting-policy"
     },
     {
       "area": "operations",
