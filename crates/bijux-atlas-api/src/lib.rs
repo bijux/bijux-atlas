@@ -9,15 +9,24 @@ pub const CRATE_NAME: &str = "bijux-atlas-api";
 pub const API_POLICY_LATEST_ALIAS: &str = LATEST_ALIAS_POLICY;
 pub const API_POLICY_NO_IMPLICIT_DEFAULT_DATASET: &str = NO_IMPLICIT_DEFAULT_DATASET_POLICY;
 
+/// Compatibility policies shared with API consumers.
 pub mod compat;
+/// Conversion helpers between wire and internal domain types.
 pub mod convert;
+/// DTOs and stable API data contracts.
 pub mod dto;
+/// Mappings between runtime failures and API error envelopes.
 pub mod error_mapping;
+/// Stable API error codes and structures.
 pub mod errors;
 mod generated;
+/// OpenAPI document generation for v1.
 pub mod openapi;
+/// Query parameter parsing and normalization.
 pub mod params;
+/// API response envelope, media type, and negotiation models.
 pub mod responses;
+/// v1 handler surface for list/query endpoints.
 pub mod wire;
 
 pub use dto::DatasetKeyDto;

@@ -20,6 +20,7 @@ mod diff;
 mod gene;
 mod manifest;
 mod policy;
+/// Serde adapters used by consumers that need explicit codec wiring.
 pub mod serde_helpers;
 mod version;
 

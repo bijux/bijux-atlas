@@ -4,6 +4,7 @@
 
 mod backend;
 mod backend_capabilities;
+/// Backend-specific store adapters.
 pub mod backends;
 mod catalog;
 mod contracts;

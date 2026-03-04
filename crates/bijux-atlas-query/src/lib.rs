@@ -32,6 +32,7 @@ pub use cursor::{
     OrderMode,
 };
 pub use db::explain_query_plan as explain_query_plan_internal;
+#[doc(hidden)]
 pub use db::prepared_sql_for_class as prepared_sql_for_class_export;
 pub use executor::execute_gene_query;
 pub use filters::{

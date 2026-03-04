@@ -4,10 +4,15 @@
 
 mod generated;
 
+/// Deterministic domain logic and canonical helpers.
 pub mod domain;
+/// Effect boundary traits for runtime adapters.
 pub mod effects;
+/// Canonical machine and human error taxonomy.
 pub mod errors;
+/// Port traits used by orchestrators and adapters.
 pub mod ports;
+/// Shared strongly-typed identifiers and primitives.
 pub mod types;
 
 pub use crate::domain::canonical;
