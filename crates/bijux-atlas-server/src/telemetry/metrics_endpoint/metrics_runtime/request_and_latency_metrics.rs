@@ -6,21 +6,29 @@ async fn append_request_and_latency_metrics(
     let req_counts = state.metrics.counts.lock().await.clone();
     let req_exemplars = state.metrics.exemplars.lock().await.clone();
     let client_fingerprints = state.metrics.client_fingerprint_counts.lock().await.clone();
+    let mut request_error_total: u64 = 0;
     for ((route, method, status, class), count) in req_counts {
+        if status >= 400 {
+            request_error_total = request_error_total.saturating_add(count);
+        }
         if state.api.enable_exemplars {
             if let Some((trace_id, ts_ms)) =
                 req_exemplars.get(&(route.clone(), method.clone(), status, class.clone()))
             {
                 body.push_str(&format!(
                     "http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",method=\"{}\",status=\"{}\",class=\"{}\"}} {} # {{trace_id=\"{}\"}} {}\n\
+atlas_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",method=\"{}\",status=\"{}\",class=\"{}\"}} {} # {{trace_id=\"{}\"}} {}\n\
 bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",method=\"{}\",status=\"{}\",class=\"{}\"}} {} # {{trace_id=\"{}\"}} {}\n",
+                    METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count, trace_id, ts_ms,
                     METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count, trace_id, ts_ms,
                     METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count, trace_id, ts_ms
                 ));
             } else {
                 body.push_str(&format!(
                     "http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",method=\"{}\",status=\"{}\",class=\"{}\"}} {}\n\
+atlas_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",method=\"{}\",status=\"{}\",class=\"{}\"}} {}\n\
 bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",method=\"{}\",status=\"{}\",class=\"{}\"}} {}\n",
+                    METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count,
                     METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count,
                     METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count
                 ));
@@ -28,12 +36,18 @@ bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=
         } else {
             body.push_str(&format!(
                 "http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",method=\"{}\",status=\"{}\",class=\"{}\"}} {}\n\
+atlas_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",method=\"{}\",status=\"{}\",class=\"{}\"}} {}\n\
 bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",method=\"{}\",status=\"{}\",class=\"{}\"}} {}\n",
+                METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count,
                 METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count,
                 METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count
             ));
         }
     }
+    body.push_str(&format!(
+        "atlas_http_request_errors_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+        METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, request_error_total
+    ));
     let mut client_fingerprints_sorted = client_fingerprints.into_iter().collect::<Vec<_>>();
     client_fingerprints_sorted.sort_by(|a, b| a.0.cmp(&b.0));
     for ((client_type, ua_family), count) in client_fingerprints_sorted {
@@ -63,6 +77,16 @@ bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=
             &vals,
             &[0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0],
         );
+        push_histogram_from_samples(
+            body,
+            "atlas_http_request_duration_seconds",
+            &format!(
+                "subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",class=\"{}\"",
+                METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, class
+            ),
+            &vals,
+            &[0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0],
+        );
     }
     let sql_lat = state.metrics.sqlite_latency_ns.lock().await.clone();
     for (query_type, vals) in sql_lat {
@@ -74,6 +98,16 @@ bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=
             query_type,
             percentile_ns(&vals, 0.95) as f64 / 1_000_000_000.0
         ));
+        push_histogram_from_samples(
+            body,
+            "atlas_query_execution_duration_seconds",
+            &format!(
+                "subsystem=\"{}\",version=\"{}\",dataset=\"{}\",query_type=\"{}\"",
+                METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, query_type
+            ),
+            &vals,
+            &[0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5],
+        );
     }
     let req_sizes = state.metrics.request_size_bytes.lock().await.clone();
     for (route, vals) in req_sizes {
@@ -85,11 +119,27 @@ bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=
             route,
             percentile_ns(&vals, 0.95) as f64
         ));
+        body.push_str(&format!(
+            "atlas_http_request_size_p95_bytes{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\"}} {:.3}\n",
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            route,
+            percentile_ns(&vals, 0.95) as f64
+        ));
     }
     let resp_sizes = state.metrics.response_size_bytes.lock().await.clone();
     for (route, vals) in resp_sizes {
         body.push_str(&format!(
             "bijux_http_response_size_p95_bytes{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\"}} {:.3}\n",
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            route,
+            percentile_ns(&vals, 0.95) as f64
+        ));
+        body.push_str(&format!(
+            "atlas_http_response_size_p95_bytes{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\"}} {:.3}\n",
             METRIC_SUBSYSTEM,
             METRIC_VERSION,
             METRIC_DATASET_ALL,
@@ -127,7 +177,44 @@ bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=
             stage,
             percentile_ns(&vals, 0.95) as f64 / 1_000_000_000.0
         ));
+        if stage == "query_plan" {
+            push_histogram_from_samples(
+                body,
+                "atlas_query_plan_generation_duration_seconds",
+                &format!(
+                    "subsystem=\"{}\",version=\"{}\",dataset=\"{}\",stage=\"{}\"",
+                    METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, stage
+                ),
+                &vals,
+                &[0.0005, 0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25],
+            );
+        }
     }
+    let query_rows = state.metrics.query_row_count.lock().await.clone();
+    for (route, rows) in query_rows {
+        push_histogram_from_samples(
+            body,
+            "atlas_query_row_count",
+            &format!(
+                "subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\"",
+                METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route
+            ),
+            &rows,
+            &[1.0, 10.0, 25.0, 50.0, 100.0, 250.0, 500.0, 1000.0],
+        );
+    }
+    body.push_str(&format!(
+        "atlas_query_cache_hits_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_query_cache_misses_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state.metrics.query_cache_hits_total.load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state.metrics.query_cache_misses_total.load(Ordering::Relaxed),
+    ));
     let registry_refresh_age_seconds = state.cache.registry_refresh_age_seconds().await;
     body.push_str(&format!(
         "atlas_registry_refresh_age_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\

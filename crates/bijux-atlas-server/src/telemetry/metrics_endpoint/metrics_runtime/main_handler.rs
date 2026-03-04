@@ -10,6 +10,12 @@ use metrics_helpers::{
 };
 
 pub(crate) async fn metrics_handler(State(state): State<AppState>) -> impl IntoResponse {
+    if !state.api.enable_metrics_endpoint {
+        return with_request_id(
+            StatusCode::SERVICE_UNAVAILABLE.into_response(),
+            &make_request_id(&state),
+        );
+    }
     let request_id = make_request_id(&state);
     let started = Instant::now();
     let mut body = String::from(
