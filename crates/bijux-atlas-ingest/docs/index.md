@@ -23,6 +23,8 @@ Docs:
 - [Artifact output contract](artifact-output-contract.md)
 - [QC policy](qc.md)
 - [Ensembl ingest workflow](ensembl-layout.md)
+- [Ingest performance metrics](ingest-performance-metrics.md)
+- [Ingest benchmark scenarios](ingest-benchmark-scenarios.md)
 
 - [How to test](testing.md)
 - [How to extend](#how-to-extend)
