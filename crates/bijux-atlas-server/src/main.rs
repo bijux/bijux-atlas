@@ -4,11 +4,11 @@
 
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_server::{
-    build_router, effective_runtime_config_payload, load_runtime_config, AppState,
+    build_router, effective_runtime_config_payload, init_tracing, load_runtime_config, AppState,
     DatasetCacheManager, FederatedBackend, LocalFsBackend, RegistrySource, S3LikeBackend,
+    TraceConfig, TraceExporterKind,
 };
 use clap::Parser;
-use opentelemetry::trace::TracerProvider as _;
 use std::path::PathBuf;
 use std::sync::atomic::AtomicU64;
 use std::sync::atomic::Ordering;
@@ -16,7 +16,6 @@ use std::sync::Arc;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use tokio::net::TcpListener;
 use tracing::{error, info, warn};
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 #[cfg(feature = "jemalloc")]
 #[global_allocator]
@@ -380,44 +379,6 @@ fn observability_governance_version() -> String {
     std::env::var("ATLAS_GOVERNANCE_VERSION").unwrap_or_else(|_| "main@unknown".to_string())
 }
 
-fn init_tracing(log_json: bool, otel_enabled: bool) -> Result<(), String> {
-    let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
-    if otel_enabled {
-        let exporter = opentelemetry_otlp::SpanExporter::builder()
-            .with_http()
-            .build()
-            .map_err(|e| format!("failed to build OTLP span exporter: {e}"))?;
-        let tracer = opentelemetry_sdk::trace::TracerProvider::builder()
-            .with_batch_exporter(exporter, opentelemetry_sdk::runtime::Tokio)
-            .build()
-            .tracer("bijux-atlas-server");
-        if log_json {
-            tracing_subscriber::registry()
-                .with(filter)
-                .with(tracing_subscriber::fmt::layer().json())
-                .with(tracing_opentelemetry::layer().with_tracer(tracer))
-                .init();
-        } else {
-            tracing_subscriber::registry()
-                .with(filter)
-                .with(tracing_subscriber::fmt::layer())
-                .with(tracing_opentelemetry::layer().with_tracer(tracer))
-                .init();
-        }
-    } else if log_json {
-        tracing_subscriber::registry()
-            .with(filter)
-            .with(tracing_subscriber::fmt::layer().json())
-            .init();
-    } else {
-        tracing_subscriber::registry()
-            .with(filter)
-            .with(tracing_subscriber::fmt::layer())
-            .init();
-    }
-    Ok(())
-}
-
 #[tokio::main]
 async fn main() -> Result<(), String> {
     let cli = ServerCliArgs::parse();
@@ -428,7 +389,19 @@ async fn main() -> Result<(), String> {
         cli.cache_root.as_deref(),
     )
     .map_err(|err| err.to_string())?;
-    init_tracing(runtime.log_json, runtime.otel_enabled)?;
+    let trace_exporter = match runtime.trace_exporter.as_str() {
+        "none" => TraceExporterKind::None,
+        _ => TraceExporterKind::Otlp,
+    };
+    let trace_cfg = TraceConfig {
+        log_json: runtime.log_json,
+        otel_enabled: runtime.otel_enabled,
+        sampling_ratio: runtime.trace_sampling_ratio,
+        exporter: trace_exporter,
+        otlp_endpoint: runtime.trace_otlp_endpoint.clone(),
+        service_name: runtime.trace_service_name.clone(),
+    };
+    init_tracing(&trace_cfg)?;
 
     let bind_addr = runtime.startup.bind_addr.clone();
     let effective_config_payload = effective_runtime_config_payload(&runtime)?;
