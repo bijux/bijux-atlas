@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "kind": "atlas_chaos_scenarios",
+  "scenarios": [
+    {
+      "id": "node-crash-and-partition",
+      "description": "simulate node crash followed by network partition",
+      "faults": [
+        {"kind": "node_crash", "node_id": "node-a"},
+        {"kind": "network_partition", "node_id": "node-b"}
+      ]
+    },
+    {
+      "id": "shard-corruption-recovery",
+      "description": "simulate shard corruption and validate recovery diagnostics",
+      "faults": [
+        {"kind": "shard_corruption", "shard_id": "atlas-default-s001"}
+      ]
+    }
+  ]
+}

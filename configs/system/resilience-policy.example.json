@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "kind": "atlas_resilience_policy",
+  "detection_policy": {
+    "node_timeout_ms": 5000,
+    "replica_lag_threshold_ms": 2000,
+    "recovery_retry_budget": 3
+  },
+  "recovery_policy": {
+    "auto_recovery_enabled": true,
+    "shard_failover_enabled": true,
+    "replica_failover_enabled": true,
+    "rebalance_after_recovery": true
+  },
+  "resilience_guarantees": {
+    "failover_within_ms": 10000,
+    "diagnostics_available": true,
+    "event_logging_required": true
+  }
+}
