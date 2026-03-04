@@ -129,3 +129,59 @@ Artifacts are stored in deterministic paths with digest-backed identity, manifes
 ## Manifest Structure
 
 Manifests include dataset identity, version metadata, digest references, schema and policy status, and provenance fields required by release and audit surfaces.
+
+## Contract Enforcement Model
+
+Contracts are SSOT-governed controls that define required behavior at API, ops, docs, config, and release surfaces.
+Enforcement runs in local development and CI lanes with deterministic reports and artifact evidence.
+
+## Ops Governance Model
+
+Ops governance defines profile classes, policy validation, rollout safety, and install evidence requirements.
+Changes to operational behavior are valid only when profile, contract, and evidence expectations remain satisfied.
+
+## Repository Policy Enforcement Model
+
+Repository policy enforces structural boundaries, naming constraints, ownership metadata, and generation discipline.
+Policy checks are non-optional and gate merges through deterministic check suites.
+
+## CI Validation Pipeline
+
+1. Build and unit validation.
+2. Contract and check execution.
+3. Docs and configuration validation.
+4. Ops and release validation.
+5. Report and artifact publication.
+
+## Testing Layers
+
+Atlas uses a layered test strategy:
+
+1. Unit tests for crate-local behavior.
+2. Integration tests for subsystem behavior.
+3. Contract tests for public and operational invariants.
+4. End-to-end and smoke tests for workflow integrity.
+
+## System Invariants
+
+- Same validated inputs produce identical artifacts.
+- Contracts and checks are deterministic.
+- Runtime surfaces only serve approved artifact states.
+- Policy exceptions are explicit, scoped, and time-bounded.
+
+## Determinism Guarantees
+
+Atlas guarantees stable outputs through canonical ordering, pinned toolchains where required, and explicit normalization.
+
+## Reproducibility Guarantees
+
+Given the same commit, configuration, and approved environment profile, Atlas reproduces equivalent build, render, and evidence outputs.
+
+## Failure Modes
+
+Primary failure modes include invalid input data, contract regressions, storage access faults, policy violations, and release evidence gaps.
+
+## Recovery Model
+
+Recovery relies on deterministic artifacts, validated rollback paths, and evidence-driven triage.
+Operational recovery never bypasses contract and policy gates.
