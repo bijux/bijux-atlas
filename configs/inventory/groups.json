@@ -24,12 +24,13 @@
     "product",
     "repo",
     "reports",
+    "release",
     "rust",
     "schema",
     "security",
     "shellcheck",
     "slo"
   ],
-  "max_top_level_dirs": 29,
+  "max_top_level_dirs": 30,
   "schema_version": 1
 }

@@ -1,0 +1,22 @@
+{
+  "changelog": {
+    "path": "CHANGELOG.md",
+    "require_breaking_section": true,
+    "required_sections": [
+      "Added",
+      "Changed",
+      "Fixed",
+      "Breaking Changes"
+    ]
+  },
+  "schema_version": 1,
+  "versioning": {
+    "allow_prerelease_tags": [
+      "rc",
+      "beta",
+      "alpha"
+    ],
+    "require_v_prefix_for_tags": true,
+    "scheme": "semver"
+  }
+}

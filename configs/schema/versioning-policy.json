@@ -68,6 +68,11 @@
     },
     {
       "compatibility": "backward-compatible",
+      "schema": "configs/schema/release-version-policy.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
       "schema": "configs/schema/reports/check-report-map.schema.json",
       "versioning": "locked"
     },

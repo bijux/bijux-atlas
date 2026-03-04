@@ -146,7 +146,8 @@
         "configs/gates/*.json",
         "configs/coverage/*",
         "configs/shellcheck/*",
-        "configs/product/*"
+        "configs/product/*",
+        "configs/release/*.json"
       ],
       "schema_owner": "platform",
       "schemas": [
@@ -389,6 +390,7 @@
         "configs/schema/configs-schema-map.schema.json",
         "configs/schema/meta-ownership.schema.json",
         "configs/schema/public-surface.schema.json",
+        "configs/schema/release-version-policy.schema.json",
         "configs/schema/reports/*.json",
         "configs/schema/versioning-policy.json"
       ],

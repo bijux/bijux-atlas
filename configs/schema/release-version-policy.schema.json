@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "changelog": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "require_breaking_section": {
+          "type": "boolean"
+        },
+        "required_sections": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "path",
+        "required_sections",
+        "require_breaking_section"
+      ],
+      "type": "object"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "versioning": {
+      "additionalProperties": false,
+      "properties": {
+        "allow_prerelease_tags": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "require_v_prefix_for_tags": {
+          "type": "boolean"
+        },
+        "scheme": {
+          "enum": [
+            "semver"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "scheme",
+        "allow_prerelease_tags",
+        "require_v_prefix_for_tags"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "versioning",
+    "changelog"
+  ],
+  "title": "Release Version Policy",
+  "type": "object"
+}
