@@ -28,7 +28,10 @@ Describe how Atlas is structured so contributors and operators share one durable
 
 ## What You Will Find Here
 
+- [Architecture Summary](summary.md)
 - [Architecture Overview](overview.md)
+- [Design Principles](design-principles.md)
+- [Engineering Philosophy](engineering-philosophy.md)
 - [Component Documentation](components/index.md)
 - [Architecture Diagrams](diagrams/index.md)
 - [Dataflow](dataflow.md)
@@ -41,6 +44,8 @@ Describe how Atlas is structured so contributors and operators share one durable
 - [Query model](query-model.md)
 - [Ingest and QC model](ingest-qc-model.md)
 - [System graph explained](system-graph-explained.md)
+- [Internal Architecture](internal-architecture.md)
+- [Architecture Evolution](evolution.md)
 
 ## Next steps
 

@@ -137,9 +137,16 @@ nav:
   - What Is Atlas: what-is-atlas.md
   - Tutorials: tutorials/index.md
   - Product: product/index.md
-  - Architecture: architecture/index.md
-  - Architecture Diagrams: architecture/diagrams/index.md
-  - Components: architecture/components/index.md
+  - Architecture:
+      - Architecture Index: architecture/index.md
+      - Architecture Summary: architecture/summary.md
+      - Architecture Overview: architecture/overview.md
+      - Design Principles: architecture/design-principles.md
+      - Engineering Philosophy: architecture/engineering-philosophy.md
+      - Components: architecture/components/index.md
+      - Architecture Diagrams: architecture/diagrams/index.md
+      - Internal Architecture: architecture/internal-architecture.md
+      - Architecture Evolution: architecture/evolution.md
   - API:
       - API Overview: api/index.md
       - Errors: api/errors.md
