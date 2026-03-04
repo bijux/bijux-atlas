@@ -2,7 +2,7 @@
 
 use crate::*;
 
-pub const METRIC_SUBSYSTEM: &str = "atlas";
+pub const METRIC_SUBSYSTEM: &str = crate::telemetry::metrics::METRICS_NAMESPACE;
 pub const METRIC_VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const METRIC_DATASET_ALL: &str = "all";
 
