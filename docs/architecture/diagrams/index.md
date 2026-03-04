@@ -27,6 +27,9 @@ related:
 - [Runtime System](runtime-system.md)
 - [Ops Governance](ops-governance.md)
 - [Cluster Membership Architecture](cluster-membership-architecture.md)
+- [Shard Architecture](shard-architecture.md)
+- [Shard Query Flow](shard-query-flow.md)
+- [Shard Routing Visualization](shard-routing-visualization.md)
 - [Diagram Style Guide](style-guide.md)
 
 ## Legacy and supporting diagrams

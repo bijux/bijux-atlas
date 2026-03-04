@@ -82,6 +82,10 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 50. [Cluster node health monitoring](cluster-node-health-monitoring.md)
 51. [Cluster node maintenance procedures](cluster-node-maintenance-procedures.md)
 52. [Cluster troubleshooting guide](cluster-troubleshooting-guide.md)
+53. [Shard distribution guide](shard-distribution-guide.md)
+54. [Shard rebalance workflow](shard-rebalance-workflow.md)
+55. [Shard failure scenarios](shard-failure-scenarios.md)
+56. [Shard debugging guide](shard-debugging-guide.md)
 
 ## What This Page Is Not
 
