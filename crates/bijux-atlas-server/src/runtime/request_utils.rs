@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
+use base64::Engine as _;
 
 fn chrono_like_unix_millis() -> u128 {
     use std::time::{SystemTime, UNIX_EPOCH};
@@ -9,6 +10,257 @@ fn chrono_like_unix_millis() -> u128 {
 
 fn chrono_like_unix_secs() -> u64 {
     (chrono_like_unix_millis() / 1000) as u64
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct AuthenticationContext {
+    principal: &'static str,
+    mechanism: &'static str,
+    subject: &'static str,
+    issuer: Option<String>,
+    scopes: Vec<String>,
+}
+
+#[derive(Debug, Clone)]
+struct ApiKeyRecord {
+    key_hash: String,
+    not_before_unix_s: Option<u64>,
+    expires_unix_s: Option<u64>,
+    revoked: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum ApiKeyValidationError {
+    Unknown,
+    NotYetValid,
+    Expired,
+    Revoked,
+}
+
+#[derive(Debug, Clone)]
+struct ApiKeyStore {
+    records: Vec<ApiKeyRecord>,
+}
+
+impl ApiKeyStore {
+    fn from_allowed_entries(entries: &[String], expiration_days: u64) -> Self {
+        let now = chrono_like_unix_secs();
+        let expires_unix_s = now.saturating_add(expiration_days.saturating_mul(86_400));
+        let mut records = Vec::new();
+        for entry in entries {
+            let trimmed = entry.trim();
+            if trimmed.is_empty() {
+                continue;
+            }
+            let parsed = parse_api_key_record_line(trimmed).unwrap_or_else(|| ApiKeyRecord {
+                key_hash: hash_api_key(trimmed),
+                not_before_unix_s: None,
+                expires_unix_s: Some(expires_unix_s),
+                revoked: false,
+            });
+            records.push(parsed);
+        }
+        Self { records }
+    }
+
+    fn validate(&self, raw_key: &str, now_unix_s: u64) -> Result<(), ApiKeyValidationError> {
+        let candidate_hash = hash_api_key(raw_key);
+        let Some(record) = self.records.iter().find(|item| item.key_hash == candidate_hash) else {
+            return Err(ApiKeyValidationError::Unknown);
+        };
+        if record.revoked {
+            return Err(ApiKeyValidationError::Revoked);
+        }
+        if let Some(not_before) = record.not_before_unix_s {
+            if now_unix_s < not_before {
+                return Err(ApiKeyValidationError::NotYetValid);
+            }
+        }
+        if let Some(expires) = record.expires_unix_s {
+            if now_unix_s > expires {
+                return Err(ApiKeyValidationError::Expired);
+            }
+        }
+        Ok(())
+    }
+}
+
+fn hash_api_key(raw_key: &str) -> String {
+    sha256_hex(raw_key.as_bytes())
+}
+
+fn parse_api_key_record_line(input: &str) -> Option<ApiKeyRecord> {
+    if !input.starts_with("hash=") {
+        return None;
+    }
+    let mut hash = None;
+    let mut not_before_unix_s = None;
+    let mut expires_unix_s = None;
+    let mut revoked = false;
+    for part in input.split('|') {
+        let mut kv = part.splitn(2, '=');
+        let key = kv.next()?;
+        let value = kv.next().unwrap_or_default();
+        match key {
+            "hash" => hash = Some(value.to_string()),
+            "not_before" => not_before_unix_s = value.parse::<u64>().ok(),
+            "expires" => expires_unix_s = value.parse::<u64>().ok(),
+            "revoked" => revoked = value.eq_ignore_ascii_case("true"),
+            _ => {}
+        }
+    }
+    let key_hash = hash?;
+    if key_hash.len() != 64 || !key_hash.chars().all(|ch| ch.is_ascii_hexdigit()) {
+        return None;
+    }
+    Some(ApiKeyRecord {
+        key_hash,
+        not_before_unix_s,
+        expires_unix_s,
+        revoked,
+    })
+}
+
+#[allow(dead_code)]
+fn generate_api_key(subject: &str) -> String {
+    static COUNTER: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+    let now = chrono_like_unix_millis();
+    let sequence = COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+    let seed = format!("{subject}:{now}:{sequence}:{}", std::process::id());
+    let material = sha256_hex(seed.as_bytes());
+    format!("atlas_{material}")
+}
+
+#[derive(Debug, Clone, serde::Deserialize)]
+struct TokenClaims {
+    sub: Option<String>,
+    iss: Option<String>,
+    aud: Option<String>,
+    exp: Option<u64>,
+    nbf: Option<u64>,
+    jti: Option<String>,
+    scope: Option<String>,
+    scopes: Option<Vec<String>>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum TokenValidationError {
+    Malformed,
+    Signature,
+    Expired,
+    NotYetValid,
+    Issuer,
+    Audience,
+    Scope,
+    Revoked,
+}
+
+impl TokenValidationError {
+    const fn as_code(&self) -> &'static str {
+        match self {
+            Self::Malformed => "token_malformed",
+            Self::Signature => "token_signature_invalid",
+            Self::Expired => "token_expired",
+            Self::NotYetValid => "token_not_yet_valid",
+            Self::Issuer => "token_issuer_invalid",
+            Self::Audience => "token_audience_invalid",
+            Self::Scope => "token_scope_missing",
+            Self::Revoked => "token_revoked",
+        }
+    }
+}
+
+fn token_header_value(headers: &HeaderMap) -> Option<String> {
+    let raw = normalized_header_value(headers, "authorization", 4096)?;
+    let mut parts = raw.splitn(2, ' ');
+    let scheme = parts.next().unwrap_or_default();
+    let token = parts.next().unwrap_or_default();
+    if !scheme.eq_ignore_ascii_case("bearer") || token.trim().is_empty() {
+        return None;
+    }
+    Some(token.trim().to_string())
+}
+
+fn validate_signed_token(
+    token: &str,
+    api: &crate::config::ApiConfig,
+) -> Result<AuthenticationContext, TokenValidationError> {
+    let Some(secret) = api.token_signing_secret.as_deref() else {
+        return Err(TokenValidationError::Malformed);
+    };
+    let mut parts = token.split('.');
+    let (Some(header_b64), Some(payload_b64), Some(sig_b64), None) =
+        (parts.next(), parts.next(), parts.next(), parts.next())
+    else {
+        return Err(TokenValidationError::Malformed);
+    };
+    let signed_content = format!("{header_b64}.{payload_b64}");
+    let mut mac =
+        Hmac::<Sha256>::new_from_slice(secret.as_bytes()).map_err(|_| TokenValidationError::Malformed)?;
+    mac.update(signed_content.as_bytes());
+    let expected = mac.finalize().into_bytes();
+    let parsed_sig = base64::engine::general_purpose::URL_SAFE_NO_PAD
+        .decode(sig_b64)
+        .map_err(|_| TokenValidationError::Malformed)?;
+    if parsed_sig != expected.as_slice() {
+        return Err(TokenValidationError::Signature);
+    }
+    let claims_json = base64::engine::general_purpose::URL_SAFE_NO_PAD
+        .decode(payload_b64)
+        .map_err(|_| TokenValidationError::Malformed)?;
+    let claims: TokenClaims =
+        serde_json::from_slice(&claims_json).map_err(|_| TokenValidationError::Malformed)?;
+    let now = chrono_like_unix_secs();
+    if let Some(nbf) = claims.nbf {
+        if now < nbf {
+            return Err(TokenValidationError::NotYetValid);
+        }
+    }
+    if let Some(exp) = claims.exp {
+        if now >= exp {
+            return Err(TokenValidationError::Expired);
+        }
+    }
+    if let Some(required) = api.token_required_issuer.as_deref() {
+        if claims.iss.as_deref() != Some(required) {
+            return Err(TokenValidationError::Issuer);
+        }
+    }
+    if let Some(required) = api.token_required_audience.as_deref() {
+        if claims.aud.as_deref() != Some(required) {
+            return Err(TokenValidationError::Audience);
+        }
+    }
+    if let Some(jti) = claims.jti.as_deref() {
+        if api.token_revoked_ids.iter().any(|value| value == jti) {
+            return Err(TokenValidationError::Revoked);
+        }
+    }
+    let mut scopes = claims.scopes.unwrap_or_default();
+    if let Some(scope_text) = claims.scope {
+        for scope in scope_text.split(' ') {
+            let normalized = scope.trim();
+            if !normalized.is_empty() && !scopes.iter().any(|value| value == normalized) {
+                scopes.push(normalized.to_string());
+            }
+        }
+    }
+    for required in &api.token_required_scopes {
+        if !scopes.iter().any(|scope| scope == required) {
+            return Err(TokenValidationError::Scope);
+        }
+    }
+    Ok(AuthenticationContext {
+        principal: "user",
+        mechanism: "token",
+        subject: if claims.sub.as_deref().is_some_and(|value| !value.is_empty()) {
+            "user"
+        } else {
+            "unknown-subject"
+        },
+        issuer: claims.iss,
+        scopes,
+    })
 }
 
 pub(crate) fn route_sli_class(route: &str) -> &'static str {
@@ -539,6 +791,24 @@ async fn record_policy_violation(state: &AppState, policy: &str) {
     *by.entry(policy.to_string()).or_insert(0) += 1;
 }
 
+async fn record_auth_failure(state: &AppState, reason: &str, route: &str) {
+    record_policy_violation(state, reason).await;
+    let key = format!("auth.{reason}");
+    let mut by = state.cache.metrics.policy_violations_by_policy.lock().await;
+    let count = by.entry(key).or_insert(0);
+    *count += 1;
+    if *count % 50 == 0 {
+        warn!(
+            event_id = "authentication_failure_alert",
+            event = "authentication_failure_alert",
+            route = route,
+            reason = reason,
+            count = *count,
+            "authentication failure threshold reached"
+        );
+    }
+}
+
 pub(crate) async fn record_shed_reason(state: &AppState, reason: &str) {
     let mut by = state.cache.metrics.shed_total_by_reason.lock().await;
     *by.entry(reason.to_string()).or_insert(0) += 1;
@@ -557,6 +827,13 @@ async fn security_middleware(
 ) -> Response {
     let uri_text = req.uri().to_string();
     let route = req.uri().path().to_string();
+    info!(
+        event_id = "authentication_evaluation_started",
+        event = "authentication_evaluation_started",
+        auth_mode = state.api.auth_mode.as_str(),
+        route = route.as_str(),
+        "authentication evaluation started"
+    );
     let auth_exempt = route_auth_exempt(&route);
     if route_is_admin_endpoint(&route) && !state.api.enable_admin_endpoints {
         emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
@@ -606,10 +883,12 @@ async fn security_middleware(
         .observe_client_fingerprint(client_type, ua_family)
         .await;
 
-    let api_key = normalized_header_value(req.headers(), "x-api-key", 256);
+    let api_key = normalized_header_value(req.headers(), "x-api-key", 512);
+    let api_key_store =
+        ApiKeyStore::from_allowed_entries(&state.api.allowed_api_keys, state.api.api_key_expiration_days);
     if !auth_exempt && state.api.require_api_key && api_key.is_none() {
         emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
-        record_policy_violation(&state, "api_key_required").await;
+        record_auth_failure(&state, "api_key_required", &route).await;
         let err = Json(ApiError::new(
             auth_error_code(StatusCode::UNAUTHORIZED),
             "api key required",
@@ -619,11 +898,11 @@ async fn security_middleware(
         return (StatusCode::UNAUTHORIZED, err).into_response();
     }
     if let Some(key) = &api_key {
-        if !state.api.allowed_api_keys.is_empty()
-            && !state.api.allowed_api_keys.iter().any(|k| k == key)
+        if !api_key_store.records.is_empty()
+            && api_key_store.validate(key, chrono_like_unix_secs()).is_err()
         {
             emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
-            record_policy_violation(&state, "api_key_invalid").await;
+            record_auth_failure(&state, "api_key_invalid", &route).await;
             let err = Json(ApiError::new(
                 auth_error_code(StatusCode::UNAUTHORIZED),
                 "invalid api key",
@@ -634,12 +913,43 @@ async fn security_middleware(
         }
     }
 
+    let token = token_header_value(req.headers());
+    let token_context = if matches!(state.api.auth_mode, crate::config::AuthMode::Token) {
+        let Some(raw_token) = token.as_deref() else {
+            emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
+            record_auth_failure(&state, "token_missing", &route).await;
+            let err = Json(ApiError::new(
+                auth_error_code(StatusCode::UNAUTHORIZED),
+                "bearer token required",
+                serde_json::json!({}),
+                "req-unknown",
+            ));
+            return (StatusCode::UNAUTHORIZED, err).into_response();
+        };
+        match validate_signed_token(raw_token, &state.api) {
+            Ok(context) => Some(context),
+            Err(err) => {
+                emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
+                record_auth_failure(&state, err.as_code(), &route).await;
+                let err = Json(ApiError::new(
+                    auth_error_code(StatusCode::UNAUTHORIZED),
+                    "invalid bearer token",
+                    serde_json::json!({"class": "authentication", "reason": err.as_code()}),
+                    "req-unknown",
+                ));
+                return (StatusCode::UNAUTHORIZED, err).into_response();
+            }
+        }
+    } else {
+        None
+    };
+
     if let Some(secret) = &state.api.hmac_secret {
         let ts = normalized_header_value(req.headers(), "x-bijux-timestamp", 64);
         let sig = normalized_header_value(req.headers(), "x-bijux-signature", 128);
         if !auth_exempt && state.api.hmac_required && (ts.is_none() || sig.is_none()) {
             emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
-            record_policy_violation(&state, "hmac_missing_headers").await;
+            record_auth_failure(&state, "hmac_missing_headers", &route).await;
             let err = Json(ApiError::new(
                 auth_error_code(StatusCode::UNAUTHORIZED),
                 "missing required HMAC headers",
@@ -652,7 +962,7 @@ async fn security_middleware(
             let now = chrono_like_unix_millis() / 1000;
             let Some(parsed_ts) = ts_value.parse::<u128>().ok() else {
                 emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
-                record_policy_violation(&state, "hmac_invalid_timestamp").await;
+                record_auth_failure(&state, "hmac_invalid_timestamp", &route).await;
                 let err = Json(ApiError::new(
                     auth_error_code(StatusCode::UNAUTHORIZED),
                     "invalid hmac timestamp",
@@ -664,7 +974,7 @@ async fn security_middleware(
             let skew = now.abs_diff(parsed_ts);
             if skew > state.api.hmac_max_skew_secs as u128 {
                 emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
-                record_policy_violation(&state, "hmac_skew").await;
+                record_auth_failure(&state, "hmac_skew", &route).await;
                 let err = Json(ApiError::new(
                     auth_error_code(StatusCode::UNAUTHORIZED),
                     "hmac timestamp outside allowed skew",
@@ -679,7 +989,7 @@ async fn security_middleware(
                 != Some(sig_value.as_str())
             {
                 emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
-                record_policy_violation(&state, "hmac_signature").await;
+                record_auth_failure(&state, "hmac_signature", &route).await;
                 let err = Json(ApiError::new(
                     auth_error_code(StatusCode::UNAUTHORIZED),
                     "invalid hmac signature",
@@ -691,10 +1001,24 @@ async fn security_middleware(
         }
     }
 
-    let principal = if route_is_admin_endpoint(&route) {
-        "operator"
+    let auth_context = if route_is_admin_endpoint(&route) {
+        AuthenticationContext {
+            principal: "operator",
+            mechanism: "internal-admin",
+            subject: "operator",
+            issuer: None,
+            scopes: Vec::new(),
+        }
     } else if auth_exempt || state.api.auth_mode == crate::config::AuthMode::Disabled {
-        "user"
+        AuthenticationContext {
+            principal: "user",
+            mechanism: "none",
+            subject: "anonymous",
+            issuer: None,
+            scopes: Vec::new(),
+        }
+    } else if let Some(context) = token_context {
+        context
     } else if matches!(
         state.api.auth_mode,
         crate::config::AuthMode::Oidc | crate::config::AuthMode::Mtls
@@ -702,7 +1026,7 @@ async fn security_middleware(
         let Some(principal) = proxy_authenticated_principal(req.headers(), state.api.auth_mode)
         else {
             emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
-            record_policy_violation(&state, "proxy_identity_missing").await;
+            record_auth_failure(&state, "proxy_identity_missing", &route).await;
             let err = Json(ApiError::new(
                 auth_error_code(StatusCode::UNAUTHORIZED),
                 "trusted auth proxy identity header required",
@@ -711,15 +1035,39 @@ async fn security_middleware(
             ));
             return (StatusCode::UNAUTHORIZED, err).into_response();
         };
-        principal
+        AuthenticationContext {
+            principal,
+            mechanism: state.api.auth_mode.as_str(),
+            subject: principal,
+            issuer: None,
+            scopes: Vec::new(),
+        }
     } else {
-        "service-account"
+        AuthenticationContext {
+            principal: "service-account",
+            mechanism: "api-key",
+            subject: "service-account",
+            issuer: None,
+            scopes: Vec::new(),
+        }
     };
+    let principal = auth_context.principal;
     let policy_allowed = embedded_policy_allows(
         principal,
         route_action_id(&route),
         route_resource_kind(&route),
         &route,
+    );
+    info!(
+        event_id = "authentication_context",
+        event = "authentication_context",
+        auth_mode = state.api.auth_mode.as_str(),
+        mechanism = auth_context.mechanism,
+        subject = auth_context.subject,
+        issuer = auth_context.issuer.as_deref().unwrap_or("unknown"),
+        scope_count = auth_context.scopes.len(),
+        route = route,
+        "authentication context established"
     );
     emit_auth_policy_decision(state.api.auth_mode, principal, &route, policy_allowed);
     if !policy_allowed {
@@ -781,6 +1129,7 @@ mod tests {
         for mode in [
             AuthMode::Disabled,
             AuthMode::ApiKey,
+            AuthMode::Token,
             AuthMode::Oidc,
             AuthMode::Mtls,
         ] {
@@ -908,6 +1257,128 @@ mod tests {
         assert_eq!(event["status"].as_str(), Some("200"));
         assert!(event.get("authorization").is_none());
         assert!(event.get("unknown_field").is_none());
+    }
+
+    fn signed_token(payload: serde_json::Value, secret: &str) -> String {
+        let header = base64::engine::general_purpose::URL_SAFE_NO_PAD
+            .encode(r#"{"alg":"HS256","typ":"JWT"}"#);
+        let claims = base64::engine::general_purpose::URL_SAFE_NO_PAD
+            .encode(serde_json::to_vec(&payload).unwrap_or_default());
+        let signed = format!("{header}.{claims}");
+        let mut mac = Hmac::<Sha256>::new_from_slice(secret.as_bytes()).unwrap_or_else(|_| {
+            Hmac::<Sha256>::new_from_slice(b"default").expect("static hmac key")
+        });
+        mac.update(signed.as_bytes());
+        let sig = base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(mac.finalize().into_bytes());
+        format!("{signed}.{sig}")
+    }
+
+    #[test]
+    fn generated_api_keys_are_hashed_and_unique() {
+        let left = generate_api_key("integration");
+        let right = generate_api_key("integration");
+        assert!(left.starts_with("atlas_"));
+        assert!(right.starts_with("atlas_"));
+        assert_ne!(left, right);
+        assert_eq!(hash_api_key("alpha").len(), 64);
+    }
+
+    #[test]
+    fn api_key_store_enforces_expiration_rotation_and_revocation() {
+        let now = chrono_like_unix_secs();
+        let active = generate_api_key("active");
+        let future = generate_api_key("future");
+        let revoked = generate_api_key("revoked");
+        let store = ApiKeyStore::from_allowed_entries(
+            &[
+                active.clone(),
+                format!("hash={}|not_before={}", hash_api_key(&future), now.saturating_add(60)),
+                format!("hash={}|revoked=true", hash_api_key(&revoked)),
+                format!(
+                    "hash={}|expires={}",
+                    hash_api_key("expired"),
+                    now.saturating_sub(1)
+                ),
+            ],
+            90,
+        );
+        assert!(store.validate(&active, now).is_ok());
+        assert_eq!(
+            store.validate(&future, now),
+            Err(ApiKeyValidationError::NotYetValid)
+        );
+        assert_eq!(
+            store.validate("expired", now),
+            Err(ApiKeyValidationError::Expired)
+        );
+        assert_eq!(
+            store.validate(&revoked, now),
+            Err(ApiKeyValidationError::Revoked)
+        );
+    }
+
+    #[test]
+    fn token_validation_enforces_expiry_scope_issuer_audience_and_revocation() {
+        let now = chrono_like_unix_secs();
+        let mut api = crate::config::ApiConfig::default();
+        api.token_signing_secret = Some("token-secret".to_string());
+        api.token_required_issuer = Some("atlas-auth".to_string());
+        api.token_required_audience = Some("atlas-api".to_string());
+        api.token_required_scopes = vec!["dataset.read".to_string()];
+        let token = signed_token(
+            serde_json::json!({
+                "sub":"user-1",
+                "iss":"atlas-auth",
+                "aud":"atlas-api",
+                "exp": now + 60,
+                "nbf": now - 1,
+                "jti":"token-1",
+                "scope":"dataset.read ops.admin"
+            }),
+            "token-secret",
+        );
+        let ctx = validate_signed_token(&token, &api).expect("valid token");
+        assert_eq!(ctx.principal, "user");
+        assert!(ctx.scopes.iter().any(|value| value == "dataset.read"));
+
+        let expired = signed_token(
+            serde_json::json!({
+                "iss":"atlas-auth","aud":"atlas-api","exp": now - 1
+            }),
+            "token-secret",
+        );
+        assert_eq!(
+            validate_signed_token(&expired, &api),
+            Err(TokenValidationError::Expired)
+        );
+
+        api.token_revoked_ids = vec!["token-1".to_string()];
+        assert_eq!(
+            validate_signed_token(&token, &api),
+            Err(TokenValidationError::Revoked)
+        );
+    }
+
+    #[test]
+    fn token_validation_rejects_malformed_tokens() {
+        let mut api = crate::config::ApiConfig::default();
+        api.token_signing_secret = Some("token-secret".to_string());
+        assert_eq!(
+            validate_signed_token("not.a.jwt", &api),
+            Err(TokenValidationError::Malformed)
+        );
+    }
+
+    #[test]
+    fn authentication_validation_performance_is_bounded() {
+        let now = chrono_like_unix_secs();
+        let api_key = generate_api_key("perf");
+        let store = ApiKeyStore::from_allowed_entries(std::slice::from_ref(&api_key), 90);
+        let start = Instant::now();
+        for _ in 0..10_000 {
+            let _ = store.validate(&api_key, now);
+        }
+        assert!(start.elapsed() < Duration::from_millis(100));
     }
 }
 

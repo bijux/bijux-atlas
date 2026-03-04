@@ -36,6 +36,7 @@ pub enum AuthMode {
     #[default]
     Disabled,
     ApiKey,
+    Token,
     Oidc,
     Mtls,
 }
@@ -45,6 +46,7 @@ impl AuthMode {
         match self {
             Self::Disabled => "disabled",
             Self::ApiKey => "api-key",
+            Self::Token => "token",
             Self::Oidc => "oidc",
             Self::Mtls => "mtls",
         }
@@ -291,9 +293,16 @@ pub struct ApiConfig {
     pub audit: AuditConfig,
     pub require_api_key: bool,
     pub allowed_api_keys: Vec<String>,
+    pub api_key_expiration_days: u64,
+    pub api_key_rotation_overlap_secs: u64,
     pub hmac_secret: Option<String>,
     pub hmac_required: bool,
     pub hmac_max_skew_secs: u64,
+    pub token_signing_secret: Option<String>,
+    pub token_required_issuer: Option<String>,
+    pub token_required_audience: Option<String>,
+    pub token_required_scopes: Vec<String>,
+    pub token_revoked_ids: Vec<String>,
 }
 
 impl Default for ApiConfig {
@@ -368,9 +377,16 @@ impl Default for ApiConfig {
             },
             require_api_key: false,
             allowed_api_keys: Vec::new(),
+            api_key_expiration_days: 90,
+            api_key_rotation_overlap_secs: 86_400,
             hmac_secret: None,
             hmac_required: false,
             hmac_max_skew_secs: 300,
+            token_signing_secret: None,
+            token_required_issuer: None,
+            token_required_audience: None,
+            token_required_scopes: Vec::new(),
+            token_revoked_ids: Vec::new(),
         }
     }
 }
@@ -396,6 +412,12 @@ pub fn validate_startup_config_contract(
     }
     if api.require_api_key && api.allowed_api_keys.is_empty() {
         return Err("require_api_key=true requires at least one allowed api key".to_string());
+    }
+    if api.api_key_expiration_days == 0 {
+        return Err("api_key_expiration_days must be greater than 0".to_string());
+    }
+    if api.api_key_rotation_overlap_secs == 0 {
+        return Err("api_key_rotation_overlap_secs must be greater than 0".to_string());
     }
     if api.require_api_key && api.hmac_required {
         return Err("api key auth and hmac auth cannot both be enabled".to_string());
@@ -551,8 +573,7 @@ fn validate_runtime_config_contract(runtime: &RuntimeConfig) -> Result<(), Runti
         "trace" | "debug" | "info" | "warn" | "error"
     ) {
         return Err(RuntimeConfigError::InvalidValue {
-            message: "ATLAS_LOG_LEVEL must be one of: trace, debug, info, warn, error"
-                .to_string(),
+            message: "ATLAS_LOG_LEVEL must be one of: trace, debug, info, warn, error".to_string(),
         });
     }
     if !(0.0..=1.0).contains(&runtime.trace_sampling_ratio) {
@@ -590,6 +611,24 @@ fn validate_runtime_config_contract(runtime: &RuntimeConfig) -> Result<(), Runti
             return Err(RuntimeConfigError::InvalidValue {
                 message:
                     "ATLAS_ENV=prod requires non-empty ATLAS_ALLOWED_API_KEYS when api key auth is enabled"
+                        .to_string(),
+            });
+        }
+        if runtime.api.token_signing_secret.is_some()
+            && (runtime
+                .api
+                .token_required_issuer
+                .as_deref()
+                .is_none_or(str::is_empty)
+                || runtime
+                    .api
+                    .token_required_audience
+                    .as_deref()
+                    .is_none_or(str::is_empty))
+        {
+            return Err(RuntimeConfigError::InvalidValue {
+                message:
+                    "token auth requires ATLAS_TOKEN_REQUIRED_ISSUER and ATLAS_TOKEN_REQUIRED_AUDIENCE"
                         .to_string(),
             });
         }
@@ -665,6 +704,17 @@ impl RuntimeConfig {
         let hmac_secret = std::env::var("ATLAS_HMAC_SECRET")
             .ok()
             .filter(|x| !x.is_empty());
+        let token_signing_secret = std::env::var("ATLAS_TOKEN_SIGNING_SECRET")
+            .ok()
+            .filter(|value| !value.is_empty());
+        let token_required_issuer = std::env::var("ATLAS_TOKEN_REQUIRED_ISSUER")
+            .ok()
+            .filter(|value| !value.is_empty());
+        let token_required_audience = std::env::var("ATLAS_TOKEN_REQUIRED_AUDIENCE")
+            .ok()
+            .filter(|value| !value.is_empty());
+        let token_required_scopes = env_list("ATLAS_TOKEN_REQUIRED_SCOPES");
+        let token_revoked_ids = env_list("ATLAS_TOKEN_REVOKED_IDS");
         let audit_sink = match std::env::var("ATLAS_AUDIT_SINK") {
             Ok(value) => match value.as_str() {
                 "stdout" => AuditSink::Stdout,
@@ -700,14 +750,16 @@ impl RuntimeConfig {
             Ok(value) => Some(match value.as_str() {
                 "disabled" => AuthMode::Disabled,
                 "api-key" => AuthMode::ApiKey,
+                "token" => AuthMode::Token,
                 "oidc" => AuthMode::Oidc,
                 "mtls" => AuthMode::Mtls,
                 _ => {
                     return Err(RuntimeConfigError::InvalidFormat {
                         name: "ATLAS_AUTH_MODE".to_string(),
                         value,
-                        message: "ATLAS_AUTH_MODE must be one of: disabled, api-key, oidc, mtls"
-                            .to_string(),
+                        message:
+                            "ATLAS_AUTH_MODE must be one of: disabled, api-key, token, oidc, mtls"
+                                .to_string(),
                     });
                 }
             }),
@@ -746,6 +798,7 @@ impl RuntimeConfig {
                 }
                 AuthMode::ApiKey
             }
+            Some(AuthMode::Token) => AuthMode::Token,
             Some(AuthMode::Oidc) => AuthMode::Oidc,
             Some(AuthMode::Mtls) => AuthMode::Mtls,
             None => {
@@ -827,9 +880,16 @@ impl RuntimeConfig {
             },
             require_api_key: matches!(auth_mode, AuthMode::ApiKey),
             allowed_api_keys,
+            api_key_expiration_days: env_u64("ATLAS_API_KEY_EXPIRATION_DAYS", 90)?,
+            api_key_rotation_overlap_secs: env_u64("ATLAS_API_KEY_ROTATION_OVERLAP_SECS", 86_400)?,
             hmac_secret,
             hmac_required: hmac_required_env,
             hmac_max_skew_secs: env_u64("ATLAS_HMAC_MAX_SKEW_SECS", 300)?,
+            token_signing_secret,
+            token_required_issuer,
+            token_required_audience,
+            token_required_scopes,
+            token_revoked_ids,
             ..ApiConfig::default()
         };
 

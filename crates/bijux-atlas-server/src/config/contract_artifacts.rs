@@ -73,6 +73,12 @@ pub fn effective_config_payload(
         if obj.contains_key("hmac_secret") {
             obj.insert("hmac_secret".to_string(), serde_json::json!("<redacted>"));
         }
+        if obj.contains_key("token_signing_secret") {
+            obj.insert(
+                "token_signing_secret".to_string(),
+                serde_json::json!("<redacted>"),
+            );
+        }
     }
     let startup_json =
         serde_json::to_value(startup).map_err(|err| format!("serialize startup config: {err}"))?;
@@ -95,6 +101,7 @@ fn redact_known_secrets(config_json: &mut serde_json::Value) {
         "redis_url",
         "allowed_api_keys",
         "hmac_secret",
+        "token_signing_secret",
         "s3_bearer",
         "http_bearer",
     ];

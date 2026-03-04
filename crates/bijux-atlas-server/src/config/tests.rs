@@ -317,7 +317,10 @@ fn runtime_config_accepts_logging_configuration() {
 #[test]
 fn runtime_config_rejects_invalid_log_level_and_sampling() {
     with_runtime_env(
-        &[("ATLAS_LOG_LEVEL", "verbose"), ("ATLAS_LOG_SAMPLING_RATE", "1.5")],
+        &[
+            ("ATLAS_LOG_LEVEL", "verbose"),
+            ("ATLAS_LOG_SAMPLING_RATE", "1.5"),
+        ],
         || {
             let startup = RuntimeStartupConfig {
                 bind_addr: DEFAULT_BIND_ADDR.to_string(),
@@ -368,7 +371,7 @@ fn runtime_config_rejects_invalid_auth_mode() {
         let err = RuntimeConfig::from_env(startup).expect_err("invalid auth mode");
         assert!(err
             .to_string()
-            .contains("ATLAS_AUTH_MODE must be one of: disabled, api-key, oidc, mtls"));
+            .contains("ATLAS_AUTH_MODE must be one of: disabled, api-key, token, oidc, mtls"));
     });
 }
 
@@ -406,6 +409,28 @@ fn runtime_config_accepts_proxy_verified_auth_modes() {
             assert_eq!(runtime.api.auth_mode.as_str(), auth_mode);
         });
     }
+}
+
+#[test]
+fn runtime_config_accepts_token_auth_mode() {
+    with_runtime_env(
+        &[
+            ("ATLAS_AUTH_MODE", "token"),
+            ("ATLAS_TOKEN_SIGNING_SECRET", "secret"),
+            ("ATLAS_TOKEN_REQUIRED_ISSUER", "atlas-auth"),
+            ("ATLAS_TOKEN_REQUIRED_AUDIENCE", "atlas-api"),
+        ],
+        || {
+            let startup = RuntimeStartupConfig {
+                bind_addr: DEFAULT_BIND_ADDR.to_string(),
+                store_root: PathBuf::from(DEFAULT_STORE_ROOT),
+                cache_root: PathBuf::from(DEFAULT_CACHE_ROOT),
+            };
+            let runtime = RuntimeConfig::from_env(startup).expect("token auth mode");
+            assert_eq!(runtime.api.auth_mode, AuthMode::Token);
+            assert!(!runtime.api.require_api_key);
+        },
+    );
 }
 
 #[test]
