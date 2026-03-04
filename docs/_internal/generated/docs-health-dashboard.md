@@ -13,39 +13,44 @@
 - External links: `0`
 - Unique external domains: `0`
 - Allowlist-covered external domains: `0/0`
-- Orphan pages: `84`
-- Pages missing `Last verified against`: `203`
+- Orphan pages: `95`
+- Allowlisted orphan pages: `0`
+- Expired orphan allowlist entries: `0`
+- Pages missing `Last verified against`: `256`
 
 ## Longest Pages
 
-- `docs/_internal/generated/docs-inventory.md`: `744` lines
-- `docs/_internal/generated/topic-index.md`: `463` lines
+- `docs/_internal/generated/docs-inventory.md`: `846` lines
+- `docs/_internal/generated/topic-index.md`: `529` lines
 - `docs/reference/contracts/errors.md`: `435` lines
 - `docs/operations/reference/ops-surface.md`: `308` lines
 - `docs/reference/contracts/plugins/spec.md`: `191` lines
+- `docs/contract.md`: `188` lines
+- `docs/reference/make-targets.md`: `175` lines
+- `docs/_internal/generated/make-targets.md`: `169` lines
 - `docs/reference/contracts/config-keys.md`: `167` lines
-- `docs/contract.md`: `162` lines
-- `docs/reference/make-targets.md`: `161` lines
 - `docs/operations/networkpolicy.md`: `160` lines
-- `docs/_internal/generated/make-targets.md`: `156` lines
 
 ## Single-Line Offenders
 
-- `docs/_internal/generated/topic-index.md`: longest line `2684` characters
+- `docs/_internal/generated/topic-index.md`: longest line `2837` characters
+- `docs/_internal/governance/suite-membership-policy.md`: longest line `334` characters
 - `docs/_internal/generated/concept-registry.md`: longest line `332` characters
 - `docs/operations/reference/ops-surface.md`: longest line `314` characters
+- `docs/_internal/governance/checks-and-contracts.md`: longest line `271` characters
 - `docs/control-plane/control-plane-architecture.md`: longest line `268` characters
 - `docs/_internal/governance/docs-debt-backlog.md`: longest line `249` characters
 - `docs/operations/release-evidence.md`: longest line `227` characters
 - `docs/_internal/generated/legacy-url-inventory.md`: longest line `227` characters
 - `docs/architecture/architecture-map.md`: longest line `216` characters
-- `docs/control-plane/lane-matrix.md`: longest line `212` characters
-- `docs/contract.md`: longest line `206` characters
 
 ## Missing Verification Markers
 
 - `docs/_assets/index.md`
 - `docs/_drafts/transcripts-canonical-policy.md`
+- `docs/_internal/architecture/layers.md`
+- `docs/_internal/architecture/modules.md`
+- `docs/_internal/cli-command-list.md`
 - `docs/_internal/contracts/configs/README.md`
 - `docs/_internal/contracts/docs/README.md`
 - `docs/_internal/contracts/make/README.md`
@@ -61,9 +66,6 @@
 - `docs/_internal/generated/governance-audit/docs-baseline-checklist.md`
 - `docs/_internal/generated/governance-audit/docs-front-matter.md`
 - `docs/_internal/generated/governance-audit/docs-inventory-triage-report.md`
-- `docs/_internal/generated/governance-audit/docs-top-delete-pages.md`
-- `docs/_internal/generated/governance-audit/docs-top-keep-pages.md`
-- `docs/_internal/generated/governance-audit/docs-top-merge-clusters.md`
 
 ## Orphan Pages
 
@@ -80,10 +82,18 @@
 - `docs/architecture/design-principles.md`
 - `docs/architecture/faq.md`
 - `docs/architecture/hot-paths.md`
+- `docs/architecture/scripting.md`
 - `docs/architecture/why-effects-are-gated.md`
+- `docs/cli-command-list.md`
 - `docs/contract.md`
 - `docs/control-plane/contract-coverage-dashboard.md`
 - `docs/control-plane/contracts.md`
 - `docs/development/add-dataset-type.md`
-- `docs/development/add-endpoint.md`
-- `docs/development/add-metric-span.md`
+
+## Allowlisted Orphan Pages
+
+- None
+
+## Expired Orphan Allowlist Entries
+
+- None

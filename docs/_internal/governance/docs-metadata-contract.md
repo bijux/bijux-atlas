@@ -2,7 +2,7 @@
 
 - Owner: `docs-governance`
 - Status: `stable`
-- Last verified against: `2026-03-04`
+- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
 
 ## Required Metadata
 

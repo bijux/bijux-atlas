@@ -120,6 +120,7 @@
     "configs/contracts/datasets/manifest.schema.json",
     "configs/contracts/datasets/pinned-policy.schema.json",
     "configs/contracts/dev-atlas-output.schema.json",
+    "configs/contracts/docs-metadata.schema.json",
     "configs/contracts/docs-site-output.schema.json",
     "configs/contracts/env.schema.json",
     "configs/contracts/governance/check-groups.schema.json",
