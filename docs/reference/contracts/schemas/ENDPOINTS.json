@@ -9,6 +9,40 @@
     {
       "deprecated": false,
       "method": "GET",
+      "params": [],
+      "path": "/debug/build-metadata",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "404"
+        }
+      ],
+      "telemetry_class": "debug"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/debug/cache-stats",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "404"
+        }
+      ],
+      "telemetry_class": "debug"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
       "params": [
         {
           "default": null,
@@ -60,7 +94,58 @@
       "deprecated": false,
       "method": "GET",
       "params": [],
+      "path": "/debug/dataset-registry",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "404"
+        }
+      ],
+      "telemetry_class": "debug"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
       "path": "/debug/datasets",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "404"
+        }
+      ],
+      "telemetry_class": "debug"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/debug/diagnostics",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "404"
+        }
+      ],
+      "telemetry_class": "debug"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/debug/query-planner-stats",
       "responses": [
         {
           "envelope": "none",
@@ -94,6 +179,87 @@
       "deprecated": false,
       "method": "GET",
       "params": [],
+      "path": "/debug/runtime-config",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "404"
+        }
+      ],
+      "telemetry_class": "debug"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/debug/runtime-stats",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "404"
+        }
+      ],
+      "telemetry_class": "debug"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/debug/shard-map",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "404"
+        }
+      ],
+      "telemetry_class": "debug"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/debug/system-info",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "404"
+        }
+      ],
+      "telemetry_class": "debug"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/health",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        }
+      ],
+      "telemetry_class": "health"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
       "path": "/healthz",
       "responses": [
         {
@@ -120,6 +286,19 @@
       "deprecated": false,
       "method": "GET",
       "params": [],
+      "path": "/live",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        }
+      ],
+      "telemetry_class": "health"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
       "path": "/metrics",
       "responses": [
         {
@@ -128,6 +307,23 @@
         }
       ],
       "telemetry_class": "metrics"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/ready",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "api_error",
+          "status": "503"
+        }
+      ],
+      "telemetry_class": "health"
     },
     {
       "deprecated": false,

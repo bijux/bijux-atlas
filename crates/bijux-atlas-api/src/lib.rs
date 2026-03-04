@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #![forbid(unsafe_code)]
+#![recursion_limit = "512"]
 
 use bijux_atlas_model::{LATEST_ALIAS_POLICY, NO_IMPLICIT_DEFAULT_DATASET_POLICY};
 

@@ -3,7 +3,7 @@
 use serde_json::{json, Map, Value};
 
 pub const OPENAPI_V1_PINNED_SHA256: &str =
-    "6164ec58d997bf9193551abcd06957ed4b105ae8f73ac0c94376306e05232a11";
+    "ecc30d96768389daf282360c83abed0a59e1537907f52832811ffefc0544142c";
 
 #[must_use]
 pub fn openapi_v1_spec() -> Value {
@@ -16,6 +16,11 @@ pub fn openapi_v1_spec() -> Value {
         "x-api-contract-version": "v1"
       },
       "paths": {
+        "/health": {
+          "get": {
+            "responses": {"200": {"description": "ok alias"}}
+          }
+        },
         "/healthz": {
           "get": {
             "responses": {"200": {"description": "ok"}}
@@ -26,10 +31,23 @@ pub fn openapi_v1_spec() -> Value {
             "responses": {"200": {"description": "overload status"}}
           }
         },
+        "/live": {
+          "get": {
+            "responses": {"200": {"description": "liveness alias"}}
+          }
+        },
         "/readyz": {
           "get": {
             "responses": {
               "200": {"description": "ready"},
+              "503": {"description": "not ready", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}}
+            }
+          }
+        },
+        "/ready": {
+          "get": {
+            "responses": {
+              "200": {"description": "ready alias"},
               "503": {"description": "not ready", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}}
             }
           }
@@ -343,6 +361,78 @@ pub fn openapi_v1_spec() -> Value {
           "get": {
             "responses": {
               "200": {"description": "registry health and merge status"},
+              "404": {"description": "disabled"}
+            }
+          }
+        },
+        "/debug/diagnostics": {
+          "get": {
+            "responses": {
+              "200": {"description": "runtime diagnostics summary"},
+              "404": {"description": "disabled"}
+            }
+          }
+        },
+        "/debug/runtime-stats": {
+          "get": {
+            "responses": {
+              "200": {"description": "runtime queue and scheduler statistics"},
+              "404": {"description": "disabled"}
+            }
+          }
+        },
+        "/debug/system-info": {
+          "get": {
+            "responses": {
+              "200": {"description": "process and host runtime metadata"},
+              "404": {"description": "disabled"}
+            }
+          }
+        },
+        "/debug/build-metadata": {
+          "get": {
+            "responses": {
+              "200": {"description": "build and binary metadata"},
+              "404": {"description": "disabled"}
+            }
+          }
+        },
+        "/debug/runtime-config": {
+          "get": {
+            "responses": {
+              "200": {"description": "effective runtime configuration"},
+              "404": {"description": "disabled"}
+            }
+          }
+        },
+        "/debug/dataset-registry": {
+          "get": {
+            "responses": {
+              "200": {"description": "dataset registry dump"},
+              "404": {"description": "disabled"}
+            }
+          }
+        },
+        "/debug/shard-map": {
+          "get": {
+            "responses": {
+              "200": {"description": "dataset shard map dump"},
+              "404": {"description": "disabled"}
+            }
+          }
+        },
+        "/debug/query-planner-stats": {
+          "get": {
+            "responses": {
+              "200": {"description": "query planner runtime statistics"},
+              "404": {"description": "disabled"}
+            }
+          }
+        },
+        "/debug/cache-stats": {
+          "get": {
+            "responses": {
+              "200": {"description": "cache utilization statistics"},
               "404": {"description": "disabled"}
             }
           }
