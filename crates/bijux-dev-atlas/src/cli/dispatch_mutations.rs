@@ -58,6 +58,10 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Checks { command } => force_json_checks(command),
         Command::Validate { format, .. } => *format = FormatArg::Json,
         Command::Release { command } => match command {
+            ReleaseCommand::Plan(args) => args.format = FormatArg::Json,
+            ReleaseCommand::Validate(args) => args.format = FormatArg::Json,
+            ReleaseCommand::Tag(args) => args.format = FormatArg::Json,
+            ReleaseCommand::Notes(args) => args.format = FormatArg::Json,
             ReleaseCommand::Check(args) => args.format = FormatArg::Json,
             ReleaseCommand::Rebuild { command } => match command {
                 crate::cli::ReleaseRebuildCommand::Verify(args) => args.format = FormatArg::Json,
@@ -1444,6 +1448,26 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             }
         }
         Command::Release { command } => match command {
+            ReleaseCommand::Plan(args) => {
+                if args.repo_root.is_none() {
+                    args.repo_root = Some(root.clone());
+                }
+            }
+            ReleaseCommand::Validate(args) => {
+                if args.repo_root.is_none() {
+                    args.repo_root = Some(root.clone());
+                }
+            }
+            ReleaseCommand::Tag(args) => {
+                if args.repo_root.is_none() {
+                    args.repo_root = Some(root.clone());
+                }
+            }
+            ReleaseCommand::Notes(args) => {
+                if args.repo_root.is_none() {
+                    args.repo_root = Some(root.clone());
+                }
+            }
             ReleaseCommand::Check(args) => {
                 if args.repo_root.is_none() {
                     args.repo_root = Some(root.clone());

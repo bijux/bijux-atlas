@@ -258,6 +258,10 @@ pub enum Command {
 
 #[derive(Subcommand, Debug)]
 pub enum ReleaseCommand {
+    Plan(ReleasePlanArgs),
+    Validate(ReleaseValidateArgs),
+    Tag(ReleaseVersionCheckArgs),
+    Notes(ReleaseChangelogGenerateArgs),
     Check(ReleaseCheckArgs),
     Rebuild {
         #[command(subcommand)]
@@ -287,6 +291,28 @@ pub enum ReleaseCommand {
     Verify(ReleaseVerifyArgs),
     Diff(ReleaseDiffArgs),
     Packet(ReleasePacketArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleasePlanArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseValidateArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub version: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
 }
 
 #[derive(Subcommand, Debug)]

@@ -4,8 +4,8 @@ use crate::cli::{
     FormatArg, ReleaseBundleBuildArgs, ReleaseBundleHashArgs, ReleaseBundleVerifyArgs,
     ReleaseChangelogGenerateArgs, ReleaseChangelogValidateArgs, ReleaseCheckArgs, ReleaseCommand,
     ReleaseDiffArgs, ReleaseManifestGenerateArgs, ReleaseManifestValidateArgs, ReleasePacketArgs,
-    ReleaseRebuildVerifyArgs, ReleaseReproducibilityReportArgs, ReleaseSignArgs, ReleaseVerifyArgs,
-    ReleaseVersionCheckArgs,
+    ReleasePlanArgs, ReleaseRebuildVerifyArgs, ReleaseReproducibilityReportArgs, ReleaseSignArgs,
+    ReleaseValidateArgs, ReleaseVerifyArgs, ReleaseVersionCheckArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
 use sha2::{Digest, Sha256};
@@ -363,6 +363,109 @@ fn run_release_check(args: ReleaseCheckArgs) -> Result<(String, i32), String> {
             .map_err(|err| format!("release check failed: {err}"))?;
     }
     Ok((rendered, if ok { 0 } else { 1 }))
+}
+
+fn read_publish_policy(root: &Path) -> Result<serde_json::Value, String> {
+    read_json(&root.join("configs/release/publish-policy.json"))
+}
+
+fn run_release_plan(args: ReleasePlanArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let policy = read_publish_policy(&root)?;
+    let publishable = policy["publishable_crates"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
+    let blocked = policy["blocked_crates"].as_array().cloned().unwrap_or_default();
+    let strategy = policy["versioning_strategy"]
+        .as_str()
+        .unwrap_or("workspace-unified");
+    let payload = serde_json::json!({
+        "kind": "release_plan",
+        "repo_root": root.display().to_string(),
+        "versioning_strategy": strategy,
+        "publishable_crates": publishable,
+        "blocked_crates": blocked
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let policy = read_publish_policy(&root)?;
+    let publishable = policy["publishable_crates"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
+
+    let mut errors = Vec::<String>::new();
+    let mut checked_crates = Vec::<String>::new();
+    if !root.join("LICENSE").exists() {
+        errors.push("missing root LICENSE file".to_string());
+    }
+    if !root.join("CHANGELOG.md").exists() {
+        errors.push("missing CHANGELOG.md".to_string());
+    }
+    for crate_name in publishable
+        .iter()
+        .filter_map(serde_json::Value::as_str)
+    {
+        let manifest_path = root.join("crates").join(crate_name).join("Cargo.toml");
+        let readme_path = root.join("crates").join(crate_name).join("README.md");
+        let text = fs::read_to_string(&manifest_path)
+            .map_err(|err| format!("failed to read {}: {err}", manifest_path.display()))?;
+        let manifest: toml::Value = toml::from_str(&text)
+            .map_err(|err| format!("failed to parse {}: {err}", manifest_path.display()))?;
+        let pkg = manifest.get("package").and_then(toml::Value::as_table);
+        let missing = |key: &str| {
+            let Some(value) = pkg.and_then(|v| v.get(key)) else {
+                return true;
+            };
+            match value {
+                toml::Value::String(text) => text.trim().is_empty(),
+                toml::Value::Table(table) => !table
+                    .get("workspace")
+                    .and_then(toml::Value::as_bool)
+                    .unwrap_or(false),
+                _ => true,
+            }
+        };
+        for key in ["description", "license", "repository", "documentation"] {
+            if missing(key) {
+                errors.push(format!(
+                    "{} missing package.{key}",
+                    manifest_path.display()
+                ));
+            }
+        }
+        if !readme_path.exists() {
+            errors.push(format!("missing crate README: {}", readme_path.display()));
+        }
+        checked_crates.push(crate_name.to_string());
+    }
+    let changelog_validate = run_release_changelog_validate(ReleaseChangelogValidateArgs {
+        repo_root: Some(root.clone()),
+        version: args.version.clone(),
+        tag: None,
+        format: FormatArg::Json,
+        out: None,
+    })?;
+    let changelog_payload: serde_json::Value = serde_json::from_str(&changelog_validate.0)
+        .map_err(|err| format!("failed to parse changelog validation payload: {err}"))?;
+    if changelog_validate.1 != 0 {
+        errors.push("release changelog validation failed".to_string());
+    }
+    let exit = if errors.is_empty() { 0 } else { 1 };
+    let payload = serde_json::json!({
+        "kind": "release_validate",
+        "repo_root": root.display().to_string(),
+        "checked_crates": checked_crates,
+        "errors": errors,
+        "changelog_validation": changelog_payload
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, exit))
 }
 
 fn repo_rel<'a>(root: &'a Path, path: &'a Path) -> String {
@@ -2058,6 +2161,10 @@ pub(crate) fn run_release_command(
     command: ReleaseCommand,
 ) -> Result<(String, i32), String> {
     match command {
+        ReleaseCommand::Plan(args) => run_release_plan(args),
+        ReleaseCommand::Validate(args) => run_release_validate(args),
+        ReleaseCommand::Tag(args) => run_release_version_check(args),
+        ReleaseCommand::Notes(args) => run_release_changelog_generate(args),
         ReleaseCommand::Check(args) => run_release_check(args),
         ReleaseCommand::Rebuild { command } => match command {
             crate::cli::ReleaseRebuildCommand::Verify(args) => run_release_rebuild_verify(args),
