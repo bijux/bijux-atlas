@@ -51,14 +51,8 @@ jobs:
 
       - name: Run regression detector and validation via control-plane
         run: |
-          cargo run -p bijux-dev-atlas -- \
-            perf diff \
-            ops/load/baselines/system-load-baseline.json \
-            ops/load/baselines/system-load-baseline.json \
-            --format json > /tmp/perf-regressions.json
-          cargo run -p bijux-dev-atlas -- \
-            perf validate \
-            --format json > /tmp/performance-regression-report.json
+          cargo run --locked -p bijux-dev-atlas -- perf diff ops/load/baselines/system-load-baseline.json ops/load/baselines/system-load-baseline.json --format json > /tmp/perf-regressions.json
+          cargo run --locked -p bijux-dev-atlas -- perf validate --format json > /tmp/performance-regression-report.json
           jq . /tmp/perf-regressions.json > /dev/null
           jq . /tmp/performance-regression-report.json > /dev/null
 

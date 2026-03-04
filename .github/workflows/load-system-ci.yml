@@ -37,11 +37,7 @@ jobs:
 
       - name: Validate load comparison via control-plane command
         run: |
-          cargo run -p bijux-dev-atlas -- \
-            perf diff \
-            ops/load/baselines/system-load-baseline.json \
-            ops/load/baselines/system-load-baseline.json \
-            --format json > /tmp/load-diff.json
+          cargo run --locked -p bijux-dev-atlas -- perf diff ops/load/baselines/system-load-baseline.json ops/load/baselines/system-load-baseline.json --format json > /tmp/load-diff.json
           jq . /tmp/load-diff.json > /dev/null
 
       - name: Run load suite coverage regression test
