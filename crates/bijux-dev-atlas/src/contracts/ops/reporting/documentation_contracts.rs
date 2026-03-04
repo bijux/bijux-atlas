@@ -146,6 +146,7 @@ pub fn render_contract_markdown(repo_root: &Path) -> Result<String, String> {
     out.push_str("- Governed surface: `ops/` and `ops/CONTRACT.md`.\n");
     out.push_str("- SSOT = bijux-dev-atlas contracts runner.\n");
     out.push_str("- Effects boundary: effect contracts require explicit runtime opt-in flags.\n");
+    out.push_str("- Legacy shell compatibility deadline: 2026-12-31.\n");
     out.push_str("- Non-goals:\n");
     out.push_str("- This document does not replace executable contract checks.\n");
     out.push_str("- This document does not grant manual exception authority.\n\n");

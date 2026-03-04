@@ -98,6 +98,9 @@ fn render_canonical_contract_doc(
     } else {
     out.push_str("- Effects boundary: this group runs static contracts only.\n");
     }
+    if domain.name == "ops" {
+        out.push_str("- Legacy shell compatibility deadline: 2026-12-31.\n");
+    }
     out.push_str("- Non-goals:\n");
     out.push_str("- This document does not replace executable contract checks.\n");
     out.push_str("- This document does not grant manual exception authority.\n\n");
