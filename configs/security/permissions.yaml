@@ -1,0 +1,18 @@
+schema_version: 1
+permissions:
+  - id: perm.catalog.read
+    action: catalog.read
+    resource_kind: namespace
+    description: Read service discovery and health surfaces.
+  - id: perm.dataset.read
+    action: dataset.read
+    resource_kind: dataset-id
+    description: Read dataset content and query responses.
+  - id: perm.ops.admin
+    action: ops.admin
+    resource_kind: namespace
+    description: Perform administrative runtime operations.
+  - id: perm.dataset.ingest
+    action: dataset.ingest
+    resource_kind: project
+    description: Ingest or refresh governed dataset artifacts.

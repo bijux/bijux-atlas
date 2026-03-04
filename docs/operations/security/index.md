@@ -18,6 +18,7 @@
 - [Token Authentication Flow](token-authentication-flow.md)
 - [Authentication Troubleshooting](authentication-troubleshooting.md)
 - [Authentication Examples](authentication-examples.md)
+- [Authorization Reference](authorization-reference.md)
 - [Audit And Security Event Classification](audit-and-security-event-classification.md)
 - [Auth Error Codes](auth-error-codes.md)
 - [Audit Logging Model](audit-logging.md)

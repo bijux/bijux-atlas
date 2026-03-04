@@ -1,0 +1,28 @@
+schema_version: 1
+roles:
+  - id: role.user.readonly
+    description: End-user readonly access for query workloads.
+    permissions:
+      - perm.catalog.read
+      - perm.dataset.read
+    inherits: []
+  - id: role.service.readonly
+    description: Service account readonly access for machine workloads.
+    permissions:
+      - perm.catalog.read
+      - perm.dataset.read
+    inherits: []
+  - id: role.operator.admin
+    description: Operator administrative control and query access.
+    permissions:
+      - perm.ops.admin
+      - perm.dataset.ingest
+    inherits:
+      - role.user.readonly
+  - id: role.automation.release
+    description: Release automation role with administrative surfaces.
+    permissions:
+      - perm.ops.admin
+      - perm.dataset.ingest
+    inherits:
+      - role.service.readonly
