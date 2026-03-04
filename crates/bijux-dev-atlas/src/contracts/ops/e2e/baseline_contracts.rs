@@ -122,5 +122,59 @@ fn e2e_contracts() -> Vec<Contract> {
                 run: test_ops_e2e_e_002_realdata_scenario_passes_contract,
             }],
         },
+        Contract {
+            id: ContractId("OPS-E2E-011".to_string()),
+            title: "scenario runner compatibility registry contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.scenario_runner_compatibility_registry_valid".to_string()),
+                title: "scenario compatibility registry is present and structurally valid",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_011_scenario_runner_compatibility_registry_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-012".to_string()),
+            title: "scenario golden snapshots contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.scenario_goldens_are_present_and_parseable".to_string()),
+                title: "required scenario golden snapshots are present and parseable",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_012_scenario_goldens_are_present_and_parseable,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-013".to_string()),
+            title: "scenario output contract fields",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.scenario_output_contract_fields_are_complete".to_string()),
+                title: "scenario result contract includes deterministic run and required evidence fields",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_013_scenario_output_contract_fields_are_complete,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-014".to_string()),
+            title: "scenario prerequisite guard contract",
+            tests: vec![TestCase {
+                id: TestId(
+                    "ops.e2e.scenario_runner_fails_fast_on_missing_prerequisites".to_string(),
+                ),
+                title: "scenario runner reports clear prerequisite failures and stays git-independent",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_014_scenario_runner_fails_fast_on_missing_prerequisites,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-015".to_string()),
+            title: "scenario tools registry coverage contract",
+            tests: vec![TestCase {
+                id: TestId(
+                    "ops.e2e.scenario_required_tools_registry_covers_all_scenarios".to_string(),
+                ),
+                title: "required tools registry covers each declared scenario exactly once",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_015_scenario_required_tools_registry_covers_all_scenarios,
+            }],
+        },
     ]
 }

@@ -548,3 +548,319 @@ fn test_ops_e2e_010_summary_schema_valid(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
+
+fn test_ops_e2e_011_scenario_runner_compatibility_registry_valid(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-E2E-011";
+    let test_id = "ops.e2e.scenario_runner_compatibility_registry_valid";
+    let rel = "ops/e2e/scenarios/version-compatibility.json";
+    let Some(doc) = read_json(&ctx.repo_root.join(rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "scenario compatibility registry must be valid json",
+            Some(rel.to_string()),
+        )]);
+    };
+    let scenarios_rel = "ops/e2e/scenarios/scenarios.json";
+    let Some(scenarios) = read_json(&ctx.repo_root.join(scenarios_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "scenario registry must be valid json",
+            Some(scenarios_rel.to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    if doc.get("schema_version").and_then(|v| v.as_i64()) != Some(1) {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "scenario compatibility registry schema_version must be 1",
+            Some(rel.to_string()),
+        ));
+    }
+    if doc
+        .get("supported_spec_versions")
+        .and_then(|v| v.as_array())
+        .is_none_or(|rows| rows.is_empty())
+    {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "supported_spec_versions must not be empty",
+            Some(rel.to_string()),
+        ));
+    }
+    if doc
+        .get("compatibility_table")
+        .and_then(|v| v.as_array())
+        .is_none_or(|rows| rows.is_empty())
+    {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "compatibility_table must not be empty",
+            Some(rel.to_string()),
+        ));
+    }
+    let scenario_schema_version = scenarios
+        .get("schema_version")
+        .and_then(|v| v.as_i64())
+        .unwrap_or_default();
+    let supported = doc
+        .get("supported_spec_versions")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(|v| v.as_i64())
+        .collect::<BTreeSet<_>>();
+    if !supported.contains(&scenario_schema_version) {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "scenario registry schema_version must be supported by runner compatibility table",
+            Some(rel.to_string()),
+        ));
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_e2e_012_scenario_goldens_are_present_and_parseable(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-E2E-012";
+    let test_id = "ops.e2e.scenario_goldens_are_present_and_parseable";
+    let required = [
+        "ops/e2e/scenarios/goldens/minimal-single-node.plan.json",
+        "ops/e2e/scenarios/goldens/query-pagination.plan.json",
+        "ops/e2e/scenarios/goldens/artifact-integrity.evidence.json",
+    ];
+    let mut violations = Vec::new();
+    for rel in required {
+        let path = ctx.repo_root.join(rel);
+        if !path.exists() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "required scenario golden snapshot is missing",
+                Some(rel.to_string()),
+            ));
+            continue;
+        }
+        if read_json(&path).is_none() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "required scenario golden snapshot must be valid json",
+                Some(rel.to_string()),
+            ));
+        }
+    }
+    let markdown_rel = "ops/e2e/scenarios/goldens/artifact-integrity.summary.md";
+    match fs::read_to_string(ctx.repo_root.join(markdown_rel)) {
+        Ok(content) => {
+            if !content.starts_with("# Scenario Evidence") {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    "scenario human report golden must start with canonical heading",
+                    Some(markdown_rel.to_string()),
+                ));
+            }
+        }
+        Err(_) => {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "required scenario human report golden is missing",
+                Some(markdown_rel.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_e2e_013_scenario_output_contract_fields_are_complete(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-E2E-013";
+    let test_id = "ops.e2e.scenario_output_contract_fields_are_complete";
+    let rel = "ops/e2e/scenarios/goldens/artifact-integrity.evidence.json";
+    let Some(result) = read_json(&ctx.repo_root.join(rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "artifact-integrity evidence golden must be valid json",
+            Some(rel.to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    let required_fields = [
+        "schema_version",
+        "schema_ref",
+        "runner_version",
+        "scenario_id",
+        "run_id",
+        "mode",
+        "status",
+        "metrics",
+        "evidence",
+        "pointers",
+    ];
+    for field in required_fields {
+        if result.get(field).is_none() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "scenario result golden must include required fields",
+                Some(rel.to_string()),
+            ));
+        }
+    }
+    let run_id = result.get("run_id").and_then(|v| v.as_str()).unwrap_or_default();
+    if run_id.len() != 12 || !run_id.chars().all(|c| c.is_ascii_hexdigit()) {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "run_id must be deterministic 12-char lowercase hex token",
+            Some(rel.to_string()),
+        ));
+    }
+    let expected = sha256_text("scenario::artifact-integrity::evidence");
+    if run_id != &expected[..12] {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "run_id must match deterministic hash derivation",
+            Some(rel.to_string()),
+        ));
+    }
+    let evidence_files = result
+        .get("evidence")
+        .and_then(|v| v.get("files"))
+        .and_then(|v| v.as_array())
+        .map(|rows| {
+            rows.iter()
+                .filter_map(|v| v.as_str().map(str::to_string))
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    if evidence_files.len() < 2 {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "scenario result must include required evidence files",
+            Some(rel.to_string()),
+        ));
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_e2e_014_scenario_runner_fails_fast_on_missing_prerequisites(
+    ctx: &RunContext,
+) -> TestResult {
+    let contract_id = "OPS-E2E-014";
+    let test_id = "ops.e2e.scenario_runner_fails_fast_on_missing_prerequisites";
+    let source_rel = "crates/bijux-dev-atlas/src/commands/ops/runtime_mod/execution_handler.rs";
+    let Ok(source) = fs::read_to_string(ctx.repo_root.join(source_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "scenario execution handler source must be readable",
+            Some(source_rel.to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    for required in [
+        "missing prerequisite `ops/e2e/scenarios/version-compatibility.json` for scenario runner",
+        "missing prerequisite `ops/e2e/scenarios/required-tools.json` for scenario runner",
+        "missing prerequisite `ops/e2e/scenarios/result-schema.json` for scenario runner",
+    ] {
+        if !source.contains(required) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "scenario runner must fail fast with explicit prerequisite message",
+                Some(source_rel.to_string()),
+            ));
+        }
+    }
+    if source.contains("git ") || source.contains(".git") {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "scenario runner must not require git metadata for deterministic execution",
+            Some(source_rel.to_string()),
+        ));
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_e2e_015_scenario_required_tools_registry_covers_all_scenarios(
+    ctx: &RunContext,
+) -> TestResult {
+    let contract_id = "OPS-E2E-015";
+    let test_id = "ops.e2e.scenario_required_tools_registry_covers_all_scenarios";
+    let tools_rel = "ops/e2e/scenarios/required-tools.json";
+    let scenarios_rel = "ops/e2e/scenarios/scenarios.json";
+    let Some(tools) = read_json(&ctx.repo_root.join(tools_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "scenario required-tools registry must be valid json",
+            Some(tools_rel.to_string()),
+        )]);
+    };
+    let Some(scenarios) = read_json(&ctx.repo_root.join(scenarios_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "scenario registry must be valid json",
+            Some(scenarios_rel.to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    let declared: BTreeSet<String> = scenarios
+        .get("scenarios")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(|v| v.get("id").and_then(|id| id.as_str()).map(str::to_string))
+        .collect();
+    let mapped: BTreeSet<String> = tools
+        .get("tools")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(|v| {
+            v.get("scenario_id")
+                .and_then(|id| id.as_str())
+                .map(str::to_string)
+        })
+        .collect();
+    if declared != mapped {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "required-tools mapping must cover every scenario exactly once",
+            Some(tools_rel.to_string()),
+        ));
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}

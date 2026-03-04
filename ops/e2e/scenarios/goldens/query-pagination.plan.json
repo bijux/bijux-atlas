@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "text": "ops scenario run query-pagination",
+  "rows": [
+    {
+      "scenario_id": "query-pagination",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario query-pagination",
+      "mode": "plan",
+      "run_id": "aa63e82f5940",
+      "evidence_directory": "artifacts/ops/scenarios/query-pagination/aa63e82f5940",
+      "required_evidence_files": [
+        "artifacts/ops/scenarios/query-pagination/aa63e82f5940/result.json",
+        "artifacts/ops/scenarios/query-pagination/aa63e82f5940/summary.md"
+      ]
+    }
+  ]
+}

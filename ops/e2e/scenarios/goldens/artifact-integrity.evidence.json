@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "schema_ref": "ops/e2e/scenarios/result-schema.json",
+  "runner_version": "1.0",
+  "scenario_id": "artifact-integrity",
+  "run_id": "31fc3bee5f75",
+  "mode": "evidence",
+  "status": "pass",
+  "started_at_utc": "1970-01-01T00:00:00Z",
+  "completed_at_utc": "1970-01-01T00:00:00Z",
+  "summary": "scenario completed in deterministic evidence mode",
+  "prerequisites": [
+    "ops/e2e/scenarios/scenarios.json",
+    "ops/e2e/scenarios/version-compatibility.json",
+    "ops/e2e/scenarios/result-schema.json"
+  ],
+  "metrics": {
+    "duration_ms": 0,
+    "checks_passed": 1,
+    "checks_failed": 0
+  },
+  "evidence": {
+    "directory": "artifacts/ops/scenarios/artifact-integrity/31fc3bee5f75",
+    "files": [
+      "artifacts/ops/scenarios/artifact-integrity/31fc3bee5f75/result.json",
+      "artifacts/ops/scenarios/artifact-integrity/31fc3bee5f75/summary.md"
+    ]
+  },
+  "pointers": {
+    "report_json": "artifacts/ops/scenarios/artifact-integrity/31fc3bee5f75/result.json",
+    "report_markdown": "artifacts/ops/scenarios/artifact-integrity/31fc3bee5f75/summary.md"
+  }
+}

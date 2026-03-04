@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "text": "ops scenario run minimal-single-node",
+  "rows": [
+    {
+      "scenario_id": "minimal-single-node",
+      "action_id": "ops.e2e.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario minimal-single-node",
+      "mode": "plan",
+      "run_id": "e45732ff7b56",
+      "evidence_directory": "artifacts/ops/scenarios/minimal-single-node/e45732ff7b56",
+      "required_evidence_files": [
+        "artifacts/ops/scenarios/minimal-single-node/e45732ff7b56/result.json",
+        "artifacts/ops/scenarios/minimal-single-node/e45732ff7b56/summary.md"
+      ]
+    }
+  ]
+}

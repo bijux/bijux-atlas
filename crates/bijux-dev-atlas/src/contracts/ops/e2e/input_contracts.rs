@@ -347,10 +347,15 @@ fn test_ops_e2e_005_taxonomy_covers_scenarios(ctx: &RunContext) -> TestResult {
         }
     }
     let required_categories = BTreeSet::from([
+        "compatibility".to_string(),
+        "correctness".to_string(),
+        "offline".to_string(),
+        "performance".to_string(),
+        "realdata".to_string(),
+        "resilience".to_string(),
+        "security".to_string(),
         "smoke".to_string(),
         "kubernetes".to_string(),
-        "realdata".to_string(),
-        "performance".to_string(),
     ]);
     if category_ids != required_categories {
         violations.push(violation(
@@ -362,10 +367,26 @@ fn test_ops_e2e_005_taxonomy_covers_scenarios(ctx: &RunContext) -> TestResult {
     }
 
     let scenario_category = BTreeMap::from([
+        ("artifact-integrity", "security"),
+        ("cold-start", "performance"),
+        ("high-concurrency", "performance"),
+        ("ingest-retry", "resilience"),
         ("smoke", "smoke"),
         ("k8s-suite", "kubernetes"),
+        ("low-resource", "resilience"),
+        ("medium-single-node", "realdata"),
+        ("minimal-single-node", "realdata"),
+        ("mixed-load", "performance"),
+        ("multi-dataset", "realdata"),
+        ("offline-mode", "offline"),
         ("realdata", "realdata"),
         ("perf-e2e", "performance"),
+        ("query-filter-projection", "correctness"),
+        ("query-pagination", "correctness"),
+        ("readonly-mode", "realdata"),
+        ("restart-resume", "resilience"),
+        ("schema-evolution", "compatibility"),
+        ("warm-start", "performance"),
     ]);
     let mut scenario_ids = BTreeSet::new();
     for scenario in scenarios
@@ -418,4 +439,3 @@ fn test_ops_e2e_005_taxonomy_covers_scenarios(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
-
