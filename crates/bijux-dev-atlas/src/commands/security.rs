@@ -2361,3 +2361,123 @@ fn run_security_scan_artifacts(args: SecurityScanArtifactsArgs) -> Result<(Strin
     )?;
     Ok((rendered, if payload["status"] == "ok" { 0 } else { 1 }))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::{
+        run_security_audit, run_security_config_validate, run_security_diagnostics,
+        run_security_policy_inspect,
+    };
+    use crate::cli::{FormatArg, SecurityPolicyInspectArgs, SecurityValidateArgs};
+    use std::fs;
+
+    fn write_minimal_security_files(root: &std::path::Path) {
+        let config_dir = root.join("configs/security");
+        fs::create_dir_all(&config_dir).expect("create security config dir");
+        fs::write(
+            config_dir.join("runtime-security.yaml"),
+            r#"schema_version: 1
+identity:
+  principal_source: ingress
+  trust_header: x-atlas-principal
+auth:
+  mode: api-key
+  required: true
+authorization:
+  default_decision: deny
+  policy_source: configs/security/policy.yaml
+secrets:
+  provider: env
+  references: [ATLAS_API_KEY]
+keys:
+  active_key_id: atlas-key-1
+  key_ring: [atlas-key-1]
+transport:
+  tls_required: true
+  min_tls_version: "1.2"
+audit:
+  enabled: true
+  sink: stdout
+events:
+  classes: [auth.failure]
+"#,
+        )
+        .expect("write runtime-security.yaml");
+        fs::write(
+            config_dir.join("policy.yaml"),
+            r#"rules:
+  - id: sec-auth-required
+    description: auth required
+    enabled: true
+"#,
+        )
+        .expect("write policy.yaml");
+    }
+
+    #[test]
+    fn security_config_validate_command_returns_ok_payload() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        write_minimal_security_files(temp.path());
+        let (rendered, code) = run_security_config_validate(SecurityValidateArgs {
+            repo_root: Some(temp.path().to_path_buf()),
+            format: FormatArg::Json,
+            out: None,
+        })
+        .expect("run security config validate");
+        assert_eq!(code, 0);
+        let value: serde_json::Value = serde_json::from_str(&rendered).expect("parse rendered");
+        assert_eq!(value["kind"], "security_config_validation_report");
+        assert_eq!(value["status"], "ok");
+    }
+
+    #[test]
+    fn security_diagnostics_and_policy_inspection_return_reports() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        write_minimal_security_files(temp.path());
+
+        let (diag, code) = run_security_diagnostics(SecurityValidateArgs {
+            repo_root: Some(temp.path().to_path_buf()),
+            format: FormatArg::Json,
+            out: None,
+        })
+        .expect("run diagnostics");
+        assert_eq!(code, 0);
+        let diag_value: serde_json::Value = serde_json::from_str(&diag).expect("parse diagnostics");
+        assert_eq!(diag_value["kind"], "security_diagnostics_report");
+
+        let (inspect, code) = run_security_policy_inspect(SecurityPolicyInspectArgs {
+            repo_root: Some(temp.path().to_path_buf()),
+            format: FormatArg::Json,
+            out: None,
+            policy_id: Some("sec-auth-required".to_string()),
+        })
+        .expect("run policy inspect");
+        assert_eq!(code, 0);
+        let inspect_value: serde_json::Value =
+            serde_json::from_str(&inspect).expect("parse inspection");
+        assert_eq!(inspect_value["kind"], "security_policy_inspection_report");
+        assert_eq!(
+            inspect_value["policies"]
+                .as_array()
+                .expect("policies array")
+                .len(),
+            1
+        );
+    }
+
+    #[test]
+    fn security_audit_command_reports_missing_artifacts_cleanly() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        write_minimal_security_files(temp.path());
+        let (rendered, code) = run_security_audit(SecurityValidateArgs {
+            repo_root: Some(temp.path().to_path_buf()),
+            format: FormatArg::Json,
+            out: None,
+        })
+        .expect("run security audit");
+        assert_eq!(code, 0);
+        let value: serde_json::Value = serde_json::from_str(&rendered).expect("parse rendered");
+        assert_eq!(value["kind"], "security_audit_report");
+        assert_eq!(value["artifacts_present"], false);
+    }
+}
