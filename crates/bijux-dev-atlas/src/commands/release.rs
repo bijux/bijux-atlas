@@ -973,6 +973,20 @@ fn run_release_verify(args: ReleaseVerifyArgs) -> Result<(String, i32), String> 
         serde_json::from_slice(&evidence_out.stdout).unwrap_or_else(|_| {
             serde_json::json!({"status":"failed","stderr": String::from_utf8_lossy(&evidence_out.stderr)})
         });
+    let readiness_report_path = root.join("artifacts/ops/ops_run/observe/operational-readiness-report.json");
+    let rel_ops_001 = std::fs::read_to_string(&readiness_report_path)
+        .ok()
+        .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
+        .is_some_and(|report| {
+            report
+                .get("status")
+                .and_then(serde_json::Value::as_str)
+                == Some("ok")
+                && report
+                    .get("completeness")
+                    .and_then(serde_json::Value::as_f64)
+                    .is_some_and(|value| value >= 1.0)
+        });
     let rel_sign_004 = rel_sign_001
         && rel_sign_002
         && rel_sign_003
@@ -981,7 +995,8 @@ fn run_release_verify(args: ReleaseVerifyArgs) -> Result<(String, i32), String> 
         && rel_prov_001
         && rel_man_001
         && rel_tar_001
-        && evidence_ok;
+        && evidence_ok
+        && rel_ops_001;
     let mut errors = checksum_errors;
     if !evidence_ok {
         errors.push("ops evidence verify failed".to_string());
@@ -1010,6 +1025,12 @@ fn run_release_verify(args: ReleaseVerifyArgs) -> Result<(String, i32), String> 
             differing_paths.join(", ")
         ));
     }
+    if !rel_ops_001 {
+        errors.push(format!(
+            "operational readiness report is missing or below threshold: {}",
+            readiness_report_path.display()
+        ));
+    }
 
     let verify_report = serde_json::json!({
         "schema_version": 1,
@@ -1025,7 +1046,8 @@ fn run_release_verify(args: ReleaseVerifyArgs) -> Result<(String, i32), String> 
             "REL-SIGN-006": rel_sign_006,
             "REL-TAR-001": rel_tar_001,
             "REL-MAN-001": rel_man_001,
-            "REL-PROV-001": rel_prov_001
+            "REL-PROV-001": rel_prov_001,
+            "REL-OPS-001": rel_ops_001
         },
         "errors": errors
     });
