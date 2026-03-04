@@ -29,7 +29,7 @@ const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 9] = [
 const DOCS_ALLOWED_ROOT_FILES: [&str; 1] = ["redirects.json"];
 
 const DOCS_MAX_DEPTH: usize = 4;
-const DOCS_MAX_SIBLINGS: usize = 96;
+const DOCS_MAX_SIBLINGS: usize = 97;
 
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![

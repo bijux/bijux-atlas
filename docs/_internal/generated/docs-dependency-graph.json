@@ -83,6 +83,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "configs/audit/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "configs/ci/README.md"
     },
     {
@@ -188,6 +193,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "configs/release/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "configs/repo/README.md"
     },
     {
@@ -219,6 +229,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "configs/slo/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "configs/system/README.md"
     },
     {
       "crate": null,
@@ -2648,6 +2663,16 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/audit-procedure.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/backward-compatibility-guarantee.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/chart-semver-policy.md"
     },
     {
@@ -2694,6 +2719,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/deploy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/deprecation-lifecycle-policy.md"
     },
     {
       "crate": null,
@@ -2753,6 +2783,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/final-readiness-checklist.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/fixture-dataset-ingest.md"
     },
     {
@@ -2798,6 +2833,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/institutional-support-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/k8s/chart-contracts.md"
     },
     {
@@ -2839,6 +2879,16 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/log-redaction-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/long-term-support-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/maintenance-policy.md"
     },
     {
       "crate": null,
@@ -3073,6 +3123,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/release-support-window-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/release-trust-root.md"
     },
     {
@@ -3213,6 +3268,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/security-disclosure-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/security-posture.md"
     },
     {
@@ -3323,7 +3383,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/simulation/results.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/supply-chain-policies.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/upgrade-compatibility-guide.md"
     },
     {
       "crate": null,

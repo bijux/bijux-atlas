@@ -132,6 +132,14 @@
     {
       "area": "configs",
       "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "configs/audit/README.md",
+      "stability": "stable",
+      "title": "Audit Configurations"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
       "owner": "platform",
       "path": "configs/ci/README.md",
       "stability": "stable",
@@ -300,6 +308,14 @@
     {
       "area": "configs",
       "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "configs/release/README.md",
+      "stability": "stable",
+      "title": "Release Configs"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
       "owner": "platform",
       "path": "configs/repo/README.md",
       "stability": "stable",
@@ -352,6 +368,14 @@
       "path": "configs/slo/README.md",
       "stability": "stable",
       "title": "SLO configs"
+    },
+    {
+      "area": "configs",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "configs/system/README.md",
+      "stability": "stable",
+      "title": "System Simulation Configurations"
     },
     {
       "area": "crates",
@@ -4235,6 +4259,22 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/audit-procedure.md",
+      "stability": "stable",
+      "title": "Audit Procedure"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/backward-compatibility-guarantee.md",
+      "stability": "stable",
+      "title": "Backward Compatibility Guarantee"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/chart-semver-policy.md",
@@ -4312,6 +4352,14 @@
       "path": "docs/operations/deploy.md",
       "stability": "stable",
       "title": "Deploy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/deprecation-lifecycle-policy.md",
+      "stability": "stable",
+      "title": "Deprecation Lifecycle Policy"
     },
     {
       "area": "operations",
@@ -4403,6 +4451,14 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/final-readiness-checklist.md",
+      "stability": "stable",
+      "title": "Final Readiness Checklist"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/fixture-dataset-ingest.md",
@@ -4475,6 +4531,14 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/institutional-support-policy.md",
+      "stability": "stable",
+      "title": "Institutional Support Policy"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/k8s/chart-contracts.md",
@@ -4544,6 +4608,22 @@
       "path": "docs/operations/log-redaction-policy.md",
       "stability": "stable",
       "title": "Log Redaction Policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/long-term-support-policy.md",
+      "stability": "stable",
+      "title": "Long-Term Support Policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/maintenance-policy.md",
+      "stability": "stable",
+      "title": "Maintenance Policy"
     },
     {
       "area": "operations",
@@ -4915,6 +4995,14 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/release-support-window-policy.md",
+      "stability": "stable",
+      "title": "Release Support Window Policy"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/release-trust-root.md",
@@ -5139,6 +5227,14 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/security-disclosure-policy.md",
+      "stability": "stable",
+      "title": "Security Disclosure Policy"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-security",
       "path": "docs/operations/security-posture.md",
@@ -5315,11 +5411,27 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/simulation/results.md",
+      "stability": "stable",
+      "title": "System Simulation Results"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-platform",
       "path": "docs/operations/supply-chain-policies.md",
       "stability": "stable",
       "title": "Supply-Chain Policies"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/upgrade-compatibility-guide.md",
+      "stability": "stable",
+      "title": "Upgrade Compatibility Guide"
     },
     {
       "area": "operations",

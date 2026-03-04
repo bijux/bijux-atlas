@@ -194,6 +194,20 @@
     },
     {
       "keywords": [
+        "audit",
+        "configs",
+        "readme"
+      ],
+      "path": "configs/audit/README.md",
+      "tags": [
+        "audit",
+        "configs",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
         "configs",
         "readme"
       ],
@@ -486,6 +500,20 @@
       "keywords": [
         "configs",
         "readme",
+        "release"
+      ],
+      "path": "configs/release/README.md",
+      "tags": [
+        "configs",
+        "readme",
+        "release"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "readme",
         "repo"
       ],
       "path": "configs/repo/README.md",
@@ -577,6 +605,20 @@
         "configs",
         "readme",
         "slo"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "readme",
+        "system"
+      ],
+      "path": "configs/system/README.md",
+      "tags": [
+        "configs",
+        "readme",
+        "system"
       ],
       "topic": "README"
     },
@@ -6998,6 +7040,30 @@
     },
     {
       "keywords": [
+        "audit-procedure",
+        "operations"
+      ],
+      "path": "docs/operations/audit-procedure.md",
+      "tags": [
+        "audit-procedure",
+        "operations"
+      ],
+      "topic": "audit-procedure"
+    },
+    {
+      "keywords": [
+        "backward-compatibility-guarantee",
+        "operations"
+      ],
+      "path": "docs/operations/backward-compatibility-guarantee.md",
+      "tags": [
+        "backward-compatibility-guarantee",
+        "operations"
+      ],
+      "topic": "backward-compatibility-guarantee"
+    },
+    {
+      "keywords": [
         "chart-semver-policy",
         "operations"
       ],
@@ -7115,6 +7181,18 @@
         "operations"
       ],
       "topic": "deploy"
+    },
+    {
+      "keywords": [
+        "deprecation-lifecycle-policy",
+        "operations"
+      ],
+      "path": "docs/operations/deprecation-lifecycle-policy.md",
+      "tags": [
+        "deprecation-lifecycle-policy",
+        "operations"
+      ],
+      "topic": "deprecation-lifecycle-policy"
     },
     {
       "keywords": [
@@ -7256,6 +7334,18 @@
     },
     {
       "keywords": [
+        "final-readiness-checklist",
+        "operations"
+      ],
+      "path": "docs/operations/final-readiness-checklist.md",
+      "tags": [
+        "final-readiness-checklist",
+        "operations"
+      ],
+      "topic": "final-readiness-checklist"
+    },
+    {
+      "keywords": [
         "fixture-dataset-ingest",
         "operations"
       ],
@@ -7361,6 +7451,18 @@
         "operations"
       ],
       "topic": "institutional-readiness-checklist"
+    },
+    {
+      "keywords": [
+        "institutional-support-policy",
+        "operations"
+      ],
+      "path": "docs/operations/institutional-support-policy.md",
+      "tags": [
+        "institutional-support-policy",
+        "operations"
+      ],
+      "topic": "institutional-support-policy"
     },
     {
       "keywords": [
@@ -7479,6 +7581,30 @@
         "operations"
       ],
       "topic": "log-redaction-policy"
+    },
+    {
+      "keywords": [
+        "long-term-support-policy",
+        "operations"
+      ],
+      "path": "docs/operations/long-term-support-policy.md",
+      "tags": [
+        "long-term-support-policy",
+        "operations"
+      ],
+      "topic": "long-term-support-policy"
+    },
+    {
+      "keywords": [
+        "maintenance-policy",
+        "operations"
+      ],
+      "path": "docs/operations/maintenance-policy.md",
+      "tags": [
+        "maintenance-policy",
+        "operations"
+      ],
+      "topic": "maintenance-policy"
     },
     {
       "keywords": [
@@ -8067,6 +8193,18 @@
     {
       "keywords": [
         "operations",
+        "release-support-window-policy"
+      ],
+      "path": "docs/operations/release-support-window-policy.md",
+      "tags": [
+        "operations",
+        "release-support-window-policy"
+      ],
+      "topic": "release-support-window-policy"
+    },
+    {
+      "keywords": [
+        "operations",
         "release-trust-root"
       ],
       "path": "docs/operations/release-trust-root.md",
@@ -8439,6 +8577,18 @@
     {
       "keywords": [
         "operations",
+        "security-disclosure-policy"
+      ],
+      "path": "docs/operations/security-disclosure-policy.md",
+      "tags": [
+        "operations",
+        "security-disclosure-policy"
+      ],
+      "topic": "security-disclosure-policy"
+    },
+    {
+      "keywords": [
+        "operations",
         "security-posture"
       ],
       "path": "docs/operations/security-posture.md",
@@ -8745,6 +8895,20 @@
     {
       "keywords": [
         "operations",
+        "results",
+        "simulation"
+      ],
+      "path": "docs/operations/simulation/results.md",
+      "tags": [
+        "operations",
+        "results",
+        "simulation"
+      ],
+      "topic": "results"
+    },
+    {
+      "keywords": [
+        "operations",
         "supply-chain-policies"
       ],
       "path": "docs/operations/supply-chain-policies.md",
@@ -8753,6 +8917,18 @@
         "supply-chain-policies"
       ],
       "topic": "supply-chain-policies"
+    },
+    {
+      "keywords": [
+        "operations",
+        "upgrade-compatibility-guide"
+      ],
+      "path": "docs/operations/upgrade-compatibility-guide.md",
+      "tags": [
+        "operations",
+        "upgrade-compatibility-guide"
+      ],
+      "topic": "upgrade-compatibility-guide"
     },
     {
       "keywords": [

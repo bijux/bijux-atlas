@@ -19,7 +19,7 @@
 | `OWNER` | `ops/_generated.example/OWNER.md, ops/datasets/OWNER.md, ops/e2e/OWNER.md, ops/env/OWNER.md, ops/inventory/OWNER.md, ops/k8s/OWNER.md, ops/load/OWNER.md, ops/observe/OWNER.md, ops/report/OWNER.md, ops/schema/OWNER.md, ops/stack/OWNER.md` |
 | `OWNERS` | `crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/OWNERS.md` |
 | `PROFILE_README` | `ops/k8s/values/PROFILE_README.md` |
-| `README` | `README.md, configs/README.md, configs/_internal/README.md, configs/ci/README.md, configs/cli/README.md, configs/contracts/README.md, configs/coverage/README.md, configs/datasets/README.md, configs/docs/README.md, configs/examples/README.md, configs/gates/README.md, configs/governance/README.md, configs/inventory/README.md, configs/layout/README.md, configs/make/README.md, configs/meta/README.md, configs/nextest/README.md, configs/observability/README.md, configs/openapi/README.md, configs/ops/README.md, configs/owners/README.md, configs/perf/README.md, configs/policy/README.md, configs/product/README.md, configs/repo/README.md, configs/reports/README.md, configs/rust/README.md, configs/schema/README.md, configs/security/README.md, configs/shellcheck/README.md, configs/slo/README.md, crates/bijux-atlas-api/README.md, crates/bijux-atlas-api/tests/README.md, crates/bijux-atlas-cli/README.md, crates/bijux-atlas-cli/tests/README.md, crates/bijux-atlas-core/README.md, crates/bijux-atlas-core/tests/README.md, crates/bijux-atlas-ingest/README.md, crates/bijux-atlas-ingest/tests/README.md, crates/bijux-atlas-ingest/tests/fixtures/edgecases/README.md, crates/bijux-atlas-ingest/tests/fixtures/minimal/README.md, crates/bijux-atlas-ingest/tests/fixtures/policies/README.md, crates/bijux-atlas-ingest/tests/fixtures/realistic/README.md, crates/bijux-atlas-model/README.md, crates/bijux-atlas-model/tests/README.md, crates/bijux-atlas-policies/README.md, crates/bijux-atlas-policies/tests/README.md, crates/bijux-atlas-query/README.md, crates/bijux-atlas-query/tests/README.md, crates/bijux-atlas-server/README.md, crates/bijux-atlas-server/tests/README.md, crates/bijux-atlas-store/README.md, crates/bijux-atlas-store/tests/README.md, crates/bijux-dev-atlas/README.md, crates/bijux-dev-atlas/src/domains/_template/README.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/README.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/README.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/README.md, crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_latest/docker/README.md, crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_patterns/docker/README.md, crates/bijux-dev-atlas/tests/fixtures/docker_contracts/pass/docker/README.md, docker/README.md, docs/_internal/contracts/configs/README.md, docs/_internal/contracts/docs/README.md, docs/_internal/contracts/make/README.md, docs/_internal/contracts/ops/README.md, make/README.md, make/_internal/contracts/README.md, ops/README.md, ops/_generated.example/README.md, ops/datasets/README.md, ops/e2e/README.md, ops/env/README.md, ops/inventory/README.md, ops/k8s/README.md, ops/k8s/kind/README.md, ops/load/README.md, ops/observe/README.md, ops/report/README.md, ops/schema/README.md, ops/stack/README.md` |
+| `README` | `README.md, configs/README.md, configs/_internal/README.md, configs/audit/README.md, configs/ci/README.md, configs/cli/README.md, configs/contracts/README.md, configs/coverage/README.md, configs/datasets/README.md, configs/docs/README.md, configs/examples/README.md, configs/gates/README.md, configs/governance/README.md, configs/inventory/README.md, configs/layout/README.md, configs/make/README.md, configs/meta/README.md, configs/nextest/README.md, configs/observability/README.md, configs/openapi/README.md, configs/ops/README.md, configs/owners/README.md, configs/perf/README.md, configs/policy/README.md, configs/product/README.md, configs/release/README.md, configs/repo/README.md, configs/reports/README.md, configs/rust/README.md, configs/schema/README.md, configs/security/README.md, configs/shellcheck/README.md, configs/slo/README.md, configs/system/README.md, crates/bijux-atlas-api/README.md, crates/bijux-atlas-api/tests/README.md, crates/bijux-atlas-cli/README.md, crates/bijux-atlas-cli/tests/README.md, crates/bijux-atlas-core/README.md, crates/bijux-atlas-core/tests/README.md, crates/bijux-atlas-ingest/README.md, crates/bijux-atlas-ingest/tests/README.md, crates/bijux-atlas-ingest/tests/fixtures/edgecases/README.md, crates/bijux-atlas-ingest/tests/fixtures/minimal/README.md, crates/bijux-atlas-ingest/tests/fixtures/policies/README.md, crates/bijux-atlas-ingest/tests/fixtures/realistic/README.md, crates/bijux-atlas-model/README.md, crates/bijux-atlas-model/tests/README.md, crates/bijux-atlas-policies/README.md, crates/bijux-atlas-policies/tests/README.md, crates/bijux-atlas-query/README.md, crates/bijux-atlas-query/tests/README.md, crates/bijux-atlas-server/README.md, crates/bijux-atlas-server/tests/README.md, crates/bijux-atlas-store/README.md, crates/bijux-atlas-store/tests/README.md, crates/bijux-dev-atlas/README.md, crates/bijux-dev-atlas/src/domains/_template/README.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/README.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/README.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/README.md, crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_latest/docker/README.md, crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_patterns/docker/README.md, crates/bijux-dev-atlas/tests/fixtures/docker_contracts/pass/docker/README.md, docker/README.md, docs/_internal/contracts/configs/README.md, docs/_internal/contracts/docs/README.md, docs/_internal/contracts/make/README.md, docs/_internal/contracts/ops/README.md, make/README.md, make/_internal/contracts/README.md, ops/README.md, ops/_generated.example/README.md, ops/datasets/README.md, ops/e2e/README.md, ops/env/README.md, ops/inventory/README.md, ops/k8s/README.md, ops/k8s/kind/README.md, ops/load/README.md, ops/observe/README.md, ops/report/README.md, ops/schema/README.md, ops/stack/README.md` |
 | `REQUIRED_FILES` | `ops/_generated.example/REQUIRED_FILES.md, ops/datasets/REQUIRED_FILES.md, ops/e2e/REQUIRED_FILES.md, ops/env/REQUIRED_FILES.md, ops/inventory/REQUIRED_FILES.md, ops/k8s/REQUIRED_FILES.md, ops/load/REQUIRED_FILES.md, ops/observe/REQUIRED_FILES.md, ops/report/REQUIRED_FILES.md, ops/schema/REQUIRED_FILES.md, ops/stack/REQUIRED_FILES.md` |
 | `RUNBOOK_GENERATION_FROM_GRAPH` | `ops/RUNBOOK_GENERATION_FROM_GRAPH.md` |
 | `SCHEMA_BUDGET_EXCEPTIONS` | `ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md` |
@@ -59,12 +59,14 @@
 | `audit-log-access` | `docs/operations/security/audit-log-access.md` |
 | `audit-log-rotation` | `docs/operations/security/audit-log-rotation.md` |
 | `audit-logging` | `docs/operations/security/audit-logging.md` |
+| `audit-procedure` | `docs/operations/audit-procedure.md` |
 | `auth-error-codes` | `docs/operations/security/auth-error-codes.md` |
 | `auth-model` | `docs/architecture/security/auth-model.md` |
 | `backend-feature-matrix` | `crates/bijux-atlas-store/docs/internal/backend-feature-matrix.md` |
 | `backends-and-guarantees` | `crates/bijux-atlas-store/docs/backends-and-guarantees.md` |
 | `backup-and-restore` | `docs/operations/release/backup-and-restore.md` |
 | `backup-and-restore-validation` | `docs/operations/release/backup-and-restore-validation.md` |
+| `backward-compatibility-guarantee` | `docs/operations/backward-compatibility-guarantee.md` |
 | `benchmarks` | `crates/bijux-atlas-api/docs/benchmarks.md, crates/bijux-atlas-cli/docs/benchmarks.md, crates/bijux-atlas-core/docs/benchmarks.md, crates/bijux-atlas-ingest/docs/benchmarks.md, crates/bijux-atlas-model/docs/benchmarks.md, crates/bijux-atlas-policies/docs/benchmarks.md, crates/bijux-atlas-query/docs/benchmarks.md, crates/bijux-atlas-server/docs/benchmarks.md, crates/bijux-atlas-store/docs/benchmarks.md, crates/bijux-dev-atlas/docs/benchmarks.md` |
 | `bijux-dev-atlas` | `docs/development/tooling/bijux-dev-atlas.md` |
 | `bijux-dna-atlas` | `docs/reference/compatibility/bijux-dna-atlas.md` |
@@ -172,6 +174,7 @@
 | `deploy-kubernetes-minimal` | `docs/operations/deploy-kubernetes-minimal.md` |
 | `deprecate-doc-page` | `docs/_internal/governance/deprecate-doc-page.md` |
 | `deprecation` | `docs/api/deprecation.md` |
+| `deprecation-lifecycle-policy` | `docs/operations/deprecation-lifecycle-policy.md` |
 | `depth-policy` | `docs/_internal/governance/style/depth-policy.md` |
 | `depth-rubric` | `docs/_internal/governance/style/depth-rubric.md` |
 | `design-principles` | `docs/architecture/design-principles.md` |
@@ -250,6 +253,7 @@
 | `faq` | `docs/architecture/faq.md` |
 | `features` | `crates/bijux-atlas-core/docs/features.md` |
 | `federation-semantics` | `docs/reference/registry/federation-semantics.md` |
+| `final-readiness-checklist` | `docs/operations/final-readiness-checklist.md` |
 | `fixture-dataset-ingest` | `docs/operations/fixture-dataset-ingest.md` |
 | `fixtures` | `docs/operations/e2e/fixtures.md` |
 | `formatting` | `crates/bijux-atlas-core/docs/formatting.md` |
@@ -282,6 +286,7 @@
 | `institutional-packet` | `docs/operations/institutional-packet.md` |
 | `institutional-reader` | `docs/institutional-reader.md` |
 | `institutional-readiness-checklist` | `docs/operations/institutional-readiness-checklist.md` |
+| `institutional-support-policy` | `docs/operations/institutional-support-policy.md` |
 | `integrity-model` | `docs/reference/store/integrity-model.md` |
 | `intro` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/sub/intro.md` |
 | `k6` | `docs/operations/load/k6.md` |
@@ -301,6 +306,8 @@
 | `load-failure-triage` | `docs/operations/runbooks/load-failure-triage.md` |
 | `log-field-inventory` | `docs/operations/security/log-field-inventory.md` |
 | `log-redaction-policy` | `docs/operations/log-redaction-policy.md` |
+| `long-term-support-policy` | `docs/operations/long-term-support-policy.md` |
+| `maintenance-policy` | `docs/operations/maintenance-policy.md` |
 | `make` | `docs/development/tooling/make.md, docs/reference/make.md` |
 | `make-targets` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/make-targets.md, docs/reference/make-targets.md` |
 | `migrate-docs-urls-safely` | `docs/_internal/governance/migrate-docs-urls-safely.md` |
@@ -402,6 +409,7 @@
 | `release-provenance` | `docs/operations/release-provenance.md` |
 | `release-signature-rotation` | `docs/operations/release-signature-rotation.md` |
 | `release-signing` | `docs/operations/release-signing.md, docs/reference/contracts/release-signing.md` |
+| `release-support-window-policy` | `docs/operations/release-support-window-policy.md` |
 | `release-trust-root` | `docs/operations/release-trust-root.md` |
 | `release-verification-failures` | `docs/operations/release-verification-failures.md` |
 | `release-workflow` | `docs/operations/release-workflow.md` |
@@ -420,6 +428,7 @@
 | `reproducibility` | `docs/reference/ingest/reproducibility.md` |
 | `required-status-checks` | `.github/required-status-checks.md` |
 | `respond-to-suspicious-activity` | `docs/operations/security/respond-to-suspicious-activity.md` |
+| `results` | `docs/operations/simulation/results.md` |
 | `retention-and-gc` | `docs/operations/retention-and-gc.md` |
 | `review-checklist` | `docs/operations/security/review-checklist.md` |
 | `review-packet` | `docs/operations/review-packet.md` |
@@ -456,6 +465,7 @@
 | `scripts-migration-release-note` | `.github/templates/scripts-migration-release-note.md` |
 | `sdk-strategy` | `docs/api/sdk-strategy.md` |
 | `security` | `docs/reference/contracts/security.md` |
+| `security-disclosure-policy` | `docs/operations/security-disclosure-policy.md` |
 | `security-posture` | `docs/control-plane/security-posture.md, docs/operations/security-posture.md` |
 | `security-response-coordination` | `docs/reference/registry/security-response-coordination.md` |
 | `sequence-threat-model` | `docs/product/sequence-threat-model.md` |
@@ -508,6 +518,7 @@
 | `update-pinned-dependencies` | `docs/development/update-pinned-dependencies.md` |
 | `update-schema-generators` | `docs/control-plane/update-schema-generators.md` |
 | `upgrade` | `docs/operations/upgrade.md` |
+| `upgrade-compatibility-guide` | `docs/operations/upgrade-compatibility-guide.md` |
 | `upgrade-procedure` | `docs/operations/release/upgrade-procedure.md` |
 | `user-stories` | `docs/product/user-stories.md` |
 | `v1-surface` | `docs/api/v1-surface.md` |

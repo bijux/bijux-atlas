@@ -115,6 +115,14 @@
     {
       "breadcrumbs": [
         "configs",
+        "configs/audit",
+        "configs/audit/README.md"
+      ],
+      "path": "configs/audit/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
         "configs/ci",
         "configs/ci/README.md"
       ],
@@ -283,6 +291,14 @@
     {
       "breadcrumbs": [
         "configs",
+        "configs/release",
+        "configs/release/README.md"
+      ],
+      "path": "configs/release/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
         "configs/repo",
         "configs/repo/README.md"
       ],
@@ -335,6 +351,14 @@
         "configs/slo/README.md"
       ],
       "path": "configs/slo/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
+        "configs/system",
+        "configs/system/README.md"
+      ],
+      "path": "configs/system/README.md"
     },
     {
       "breadcrumbs": [
@@ -4719,6 +4743,22 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/audit-procedure.md"
+      ],
+      "path": "docs/operations/audit-procedure.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/backward-compatibility-guarantee.md"
+      ],
+      "path": "docs/operations/backward-compatibility-guarantee.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/chart-semver-policy.md"
       ],
       "path": "docs/operations/chart-semver-policy.md"
@@ -4794,6 +4834,14 @@
         "docs/operations/deploy.md"
       ],
       "path": "docs/operations/deploy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/deprecation-lifecycle-policy.md"
+      ],
+      "path": "docs/operations/deprecation-lifecycle-policy.md"
     },
     {
       "breadcrumbs": [
@@ -4890,6 +4938,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/final-readiness-checklist.md"
+      ],
+      "path": "docs/operations/final-readiness-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/fixture-dataset-ingest.md"
       ],
       "path": "docs/operations/fixture-dataset-ingest.md"
@@ -4957,6 +5013,14 @@
         "docs/operations/institutional-readiness-checklist.md"
       ],
       "path": "docs/operations/institutional-readiness-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/institutional-support-policy.md"
+      ],
+      "path": "docs/operations/institutional-support-policy.md"
     },
     {
       "breadcrumbs": [
@@ -5035,6 +5099,22 @@
         "docs/operations/log-redaction-policy.md"
       ],
       "path": "docs/operations/log-redaction-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/long-term-support-policy.md"
+      ],
+      "path": "docs/operations/long-term-support-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/maintenance-policy.md"
+      ],
+      "path": "docs/operations/maintenance-policy.md"
     },
     {
       "breadcrumbs": [
@@ -5424,6 +5504,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/release-support-window-policy.md"
+      ],
+      "path": "docs/operations/release-support-window-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/release-trust-root.md"
       ],
       "path": "docs/operations/release-trust-root.md"
@@ -5666,6 +5754,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/security-disclosure-policy.md"
+      ],
+      "path": "docs/operations/security-disclosure-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/security-posture.md"
       ],
       "path": "docs/operations/security-posture.md"
@@ -5863,9 +5959,26 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/simulation",
+        "docs/operations/simulation/results.md"
+      ],
+      "path": "docs/operations/simulation/results.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/supply-chain-policies.md"
       ],
       "path": "docs/operations/supply-chain-policies.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/upgrade-compatibility-guide.md"
+      ],
+      "path": "docs/operations/upgrade-compatibility-guide.md"
     },
     {
       "breadcrumbs": [
