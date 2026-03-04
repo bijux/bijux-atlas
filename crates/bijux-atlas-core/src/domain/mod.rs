@@ -53,10 +53,10 @@ pub use security_authorization::{
 };
 pub use security_data_protection::{
     calculate_manifest_checksum, detect_tampering, https_enforced, load_certificate_bundle,
-    validate_certificate_bundle, verify_artifact_checksum, verify_artifact_signature,
-    verify_dataset_manifest_integrity, CertificateRotationState, CertificateValidationError,
-    DataProtectionPolicy, DatasetManifestIntegrity, EncryptionAtRest, LoadedCertificate, TlsConfig,
-    XorEncryption,
+    tls_handshake_allowed, validate_certificate_bundle, verify_artifact_checksum,
+    verify_artifact_signature, verify_dataset_manifest_integrity, CertificateRotationState,
+    CertificateValidationError, DataProtectionPolicy, DatasetManifestIntegrity, EncryptionAtRest,
+    LoadedCertificate, TlsConfig, XorEncryption,
 };
 pub use security_runtime::{
     load_security_config_from_path, validate_security_config, EnvSecretsProvider, KeyManager,

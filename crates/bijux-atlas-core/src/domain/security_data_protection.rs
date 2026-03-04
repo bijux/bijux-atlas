@@ -121,6 +121,23 @@ pub fn https_enforced(forwarded_proto: Option<&str>, required: bool) -> bool {
     forwarded_proto.is_some_and(|value| value.eq_ignore_ascii_case("https"))
 }
 
+#[must_use]
+pub fn tls_handshake_allowed(
+    tls_enabled: bool,
+    min_version: &str,
+    negotiated_version: &str,
+) -> bool {
+    if !tls_enabled {
+        return false;
+    }
+    match (min_version, negotiated_version) {
+        ("1.3", "1.3") => true,
+        ("1.2", "1.2" | "1.3") => true,
+        ("1.1", "1.1" | "1.2" | "1.3") => true,
+        _ => false,
+    }
+}
+
 pub trait EncryptionAtRest {
     fn encrypt(&self, plaintext: &[u8]) -> Vec<u8>;
     fn decrypt(&self, ciphertext: &[u8]) -> Vec<u8>;
@@ -218,9 +235,9 @@ pub fn detect_tampering(
 mod tests {
     use super::{
         calculate_manifest_checksum, detect_tampering, https_enforced, load_certificate_bundle,
-        validate_certificate_bundle, verify_artifact_checksum, verify_artifact_signature,
-        verify_dataset_manifest_integrity, CertificateRotationState, DatasetManifestIntegrity,
-        EncryptionAtRest, TlsConfig, XorEncryption,
+        tls_handshake_allowed, validate_certificate_bundle, verify_artifact_checksum,
+        verify_artifact_signature, verify_dataset_manifest_integrity, CertificateRotationState,
+        DatasetManifestIntegrity, EncryptionAtRest, TlsConfig, XorEncryption,
     };
     use std::collections::BTreeMap;
 
@@ -262,6 +279,14 @@ mod tests {
         assert!(!https_enforced(Some("http"), true));
         assert!(!https_enforced(None, true));
         assert!(https_enforced(None, false));
+    }
+
+    #[test]
+    fn tls_handshake_policy_enforces_minimum_version() {
+        assert!(tls_handshake_allowed(true, "1.2", "1.2"));
+        assert!(tls_handshake_allowed(true, "1.2", "1.3"));
+        assert!(!tls_handshake_allowed(true, "1.3", "1.2"));
+        assert!(!tls_handshake_allowed(false, "1.2", "1.3"));
     }
 
     #[test]
@@ -307,5 +332,16 @@ mod tests {
         let mut corrupted = manifest.clone();
         corrupted.manifest_checksum_sha256 = "corrupt".to_string();
         assert!(!verify_dataset_manifest_integrity(&corrupted));
+    }
+
+    #[test]
+    fn encryption_operations_have_bounded_runtime() {
+        let cipher = XorEncryption::new(b"atlas-performance-key");
+        let payload = vec![0x55_u8; 2 * 1024 * 1024];
+        let started = std::time::Instant::now();
+        let encrypted = cipher.encrypt(&payload);
+        let decrypted = cipher.decrypt(&encrypted);
+        assert_eq!(decrypted, payload);
+        assert!(started.elapsed() < std::time::Duration::from_millis(250));
     }
 }
