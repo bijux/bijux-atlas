@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "cluster_id": "atlas-local",
+  "consistency": {
+    "read_consistency": "quorum",
+    "write_consistency": "quorum"
+  },
+  "policy": {
+    "replication_factor": 2,
+    "primary_required": true,
+    "max_replication_lag_ms": 2000
+  },
+  "replicas": [
+    {
+      "dataset_id": "atlas-default",
+      "shard_id": "atlas-default-s001",
+      "primary_node_id": "node-a",
+      "replica_node_ids": ["node-b"],
+      "sync": {
+        "last_applied_lsn": 1000,
+        "primary_lsn": 1020,
+        "lag_ms": 15,
+        "sync_throughput_rows_per_second": 12000
+      }
+    }
+  ]
+}
