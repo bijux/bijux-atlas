@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "governance_version": 3,
+  "compatibility_policy": "configs/governance/compatibility.yaml",
+  "contract_evolution_policy": {
+    "authority": "docs/_internal/governance/compatibility-and-deprecation-process.md",
+    "compatibility_mode": "backward-compatible-with-announced-deprecations"
+  },
+  "components": {
+    "policies_registry": "configs/governance/governance.json",
+    "contracts_registry": "configs/governance/contracts.registry.json",
+    "checks_registry": "configs/governance/checks.registry.json",
+    "exceptions_registry": "configs/governance/exceptions.yaml"
+  },
+  "policy_authority_mappings": {
+    "checks": "configs/governance/check-policy-authority-map.json",
+    "contracts": "configs/governance/contract-policy-authority-map.json"
+  },
+  "policies": [
+    {
+      "id": "docs-internal-link-integrity",
+      "authority": "docs/_internal/governance/broken-link-policy.md",
+      "enforcement": [
+        "CHECK-DOCS-LINKS",
+        "CHECK-DOCS-NAV",
+        "docs doctor"
+      ]
+    },
+    {
+      "id": "release-bundle-integrity",
+      "authority": "docs/reference/contracts/release/evidence.md",
+      "enforcement": [
+        "release manifest validate",
+        "release bundle verify",
+        "OPS-STACK-007"
+      ]
+    },
+    {
+      "id": "ops-profile-safety",
+      "authority": "docs/reference/contracts/ops/profile-matrix.md",
+      "enforcement": [
+        "ops validate",
+        "CHECK-OPS-K8S-CONTRACTS",
+        "OPS-INV-003"
+      ]
+    }
+  ]
+}

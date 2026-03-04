@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "owner": "team:atlas-governance",
+  "mappings": [
+    {
+      "contract_id": "OPS-INV-003",
+      "policy_id": "ops-profile-safety",
+      "authority": "docs/reference/contracts/ops/profile-matrix.md"
+    },
+    {
+      "contract_id": "OPS-STACK-007",
+      "policy_id": "release-bundle-integrity",
+      "authority": "docs/reference/contracts/release/evidence.md"
+    }
+  ]
+}

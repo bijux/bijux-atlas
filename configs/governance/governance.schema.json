@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "governance_registry",
+  "type": "object",
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "governance_version": {"type": "integer", "minimum": 1},
+    "compatibility_policy": {"type": "string", "minLength": 1},
+    "contract_evolution_policy": {
+      "type": "object",
+      "properties": {
+        "authority": {"type": "string", "minLength": 1},
+        "compatibility_mode": {"type": "string", "minLength": 1}
+      },
+      "required": ["authority", "compatibility_mode"]
+    },
+    "components": {
+      "type": "object",
+      "properties": {
+        "policies_registry": {"type": "string", "minLength": 1},
+        "contracts_registry": {"type": "string", "minLength": 1},
+        "checks_registry": {"type": "string", "minLength": 1},
+        "exceptions_registry": {"type": "string", "minLength": 1}
+      },
+      "required": [
+        "policies_registry",
+        "contracts_registry",
+        "checks_registry",
+        "exceptions_registry"
+      ]
+    },
+    "policy_authority_mappings": {
+      "type": "object",
+      "properties": {
+        "checks": {"type": "string", "minLength": 1},
+        "contracts": {"type": "string", "minLength": 1}
+      },
+      "required": ["checks", "contracts"]
+    },
+    "policies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "authority": {"type": "string", "minLength": 1},
+          "enforcement": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1}
+          }
+        },
+        "required": ["id", "authority", "enforcement"]
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "governance_version",
+    "compatibility_policy",
+    "contract_evolution_policy",
+    "components",
+    "policy_authority_mappings",
+    "policies"
+  ]
+}
