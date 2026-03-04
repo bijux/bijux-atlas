@@ -573,9 +573,9 @@
     },
     {
       "counts": {
-        "covered": 145,
+        "covered": 146,
         "generated": 1,
-        "internal": 125,
+        "internal": 126,
         "public": 19,
         "schemas": 12
       },
@@ -637,6 +637,7 @@
         "configs/contracts/release/checksum-list.schema.json",
         "configs/contracts/release/packet-list.schema.json",
         "configs/contracts/release/provenance.schema.json",
+        "configs/contracts/release/release-manifest.schema.json",
         "configs/contracts/release/release-sign.schema.json",
         "configs/contracts/release/release-verify.schema.json",
         "configs/contracts/release/signing-policy.schema.json",

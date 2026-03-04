@@ -251,10 +251,31 @@ pub enum Command {
 #[derive(Subcommand, Debug)]
 pub enum ReleaseCommand {
     Check(ReleaseCheckArgs),
+    Manifest {
+        #[command(subcommand)]
+        command: ReleaseManifestCommand,
+    },
+    Bundle {
+        #[command(subcommand)]
+        command: ReleaseBundleCommand,
+    },
     Sign(ReleaseSignArgs),
     Verify(ReleaseVerifyArgs),
     Diff(ReleaseDiffArgs),
     Packet(ReleasePacketArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ReleaseManifestCommand {
+    Generate(ReleaseManifestGenerateArgs),
+    Validate(ReleaseManifestValidateArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ReleaseBundleCommand {
+    Build(ReleaseBundleBuildArgs),
+    Verify(ReleaseBundleVerifyArgs),
+    Hash(ReleaseBundleHashArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -414,6 +435,66 @@ pub struct ReleaseCheckArgs {
     pub repo_root: Option<PathBuf>,
     #[arg(long, default_value = "kind")]
     pub profile: String,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseManifestGenerateArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub version: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseManifestValidateArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub version: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseBundleBuildArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub version: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseBundleVerifyArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub version: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseBundleHashArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub version: Option<String>,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]

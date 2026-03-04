@@ -57,6 +57,15 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Validate { format, .. } => *format = FormatArg::Json,
         Command::Release { command } => match command {
             ReleaseCommand::Check(args) => args.format = FormatArg::Json,
+            ReleaseCommand::Manifest { command } => match command {
+                crate::cli::ReleaseManifestCommand::Generate(args) => args.format = FormatArg::Json,
+                crate::cli::ReleaseManifestCommand::Validate(args) => args.format = FormatArg::Json,
+            },
+            ReleaseCommand::Bundle { command } => match command {
+                crate::cli::ReleaseBundleCommand::Build(args) => args.format = FormatArg::Json,
+                crate::cli::ReleaseBundleCommand::Verify(args) => args.format = FormatArg::Json,
+                crate::cli::ReleaseBundleCommand::Hash(args) => args.format = FormatArg::Json,
+            },
             ReleaseCommand::Sign(args) => args.format = FormatArg::Json,
             ReleaseCommand::Verify(args) => args.format = FormatArg::Json,
             ReleaseCommand::Diff(args) => args.format = FormatArg::Json,
@@ -1178,6 +1187,35 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     args.repo_root = Some(root.clone());
                 }
             }
+            ReleaseCommand::Manifest { command } => match command {
+                crate::cli::ReleaseManifestCommand::Generate(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+                crate::cli::ReleaseManifestCommand::Validate(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+            },
+            ReleaseCommand::Bundle { command } => match command {
+                crate::cli::ReleaseBundleCommand::Build(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+                crate::cli::ReleaseBundleCommand::Verify(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+                crate::cli::ReleaseBundleCommand::Hash(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+            },
             ReleaseCommand::Sign(args) => {
                 if args.repo_root.is_none() {
                     args.repo_root = Some(root.clone());

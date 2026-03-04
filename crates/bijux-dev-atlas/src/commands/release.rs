@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    FormatArg, ReleaseCheckArgs, ReleaseCommand, ReleaseDiffArgs, ReleasePacketArgs,
-    ReleaseSignArgs, ReleaseVerifyArgs,
+    FormatArg, ReleaseBundleBuildArgs, ReleaseBundleHashArgs, ReleaseBundleVerifyArgs,
+    ReleaseCheckArgs, ReleaseCommand, ReleaseDiffArgs, ReleaseManifestGenerateArgs,
+    ReleaseManifestValidateArgs, ReleasePacketArgs, ReleaseSignArgs, ReleaseVerifyArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
 use sha2::{Digest, Sha256};
@@ -10,6 +11,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
 use std::process::Command as ProcessCommand;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 fn sha256_file(path: &Path) -> Result<String, String> {
     let bytes =
@@ -969,12 +971,588 @@ fn run_release_packet(args: ReleasePacketArgs) -> Result<(String, i32), String> 
     Ok((rendered, if rel_pack_001 { 0 } else { 1 }))
 }
 
+fn default_release_version(root: &Path) -> String {
+    let chart_yaml = root.join("ops/k8s/charts/bijux-atlas/Chart.yaml");
+    if let Ok(value) = read_yaml(&chart_yaml) {
+        if let Some(version) = value.get("version").and_then(serde_yaml::Value::as_str) {
+            if !version.trim().is_empty() {
+                return version.to_string();
+            }
+        }
+    }
+    "0.0.0".to_string()
+}
+
+fn release_root(root: &Path, version: &str) -> std::path::PathBuf {
+    root.join("artifacts/release").join(version)
+}
+
+fn release_manifest_path(root: &Path, version: &str) -> std::path::PathBuf {
+    release_root(root, version).join("manifest.json")
+}
+
+fn release_bundle_hash(members: &[serde_json::Value]) -> String {
+    let mut hasher = Sha256::new();
+    for row in members {
+        let path = row
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let sha256 = row
+            .get("sha256")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let size = row
+            .get("size_bytes")
+            .and_then(serde_json::Value::as_u64)
+            .unwrap_or(0);
+        hasher.update(path.as_bytes());
+        hasher.update(b"\n");
+        hasher.update(sha256.as_bytes());
+        hasher.update(b"\n");
+        hasher.update(size.to_string().as_bytes());
+        hasher.update(b"\n");
+    }
+    format!("{:x}", hasher.finalize())
+}
+
+fn collect_manifest_source(root: &Path) -> Result<serde_json::Value, String> {
+    read_json(&root.join("release/evidence/manifest.json"))
+}
+
+fn create_release_manifest(root: &Path, version: &str) -> Result<serde_json::Value, String> {
+    let source = collect_manifest_source(root)?;
+    let git_sha = ProcessCommand::new("git")
+        .current_dir(root)
+        .args(["rev-parse", "HEAD"])
+        .output()
+        .ok()
+        .and_then(|out| String::from_utf8(out.stdout).ok())
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .unwrap_or_else(|| "unknown".to_string());
+    let build_time = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_secs().to_string())
+        .unwrap_or_else(|_| "0".to_string());
+    let docs_hash = source
+        .get("docs_site_summary")
+        .and_then(|v| v.get("sha256"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default()
+        .to_string();
+    let ops_profiles = source
+        .get("image_artifacts")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|row| {
+            row.get("profile")
+                .and_then(serde_json::Value::as_str)
+                .map(str::to_string)
+        })
+        .collect::<BTreeSet<_>>()
+        .into_iter()
+        .collect::<Vec<_>>();
+    let sbom_refs = source
+        .get("sboms")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|row| {
+            serde_json::json!({
+                "path": row.get("path").cloned().unwrap_or(serde_json::Value::Null),
+                "sha256": row.get("sha256").cloned().unwrap_or(serde_json::Value::Null)
+            })
+        })
+        .collect::<Vec<_>>();
+    let image_digests = source
+        .get("image_artifacts")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|row| {
+            row.get("digest")
+                .and_then(serde_json::Value::as_str)
+                .map(str::to_string)
+        })
+        .filter(|digest| !digest.is_empty())
+        .collect::<BTreeSet<_>>()
+        .into_iter()
+        .collect::<Vec<_>>();
+    let chart_path = source
+        .get("chart_package")
+        .and_then(|v| v.get("path"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default()
+        .to_string();
+    let chart_digest = source
+        .get("chart_package")
+        .and_then(|v| v.get("sha256"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default()
+        .to_string();
+    let mut payload = serde_json::json!({
+        "schema_version": 1,
+        "version": version,
+        "git_sha": git_sha,
+        "build_time": build_time,
+        "control_plane_version": env!("CARGO_PKG_VERSION"),
+        "ops_profiles_validated": ops_profiles,
+        "docs_build_hash": docs_hash,
+        "sbom_digests": sbom_refs,
+        "container_image_digests": image_digests,
+        "chart": {
+            "version": version,
+            "path": chart_path,
+            "sha256": chart_digest
+        },
+        "artifact_list": [],
+        "security_advisories": []
+    });
+    payload["artifact_count"] = serde_json::json!(0);
+    payload["artifact_total_size_bytes"] = serde_json::json!(0);
+    Ok(payload)
+}
+
+fn required_release_tree_entries() -> BTreeSet<&'static str> {
+    [
+        "manifest.json",
+        "images",
+        "charts",
+        "docs",
+        "sbom",
+        "provenance",
+    ]
+    .into_iter()
+    .collect()
+}
+
+fn run_release_manifest_generate(
+    args: ReleaseManifestGenerateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let version = args
+        .version
+        .unwrap_or_else(|| default_release_version(&root));
+    let release_dir = release_root(&root, &version);
+    fs::create_dir_all(&release_dir)
+        .map_err(|err| format!("failed to create {}: {err}", release_dir.display()))?;
+    let manifest = create_release_manifest(&root, &version)?;
+    let path = release_manifest_path(&root, &version);
+    write_json(&path, &manifest)?;
+    let rendered = emit_payload(
+        args.format,
+        args.out,
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "release_manifest_generate",
+            "status": "ok",
+            "version": version,
+            "path": repo_rel(&root, &path)
+        }),
+    )?;
+    Ok((rendered, 0))
+}
+
+fn validate_release_manifest(root: &Path, version: &str) -> Result<serde_json::Value, String> {
+    ensure_json(&root.join("configs/contracts/release/release-manifest.schema.json"))?;
+    let manifest_path = release_manifest_path(root, version);
+    let manifest = read_json(&manifest_path)?;
+    let mut errors = Vec::<String>::new();
+    for key in [
+        "version",
+        "git_sha",
+        "build_time",
+        "artifact_list",
+        "control_plane_version",
+        "ops_profiles_validated",
+        "docs_build_hash",
+        "sbom_digests",
+        "container_image_digests",
+        "chart",
+    ] {
+        if manifest.get(key).is_none() {
+            errors.push(format!("missing required key `{key}`"));
+        }
+    }
+    let artifact_list = manifest
+        .get("artifact_list")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    for row in &artifact_list {
+        let path = row
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let expected = row
+            .get("sha256")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        if path.is_empty() || expected.is_empty() {
+            errors.push("artifact_list row requires path and sha256".to_string());
+            continue;
+        }
+        let abs = release_root(root, version).join(path);
+        if !abs.exists() {
+            errors.push(format!("artifact does not exist: {path}"));
+            continue;
+        }
+        let actual = sha256_file(&abs)?;
+        if actual != expected {
+            errors.push(format!("artifact digest mismatch: {path}"));
+        }
+    }
+    let source = collect_manifest_source(root)?;
+    let known_image_digests = source
+        .get("image_artifacts")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|row| {
+            row.get("digest")
+                .and_then(serde_json::Value::as_str)
+                .map(str::to_string)
+        })
+        .collect::<BTreeSet<_>>();
+    for digest in manifest
+        .get("container_image_digests")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(str::to_string))
+    {
+        if !known_image_digests.contains(digest.as_str()) {
+            errors.push(format!(
+                "container digest not present in source evidence: {digest}"
+            ));
+        }
+    }
+    let chart_path = manifest
+        .get("chart")
+        .and_then(|v| v.get("path"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    let chart_sha = manifest
+        .get("chart")
+        .and_then(|v| v.get("sha256"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    if !chart_path.is_empty() {
+        let abs = root.join(chart_path);
+        if !abs.exists() {
+            errors.push(format!("chart package missing: {chart_path}"));
+        } else if !chart_sha.is_empty() && sha256_file(&abs)? != chart_sha {
+            errors.push("chart digest does not match packaged chart".to_string());
+        }
+    }
+    let has_docs = artifact_list.iter().any(|row| {
+        row.get("path")
+            .and_then(serde_json::Value::as_str)
+            .is_some_and(|p| p.starts_with("docs/"))
+    });
+    if !has_docs {
+        errors.push("release bundle must include docs artifact".to_string());
+    }
+    let has_ops_evidence = artifact_list.iter().any(|row| {
+        row.get("path")
+            .and_then(serde_json::Value::as_str)
+            .is_some_and(|p| p.contains("ops-profile"))
+    });
+    if !has_ops_evidence {
+        errors.push("release bundle must include ops profile evidence".to_string());
+    }
+    let has_sbom = artifact_list.iter().any(|row| {
+        row.get("path")
+            .and_then(serde_json::Value::as_str)
+            .is_some_and(|p| p.starts_with("sbom/"))
+    });
+    if !has_sbom {
+        errors.push("release bundle must include sbom artifact".to_string());
+    }
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_manifest_validate",
+        "status": if errors.is_empty() { "ok" } else { "failed" },
+        "version": version,
+        "path": repo_rel(root, &manifest_path),
+        "errors": errors
+    }))
+}
+
+fn run_release_manifest_validate(
+    args: ReleaseManifestValidateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let version = args
+        .version
+        .unwrap_or_else(|| default_release_version(&root));
+    let payload = validate_release_manifest(&root, &version)?;
+    let code = if payload["status"] == "ok" { 0 } else { 1 };
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, code))
+}
+
+fn run_release_bundle_build(args: ReleaseBundleBuildArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let version = args
+        .version
+        .unwrap_or_else(|| default_release_version(&root));
+    let out_root = release_root(&root, &version);
+    let images_dir = out_root.join("images");
+    let charts_dir = out_root.join("charts");
+    let docs_dir = out_root.join("docs");
+    let sbom_dir = out_root.join("sbom");
+    let provenance_dir = out_root.join("provenance");
+    for dir in [
+        &images_dir,
+        &charts_dir,
+        &docs_dir,
+        &sbom_dir,
+        &provenance_dir,
+    ] {
+        fs::create_dir_all(dir)
+            .map_err(|err| format!("failed to create {}: {err}", dir.display()))?;
+    }
+    let source = collect_manifest_source(&root)?;
+    let mut copied = Vec::<serde_json::Value>::new();
+    let image_digest_path = images_dir.join("container-image-digests.json");
+    let image_digest_payload = serde_json::json!({
+        "schema_version": 1,
+        "digests": source.get("image_artifacts").cloned().unwrap_or(serde_json::Value::Null)
+    });
+    write_json(&image_digest_path, &image_digest_payload)?;
+    copied.push(serde_json::json!({"path":"images/container-image-digests.json","sha256":sha256_file(&image_digest_path)?,"size_bytes":fs::metadata(&image_digest_path).map_err(|e| e.to_string())?.len()}));
+
+    let docs_hash = source
+        .get("docs_site_summary")
+        .cloned()
+        .unwrap_or(serde_json::Value::Null);
+    let docs_hash_path = docs_dir.join("docs-build.json");
+    write_json(&docs_hash_path, &docs_hash)?;
+    copied.push(serde_json::json!({"path":"docs/docs-build.json","sha256":sha256_file(&docs_hash_path)?,"size_bytes":fs::metadata(&docs_hash_path).map_err(|e| e.to_string())?.len()}));
+
+    let ops_profiles = source
+        .get("image_artifacts")
+        .cloned()
+        .unwrap_or(serde_json::Value::Null);
+    let ops_profile_path = provenance_dir.join("ops-profile-evidence.json");
+    write_json(&ops_profile_path, &ops_profiles)?;
+    copied.push(serde_json::json!({"path":"provenance/ops-profile-evidence.json","sha256":sha256_file(&ops_profile_path)?,"size_bytes":fs::metadata(&ops_profile_path).map_err(|e| e.to_string())?.len()}));
+
+    let provenance_src = root.join("release/provenance.json");
+    if provenance_src.exists() {
+        let dst = provenance_dir.join("provenance.json");
+        fs::copy(&provenance_src, &dst)
+            .map_err(|err| format!("failed to copy {}: {err}", provenance_src.display()))?;
+        copied.push(serde_json::json!({"path":"provenance/provenance.json","sha256":sha256_file(&dst)?,"size_bytes":fs::metadata(&dst).map_err(|e| e.to_string())?.len()}));
+    }
+
+    if let Some(chart_path) = source
+        .get("chart_package")
+        .and_then(|v| v.get("path"))
+        .and_then(serde_json::Value::as_str)
+    {
+        let src = root.join(chart_path);
+        if src.exists() {
+            let file = src
+                .file_name()
+                .and_then(|n| n.to_str())
+                .unwrap_or("chart.tgz");
+            let dst = charts_dir.join(file);
+            fs::copy(&src, &dst)
+                .map_err(|err| format!("failed to copy {}: {err}", src.display()))?;
+            copied.push(serde_json::json!({"path":format!("charts/{file}"),"sha256":sha256_file(&dst)?,"size_bytes":fs::metadata(&dst).map_err(|e| e.to_string())?.len()}));
+        }
+    }
+    for row in source
+        .get("sboms")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+    {
+        let Some(src_rel) = row.get("path").and_then(serde_json::Value::as_str) else {
+            continue;
+        };
+        let src = root.join(src_rel);
+        if !src.exists() {
+            continue;
+        }
+        let file = src
+            .file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or("sbom.json");
+        let dst = sbom_dir.join(file);
+        fs::copy(&src, &dst).map_err(|err| format!("failed to copy {}: {err}", src.display()))?;
+        copied.push(serde_json::json!({"path":format!("sbom/{file}"),"sha256":sha256_file(&dst)?,"size_bytes":fs::metadata(&dst).map_err(|e| e.to_string())?.len()}));
+    }
+    copied.sort_by(|a, b| a["path"].as_str().cmp(&b["path"].as_str()));
+    let mut manifest = create_release_manifest(&root, &version)?;
+    manifest["artifact_list"] = serde_json::json!(copied);
+    manifest["artifact_count"] = serde_json::json!(manifest["artifact_list"]
+        .as_array()
+        .map(|r| r.len())
+        .unwrap_or(0));
+    manifest["artifact_total_size_bytes"] = serde_json::json!(manifest["artifact_list"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(|r| r.get("size_bytes").and_then(serde_json::Value::as_u64))
+        .sum::<u64>());
+    let bundle_hash = release_bundle_hash(
+        manifest["artifact_list"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+            .as_slice(),
+    );
+    manifest["bundle_hash"] = serde_json::json!(bundle_hash.clone());
+    let manifest_path = release_manifest_path(&root, &version);
+    write_json(&manifest_path, &manifest)?;
+    fs::write(out_root.join("bundle.sha256"), format!("{bundle_hash}\n"))
+        .map_err(|err| format!("failed to write bundle hash: {err}"))?;
+    let rendered = emit_payload(
+        args.format,
+        args.out,
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "release_bundle_build",
+            "status": "ok",
+            "version": version,
+            "root": repo_rel(&root, &out_root),
+            "bundle_hash": bundle_hash
+        }),
+    )?;
+    Ok((rendered, 0))
+}
+
+fn run_release_bundle_hash(args: ReleaseBundleHashArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let version = args
+        .version
+        .unwrap_or_else(|| default_release_version(&root));
+    let manifest = read_json(&release_manifest_path(&root, &version))?;
+    let items = manifest
+        .get("artifact_list")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let bundle_hash = release_bundle_hash(items.as_slice());
+    let rendered = emit_payload(
+        args.format,
+        args.out,
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "release_bundle_hash",
+            "status": "ok",
+            "version": version,
+            "bundle_hash": bundle_hash
+        }),
+    )?;
+    Ok((rendered, 0))
+}
+
+fn run_release_bundle_verify(args: ReleaseBundleVerifyArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let version = args
+        .version
+        .unwrap_or_else(|| default_release_version(&root));
+    let bundle_root = release_root(&root, &version);
+    let mut errors = Vec::<String>::new();
+    let required = required_release_tree_entries();
+    for item in &required {
+        if !bundle_root.join(item).exists() {
+            errors.push(format!("missing required release tree entry `{item}`"));
+        }
+    }
+    if bundle_root.exists() {
+        for entry in fs::read_dir(&bundle_root)
+            .map_err(|err| format!("failed to read {}: {err}", bundle_root.display()))?
+        {
+            let entry = entry.map_err(|err| format!("failed to read release tree entry: {err}"))?;
+            let name = entry.file_name().to_string_lossy().to_string();
+            if !required.contains(name.as_str()) && name != "bundle.sha256" {
+                errors.push(format!("unexpected file in release tree: {name}"));
+            }
+        }
+    }
+    let manifest_payload = validate_release_manifest(&root, &version)?;
+    if manifest_payload["status"] != "ok" {
+        errors.extend(
+            manifest_payload["errors"]
+                .as_array()
+                .cloned()
+                .unwrap_or_default()
+                .into_iter()
+                .filter_map(|value| value.as_str().map(str::to_string)),
+        );
+    }
+    let hash_payload = run_release_bundle_hash(ReleaseBundleHashArgs {
+        repo_root: Some(root.clone()),
+        version: Some(version.clone()),
+        format: FormatArg::Json,
+        out: None,
+    })?;
+    let computed_hash: serde_json::Value =
+        serde_json::from_str(&hash_payload.0).unwrap_or_default();
+    let computed = computed_hash
+        .get("bundle_hash")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default()
+        .to_string();
+    let manifest = read_json(&release_manifest_path(&root, &version))?;
+    let declared = manifest
+        .get("bundle_hash")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default()
+        .to_string();
+    if !declared.is_empty() && computed != declared {
+        errors.push("same commit should produce identical bundle hash".to_string());
+    }
+    if !release_manifest_path(&root, &version).exists() {
+        errors.push("release bundle contains no manifest".to_string());
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let rendered = emit_payload(
+        args.format,
+        args.out,
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "release_bundle_verify",
+            "status": status,
+            "version": version,
+            "bundle_hash": computed,
+            "errors": errors
+        }),
+    )?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
 pub(crate) fn run_release_command(
     _quiet: bool,
     command: ReleaseCommand,
 ) -> Result<(String, i32), String> {
     match command {
         ReleaseCommand::Check(args) => run_release_check(args),
+        ReleaseCommand::Manifest { command } => match command {
+            crate::cli::ReleaseManifestCommand::Generate(args) => {
+                run_release_manifest_generate(args)
+            }
+            crate::cli::ReleaseManifestCommand::Validate(args) => {
+                run_release_manifest_validate(args)
+            }
+        },
+        ReleaseCommand::Bundle { command } => match command {
+            crate::cli::ReleaseBundleCommand::Build(args) => run_release_bundle_build(args),
+            crate::cli::ReleaseBundleCommand::Verify(args) => run_release_bundle_verify(args),
+            crate::cli::ReleaseBundleCommand::Hash(args) => run_release_bundle_hash(args),
+        },
         ReleaseCommand::Sign(args) => run_release_sign(args),
         ReleaseCommand::Verify(args) => run_release_verify(args),
         ReleaseCommand::Diff(args) => run_release_diff(args),

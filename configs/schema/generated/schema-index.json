@@ -163,6 +163,7 @@
     "configs/contracts/release/checksum-list.schema.json",
     "configs/contracts/release/packet-list.schema.json",
     "configs/contracts/release/provenance.schema.json",
+    "configs/contracts/release/release-manifest.schema.json",
     "configs/contracts/release/release-sign.schema.json",
     "configs/contracts/release/release-verify.schema.json",
     "configs/contracts/release/signing-policy.schema.json",
