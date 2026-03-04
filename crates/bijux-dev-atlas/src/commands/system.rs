@@ -566,7 +566,8 @@ mod tests {
         write_json,
     };
     use crate::cli::{
-        FormatArg, SystemClusterArgs, SystemClusterCommand, SystemDebugArgs, SystemDebugCommand,
+        FormatArg, SystemClusterArgs, SystemClusterCommand, SystemClusterNodeActionArgs,
+        SystemDebugArgs, SystemDebugCommand,
     };
     use std::fs;
     use std::path::PathBuf;
@@ -702,6 +703,61 @@ mod tests {
         let value: serde_json::Value =
             serde_json::from_str(&rendered).expect("parse rendered json");
         assert_eq!(value["kind"], "system_cluster_topology");
+    }
+
+    #[test]
+    fn cluster_node_drain_command_renders_action_payload() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        let root = temp.path();
+        let configs_dir = root.join("configs/ops/runtime");
+        fs::create_dir_all(&configs_dir).expect("create runtime config dir");
+        write_json(
+            &configs_dir.join("cluster-config.example.json"),
+            &serde_json::json!({
+                "schema_version": 1,
+                "cluster_id": "atlas-test",
+                "topology_mode": "clustered_static",
+                "discovery": {"strategy": "static_seed_list", "seed_nodes": ["http://node-1:8080"]},
+                "bootstrap": {"join_timeout_ms": 1000, "max_join_attempts": 3},
+                "health": {"heartbeat_interval_ms": 1000, "node_timeout_ms": 5000, "required_role_quorum": {"ingest": 1, "query": 1}},
+                "metadata_store": {"backend": "memory", "endpoint": "in-memory://cluster"},
+                "compatibility": {"min_node_version": "1.0.0", "max_skew_major": 0}
+            }),
+        )
+        .expect("write cluster config");
+        write_json(
+            &configs_dir.join("node-config.example.json"),
+            &serde_json::json!({
+                "schema_version": 1,
+                "cluster_id": "atlas-test",
+                "node_id": "node-1",
+                "generation": 1,
+                "role": "hybrid",
+                "advertise_addr": "http://node-1:8080",
+                "capabilities": ["query.execute"],
+                "readiness": {"require_membership": true, "require_dataset_registry": true, "require_health_probes": true},
+                "shutdown": {"drain_timeout_ms": 1000, "publish_exit_state": true}
+            }),
+        )
+        .expect("write node config");
+
+        let (rendered, code) = run_cluster_command(SystemClusterCommand::NodeDrain(
+            SystemClusterNodeActionArgs {
+                common: SystemClusterArgs {
+                    repo_root: Some(root.to_path_buf()),
+                    format: FormatArg::Json,
+                    out: None,
+                    cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
+                    node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
+                },
+                node_id: "node-1".to_string(),
+            },
+        ))
+        .expect("run node drain command");
+        assert_eq!(code, 0);
+        let value: serde_json::Value = serde_json::from_str(&rendered).expect("parse rendered");
+        assert_eq!(value["kind"], "system_cluster_node_action");
+        assert_eq!(value["action"], "drain");
     }
 }
 
