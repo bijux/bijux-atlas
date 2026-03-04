@@ -864,3 +864,159 @@ fn test_ops_e2e_015_scenario_required_tools_registry_covers_all_scenarios(
         TestResult::Fail(violations)
     }
 }
+
+fn test_ops_e2e_016_upgrade_contracts_and_specs_exist(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-E2E-016";
+    let test_id = "ops.e2e.upgrade_contracts_and_specs_exist";
+    let contracts_rel = "ops/e2e/scenarios/upgrade/contracts.json";
+    let Some(contracts) = read_json(&ctx.repo_root.join(contracts_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "upgrade contracts file must be valid json",
+            Some(contracts_rel.to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    if contracts.get("schema_version").and_then(|v| v.as_i64()) != Some(1) {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "upgrade contracts schema_version must be 1",
+            Some(contracts_rel.to_string()),
+        ));
+    }
+    for rel in [
+        "ops/e2e/scenarios/upgrade/upgrade-patch.json",
+        "ops/e2e/scenarios/upgrade/upgrade-minor.json",
+        "ops/e2e/scenarios/upgrade/rollback-after-failed-upgrade.json",
+        "ops/e2e/scenarios/upgrade/rollback-after-successful-upgrade.json",
+        "ops/e2e/scenarios/upgrade/upgrade-existing-datasets.json",
+        "ops/e2e/scenarios/upgrade/upgrade-config-migration.json",
+        "ops/e2e/scenarios/upgrade/upgrade-feature-default-change.json",
+    ] {
+        if read_json(&ctx.repo_root.join(rel)).is_none() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "upgrade scenario spec must exist and be valid json",
+                Some(rel.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_e2e_017_upgrade_compatibility_table_is_complete(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-E2E-017";
+    let test_id = "ops.e2e.upgrade_compatibility_table_is_complete";
+    let rel = "ops/e2e/scenarios/upgrade/version-compatibility.json";
+    let Some(table) = read_json(&ctx.repo_root.join(rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "upgrade compatibility table must be valid json",
+            Some(rel.to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    let rows = table
+        .get("compatibility")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default();
+    if rows.is_empty() {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "upgrade compatibility table must include at least one row",
+            Some(rel.to_string()),
+        ));
+    }
+    let has_patch = rows.iter().any(|r| r.get("kind").and_then(|v| v.as_str()) == Some("patch"));
+    let has_minor = rows.iter().any(|r| r.get("kind").and_then(|v| v.as_str()) == Some("minor"));
+    let has_rollback = rows
+        .iter()
+        .any(|r| r.get("kind").and_then(|v| v.as_str()) == Some("rollback"));
+    if !has_patch || !has_minor || !has_rollback {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "compatibility table must include patch, minor, and rollback rows",
+            Some(rel.to_string()),
+        ));
+    }
+    let cargo_rel = "Cargo.toml";
+    if let Ok(cargo_text) = fs::read_to_string(ctx.repo_root.join(cargo_rel)) {
+        let workspace_version = cargo_text
+            .lines()
+            .find_map(|line| line.trim().strip_prefix("version = "))
+            .map(|v| v.trim_matches('"').to_string())
+            .unwrap_or_default();
+        let current_version = table
+            .get("current_version")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default()
+            .to_string();
+        if !workspace_version.is_empty() && workspace_version != current_version {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "upgrade compatibility current_version must match workspace Cargo.toml version",
+                Some(rel.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_e2e_018_upgrade_and_rollback_evidence_requirements_declared(
+    ctx: &RunContext,
+) -> TestResult {
+    let contract_id = "OPS-E2E-018";
+    let test_id = "ops.e2e.upgrade_and_rollback_evidence_requirements_declared";
+    let rel = "crates/bijux-dev-atlas/src/commands/ops/runtime_mod/execution_handler.rs";
+    let Ok(source) = fs::read_to_string(ctx.repo_root.join(rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "scenario execution handler must be readable",
+            Some(rel.to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    for token in [
+        "before-config.json",
+        "after-config.json",
+        "before-api-surface.json",
+        "after-api-surface.json",
+        "before-metrics.json",
+        "after-metrics.json",
+        "before-dataset-registry.json",
+        "after-dataset-registry.json",
+        "rollback-restore-validation.json",
+        "rollback-query-correctness.json",
+    ] {
+        if !source.contains(token) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "upgrade and rollback evidence files must be declared in scenario runner",
+                Some(rel.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}

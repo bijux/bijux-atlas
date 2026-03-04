@@ -385,8 +385,15 @@ fn test_ops_e2e_005_taxonomy_covers_scenarios(ctx: &RunContext) -> TestResult {
         ("query-pagination", "correctness"),
         ("readonly-mode", "realdata"),
         ("restart-resume", "resilience"),
+        ("rollback-after-failed-upgrade", "resilience"),
+        ("rollback-after-successful-upgrade", "resilience"),
         ("schema-evolution", "compatibility"),
         ("warm-start", "performance"),
+        ("upgrade-config-migration", "compatibility"),
+        ("upgrade-existing-datasets", "compatibility"),
+        ("upgrade-feature-default-change", "compatibility"),
+        ("upgrade-minor", "compatibility"),
+        ("upgrade-patch", "compatibility"),
     ]);
     let mut scenario_ids = BTreeSet::new();
     for scenario in scenarios

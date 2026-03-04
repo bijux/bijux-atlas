@@ -176,5 +176,37 @@ fn e2e_contracts() -> Vec<Contract> {
                 run: test_ops_e2e_015_scenario_required_tools_registry_covers_all_scenarios,
             }],
         },
+        Contract {
+            id: ContractId("OPS-E2E-016".to_string()),
+            title: "upgrade contracts and specs presence",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.upgrade_contracts_and_specs_exist".to_string()),
+                title: "upgrade and rollback contracts plus scenario specs are present and parseable",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_016_upgrade_contracts_and_specs_exist,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-017".to_string()),
+            title: "upgrade compatibility table contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.upgrade_compatibility_table_is_complete".to_string()),
+                title: "upgrade compatibility table includes patch minor and rollback support rows",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_017_upgrade_compatibility_table_is_complete,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-018".to_string()),
+            title: "upgrade and rollback evidence contract",
+            tests: vec![TestCase {
+                id: TestId(
+                    "ops.e2e.upgrade_and_rollback_evidence_requirements_declared".to_string(),
+                ),
+                title: "scenario runner declares required before-after and rollback evidence artifacts",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_018_upgrade_and_rollback_evidence_requirements_declared,
+            }],
+        },
     ]
 }
