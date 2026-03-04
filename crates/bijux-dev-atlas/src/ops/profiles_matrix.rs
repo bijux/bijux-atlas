@@ -338,6 +338,16 @@ fn rollout_safety_status(
         .pointer("/podDisruptionBudget/enabled")
         .and_then(serde_json::Value::as_bool)
         .unwrap_or(false);
+    let statefulset_update_strategy = merged_values
+        .pointer("/statefulset/updateStrategy")
+        .or_else(|| merged_values.pointer("/statefulset/updateStrategy/type"))
+        .and_then(serde_json::Value::as_str);
+    let termination_grace_seconds = merged_values
+        .pointer("/terminationGracePeriodSeconds")
+        .and_then(serde_json::Value::as_u64);
+    let pre_stop_hook_enabled = merged_values
+        .pointer("/lifecycle/preStop/enabled")
+        .and_then(serde_json::Value::as_bool);
 
     let mut errors = Vec::new();
     if profile_name == "prod" || profile_name == "perf" {
@@ -362,6 +372,27 @@ fn rollout_safety_status(
                 "$.podDisruptionBudget.enabled: prod-class profiles require a PodDisruptionBudget"
                     .to_string(),
             );
+        }
+        if let Some(strategy) = statefulset_update_strategy {
+            if strategy != "RollingUpdate" {
+                errors.push(
+                    "$.statefulset.updateStrategy: prod-class profiles require RollingUpdate"
+                        .to_string(),
+                );
+            }
+        }
+        if termination_grace_seconds.unwrap_or(0) < 30 {
+            errors.push(
+                "$.terminationGracePeriodSeconds: prod-class profiles require >= 30".to_string(),
+            );
+        }
+        if let Some(pre_stop_enabled) = pre_stop_hook_enabled {
+            if !pre_stop_enabled {
+                errors.push(
+                    "$.lifecycle.preStop.enabled: prod-class profiles require preStop hook when lifecycle block is present"
+                        .to_string(),
+                );
+            }
         }
     }
     let status = if errors.is_empty() { "pass" } else { "fail" };

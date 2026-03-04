@@ -194,5 +194,5 @@ fn rollout_safety_requires_prod_replicas_strategy_and_pdb() {
     });
     let status = rollout_safety_status(&repo_root, "prod", &kind_summary, &merged_values);
     assert_eq!(status.status, "fail");
-    assert_eq!(status.errors.len(), 3);
+    assert_eq!(status.errors.len(), 4);
 }
