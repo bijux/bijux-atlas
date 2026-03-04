@@ -29,6 +29,14 @@
 - store access span
 - release or dataset resolution span when applicable
 
+## Span tags and annotations
+
+- `dataset_id`
+- `query_type`
+- `request_origin`
+- `shard_id` when shard fanout routing is active
+- error annotation on request spans for `5xx` responses
+
 ## Verify success
 
 ```bash
@@ -45,4 +53,7 @@ If tracing changes hide correlation between request, query, and store spans, rev
 ## Next
 
 - [Alerts](alerts.md)
+- [Trace timeline examples](trace-timeline-examples.md)
+- [Trace dashboard examples](trace-dashboard-examples.md)
+- [Trace troubleshooting](trace-troubleshooting.md)
 - [Incident Response](../incident-response.md)

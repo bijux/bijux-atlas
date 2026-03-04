@@ -24,9 +24,11 @@ Tracing initialization is centralized in `crates/bijux-atlas-server/src/telemetr
 ## Runtime configuration
 
 - `ATLAS_OTEL_ENABLED`
-- `ATLAS_TRACE_EXPORTER` (`otlp` or `none`)
+- `ATLAS_TRACE_EXPORTER` (`otlp`, `jaeger`, `file`, or `none`)
 - `ATLAS_TRACE_SAMPLING_RATIO` (`0.0..=1.0`)
 - `ATLAS_TRACE_OTLP_ENDPOINT` (optional)
+- `ATLAS_TRACE_JAEGER_ENDPOINT` (optional; defaults to local OTLP ingest endpoint)
+- `ATLAS_TRACE_FILE_PATH` (optional; local JSONL trace sink when exporter is `file`)
 - `ATLAS_TRACE_SERVICE_NAME`
 - `ATLAS_TRACE_CONTEXT_PROPAGATION_ENABLED`
 
@@ -48,3 +50,12 @@ Tracing initialization is centralized in `crates/bijux-atlas-server/src/telemetr
 - artifact loading
 - cursor generation
 - API serialization
+
+## Exporter behavior
+
+- `otlp`: exports spans to the configured OTLP endpoint.
+- `jaeger`: exports via OTLP endpoint compatible with Jaeger collector ingest.
+- `file`: writes line-delimited JSON spans to local path for offline debugging.
+- `none`: keeps local structured tracing without remote span export.
+
+If remote exporter initialization fails, Atlas falls back to local tracing output so runtime diagnostics remain available.

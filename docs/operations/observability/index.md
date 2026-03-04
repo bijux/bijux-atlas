@@ -20,6 +20,10 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - [Observability setup](../observability-setup.md): minimum metrics, logs, and trace wiring
 - [Tracing](tracing.md): trace-first diagnosis flow
 - [Tracing architecture](tracing-architecture.md): runtime span model, propagation, and exporter setup
+- [Trace sampling policy](trace-sampling-policy.md): sampling defaults and change rules
+- [Trace timeline examples](trace-timeline-examples.md): healthy and failure span sequences
+- [Trace dashboard examples](trace-dashboard-examples.md): practical dashboard panels and filters
+- [Trace troubleshooting](trace-troubleshooting.md): exporter and propagation triage
 - [SLO policy](slo-policy.md): target objectives and burn policy
 - [SLOs with PromQL](slos-with-promql.md): practical query patterns for burn analysis
 - Alert rule source: `ops/observe/alerts/atlas-alert-rules.yaml`
