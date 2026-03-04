@@ -345,9 +345,11 @@ fn embedded_policy_allows(
     resource_kind: &str,
     route: &str,
 ) -> bool {
+    const EMBEDDED_AUTH_POLICY: &str =
+        include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/security/policy.yaml"));
     static POLICY: std::sync::OnceLock<serde_yaml::Value> = std::sync::OnceLock::new();
     let policy = POLICY.get_or_init(|| {
-        serde_yaml::from_str(include_str!("../../../../configs/security/policy.yaml"))
+        serde_yaml::from_str(EMBEDDED_AUTH_POLICY)
             .unwrap_or_else(|err| panic!("embedded auth policy: {err}"))
     });
     let default_allow = policy
@@ -423,18 +425,25 @@ fn embedded_authorization_allows(
     resource_kind: &str,
     route: &str,
 ) -> bool {
+    const EMBEDDED_PERMISSIONS: &str = include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../configs/security/permissions.yaml"
+    ));
+    const EMBEDDED_ROLES: &str =
+        include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/security/roles.yaml"));
+    const EMBEDDED_AUTHZ_POLICY: &str =
+        include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/security/policy.yaml"));
     static ENGINE: std::sync::OnceLock<bijux_atlas_core::AuthorizationEngine> =
         std::sync::OnceLock::new();
     let engine = ENGINE.get_or_init(|| {
-        let permissions: bijux_atlas_core::PermissionCatalog = serde_yaml::from_str(include_str!(
-            "../../../../configs/security/permissions.yaml"
-        ))
-        .unwrap_or_else(|err| panic!("embedded permission catalog: {err}"));
+        let permissions: bijux_atlas_core::PermissionCatalog =
+            serde_yaml::from_str(EMBEDDED_PERMISSIONS)
+                .unwrap_or_else(|err| panic!("embedded permission catalog: {err}"));
         let roles: bijux_atlas_core::RoleCatalog =
-            serde_yaml::from_str(include_str!("../../../../configs/security/roles.yaml"))
+            serde_yaml::from_str(EMBEDDED_ROLES)
                 .unwrap_or_else(|err| panic!("embedded role catalog: {err}"));
         let policy: bijux_atlas_core::AuthorizationPolicy =
-            serde_yaml::from_str(include_str!("../../../../configs/security/policy.yaml"))
+            serde_yaml::from_str(EMBEDDED_AUTHZ_POLICY)
                 .unwrap_or_else(|err| panic!("embedded authorization policy: {err}"));
         let evaluator = bijux_atlas_core::PermissionEvaluator::new(permissions);
         let mut registry = bijux_atlas_core::RoleRegistry::new();
