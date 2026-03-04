@@ -20,6 +20,7 @@ related:
 - Workspace follows unified semver versioning for v0.1 release line.
 - Release tags must match `v<workspace-version>`.
 - Changelog must contain `Added`, `Changed`, `Fixed`, `Breaking Changes`.
+- Canonical release inventory lives in `release/crates-v0.1.toml`.
 
 ## Public API contract per publishable crate
 

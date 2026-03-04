@@ -40,6 +40,8 @@ Facts live here. Procedures do not. Use this section for stable names, keys, sch
 - Governance facts: [Governance reference](governance.md)
 - Release planning: [Release planning reference](release-plan.md)
 - Crate release policy: [Crate release policy](crate-release-policy.md)
+- Workspace versioning: [Workspace versioning policy](workspace-versioning-policy.md)
+- API stability boundaries: [Crate API stability boundaries](crate-api-stability.md)
 - MSRV policy: [MSRV policy](msrv-policy.md)
 - Crate feature flags: [Crate feature flags](crate-feature-flags.md)
 - Crate dependency graph: [Crate dependency graph](crate-dependency-graph.md)
