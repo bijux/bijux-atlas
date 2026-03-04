@@ -704,7 +704,10 @@ fn test_make_ops_001_ops_targets_use_control_plane(ctx: &RunContext) -> TestResu
         if recipes.iter().all(|recipe| {
             recipe.contains("$(DEV_ATLAS) ops")
                 || recipe.contains("$(DEV_ATLAS) contracts ops")
+                || recipe.contains("$(DEV_ATLAS) contract run --mode static --domain ops")
+                || recipe.contains("$(DEV_ATLAS) contract run --mode effect --domain ops")
                 || recipe.contains("$(DEV_ATLAS) check")
+                || recipe.contains("$(DEV_ATLAS) checks")
                 || recipe.contains("$(MAKE)")
                 || is_auxiliary_recipe(recipe)
         }) {
