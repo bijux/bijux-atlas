@@ -30,6 +30,8 @@ related:
 - [Shard Architecture](shard-architecture.md)
 - [Shard Query Flow](shard-query-flow.md)
 - [Shard Routing Visualization](shard-routing-visualization.md)
+- [Replication Architecture](replication-architecture.md)
+- [Replication Flow](replication-flow.md)
 - [Diagram Style Guide](style-guide.md)
 
 ## Legacy and supporting diagrams

@@ -86,6 +86,11 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 54. [Shard rebalance workflow](shard-rebalance-workflow.md)
 55. [Shard failure scenarios](shard-failure-scenarios.md)
 56. [Shard debugging guide](shard-debugging-guide.md)
+57. [Replication failover process](replication/failover-process.md)
+58. [Replication troubleshooting](replication/troubleshooting.md)
+59. [Replication metrics dashboards](replication/metrics-dashboards.md)
+60. [Replication policy](replication/policy.md)
+61. [Replication scaling strategy](replication/scaling-strategy.md)
 
 ## What This Page Is Not
 
