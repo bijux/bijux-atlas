@@ -68,6 +68,57 @@ pub(crate) fn docs_lint_payload(
 ) -> Result<serde_json::Value, String> {
     let policy = load_quality_policy(&ctx.repo_root);
     let mut errors = Vec::<String>::new();
+    let docs_lint_root = ctx.repo_root.join("configs/docs");
+    let required_lint_files = [
+        "configs/docs/.vale.ini",
+        "configs/docs/.markdownlint-cli2.jsonc",
+        "configs/docs/cspell.config.json",
+        "configs/docs/package.json",
+        "configs/docs/package-lock.json",
+    ];
+    for rel in required_lint_files {
+        if !ctx.repo_root.join(rel).exists() {
+            errors.push(format!(
+                "DOCS_LINT_CONFIG_MISSING: required lint config `{rel}` is missing"
+            ));
+        }
+    }
+    let package_json_path = docs_lint_root.join("package.json");
+    if package_json_path.exists() {
+        let package_text = fs::read_to_string(&package_json_path)
+            .map_err(|e| format!("failed to read {}: {e}", package_json_path.display()))?;
+        let package_json: serde_json::Value = serde_json::from_str(&package_text)
+            .map_err(|e| format!("failed to parse {}: {e}", package_json_path.display()))?;
+        let scripts = package_json
+            .get("scripts")
+            .and_then(|v| v.as_object())
+            .cloned()
+            .unwrap_or_default();
+        for key in ["markdownlint", "cspell"] {
+            if !scripts.contains_key(key) {
+                errors.push(format!(
+                    "DOCS_LINT_CONFIG_INVALID: `configs/docs/package.json` missing script `{key}`"
+                ));
+            }
+        }
+    }
+    let vale_ini_path = docs_lint_root.join(".vale.ini");
+    if vale_ini_path.exists() {
+        let vale_text = fs::read_to_string(&vale_ini_path)
+            .map_err(|e| format!("failed to read {}: {e}", vale_ini_path.display()))?;
+        if !vale_text.contains("StylesPath") {
+            errors.push(
+                "DOCS_LINT_CONFIG_INVALID: `configs/docs/.vale.ini` must declare `StylesPath`"
+                    .to_string(),
+            );
+        }
+        let styles_dir = docs_lint_root.join(".vale");
+        if !styles_dir.exists() {
+            errors.push(
+                "DOCS_LINT_CONFIG_INVALID: `configs/docs/.vale` directory must exist".to_string(),
+            );
+        }
+    }
     let adr_filename_re = Regex::new(r"^ADR-\d{4}-[a-z0-9-]+\.md$").map_err(|e| e.to_string())?;
     let schema_ref_re =
         Regex::new(r"`([^`\n]*schema[^`\n]*\.(json|ya?ml))`").map_err(|e| e.to_string())?;
@@ -260,4 +311,3 @@ fn docs_grep_payload(
         serde_json::json!({"schema_version":1,"run_id":ctx.run_id.as_str(),"text": format!("{} matches", rows.len()),"rows":rows,"capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},"options": {"strict": common.strict, "include_drafts": common.include_drafts}}),
     )
 }
-
