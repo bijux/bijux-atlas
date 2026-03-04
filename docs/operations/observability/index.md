@@ -16,6 +16,7 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - [Alerts](alerts.md): alert-to-runbook routing and severity model
 - [Dashboards](dashboards.md): dashboard set for incident triage
 - [Metrics architecture](metrics-architecture.md): naming, labels, cardinality, and required runtime metrics
+- [Logging architecture](logging-architecture.md): structured schema, levels, and metadata policy
 - [Observability lifecycle](../observability-lifecycle.md): how dashboards, alerts, and SLOs evolve safely
 - [Observability setup](../observability-setup.md): minimum metrics, logs, and trace wiring
 - [Tracing](tracing.md): trace-first diagnosis flow
