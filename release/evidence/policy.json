@@ -7,6 +7,11 @@
     "json",
     "sarif"
   ],
+  "cve_budget": {
+    "max_critical": 0,
+    "max_high": 0
+  },
+  "cve_overrides": [],
   "require_prod_image_artifacts": true,
   "required_paths": [
     "release/evidence/identity.json",

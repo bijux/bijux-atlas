@@ -91,6 +91,26 @@ fn parse_requirement_indexes(text: &str) -> Vec<String> {
         .collect()
 }
 
+fn parse_expiry_allowlist_rows(text: &str) -> Vec<(String, String, String)> {
+    let mut rows = Vec::new();
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() || trimmed.starts_with('#') {
+            continue;
+        }
+        let parts = trimmed.split('|').map(str::trim).collect::<Vec<_>>();
+        if parts.len() != 3 {
+            continue;
+        }
+        rows.push((
+            parts[0].to_string(),
+            parts[1].to_string(),
+            parts[2].to_string(),
+        ));
+    }
+    rows
+}
+
 fn parse_python_lock_rows(text: &str) -> Vec<String> {
     let mut rows = Vec::new();
     for line in text.lines() {
@@ -179,6 +199,16 @@ fn is_iso_date(value: &str) -> bool {
             .iter()
             .enumerate()
             .all(|(idx, byte)| matches!(idx, 4 | 7) || byte.is_ascii_digit())
+}
+
+fn parse_scan_summary(value: &serde_json::Value) -> Option<(i64, i64, i64, i64)> {
+    let summary = value.get("summary")?;
+    Some((
+        summary.get("critical")?.as_i64()?,
+        summary.get("high")?.as_i64()?,
+        summary.get("medium")?.as_i64()?,
+        summary.get("low")?.as_i64()?,
+    ))
 }
 
 fn validate_audit_record_shape(
@@ -458,6 +488,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let forbidden_patterns = read_json(&forbidden_patterns_path)?;
     let dependency_policy = read_json(&dependency_policy_path)?;
     let signing_policy = read_yaml(&signing_policy_path)?;
+    let release_evidence_policy = read_json(&root.join("release/evidence/policy.json"))?;
     let retention = read_yaml(&retention_path)?;
 
     let asset_rows = assets
@@ -1570,6 +1601,186 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     }
     let sec_sbom_001 = sbom_gaps.is_empty();
 
+    let cve_budget = release_evidence_policy
+        .get("cve_budget")
+        .cloned()
+        .unwrap_or_else(|| serde_json::json!({"max_critical": 0, "max_high": 0}));
+    let budget_critical = cve_budget
+        .get("max_critical")
+        .and_then(serde_json::Value::as_i64)
+        .unwrap_or(0);
+    let budget_high = cve_budget
+        .get("max_high")
+        .and_then(serde_json::Value::as_i64)
+        .unwrap_or(0);
+    let overrides = release_evidence_policy
+        .get("cve_overrides")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let mut scan_rows = Vec::new();
+    let mut total_critical = 0i64;
+    let mut total_high = 0i64;
+    let mut total_medium = 0i64;
+    let mut total_low = 0i64;
+    let mut scan_errors = Vec::new();
+    for row in &sbom_rows {
+        let _ = row;
+    }
+    for scan_entry in evidence_manifest
+        .get("scan_reports")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+    {
+        let Some(scan_path) = scan_entry.as_str() else {
+            continue;
+        };
+        let scan_abs = root.join(scan_path);
+        if !scan_abs.exists() {
+            scan_errors.push(format!("missing-scan-report:{scan_path}"));
+            continue;
+        }
+        let scan_json = read_json(&scan_abs)?;
+        let Some((critical, high, medium, low)) = parse_scan_summary(&scan_json) else {
+            scan_errors.push(format!("invalid-scan-summary:{scan_path}"));
+            continue;
+        };
+        total_critical += critical;
+        total_high += high;
+        total_medium += medium;
+        total_low += low;
+        scan_rows.push(serde_json::json!({
+            "path": scan_path,
+            "critical": critical,
+            "high": high,
+            "medium": medium,
+            "low": low
+        }));
+    }
+    let mut allowed_critical = budget_critical;
+    let mut allowed_high = budget_high;
+    let mut invalid_overrides = Vec::new();
+    for row in &overrides {
+        let id = row
+            .get("id")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let justification = row
+            .get("justification")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let expires_on = row
+            .get("expires_on")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let extra_critical = row
+            .get("critical")
+            .and_then(serde_json::Value::as_i64)
+            .unwrap_or(0);
+        let extra_high = row
+            .get("high")
+            .and_then(serde_json::Value::as_i64)
+            .unwrap_or(0);
+        if id.is_empty()
+            || justification.len() < 8
+            || !is_iso_date(expires_on)
+            || expires_on < "2026-03-04"
+        {
+            invalid_overrides.push(format!("invalid-override:{id}:{expires_on}"));
+            continue;
+        }
+        allowed_critical += extra_critical;
+        allowed_high += extra_high;
+    }
+    let vulnerability_budget_fail =
+        total_critical > allowed_critical || total_high > allowed_high || !scan_errors.is_empty();
+    let sec_vuln_001 = scan_errors.is_empty();
+    let sec_vuln_002 = !vulnerability_budget_fail;
+    let sec_vuln_003 = invalid_overrides.is_empty();
+    let vulnerability_report = serde_json::json!({
+        "schema_version": 1,
+        "status": if sec_vuln_001 && sec_vuln_002 && sec_vuln_003 { "ok" } else { "failed" },
+        "budget": {
+            "critical": budget_critical,
+            "high": budget_high
+        },
+        "allowed_with_overrides": {
+            "critical": allowed_critical,
+            "high": allowed_high
+        },
+        "totals": {
+            "critical": total_critical,
+            "high": total_high,
+            "medium": total_medium,
+            "low": total_low
+        },
+        "rows": scan_rows,
+        "gaps": {
+            "scan_errors": scan_errors,
+            "invalid_overrides": invalid_overrides
+        }
+    });
+    let vulnerability_report_path = named_report_path(&root, "security-vulnerability-scan.json")?;
+    fs::write(
+        &vulnerability_report_path,
+        serde_json::to_string_pretty(&vulnerability_report)
+            .map_err(|err| format!("encode vulnerability report failed: {err}"))?,
+    )
+    .map_err(|err| {
+        format!(
+            "failed to write {}: {err}",
+            vulnerability_report_path.display()
+        )
+    })?;
+
+    let unsafe_pattern_needles = ["curl", "wget"];
+    let script_allowlist_text =
+        fs::read_to_string(root.join("configs/policy/shell-network-fetch-allowlist.txt"))
+            .unwrap_or_default();
+    let script_allowlist = parse_expiry_allowlist_rows(&script_allowlist_text);
+    let mut unsafe_download_hits = Vec::new();
+    for rel in [
+        "Makefile",
+        ".github/workflows/ci-pr.yml",
+        ".github/workflows/ci-nightly.yml",
+        ".github/workflows/release-candidate.yml",
+        ".github/workflows/ops-validate.yml",
+        ".github/workflows/ops-integration-kind.yml",
+        ".github/workflows/dependency-lock.yml",
+        ".github/workflows/docs-audit.yml",
+        ".github/workflows/docs-only.yml",
+    ] {
+        let path = root.join(rel);
+        if !path.exists() {
+            continue;
+        }
+        let text =
+            fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", rel))?;
+        for (idx, line) in text.lines().enumerate() {
+            let lower = line.to_ascii_lowercase();
+            let has_fetch = unsafe_pattern_needles
+                .iter()
+                .any(|needle| lower.contains(needle));
+            let has_pipe_shell =
+                (lower.contains("| bash") || lower.contains("| sh")) && has_fetch;
+            if !has_pipe_shell {
+                continue;
+            }
+            let key = format!("{rel}:{}", idx + 1);
+            let allowlisted = script_allowlist.iter().any(|(entry, expires_on, reason)| {
+                entry == &key
+                    && is_iso_date(expires_on)
+                    && expires_on.as_str() >= "2026-03-04"
+                    && reason.len() >= 8
+            });
+            if !allowlisted {
+                unsafe_download_hits.push(key);
+            }
+        }
+    }
+    let sec_scripts_001 = unsafe_download_hits.is_empty();
+
     let mut rust_rows = rust_lock_text
         .as_deref()
         .map(parse_cargo_lock_rows)
@@ -1750,6 +1961,10 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             && sec_images_001
             && sec_actions_001
             && sec_sbom_001
+            && sec_vuln_001
+            && sec_vuln_002
+            && sec_vuln_003
+            && sec_scripts_001
             && signing_policy_valid
         { "ok" } else { "failed" },
         "counts": {
@@ -1770,6 +1985,11 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "dependency_inventory": dependency_inventory_report_path
                 .strip_prefix(&root)
                 .unwrap_or(&dependency_inventory_report_path)
+                .display()
+                .to_string(),
+            "vulnerability_scan": vulnerability_report_path
+                .strip_prefix(&root)
+                .unwrap_or(&vulnerability_report_path)
                 .display()
                 .to_string(),
             "github_actions": github_actions_report_path
@@ -1812,10 +2032,15 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "SEC-DEPS-003": sec_deps_003,
             "SEC-IMAGES-001": sec_images_001,
             "SEC-ACTIONS-001": sec_actions_001,
-            "SEC-SBOM-001": sec_sbom_001
+            "SEC-SBOM-001": sec_sbom_001,
+            "SEC-VULN-001": sec_vuln_001,
+            "SEC-VULN-002": sec_vuln_002,
+            "SEC-VULN-003": sec_vuln_003,
+            "SEC-SCRIPTS-001": sec_scripts_001
         },
         "policy_validation": {
             "dependency_source_policy": sec_deps_001 && sec_deps_002 && sec_images_001 && sec_actions_001 && sec_sbom_001,
+            "vulnerability_budget_policy": sec_vuln_001 && sec_vuln_002 && sec_vuln_003,
             "signing_policy": signing_policy_valid
         },
         "gaps": {
@@ -1844,6 +2069,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             "disallowed_npm_sources": disallowed_npm_sources,
             "disallowed_python_indexes": disallowed_python_indexes,
             "dependency_lock_gaps": dependency_lock_gaps,
+            "unsafe_download_hits": unsafe_download_hits,
             "workflow_pin_gaps": workflow_pin_gaps,
             "invalid_action_exceptions": invalid_action_exceptions,
             "image_evidence_gaps": image_evidence_gaps,

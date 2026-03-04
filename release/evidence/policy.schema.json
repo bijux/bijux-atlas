@@ -9,7 +9,8 @@
     "required_paths",
     "require_prod_image_artifacts",
     "accepted_sbom_formats",
-    "accepted_scan_report_formats"
+    "accepted_scan_report_formats",
+    "cve_budget"
   ],
   "properties": {
     "schema_version": {
@@ -39,6 +40,60 @@
       "items": {
         "type": "string",
         "minLength": 1
+      }
+    },
+    "cve_budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_critical",
+        "max_high"
+      ],
+      "properties": {
+        "max_critical": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_high": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "cve_overrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "critical",
+          "high",
+          "expires_on",
+          "justification"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "critical": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "high": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "expires_on": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "justification": {
+            "type": "string",
+            "minLength": 8
+          }
+        }
       }
     }
   }
