@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "fixture_id": "corrupted-shard-sample",
+  "shard_path": "fixtures/shards/shard-001.bin",
+  "corruption": {
+    "offset": 128,
+    "bytes_before": "a1b2c3d4",
+    "bytes_after": "ffffffff"
+  },
+  "expected_result": "integrity-alarm"
+}

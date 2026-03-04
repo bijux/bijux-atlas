@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "fixture_id": "missing-artifact-sample",
+  "missing_path": "artifacts/release/0.1.0/release-manifest.json",
+  "expected_result": "boot-failure"
+}

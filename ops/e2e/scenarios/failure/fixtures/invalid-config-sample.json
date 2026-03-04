@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "fixture_id": "invalid-config-sample",
+  "config_path": "fixtures/configs/invalid-runtime.yaml",
+  "parse_error": "missing required key: datasets",
+  "expected_result": "boot-failure"
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "fixture_id": "disk-full-simulation-wrapper",
+  "method": "tmpfs-quota",
+  "target_dir": "artifacts/ops/sandbox/disk-full",
+  "quota_bytes": 1048576,
+  "expected_result": "controlled-write-failure"
+}
