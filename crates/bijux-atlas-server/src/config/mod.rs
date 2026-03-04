@@ -122,6 +122,10 @@ pub struct RuntimeConfig {
     pub env_name: String,
     pub catalog_mode: CatalogMode,
     pub log_json: bool,
+    pub log_level: String,
+    pub log_filter_targets: Option<String>,
+    pub log_sampling_rate: f64,
+    pub log_redaction_enabled: bool,
     pub otel_enabled: bool,
     pub trace_sampling_ratio: f64,
     pub trace_exporter: String,
@@ -525,6 +529,20 @@ fn validate_runtime_config_contract(runtime: &RuntimeConfig) -> Result<(), Runti
             });
         }
     }
+    if !(0.0..=1.0).contains(&runtime.log_sampling_rate) {
+        return Err(RuntimeConfigError::InvalidValue {
+            message: "ATLAS_LOG_SAMPLING_RATE must be in [0.0, 1.0]".to_string(),
+        });
+    }
+    if !matches!(
+        runtime.log_level.to_ascii_lowercase().as_str(),
+        "trace" | "debug" | "info" | "warn" | "error"
+    ) {
+        return Err(RuntimeConfigError::InvalidValue {
+            message: "ATLAS_LOG_LEVEL must be one of: trace, debug, info, warn, error"
+                .to_string(),
+        });
+    }
     if !(0.0..=1.0).contains(&runtime.trace_sampling_ratio) {
         return Err(RuntimeConfigError::InvalidValue {
             message: "ATLAS_TRACE_SAMPLING_RATIO must be in [0.0, 1.0]".to_string(),
@@ -851,6 +869,10 @@ impl RuntimeConfig {
                 CatalogMode::Required
             },
             log_json: env_bool("ATLAS_LOG_JSON", true)?,
+            log_level: std::env::var("ATLAS_LOG_LEVEL").unwrap_or_else(|_| "info".to_string()),
+            log_filter_targets: std::env::var("ATLAS_LOG_FILTER_TARGETS").ok(),
+            log_sampling_rate: env_f64("ATLAS_LOG_SAMPLING_RATE", 1.0)?,
+            log_redaction_enabled: env_bool("ATLAS_LOG_REDACTION_ENABLED", true)?,
             otel_enabled: env_bool("ATLAS_OTEL_ENABLED", false)?,
             trace_sampling_ratio: env_f64("ATLAS_TRACE_SAMPLING_RATIO", 1.0)?,
             trace_exporter: std::env::var("ATLAS_TRACE_EXPORTER")

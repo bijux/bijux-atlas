@@ -21,6 +21,7 @@ include!("runtime/orchestrator/mod.rs");
 
 pub use crate::telemetry::generated::metrics_contract::CONTRACT_METRIC_NAMES;
 pub use crate::telemetry::generated::trace_spans_contract::CONTRACT_TRACE_SPAN_NAMES;
+pub use crate::telemetry::logging::LoggingConfig;
 pub use crate::telemetry::tracing::{init_tracing, TraceConfig, TraceExporterKind};
 
 #[cfg(test)]

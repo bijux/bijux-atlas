@@ -5,8 +5,8 @@
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_server::{
     build_router, effective_runtime_config_payload, init_tracing, load_runtime_config, AppState,
-    DatasetCacheManager, FederatedBackend, LocalFsBackend, RegistrySource, S3LikeBackend,
-    TraceConfig, TraceExporterKind,
+    DatasetCacheManager, FederatedBackend, LocalFsBackend, LoggingConfig, RegistrySource,
+    S3LikeBackend, TraceConfig, TraceExporterKind,
 };
 use clap::Parser;
 use std::path::PathBuf;
@@ -396,7 +396,13 @@ async fn main() -> Result<(), String> {
         _ => TraceExporterKind::Otlp,
     };
     let trace_cfg = TraceConfig {
-        log_json: runtime.log_json,
+        logging: LoggingConfig {
+            log_json: runtime.log_json,
+            level: runtime.log_level.clone(),
+            filter_targets: runtime.log_filter_targets.clone(),
+            sampling_rate: runtime.log_sampling_rate,
+            redaction_enabled: runtime.log_redaction_enabled,
+        },
         otel_enabled: runtime.otel_enabled,
         sampling_ratio: runtime.trace_sampling_ratio,
         exporter: trace_exporter,

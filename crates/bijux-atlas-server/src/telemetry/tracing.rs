@@ -4,6 +4,8 @@ use opentelemetry::trace::TracerProvider as _;
 use opentelemetry_otlp::WithExportConfig;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
+use crate::telemetry::logging::LoggingConfig;
+
 #[derive(Debug, Clone)]
 pub enum TraceExporterKind {
     Otlp,
@@ -14,7 +16,7 @@ pub enum TraceExporterKind {
 
 #[derive(Debug, Clone)]
 pub struct TraceConfig {
-    pub log_json: bool,
+    pub logging: LoggingConfig,
     pub otel_enabled: bool,
     pub sampling_ratio: f64,
     pub exporter: TraceExporterKind,
@@ -25,7 +27,9 @@ pub struct TraceConfig {
 }
 
 pub fn init_tracing(config: &TraceConfig) -> Result<(), String> {
-    let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
+    let default_directive = config.logging.default_filter_directive();
+    let filter =
+        EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new(default_directive));
     if config.otel_enabled {
         match config.exporter {
             TraceExporterKind::Otlp => {
@@ -36,7 +40,7 @@ pub fn init_tracing(config: &TraceConfig) -> Result<(), String> {
                 let exporter = match builder.build() {
                     Ok(exporter) => exporter,
                     Err(err) => {
-                        return init_plain_subscriber(config.log_json, filter).map_err(|e| {
+                        return init_plain_subscriber(config.logging.log_json, filter).map_err(|e| {
                             format!(
                                 "failed to build OTLP span exporter ({err}); fallback subscriber failed: {e}"
                             )
@@ -56,7 +60,7 @@ pub fn init_tracing(config: &TraceConfig) -> Result<(), String> {
                     .with_batch_exporter(exporter, opentelemetry_sdk::runtime::Tokio)
                     .build()
                     .tracer("bijux-atlas-server");
-                init_otel_subscriber(config.log_json, filter, tracer)?;
+                init_otel_subscriber(config.logging.log_json, filter, tracer)?;
             }
             TraceExporterKind::Jaeger => {
                 let endpoint = config
@@ -70,7 +74,7 @@ pub fn init_tracing(config: &TraceConfig) -> Result<(), String> {
                 {
                     Ok(exporter) => exporter,
                     Err(err) => {
-                        return init_plain_subscriber(config.log_json, filter).map_err(|e| {
+                        return init_plain_subscriber(config.logging.log_json, filter).map_err(|e| {
                             format!(
                                 "failed to build Jaeger span exporter ({err}); fallback subscriber failed: {e}"
                             )
@@ -90,7 +94,7 @@ pub fn init_tracing(config: &TraceConfig) -> Result<(), String> {
                     .with_batch_exporter(exporter, opentelemetry_sdk::runtime::Tokio)
                     .build()
                     .tracer("bijux-atlas-server");
-                init_otel_subscriber(config.log_json, filter, tracer)?;
+                init_otel_subscriber(config.logging.log_json, filter, tracer)?;
             }
             TraceExporterKind::File => {
                 let file_path = config
@@ -120,11 +124,11 @@ pub fn init_tracing(config: &TraceConfig) -> Result<(), String> {
                     .map_err(|e| format!("failed to initialize file tracing subscriber: {e}"))?;
             }
             TraceExporterKind::None => {
-                init_plain_subscriber(config.log_json, filter)?;
+                init_plain_subscriber(config.logging.log_json, filter)?;
             }
         }
     } else {
-        init_plain_subscriber(config.log_json, filter)?;
+        init_plain_subscriber(config.logging.log_json, filter)?;
     }
     Ok(())
 }

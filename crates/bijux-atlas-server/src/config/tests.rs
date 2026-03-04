@@ -286,6 +286,53 @@ fn runtime_config_rejects_unknown_trace_exporter() {
 }
 
 #[test]
+fn runtime_config_accepts_logging_configuration() {
+    with_runtime_env(
+        &[
+            ("ATLAS_LOG_LEVEL", "debug"),
+            ("ATLAS_LOG_FILTER_TARGETS", "atlas=debug,hyper=warn"),
+            ("ATLAS_LOG_SAMPLING_RATE", "0.75"),
+            ("ATLAS_LOG_REDACTION_ENABLED", "false"),
+        ],
+        || {
+            let startup = RuntimeStartupConfig {
+                bind_addr: DEFAULT_BIND_ADDR.to_string(),
+                store_root: PathBuf::from(DEFAULT_STORE_ROOT),
+                cache_root: PathBuf::from(DEFAULT_CACHE_ROOT),
+            };
+            let runtime = RuntimeConfig::from_env(startup).expect("valid logging config");
+            assert_eq!(runtime.log_level, "debug");
+            assert_eq!(
+                runtime.log_filter_targets.as_deref(),
+                Some("atlas=debug,hyper=warn")
+            );
+            assert_eq!(runtime.log_sampling_rate, 0.75);
+            assert!(!runtime.log_redaction_enabled);
+        },
+    );
+}
+
+#[test]
+fn runtime_config_rejects_invalid_log_level_and_sampling() {
+    with_runtime_env(
+        &[("ATLAS_LOG_LEVEL", "verbose"), ("ATLAS_LOG_SAMPLING_RATE", "1.5")],
+        || {
+            let startup = RuntimeStartupConfig {
+                bind_addr: DEFAULT_BIND_ADDR.to_string(),
+                store_root: PathBuf::from(DEFAULT_STORE_ROOT),
+                cache_root: PathBuf::from(DEFAULT_CACHE_ROOT),
+            };
+            let err = RuntimeConfig::from_env(startup).expect_err("invalid logging config");
+            let msg = err.to_string();
+            assert!(
+                msg.contains("ATLAS_LOG_LEVEL must be one of")
+                    || msg.contains("ATLAS_LOG_SAMPLING_RATE must be in [0.0, 1.0]")
+            );
+        },
+    );
+}
+
+#[test]
 fn runtime_config_rejects_invalid_auth_mode() {
     with_runtime_env(&[("ATLAS_AUTH_MODE", "hmac")], || {
         let startup = RuntimeStartupConfig {
