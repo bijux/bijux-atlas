@@ -1,7 +1,7 @@
 {
   "contracts": [
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_000",
       "id": "DOCKER-000",
@@ -23,7 +23,7 @@
       "title": "docker directory contract"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_003",
       "id": "DOCKER-003",
@@ -41,7 +41,7 @@
       "title": "root Dockerfile policy"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_004",
       "id": "DOCKER-004",
@@ -59,7 +59,7 @@
       "title": "dockerfile location policy"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_006",
       "id": "DOCKER-006",
@@ -77,7 +77,7 @@
       "title": "forbidden tags policy"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_007",
       "id": "DOCKER-007",
@@ -95,7 +95,7 @@
       "title": "digest pinning policy"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_008",
       "id": "DOCKER-008",
@@ -113,7 +113,7 @@
       "title": "required labels policy"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_009",
       "id": "DOCKER-009",
@@ -131,7 +131,7 @@
       "title": "build args defaults policy"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_010",
       "id": "DOCKER-010",
@@ -149,7 +149,7 @@
       "title": "forbidden pattern policy"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_011",
       "id": "DOCKER-011",
@@ -171,7 +171,7 @@
       "title": "copy source policy"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_012",
       "id": "DOCKER-012",
@@ -185,7 +185,7 @@
       "title": "required images exist"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_013",
       "id": "DOCKER-013",
@@ -199,7 +199,7 @@
       "title": "forbidden extra images"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_014",
       "id": "DOCKER-014",
@@ -213,7 +213,7 @@
       "title": "branch-like tags forbidden"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_015",
       "id": "DOCKER-015",
@@ -227,7 +227,7 @@
       "title": "base image allowlist"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_016",
       "id": "DOCKER-016",
@@ -241,7 +241,7 @@
       "title": "base image lock digest"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_017",
       "id": "DOCKER-017",
@@ -255,7 +255,7 @@
       "title": "from arg defaults"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_018",
       "id": "DOCKER-018",
@@ -269,7 +269,7 @@
       "title": "from platform override"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_019",
       "id": "DOCKER-019",
@@ -283,7 +283,7 @@
       "title": "shell instruction policy"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_020",
       "id": "DOCKER-020",
@@ -297,7 +297,7 @@
       "title": "package manager cleanup"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_021",
       "id": "DOCKER-021",
@@ -311,7 +311,7 @@
       "title": "runtime non-root user"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_022",
       "id": "DOCKER-022",
@@ -325,7 +325,7 @@
       "title": "final stage user declaration"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_023",
       "id": "DOCKER-023",
@@ -339,7 +339,7 @@
       "title": "final stage workdir"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_024",
       "id": "DOCKER-024",
@@ -353,7 +353,7 @@
       "title": "final stage process entry"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_025",
       "id": "DOCKER-025",
@@ -367,7 +367,7 @@
       "title": "release labels contract"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_026",
       "id": "DOCKER-026",
@@ -381,7 +381,7 @@
       "title": "secret copy guard"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_027",
       "id": "DOCKER-027",
@@ -395,7 +395,7 @@
       "title": "add instruction forbidden"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_028",
       "id": "DOCKER-028",
@@ -409,7 +409,7 @@
       "title": "multistage build required"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_029",
       "id": "DOCKER-029",
@@ -423,7 +423,7 @@
       "title": "dockerignore required entries"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_030",
       "id": "DOCKER-030",
@@ -437,7 +437,7 @@
       "title": "reproducible build args"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_031",
       "id": "DOCKER-031",
@@ -451,7 +451,7 @@
       "title": "final stage network isolation"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_032",
       "id": "DOCKER-032",
@@ -465,7 +465,7 @@
       "title": "final stage package manager isolation"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_033",
       "id": "DOCKER-033",
@@ -479,7 +479,7 @@
       "title": "image smoke manifest"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_034",
       "id": "DOCKER-034",
@@ -493,7 +493,7 @@
       "title": "image manifest schema"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_035",
       "id": "DOCKER-035",
@@ -507,7 +507,7 @@
       "title": "image manifest completeness"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_036",
       "id": "DOCKER-036",
@@ -521,7 +521,7 @@
       "title": "image build matrix"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon",
+      "command": "bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon",
       "effects": [
         "docker-daemon",
         "subprocess"
@@ -538,7 +538,7 @@
       "title": "build succeeds"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon",
+      "command": "bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon",
       "effects": [
         "docker-daemon",
         "subprocess"
@@ -559,7 +559,7 @@
       "title": "runtime smoke checks"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon",
+      "command": "bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon",
       "effects": [
         "docker-daemon",
         "subprocess"
@@ -576,7 +576,7 @@
       "title": "sbom generated"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-network --allow-docker-daemon",
+      "command": "bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-network --allow-docker-daemon",
       "effects": [
         "docker-daemon",
         "network",
@@ -594,7 +594,7 @@
       "title": "scan passes policy"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon",
+      "command": "bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon",
       "effects": [
         "docker-daemon",
         "subprocess"
@@ -611,7 +611,7 @@
       "title": "manifest image builds"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon",
+      "command": "bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon",
       "effects": [
         "docker-daemon",
         "subprocess"
@@ -628,7 +628,7 @@
       "title": "manifest image smoke"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon",
+      "command": "bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon",
       "effects": [
         "docker-daemon",
         "subprocess"
@@ -645,7 +645,7 @@
       "title": "ci build pull policy"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon",
+      "command": "bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon",
       "effects": [
         "docker-daemon",
         "subprocess"
@@ -662,7 +662,7 @@
       "title": "build metadata artifact"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon",
+      "command": "bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon",
       "effects": [
         "docker-daemon",
         "subprocess"
@@ -679,7 +679,7 @@
       "title": "manifest sbom coverage"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-network --allow-docker-daemon",
+      "command": "bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-network --allow-docker-daemon",
       "effects": [
         "docker-daemon",
         "network",
@@ -697,7 +697,7 @@
       "title": "scan artifact threshold"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-network --allow-docker-daemon",
+      "command": "bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-network --allow-docker-daemon",
       "effects": [
         "docker-daemon",
         "network",
@@ -715,7 +715,7 @@
       "title": "vulnerability allowlist discipline"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_044",
       "id": "DOCKER-044",
@@ -729,7 +729,7 @@
       "title": "pip install hash pinning"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_045",
       "id": "DOCKER-045",
@@ -743,7 +743,7 @@
       "title": "cargo install version pinning"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_046",
       "id": "DOCKER-046",
@@ -757,7 +757,7 @@
       "title": "go install latest forbidden"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_047",
       "id": "DOCKER-047",
@@ -771,7 +771,7 @@
       "title": "docker markdown boundary"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_048",
       "id": "DOCKER-048",
@@ -785,7 +785,7 @@
       "title": "contract document generation"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_049",
       "id": "DOCKER-049",
@@ -799,7 +799,7 @@
       "title": "contract registry export"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_050",
       "id": "DOCKER-050",
@@ -813,7 +813,7 @@
       "title": "contract gate map export"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_051",
       "id": "DOCKER-051",
@@ -827,7 +827,7 @@
       "title": "exceptions registry schema"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_052",
       "id": "DOCKER-052",
@@ -841,7 +841,7 @@
       "title": "exceptions minimal entries"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_053",
       "id": "DOCKER-053",
@@ -855,7 +855,7 @@
       "title": "scan profile policy"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_054",
       "id": "DOCKER-054",
@@ -869,7 +869,7 @@
       "title": "runtime engine policy"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_055",
       "id": "DOCKER-055",
@@ -883,7 +883,7 @@
       "title": "airgap build policy"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_056",
       "id": "DOCKER-056",
@@ -897,7 +897,7 @@
       "title": "multi-registry push policy"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_057",
       "id": "DOCKER-057",
@@ -911,7 +911,7 @@
       "title": "downloaded asset digest pinning"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_058",
       "id": "DOCKER-058",
@@ -925,7 +925,7 @@
       "title": "vendored binary declaration"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_059",
       "id": "DOCKER-059",
@@ -939,7 +939,7 @@
       "title": "curl pipe shell forbidden"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_060",
       "id": "DOCKER-060",
@@ -953,7 +953,7 @@
       "title": "dockerfile formatting"
     },
     {
-      "command": "bijux dev atlas contracts docker --mode static",
+      "command": "bijux dev atlas contract run --mode static --domain docker",
       "effects": [],
       "gate_id": "docker.contract.docker_061",
       "id": "DOCKER-061",

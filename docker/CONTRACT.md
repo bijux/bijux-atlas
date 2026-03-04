@@ -1,7 +1,7 @@
 # Docker Contract
 
 - Owner: `bijux-atlas-platform`
-- Enforced by: `bijux dev atlas contracts docker`
+- Enforced by: `bijux dev atlas contract run --domain docker`
 
 ## Contract Registry
 
@@ -336,69 +336,69 @@ Tests:
 
 | Contract | Gate | Command |
 | --- | --- | --- |
-| `DOCKER-000` | `docker.contract.docker_000` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-003` | `docker.contract.docker_003` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-004` | `docker.contract.docker_004` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-006` | `docker.contract.docker_006` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-007` | `docker.contract.docker_007` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-008` | `docker.contract.docker_008` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-009` | `docker.contract.docker_009` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-010` | `docker.contract.docker_010` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-011` | `docker.contract.docker_011` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-012` | `docker.contract.docker_012` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-013` | `docker.contract.docker_013` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-014` | `docker.contract.docker_014` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-015` | `docker.contract.docker_015` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-016` | `docker.contract.docker_016` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-017` | `docker.contract.docker_017` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-018` | `docker.contract.docker_018` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-019` | `docker.contract.docker_019` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-020` | `docker.contract.docker_020` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-021` | `docker.contract.docker_021` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-022` | `docker.contract.docker_022` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-023` | `docker.contract.docker_023` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-024` | `docker.contract.docker_024` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-025` | `docker.contract.docker_025` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-026` | `docker.contract.docker_026` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-027` | `docker.contract.docker_027` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-028` | `docker.contract.docker_028` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-029` | `docker.contract.docker_029` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-030` | `docker.contract.docker_030` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-031` | `docker.contract.docker_031` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-032` | `docker.contract.docker_032` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-033` | `docker.contract.docker_033` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-034` | `docker.contract.docker_034` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-035` | `docker.contract.docker_035` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-036` | `docker.contract.docker_036` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-100` | `docker.contract.docker_100` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
-| `DOCKER-101` | `docker.contract.docker_101` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
-| `DOCKER-102` | `docker.contract.docker_102` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
-| `DOCKER-103` | `docker.contract.docker_103` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-network --allow-docker-daemon` |
-| `DOCKER-037` | `docker.contract.docker_037` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
-| `DOCKER-038` | `docker.contract.docker_038` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
-| `DOCKER-039` | `docker.contract.docker_039` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
-| `DOCKER-040` | `docker.contract.docker_040` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
-| `DOCKER-041` | `docker.contract.docker_041` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
-| `DOCKER-042` | `docker.contract.docker_042` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-network --allow-docker-daemon` |
-| `DOCKER-043` | `docker.contract.docker_043` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-network --allow-docker-daemon` |
-| `DOCKER-044` | `docker.contract.docker_044` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-045` | `docker.contract.docker_045` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-046` | `docker.contract.docker_046` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-047` | `docker.contract.docker_047` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-048` | `docker.contract.docker_048` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-049` | `docker.contract.docker_049` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-050` | `docker.contract.docker_050` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-051` | `docker.contract.docker_051` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-052` | `docker.contract.docker_052` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-053` | `docker.contract.docker_053` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-054` | `docker.contract.docker_054` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-055` | `docker.contract.docker_055` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-056` | `docker.contract.docker_056` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-057` | `docker.contract.docker_057` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-058` | `docker.contract.docker_058` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-059` | `docker.contract.docker_059` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-060` | `docker.contract.docker_060` | `bijux dev atlas contracts docker --mode static` |
-| `DOCKER-061` | `docker.contract.docker_061` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-000` | `docker.contract.docker_000` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-003` | `docker.contract.docker_003` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-004` | `docker.contract.docker_004` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-006` | `docker.contract.docker_006` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-007` | `docker.contract.docker_007` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-008` | `docker.contract.docker_008` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-009` | `docker.contract.docker_009` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-010` | `docker.contract.docker_010` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-011` | `docker.contract.docker_011` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-012` | `docker.contract.docker_012` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-013` | `docker.contract.docker_013` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-014` | `docker.contract.docker_014` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-015` | `docker.contract.docker_015` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-016` | `docker.contract.docker_016` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-017` | `docker.contract.docker_017` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-018` | `docker.contract.docker_018` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-019` | `docker.contract.docker_019` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-020` | `docker.contract.docker_020` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-021` | `docker.contract.docker_021` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-022` | `docker.contract.docker_022` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-023` | `docker.contract.docker_023` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-024` | `docker.contract.docker_024` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-025` | `docker.contract.docker_025` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-026` | `docker.contract.docker_026` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-027` | `docker.contract.docker_027` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-028` | `docker.contract.docker_028` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-029` | `docker.contract.docker_029` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-030` | `docker.contract.docker_030` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-031` | `docker.contract.docker_031` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-032` | `docker.contract.docker_032` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-033` | `docker.contract.docker_033` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-034` | `docker.contract.docker_034` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-035` | `docker.contract.docker_035` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-036` | `docker.contract.docker_036` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-100` | `docker.contract.docker_100` | `bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-101` | `docker.contract.docker_101` | `bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-102` | `docker.contract.docker_102` | `bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-103` | `docker.contract.docker_103` | `bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-network --allow-docker-daemon` |
+| `DOCKER-037` | `docker.contract.docker_037` | `bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-038` | `docker.contract.docker_038` | `bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-039` | `docker.contract.docker_039` | `bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-040` | `docker.contract.docker_040` | `bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-041` | `docker.contract.docker_041` | `bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-042` | `docker.contract.docker_042` | `bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-network --allow-docker-daemon` |
+| `DOCKER-043` | `docker.contract.docker_043` | `bijux dev atlas contract run --mode effect --domain docker --allow-subprocess --allow-network --allow-docker-daemon` |
+| `DOCKER-044` | `docker.contract.docker_044` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-045` | `docker.contract.docker_045` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-046` | `docker.contract.docker_046` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-047` | `docker.contract.docker_047` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-048` | `docker.contract.docker_048` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-049` | `docker.contract.docker_049` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-050` | `docker.contract.docker_050` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-051` | `docker.contract.docker_051` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-052` | `docker.contract.docker_052` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-053` | `docker.contract.docker_053` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-054` | `docker.contract.docker_054` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-055` | `docker.contract.docker_055` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-056` | `docker.contract.docker_056` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-057` | `docker.contract.docker_057` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-058` | `docker.contract.docker_058` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-059` | `docker.contract.docker_059` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-060` | `docker.contract.docker_060` | `bijux dev atlas contract run --mode static --domain docker` |
+| `DOCKER-061` | `docker.contract.docker_061` | `bijux dev atlas contract run --mode static --domain docker` |
 
 ## Rule
 
