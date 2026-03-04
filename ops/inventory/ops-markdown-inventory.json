@@ -1,7 +1,17 @@
 {
   "schema_version": 1,
   "owner": "bijux-atlas-operations",
-  "description": "Classification of markdown files under ops/ surface.",
+  "description": "Current markdown inventory under ops/ with SSOT class assignment.",
+  "totals": {
+    "markdown_files": 63,
+    "by_class": {
+      "spec": 53,
+      "runbook": 2,
+      "evidence": 4,
+      "policy": 3,
+      "stub": 1
+    }
+  },
   "entries": [
     {
       "path": "ops/CONTRACT.md",
@@ -255,5 +265,6 @@
       "path": "ops/stack/REQUIRED_FILES.md",
       "class": "spec"
     }
-  ]
+  ],
+  "narrative_files": []
 }
