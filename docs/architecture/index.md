@@ -42,6 +42,7 @@ Describe how Atlas is structured so contributors and operators share one durable
 - [Distributed cluster foundation](distributed-cluster-foundation.md)
 - [Cluster topology](cluster-topology.md)
 - [Cluster membership lifecycle](cluster-membership-lifecycle.md)
+- [Shard routing foundation](shard-routing-foundation.md)
 - [Storage](storage.md)
 - [Security auth model](security/auth-model.md)
 - [Performance model](performance-model.md)
