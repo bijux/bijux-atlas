@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "id": "boot-invalid-config",
+  "failure_mode": "simulate-config-parse-error",
+  "failure_expected": true,
+  "expected_behavior": "boot fails with explicit parse diagnostics",
+  "recommended_action": "fix config and rerun validation before boot"
+}

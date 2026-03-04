@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "id": "query-crash-cache-integrity",
+  "failure_mode": "kill-process-mid-query",
+  "failure_expected": true,
+  "expected_behavior": "query crash does not corrupt cache metadata",
+  "recommended_action": "restart query runtime and verify cache manifest"
+}

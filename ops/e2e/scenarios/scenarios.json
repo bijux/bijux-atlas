@@ -16,6 +16,34 @@
       "evidence_class": "fast"
     },
     {
+      "id": "boot-invalid-config",
+      "description": "Boot with invalid config fails fast with clear diagnostics.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario boot-invalid-config",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "resilience",
+      "evidence_class": "fast"
+    },
+    {
+      "id": "boot-missing-artifact",
+      "description": "Boot with missing artifact fails fast and reports missing input.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario boot-missing-artifact",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "resilience",
+      "evidence_class": "fast"
+    },
+    {
       "id": "cold-start",
       "description": "Empty cache cold-start behavior and first-request latency.",
       "action_id": "ops.e2e.run",
@@ -30,6 +58,34 @@
       "evidence_class": "slow"
     },
     {
+      "id": "corrupted-shard-isolation",
+      "description": "Corrupted shard triggers integrity alarm and isolation behavior.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario corrupted-shard-isolation",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "security",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "disk-full-controlled-failure",
+      "description": "Disk full condition triggers controlled write failure with diagnostics.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario disk-full-controlled-failure",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "resilience",
+      "evidence_class": "slow"
+    },
+    {
       "id": "high-concurrency",
       "description": "High parallel query load verifies concurrency correctness and stability.",
       "action_id": "ops.e2e.run",
@@ -41,6 +97,20 @@
         "load": true
       },
       "intent": "performance",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "ingest-crash-partial-state",
+      "description": "Ingest crash path avoids silent partial state and records failure evidence.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario ingest-crash-partial-state",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "resilience",
       "evidence_class": "slow"
     },
     {
@@ -156,6 +226,20 @@
       "evidence_class": "fast"
     },
     {
+      "id": "out-of-memory-crash-report",
+      "description": "Out-of-memory path emits structured crash evidence.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario out-of-memory-crash-report",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "resilience",
+      "evidence_class": "slow"
+    },
+    {
       "id": "perf-e2e",
       "description": "Perf-oriented end-to-end scenario composing load suites with stack and datasets.",
       "action_id": "ops.load.run",
@@ -167,6 +251,20 @@
         "load": true
       },
       "intent": "performance",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "query-crash-cache-integrity",
+      "description": "Query crash path preserves cache integrity and reports recovery guidance.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario query-crash-cache-integrity",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": false
+      },
+      "intent": "resilience",
       "evidence_class": "slow"
     },
     {
@@ -226,6 +324,20 @@
       "evidence_class": "slow"
     },
     {
+      "id": "repeated-bad-requests-rate-limited",
+      "description": "Repeated bad requests trigger rate-limited logging behavior.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario repeated-bad-requests-rate-limited",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": true
+      },
+      "intent": "resilience",
+      "evidence_class": "fast"
+    },
+    {
       "id": "restart-resume",
       "description": "Runtime restart resumes expected state without corruption.",
       "action_id": "ops.e2e.run",
@@ -280,6 +392,20 @@
       },
       "intent": "compatibility",
       "evidence_class": "slow"
+    },
+    {
+      "id": "slow-query-warning-metric",
+      "description": "Slow query path emits warning and increments latency metric.",
+      "action_id": "ops.scenario.run",
+      "entrypoint": "bijux dev atlas ops scenario run --scenario slow-query-warning-metric",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": true,
+        "load": true
+      },
+      "intent": "performance",
+      "evidence_class": "fast"
     },
     {
       "id": "smoke",

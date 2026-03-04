@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "id": "ingest-crash-partial-state",
+  "failure_mode": "kill-process-mid-ingest",
+  "failure_expected": true,
+  "expected_behavior": "ingest crash leaves no silent partial success and reports failure state",
+  "recommended_action": "restart ingest from last verified checkpoint"
+}

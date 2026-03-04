@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "id": "corrupted-shard-isolation",
+  "failure_mode": "corrupt-shard-file",
+  "failure_expected": true,
+  "expected_behavior": "corrupted shard is isolated and integrity alarm is emitted",
+  "recommended_action": "quarantine shard and recover from healthy replica"
+}

@@ -7,7 +7,27 @@
       "max_duration_seconds": 600
     },
     {
+      "scenario_id": "boot-invalid-config",
+      "must_pass": true,
+      "max_duration_seconds": 600
+    },
+    {
+      "scenario_id": "boot-missing-artifact",
+      "must_pass": true,
+      "max_duration_seconds": 600
+    },
+    {
       "scenario_id": "cold-start",
+      "must_pass": true,
+      "max_duration_seconds": 1200
+    },
+    {
+      "scenario_id": "corrupted-shard-isolation",
+      "must_pass": true,
+      "max_duration_seconds": 1200
+    },
+    {
+      "scenario_id": "disk-full-controlled-failure",
       "must_pass": true,
       "max_duration_seconds": 1200
     },
@@ -15,6 +35,11 @@
       "scenario_id": "high-concurrency",
       "must_pass": true,
       "max_duration_seconds": 2400
+    },
+    {
+      "scenario_id": "ingest-crash-partial-state",
+      "must_pass": true,
+      "max_duration_seconds": 1200
     },
     {
       "scenario_id": "ingest-retry",
@@ -57,9 +82,19 @@
       "max_duration_seconds": 1200
     },
     {
+      "scenario_id": "out-of-memory-crash-report",
+      "must_pass": true,
+      "max_duration_seconds": 1200
+    },
+    {
       "scenario_id": "perf-e2e",
       "must_pass": true,
       "max_duration_seconds": 2400
+    },
+    {
+      "scenario_id": "query-crash-cache-integrity",
+      "must_pass": true,
+      "max_duration_seconds": 1200
     },
     {
       "scenario_id": "query-filter-projection",
@@ -82,6 +117,11 @@
       "max_duration_seconds": 1200
     },
     {
+      "scenario_id": "repeated-bad-requests-rate-limited",
+      "must_pass": true,
+      "max_duration_seconds": 1200
+    },
+    {
       "scenario_id": "restart-resume",
       "must_pass": true,
       "max_duration_seconds": 1200
@@ -98,6 +138,11 @@
     },
     {
       "scenario_id": "schema-evolution",
+      "must_pass": true,
+      "max_duration_seconds": 1200
+    },
+    {
+      "scenario_id": "slow-query-warning-metric",
       "must_pass": true,
       "max_duration_seconds": 1200
     },

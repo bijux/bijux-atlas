@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "id": "repeated-bad-requests-rate-limited",
+  "failure_mode": "simulate-downstream-timeout",
+  "failure_expected": false,
+  "expected_behavior": "bad request storms produce rate-limited logs",
+  "recommended_action": "apply request throttling and inspect client behavior"
+}

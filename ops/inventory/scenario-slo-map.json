@@ -12,6 +12,26 @@
       "load_suites": []
     },
     {
+      "scenario_id": "boot-invalid-config",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.upgrade"
+      ],
+      "load_suites": []
+    },
+    {
+      "scenario_id": "boot-missing-artifact",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.store_outage"
+      ],
+      "load_suites": []
+    },
+    {
       "scenario_id": "cold-start",
       "slo_ids": [
         "api.availability",
@@ -26,6 +46,30 @@
       ]
     },
     {
+      "scenario_id": "corrupted-shard-isolation",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.store_outage"
+      ],
+      "load_suites": [
+        "mixed"
+      ]
+    },
+    {
+      "scenario_id": "disk-full-controlled-failure",
+      "slo_ids": [
+        "ingest.success_rate"
+      ],
+      "drill_ids": [
+        "ops.drill.memory_growth"
+      ],
+      "load_suites": [
+        "ingest-query-workload"
+      ]
+    },
+    {
       "scenario_id": "high-concurrency",
       "slo_ids": [
         "api.availability",
@@ -37,6 +81,18 @@
       "load_suites": [
         "mixed-workload",
         "spike"
+      ]
+    },
+    {
+      "scenario_id": "ingest-crash-partial-state",
+      "slo_ids": [
+        "ingest.success_rate"
+      ],
+      "drill_ids": [
+        "ops.drill.store_outage"
+      ],
+      "load_suites": [
+        "ingest-query-workload"
       ]
     },
     {
@@ -138,6 +194,18 @@
       "load_suites": []
     },
     {
+      "scenario_id": "out-of-memory-crash-report",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.memory_growth"
+      ],
+      "load_suites": [
+        "cheap-only-survival"
+      ]
+    },
+    {
       "scenario_id": "perf-e2e",
       "slo_ids": [
         "api.availability",
@@ -151,6 +219,18 @@
         "mixed-workload",
         "heavy-query-workload",
         "long-running-stability"
+      ]
+    },
+    {
+      "scenario_id": "query-crash-cache-integrity",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.pod_churn"
+      ],
+      "load_suites": [
+        "pod-churn"
       ]
     },
     {
@@ -200,6 +280,18 @@
       ]
     },
     {
+      "scenario_id": "repeated-bad-requests-rate-limited",
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.overload"
+      ],
+      "load_suites": [
+        "spike"
+      ]
+    },
+    {
       "scenario_id": "restart-resume",
       "slo_ids": [
         "api.availability"
@@ -245,6 +337,18 @@
       ],
       "load_suites": [
         "multi-release"
+      ]
+    },
+    {
+      "scenario_id": "slow-query-warning-metric",
+      "slo_ids": [
+        "api.p95_latency"
+      ],
+      "drill_ids": [
+        "ops.drill.overload"
+      ],
+      "load_suites": [
+        "mixed-workload"
       ]
     },
     {

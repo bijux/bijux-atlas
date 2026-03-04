@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "contract_id": "failure-scenarios",
+  "required_evidence": [
+    "result.json",
+    "summary.md",
+    "failure-classification.json",
+    "metrics-snapshot.json",
+    "config-snapshot.json",
+    "logs-snapshot.txt"
+  ],
+  "required_fields": [
+    "failure_expected",
+    "failure_mode",
+    "recommended_action"
+  ]
+}

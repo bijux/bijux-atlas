@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "catalog_id": "ops-e2e-failure-injection",
+  "mechanisms": [
+    {
+      "id": "kill-process-mid-ingest",
+      "description": "Terminate ingest worker during write path",
+      "expected_behavior": "system marks ingest run failed with no silent partial success",
+      "severity": "high"
+    },
+    {
+      "id": "kill-process-mid-query",
+      "description": "Terminate query worker while serving requests",
+      "expected_behavior": "service restart required and cache integrity preserved",
+      "severity": "medium"
+    },
+    {
+      "id": "corrupt-shard-file",
+      "description": "Inject shard payload corruption in test mode",
+      "expected_behavior": "integrity detector isolates shard and reports alarm",
+      "severity": "high"
+    },
+    {
+      "id": "simulate-disk-full",
+      "description": "Reject writes with ENOSPC semantics",
+      "expected_behavior": "write path exits with controlled failure and evidence bundle",
+      "severity": "high"
+    },
+    {
+      "id": "simulate-read-only-filesystem",
+      "description": "Reject write attempts as read-only filesystem",
+      "expected_behavior": "startup or ingest exits with explicit readonly diagnostics",
+      "severity": "high"
+    },
+    {
+      "id": "simulate-network-partition",
+      "description": "Break control/data-plane connectivity in clustered tests",
+      "expected_behavior": "timeouts and degraded mode are reported without data corruption",
+      "severity": "medium"
+    },
+    {
+      "id": "simulate-downstream-timeout",
+      "description": "Force dependency timeout in external call path",
+      "expected_behavior": "operation retries or fails with bounded latency",
+      "severity": "medium"
+    },
+    {
+      "id": "simulate-config-parse-error",
+      "description": "Inject invalid config payload on boot",
+      "expected_behavior": "boot fails fast with parse diagnostics",
+      "severity": "high"
+    },
+    {
+      "id": "simulate-missing-artifact",
+      "description": "Remove required artifact before boot",
+      "expected_behavior": "boot fails fast with missing artifact diagnostics",
+      "severity": "high"
+    },
+    {
+      "id": "simulate-out-of-memory",
+      "description": "Constrain process memory until allocator failure path is exercised",
+      "expected_behavior": "runtime emits structured crash report before exit",
+      "severity": "high"
+    }
+  ]
+}

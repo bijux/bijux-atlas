@@ -10,6 +10,22 @@
       ]
     },
     {
+      "scenario_id": "boot-invalid-config",
+      "covers": [
+        "datasets",
+        "observe",
+        "stack"
+      ]
+    },
+    {
+      "scenario_id": "boot-missing-artifact",
+      "covers": [
+        "datasets",
+        "observe",
+        "stack"
+      ]
+    },
+    {
       "scenario_id": "cold-start",
       "covers": [
         "datasets",
@@ -19,10 +35,34 @@
       ]
     },
     {
+      "scenario_id": "corrupted-shard-isolation",
+      "covers": [
+        "datasets",
+        "observe",
+        "stack"
+      ]
+    },
+    {
+      "scenario_id": "disk-full-controlled-failure",
+      "covers": [
+        "datasets",
+        "observe",
+        "stack"
+      ]
+    },
+    {
       "scenario_id": "high-concurrency",
       "covers": [
         "datasets",
         "load",
+        "observe",
+        "stack"
+      ]
+    },
+    {
+      "scenario_id": "ingest-crash-partial-state",
+      "covers": [
+        "datasets",
         "observe",
         "stack"
       ]
@@ -92,10 +132,26 @@
       ]
     },
     {
+      "scenario_id": "out-of-memory-crash-report",
+      "covers": [
+        "datasets",
+        "observe",
+        "stack"
+      ]
+    },
+    {
       "scenario_id": "perf-e2e",
       "covers": [
         "datasets",
         "load",
+        "observe",
+        "stack"
+      ]
+    },
+    {
+      "scenario_id": "query-crash-cache-integrity",
+      "covers": [
+        "datasets",
         "observe",
         "stack"
       ]
@@ -130,6 +186,15 @@
       ]
     },
     {
+      "scenario_id": "repeated-bad-requests-rate-limited",
+      "covers": [
+        "datasets",
+        "load",
+        "observe",
+        "stack"
+      ]
+    },
+    {
       "scenario_id": "restart-resume",
       "covers": [
         "datasets",
@@ -157,6 +222,15 @@
       "scenario_id": "schema-evolution",
       "covers": [
         "datasets",
+        "observe",
+        "stack"
+      ]
+    },
+    {
+      "scenario_id": "slow-query-warning-metric",
+      "covers": [
+        "datasets",
+        "load",
         "observe",
         "stack"
       ]

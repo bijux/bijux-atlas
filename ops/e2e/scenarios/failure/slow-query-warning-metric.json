@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "id": "slow-query-warning-metric",
+  "failure_mode": "simulate-downstream-timeout",
+  "failure_expected": false,
+  "expected_behavior": "slow query emits warning and increments latency violation metric",
+  "recommended_action": "inspect query plan and tune index or cache policy"
+}

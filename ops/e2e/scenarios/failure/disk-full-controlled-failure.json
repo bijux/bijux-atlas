@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "id": "disk-full-controlled-failure",
+  "failure_mode": "simulate-disk-full",
+  "failure_expected": true,
+  "expected_behavior": "write path fails in controlled mode with actionable evidence",
+  "recommended_action": "free disk capacity and resume ingest"
+}

@@ -8,6 +8,18 @@
       ]
     },
     {
+      "scenario_id": "boot-invalid-config",
+      "required_tools": [
+        "bijux-dev-atlas"
+      ]
+    },
+    {
+      "scenario_id": "boot-missing-artifact",
+      "required_tools": [
+        "bijux-dev-atlas"
+      ]
+    },
+    {
       "scenario_id": "cold-start",
       "required_tools": [
         "bijux-dev-atlas",
@@ -15,10 +27,28 @@
       ]
     },
     {
+      "scenario_id": "corrupted-shard-isolation",
+      "required_tools": [
+        "bijux-dev-atlas"
+      ]
+    },
+    {
+      "scenario_id": "disk-full-controlled-failure",
+      "required_tools": [
+        "bijux-dev-atlas"
+      ]
+    },
+    {
       "scenario_id": "high-concurrency",
       "required_tools": [
         "bijux-dev-atlas",
         "k6"
+      ]
+    },
+    {
+      "scenario_id": "ingest-crash-partial-state",
+      "required_tools": [
+        "bijux-dev-atlas"
       ]
     },
     {
@@ -73,10 +103,22 @@
       ]
     },
     {
+      "scenario_id": "out-of-memory-crash-report",
+      "required_tools": [
+        "bijux-dev-atlas"
+      ]
+    },
+    {
       "scenario_id": "perf-e2e",
       "required_tools": [
         "bijux-dev-atlas",
         "k6"
+      ]
+    },
+    {
+      "scenario_id": "query-crash-cache-integrity",
+      "required_tools": [
+        "bijux-dev-atlas"
       ]
     },
     {
@@ -104,6 +146,13 @@
       ]
     },
     {
+      "scenario_id": "repeated-bad-requests-rate-limited",
+      "required_tools": [
+        "bijux-dev-atlas",
+        "k6"
+      ]
+    },
+    {
       "scenario_id": "restart-resume",
       "required_tools": [
         "bijux-dev-atlas"
@@ -125,6 +174,13 @@
       "scenario_id": "schema-evolution",
       "required_tools": [
         "bijux-dev-atlas"
+      ]
+    },
+    {
+      "scenario_id": "slow-query-warning-metric",
+      "required_tools": [
+        "bijux-dev-atlas",
+        "k6"
       ]
     },
     {

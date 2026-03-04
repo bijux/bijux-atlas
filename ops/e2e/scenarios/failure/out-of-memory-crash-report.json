@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "id": "out-of-memory-crash-report",
+  "failure_mode": "simulate-out-of-memory",
+  "failure_expected": true,
+  "expected_behavior": "oom path emits structured crash report when termination is unavoidable",
+  "recommended_action": "increase memory budget and apply low-resource profile tuning"
+}
