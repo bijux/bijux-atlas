@@ -2700,6 +2700,43 @@ pub(crate) fn run_governance_command(
             Ok((rendered, code))
         }
         GovernanceCommand::Exceptions { command } => match command {
+            GovernanceExceptionsCommand::List {
+                repo_root,
+                format,
+                out,
+            } => {
+                let root = resolve_repo_root(repo_root)?;
+                let registry_path = exceptions_registry_path(&root);
+                let registry: ExceptionsRegistry = read_yaml_file(&registry_path)?;
+                let today = current_utc_day()?;
+                let rows = registry
+                    .exceptions
+                    .into_iter()
+                    .map(|item| {
+                        let expires = date_days(&item.expires_at).ok();
+                        serde_json::json!({
+                            "id": item.id,
+                            "scope": {"kind": item.scope.kind, "id": item.scope.id},
+                            "severity": item.severity,
+                            "owner": item.owner,
+                            "created_at": item.created_at,
+                            "expires_at": item.expires_at,
+                            "days_to_expiry": expires.map(|value| value - today),
+                            "reason": item.reason,
+                        })
+                    })
+                    .collect::<Vec<_>>();
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "kind": "governance_exceptions_list",
+                    "status": "ok",
+                    "count": rows.len(),
+                    "exceptions": rows,
+                    "registry": registry_path.strip_prefix(&root).unwrap_or(&registry_path).display().to_string(),
+                });
+                let rendered = emit_payload(format, out, &payload)?;
+                Ok((rendered, 0))
+            }
             GovernanceExceptionsCommand::Validate {
                 repo_root,
                 format,
