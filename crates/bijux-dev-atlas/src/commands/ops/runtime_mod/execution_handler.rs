@@ -35,6 +35,17 @@ struct UpgradeScenarioSpec {
     steps: Vec<String>,
 }
 
+#[derive(Debug, Deserialize)]
+struct FailureScenarioSpec {
+    schema_version: u64,
+    id: String,
+    failure_mode: String,
+    #[serde(default)]
+    failure_expected: bool,
+    expected_behavior: String,
+    recommended_action: String,
+}
+
 fn deterministic_scenario_run_id(scenario_id: &str, mode: &str) -> String {
     let digest = sha256_hex(&format!("scenario::{scenario_id}::{mode}"));
     digest.chars().take(12).collect()
@@ -53,6 +64,38 @@ fn load_upgrade_spec(
     let raw = std::fs::read_to_string(&path)
         .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     let parsed: UpgradeScenarioSpec = serde_json::from_str(&raw)
+        .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    if parsed.schema_version != 1 {
+        return Err(format!(
+            "{}: expected schema_version=1, got {}",
+            path.display(),
+            parsed.schema_version
+        ));
+    }
+    if parsed.id != scenario_id {
+        return Err(format!(
+            "{}: scenario id mismatch (`{}` vs `{}`)",
+            path.display(),
+            parsed.id,
+            scenario_id
+        ));
+    }
+    Ok(Some(parsed))
+}
+
+fn load_failure_spec(
+    repo_root: &std::path::Path,
+    scenario_id: &str,
+) -> Result<Option<FailureScenarioSpec>, String> {
+    let path = repo_root
+        .join("ops/e2e/scenarios/failure")
+        .join(format!("{scenario_id}.json"));
+    if !path.exists() {
+        return Ok(None);
+    }
+    let raw = std::fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let parsed: FailureScenarioSpec = serde_json::from_str(&raw)
         .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
     if parsed.schema_version != 1 {
         return Err(format!(
@@ -337,6 +380,7 @@ pub(super) fn dispatch_execution(
                     "execute"
                 };
                 let upgrade_spec = load_upgrade_spec(&repo_root, &scenario.id)?;
+                let failure_spec = load_failure_spec(&repo_root, &scenario.id)?;
                 let run_id = deterministic_scenario_run_id(&scenario.id, mode);
                 let evidence_dir_rel = format!("artifacts/ops/scenarios/{}/{run_id}", scenario.id);
                 let evidence_files = vec![
@@ -356,6 +400,12 @@ pub(super) fn dispatch_execution(
                 let rollback_files = vec![
                     format!("{evidence_dir_rel}/rollback-restore-validation.json"),
                     format!("{evidence_dir_rel}/rollback-query-correctness.json"),
+                ];
+                let failure_evidence_files = vec![
+                    format!("{evidence_dir_rel}/failure-classification.json"),
+                    format!("{evidence_dir_rel}/metrics-snapshot.json"),
+                    format!("{evidence_dir_rel}/config-snapshot.json"),
+                    format!("{evidence_dir_rel}/logs-snapshot.txt"),
                 ];
                 if args.evidence {
                     if !common.allow_write {
@@ -383,7 +433,7 @@ pub(super) fn dispatch_execution(
                         "status": "pass",
                         "started_at_utc": now,
                         "completed_at_utc": now,
-                        "summary": "scenario completed in deterministic evidence mode",
+                        "summary": if failure_spec.is_some() { "failure scenario completed in deterministic evidence mode" } else { "scenario completed in deterministic evidence mode" },
                         "prerequisites": ["ops/e2e/scenarios/scenarios.json", "ops/e2e/scenarios/version-compatibility.json", "ops/e2e/scenarios/result-schema.json"],
                         "metrics": {"duration_ms": 0, "checks_passed": 1, "checks_failed": 0},
                         "evidence": {"directory": evidence_dir_rel, "files": evidence_files},
@@ -450,6 +500,62 @@ pub(super) fn dispatch_execution(
                             })?;
                         }
                     }
+                    if let Some(spec) = &failure_spec {
+                        let classification_path = repo_root.join(&failure_evidence_files[0]);
+                        let metrics_path = repo_root.join(&failure_evidence_files[1]);
+                        let config_path = repo_root.join(&failure_evidence_files[2]);
+                        let logs_path = repo_root.join(&failure_evidence_files[3]);
+                        std::fs::write(
+                            &classification_path,
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "schema_version": 1,
+                                "scenario_id": args.scenario,
+                                "run_id": run_id,
+                                "failure_mode": spec.failure_mode,
+                                "failure_expected": spec.failure_expected,
+                                "expected_behavior": spec.expected_behavior,
+                                "recommended_action": spec.recommended_action,
+                                "classification": if spec.failure_expected { "controlled-failure" } else { "degraded-success" }
+                            }))
+                            .map_err(|err| OpsCommandError::Manifest(format!("failed to encode failure classification {}: {err}", classification_path.display())).to_stable_message())?,
+                        )
+                        .map_err(|err| OpsCommandError::Manifest(format!("failed to write failure classification {}: {err}", classification_path.display())).to_stable_message())?;
+                        std::fs::write(
+                            &metrics_path,
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "schema_version": 1,
+                                "scenario_id": args.scenario,
+                                "run_id": run_id,
+                                "metrics": {
+                                    "error_rate": if spec.failure_expected { 1.0 } else { 0.05 },
+                                    "warning_count": if spec.failure_expected { 1 } else { 3 },
+                                    "latency_violation_count": if spec.failure_mode == "simulate-downstream-timeout" { 1 } else { 0 }
+                                }
+                            }))
+                            .map_err(|err| OpsCommandError::Manifest(format!("failed to encode metrics snapshot {}: {err}", metrics_path.display())).to_stable_message())?,
+                        )
+                        .map_err(|err| OpsCommandError::Manifest(format!("failed to write metrics snapshot {}: {err}", metrics_path.display())).to_stable_message())?;
+                        std::fs::write(
+                            &config_path,
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "schema_version": 1,
+                                "scenario_id": args.scenario,
+                                "run_id": run_id,
+                                "snapshot": "deterministic",
+                                "profile": common.profile
+                            }))
+                            .map_err(|err| OpsCommandError::Manifest(format!("failed to encode config snapshot {}: {err}", config_path.display())).to_stable_message())?,
+                        )
+                        .map_err(|err| OpsCommandError::Manifest(format!("failed to write config snapshot {}: {err}", config_path.display())).to_stable_message())?;
+                        std::fs::write(
+                            &logs_path,
+                            format!(
+                                "level=ERROR scenario={} run_id={} failure_mode={} recommended_action=\"{}\"\n",
+                                args.scenario, run_id, spec.failure_mode, spec.recommended_action
+                            ),
+                        )
+                        .map_err(|err| OpsCommandError::Manifest(format!("failed to write logs snapshot {}: {err}", logs_path.display())).to_stable_message())?;
+                    }
                     if scenario.id.starts_with("rollback-") {
                         for rel in &rollback_files {
                             let path = repo_root.join(rel);
@@ -499,6 +605,9 @@ pub(super) fn dispatch_execution(
                         "run_id": run_id,
                         "compose": scenario.compose,
                         "versioned_install": versioned_install,
+                        "failure_mode": failure_spec.as_ref().map(|spec| spec.failure_mode.clone()),
+                        "failure_expected": failure_spec.as_ref().map(|spec| spec.failure_expected),
+                        "recommended_action": failure_spec.as_ref().map(|spec| spec.recommended_action.clone()),
                         "upgrade_step": upgrade_spec.as_ref().map(|spec| spec.steps.contains(&"upgrade".to_string())).unwrap_or(false),
                         "rollback_step": upgrade_spec.as_ref().map(|spec| spec.steps.contains(&"rollback".to_string())).unwrap_or(false),
                         "scenario_steps": upgrade_spec.as_ref().map(|spec| spec.steps.clone()).unwrap_or_default(),
@@ -506,6 +615,7 @@ pub(super) fn dispatch_execution(
                         "required_evidence_files": evidence_files,
                         "before_after_evidence_files": if upgrade_spec.is_some() { before_after_files } else { Vec::<String>::new() },
                         "rollback_evidence_files": if scenario.id.starts_with("rollback-") { rollback_files } else { Vec::<String>::new() },
+                        "failure_evidence_files": if failure_spec.is_some() { failure_evidence_files } else { Vec::<String>::new() },
                     }],
                     "summary": {"total": 1, "errors": 0, "warnings": 0}
                 });
