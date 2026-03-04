@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "dataset_id": "atlas-default",
+  "layout": {
+    "shard_count": 4,
+    "partition_hint": "range-key"
+  },
+  "ownership_rule": {
+    "min_owner_count": 1,
+    "allow_owner_transfer": true
+  },
+  "shards": [
+    {
+      "shard_id": "atlas-default-s001",
+      "key_range_start": "k000",
+      "key_range_end": "k099",
+      "owner_node_id": "node-a",
+      "replica_node_ids": ["node-b"]
+    },
+    {
+      "shard_id": "atlas-default-s002",
+      "key_range_start": "k100",
+      "key_range_end": "k199",
+      "owner_node_id": "node-b",
+      "replica_node_ids": ["node-a"]
+    }
+  ]
+}

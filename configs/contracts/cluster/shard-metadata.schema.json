@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/cluster/shard-metadata.schema.json",
+  "title": "Cluster Shard Metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "dataset_id", "layout", "ownership_rule", "shards"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "dataset_id": {"type": "string", "minLength": 1},
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["shard_count", "partition_hint"],
+      "properties": {
+        "shard_count": {"type": "integer", "minimum": 1},
+        "partition_hint": {"type": "string", "minLength": 1}
+      }
+    },
+    "ownership_rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min_owner_count", "allow_owner_transfer"],
+      "properties": {
+        "min_owner_count": {"type": "integer", "minimum": 1},
+        "allow_owner_transfer": {"type": "boolean"}
+      }
+    },
+    "shards": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "shard_id",
+          "key_range_start",
+          "key_range_end",
+          "owner_node_id",
+          "replica_node_ids"
+        ],
+        "properties": {
+          "shard_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,62}$"},
+          "key_range_start": {"type": "string", "minLength": 1},
+          "key_range_end": {"type": "string", "minLength": 1},
+          "owner_node_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,62}$"},
+          "replica_node_ids": {
+            "type": "array",
+            "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,62}$"},
+            "uniqueItems": true
+          }
+        }
+      }
+    }
+  }
+}
