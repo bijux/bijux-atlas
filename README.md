@@ -183,3 +183,44 @@ flowchart LR
     V --> P[Package Release Bundle]
     P --> U[Publish and Operate]
 ```
+
+## Development Workflow
+1. Change code, configs, docs, or ops surfaces in bounded commits.
+2. Run targeted checks/contracts for affected domains.
+3. Run full quality gates before merge (`make test-all`, `make contract-all`, `make checks-all`).
+4. Regenerate governed artifacts through control-plane commands, not manual edits.
+5. Merge only when deterministic outputs and required governance evidence are clean.
+
+## Testing Philosophy
+- Determinism is a first-class test requirement, not an optional quality signal.
+- Contracts validate invariants at repository, runtime, and release boundaries.
+- Slow tests are explicitly tagged to keep default feedback loops fast and predictable.
+- Generated artifacts are treated as testable, governed outputs.
+- Failures must be actionable and tied to explicit policy or contract authority.
+
+## Governance Model
+Governance is encoded as executable contracts, checks, and policy registries. Changes to high-risk surfaces must preserve policy linkage, schema coverage, and evidence generation. Governance drift is detected as a build failure, not a post-merge review comment.
+
+## Ops Model
+Operations are profile-driven. Each profile defines safety posture, required resources, and policy boundaries. Ops workflows render manifests, validate constraints, and produce evidence artifacts to support release and audit readiness.
+
+## Release Model
+Releases are manifest-based and artifact-centric. A release is defined by deterministic bundle composition, digest-backed artifact references, reproducibility checks, and contract-verified metadata integrity.
+
+## Performance Goals
+- Deterministic query behavior under governed profile constraints.
+- Bounded control-plane execution times for core validation lanes.
+- Profile-aware scalability rules for production-oriented deployments.
+- Reproducible performance evidence captured in release and ops artifacts.
+
+## Reliability Goals
+- Predictable behavior across repeated runs with the same inputs.
+- Controlled failure modes with explicit recovery workflows.
+- Release and operational evidence sufficient for institutional review.
+- Guardrails that prevent silent drift in critical surfaces.
+
+## Security Model
+- Policy-enforced boundaries for secrets, network, and execution effects.
+- Digest-pinned artifacts and governed dependency posture for release workflows.
+- Structured audit evidence for controls, checks, and contract enforcement.
+- Explicit disclosure, upgrade, and maintenance policy documentation in operations docs.
