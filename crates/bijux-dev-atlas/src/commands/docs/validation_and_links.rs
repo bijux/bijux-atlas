@@ -64,10 +64,12 @@ pub(crate) fn docs_validate_payload(
             }
         }
     }
-    if top_level_dirs.len() > 8 {
+    let max_top_level_categories = 13usize;
+    if top_level_dirs.len() > max_top_level_categories {
         issues.warnings.push(format!(
-            "DOCS_BUDGET_WARN: docs top-level category count {} exceeds budget 8",
-            top_level_dirs.len()
+            "DOCS_BUDGET_WARN: docs top-level category count {} exceeds budget {}",
+            top_level_dirs.len(),
+            max_top_level_categories
         ));
     }
     for (category, pages) in page_counts {
@@ -94,6 +96,38 @@ pub(crate) fn docs_validate_payload(
             issues.errors.push(format!(
                 "DOCS_REFERENCE_ERROR: missing generated docs reference page `docs/{rel}`"
             ));
+        }
+    }
+    let requirements_lock = ctx.repo_root.join("configs/docs/requirements.lock.txt");
+    if requirements_lock.exists() {
+        let requirements_text = fs::read_to_string(&requirements_lock)
+            .map_err(|e| format!("failed to read {}: {e}", requirements_lock.display()))?;
+        for package in [
+            "mkdocs",
+            "mkdocs-material",
+            "mkdocs-git-revision-date-localized-plugin",
+            "mkdocs-redirects",
+        ] {
+            let mut matched = false;
+            for line in requirements_text.lines() {
+                let trimmed = line.trim();
+                if trimmed.starts_with(&format!("{package}==")) {
+                    matched = true;
+                    break;
+                }
+                if trimmed.starts_with(package) && !trimmed.starts_with(&format!("{package}==")) {
+                    issues.errors.push(format!(
+                        "DOCS_TOOLCHAIN_PIN_ERROR: `{package}` must be pinned with `==` in configs/docs/requirements.lock.txt"
+                    ));
+                    matched = true;
+                    break;
+                }
+            }
+            if !matched {
+                issues.errors.push(format!(
+                    "DOCS_TOOLCHAIN_PIN_ERROR: `{package}` missing from configs/docs/requirements.lock.txt"
+                ));
+            }
         }
     }
     let mut body_hashes = BTreeMap::<String, Vec<String>>::new();

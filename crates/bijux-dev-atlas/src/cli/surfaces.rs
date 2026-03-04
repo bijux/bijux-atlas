@@ -124,6 +124,8 @@ pub enum DocsCommand {
     Check(DocsCommonArgs),
     VerifyContracts(DocsCommonArgs),
     Doctor(DocsCommonArgs),
+    DeployPlan(DocsCommonArgs),
+    PagesSmoke(DocsPagesSmokeArgs),
     Where(DocsCommonArgs),
     SiteDir(DocsCommonArgs),
     Validate(DocsCommonArgs),
@@ -147,10 +149,20 @@ pub enum DocsCommand {
         #[command(subcommand)]
         command: DocsRedirectsCommand,
     },
+    Spine {
+        #[command(subcommand)]
+        command: DocsSpineCommand,
+    },
     Registry {
         #[command(subcommand)]
         command: DocsRegistryCommand,
     },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum DocsSpineCommand {
+    Validate(DocsCommonArgs),
+    Report(DocsCommonArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -229,6 +241,16 @@ pub struct DocsExternalLinksArgs {
     pub common: DocsCommonArgs,
     #[arg(long, default_value = "configs/docs/external-link-allowlist.json")]
     pub allowlist: PathBuf,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct DocsPagesSmokeArgs {
+    #[command(flatten)]
+    pub common: DocsCommonArgs,
+    #[arg(long)]
+    pub url: Option<String>,
+    #[arg(long, default_value = "Docs Build Info")]
+    pub marker: String,
 }
 
 #[derive(Subcommand, Debug)]

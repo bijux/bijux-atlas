@@ -387,7 +387,11 @@ mod tests {
     fn docs_subcommands_parse() {
         let commands = [
             vec!["bijux-dev-atlas", "docs", "doctor"],
+            vec!["bijux-dev-atlas", "docs", "deploy-plan"],
+            vec!["bijux-dev-atlas", "docs", "pages-smoke", "--allow-network"],
             vec!["bijux-dev-atlas", "docs", "where"],
+            vec!["bijux-dev-atlas", "docs", "spine", "validate"],
+            vec!["bijux-dev-atlas", "docs", "spine", "report"],
             vec!["bijux-dev-atlas", "docs", "check", "--allow-subprocess"],
             vec!["bijux-dev-atlas", "docs", "verify-contracts"],
             vec!["bijux-dev-atlas", "docs", "validate"],

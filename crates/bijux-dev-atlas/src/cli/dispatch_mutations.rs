@@ -386,6 +386,7 @@ fn force_json_docs(command: &mut DocsCommand) {
         DocsCommand::Check(common)
         | DocsCommand::VerifyContracts(common)
         | DocsCommand::Doctor(common)
+        | DocsCommand::DeployPlan(common)
         | DocsCommand::Where(common)
         | DocsCommand::SiteDir(common)
         | DocsCommand::Validate(common)
@@ -397,6 +398,7 @@ fn force_json_docs(command: &mut DocsCommand) {
         | DocsCommand::Inventory(common)
         | DocsCommand::ShrinkReport(common)
         | DocsCommand::HealthDashboard(common) => common.format = FormatArg::Json,
+        DocsCommand::PagesSmoke(args) => args.common.format = FormatArg::Json,
         DocsCommand::Serve(args) => args.common.format = FormatArg::Json,
         DocsCommand::Grep(args) => args.common.format = FormatArg::Json,
         DocsCommand::LifecycleSummaryTable(args) | DocsCommand::DrillSummaryTable(args) => {
@@ -404,6 +406,10 @@ fn force_json_docs(command: &mut DocsCommand) {
         }
         DocsCommand::Redirects { command } => match command {
             crate::cli::DocsRedirectsCommand::Sync(common) => common.format = FormatArg::Json,
+        },
+        DocsCommand::Spine { command } => match command {
+            crate::cli::DocsSpineCommand::Validate(common)
+            | crate::cli::DocsSpineCommand::Report(common) => common.format = FormatArg::Json,
         },
         DocsCommand::Registry { command } => match command {
             crate::cli::DocsRegistryCommand::Build(common)
@@ -693,6 +699,7 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
         Command::Docs { command } => match command {
             DocsCommand::Check(common)
             | DocsCommand::Doctor(common)
+            | DocsCommand::DeployPlan(common)
             | DocsCommand::SiteDir(common)
             | DocsCommand::Validate(common)
             | DocsCommand::Lint(common)
@@ -701,6 +708,7 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | DocsCommand::VerifyContracts(common) => common.strict = true,
             DocsCommand::Build(_)
             | DocsCommand::Serve(_)
+            | DocsCommand::PagesSmoke(_)
             | DocsCommand::Clean(_)
             | DocsCommand::Inventory(_)
             | DocsCommand::ShrinkReport(_)
@@ -711,6 +719,9 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | DocsCommand::Where(_) => {}
             DocsCommand::Redirects { command } => match command {
                 crate::cli::DocsRedirectsCommand::Sync(_) => {}
+            },
+            DocsCommand::Spine { command } => match command {
+                crate::cli::DocsSpineCommand::Validate(_) | crate::cli::DocsSpineCommand::Report(_) => {}
             },
             DocsCommand::Registry { command } => match command {
                 crate::cli::DocsRegistryCommand::Build(_)
@@ -1098,6 +1109,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             DocsCommand::Check(common)
             | DocsCommand::VerifyContracts(common)
             | DocsCommand::Doctor(common)
+            | DocsCommand::DeployPlan(common)
             | DocsCommand::Where(common)
             | DocsCommand::SiteDir(common)
             | DocsCommand::Validate(common)
@@ -1109,6 +1121,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | DocsCommand::Inventory(common)
             | DocsCommand::ShrinkReport(common)
             | DocsCommand::HealthDashboard(common) => common.repo_root = Some(root.clone()),
+            DocsCommand::PagesSmoke(args) => args.common.repo_root = Some(root.clone()),
             DocsCommand::Serve(args) => args.common.repo_root = Some(root.clone()),
             DocsCommand::Grep(args) => args.common.repo_root = Some(root.clone()),
             DocsCommand::LifecycleSummaryTable(args) | DocsCommand::DrillSummaryTable(args) => {
@@ -1116,6 +1129,12 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             }
             DocsCommand::Redirects { command } => match command {
                 crate::cli::DocsRedirectsCommand::Sync(common) => {
+                    common.repo_root = Some(root.clone())
+                }
+            },
+            DocsCommand::Spine { command } => match command {
+                crate::cli::DocsSpineCommand::Validate(common)
+                | crate::cli::DocsSpineCommand::Report(common) => {
                     common.repo_root = Some(root.clone())
                 }
             },
