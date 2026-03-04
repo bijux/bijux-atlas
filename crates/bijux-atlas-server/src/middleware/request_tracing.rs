@@ -24,6 +24,7 @@ pub(crate) async fn request_tracing_middleware(
         request_id = %trace.request_id,
         correlation_id = trace.correlation_id.as_deref().unwrap_or(""),
         run_id = trace.run_id.as_deref().unwrap_or(""),
+        traceparent = trace.traceparent.as_deref().unwrap_or(""),
         method = %method,
         route = %route,
     );
@@ -40,6 +41,16 @@ pub(crate) async fn request_tracing_middleware(
     );
     if let Ok(value) = axum::http::HeaderValue::from_str(&trace.request_id) {
         response.headers_mut().insert("x-request-id", value);
+    }
+    if let Some(correlation_id) = &trace.correlation_id {
+        if let Ok(value) = axum::http::HeaderValue::from_str(correlation_id) {
+            response.headers_mut().insert("x-correlation-id", value);
+        }
+    }
+    if let Some(traceparent) = &trace.traceparent {
+        if let Ok(value) = axum::http::HeaderValue::from_str(traceparent) {
+            response.headers_mut().insert("traceparent", value);
+        }
     }
     response
 }

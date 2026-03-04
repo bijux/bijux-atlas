@@ -8,6 +8,7 @@ pub(crate) struct RequestTrace {
     pub request_id: String,
     pub correlation_id: Option<String>,
     pub run_id: Option<String>,
+    pub traceparent: Option<String>,
 }
 
 #[must_use]
@@ -20,6 +21,12 @@ pub(crate) fn extract_request_trace(headers: &HeaderMap, state: &AppState) -> Re
         .map(ToString::to_string);
     let run_id = headers
         .get("x-run-id")
+        .and_then(|v| v.to_str().ok())
+        .map(str::trim)
+        .filter(|v| !v.is_empty())
+        .map(ToString::to_string);
+    let traceparent = headers
+        .get("traceparent")
         .and_then(|v| v.to_str().ok())
         .map(str::trim)
         .filter(|v| !v.is_empty())
@@ -42,6 +49,7 @@ pub(crate) fn extract_request_trace(headers: &HeaderMap, state: &AppState) -> Re
         request_id,
         correlation_id,
         run_id,
+        traceparent,
     }
 }
 
@@ -65,5 +73,6 @@ mod tests {
         assert_eq!(trace.request_id, "req-abc");
         assert_eq!(trace.correlation_id.as_deref(), Some("corr-1"));
         assert_eq!(trace.run_id.as_deref(), Some("run-1"));
+        assert_eq!(trace.traceparent, None);
     }
 }

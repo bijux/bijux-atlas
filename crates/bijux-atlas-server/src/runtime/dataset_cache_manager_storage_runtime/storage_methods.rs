@@ -30,7 +30,12 @@ impl DatasetCacheManager {
         &self,
         dataset: &DatasetId,
     ) -> Result<(PathBuf, PathBuf), CacheError> {
-        self.ensure_dataset_cached(dataset).await?;
+        async { self.ensure_dataset_cached(dataset).await }
+            .instrument(tracing::info_span!(
+                "dataset_loading",
+                dataset = %dataset.canonical_string()
+            ))
+            .await?;
         let paths = self.resolve_cache_paths(dataset).await?;
         if paths.fasta.exists() && paths.fai.exists() {
             return Ok((paths.fasta, paths.fai));
@@ -46,7 +51,12 @@ impl DatasetCacheManager {
                     .to_string(),
             ));
         }
-        let manifest = self.store.fetch_manifest(dataset).await?;
+        let manifest = async { self.store.fetch_manifest(dataset).await }
+            .instrument(tracing::info_span!(
+                "artifact_loading",
+                dataset = %dataset.canonical_string()
+            ))
+            .await?;
         let fasta = self.store.fetch_fasta_bytes(dataset).await?;
         let fai = self.store.fetch_fai_bytes(dataset).await?;
         if sha256_hex(&fasta) != manifest.checksums.fasta_sha256 {
@@ -65,7 +75,12 @@ impl DatasetCacheManager {
         &self,
         dataset: &DatasetId,
     ) -> Result<PathBuf, CacheError> {
-        self.ensure_dataset_cached(dataset).await?;
+        async { self.ensure_dataset_cached(dataset).await }
+            .instrument(tracing::info_span!(
+                "dataset_loading",
+                dataset = %dataset.canonical_string()
+            ))
+            .await?;
         let paths = self.resolve_cache_paths(dataset).await?;
         if paths.release_gene_index.exists() {
             return Ok(paths.release_gene_index);
@@ -81,7 +96,12 @@ impl DatasetCacheManager {
                     .to_string(),
             ));
         }
-        let bytes = self.store.fetch_release_gene_index_bytes(dataset).await?;
+        let bytes = async { self.store.fetch_release_gene_index_bytes(dataset).await }
+            .instrument(tracing::info_span!(
+                "artifact_loading",
+                dataset = %dataset.canonical_string()
+            ))
+            .await?;
         ensure_secure_dir(&paths.derived_dir)?;
         write_atomic_file(&paths.release_gene_index, &bytes)?;
         Ok(paths.release_gene_index)
@@ -296,6 +316,10 @@ impl DatasetCacheManager {
                 .ok();
             Ok::<_, CacheError>((manifest, sqlite, release_gene_index))
         }
+        .instrument(tracing::info_span!(
+            "ingest_pipeline",
+            dataset = %dataset.canonical_string()
+        ))
         .instrument(tracing::info_span!(
             "store_fetch",
             dataset = %dataset.canonical_string(),
