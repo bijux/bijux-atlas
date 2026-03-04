@@ -455,6 +455,9 @@
     "budget-policy": [
       "docs/reference/ops-schema/budget-policy.md"
     ],
+    "build-info": [
+      "docs/reference/build-info.md"
+    ],
     "caching": [
       "crates/bijux-atlas-server/docs/caching.md",
       "crates/bijux-atlas-store/docs/caching.md",
@@ -990,6 +993,9 @@
     "docs-checks": [
       "docs/_internal/governance/checks/docs-checks.md"
     ],
+    "docs-consolidation": [
+      "docs/_internal/governance/docs-consolidation.md"
+    ],
     "docs-contract": [
       "docs/_internal/governance/docs-contract.md"
     ],
@@ -1062,6 +1068,9 @@
     ],
     "docs-site-deploy": [
       "docs/operations/docs-site-deploy.md"
+    ],
+    "docs-spine": [
+      "docs/_internal/governance/docs-spine.md"
     ],
     "docs-structure-freeze": [
       "docs/operations/docs-structure-freeze.md"

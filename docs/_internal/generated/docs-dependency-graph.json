@@ -1788,6 +1788,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-consolidation.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/docs-contract.md"
     },
     {
@@ -1879,6 +1884,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/_internal/governance/docs-search-tips.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-spine.md"
     },
     {
       "crate": null,
@@ -4714,6 +4724,11 @@
       "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/api/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/build-info.md"
     },
     {
       "crate": null,

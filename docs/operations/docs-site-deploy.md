@@ -41,3 +41,11 @@ The governance source of truth is:
 - Built site directory: `artifacts/docs/site`
 - Pages environment: `github-pages`
 - Deployment URL: provided by GitHub Pages deployment output
+
+## CNAME Support
+
+Custom domain support is optional.
+
+1. Add `docs/CNAME` with the desired hostname.
+2. Ensure the hostname is configured in GitHub Pages settings.
+3. Keep `docs/CNAME` under version control so domain ownership remains auditable.

@@ -2861,6 +2861,14 @@
       "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-consolidation.md",
+      "stability": "stable",
+      "title": "Docs Consolidation"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
       "path": "docs/_internal/governance/docs-contract.md",
       "stability": "stable",
       "title": "Docs Contract"
@@ -3008,6 +3016,14 @@
       "path": "docs/_internal/governance/docs-search-tips.md",
       "stability": "stable",
       "title": "Docs Search Tips"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-spine.md",
+      "stability": "stable",
+      "title": "Docs Spine"
     },
     {
       "area": "_internal",
@@ -7544,6 +7560,14 @@
       "path": "docs/reference/api/index.md",
       "stability": "stable",
       "title": "API Reference"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/build-info.md",
+      "stability": "stable",
+      "title": "Docs Build Info"
     },
     {
       "area": "reference",

@@ -3276,6 +3276,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/docs-consolidation.md"
+      ],
+      "path": "docs/_internal/governance/docs-consolidation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/docs-contract.md"
       ],
       "path": "docs/_internal/governance/docs-contract.md"
@@ -3441,6 +3450,15 @@
         "docs/_internal/governance/docs-search-tips.md"
       ],
       "path": "docs/_internal/governance/docs-search-tips.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-spine.md"
+      ],
+      "path": "docs/_internal/governance/docs-spine.md"
     },
     {
       "breadcrumbs": [
@@ -8286,6 +8304,14 @@
         "docs/reference/api/index.md"
       ],
       "path": "docs/reference/api/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/build-info.md"
+      ],
+      "path": "docs/reference/build-info.md"
     },
     {
       "breadcrumbs": [

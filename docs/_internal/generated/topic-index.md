@@ -106,6 +106,7 @@
 | `broken-link-policy` | `docs/_internal/governance/broken-link-policy.md` |
 | `budget-exceptions` | `docs/reference/ops-schema/budget-exceptions.md` |
 | `budget-policy` | `docs/reference/ops-schema/budget-policy.md` |
+| `build-info` | `docs/reference/build-info.md` |
 | `caching` | `crates/bijux-atlas-server/docs/caching.md, crates/bijux-atlas-store/docs/caching.md, docs/api/caching.md` |
 | `canonicalization` | `crates/bijux-atlas-core/docs/canonicalization.md` |
 | `capabilities-model` | `docs/control-plane/capabilities-model.md` |
@@ -277,6 +278,7 @@
 | `docs-change-process` | `docs/_internal/meta/docs-change-process.md` |
 | `docs-charter` | `docs/_internal/governance/docs-charter.md` |
 | `docs-checks` | `docs/_internal/governance/checks/docs-checks.md` |
+| `docs-consolidation` | `docs/_internal/governance/docs-consolidation.md` |
 | `docs-contract` | `docs/_internal/governance/docs-contract.md` |
 | `docs-convergence-policy` | `docs/operations/docs-convergence-policy.md` |
 | `docs-dashboard` | `docs/_internal/governance/docs-dashboard.md` |
@@ -301,6 +303,7 @@
 | `docs-rewrite-plan` | `docs/_internal/meta/internal/docs-rewrite-plan.md` |
 | `docs-search-tips` | `docs/_internal/governance/docs-search-tips.md` |
 | `docs-site-deploy` | `docs/operations/docs-site-deploy.md` |
+| `docs-spine` | `docs/_internal/governance/docs-spine.md` |
 | `docs-structure-freeze` | `docs/operations/docs-structure-freeze.md` |
 | `docs-style` | `docs/_internal/governance/docs-style.md` |
 | `docs-surface-rules` | `docs/_internal/policies/docs-surface-rules.md` |

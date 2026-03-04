@@ -4763,6 +4763,20 @@
     {
       "keywords": [
         "-internal",
+        "docs-consolidation",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-consolidation.md",
+      "tags": [
+        "-internal",
+        "docs-consolidation",
+        "governance"
+      ],
+      "topic": "docs-consolidation"
+    },
+    {
+      "keywords": [
+        "-internal",
         "docs-contract",
         "governance"
       ],
@@ -5025,6 +5039,20 @@
         "governance"
       ],
       "topic": "docs-search-tips"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-spine",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-spine.md",
+      "tags": [
+        "-internal",
+        "docs-spine",
+        "governance"
+      ],
+      "topic": "docs-spine"
     },
     {
       "keywords": [
@@ -12445,6 +12473,18 @@
         "reference"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "build-info",
+        "reference"
+      ],
+      "path": "docs/reference/build-info.md",
+      "tags": [
+        "build-info",
+        "reference"
+      ],
+      "topic": "build-info"
     },
     {
       "keywords": [

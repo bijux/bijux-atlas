@@ -8695,6 +8695,31 @@
       "doc_version": "v1",
       "keywords": [
         "-internal",
+        "docs-consolidation",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-consolidation.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-consolidation",
+        "governance"
+      ],
+      "title": "Docs Consolidation",
+      "topic": "docs-consolidation"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
         "docs-contract",
         "governance"
       ],
@@ -9161,6 +9186,31 @@
       ],
       "title": "Docs Search Tips",
       "topic": "docs-search-tips"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-spine",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-spine.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-spine",
+        "governance"
+      ],
+      "title": "Docs Spine",
+      "topic": "docs-spine"
     },
     {
       "area": "_internal",
@@ -22818,6 +22868,29 @@
       ],
       "title": "API Reference",
       "topic": "index"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "build-info",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/build-info.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "build-info",
+        "reference"
+      ],
+      "title": "Docs Build Info",
+      "topic": "build-info"
     },
     {
       "area": "reference",

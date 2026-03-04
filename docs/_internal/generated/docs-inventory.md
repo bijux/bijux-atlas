@@ -364,6 +364,7 @@ License: Apache-2.0
 | `docs/_internal/governance/docs-build-publish-model.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-change-classification.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-charter.md` | `concept` | `bijux-atlas-docs` | `stable` |
+| `docs/_internal/governance/docs-consolidation.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-contract.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-dashboard.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-debt-backlog.md` | `concept` | `docs-governance` | `stable` |
@@ -383,6 +384,7 @@ License: Apache-2.0
 | `docs/_internal/governance/docs-review-checklist.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-reviewability-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-search-tips.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/docs-spine.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-style.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-toolchain-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-versioning-model.md` | `concept` | `docs-governance` | `stable` |
@@ -950,6 +952,7 @@ License: Apache-2.0
 | `docs/product/user-stories.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/what-is-bijux-atlas.md` | `concept` | `bijux-atlas-product` | `stable` |
 | `docs/reference/api/index.md` | `reference` | `docs-governance` | `stable` |
+| `docs/reference/build-info.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/checks/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/command-inventory.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/commands.md` | `reference` | `bijux-atlas-operations` | `stable` |
