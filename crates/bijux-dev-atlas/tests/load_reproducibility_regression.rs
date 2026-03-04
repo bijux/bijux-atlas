@@ -32,7 +32,11 @@ fn load_reproducibility_and_baseline_assets_are_present() {
             .expect("read baseline"),
     )
     .expect("parse baseline");
-    assert_eq!(baseline["schema_version"], serde_json::json!(1));
+    assert_eq!(baseline["metadata"]["schema_version"], serde_json::json!(1));
+    assert_eq!(
+        baseline["name"],
+        serde_json::json!("system-load-baseline")
+    );
     for suite in [
         "mixed-workload",
         "ingest-query-workload",
@@ -51,7 +55,9 @@ fn load_reproducibility_and_baseline_assets_are_present() {
         "cursor-stress",
     ] {
         assert!(
-            baseline["suites"].get(suite).is_some(),
+            baseline["rows"]
+                .as_array()
+                .is_some_and(|rows| rows.iter().any(|row| row["suite"] == suite)),
             "missing baseline suite `{suite}`"
         );
     }
@@ -66,7 +72,29 @@ fn load_reproducibility_and_baseline_assets_are_present() {
 }
 
 #[test]
-fn load_comparison_tool_exists() {
-    let tool_path = repo_root().join("ops/load/tools/compare-load-report.sh");
-    assert!(tool_path.exists(), "missing load comparison tool");
+fn load_comparison_is_available_via_control_plane_command() {
+    let output = std::process::Command::new("cargo")
+        .args([
+            "run",
+            "-p",
+            "bijux-dev-atlas",
+            "--",
+            "perf",
+            "diff",
+            "ops/load/baselines/system-load-baseline.json",
+            "ops/load/baselines/system-load-baseline.json",
+            "--format",
+            "json",
+        ])
+        .current_dir(repo_root())
+        .output()
+        .expect("run perf diff command");
+    assert!(
+        output.status.success(),
+        "perf diff command failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let value: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("perf diff json output");
+    assert_eq!(value["status"], serde_json::json!("ok"));
 }
