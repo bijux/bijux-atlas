@@ -201,11 +201,11 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/docs-build-publish-model.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/docs-consolidation.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/docs-lint-rules.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/docs-merge-plan.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/docs-navigation-policy.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/docs-pages-repository-settings.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/docs-quality-policy.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/docs-spine.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/docs-style.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/exception-inventory.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/metadata/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/metadata/taxonomy-map.md` has no inbound doc links",
@@ -420,7 +420,7 @@
   "summary": {
     "errors": 57,
     "reference_date": "2026-02-25",
-    "registered": 1179,
+    "registered": 1182,
     "stale_pages": 0,
     "warnings": 460
   }
