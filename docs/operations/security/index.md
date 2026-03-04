@@ -14,6 +14,7 @@
 - [Security Posture](../security-posture.md)
 - [Security Compliance](compliance.md)
 - [API Access Model](api-access-model.md)
+- [Audit And Security Event Classification](audit-and-security-event-classification.md)
 - [Auth Error Codes](auth-error-codes.md)
 - [Audit Logging Model](audit-logging.md)
 - [Enable Audit Logging And Retention](enable-audit-logging.md)

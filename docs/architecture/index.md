@@ -53,6 +53,7 @@ Describe how Atlas is structured so contributors and operators share one durable
 - [Resilience model](resilience-model.md)
 - [Storage](storage.md)
 - [Security auth model](security/auth-model.md)
+- [Security architecture](security/security-architecture.md)
 - [Performance model](performance-model.md)
 - [Query model](query-model.md)
 - [Query performance architecture](query-performance-architecture.md)
