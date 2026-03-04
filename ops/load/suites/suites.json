@@ -253,6 +253,56 @@
       "thresholds": {"p95_ms_max": 1800, "p99_ms_max": 3400, "error_rate_max": 0.08}
     },
     {
+      "name": "shard-hot-spot",
+      "purpose": "shard hot-spot workload to validate bounded degradation on concentrated shard traffic",
+      "kind": "k6",
+      "scenario": "shard-hot-spot.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly", "load-nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
+      "thresholds": {"p95_ms_max": 1600, "p99_ms_max": 3000, "error_rate_max": 0.07}
+    },
+    {
+      "name": "cache-thrashing",
+      "purpose": "cache thrashing workload to validate cache pressure resilience",
+      "kind": "k6",
+      "scenario": "cache-thrashing.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly", "load-nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
+      "thresholds": {"p95_ms_max": 1500, "p99_ms_max": 2900, "error_rate_max": 0.08}
+    },
+    {
+      "name": "dataset-churn",
+      "purpose": "dataset churn workload to validate bounded behavior across release selection changes",
+      "kind": "k6",
+      "scenario": "dataset-churn.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly", "load-nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
+      "thresholds": {"p95_ms_max": 1400, "p99_ms_max": 2600, "error_rate_max": 0.07}
+    },
+    {
+      "name": "artifact-reload",
+      "purpose": "artifact reload workload to validate readiness transitions under repeated probes",
+      "kind": "k6",
+      "scenario": "artifact-reload.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly", "load-nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
+      "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2200, "error_rate_max": 0.06}
+    },
+    {
+      "name": "cursor-stress",
+      "purpose": "cursor stress workload to validate pagination token handling at scale",
+      "kind": "k6",
+      "scenario": "cursor-stress.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly", "load-nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
+      "thresholds": {"p95_ms_max": 1300, "p99_ms_max": 2400, "error_rate_max": 0.06}
+    },
+    {
       "name": "mixed-gene-sequence",
       "purpose": "measure mixed gene and sequence traffic under realistic budgets",
       "kind": "k6",

@@ -1,0 +1,1 @@
+{"name":"cache-thrashing","suite":"cache-thrashing.js","focus":"high-cardinality cache churn profile"}

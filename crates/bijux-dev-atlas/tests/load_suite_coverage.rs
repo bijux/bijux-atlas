@@ -36,6 +36,11 @@ fn load_suite_manifest_includes_system_load_profiles() {
         "cpu-saturation",
         "disk-io-saturation",
         "thread-pool-exhaustion",
+        "shard-hot-spot",
+        "cache-thrashing",
+        "dataset-churn",
+        "artifact-reload",
+        "cursor-stress",
     ] {
         assert!(names.contains(suite), "missing load suite `{suite}`");
     }
