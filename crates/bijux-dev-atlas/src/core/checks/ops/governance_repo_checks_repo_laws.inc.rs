@@ -394,6 +394,100 @@ pub(super) fn check_repo_registry_order_deterministic(
     Ok(violations)
 }
 
+pub(super) fn check_repo_check_docs_paths_exist(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("ops/inventory/registry.toml");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    let mut in_checks = false;
+    let mut current_id: Option<String> = None;
+    let mut current_docs: Option<String> = None;
+    let mut current_suites: Vec<String> = Vec::new();
+
+    let repo_root = ctx.repo_root;
+    let flush_row = |id: Option<String>,
+                     docs: Option<String>,
+                     suites: Vec<String>,
+                     violations: &mut Vec<Violation>| {
+        if !suites
+            .iter()
+            .any(|suite| suite == "repo_required" || suite == "required")
+        {
+            return;
+        }
+        if let (Some(check_id), Some(docs_path)) = (id, docs) {
+            if docs_path.starts_with("http://") || docs_path.starts_with("https://") {
+                return;
+            }
+            let docs_rel = Path::new(&docs_path);
+            if !docs_rel.is_relative() || !repo_root.join(docs_rel).exists() {
+                violations.push(violation(
+                    "REPO_CHECK_DOCS_PATH_MISSING",
+                    format!(
+                        "check `{check_id}` references missing docs authority path `{docs_path}`"
+                    ),
+                    "point `docs` to an existing in-repo policy or contract authority file",
+                    Some(rel),
+                ));
+            }
+        }
+    };
+
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if trimmed == "[[checks]]" {
+            flush_row(
+                current_id.take(),
+                current_docs.take(),
+                std::mem::take(&mut current_suites),
+                &mut violations,
+            );
+            in_checks = true;
+            continue;
+        }
+        if trimmed.starts_with("[[") && trimmed != "[[checks]]" {
+            flush_row(
+                current_id.take(),
+                current_docs.take(),
+                std::mem::take(&mut current_suites),
+                &mut violations,
+            );
+            in_checks = false;
+            continue;
+        }
+        if !in_checks {
+            continue;
+        }
+        if let Some(raw_id) = trimmed.strip_prefix("id = ") {
+            current_id = Some(raw_id.trim().trim_matches('"').to_string());
+            continue;
+        }
+        if let Some(raw_docs) = trimmed.strip_prefix("docs = ") {
+            current_docs = Some(raw_docs.trim().trim_matches('"').to_string());
+            continue;
+        }
+        if let Some(raw_suites) = trimmed.strip_prefix("suites = [") {
+            let mut suites = raw_suites.trim().trim_end_matches(']').to_string();
+            suites = suites.replace('"', "");
+            current_suites = suites
+                .split(',')
+                .map(str::trim)
+                .filter(|suite| !suite.is_empty())
+                .map(str::to_string)
+                .collect();
+        }
+    }
+    flush_row(
+        current_id.take(),
+        current_docs.take(),
+        std::mem::take(&mut current_suites),
+        &mut violations,
+    );
+    Ok(violations)
+}
+
 pub(super) fn check_repo_defaults_work_surface_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {

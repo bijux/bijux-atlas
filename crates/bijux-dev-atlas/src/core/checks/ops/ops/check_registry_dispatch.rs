@@ -206,6 +206,7 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
             Some(check_crates_plugin_conformance_binaries)
         }
         "checks_repo_artifacts_not_tracked" => Some(check_repo_artifacts_not_tracked),
+        "checks_repo_check_docs_paths_exist" => Some(check_repo_check_docs_paths_exist),
         "checks_repo_defaults_work_surface_contract" => {
             Some(check_repo_defaults_work_surface_contract)
         }
@@ -339,6 +340,7 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_crates_command_namespace_ownership_unique",
         "checks_crates_plugin_conformance_binaries",
         "checks_repo_artifacts_not_tracked",
+        "checks_repo_check_docs_paths_exist",
         "checks_repo_defaults_work_surface_contract",
         "checks_repo_duplicate_ssot_registries_absent",
         "checks_repo_generated_content_stays_in_allowed_paths",

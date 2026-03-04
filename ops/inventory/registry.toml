@@ -7,7 +7,7 @@ vocabulary = ["ops", "repo", "docs", "make", "lint", "internal", "fast", "slow"]
 id = "checks_configs_nextest_toml_present"
 domain = "configs"
 title = "nextest config exists under configs"
-docs = "docs/development/tooling/rust-toolchain.md"
+docs = "docs/development/tooling/index.md"
 tags = ["internal", "fast"]
 suites = ["deep"]
 effects_required = ["fs_read"]
@@ -40,7 +40,7 @@ visibility = "internal"
 id = "checks_configs_security_deny_toml_present"
 domain = "configs"
 title = "cargo deny policy config exists under configs security"
-docs = "docs/development/tooling/rust-toolchain.md"
+docs = "docs/development/tooling/index.md"
 tags = ["internal", "fast"]
 suites = ["deep"]
 effects_required = ["fs_read"]
@@ -950,6 +950,17 @@ budget_ms = 1000
 visibility = "internal"
 
 [[checks]]
+id = "checks_repo_check_docs_paths_exist"
+domain = "repo"
+title = "every registry check references an existing policy authority path"
+docs = "ops/inventory/registry.toml"
+tags = ["repo", "internal", "fast"]
+suites = ["repo_required"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
 id = "checks_repo_defaults_work_surface_contract"
 domain = "repo"
 title = "default build docs and helm template surfaces exist"
@@ -1118,7 +1129,7 @@ visibility = "internal"
 id = "checks_root_cargo_config_contract"
 domain = "root"
 title = "cargo config enforces deterministic target and terminal defaults"
-docs = "docs/development/tooling/rust-toolchain.md"
+docs = "docs/development/tooling/index.md"
 tags = ["internal", "fast"]
 suites = ["deep"]
 effects_required = ["fs_read"]
@@ -1129,7 +1140,7 @@ visibility = "internal"
 id = "checks_root_clippy_toml_present"
 domain = "root"
 title = "clippy lint policy exists at repo root"
-docs = "docs/development/tooling/rust-toolchain.md"
+docs = "docs/development/tooling/index.md"
 tags = ["internal", "fast"]
 suites = ["deep"]
 effects_required = ["fs_read"]
@@ -1206,7 +1217,7 @@ visibility = "internal"
 id = "checks_root_rust_toolchain_toml_contract"
 domain = "root"
 title = "rust toolchain pin declares minimal profile and required components"
-docs = "docs/development/tooling/rust-toolchain.md"
+docs = "docs/development/tooling/index.md"
 tags = ["internal", "fast"]
 suites = ["deep"]
 effects_required = ["fs_read"]
@@ -1217,7 +1228,7 @@ visibility = "internal"
 id = "checks_root_rustfmt_toml_present"
 domain = "root"
 title = "rustfmt policy exists at repo root"
-docs = "docs/development/tooling/rust-toolchain.md"
+docs = "docs/development/tooling/index.md"
 tags = ["internal", "fast"]
 suites = ["deep"]
 effects_required = ["fs_read"]
@@ -1338,7 +1349,7 @@ visibility = "internal"
 id = "checks_workflows_rust_toolchain_matches_repo_pin"
 domain = "workflows"
 title = "rust workflow pin matches rust-toolchain.toml"
-docs = "docs/development/tooling/rust-toolchain.md"
+docs = "docs/development/tooling/index.md"
 tags = ["internal", "fast"]
 suites = ["deep"]
 effects_required = ["fs_read"]
@@ -1411,6 +1422,7 @@ tags_any = []
 id = "ci_pr"
 checks = [
   "checks_repo_artifacts_not_tracked",
+  "checks_repo_check_docs_paths_exist",
   "checks_repo_generated_content_stays_in_allowed_paths",
   "checks_repo_law_metadata_complete_and_unique",
   "checks_repo_root_directory_allowlist_contract",
@@ -1572,6 +1584,7 @@ tags_any = ["fast"]
 id = "repo_required"
 checks = [
   "checks_repo_artifacts_not_tracked",
+  "checks_repo_check_docs_paths_exist",
   "checks_repo_defaults_work_surface_contract",
   "checks_repo_duplicate_ssot_registries_absent",
   "checks_repo_generated_content_stays_in_allowed_paths",
@@ -1590,6 +1603,7 @@ tags_any = []
 id = "required"
 checks = [
   "checks_repo_artifacts_not_tracked",
+  "checks_repo_check_docs_paths_exist",
   "checks_repo_generated_content_stays_in_allowed_paths",
   "checks_repo_law_metadata_complete_and_unique",
   "checks_repo_root_directory_allowlist_contract",
