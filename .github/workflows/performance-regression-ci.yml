@@ -43,6 +43,7 @@ jobs:
           jq . ops/report/generated/performance-metadata.json > /dev/null
           jq . ops/report/generated/performance-baseline-verification.json > /dev/null
           jq . ops/report/generated/performance-audit-report.json > /dev/null
+          jq . ops/report/generated/performance-completion-report.json > /dev/null
           jq . configs/contracts/perf/performance-metadata.schema.json > /dev/null
 
       - name: Run regression detector and report generator

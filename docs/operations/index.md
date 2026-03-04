@@ -64,11 +64,17 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 32. [Performance dashboard guide](performance-dashboard-guide.md)
 33. [Performance troubleshooting guide](performance-troubleshooting-guide.md)
 34. [Performance architecture diagrams](performance-architecture-diagrams.md)
-35. [Dataset update](dataset-update.md)
-36. [Dataset deprecation](dataset-deprecation.md)
-37. [Data retention policy](data-retention-policy.md)
-38. [Data access model](data-access-model.md)
-39. [Scientific defensibility](scientific-defensibility.md)
+35. [Performance testing tutorial](performance-testing-tutorial.md)
+36. [Performance roadmap](performance-roadmap.md)
+37. [Performance FAQ](performance-faq.md)
+38. [Performance glossary](performance-glossary.md)
+39. [Performance design principles](performance-design-principles.md)
+40. [Performance optimization guidelines](performance-optimization-guidelines.md)
+41. [Dataset update](dataset-update.md)
+42. [Dataset deprecation](dataset-deprecation.md)
+43. [Data retention policy](data-retention-policy.md)
+44. [Data access model](data-access-model.md)
+45. [Scientific defensibility](scientific-defensibility.md)
 
 ## What This Page Is Not
 
