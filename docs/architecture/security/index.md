@@ -29,3 +29,4 @@ related:
 - [Security Design Principles](security-design-principles.md)
 - [Authorization Architecture Diagrams](authorization-architecture-diagrams.md)
 - [RBAC Flow Diagrams](rbac-flow-diagrams.md)
+- [Data Protection Strategy](data-protection-strategy.md)

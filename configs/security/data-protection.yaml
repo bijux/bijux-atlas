@@ -1,0 +1,25 @@
+schema_version: 1
+strategy:
+  posture: defense-in-depth
+  objectives:
+    - confidentiality
+    - integrity
+    - availability
+encryption:
+  transport_tls_required: true
+  at_rest_required: true
+  dataset_encryption_optional: true
+classification:
+  source: configs/security/data-classification.yaml
+  policy: least-collection-and-redaction
+sensitive_handling:
+  forbid_plaintext_secrets_in_logs: true
+  require_redaction_for:
+    - api_key
+    - bearer_token
+    - hmac_signature
+    - client_ip
+retention:
+  audit_records_days: 30
+  security_events_days: 90
+  integrity_evidence_days: 180
