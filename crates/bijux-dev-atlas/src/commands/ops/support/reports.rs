@@ -146,6 +146,9 @@ pub(crate) fn run_ops_checks(
         Some(DomainArg::Ops),
         None,
         None,
+        None,
+        None,
+        None,
         include_internal,
         include_slow,
     )?;

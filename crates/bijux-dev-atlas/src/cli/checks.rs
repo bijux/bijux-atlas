@@ -17,8 +17,14 @@ pub enum CheckCommand {
         suite: Option<String>,
         #[arg(long, value_enum)]
         domain: Option<DomainArg>,
+        #[arg(long, value_enum)]
+        severity: Option<CheckSeverityArg>,
+        #[arg(long, value_enum)]
+        mode: Option<CheckModeArg>,
         #[arg(long)]
         tag: Option<String>,
+        #[arg(long, value_name = "TEXT")]
+        name: Option<String>,
         #[arg(long, value_name = "GLOB")]
         id: Option<String>,
         #[arg(long, default_value_t = false)]
@@ -65,8 +71,14 @@ pub enum CheckCommand {
         suite: Option<String>,
         #[arg(long, value_enum)]
         domain: Option<DomainArg>,
+        #[arg(long, value_enum)]
+        severity: Option<CheckSeverityArg>,
+        #[arg(long, value_enum)]
+        mode: Option<CheckModeArg>,
         #[arg(long)]
         tag: Option<String>,
+        #[arg(long, value_name = "TEXT")]
+        name: Option<String>,
         #[arg(long, value_name = "GLOB")]
         id: Option<String>,
         #[arg(long, default_value_t = false)]
@@ -168,8 +180,14 @@ pub enum ChecksCommand {
         suite: Option<String>,
         #[arg(long, value_enum)]
         domain: Option<DomainArg>,
+        #[arg(long, value_enum)]
+        severity: Option<CheckSeverityArg>,
+        #[arg(long, value_enum)]
+        mode: Option<CheckModeArg>,
         #[arg(long)]
         tag: Option<String>,
+        #[arg(long, value_name = "TEXT")]
+        name: Option<String>,
         #[arg(long, value_name = "GLOB")]
         id: Option<String>,
         #[arg(long, default_value_t = false)]
@@ -207,6 +225,21 @@ pub enum CheckRegistryCommand {
         #[arg(long)]
         out: Option<PathBuf>,
     },
+}
+
+#[derive(ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
+pub enum CheckSeverityArg {
+    Blocker,
+    High,
+    Medium,
+    Low,
+    Info,
+}
+
+#[derive(ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
+pub enum CheckModeArg {
+    Static,
+    Effect,
 }
 
 #[derive(Subcommand, Debug)]

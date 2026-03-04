@@ -63,8 +63,15 @@ fn render_list_output(checks: &[CheckSpec], format: FormatArg) -> Result<String,
                     .collect::<Vec<_>>()
                     .join(",");
                 lines.push(format!(
-                    "{}\tbudget_ms={}\ttags={}\tsuites={}\t{}",
-                    check.id, check.budget_ms, tags, suites, check.title
+                    "{}\tseverity={:?}\tmode={:?}\towner={}\tbudget_ms={}\ttags={}\tsuites={}\t{}",
+                    check.id,
+                    check.severity,
+                    check.mode,
+                    check.owner,
+                    check.budget_ms,
+                    tags,
+                    suites,
+                    check.title
                 ));
             }
             Ok(lines.join("\n"))
@@ -78,6 +85,12 @@ fn render_list_output(checks: &[CheckSpec], format: FormatArg) -> Result<String,
                         "domain": format!("{:?}", check.domain).to_ascii_lowercase(),
                         "tags": check.tags.iter().map(|v| v.as_str()).collect::<Vec<_>>(),
                         "suites": check.suites.iter().map(|v| v.as_str()).collect::<Vec<_>>(),
+                        "owner": check.owner.as_str(),
+                        "severity": format!("{:?}", check.severity).to_ascii_lowercase(),
+                        "mode": format!("{:?}", check.mode).to_ascii_lowercase(),
+                        "rationale": check.rationale.as_str(),
+                        "fix_hint": check.fix_hint.as_str(),
+                        "evidence_paths": &check.evidence_paths,
                         "budget_ms": check.budget_ms,
                         "title": check.title,
                     })
@@ -182,7 +195,10 @@ pub(crate) struct CheckListOptions {
     repo_root: Option<PathBuf>,
     suite: Option<String>,
     domain: Option<DomainArg>,
+    severity: Option<CheckSeverityArg>,
+    mode: Option<CheckModeArg>,
     tag: Option<String>,
+    name: Option<String>,
     id: Option<String>,
     include_internal: bool,
     include_slow: bool,
@@ -231,7 +247,10 @@ pub(crate) fn run_check_list(options: CheckListOptions) -> Result<(String, i32),
     let selectors = parse_selectors(
         options.suite,
         options.domain,
+        options.severity,
+        options.mode,
         options.tag,
+        options.name,
         options.id,
         options.include_internal,
         options.include_slow,
@@ -281,7 +300,10 @@ pub(crate) struct CheckRunOptions {
     run_id: Option<String>,
     suite: Option<String>,
     domain: Option<DomainArg>,
+    severity: Option<CheckSeverityArg>,
+    mode: Option<CheckModeArg>,
     tag: Option<String>,
+    name: Option<String>,
     id: Option<String>,
     include_internal: bool,
     include_slow: bool,
@@ -330,7 +352,10 @@ pub(crate) fn run_check_run(options: CheckRunOptions) -> Result<(String, i32), S
     let selectors = parse_selectors(
         options.suite,
         options.domain,
+        options.severity,
+        options.mode,
         options.tag,
+        options.name,
         options.id,
         options.include_internal,
         options.include_slow,
@@ -400,6 +425,9 @@ pub(crate) fn run_check_doctor(
     let inventory_errors = validate_ops_inventory(&root);
     let selectors = parse_selectors(
         Some("doctor".to_string()),
+        None,
+        None,
+        None,
         None,
         None,
         None,

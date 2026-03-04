@@ -6,9 +6,9 @@ use std::process::Command as ProcessCommand;
 #[cfg(test)]
 pub(crate) use crate::cli::Cli;
 use crate::cli::{
-    ConfigsCommand, ConfigsCommonArgs, DemoCommand, DocsCommand, DocsCommonArgs, DomainArg,
-    FormatArg, GatesCommand, OpsCommand, OpsCommonArgs, OpsRenderTarget, OpsStatusTarget,
-    WorkflowsCommand,
+    CheckModeArg, CheckSeverityArg, ConfigsCommand, ConfigsCommonArgs, DemoCommand, DocsCommand,
+    DocsCommonArgs, DomainArg, FormatArg, GatesCommand, OpsCommand, OpsCommonArgs,
+    OpsRenderTarget, OpsStatusTarget, WorkflowsCommand,
 };
 use bijux_dev_atlas::runtime::{Capabilities, RealFs, RealProcessRunner, WorkspaceRoot};
 use bijux_dev_atlas::core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
@@ -18,6 +18,7 @@ use bijux_dev_atlas::core::{
     Selectors,
 };
 use bijux_dev_atlas::model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
+use bijux_dev_atlas::model::{CheckMode, CheckSeverity};
 use bijux_dev_atlas::registry::{CheckCatalog, CheckCatalogEntry};
 use bijux_dev_atlas::ui::terminal::report::render_check_run_report;
 pub(crate) use build_commands::run_build_command;
@@ -100,7 +101,10 @@ pub(crate) fn plugin_metadata_json() -> String {
 fn parse_selectors(
     suite: Option<String>,
     domain: Option<DomainArg>,
+    severity: Option<CheckSeverityArg>,
+    mode: Option<CheckModeArg>,
     tag: Option<String>,
+    name: Option<String>,
     id: Option<String>,
     include_internal: bool,
     include_slow: bool,
@@ -119,7 +123,19 @@ fn parse_selectors(
             .map(|v| SuiteId::parse(v))
             .transpose()?,
         domain: domain.map(Into::into),
+        severity: severity.map(|value| match value {
+            CheckSeverityArg::Blocker => CheckSeverity::Blocker,
+            CheckSeverityArg::High => CheckSeverity::High,
+            CheckSeverityArg::Medium => CheckSeverity::Medium,
+            CheckSeverityArg::Low => CheckSeverity::Low,
+            CheckSeverityArg::Info => CheckSeverity::Info,
+        }),
+        mode: mode.map(|value| match value {
+            CheckModeArg::Static => CheckMode::Static,
+            CheckModeArg::Effect => CheckMode::Effect,
+        }),
         tag: tag.map(|v| Tag::parse(&v)).transpose()?,
+        title_substring: name,
         id_glob: id,
         include_internal,
         include_slow,
