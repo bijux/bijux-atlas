@@ -18,6 +18,8 @@ pub use crate::domain::{
     ClusterHealthConfig, ClusterHealthQuorumConfig, ClusterMetadataStore, ClusterStateRegistry,
     ClusterStatusSnapshot, CompatibilityPolicy, DiscoveryStrategy, HeartbeatMessage, HealthPolicy,
     MembershipMetrics, MembershipPolicy, MembershipRegistry, MembershipState, MetadataBackend,
+    ConsistencyGuarantee, ConsistencyLevel, ReplicaDiagnostics, ReplicaHealth, ReplicaMetadata,
+    ReplicaRecord, ReplicaRegistry, ReplicaSyncState, ReplicationMetrics, ReplicationPolicy,
     DatasetShardLayout, ShardHealth, ShardKeyStrategy, ShardMetadata, ShardOwnershipRule,
     ShardRecord, ShardRegistry, ShardRegistryMetrics, ShardRuntimeStats, stable_hash_u64,
     NodeConfigFile, NodeDescriptor, NodeIdentity, NodeMembershipRecord, NodeMetadata, NodeRole,
