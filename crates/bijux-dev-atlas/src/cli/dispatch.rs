@@ -15,7 +15,7 @@ use crate::{
     run_make_command, run_ops_command, run_perf_command, run_policies_command,
     run_print_boundaries_command, run_registry_check_by_id, run_registry_command,
     run_registry_contract_by_id, run_release_command, run_security_command, run_suites_command,
-    run_version_command, run_workflows_command,
+    run_system_command, run_version_command, run_workflows_command,
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions, ChecksCatalogListOptions};
 use bijux_dev_atlas::contracts;
@@ -166,6 +166,22 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
             }
             Err(err) => {
                 let _ = writeln!(io::stderr(), "bijux-dev-atlas security failed: {err}");
+                1
+            }
+        },
+        Command::System { command } => match run_system_command(cli.quiet, command) {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    if code == 0 {
+                        let _ = writeln!(io::stdout(), "{rendered}");
+                    } else {
+                        let _ = writeln!(io::stderr(), "{rendered}");
+                    }
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas system failed: {err}");
                 1
             }
         },

@@ -48,6 +48,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Configs { command } => force_json_configs(command),
         Command::Governance { command } => force_json_governance(command),
         Command::Security { command } => force_json_security(command),
+        Command::System { command } => force_json_system(command),
         Command::Datasets { command } => force_json_datasets(command),
         Command::Ingest { command } => force_json_ingest(command),
         Command::Perf { command } => force_json_perf(command),
@@ -504,6 +505,19 @@ fn force_json_security(command: &mut SecurityCommand) {
             crate::cli::SecurityComplianceCommand::Validate(args) => args.format = FormatArg::Json,
         },
         SecurityCommand::ScanArtifacts(args) => args.format = FormatArg::Json,
+    }
+}
+
+fn force_json_system(command: &mut crate::cli::SystemCommand) {
+    match command {
+        crate::cli::SystemCommand::Simulate { command } => match command {
+            crate::cli::SystemSimulateCommand::Install(args)
+            | crate::cli::SystemSimulateCommand::Upgrade(args)
+            | crate::cli::SystemSimulateCommand::Rollback(args)
+            | crate::cli::SystemSimulateCommand::OfflineMode(args) => {
+                args.format = FormatArg::Json
+            }
+        },
     }
 }
 
@@ -1081,6 +1095,16 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
             },
             SecurityCommand::ScanArtifacts(args) => args.repo_root = Some(root.clone()),
+        },
+        Command::System { command } => match command {
+            crate::cli::SystemCommand::Simulate { command } => match command {
+                crate::cli::SystemSimulateCommand::Install(args)
+                | crate::cli::SystemSimulateCommand::Upgrade(args)
+                | crate::cli::SystemSimulateCommand::Rollback(args)
+                | crate::cli::SystemSimulateCommand::OfflineMode(args) => {
+                    args.repo_root = Some(root.clone())
+                }
+            },
         },
         Command::Datasets { command } => match command {
             DatasetsCommand::Validate(args) => args.repo_root = Some(root.clone()),

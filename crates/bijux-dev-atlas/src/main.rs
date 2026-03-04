@@ -38,6 +38,8 @@ mod perf_commands;
 mod release_commands;
 #[path = "commands/security.rs"]
 mod security_commands;
+#[path = "commands/system.rs"]
+mod system_commands;
 #[path = "commands/suites.rs"]
 mod suites_commands;
 
