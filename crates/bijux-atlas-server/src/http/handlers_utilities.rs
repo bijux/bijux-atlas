@@ -445,6 +445,17 @@ pub(crate) async fn healthz_handler(State(state): State<AppState>) -> impl IntoR
     with_request_id(resp, &request_id)
 }
 
+pub(crate) async fn health_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let request_id = make_request_id(&state);
+    let started = Instant::now();
+    let resp = (StatusCode::OK, "ok").into_response();
+    state
+        .metrics
+        .observe_request_with_trace("/health", StatusCode::OK, started.elapsed(), Some(&request_id))
+        .await;
+    with_request_id(resp, &request_id)
+}
+
 pub(crate) async fn overload_health_handler(State(state): State<AppState>) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
@@ -566,6 +577,57 @@ pub(crate) async fn readyz_handler(State(state): State<AppState>) -> impl IntoRe
             .await;
         with_request_id(resp, &request_id)
     }
+}
+
+pub(crate) async fn ready_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let request_id = make_request_id(&state);
+    let started = Instant::now();
+    let catalog_present = state.cache.current_catalog().await.is_some();
+    let catalog_ready = readyz_catalog_ready(
+        state.api.readiness_requires_catalog,
+        state.cache.cached_only_mode(),
+        catalog_present,
+    );
+    let status = if state.ready.load(Ordering::Relaxed) && catalog_ready {
+        StatusCode::OK
+    } else {
+        StatusCode::SERVICE_UNAVAILABLE
+    };
+    let body = if status == StatusCode::OK {
+        "ready"
+    } else {
+        "not-ready"
+    };
+    let resp = (status, body).into_response();
+    state
+        .metrics
+        .observe_request_with_trace("/ready", status, started.elapsed(), Some(&request_id))
+        .await;
+    with_request_id(resp, &request_id)
+}
+
+pub(crate) async fn live_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let request_id = make_request_id(&state);
+    let started = Instant::now();
+    let is_live = state.accepting_requests.load(Ordering::Relaxed);
+    let status = if is_live {
+        StatusCode::OK
+    } else {
+        StatusCode::SERVICE_UNAVAILABLE
+    };
+    let resp = (
+        status,
+        Json(json!({
+            "live": is_live,
+            "draining": !is_live
+        })),
+    )
+        .into_response();
+    state
+        .metrics
+        .observe_request_with_trace("/live", status, started.elapsed(), Some(&request_id))
+        .await;
+    with_request_id(resp, &request_id)
 }
 
 fn readyz_catalog_ready(

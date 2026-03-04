@@ -197,6 +197,67 @@ impl DatasetCacheManager {
         out
     }
 
+    pub async fn cache_stats_snapshot(&self) -> serde_json::Value {
+        let metrics = &self.metrics;
+        let dataset_count = self.entries.lock().await.len() as u64;
+        serde_json::json!({
+            "dataset_count": dataset_count,
+            "dataset_hits": metrics.dataset_hits.load(std::sync::atomic::Ordering::Relaxed),
+            "dataset_misses": metrics.dataset_misses.load(std::sync::atomic::Ordering::Relaxed),
+            "disk_usage_bytes": metrics.disk_usage_bytes.load(std::sync::atomic::Ordering::Relaxed),
+            "cache_evictions_total": metrics.cache_evictions_total.load(std::sync::atomic::Ordering::Relaxed),
+            "store_download_failures": metrics.store_download_failures.load(std::sync::atomic::Ordering::Relaxed),
+            "store_open_failures": metrics.store_open_failures.load(std::sync::atomic::Ordering::Relaxed),
+            "policy_violations_total": metrics.policy_violations_total.load(std::sync::atomic::Ordering::Relaxed),
+            "registry_refresh_failures_total": metrics.registry_refresh_failures_total.load(std::sync::atomic::Ordering::Relaxed)
+        })
+    }
+
+    pub async fn dataset_registry_dump(&self) -> serde_json::Value {
+        let catalog = self.current_catalog().await.unwrap_or_else(|| Catalog::new(vec![]));
+        let mut datasets = catalog
+            .datasets
+            .into_iter()
+            .map(|entry| entry.dataset.canonical_string())
+            .collect::<Vec<_>>();
+        datasets.sort();
+        serde_json::json!({
+            "catalog_epoch": self.catalog_epoch().await,
+            "dataset_count": datasets.len(),
+            "datasets": datasets
+        })
+    }
+
+    pub async fn shard_map_dump(&self) -> serde_json::Value {
+        let entries = self.entries.lock().await;
+        let mut by_dataset = serde_json::Map::new();
+        for (dataset, entry) in entries.iter() {
+            let seqid_map = entry
+                .shard_by_seqid
+                .iter()
+                .map(|(seqid, shards)| {
+                    (
+                        seqid.clone(),
+                        serde_json::Value::Array(
+                            shards
+                                .iter()
+                                .map(|path| serde_json::Value::String(path.display().to_string()))
+                                .collect(),
+                        ),
+                    )
+                })
+                .collect::<serde_json::Map<String, serde_json::Value>>();
+            by_dataset.insert(
+                dataset.canonical_string(),
+                serde_json::json!({
+                    "shard_count": entry.shard_sqlite_paths.len(),
+                    "seqid_to_shards": seqid_map
+                }),
+            );
+        }
+        serde_json::Value::Object(by_dataset)
+    }
+
     pub async fn fetch_manifest_summary(
         &self,
         dataset: &DatasetId,

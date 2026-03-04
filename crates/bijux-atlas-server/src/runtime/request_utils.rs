@@ -12,7 +12,16 @@ fn chrono_like_unix_secs() -> u64 {
 }
 
 pub(crate) fn route_sli_class(route: &str) -> &'static str {
-    if matches!(route, "/healthz" | "/readyz" | "/metrics" | "/v1/version") {
+    if matches!(
+        route,
+        "/health"
+            | "/healthz"
+            | "/ready"
+            | "/readyz"
+            | "/live"
+            | "/metrics"
+            | "/v1/version"
+    ) {
         return "cheap";
     }
     if route.contains("/diff") || route.contains("/region") || route.contains("/sequence") {
@@ -24,7 +33,15 @@ pub(crate) fn route_sli_class(route: &str) -> &'static str {
 fn route_auth_exempt(route: &str) -> bool {
     matches!(
         route,
-        "/healthz" | "/healthz/overload" | "/readyz" | "/metrics" | "/v1/version" | "/v1/openapi.json"
+        "/health"
+            | "/healthz"
+            | "/healthz/overload"
+            | "/ready"
+            | "/readyz"
+            | "/live"
+            | "/metrics"
+            | "/v1/version"
+            | "/v1/openapi.json"
     )
 }
 
@@ -34,6 +51,15 @@ fn route_is_admin_endpoint(route: &str) -> bool {
         "/debug/datasets"
             | "/debug/dataset-health"
             | "/debug/registry-health"
+            | "/debug/diagnostics"
+            | "/debug/runtime-stats"
+            | "/debug/system-info"
+            | "/debug/build-metadata"
+            | "/debug/runtime-config"
+            | "/debug/dataset-registry"
+            | "/debug/shard-map"
+            | "/debug/query-planner-stats"
+            | "/debug/cache-stats"
             | "/v1/_debug/echo"
     )
 }

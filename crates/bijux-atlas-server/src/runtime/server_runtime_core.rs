@@ -325,6 +325,41 @@ impl RequestMetrics {
         self.dataset_query_distribution.lock().await.clone()
     }
 
+    pub(crate) async fn query_planner_stats_snapshot(&self) -> serde_json::Value {
+        let stage_latency = self.stage_latency_ns.lock().await;
+        let query_plan = stage_latency.get("query_plan").cloned().unwrap_or_default();
+        let query_exec = stage_latency.get("query").cloned().unwrap_or_default();
+        let sqlite_latency = self.sqlite_latency_ns.lock().await.clone();
+        let query_rows = self.query_row_count.lock().await.clone();
+        serde_json::json!({
+            "query_plan_samples": query_plan.len(),
+            "query_plan_latency_ns": query_plan,
+            "query_execution_samples": query_exec.len(),
+            "query_execution_latency_ns": query_exec,
+            "sqlite_latency_ns_by_type": sqlite_latency,
+            "query_row_count_by_route": query_rows
+        })
+    }
+
+    pub(crate) async fn runtime_stats_snapshot(&self) -> serde_json::Value {
+        let counts = self.counts.lock().await.clone();
+        let latency = self.latency_ns.lock().await.clone();
+        let request_sizes = self.request_size_bytes.lock().await.clone();
+        let response_sizes = self.response_size_bytes.lock().await.clone();
+        let client_fingerprints = self.client_fingerprint_counts.lock().await.clone();
+        serde_json::json!({
+            "request_counts": counts,
+            "latency_ns_by_route": latency,
+            "request_size_bytes_by_route": request_sizes,
+            "response_size_bytes_by_route": response_sizes,
+            "client_fingerprints": client_fingerprints,
+            "query_cache_hits_total": self.query_cache_hits_total.load(Ordering::Relaxed),
+            "query_cache_misses_total": self.query_cache_misses_total.load(Ordering::Relaxed),
+            "slow_queries_total": self.slow_queries_total.load(Ordering::Relaxed),
+            "dataset_query_distribution": self.dataset_query_distribution.lock().await.clone()
+        })
+    }
+
     pub(crate) async fn should_shed_heavy(&self, min_samples: usize, threshold_ms: u64) -> bool {
         let recent = self.heavy_latency_recent_ns.lock().await;
         if recent.len() < min_samples {

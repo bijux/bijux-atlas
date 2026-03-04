@@ -104,12 +104,15 @@ impl AppState {
 pub fn build_router(state: AppState) -> Router {
     let mut router = Router::new()
         .route("/", get(http::handlers::landing_handler))
+        .route("/health", get(http::handlers::health_handler))
         .route("/healthz", get(http::handlers::healthz_handler))
         .route(
             "/healthz/overload",
             get(http::handlers::overload_health_handler),
         )
+        .route("/ready", get(http::handlers::ready_handler))
         .route("/readyz", get(http::handlers::readyz_handler))
+        .route("/live", get(http::handlers::live_handler))
         .route("/metrics", get(http::handlers::metrics_handler))
         .route("/v1/openapi.json", get(http::handlers::openapi_handler))
         .route("/v1/version", get(http::handlers::version_handler))
@@ -159,6 +162,33 @@ pub fn build_router(state: AppState) -> Router {
             .route(
                 "/debug/registry-health",
                 get(http::handlers::registry_health_handler),
+            )
+            .route("/debug/diagnostics", get(http::handlers::diagnostics_handler))
+            .route(
+                "/debug/runtime-stats",
+                get(http::handlers::runtime_stats_handler),
+            )
+            .route("/debug/system-info", get(http::handlers::system_info_handler))
+            .route(
+                "/debug/build-metadata",
+                get(http::handlers::build_metadata_handler),
+            )
+            .route(
+                "/debug/runtime-config",
+                get(http::handlers::runtime_config_dump_handler),
+            )
+            .route(
+                "/debug/dataset-registry",
+                get(http::handlers::dataset_registry_dump_handler),
+            )
+            .route("/debug/shard-map", get(http::handlers::shard_map_dump_handler))
+            .route(
+                "/debug/query-planner-stats",
+                get(http::handlers::query_planner_stats_dump_handler),
+            )
+            .route(
+                "/debug/cache-stats",
+                get(http::handlers::cache_stats_dump_handler),
             )
             .route("/v1/_debug/echo", get(http::handlers::debug_echo_handler));
     }

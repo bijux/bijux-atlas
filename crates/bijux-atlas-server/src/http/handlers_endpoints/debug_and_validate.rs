@@ -303,3 +303,294 @@ pub(crate) async fn registry_health_handler(State(state): State<AppState>) -> im
     with_request_id(resp, &request_id)
 }
 
+pub(crate) async fn diagnostics_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let started = Instant::now();
+    let request_id = make_request_id(&state);
+    if !state.api.enable_debug_datasets {
+        let resp = api_error_response(
+            StatusCode::NOT_FOUND,
+            error_json(
+                ApiErrorCode::InvalidQueryParameter,
+                "debug endpoint disabled",
+                json!({}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request("/debug/diagnostics", StatusCode::NOT_FOUND, started.elapsed())
+            .await;
+        return with_request_id(resp, &request_id);
+    }
+    let catalog_present = state.cache.current_catalog().await.is_some();
+    let ready = state.ready.load(std::sync::atomic::Ordering::Relaxed);
+    let live = state.accepting_requests.load(std::sync::atomic::Ordering::Relaxed);
+    let runtime_stats = state.metrics.runtime_stats_snapshot().await;
+    let cache_stats = state.cache.cache_stats_snapshot().await;
+    let response = Json(json!({
+        "health": {
+            "live": live,
+            "ready": ready,
+            "catalog_present": catalog_present
+        },
+        "version": {
+            "crate": env!("CARGO_PKG_NAME"),
+            "version": env!("CARGO_PKG_VERSION"),
+            "build_hash": option_env!("BIJUX_BUILD_HASH").unwrap_or("dev")
+        },
+        "runtime_stats": runtime_stats,
+        "cache_stats": cache_stats
+    }))
+    .into_response();
+    state
+        .metrics
+        .observe_request("/debug/diagnostics", StatusCode::OK, started.elapsed())
+        .await;
+    with_request_id(response, &request_id)
+}
+
+pub(crate) async fn runtime_stats_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let started = Instant::now();
+    let request_id = make_request_id(&state);
+    if !state.api.enable_debug_datasets {
+        let resp = api_error_response(
+            StatusCode::NOT_FOUND,
+            error_json(
+                ApiErrorCode::InvalidQueryParameter,
+                "debug endpoint disabled",
+                json!({}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request("/debug/runtime-stats", StatusCode::NOT_FOUND, started.elapsed())
+            .await;
+        return with_request_id(resp, &request_id);
+    }
+    let runtime_stats = state.metrics.runtime_stats_snapshot().await;
+    let response = Json(runtime_stats).into_response();
+    state
+        .metrics
+        .observe_request("/debug/runtime-stats", StatusCode::OK, started.elapsed())
+        .await;
+    with_request_id(response, &request_id)
+}
+
+pub(crate) async fn system_info_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let started = Instant::now();
+    let request_id = make_request_id(&state);
+    if !state.api.enable_debug_datasets {
+        let resp = api_error_response(
+            StatusCode::NOT_FOUND,
+            error_json(
+                ApiErrorCode::InvalidQueryParameter,
+                "debug endpoint disabled",
+                json!({}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request("/debug/system-info", StatusCode::NOT_FOUND, started.elapsed())
+            .await;
+        return with_request_id(resp, &request_id);
+    }
+    let response = Json(json!({
+        "crate": env!("CARGO_PKG_NAME"),
+        "version": env!("CARGO_PKG_VERSION"),
+        "os": std::env::consts::OS,
+        "arch": std::env::consts::ARCH,
+        "hostname": std::env::var("HOSTNAME").unwrap_or_else(|_| "unknown".to_string())
+    }))
+    .into_response();
+    state
+        .metrics
+        .observe_request("/debug/system-info", StatusCode::OK, started.elapsed())
+        .await;
+    with_request_id(response, &request_id)
+}
+
+pub(crate) async fn build_metadata_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let started = Instant::now();
+    let request_id = make_request_id(&state);
+    if !state.api.enable_debug_datasets {
+        let resp = api_error_response(
+            StatusCode::NOT_FOUND,
+            error_json(
+                ApiErrorCode::InvalidQueryParameter,
+                "debug endpoint disabled",
+                json!({}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request("/debug/build-metadata", StatusCode::NOT_FOUND, started.elapsed())
+            .await;
+        return with_request_id(resp, &request_id);
+    }
+    let response = Json(json!({
+        "build_hash": option_env!("BIJUX_BUILD_HASH").unwrap_or("dev"),
+        "release_id": std::env::var("ATLAS_RELEASE_ID").unwrap_or_else(|_| "dev".to_string()),
+        "governance_version": std::env::var("ATLAS_GOVERNANCE_VERSION").unwrap_or_else(|_| "main@unknown".to_string())
+    }))
+    .into_response();
+    state
+        .metrics
+        .observe_request("/debug/build-metadata", StatusCode::OK, started.elapsed())
+        .await;
+    with_request_id(response, &request_id)
+}
+
+pub(crate) async fn runtime_config_dump_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let started = Instant::now();
+    let request_id = make_request_id(&state);
+    if !state.api.enable_debug_datasets {
+        let resp = api_error_response(
+            StatusCode::NOT_FOUND,
+            error_json(
+                ApiErrorCode::InvalidQueryParameter,
+                "debug endpoint disabled",
+                json!({}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request("/debug/runtime-config", StatusCode::NOT_FOUND, started.elapsed())
+            .await;
+        return with_request_id(resp, &request_id);
+    }
+    let response = Json(json!({
+        "api": {
+            "enable_admin_endpoints": state.api.enable_admin_endpoints,
+            "readiness_requires_catalog": state.api.readiness_requires_catalog,
+            "request_timeout_ms": state.api.request_timeout.as_millis(),
+            "sql_timeout_ms": state.api.sql_timeout.as_millis()
+        },
+        "limits": {
+            "max_limit": state.limits.max_limit,
+            "max_region_span": state.limits.max_region_span,
+            "max_serialization_bytes": state.limits.max_serialization_bytes
+        },
+        "cache": {
+            "cached_only_mode": state.cache.cached_only_mode(),
+            "registry_freeze_mode": state.cache.registry_freeze_mode(),
+            "registry_ttl_seconds": state.cache.registry_ttl_seconds()
+        }
+    }))
+    .into_response();
+    state
+        .metrics
+        .observe_request("/debug/runtime-config", StatusCode::OK, started.elapsed())
+        .await;
+    with_request_id(response, &request_id)
+}
+
+pub(crate) async fn dataset_registry_dump_handler(
+    State(state): State<AppState>,
+) -> impl IntoResponse {
+    let started = Instant::now();
+    let request_id = make_request_id(&state);
+    if !state.api.enable_debug_datasets {
+        let resp = api_error_response(
+            StatusCode::NOT_FOUND,
+            error_json(
+                ApiErrorCode::InvalidQueryParameter,
+                "debug endpoint disabled",
+                json!({}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request("/debug/dataset-registry", StatusCode::NOT_FOUND, started.elapsed())
+            .await;
+        return with_request_id(resp, &request_id);
+    }
+    let response = Json(state.cache.dataset_registry_dump().await).into_response();
+    state
+        .metrics
+        .observe_request("/debug/dataset-registry", StatusCode::OK, started.elapsed())
+        .await;
+    with_request_id(response, &request_id)
+}
+
+pub(crate) async fn shard_map_dump_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let started = Instant::now();
+    let request_id = make_request_id(&state);
+    if !state.api.enable_debug_datasets {
+        let resp = api_error_response(
+            StatusCode::NOT_FOUND,
+            error_json(
+                ApiErrorCode::InvalidQueryParameter,
+                "debug endpoint disabled",
+                json!({}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request("/debug/shard-map", StatusCode::NOT_FOUND, started.elapsed())
+            .await;
+        return with_request_id(resp, &request_id);
+    }
+    let response = Json(state.cache.shard_map_dump().await).into_response();
+    state
+        .metrics
+        .observe_request("/debug/shard-map", StatusCode::OK, started.elapsed())
+        .await;
+    with_request_id(response, &request_id)
+}
+
+pub(crate) async fn query_planner_stats_dump_handler(
+    State(state): State<AppState>,
+) -> impl IntoResponse {
+    let started = Instant::now();
+    let request_id = make_request_id(&state);
+    if !state.api.enable_debug_datasets {
+        let resp = api_error_response(
+            StatusCode::NOT_FOUND,
+            error_json(
+                ApiErrorCode::InvalidQueryParameter,
+                "debug endpoint disabled",
+                json!({}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request(
+                "/debug/query-planner-stats",
+                StatusCode::NOT_FOUND,
+                started.elapsed(),
+            )
+            .await;
+        return with_request_id(resp, &request_id);
+    }
+    let response = Json(state.metrics.query_planner_stats_snapshot().await).into_response();
+    state
+        .metrics
+        .observe_request("/debug/query-planner-stats", StatusCode::OK, started.elapsed())
+        .await;
+    with_request_id(response, &request_id)
+}
+
+pub(crate) async fn cache_stats_dump_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let started = Instant::now();
+    let request_id = make_request_id(&state);
+    if !state.api.enable_debug_datasets {
+        let resp = api_error_response(
+            StatusCode::NOT_FOUND,
+            error_json(
+                ApiErrorCode::InvalidQueryParameter,
+                "debug endpoint disabled",
+                json!({}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request("/debug/cache-stats", StatusCode::NOT_FOUND, started.elapsed())
+            .await;
+        return with_request_id(resp, &request_id);
+    }
+    let response = Json(state.cache.cache_stats_snapshot().await).into_response();
+    state
+        .metrics
+        .observe_request("/debug/cache-stats", StatusCode::OK, started.elapsed())
+        .await;
+    with_request_id(response, &request_id)
+}
