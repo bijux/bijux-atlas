@@ -1838,6 +1838,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-pages-repository-settings.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/docs-publication-model.md"
     },
     {
@@ -3194,6 +3199,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/docs-convergence-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/docs-site-deploy.md"
     },
     {
       "crate": null,

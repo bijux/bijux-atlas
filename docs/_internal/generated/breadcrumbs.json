@@ -3366,6 +3366,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/docs-pages-repository-settings.md"
+      ],
+      "path": "docs/_internal/governance/docs-pages-repository-settings.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/docs-publication-model.md"
       ],
       "path": "docs/_internal/governance/docs-publication-model.md"
@@ -5658,6 +5667,14 @@
         "docs/operations/docs-convergence-policy.md"
       ],
       "path": "docs/operations/docs-convergence-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/docs-site-deploy.md"
+      ],
+      "path": "docs/operations/docs-site-deploy.md"
     },
     {
       "breadcrumbs": [

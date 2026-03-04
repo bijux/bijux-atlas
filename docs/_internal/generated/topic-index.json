@@ -1027,6 +1027,9 @@
     "docs-ownership": [
       "docs/_internal/governance/docs-ownership.md"
     ],
+    "docs-pages-repository-settings": [
+      "docs/_internal/governance/docs-pages-repository-settings.md"
+    ],
     "docs-principles": [
       "docs/_internal/meta/docs-principles.md"
     ],
@@ -1056,6 +1059,9 @@
     ],
     "docs-search-tips": [
       "docs/_internal/governance/docs-search-tips.md"
+    ],
+    "docs-site-deploy": [
+      "docs/operations/docs-site-deploy.md"
     ],
     "docs-structure-freeze": [
       "docs/operations/docs-structure-freeze.md"

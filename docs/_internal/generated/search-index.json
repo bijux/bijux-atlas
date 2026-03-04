@@ -4903,6 +4903,20 @@
     {
       "keywords": [
         "-internal",
+        "docs-pages-repository-settings",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-pages-repository-settings.md",
+      "tags": [
+        "-internal",
+        "docs-pages-repository-settings",
+        "governance"
+      ],
+      "topic": "docs-pages-repository-settings"
+    },
+    {
+      "keywords": [
+        "-internal",
         "docs-publication-model",
         "governance"
       ],
@@ -8407,6 +8421,18 @@
         "operations"
       ],
       "topic": "docs-convergence-policy"
+    },
+    {
+      "keywords": [
+        "docs-site-deploy",
+        "operations"
+      ],
+      "path": "docs/operations/docs-site-deploy.md",
+      "tags": [
+        "docs-site-deploy",
+        "operations"
+      ],
+      "topic": "docs-site-deploy"
     },
     {
       "keywords": [

@@ -2939,6 +2939,14 @@
     },
     {
       "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-pages-repository-settings.md",
+      "stability": "stable",
+      "title": "Docs Pages Repository Settings"
+    },
+    {
+      "area": "_internal",
       "audience": "contributor",
       "owner": "docs-governance",
       "path": "docs/_internal/governance/docs-publication-model.md",
@@ -5112,6 +5120,14 @@
       "path": "docs/operations/docs-convergence-policy.md",
       "stability": "stable",
       "title": "Docs Convergence Policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/docs-site-deploy.md",
+      "stability": "stable",
+      "title": "Docs Site Deployment"
     },
     {
       "area": "operations",

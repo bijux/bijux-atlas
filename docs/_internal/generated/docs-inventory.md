@@ -374,6 +374,7 @@ License: Apache-2.0
 | `docs/_internal/governance/docs-navigation-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-operating-model.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-ownership.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/docs-pages-repository-settings.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-publication-model.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-publication-semantics.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-quality-policy.md` | `concept` | `docs-governance` | `stable` |
@@ -646,6 +647,7 @@ License: Apache-2.0
 | `docs/operations/deprecation-lifecycle-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/docs-as-runbooks.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/docs-convergence-policy.md` | `concept` | `docs-governance` | `stable` |
+| `docs/operations/docs-site-deploy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/docs-structure-freeze.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/drills-program.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/drills.md` | `concept` | `bijux-atlas-operations` | `stable` |

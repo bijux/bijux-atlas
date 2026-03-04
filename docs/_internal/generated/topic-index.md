@@ -289,6 +289,7 @@
 | `docs-navigation-policy` | `docs/_internal/governance/docs-navigation-policy.md` |
 | `docs-operating-model` | `docs/_internal/governance/docs-operating-model.md, docs/_internal/meta/docs-operating-model.md` |
 | `docs-ownership` | `docs/_internal/governance/docs-ownership.md` |
+| `docs-pages-repository-settings` | `docs/_internal/governance/docs-pages-repository-settings.md` |
 | `docs-principles` | `docs/_internal/meta/docs-principles.md` |
 | `docs-publication-model` | `docs/_internal/governance/docs-publication-model.md` |
 | `docs-publication-semantics` | `docs/_internal/governance/docs-publication-semantics.md` |
@@ -299,6 +300,7 @@
 | `docs-reviewability-policy` | `docs/_internal/governance/docs-reviewability-policy.md` |
 | `docs-rewrite-plan` | `docs/_internal/meta/internal/docs-rewrite-plan.md` |
 | `docs-search-tips` | `docs/_internal/governance/docs-search-tips.md` |
+| `docs-site-deploy` | `docs/operations/docs-site-deploy.md` |
 | `docs-structure-freeze` | `docs/operations/docs-structure-freeze.md` |
 | `docs-style` | `docs/_internal/governance/docs-style.md` |
 | `docs-surface-rules` | `docs/_internal/policies/docs-surface-rules.md` |

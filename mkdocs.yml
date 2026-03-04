@@ -116,6 +116,7 @@ plugins:
         root/release-process-overview.md: operations/release/index.md
         root/repository-structure.md: development/repo-layout.md
         root/reproducibility-guarantees.md: product/compatibility-promise.md
+        root/docs-site-deploy.md: operations/docs-site-deploy.md
         root/schema-index.md: reference/schemas.md
         root/security-model.md: operations/security/index.md
         root/stability-guarantees.md: product/compatibility-promise.md

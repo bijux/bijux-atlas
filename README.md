@@ -141,6 +141,12 @@ A platform team needs to publish an updated human genome annotation release:
 - Operations: [`docs/operations/index.md`](docs/operations/index.md)
 - Reference: [`docs/reference/index.md`](docs/reference/index.md)
 
+## Docs Deploy
+- Pipeline: [`.github/workflows/docs-deploy.yml`](.github/workflows/docs-deploy.yml)
+- Output directory: `artifacts/docs/site`
+- Publish target: GitHub Pages (`github-pages` environment)
+- Operator guide: [`docs/operations/docs-site-deploy.md`](docs/operations/docs-site-deploy.md)
+
 ## Repository Surfaces
 - Source crates: `crates/`
 - Runtime and policy configs: `configs/`
