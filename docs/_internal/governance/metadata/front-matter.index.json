@@ -7666,6 +7666,14 @@
       "title": "What is Bijux Atlas"
     },
     {
+      "area": "product",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/product/what-we-built.md",
+      "stability": "stable",
+      "title": "What We Built"
+    },
+    {
       "area": "reference",
       "audience": "mixed",
       "owner": "docs-governance",

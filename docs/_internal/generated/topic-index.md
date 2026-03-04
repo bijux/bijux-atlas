@@ -843,6 +843,7 @@
 | `what-breaks-if-removed` | `docs/operations/reference/what-breaks-if-removed.md` |
 | `what-is-bijux-atlas` | `docs/product/what-is-bijux-atlas.md` |
 | `what-to-read-next` | `docs/what-to-read-next.md` |
+| `what-we-built` | `docs/product/what-we-built.md` |
 | `where-truth-lives` | `docs/development/where-truth-lives.md` |
 | `why-a-control-plane` | `docs/control-plane/why-a-control-plane.md` |
 | `why-effects-are-gated` | `docs/architecture/why-effects-are-gated.md` |

@@ -83,7 +83,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `.github/required-status-checks.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `.github/templates/scripts-migration-release-note.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `CHANGELOG.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `CONTRACT.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `CONTRIBUTING.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `SECURITY.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-api/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-api/docs/benchmarks.md` has no inbound doc links",
@@ -257,7 +257,6 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/system-graph-explained.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/why-effects-are-gated.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/cli-command-list.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/contract.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/control-plane/contract-coverage-dashboard.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/control-plane/contracts.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/development/add-dataset-type.md` has no inbound doc links",
@@ -423,8 +422,8 @@
   "summary": {
     "errors": 57,
     "reference_date": "2026-02-25",
-    "registered": 1195,
+    "registered": 1196,
     "stale_pages": 0,
-    "warnings": 463
+    "warnings": 462
   }
 }

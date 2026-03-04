@@ -12636,6 +12636,18 @@
     },
     {
       "keywords": [
+        "product",
+        "what-we-built"
+      ],
+      "path": "docs/product/what-we-built.md",
+      "tags": [
+        "product",
+        "what-we-built"
+      ],
+      "topic": "what-we-built"
+    },
+    {
+      "keywords": [
         "api",
         "index",
         "reference"

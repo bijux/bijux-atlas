@@ -4792,6 +4792,11 @@
     },
     {
       "crate": null,
+      "doc_type": "concept",
+      "from": "docs/product/what-we-built.md"
+    },
+    {
+      "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/api/index.md"
     },

@@ -965,6 +965,7 @@ License: Apache-2.0
 | `docs/product/transcripts-v1.md` | `concept` | `bijux-atlas-query` | `stable` |
 | `docs/product/user-stories.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/what-is-bijux-atlas.md` | `concept` | `bijux-atlas-product` | `stable` |
+| `docs/product/what-we-built.md` | `concept` | `docs-governance` | `stable` |
 | `docs/reference/api/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/audience-legend.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/build-info.md` | `reference` | `docs-governance` | `stable` |
