@@ -218,6 +218,11 @@ pub(crate) async fn genes_handler(
             }
         };
     let normalized = super::handlers::normalize_query(&params);
+    let query_id = {
+        let fingerprint = format!("{}|{}", request_id, normalized);
+        let digest = bijux_atlas_core::sha256_hex(fingerprint.as_bytes());
+        format!("qry-{}", &digest[..12])
+    };
     let manifest_summary = state.cache.fetch_manifest_summary(&dataset).await.ok();
     let artifact_hash = super::handlers::dataset_artifact_hash(manifest_summary.as_ref(), &dataset);
     let etag = super::handlers::dataset_etag(&artifact_hash, "/v1/genes", &params);
@@ -361,6 +366,7 @@ pub(crate) async fn genes_handler(
             info!(
                 event_id = "cache_hit_hot_query",
                 request_id = %request_id,
+                query_id = %query_id,
                 dataset_id = %dataset.canonical_string(),
                 query_type = "genes",
                 "hot query cache hit"
@@ -388,6 +394,7 @@ pub(crate) async fn genes_handler(
         info!(
             event_id = "cache_miss_hot_query",
             request_id = %request_id,
+            query_id = %query_id,
             dataset_id = %dataset.canonical_string(),
             query_type = "genes",
             "hot query cache miss"
@@ -501,6 +508,7 @@ pub(crate) async fn genes_handler(
                 info!(
                     event_id = "shard_routing_started",
                     request_id = %request_id,
+                    query_id = %query_id,
                     dataset_id = %dataset.canonical_string(),
                     "shard routing started"
                 );
@@ -552,6 +560,7 @@ pub(crate) async fn genes_handler(
                             info!(
                                 event_id = "shard_routing_selected",
                                 request_id = %request_id,
+                                query_id = %query_id,
                                 dataset_id = %dataset.canonical_string(),
                                 selected_shard_count = refs.len(),
                                 "shard routing selected fanout plan"
@@ -571,6 +580,7 @@ pub(crate) async fn genes_handler(
             warn!(
                 event_id = "slow_query_detected",
                 request_id = %request_id,
+                query_id = %query_id,
                 dataset = %format!("{}/{}/{}", dataset.release, dataset.species, dataset.assembly),
                 class = %format!("{class:?}").to_lowercase(),
                 normalized_query = %super::handlers::normalize_query(&params),
@@ -610,6 +620,7 @@ pub(crate) async fn genes_handler(
             warn!(
                 event_id = "query_error_classified",
                 request_id = %request_id,
+                query_id = %query_id,
                 route = "/v1/genes",
                 error_class = if msg.contains("limit")
                     || msg.contains("span")
@@ -719,6 +730,7 @@ pub(crate) async fn genes_handler(
             warn!(
                 event_id = "request_timeout",
                 request_id = %request_id,
+                query_id = %query_id,
                 route = "/v1/genes",
                 timeout_ms = state.api.request_timeout.as_millis(),
                 "request timed out"
