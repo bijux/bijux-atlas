@@ -130,12 +130,10 @@ pub fn tls_handshake_allowed(
     if !tls_enabled {
         return false;
     }
-    match (min_version, negotiated_version) {
-        ("1.3", "1.3") => true,
-        ("1.2", "1.2" | "1.3") => true,
-        ("1.1", "1.1" | "1.2" | "1.3") => true,
-        _ => false,
-    }
+    matches!(
+        (min_version, negotiated_version),
+        ("1.3", "1.3") | ("1.2", "1.2" | "1.3") | ("1.1", "1.1" | "1.2" | "1.3")
+    )
 }
 
 pub trait EncryptionAtRest {

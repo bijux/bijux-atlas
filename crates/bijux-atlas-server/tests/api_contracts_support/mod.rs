@@ -56,6 +56,7 @@ pub fn fixture_fasta_and_fai() -> (Vec<u8>, Vec<u8>) {
     (fasta, fai)
 }
 
+#[allow(dead_code)]
 pub fn fixture_release_index(
     dataset: &DatasetId,
     rows: Vec<(&str, &str, u64, u64, &str)>,

@@ -26,17 +26,15 @@ impl DatasetCacheManager {
         let mut by = self.metrics.policy_violations_by_policy.lock().await;
         let count = by.entry(event.to_string()).or_insert(0);
         *count += 1;
-        if event == "integrity.violation" || event == "tamper.detected" {
-            if *count % 10 == 0 {
-                warn!(
-                    event_id = "data_protection_alert",
-                    event = "data_protection_alert",
-                    policy = event,
-                    dataset = %dataset.canonical_string(),
-                    count = *count,
-                    "data protection violation threshold reached"
-                );
-            }
+        if (event == "integrity.violation" || event == "tamper.detected") && *count % 10 == 0 {
+            warn!(
+                event_id = "data_protection_alert",
+                event = "data_protection_alert",
+                policy = event,
+                dataset = %dataset.canonical_string(),
+                count = *count,
+                "data protection violation threshold reached"
+            );
         }
     }
 

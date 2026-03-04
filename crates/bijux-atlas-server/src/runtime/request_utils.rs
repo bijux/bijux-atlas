@@ -1450,11 +1450,13 @@ mod tests {
     #[test]
     fn token_validation_enforces_expiry_scope_issuer_audience_and_revocation() {
         let now = chrono_like_unix_secs();
-        let mut api = crate::config::ApiConfig::default();
-        api.token_signing_secret = Some("token-secret".to_string());
-        api.token_required_issuer = Some("atlas-auth".to_string());
-        api.token_required_audience = Some("atlas-api".to_string());
-        api.token_required_scopes = vec!["dataset.read".to_string()];
+        let mut api = crate::config::ApiConfig {
+            token_signing_secret: Some("token-secret".to_string()),
+            token_required_issuer: Some("atlas-auth".to_string()),
+            token_required_audience: Some("atlas-api".to_string()),
+            token_required_scopes: vec!["dataset.read".to_string()],
+            ..crate::config::ApiConfig::default()
+        };
         let token = signed_token(
             serde_json::json!({
                 "sub":"user-1",
@@ -1491,8 +1493,10 @@ mod tests {
 
     #[test]
     fn token_validation_rejects_malformed_tokens() {
-        let mut api = crate::config::ApiConfig::default();
-        api.token_signing_secret = Some("token-secret".to_string());
+        let api = crate::config::ApiConfig {
+            token_signing_secret: Some("token-secret".to_string()),
+            ..crate::config::ApiConfig::default()
+        };
         assert_eq!(
             validate_signed_token("not.a.jwt", &api),
             Err(TokenValidationError::Malformed)

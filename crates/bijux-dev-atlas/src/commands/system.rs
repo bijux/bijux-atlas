@@ -829,6 +829,7 @@ fn run_scenarios(
 }
 
 #[cfg(test)]
+#[allow(clippy::items_after_test_module)]
 mod tests {
     use super::{
         ensure_diagnostics_schema, run_cluster_command, run_debug_command, stable_sha256,

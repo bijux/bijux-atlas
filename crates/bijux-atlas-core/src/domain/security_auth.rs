@@ -192,7 +192,6 @@ pub fn rotate_api_key(
     next_raw
 }
 
-#[must_use]
 pub fn mint_signed_token(claims: &TokenClaims, signing_secret: &str) -> Result<String, String> {
     let payload =
         serde_json::to_vec(claims).map_err(|err| format!("token encode failed: {err}"))?;
