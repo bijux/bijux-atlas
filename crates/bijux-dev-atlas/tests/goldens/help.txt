@@ -9,6 +9,8 @@ Commands:
   demo        
   configs     
   governance  
+  system      
+  audit       
   security    
   datasets    
   ingest      

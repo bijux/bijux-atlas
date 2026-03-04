@@ -12,6 +12,7 @@ Commands:
   stack             
   k8s               
   profiles          
+  profile           
   load              
   datasets          
   e2e               
@@ -43,6 +44,7 @@ Commands:
   verify-tools      
   list-actions      
   plan              
+  install-plan      
   up                
   down              
   clean             

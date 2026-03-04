@@ -4,6 +4,8 @@ reports
 demo
 configs
 governance
+system
+audit
 security
 datasets
 ingest
