@@ -8,7 +8,7 @@
   "properties": {
     "schema_version": {
       "type": "integer",
-      "const": 1
+      "const": 2
     },
     "slos": {
       "type": "array",
@@ -17,19 +17,34 @@
         "type": "object",
         "required": [
           "id",
-          "target",
-          "window"
+          "objective",
+          "window",
+          "unit",
+          "metric",
+          "description"
         ],
         "properties": {
           "id": {
             "type": "string",
             "minLength": 1
           },
-          "target": {
+          "objective": {
+            "type": "number",
+            "minimum": 0
+          },
+          "window": {
             "type": "string",
             "minLength": 1
           },
-          "window": {
+          "unit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "metric": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
             "type": "string",
             "minLength": 1
           }

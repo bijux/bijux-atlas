@@ -1,7 +1,37 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "slos": [
-    {"id": "api.availability", "target": "99.9", "window": "30d"},
-    {"id": "api.p95_latency", "target": "300ms", "window": "30d"}
+    {
+      "id": "atlas.availability",
+      "objective": 99.9,
+      "window": "30d",
+      "unit": "percent",
+      "metric": "bijux_http_requests_total",
+      "description": "Successful request ratio for all Atlas API routes."
+    },
+    {
+      "id": "atlas.p95_latency",
+      "objective": 0.30,
+      "window": "30d",
+      "unit": "seconds",
+      "metric": "bijux_http_request_latency_p95_seconds",
+      "description": "P95 end-to-end latency for core API routes."
+    },
+    {
+      "id": "atlas.error_rate",
+      "objective": 0.005,
+      "window": "30d",
+      "unit": "ratio",
+      "metric": "bijux_http_requests_total",
+      "description": "5xx error ratio budget across request classes."
+    },
+    {
+      "id": "atlas.ingest_throughput",
+      "objective": 50,
+      "window": "10m",
+      "unit": "records_per_second",
+      "metric": "atlas_ingest_records_total",
+      "description": "Sustained ingest throughput for normal operating workloads."
+    }
   ]
 }

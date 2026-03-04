@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "measurement_method": {
+    "atlas.availability": {
+      "promql": "sum(rate(bijux_http_requests_total{subsystem=\"atlas\",status!~\"5..\"}[5m])) / clamp_min(sum(rate(bijux_http_requests_total{subsystem=\"atlas\"}[5m])), 1)",
+      "recording_rule": "atlas:sli:availability:ratio_5m",
+      "evaluation_interval": "30s"
+    },
+    "atlas.p95_latency": {
+      "promql": "max(bijux_http_request_latency_p95_seconds{subsystem=\"atlas\"})",
+      "recording_rule": "atlas:sli:latency_p95_seconds",
+      "evaluation_interval": "30s"
+    },
+    "atlas.error_rate": {
+      "promql": "sum(rate(bijux_http_requests_total{subsystem=\"atlas\",status=~\"5..\"}[5m])) / clamp_min(sum(rate(bijux_http_requests_total{subsystem=\"atlas\"}[5m])), 1)",
+      "recording_rule": "atlas:sli:error_rate:ratio_5m",
+      "evaluation_interval": "30s"
+    },
+    "atlas.ingest_throughput": {
+      "promql": "sum(rate(atlas_ingest_records_total{subsystem=\"atlas\"}[5m]))",
+      "recording_rule": "atlas:sli:ingest_records_per_second_5m",
+      "evaluation_interval": "30s"
+    }
+  }
+}

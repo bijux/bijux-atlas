@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "slo_metric_map": [
+    {
+      "slo_id": "atlas.availability",
+      "metrics": [
+        "bijux_http_requests_total"
+      ]
+    },
+    {
+      "slo_id": "atlas.p95_latency",
+      "metrics": [
+        "bijux_http_request_latency_p95_seconds"
+      ]
+    },
+    {
+      "slo_id": "atlas.error_rate",
+      "metrics": [
+        "bijux_http_requests_total"
+      ]
+    },
+    {
+      "slo_id": "atlas.ingest_throughput",
+      "metrics": [
+        "atlas_ingest_records_total"
+      ]
+    }
+  ]
+}
