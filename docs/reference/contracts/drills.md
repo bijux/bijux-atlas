@@ -4,7 +4,7 @@
 - Type: `reference`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@93ad533e5a4c4704f3a344db96b083570bb4d4b0`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: define the machine-readable contract for institutional drills.
 
 ## Contract IDs

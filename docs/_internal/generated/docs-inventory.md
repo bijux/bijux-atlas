@@ -467,8 +467,8 @@ License: Apache-2.0
 | `docs/architecture/artifact-model.md` | `concept` | `architecture` | `stable` |
 | `docs/architecture/boundaries.md` | `concept` | `architecture` | `stable` |
 | `docs/architecture/boundary-maps.md` | `concept` | `platform` | `stable` |
-| `docs/architecture/cluster-membership-lifecycle.md` | `concept` | `architecture` | `experimental` |
-| `docs/architecture/cluster-topology.md` | `concept` | `architecture` | `experimental` |
+| `docs/architecture/cluster-membership-lifecycle.md` | `concept` | `architecture` | `evolving` |
+| `docs/architecture/cluster-topology.md` | `concept` | `architecture` | `evolving` |
 | `docs/architecture/common-failure-catalog.md` | `concept` | `architecture` | `stable` |
 | `docs/architecture/components.md` | `concept` | `architecture` | `stable` |
 | `docs/architecture/components/index.md` | `concept` | `docs-governance` | `stable` |
@@ -500,7 +500,7 @@ License: Apache-2.0
 | `docs/architecture/diagrams/shard-routing-visualization.md` | `concept` | `docs-governance` | `stable` |
 | `docs/architecture/diagrams/style-guide.md` | `concept` | `docs-governance` | `stable` |
 | `docs/architecture/diagrams/system-topology.md` | `concept` | `docs-governance` | `stable` |
-| `docs/architecture/distributed-cluster-foundation.md` | `concept` | `architecture` | `experimental` |
+| `docs/architecture/distributed-cluster-foundation.md` | `concept` | `architecture` | `evolving` |
 | `docs/architecture/effects.md` | `concept` | `architecture` | `stable` |
 | `docs/architecture/engineering-philosophy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/architecture/error-model.md` | `concept` | `architecture` | `stable` |
@@ -548,7 +548,7 @@ License: Apache-2.0
 | `docs/architecture/security/trust-boundaries.md` | `concept` | `docs-governance` | `stable` |
 | `docs/architecture/shard-design-principles.md` | `concept` | `docs-governance` | `stable` |
 | `docs/architecture/shard-model.md` | `concept` | `docs-governance` | `stable` |
-| `docs/architecture/shard-routing-foundation.md` | `concept` | `architecture` | `experimental` |
+| `docs/architecture/shard-routing-foundation.md` | `concept` | `architecture` | `evolving` |
 | `docs/architecture/shard-routing-strategy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/architecture/storage.md` | `concept` | `architecture` | `stable` |
 | `docs/architecture/store-integrity-model.md` | `concept` | `architecture` | `stable` |
@@ -627,13 +627,13 @@ License: Apache-2.0
 | `docs/operations/audit-procedure.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/backward-compatibility-guarantee.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/chart-semver-policy.md` | `concept` | `bijux-atlas-operations` | `stable` |
-| `docs/operations/cluster-deployment-models.md` | `concept` | `bijux-atlas-operations` | `experimental` |
+| `docs/operations/cluster-deployment-models.md` | `concept` | `bijux-atlas-operations` | `evolving` |
 | `docs/operations/cluster-membership-protocol.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/cluster-node-health-monitoring.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/cluster-node-lifecycle-states.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/cluster-node-maintenance-procedures.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/cluster-troubleshooting-guide.md` | `concept` | `docs-governance` | `stable` |
-| `docs/operations/cluster-upgrade-and-compatibility.md` | `concept` | `bijux-atlas-operations` | `experimental` |
+| `docs/operations/cluster-upgrade-and-compatibility.md` | `concept` | `bijux-atlas-operations` | `evolving` |
 | `docs/operations/config.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/data-access-model.md` | `concept` | `bijux-atlas-data` | `stable` |
 | `docs/operations/data-retention-policy.md` | `concept` | `bijux-atlas-data` | `stable` |

@@ -13,7 +13,7 @@ last_reviewed: 2026-03-03
 - Type: `runbook`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@3af24f78bdf0be1507efa8651298c45b68fa9e1e`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Last changed: `2026-03-03`
 - Reason to exist: define the kind-backed lifecycle validation path for upgrade and rollback simulations.
 

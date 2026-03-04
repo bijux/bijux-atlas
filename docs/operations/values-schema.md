@@ -4,7 +4,7 @@
 - Type: `runbook`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@ac729387b2bb5ef0b6391a0dd7fc5743ff3c2f30`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: explain how the chart values schema rejects invalid deployments before they reach the cluster.
 
 Related ops contracts: `OPS-K8S-001`, `OPS-K8S-004`.

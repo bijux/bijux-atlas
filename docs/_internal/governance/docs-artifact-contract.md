@@ -5,7 +5,7 @@
 - Type: `policy`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@f8bf6639b45f6717d0de1903b56bc7dcf4615b06`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: define which documentation artifacts are committed, which are build outputs, and how they are maintained.
 
 ## Committed Artifacts

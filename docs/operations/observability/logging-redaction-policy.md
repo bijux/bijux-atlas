@@ -4,7 +4,7 @@
 - Type: `policy`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@053b86165`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: define safe-field expectations for runtime logs.
 
 ## Configuration

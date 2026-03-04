@@ -21,7 +21,7 @@ related:
 - Type: `concept`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@ecce23744e45d1869232fef0bd682d7b33f80991`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: define the canonical authentication and access-boundary stance for Atlas.
 
 ## Purpose

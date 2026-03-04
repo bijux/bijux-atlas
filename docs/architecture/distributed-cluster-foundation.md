@@ -2,7 +2,7 @@
 title: Distributed Cluster Foundation
 audience: contributor
 type: concept
-stability: experimental
+stability: evolving
 owner: architecture
 last_reviewed: 2026-03-04
 tags:
@@ -19,8 +19,8 @@ related:
 - Owner: `architecture`
 - Type: `concept`
 - Audience: `contributor`
-- Stability: `experimental`
-- Last verified against: `main`
+- Stability: `evolving`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: define the baseline distributed cluster model for Atlas runtime evolution.
 
 ## Distributed System Philosophy

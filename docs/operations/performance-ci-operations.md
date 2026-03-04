@@ -2,7 +2,7 @@
 
 - Owner: `platform`
 - Stability: `stable`
-- Last verified against: `main@fc113b1bb`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 
 ## Purpose
 

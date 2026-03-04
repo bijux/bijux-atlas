@@ -2,7 +2,7 @@
 title: Shard Distribution Guide
 audience: operator
 type: runbook
-stability: experimental
+stability: evolving
 owner: bijux-atlas-operations
 last_reviewed: 2026-03-04
 tags:

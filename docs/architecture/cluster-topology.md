@@ -2,7 +2,7 @@
 title: Cluster Topology
 audience: contributor
 type: concept
-stability: experimental
+stability: evolving
 owner: architecture
 last_reviewed: 2026-03-04
 tags:
@@ -19,7 +19,7 @@ related:
 - Owner: `architecture`
 - Type: `concept`
 - Audience: `contributor`
-- Stability: `experimental`
+- Stability: `evolving`
 - Reason to exist: define the topology model and deployment variants used by Atlas cluster runtime.
 
 ## Topology Summary

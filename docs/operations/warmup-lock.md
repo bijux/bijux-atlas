@@ -5,7 +5,7 @@
 - Type: `reference`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@a10951a3e4e65b3b9be3bb67b16b4dc16a6d5287`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Last changed: `2026-03-03`
 - Reason to exist: explain the startup warmup lock used to coordinate Redis-backed dataset warmup.
 

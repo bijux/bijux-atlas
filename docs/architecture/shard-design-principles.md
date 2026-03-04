@@ -2,7 +2,7 @@
 title: Shard Design Principles
 audience: contributor
 type: concept
-stability: experimental
+stability: evolving
 owner: architecture
 last_reviewed: 2026-03-04
 tags:

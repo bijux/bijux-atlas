@@ -4,7 +4,7 @@
 - Type: `reference`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@2a4d4cd97d7132be969d573ba9461d6bd0a1653e`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Last changed: `2026-03-03`
 - Reason to exist: define the stable semantics of `/healthz` and `/readyz`.
 

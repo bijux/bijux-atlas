@@ -4,7 +4,7 @@
 - Type: `policy`
 - Audience: `reviewers`
 - Stability: `stable`
-- Last verified against: `main@522431fd5e6376d1fdc88f630ae5d334612ca8d2`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Last changed: `2026-03-03`
 - Reason to exist: define what dataset-derived outputs are retained and why.
 

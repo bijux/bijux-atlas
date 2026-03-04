@@ -11,14 +11,11 @@ Document the supported comparison tool for baseline versus candidate load report
 
 ## Tool
 
-- `ops/load/tools/compare-load-report.sh`
+- `bijux dev atlas ops load report`
 
 ## Usage
 
-```bash
-ops/load/tools/compare-load-report.sh \
-  ops/load/baselines/system-load-baseline.json \
-  ops/load/baselines/system-load-baseline.json
-```
+Use the committed load summary and drift report artifacts as the canonical comparison surfaces:
 
-Expected output is JSON with per-suite latency and error-rate deltas.
+- `ops/load/generated/load-summary.json`
+- `ops/load/generated/load-drift-report.json`

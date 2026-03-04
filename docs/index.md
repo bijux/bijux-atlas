@@ -21,23 +21,23 @@ Atlas documentation is organized by system understanding first, then execution d
 
 ## Primary Reader Paths
 
-- New to Atlas: [What Is Atlas](what-is-atlas.md)
+- New to Atlas: [Architecture Summary](architecture/summary.md)
 - System understanding: [Architecture Overview](architecture/overview.md)
-- Runtime operation: [Operations Index](operations/index.md)
-- API consumer path: [API Overview](api/index.md)
+- Runtime operation: [Deploy Overview](operations/deploy.md)
+- API consumer path: [API v1 Surface](api/v1-surface.md)
 - Contributor path: [Development Index](development/index.md)
 
-## Documentation Structure
+## Docs Spine
 
-- [Start Here](start-here.md)
-- [What Is Atlas](what-is-atlas.md)
-- [Architecture](architecture/index.md)
-- [Tutorials](tutorials/index.md)
-- [API](api/index.md)
-- [Operations](operations/index.md)
-- [Control-plane](control-plane/index.md)
-- [Reference](reference/index.md)
-- [Glossary](glossary.md)
+- Start: [Start Here](start-here.md)
+- Product: [What Is Bijux Atlas](product/what-is-bijux-atlas.md)
+- Product Index: [Product Index](product/index.md)
+- Architecture: [Architecture Index](architecture/index.md)
+- API: [API Surface Index](api/index.md)
+- Ops: [Operations Index](operations/index.md)
+- Dev: [Development Tooling](development/tooling/index.md)
+- Control-plane: [Control-plane Index](control-plane/index.md)
+- Reference: [Reference Index](reference/index.md)
 
 ## Next steps
 
@@ -47,5 +47,3 @@ Atlas documentation is organized by system understanding first, then execution d
 - [Site map](site-map.md)
 - [What to read next](what-to-read-next.md)
 - [Glossary](glossary.md)
-
-- [_Assets Index](_assets/index.md)

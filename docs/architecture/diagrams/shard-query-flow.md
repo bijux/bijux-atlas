@@ -2,7 +2,7 @@
 title: Shard Query Flow
 audience: contributor
 type: reference
-stability: experimental
+stability: evolving
 owner: architecture
 last_reviewed: 2026-03-04
 tags:

@@ -25,6 +25,15 @@ Genomics data pipelines often fail reproducibility and auditability requirements
 ## System Elevator Pitch
 Bijux Atlas turns genomics data delivery into a deterministic, policy-enforced, and auditable system from ingest to release.
 
+## Product Narrative
+Atlas exists to keep genomics dataset delivery reproducible for operators and reviewers who need evidence, not trust. It connects ingest, query, release, and governance into one deterministic path where every critical claim is backed by executable contracts and auditable artifacts.
+
+## Quick Start
+1. Install Rust and the pinned toolchain defined by the repository.
+2. Run `make check` for fast local quality gates.
+3. Run `make test` for the default test gate.
+4. Use `bijux dev atlas contract run --domain <domain>` for targeted contract verification.
+
 ## Quick System Overview
 Bijux Atlas is built around a Rust control plane (`bijux-dev-atlas`) that enforces contracts and executes workflows. Operational and release outputs are treated as governed artifacts, not ad-hoc side effects.
 
@@ -133,6 +142,13 @@ A platform team needs to publish an updated human genome annotation release:
 - Operations: [`docs/operations/index.md`](docs/operations/index.md)
 - Reference: [`docs/reference/index.md`](docs/reference/index.md)
 
+## Repository Surfaces
+- Source crates: `crates/`
+- Runtime and policy configs: `configs/`
+- Operations specifications and artifacts: `ops/`
+- Documentation and governance references: `docs/`
+- Generated evidence and local outputs: `artifacts/`
+
 ## Repository Layout
 - `crates/`: Rust crates for ingest, query, API, server, and control plane.
 - `configs/`: governed configuration and policy surfaces.
@@ -187,7 +203,7 @@ flowchart LR
 ## Development Workflow
 1. Change code, configs, docs, or ops surfaces in bounded commits.
 2. Run targeted checks/contracts for affected domains.
-3. Run full quality gates before merge (`make test-all`, `make contract-all`, `make checks-all`).
+3. Run the quality gates documented in [`docs/start-here.md`](docs/start-here.md).
 4. Regenerate governed artifacts through control-plane commands, not manual edits.
 5. Merge only when deterministic outputs and required governance evidence are clean.
 

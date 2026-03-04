@@ -4,7 +4,7 @@
 - Type: `runbook`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@0f088c31314aa61bc0ec69f1f5e683625b0d6bd5`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Last changed: `2026-03-03`
 - Reason to exist: describe the governed process for adding a new artifact to the release evidence set.
 

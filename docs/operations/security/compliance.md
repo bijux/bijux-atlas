@@ -4,7 +4,7 @@
 - Type: `runbook`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@bb6ad845da4ad296a761a62e4b69f40969f7b563`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: explain the governed control catalog, evidence matrix, and secret scanning workflow.
 
 ## Prereqs

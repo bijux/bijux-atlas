@@ -3686,7 +3686,7 @@
       "audience": "contributor",
       "owner": "architecture",
       "path": "docs/architecture/cluster-membership-lifecycle.md",
-      "stability": "experimental",
+      "stability": "evolving",
       "title": "Cluster Membership Lifecycle"
     },
     {
@@ -3694,7 +3694,7 @@
       "audience": "contributor",
       "owner": "architecture",
       "path": "docs/architecture/cluster-topology.md",
-      "stability": "experimental",
+      "stability": "evolving",
       "title": "Cluster Topology"
     },
     {
@@ -3950,7 +3950,7 @@
       "audience": "contributor",
       "owner": "architecture",
       "path": "docs/architecture/distributed-cluster-foundation.md",
-      "stability": "experimental",
+      "stability": "evolving",
       "title": "Distributed Cluster Foundation"
     },
     {
@@ -4334,7 +4334,7 @@
       "audience": "contributor",
       "owner": "architecture",
       "path": "docs/architecture/shard-routing-foundation.md",
-      "stability": "experimental",
+      "stability": "evolving",
       "title": "Shard Routing Foundation"
     },
     {
@@ -4966,7 +4966,7 @@
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/cluster-deployment-models.md",
-      "stability": "experimental",
+      "stability": "evolving",
       "title": "Cluster Deployment Models"
     },
     {
@@ -5014,7 +5014,7 @@
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/cluster-upgrade-and-compatibility.md",
-      "stability": "experimental",
+      "stability": "evolving",
       "title": "Cluster Upgrade And Compatibility"
     },
     {
@@ -6983,7 +6983,7 @@
       "owner": "bijux-atlas-security",
       "path": "docs/operations/security/data-retention-policy.md",
       "stability": "stable",
-      "title": "Data Retention Policy"
+      "title": "Security Data Retention Policy"
     },
     {
       "area": "operations",

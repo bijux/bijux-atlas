@@ -1,4 +1,4 @@
-# Data Retention Policy
+# Security Data Retention Policy
 
 - Owner: `bijux-atlas-security`
 - Type: `policy`

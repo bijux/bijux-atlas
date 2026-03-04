@@ -5,7 +5,7 @@
 - Type: `policy`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@a4f9ebad44bca62517d2fcb77f8f2a38e4c72f54`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Last changed: `2026-03-03`
 - Reason to exist: define how the documentation toolchain is updated and reproduced.
 

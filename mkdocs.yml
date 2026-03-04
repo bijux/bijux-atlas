@@ -134,8 +134,6 @@ not_in_nav: |
 nav:
   - Home: index.md
   - Start Here: start-here.md
-  - What Is Atlas: what-is-atlas.md
-  - Tutorials: tutorials/index.md
   - Product: product/index.md
   - Architecture:
       - Architecture Index: architecture/index.md
@@ -171,10 +169,9 @@ nav:
   - Development:
       - Development Overview: development/index.md
       - Tooling: development/tooling/index.md
-      - Internal Governance: _internal/governance/index.md
-      - Internal Docs Dashboard: _internal/governance/docs-dashboard.md
+      - Docs governance: _internal/governance/index.md
+      - Docs Dashboard: _internal/governance/docs-dashboard.md
   - Reference: reference/index.md
-  - API Reference: reference/api/index.md
   - Errors and Exit Codes: reference/errors-and-exit-codes.md
   - Ops Reference: reference/ops/index.md
   - Configs Reference: reference/configs/index.md

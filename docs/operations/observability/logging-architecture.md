@@ -4,7 +4,7 @@
 - Type: `concept`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@b77ca37b3`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: define structured runtime logging model, schema, and metadata conventions.
 
 ## Logging philosophy

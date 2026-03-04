@@ -13,7 +13,7 @@ last_reviewed: 2026-03-03
 - Type: `concept`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@5fcfe93aaeed218cb75ecb5c143ee3129fbe4bcf`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Last changed: `2026-03-03`
 - Reason to exist: explain what the release evidence proves and what it does not prove.
 

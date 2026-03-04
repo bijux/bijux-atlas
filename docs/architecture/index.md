@@ -19,7 +19,7 @@ related:
 - Type: `concept`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: define canonical runtime structure, boundaries, and invariants.
 
 ## Purpose
@@ -57,11 +57,7 @@ Describe how Atlas is structured so contributors and operators share one durable
 - [Security design principles](security/security-design-principles.md)
 - [Performance model](performance-model.md)
 - [Query model](query-model.md)
-- [Query performance architecture](query-performance-architecture.md)
 - [Ingest and QC model](ingest-qc-model.md)
-- [System graph explained](system-graph-explained.md)
-- [Internal Architecture](internal-architecture.md)
-- [Architecture Evolution](evolution.md)
 
 ## Next steps
 

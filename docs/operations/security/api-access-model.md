@@ -4,7 +4,7 @@
 - Type: `reference`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@45a8f8e639b1718e65a07a95cb3660b7a4e467f4`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: define endpoint audiences and the default exposure expectations.
 
 ## Publicly reachable health surface

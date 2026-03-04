@@ -2,7 +2,7 @@
 title: Cluster Deployment Models
 audience: operator
 type: runbook
-stability: experimental
+stability: evolving
 owner: bijux-atlas-operations
 last_reviewed: 2026-03-04
 tags:
@@ -19,7 +19,7 @@ related:
 - Owner: `bijux-atlas-operations`
 - Type: `runbook`
 - Audience: `operator`
-- Stability: `experimental`
+- Stability: `evolving`
 - Reason to exist: define single-node and multi-node deployment models and their operational tradeoffs.
 
 ## Single-Node Mode

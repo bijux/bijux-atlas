@@ -35,6 +35,7 @@ This documentation set is organized around three audience paths and a shared rea
 - [Governance](governance/index.md)
 - [Reference](reference/index.md)
 - [Control-plane](control-plane/index.md)
+- [Tutorials](tutorials/index.md)
 - [Glossary](glossary.md)
 
 ## Navigation policy

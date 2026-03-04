@@ -4,7 +4,7 @@
 - Type: `guide`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@17d67e8ab49e844c60d0bc95bb7a56e2732a097b`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: define the canonical way to refresh GitHub Actions SHA pins without weakening the supply chain boundary.
 
 ## Preconditions

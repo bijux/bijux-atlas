@@ -4,7 +4,7 @@
 - Type: `runbook`
 - Audience: `operators`
 - Stability: `stable`
-- Last verified against: `main@f5f3bd4471d8bf4dbf13fef4381ef6bfda2480a2`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: define the first response workflow when audit logs indicate suspicious access.
 
 ## Prereqs

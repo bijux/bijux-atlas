@@ -1,4 +1,4 @@
-# Pagination
+# Query Pagination Reference
 
 - Owner: `api-contracts`
 - Audience: `user`

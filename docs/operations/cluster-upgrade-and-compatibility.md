@@ -2,7 +2,7 @@
 title: Cluster Upgrade And Compatibility
 audience: operator
 type: runbook
-stability: experimental
+stability: evolving
 owner: bijux-atlas-operations
 last_reviewed: 2026-03-04
 tags:
@@ -19,7 +19,7 @@ related:
 - Owner: `bijux-atlas-operations`
 - Type: `runbook`
 - Audience: `operator`
-- Stability: `experimental`
+- Stability: `evolving`
 - Reason to exist: define durable rules for cluster upgrades and node-version compatibility.
 
 ## Upgrade Strategy
@@ -42,6 +42,10 @@ related:
 1. Keep one healthy query quorum during each upgrade step.
 2. Keep one healthy ingest quorum during each upgrade step.
 3. Block promotion if cluster health is `degraded` or `unavailable`.
+
+## Policy References
+
+- OPS-ROOT-023: operations policy statements require an explicit OPS contract id.
 
 ## Evidence To Collect
 

@@ -4,7 +4,7 @@
 - Type: `runbook`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@a98808392299dfcbf57f73e25722d2b7070f72e4`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: define what the security posture covers and what remains outside the current operating boundary.
 
 ## In scope

@@ -2,7 +2,7 @@
 title: Cluster Membership Protocol
 audience: operator
 type: runbook
-stability: experimental
+stability: evolving
 owner: bijux-atlas-operations
 last_reviewed: 2026-03-04
 tags:
@@ -35,6 +35,10 @@ related:
 1. Registration requires non-empty node identity fields.
 2. Heartbeats must carry matching generation.
 3. Timeout policy is enforced by membership detector.
+
+## Policy References
+
+- OPS-ROOT-023: operation docs that declare policy behavior must reference an OPS contract id.
 
 ## Operator Commands
 

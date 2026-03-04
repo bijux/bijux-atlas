@@ -11251,7 +11251,7 @@
       "owner": "architecture",
       "path": "docs/architecture/cluster-membership-lifecycle.md",
       "review_due": "2026-08-24",
-      "stability": "experimental",
+      "stability": "evolving",
       "tags": [
         "architecture",
         "cluster-membership-lifecycle"
@@ -11274,7 +11274,7 @@
       "owner": "architecture",
       "path": "docs/architecture/cluster-topology.md",
       "review_due": "2026-08-24",
-      "stability": "experimental",
+      "stability": "evolving",
       "tags": [
         "architecture",
         "cluster-topology"
@@ -12052,7 +12052,7 @@
       "owner": "architecture",
       "path": "docs/architecture/distributed-cluster-foundation.md",
       "review_due": "2026-08-24",
-      "stability": "experimental",
+      "stability": "evolving",
       "tags": [
         "architecture",
         "distributed-cluster-foundation"
@@ -13202,7 +13202,7 @@
       "owner": "architecture",
       "path": "docs/architecture/shard-routing-foundation.md",
       "review_due": "2026-08-24",
-      "stability": "experimental",
+      "stability": "evolving",
       "tags": [
         "architecture",
         "shard-routing-foundation"
@@ -15015,7 +15015,7 @@
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/cluster-deployment-models.md",
       "review_due": "2026-08-24",
-      "stability": "experimental",
+      "stability": "evolving",
       "tags": [
         "cluster-deployment-models",
         "operations"
@@ -15153,7 +15153,7 @@
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/cluster-upgrade-and-compatibility.md",
       "review_due": "2026-08-24",
-      "stability": "experimental",
+      "stability": "evolving",
       "tags": [
         "cluster-upgrade-and-compatibility",
         "operations"
@@ -21118,7 +21118,7 @@
         "operations",
         "security"
       ],
-      "title": "Data Retention Policy",
+      "title": "Security Data Retention Policy",
       "topic": "data-retention-policy"
     },
     {

@@ -4,7 +4,7 @@
 - Type: `runbook`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@c2daae9a6eb79ca94c4238bb885809f75af87caf`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: provide the release operator entrypoint.
 
 ## Why you are reading this

@@ -13,7 +13,7 @@ last_reviewed: 2026-03-03
 - Type: `runbook`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@e9387d58b0f8c2f4e61c6bc6c88f1ac4f75fc8aa`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Last changed: `2026-03-03`
 - Reason to exist: define the deterministic install simulation surface for kind-backed validation.
 

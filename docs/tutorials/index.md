@@ -1,7 +1,7 @@
 ---
 title: Tutorials
 audience: user
-type: guide
+type: concept
 stability: stable
 owner: docs-governance
 last_reviewed: 2026-03-04

@@ -11,6 +11,7 @@
     "operations": "bijux-atlas-operations",
     "product": "product",
     "reference": "docs-governance",
-    "control-plane": "platform"
+    "control-plane": "platform",
+    "tutorials": "docs-governance"
   }
 }

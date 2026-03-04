@@ -4,7 +4,7 @@
 - Type: `concept`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@240605bb1dd034f0f58f07a313d49d280f81556c`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: preserve stable URL while canonical mapping lives in Dataflow.
 
 This page is retained as a stable URL. Canonical contract-to-runtime mapping is in [Dataflow](dataflow.md).
