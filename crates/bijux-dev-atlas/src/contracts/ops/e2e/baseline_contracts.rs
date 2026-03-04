@@ -208,5 +208,45 @@ fn e2e_contracts() -> Vec<Contract> {
                 run: test_ops_e2e_018_upgrade_and_rollback_evidence_requirements_declared,
             }],
         },
+        Contract {
+            id: ContractId("OPS-E2E-019".to_string()),
+            title: "upgrade compatibility lint policy contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.upgrade_compatibility_lint_policy_valid".to_string()),
+                title: "compatibility lint policy is parseable and enforces semver major gate for incompatible changes",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_019_upgrade_compatibility_lint_policy_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-020".to_string()),
+            title: "schema evolution policy fixture contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.schema_evolution_policy_and_fixtures_valid".to_string()),
+                title: "schema evolution policy and pass-fail fixtures are aligned",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_020_schema_evolution_policy_and_fixtures_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-021".to_string()),
+            title: "api evolution policy fixture contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.api_evolution_policy_and_fixtures_valid".to_string()),
+                title: "api evolution policy and boundary goldens enforce compatibility expectations",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_021_api_evolution_policy_and_fixtures_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-022".to_string()),
+            title: "upgrade rollback baseline fixture contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.rollback_baseline_fixture_valid".to_string()),
+                title: "rollback baseline fixture references canonical rollback scenario and contract",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_022_rollback_baseline_fixture_valid,
+            }],
+        },
     ]
 }

@@ -1020,3 +1020,375 @@ fn test_ops_e2e_018_upgrade_and_rollback_evidence_requirements_declared(
         TestResult::Fail(violations)
     }
 }
+
+fn test_ops_e2e_019_upgrade_compatibility_lint_policy_valid(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-E2E-019";
+    let test_id = "ops.e2e.upgrade_compatibility_lint_policy_valid";
+    let rel = "ops/e2e/scenarios/upgrade/compatibility-lint-policy.json";
+    let Some(policy) = read_json(&ctx.repo_root.join(rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "compatibility lint policy must be valid json",
+            Some(rel.to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    if policy.get("schema_version").and_then(|v| v.as_i64()) != Some(1) {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "compatibility lint policy schema_version must be 1",
+            Some(rel.to_string()),
+        ));
+    }
+    let expected = [
+        ("block_on_incompatible_patch_or_minor", true),
+        ("allow_incompatible_major", true),
+        ("requires_semver_bump", true),
+    ];
+    for (field, value) in expected {
+        if policy
+            .get("enforcement")
+            .and_then(|v| v.get(field))
+            .and_then(|v| v.as_bool())
+            != Some(value)
+        {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "compatibility lint enforcement flags must match semver gating policy",
+                Some(rel.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_e2e_020_schema_evolution_policy_and_fixtures_valid(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-E2E-020";
+    let test_id = "ops.e2e.schema_evolution_policy_and_fixtures_valid";
+    let policy_rel = "ops/e2e/scenarios/upgrade/schema-evolution-policy.json";
+    let Some(policy) = read_json(&ctx.repo_root.join(policy_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "schema evolution policy must be valid json",
+            Some(policy_rel.to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    let allowed: BTreeSet<String> = policy
+        .get("allowed_patch")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(|v| v.as_str().map(str::to_string))
+        .collect();
+    let forbidden: BTreeSet<String> = policy
+        .get("forbidden_without_major")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(|v| v.as_str().map(str::to_string))
+        .collect();
+    let compatible_fixture_rel = "ops/e2e/scenarios/upgrade/fixtures/compatible-schema-change.json";
+    let incompatible_fixture_rel =
+        "ops/e2e/scenarios/upgrade/fixtures/incompatible-schema-change.json";
+    let Some(compatible_fixture) = read_json(&ctx.repo_root.join(compatible_fixture_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "compatible schema fixture must be valid json",
+            Some(compatible_fixture_rel.to_string()),
+        )]);
+    };
+    let Some(incompatible_fixture) = read_json(&ctx.repo_root.join(incompatible_fixture_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "incompatible schema fixture must be valid json",
+            Some(incompatible_fixture_rel.to_string()),
+        )]);
+    };
+    if compatible_fixture
+        .get("expected_result")
+        .and_then(|v| v.as_str())
+        != Some("pass")
+    {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "compatible schema fixture must declare expected_result=pass",
+            Some(compatible_fixture_rel.to_string()),
+        ));
+    }
+    if incompatible_fixture
+        .get("expected_result")
+        .and_then(|v| v.as_str())
+        != Some("fail")
+    {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "incompatible schema fixture must declare expected_result=fail",
+            Some(incompatible_fixture_rel.to_string()),
+        ));
+    }
+    let compatible_change = compatible_fixture
+        .get("change_kind")
+        .and_then(|v| v.as_str())
+        .unwrap_or_default();
+    if !allowed.contains(compatible_change) {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "compatible schema fixture change_kind must be listed in allowed_patch",
+            Some(compatible_fixture_rel.to_string()),
+        ));
+    }
+    let incompatible_change = incompatible_fixture
+        .get("change_kind")
+        .and_then(|v| v.as_str())
+        .unwrap_or_default();
+    if !forbidden.contains(incompatible_change) {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "incompatible schema fixture change_kind must be listed in forbidden_without_major",
+            Some(incompatible_fixture_rel.to_string()),
+        ));
+    }
+    if compatible_fixture
+        .get("required_contract")
+        .and_then(|v| v.as_str())
+        != Some(contract_id)
+        || incompatible_fixture
+            .get("required_contract")
+            .and_then(|v| v.as_str())
+            != Some(contract_id)
+    {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "schema fixtures must reference OPS-E2E-020 as required_contract",
+            None,
+        ));
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_e2e_021_api_evolution_policy_and_fixtures_valid(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-E2E-021";
+    let test_id = "ops.e2e.api_evolution_policy_and_fixtures_valid";
+    let policy_rel = "ops/e2e/scenarios/upgrade/api-evolution-policy.json";
+    let Some(policy) = read_json(&ctx.repo_root.join(policy_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "api evolution policy must be valid json",
+            Some(policy_rel.to_string()),
+        )]);
+    };
+    let fixture_rel = "ops/e2e/scenarios/upgrade/fixtures/api-incompatible-change.json";
+    let golden_rel = "ops/e2e/scenarios/upgrade/goldens/api-surface-tag-boundaries.json";
+    let Some(fixture) = read_json(&ctx.repo_root.join(fixture_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "api incompatible fixture must be valid json",
+            Some(fixture_rel.to_string()),
+        )]);
+    };
+    let Some(golden) = read_json(&ctx.repo_root.join(golden_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "api boundary golden must be valid json",
+            Some(golden_rel.to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    let forbidden: BTreeSet<String> = policy
+        .get("forbidden_without_major")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(|v| v.as_str().map(str::to_string))
+        .collect();
+    let fixture_change = fixture
+        .get("change_kind")
+        .and_then(|v| v.as_str())
+        .unwrap_or_default();
+    if !forbidden.contains(fixture_change) {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "api incompatible fixture change_kind must be forbidden_without_major",
+            Some(fixture_rel.to_string()),
+        ));
+    }
+    if fixture.get("expected_result").and_then(|v| v.as_str()) != Some("fail") {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "api incompatible fixture must declare expected_result=fail",
+            Some(fixture_rel.to_string()),
+        ));
+    }
+    if fixture
+        .get("required_contract")
+        .and_then(|v| v.as_str())
+        != Some(contract_id)
+    {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "api incompatible fixture must reference OPS-E2E-021 as required_contract",
+            Some(fixture_rel.to_string()),
+        ));
+    }
+    let boundaries = golden
+        .get("boundaries")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default();
+    if boundaries.len() < 2 {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "api boundary golden must include at least patch and minor transitions",
+            Some(golden_rel.to_string()),
+        ));
+    }
+    if !boundaries
+        .iter()
+        .any(|row| row.get("kind").and_then(|v| v.as_str()) == Some("patch"))
+        || !boundaries
+            .iter()
+            .any(|row| row.get("kind").and_then(|v| v.as_str()) == Some("minor"))
+    {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "api boundary golden must include patch and minor entries",
+            Some(golden_rel.to_string()),
+        ));
+    }
+    for row in boundaries {
+        if row
+            .get("breaking_changes")
+            .and_then(|v| v.as_array())
+            .is_none()
+        {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "api boundary golden rows must declare breaking_changes arrays",
+                Some(golden_rel.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_e2e_022_rollback_baseline_fixture_valid(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-E2E-022";
+    let test_id = "ops.e2e.rollback_baseline_fixture_valid";
+    let fixture_rel = "ops/e2e/scenarios/upgrade/fixtures/rollback-restores-baseline.json";
+    let older_fixture_rel = "ops/e2e/scenarios/upgrade/fixtures/older-version-artifacts.json";
+    let Some(fixture) = read_json(&ctx.repo_root.join(fixture_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "rollback baseline fixture must be valid json",
+            Some(fixture_rel.to_string()),
+        )]);
+    };
+    let Some(older_fixture) = read_json(&ctx.repo_root.join(older_fixture_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "older version artifacts fixture must be valid json",
+            Some(older_fixture_rel.to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    if fixture
+        .get("baseline_scenario")
+        .and_then(|v| v.as_str())
+        != Some("rollback-after-successful-upgrade")
+    {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "rollback baseline fixture must target rollback-after-successful-upgrade scenario",
+            Some(fixture_rel.to_string()),
+        ));
+    }
+    if fixture
+        .get("required_contract")
+        .and_then(|v| v.as_str())
+        != Some(contract_id)
+    {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "rollback baseline fixture must reference OPS-E2E-022 as required_contract",
+            Some(fixture_rel.to_string()),
+        ));
+    }
+    if fixture
+        .get("expected_result")
+        .and_then(|v| v.as_str())
+        != Some("restored")
+    {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "rollback baseline fixture expected_result must be restored",
+            Some(fixture_rel.to_string()),
+        ));
+    }
+    let artifacts = older_fixture
+        .get("artifacts")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default();
+    if artifacts.is_empty() {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "older version artifact fixture must include at least one artifact path",
+            Some(older_fixture_rel.to_string()),
+        ));
+    }
+    if !artifacts
+        .iter()
+        .all(|v| v.as_str().map(|s| s.starts_with("artifacts/release/")).unwrap_or(false))
+    {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "older version artifact fixture paths must stay under artifacts/release",
+            Some(older_fixture_rel.to_string()),
+        ));
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}

@@ -300,6 +300,42 @@
       "static_only": true
     },
     {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-E2E-019",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-E2E-020",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-E2E-021",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-E2E-022",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "static_only": true
+    },
+    {
       "command": "bijux dev atlas ops run",
       "contract_id": "OPS-E2E-E-001",
       "effects_required": [
