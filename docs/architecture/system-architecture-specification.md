@@ -185,3 +185,51 @@ Primary failure modes include invalid input data, contract regressions, storage 
 
 Recovery relies on deterministic artifacts, validated rollback paths, and evidence-driven triage.
 Operational recovery never bypasses contract and policy gates.
+
+## Upgrade Strategy
+
+Upgrades are executed through versioned artifacts, compatibility checks, staged validation, and evidence capture before promotion.
+
+## Compatibility Model
+
+Compatibility is evaluated across API contracts, artifact schemas, dataset versions, and operational policy surfaces.
+Breaking changes require explicit contract evolution and migration guidance.
+
+## Versioning Strategy
+
+Atlas uses explicit version identifiers for datasets, manifests, schemas, and release bundles with monotonic progression policies.
+
+## Crate Boundaries
+
+Crate boundaries separate core model logic, runtime behavior, interface surfaces, and control-plane orchestration.
+Cross-boundary dependencies must follow documented architecture constraints.
+
+## Dependency Layering
+
+Layering flows from foundation crates to runtime subsystems and then to interface and orchestration surfaces.
+Reverse or shortcut dependencies are treated as architecture violations.
+
+## Extension Points
+
+Extension points are explicit interfaces for policy, checks, reports, and selected runtime integrations.
+Each extension point requires deterministic behavior and contract coverage.
+
+## Plugin Architecture
+
+Plugin behavior is defined by versioned plugin contracts and capability boundaries.
+Plugins integrate through approved interfaces and must not bypass policy or contract enforcement.
+
+## System Limitations
+
+Atlas prioritizes deterministic correctness and governance over unrestricted runtime flexibility.
+External orchestration and third-party infrastructure behavior are outside direct Atlas control.
+
+## Known Tradeoffs
+
+- Strong governance increases change ceremony but reduces ambiguity and regression risk.
+- Deterministic outputs may limit opportunistic optimizations that break reproducibility.
+- Layer isolation can add indirection but improves long-term maintainability.
+
+## Future Architecture Directions
+
+Near-term direction focuses on clearer subsystem APIs, stronger extension contracts, and broader reproducibility coverage with lower operational overhead.
