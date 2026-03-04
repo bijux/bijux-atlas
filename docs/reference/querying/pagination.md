@@ -1,16 +1,33 @@
-# Pagination semantics
+# Pagination
 
-Owner: `bijux-atlas-api`
-Type: `reference`
-Reason to exist: define the canonical pagination contract for API readers and operators.
+- Owner: `api-contracts`
+- Audience: `user`
+- Type: `reference`
+- Stability: `stable`
+- Reason to exist: define stable pagination semantics for query endpoints.
 
-## Contract
+## Rules
 
-- Cursor-based pagination is the canonical default.
-- Clients must treat cursors as opaque tokens.
-- Default and maximum limits are defined by the API surface contract.
+- Cursor-based pagination is canonical.
+- Cursor values are opaque and immutable.
+- `limit` controls page size within configured bounds.
+- Reusing a cursor with a different query shape is invalid.
 
-## See also
+## Example
 
-- `docs/api/index.md`
-- `docs/reference/index.md`
+First page:
+
+```bash
+curl -fsS 'http://127.0.0.1:8080/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&limit=2'
+```
+
+Next page:
+
+```bash
+curl -fsS 'http://127.0.0.1:8080/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&limit=2&cursor=<cursor>'
+```
+
+## Related
+
+- [Query Parameters](query-parameters.md)
+- [API Pagination Guide](../../api/pagination.md)
