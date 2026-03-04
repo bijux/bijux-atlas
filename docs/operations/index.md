@@ -91,6 +91,8 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 59. [Replication metrics dashboards](replication/metrics-dashboards.md)
 60. [Replication policy](replication/policy.md)
 61. [Replication scaling strategy](replication/scaling-strategy.md)
+62. [Resilience recovery workflow](resilience/recovery-workflow.md)
+63. [Resilience failure injection guide](resilience/failure-injection-guide.md)
 
 ## What This Page Is Not
 

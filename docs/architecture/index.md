@@ -50,6 +50,7 @@ Describe how Atlas is structured so contributors and operators share one durable
 - [Replication architecture](replication-architecture.md)
 - [Replica lifecycle](replica-lifecycle.md)
 - [Consistency contract](consistency-contract.md)
+- [Resilience model](resilience-model.md)
 - [Storage](storage.md)
 - [Security auth model](security/auth-model.md)
 - [Performance model](performance-model.md)
