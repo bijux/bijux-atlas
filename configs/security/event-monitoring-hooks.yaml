@@ -1,0 +1,22 @@
+schema_version: 1
+hooks:
+  - id: security-auth-failure-hook
+    event: authentication_failure_alert
+    destination: alertmanager
+    severity: high
+    enabled: true
+  - id: security-authz-denial-hook
+    event: authorization_denied
+    destination: alertmanager
+    severity: high
+    enabled: true
+  - id: security-integrity-violation-hook
+    event: integrity_violation_alert
+    destination: siem
+    severity: critical
+    enabled: true
+  - id: security-tamper-detection-hook
+    event: tamper_detection_alert
+    destination: siem
+    severity: critical
+    enabled: true

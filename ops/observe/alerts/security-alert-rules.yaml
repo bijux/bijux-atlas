@@ -1,0 +1,23 @@
+group: atlas-security
+description: Security posture and incident-response alerts for authentication, authorization, integrity, and tamper signals.
+rules:
+  - id: atlas-authentication-failure-spike
+    expr: sum(rate(atlas_authentication_failures_total[5m])) > 10
+    severity: high
+    for: 5m
+    runbook: docs/operations/security/incident-response-process.md
+  - id: atlas-authorization-denials-spike
+    expr: sum(rate(atlas_authorization_denials_total[5m])) > 10
+    severity: high
+    for: 5m
+    runbook: docs/operations/security/incident-response-process.md
+  - id: atlas-integrity-violations
+    expr: sum(increase(atlas_integrity_violations_total[5m])) > 0
+    severity: critical
+    for: 1m
+    runbook: docs/operations/security/incident-response-process.md
+  - id: atlas-tamper-detections
+    expr: sum(increase(atlas_tamper_detections_total[5m])) > 0
+    severity: critical
+    for: 1m
+    runbook: docs/operations/security/incident-response-process.md
