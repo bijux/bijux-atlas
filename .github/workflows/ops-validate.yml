@@ -17,6 +17,7 @@ concurrency:
 
 env:
   RUN_ID: ops-validate-${{ github.event.pull_request.number || github.run_id }}-${{ github.run_attempt }}
+  CARGO_TERM_COLOR: always
 
 jobs:
   validate:

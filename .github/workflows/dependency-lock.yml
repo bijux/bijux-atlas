@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
+      CARGO_TERM_COLOR: always
       ISO_ROOT: artifacts/isolates/dependency-lock
       CARGO_TARGET_DIR: artifacts/isolates/dependency-lock/target
       CARGO_HOME: artifacts/isolates/dependency-lock/cargo-home

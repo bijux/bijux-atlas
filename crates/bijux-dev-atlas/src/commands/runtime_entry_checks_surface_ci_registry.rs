@@ -139,7 +139,21 @@ pub(super) fn load_ci_lane_surface(repo_root: &Path) -> Result<CiLaneSurfaceRegi
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub(super) struct CiLaneRegistry {
     pub(super) schema_version: u64,
+    #[serde(default)]
+    pub(super) concurrency_classes: std::collections::BTreeMap<String, CiConcurrencyClass>,
+    #[serde(default)]
+    pub(super) timeout_classes: std::collections::BTreeMap<String, CiTimeoutClass>,
     pub(super) lanes: Vec<CiLaneRegistryEntry>,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub(super) struct CiConcurrencyClass {
+    pub(super) max_parallelism: u64,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub(super) struct CiTimeoutClass {
+    pub(super) max_minutes: u64,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -147,6 +161,8 @@ pub(super) struct CiLaneRegistryEntry {
     pub(super) id: String,
     pub(super) description: String,
     pub(super) mode: String,
+    #[serde(default)]
+    pub(super) aliases: Vec<String>,
     pub(super) required_env: Vec<String>,
     pub(super) artifacts_expected: Vec<String>,
     pub(super) evidence_bundle: String,

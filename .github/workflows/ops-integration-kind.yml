@@ -31,6 +31,7 @@ jobs:
     timeout-minutes: 45
     env:
       NETWORK_ACCESS: required
+      KUBECONFIG: ~/.kube/config
       ISO_ROOT: artifacts/isolates/ops-kind
       CARGO_TARGET_DIR: .cache/cargo/target/ops-kind
       CARGO_HOME: .cache/cargo/home/ops-kind

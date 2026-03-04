@@ -23,6 +23,7 @@ concurrency:
 
 env:
   RUN_ID: rc-${{ github.run_id }}-${{ github.run_attempt }}
+  GITHUB_REF: ${{ github.ref }}
 
 jobs:
   release-candidate:
