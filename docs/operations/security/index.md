@@ -77,6 +77,13 @@
 
 Security workflows are successful when posture checks pass and incident handling remains auditable.
 
+## Threat model outline
+
+- Assets: dataset artifacts, runtime credentials, release bundles, and audit logs.
+- Trust boundaries: API edge, control-plane execution, artifact storage, and cluster runtime.
+- Primary risks: unauthorized access, tampering, credential leakage, and audit gaps.
+- Controls: authentication, authorization, encryption, integrity checks, and incident response.
+
 ## Next
 
 - [Release Operations](../release/index.md)

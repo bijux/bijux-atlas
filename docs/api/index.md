@@ -41,6 +41,7 @@ Use this section to integrate clients with Atlas API surfaces safely and predict
 
 ## Consumer policies
 
+- [API lifecycle](lifecycle.md)
 - [Deprecation lifecycle](deprecation.md)
 - [Client retries and backoff](client-retries-and-backoff.md)
 - [Performance expectations](performance-expectations.md)

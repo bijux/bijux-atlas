@@ -9,17 +9,15 @@
 
 ## Prerequisites
 
-- Release artifact is published and approved.
-- Cluster access and namespace policies are configured.
-- Required chart values are prepared.
-- `helm`, `kubectl`, and required runtime credentials are available.
+- Read and satisfy [Operations prerequisites](prerequisites.md).
 
 ## Golden path
 
 1. Prepare overrides with [Minimal production overrides](minimal-production-overrides.md).
-2. Render the plan before apply.
-3. Apply the install or upgrade through the canonical wrapper.
-4. Run the install verification checklist.
+2. Select the target deployment profile from [Profiles](profiles.md).
+3. Render the plan before apply.
+4. Apply the install or upgrade through the canonical wrapper.
+5. Run the install verification checklist.
 
 ```bash
 make ops-prereqs
@@ -84,5 +82,7 @@ make ops-clean
 
 - [Deploy to kind (10 minutes)](deploy-kind.md)
 - [Deploy to Kubernetes (prod minimal)](deploy-kubernetes-minimal.md)
+- [Profiles](profiles.md)
+- [Profiles matrix](profiles-matrix.md)
 - [Install verification checklist](install-verification-checklist.md)
 - [Incident response](incident-response.md)

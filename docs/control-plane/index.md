@@ -36,8 +36,7 @@ In this documentation set, the `Control plane` is the `bijux dev atlas` surface 
 - [Capabilities model](capabilities-model.md)
 - [Reports schema](reports-schema.md)
 - [CI report consumption](ci-report-consumption.md)
-- [Add a check in 30 minutes](add-a-check-in-30-minutes.md)
-- [Add a contract registry in 30 minutes](add-a-contract-registry-in-30-minutes.md)
+- [Extend the control-plane](extend-control-plane.md)
 - [Debug failing checks](debug-failing-checks.md)
 - [CLI reference](cli-reference.md)
 

@@ -62,5 +62,6 @@ bijux dev atlas demo quickstart --format json
 - Runtime model: [Architecture dataflow](architecture/dataflow.md)
 - Operator workflows: [Operations](operations/index.md)
 - Guided tracks: [What to read next](what-to-read-next.md)
+- Product FAQ: [Product FAQ](product/faq.md)
 - Onboarding rubric: [Contributor onboarding rubric (30 minutes)](development/contributor-onboarding-rubric.md)
 - Terms: [Glossary](glossary.md)

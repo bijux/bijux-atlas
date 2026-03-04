@@ -9,6 +9,7 @@
 
 ## Prerequisites
 
+- Read and satisfy [Operations prerequisites](prerequisites.md).
 - `kubectl` `v1.30+`
 - `helm` `v3.15+`
 - target namespace exists

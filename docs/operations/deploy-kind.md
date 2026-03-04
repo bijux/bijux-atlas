@@ -9,6 +9,7 @@
 
 ## Prerequisites
 
+- Read and satisfy [Operations prerequisites](prerequisites.md).
 - `kind` `v0.23+`
 - `kubectl` `v1.30+`
 - `helm` `v3.15+`
