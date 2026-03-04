@@ -164,6 +164,8 @@ fn test_ops_root_014_no_procedure_docs_in_ops(ctx: &RunContext) -> TestResult {
             "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md",
             "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
             "ops/schema/VERSIONING_POLICY.md",
+            "ops/_templates/runbook.md",
+            "ops/_templates/policy.md",
         ]);
         if explicitly_allowed.contains(rel.as_str()) {
             continue;

@@ -58,6 +58,7 @@ fn test_ops_root_001_allowed_surface(ctx: &RunContext) -> TestResult {
         "_generated",
         "_generated.example",
         "_examples",
+        "_templates",
         "datasets",
         "drills",
         "e2e",

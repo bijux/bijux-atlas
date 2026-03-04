@@ -80,7 +80,7 @@ fn test_ops_inv_pillars_003_no_extra_pillar_dirs(ctx: &RunContext) -> TestResult
         if name == "policy" {
             continue;
         }
-        if name == "_benchmarks" || name == "_examples" || name == "drills" {
+        if name == "_benchmarks" || name == "_examples" || name == "_templates" || name == "drills" {
             continue;
         }
         if name == "_generated" || name == "_generated.example" {
