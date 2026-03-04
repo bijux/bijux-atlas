@@ -76,6 +76,27 @@ impl AppState {
         registry
     }
 
+    fn init_resilience_registry() -> bijux_atlas_core::FailureRecoveryRegistry {
+        bijux_atlas_core::FailureRecoveryRegistry::new(
+            bijux_atlas_core::FailureDetectionPolicy {
+                node_timeout_ms: 5_000,
+                replica_lag_threshold_ms: 2_000,
+                recovery_retry_budget: 3,
+            },
+            bijux_atlas_core::RecoveryPolicy {
+                auto_recovery_enabled: true,
+                shard_failover_enabled: true,
+                replica_failover_enabled: true,
+                rebalance_after_recovery: true,
+            },
+            bijux_atlas_core::ResilienceGuarantees {
+                failover_within_ms: 10_000,
+                diagnostics_available: true,
+                event_logging_required: true,
+            },
+        )
+    }
+
     #[must_use]
     pub fn new(cache: Arc<DatasetCacheManager>) -> Self {
         Self::with_config(cache, ApiConfig::default(), QueryLimits::default())
@@ -151,6 +172,7 @@ impl AppState {
             membership: Arc::new(Mutex::new(Self::init_membership_registry())),
             shard_registry: Arc::new(Mutex::new(Self::init_shard_registry())),
             replica_registry: Arc::new(Mutex::new(Self::init_replica_registry())),
+            resilience_registry: Arc::new(Mutex::new(Self::init_resilience_registry())),
             runtime_policy_hash,
             runtime_policy_mode: Arc::new("strict".to_string()),
             api,
@@ -289,6 +311,19 @@ pub fn build_router(state: AppState) -> Router {
                 "/debug/cluster/replicas/diagnostics",
                 get(http::handlers::cluster_replica_diagnostics_handler),
             )
+            .route(
+                "/debug/recovery/run",
+                post(http::handlers::cluster_recovery_run_handler),
+            )
+            .route(
+                "/debug/recovery/diagnostics",
+                get(http::handlers::recovery_diagnostics_handler),
+            )
+            .route(
+                "/debug/failure-injection",
+                post(http::handlers::failure_injection_handler),
+            )
+            .route("/debug/chaos/run", post(http::handlers::chaos_run_handler))
             .route("/v1/_debug/echo", get(http::handlers::debug_echo_handler));
     }
     router

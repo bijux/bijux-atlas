@@ -393,6 +393,7 @@ bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} 
     let process_cpu_usage_ratio = 0.0_f64;
     let shard_registry_metrics = state.shard_registry.lock().await.metrics();
     let replication_metrics = state.replica_registry.lock().await.metrics();
+    let resilience_metrics = state.resilience_registry.lock().await.metrics();
     let thread_pool_usage = if state.api.heavy_worker_pool_size == 0 {
         0.0
     } else {
@@ -631,7 +632,12 @@ atlas_replica_groups_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\
 atlas_replica_healthy_groups_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 atlas_replication_lag_ms_avg{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 atlas_replication_throughput_rows_per_second{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
-atlas_replica_failures_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+atlas_replica_failures_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_recovery_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_recovery_success_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_recovery_failed_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_recovery_latency_avg_ms{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_failure_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
@@ -675,7 +681,27 @@ atlas_replica_failures_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
-        replication_metrics.replica_failures_total
+        replication_metrics.replica_failures_total,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        resilience_metrics.recovery_events_total,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        resilience_metrics.successful_recoveries_total,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        resilience_metrics.failed_recoveries_total,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        resilience_metrics.recovery_latency_avg_ms,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        resilience_metrics.failure_events_total
     ));
     push_histogram_from_samples(
         &mut body,

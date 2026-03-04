@@ -41,6 +41,15 @@ pub(crate) struct ClusterReplicaFailoverRequest {
     pub promote_node_id: String,
 }
 
+#[derive(Debug, serde::Deserialize)]
+pub(crate) struct FailureInjectionRequest {
+    pub kind: String,
+    #[serde(default)]
+    pub node_id: Option<String>,
+    #[serde(default)]
+    pub shard_id: Option<String>,
+}
+
 struct RequestQueueGuard {
     counter: Arc<AtomicU64>,
 }
@@ -964,6 +973,249 @@ pub(crate) async fn cluster_replica_diagnostics_handler(
         .metrics
         .observe_request_with_trace(
             "/debug/cluster/replicas/diagnostics",
+            StatusCode::OK,
+            started.elapsed(),
+            Some(&request_id),
+        )
+        .await;
+    with_request_id(response, &request_id)
+}
+
+pub(crate) async fn cluster_recovery_run_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let request_id = make_request_id(&state);
+    let started = Instant::now();
+    let now_unix_ms = chrono_like_unix_millis() as u64;
+
+    let mut membership = state.membership.lock().await;
+    let timed_out_nodes = membership.detect_timeouts(now_unix_ms);
+    let live_nodes = membership
+        .nodes()
+        .into_iter()
+        .filter(|node| membership.node_is_live(&node.descriptor.identity.node_id, now_unix_ms))
+        .map(|node| node.descriptor.identity.node_id.clone())
+        .collect::<Vec<_>>();
+    drop(membership);
+
+    let mut shard_registry = state.shard_registry.lock().await;
+    let mut replica_registry = state.replica_registry.lock().await;
+    let mut resilience = state.resilience_registry.lock().await;
+
+    let mut shard_failovers = 0_u64;
+    let mut replica_failovers = 0_u64;
+    for node_id in &timed_out_nodes {
+        resilience.record_failure(
+            bijux_atlas_core::FailureCategory::NodeUnreachable,
+            node_id,
+            now_unix_ms,
+            "node heartbeat timeout detected",
+        );
+    }
+
+    if !live_nodes.is_empty() {
+        for node_id in &timed_out_nodes {
+            let shard_ids = shard_registry
+                .shards_for_owner(node_id)
+                .into_iter()
+                .map(|shard| shard.metadata.shard_id.clone())
+                .collect::<Vec<_>>();
+            for shard_id in shard_ids {
+                if let Some(new_owner) = live_nodes.iter().find(|candidate| *candidate != node_id) {
+                    if shard_registry.transfer_ownership(&shard_id, new_owner) {
+                        shard_failovers = shard_failovers.saturating_add(1);
+                    }
+                }
+            }
+        }
+
+        let replica_keys = replica_registry
+            .list()
+            .into_iter()
+            .map(|record| (record.metadata.dataset_id.clone(), record.metadata.shard_id.clone()))
+            .collect::<Vec<_>>();
+        for (dataset_id, shard_id) in replica_keys {
+            let failover_target = replica_registry
+                .get(&dataset_id, &shard_id)
+                .and_then(|replica| {
+                    if timed_out_nodes
+                        .iter()
+                        .any(|node| node == &replica.metadata.primary_node_id)
+                    {
+                        replica.metadata.replica_node_ids.first().cloned()
+                    } else {
+                        None
+                    }
+                });
+            if let Some(target) = failover_target {
+                if replica_registry.failover(&dataset_id, &shard_id, &target) {
+                    replica_failovers = replica_failovers.saturating_add(1);
+                }
+            }
+        }
+    }
+
+    let completed_at = chrono_like_unix_millis() as u64;
+    resilience.record_recovery(
+        "cluster",
+        "automatic_recovery_workflow",
+        now_unix_ms,
+        completed_at,
+        true,
+    );
+    tracing::info!(
+        event_id = "cluster_recovery_run",
+        timed_out_nodes = timed_out_nodes.len(),
+        shard_failovers,
+        replica_failovers,
+        route = "/debug/recovery/run",
+        "automatic cluster recovery run completed"
+    );
+
+    let payload = json!({
+        "schema_version": 1,
+        "kind": "cluster_recovery_run_result",
+        "timed_out_nodes": timed_out_nodes,
+        "shard_failovers": shard_failovers,
+        "replica_failovers": replica_failovers,
+    });
+    let response = Json(payload).into_response();
+    state
+        .metrics
+        .observe_request_with_trace(
+            "/debug/recovery/run",
+            StatusCode::OK,
+            started.elapsed(),
+            Some(&request_id),
+        )
+        .await;
+    with_request_id(response, &request_id)
+}
+
+pub(crate) async fn recovery_diagnostics_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let request_id = make_request_id(&state);
+    let started = Instant::now();
+    let diagnostics = state.resilience_registry.lock().await.diagnostics();
+    let payload = json!({
+        "schema_version": 1,
+        "kind": "cluster_recovery_diagnostics_report",
+        "diagnostics": diagnostics
+    });
+    let response = Json(payload).into_response();
+    state
+        .metrics
+        .observe_request_with_trace(
+            "/debug/recovery/diagnostics",
+            StatusCode::OK,
+            started.elapsed(),
+            Some(&request_id),
+        )
+        .await;
+    with_request_id(response, &request_id)
+}
+
+pub(crate) async fn failure_injection_handler(
+    State(state): State<AppState>,
+    Json(req): Json<FailureInjectionRequest>,
+) -> impl IntoResponse {
+    let request_id = make_request_id(&state);
+    let started = Instant::now();
+    let now_unix_ms = chrono_like_unix_millis() as u64;
+    let mut resilience = state.resilience_registry.lock().await;
+    let (category, target_id, detail) = match req.kind.as_str() {
+        "node_crash" => (
+            bijux_atlas_core::FailureCategory::NodeUnreachable,
+            req.node_id.unwrap_or_else(|| "node-a".to_string()),
+            "simulated node crash",
+        ),
+        "shard_corruption" => (
+            bijux_atlas_core::FailureCategory::ShardCorruption,
+            req.shard_id.unwrap_or_else(|| "atlas-default-s001".to_string()),
+            "simulated shard corruption",
+        ),
+        "network_partition" => (
+            bijux_atlas_core::FailureCategory::NetworkPartition,
+            req.node_id.unwrap_or_else(|| "node-b".to_string()),
+            "simulated network partition",
+        ),
+        _ => (
+            bijux_atlas_core::FailureCategory::Unknown,
+            "cluster".to_string(),
+            "simulated unknown fault",
+        ),
+    };
+    let event_id = resilience.record_failure(category, target_id.clone(), now_unix_ms, detail);
+    tracing::warn!(
+        event_id = "failure_injection",
+        route = "/debug/failure-injection",
+        simulation_id = %event_id,
+        target = %target_id,
+        fault_kind = %req.kind,
+        "failure injection recorded"
+    );
+    let payload = json!({
+        "schema_version": 1,
+        "kind": "failure_injection_result",
+        "event_id": event_id,
+        "target_id": target_id,
+        "fault_kind": req.kind
+    });
+    let response = Json(payload).into_response();
+    state
+        .metrics
+        .observe_request_with_trace(
+            "/debug/failure-injection",
+            StatusCode::OK,
+            started.elapsed(),
+            Some(&request_id),
+        )
+        .await;
+    with_request_id(response, &request_id)
+}
+
+pub(crate) async fn chaos_run_handler(
+    State(state): State<AppState>,
+    Json(req): Json<FailureInjectionRequest>,
+) -> impl IntoResponse {
+    let request_id = make_request_id(&state);
+    let started = Instant::now();
+    let now_unix_ms = chrono_like_unix_millis() as u64;
+    let mut resilience = state.resilience_registry.lock().await;
+    let id1 = resilience.record_failure(
+        bijux_atlas_core::FailureCategory::NodeUnreachable,
+        req.node_id.clone().unwrap_or_else(|| "node-a".to_string()),
+        now_unix_ms,
+        "chaos scenario injected node crash",
+    );
+    let id2 = resilience.record_failure(
+        bijux_atlas_core::FailureCategory::NetworkPartition,
+        req.node_id.unwrap_or_else(|| "node-b".to_string()),
+        now_unix_ms.saturating_add(1),
+        "chaos scenario injected network partition",
+    );
+    resilience.record_recovery(
+        "cluster",
+        "chaos_recovery_evaluation",
+        now_unix_ms,
+        now_unix_ms.saturating_add(10),
+        true,
+    );
+    tracing::warn!(
+        event_id = "chaos_run",
+        route = "/debug/chaos/run",
+        injection_a = %id1,
+        injection_b = %id2,
+        "chaos run executed"
+    );
+    let payload = json!({
+        "schema_version": 1,
+        "kind": "chaos_run_result",
+        "injection_events": [id1, id2],
+        "status": "recorded"
+    });
+    let response = Json(payload).into_response();
+    state
+        .metrics
+        .observe_request_with_trace(
+            "/debug/chaos/run",
             StatusCode::OK,
             started.elapsed(),
             Some(&request_id),
