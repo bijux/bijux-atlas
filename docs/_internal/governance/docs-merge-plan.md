@@ -27,7 +27,7 @@ This table records canonical consolidation decisions and the redirect target for
 | `docs/control-plane/add-a-check-in-30-minutes.md` + `docs/control-plane/add-a-contract-registry-in-30-minutes.md` | `docs/control-plane/extend-control-plane.md` | completed |
 | `docs/operations/reference/commands.md` | `docs/reference/commands.md` | completed |
 | `docs/reference/errors.md` | `docs/reference/errors-and-exit-codes.md` | completed |
-| `docs/api/versioning.md` + `docs/api/compatibility.md` + `docs/api/deprecation.md` | `docs/api/lifecycle.md` | completed |
+| API lifecycle narrative consolidation | `docs/api/lifecycle.md` | completed |
 | repeated deployment prerequisites sections | `docs/operations/prerequisites.md` | completed |
 | repeated FAQ entrypoints | `docs/product/faq.md` | completed |
 

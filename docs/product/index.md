@@ -39,6 +39,12 @@ Provide the canonical product story: what Atlas is, who it serves, and the promi
 - [Compatibility promise](compatibility-promise.md)
 - [Non-goals](non-goals.md)
 - [Release model](release-model.md)
+- [Product FAQ](faq.md)
+- [Production-ready boundaries](production-ready-boundaries.md)
+- [Not done yet](not-done-yet.md)
+- [For reviewers](for-reviewers.md)
+- [Deep work highlights](deep-work-highlights.md)
+- [How this repo enforces itself](how-this-repo-enforces-itself.md)
 
 ## Entry Points
 
