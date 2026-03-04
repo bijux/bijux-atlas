@@ -1093,7 +1093,9 @@ fn run_contract_command(
 ) -> Result<(String, i32), String> {
     match command {
         ContractCommand::List(args) => run_contract_list_command(global, args),
-        ContractCommand::Describe(args) => run_contract_describe_command(global, args),
+        ContractCommand::Explain(args) | ContractCommand::Describe(args) => {
+            run_contract_describe_command(global, args)
+        }
         ContractCommand::Run(args) => run_contract_run_command(global, args),
         ContractCommand::Report(args) => run_contract_report_command(global, args),
     }

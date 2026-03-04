@@ -93,7 +93,9 @@ fn force_json_artifacts(command: &mut ArtifactsCommand) {
 fn force_json_contract(command: &mut ContractCommand) {
     match command {
         ContractCommand::List(args) => args.format = FormatArg::Json,
-        ContractCommand::Describe(args) => args.format = FormatArg::Json,
+        ContractCommand::Explain(args) | ContractCommand::Describe(args) => {
+            args.format = FormatArg::Json
+        }
         ContractCommand::Run(args) => args.format = FormatArg::Json,
         ContractCommand::Report(args) => args.format = FormatArg::Json,
     }
@@ -495,6 +497,7 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
         Command::Tests { .. } => {}
         Command::Contract { command } => match command {
             ContractCommand::List(_)
+            | ContractCommand::Explain(_)
             | ContractCommand::Describe(_)
             | ContractCommand::Report(_) => {}
             ContractCommand::Run(args) => {
@@ -1009,7 +1012,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         },
         Command::Contract { command } => match command {
             ContractCommand::List(args) => args.repo_root = Some(root.clone()),
-            ContractCommand::Describe(args) => args.repo_root = Some(root.clone()),
+            ContractCommand::Explain(args) | ContractCommand::Describe(args) => {
+                args.repo_root = Some(root.clone())
+            }
             ContractCommand::Run(args) => args.repo_root = Some(root.clone()),
             ContractCommand::Report(args) => args.repo_root = Some(root.clone()),
         },
