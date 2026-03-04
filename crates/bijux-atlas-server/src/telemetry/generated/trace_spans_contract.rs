@@ -5,6 +5,7 @@ pub const CONTRACT_TRACE_SPAN_NAMES: &[&str] = &[
     "admission_control",
     "cache_lookup",
     "dataset_resolve",
+    "encryption_integrity_verify",
     "serialize_response",
     "sqlite_query",
     "store_fetch",

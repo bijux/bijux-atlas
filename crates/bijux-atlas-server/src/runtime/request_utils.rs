@@ -892,6 +892,12 @@ async fn security_middleware(
     );
     let auth_exempt = route_auth_exempt(&route);
     if state.api.require_https {
+        info!(
+            event_id = "transport_https_policy",
+            event = "transport_https_policy",
+            route = route.as_str(),
+            "evaluating https transport requirement"
+        );
         let forwarded_proto = normalized_header_value(req.headers(), "x-forwarded-proto", 16);
         if !bijux_atlas_core::https_enforced(forwarded_proto.as_deref(), true) {
             record_policy_violation(&state, "https_required").await;

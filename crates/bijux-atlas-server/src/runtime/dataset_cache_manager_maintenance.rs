@@ -1,6 +1,45 @@
 // SPDX-License-Identifier: Apache-2.0
 
 impl DatasetCacheManager {
+    async fn record_data_protection_event(&self, event: &str, dataset: &DatasetId) {
+        match event {
+            "encryption.operation" => {
+                self.metrics
+                    .encryption_operations_total
+                    .fetch_add(1, Ordering::Relaxed);
+            }
+            "integrity.violation" => {
+                self.metrics
+                    .integrity_violations_total
+                    .fetch_add(1, Ordering::Relaxed);
+            }
+            "tamper.detected" => {
+                self.metrics
+                    .tamper_detections_total
+                    .fetch_add(1, Ordering::Relaxed);
+            }
+            _ => {}
+        }
+        self.metrics
+            .policy_violations_total
+            .fetch_add(1, Ordering::Relaxed);
+        let mut by = self.metrics.policy_violations_by_policy.lock().await;
+        let count = by.entry(event.to_string()).or_insert(0);
+        *count += 1;
+        if event == "integrity.violation" || event == "tamper.detected" {
+            if *count % 10 == 0 {
+                warn!(
+                    event_id = "data_protection_alert",
+                    event = "data_protection_alert",
+                    policy = event,
+                    dataset = %dataset.canonical_string(),
+                    count = *count,
+                    "data protection violation threshold reached"
+                );
+            }
+        }
+    }
+
     async fn reverify_cached_datasets(&self) -> Result<(), CacheError> {
         let datasets: Vec<DatasetId> = {
             let entries = self.entries.lock().await;
@@ -9,6 +48,8 @@ impl DatasetCacheManager {
         for dataset in datasets {
             if !self.verify_dataset_integrity_strict(&dataset).await? {
                 warn!(dataset = ?dataset, "cached dataset failed re-verification");
+                self.record_data_protection_event("integrity.violation", &dataset)
+                    .await;
                 self.record_corruption_failure(&dataset).await;
                 let mut entries = self.entries.lock().await;
                 if let Some(entry) = entries.remove(&dataset) {

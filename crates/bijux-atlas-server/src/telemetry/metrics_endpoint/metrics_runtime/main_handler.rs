@@ -363,6 +363,21 @@ bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} 
         .metrics
         .policy_violations_total
         .load(Ordering::Relaxed);
+    let encryption_operations_total = state
+        .cache
+        .metrics
+        .encryption_operations_total
+        .load(Ordering::Relaxed);
+    let integrity_violations_total = state
+        .cache
+        .metrics
+        .integrity_violations_total
+        .load(Ordering::Relaxed);
+    let tamper_detections_total = state
+        .cache
+        .metrics
+        .tamper_detections_total
+        .load(Ordering::Relaxed);
     let invariants_total: u64 = state
         .cache
         .metrics
@@ -528,6 +543,23 @@ bijux_fs_space_pressure_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"
             .metrics
             .fs_space_pressure_events_total
             .load(Ordering::Relaxed)
+    ));
+    body.push_str(&format!(
+        "atlas_encryption_operations_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_integrity_violations_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_tamper_detections_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        encryption_operations_total,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        integrity_violations_total,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        tamper_detections_total
     ));
     body.push_str(&format!(
         "atlas_ingest_throughput_bytes_per_second{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {:.3}\n\

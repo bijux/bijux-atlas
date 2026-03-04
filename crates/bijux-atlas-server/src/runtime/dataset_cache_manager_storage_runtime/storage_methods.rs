@@ -362,9 +362,11 @@ impl DatasetCacheManager {
         .await?;
         let sqlite_hash = async { sha256_hex(&sqlite) }
             .instrument(tracing::info_span!(
-                "verify",
+                "encryption_integrity_verify",
                 dataset = %dataset.canonical_string()
             ))
+            .await;
+        self.record_data_protection_event("encryption.operation", dataset)
             .await;
         if sqlite_hash != manifest.checksums.sqlite_sha256 {
             error!(
@@ -372,6 +374,10 @@ impl DatasetCacheManager {
                 dataset_id = %dataset.canonical_string(),
                 "dataset verify failed"
             );
+            self.record_data_protection_event("integrity.violation", dataset)
+                .await;
+            self.record_data_protection_event("tamper.detected", dataset)
+                .await;
             self.metrics
                 .store_download_failures
                 .fetch_add(1, Ordering::Relaxed);

@@ -169,6 +169,9 @@ pub struct CacheMetrics {
     pub shed_total_by_reason: Mutex<HashMap<String, u64>>,
     pub dataset_missing_by_hash_bucket: Mutex<HashMap<String, u64>>,
     pub invariant_violations_by_name: Mutex<HashMap<String, u64>>,
+    pub encryption_operations_total: AtomicU64,
+    pub integrity_violations_total: AtomicU64,
+    pub tamper_detections_total: AtomicU64,
 }
 
 #[derive(Default)]
