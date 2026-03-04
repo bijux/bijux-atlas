@@ -50,6 +50,7 @@ plugins:
       redirect_maps:
         _generated/governance-audit/index.md: _internal/generated/governance-audit/index.md
         _generated/topic-index.md: _internal/generated/topic-index.md
+        architecture/faq.md: product/faq.md
         contracts/breaking-change-examples.md: _internal/governance/contract-breaking-change-examples.md
         contracts/compatibility.md: reference/contracts/compatibility.md
         contracts/contract-change-checklist.md: _internal/governance/contract-change-checklist.md
@@ -62,6 +63,8 @@ plugins:
         contracts/plugin/spec.md: reference/contracts/plugins/spec.md
         contracts/ssot-workflow.md: _internal/governance/contract-ssot-workflow.md
         contracts/tracing.md: reference/contracts/telemetry.md
+        control-plane/add-a-check-in-30-minutes.md: control-plane/extend-control-plane.md
+        control-plane/add-a-contract-registry-in-30-minutes.md: control-plane/extend-control-plane.md
         control-plane/contracts.md: control-plane/index.md
         control-plane/ops-boundary.md: control-plane/index.md
         dev/check-failures.md: development/debugging-locally.md
@@ -89,6 +92,11 @@ plugins:
         governance/docs-style.md: _internal/governance/docs-style.md
         governance/index.md: _internal/governance/index.md
         governance/root-legacy-mapping.md: _internal/meta/internal/root-legacy-mapping.md
+        operations/observability/observability-faq.md: product/faq.md
+        operations/operator-faq.md: product/faq.md
+        operations/performance-faq.md: product/faq.md
+        operations/reference/commands.md: reference/commands.md
+        operations/security/security-faq.md: product/faq.md
         ownership.md: _internal/governance/docs-ownership.md
         product/reading-tracks.md: what-to-read-next.md
         reference/contracts/artifacts/directory-contract.md: reference/contracts/artifacts/index.md
@@ -100,6 +108,7 @@ plugins:
         reference/contracts/metrics.md: reference/contracts/telemetry.md
         reference/contracts/ssot-workflow.md: _internal/governance/contract-ssot-workflow.md
         reference/contracts/tracing.md: reference/contracts/telemetry.md
+        reference/errors.md: reference/errors-and-exit-codes.md
         root/architecture-overview.md: architecture/index.md
         root/ci-workflow-explanation.md: development/ci-overview.md
         root/command-index.md: reference/commands.md
@@ -118,7 +127,6 @@ plugins:
         root/release-process-overview.md: operations/release/index.md
         root/repository-structure.md: development/repo-layout.md
         root/reproducibility-guarantees.md: product/compatibility-promise.md
-        root/docs-site-deploy.md: operations/docs-site-deploy.md
         root/schema-index.md: reference/schemas.md
         root/security-model.md: operations/security/index.md
         root/stability-guarantees.md: product/compatibility-promise.md
@@ -126,6 +134,7 @@ plugins:
         science/index.md: product/index.md
         security/index.md: operations/security/index.md
         style.md: _internal/governance/docs-style.md
+        tutorials/faq.md: product/faq.md
       # end generated redirect_maps
 
 extra:

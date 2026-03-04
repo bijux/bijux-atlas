@@ -7,6 +7,7 @@
 | --- | --- | --- | --- | --- |
 | `docs/_generated/governance-audit/index.md` | `docs/_internal/generated/governance-audit/index.md` | `docs-governance` | legacy generated markdown aliases point at the internal generated sink | `none` |
 | `docs/_generated/topic-index.md` | `docs/_internal/generated/topic-index.md` | `docs-governance` | legacy generated markdown aliases point at the internal generated sink | `none` |
+| `docs/architecture/faq.md` | `docs/product/faq.md` | `unassigned` | missing redirect metadata | `none` |
 | `docs/contracts/breaking-change-examples.md` | `docs/_internal/governance/contract-breaking-change-examples.md` | `docs-governance` | contract references moved under docs/reference/contracts | `none` |
 | `docs/contracts/compatibility.md` | `docs/reference/contracts/compatibility.md` | `docs-governance` | contract references moved under docs/reference/contracts | `none` |
 | `docs/contracts/contract-change-checklist.md` | `docs/_internal/governance/contract-change-checklist.md` | `docs-governance` | contract references moved under docs/reference/contracts | `none` |
@@ -19,6 +20,8 @@
 | `docs/contracts/plugin/spec.md` | `docs/reference/contracts/plugins/spec.md` | `docs-governance` | contract references moved under docs/reference/contracts | `none` |
 | `docs/contracts/ssot-workflow.md` | `docs/_internal/governance/contract-ssot-workflow.md` | `docs-governance` | contract references moved under docs/reference/contracts | `none` |
 | `docs/contracts/tracing.md` | `docs/reference/contracts/telemetry.md` | `docs-governance` | contract references moved under docs/reference/contracts | `none` |
+| `docs/control-plane/add-a-check-in-30-minutes.md` | `docs/control-plane/extend-control-plane.md` | `unassigned` | missing redirect metadata | `none` |
+| `docs/control-plane/add-a-contract-registry-in-30-minutes.md` | `docs/control-plane/extend-control-plane.md` | `unassigned` | missing redirect metadata | `none` |
 | `docs/control-plane/contracts.md` | `docs/control-plane/index.md` | `docs-governance` | control-plane overview content was consolidated into the section index | `none` |
 | `docs/control-plane/ops-boundary.md` | `docs/control-plane/index.md` | `docs-governance` | control-plane overview content was consolidated into the section index | `none` |
 | `docs/dev/check-failures.md` | `docs/development/debugging-locally.md` | `docs-governance` | legacy short development aliases moved under development | `none` |
@@ -46,6 +49,11 @@
 | `docs/governance/docs-style.md` | `docs/_internal/governance/docs-style.md` | `docs-governance` | legacy governance reader aliases moved under docs/_internal/governance | `none` |
 | `docs/governance/index.md` | `docs/_internal/governance/index.md` | `docs-governance` | legacy governance reader aliases moved under docs/_internal/governance | `none` |
 | `docs/governance/root-legacy-mapping.md` | `docs/_internal/meta/internal/root-legacy-mapping.md` | `docs-governance` | legacy governance reader aliases moved under docs/_internal/governance | `none` |
+| `docs/operations/observability/observability-faq.md` | `docs/product/faq.md` | `unassigned` | missing redirect metadata | `none` |
+| `docs/operations/operator-faq.md` | `docs/product/faq.md` | `unassigned` | missing redirect metadata | `none` |
+| `docs/operations/performance-faq.md` | `docs/product/faq.md` | `unassigned` | missing redirect metadata | `none` |
+| `docs/operations/reference/commands.md` | `docs/reference/commands.md` | `unassigned` | missing redirect metadata | `none` |
+| `docs/operations/security/security-faq.md` | `docs/product/faq.md` | `unassigned` | missing redirect metadata | `none` |
 | `docs/ownership.md` | `docs/_internal/governance/docs-ownership.md` | `docs-governance` | legacy top-level ownership alias preserved for inbound links | `none` |
 | `docs/product/reading-tracks.md` | `docs/what-to-read-next.md` | `docs-governance` | legacy product aliases were consolidated to canonical reader pages | `none` |
 | `docs/reference/contracts/artifacts/directory-contract.md` | `docs/reference/contracts/artifacts/index.md` | `docs-governance` | contract references consolidated under canonical topic indexes | `none` |
@@ -57,6 +65,7 @@
 | `docs/reference/contracts/metrics.md` | `docs/reference/contracts/telemetry.md` | `docs-governance` | contract references consolidated under canonical topic indexes | `none` |
 | `docs/reference/contracts/ssot-workflow.md` | `docs/_internal/governance/contract-ssot-workflow.md` | `docs-governance` | contract references consolidated under canonical topic indexes | `none` |
 | `docs/reference/contracts/tracing.md` | `docs/reference/contracts/telemetry.md` | `docs-governance` | contract references consolidated under canonical topic indexes | `none` |
+| `docs/reference/errors.md` | `docs/reference/errors-and-exit-codes.md` | `unassigned` | missing redirect metadata | `none` |
 | `docs/root/architecture-overview.md` | `docs/architecture/index.md` | `docs-governance` | root docs surface consolidated under the reader spine | `none` |
 | `docs/root/ci-workflow-explanation.md` | `docs/development/ci-overview.md` | `docs-governance` | root docs surface consolidated under the reader spine | `none` |
 | `docs/root/command-index.md` | `docs/reference/commands.md` | `docs-governance` | root docs surface consolidated under the reader spine | `none` |
@@ -82,3 +91,4 @@
 | `docs/science/index.md` | `docs/product/index.md` | `docs-governance` | science reader pages moved under product | `none` |
 | `docs/security/index.md` | `docs/operations/security/index.md` | `docs-governance` | security reader pages moved under operations/security | `none` |
 | `docs/style.md` | `docs/_internal/governance/docs-style.md` | `docs-governance` | legacy top-level style alias preserved for inbound links | `none` |
+| `docs/tutorials/faq.md` | `docs/product/faq.md` | `unassigned` | missing redirect metadata | `none` |
