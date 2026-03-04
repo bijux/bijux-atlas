@@ -16,6 +16,22 @@ impl AppState {
         }
     }
 
+    fn init_membership_registry() -> bijux_atlas_core::MembershipRegistry {
+        let cluster_path = std::env::var("ATLAS_CLUSTER_CONFIG_PATH")
+            .unwrap_or_else(|_| "configs/ops/runtime/cluster-config.example.json".to_string());
+        let policy = bijux_atlas_core::load_cluster_config_from_path(std::path::Path::new(&cluster_path))
+            .ok()
+            .map(|cfg| bijux_atlas_core::MembershipPolicy {
+                heartbeat_interval_ms: cfg.health.heartbeat_interval_ms,
+                node_timeout_ms: cfg.health.node_timeout_ms,
+            })
+            .unwrap_or(bijux_atlas_core::MembershipPolicy {
+                heartbeat_interval_ms: 1_000,
+                node_timeout_ms: 5_000,
+            });
+        bijux_atlas_core::MembershipRegistry::new(policy)
+    }
+
     #[must_use]
     pub fn new(cache: Arc<DatasetCacheManager>) -> Self {
         Self::with_config(cache, ApiConfig::default(), QueryLimits::default())
@@ -88,6 +104,7 @@ impl AppState {
                 .and_then(|u| RedisBackend::new(u, &api.redis_prefix, redis_policy).ok())
                 .map(Arc::new),
             queued_requests: Arc::new(AtomicU64::new(0)),
+            membership: Arc::new(Mutex::new(Self::init_membership_registry())),
             runtime_policy_hash,
             runtime_policy_mode: Arc::new("strict".to_string()),
             api,
@@ -191,8 +208,24 @@ pub fn build_router(state: AppState) -> Router {
                 get(http::handlers::cache_stats_dump_handler),
             )
             .route(
+                "/debug/cluster/nodes",
+                get(http::handlers::cluster_nodes_handler),
+            )
+            .route(
                 "/debug/cluster-status",
                 get(http::handlers::cluster_status_handler),
+            )
+            .route(
+                "/debug/cluster/register",
+                post(http::handlers::cluster_register_handler),
+            )
+            .route(
+                "/debug/cluster/heartbeat",
+                post(http::handlers::cluster_heartbeat_handler),
+            )
+            .route(
+                "/debug/cluster/mode",
+                post(http::handlers::cluster_mode_handler),
             )
             .route("/v1/_debug/echo", get(http::handlers::debug_echo_handler));
     }

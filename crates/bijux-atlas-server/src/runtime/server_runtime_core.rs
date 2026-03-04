@@ -574,6 +574,7 @@ pub struct AppState {
     pub(crate) hot_query_cache: Arc<Mutex<cache::hot::HotQueryCache>>,
     pub(crate) redis_backend: Option<Arc<RedisBackend>>,
     pub(crate) queued_requests: Arc<AtomicU64>,
+    pub(crate) membership: Arc<Mutex<bijux_atlas_core::MembershipRegistry>>,
     pub runtime_policy_hash: Arc<String>,
     pub runtime_policy_mode: Arc<String>,
 }
