@@ -32,6 +32,7 @@
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `effect-boundary-map` appears 9 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `effects` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `errors` appears 13 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `evidence` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `examples` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `exit-codes` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `failure-modes-reference` appears 2 times",
@@ -53,6 +54,7 @@
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `schema-index` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `schemas` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `security-posture` appears 2 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `spec` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `start-here` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `telemetry` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `testing` appears 10 times",
@@ -209,11 +211,13 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/governance/style/stability-levels.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/linking.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/ops-doc-classes.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/policies/docs-surface-rules.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/policies/root-surface-policy.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/registry-deprecation-plan.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/repo-constitution.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/root-surface.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/ssot-model.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_internal/ssot.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/api/caching.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/api/default-field-set.md` has no inbound doc links",
@@ -330,6 +334,11 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/_generated.example/OWNER.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/_generated.example/REQUIRED_FILES.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/_generated.example/control-plane.snapshot.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/_templates/evidence.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/_templates/policy.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/_templates/runbook.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/_templates/spec.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/_templates/stub.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/datasets/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/datasets/OWNER.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/datasets/REQUIRED_FILES.md` has no inbound doc links",
@@ -370,7 +379,7 @@
   "schema_version": 1,
   "summary": {
     "errors": 53,
-    "registered": 829,
-    "warnings": 407
+    "registered": 836,
+    "warnings": 416
   }
 }

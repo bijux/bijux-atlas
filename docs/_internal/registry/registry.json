@@ -9944,6 +9944,29 @@
       "doc_version": "v1",
       "keywords": [
         "-internal",
+        "ops-doc-classes"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-platform",
+      "path": "docs/_internal/ops-doc-classes.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "ops-doc-classes"
+      ],
+      "title": "Ops Document Classes",
+      "topic": "ops-doc-classes"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
         "docs-surface-rules",
         "policies"
       ],
@@ -10054,6 +10077,29 @@
       ],
       "title": "Root Surface Rationale",
       "topic": "root-surface"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "ssot-model"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-platform",
+      "path": "docs/_internal/ssot-model.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "ssot-model"
+      ],
+      "title": "SSOT Model",
+      "topic": "ssot-model"
     },
     {
       "area": "_internal",
@@ -18821,7 +18867,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-platform",
       "path": "ops/SSOT.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -18829,7 +18875,7 @@
         "ops",
         "ssot"
       ],
-      "title": "Ops SSOT Boundary",
+      "title": "Ops SSOT",
       "topic": "SSOT"
     },
     {
@@ -18931,6 +18977,131 @@
       ],
       "title": "Control Plane Snapshot",
       "topic": "control-plane.snapshot"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-templates",
+        "evidence",
+        "ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/_templates/evidence.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-templates",
+        "evidence",
+        "ops"
+      ],
+      "title": "Evidence Reference",
+      "topic": "evidence"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-templates",
+        "ops",
+        "policy"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/_templates/policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-templates",
+        "ops",
+        "policy"
+      ],
+      "title": "Policy Title",
+      "topic": "policy"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-templates",
+        "ops",
+        "runbook"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/_templates/runbook.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-templates",
+        "ops",
+        "runbook"
+      ],
+      "title": "Runbook Title",
+      "topic": "runbook"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-templates",
+        "ops",
+        "spec"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/_templates/spec.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-templates",
+        "ops",
+        "spec"
+      ],
+      "title": "Specification Title",
+      "topic": "spec"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-templates",
+        "ops",
+        "stub"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/_templates/stub.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-templates",
+        "ops",
+        "stub"
+      ],
+      "title": "Redirect Stub",
+      "topic": "stub"
     },
     {
       "area": "ops",

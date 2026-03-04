@@ -3237,6 +3237,14 @@
       "area": "_internal",
       "audience": "contributors",
       "owner": "bijux-atlas-platform",
+      "path": "docs/_internal/ops-doc-classes.md",
+      "stability": "stable",
+      "title": "Ops Document Classes"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "bijux-atlas-platform",
       "path": "docs/_internal/policies/docs-surface-rules.md",
       "stability": "stable",
       "title": "Docs Surface Rules"
@@ -3272,6 +3280,14 @@
       "path": "docs/_internal/root-surface.md",
       "stability": "stable",
       "title": "Root Surface Rationale"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "bijux-atlas-platform",
+      "path": "docs/_internal/ssot-model.md",
+      "stability": "stable",
+      "title": "SSOT Model"
     },
     {
       "area": "_internal",
@@ -6220,10 +6236,10 @@
     {
       "area": "ops",
       "audience": "contributors",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-platform",
       "path": "ops/SSOT.md",
       "stability": "stable",
-      "title": "Ops SSOT Boundary"
+      "title": "Ops SSOT"
     },
     {
       "area": "ops",
@@ -6256,6 +6272,46 @@
       "path": "ops/_generated.example/control-plane.snapshot.md",
       "stability": "stable",
       "title": "Control Plane Snapshot"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/_templates/evidence.md",
+      "stability": "stable",
+      "title": "Evidence Reference"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/_templates/policy.md",
+      "stability": "stable",
+      "title": "Policy Title"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/_templates/runbook.md",
+      "stability": "stable",
+      "title": "Runbook Title"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/_templates/spec.md",
+      "stability": "stable",
+      "title": "Specification Title"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/_templates/stub.md",
+      "stability": "stable",
+      "title": "Redirect Stub"
     },
     {
       "area": "ops",

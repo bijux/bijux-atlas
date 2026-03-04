@@ -2023,6 +2023,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/ops-doc-classes.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/policies/docs-surface-rules.md"
     },
     {
@@ -2044,6 +2049,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/_internal/root-surface.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/ssot-model.md"
     },
     {
       "crate": null,
@@ -3909,6 +3919,31 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/_generated.example/control-plane.snapshot.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/_templates/evidence.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/_templates/policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/_templates/runbook.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/_templates/spec.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/_templates/stub.md"
     },
     {
       "crate": null,

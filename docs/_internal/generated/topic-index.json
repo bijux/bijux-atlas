@@ -880,7 +880,8 @@
       "docs/reference/errors-and-exit-codes.md"
     ],
     "evidence": [
-      "docs/reference/contracts/release/evidence.md"
+      "docs/reference/contracts/release/evidence.md",
+      "ops/_templates/evidence.md"
     ],
     "evidence-model": [
       "docs/operations/reference/evidence-model.md"
@@ -1233,6 +1234,9 @@
     "ops-determinism-proof": [
       "docs/governance/ops-determinism-proof.md"
     ],
+    "ops-doc-classes": [
+      "docs/_internal/ops-doc-classes.md"
+    ],
     "ops-docs-contract": [
       "docs/operations/ops-docs-contract.md"
     ],
@@ -1321,6 +1325,9 @@
     ],
     "plugin-versioning-and-release-independence": [
       "docs/reference/registry/plugin-versioning-and-release-independence.md"
+    ],
+    "policy": [
+      "ops/_templates/policy.md"
     ],
     "policy-authoring-guide": [
       "crates/bijux-atlas-policies/docs/policy-authoring-guide.md"
@@ -1558,6 +1565,9 @@
     "run-locally": [
       "docs/operations/run-locally.md"
     ],
+    "runbook": [
+      "ops/_templates/runbook.md"
+    ],
     "runbook-snippet": [
       "crates/bijux-atlas-store/docs/internal/runbook-snippet.md"
     ],
@@ -1673,10 +1683,14 @@
       "docs/operations/observability/slos-with-promql.md"
     ],
     "spec": [
-      "docs/reference/contracts/plugins/spec.md"
+      "docs/reference/contracts/plugins/spec.md",
+      "ops/_templates/spec.md"
     ],
     "ssot": [
       "docs/_internal/ssot.md"
+    ],
+    "ssot-model": [
+      "docs/_internal/ssot-model.md"
     ],
     "stability-levels": [
       "docs/_internal/governance/style/stability-levels.md"
@@ -1702,6 +1716,9 @@
     ],
     "structure-templates": [
       "docs/_internal/governance/style/structure-templates.md"
+    ],
+    "stub": [
+      "ops/_templates/stub.md"
     ],
     "style-guide": [
       "docs/_internal/governance/style-guide.md"

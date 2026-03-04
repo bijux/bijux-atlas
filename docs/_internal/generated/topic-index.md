@@ -232,7 +232,7 @@
 | `error-model` | `docs/architecture/error-model.md` |
 | `errors` | `crates/bijux-atlas-api/docs/errors.md, crates/bijux-atlas-cli/docs/errors.md, crates/bijux-atlas-core/docs/errors.md, crates/bijux-atlas-ingest/docs/errors.md, crates/bijux-atlas-model/docs/errors.md, crates/bijux-atlas-policies/docs/errors.md, crates/bijux-atlas-query/docs/errors.md, crates/bijux-atlas-server/docs/errors.md, crates/bijux-atlas-store/docs/errors.md, crates/bijux-dev-atlas/docs/errors.md, docs/api/errors.md, docs/reference/contracts/errors.md, docs/reference/errors.md` |
 | `errors-and-exit-codes` | `docs/reference/errors-and-exit-codes.md` |
-| `evidence` | `docs/reference/contracts/release/evidence.md` |
+| `evidence` | `docs/reference/contracts/release/evidence.md, ops/_templates/evidence.md` |
 | `evidence-model` | `docs/operations/reference/evidence-model.md` |
 | `evidence-retention-policy` | `docs/operations/evidence-retention-policy.md` |
 | `evidence-viewer` | `docs/operations/evidence-viewer.md` |
@@ -325,6 +325,7 @@
 | `ops-command-list` | `crates/bijux-dev-atlas/docs/internal/ops-command-list.md` |
 | `ops-deletion-impact-simulation` | `docs/governance/ops-deletion-impact-simulation.md` |
 | `ops-determinism-proof` | `docs/governance/ops-determinism-proof.md` |
+| `ops-doc-classes` | `docs/_internal/ops-doc-classes.md` |
 | `ops-docs-contract` | `docs/operations/ops-docs-contract.md` |
 | `ops-drift-dashboard` | `docs/_internal/governance/ops-drift-dashboard.md` |
 | `ops-e2e-boundary` | `.github/PULL_REQUEST_TEMPLATE/ops-e2e-boundary.md` |
@@ -353,6 +354,7 @@
 | `placement` | `docs/_internal/governance/style/placement.md` |
 | `plugin-contract` | `crates/bijux-atlas-cli/docs/plugin-contract.md` |
 | `plugin-versioning-and-release-independence` | `docs/reference/registry/plugin-versioning-and-release-independence.md` |
+| `policy` | `ops/_templates/policy.md` |
 | `policy-authoring-guide` | `crates/bijux-atlas-policies/docs/policy-authoring-guide.md` |
 | `policy-enforcement-mapping` | `docs/_internal/governance/policy-enforcement-mapping.md` |
 | `privacy-stance` | `docs/operations/security/privacy-stance.md` |
@@ -428,6 +430,7 @@
 | `root-surface` | `docs/_internal/root-surface.md` |
 | `root-surface-policy` | `docs/_internal/policies/root-surface-policy.md` |
 | `run-locally` | `docs/operations/run-locally.md` |
+| `runbook` | `ops/_templates/runbook.md` |
 | `runbook-snippet` | `crates/bijux-atlas-store/docs/internal/runbook-snippet.md` |
 | `runbook-template` | `docs/operations/runbook-template.md` |
 | `runbooks-to-alerts-mapping` | `docs/operations/runbooks-to-alerts-mapping.md` |
@@ -465,8 +468,9 @@
 | `slo-store-backend-error-spike` | `docs/operations/runbooks/slo-store-backend-error-spike.md` |
 | `slo-targets` | `docs/product/slo-targets.md` |
 | `slos-with-promql` | `docs/operations/observability/slos-with-promql.md` |
-| `spec` | `docs/reference/contracts/plugins/spec.md` |
+| `spec` | `docs/reference/contracts/plugins/spec.md, ops/_templates/spec.md` |
 | `ssot` | `docs/_internal/ssot.md` |
+| `ssot-model` | `docs/_internal/ssot-model.md` |
 | `stability-levels` | `docs/_internal/governance/style/stability-levels.md` |
 | `start-here` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/start-here.md, docs/start-here.md` |
 | `static-and-effect-mode` | `docs/control-plane/static-and-effect-mode.md` |
@@ -475,6 +479,7 @@
 | `store-outage` | `docs/operations/runbooks/store-outage.md` |
 | `structure-index` | `docs/structure-index.md` |
 | `structure-templates` | `docs/_internal/governance/style/structure-templates.md` |
+| `stub` | `ops/_templates/stub.md` |
 | `style-guide` | `docs/_internal/governance/style-guide.md` |
 | `style-lints` | `docs/_internal/governance/style-lints.md` |
 | `suite-membership-policy` | `docs/_internal/governance/suite-membership-policy.md` |

@@ -5495,6 +5495,18 @@
     {
       "keywords": [
         "-internal",
+        "ops-doc-classes"
+      ],
+      "path": "docs/_internal/ops-doc-classes.md",
+      "tags": [
+        "-internal",
+        "ops-doc-classes"
+      ],
+      "topic": "ops-doc-classes"
+    },
+    {
+      "keywords": [
+        "-internal",
         "docs-surface-rules",
         "policies"
       ],
@@ -5555,6 +5567,18 @@
         "root-surface"
       ],
       "topic": "root-surface"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "ssot-model"
+      ],
+      "path": "docs/_internal/ssot-model.md",
+      "tags": [
+        "-internal",
+        "ssot-model"
+      ],
+      "topic": "ssot-model"
     },
     {
       "keywords": [
@@ -10329,6 +10353,76 @@
         "ops"
       ],
       "topic": "control-plane.snapshot"
+    },
+    {
+      "keywords": [
+        "-templates",
+        "evidence",
+        "ops"
+      ],
+      "path": "ops/_templates/evidence.md",
+      "tags": [
+        "-templates",
+        "evidence",
+        "ops"
+      ],
+      "topic": "evidence"
+    },
+    {
+      "keywords": [
+        "-templates",
+        "ops",
+        "policy"
+      ],
+      "path": "ops/_templates/policy.md",
+      "tags": [
+        "-templates",
+        "ops",
+        "policy"
+      ],
+      "topic": "policy"
+    },
+    {
+      "keywords": [
+        "-templates",
+        "ops",
+        "runbook"
+      ],
+      "path": "ops/_templates/runbook.md",
+      "tags": [
+        "-templates",
+        "ops",
+        "runbook"
+      ],
+      "topic": "runbook"
+    },
+    {
+      "keywords": [
+        "-templates",
+        "ops",
+        "spec"
+      ],
+      "path": "ops/_templates/spec.md",
+      "tags": [
+        "-templates",
+        "ops",
+        "spec"
+      ],
+      "topic": "spec"
+    },
+    {
+      "keywords": [
+        "-templates",
+        "ops",
+        "stub"
+      ],
+      "path": "ops/_templates/stub.md",
+      "tags": [
+        "-templates",
+        "ops",
+        "stub"
+      ],
+      "topic": "stub"
     },
     {
       "keywords": [

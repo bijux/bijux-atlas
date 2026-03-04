@@ -3717,6 +3717,14 @@
       "breadcrumbs": [
         "docs",
         "docs/_internal",
+        "docs/_internal/ops-doc-classes.md"
+      ],
+      "path": "docs/_internal/ops-doc-classes.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
         "docs/_internal/policies",
         "docs/_internal/policies/docs-surface-rules.md"
       ],
@@ -3754,6 +3762,14 @@
         "docs/_internal/root-surface.md"
       ],
       "path": "docs/_internal/root-surface.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/ssot-model.md"
+      ],
+      "path": "docs/_internal/ssot-model.md"
     },
     {
       "breadcrumbs": [
@@ -6874,6 +6890,46 @@
         "ops/_generated.example/control-plane.snapshot.md"
       ],
       "path": "ops/_generated.example/control-plane.snapshot.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/_templates",
+        "ops/_templates/evidence.md"
+      ],
+      "path": "ops/_templates/evidence.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/_templates",
+        "ops/_templates/policy.md"
+      ],
+      "path": "ops/_templates/policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/_templates",
+        "ops/_templates/runbook.md"
+      ],
+      "path": "ops/_templates/runbook.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/_templates",
+        "ops/_templates/spec.md"
+      ],
+      "path": "ops/_templates/spec.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/_templates",
+        "ops/_templates/stub.md"
+      ],
+      "path": "ops/_templates/stub.md"
     },
     {
       "breadcrumbs": [
