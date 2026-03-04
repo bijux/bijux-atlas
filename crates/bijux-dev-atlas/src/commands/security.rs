@@ -1762,8 +1762,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             let has_fetch = unsafe_pattern_needles
                 .iter()
                 .any(|needle| lower.contains(needle));
-            let has_pipe_shell =
-                (lower.contains("| bash") || lower.contains("| sh")) && has_fetch;
+            let has_pipe_shell = (lower.contains("| bash") || lower.contains("| sh")) && has_fetch;
             if !has_pipe_shell {
                 continue;
             }
