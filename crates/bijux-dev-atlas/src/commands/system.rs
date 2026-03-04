@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    SystemClusterArgs, SystemClusterCommand, SystemCommand, SystemDebugCommand,
+    SystemClusterArgs, SystemClusterCommand, SystemClusterNodeActionArgs, SystemCommand, SystemDebugCommand,
     SystemSimulateCommand,
 };
 use crate::{emit_payload, resolve_repo_root};
@@ -282,7 +282,68 @@ fn run_cluster_command(command: SystemClusterCommand) -> Result<(String, i32), S
             let rendered = emit_payload(args.format, args.out, &payload)?;
             Ok((rendered, 0))
         }
+        SystemClusterCommand::Membership(args) => {
+            let (cluster, node) = load_cluster_inputs(&args)?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "system_cluster_membership",
+                "cluster_id": cluster.cluster_id,
+                "membership_state": "active",
+                "node": {
+                    "node_id": node.node_id,
+                    "generation": node.generation,
+                    "role": node.role
+                },
+                "heartbeat_policy": cluster.health
+            });
+            let rendered = emit_payload(args.format, args.out, &payload)?;
+            Ok((rendered, 0))
+        }
+        SystemClusterCommand::NodeHealth(args) => {
+            let (_cluster, node) = load_cluster_inputs(&args)?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "system_cluster_node_health",
+                "node_id": node.node_id,
+                "health": "healthy",
+                "load_percent": 0,
+                "capability_count": node.capabilities.len(),
+                "capabilities": node.capabilities
+            });
+            let rendered = emit_payload(args.format, args.out, &payload)?;
+            Ok((rendered, 0))
+        }
+        SystemClusterCommand::NodeDrain(args) => {
+            let payload = run_node_action(args, "drain")?;
+            Ok(payload)
+        }
+        SystemClusterCommand::NodeMaintenance(args) => {
+            let payload = run_node_action(args, "maintenance")?;
+            Ok(payload)
+        }
+        SystemClusterCommand::NodeDiagnostics(args) => {
+            let payload = run_node_action(args, "diagnostics")?;
+            Ok(payload)
+        }
     }
+}
+
+fn run_node_action(
+    args: SystemClusterNodeActionArgs,
+    action: &str,
+) -> Result<(String, i32), String> {
+    let (_cluster, node) = load_cluster_inputs(&args.common)?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "system_cluster_node_action",
+        "action": action,
+        "target_node_id": args.node_id,
+        "configured_node_id": node.node_id,
+        "generation": node.generation,
+        "status": if action == "diagnostics" { "report-ready" } else { "accepted" }
+    });
+    let rendered = emit_payload(args.common.format, args.common.out, &payload)?;
+    Ok((rendered, 0))
 }
 
 fn build_evidence(scenario: &SimulationScenario) -> serde_json::Value {

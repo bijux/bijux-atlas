@@ -504,6 +504,11 @@ pub enum SystemClusterCommand {
     NodeList(SystemClusterArgs),
     Status(SystemClusterArgs),
     Diagnostics(SystemClusterArgs),
+    Membership(SystemClusterArgs),
+    NodeHealth(SystemClusterArgs),
+    NodeDrain(SystemClusterNodeActionArgs),
+    NodeMaintenance(SystemClusterNodeActionArgs),
+    NodeDiagnostics(SystemClusterNodeActionArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -584,6 +589,14 @@ pub struct SystemClusterArgs {
     pub cluster_config: PathBuf,
     #[arg(long, default_value = "configs/ops/runtime/node-config.example.json")]
     pub node_config: PathBuf,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct SystemClusterNodeActionArgs {
+    #[command(flatten)]
+    pub common: SystemClusterArgs,
+    #[arg(long)]
+    pub node_id: String,
 }
 
 #[derive(Args, Debug, Clone)]
