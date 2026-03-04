@@ -70,9 +70,9 @@ coverage: ## Run workspace coverage with cargo llvm-cov + nextest
 	@CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo llvm-cov report
 
 fmt: ## Run cargo fmt --check
-	@printf '%s\n' "run: bijux-dev-atlas ci verify rust-fmt"
+	@printf '%s\n' "run: cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml"
 	@mkdir -p $(ARTIFACT_ROOT)/fmt/$(RUN_ID)
-	@output="$$(cargo run -q -p bijux-dev-atlas -- ci verify rust-fmt --allow-subprocess --format $(FORMAT) 2>&1)"; \
+	@output="$$(CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml 2>&1)"; \
 	status=$$?; \
 	printf '%s\n' "$$output" | tee $(ARTIFACT_ROOT)/fmt/$(RUN_ID)/report.txt; \
 	if [ $$status -eq 0 ]; then \
@@ -81,9 +81,9 @@ fmt: ## Run cargo fmt --check
 	exit $$status
 
 lint: ## Run cargo clippy with warnings denied
-	@printf '%s\n' "run: bijux-dev-atlas ci verify rust-clippy"
+	@printf '%s\n' "run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings"
 	@mkdir -p $(ARTIFACT_ROOT)/lint/$(RUN_ID)
-	@cargo run -q -p bijux-dev-atlas -- ci verify rust-clippy --allow-subprocess --format $(FORMAT) | tee $(ARTIFACT_ROOT)/lint/$(RUN_ID)/report.json
+	@CLIPPY_CONF_DIR=configs/rust CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo clippy --workspace --all-targets --all-features --locked -- -D warnings 2>&1 | tee $(ARTIFACT_ROOT)/lint/$(RUN_ID)/report.txt
 
 lint-policy-report: ## Emit effective lint policy report artifact
 	@$(DEV_ATLAS) make lint-policy-report --allow-write --format $(FORMAT)
