@@ -25,7 +25,10 @@ pub(crate) async fn request_tracing_middleware(
         correlation_id = trace.correlation_id.as_deref().unwrap_or(""),
         run_id = trace.run_id.as_deref().unwrap_or(""),
         traceparent = trace.traceparent.as_deref().unwrap_or(""),
-        request_origin = trace.request_origin.as_deref().unwrap_or(""),
+        request_origin = %crate::telemetry::logging::redact_if_needed(
+            true,
+            trace.request_origin.as_deref().unwrap_or("")
+        ),
         error = tracing::field::Empty,
         method = %method,
         route = %route,

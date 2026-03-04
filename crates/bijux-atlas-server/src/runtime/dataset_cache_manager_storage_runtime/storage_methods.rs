@@ -111,7 +111,11 @@ impl DatasetCacheManager {
         &self,
         dataset: &DatasetId,
     ) -> Result<DatasetConnection, CacheError> {
-        info!(dataset = ?dataset, "dataset open start");
+        info!(
+            event_id = "dataset_load_started",
+            dataset_id = %dataset.canonical_string(),
+            "dataset open start"
+        );
         let open_started = Instant::now();
         self.check_quarantine(dataset).await?;
         async { self.ensure_dataset_cached(dataset).await }
@@ -199,6 +203,12 @@ impl DatasetCacheManager {
                 self.metrics
                     .store_open_failures
                     .fetch_add(1, Ordering::Relaxed);
+                warn!(
+                    event_id = "dataset_open_timeout",
+                    dataset_id = %dataset.canonical_string(),
+                    timeout_ms = self.cfg.dataset_open_timeout.as_millis(),
+                    "dataset open timed out"
+                );
                 Err(CacheError("dataset open timeout".to_string()))
             }
         }
@@ -254,6 +264,11 @@ impl DatasetCacheManager {
             self.metrics
                 .store_retry_budget_exhausted_total
                 .fetch_add(1, Ordering::Relaxed);
+            warn!(
+                event_id = "store_retry_budget_exhausted",
+                dataset_id = %dataset.canonical_string(),
+                "store retry budget exhausted"
+            );
             return Err(CacheError(
                 "store retry budget exhausted; refusing download".to_string(),
             ));
@@ -266,6 +281,11 @@ impl DatasetCacheManager {
             self.metrics
                 .store_retry_budget_exhausted_total
                 .fetch_add(1, Ordering::Relaxed);
+            warn!(
+                event_id = "dataset_retry_budget_exhausted",
+                dataset_id = %dataset.canonical_string(),
+                "dataset retry budget exhausted"
+            );
             return Err(CacheError(
                 "dataset retry budget exhausted; refusing download".to_string(),
             ));
@@ -274,13 +294,27 @@ impl DatasetCacheManager {
             self.metrics
                 .store_download_retry_total
                 .fetch_add(1, Ordering::Relaxed);
+            info!(
+                event_id = "store_download_retry",
+                dataset_id = %dataset.canonical_string(),
+                remaining = *per_dataset_remaining,
+                "dataset download retry"
+            );
         }
         *per_dataset_remaining = per_dataset_remaining.saturating_sub(1);
         drop(dataset_budget);
 
-        info!(dataset = ?dataset, "dataset download path");
+        info!(
+            event_id = "ingest_download_path",
+            dataset_id = %dataset.canonical_string(),
+            "dataset download path"
+        );
         let started = Instant::now();
-        info!(dataset = ?dataset, "dataset download start");
+        info!(
+            event_id = "ingest_download_started",
+            dataset_id = %dataset.canonical_string(),
+            "dataset download start"
+        );
         let _download_permit = self
             .download_semaphore
             .clone()
@@ -333,7 +367,11 @@ impl DatasetCacheManager {
             ))
             .await;
         if sqlite_hash != manifest.checksums.sqlite_sha256 {
-            error!("dataset verify failed {:?}", dataset);
+            error!(
+                event_id = "ingest_anomaly_checksum_mismatch",
+                dataset_id = %dataset.canonical_string(),
+                "dataset verify failed"
+            );
             self.metrics
                 .store_download_failures
                 .fetch_add(1, Ordering::Relaxed);

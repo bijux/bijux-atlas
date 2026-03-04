@@ -358,6 +358,13 @@ pub(crate) async fn genes_handler(
         )
         .in_scope(|| cache.get(&coalesce_key))
         {
+            info!(
+                event_id = "cache_hit_hot_query",
+                request_id = %request_id,
+                dataset_id = %dataset.canonical_string(),
+                query_type = "genes",
+                "hot query cache hit"
+            );
             state.metrics.observe_query_cache_hit();
             let mut resp = Response::builder()
                 .status(StatusCode::OK)
@@ -378,6 +385,13 @@ pub(crate) async fn genes_handler(
                 .await;
             return super::handlers::with_request_id(resp, &request_id);
         }
+        info!(
+            event_id = "cache_miss_hot_query",
+            request_id = %request_id,
+            dataset_id = %dataset.canonical_string(),
+            query_type = "genes",
+            "hot query cache miss"
+        );
         state.metrics.observe_query_cache_miss();
     }
     let _coalesce_guard = if class == QueryClass::Heavy || class == QueryClass::Cheap {
@@ -484,6 +498,12 @@ pub(crate) async fn genes_handler(
                     shard_id = tracing::field::Empty
                 )
                 .entered();
+                info!(
+                    event_id = "shard_routing_started",
+                    request_id = %request_id,
+                    dataset_id = %dataset.canonical_string(),
+                    "shard routing started"
+                );
                 let catalog_path = bijux_atlas_model::artifact_paths(
                     state.cache.disk_root(),
                     &dataset,
@@ -529,6 +549,13 @@ pub(crate) async fn genes_handler(
                                 b"atlas-server-cursor-secret",
                             )
                             .map_err(|e| CacheError(e.to_string()))?;
+                            info!(
+                                event_id = "shard_routing_selected",
+                                request_id = %request_id,
+                                dataset_id = %dataset.canonical_string(),
+                                selected_shard_count = refs.len(),
+                                "shard routing selected fanout plan"
+                            );
                             drop(permits);
                             return Ok(response);
                         }
@@ -542,6 +569,7 @@ pub(crate) async fn genes_handler(
         if query_elapsed > state.api.slow_query_threshold {
             state.metrics.observe_slow_query();
             warn!(
+                event_id = "slow_query_detected",
                 request_id = %request_id,
                 dataset = %format!("{}/{}/{}", dataset.release, dataset.species, dataset.assembly),
                 class = %format!("{class:?}").to_lowercase(),
@@ -579,6 +607,25 @@ pub(crate) async fn genes_handler(
         }
         Ok(Err(err)) => {
             let msg = err.to_string();
+            warn!(
+                event_id = "query_error_classified",
+                request_id = %request_id,
+                route = "/v1/genes",
+                error_class = if msg.contains("limit")
+                    || msg.contains("span")
+                    || msg.contains("scan")
+                    || msg.contains("name_prefix")
+                {
+                    "policy"
+                } else if msg.contains("Validation:") || msg.contains("seqid does not exist in dataset") {
+                    "validation"
+                } else if req.cursor.is_some() {
+                    "cursor"
+                } else {
+                    "runtime"
+                },
+                "query error classified"
+            );
             if msg.contains("limit")
                 || msg.contains("span")
                 || msg.contains("scan")
@@ -669,6 +716,13 @@ pub(crate) async fn genes_handler(
             return super::handlers::with_request_id(resp, &request_id);
         }
         Err(_) => {
+            warn!(
+                event_id = "request_timeout",
+                request_id = %request_id,
+                route = "/v1/genes",
+                timeout_ms = state.api.request_timeout.as_millis(),
+                "request timed out"
+            );
             if state.api.continue_download_on_request_timeout_for_warmup
                 && state.cache.is_pinned_dataset(&dataset)
             {

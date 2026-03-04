@@ -250,11 +250,25 @@ impl S3LikeBackend {
                             resp.status()
                         )));
                     }
+                    tracing::warn!(
+                        event_id = "store_download_retry",
+                        backend = "http_s3",
+                        status = %resp.status(),
+                        attempt,
+                        "store download retrying after status error"
+                    );
                 }
                 Err(e) => {
                     if attempt >= self.retry.max_attempts {
                         return Err(CacheError(format!("download failed url={url}: {e}")));
                     }
+                    tracing::warn!(
+                        event_id = "store_download_retry",
+                        backend = "http_s3",
+                        attempt,
+                        is_timeout = e.is_timeout(),
+                        "store download retrying after transport error"
+                    );
                 }
             }
             tokio::time::sleep(Duration::from_millis(
@@ -313,11 +327,25 @@ impl S3LikeBackend {
                             resp.status()
                         )));
                     }
+                    tracing::warn!(
+                        event_id = "store_catalog_retry",
+                        backend = "http_s3",
+                        status = %resp.status(),
+                        attempt,
+                        "catalog fetch retrying after status error"
+                    );
                 }
                 Err(e) => {
                     if attempt >= self.retry.max_attempts {
                         return Err(CacheError(format!("download failed url={url}: {e}")));
                     }
+                    tracing::warn!(
+                        event_id = "store_catalog_retry",
+                        backend = "http_s3",
+                        attempt,
+                        is_timeout = e.is_timeout(),
+                        "catalog fetch retrying after transport error"
+                    );
                 }
             }
             tokio::time::sleep(Duration::from_millis(
@@ -388,6 +416,13 @@ impl S3LikeBackend {
                             resp.status()
                         )));
                     }
+                    tracing::warn!(
+                        event_id = "store_resume_retry",
+                        backend = "http_s3",
+                        status = %resp.status(),
+                        attempt,
+                        "resumable download retrying after status error"
+                    );
                 }
                 Err(e) => {
                     if attempt >= self.retry.max_attempts {
@@ -395,6 +430,13 @@ impl S3LikeBackend {
                             "resumable download failed url={url}: {e}"
                         )));
                     }
+                    tracing::warn!(
+                        event_id = "store_resume_retry",
+                        backend = "http_s3",
+                        attempt,
+                        is_timeout = e.is_timeout(),
+                        "resumable download retrying after transport error"
+                    );
                 }
             }
             tokio::time::sleep(Duration::from_millis(
@@ -434,6 +476,13 @@ impl S3LikeBackend {
                             resp.status()
                         )));
                     }
+                    tracing::warn!(
+                        event_id = "store_checksum_retry",
+                        backend = "http_s3",
+                        status = %resp.status(),
+                        attempt,
+                        "checksum fetch retrying after status error"
+                    );
                 }
                 Err(e) => {
                     if attempt >= self.retry.max_attempts {
@@ -441,6 +490,13 @@ impl S3LikeBackend {
                             "checksum download failed url={url}: {e}"
                         )));
                     }
+                    tracing::warn!(
+                        event_id = "store_checksum_retry",
+                        backend = "http_s3",
+                        attempt,
+                        is_timeout = e.is_timeout(),
+                        "checksum fetch retrying after transport error"
+                    );
                 }
             }
             tokio::time::sleep(Duration::from_millis(
