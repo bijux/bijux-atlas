@@ -56,12 +56,12 @@ pub(super) fn check_repo_no_executable_script_sources(
 pub(super) fn check_repo_root_markdown_allowlist_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let allowlist_rel = Path::new("configs/repo/root-file-allowlist.json");
+    let allowlist_rel = Path::new("configs/layout/root_markdown_allowlist.json");
     let allowlist = read_json_value(&ctx.repo_root.join(allowlist_rel))?;
-    let allowed = allowlist["allowed_root_markdown"]
+    let allowed = allowlist["files"]
         .as_array()
         .ok_or_else(|| {
-            CheckError::Failed("root-file-allowlist missing allowed_root_markdown".to_string())
+            CheckError::Failed("root_markdown_allowlist missing files".to_string())
         })?
         .iter()
         .filter_map(Value::as_str)
@@ -80,7 +80,7 @@ pub(super) fn check_repo_root_markdown_allowlist_contract(
             violations.push(violation(
                 "REPO_ROOT_MARKDOWN_NOT_ALLOWLISTED",
                 format!("unexpected root markdown file: `{name}`"),
-                "add file to root-file-allowlist.json only after governance approval",
+                "add file to configs/layout/root_markdown_allowlist.json only after governance approval",
                 Some(Path::new(name)),
             ));
         }
