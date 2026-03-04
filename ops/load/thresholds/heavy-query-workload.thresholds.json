@@ -1,10 +1,10 @@
 {
   "kind": "ops-load-suite-thresholds",
   "schema_version": 1,
-  "suite": "store-outage-under-spike",
+  "suite": "heavy-query-workload",
   "thresholds": {
     "p95_ms_max": 1500,
-    "p99_ms_max": 3000,
-    "error_rate_max": 0.1
+    "p99_ms_max": 2800,
+    "error_rate_max": 0.06
   }
 }

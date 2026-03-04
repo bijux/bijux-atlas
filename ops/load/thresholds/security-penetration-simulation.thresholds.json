@@ -1,10 +1,10 @@
 {
   "kind": "ops-load-suite-thresholds",
   "schema_version": 1,
-  "suite": "noisy-neighbor-cpu-throttle",
+  "suite": "security-penetration-simulation",
   "thresholds": {
     "p95_ms_max": 1600,
-    "p99_ms_max": 3200,
-    "error_rate_max": 0.05
+    "p99_ms_max": 2800,
+    "error_rate_max": 0.15
   }
 }

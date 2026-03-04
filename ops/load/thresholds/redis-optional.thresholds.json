@@ -3,8 +3,8 @@
   "schema_version": 1,
   "suite": "redis-optional",
   "thresholds": {
-    "error_rate_max": 0.05,
     "p95_ms_max": 1200,
-    "p99_ms_max": 2200
+    "p99_ms_max": 2200,
+    "error_rate_max": 0.05
   }
 }

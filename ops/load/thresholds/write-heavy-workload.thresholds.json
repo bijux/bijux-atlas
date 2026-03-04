@@ -1,10 +1,10 @@
 {
   "kind": "ops-load-suite-thresholds",
   "schema_version": 1,
-  "suite": "noisy-neighbor-cpu-throttle",
+  "suite": "write-heavy-workload",
   "thresholds": {
-    "p95_ms_max": 1600,
-    "p99_ms_max": 3200,
+    "p95_ms_max": 1400,
+    "p99_ms_max": 2600,
     "error_rate_max": 0.05
   }
 }

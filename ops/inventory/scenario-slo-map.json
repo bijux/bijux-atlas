@@ -3,32 +3,74 @@
   "mappings": [
     {
       "scenario_id": "smoke",
-      "slo_ids": ["api.availability", "api.p95_latency"],
-      "drill_ids": ["ops.drill.store_outage"],
-      "load_suites": ["mixed", "cheap-only-survival"]
+      "slo_ids": [
+        "api.availability",
+        "api.p95_latency"
+      ],
+      "drill_ids": [
+        "ops.drill.store_outage"
+      ],
+      "load_suites": [
+        "mixed",
+        "cheap-only-survival"
+      ]
     },
     {
       "scenario_id": "k8s-suite",
-      "slo_ids": ["api.availability"],
-      "drill_ids": ["ops.drill.pod_churn", "ops.drill.upgrade"],
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.pod_churn",
+        "ops.drill.upgrade"
+      ],
       "load_suites": []
     },
     {
       "scenario_id": "realdata",
-      "slo_ids": ["api.availability"],
-      "drill_ids": ["ops.drill.rollback", "ops.drill.store_outage"],
-      "load_suites": ["multi-release", "diff-heavy"]
+      "slo_ids": [
+        "api.availability"
+      ],
+      "drill_ids": [
+        "ops.drill.rollback",
+        "ops.drill.store_outage"
+      ],
+      "load_suites": [
+        "multi-release",
+        "diff-heavy"
+      ]
     },
     {
       "scenario_id": "perf-e2e",
-      "slo_ids": ["api.availability", "api.p95_latency"],
-      "drill_ids": ["ops.drill.overload", "ops.drill.memory_growth"],
+      "slo_ids": [
+        "api.availability",
+        "api.p95_latency"
+      ],
+      "drill_ids": [
+        "ops.drill.overload",
+        "ops.drill.memory_growth"
+      ],
       "load_suites": [
         "cold-start-p99",
         "cold-start-prefetch-5pods",
         "hpa-validation-short",
         "load-under-rollback",
         "load-under-rollout",
+        "mixed-workload",
+        "ingest-query-workload",
+        "heavy-query-workload",
+        "read-heavy-workload",
+        "write-heavy-workload",
+        "long-running-stability",
+        "memory-leak-detection",
+        "cpu-saturation",
+        "disk-io-saturation",
+        "thread-pool-exhaustion",
+        "shard-hot-spot",
+        "cache-thrashing",
+        "dataset-churn",
+        "artifact-reload",
+        "cursor-stress",
         "mixed-gene-sequence",
         "noisy-neighbor-cpu-throttle",
         "pod-churn",
@@ -37,6 +79,11 @@
         "sharded-fanout",
         "stampede",
         "store-outage-under-spike",
+        "security-regression-suite",
+        "security-malicious-input-suite",
+        "security-injection-suite",
+        "security-dos-resilience-suite",
+        "security-penetration-simulation",
         "warm-steady-state-p99",
         "spike-overload-proof",
         "soak-30m"

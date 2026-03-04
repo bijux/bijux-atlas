@@ -3,8 +3,8 @@
   "schema_version": 1,
   "suite": "load-under-rollout",
   "thresholds": {
-    "error_rate_max": 0.05,
     "p95_ms_max": 1400,
-    "p99_ms_max": 2600
+    "p99_ms_max": 2600,
+    "error_rate_max": 0.05
   }
 }

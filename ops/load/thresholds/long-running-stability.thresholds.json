@@ -1,7 +1,7 @@
 {
   "kind": "ops-load-suite-thresholds",
   "schema_version": 1,
-  "suite": "soak-30m",
+  "suite": "long-running-stability",
   "thresholds": {
     "p95_ms_max": 1200,
     "p99_ms_max": 2400,

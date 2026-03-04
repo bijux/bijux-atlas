@@ -3,8 +3,8 @@
   "schema_version": 1,
   "suite": "response-size-abuse",
   "thresholds": {
-    "error_rate_max": 0.02,
     "p95_ms_max": 900,
-    "p99_ms_max": 1800
+    "p99_ms_max": 1800,
+    "error_rate_max": 0.02
   }
 }

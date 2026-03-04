@@ -3,8 +3,8 @@
   "schema_version": 1,
   "suite": "warm-steady-state-p99",
   "thresholds": {
-    "error_rate_max": 0.01,
     "p95_ms_max": 800,
-    "p99_ms_max": 1500
+    "p99_ms_max": 1500,
+    "error_rate_max": 0.01
   }
 }

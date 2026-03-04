@@ -3,8 +3,8 @@
   "schema_version": 1,
   "suite": "sharded-fanout",
   "thresholds": {
-    "error_rate_max": 0.04,
     "p95_ms_max": 1400,
-    "p99_ms_max": 2800
+    "p99_ms_max": 2800,
+    "error_rate_max": 0.04
   }
 }

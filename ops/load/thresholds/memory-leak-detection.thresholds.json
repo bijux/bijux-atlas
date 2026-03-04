@@ -1,11 +1,11 @@
 {
   "kind": "ops-load-suite-thresholds",
   "schema_version": 1,
-  "suite": "soak-30m",
+  "suite": "memory-leak-detection",
   "thresholds": {
-    "p95_ms_max": 1200,
-    "p99_ms_max": 2400,
-    "error_rate_max": 0.03,
+    "p95_ms_max": 1300,
+    "p99_ms_max": 2500,
+    "error_rate_max": 0.04,
     "memory_growth_bytes_max": 268435456
   }
 }
