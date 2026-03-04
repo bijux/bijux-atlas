@@ -10,6 +10,7 @@ pub mod replication;
 pub mod resilience;
 pub mod security_auth;
 pub mod security_authorization;
+pub mod security_data_protection;
 pub mod security_runtime;
 pub mod sharding;
 pub mod time;
@@ -49,6 +50,13 @@ pub use security_authorization::{
     AuthorizationDecision, AuthorizationEngine, AuthorizationPolicy, AuthorizationPolicyRule,
     AuthorizationResources, PermissionCatalog, PermissionDefinition, PermissionEvaluator,
     RoleCatalog, RoleDefinition, RoleRegistry,
+};
+pub use security_data_protection::{
+    calculate_manifest_checksum, detect_tampering, https_enforced, load_certificate_bundle,
+    validate_certificate_bundle, verify_artifact_checksum, verify_artifact_signature,
+    verify_dataset_manifest_integrity, CertificateRotationState, CertificateValidationError,
+    DataProtectionPolicy, DatasetManifestIntegrity, EncryptionAtRest, LoadedCertificate, TlsConfig,
+    XorEncryption,
 };
 pub use security_runtime::{
     load_security_config_from_path, validate_security_config, EnvSecretsProvider, KeyManager,
