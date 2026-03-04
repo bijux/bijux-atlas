@@ -1,0 +1,45 @@
+schema_version = 1
+release_line = "v0.1"
+versioning_model = "workspace-unified"
+
+[publish]
+allow = [
+  "bijux-atlas-api",
+  "bijux-atlas-cli",
+  "bijux-atlas-core",
+  "bijux-atlas-ingest",
+  "bijux-atlas-model",
+  "bijux-atlas-policies",
+  "bijux-atlas-query",
+  "bijux-atlas-server",
+  "bijux-atlas-store",
+]
+deny = [
+  "bijux-dev-atlas",
+  "bijux-atlas-benchmark",
+]
+
+[roles]
+"bijux-atlas-server" = "runtime-server"
+"bijux-atlas-core" = "core-library"
+"bijux-atlas-policies" = "policy-library"
+"bijux-dev-atlas" = "developer-tool-private"
+"bijux-atlas-api" = "api-library"
+"bijux-atlas-cli" = "operator-cli"
+"bijux-atlas-ingest" = "ingest-library"
+"bijux-atlas-model" = "model-library"
+"bijux-atlas-query" = "query-library"
+"bijux-atlas-store" = "storage-library"
+"bijux-atlas-benchmark" = "benchmark-private"
+
+[metadata_requirements]
+required_package_fields = [
+  "description",
+  "license",
+  "repository",
+  "homepage",
+  "documentation",
+  "readme",
+  "categories",
+  "keywords",
+]

@@ -4,6 +4,7 @@ use crate::cli::{
     FormatArg, ReleaseBundleBuildArgs, ReleaseBundleHashArgs, ReleaseBundleVerifyArgs,
     ReleaseChangelogGenerateArgs, ReleaseChangelogValidateArgs, ReleaseCheckArgs, ReleaseCommand,
     ReleaseCompatibilityCheckArgs, ReleaseDiffArgs, ReleaseManifestGenerateArgs,
+    ReleaseCratesCommand, ReleaseCratesListArgs, ReleaseCratesValidateArgs,
     ReleaseManifestValidateArgs, ReleasePacketArgs, ReleasePlanArgs, ReleaseRebuildVerifyArgs,
     ReleaseReproducibilityReportArgs, ReleaseSignArgs, ReleaseTransitionPlanArgs,
     ReleaseValidateArgs, ReleaseVerifyArgs, ReleaseVersionCheckArgs,
@@ -368,6 +369,207 @@ fn run_release_check(args: ReleaseCheckArgs) -> Result<(String, i32), String> {
 
 fn read_publish_policy(root: &Path) -> Result<serde_json::Value, String> {
     read_json(&root.join("configs/release/publish-policy.json"))
+}
+
+fn read_crates_release_spec(root: &Path) -> Result<toml::Value, String> {
+    let path = root.join("release/crates-v0.1.toml");
+    toml::from_str(
+        &fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", path.display()))
+}
+
+fn release_spec_allow_deny(spec: &toml::Value) -> (Vec<String>, Vec<String>) {
+    let allow = spec
+        .get("publish")
+        .and_then(toml::Value::as_table)
+        .and_then(|publish| publish.get("allow"))
+        .and_then(toml::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(toml::Value::as_str)
+        .map(ToOwned::to_owned)
+        .collect::<Vec<_>>();
+    let deny = spec
+        .get("publish")
+        .and_then(toml::Value::as_table)
+        .and_then(|publish| publish.get("deny"))
+        .and_then(toml::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(toml::Value::as_str)
+        .map(ToOwned::to_owned)
+        .collect::<Vec<_>>();
+    (allow, deny)
+}
+
+fn crate_manifest_table(root: &Path, crate_name: &str) -> Result<toml::map::Map<String, toml::Value>, String> {
+    let path = root.join("crates").join(crate_name).join("Cargo.toml");
+    let value: toml::Value = toml::from_str(
+        &fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    value
+        .get("package")
+        .and_then(toml::Value::as_table)
+        .cloned()
+        .ok_or_else(|| format!("{} missing [package] table", path.display()))
+}
+
+fn run_release_crates_list(args: ReleaseCratesListArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let spec = read_crates_release_spec(&root)?;
+    let (mut publishable, mut blocked) = release_spec_allow_deny(&spec);
+    publishable.sort();
+    blocked.sort();
+    let roles = spec
+        .get("roles")
+        .and_then(toml::Value::as_table)
+        .cloned()
+        .unwrap_or_default();
+    let crate_rows = publishable
+        .iter()
+        .map(|name| {
+            let role = roles
+                .get(name)
+                .and_then(toml::Value::as_str)
+                .unwrap_or("unspecified");
+            serde_json::json!({
+                "name": name,
+                "publish": true,
+                "role": role
+            })
+        })
+        .chain(blocked.iter().map(|name| {
+            let role = roles
+                .get(name)
+                .and_then(toml::Value::as_str)
+                .unwrap_or("unspecified");
+            serde_json::json!({
+                "name": name,
+                "publish": false,
+                "role": role
+            })
+        }))
+        .collect::<Vec<_>>();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_crates_list",
+        "release_line": spec.get("release_line").and_then(toml::Value::as_str).unwrap_or("v0.1"),
+        "versioning_model": spec.get("versioning_model").and_then(toml::Value::as_str).unwrap_or("workspace-unified"),
+        "crates": crate_rows
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_release_crates_validate_metadata(args: ReleaseCratesValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let spec = read_crates_release_spec(&root)?;
+    let (publishable, _) = release_spec_allow_deny(&spec);
+    let required_fields = spec
+        .get("metadata_requirements")
+        .and_then(toml::Value::as_table)
+        .and_then(|metadata| metadata.get("required_package_fields"))
+        .and_then(toml::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(toml::Value::as_str)
+        .map(ToOwned::to_owned)
+        .collect::<Vec<_>>();
+    let mut errors = Vec::<String>::new();
+    let mut checked = Vec::<String>::new();
+    for crate_name in publishable {
+        let package = crate_manifest_table(&root, &crate_name)?;
+        for key in &required_fields {
+            let value = package.get(key);
+            let missing = match value {
+                None => true,
+                Some(toml::Value::String(text)) => text.trim().is_empty(),
+                Some(toml::Value::Array(values)) => values.is_empty(),
+                Some(toml::Value::Table(table)) => !table
+                    .get("workspace")
+                    .and_then(toml::Value::as_bool)
+                    .unwrap_or(false),
+                _ => false,
+            };
+            if missing {
+                errors.push(format!("crate `{crate_name}` missing package.{key}"));
+            }
+        }
+        let readme_rel = package
+            .get("readme")
+            .and_then(toml::Value::as_str)
+            .unwrap_or("README.md");
+        let readme_path = root.join("crates").join(&crate_name).join(readme_rel);
+        if !readme_path.exists() {
+            errors.push(format!(
+                "crate `{crate_name}` readme path does not exist: {}",
+                readme_path.display()
+            ));
+        }
+        checked.push(crate_name);
+    }
+    checked.sort();
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_crates_validate_metadata",
+        "status": status,
+        "checked_crates": checked,
+        "required_fields": required_fields,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_crates_validate_publish_flags(
+    args: ReleaseCratesValidateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let spec = read_crates_release_spec(&root)?;
+    let (publishable, blocked) = release_spec_allow_deny(&spec);
+    let mut errors = Vec::<String>::new();
+    let mut checked = Vec::<String>::new();
+    for crate_name in publishable {
+        let package = crate_manifest_table(&root, &crate_name)?;
+        if package
+            .get("publish")
+            .and_then(toml::Value::as_bool)
+            .unwrap_or(true)
+            == false
+        {
+            errors.push(format!(
+                "crate `{crate_name}` is publishable but has package.publish = false"
+            ));
+        }
+        checked.push(crate_name);
+    }
+    for crate_name in blocked {
+        let package = crate_manifest_table(&root, &crate_name)?;
+        if package
+            .get("publish")
+            .and_then(toml::Value::as_bool)
+            .unwrap_or(true)
+        {
+            errors.push(format!(
+                "crate `{crate_name}` is blocked but missing package.publish = false"
+            ));
+        }
+        checked.push(crate_name);
+    }
+    checked.sort();
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_crates_validate_publish_flags",
+        "status": status,
+        "checked_crates": checked,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
 fn run_release_plan(args: ReleasePlanArgs) -> Result<(String, i32), String> {
@@ -2368,6 +2570,13 @@ pub(crate) fn run_release_command(
         ReleaseCommand::Verify(args) => run_release_verify(args),
         ReleaseCommand::Diff(args) => run_release_diff(args),
         ReleaseCommand::Packet(args) => run_release_packet(args),
+        ReleaseCommand::Crates { command } => match command {
+            ReleaseCratesCommand::List(args) => run_release_crates_list(args),
+            ReleaseCratesCommand::ValidateMetadata(args) => run_release_crates_validate_metadata(args),
+            ReleaseCratesCommand::ValidatePublishFlags(args) => {
+                run_release_crates_validate_publish_flags(args)
+            }
+        },
     }
 }
 

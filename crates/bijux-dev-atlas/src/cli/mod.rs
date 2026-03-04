@@ -294,6 +294,17 @@ pub enum ReleaseCommand {
     Verify(ReleaseVerifyArgs),
     Diff(ReleaseDiffArgs),
     Packet(ReleasePacketArgs),
+    Crates {
+        #[command(subcommand)]
+        command: ReleaseCratesCommand,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ReleaseCratesCommand {
+    List(ReleaseCratesListArgs),
+    ValidateMetadata(ReleaseCratesValidateArgs),
+    ValidatePublishFlags(ReleaseCratesValidateArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -1000,6 +1011,26 @@ pub struct ReleasePacketArgs {
     pub repo_root: Option<PathBuf>,
     #[arg(long, default_value = "release/evidence")]
     pub evidence: PathBuf,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseCratesListArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseCratesValidateArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]

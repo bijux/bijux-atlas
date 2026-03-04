@@ -4,7 +4,7 @@ use crate::cli::{
     ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand, Command,
     ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, FormatArg,
     IngestCommand, MakeCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand,
-    ReleaseCommand, ReportsCommand, SecurityCommand, TestsCommand,
+    ReleaseCommand, ReleaseCratesCommand, ReportsCommand, SecurityCommand, TestsCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -98,6 +98,11 @@ pub(super) fn force_json_output(command: &mut Command) {
             ReleaseCommand::Verify(args) => args.format = FormatArg::Json,
             ReleaseCommand::Diff(args) => args.format = FormatArg::Json,
             ReleaseCommand::Packet(args) => args.format = FormatArg::Json,
+            ReleaseCommand::Crates { command } => match command {
+                ReleaseCratesCommand::List(args) => args.format = FormatArg::Json,
+                ReleaseCratesCommand::ValidateMetadata(args) => args.format = FormatArg::Json,
+                ReleaseCratesCommand::ValidatePublishFlags(args) => args.format = FormatArg::Json,
+            },
         },
         Command::Docker { .. }
         | Command::Build { .. }
@@ -1638,6 +1643,23 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     args.repo_root = Some(root.clone());
                 }
             }
+            ReleaseCommand::Crates { command } => match command {
+                ReleaseCratesCommand::List(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+                ReleaseCratesCommand::ValidateMetadata(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+                ReleaseCratesCommand::ValidatePublishFlags(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+            },
         },
         Command::Version { .. }
         | Command::Help { .. }
