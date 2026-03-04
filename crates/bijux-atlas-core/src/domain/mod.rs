@@ -6,6 +6,7 @@ pub mod config;
 pub mod distributed;
 pub mod distributed_config;
 pub mod membership;
+pub mod sharding;
 pub mod time;
 
 pub use canonical::{sha256, sha256_hex, Hash256};
@@ -24,4 +25,8 @@ pub use distributed_config::{
 pub use membership::{
     HeartbeatMessage, MembershipMetrics, MembershipPolicy, MembershipRegistry, MembershipState,
     NodeMembershipRecord,
+};
+pub use sharding::{
+    DatasetShardLayout, ShardHealth, ShardKeyStrategy, ShardMetadata, ShardOwnershipRule,
+    ShardRecord, ShardRegistry, ShardRegistryMetrics, ShardRuntimeStats, stable_hash_u64,
 };
