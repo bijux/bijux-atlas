@@ -20,6 +20,16 @@
 - `multi-release`: cross-release consistency.
 - `diff-heavy`: diff endpoint pressure profile.
 - `soak-30m`: sustained load and memory growth check.
+- `mixed-workload`: balanced mixed read/heavy profile.
+- `ingest-query-workload`: ingest-adjacent plus query overlap profile.
+- `heavy-query-workload`: high-cost query pressure profile.
+- `read-heavy-workload`: read-dominant profile.
+- `write-heavy-workload`: write-adjacent diff profile.
+- `long-running-stability`: long-duration stability profile.
+- `memory-leak-detection`: sustained memory growth guard.
+- `cpu-saturation`: CPU pressure profile.
+- `disk-io-saturation`: disk and shard-read pressure profile.
+- `thread-pool-exhaustion`: worker-pool pressure profile.
 
 Authoritative suite definitions live in `ops/load/suites/suites.json`.
 

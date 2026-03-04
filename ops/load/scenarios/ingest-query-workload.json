@@ -1,0 +1,1 @@
+{"name":"ingest-query-workload","suite":"mixed-gene-sequence.js","focus":"concurrent ingest-adjacent and query workload simulation"}

@@ -1,0 +1,1 @@
+{"name":"long-running-stability","suite":"soak-30m.js","duration":"30m","focus":"long-running stability and latency drift detection"}
