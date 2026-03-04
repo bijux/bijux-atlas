@@ -28,6 +28,8 @@
     "ops/inventory/markdown-allowlist.json",
     "ops/inventory/namespaces.json",
     "ops/inventory/observability-coverage-map.json",
+    "ops/inventory/ops-markdown-classification.json",
+    "ops/inventory/ops-markdown-inventory.json",
     "ops/inventory/owners.json",
     "ops/inventory/pillars.json",
     "ops/inventory/pin-freeze.json",
