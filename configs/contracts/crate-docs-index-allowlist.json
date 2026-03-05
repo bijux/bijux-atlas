@@ -2,7 +2,7 @@
   "schema_version": 1,
   "allowlist": [
     "bijux-atlas-api",
-    "bijux-atlas-benchmark",
+    "bijux-atlas-bench",
     "bijux-atlas-cli",
     "bijux-atlas-core",
     "bijux-atlas-ingest",

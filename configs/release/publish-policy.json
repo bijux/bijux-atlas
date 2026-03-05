@@ -14,7 +14,7 @@
   ],
   "blocked_crates": [
     "bijux-dev-atlas",
-    "bijux-atlas-benchmark"
+    "bijux-atlas-bench"
   ],
   "crates_io_release": {
     "target": "v0.1",

@@ -16,7 +16,7 @@ allow = [
 ]
 deny = [
   "bijux-dev-atlas",
-  "bijux-atlas-benchmark",
+  "bijux-atlas-bench",
 ]
 
 [roles]
@@ -30,7 +30,7 @@ deny = [
 "bijux-atlas-model" = "model-library"
 "bijux-atlas-query" = "query-library"
 "bijux-atlas-store" = "storage-library"
-"bijux-atlas-benchmark" = "benchmark-private"
+"bijux-atlas-bench" = "benchmark-private"
 
 [metadata_requirements]
 required_package_fields = [
