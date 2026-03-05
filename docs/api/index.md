@@ -78,4 +78,7 @@ Endpoint and schema facts live in [Reference](../reference/index.md).
 - [API security considerations](api-security-considerations.md)
 - [API rate limit policy](api-rate-limit-policy.md)
 - [API error code reference](api-error-code-reference.md)
+- [Python client quickstart](client-python-quickstart.md)
+- [Python client architecture](client-python-architecture.md)
+- [Python client API reference](client-python-api-reference.md)
 - [API completion report](api-completion-report.md)
