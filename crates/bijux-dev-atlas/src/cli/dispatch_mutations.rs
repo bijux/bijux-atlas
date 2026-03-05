@@ -3,7 +3,8 @@
 use crate::cli::{
     ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand, Command,
     ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, FormatArg,
-    IngestCommand, MakeCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand,
+    IngestCommand, InvariantsCommand, MakeCommand, OpsCommand, PerfCommand, PoliciesCommand,
+    RegistryCommand,
     ReleaseApiSurfaceCommand, ReleaseChecksumsCommand, ReleaseCommand, ReleaseCratesCommand,
     ReleaseImagesCommand, ReleaseMsrvCommand, ReleaseOpsCommand, ReleaseSemverCommand,
     ReportsCommand, SecurityCommand, TestsCommand,
@@ -52,6 +53,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Security { command } => force_json_security(command),
         Command::System { command } => force_json_system(command),
         Command::Audit { command } => force_json_audit(command),
+        Command::Invariants { command } => force_json_invariants(command),
         Command::Datasets { command } => force_json_datasets(command),
         Command::Ingest { command } => force_json_ingest(command),
         Command::Perf { command } => force_json_perf(command),
@@ -170,6 +172,15 @@ pub(super) fn force_json_output(command: &mut Command) {
         | Command::Workflows { .. }
         | Command::Gates { .. }
         | Command::Capabilities { .. } => {}
+    }
+}
+
+fn force_json_invariants(command: &mut InvariantsCommand) {
+    match command {
+        InvariantsCommand::Run(args) | InvariantsCommand::List(args) => {
+            args.format = FormatArg::Json
+        }
+        InvariantsCommand::Explain(args) => args.common.format = FormatArg::Json,
     }
 }
 
@@ -1457,6 +1468,12 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     args.repo_root = Some(root.clone())
                 }
             },
+        },
+        Command::Invariants { command } => match command {
+            InvariantsCommand::Run(args) | InvariantsCommand::List(args) => {
+                args.repo_root = Some(root.clone())
+            }
+            InvariantsCommand::Explain(args) => args.common.repo_root = Some(root.clone()),
         },
         Command::Datasets { command } => match command {
             DatasetsCommand::Validate(args) => args.repo_root = Some(root.clone()),

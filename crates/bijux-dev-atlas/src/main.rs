@@ -23,6 +23,8 @@ mod control_plane_commands;
 mod docs_commands;
 #[path = "commands/governance.rs"]
 mod governance_commands;
+#[path = "commands/invariants.rs"]
+mod invariants_commands;
 #[cfg(test)]
 #[path = "../tests/support/main_cli_parser_tests.rs"]
 mod main_tests;

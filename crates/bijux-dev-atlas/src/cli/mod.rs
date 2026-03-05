@@ -134,6 +134,10 @@ pub enum Command {
         #[command(subcommand)]
         command: AuditCommand,
     },
+    Invariants {
+        #[command(subcommand)]
+        command: InvariantsCommand,
+    },
     Security {
         #[command(subcommand)]
         command: SecurityCommand,
@@ -324,6 +328,31 @@ pub enum ReleaseCommand {
         #[command(subcommand)]
         command: ReleaseOpsCommand,
     },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum InvariantsCommand {
+    Run(InvariantsCommonArgs),
+    List(InvariantsCommonArgs),
+    Explain(InvariantsExplainArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct InvariantsCommonArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct InvariantsExplainArgs {
+    #[arg()]
+    pub id: String,
+    #[command(flatten)]
+    pub common: InvariantsCommonArgs,
 }
 
 #[derive(Subcommand, Debug)]
