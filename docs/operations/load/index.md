@@ -26,6 +26,7 @@
 - [Capacity planning methodology](capacity-planning-methodology.md)
 - [Performance regression thresholds](performance-regression-thresholds.md)
 - [Load harness and generators](harness-and-generators.md)
+- [Load command reference](load-command-reference.md)
 - [Load testing documentation](documentation.md)
 - [Load testing quickstart](quickstart.md)
 - [Load testing troubleshooting](troubleshooting.md)
