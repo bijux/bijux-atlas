@@ -14,6 +14,7 @@ pub mod docker;
 pub mod docs;
 pub mod drift;
 pub mod governance_enforcement;
+pub mod logging_registry;
 pub mod make;
 pub mod metrics_registry;
 pub mod ops;
