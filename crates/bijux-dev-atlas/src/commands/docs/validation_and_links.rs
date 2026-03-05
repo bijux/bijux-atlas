@@ -57,6 +57,7 @@ pub(crate) fn docs_validate_payload(
             "DOCS_NAV_ERROR: mkdocs.yml docs_dir must be `docs`, got `{docs_dir}`"
         ));
     }
+    validate_docs_consolidation_inventory(ctx, &mut issues)?;
     let has_navigation_path = yaml
         .get("theme")
         .and_then(|theme| theme.get("features"))
@@ -422,6 +423,97 @@ pub(crate) fn docs_validate_payload(
         "capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},
         "options": {"strict": common.strict, "include_drafts": common.include_drafts}
     }))
+}
+
+fn validate_docs_consolidation_inventory(
+    ctx: &DocsContext,
+    issues: &mut DocsIssues,
+) -> Result<(), String> {
+    let inventory_path = ctx
+        .repo_root
+        .join("docs/_internal/governance/docs-consolidation-inventory.json");
+    if !inventory_path.exists() {
+        issues.warnings.push(format!(
+            "DOCS_CONSOLIDATION_WARN: missing {}",
+            inventory_path.display()
+        ));
+        return Ok(());
+    }
+    let redirects_path = ctx.repo_root.join("docs/redirects.json");
+    let redirects_value: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(&redirects_path)
+            .map_err(|e| format!("failed to read {}: {e}", redirects_path.display()))?,
+    )
+    .map_err(|e| format!("failed to parse {}: {e}", redirects_path.display()))?;
+    let redirects = redirects_value
+        .as_object()
+        .ok_or_else(|| format!("{} must be a JSON object", redirects_path.display()))?;
+    let inventory_value: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(&inventory_path)
+            .map_err(|e| format!("failed to read {}: {e}", inventory_path.display()))?,
+    )
+    .map_err(|e| format!("failed to parse {}: {e}", inventory_path.display()))?;
+    let rows = inventory_value
+        .get("entries")
+        .and_then(|v| v.as_array())
+        .ok_or_else(|| format!("{} must contain `entries[]`", inventory_path.display()))?;
+    let allowed = [
+        "canonical",
+        "supporting",
+        "redundant",
+        "obsolete",
+        "internal-only",
+    ];
+    for row in rows {
+        let path = row
+            .get("path")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default()
+            .to_string();
+        let classification = row
+            .get("classification")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default()
+            .to_string();
+        if path.is_empty() || classification.is_empty() {
+            issues.errors.push(format!(
+                "DOCS_CONSOLIDATION_ERROR: inventory entries require `path` and `classification` ({})",
+                inventory_path.display()
+            ));
+            continue;
+        }
+        if !allowed.contains(&classification.as_str()) {
+            issues.errors.push(format!(
+                "DOCS_CONSOLIDATION_ERROR: `{path}` has invalid classification `{classification}`"
+            ));
+            continue;
+        }
+        if classification == "redundant" || classification == "obsolete" {
+            let canonical_target = row
+                .get("canonical_target")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default()
+                .to_string();
+            if canonical_target.is_empty() {
+                issues.errors.push(format!(
+                    "DOCS_CONSOLIDATION_ERROR: `{path}` ({classification}) requires `canonical_target`"
+                ));
+                continue;
+            }
+            let redirect_key = path.strip_prefix("docs/").unwrap_or(&path).to_string();
+            let redirect_value = redirects
+                .get(&redirect_key)
+                .and_then(|v| v.as_str())
+                .unwrap_or_default()
+                .to_string();
+            if redirect_value != canonical_target {
+                issues.errors.push(format!(
+                    "DOCS_CONSOLIDATION_ERROR: redirects.json must map `{redirect_key}` -> `{canonical_target}`"
+                ));
+            }
+        }
+    }
+    Ok(())
 }
 
 fn extract_frontmatter_map(text: &str) -> BTreeMap<String, String> {

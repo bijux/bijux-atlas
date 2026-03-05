@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "path": "docs/index.md",
+      "classification": "canonical",
+      "owner": "docs-governance",
+      "purpose": "root site entrypoint"
+    },
+    {
+      "path": "docs/product/index.md",
+      "classification": "canonical",
+      "owner": "docs-governance",
+      "purpose": "product narrative index"
+    },
+    {
+      "path": "docs/operations/index.md",
+      "classification": "canonical",
+      "owner": "docs-governance",
+      "purpose": "operations lifecycle entrypoint"
+    },
+    {
+      "path": "docs/development/index.md",
+      "classification": "canonical",
+      "owner": "docs-governance",
+      "purpose": "development workflow entrypoint"
+    },
+    {
+      "path": "docs/control-plane/index.md",
+      "classification": "canonical",
+      "owner": "docs-governance",
+      "purpose": "control-plane governance entrypoint"
+    },
+    {
+      "path": "docs/reference/index.md",
+      "classification": "canonical",
+      "owner": "docs-governance",
+      "purpose": "reference domain entrypoint"
+    },
+    {
+      "path": "docs/tutorials/index.md",
+      "classification": "supporting",
+      "owner": "docs-governance",
+      "purpose": "tutorial path entrypoint"
+    },
+    {
+      "path": "docs/tutorials/real-data/index.md",
+      "classification": "canonical",
+      "owner": "docs-governance",
+      "purpose": "real-data run product proof entrypoint"
+    },
+    {
+      "path": "docs/_internal/governance/docs-consolidation.md",
+      "classification": "internal-only",
+      "owner": "docs-governance",
+      "purpose": "consolidation policy and execution rules"
+    },
+    {
+      "path": "docs/product/reading-tracks.md",
+      "classification": "redundant",
+      "canonical_target": "docs/what-to-read-next.md",
+      "owner": "docs-governance",
+      "purpose": "legacy alias retained via redirect"
+    },
+    {
+      "path": "docs/root/index.md",
+      "classification": "obsolete",
+      "canonical_target": "docs/index.md",
+      "owner": "docs-governance",
+      "purpose": "legacy root location superseded by docs/index.md"
+    },
+    {
+      "path": "docs/dev/index.md",
+      "classification": "obsolete",
+      "canonical_target": "docs/development/index.md",
+      "owner": "docs-governance",
+      "purpose": "legacy development location superseded"
+    }
+  ]
+}
