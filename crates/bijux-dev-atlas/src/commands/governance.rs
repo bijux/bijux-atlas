@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    GovernanceAdrCommand, GovernanceBreakingCommand, GovernanceCommand,
+    FormatArg, GovernanceAdrCommand, GovernanceBreakingCommand, GovernanceCommand,
     GovernanceDeprecationsCommand, GovernanceExceptionsCommand, RegistryCommand,
     RegistryMissingArg,
 };
@@ -2707,7 +2707,10 @@ fn contributor_guideline_validation_errors(root: &Path) -> Vec<String> {
         Err(_) => {
             errors.push(format!(
                 "contributor onboarding workflow missing: {}",
-                onboarding_path.strip_prefix(root).unwrap_or(&onboarding_path).display()
+                onboarding_path
+                    .strip_prefix(root)
+                    .unwrap_or(&onboarding_path)
+                    .display()
             ));
             return errors;
         }
@@ -2904,7 +2907,8 @@ pub(crate) fn run_governance_command(
             let contributor_errors = contributor_guideline_validation_errors(&root);
             let adr_index = governance_adr_index_payload(&root)?;
             let enforcement_registry = governance_enforcement::load_registry(&root)?;
-            let enforcement = governance_enforcement::evaluate_registry(&root, &enforcement_registry);
+            let enforcement =
+                governance_enforcement::evaluate_registry(&root, &enforcement_registry);
             let status = if docs_errors.is_empty()
                 && contributor_errors.is_empty()
                 && enforcement.status == "ok"
@@ -2948,6 +2952,60 @@ pub(crate) fn run_governance_command(
             let rendered = emit_payload(format, out, &payload)?;
             let exit_code = if payload["status"] == "ok" { 0 } else { 1 };
             Ok((rendered, exit_code))
+        }
+        GovernanceCommand::DoctrineReport {
+            repo_root,
+            format,
+            out,
+        } => {
+            let root = resolve_repo_root(repo_root)?;
+            let (checks_rendered, checks_code) =
+                crate::run_checks_automation_boundaries(crate::AutomationBoundariesOptions {
+                    repo_root: Some(root.clone()),
+                    format: FormatArg::Json,
+                    out: None,
+                })?;
+            let (contracts_rendered, contracts_code) =
+                crate::run_contract_automation_boundaries(crate::AutomationBoundariesOptions {
+                    repo_root: Some(root.clone()),
+                    format: FormatArg::Json,
+                    out: None,
+                })?;
+
+            let checks_report: serde_json::Value = serde_json::from_str(&checks_rendered)
+                .map_err(|e| format!("parse checks automation report failed: {e}"))?;
+            let contracts_report: serde_json::Value = serde_json::from_str(&contracts_rendered)
+                .map_err(|e| format!("parse contract automation report failed: {e}"))?;
+
+            let status = if checks_code == 0 && contracts_code == 0 {
+                "ok"
+            } else {
+                "failed"
+            };
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "doctrine_compliance_report",
+                "status": status,
+                "summary": {
+                    "checks_exit_code": checks_code,
+                    "contracts_exit_code": contracts_code,
+                    "checks_violations": checks_report["violations"].as_array().map_or(0, |rows| rows.len()),
+                    "contracts_violations": contracts_report["violations"].as_array().map_or(0, |rows| rows.len()),
+                },
+                "checks_automation_boundaries": checks_report,
+                "contract_automation_boundaries": contracts_report,
+            });
+            let report_path = root.join("artifacts/governance/doctrine-compliance-report.json");
+            write_pretty_json(&report_path, &payload)?;
+            let envelope = serde_json::json!({
+                "schema_version": 1,
+                "kind": "doctrine_compliance",
+                "status": status,
+                "report_path": report_path.strip_prefix(&root).unwrap_or(&report_path).display().to_string(),
+                "summary": payload["summary"].clone(),
+            });
+            let rendered = emit_payload(format, out, &envelope)?;
+            Ok((rendered, if status == "ok" { 0 } else { 1 }))
         }
         GovernanceCommand::Validate {
             repo_root,

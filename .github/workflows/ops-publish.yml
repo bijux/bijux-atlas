@@ -36,12 +36,14 @@ jobs:
           fi
           echo "RELEASE_VERSION=${version}" >> "${GITHUB_ENV}"
 
-      - name: Install Helm
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.4
+
+      - name: Verify Helm
         shell: bash
-        run: |
-          set -euo pipefail
-          curl -sSfL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-          helm version
+        run: helm version
 
       - name: Package Helm chart
         shell: bash
