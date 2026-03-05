@@ -43,4 +43,12 @@ fn governance_report_includes_automation_purity_sections() {
         sections.contains_key("Clients tooling purity"),
         "governance report must include Clients tooling purity section"
     );
+    assert!(
+        sections.contains_key("Directory Purity"),
+        "governance report must include Directory Purity section"
+    );
+    assert!(
+        sections.contains_key("Repo purity"),
+        "governance report must include Repo purity section"
+    );
 }

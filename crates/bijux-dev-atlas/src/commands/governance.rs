@@ -2935,6 +2935,20 @@ pub(crate) fn run_governance_command(
                 })
                 .cloned()
                 .unwrap_or_else(|| serde_json::json!({"id":"automation.clients.forbidden-patterns","status":"missing"}));
+            let directory_purity = checks_report["checks"]
+                .as_array()
+                .and_then(|rows| {
+                    rows.iter().find(|row| {
+                        row["id"].as_str() == Some("automation.ops.directory-purity")
+                    })
+                })
+                .cloned()
+                .unwrap_or_else(|| serde_json::json!({"id":"automation.ops.directory-purity","status":"missing"}));
+            let repo_purity = serde_json::json!({
+                "status": if checks_code == 0 { "ok" } else { "failed" },
+                "automation_boundary_violations": checks_report["violations"].as_array().map_or(0, |rows| rows.len()),
+                "checks_exit_code": checks_code,
+            });
             let status = if docs_errors.is_empty()
                 && contributor_errors.is_empty()
                 && enforcement.status == "ok"
@@ -2971,6 +2985,8 @@ pub(crate) fn run_governance_command(
                     "Automation purity": checks_report,
                     "Tutorials purity": tutorials_purity,
                     "Clients tooling purity": clients_purity,
+                    "Directory Purity": directory_purity,
+                    "Repo purity": repo_purity,
                 }
             });
             let report_path = governance_health_report_path(&root);
