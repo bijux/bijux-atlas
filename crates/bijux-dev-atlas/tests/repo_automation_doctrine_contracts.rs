@@ -140,6 +140,99 @@ fn root_makefile_must_not_contain_shell_parsing_logic() {
 }
 
 #[test]
+fn make_wrapper_modules_must_not_contain_shell_parsing_or_script_calls() {
+    let root = repo_root();
+    let wrapper_targets = [
+        ("make/root.mk", "checks-all:"),
+        ("make/root.mk", "release-plan:"),
+        ("make/root.mk", "openapi-generate:"),
+        ("make/contracts.mk", "contracts-all:"),
+        ("make/docs.mk", "docs-build:"),
+        ("make/docs.mk", "docs-serve:"),
+        ("make/ops.mk", "ops-validate:"),
+    ];
+    let forbidden_tokens = ["jq ", "rg ", "sed ", "awk ", "python ", "python3 ", "node "];
+    let mut violations = Vec::new();
+    for (module_rel, target_header) in wrapper_targets {
+        let module = root.join(module_rel);
+        let text = fs::read_to_string(&module).expect("read make module");
+        let mut in_target = false;
+        for line in text.lines() {
+            if line.starts_with(target_header) {
+                in_target = true;
+                continue;
+            }
+            if in_target && !line.starts_with('\t') {
+                break;
+            }
+            if !in_target || !line.starts_with('\t') {
+                continue;
+            }
+            let trimmed = line.trim();
+            for token in forbidden_tokens {
+                if trimmed.contains(token) {
+                    violations.push(format!(
+                        "{} target `{}` contains forbidden token `{token}`",
+                        module_rel,
+                        target_header.trim_end_matches(':')
+                    ));
+                }
+            }
+            if trimmed.contains("tools/") || trimmed.contains("scripts/") {
+                violations.push(format!(
+                    "{} target `{}` references forbidden tools/scripts path",
+                    module_rel,
+                    target_header.trim_end_matches(':')
+                ));
+            }
+        }
+    }
+    assert!(
+        violations.is_empty(),
+        "make wrapper modules must remain delegation-only:\n{}",
+        violations.join("\n")
+    );
+}
+
+#[test]
+fn required_make_wrappers_must_delegate_to_dev_atlas() {
+    let root = repo_root();
+    let root_mk = fs::read_to_string(root.join("make/root.mk")).expect("read make/root.mk");
+    let contracts_mk =
+        fs::read_to_string(root.join("make/contracts.mk")).expect("read make/contracts.mk");
+    let docs_mk = fs::read_to_string(root.join("make/docs.mk")).expect("read make/docs.mk");
+    let ops_mk = fs::read_to_string(root.join("make/ops.mk")).expect("read make/ops.mk");
+
+    assert!(root_mk.contains("checks-all:"), "missing checks-all target");
+    assert!(
+        root_mk.contains("release-plan:") && root_mk.contains("$(DEV_ATLAS) release plan"),
+        "release-plan target must delegate to bijux-dev-atlas release plan"
+    );
+    assert!(
+        root_mk.contains("openapi-generate:") && root_mk.contains("$(DEV_ATLAS) api contract"),
+        "openapi-generate target must delegate through bijux-dev-atlas"
+    );
+    assert!(
+        contracts_mk.contains("contracts-all:")
+            && contracts_mk.contains("$(DEV_ATLAS)")
+            && contracts_mk.contains("contract run --mode all"),
+        "contracts-all target must delegate to bijux-dev-atlas contract run --mode all"
+    );
+    assert!(
+        docs_mk.contains("docs-build:") && docs_mk.contains("$(DEV_ATLAS) docs build"),
+        "docs-build target must delegate to bijux-dev-atlas docs build"
+    );
+    assert!(
+        docs_mk.contains("docs-serve:") && docs_mk.contains("$(DEV_ATLAS) docs serve"),
+        "docs-serve target must delegate to bijux-dev-atlas docs serve"
+    );
+    assert!(
+        ops_mk.contains("ops-validate:") && ops_mk.contains("$(DEV_ATLAS) ops validate"),
+        "ops-validate target must delegate to bijux-dev-atlas ops validate"
+    );
+}
+
+#[test]
 fn root_makefile_must_stay_include_only() {
     let root = repo_root();
     let makefile = root.join("Makefile");
