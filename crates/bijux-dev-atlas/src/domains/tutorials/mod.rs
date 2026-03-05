@@ -2,6 +2,7 @@
 //! Tutorials domain registration.
 
 pub mod commands;
+pub mod checks;
 pub mod contracts;
 pub mod runtime;
 
@@ -50,4 +51,3 @@ impl Domain for TutorialsDomain {
             .collect()
     }
 }
-

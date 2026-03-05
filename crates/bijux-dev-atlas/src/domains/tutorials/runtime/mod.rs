@@ -2,4 +2,4 @@
 //! Tutorials runtime canonical module surface.
 
 pub mod router;
-
+pub mod workspace;
