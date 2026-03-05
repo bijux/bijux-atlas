@@ -96,6 +96,20 @@ Release artifact references:
 - Build output: `artifacts/docs/site`
 - Operator guide: [`docs/operations/docs-site-deploy.md`](docs/operations/docs-site-deploy.md)
 
+## Runtime Image (GHCR)
+
+- Image: `ghcr.io/<org>/bijux-atlas-runtime:<version>`
+- Container policy: runtime image executes as `nonroot` user.
+- Exposed port: `8080` (stable runtime HTTP port).
+
+Run and verify health:
+
+```bash
+docker run --rm -p 8080:8080 ghcr.io/<org>/bijux-atlas-runtime:<version> atlas serve
+curl -fsS http://127.0.0.1:8080/healthz
+curl -fsS http://127.0.0.1:8080/readyz
+```
+
 ## Tutorial Automation Migration
 
 Tutorial automation is executed through `bijux-dev-atlas` commands. Legacy tutorial script entrypoints are removed. See [`docs/tutorials/run-with-dev-atlas.md`](docs/tutorials/run-with-dev-atlas.md).
