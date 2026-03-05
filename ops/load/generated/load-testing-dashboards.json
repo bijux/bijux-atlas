@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "kind": "load_testing_dashboards",
+  "dashboards": [
+    {
+      "id": "load-runtime-health",
+      "focus": "runtime saturation and memory pressure"
+    },
+    {
+      "id": "load-query-latency",
+      "focus": "p50/p95/p99 query latency and throughput"
+    },
+    {
+      "id": "load-ingest-health",
+      "focus": "ingest throughput and ingest failure rate"
+    }
+  ]
+}

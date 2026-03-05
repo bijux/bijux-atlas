@@ -1,0 +1,3 @@
+{"dataset_id":"atlas-ingest-sample-001","artifact_id":"artifact-0001","checksum":"sha256:1111111111111111111111111111111111111111111111111111111111111111","size_bytes":4096}
+{"dataset_id":"atlas-ingest-sample-001","artifact_id":"artifact-0002","checksum":"sha256:2222222222222222222222222222222222222222222222222222222222222222","size_bytes":8192}
+{"dataset_id":"atlas-ingest-sample-001","artifact_id":"artifact-0003","checksum":"sha256:3333333333333333333333333333333333333333333333333333333333333333","size_bytes":16384}

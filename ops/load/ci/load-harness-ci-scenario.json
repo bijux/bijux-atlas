@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "kind": "load_harness_ci_scenario",
+  "id": "load-harness-regression-check",
+  "description": "Run baseline, run, and compare commands on each pull request and fail on regressions.",
+  "commands": [
+    "bijux-dev-atlas load baseline --scenario mixed_workload --duration-secs 120 --format json",
+    "bijux-dev-atlas load run --scenario mixed_workload --duration-secs 120 --format json",
+    "bijux-dev-atlas load compare --format json"
+  ],
+  "failure_exit_code": 2
+}
