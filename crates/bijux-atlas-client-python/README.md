@@ -1,15 +1,26 @@
-# bijux-atlas-client-python
+# atlas-client
 
-Python client product crate for Bijux Atlas.
+Python SDK for Atlas HTTP APIs.
 
-## Layout
+## Quickstart
 
-- `python/`: package source (`atlas_client`)
-- `examples/`: runnable examples
-- `tests/`: client product tests
-- `docs/`: client docs sources
-- `notebooks/`: notebooks
+```bash
+python -m pip install -e clients/atlas-client
+python clients/atlas-client/examples/simple_query.py
+```
 
-## Publication decision
+## Documentation And Verification
 
-PyPI publication is deferred until the packaging and release workflow is finalized. Until then, this crate is the canonical in-repo source for client packaging inputs and verification.
+Use `bijux-dev-atlas` for client docs generation and validation:
+
+```bash
+cargo run -p bijux-dev-atlas -- clients docs-generate --client atlas-client
+cargo run -p bijux-dev-atlas -- clients verify --client atlas-client
+```
+
+## Features
+
+- HTTP dataset query wrapper
+- retry and timeout configuration
+- pagination helpers
+- logging and tracing hooks
