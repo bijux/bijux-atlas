@@ -69,6 +69,13 @@ fn api_verify_and_contract_generate_evidence() {
         .expect("api verify");
     assert!(verify.status.success());
 
+    let validate = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args(["api", "validate", "--format", "json"])
+        .output()
+        .expect("api validate");
+    assert!(validate.status.success());
+
     let contract = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)
         .args(["api", "contract", "--format", "json"])
@@ -78,9 +85,16 @@ fn api_verify_and_contract_generate_evidence() {
 
     for rel in [
         "artifacts/api/api-coverage-report.json",
+        "artifacts/api/api-compatibility-report.json",
         "artifacts/api/api-contract-evidence-bundle.json",
+        "artifacts/api/api-contract-registry-snapshot.json",
+        "artifacts/api/api-example-requests.json",
+        "artifacts/api/api-example-responses.json",
+        "artifacts/api/api-example-dataset-queries.json",
         "docs/api/generated/endpoint-index.md",
         "docs/api/generated/endpoint-templates.md",
+        "docs/api/generated/api-schema-reference.md",
+        "docs/api/generated/api-contract-documentation.md",
     ] {
         assert!(root.join(rel).exists(), "missing artifact: {rel}");
     }
@@ -94,4 +108,14 @@ fn openapi_fixture_is_parseable_for_schema_regression_tests() {
             .expect("parse fixture");
     assert_eq!(payload["openapi"], serde_json::json!("3.0.3"));
     assert!(payload["paths"].is_object());
+}
+
+#[test]
+fn api_compatibility_harness_contract_is_valid() {
+    let harness = repo_root().join("ops/api/contracts/api-compatibility-harness.json");
+    let payload: serde_json::Value =
+        serde_json::from_str(&fs::read_to_string(harness).expect("read harness"))
+            .expect("parse harness");
+    assert_eq!(payload["schema_version"], serde_json::json!(1));
+    assert!(payload["version_matrix"].is_array());
 }
