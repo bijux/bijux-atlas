@@ -51,6 +51,9 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
     }
 
     let embedded_schema_allowlist = BTreeSet::from([
+        "ops/audit/event.schema.json".to_string(),
+        "ops/audit/report.schema.json".to_string(),
+        "ops/cli/schema/command-output.schema.json".to_string(),
         "ops/k8s/charts/bijux-atlas/values.schema.json".to_string(),
         "ops/observe/drills/result.schema.json".to_string(),
         "ops/observe/pack/compose.schema.json".to_string(),
@@ -58,6 +61,8 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
         "ops/load/contracts/load-report.schema.json".to_string(),
         "ops/load/contracts/load-summary.schema.json".to_string(),
     ]);
+    let embedded_schema_prefix_allowlist =
+        ["ops/evidence/schema/", "ops/observe/", "ops/reproducibility/"];
     for file in walk_files(&ctx.repo_root.join("ops"))
         .into_iter()
         .filter_map(|path| path.strip_prefix(ctx.repo_root).ok().map(PathBuf::from))
@@ -69,7 +74,12 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
         })
     {
         let rel_str = file.display().to_string();
-        if !file.starts_with("ops/schema") && !embedded_schema_allowlist.contains(&rel_str) {
+        if !file.starts_with("ops/schema")
+            && !embedded_schema_allowlist.contains(&rel_str)
+            && !embedded_schema_prefix_allowlist
+                .iter()
+                .any(|prefix| rel_str.starts_with(prefix))
+        {
             violations.push(violation(
                 "OPS_SCHEMA_OUTSIDE_CANONICAL_TREE",
                 format!(
