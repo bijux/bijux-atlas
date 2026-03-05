@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "kind": "rust_client_runtime_compatibility",
+  "matrix": [
+    {
+      "client_version": "0.1.x",
+      "runtime_version": "0.1.x",
+      "api_version": "v1",
+      "status": "supported"
+    }
+  ]
+}

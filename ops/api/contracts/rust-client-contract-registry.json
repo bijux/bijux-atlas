@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "kind": "rust_client_contract_registry",
+  "crate": "bijux-atlas-client",
+  "contracts": [
+    "crates/bijux-atlas-client/config/client-config.schema.json",
+    "ops/api/contracts/rust-client-runtime-compatibility.json"
+  ]
+}
