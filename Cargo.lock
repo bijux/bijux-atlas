@@ -290,6 +290,7 @@ dependencies = [
 name = "bijux-atlas-client"
 version = "0.1.0"
 dependencies = [
+ "criterion",
  "reqwest",
  "serde",
  "serde_json",

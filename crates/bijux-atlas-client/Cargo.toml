@@ -19,3 +19,8 @@ reqwest = { version = "0.12", default-features = false, features = ["blocking", 
 
 [dev-dependencies]
 serde_json.workspace = true
+criterion = "0.5"
+
+[[bench]]
+name = "client_sdk"
+harness = false
