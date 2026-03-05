@@ -12,8 +12,8 @@ tags:
 
 # Forbidden repository patterns
 
-- Root `tools/` directory for automation scripts
-- Root `scripts/` directory for automation scripts
+- Root `control-plane/` directory for automation scripts
+- Root `automation/` directory for automation scripts
 - Root-level `*.sh` automation helpers
 - Root-level `*.py` automation helpers
 - Workflow steps that execute repository bash scripts directly

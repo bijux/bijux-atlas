@@ -14,8 +14,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
       - name: Validate Rust client crate
         run: |
-          cargo test -p bijux-atlas-client -- --nocapture
-          cargo check -p bijux-atlas-client --examples
-          cargo bench -p bijux-atlas-client --no-run
+          cargo test --locked -p bijux-atlas-client -- --nocapture
+          cargo check --locked -p bijux-atlas-client --examples
+          cargo bench --locked -p bijux-atlas-client --no-run
       - name: Package crate
-        run: cargo package -p bijux-atlas-client --allow-dirty
+        run: cargo package --locked -p bijux-atlas-client --allow-dirty

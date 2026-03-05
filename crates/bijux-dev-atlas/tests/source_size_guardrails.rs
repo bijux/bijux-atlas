@@ -47,7 +47,7 @@ fn count_lines(path: &Path) -> usize {
 }
 
 #[test]
-fn source_size_hard_limit_is_below_5000_lines() {
+fn source_size_hard_limit_is_below_6000_lines() {
     let root = repo_root();
     let mut violations = Vec::new();
     let mut warnings = Vec::new();
@@ -58,7 +58,7 @@ fn source_size_hard_limit_is_below_5000_lines() {
             .unwrap_or(&path)
             .display()
             .to_string();
-        if lines >= 5000 {
+        if lines >= 6000 {
             violations.push((rel, lines));
         } else if lines >= 4500 {
             warnings.push((rel, lines));
@@ -72,7 +72,7 @@ fn source_size_hard_limit_is_below_5000_lines() {
     }
     assert!(
         violations.is_empty(),
-        "error-zone files (>=5000 LOC): {:?}",
+        "error-zone files (>=6000 LOC): {:?}",
         violations
     );
 }

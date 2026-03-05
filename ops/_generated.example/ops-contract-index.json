@@ -363,6 +363,291 @@
       "title": "e2e summary schema contract"
     },
     {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-011",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.scenario_runner_compatibility_registry_valid"
+      ],
+      "title": "scenario runner compatibility registry contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-012",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.scenario_goldens_are_present_and_parseable"
+      ],
+      "title": "scenario golden snapshots contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-013",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.scenario_output_contract_fields_are_complete"
+      ],
+      "title": "scenario output contract fields"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-014",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.scenario_runner_fails_fast_on_missing_prerequisites"
+      ],
+      "title": "scenario prerequisite guard contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-015",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.scenario_required_tools_registry_covers_all_scenarios"
+      ],
+      "title": "scenario tools registry coverage contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-016",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.upgrade_contracts_and_specs_exist"
+      ],
+      "title": "upgrade contracts and specs presence"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-017",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.upgrade_compatibility_table_is_complete"
+      ],
+      "title": "upgrade compatibility table contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-018",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.upgrade_and_rollback_evidence_requirements_declared"
+      ],
+      "title": "upgrade and rollback evidence contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-019",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.upgrade_compatibility_lint_policy_valid"
+      ],
+      "title": "upgrade compatibility lint policy contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-020",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.schema_evolution_policy_and_fixtures_valid"
+      ],
+      "title": "schema evolution policy fixture contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-021",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.api_evolution_policy_and_fixtures_valid"
+      ],
+      "title": "api evolution policy fixture contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-022",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.rollback_baseline_fixture_valid"
+      ],
+      "title": "upgrade rollback baseline fixture contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-023",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.failure_injection_catalog_valid"
+      ],
+      "title": "failure injection catalog contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-024",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.failure_scenarios_are_present_and_parseable"
+      ],
+      "title": "failure scenario specification contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-025",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.failure_evidence_requirements_declared"
+      ],
+      "title": "failure evidence output contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-026",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.failure_contract_policy_linkage_valid"
+      ],
+      "title": "failure contracts policy linkage"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-027",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.failure_evidence_contains_logs_metrics_config"
+      ],
+      "title": "failure evidence completeness contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-028",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.diagnose_schema_version_and_redaction_policy_declared"
+      ],
+      "title": "diagnose schema and redaction contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.validate"
+      ],
+      "id": "OPS-E2E-029",
+      "mode": "static",
+      "pillar": "e2e",
+      "static_only": true,
+      "test_ids": [
+        "ops.e2e.failure_fixtures_are_present_and_parseable"
+      ],
+      "title": "failure fixture catalog contract"
+    },
+    {
       "command": "bijux dev atlas ops run",
       "effects_required": [
         "subprocess"

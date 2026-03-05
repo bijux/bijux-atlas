@@ -14,14 +14,14 @@ jobs:
   governance-sustainability:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-      - uses: dtolnay/rust-toolchain@fe0d6af7d5ee8c1144f8f120ce1f75d2f1c56c3e
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
         with:
           toolchain: stable
       - name: Governance checks
         run: |
-          cargo run -q -p bijux-dev-atlas -- governance check --format json
-          cargo run -q -p bijux-dev-atlas -- governance validate --format json
-          cargo run -q -p bijux-dev-atlas -- governance report --format json
+          cargo run --locked -q -p bijux-dev-atlas -- governance check --format json
+          cargo run --locked -q -p bijux-dev-atlas -- governance validate --format json
+          cargo run --locked -q -p bijux-dev-atlas -- governance report --format json
       - name: Governance sustainability contracts
-        run: cargo test -p bijux-dev-atlas --test governance_sustainability_contracts -- --nocapture
+        run: cargo test --locked -p bijux-dev-atlas --test governance_sustainability_contracts -- --nocapture

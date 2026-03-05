@@ -16,11 +16,13 @@ Commands:
   load              
   datasets          
   e2e               
+  scenario          
   obs               
   schema            
   inventory-domain  
   report-domain     
   evidence          
+  diagnose          
   drills            
   tools             
   suite             
@@ -44,6 +46,7 @@ Commands:
   verify-tools      
   list-actions      
   plan              
+  release-plan      
   install-plan      
   up                
   down              

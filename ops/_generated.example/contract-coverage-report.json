@@ -4,7 +4,31 @@
       "authored_vs_generated": true,
       "enforcement_links": 3,
       "invariants": 8,
+      "path": "ops/api/CONTRACT.md"
+    },
+    {
+      "authored_vs_generated": true,
+      "enforcement_links": 3,
+      "invariants": 8,
+      "path": "ops/audit/CONTRACT.md"
+    },
+    {
+      "authored_vs_generated": true,
+      "enforcement_links": 3,
+      "invariants": 8,
+      "path": "ops/cli/CONTRACT.md"
+    },
+    {
+      "authored_vs_generated": true,
+      "enforcement_links": 3,
+      "invariants": 8,
       "path": "ops/datasets/CONTRACT.md"
+    },
+    {
+      "authored_vs_generated": true,
+      "enforcement_links": 3,
+      "invariants": 8,
+      "path": "ops/drift/CONTRACT.md"
     },
     {
       "authored_vs_generated": true,
@@ -17,6 +41,24 @@
       "enforcement_links": 2,
       "invariants": 8,
       "path": "ops/env/CONTRACT.md"
+    },
+    {
+      "authored_vs_generated": true,
+      "enforcement_links": 3,
+      "invariants": 8,
+      "path": "ops/evidence/CONTRACT.md"
+    },
+    {
+      "authored_vs_generated": true,
+      "enforcement_links": 3,
+      "invariants": 8,
+      "path": "ops/governance/CONTRACT.md"
+    },
+    {
+      "authored_vs_generated": true,
+      "enforcement_links": 3,
+      "invariants": 8,
+      "path": "ops/invariants/CONTRACT.md"
     },
     {
       "authored_vs_generated": true,
@@ -52,7 +94,19 @@
       "authored_vs_generated": true,
       "enforcement_links": 3,
       "invariants": 8,
+      "path": "ops/reproducibility/CONTRACT.md"
+    },
+    {
+      "authored_vs_generated": true,
+      "enforcement_links": 3,
+      "invariants": 8,
       "path": "ops/schema/CONTRACT.md"
+    },
+    {
+      "authored_vs_generated": true,
+      "enforcement_links": 3,
+      "invariants": 8,
+      "path": "ops/security/CONTRACT.md"
     },
     {
       "authored_vs_generated": true,

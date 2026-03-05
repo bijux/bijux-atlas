@@ -1,6 +1,6 @@
 # Why Scripts Are Forbidden
 
-Repository-local automation scripts (`tools/`, `scripts/`, root `*.sh`, root `*.py`) are forbidden to keep operational behavior stable and auditable.
+Repository-local automation scripts (`control-plane/`, `automation/`, root `*.sh`, root `*.py`) are forbidden to keep operational behavior stable and auditable.
 
 ## Institutional reasons
 

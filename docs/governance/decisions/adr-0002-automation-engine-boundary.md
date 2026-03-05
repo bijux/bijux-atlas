@@ -22,7 +22,7 @@ Repository automation drifted into ad hoc script paths, reducing auditability an
 
 ## Decision
 
-`bijux-dev-atlas` is the sole automation engine for repository workflows. Root `tools/`, `scripts/`, and root automation scripts are forbidden.
+`bijux-dev-atlas` is the sole automation engine for repository workflows. Root `control-plane/`, `automation/`, and root automation scripts are forbidden.
 
 ## Consequences
 

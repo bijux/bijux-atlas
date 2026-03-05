@@ -19,7 +19,7 @@ jobs:
         uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
       - name: Threat model command verification
         run: |
-          cargo run -p bijux-dev-atlas -- security threats verify --format json
+          cargo run --locked -p bijux-dev-atlas -- security threats verify --format json
       - name: Threat model governance tests
         run: |
-          cargo test -p bijux-dev-atlas threat_model_governance_contracts -- --nocapture
+          cargo test --locked -p bijux-dev-atlas threat_model_governance_contracts -- --nocapture

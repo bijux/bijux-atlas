@@ -23,7 +23,7 @@ Repository policy boundaries:
   - `packages/bijux-atlas-python/examples/**/*.py`
 - Notebooks are allowed only under:
   - `packages/bijux-atlas-python/notebooks/**/*.ipynb`
-- `packages/bijux-atlas-python/tools/` is forbidden.
+- `packages/bijux-atlas-python/control-plane/` is forbidden.
 - `__pycache__` and `*.pyc` are forbidden.
 - Root `clients/` is forbidden.
 

@@ -12,15 +12,27 @@ fn workspace_root() -> PathBuf {
         .to_path_buf()
 }
 
+fn update_goldens_enabled() -> bool {
+    std::env::var("UPDATE_GOLDENS").ok().as_deref() == Some("1")
+}
+
+fn assert_json_matches_or_update(path: &PathBuf, expected: &serde_json::Value, message: &str) {
+    if update_goldens_enabled() {
+        let text = serde_json::to_string_pretty(expected).expect("serialize expected json");
+        fs::write(path, format!("{text}\n")).expect("write updated golden");
+    }
+    let text = fs::read_to_string(path).expect("read committed golden");
+    let actual: serde_json::Value = serde_json::from_str(&text).expect("parse committed golden");
+    assert_eq!(actual, *expected, "{message}");
+}
+
 #[test]
 fn ops_contract_index_matches_committed_example() {
     let root = workspace_root();
     let expected = bijux_dev_atlas::contracts::ops::render_contract_index_json(&root)
         .expect("render ops contract index");
     let path = root.join("ops/_generated.example/ops-contract-index.json");
-    let text = fs::read_to_string(&path).expect("read committed ops contract index");
-    let actual: serde_json::Value = serde_json::from_str(&text).expect("parse ops contract index");
-    assert_eq!(actual, expected, "ops contract index drift detected");
+    assert_json_matches_or_update(&path, &expected, "ops contract index drift detected");
 }
 
 #[test]
@@ -29,10 +41,7 @@ fn ops_contract_coverage_report_matches_committed_example() {
     let expected = bijux_dev_atlas::contracts::ops::render_contract_coverage_report_json(&root)
         .expect("render ops contract coverage report");
     let path = root.join("ops/_generated.example/contract-coverage-report.json");
-    let text = fs::read_to_string(&path).expect("read committed ops contract coverage report");
-    let actual: serde_json::Value =
-        serde_json::from_str(&text).expect("parse ops contract coverage report");
-    assert_eq!(actual, expected, "ops contract coverage drift detected");
+    assert_json_matches_or_update(&path, &expected, "ops contract coverage drift detected");
 }
 
 #[test]

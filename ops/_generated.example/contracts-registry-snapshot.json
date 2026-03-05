@@ -241,6 +241,196 @@
       "title": "e2e summary schema contract"
     },
     {
+      "id": "OPS-E2E-011",
+      "tests": [
+        {
+          "test_id": "ops.e2e.scenario_runner_compatibility_registry_valid",
+          "title": "scenario compatibility registry is present and structurally valid"
+        }
+      ],
+      "title": "scenario runner compatibility registry contract"
+    },
+    {
+      "id": "OPS-E2E-012",
+      "tests": [
+        {
+          "test_id": "ops.e2e.scenario_goldens_are_present_and_parseable",
+          "title": "required scenario golden snapshots are present and parseable"
+        }
+      ],
+      "title": "scenario golden snapshots contract"
+    },
+    {
+      "id": "OPS-E2E-013",
+      "tests": [
+        {
+          "test_id": "ops.e2e.scenario_output_contract_fields_are_complete",
+          "title": "scenario result contract includes deterministic run and required evidence fields"
+        }
+      ],
+      "title": "scenario output contract fields"
+    },
+    {
+      "id": "OPS-E2E-014",
+      "tests": [
+        {
+          "test_id": "ops.e2e.scenario_runner_fails_fast_on_missing_prerequisites",
+          "title": "scenario runner reports clear prerequisite failures and stays git-independent"
+        }
+      ],
+      "title": "scenario prerequisite guard contract"
+    },
+    {
+      "id": "OPS-E2E-015",
+      "tests": [
+        {
+          "test_id": "ops.e2e.scenario_required_tools_registry_covers_all_scenarios",
+          "title": "required tools registry covers each declared scenario exactly once"
+        }
+      ],
+      "title": "scenario tools registry coverage contract"
+    },
+    {
+      "id": "OPS-E2E-016",
+      "tests": [
+        {
+          "test_id": "ops.e2e.upgrade_contracts_and_specs_exist",
+          "title": "upgrade and rollback contracts plus scenario specs are present and parseable"
+        }
+      ],
+      "title": "upgrade contracts and specs presence"
+    },
+    {
+      "id": "OPS-E2E-017",
+      "tests": [
+        {
+          "test_id": "ops.e2e.upgrade_compatibility_table_is_complete",
+          "title": "upgrade compatibility table includes patch minor and rollback support rows"
+        }
+      ],
+      "title": "upgrade compatibility table contract"
+    },
+    {
+      "id": "OPS-E2E-018",
+      "tests": [
+        {
+          "test_id": "ops.e2e.upgrade_and_rollback_evidence_requirements_declared",
+          "title": "scenario runner declares required before-after and rollback evidence artifacts"
+        }
+      ],
+      "title": "upgrade and rollback evidence contract"
+    },
+    {
+      "id": "OPS-E2E-019",
+      "tests": [
+        {
+          "test_id": "ops.e2e.upgrade_compatibility_lint_policy_valid",
+          "title": "compatibility lint policy is parseable and enforces semver major gate for incompatible changes"
+        }
+      ],
+      "title": "upgrade compatibility lint policy contract"
+    },
+    {
+      "id": "OPS-E2E-020",
+      "tests": [
+        {
+          "test_id": "ops.e2e.schema_evolution_policy_and_fixtures_valid",
+          "title": "schema evolution policy and pass-fail fixtures are aligned"
+        }
+      ],
+      "title": "schema evolution policy fixture contract"
+    },
+    {
+      "id": "OPS-E2E-021",
+      "tests": [
+        {
+          "test_id": "ops.e2e.api_evolution_policy_and_fixtures_valid",
+          "title": "api evolution policy and boundary goldens enforce compatibility expectations"
+        }
+      ],
+      "title": "api evolution policy fixture contract"
+    },
+    {
+      "id": "OPS-E2E-022",
+      "tests": [
+        {
+          "test_id": "ops.e2e.rollback_baseline_fixture_valid",
+          "title": "rollback baseline fixture references canonical rollback scenario and contract"
+        }
+      ],
+      "title": "upgrade rollback baseline fixture contract"
+    },
+    {
+      "id": "OPS-E2E-023",
+      "tests": [
+        {
+          "test_id": "ops.e2e.failure_injection_catalog_valid",
+          "title": "failure injection catalog contains canonical mechanisms and expected behavior"
+        }
+      ],
+      "title": "failure injection catalog contract"
+    },
+    {
+      "id": "OPS-E2E-024",
+      "tests": [
+        {
+          "test_id": "ops.e2e.failure_scenarios_are_present_and_parseable",
+          "title": "failure scenario specifications are committed and structurally valid"
+        }
+      ],
+      "title": "failure scenario specification contract"
+    },
+    {
+      "id": "OPS-E2E-025",
+      "tests": [
+        {
+          "test_id": "ops.e2e.failure_evidence_requirements_declared",
+          "title": "scenario runner declares deterministic failure evidence and operator guidance fields"
+        }
+      ],
+      "title": "failure evidence output contract"
+    },
+    {
+      "id": "OPS-E2E-026",
+      "tests": [
+        {
+          "test_id": "ops.e2e.failure_contract_policy_linkage_valid",
+          "title": "failure contracts file lists required evidence and fields for failure scenarios"
+        }
+      ],
+      "title": "failure contracts policy linkage"
+    },
+    {
+      "id": "OPS-E2E-027",
+      "tests": [
+        {
+          "test_id": "ops.e2e.failure_evidence_contains_logs_metrics_config",
+          "title": "failure evidence policy requires logs, metrics snapshot, and config snapshot"
+        }
+      ],
+      "title": "failure evidence completeness contract"
+    },
+    {
+      "id": "OPS-E2E-028",
+      "tests": [
+        {
+          "test_id": "ops.e2e.diagnose_schema_version_and_redaction_policy_declared",
+          "title": "diagnose commands declare schema versioned bundles and explicit redaction keys"
+        }
+      ],
+      "title": "diagnose schema and redaction contract"
+    },
+    {
+      "id": "OPS-E2E-029",
+      "tests": [
+        {
+          "test_id": "ops.e2e.failure_fixtures_are_present_and_parseable",
+          "title": "failure fixture samples exist for corruption, invalid config, missing artifact, and disk-full simulation"
+        }
+      ],
+      "title": "failure fixture catalog contract"
+    },
+    {
       "id": "OPS-E2E-E-001",
       "tests": [
         {

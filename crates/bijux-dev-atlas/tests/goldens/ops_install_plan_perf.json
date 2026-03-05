@@ -2,6 +2,7 @@
   "rows": [
     {
       "dry_run": "none",
+      "evidence_mode": false,
       "install_plan": {
         "forbidden_objects": [],
         "has_crds": false,

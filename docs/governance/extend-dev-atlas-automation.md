@@ -11,7 +11,7 @@
 ## Prohibited workflow
 
 1. Do not add root scripts.
-2. Do not add `tools/` or `scripts/`.
+2. Do not add `control-plane/` or `automation/`.
 3. Do not add workflow shell pipelines that bypass `bijux-dev-atlas`.
 
 ## Acceptance checks

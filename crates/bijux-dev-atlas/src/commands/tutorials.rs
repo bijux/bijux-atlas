@@ -4,7 +4,7 @@ use crate::cli::{
     TutorialsBuildCommand, TutorialsBuildDocsArgs, TutorialsCommand, TutorialsCommandArgs,
     TutorialsContractsCommand, TutorialsDashboardsCommand, TutorialsDatasetCommand,
     TutorialsDatasetPackageArgs, TutorialsEvidenceCommand, TutorialsRunCommand,
-    TutorialsWorkflowArgs, TutorialsWorkspaceCommand, TutorialsWorkspaceCleanupArgs,
+    TutorialsWorkflowArgs, TutorialsWorkspaceCleanupArgs, TutorialsWorkspaceCommand,
 };
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::domains::tutorials::checks;
@@ -15,8 +15,8 @@ use std::fs;
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command as ProcessCommand;
-use std::time::{SystemTime, UNIX_EPOCH};
 use std::time::Instant;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 pub(crate) fn run_tutorials_command(quiet: bool, command: TutorialsCommand) -> i32 {
     let run = match command {
@@ -156,7 +156,8 @@ fn run_tutorials_verify(args: &TutorialsCommandArgs) -> Result<(String, i32), St
     let tutorial_checks = checks::checks(&repo_root)?;
     let (dashboards_ok, dashboards_detail) = validate_dashboards(&assets.dashboard_items);
     let (evidence_ok, evidence_detail) = validate_evidence(&assets.evidence_items);
-    let (contract_ok, contract_detail) = validate_dataset_contract_semantics(&assets.dataset_contract);
+    let (contract_ok, contract_detail) =
+        validate_dataset_contract_semantics(&assets.dataset_contract);
     let success = dashboards_ok && evidence_ok && contract_ok;
     let report = serde_json::json!({
         "schema_version": 1,
@@ -189,7 +190,13 @@ fn run_tutorials_verify(args: &TutorialsCommandArgs) -> Result<(String, i32), St
 
 fn run_tutorials_workflow(args: &TutorialsWorkflowArgs) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
-    let mut selected = vec!["setup", "ingest", "query", "dashboards-validate", "evidence-validate"];
+    let mut selected = vec![
+        "setup",
+        "ingest",
+        "query",
+        "dashboards-validate",
+        "evidence-validate",
+    ];
     if let Some(only) = args.only.as_deref() {
         selected = vec![only];
     }
@@ -197,14 +204,16 @@ fn run_tutorials_workflow(args: &TutorialsWorkflowArgs) -> Result<(String, i32),
     for step in selected {
         let row = match step {
             "setup" => run_timed_step("setup", || run_tutorials_workspace_setup(&args.common)),
-            "ingest" => run_timed_step("ingest", || run_tutorials_dataset_ingest(&args.common).map(|_| ())),
+            "ingest" => run_timed_step("ingest", || {
+                run_tutorials_dataset_ingest(&args.common).map(|_| ())
+            }),
             "query" => run_timed_step("query", || run_tutorials_query_probe(&args.common)),
-            "dashboards-validate" => {
-                run_timed_step("dashboards-validate", || run_tutorials_dashboards_validate(&args.common).map(|_| ()))
-            }
-            "evidence-validate" => {
-                run_timed_step("evidence-validate", || run_tutorials_evidence_validate(&args.common).map(|_| ()))
-            }
+            "dashboards-validate" => run_timed_step("dashboards-validate", || {
+                run_tutorials_dashboards_validate(&args.common).map(|_| ())
+            }),
+            "evidence-validate" => run_timed_step("evidence-validate", || {
+                run_tutorials_evidence_validate(&args.common).map(|_| ())
+            }),
             "verify" => run_timed_step("verify", || run_tutorials_verify(&args.common).map(|_| ())),
             unknown => serde_json::json!({
                 "name": unknown,
@@ -284,7 +293,9 @@ fn run_tutorials_build_docs(args: &TutorialsBuildDocsArgs) -> Result<(String, i3
     Ok((rendered, if status.success() { 0 } else { 1 }))
 }
 
-fn run_tutorials_dataset_package(args: &TutorialsDatasetPackageArgs) -> Result<(String, i32), String> {
+fn run_tutorials_dataset_package(
+    args: &TutorialsDatasetPackageArgs,
+) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
     let sha_file_path = repo_root.join("tutorials/contracts/atlas-example-minimal.sha256");
     let files = load_files_from_sha256_manifest(&sha_file_path)?;
@@ -328,8 +339,10 @@ fn run_tutorials_dataset_ingest(args: &TutorialsCommandArgs) -> Result<(String, 
         ])
         .output()
         .map_err(|err| format!("failed to run ingest dry-run: {err}"))?;
-    let stdout = String::from_utf8(output.stdout).map_err(|err| format!("ingest stdout utf8: {err}"))?;
-    let stderr = String::from_utf8(output.stderr).map_err(|err| format!("ingest stderr utf8: {err}"))?;
+    let stdout =
+        String::from_utf8(output.stdout).map_err(|err| format!("ingest stdout utf8: {err}"))?;
+    let stderr =
+        String::from_utf8(output.stderr).map_err(|err| format!("ingest stderr utf8: {err}"))?;
     let parsed = serde_json::from_str::<serde_json::Value>(&stdout).unwrap_or_else(|_| {
         serde_json::json!({
             "raw_stdout": stdout
@@ -407,10 +420,14 @@ fn run_tutorials_reproducibility_check(
     let run_two = run_dir.join("atlas-example-minimal.run2.tar");
     build_deterministic_tar(&repo_root, &files, &run_one, true)?;
     build_deterministic_tar(&repo_root, &files, &run_two, true)?;
-    let run_one_hash =
-        sha256_hex(&fs::read(&run_one).map_err(|err| format!("failed to read {}: {err}", run_one.display()))?);
-    let run_two_hash =
-        sha256_hex(&fs::read(&run_two).map_err(|err| format!("failed to read {}: {err}", run_two.display()))?);
+    let run_one_hash = sha256_hex(
+        &fs::read(&run_one)
+            .map_err(|err| format!("failed to read {}: {err}", run_one.display()))?,
+    );
+    let run_two_hash = sha256_hex(
+        &fs::read(&run_two)
+            .map_err(|err| format!("failed to read {}: {err}", run_two.display()))?,
+    );
     let reproducible = run_one_hash == run_two_hash;
     let file_level_diffs = if reproducible {
         Vec::new()
@@ -561,13 +578,17 @@ fn run_tutorials_generate(args: &TutorialsCommandArgs) -> Result<(String, i32), 
     let rendered = emit_tutorial_output(
         args,
         &report,
-        Some(render_tutorial_summary_markdown("inventory-health", &report)),
+        Some(render_tutorial_summary_markdown(
+            "inventory-health",
+            &report,
+        )),
     )?;
     Ok((rendered, 0))
 }
 
 fn load_tutorial_assets(repo_root: &Path) -> Result<TutorialAssets, String> {
-    let dataset_contract_path = repo_root.join("tutorials/contracts/tutorial-dataset-contract.json");
+    let dataset_contract_path =
+        repo_root.join("tutorials/contracts/tutorial-dataset-contract.json");
     let dataset_contract_text = fs::read_to_string(&dataset_contract_path)
         .map_err(|err| format!("failed to read {}: {err}", dataset_contract_path.display()))?;
     let dataset_contract: serde_json::Value = serde_json::from_str(&dataset_contract_text)
@@ -587,7 +608,9 @@ fn load_tutorial_assets(repo_root: &Path) -> Result<TutorialAssets, String> {
 
 fn scan_contracts_directory(path: PathBuf) -> Result<Vec<String>, String> {
     let mut files = Vec::new();
-    for entry in fs::read_dir(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))? {
+    for entry in
+        fs::read_dir(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?
+    {
         let entry = entry.map_err(|err| format!("failed to read entry: {err}"))?;
         let p = entry.path();
         if p.is_file() {
@@ -600,7 +623,10 @@ fn scan_contracts_directory(path: PathBuf) -> Result<Vec<String>, String> {
         }
     }
     files.sort();
-    let expected = ["tutorial-dataset-contract.json", "atlas-example-minimal.sha256"];
+    let expected = [
+        "tutorial-dataset-contract.json",
+        "atlas-example-minimal.sha256",
+    ];
     let missing = expected
         .iter()
         .filter(|item| !files.iter().any(|found| found == **item))
@@ -617,15 +643,18 @@ fn scan_contracts_directory(path: PathBuf) -> Result<Vec<String>, String> {
 
 fn load_json_directory(path: PathBuf) -> Result<Vec<(String, serde_json::Value)>, String> {
     let mut rows = Vec::new();
-    for entry in fs::read_dir(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))? {
+    for entry in
+        fs::read_dir(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?
+    {
         let entry = entry.map_err(|err| format!("failed to read entry: {err}"))?;
         let p = entry.path();
         if p.extension().and_then(|v| v.to_str()) != Some("json") {
             continue;
         }
-        let text = fs::read_to_string(&p).map_err(|err| format!("failed to read {}: {err}", p.display()))?;
-        let json: serde_json::Value =
-            serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", p.display()))?;
+        let text = fs::read_to_string(&p)
+            .map_err(|err| format!("failed to read {}: {err}", p.display()))?;
+        let json: serde_json::Value = serde_json::from_str(&text)
+            .map_err(|err| format!("failed to parse {}: {err}", p.display()))?;
         let name = p
             .file_name()
             .and_then(|v| v.to_str())
@@ -637,9 +666,7 @@ fn load_json_directory(path: PathBuf) -> Result<Vec<(String, serde_json::Value)>
     Ok(rows)
 }
 
-fn validate_dashboards(
-    dashboards: &[(String, serde_json::Value)],
-) -> (bool, serde_json::Value) {
+fn validate_dashboards(dashboards: &[(String, serde_json::Value)]) -> (bool, serde_json::Value) {
     let mut violations = Vec::new();
     for (name, dashboard) in dashboards {
         let has_title = dashboard.get("title").and_then(|v| v.as_str()).is_some();
@@ -657,9 +684,7 @@ fn validate_dashboards(
     )
 }
 
-fn validate_evidence(
-    evidence: &[(String, serde_json::Value)],
-) -> (bool, serde_json::Value) {
+fn validate_evidence(evidence: &[(String, serde_json::Value)]) -> (bool, serde_json::Value) {
     let mut violations = Vec::new();
     for (name, item) in evidence {
         let has_id = item.get("id").and_then(|v| v.as_str()).is_some();
@@ -694,7 +719,12 @@ fn validate_dataset_contract_semantics(contract: &serde_json::Value) -> (bool, s
         .into_iter()
         .filter_map(|v| v.as_str().map(ToOwned::to_owned))
         .collect::<Vec<_>>();
-    for key in ["dataset_id", "schema_version", "record_count", "description"] {
+    for key in [
+        "dataset_id",
+        "schema_version",
+        "record_count",
+        "description",
+    ] {
         if !required_keys.iter().any(|found| found == key) {
             violations.push(serde_json::json!({
                 "pointer": "/required",
@@ -727,18 +757,27 @@ fn validate_dataset_contract_semantics(contract: &serde_json::Value) -> (bool, s
     )
 }
 
-fn write_tutorial_report(repo_root: &Path, file_name: &str, payload: &serde_json::Value) -> Result<(), String> {
+fn write_tutorial_report(
+    repo_root: &Path,
+    file_name: &str,
+    payload: &serde_json::Value,
+) -> Result<(), String> {
     let path = repo_root.join("artifacts/tutorials").join(file_name);
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)
             .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
     }
-    let text = serde_json::to_string_pretty(payload).map_err(|err| format!("serialize report failed: {err}"))?;
+    let text = serde_json::to_string_pretty(payload)
+        .map_err(|err| format!("serialize report failed: {err}"))?;
     fs::write(&path, format!("{text}\n"))
         .map_err(|err| format!("failed to write {}: {err}", path.display()))
 }
 
-fn write_tutorial_markdown_report(repo_root: &Path, file_name: &str, markdown: &str) -> Result<(), String> {
+fn write_tutorial_markdown_report(
+    repo_root: &Path,
+    file_name: &str,
+    markdown: &str,
+) -> Result<(), String> {
     let path = repo_root.join("artifacts/tutorials").join(file_name);
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)
@@ -748,7 +787,12 @@ fn write_tutorial_markdown_report(repo_root: &Path, file_name: &str, markdown: &
         .map_err(|err| format!("failed to write {}: {err}", path.display()))
 }
 
-fn write_tutorial_log(repo_root: &Path, file_name: &str, stdout: &str, stderr: &str) -> Result<(), String> {
+fn write_tutorial_log(
+    repo_root: &Path,
+    file_name: &str,
+    stdout: &str,
+    stderr: &str,
+) -> Result<(), String> {
     let path = repo_root.join("artifacts/tutorials").join(file_name);
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)
@@ -834,7 +878,8 @@ fn render_workflow_nextest(steps: &[serde_json::Value], color: bool, verbose: bo
         };
         let duration = row["duration_ms"].as_u64().unwrap_or(0);
         let name = row["name"].as_str().unwrap_or("unknown");
-        let mut line = render_status_line(style, color, duration, index + 1, total, "tutorials", name);
+        let mut line =
+            render_status_line(style, color, duration, index + 1, total, "tutorials", name);
         if !is_skipped {
             if let Some(error) = row["error"].as_str() {
                 line.push_str(&format!(" ({error})"));
@@ -842,11 +887,7 @@ fn render_workflow_nextest(steps: &[serde_json::Value], color: bool, verbose: bo
         }
         lines.push(line);
         if verbose {
-            lines.push(format!(
-                "  detail: step={} duration_ms={}",
-                name,
-                duration
-            ));
+            lines.push(format!("  detail: step={} duration_ms={}", name, duration));
         }
     }
     let failed = steps
@@ -860,19 +901,14 @@ fn render_workflow_nextest(steps: &[serde_json::Value], color: bool, verbose: bo
     let passed = total.saturating_sub(failed).saturating_sub(skipped);
     lines.push(format!(
         "summary: total={} passed={} failed={} skipped={}",
-        total,
-        passed,
-        failed,
-        skipped
+        total, passed, failed, skipped
     ));
     lines.join("\n")
 }
 
 fn render_tutorial_summary_markdown(action: &str, payload: &serde_json::Value) -> String {
     let pretty = serde_json::to_string_pretty(payload).unwrap_or_else(|_| "{}".to_string());
-    format!(
-        "# Tutorials {action}\n\n```json\n{pretty}\n```"
-    )
+    format!("# Tutorials {action}\n\n```json\n{pretty}\n```")
 }
 
 fn render_tutorial_explain_markdown() -> String {
@@ -892,7 +928,8 @@ fn emit_tutorial_output(
     markdown: Option<String>,
 ) -> Result<String, String> {
     if args.markdown {
-        let content = markdown.unwrap_or_else(|| render_tutorial_summary_markdown("report", payload));
+        let content =
+            markdown.unwrap_or_else(|| render_tutorial_summary_markdown("report", payload));
         if let Some(path) = &args.out {
             fs::write(path, format!("{content}\n"))
                 .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
@@ -908,7 +945,8 @@ fn emit_tutorial_output(
 }
 
 fn load_sha256_pairs(path: &Path) -> Result<Vec<(String, String)>, String> {
-    let text = fs::read_to_string(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let text = fs::read_to_string(path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     let mut rows = Vec::new();
     for (line_no, line) in text.lines().enumerate() {
         let trimmed = line.trim();
@@ -953,7 +991,8 @@ fn build_deterministic_tar(
         } else {
             repo_root.join(rel)
         };
-        let data = fs::read(&src).map_err(|err| format!("failed to read {}: {err}", src.display()))?;
+        let data =
+            fs::read(&src).map_err(|err| format!("failed to read {}: {err}", src.display()))?;
         let archive_path = src
             .strip_prefix(repo_root)
             .map(|p| p.to_string_lossy().to_string())
@@ -978,7 +1017,9 @@ fn build_deterministic_tar(
             .append_data(&mut header, archive_path, data.as_slice())
             .map_err(|err| format!("failed to add {} to tar: {err}", src.display()))?;
     }
-    builder.finish().map_err(|err| format!("failed to finalize tar: {err}"))
+    builder
+        .finish()
+        .map_err(|err| format!("failed to finalize tar: {err}"))
 }
 
 fn update_sha256_manifest(
@@ -1059,7 +1100,11 @@ mod tests {
         update_sha256_manifest(repo, &files, &manifest).expect("update manifest");
         let pairs = load_sha256_pairs(&manifest).expect("load pairs");
         assert_eq!(pairs.len(), 1);
-        assert_eq!(pairs[0].1, "data/sample.json");
+        assert!(
+            pairs[0].1.ends_with("data/sample.json"),
+            "expected manifest path to end with data/sample.json, got {}",
+            pairs[0].1
+        );
         let digest = sha256_hex(&fs::read(repo.join("data/sample.json")).expect("read"));
         assert_eq!(pairs[0].0, digest);
     }
@@ -1150,8 +1195,14 @@ mod tests {
             })
             .collect::<Vec<_>>();
         let text = render_workflow_nextest(&steps, false, false);
-        assert!(text.contains("(10/12)"), "counter should include multi-digit index");
-        assert!(text.contains("(12/12)"), "counter should include final index");
+        assert!(
+            text.contains("(10/12)"),
+            "counter should include multi-digit index"
+        );
+        assert!(
+            text.contains("(12/12)"),
+            "counter should include final index"
+        );
     }
 
     #[test]

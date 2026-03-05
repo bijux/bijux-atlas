@@ -25,6 +25,10 @@ Commands:
   invariants  
   security    
   runtime     
+  tutorials   
+  packages    
+  clients     
+  migrations  
   datasets    
   ingest      
   perf        
@@ -117,12 +121,14 @@ kind-up
 lint-make
 make-fast
 make-target-list
+openapi-generate
 ops-contracts
 ops-contracts-effect
 ops-fast
 ops-nightly
 ops-pr
 registry-doctor
+release-plan
 root-surface-explain
 stack-down
 stack-up

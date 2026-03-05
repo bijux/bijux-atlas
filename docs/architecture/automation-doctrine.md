@@ -16,7 +16,7 @@ tags:
 
 ## Rules
 
-- Do not add root `tools/` or `scripts/` automation trees.
+- Do not add root `control-plane/` or `automation/` automation trees.
 - Do not add root `*.sh` or `*.py` automation helpers.
 - Make targets must delegate to `bijux-dev-atlas` command surfaces.
 - Workflows must call `bijux-dev-atlas` commands for repository automation.

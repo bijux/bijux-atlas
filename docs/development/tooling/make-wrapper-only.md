@@ -18,7 +18,7 @@ Rules:
 
 - wrapper recipes delegate to `bijux-dev-atlas` commands
 - no embedded orchestration scripts
-- no `tools/` or `scripts/` call paths
+- no `control-plane/` or `automation/` call paths
 - command behavior lives in Rust control-plane code
 
 Verification:
