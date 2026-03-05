@@ -23,6 +23,9 @@ CLI UX benchmark ownership is **dev-only** and is implemented in `bijux-dev-atla
 
 ```bash
 cargo run -p bijux-dev-atlas -- perf cli-ux bench --format json
+cargo run -p bijux-dev-atlas -- perf cli-ux bench --mode cold-start --format json
+cargo run -p bijux-dev-atlas -- perf cli-ux bench --mode warm-start --format json
+cargo run -p bijux-dev-atlas -- perf cli-ux bench --mode completion --format json
 ```
 
 ## Compare runs

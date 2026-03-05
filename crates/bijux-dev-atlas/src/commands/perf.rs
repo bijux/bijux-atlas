@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    PerfBenchesCommand, PerfCliUxBenchArgs, PerfCliUxCommand, PerfCliUxDiffArgs, PerfCommand,
-    PerfDiffArgs, PerfKindArgs, PerfRunArgs, PerfValidateArgs,
+    PerfBenchesCommand, PerfCliUxBenchArgs, PerfCliUxCommand, PerfCliUxDiffArgs,
+    PerfCliUxModeArg, PerfCommand, PerfDiffArgs, PerfKindArgs, PerfRunArgs, PerfValidateArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
 use reqwest::blocking::Client;
@@ -866,6 +866,9 @@ struct CliUxSpec {
     id: String,
     benchmark_kind: String,
     command: Vec<String>,
+    cold_start_command: Option<Vec<String>>,
+    warm_start_command: Option<Vec<String>>,
+    completion_command: Option<Vec<String>>,
     thresholds: CliUxThresholds,
 }
 
@@ -892,12 +895,30 @@ fn load_cli_ux_spec(root: &Path) -> Result<CliUxSpec, String> {
 fn run_perf_cli_ux_bench(args: PerfCliUxBenchArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     let spec = load_cli_ux_spec(&root)?;
+    let mode = args.mode;
+    let command = match mode {
+        PerfCliUxModeArg::ColdStart => spec
+            .cold_start_command
+            .clone()
+            .unwrap_or_else(|| spec.command.clone()),
+        PerfCliUxModeArg::WarmStart => spec
+            .warm_start_command
+            .clone()
+            .unwrap_or_else(|| spec.command.clone()),
+        PerfCliUxModeArg::Completion => spec
+            .completion_command
+            .clone()
+            .unwrap_or_else(|| vec!["list".to_string(), "--format".to_string(), "json".to_string()]),
+    };
+    if command.is_empty() {
+        return Err("cli-ux benchmark command for selected mode is empty".to_string());
+    }
     let exe = std::env::current_exe().map_err(|err| format!("resolve current executable failed: {err}"))?;
     let runs = args.runs.max(1);
     let warmup = args.warmup.min(runs.saturating_sub(1));
 
     let mut samples = Vec::new();
-    let mut progress_lines = vec!["perf cli-ux bench".to_string()];
+    let mut progress_lines = vec![format!("perf cli-ux bench --mode {:?}", mode).to_lowercase()];
     let logs_root = root.join("artifacts/perf/cli-ux/raw");
     fs::create_dir_all(&logs_root)
         .map_err(|err| format!("failed to create {}: {err}", logs_root.display()))?;
@@ -905,7 +926,7 @@ fn run_perf_cli_ux_bench(args: PerfCliUxBenchArgs) -> Result<(String, i32), Stri
     for index in 0..runs {
         let started = Instant::now();
         let output = ProcessCommand::new(&exe)
-            .args(&spec.command)
+            .args(&command)
             .output()
             .map_err(|err| format!("run cli-ux sample failed: {err}"))?;
         let elapsed_ms = started.elapsed().as_secs_f64() * 1000.0;
@@ -943,7 +964,8 @@ fn run_perf_cli_ux_bench(args: PerfCliUxBenchArgs) -> Result<(String, i32), Stri
         "schema_version": 1,
         "benchmark_id": spec.id,
         "benchmark_kind": spec.benchmark_kind,
-        "command": spec.command,
+        "mode": format!("{:?}", mode).to_lowercase(),
+        "command": command,
         "runs": runs,
         "warmup_runs": warmup,
         "measured_runs": measured.len(),
@@ -973,8 +995,8 @@ fn run_perf_cli_ux_bench(args: PerfCliUxBenchArgs) -> Result<(String, i32), Stri
     write_json(&report_path, &report)?;
     let summary_path = artifacts_root.join("latest-summary.md");
     let summary_md = format!(
-        "# CLI UX Benchmark Summary\n\n| Metric | Value |\n|---|---|\n| p50 ms | {:.3} |\n| p95 ms | {:.3} |\n| p99 ms | {:.3} |\n| failed samples | {} |\n| warmup runs | {} |\n| measured runs | {} |\n",
-        p50, p95, p99, failed_samples, warmup, measured.len()
+        "# CLI UX Benchmark Summary\n\n| Metric | Value |\n|---|---|\n| mode | {:?} |\n| p50 ms | {:.3} |\n| p95 ms | {:.3} |\n| p99 ms | {:.3} |\n| failed samples | {} |\n| warmup runs | {} |\n| measured runs | {} |\n",
+        mode, p50, p95, p99, failed_samples, warmup, measured.len()
     );
     fs::write(&summary_path, summary_md)
         .map_err(|err| format!("failed to write {}: {err}", summary_path.display()))?;

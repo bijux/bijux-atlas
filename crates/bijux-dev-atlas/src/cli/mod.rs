@@ -1943,6 +1943,8 @@ pub struct PerfCliUxBenchArgs {
     pub runs: u32,
     #[arg(long, default_value_t = 2)]
     pub warmup: u32,
+    #[arg(long, value_enum, default_value_t = PerfCliUxModeArg::WarmStart)]
+    pub mode: PerfCliUxModeArg,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]
@@ -1961,6 +1963,13 @@ pub struct PerfCliUxDiffArgs {
     pub format: FormatArg,
     #[arg(long)]
     pub out: Option<PathBuf>,
+}
+
+#[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
+pub enum PerfCliUxModeArg {
+    ColdStart,
+    WarmStart,
+    Completion,
 }
 
 #[derive(Args, Debug, Clone)]

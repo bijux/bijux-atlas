@@ -72,3 +72,26 @@ fn perf_cli_ux_diff_writes_regression_report() {
     let report = root.join("artifacts/perf/cli-ux/latest-diff.json");
     assert!(report.exists(), "missing diff report: {}", report.display());
 }
+
+#[test]
+fn perf_cli_ux_completion_mode_executes() {
+    let root = repo_root();
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args([
+            "perf",
+            "cli-ux",
+            "bench",
+            "--mode",
+            "completion",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("run perf cli-ux completion mode");
+    assert!(
+        output.status.success(),
+        "perf cli-ux completion mode failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
