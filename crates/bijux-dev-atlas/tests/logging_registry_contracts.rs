@@ -87,3 +87,29 @@ fn classify_event_name_maps_security_prefix() {
         LogClass::Security
     );
 }
+
+#[test]
+fn schema_validation_on_sample_logs_produces_deterministic_results() {
+    let path = repo_root().join("ops/observe/contracts/logs.example.jsonl");
+    let text = fs::read_to_string(path).expect("read logs example");
+    let mut all = Vec::new();
+    for line in text.lines().filter(|line| !line.trim().is_empty()) {
+        let row: serde_json::Value = serde_json::from_str(line).expect("json line");
+        all.push(validate_log_record(&row));
+    }
+    assert!(!all.is_empty());
+}
+
+#[test]
+fn redaction_validation_flags_secret_patterns() {
+    let row = serde_json::json!({
+        "timestamp": "2026-03-05T10:00:00Z",
+        "level": "INFO",
+        "target": "atlas::runtime",
+        "message": "secret leaked",
+        "request_id": "req-2",
+        "event_name": "runtime_init"
+    });
+    let violations = validate_log_record(&row);
+    assert!(violations.iter().any(|v| v.code == "redaction_violation"));
+}
