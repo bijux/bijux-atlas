@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "surface_id": "cli-dev-command-surface",
+  "binary": "bijux-dev-atlas",
+  "required_runtime_commands": [
+    "runtime self-check",
+    "runtime print-config-schema",
+    "runtime explain-config-schema"
+  ],
+  "notes": "dev cli owns repository runtime diagnostics"
+}

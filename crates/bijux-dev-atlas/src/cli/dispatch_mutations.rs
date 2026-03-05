@@ -51,6 +51,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Configs { command } => force_json_configs(command),
         Command::Governance { command } => force_json_governance(command),
         Command::Security { command } => force_json_security(command),
+        Command::Runtime { command } => force_json_runtime(command),
         Command::System { command } => force_json_system(command),
         Command::Audit { command } => force_json_audit(command),
         Command::Observe { command } => force_json_observe(command),
@@ -694,6 +695,14 @@ fn force_json_security(command: &mut SecurityCommand) {
             crate::cli::SecurityThreatCommand::Explain(args) => args.format = FormatArg::Json,
         },
         SecurityCommand::ScanArtifacts(args) => args.format = FormatArg::Json,
+    }
+}
+
+fn force_json_runtime(command: &mut crate::cli::RuntimeCommand) {
+    match command {
+        crate::cli::RuntimeCommand::SelfCheck(args)
+        | crate::cli::RuntimeCommand::PrintConfigSchema(args)
+        | crate::cli::RuntimeCommand::ExplainConfigSchema(args) => args.format = FormatArg::Json,
     }
 }
 
@@ -1505,6 +1514,13 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
             },
             SecurityCommand::ScanArtifacts(args) => args.repo_root = Some(root.clone()),
+        },
+        Command::Runtime { command } => match command {
+            crate::cli::RuntimeCommand::SelfCheck(args)
+            | crate::cli::RuntimeCommand::PrintConfigSchema(args)
+            | crate::cli::RuntimeCommand::ExplainConfigSchema(args) => {
+                args.repo_root = Some(root.clone())
+            }
         },
         Command::System { command } => match command {
             crate::cli::SystemCommand::Simulate { command } => match command {

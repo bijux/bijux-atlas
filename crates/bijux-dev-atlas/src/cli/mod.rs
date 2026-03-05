@@ -164,6 +164,10 @@ pub enum Command {
         #[command(subcommand)]
         command: SecurityCommand,
     },
+    Runtime {
+        #[command(subcommand)]
+        command: RuntimeCommand,
+    },
     Datasets {
         #[command(subcommand)]
         command: DatasetsCommand,
@@ -1194,6 +1198,25 @@ pub struct SecurityValidateArgs {
 #[derive(Subcommand, Debug)]
 pub enum SecurityComplianceCommand {
     Validate(SecurityValidateArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum RuntimeCommand {
+    SelfCheck(RuntimeCommandArgs),
+    PrintConfigSchema(RuntimeCommandArgs),
+    ExplainConfigSchema(RuntimeCommandArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct RuntimeCommandArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    pub canonical: bool,
 }
 
 #[derive(Args, Debug, Clone)]

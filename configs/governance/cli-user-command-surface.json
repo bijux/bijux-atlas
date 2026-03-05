@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "surface_id": "cli-user-command-surface",
+  "binary": "bijux-atlas",
+  "forbidden_commands": [
+    "self-check",
+    "print-config-schema",
+    "runtime"
+  ],
+  "notes": "user cli must not expose dev-only runtime diagnostics"
+}

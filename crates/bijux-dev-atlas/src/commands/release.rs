@@ -2,18 +2,17 @@
 
 use crate::cli::{
     FormatArg, ReleaseApiSurfaceCommand, ReleaseApiSurfaceSnapshotArgs, ReleaseBundleBuildArgs,
-    ReleaseBundleHashArgs, ReleaseBundleVerifyArgs,
-    ReleaseChangelogGenerateArgs, ReleaseChangelogValidateArgs, ReleaseCheckArgs, ReleaseCommand,
-    ReleaseCompatibilityCheckArgs, ReleaseCratesCommand, ReleaseCratesDryRunArgs,
-    ReleaseCratesListArgs, ReleaseCratesValidateArgs, ReleaseDiffArgs, ReleaseImagesCommand,
-    ReleaseImagesChangelogArgs, ReleaseImagesIntegrationArgs, ReleaseImagesManifestArgs,
-    ReleaseImagesNotesArgs, ReleaseImagesValidateArgs, ReleaseOpsBundleArgs, ReleaseOpsCommand,
-    ReleaseOpsPackageArgs, ReleaseOpsPullTestArgs, ReleaseOpsPushArgs, ReleaseManifestGenerateArgs,
-    ReleaseManifestValidateArgs, ReleaseMsrvCommand, ReleaseMsrvVerifyArgs, ReleasePacketArgs,
+    ReleaseBundleHashArgs, ReleaseBundleVerifyArgs, ReleaseChangelogGenerateArgs,
+    ReleaseChangelogValidateArgs, ReleaseCheckArgs, ReleaseCommand, ReleaseCompatibilityCheckArgs,
+    ReleaseCratesCommand, ReleaseCratesDryRunArgs, ReleaseCratesListArgs,
+    ReleaseCratesValidateArgs, ReleaseDiffArgs, ReleaseImagesChangelogArgs, ReleaseImagesCommand,
+    ReleaseImagesIntegrationArgs, ReleaseImagesManifestArgs, ReleaseImagesNotesArgs,
+    ReleaseImagesValidateArgs, ReleaseManifestGenerateArgs, ReleaseManifestValidateArgs,
+    ReleaseMsrvCommand, ReleaseMsrvVerifyArgs, ReleaseOpsBundleArgs, ReleaseOpsCommand,
+    ReleaseOpsPackageArgs, ReleaseOpsPullTestArgs, ReleaseOpsPushArgs, ReleasePacketArgs,
     ReleasePlanArgs, ReleaseRebuildVerifyArgs, ReleaseReproducibilityReportArgs,
-    ReleaseSemverCommand,
-    ReleaseSemverCheckArgs, ReleaseSignArgs, ReleaseTransitionPlanArgs, ReleaseValidateArgs,
-    ReleaseVerifyArgs, ReleaseVersionCheckArgs,
+    ReleaseSemverCheckArgs, ReleaseSemverCommand, ReleaseSignArgs, ReleaseTransitionPlanArgs,
+    ReleaseValidateArgs, ReleaseVerifyArgs, ReleaseVersionCheckArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
 use regex::Regex;
@@ -381,7 +380,8 @@ fn read_publish_policy(root: &Path) -> Result<serde_json::Value, String> {
 fn read_crates_release_spec(root: &Path) -> Result<toml::Value, String> {
     let path = root.join("release/crates-v0.1.toml");
     toml::from_str(
-        &fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+        &fs::read_to_string(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
@@ -389,7 +389,8 @@ fn read_crates_release_spec(root: &Path) -> Result<toml::Value, String> {
 fn read_images_release_spec(root: &Path) -> Result<toml::Value, String> {
     let path = root.join("release/images-v0.1.toml");
     toml::from_str(
-        &fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+        &fs::read_to_string(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
@@ -405,7 +406,10 @@ fn dockerfile_label_map(path: &Path) -> Result<BTreeMap<String, String>, String>
         }
         let rest = trimmed.trim_start_matches("LABEL ").trim();
         if let Some((k, v)) = rest.split_once('=') {
-            labels.insert(k.trim().to_ascii_lowercase(), v.trim().trim_matches('"').to_string());
+            labels.insert(
+                k.trim().to_ascii_lowercase(),
+                v.trim().trim_matches('"').to_string(),
+            );
         }
     }
     Ok(labels)
@@ -447,9 +451,9 @@ fn run_release_images_validate_labels(
     for key in &required {
         match labels.get(key) {
             None => errors.push(format!("runtime Dockerfile missing label `{key}`")),
-            Some(value) if value.trim().is_empty() => {
-                errors.push(format!("runtime Dockerfile label `{key}` must be non-empty"))
-            }
+            Some(value) if value.trim().is_empty() => errors.push(format!(
+                "runtime Dockerfile label `{key}` must be non-empty"
+            )),
             _ => {}
         }
     }
@@ -461,7 +465,9 @@ fn run_release_images_validate_labels(
         "org.opencontainers.image.licenses",
     ] {
         if !labels.contains_key(required) {
-            errors.push(format!("runtime Dockerfile missing release label `{required}`"));
+            errors.push(format!(
+                "runtime Dockerfile missing release label `{required}`"
+            ));
         }
     }
     let status = if errors.is_empty() { "ok" } else { "failed" };
@@ -478,7 +484,9 @@ fn run_release_images_validate_labels(
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
-fn run_release_images_validate_tags(args: ReleaseImagesValidateArgs) -> Result<(String, i32), String> {
+fn run_release_images_validate_tags(
+    args: ReleaseImagesValidateArgs,
+) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let spec = read_images_release_spec(&root)?;
     let forbid_latest = spec
@@ -512,7 +520,9 @@ fn run_release_images_validate_tags(args: ReleaseImagesValidateArgs) -> Result<(
             .and_then(toml::Value::as_bool)
             .unwrap_or(false);
         if forbid_latest && allow_latest {
-            errors.push(format!("image `{name}` allows latest while policy forbids it"));
+            errors.push(format!(
+                "image `{name}` allows latest while policy forbids it"
+            ));
         }
         if forbid_latest
             && tag_policy
@@ -532,7 +542,12 @@ fn run_release_images_validate_tags(args: ReleaseImagesValidateArgs) -> Result<(
             "allow_latest": allow_latest
         }));
     }
-    rows.sort_by(|a, b| a["name"].as_str().unwrap_or_default().cmp(b["name"].as_str().unwrap_or_default()));
+    rows.sort_by(|a, b| {
+        a["name"]
+            .as_str()
+            .unwrap_or_default()
+            .cmp(b["name"].as_str().unwrap_or_default())
+    });
     let status = if errors.is_empty() { "ok" } else { "failed" };
     let payload = serde_json::json!({
         "schema_version": 1,
@@ -622,7 +637,9 @@ fn run_release_images_validate_base_digests(
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
-fn run_release_images_sbom_verify(args: ReleaseImagesValidateArgs) -> Result<(String, i32), String> {
+fn run_release_images_sbom_verify(
+    args: ReleaseImagesValidateArgs,
+) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let policy = read_json(&root.join("configs/release/image-sbom-policy.json"))?;
     let required = policy
@@ -649,7 +666,9 @@ fn run_release_images_sbom_verify(args: ReleaseImagesValidateArgs) -> Result<(St
     }
     let mut rows = Vec::<serde_json::Value>::new();
     for artifact in &required_artifacts {
-        let Some(path) = artifact.as_str() else { continue };
+        let Some(path) = artifact.as_str() else {
+            continue;
+        };
         let full = root.join(path);
         let exists = full.exists();
         if required && !exists {
@@ -707,7 +726,9 @@ fn run_release_images_provenance_verify(
     }
     let mut rows = Vec::<serde_json::Value>::new();
     for artifact in &required_artifacts {
-        let Some(path) = artifact.as_str() else { continue };
+        let Some(path) = artifact.as_str() else {
+            continue;
+        };
         let exists = root.join(path).exists();
         if required && !exists {
             errors.push(format!("required provenance artifact missing: {path}"));
@@ -729,7 +750,9 @@ fn run_release_images_provenance_verify(
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
-fn run_release_images_scan_verify(args: ReleaseImagesValidateArgs) -> Result<(String, i32), String> {
+fn run_release_images_scan_verify(
+    args: ReleaseImagesValidateArgs,
+) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let policy = read_json(&root.join("configs/release/image-vulnerability-policy.json"))?;
     let required_artifacts = policy
@@ -740,7 +763,9 @@ fn run_release_images_scan_verify(args: ReleaseImagesValidateArgs) -> Result<(St
     let mut errors = Vec::<String>::new();
     let mut rows = Vec::<serde_json::Value>::new();
     for artifact in required_artifacts {
-        let Some(path) = artifact.as_str() else { continue };
+        let Some(path) = artifact.as_str() else {
+            continue;
+        };
         let exists = root.join(path).exists();
         if !exists {
             errors.push(format!("required vulnerability artifact missing: {path}"));
@@ -761,7 +786,9 @@ fn run_release_images_scan_verify(args: ReleaseImagesValidateArgs) -> Result<(St
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
-fn run_release_images_smoke_verify(args: ReleaseImagesValidateArgs) -> Result<(String, i32), String> {
+fn run_release_images_smoke_verify(
+    args: ReleaseImagesValidateArgs,
+) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let spec = read_json(&root.join("configs/release/image-smoke-scenarios.json"))?;
     let checks = spec
@@ -793,7 +820,9 @@ fn run_release_images_smoke_verify(args: ReleaseImagesValidateArgs) -> Result<(S
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
-fn run_release_images_size_report(args: ReleaseImagesValidateArgs) -> Result<(String, i32), String> {
+fn run_release_images_size_report(
+    args: ReleaseImagesValidateArgs,
+) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let policy = read_json(&root.join("configs/release/image-runtime-hardening-policy.json"))?;
     let budget = policy
@@ -902,9 +931,13 @@ fn run_release_images_runtime_hardening_verify(
         .cloned()
         .unwrap_or_default();
     for token in forbidden_tokens {
-        let Some(token_text) = token.as_str() else { continue };
+        let Some(token_text) = token.as_str() else {
+            continue;
+        };
         if runtime_section.contains(token_text) {
-            errors.push(format!("runtime Dockerfile contains forbidden token `{token_text}`"));
+            errors.push(format!(
+                "runtime Dockerfile contains forbidden token `{token_text}`"
+            ));
         }
     }
     if policy
@@ -913,7 +946,9 @@ fn run_release_images_runtime_hardening_verify(
         .unwrap_or(true)
         && (runtime_section.contains("chmod 777") || runtime_section.contains("chown -R"))
     {
-        errors.push("runtime Dockerfile must avoid broad write-surface permission grants".to_string());
+        errors.push(
+            "runtime Dockerfile must avoid broad write-surface permission grants".to_string(),
+        );
     }
     let allowed_runtime_binaries = policy
         .get("allowed_runtime_binaries")
@@ -955,25 +990,26 @@ fn run_release_images_runtime_command_verify(
     args: ReleaseImagesValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let cli_dispatch = root.join("crates/bijux-atlas-cli/src/atlas_command_dispatch.rs");
-    let cli_lib = root.join("crates/bijux-atlas-cli/src/lib.rs");
-    let schema_path = root.join("crates/bijux-atlas-server/docs/generated/runtime-startup-config.schema.json");
-    let dispatch_text = fs::read_to_string(&cli_dispatch)
-        .map_err(|err| format!("failed to read {}: {err}", cli_dispatch.display()))?;
-    let cli_text = fs::read_to_string(&cli_lib)
-        .map_err(|err| format!("failed to read {}: {err}", cli_lib.display()))?;
+    let dev_cli_dispatch = root.join("crates/bijux-dev-atlas/src/cli/dispatch.rs");
+    let dev_cli_mod = root.join("crates/bijux-dev-atlas/src/cli/mod.rs");
+    let schema_path =
+        root.join("crates/bijux-atlas-server/docs/generated/runtime-startup-config.schema.json");
+    let dispatch_text = fs::read_to_string(&dev_cli_dispatch)
+        .map_err(|err| format!("failed to read {}: {err}", dev_cli_dispatch.display()))?;
+    let cli_text = fs::read_to_string(&dev_cli_mod)
+        .map_err(|err| format!("failed to read {}: {err}", dev_cli_mod.display()))?;
     let mut errors = Vec::<String>::new();
-    if !cli_text.contains("print-config-schema") {
-        errors.push("runtime CLI is missing print-config-schema command declaration".to_string());
+    if !cli_text.contains("PrintConfigSchema(RuntimeCommandArgs)") {
+        errors.push("dev CLI is missing runtime print-config-schema command declaration".to_string());
     }
-    if !dispatch_text.contains("AtlasCommand::PrintConfigSchema") {
-        errors.push("runtime CLI dispatcher is missing PrintConfigSchema route".to_string());
+    if !dispatch_text.contains("Command::Runtime { command }") {
+        errors.push("dev CLI dispatcher is missing Runtime command route".to_string());
     }
-    if !cli_text.contains("self-check") {
-        errors.push("runtime CLI is missing self-check command declaration".to_string());
+    if !cli_text.contains("SelfCheck(RuntimeCommandArgs)") {
+        errors.push("dev CLI is missing runtime self-check command declaration".to_string());
     }
-    if !dispatch_text.contains("AtlasCommand::SelfCheck") {
-        errors.push("runtime CLI dispatcher is missing SelfCheck route".to_string());
+    if !cli_text.contains("ExplainConfigSchema(RuntimeCommandArgs)") {
+        errors.push("dev CLI is missing runtime explain-config-schema command declaration".to_string());
     }
     if !schema_path.exists() {
         errors.push(format!(
@@ -987,10 +1023,11 @@ fn run_release_images_runtime_command_verify(
         "kind": "release_images_runtime_command_verify",
         "status": status,
         "checks": [
-            {"id":"runtime_print_config_schema_command","status": if cli_text.contains("print-config-schema") {"ok"} else {"failed"}},
-            {"id":"runtime_self_check_command","status": if cli_text.contains("self-check") {"ok"} else {"failed"}},
+            {"id":"runtime_print_config_schema_command","status": if cli_text.contains("PrintConfigSchema(RuntimeCommandArgs)") {"ok"} else {"failed"}},
+            {"id":"runtime_self_check_command","status": if cli_text.contains("SelfCheck(RuntimeCommandArgs)") {"ok"} else {"failed"}},
+            {"id":"runtime_explain_config_schema_command","status": if cli_text.contains("ExplainConfigSchema(RuntimeCommandArgs)") {"ok"} else {"failed"}},
             {"id":"runtime_schema_reference_exists","status": if schema_path.exists() {"ok"} else {"failed"}},
-            {"id":"runtime_self_check_offline_contract","status": if dispatch_text.contains("AtlasCommand::SelfCheck") {"ok"} else {"failed"}}
+            {"id":"runtime_self_check_offline_contract","status": if dispatch_text.contains("Command::Runtime { command }") {"ok"} else {"failed"}}
         ],
         "errors": errors
     });
@@ -1055,14 +1092,20 @@ fn run_release_images_manifest_verify(
         .filter_map(|row| row.get("name").and_then(serde_json::Value::as_str))
         .collect::<BTreeSet<_>>();
     for row in &image_digests {
-        let Some(tag) = row.get("tag").and_then(serde_json::Value::as_str) else { continue };
-        let Some(digest) = row.get("digest").and_then(serde_json::Value::as_str) else { continue };
+        let Some(tag) = row.get("tag").and_then(serde_json::Value::as_str) else {
+            continue;
+        };
+        let Some(digest) = row.get("digest").and_then(serde_json::Value::as_str) else {
+            continue;
+        };
         if !digest.starts_with("sha256:") {
             errors.push(format!("image digest must be sha256-prefixed: {tag}"));
         }
         let image_name = tag.split(':').next().unwrap_or_default();
         if !declared_set.contains(image_name) {
-            errors.push(format!("image tag `{tag}` is not declared in docker/images.manifest.json"));
+            errors.push(format!(
+                "image tag `{tag}` is not declared in docker/images.manifest.json"
+            ));
         }
     }
     let registry_path = root.join("release/image-digest-registry.json");
@@ -1074,14 +1117,20 @@ fn run_release_images_manifest_verify(
             .cloned()
             .unwrap_or_default();
         for row in immutables {
-            let Some(tag) = row.get("tag").and_then(serde_json::Value::as_str) else { continue };
-            let Some(digest) = row.get("digest").and_then(serde_json::Value::as_str) else { continue };
+            let Some(tag) = row.get("tag").and_then(serde_json::Value::as_str) else {
+                continue;
+            };
+            let Some(digest) = row.get("digest").and_then(serde_json::Value::as_str) else {
+                continue;
+            };
             let changed = image_digests.iter().any(|candidate| {
                 candidate.get("tag").and_then(serde_json::Value::as_str) == Some(tag)
                     && candidate.get("digest").and_then(serde_json::Value::as_str) != Some(digest)
             });
             if changed {
-                errors.push(format!("digest registry immutability violation for tag `{tag}`"));
+                errors.push(format!(
+                    "digest registry immutability violation for tag `{tag}`"
+                ));
             }
         }
     }
@@ -1101,7 +1150,9 @@ fn run_release_images_release_notes_check(
     args: ReleaseImagesNotesArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let version = args.version.unwrap_or_else(|| workspace_version(&root).unwrap_or_else(|_| "0.1.0".to_string()));
+    let version = args
+        .version
+        .unwrap_or_else(|| workspace_version(&root).unwrap_or_else(|_| "0.1.0".to_string()));
     let template_path = root.join("release/notes/image-release-notes-template.md");
     let notes_path = root.join(format!("release/notes/images/{version}.md"));
     let mut errors = Vec::<String>::new();
@@ -1134,9 +1185,19 @@ fn run_release_images_changelog_extract(
     let root = resolve_repo_root(args.repo_root.clone())?;
     let from_ref = args.from_ref.unwrap_or_else(|| "HEAD~30".to_string());
     let to_ref = args.to_ref.unwrap_or_else(|| "HEAD".to_string());
-    let version = args.version.unwrap_or_else(|| workspace_version(&root).unwrap_or_else(|_| "0.1.0".to_string()));
+    let version = args
+        .version
+        .unwrap_or_else(|| workspace_version(&root).unwrap_or_else(|_| "0.1.0".to_string()));
     let output = ProcessCommand::new("git")
-        .args(["log", "--oneline", &format!("{from_ref}..{to_ref}"), "--", "docker", "crates/bijux-atlas-cli", "crates/bijux-atlas-server"])
+        .args([
+            "log",
+            "--oneline",
+            &format!("{from_ref}..{to_ref}"),
+            "--",
+            "docker",
+            "crates/bijux-atlas-cli",
+            "crates/bijux-atlas-server",
+        ])
         .current_dir(&root)
         .output()
         .map_err(|err| format!("failed to run git log: {err}"))?;
@@ -1185,7 +1246,8 @@ fn run_release_images_changelog_extract(
 fn read_ops_release_spec(root: &Path) -> Result<toml::Value, String> {
     let path = root.join("release/ops-v0.1.toml");
     toml::from_str(
-        &fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+        &fs::read_to_string(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
@@ -1266,9 +1328,16 @@ fn run_release_images_build_reproducibility_check(
     let text = fs::read_to_string(&dockerfile)
         .map_err(|err| format!("failed to read {}: {err}", dockerfile.display()))?;
     let mut errors = Vec::<String>::new();
-    for token in ["ARG BUILD_DATE", "ARG SOURCE_DATE_EPOCH", "ARG VCS_REF", "ARG IMAGE_VERSION"] {
+    for token in [
+        "ARG BUILD_DATE",
+        "ARG SOURCE_DATE_EPOCH",
+        "ARG VCS_REF",
+        "ARG IMAGE_VERSION",
+    ] {
         if !text.contains(token) {
-            errors.push(format!("Dockerfile missing reproducibility build arg `{token}`"));
+            errors.push(format!(
+                "Dockerfile missing reproducibility build arg `{token}`"
+            ));
         }
     }
     if !text.contains("org.opencontainers.image.created=\"${BUILD_DATE}\"") {
@@ -1320,7 +1389,11 @@ fn run_release_images_lock_drift_verify(
         .current_dir(&root)
         .output()
         .map_err(|err| format!("failed to run cargo metadata --locked: {err}"))?;
-    let status = if output.status.success() { "ok" } else { "failed" };
+    let status = if output.status.success() {
+        "ok"
+    } else {
+        "failed"
+    };
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "release_images_lock_drift_verify",
@@ -1336,12 +1409,66 @@ fn run_release_images_readiness_summary(
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let checks = vec![
-        ("labels", run_release_images_validate_labels(ReleaseImagesValidateArgs { repo_root: Some(root.clone()), format: FormatArg::Json, out: None }).map(|(_, c)| c == 0).unwrap_or(false)),
-        ("tags", run_release_images_validate_tags(ReleaseImagesValidateArgs { repo_root: Some(root.clone()), format: FormatArg::Json, out: None }).map(|(_, c)| c == 0).unwrap_or(false)),
-        ("base_digests", run_release_images_validate_base_digests(ReleaseImagesValidateArgs { repo_root: Some(root.clone()), format: FormatArg::Json, out: None }).map(|(_, c)| c == 0).unwrap_or(false)),
-        ("runtime_hardening", run_release_images_runtime_hardening_verify(ReleaseImagesValidateArgs { repo_root: Some(root.clone()), format: FormatArg::Json, out: None }).map(|(_, c)| c == 0).unwrap_or(false)),
-        ("runtime_commands", run_release_images_runtime_command_verify(ReleaseImagesValidateArgs { repo_root: Some(root.clone()), format: FormatArg::Json, out: None }).map(|(_, c)| c == 0).unwrap_or(false)),
-        ("locked_dependencies", run_release_images_locked_dependencies_verify(ReleaseImagesValidateArgs { repo_root: Some(root.clone()), format: FormatArg::Json, out: None }).map(|(_, c)| c == 0).unwrap_or(false)),
+        (
+            "labels",
+            run_release_images_validate_labels(ReleaseImagesValidateArgs {
+                repo_root: Some(root.clone()),
+                format: FormatArg::Json,
+                out: None,
+            })
+            .map(|(_, c)| c == 0)
+            .unwrap_or(false),
+        ),
+        (
+            "tags",
+            run_release_images_validate_tags(ReleaseImagesValidateArgs {
+                repo_root: Some(root.clone()),
+                format: FormatArg::Json,
+                out: None,
+            })
+            .map(|(_, c)| c == 0)
+            .unwrap_or(false),
+        ),
+        (
+            "base_digests",
+            run_release_images_validate_base_digests(ReleaseImagesValidateArgs {
+                repo_root: Some(root.clone()),
+                format: FormatArg::Json,
+                out: None,
+            })
+            .map(|(_, c)| c == 0)
+            .unwrap_or(false),
+        ),
+        (
+            "runtime_hardening",
+            run_release_images_runtime_hardening_verify(ReleaseImagesValidateArgs {
+                repo_root: Some(root.clone()),
+                format: FormatArg::Json,
+                out: None,
+            })
+            .map(|(_, c)| c == 0)
+            .unwrap_or(false),
+        ),
+        (
+            "runtime_commands",
+            run_release_images_runtime_command_verify(ReleaseImagesValidateArgs {
+                repo_root: Some(root.clone()),
+                format: FormatArg::Json,
+                out: None,
+            })
+            .map(|(_, c)| c == 0)
+            .unwrap_or(false),
+        ),
+        (
+            "locked_dependencies",
+            run_release_images_locked_dependencies_verify(ReleaseImagesValidateArgs {
+                repo_root: Some(root.clone()),
+                format: FormatArg::Json,
+                out: None,
+            })
+            .map(|(_, c)| c == 0)
+            .unwrap_or(false),
+        ),
     ];
     let rows = checks
         .iter()
@@ -1382,7 +1509,8 @@ fn run_release_ops_package(args: ReleaseOpsPackageArgs) -> Result<(String, i32),
         .unwrap_or("artifacts/release/ops/package");
     let chart_path = root.join(chart_rel);
     let out_dir = root.join(out_rel);
-    fs::create_dir_all(&out_dir).map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
+    fs::create_dir_all(&out_dir)
+        .map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
     let mut helm_package_stdout = String::new();
     let mut helm_lint_stdout = String::new();
     let mut errors = Vec::<String>::new();
@@ -1394,7 +1522,10 @@ fn run_release_ops_package(args: ReleaseOpsPackageArgs) -> Result<(String, i32),
             .map_err(|err| format!("failed to run helm lint: {err}"))?;
         helm_lint_stdout = String::from_utf8_lossy(&lint.stdout).to_string();
         if !lint.status.success() {
-            errors.push(format!("helm lint failed: {}", String::from_utf8_lossy(&lint.stderr).trim()));
+            errors.push(format!(
+                "helm lint failed: {}",
+                String::from_utf8_lossy(&lint.stderr).trim()
+            ));
         }
         let package = ProcessCommand::new("helm")
             .args([
@@ -1414,7 +1545,9 @@ fn run_release_ops_package(args: ReleaseOpsPackageArgs) -> Result<(String, i32),
             ));
         }
     } else {
-        errors.push("release ops package requires --allow-subprocess for helm package/lint".to_string());
+        errors.push(
+            "release ops package requires --allow-subprocess for helm package/lint".to_string(),
+        );
     }
     let packages = fs::read_dir(&out_dir)
         .map_err(|err| format!("failed to read {}: {err}", out_dir.display()))?
@@ -1463,7 +1596,10 @@ fn run_release_ops_validate_package(args: ReleaseOpsPackageArgs) -> Result<(Stri
             .filter_map(|entry| entry.ok().map(|e| e.path()))
             .find(|p| p.extension().and_then(|e| e.to_str()) == Some("tgz"))
     } else {
-        errors.push(format!("ops package output directory missing: {}", out_dir.display()));
+        errors.push(format!(
+            "ops package output directory missing: {}",
+            out_dir.display()
+        ));
         None
     };
     if chart_tgz.is_none() {
@@ -1567,7 +1703,10 @@ fn run_release_ops_push(args: ReleaseOpsPushArgs) -> Result<(String, i32), Strin
             ));
         }
     } else {
-        errors.push("release ops push requires --allow-subprocess and --allow-network (or --dry-run)".to_string());
+        errors.push(
+            "release ops push requires --allow-subprocess and --allow-network (or --dry-run)"
+                .to_string(),
+        );
     }
     let digest = sha256_file(&chart_pkg)?;
     let digest_report_path = root.join("release/ops-chart-digest.json");
@@ -1669,7 +1808,12 @@ fn run_release_ops_pull_test(args: ReleaseOpsPullTestArgs) -> Result<(String, i3
     let mut stdout = String::new();
     if args.common.allow_subprocess && args.allow_network {
         let output = ProcessCommand::new("helm")
-            .args(["pull", chart_ref.as_str(), "--destination", "artifacts/release/ops/pull-test"])
+            .args([
+                "pull",
+                chart_ref.as_str(),
+                "--destination",
+                "artifacts/release/ops/pull-test",
+            ])
             .current_dir(&root)
             .output()
             .map_err(|err| format!("failed to run helm pull: {err}"))?;
@@ -1681,7 +1825,9 @@ fn run_release_ops_pull_test(args: ReleaseOpsPullTestArgs) -> Result<(String, i3
             ));
         }
     } else {
-        errors.push("release ops pull-test requires --allow-subprocess and --allow-network".to_string());
+        errors.push(
+            "release ops pull-test requires --allow-subprocess and --allow-network".to_string(),
+        );
     }
     let status = if errors.is_empty() { "ok" } else { "failed" };
     let payload = serde_json::json!({
@@ -1725,7 +1871,9 @@ fn run_release_ops_bundle_build(args: ReleaseOpsBundleArgs) -> Result<(String, i
             package_out.display()
         )
     })?;
-    let bundle_dir = root.join("artifacts/release/ops/bundle").join(format!("v{version}"));
+    let bundle_dir = root
+        .join("artifacts/release/ops/bundle")
+        .join(format!("v{version}"));
     fs::create_dir_all(&bundle_dir)
         .map_err(|err| format!("failed to create {}: {err}", bundle_dir.display()))?;
     let bundle_staging = bundle_dir.join("contents");
@@ -1756,7 +1904,11 @@ fn run_release_ops_bundle_build(args: ReleaseOpsBundleArgs) -> Result<(String, i
         }
         if path.is_dir() {
             let _ = ProcessCommand::new("cp")
-                .args(["-R", path.to_string_lossy().as_ref(), target.to_string_lossy().as_ref()])
+                .args([
+                    "-R",
+                    path.to_string_lossy().as_ref(),
+                    target.to_string_lossy().as_ref(),
+                ])
                 .output();
         } else {
             fs::copy(&path, &target)
@@ -1767,7 +1919,12 @@ fn run_release_ops_bundle_build(args: ReleaseOpsBundleArgs) -> Result<(String, i
             }));
         }
     }
-    copied.sort_by(|a, b| a["path"].as_str().unwrap_or_default().cmp(b["path"].as_str().unwrap_or_default()));
+    copied.sort_by(|a, b| {
+        a["path"]
+            .as_str()
+            .unwrap_or_default()
+            .cmp(b["path"].as_str().unwrap_or_default())
+    });
     let checksums_path = bundle_staging.join("checksums.json");
     write_json(
         &checksums_path,
@@ -1824,7 +1981,9 @@ fn run_release_ops_bundle_build(args: ReleaseOpsBundleArgs) -> Result<(String, i
 fn run_release_ops_bundle_verify(args: ReleaseOpsBundleArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.common.repo_root.clone())?;
     let version = args.version.unwrap_or_else(|| "0.1.0".to_string());
-    let bundle_dir = root.join("artifacts/release/ops/bundle").join(format!("v{version}"));
+    let bundle_dir = root
+        .join("artifacts/release/ops/bundle")
+        .join(format!("v{version}"));
     let tarball = bundle_dir.join(format!("ops-bundle-v{version}.tar.gz"));
     let mut errors = Vec::<String>::new();
     if !tarball.exists() {
@@ -1888,13 +2047,17 @@ fn run_release_ops_values_coverage(args: ReleaseOpsPackageArgs) -> Result<(Strin
             .and_then(serde_json::Value::as_bool)
             .unwrap_or(false);
         if schema_keys.contains(key) && !has_docs && !internal {
-            missing.push(format!("values key `{key}` must reference docs or set internal_only=true"));
+            missing.push(format!(
+                "values key `{key}` must reference docs or set internal_only=true"
+            ));
         }
         rows.push(row);
     }
     for key in &schema_keys {
         if !covered.contains(key) {
-            missing.push(format!("values key `{key}` is missing from ops/k8s/values/documentation-map.json"));
+            missing.push(format!(
+                "values key `{key}` is missing from ops/k8s/values/documentation-map.json"
+            ));
         }
     }
     rows.sort_by(|a, b| {
@@ -1921,7 +2084,10 @@ fn run_release_ops_values_coverage(args: ReleaseOpsPackageArgs) -> Result<(Strin
         "errors": missing
     });
     if args.allow_write {
-        write_json(&root.join("ops/report/generated/ops-values-coverage.json"), &payload)?;
+        write_json(
+            &root.join("ops/report/generated/ops-values-coverage.json"),
+            &payload,
+        )?;
     }
     let rendered = emit_payload(args.format, args.out, &payload)?;
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
@@ -1939,11 +2105,26 @@ fn run_release_ops_profiles_verify(args: ReleaseOpsPackageArgs) -> Result<(Strin
     let mut errors = Vec::<String>::new();
     let mut output_rows = Vec::<serde_json::Value>::new();
     for row in rows {
-        let id = row.get("id").and_then(serde_json::Value::as_str).unwrap_or_default();
-        let owner = row.get("owner").and_then(serde_json::Value::as_str).unwrap_or_default();
-        let purpose = row.get("purpose").and_then(serde_json::Value::as_str).unwrap_or_default();
-        let env = row.get("intendedUse").and_then(serde_json::Value::as_str).unwrap_or_default();
-        let risk = row.get("risk_level").and_then(serde_json::Value::as_str).unwrap_or_default();
+        let id = row
+            .get("id")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let owner = row
+            .get("owner")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let purpose = row
+            .get("purpose")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let env = row
+            .get("intendedUse")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let risk = row
+            .get("risk_level")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
         if owner.trim().is_empty() {
             errors.push(format!("profile `{id}` must define owner"));
         }
@@ -2004,7 +2185,8 @@ fn run_release_ops_lineage_generate(args: ReleaseOpsPackageArgs) -> Result<(Stri
             .unwrap_or_default()
             .to_string()
     } else {
-        let fallback = root.join("release/evidence/ops-distribution/install-chart-from-oci/evidence.json");
+        let fallback =
+            root.join("release/evidence/ops-distribution/install-chart-from-oci/evidence.json");
         if fallback.exists() {
             image_digest_source = repo_rel(&root, &fallback);
             read_json(&fallback)?
@@ -2016,10 +2198,11 @@ fn run_release_ops_lineage_generate(args: ReleaseOpsPackageArgs) -> Result<(Stri
             String::new()
         }
     };
-    let schema_version = read_json(&root.join("ops/evidence/schema/v1/ops-evidence-bundle.schema.json"))?
-        .get("schema_version")
-        .and_then(serde_json::Value::as_i64)
-        .unwrap_or(1);
+    let schema_version =
+        read_json(&root.join("ops/evidence/schema/v1/ops-evidence-bundle.schema.json"))?
+            .get("schema_version")
+            .and_then(serde_json::Value::as_i64)
+            .unwrap_or(1);
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "release_ops_artifact_lineage",
@@ -2041,7 +2224,10 @@ fn run_release_ops_lineage_generate(args: ReleaseOpsPackageArgs) -> Result<(Stri
         }
     });
     if args.allow_write {
-        write_json(&root.join("ops/report/generated/ops-artifact-lineage.json"), &payload)?;
+        write_json(
+            &root.join("ops/report/generated/ops-artifact-lineage.json"),
+            &payload,
+        )?;
     }
     let status = payload
         .get("status")
@@ -2069,9 +2255,14 @@ fn run_release_ops_provenance_verify(args: ReleaseOpsPackageArgs) -> Result<(Str
     if errors.is_empty() {
         let doc = fs::read_to_string(&doc_path)
             .map_err(|err| format!("failed to read {}: {err}", doc_path.display()))?;
-        for required_ref in ["release/ops-release-manifest.json", "release/ops-chart-digest.json"] {
+        for required_ref in [
+            "release/ops-release-manifest.json",
+            "release/ops-chart-digest.json",
+        ] {
             if !doc.contains(required_ref) {
-                errors.push(format!("ops provenance document must reference `{required_ref}`"));
+                errors.push(format!(
+                    "ops provenance document must reference `{required_ref}`"
+                ));
             }
         }
     }
@@ -2114,7 +2305,10 @@ fn run_release_ops_scenario_evidence_verify(
             .join(scenario)
             .join("evidence.json");
         if !evidence_path.exists() {
-            errors.push(format!("missing scenario evidence: {}", repo_rel(&root, &evidence_path)));
+            errors.push(format!(
+                "missing scenario evidence: {}",
+                repo_rel(&root, &evidence_path)
+            ));
             continue;
         }
         let evidence = read_json(&evidence_path)?;
@@ -2272,8 +2466,14 @@ fn run_release_ops_readiness_summary(args: ReleaseOpsPackageArgs) -> Result<(Str
             .into_iter()
             .flatten()
         {
-            let check = row.get("check").and_then(serde_json::Value::as_str).unwrap_or_default();
-            let row_status = row.get("status").and_then(serde_json::Value::as_str).unwrap_or_default();
+            let check = row
+                .get("check")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
+            let row_status = row
+                .get("status")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
             md.push_str(&format!("| `{check}` | `{row_status}` |\n"));
         }
         let md_path = root.join("ops/report/generated/ops-release-readiness-summary.md");
@@ -2435,10 +2635,14 @@ fn release_spec_allow_deny(spec: &toml::Value) -> (Vec<String>, Vec<String>) {
     (allow, deny)
 }
 
-fn crate_manifest_table(root: &Path, crate_name: &str) -> Result<toml::map::Map<String, toml::Value>, String> {
+fn crate_manifest_table(
+    root: &Path,
+    crate_name: &str,
+) -> Result<toml::map::Map<String, toml::Value>, String> {
     let path = root.join("crates").join(crate_name).join("Cargo.toml");
     let value: toml::Value = toml::from_str(
-        &fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+        &fs::read_to_string(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
     value
@@ -2495,7 +2699,9 @@ fn run_release_crates_list(args: ReleaseCratesListArgs) -> Result<(String, i32),
     Ok((rendered, 0))
 }
 
-fn run_release_crates_validate_metadata(args: ReleaseCratesValidateArgs) -> Result<(String, i32), String> {
+fn run_release_crates_validate_metadata(
+    args: ReleaseCratesValidateArgs,
+) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let spec = read_crates_release_spec(&root)?;
     let (publishable, _) = release_spec_allow_deny(&spec);
@@ -2633,10 +2839,9 @@ fn collect_api_surface_entries(root: &Path, crate_name: &str) -> Result<Vec<Stri
     let lib = root.join("crates").join(crate_name).join("src/lib.rs");
     let text = fs::read_to_string(&lib)
         .map_err(|err| format!("failed to read {}: {err}", lib.display()))?;
-    let re = Regex::new(
-        r#"^\s*pub\s+(mod|use|fn|struct|enum|trait|const|type)\s+([A-Za-z0-9_]+)?"#,
-    )
-    .map_err(|err| format!("failed to build api surface regex: {err}"))?;
+    let re =
+        Regex::new(r#"^\s*pub\s+(mod|use|fn|struct|enum|trait|const|type)\s+([A-Za-z0-9_]+)?"#)
+            .map_err(|err| format!("failed to build api surface regex: {err}"))?;
     let mut entries = text
         .lines()
         .map(str::trim)
@@ -2916,7 +3121,9 @@ fn run_release_crates_dry_run(args: ReleaseCratesDryRunArgs) -> Result<(String, 
             .args(["package", "-p", &crate_name, "--allow-dirty", "--list"])
             .current_dir(&root)
             .output()
-            .map_err(|err| format!("failed to run cargo package --list for `{crate_name}`: {err}"))?;
+            .map_err(|err| {
+                format!("failed to run cargo package --list for `{crate_name}`: {err}")
+            })?;
         if !output.status.success() {
             errors.push(format!(
                 "cargo package --list failed for `{crate_name}`: {}",
@@ -2939,7 +3146,9 @@ fn run_release_crates_dry_run(args: ReleaseCratesDryRunArgs) -> Result<(String, 
             errors.push(format!("crate `{crate_name}` package list missing LICENSE"));
         }
         if !has_readme {
-            errors.push(format!("crate `{crate_name}` package list missing README.md"));
+            errors.push(format!(
+                "crate `{crate_name}` package list missing README.md"
+            ));
         }
         if require_changelog && !has_changelog {
             errors.push(format!(
@@ -3097,7 +3306,8 @@ fn run_release_compatibility_check(
     let root = resolve_repo_root(args.repo_root.clone())?;
     let table_rel = "ops/e2e/scenarios/upgrade/version-compatibility.json";
     let table = read_json(&root.join(table_rel))?;
-    let (from_version, to_version) = normalize_transition_versions(args.from_version, args.to_version);
+    let (from_version, to_version) =
+        normalize_transition_versions(args.from_version, args.to_version);
     let rows = table
         .get("compatibility")
         .and_then(serde_json::Value::as_array)
@@ -3141,7 +3351,8 @@ fn run_release_transition_plan(
     mode: &str,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let (from_version, to_version) = normalize_transition_versions(args.from_version, args.to_version);
+    let (from_version, to_version) =
+        normalize_transition_versions(args.from_version, args.to_version);
     let scenario_id = if mode == "rollback" {
         "rollback-after-successful-upgrade"
     } else {
@@ -3371,9 +3582,7 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
             if feature_name == "default" {
                 continue;
             }
-            let is_empty = definition
-                .as_array()
-                .is_some_and(|items| items.is_empty());
+            let is_empty = definition.as_array().is_some_and(|items| items.is_empty());
             if is_empty && !allow_empty_features.contains(feature_name) {
                 errors.push(format!(
                     "crate `{crate_name}` feature `{feature_name}` has no dependencies and is not allowed by policy"
@@ -3516,7 +3725,8 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
         for entry in fs::read_dir(&examples_runtime_dir)
             .map_err(|err| format!("failed to read {}: {err}", examples_runtime_dir.display()))?
         {
-            let entry = entry.map_err(|err| format!("failed to read runtime config entry: {err}"))?;
+            let entry =
+                entry.map_err(|err| format!("failed to read runtime config entry: {err}"))?;
             let path = entry.path();
             if path.extension().and_then(|ext| ext.to_str()) != Some("toml") {
                 continue;
@@ -3538,7 +3748,8 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
             }
         }
         if !has_toml {
-            errors.push("no runtime TOML examples found under configs/examples/runtime".to_string());
+            errors
+                .push("no runtime TOML examples found under configs/examples/runtime".to_string());
         }
     }
     let changelog_validate = run_release_changelog_validate(ReleaseChangelogValidateArgs {
@@ -3930,15 +4141,13 @@ fn run_release_verify(args: ReleaseVerifyArgs) -> Result<(String, i32), String> 
         serde_json::from_slice(&evidence_out.stdout).unwrap_or_else(|_| {
             serde_json::json!({"status":"failed","stderr": String::from_utf8_lossy(&evidence_out.stderr)})
         });
-    let readiness_report_path = root.join("artifacts/ops/ops_run/observe/operational-readiness-report.json");
+    let readiness_report_path =
+        root.join("artifacts/ops/ops_run/observe/operational-readiness-report.json");
     let rel_ops_001 = std::fs::read_to_string(&readiness_report_path)
         .ok()
         .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
         .is_some_and(|report| {
-            report
-                .get("status")
-                .and_then(serde_json::Value::as_str)
-                == Some("ok")
+            report.get("status").and_then(serde_json::Value::as_str) == Some("ok")
                 && report
                     .get("completeness")
                     .and_then(serde_json::Value::as_f64)
@@ -5222,11 +5431,11 @@ fn generate_release_readiness_report(
     }))
 }
 
-fn run_release_readiness_report(
-    args: ReleaseBundleBuildArgs,
-) -> Result<(String, i32), String> {
+fn run_release_readiness_report(args: ReleaseBundleBuildArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let version = args.version.unwrap_or_else(|| default_release_version(&root));
+    let version = args
+        .version
+        .unwrap_or_else(|| default_release_version(&root));
     let report = generate_release_readiness_report(&root, &version)?;
     let out_path = root
         .join("artifacts/release/reports")
@@ -5253,11 +5462,11 @@ fn run_release_readiness_report(
     Ok((rendered, code))
 }
 
-fn run_release_launch_checklist(
-    args: ReleaseBundleBuildArgs,
-) -> Result<(String, i32), String> {
+fn run_release_launch_checklist(args: ReleaseBundleBuildArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let version = args.version.unwrap_or_else(|| default_release_version(&root));
+    let version = args
+        .version
+        .unwrap_or_else(|| default_release_version(&root));
     let report = generate_release_readiness_report(&root, &version)?;
     let manifest = read_json(&release_manifest_path(&root, &version))?;
     let out_path = root
@@ -5302,14 +5511,23 @@ fn run_release_launch_checklist(
         .into_iter()
         .flatten()
     {
-        let path = row.get("path").and_then(serde_json::Value::as_str).unwrap_or_default();
-        let status = row.get("status").and_then(serde_json::Value::as_str).unwrap_or_default();
+        let path = row
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let status = row
+            .get("status")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
         doc.push_str(&format!("- [{status}] `{path}`\n"));
     }
     doc.push_str("\n## Manifest summary\n\n");
     doc.push_str(&format!(
         "- git sha: `{}`\n",
-        manifest.get("git_sha").and_then(serde_json::Value::as_str).unwrap_or("unknown")
+        manifest
+            .get("git_sha")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("unknown")
     ));
     doc.push_str(&format!(
         "- chart: `{}`\n",
@@ -5319,7 +5537,8 @@ fn run_release_launch_checklist(
             .and_then(serde_json::Value::as_str)
             .unwrap_or("unknown")
     ));
-    fs::write(&out_path, doc).map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
+    fs::write(&out_path, doc)
+        .map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
     let status = report["status"].as_str().unwrap_or("failed");
     let rendered = emit_payload(
         args.format,
@@ -5519,7 +5738,9 @@ pub(crate) fn run_release_command(
         ReleaseCommand::Packet(args) => run_release_packet(args),
         ReleaseCommand::Crates { command } => match command {
             ReleaseCratesCommand::List(args) => run_release_crates_list(args),
-            ReleaseCratesCommand::ValidateMetadata(args) => run_release_crates_validate_metadata(args),
+            ReleaseCratesCommand::ValidateMetadata(args) => {
+                run_release_crates_validate_metadata(args)
+            }
             ReleaseCratesCommand::ValidatePublishFlags(args) => {
                 run_release_crates_validate_publish_flags(args)
             }

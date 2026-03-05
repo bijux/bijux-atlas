@@ -50,6 +50,8 @@ mod perf_commands;
 mod release_commands;
 #[path = "commands/reproduce.rs"]
 mod reproduce_commands;
+#[path = "commands/runtime.rs"]
+mod runtime_commands;
 #[path = "commands/security.rs"]
 mod security_commands;
 #[path = "commands/suites.rs"]

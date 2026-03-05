@@ -31,12 +31,6 @@ fn run_atlas_command(
         AtlasCommand::PrintConfig { canonical } => {
             print_config(canonical, output_mode).map_err(CliError::internal)
         }
-        AtlasCommand::PrintConfigSchema { canonical } => {
-            print_config_schema(canonical, output_mode).map_err(CliError::internal)
-        }
-        AtlasCommand::SelfCheck { canonical } => {
-            run_self_check(canonical, output_mode).map_err(CliError::internal)
-        }
         AtlasCommand::Catalog { command } => match command {
             CatalogCommand::Validate { path } => {
                 artifact_validation::validate_catalog(path, output_mode).map_err(CliError::internal)

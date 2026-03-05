@@ -172,62 +172,6 @@ fn print_config(canonical_out: bool, output_mode: OutputMode) -> Result<(), Stri
     Ok(())
 }
 
-fn runtime_config_schema_path() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../bijux-atlas-server/docs/generated/runtime-startup-config.schema.json")
-}
-
-fn print_config_schema(canonical_out: bool, output_mode: OutputMode) -> Result<(), String> {
-    let schema_path = runtime_config_schema_path();
-    let schema_text = fs::read_to_string(&schema_path)
-        .map_err(|e| format!("failed to read {}: {e}", schema_path.display()))?;
-    let schema_json: Value =
-        serde_json::from_str(&schema_text).map_err(|e| format!("invalid schema JSON: {e}"))?;
-    let text = if canonical_out {
-        String::from_utf8(canonical::stable_json_bytes(&schema_json).map_err(|e| e.to_string())?)
-            .map_err(|e| e.to_string())?
-    } else {
-        serde_json::to_string_pretty(&schema_json).map_err(|e| e.to_string())?
-    };
-    println!("{text}");
-    if !output_mode.json {
-        println!();
-    }
-    Ok(())
-}
-
-fn run_self_check(canonical_out: bool, output_mode: OutputMode) -> Result<(), String> {
-    let schema_path = runtime_config_schema_path();
-    let schema_text = fs::read_to_string(&schema_path)
-        .map_err(|e| format!("failed to read {}: {e}", schema_path.display()))?;
-    let schema_json: Value =
-        serde_json::from_str(&schema_text).map_err(|e| format!("invalid schema JSON: {e}"))?;
-    let schema_bytes = canonical::stable_json_bytes(&schema_json).map_err(|e| e.to_string())?;
-    let schema_digest = sha256_hex(&schema_bytes);
-    let payload = json!({
-        "schema_version": 1,
-        "kind": "runtime_self_check",
-        "status": "ok",
-        "checks": [
-            {"id":"config_schema_available","status":"ok","path": schema_path.display().to_string()},
-            {"id":"config_schema_matches_repo","status":"ok","sha256": schema_digest},
-            {"id":"self_check_offline_ready","status":"ok","external_dependencies_required": false},
-            {"id":"self_check_deterministic_report","status":"ok","canonical_json": true}
-        ]
-    });
-    let text = if canonical_out {
-        String::from_utf8(canonical::stable_json_bytes(&payload).map_err(|e| e.to_string())?)
-            .map_err(|e| e.to_string())?
-    } else {
-        serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
-    };
-    println!("{text}");
-    if !output_mode.json {
-        println!();
-    }
-    Ok(())
-}
-
 #[derive(Debug)]
 struct CliError {
     exit_code: bijux_atlas_core::ExitCode,

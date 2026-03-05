@@ -14,6 +14,7 @@ docker run --rm -p 8080:8080 ghcr.io/bijux/bijux-atlas-server:v0.1.0 atlas serve
 
 ## Runtime Config Commands
 ```bash
-docker run --rm ghcr.io/bijux/bijux-atlas-server:v0.1.0 print-config-schema --json
-docker run --rm ghcr.io/bijux/bijux-atlas-server:v0.1.0 self-check --json
+bijux-dev-atlas runtime print-config-schema --format json
+bijux-dev-atlas runtime self-check --format json
+bijux-dev-atlas runtime explain-config-schema --format json
 ```
