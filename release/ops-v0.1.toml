@@ -15,7 +15,12 @@ include = [
   "ops/k8s/charts/bijux-atlas/Chart.yaml",
   "ops/k8s/charts/bijux-atlas/values.yaml",
   "ops/k8s/charts/bijux-atlas/values.schema.json",
-  "ops/inventory"
+  "ops/inventory",
+  "ops/k8s/values",
+  "ops/evidence/schema/v1/ops-evidence-bundle.schema.json",
+  "ops/k8s/tests/goldens/render-kind.summary.json",
+  "ops/report/generated/release-evidence-bundle.json",
+  "docs/operations/release-provenance.md"
 ]
 checksum = "sha256"
 
@@ -29,3 +34,10 @@ output_dir = "artifacts/release/ops/package"
 require_helm_lint = true
 require_schema_validation = true
 require_install_evidence_bundle = true
+
+[bundle]
+name_prefix = "ops-bundle"
+output_dir = "artifacts/release/ops/bundle"
+offline_required = true
+include_tool_version_requirements = true
+include_compatibility_notes = true

@@ -140,8 +140,13 @@ pub(super) fn force_json_output(command: &mut Command) {
                 | ReleaseImagesCommand::ReadinessSummary(args) => args.format = FormatArg::Json,
             },
             ReleaseCommand::Ops { command } => match command {
-                ReleaseOpsCommand::Package(args) | ReleaseOpsCommand::ValidatePackage(args) => {
-                    args.format = FormatArg::Json
+                ReleaseOpsCommand::Package(args)
+                | ReleaseOpsCommand::ValidatePackage(args)
+                | ReleaseOpsCommand::DigestVerify(args) => args.format = FormatArg::Json,
+                ReleaseOpsCommand::Push(args) => args.common.format = FormatArg::Json,
+                ReleaseOpsCommand::PullTest(args) => args.common.format = FormatArg::Json,
+                ReleaseOpsCommand::BundleBuild(args) | ReleaseOpsCommand::BundleVerify(args) => {
+                    args.common.format = FormatArg::Json
                 }
             },
         },
@@ -1778,9 +1783,26 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
             },
             ReleaseCommand::Ops { command } => match command {
-                ReleaseOpsCommand::Package(args) | ReleaseOpsCommand::ValidatePackage(args) => {
+                ReleaseOpsCommand::Package(args)
+                | ReleaseOpsCommand::ValidatePackage(args)
+                | ReleaseOpsCommand::DigestVerify(args) => {
                     if args.repo_root.is_none() {
                         args.repo_root = Some(root.clone());
+                    }
+                }
+                ReleaseOpsCommand::Push(args) => {
+                    if args.common.repo_root.is_none() {
+                        args.common.repo_root = Some(root.clone());
+                    }
+                }
+                ReleaseOpsCommand::PullTest(args) => {
+                    if args.common.repo_root.is_none() {
+                        args.common.repo_root = Some(root.clone());
+                    }
+                }
+                ReleaseOpsCommand::BundleBuild(args) | ReleaseOpsCommand::BundleVerify(args) => {
+                    if args.common.repo_root.is_none() {
+                        args.common.repo_root = Some(root.clone());
                     }
                 }
             },

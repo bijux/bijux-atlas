@@ -7,8 +7,8 @@ use crate::cli::{
     ReleaseCompatibilityCheckArgs, ReleaseCratesCommand, ReleaseCratesDryRunArgs,
     ReleaseCratesListArgs, ReleaseCratesValidateArgs, ReleaseDiffArgs, ReleaseImagesCommand,
     ReleaseImagesChangelogArgs, ReleaseImagesIntegrationArgs, ReleaseImagesManifestArgs,
-    ReleaseImagesNotesArgs, ReleaseImagesValidateArgs, ReleaseOpsCommand, ReleaseOpsPackageArgs,
-    ReleaseManifestGenerateArgs,
+    ReleaseImagesNotesArgs, ReleaseImagesValidateArgs, ReleaseOpsBundleArgs, ReleaseOpsCommand,
+    ReleaseOpsPackageArgs, ReleaseOpsPullTestArgs, ReleaseOpsPushArgs, ReleaseManifestGenerateArgs,
     ReleaseManifestValidateArgs, ReleaseMsrvCommand, ReleaseMsrvVerifyArgs, ReleasePacketArgs,
     ReleasePlanArgs, ReleaseRebuildVerifyArgs, ReleaseReproducibilityReportArgs,
     ReleaseSemverCommand,
@@ -1490,6 +1490,365 @@ fn run_release_ops_validate_package(args: ReleaseOpsPackageArgs) -> Result<(Stri
         "errors": errors
     });
     let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn find_ops_chart_tgz(out_dir: &Path) -> Result<Option<std::path::PathBuf>, String> {
+    if !out_dir.exists() {
+        return Ok(None);
+    }
+    let mut rows = fs::read_dir(out_dir)
+        .map_err(|err| format!("failed to read {}: {err}", out_dir.display()))?
+        .filter_map(|entry| entry.ok().map(|e| e.path()))
+        .filter(|p| p.extension().and_then(|e| e.to_str()) == Some("tgz"))
+        .collect::<Vec<_>>();
+    rows.sort();
+    Ok(rows.pop())
+}
+
+fn release_version_from_chart(chart_yaml: &Path) -> Result<String, String> {
+    let yaml = read_yaml(chart_yaml)?;
+    yaml.get("version")
+        .and_then(serde_yaml::Value::as_str)
+        .map(ToOwned::to_owned)
+        .ok_or_else(|| format!("missing `version` in {}", chart_yaml.display()))
+}
+
+fn run_release_ops_push(args: ReleaseOpsPushArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.common.repo_root.clone())?;
+    let spec = read_ops_release_spec(&root)?;
+    let out_rel = spec
+        .get("package")
+        .and_then(toml::Value::as_table)
+        .and_then(|v| v.get("output_dir"))
+        .and_then(toml::Value::as_str)
+        .unwrap_or("artifacts/release/ops/package");
+    let out_dir = root.join(out_rel);
+    let chart_pkg = find_ops_chart_tgz(&out_dir)?;
+    let chart_pkg = match chart_pkg {
+        Some(path) => path,
+        None => {
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "release_ops_push",
+                "status": "failed",
+                "errors": [format!("no packaged chart found in {}", out_dir.display())]
+            });
+            let rendered = emit_payload(args.common.format, args.common.out, &payload)?;
+            return Ok((rendered, 1));
+        }
+    };
+    let chart_ref = spec
+        .get("distribution")
+        .and_then(toml::Value::as_table)
+        .and_then(|v| v.get("chart_reference"))
+        .and_then(toml::Value::as_str)
+        .unwrap_or("oci://ghcr.io/bijux/charts/bijux-atlas")
+        .to_string();
+    let mut errors = Vec::<String>::new();
+    let mut stdout = String::new();
+    if args.dry_run {
+        stdout = format!("dry-run: helm push {} {}", chart_pkg.display(), chart_ref);
+    } else if args.common.allow_subprocess && args.allow_network {
+        let output = ProcessCommand::new("helm")
+            .args([
+                "push",
+                chart_pkg.to_string_lossy().as_ref(),
+                chart_ref.as_str(),
+            ])
+            .current_dir(&root)
+            .output()
+            .map_err(|err| format!("failed to run helm push: {err}"))?;
+        stdout = String::from_utf8_lossy(&output.stdout).to_string();
+        if !output.status.success() {
+            errors.push(format!(
+                "helm push failed: {}",
+                String::from_utf8_lossy(&output.stderr).trim()
+            ));
+        }
+    } else {
+        errors.push("release ops push requires --allow-subprocess and --allow-network (or --dry-run)".to_string());
+    }
+    let digest = sha256_file(&chart_pkg)?;
+    let digest_report_path = root.join("release/ops-chart-digest.json");
+    let release_manifest_path = root.join("release/ops-release-manifest.json");
+    if args.common.allow_write {
+        write_json(
+            &digest_report_path,
+            &serde_json::json!({
+                "schema_version": 1,
+                "chart_reference": chart_ref,
+                "package_path": repo_rel(&root, &chart_pkg),
+                "sha256": digest
+            }),
+        )?;
+        write_json(
+            &release_manifest_path,
+            &serde_json::json!({
+                "schema_version": 1,
+                "kind": "ops_release_manifest",
+                "chart_reference": chart_ref,
+                "chart_package_path": repo_rel(&root, &chart_pkg),
+                "chart_sha256": digest
+            }),
+        )?;
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_push",
+        "status": status,
+        "chart_reference": chart_ref,
+        "package_path": repo_rel(&root, &chart_pkg),
+        "sha256": digest,
+        "digest_report_path": repo_rel(&root, &digest_report_path),
+        "release_manifest_path": repo_rel(&root, &release_manifest_path),
+        "stdout": stdout,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.common.format, args.common.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_ops_digest_verify(args: ReleaseOpsPackageArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let spec = read_ops_release_spec(&root)?;
+    let out_rel = spec
+        .get("package")
+        .and_then(toml::Value::as_table)
+        .and_then(|v| v.get("output_dir"))
+        .and_then(toml::Value::as_str)
+        .unwrap_or("artifacts/release/ops/package");
+    let out_dir = root.join(out_rel);
+    let chart_pkg = find_ops_chart_tgz(&out_dir)?;
+    let digest_report_path = root.join("release/ops-chart-digest.json");
+    let mut errors = Vec::<String>::new();
+    let mut actual_sha = None;
+    if let Some(path) = chart_pkg.as_ref() {
+        actual_sha = Some(sha256_file(path)?);
+    } else {
+        errors.push(format!("no chart package found in {}", out_dir.display()));
+    }
+    let recorded_sha = if digest_report_path.exists() {
+        read_json(&digest_report_path)?
+            .get("sha256")
+            .and_then(serde_json::Value::as_str)
+            .map(ToOwned::to_owned)
+    } else {
+        errors.push("missing release/ops-chart-digest.json".to_string());
+        None
+    };
+    if actual_sha.is_some() && recorded_sha.is_some() && actual_sha != recorded_sha {
+        errors.push("chart digest does not match recorded push digest".to_string());
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_digest_verify",
+        "status": status,
+        "actual_sha256": actual_sha,
+        "recorded_sha256": recorded_sha,
+        "digest_report_path": repo_rel(&root, &digest_report_path),
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_ops_pull_test(args: ReleaseOpsPullTestArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.common.repo_root.clone())?;
+    let spec = read_ops_release_spec(&root)?;
+    let chart_ref = spec
+        .get("distribution")
+        .and_then(toml::Value::as_table)
+        .and_then(|v| v.get("chart_reference"))
+        .and_then(toml::Value::as_str)
+        .unwrap_or("oci://ghcr.io/bijux/charts/bijux-atlas")
+        .to_string();
+    let mut errors = Vec::<String>::new();
+    let mut stdout = String::new();
+    if args.common.allow_subprocess && args.allow_network {
+        let output = ProcessCommand::new("helm")
+            .args(["pull", chart_ref.as_str(), "--destination", "artifacts/release/ops/pull-test"])
+            .current_dir(&root)
+            .output()
+            .map_err(|err| format!("failed to run helm pull: {err}"))?;
+        stdout = String::from_utf8_lossy(&output.stdout).to_string();
+        if !output.status.success() {
+            errors.push(format!(
+                "helm pull failed: {}",
+                String::from_utf8_lossy(&output.stderr).trim()
+            ));
+        }
+    } else {
+        errors.push("release ops pull-test requires --allow-subprocess and --allow-network".to_string());
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_pull_test",
+        "status": status,
+        "chart_reference": chart_ref,
+        "stdout": stdout,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.common.format, args.common.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_ops_bundle_build(args: ReleaseOpsBundleArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.common.repo_root.clone())?;
+    if !args.common.allow_write {
+        return Err("release ops bundle-build requires --allow-write".to_string());
+    }
+    let spec = read_ops_release_spec(&root)?;
+    let chart_path = root.join(
+        spec.get("chart")
+            .and_then(toml::Value::as_table)
+            .and_then(|v| v.get("path"))
+            .and_then(toml::Value::as_str)
+            .unwrap_or("ops/k8s/charts/bijux-atlas"),
+    );
+    let chart_version = release_version_from_chart(&chart_path.join("Chart.yaml"))?;
+    let version = args.version.unwrap_or(chart_version);
+    let package_out = root.join(
+        spec.get("package")
+            .and_then(toml::Value::as_table)
+            .and_then(|v| v.get("output_dir"))
+            .and_then(toml::Value::as_str)
+            .unwrap_or("artifacts/release/ops/package"),
+    );
+    let chart_pkg = find_ops_chart_tgz(&package_out)?;
+    let chart_pkg = chart_pkg.ok_or_else(|| {
+        format!(
+            "chart package is missing in {}; run `release ops package` first",
+            package_out.display()
+        )
+    })?;
+    let bundle_dir = root.join("artifacts/release/ops/bundle").join(format!("v{version}"));
+    fs::create_dir_all(&bundle_dir)
+        .map_err(|err| format!("failed to create {}: {err}", bundle_dir.display()))?;
+    let bundle_staging = bundle_dir.join("contents");
+    fs::create_dir_all(&bundle_staging)
+        .map_err(|err| format!("failed to create {}: {err}", bundle_staging.display()))?;
+    let include_paths = vec![
+        chart_pkg.clone(),
+        root.join("ops/k8s/values"),
+        root.join("ops/k8s/charts/bijux-atlas/values.schema.json"),
+        root.join("ops/inventory"),
+        root.join("ops/evidence/schema/v1/ops-evidence-bundle.schema.json"),
+        root.join("ops/k8s/tests/goldens/render-kind.summary.json"),
+        root.join("ops/report/generated/release-evidence-bundle.json"),
+        root.join("ops/report/generated/readiness-score.json"),
+    ];
+    let mut copied = Vec::<serde_json::Value>::new();
+    for path in include_paths {
+        if !path.exists() {
+            continue;
+        }
+        let rel = repo_rel(&root, &path);
+        let target = bundle_staging.join(&rel);
+        if let Some(parent) = target.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+        }
+        if path.is_dir() {
+            let _ = ProcessCommand::new("cp")
+                .args(["-R", path.to_string_lossy().as_ref(), target.to_string_lossy().as_ref()])
+                .output();
+        } else {
+            fs::copy(&path, &target)
+                .map_err(|err| format!("failed to copy {}: {err}", path.display()))?;
+            copied.push(serde_json::json!({
+                "path": rel,
+                "sha256": sha256_file(&target)?,
+            }));
+        }
+    }
+    copied.sort_by(|a, b| a["path"].as_str().unwrap_or_default().cmp(b["path"].as_str().unwrap_or_default()));
+    let checksums_path = bundle_staging.join("checksums.json");
+    write_json(
+        &checksums_path,
+        &serde_json::json!({
+            "schema_version": 1,
+            "artifacts": copied
+        }),
+    )?;
+    let compatibility_path = bundle_staging.join("compatibility-notes.md");
+    fs::write(
+        &compatibility_path,
+        "Ops compatibility notes\n- chart: release-version\n- profiles bundle: release-version\n",
+    )
+    .map_err(|err| format!("failed to write {}: {err}", compatibility_path.display()))?;
+    let tool_versions_path = bundle_staging.join("tool-version-requirements.json");
+    write_json(
+        &tool_versions_path,
+        &serde_json::json!({
+            "schema_version": 1,
+            "helm": ">=3.14.0",
+            "kubectl": ">=1.31.0"
+        }),
+    )?;
+    let tarball = bundle_dir.join(format!("ops-bundle-v{version}.tar.gz"));
+    let output = ProcessCommand::new("tar")
+        .args([
+            "-czf",
+            tarball.to_string_lossy().as_ref(),
+            "-C",
+            bundle_staging.to_string_lossy().as_ref(),
+            ".",
+        ])
+        .output()
+        .map_err(|err| format!("failed to build bundle tarball: {err}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "failed to build bundle tarball: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        ));
+    }
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_bundle_build",
+        "status": "ok",
+        "version": version,
+        "bundle_tarball": repo_rel(&root, &tarball),
+        "bundle_sha256": sha256_file(&tarball)?,
+        "staging_dir": repo_rel(&root, &bundle_staging)
+    });
+    let rendered = emit_payload(args.common.format, args.common.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_release_ops_bundle_verify(args: ReleaseOpsBundleArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.common.repo_root.clone())?;
+    let version = args.version.unwrap_or_else(|| "0.1.0".to_string());
+    let bundle_dir = root.join("artifacts/release/ops/bundle").join(format!("v{version}"));
+    let tarball = bundle_dir.join(format!("ops-bundle-v{version}.tar.gz"));
+    let mut errors = Vec::<String>::new();
+    if !tarball.exists() {
+        errors.push(format!("bundle tarball missing: {}", tarball.display()));
+    }
+    let staging = bundle_dir.join("contents");
+    for required in [
+        "checksums.json",
+        "tool-version-requirements.json",
+        "compatibility-notes.md",
+        "ops/evidence/schema/v1/ops-evidence-bundle.schema.json",
+    ] {
+        if !staging.join(required).exists() {
+            errors.push(format!("bundle missing required file: {required}"));
+        }
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_bundle_verify",
+        "status": status,
+        "version": version,
+        "bundle_tarball": repo_rel(&root, &tarball),
+        "errors": errors
+    });
+    let rendered = emit_payload(args.common.format, args.common.out, &payload)?;
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
@@ -4473,6 +4832,11 @@ pub(crate) fn run_release_command(
         ReleaseCommand::Ops { command } => match command {
             ReleaseOpsCommand::Package(args) => run_release_ops_package(args),
             ReleaseOpsCommand::ValidatePackage(args) => run_release_ops_validate_package(args),
+            ReleaseOpsCommand::Push(args) => run_release_ops_push(args),
+            ReleaseOpsCommand::DigestVerify(args) => run_release_ops_digest_verify(args),
+            ReleaseOpsCommand::PullTest(args) => run_release_ops_pull_test(args),
+            ReleaseOpsCommand::BundleBuild(args) => run_release_ops_bundle_build(args),
+            ReleaseOpsCommand::BundleVerify(args) => run_release_ops_bundle_verify(args),
         },
     }
 }

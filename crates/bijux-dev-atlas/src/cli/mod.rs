@@ -371,6 +371,11 @@ pub enum ReleaseImagesCommand {
 pub enum ReleaseOpsCommand {
     Package(ReleaseOpsPackageArgs),
     ValidatePackage(ReleaseOpsPackageArgs),
+    Push(ReleaseOpsPushArgs),
+    DigestVerify(ReleaseOpsPackageArgs),
+    PullTest(ReleaseOpsPullTestArgs),
+    BundleBuild(ReleaseOpsBundleArgs),
+    BundleVerify(ReleaseOpsBundleArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -1231,6 +1236,32 @@ pub struct ReleaseOpsPackageArgs {
     pub allow_write: bool,
     #[arg(long, default_value_t = false)]
     pub allow_subprocess: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseOpsPushArgs {
+    #[command(flatten)]
+    pub common: ReleaseOpsPackageArgs,
+    #[arg(long, default_value_t = false)]
+    pub allow_network: bool,
+    #[arg(long, default_value_t = false)]
+    pub dry_run: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseOpsPullTestArgs {
+    #[command(flatten)]
+    pub common: ReleaseOpsPackageArgs,
+    #[arg(long, default_value_t = false)]
+    pub allow_network: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseOpsBundleArgs {
+    #[command(flatten)]
+    pub common: ReleaseOpsPackageArgs,
+    #[arg(long)]
+    pub version: Option<String>,
 }
 
 #[derive(Args, Debug, Clone)]
