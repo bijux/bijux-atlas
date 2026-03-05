@@ -45,6 +45,7 @@ Provide the canonical product story: what Atlas is, who it serves, and the promi
 - [Production-ready boundaries](production-ready-boundaries.md)
 - [Not done yet](not-done-yet.md)
 - [For reviewers](for-reviewers.md)
+- [For operators](for-operators.md)
 - [Reviewer onboarding checklist](reviewer-onboarding-checklist.md)
 - [Deep work highlights](deep-work-highlights.md)
 - [How this repo enforces itself](how-this-repo-enforces-itself.md)

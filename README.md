@@ -11,6 +11,33 @@ Deterministic genomics data infrastructure with executable governance.
 | Docs | `docs/` | Canonical user/operator/contributor documentation |
 | Docker | `docker/` | Container build and runtime image definitions |
 
+## What's Real
+
+Ten deterministic end-to-end runs are the core proof surface.
+
+- Landing page: [`docs/tutorials/real-data/index.md`](docs/tutorials/real-data/index.md)
+- Run catalog and intent: [`configs/tutorials/real-data-runs.json`](configs/tutorials/real-data-runs.json)
+- Combined report: [`docs/reference/reports/real-data-runs.md`](docs/reference/reports/real-data-runs.md)
+
+## How To Evaluate
+
+Run these checks as the fastest evaluator path:
+
+1. `bijux-dev-atlas tutorials list-runs --format json`
+2. `bijux-dev-atlas tutorials plan-run --run-id rdr-001-genes-baseline --format json`
+3. `bijux-dev-atlas tutorials docs-report --format json`
+4. `bijux-dev-atlas docs generate real-data-pages --allow-write --format json`
+
+## Evidence First
+
+Evidence is treated as a product contract, not an optional report.
+
+- Human-readable summaries: `docs/_internal/generated/`
+- Run-level artifacts: `artifacts/tutorials/runs/<run_id>/`
+- Contract and checks index: [`docs/_internal/governance/checks-and-contracts.md`](docs/_internal/governance/checks-and-contracts.md)
+
+## Architecture Map
+
 ## Why This Is Different
 
 - Determinism is enforced, not claimed.
@@ -47,6 +74,14 @@ Planned publication surfaces:
 - `GHCR` for runtime and supporting container images
 - `GitHub Pages` for docs site
 - Versioned ops release artifacts for cluster operators
+
+Release artifact references:
+
+- Crates: `release/crates-v0.1.toml`
+- Images: `release/images-v0.1.toml`
+- Ops Helm OCI chart: `release/ops-v0.1.toml` (`oci://ghcr.io/bijux/charts/bijux-atlas`)
+- Ops release manifest: `release/ops-release-manifest.json`
+- Ops chart/workspace linkage manifest: `release/ops-release-bundle-manifest.json`
 
 ## Docs Deploy
 

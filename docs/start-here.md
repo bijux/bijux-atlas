@@ -32,6 +32,10 @@ This is the only onboarding root in `docs/`.
 
 Atlas validates dataset inputs, builds immutable artifacts, and serves stable API queries through explicit operational controls.
 
+## Primary proof path
+
+Start with [Real Data Runs](tutorials/real-data/index.md). This is the fastest path to verify end-to-end ingest, query, and evidence behavior on real datasets.
+
 ## Quickstart
 
 ```bash
@@ -60,6 +64,8 @@ bijux dev atlas demo quickstart --format json
 
 ## Next steps
 
+- [Real data runs](tutorials/real-data/index.md)
+- [Reviewer quick path](tutorials/real-data/reviewer-quick-path.md)
 - [Product Index](product/index.md)
 - [Architecture Index](architecture/index.md)
 - [Operations Index](operations/index.md)
