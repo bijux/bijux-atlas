@@ -1381,11 +1381,20 @@ pub enum ClientsCommand {
         #[command(subcommand)]
         command: ClientsCompatMatrixCommand,
     },
+    Python {
+        #[command(subcommand)]
+        command: ClientsPythonCommand,
+    },
 }
 
 #[derive(Subcommand, Debug)]
 pub enum ClientsCompatMatrixCommand {
     Verify(ClientsCommandArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ClientsPythonCommand {
+    Test(ClientsPythonTestArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -1400,6 +1409,16 @@ pub struct ClientsCommandArgs {
     pub markdown: bool,
     #[arg(long)]
     pub repo_root: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ClientsPythonTestArgs {
+    #[command(flatten)]
+    pub common: ClientsCommandArgs,
+    #[arg(long, default_value_t = false)]
+    pub skip_network: bool,
+    #[arg(long, default_value_t = false)]
+    pub install_deps: bool,
 }
 
 #[derive(Args, Debug, Clone)]

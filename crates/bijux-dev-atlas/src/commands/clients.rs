@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{ClientsCommand, ClientsCommandArgs, ClientsCompatMatrixCommand};
+use crate::cli::{
+    ClientsCommand, ClientsCommandArgs, ClientsCompatMatrixCommand, ClientsPythonCommand,
+    ClientsPythonTestArgs,
+};
 use crate::{emit_payload, resolve_repo_root};
 use std::fs;
 use std::io::{self, Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
+use std::process::Command as ProcessCommand;
 
 const CLIENT_DOCS_CONFIG: &str = "configs/clients/atlas-client-docs.json";
 const OPENAPI_SNAPSHOT: &str = "configs/openapi/v1/openapi.snapshot.json";
@@ -27,6 +31,9 @@ pub(crate) fn run_clients_command(quiet: bool, command: ClientsCommand) -> i32 {
         ClientsCommand::SchemaVerify(args) => run_clients_schema_verify(&args),
         ClientsCommand::CompatMatrix { command } => match command {
             ClientsCompatMatrixCommand::Verify(args) => run_clients_compat_matrix_verify(&args),
+        },
+        ClientsCommand::Python { command } => match command {
+            ClientsPythonCommand::Test(args) => run_clients_python_test(&args),
         },
     };
 
@@ -78,10 +85,11 @@ fn run_clients_verify(args: &ClientsCommandArgs) -> Result<(String, i32), String
         ]);
         return Ok((nextest, if passed == 4 { 0 } else { 1 }));
     }
-    let payload = serde_json::json!({
+    let success = passed == 4;
+    let evidence = serde_json::json!({
         "schema_version": 1,
         "domain": "clients",
-        "action": "verify",
+        "action": "verify-evidence",
         "client": args.client,
         "checks": [
             {"id": "docs-verify", "status": if docs_code == 0 {"pass"} else {"fail"}},
@@ -97,7 +105,39 @@ fn run_clients_verify(args: &ClientsCommandArgs) -> Result<(String, i32), String
         },
         "summary": {"total": 4, "passed": passed, "failed": 4 - passed}
     });
-    Ok((emit_payload(args.format, args.out.clone(), &payload)?, if passed == 4 { 0 } else { 1 }))
+    let evidence_root = repo_artifact_root(args, &args.client);
+    fs::create_dir_all(&evidence_root)
+        .map_err(|err| format!("failed to create {}: {err}", evidence_root.display()))?;
+    let evidence_json_path = evidence_root.join("verify-evidence.json");
+    fs::write(
+        &evidence_json_path,
+        format!(
+            "{}\n",
+            serde_json::to_string_pretty(&evidence).map_err(|err| format!("serialize failed: {err}"))?
+        ),
+    )
+    .map_err(|err| format!("failed to write {}: {err}", evidence_json_path.display()))?;
+    let evidence_md_path = evidence_root.join("verify-evidence.md");
+    fs::write(
+        &evidence_md_path,
+        render_clients_verify_markdown(&args.client, &evidence),
+    )
+    .map_err(|err| format!("failed to write {}: {err}", evidence_md_path.display()))?;
+
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "domain": "clients",
+        "action": "verify",
+        "client": args.client,
+        "success": success,
+        "summary": evidence["summary"].clone(),
+        "checks": evidence["checks"].clone(),
+        "evidence": {
+            "json": evidence_json_path.display().to_string(),
+            "markdown": evidence_md_path.display().to_string()
+        }
+    });
+    Ok((emit_payload(args.format, args.out.clone(), &payload)?, if success { 0 } else { 1 }))
 }
 
 fn run_clients_docs_generate(args: &ClientsCommandArgs) -> Result<(String, i32), String> {
@@ -253,10 +293,7 @@ fn run_clients_examples_run(args: &ClientsCommandArgs) -> Result<(String, i32), 
         "violations": failures,
         "success": failures.is_empty()
     });
-    let evidence_path = repo_root
-        .join("artifacts/clients")
-        .join(&args.client)
-        .join("examples-run-evidence.json");
+    let evidence_path = repo_artifact_root(args, &args.client).join("examples-run-evidence.json");
     if let Some(parent) = evidence_path.parent() {
         fs::create_dir_all(parent)
             .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
@@ -281,6 +318,121 @@ fn run_clients_examples_run(args: &ClientsCommandArgs) -> Result<(String, i32), 
     Ok((
         emit_payload(args.format, args.out.clone(), &payload)?,
         if payload["success"].as_bool().unwrap_or(false) { 0 } else { 1 },
+    ))
+}
+
+fn run_clients_python_test(args: &ClientsPythonTestArgs) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let root = client_root(&repo_root, &args.common.client);
+    let lock_path = root.join("requirements.lock");
+    if !lock_path.exists() {
+        return Err(format!(
+            "missing deterministic lockfile {}; add requirements.lock",
+            lock_path.display()
+        ));
+    }
+    if args.install_deps {
+        run_allowlisted_python(
+            &root,
+            &["-m", "pip", "install", "-r", "requirements.lock"],
+            "install dependencies",
+        )?;
+    }
+
+    let mut test_files = Vec::new();
+    for entry in walkdir::WalkDir::new(root.join("tests")) {
+        let entry = entry.map_err(|err| format!("walk tests failed: {err}"))?;
+        if entry.file_type().is_file()
+            && entry.path().extension().and_then(|v| v.to_str()) == Some("py")
+            && entry
+                .path()
+                .file_name()
+                .and_then(|v| v.to_str())
+                .unwrap_or_default()
+                .starts_with("test_")
+        {
+            let rel = entry
+                .path()
+                .strip_prefix(&root)
+                .unwrap_or(entry.path())
+                .display()
+                .to_string();
+            test_files.push(rel);
+        }
+    }
+    test_files.sort();
+    let mut rows = Vec::new();
+    for test_file in &test_files {
+        let mut cmd_args = vec!["-m", "pytest", test_file.as_str()];
+        if args.skip_network {
+            cmd_args.extend(["-m", "not integration and not network"]);
+        }
+        let started = std::time::Instant::now();
+        let status = run_allowlisted_python_status(&root, &cmd_args, args.skip_network)?;
+        let duration_ms = started.elapsed().as_millis() as u64;
+        rows.push((test_file.clone(), status.success(), duration_ms));
+    }
+    let passed = rows.iter().filter(|(_, ok, _)| *ok).count();
+    let failed = rows.len().saturating_sub(passed);
+    let evidence_root = repo_artifact_root(&args.common, &args.common.client);
+    fs::create_dir_all(&evidence_root)
+        .map_err(|err| format!("failed to create {}: {err}", evidence_root.display()))?;
+    let evidence_path = evidence_root.join("python-test-evidence.json");
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "domain": "clients",
+        "action": "python-test",
+        "client": args.common.client,
+        "skip_network": args.skip_network,
+        "install_deps": args.install_deps,
+        "lockfile": "requirements.lock",
+        "summary": {"total": rows.len(), "passed": passed, "failed": failed},
+        "tests": rows.iter().map(|(id, ok, duration_ms)| serde_json::json!({
+            "id": id,
+            "status": if *ok { "pass" } else { "fail" },
+            "duration_ms": duration_ms
+        })).collect::<Vec<_>>()
+    });
+    fs::write(
+        &evidence_path,
+        format!(
+            "{}\n",
+            serde_json::to_string_pretty(&payload).map_err(|err| format!("serialize failed: {err}"))?
+        ),
+    )
+    .map_err(|err| format!("failed to write {}: {err}", evidence_path.display()))?;
+    if matches!(args.common.format, crate::cli::FormatArg::Text) && !args.common.markdown {
+        let mut lines = vec!["clients python test".to_string()];
+        for (idx, (id, ok, duration_ms)) in rows.iter().enumerate() {
+            let status = if *ok { "PASS" } else { "FAIL" };
+            lines.push(format!(
+                "{status} ({}/{}) clients python {} [{} ms]",
+                idx + 1,
+                rows.len(),
+                id,
+                duration_ms
+            ));
+        }
+        lines.push(format!(
+            "summary: total={} passed={} failed={}",
+            rows.len(),
+            passed,
+            failed
+        ));
+        return Ok((lines.join("\n"), if failed == 0 { 0 } else { 1 }));
+    }
+    let out = serde_json::json!({
+        "schema_version": 1,
+        "domain": "clients",
+        "action": "python-test",
+        "client": args.common.client,
+        "success": failed == 0,
+        "summary": payload["summary"].clone(),
+        "evidence": evidence_path.display().to_string()
+    });
+    Ok((
+        emit_payload(args.common.format, args.common.out.clone(), &out)?,
+        if failed == 0 { 0 } else { 1 },
     ))
 }
 
@@ -438,6 +590,78 @@ fn render_matrix_markdown(model: &ClientsDocsModel) -> String {
 
 fn normalize_newlines(text: &str) -> String {
     text.replace("\r\n", "\n").trim().to_string()
+}
+
+fn run_allowlisted_python(cwd: &Path, args: &[&str], reason: &str) -> Result<(), String> {
+    let status = run_allowlisted_python_status(cwd, args, false)?;
+    if !status.success() {
+        return Err(format!("python command failed while attempting to {reason}"));
+    }
+    Ok(())
+}
+
+fn run_allowlisted_python_status(
+    cwd: &Path,
+    args: &[&str],
+    skip_network: bool,
+) -> Result<std::process::ExitStatus, String> {
+    let python = resolve_python_interpreter(cwd)?;
+    if !cwd.ends_with(Path::new("crates/bijux-atlas-client-python")) {
+        return Err(format!(
+            "python execution outside allowed client crate is forbidden: {}",
+            cwd.display()
+        ));
+    }
+    let mut cmd = ProcessCommand::new(&python);
+    cmd.current_dir(cwd).args(args);
+    if skip_network {
+        cmd.env("ATLAS_CLIENT_SKIP_NETWORK", "1");
+    }
+    cmd.status()
+        .map_err(|err| format!("execute `{python}` failed: {err}"))
+}
+
+fn resolve_python_interpreter(cwd: &Path) -> Result<String, String> {
+    for candidate in ["python3", "python"] {
+        let status = ProcessCommand::new(candidate)
+            .current_dir(cwd)
+            .args(["--version"])
+            .status();
+        if matches!(status, Ok(s) if s.success()) {
+            return Ok(candidate.to_string());
+        }
+    }
+    Err("python interpreter not found (tried `python3` and `python`)".to_string())
+}
+
+fn repo_artifact_root(args: &ClientsCommandArgs, client: &str) -> PathBuf {
+    let repo_root = resolve_repo_root(args.repo_root.clone()).unwrap_or_else(|_| PathBuf::from("."));
+    repo_root.join("artifacts/clients").join(client)
+}
+
+fn render_clients_verify_markdown(client: &str, evidence: &serde_json::Value) -> String {
+    let mut lines = vec![
+        format!("# Client verification evidence: {client}"),
+        String::new(),
+        "| Check | Status |".to_string(),
+        "|---|---|".to_string(),
+    ];
+    if let Some(checks) = evidence["checks"].as_array() {
+        for check in checks {
+            let id = check["id"].as_str().unwrap_or("unknown");
+            let status = check["status"].as_str().unwrap_or("unknown");
+            lines.push(format!("| `{id}` | `{status}` |"));
+        }
+    }
+    lines.push(String::new());
+    lines.push(format!(
+        "Summary: total={} passed={} failed={}",
+        evidence["summary"]["total"].as_u64().unwrap_or(0),
+        evidence["summary"]["passed"].as_u64().unwrap_or(0),
+        evidence["summary"]["failed"].as_u64().unwrap_or(0),
+    ));
+    lines.push(String::new());
+    lines.join("\n")
 }
 
 fn render_clients_verify_nextest(rows: &[(&str, i32)]) -> String {

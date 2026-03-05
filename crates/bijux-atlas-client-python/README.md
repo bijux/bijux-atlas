@@ -20,7 +20,10 @@ Use `bijux-dev-atlas` for client docs generation and validation:
 ```bash
 cargo run -p bijux-dev-atlas -- clients docs-generate --client atlas-client
 cargo run -p bijux-dev-atlas -- clients verify --client atlas-client
+cargo run -p bijux-dev-atlas -- clients python test --client atlas-client --install-deps
 ```
+
+`clients python test` uses the deterministic lockfile `requirements.lock`.
 
 ## Features
 

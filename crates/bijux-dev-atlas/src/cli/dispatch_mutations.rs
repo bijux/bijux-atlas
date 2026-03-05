@@ -779,6 +779,9 @@ fn force_json_clients(command: &mut crate::cli::ClientsCommand) {
         crate::cli::ClientsCommand::CompatMatrix { command } => match command {
             crate::cli::ClientsCompatMatrixCommand::Verify(args) => args.format = FormatArg::Json,
         },
+        crate::cli::ClientsCommand::Python { command } => match command {
+            crate::cli::ClientsPythonCommand::Test(args) => args.common.format = FormatArg::Json,
+        },
     }
 }
 
@@ -1702,6 +1705,11 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             crate::cli::ClientsCommand::CompatMatrix { command } => match command {
                 crate::cli::ClientsCompatMatrixCommand::Verify(args) => {
                     args.repo_root = Some(root.clone())
+                }
+            },
+            crate::cli::ClientsCommand::Python { command } => match command {
+                crate::cli::ClientsPythonCommand::Test(args) => {
+                    args.common.repo_root = Some(root.clone())
                 }
             },
         },

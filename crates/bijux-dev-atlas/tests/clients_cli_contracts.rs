@@ -185,3 +185,47 @@ fn clients_verify_text_uses_nextest_style_summary() {
     assert!(text.contains("PASS"), "verify text should include PASS rows");
     assert!(text.contains("summary: total="), "verify text should include summary line");
 }
+
+#[test]
+fn clients_verify_writes_json_and_markdown_evidence() {
+    let _guard = CLIENT_DOCS_TEST_LOCK.lock().expect("lock");
+    let root = repo_root();
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args(["clients", "verify", "--client", "atlas-client", "--format", "json"])
+        .output()
+        .expect("clients verify");
+    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    let evidence_json = payload["evidence"]["json"].as_str().expect("evidence json path");
+    let evidence_md = payload["evidence"]["markdown"]
+        .as_str()
+        .expect("evidence markdown path");
+    assert!(PathBuf::from(evidence_json).exists(), "json evidence must exist");
+    assert!(PathBuf::from(evidence_md).exists(), "markdown evidence must exist");
+}
+
+#[test]
+fn clients_python_test_reports_missing_lockfile() {
+    let _guard = CLIENT_DOCS_TEST_LOCK.lock().expect("lock");
+    let root = repo_root();
+    let lock = root.join("crates/bijux-atlas-client-python/requirements.lock");
+    assert!(lock.exists(), "requirements.lock must exist");
+    let backup = root.join("crates/bijux-atlas-client-python/requirements.lock.bak-test");
+    std::fs::rename(&lock, &backup).expect("rename lock");
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args(["clients", "python", "test", "--client", "atlas-client", "--format", "json"])
+        .output()
+        .expect("clients python test");
+    std::fs::rename(&backup, &lock).expect("restore lock");
+    assert!(
+        !output.status.success(),
+        "command should fail without deterministic lockfile"
+    );
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        stderr.contains("missing deterministic lockfile"),
+        "stderr should mention missing deterministic lockfile: {stderr}"
+    );
+}
