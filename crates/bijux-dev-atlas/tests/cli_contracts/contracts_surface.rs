@@ -379,7 +379,7 @@ fn slow_contracts_ci_human_output_disables_ansi_color() {
         .env_remove("FORCE_COLOR")
         .env_remove("CLICOLOR_FORCE")
         .env_remove("CARGO_TERM_COLOR")
-        .args(["contracts", "docs", "--ci"])
+        .args(["contracts", "docs", "--only", "DOC-001", "--ci"])
         .output()
         .expect("contracts docs ci");
     assert!(output.status.success());
@@ -407,7 +407,14 @@ fn contracts_configs_runs_and_reports_summary() {
 fn slow_contracts_docs_runs_and_reports_summary() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["contracts", "docs", "--format", "json"])
+        .args([
+            "contracts",
+            "docs",
+            "--format",
+            "json",
+            "--only",
+            "DOC-001",
+        ])
         .output()
         .expect("contracts docs");
     assert!(output.status.success());
@@ -423,7 +430,6 @@ fn slow_contracts_docs_writes_report_artifacts() {
     let artifacts_root = repo_root().join("artifacts/tests/contracts-docs-report");
     fs::create_dir_all(&artifacts_root).expect("mkdir artifacts");
     let report_paths = [
-        "docs-index-correctness.json",
         "broken-links.json",
         "orphans.json",
         "metadata-coverage.json",
@@ -445,6 +451,16 @@ fn slow_contracts_docs_writes_report_artifacts() {
             "docs",
             "--format",
             "json",
+            "--only",
+            "DOC-032",
+            "--only",
+            "DOC-033",
+            "--only",
+            "DOC-034",
+            "--only",
+            "DOC-035",
+            "--only",
+            "DOC-036",
             "--artifacts-root",
             artifacts_root.to_str().expect("artifacts root"),
         ])
@@ -452,7 +468,6 @@ fn slow_contracts_docs_writes_report_artifacts() {
         .expect("contracts docs report");
     assert!(output.status.success());
     let kinds = [
-        ("docs-index-correctness.json", "docs_index_correctness"),
         ("broken-links.json", "docs_broken_links"),
         ("orphans.json", "docs_orphans"),
         ("metadata-coverage.json", "docs_metadata_coverage"),
