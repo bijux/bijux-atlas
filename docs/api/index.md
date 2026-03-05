@@ -30,6 +30,7 @@ Use this section to integrate clients with Atlas API surfaces safely and predict
 ## Start here
 
 - [Quick Reference](quick-reference.md)
+- [API documentation](api-documentation.md)
 - [Pagination](pagination.md)
 - [Errors](errors.md)
 - [Compatibility](compatibility.md)
@@ -59,8 +60,22 @@ Endpoint and schema facts live in [Reference](../reference/index.md).
 
 - [Compatibility test plan](compatibility-test-plan.md)
 - [OpenAPI generation](openapi-generation.md)
+- [API schema reference](api-schema-reference.md)
+- [API endpoint index](api-endpoint-index.md)
+- [API contract documentation](api-contract-documentation.md)
+- [API contract registry snapshot](api-contract-registry-snapshot.md)
+- [API compatibility harness](api-compatibility-harness.md)
 
 ## Next steps
 
 - [Reference](../reference/index.md)
 - [Glossary](../glossary.md)
+
+## Operations
+
+- [API troubleshooting guide](api-troubleshooting-guide.md)
+- [API usage examples](api-usage-examples.md)
+- [API security considerations](api-security-considerations.md)
+- [API rate limit policy](api-rate-limit-policy.md)
+- [API error code reference](api-error-code-reference.md)
+- [API completion report](api-completion-report.md)
