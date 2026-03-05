@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/client/client-config.schema.json",
+  "title": "Atlas Rust Client Configuration",
+  "type": "object",
+  "required": [
+    "base_url",
+    "timeout_millis",
+    "retry_attempts",
+    "retry_backoff_millis",
+    "default_headers"
+  ],
+  "properties": {
+    "base_url": {
+      "type": "string",
+      "pattern": "^https?://"
+    },
+    "timeout_millis": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "retry_attempts": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "retry_backoff_millis": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "default_headers": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}
