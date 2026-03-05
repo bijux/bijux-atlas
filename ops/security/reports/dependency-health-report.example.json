@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "kind": "dependency_health_report",
+  "summary": {
+    "dependency_inventory_rows": 1,
+    "vulnerability_rows": 1,
+    "workflow_action_rows": 1,
+    "status": "ok"
+  },
+  "source": "security dependency-audit"
+}
