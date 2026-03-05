@@ -17,6 +17,8 @@ related:
 
 - Owner: `docs-governance`
 
+`docs/INDEX.md` is the canonical top-level navigation authority for reader-facing docs.
+
 Atlas documentation is organized by system understanding first, then execution detail.
 
 ## Primary Reader Paths
@@ -38,6 +40,7 @@ Atlas documentation is organized by system understanding first, then execution d
 - Dev: [Development Index](development/index.md)
 - Control-plane: [Control-plane Index](control-plane/index.md)
 - Reference: [Reference Index](reference/index.md)
+- Governance: [Governance Index](governance/index.md)
 
 ## Next steps
 
