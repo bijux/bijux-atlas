@@ -61,22 +61,26 @@ impl Domain for TutorialsDomain {
             .cloned()
             .collect::<Vec<_>>();
         if runnables.is_empty() {
-            runnables.push(RunnableEntry {
-                id: RunnableId::parse("tutorials.verify.contract").expect("valid runnable id"),
-                suite: SuiteId::parse("tutorials").expect("valid suite"),
-                kind: RunnableKind::Contract,
-                mode: RunnableMode::Pure,
-                summary: "Validate tutorials contracts and generated artifacts".to_string(),
-                owner: "docs-governance".to_string(),
-                group: "tutorials".to_string(),
-                tags: Vec::new(),
-                commands: vec!["bijux-dev-atlas tutorials verify --format json".to_string()],
-                report_ids: vec!["tutorials_verify".to_string()],
-                reports: vec!["artifacts/tutorials/verify-report.json".to_string()],
-                required_tools: vec!["bijux-dev-atlas".to_string()],
-                missing_tools_policy: "fail".to_string(),
-                effects_required: Vec::new(),
-            });
+            let id = RunnableId::parse("tutorials.verify.contract");
+            let suite = SuiteId::parse("tutorials");
+            if let (Ok(id), Ok(suite)) = (id, suite) {
+                runnables.push(RunnableEntry {
+                    id,
+                    suite,
+                    kind: RunnableKind::Contract,
+                    mode: RunnableMode::Pure,
+                    summary: "Validate tutorials contracts and generated artifacts".to_string(),
+                    owner: "docs-governance".to_string(),
+                    group: "tutorials".to_string(),
+                    tags: Vec::new(),
+                    commands: vec!["bijux-dev-atlas tutorials verify --format json".to_string()],
+                    report_ids: vec!["tutorials_verify".to_string()],
+                    reports: vec!["artifacts/tutorials/verify-report.json".to_string()],
+                    required_tools: vec!["bijux-dev-atlas".to_string()],
+                    missing_tools_policy: "fail".to_string(),
+                    effects_required: Vec::new(),
+                });
+            }
         }
         runnables
     }

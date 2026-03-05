@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -10,6 +10,26 @@ fn repo_root() -> PathBuf {
         .parent()
         .expect("repo")
         .to_path_buf()
+}
+
+fn walk_files(root: &Path) -> Result<Vec<PathBuf>, String> {
+    let mut files = Vec::new();
+    let mut stack = vec![root.to_path_buf()];
+    while let Some(cursor) = stack.pop() {
+        let entries =
+            fs::read_dir(&cursor).map_err(|err| format!("read {} failed: {err}", cursor.display()))?;
+        for entry in entries {
+            let entry = entry.map_err(|err| format!("read entry failed: {err}"))?;
+            let path = entry.path();
+            if path.is_dir() {
+                stack.push(path);
+            } else {
+                files.push(path);
+            }
+        }
+    }
+    files.sort();
+    Ok(files)
 }
 
 #[test]
@@ -466,13 +486,11 @@ fn ops_tree_must_not_include_python_or_shell_sources() {
     let ops = root.join("ops");
     let mut violations = Vec::new();
     if ops.exists() {
-        for entry in walkdir::WalkDir::new(&ops) {
-            let entry = entry.expect("walk ops");
-            if !entry.file_type().is_file() {
-                continue;
-            }
-            let path = entry.path();
-            let ext = path.extension().and_then(|v| v.to_str()).unwrap_or_default();
+        for path in walk_files(&ops).expect("walk ops") {
+            let ext = path
+                .extension()
+                .and_then(|v| v.to_str())
+                .unwrap_or_default();
             if ext == "py" || ext == "sh" {
                 violations.push(
                     path.strip_prefix(&root)
@@ -496,23 +514,17 @@ fn ops_tree_must_use_allowed_artifact_extensions() {
     let ops = root.join("ops");
     let mut violations = Vec::new();
     if ops.exists() {
-        for entry in walkdir::WalkDir::new(&ops) {
-            let entry = entry.expect("walk ops");
-            if !entry.file_type().is_file() {
-                continue;
-            }
-            let rel = entry
-                .path()
+        for path in walk_files(&ops).expect("walk ops") {
+            let rel = path
                 .strip_prefix(&root)
                 .expect("relative path")
                 .display()
                 .to_string();
-            let file_name = entry.file_name().to_string_lossy();
+            let file_name = path.file_name().and_then(|n| n.to_str()).unwrap_or_default();
             if file_name == ".gitkeep" {
                 continue;
             }
-            let ext = entry
-                .path()
+            let ext = path
                 .extension()
                 .and_then(|v| v.to_str())
                 .unwrap_or_default();
@@ -623,14 +635,10 @@ fn legacy_clients_root_references_are_forbidden_in_docs_make_and_workflows() {
         if !scan_root.exists() {
             continue;
         }
-        for entry in walkdir::WalkDir::new(scan_root) {
-            let entry = entry.expect("walk scan root");
-            if !entry.file_type().is_file() {
-                continue;
-            }
-            let text = std::fs::read_to_string(entry.path()).unwrap_or_default();
+        for path in walk_files(&scan_root).expect("walk scan root") {
+            let text = std::fs::read_to_string(&path).unwrap_or_default();
             if has_legacy_client_root_reference(&text) {
-                violations.push(entry.path().display().to_string());
+                violations.push(path.display().to_string());
             }
         }
     }
@@ -687,13 +695,11 @@ fn tutorials_tree_must_not_include_python_or_shell_sources() {
     let tutorials = root.join("tutorials");
     let mut violations = Vec::new();
     if tutorials.exists() {
-        for entry in walkdir::WalkDir::new(&tutorials) {
-            let entry = entry.expect("walk tutorials");
-            if !entry.file_type().is_file() {
-                continue;
-            }
-            let path = entry.path();
-            let ext = path.extension().and_then(|v| v.to_str()).unwrap_or_default();
+        for path in walk_files(&tutorials).expect("walk tutorials") {
+            let ext = path
+                .extension()
+                .and_then(|v| v.to_str())
+                .unwrap_or_default();
             if ext == "py" || ext == "sh" {
                 violations.push(
                     path.strip_prefix(&root)

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -10,6 +10,26 @@ fn repo_root() -> PathBuf {
         .parent()
         .expect("workspace root")
         .to_path_buf()
+}
+
+fn walk_files(root: &Path) -> Result<Vec<PathBuf>, String> {
+    let mut files = Vec::new();
+    let mut stack = vec![root.to_path_buf()];
+    while let Some(cursor) = stack.pop() {
+        let entries =
+            fs::read_dir(&cursor).map_err(|err| format!("read {} failed: {err}", cursor.display()))?;
+        for entry in entries {
+            let entry = entry.map_err(|err| format!("read entry failed: {err}"))?;
+            let path = entry.path();
+            if path.is_dir() {
+                stack.push(path);
+            } else {
+                files.push(path);
+            }
+        }
+    }
+    files.sort();
+    Ok(files)
 }
 
 #[test]
@@ -26,17 +46,15 @@ fn client_docs_must_not_reference_local_script_paths() {
     let root = repo_root();
     let docs_dir = root.join("packages/bijux-atlas-python/docs");
     let mut violations = Vec::new();
-    for entry in walkdir::WalkDir::new(docs_dir) {
-        let entry = entry.expect("walk docs");
-        if !entry.file_type().is_file() {
+    for path in walk_files(&docs_dir).expect("walk docs") {
+        if path.extension().and_then(|v| v.to_str()) != Some("md") {
             continue;
         }
-        if entry.path().extension().and_then(|v| v.to_str()) != Some("md") {
-            continue;
-        }
-        let text = fs::read_to_string(entry.path()).expect("read docs file");
-        if text.contains("tools/generate_docs.py") || text.contains("packages/bijux-atlas-python/tools/") {
-            violations.push(entry.path().display().to_string());
+        let text = fs::read_to_string(&path).expect("read docs file");
+        if text.contains("tools/generate_docs.py")
+            || text.contains("packages/bijux-atlas-python/tools/")
+        {
+            violations.push(path.display().to_string());
         }
     }
     assert!(
@@ -50,7 +68,11 @@ fn client_docs_must_not_reference_local_script_paths() {
 fn client_python_paths_must_stay_in_product_zones_only() {
     let root = repo_root();
     let output = std::process::Command::new("git")
-        .args(["ls-files", "packages/bijux-atlas-python/**/**/*.py", "packages/bijux-atlas-python/**/**/*.ipynb"])
+        .args([
+            "ls-files",
+            "packages/bijux-atlas-python/**/**/*.py",
+            "packages/bijux-atlas-python/**/**/*.ipynb",
+        ])
         .current_dir(&root)
         .output()
         .expect("git ls-files");
@@ -117,8 +139,9 @@ fn client_pyproject_metadata_must_be_complete() {
 #[test]
 fn client_docs_must_reference_runtime_endpoints() {
     let root = repo_root();
-    let api_ref = fs::read_to_string(root.join("packages/bijux-atlas-python/docs/api-reference.md"))
-        .expect("read api-reference.md");
+    let api_ref =
+        fs::read_to_string(root.join("packages/bijux-atlas-python/docs/api-reference.md"))
+            .expect("read api-reference.md");
     assert!(
         api_ref.contains("/v1/"),
         "client API reference must include runtime endpoint paths"
@@ -131,19 +154,15 @@ fn client_examples_must_target_tutorial_dataset_scenario() {
     let examples = root.join("packages/bijux-atlas-python/examples");
     let mut checked = 0usize;
     let mut violations = Vec::new();
-    for entry in walkdir::WalkDir::new(examples) {
-        let entry = entry.expect("walk examples");
-        if !entry.file_type().is_file() {
+    for path in walk_files(&examples).expect("walk examples") {
+        if path.extension().and_then(|v| v.to_str()) != Some("py") {
             continue;
         }
-        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
-            continue;
-        }
-        let text = fs::read_to_string(entry.path()).expect("read example");
+        let text = fs::read_to_string(&path).expect("read example");
         checked += 1;
         let uses_dataset = text.contains("dataset=\"genes\"") || text.contains("dataset='genes'");
         if !uses_dataset {
-            violations.push(entry.path().display().to_string());
+            violations.push(path.display().to_string());
         }
     }
     assert!(checked > 0, "expected python examples to exist");
@@ -159,15 +178,11 @@ fn client_tests_must_not_require_external_network() {
     let root = repo_root();
     let tests_dir = root.join("packages/bijux-atlas-python/tests");
     let mut violations = Vec::new();
-    for entry in walkdir::WalkDir::new(tests_dir) {
-        let entry = entry.expect("walk tests");
-        if !entry.file_type().is_file() {
+    for path in walk_files(&tests_dir).expect("walk tests") {
+        if path.extension().and_then(|v| v.to_str()) != Some("py") {
             continue;
         }
-        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
-            continue;
-        }
-        let text = fs::read_to_string(entry.path()).expect("read test file");
+        let text = fs::read_to_string(&path).expect("read test file");
         let lower = text.to_ascii_lowercase();
         let has_external_call = lower.contains("requests.get(\"http")
             || lower.contains("requests.post(\"http")
@@ -175,7 +190,7 @@ fn client_tests_must_not_require_external_network() {
             || lower.contains("httpx.get(\"http")
             || lower.contains("httpx.post(\"http");
         if has_external_call {
-            violations.push(entry.path().display().to_string());
+            violations.push(path.display().to_string());
         }
     }
     assert!(
@@ -188,8 +203,9 @@ fn client_tests_must_not_require_external_network() {
 #[test]
 fn client_tests_must_support_offline_mock_server_mode() {
     let root = repo_root();
-    let integration = fs::read_to_string(root.join("packages/bijux-atlas-python/tests/test_integration.py"))
-        .expect("read integration test");
+    let integration =
+        fs::read_to_string(root.join("packages/bijux-atlas-python/tests/test_integration.py"))
+            .expect("read integration test");
     assert!(
         integration.contains("HTTPServer") && integration.contains("127.0.0.1"),
         "integration tests must include local mock server mode"
@@ -213,23 +229,16 @@ fn client_tests_must_be_tagged_unit_integration_or_perf() {
     let root = repo_root();
     let tests_dir = root.join("packages/bijux-atlas-python/tests");
     let mut violations = Vec::new();
-    for entry in walkdir::WalkDir::new(tests_dir) {
-        let entry = entry.expect("walk tests");
-        if !entry.file_type().is_file() {
+    for path in walk_files(&tests_dir).expect("walk tests") {
+        if path.extension().and_then(|v| v.to_str()) != Some("py") {
             continue;
         }
-        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
-            continue;
-        }
-        let text = fs::read_to_string(entry.path()).expect("read test file");
+        let text = fs::read_to_string(&path).expect("read test file");
         let has_scope_tag = text.contains("# test_scope: unit")
             || text.contains("# test_scope: integration")
             || text.contains("# test_scope: perf");
         if !has_scope_tag {
-            violations.push(format!(
-                "{}: missing # test_scope tag",
-                entry.path().display()
-            ));
+            violations.push(format!("{}: missing # test_scope tag", path.display()));
         }
     }
     assert!(
@@ -245,37 +254,34 @@ fn perf_tests_must_be_opt_in_and_integration_tests_must_require_env() {
     let tests_dir = root.join("packages/bijux-atlas-python/tests");
     let mut perf_violations = Vec::new();
     let mut integration_violations = Vec::new();
-    for entry in walkdir::WalkDir::new(tests_dir) {
-        let entry = entry.expect("walk tests");
-        if !entry.file_type().is_file() {
+    for path in walk_files(&tests_dir).expect("walk tests") {
+        if path.extension().and_then(|v| v.to_str()) != Some("py") {
             continue;
         }
-        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
-            continue;
-        }
-        let text = fs::read_to_string(entry.path()).expect("read test file");
-        let filename = entry.path().file_name().and_then(|v| v.to_str()).unwrap_or_default();
+        let text = fs::read_to_string(&path).expect("read test file");
+        let filename = path
+            .file_name()
+            .and_then(|v| v.to_str())
+            .unwrap_or_default();
         if text.contains("# test_scope: perf")
             && !text.contains("BIJUX_ATLAS_RUN_PERF")
             && !text.contains("skipUnless")
         {
             perf_violations.push(format!(
                 "{}: perf tests must be guarded by BIJUX_ATLAS_RUN_PERF or skipUnless",
-                entry.path().display()
+                path.display()
             ));
         }
-        if text.contains("# test_scope: integration")
-            && !text.contains("BIJUX_ATLAS_URL")
-        {
+        if text.contains("# test_scope: integration") && !text.contains("BIJUX_ATLAS_URL") {
             integration_violations.push(format!(
                 "{}: integration tests must require BIJUX_ATLAS_URL",
-                entry.path().display()
+                path.display()
             ));
         }
         if filename.contains("integration") && !text.contains("# test_scope: integration") {
             integration_violations.push(format!(
                 "{}: integration-named file must carry integration scope tag",
-                entry.path().display()
+                path.display()
             ));
         }
     }
@@ -300,16 +306,11 @@ fn examples_index_must_exist_and_reference_all_example_scripts() {
 
     let examples = root.join("packages/bijux-atlas-python/examples");
     let mut scripts = Vec::new();
-    for entry in walkdir::WalkDir::new(&examples) {
-        let entry = entry.expect("walk examples");
-        if !entry.file_type().is_file() {
+    for path in walk_files(&examples).expect("walk examples") {
+        if path.extension().and_then(|v| v.to_str()) != Some("py") {
             continue;
         }
-        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
-            continue;
-        }
-        let rel = entry
-            .path()
+        let rel = path
             .strip_prefix(&examples)
             .expect("relative path")
             .to_string_lossy()
@@ -330,24 +331,17 @@ fn examples_must_include_header_and_stay_within_complexity_budget() {
     let root = repo_root();
     let examples = root.join("packages/bijux-atlas-python/examples");
     let mut violations = Vec::new();
-    for entry in walkdir::WalkDir::new(&examples) {
-        let entry = entry.expect("walk examples");
-        if !entry.file_type().is_file() {
+    for path in walk_files(&examples).expect("walk examples") {
+        if path.extension().and_then(|v| v.to_str()) != Some("py") {
             continue;
         }
-        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
-            continue;
-        }
-        let text = fs::read_to_string(entry.path()).expect("read example");
+        let text = fs::read_to_string(&path).expect("read example");
         let line_count = text.lines().count();
         if !text.contains("# Purpose:") || !text.contains("# Expected output:") {
-            violations.push(format!("{}: missing required header", entry.path().display()));
+            violations.push(format!("{}: missing required header", path.display()));
         }
         if line_count > 200 {
-            violations.push(format!(
-                "{}: exceeds 200 LOC budget ({line_count})",
-                entry.path().display()
-            ));
+            violations.push(format!("{}: exceeds 200 LOC budget ({line_count})", path.display()));
         }
     }
     assert!(
@@ -362,27 +356,22 @@ fn examples_must_use_documented_runtime_endpoint_variable() {
     let root = repo_root();
     let examples = root.join("packages/bijux-atlas-python/examples");
     let mut violations = Vec::new();
-    for entry in walkdir::WalkDir::new(&examples) {
-        let entry = entry.expect("walk examples");
-        if !entry.file_type().is_file() {
+    for path in walk_files(&examples).expect("walk examples") {
+        if path.extension().and_then(|v| v.to_str()) != Some("py") {
             continue;
         }
-        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
-            continue;
-        }
-        let text = fs::read_to_string(entry.path()).expect("read example");
+        let text = fs::read_to_string(&path).expect("read example");
         if !text.contains("BIJUX_ATLAS_URL") {
             violations.push(format!(
                 "{}: examples must use BIJUX_ATLAS_URL (no hardcoded runtime endpoint)",
-                entry.path().display()
+                path.display()
             ));
         }
     }
 
-    let usage_readme = fs::read_to_string(
-        root.join("packages/bijux-atlas-python/examples/usage/README.md"),
-    )
-    .expect("read usage readme");
+    let usage_readme =
+        fs::read_to_string(root.join("packages/bijux-atlas-python/examples/usage/README.md"))
+            .expect("read usage readme");
     assert!(
         usage_readme.contains("BIJUX_ATLAS_URL"),
         "usage README must document BIJUX_ATLAS_URL"
@@ -400,22 +389,18 @@ fn examples_must_not_use_external_network_clients_directly() {
     let root = repo_root();
     let examples = root.join("packages/bijux-atlas-python/examples");
     let mut violations = Vec::new();
-    for entry in walkdir::WalkDir::new(&examples) {
-        let entry = entry.expect("walk examples");
-        if !entry.file_type().is_file() {
+    for path in walk_files(&examples).expect("walk examples") {
+        if path.extension().and_then(|v| v.to_str()) != Some("py") {
             continue;
         }
-        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
-            continue;
-        }
-        let text = fs::read_to_string(entry.path()).expect("read example");
+        let text = fs::read_to_string(&path).expect("read example");
         let lower = text.to_ascii_lowercase();
         let has_external_client = lower.contains("import requests")
             || lower.contains("import httpx")
             || lower.contains("urllib.request")
             || lower.contains("socket.socket(");
         if has_external_client {
-            violations.push(entry.path().display().to_string());
+            violations.push(path.display().to_string());
         }
     }
     assert!(
@@ -429,7 +414,8 @@ fn examples_must_not_use_external_network_clients_directly() {
 fn client_test_policy_docs_must_exist() {
     let root = repo_root();
     assert!(
-        root.join("docs/api/client-python/client-test-policy.md").exists(),
+        root.join("docs/api/client-python/client-test-policy.md")
+            .exists(),
         "client test policy doc must exist"
     );
     assert!(
