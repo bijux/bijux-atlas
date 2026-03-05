@@ -2,10 +2,26 @@
   "schema_version": 1,
   "surface_id": "cli-user-command-surface",
   "binary": "bijux-atlas",
+  "top_level_commands": [
+    "catalog",
+    "completion",
+    "config",
+    "dataset",
+    "diff",
+    "gc",
+    "ingest",
+    "openapi",
+    "policy",
+    "version"
+  ],
   "forbidden_commands": [
+    "runtime",
     "self-check",
     "print-config-schema",
-    "runtime"
+    "explain-config-schema",
+    "checks",
+    "contract",
+    "governance"
   ],
-  "notes": "user cli must not expose dev-only runtime diagnostics"
+  "docs_reference": "docs/architecture/cli-boundaries.md"
 }

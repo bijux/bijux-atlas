@@ -2,10 +2,44 @@
   "schema_version": 1,
   "surface_id": "cli-dev-command-surface",
   "binary": "bijux-dev-atlas",
-  "required_runtime_commands": [
-    "runtime self-check",
-    "runtime print-config-schema",
-    "runtime explain-config-schema"
+  "top_level_commands": [
+    "api",
+    "audit",
+    "check",
+    "checks",
+    "ci",
+    "configs",
+    "contract",
+    "datasets",
+    "demo",
+    "describe",
+    "docs",
+    "governance",
+    "ingest",
+    "invariants",
+    "list",
+    "load",
+    "observe",
+    "ops",
+    "perf",
+    "policies",
+    "registry",
+    "reports",
+    "run",
+    "runtime",
+    "security",
+    "suites",
+    "system",
+    "tests",
+    "validate"
   ],
-  "notes": "dev cli owns repository runtime diagnostics"
+  "runtime_required_subcommands": [
+    "self-check",
+    "print-config-schema",
+    "explain-config-schema"
+  ],
+  "forbidden_user_flow_commands": [
+    "query"
+  ],
+  "docs_reference": "docs/architecture/cli-boundaries.md"
 }
