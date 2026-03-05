@@ -5827,12 +5827,23 @@ mod tests {
     use super::*;
     use std::path::PathBuf;
     use std::sync::atomic::{AtomicU64, Ordering};
+    use std::time::{SystemTime, UNIX_EPOCH};
 
     static TEST_REPO_SEQUENCE: AtomicU64 = AtomicU64::new(1);
 
+    fn cleanup_release_test_repo(root: &PathBuf) {
+        let _ = fs::remove_dir_all(root);
+    }
+
     fn create_release_test_repo(changelog: &str, policy: &str) -> PathBuf {
         let stamp = TEST_REPO_SEQUENCE.fetch_add(1, Ordering::Relaxed);
-        let root = std::env::temp_dir().join(format!("bijux-release-tests-{stamp}"));
+        let pid = std::process::id();
+        let nanos = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map(|d| d.as_nanos())
+            .unwrap_or(0);
+        let root = std::env::temp_dir().join(format!("bijux-release-tests-{pid}-{nanos}-{stamp}"));
+        cleanup_release_test_repo(&root);
         fs::create_dir_all(root.join("configs/release")).expect("create release config directory");
         fs::write(root.join("CHANGELOG.md"), changelog).expect("write changelog");
         fs::write(root.join("configs/release/version-policy.json"), policy).expect("write policy");
@@ -5854,7 +5865,7 @@ mod tests {
         };
         let (_, exit_code) = run_release_version_check(args).expect("version check should run");
         assert_eq!(exit_code, 1, "disallowed prerelease tag must fail");
-        fs::remove_dir_all(root).expect("cleanup test repo");
+        cleanup_release_test_repo(&root);
     }
 
     #[test]
@@ -5872,6 +5883,6 @@ mod tests {
         };
         let (_, exit_code) = run_release_version_check(args).expect("version check should run");
         assert_eq!(exit_code, 1, "version progression must be monotonic");
-        fs::remove_dir_all(root).expect("cleanup test repo");
+        cleanup_release_test_repo(&root);
     }
 }
