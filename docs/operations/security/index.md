@@ -113,3 +113,5 @@ Security workflows are successful when posture checks pass and incident handling
 - [Threat Model Troubleshooting](threat-model-troubleshooting.md)
 - [Threat Model Review Checklist](threat-model-review-checklist.md)
 - [Threat Model Update Policy](threat-model-update-policy.md)
+- [Threat Model CI Validation](threat-model-ci-validation.md)
+- [Threat Model Audit Scenario](threat-model-audit-scenario.md)

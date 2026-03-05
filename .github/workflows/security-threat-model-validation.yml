@@ -1,0 +1,25 @@
+name: security-threat-model-validation
+
+on:
+  pull_request:
+    paths:
+      - "security/threat-model/**"
+      - "crates/bijux-dev-atlas/src/commands/security.rs"
+      - "crates/bijux-dev-atlas/src/cli/mod.rs"
+      - "crates/bijux-dev-atlas/tests/threat_model_governance_contracts.rs"
+      - "docs/operations/security/**"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Threat model command verification
+        run: |
+          cargo run -p bijux-dev-atlas -- security threats verify --format json
+      - name: Threat model governance tests
+        run: |
+          cargo test -p bijux-dev-atlas threat_model_governance_contracts -- --nocapture

@@ -1,0 +1,21 @@
+{
+  "id": "security_threat_model_audit",
+  "description": "Audit scenario validating threat registry integrity and report generation",
+  "steps": [
+    {
+      "name": "verify threat registry",
+      "command": "bijux-dev-atlas security threats verify --format json"
+    },
+    {
+      "name": "list threat entries",
+      "command": "bijux-dev-atlas security threats list --format json"
+    },
+    {
+      "name": "inspect critical threat",
+      "command": "bijux-dev-atlas security threats explain SEC-THREAT-RUNTIME-SPOOF --format json"
+    }
+  ],
+  "evidence": [
+    "artifacts/security/security-threat-coverage-report.json"
+  ]
+}
