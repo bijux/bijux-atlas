@@ -45,10 +45,13 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - [Observability setup](../observability-setup.md): minimum metrics, logs, and trace wiring
 - [Tracing](tracing.md): trace-first diagnosis flow
 - [Tracing architecture](tracing-architecture.md): runtime span model, propagation, and exporter setup
+- [Trace context propagation policy](trace-context-propagation-policy.md): context handoff requirements across boundaries
 - [Tracing spans](tracing-spans.md): required span coverage surface
+- [Trace span naming conventions](trace-span-naming-conventions.md): canonical span naming policy
 - [Trace fields](trace-fields.md): required trace identity and attributes
 - [Trace exporters](trace-exporters.md): supported exporter modes and fallback
 - [Trace sampling policy](trace-sampling-policy.md): sampling defaults and change rules
+- [Trace retention policy](trace-retention-policy.md): retention tiers for high-fidelity and summarized traces
 - [Trace timeline examples](trace-timeline-examples.md): healthy and failure span sequences
 - [Trace dashboard examples](trace-dashboard-examples.md): practical dashboard panels and filters
 - [Trace troubleshooting](trace-troubleshooting.md): exporter and propagation triage

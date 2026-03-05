@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "kind": "trace_span_registry",
+  "source": "generated from tracing contract registry",
+  "required_spans": [
+    "runtime.root",
+    "http.request",
+    "query.execution",
+    "ingest.processing",
+    "artifact.load",
+    "registry.access",
+    "configuration.load",
+    "lifecycle.startup",
+    "lifecycle.shutdown",
+    "error.structured"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "kind": "trace_correlation_policy",
+  "request_id": "required for request, query, and error spans",
+  "async_propagation": "required across async boundaries",
+  "logging_correlation": "trace spans must correlate with structured logs",
+  "metrics_correlation": "trace spans must correlate with request and latency metrics"
+}

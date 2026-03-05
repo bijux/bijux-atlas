@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "kind": "tracing_architecture",
+  "summary": "Request-centric distributed tracing with runtime, request, query, ingest, artifact, registry, configuration, lifecycle, and error spans.",
+  "source": "crates/bijux-dev-atlas/src/contracts/tracing_registry.rs"
+}
