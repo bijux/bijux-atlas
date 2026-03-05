@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Drift detection contract model.
 
-#[derive(Debug, Clone, Copy, serde::Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum DriftType {
     Configuration,
@@ -11,7 +11,7 @@ pub enum DriftType {
     OpsProfile,
 }
 
-#[derive(Debug, Clone, Copy, serde::Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum DriftSeverity {
     Critical,
@@ -20,7 +20,7 @@ pub enum DriftSeverity {
     Low,
 }
 
-#[derive(Debug, Clone, Copy, serde::Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum DriftClass {
     Missing,

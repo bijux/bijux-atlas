@@ -346,9 +346,11 @@ pub enum InvariantsCommand {
 
 #[derive(Subcommand, Debug)]
 pub enum DriftCommand {
-    Detect(InvariantsCommonArgs),
+    Detect(DriftDetectArgs),
     Explain(DriftExplainArgs),
-    Report(InvariantsCommonArgs),
+    Report(DriftDetectArgs),
+    Baseline(DriftBaselineArgs),
+    Compare(DriftCompareArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -357,6 +359,32 @@ pub struct DriftExplainArgs {
     pub drift_type: String,
     #[command(flatten)]
     pub common: InvariantsCommonArgs,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct DriftDetectArgs {
+    #[command(flatten)]
+    pub common: InvariantsCommonArgs,
+    #[arg(long)]
+    pub ignore_file: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct DriftBaselineArgs {
+    #[command(flatten)]
+    pub detect: DriftDetectArgs,
+    #[arg(long)]
+    pub snapshot_out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct DriftCompareArgs {
+    #[command(flatten)]
+    pub detect: DriftDetectArgs,
+    #[arg(long)]
+    pub baseline: PathBuf,
+    #[arg(long)]
+    pub current: Option<PathBuf>,
 }
 
 #[derive(Args, Debug, Clone)]

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{DriftCommand, InvariantsCommonArgs};
+use crate::cli::{DriftCommand, DriftCompareArgs, DriftDetectArgs, InvariantsCommonArgs};
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::contracts::drift::{
     explain_drift_type, DriftClass, DriftSeverity, DriftType,
@@ -10,7 +10,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
 
-#[derive(Debug, Clone, serde::Serialize)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 struct DriftFinding {
     drift_type: DriftType,
     severity: DriftSeverity,
@@ -28,6 +28,19 @@ struct DriftSummary {
     medium: usize,
     low: usize,
     aggregate_score: usize,
+}
+
+#[derive(Debug, Clone, serde::Deserialize)]
+struct DriftIgnoreFile {
+    schema_version: u32,
+    ignores: Vec<DriftIgnoreRule>,
+}
+
+#[derive(Debug, Clone, serde::Deserialize)]
+struct DriftIgnoreRule {
+    drift_type: Option<String>,
+    message_contains: Option<String>,
+    path_contains: Option<String>,
 }
 
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
@@ -81,7 +94,9 @@ fn detect_config_drift(root: &Path, out: &mut Vec<DriftFinding>) {
                     DriftType::Configuration,
                     DriftSeverity::High,
                     DriftClass::Mismatch,
-                    format!("configs inventory schema_version drifted: expected 1, found {schema_version}"),
+                    format!(
+                        "configs inventory schema_version drifted: expected 1, found {schema_version}"
+                    ),
                     Some(&inv),
                 ));
             }
@@ -296,7 +311,18 @@ fn detect_all(root: &Path) -> Vec<DriftFinding> {
     detect_registry_drift(root, &mut findings);
     detect_runtime_config_drift(root, &mut findings);
     detect_ops_profile_drift(root, &mut findings);
-    findings.sort_by(|a, b| a.message.cmp(&b.message));
+    findings.sort_by(|a, b| {
+        (
+            format!("{:?}", a.drift_type),
+            a.path.as_deref().unwrap_or_default(),
+            a.message.as_str(),
+        )
+            .cmp(&(
+                format!("{:?}", b.drift_type),
+                b.path.as_deref().unwrap_or_default(),
+                b.message.as_str(),
+            ))
+    });
     findings
 }
 
@@ -323,29 +349,222 @@ fn summarize(findings: &[DriftFinding]) -> DriftSummary {
     }
 }
 
-fn detect(common: InvariantsCommonArgs) -> Result<(String, i32), String> {
-    let root = resolve_repo_root(common.repo_root)?;
-    let findings = detect_all(&root);
+fn parse_drift_type(value: &str) -> Option<DriftType> {
+    match value {
+        "configuration" | "config" => Some(DriftType::Configuration),
+        "artifact" => Some(DriftType::Artifact),
+        "registry" => Some(DriftType::Registry),
+        "runtime_config" | "runtime-config" => Some(DriftType::RuntimeConfig),
+        "ops_profile" | "ops-profile" | "profile" => Some(DriftType::OpsProfile),
+        _ => None,
+    }
+}
+
+fn load_ignore_rules(path: Option<&Path>) -> Result<Vec<DriftIgnoreRule>, String> {
+    let Some(path) = path else {
+        return Ok(Vec::new());
+    };
+    let text = fs::read_to_string(path)
+        .map_err(|err| format!("failed to read drift ignore file {}: {err}", path.display()))?;
+    let file: DriftIgnoreFile = serde_json::from_str(&text)
+        .map_err(|err| format!("failed to parse drift ignore file {}: {err}", path.display()))?;
+    if file.schema_version != 1 {
+        return Err(format!(
+            "invalid drift ignore file {}: schema_version must be 1",
+            path.display()
+        ));
+    }
+    for (idx, rule) in file.ignores.iter().enumerate() {
+        if rule.drift_type.is_none() && rule.message_contains.is_none() && rule.path_contains.is_none() {
+            return Err(format!(
+                "invalid drift ignore rule #{idx}: must set at least one of drift_type, message_contains, path_contains"
+            ));
+        }
+        if let Some(ref kind) = rule.drift_type {
+            if parse_drift_type(kind).is_none() {
+                return Err(format!(
+                    "invalid drift ignore rule #{idx}: unknown drift_type `{kind}`"
+                ));
+            }
+        }
+    }
+    Ok(file.ignores)
+}
+
+fn apply_ignores(
+    findings: Vec<DriftFinding>,
+    rules: &[DriftIgnoreRule],
+) -> (Vec<DriftFinding>, usize) {
+    if rules.is_empty() {
+        return (findings, 0);
+    }
+    let mut kept = Vec::new();
+    let mut ignored = 0usize;
+    for row in findings {
+        let mut matched = false;
+        for rule in rules {
+            if let Some(ref type_filter) = rule.drift_type {
+                if parse_drift_type(type_filter) != Some(row.drift_type) {
+                    continue;
+                }
+            }
+            if let Some(ref message_filter) = rule.message_contains {
+                if !row.message.contains(message_filter) {
+                    continue;
+                }
+            }
+            if let Some(ref path_filter) = rule.path_contains {
+                if !row.path.as_deref().unwrap_or_default().contains(path_filter) {
+                    continue;
+                }
+            }
+            matched = true;
+            break;
+        }
+        if matched {
+            ignored += 1;
+        } else {
+            kept.push(row);
+        }
+    }
+    (kept, ignored)
+}
+
+fn detect_with_ignores(
+    common: &InvariantsCommonArgs,
+    ignore_file: Option<&Path>,
+) -> Result<(serde_json::Value, i32), String> {
+    let root = resolve_repo_root(common.repo_root.clone())?;
+    let rules = load_ignore_rules(ignore_file)?;
+    let raw = detect_all(&root);
+    let (findings, ignored_count) = apply_ignores(raw, &rules);
     let summary = summarize(&findings);
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "drift_report",
         "status": if summary.findings_total == 0 { "ok" } else { "failed" },
         "summary": summary,
+        "ignored_count": ignored_count,
         "findings": findings
     });
-    let rendered = emit_payload(common.format, common.out, &payload)?;
-    Ok((rendered, if summary.findings_total == 0 { 0 } else { 3 }))
+    Ok((payload, if summary.findings_total == 0 { 0 } else { 3 }))
 }
 
-fn report(common: InvariantsCommonArgs) -> Result<(String, i32), String> {
-    detect(common)
+fn detect(args: DriftDetectArgs) -> Result<(String, i32), String> {
+    let (payload, code) = detect_with_ignores(&args.common, args.ignore_file.as_deref())?;
+    let rendered = emit_payload(args.common.format, args.common.out, &payload)?;
+    Ok((rendered, code))
 }
 
-fn explain(
-    drift_type: String,
-    common: InvariantsCommonArgs,
-) -> Result<(String, i32), String> {
+fn report(args: DriftDetectArgs) -> Result<(String, i32), String> {
+    detect(args)
+}
+
+fn baseline(args: crate::cli::DriftBaselineArgs) -> Result<(String, i32), String> {
+    let (payload, code) = detect_with_ignores(&args.detect.common, args.detect.ignore_file.as_deref())?;
+    let root = resolve_repo_root(args.detect.common.repo_root.clone())?;
+    let out_path = args
+        .snapshot_out
+        .unwrap_or_else(|| root.join("artifacts/drift/baseline.json"));
+    if let Some(parent) = out_path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
+    let text = serde_json::to_string_pretty(&payload)
+        .map_err(|err| format!("failed to encode baseline payload: {err}"))?;
+    fs::write(&out_path, format!("{text}\n"))
+        .map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
+    let mut report_payload = payload;
+    if let Some(obj) = report_payload.as_object_mut() {
+        obj.insert(
+            "baseline_path".to_string(),
+            serde_json::Value::String(out_path.display().to_string()),
+        );
+    }
+    let rendered = emit_payload(args.detect.common.format, args.detect.common.out, &report_payload)?;
+    Ok((rendered, code))
+}
+
+fn compare(args: DriftCompareArgs) -> Result<(String, i32), String> {
+    let baseline_value = read_json(&args.baseline)?;
+    let baseline_findings = baseline_value
+        .get("findings")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|row| serde_json::from_value::<DriftFinding>(row).map_err(|err| err.to_string()))
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|err| format!("failed to parse baseline findings: {err}"))?;
+
+    let current_findings = if let Some(path) = args.current.as_deref() {
+        let value = read_json(path)?;
+        value
+            .get("findings")
+            .and_then(serde_json::Value::as_array)
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .map(|row| serde_json::from_value::<DriftFinding>(row).map_err(|err| err.to_string()))
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(|err| format!("failed to parse current findings: {err}"))?
+    } else {
+        let (value, _code) =
+            detect_with_ignores(&args.detect.common, args.detect.ignore_file.as_deref())?;
+        value
+            .get("findings")
+            .and_then(serde_json::Value::as_array)
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .map(|row| serde_json::from_value::<DriftFinding>(row).map_err(|err| err.to_string()))
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(|err| format!("failed to parse detected findings: {err}"))?
+    };
+
+    let baseline_set = baseline_findings
+        .iter()
+        .map(|row| format!("{:?}|{:?}|{}|{}", row.drift_type, row.class, row.path.as_deref().unwrap_or_default(), row.message))
+        .collect::<BTreeSet<_>>();
+    let current_set = current_findings
+        .iter()
+        .map(|row| format!("{:?}|{:?}|{}|{}", row.drift_type, row.class, row.path.as_deref().unwrap_or_default(), row.message))
+        .collect::<BTreeSet<_>>();
+
+    let mut added = current_set
+        .difference(&baseline_set)
+        .cloned()
+        .collect::<Vec<_>>();
+    let mut resolved = baseline_set
+        .difference(&current_set)
+        .cloned()
+        .collect::<Vec<_>>();
+    let mut unchanged = baseline_set
+        .intersection(&current_set)
+        .cloned()
+        .collect::<Vec<_>>();
+    added.sort();
+    resolved.sort();
+    unchanged.sort();
+
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "drift_compare",
+        "status": if added.is_empty() { "ok" } else { "failed" },
+        "summary": {
+            "added": added.len(),
+            "resolved": resolved.len(),
+            "unchanged": unchanged.len()
+        },
+        "added": added,
+        "resolved": resolved,
+        "unchanged": unchanged
+    });
+    let rendered = emit_payload(args.detect.common.format, args.detect.common.out, &payload)?;
+    Ok((rendered, if payload["status"] == "ok" { 0 } else { 3 }))
+}
+
+fn explain(drift_type: String, common: InvariantsCommonArgs) -> Result<(String, i32), String> {
     let explanation = explain_drift_type(&drift_type.to_ascii_lowercase());
     let known = explanation.is_some();
     let payload = if let Some(info) = explanation {
@@ -367,13 +586,12 @@ fn explain(
     Ok((rendered, if known { 0 } else { 2 }))
 }
 
-pub(crate) fn run_drift_command(
-    _quiet: bool,
-    command: DriftCommand,
-) -> Result<(String, i32), String> {
+pub(crate) fn run_drift_command(_quiet: bool, command: DriftCommand) -> Result<(String, i32), String> {
     match command {
         DriftCommand::Detect(args) => detect(args),
         DriftCommand::Explain(args) => explain(args.drift_type, args.common),
         DriftCommand::Report(args) => report(args),
+        DriftCommand::Baseline(args) => baseline(args),
+        DriftCommand::Compare(args) => compare(args),
     }
 }

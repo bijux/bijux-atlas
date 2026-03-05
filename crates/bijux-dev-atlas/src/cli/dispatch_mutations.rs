@@ -190,10 +190,10 @@ fn force_json_invariants(command: &mut InvariantsCommand) {
 
 fn force_json_drift(command: &mut DriftCommand) {
     match command {
-        DriftCommand::Detect(args) | DriftCommand::Report(args) => {
-            args.format = FormatArg::Json
-        }
+        DriftCommand::Detect(args) | DriftCommand::Report(args) => args.common.format = FormatArg::Json,
         DriftCommand::Explain(args) => args.common.format = FormatArg::Json,
+        DriftCommand::Baseline(args) => args.detect.common.format = FormatArg::Json,
+        DriftCommand::Compare(args) => args.detect.common.format = FormatArg::Json,
     }
 }
 
@@ -1493,9 +1493,11 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         },
         Command::Drift { command } => match command {
             DriftCommand::Detect(args) | DriftCommand::Report(args) => {
-                args.repo_root = Some(root.clone())
+                args.common.repo_root = Some(root.clone())
             }
             DriftCommand::Explain(args) => args.common.repo_root = Some(root.clone()),
+            DriftCommand::Baseline(args) => args.detect.common.repo_root = Some(root.clone()),
+            DriftCommand::Compare(args) => args.detect.common.repo_root = Some(root.clone()),
         },
         Command::Datasets { command } => match command {
             DatasetsCommand::Validate(args) => args.repo_root = Some(root.clone()),
