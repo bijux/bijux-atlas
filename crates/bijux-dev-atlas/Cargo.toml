@@ -101,3 +101,7 @@ harness = false
 [[bench]]
 name = "authorization"
 harness = false
+
+[[bench]]
+name = "security_supply_chain"
+harness = false

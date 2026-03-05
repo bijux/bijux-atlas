@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "kind": "supply_chain_ci_validation_scenario",
+  "workflow": ".github/workflows/security-supply-chain-validation.yml",
+  "status": "ready"
+}
