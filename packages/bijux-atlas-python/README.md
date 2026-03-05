@@ -11,7 +11,7 @@ pip install bijux-atlas
 ## Import
 
 ```python
-from bijux_atlas import BijuxAtlasClient
+from bijux_atlas import AtlasClient, ClientConfig
 ```
 
 ## Packaging scope
