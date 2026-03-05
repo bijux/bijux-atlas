@@ -23,6 +23,12 @@ related:
 - `bijux-dev-atlas reproduce verify --format json`
 - `bijux-dev-atlas security validate --format json`
 
+## Generated snippets
+
+- [Generated examples index](../_generated/examples.md)
+- [Generated schema snippets](../_generated/schema-snippets.md)
+- [Generated OpenAPI snippets](../_generated/openapi-snippets.md)
+
 ## Contracts and Evidence
 
 - `tutorials/contracts/tutorial-dataset-contract.json`

@@ -21,4 +21,6 @@ This section defines contributor tooling surfaces that are enforced by contracts
 - [Makefile Is Wrapper Only](make-wrapper-only.md)
 - [How To Add A Make Wrapper](how-to-add-make-wrapper.md)
 - [Make Wrapper Snippet](make-wrapper-snippet.md)
+- [Make Surface Evolution Policy](make-evolution-policy.md)
+- [Make Wrapper Migration Notes](make-wrapper-migration-notes.md)
 - [`bijux-dev-atlas` control-plane tooling](bijux-dev-atlas.md)

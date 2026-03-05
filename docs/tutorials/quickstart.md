@@ -15,6 +15,10 @@ related:
 
 # Tutorial Quickstart
 
+Generated command surface references:
+
+--8<-- "docs/_generated/command-lists.md"
+
 1. Validate tutorial dataset:
 
 ```bash
