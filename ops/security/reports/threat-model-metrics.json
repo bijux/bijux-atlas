@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "kind": "security_threat_model_metrics",
+  "threat_count": 8,
+  "coverage_percent": 100.0,
+  "high_severity_count": 6,
+  "medium_severity_count": 2,
+  "low_severity_count": 0,
+  "mitigation_count": 12,
+  "registry_completeness": "ok"
+}

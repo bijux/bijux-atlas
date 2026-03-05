@@ -1,0 +1,15 @@
+example_id: runtime_api_spoofing
+threat:
+  id: SEC-THREAT-RUNTIME-SPOOF
+  category: spoofing
+  severity: high
+  likelihood: medium
+  affected_component: runtime_api
+  title: Caller attempts to impersonate trusted client identity.
+  residual_risk: malformed and abusive traffic remains possible at public edges.
+mitigations:
+  - MIT-HTTP-BOUNDARY
+  - MIT-AUTH-MODEL
+validation:
+  command: bijux-dev-atlas security threats verify --format json
+  expected_status: ok

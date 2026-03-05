@@ -1,0 +1,9 @@
+id: SEC-THREAT-EXAMPLE
+title: Example threat title
+category: spoofing
+severity: high
+likelihood: medium
+affected_component: runtime_api
+mitigations:
+  - MIT-EXAMPLE-CONTROL
+residual_risk: Residual risk statement with bounded impact.

@@ -1,0 +1,5 @@
+id: MIT-EXAMPLE-CONTROL
+title: Example mitigation control
+control_check_id: SEC-EXAMPLE-001
+docs_page: docs/operations/security/threat-model-reference.md
+runbook_page: docs/operations/security/threat-model-troubleshooting.md
