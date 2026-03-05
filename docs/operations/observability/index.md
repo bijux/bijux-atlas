@@ -30,6 +30,7 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - [Logging architecture](logging-architecture.md): structured schema, levels, and metadata policy
 - [Logging philosophy](logging-philosophy.md): stable principles for production log design
 - [Structured log schema](structured-log-schema.md): required fields and validation contract
+- [Log schema documentation](log-schema-documentation.md): canonical schema sources and required fields
 - [Logging debugging guide](logging-debugging-guide.md): request and query log triage flow
 - [Logging ingestion examples](logging-ingestion-examples.md): parser and field mapping patterns
 - [Logging aggregation examples](logging-aggregation-examples.md): incident-oriented aggregation slices
@@ -40,10 +41,14 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - [Log metadata fields](log-metadata-fields.md): stable structured field contract
 - [Log correlation IDs](log-correlation-ids.md): cross-signal request correlation flow
 - [Log analysis workflows](log-analysis-workflows.md): repeatable triage flows
+- [Log analysis guide](log-analysis-guide.md): deterministic triage sequence for structured logs
 - [Logging sampling policy](logging-sampling-policy.md): deterministic log volume control
 - [Logging redaction policy](logging-redaction-policy.md): masking and safe-field rules
 - [Logging privacy policy](logging-privacy-policy.md): privacy constraints for runtime logs
 - [Logging rotation policy](logging-rotation-policy.md): bounded local log retention controls
+- [Log output examples](log-output-examples.md): concrete structured logging payloads
+- [Log troubleshooting guide](log-troubleshooting-guide.md): validation-first troubleshooting path
+- [Logging completion report](logging-completion-report.md): delivered logging controls and evidence
 - [Observability lifecycle](../observability-lifecycle.md): how dashboards, alerts, and SLOs evolve safely
 - [Observability setup](../observability-setup.md): minimum metrics, logs, and trace wiring
 - [Tracing](tracing.md): trace-first diagnosis flow
