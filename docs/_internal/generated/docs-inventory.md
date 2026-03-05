@@ -343,6 +343,7 @@ License: Apache-2.0
 | `docs/_generated/examples.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_generated/openapi-snippets.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_generated/ops-snippets.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_generated/real-data-runs-table.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_generated/schema-snippets.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/architecture/layers.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/architecture/modules.md` | `concept` | `docs-governance` | `stable` |
@@ -385,6 +386,7 @@ License: Apache-2.0
 | `docs/_internal/governance/docs-change-classification.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-charter.md` | `concept` | `bijux-atlas-docs` | `stable` |
 | `docs/_internal/governance/docs-compression-policy.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/docs-consolidation-inventory.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-consolidation.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-contract.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-dashboard.md` | `concept` | `docs-governance` | `stable` |
@@ -392,6 +394,7 @@ License: Apache-2.0
 | `docs/_internal/governance/docs-deletion-safety-checklist.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-drift-dashboard.md` | `concept` | `bijux-atlas-platform` | `stable` |
 | `docs/_internal/governance/docs-inventory-taxonomy.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/docs-linking-rules.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-lint-rules.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-merge-plan.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/docs-metadata-contract.md` | `concept` | `docs-governance` | `stable` |
@@ -413,6 +416,7 @@ License: Apache-2.0
 | `docs/_internal/governance/docs-versioning-model.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/exception-inventory.md` | `concept` | `bijux-atlas-governance` | `stable` |
 | `docs/_internal/governance/generated-content-policy.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/generated-files-registry.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/governance-ssot.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/index.md` | `concept` | `platform` | `stable` |
 | `docs/_internal/governance/metadata/index.md` | `concept` | `docs-governance` | `stable` |
@@ -427,6 +431,7 @@ License: Apache-2.0
 | `docs/_internal/governance/policies/index.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/policy-enforcement-mapping.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/readers-guide.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_internal/governance/real-data-runs-contract.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/redirect-lifecycle.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/redirects-contract.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/redirects-policy.md` | `concept` | `docs-governance` | `stable` |
@@ -451,6 +456,7 @@ License: Apache-2.0
 | `docs/_internal/governance/suite-membership-policy.md` | `concept` | `team:atlas-governance` | `stable` |
 | `docs/_internal/governance/suites-and-registries.md` | `concept` | `team:atlas-governance` | `stable` |
 | `docs/_internal/governance/triage-validation-failures.md` | `concept` | `team:atlas-governance` | `stable` |
+| `docs/_internal/governance/tutorials-legacy-automation-map.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/verification-metadata.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/index.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/linking.md` | `concept` | `bijux-atlas-platform` | `stable` |
@@ -803,6 +809,7 @@ License: Apache-2.0
 | `docs/operations/deploy-kubernetes-minimal.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/deploy-kubernetes.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/deploy.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/deploy/installing-ops-product.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/deprecation-lifecycle-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/docker-build-network-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/docs-as-runbooks.md` | `concept` | `bijux-atlas-operations` | `stable` |
@@ -1000,6 +1007,7 @@ License: Apache-2.0
 | `docs/operations/ops-as-product.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/ops-chart-rollback-guide.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/ops-chart-upgrade-guide.md` | `concept` | `docs-governance` | `stable` |
+| `docs/operations/ops-compatibility-matrix.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/ops-compatibility-promise.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/ops-directory-purity-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/ops-distribution-policy.md` | `concept` | `docs-governance` | `stable` |
@@ -1367,6 +1375,7 @@ License: Apache-2.0
 | `docs/product/deep-work-highlights.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/diffs-v1.md` | `concept` | `bijux-atlas-query` | `stable` |
 | `docs/product/faq.md` | `concept` | `docs-governance` | `stable` |
+| `docs/product/for-operators.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/for-reviewers.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/how-this-repo-enforces-itself.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/immutability-and-aliases.md` | `concept` | `bijux-atlas-store` + `bijux-atlas-api` | `stable` |
@@ -1387,6 +1396,7 @@ License: Apache-2.0
 | `docs/product/what-we-built.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/why-trust-this.md` | `concept` | `docs-governance` | `stable` |
 | `docs/reference/api/index.md` | `reference` | `docs-governance` | `stable` |
+| `docs/reference/artifacts-locator.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/audience-legend.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/breaking-change-checklist.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/build-info.md` | `reference` | `docs-governance` | `stable` |
@@ -1552,6 +1562,7 @@ License: Apache-2.0
 | `docs/reference/reports/checks/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/reports/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/reports/migrations/index.md` | `reference` | `bijux-atlas-governance` | `stable` |
+| `docs/reference/reports/real-data-runs.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/runtime/config.md` | `reference` | `bijux-atlas-server` | `stable` |
 | `docs/reference/runtime/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/schema-versioning-policy.md` | `reference` | `docs-governance` | `stable` |
@@ -1596,6 +1607,22 @@ License: Apache-2.0
 | `docs/tutorials/query-via-rust-client.md` | `concept` | `docs-governance` | `stable` |
 | `docs/tutorials/quickstart.md` | `concept` | `docs-governance` | `stable` |
 | `docs/tutorials/reading-metrics.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/evidence-summary-dashboard.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/index.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/overview.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/reproduce-all-runs.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/reproduce-single-run.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/reviewer-quick-path.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/runs/rdr-001-genes-baseline.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/runs/rdr-002-transcripts-baseline.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/runs/rdr-003-variants-mini.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/runs/rdr-004-expression-medium.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/runs/rdr-005-population-medium.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/runs/rdr-006-phenotype-medium.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/runs/rdr-007-assembly-large-sample.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/runs/rdr-008-annotation-large-sample.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/runs/rdr-009-clinvar-large-sample.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data/runs/rdr-010-combined-release.md` | `concept` | `docs-governance` | `stable` |
 | `docs/tutorials/reference.md` | `concept` | `docs-governance` | `stable` |
 | `docs/tutorials/reproducibility-and-integrity.md` | `concept` | `docs-governance` | `stable` |
 | `docs/tutorials/run-with-dev-atlas.md` | `concept` | `docs-governance` | `stable` |

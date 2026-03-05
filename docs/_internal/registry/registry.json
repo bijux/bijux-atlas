@@ -8128,6 +8128,29 @@
       "doc_version": "v1",
       "keywords": [
         "-generated",
+        "real-data-runs-table"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_generated/real-data-runs-table.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-generated",
+        "real-data-runs-table"
+      ],
+      "title": "Real Data Runs Table",
+      "topic": "real-data-runs-table"
+    },
+    {
+      "area": "_generated",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-generated",
         "schema-snippets"
       ],
       "last_reviewed": "2026-02-25",
@@ -9192,6 +9215,31 @@
       "doc_version": "v1",
       "keywords": [
         "-internal",
+        "docs-consolidation-inventory",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-consolidation-inventory.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-consolidation-inventory",
+        "governance"
+      ],
+      "title": "Docs Consolidation Inventory",
+      "topic": "docs-consolidation-inventory"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
         "docs-consolidation",
         "governance"
       ],
@@ -9358,6 +9406,31 @@
       ],
       "title": "Docs Inventory Taxonomy",
       "topic": "docs-inventory-taxonomy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "docs-linking-rules",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-linking-rules.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "docs-linking-rules",
+        "governance"
+      ],
+      "title": "Docs Linking Rules",
+      "topic": "docs-linking-rules"
     },
     {
       "area": "_internal",
@@ -9886,6 +9959,31 @@
     },
     {
       "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "generated-files-registry",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/generated-files-registry.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "generated-files-registry",
+        "governance"
+      ],
+      "title": "Generated Files Registry",
+      "topic": "generated-files-registry"
+    },
+    {
+      "area": "_internal",
       "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
@@ -10243,6 +10341,31 @@
       ],
       "title": "Governance Readers Guide",
       "topic": "readers-guide"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "real-data-runs-contract"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/real-data-runs-contract.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "real-data-runs-contract"
+      ],
+      "title": "Real Data Runs Contract",
+      "topic": "real-data-runs-contract"
     },
     {
       "area": "_internal",
@@ -10861,6 +10984,31 @@
       ],
       "title": "Triage Validation Failures",
       "topic": "triage-validation-failures"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "governance",
+        "tutorials-legacy-automation-map"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/tutorials-legacy-automation-map.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "governance",
+        "tutorials-legacy-automation-map"
+      ],
+      "title": "Tutorials Legacy Automation Map",
+      "topic": "tutorials-legacy-automation-map"
     },
     {
       "area": "_internal",
@@ -19157,6 +19305,31 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "deploy",
+        "installing-ops-product",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/deploy/installing-ops-product.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "deploy",
+        "installing-ops-product",
+        "operations"
+      ],
+      "title": "Installing Ops Product",
+      "topic": "installing-ops-product"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "deprecation-lifecycle-policy",
         "operations"
       ],
@@ -23948,6 +24121,29 @@
       ],
       "title": "Ops Chart Upgrade Guide",
       "topic": "ops-chart-upgrade-guide"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-compatibility-matrix"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-compatibility-matrix.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-compatibility-matrix"
+      ],
+      "title": "Ops Compatibility Matrix",
+      "topic": "ops-compatibility-matrix"
     },
     {
       "area": "operations",
@@ -32899,6 +33095,29 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "for-operators",
+        "product"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/product/for-operators.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "for-operators",
+        "product"
+      ],
+      "title": "For Operators",
+      "topic": "for-operators"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "for-reviewers",
         "product"
       ],
@@ -33353,6 +33572,29 @@
       ],
       "title": "API Reference",
       "topic": "index"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "artifacts-locator",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/artifacts-locator.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "artifacts-locator",
+        "reference"
+      ],
+      "title": "Artifacts Locator",
+      "topic": "artifacts-locator"
     },
     {
       "area": "reference",
@@ -37455,6 +37697,31 @@
     },
     {
       "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "real-data-runs",
+        "reference",
+        "reports"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/reports/real-data-runs.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "real-data-runs",
+        "reference",
+        "reports"
+      ],
+      "title": "Real Data Runs Report",
+      "topic": "real-data-runs"
+    },
+    {
+      "area": "reference",
       "audience": "user",
       "crate": null,
       "doc_type": "reference",
@@ -38472,6 +38739,426 @@
       ],
       "title": "Tutorial: Reading Metrics",
       "topic": "reading-metrics"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "evidence-summary-dashboard",
+        "real-data",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/evidence-summary-dashboard.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "evidence-summary-dashboard",
+        "real-data",
+        "tutorials"
+      ],
+      "title": "Real Data Evidence Summary Dashboard",
+      "topic": "evidence-summary-dashboard"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "index",
+        "real-data",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "index",
+        "real-data",
+        "tutorials"
+      ],
+      "title": "Real Data Runs",
+      "topic": "index"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "overview",
+        "real-data",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/overview.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "overview",
+        "real-data",
+        "tutorials"
+      ],
+      "title": "Real Data Runs Overview",
+      "topic": "overview"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "real-data",
+        "reproduce-all-runs",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/reproduce-all-runs.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "real-data",
+        "reproduce-all-runs",
+        "tutorials"
+      ],
+      "title": "Reproduce All Real Data Runs",
+      "topic": "reproduce-all-runs"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "real-data",
+        "reproduce-single-run",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/reproduce-single-run.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "real-data",
+        "reproduce-single-run",
+        "tutorials"
+      ],
+      "title": "Reproduce Single Real Data Run",
+      "topic": "reproduce-single-run"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "real-data",
+        "reviewer-quick-path",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/reviewer-quick-path.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "real-data",
+        "reviewer-quick-path",
+        "tutorials"
+      ],
+      "title": "Reviewer Quick Path",
+      "topic": "reviewer-quick-path"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "rdr-001-genes-baseline",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-001-genes-baseline.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "rdr-001-genes-baseline",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "title": "Genes Baseline Tiny",
+      "topic": "rdr-001-genes-baseline"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "rdr-002-transcripts-baseline",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-002-transcripts-baseline.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "rdr-002-transcripts-baseline",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "title": "Transcripts Baseline Tiny",
+      "topic": "rdr-002-transcripts-baseline"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "rdr-003-variants-mini",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-003-variants-mini.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "rdr-003-variants-mini",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "title": "Variants Mini Tiny",
+      "topic": "rdr-003-variants-mini"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "rdr-004-expression-medium",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-004-expression-medium.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "rdr-004-expression-medium",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "title": "Expression Medium",
+      "topic": "rdr-004-expression-medium"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "rdr-005-population-medium",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-005-population-medium.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "rdr-005-population-medium",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "title": "Population Medium",
+      "topic": "rdr-005-population-medium"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "rdr-006-phenotype-medium",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-006-phenotype-medium.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "rdr-006-phenotype-medium",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "title": "Phenotype Medium",
+      "topic": "rdr-006-phenotype-medium"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "rdr-007-assembly-large-sample",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-007-assembly-large-sample.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "rdr-007-assembly-large-sample",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "title": "Assembly Large Sample",
+      "topic": "rdr-007-assembly-large-sample"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "rdr-008-annotation-large-sample",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-008-annotation-large-sample.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "rdr-008-annotation-large-sample",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "title": "Annotation Large Sample",
+      "topic": "rdr-008-annotation-large-sample"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "rdr-009-clinvar-large-sample",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-009-clinvar-large-sample.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "rdr-009-clinvar-large-sample",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "title": "ClinVar Large Sample",
+      "topic": "rdr-009-clinvar-large-sample"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "rdr-010-combined-release",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-010-combined-release.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "rdr-010-combined-release",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "title": "Combined Release Validation",
+      "topic": "rdr-010-combined-release"
     },
     {
       "area": "tutorials",

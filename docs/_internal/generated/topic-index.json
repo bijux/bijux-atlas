@@ -483,6 +483,9 @@
     "artifacts": [
       "crates/bijux-dev-atlas/docs/internal/artifacts.md"
     ],
+    "artifacts-locator": [
+      "docs/reference/artifacts-locator.md"
+    ],
     "atlas-client-usage-examples": [
       "docs/reference/examples/atlas-client-usage-examples.md"
     ],
@@ -1495,6 +1498,9 @@
     "docs-consolidation": [
       "docs/_internal/governance/docs-consolidation.md"
     ],
+    "docs-consolidation-inventory": [
+      "docs/_internal/governance/docs-consolidation-inventory.md"
+    ],
     "docs-contract": [
       "docs/_internal/governance/docs-contract.md"
     ],
@@ -1518,6 +1524,9 @@
     ],
     "docs-inventory-taxonomy": [
       "docs/_internal/governance/docs-inventory-taxonomy.md"
+    ],
+    "docs-linking-rules": [
+      "docs/_internal/governance/docs-linking-rules.md"
     ],
     "docs-lint-rules": [
       "docs/_internal/governance/docs-lint-rules.md"
@@ -1781,6 +1790,9 @@
     "evidence-retention-policy": [
       "docs/operations/evidence-retention-policy.md"
     ],
+    "evidence-summary-dashboard": [
+      "docs/tutorials/real-data/evidence-summary-dashboard.md"
+    ],
     "evidence-viewer": [
       "docs/operations/evidence-viewer.md"
     ],
@@ -1897,6 +1909,9 @@
     "fixtures": [
       "docs/operations/e2e/fixtures.md"
     ],
+    "for-operators": [
+      "docs/product/for-operators.md"
+    ],
     "for-reviewers": [
       "docs/product/for-reviewers.md"
     ],
@@ -1928,6 +1943,9 @@
     ],
     "generated-example-authoring": [
       "docs/tutorials/generated-example-authoring.md"
+    ],
+    "generated-files-registry": [
+      "docs/_internal/governance/generated-files-registry.md"
     ],
     "generation": [
       "docs/_internal/generation.md"
@@ -2177,7 +2195,8 @@
       "docs/reference/reports/migrations/index.md",
       "docs/reference/runtime/index.md",
       "docs/reference/store/index.md",
-      "docs/tutorials/index.md"
+      "docs/tutorials/index.md",
+      "docs/tutorials/real-data/index.md"
     ],
     "ingest-benchmark-ci": [
       "crates/bijux-atlas-ingest/docs/ingest-benchmark-ci.md"
@@ -2247,6 +2266,9 @@
     ],
     "install-verification-checklist": [
       "docs/operations/install-verification-checklist.md"
+    ],
+    "installing-ops-product": [
+      "docs/operations/deploy/installing-ops-product.md"
     ],
     "institutional-packet": [
       "docs/operations/institutional-packet.md"
@@ -2663,6 +2685,9 @@
     "ops-command-list": [
       "crates/bijux-dev-atlas/docs/internal/ops-command-list.md"
     ],
+    "ops-compatibility-matrix": [
+      "docs/operations/ops-compatibility-matrix.md"
+    ],
     "ops-compatibility-promise": [
       "docs/operations/ops-compatibility-promise.md"
     ],
@@ -2774,7 +2799,8 @@
     ],
     "overview": [
       "docs/architecture/overview.md",
-      "docs/operations/overview.md"
+      "docs/operations/overview.md",
+      "docs/tutorials/real-data/overview.md"
     ],
     "package-location-and-policy": [
       "docs/api/client-python/package-location-and-policy.md"
@@ -3095,6 +3121,36 @@
     "rbac-structure": [
       "docs/architecture/security/rbac-structure.md"
     ],
+    "rdr-001-genes-baseline": [
+      "docs/tutorials/real-data/runs/rdr-001-genes-baseline.md"
+    ],
+    "rdr-002-transcripts-baseline": [
+      "docs/tutorials/real-data/runs/rdr-002-transcripts-baseline.md"
+    ],
+    "rdr-003-variants-mini": [
+      "docs/tutorials/real-data/runs/rdr-003-variants-mini.md"
+    ],
+    "rdr-004-expression-medium": [
+      "docs/tutorials/real-data/runs/rdr-004-expression-medium.md"
+    ],
+    "rdr-005-population-medium": [
+      "docs/tutorials/real-data/runs/rdr-005-population-medium.md"
+    ],
+    "rdr-006-phenotype-medium": [
+      "docs/tutorials/real-data/runs/rdr-006-phenotype-medium.md"
+    ],
+    "rdr-007-assembly-large-sample": [
+      "docs/tutorials/real-data/runs/rdr-007-assembly-large-sample.md"
+    ],
+    "rdr-008-annotation-large-sample": [
+      "docs/tutorials/real-data/runs/rdr-008-annotation-large-sample.md"
+    ],
+    "rdr-009-clinvar-large-sample": [
+      "docs/tutorials/real-data/runs/rdr-009-clinvar-large-sample.md"
+    ],
+    "rdr-010-combined-release": [
+      "docs/tutorials/real-data/runs/rdr-010-combined-release.md"
+    ],
     "readers-guide": [
       "docs/_internal/governance/readers-guide.md"
     ],
@@ -3103,6 +3159,15 @@
     ],
     "reading-metrics": [
       "docs/tutorials/reading-metrics.md"
+    ],
+    "real-data-runs": [
+      "docs/reference/reports/real-data-runs.md"
+    ],
+    "real-data-runs-contract": [
+      "docs/_internal/governance/real-data-runs-contract.md"
+    ],
+    "real-data-runs-table": [
+      "docs/_generated/real-data-runs-table.md"
     ],
     "recovery-timeline-examples": [
       "docs/operations/resilience/recovery-timeline-examples.md"
@@ -3295,8 +3360,14 @@
     "repository-structure": [
       "docs/architecture/diagrams/repository-structure.md"
     ],
+    "reproduce-all-runs": [
+      "docs/tutorials/real-data/reproduce-all-runs.md"
+    ],
     "reproduce-ci-locally": [
       "docs/control-plane/reproduce-ci-locally.md"
+    ],
+    "reproduce-single-run": [
+      "docs/tutorials/real-data/reproduce-single-run.md"
     ],
     "reproducibility": [
       "docs/reference/ingest/reproducibility.md"
@@ -3376,6 +3447,9 @@
     ],
     "reviewer-onboarding-checklist": [
       "docs/product/reviewer-onboarding-checklist.md"
+    ],
+    "reviewer-quick-path": [
+      "docs/tutorials/real-data/reviewer-quick-path.md"
     ],
     "roadmap": [
       "docs/operations/replication/roadmap.md"
@@ -4109,6 +4183,9 @@
     ],
     "tutorials-doctrine": [
       "docs/architecture/tutorials-doctrine.md"
+    ],
+    "tutorials-legacy-automation-map": [
+      "docs/_internal/governance/tutorials-legacy-automation-map.md"
     ],
     "umbrella-atlas-matrix": [
       "docs/reference/compatibility/umbrella-atlas-matrix.md"

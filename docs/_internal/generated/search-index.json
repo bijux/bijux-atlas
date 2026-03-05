@@ -4427,6 +4427,18 @@
     {
       "keywords": [
         "-generated",
+        "real-data-runs-table"
+      ],
+      "path": "docs/_generated/real-data-runs-table.md",
+      "tags": [
+        "-generated",
+        "real-data-runs-table"
+      ],
+      "topic": "real-data-runs-table"
+    },
+    {
+      "keywords": [
+        "-generated",
         "schema-snippets"
       ],
       "path": "docs/_generated/schema-snippets.md",
@@ -5029,6 +5041,20 @@
     {
       "keywords": [
         "-internal",
+        "docs-consolidation-inventory",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-consolidation-inventory.md",
+      "tags": [
+        "-internal",
+        "docs-consolidation-inventory",
+        "governance"
+      ],
+      "topic": "docs-consolidation-inventory"
+    },
+    {
+      "keywords": [
+        "-internal",
         "docs-consolidation",
         "governance"
       ],
@@ -5123,6 +5149,20 @@
         "governance"
       ],
       "topic": "docs-inventory-taxonomy"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "docs-linking-rules",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/docs-linking-rules.md",
+      "tags": [
+        "-internal",
+        "docs-linking-rules",
+        "governance"
+      ],
+      "topic": "docs-linking-rules"
     },
     {
       "keywords": [
@@ -5421,6 +5461,20 @@
     {
       "keywords": [
         "-internal",
+        "generated-files-registry",
+        "governance"
+      ],
+      "path": "docs/_internal/governance/generated-files-registry.md",
+      "tags": [
+        "-internal",
+        "generated-files-registry",
+        "governance"
+      ],
+      "topic": "generated-files-registry"
+    },
+    {
+      "keywords": [
+        "-internal",
         "governance",
         "governance-ssot"
       ],
@@ -5623,6 +5677,20 @@
         "readers-guide"
       ],
       "topic": "readers-guide"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "real-data-runs-contract"
+      ],
+      "path": "docs/_internal/governance/real-data-runs-contract.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "real-data-runs-contract"
+      ],
+      "topic": "real-data-runs-contract"
     },
     {
       "keywords": [
@@ -5977,6 +6045,20 @@
         "triage-validation-failures"
       ],
       "topic": "triage-validation-failures"
+    },
+    {
+      "keywords": [
+        "-internal",
+        "governance",
+        "tutorials-legacy-automation-map"
+      ],
+      "path": "docs/_internal/governance/tutorials-legacy-automation-map.md",
+      "tags": [
+        "-internal",
+        "governance",
+        "tutorials-legacy-automation-map"
+      ],
+      "topic": "tutorials-legacy-automation-map"
     },
     {
       "keywords": [
@@ -10396,6 +10478,20 @@
     },
     {
       "keywords": [
+        "deploy",
+        "installing-ops-product",
+        "operations"
+      ],
+      "path": "docs/operations/deploy/installing-ops-product.md",
+      "tags": [
+        "deploy",
+        "installing-ops-product",
+        "operations"
+      ],
+      "topic": "installing-ops-product"
+    },
+    {
+      "keywords": [
         "deprecation-lifecycle-policy",
         "operations"
       ],
@@ -13025,6 +13121,18 @@
         "ops-chart-upgrade-guide"
       ],
       "topic": "ops-chart-upgrade-guide"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-compatibility-matrix"
+      ],
+      "path": "docs/operations/ops-compatibility-matrix.md",
+      "tags": [
+        "operations",
+        "ops-compatibility-matrix"
+      ],
+      "topic": "ops-compatibility-matrix"
     },
     {
       "keywords": [
@@ -17934,6 +18042,18 @@
     },
     {
       "keywords": [
+        "for-operators",
+        "product"
+      ],
+      "path": "docs/product/for-operators.md",
+      "tags": [
+        "for-operators",
+        "product"
+      ],
+      "topic": "for-operators"
+    },
+    {
+      "keywords": [
         "for-reviewers",
         "product"
       ],
@@ -18173,6 +18293,18 @@
         "reference"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "artifacts-locator",
+        "reference"
+      ],
+      "path": "docs/reference/artifacts-locator.md",
+      "tags": [
+        "artifacts-locator",
+        "reference"
+      ],
+      "topic": "artifacts-locator"
     },
     {
       "keywords": [
@@ -20460,6 +20592,20 @@
     },
     {
       "keywords": [
+        "real-data-runs",
+        "reference",
+        "reports"
+      ],
+      "path": "docs/reference/reports/real-data-runs.md",
+      "tags": [
+        "real-data-runs",
+        "reference",
+        "reports"
+      ],
+      "topic": "real-data-runs"
+    },
+    {
+      "keywords": [
         "config",
         "reference",
         "runtime"
@@ -20993,6 +21139,250 @@
         "tutorials"
       ],
       "topic": "reading-metrics"
+    },
+    {
+      "keywords": [
+        "evidence-summary-dashboard",
+        "real-data",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/evidence-summary-dashboard.md",
+      "tags": [
+        "evidence-summary-dashboard",
+        "real-data",
+        "tutorials"
+      ],
+      "topic": "evidence-summary-dashboard"
+    },
+    {
+      "keywords": [
+        "index",
+        "real-data",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/index.md",
+      "tags": [
+        "index",
+        "real-data",
+        "tutorials"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "overview",
+        "real-data",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/overview.md",
+      "tags": [
+        "overview",
+        "real-data",
+        "tutorials"
+      ],
+      "topic": "overview"
+    },
+    {
+      "keywords": [
+        "real-data",
+        "reproduce-all-runs",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/reproduce-all-runs.md",
+      "tags": [
+        "real-data",
+        "reproduce-all-runs",
+        "tutorials"
+      ],
+      "topic": "reproduce-all-runs"
+    },
+    {
+      "keywords": [
+        "real-data",
+        "reproduce-single-run",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/reproduce-single-run.md",
+      "tags": [
+        "real-data",
+        "reproduce-single-run",
+        "tutorials"
+      ],
+      "topic": "reproduce-single-run"
+    },
+    {
+      "keywords": [
+        "real-data",
+        "reviewer-quick-path",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/reviewer-quick-path.md",
+      "tags": [
+        "real-data",
+        "reviewer-quick-path",
+        "tutorials"
+      ],
+      "topic": "reviewer-quick-path"
+    },
+    {
+      "keywords": [
+        "rdr-001-genes-baseline",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-001-genes-baseline.md",
+      "tags": [
+        "rdr-001-genes-baseline",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "topic": "rdr-001-genes-baseline"
+    },
+    {
+      "keywords": [
+        "rdr-002-transcripts-baseline",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-002-transcripts-baseline.md",
+      "tags": [
+        "rdr-002-transcripts-baseline",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "topic": "rdr-002-transcripts-baseline"
+    },
+    {
+      "keywords": [
+        "rdr-003-variants-mini",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-003-variants-mini.md",
+      "tags": [
+        "rdr-003-variants-mini",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "topic": "rdr-003-variants-mini"
+    },
+    {
+      "keywords": [
+        "rdr-004-expression-medium",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-004-expression-medium.md",
+      "tags": [
+        "rdr-004-expression-medium",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "topic": "rdr-004-expression-medium"
+    },
+    {
+      "keywords": [
+        "rdr-005-population-medium",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-005-population-medium.md",
+      "tags": [
+        "rdr-005-population-medium",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "topic": "rdr-005-population-medium"
+    },
+    {
+      "keywords": [
+        "rdr-006-phenotype-medium",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-006-phenotype-medium.md",
+      "tags": [
+        "rdr-006-phenotype-medium",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "topic": "rdr-006-phenotype-medium"
+    },
+    {
+      "keywords": [
+        "rdr-007-assembly-large-sample",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-007-assembly-large-sample.md",
+      "tags": [
+        "rdr-007-assembly-large-sample",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "topic": "rdr-007-assembly-large-sample"
+    },
+    {
+      "keywords": [
+        "rdr-008-annotation-large-sample",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-008-annotation-large-sample.md",
+      "tags": [
+        "rdr-008-annotation-large-sample",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "topic": "rdr-008-annotation-large-sample"
+    },
+    {
+      "keywords": [
+        "rdr-009-clinvar-large-sample",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-009-clinvar-large-sample.md",
+      "tags": [
+        "rdr-009-clinvar-large-sample",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "topic": "rdr-009-clinvar-large-sample"
+    },
+    {
+      "keywords": [
+        "rdr-010-combined-release",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-010-combined-release.md",
+      "tags": [
+        "rdr-010-combined-release",
+        "real-data",
+        "runs",
+        "tutorials"
+      ],
+      "topic": "rdr-010-combined-release"
     },
     {
       "keywords": [

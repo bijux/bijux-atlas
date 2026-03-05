@@ -3072,6 +3072,14 @@
       "breadcrumbs": [
         "docs",
         "docs/_generated",
+        "docs/_generated/real-data-runs-table.md"
+      ],
+      "path": "docs/_generated/real-data-runs-table.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_generated",
         "docs/_generated/schema-snippets.md"
       ],
       "path": "docs/_generated/schema-snippets.md"
@@ -3459,6 +3467,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/docs-consolidation-inventory.md"
+      ],
+      "path": "docs/_internal/governance/docs-consolidation-inventory.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/docs-consolidation.md"
       ],
       "path": "docs/_internal/governance/docs-consolidation.md"
@@ -3516,6 +3533,15 @@
         "docs/_internal/governance/docs-inventory-taxonomy.md"
       ],
       "path": "docs/_internal/governance/docs-inventory-taxonomy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/docs-linking-rules.md"
+      ],
+      "path": "docs/_internal/governance/docs-linking-rules.md"
     },
     {
       "breadcrumbs": [
@@ -3711,6 +3737,15 @@
         "docs",
         "docs/_internal",
         "docs/_internal/governance",
+        "docs/_internal/governance/generated-files-registry.md"
+      ],
+      "path": "docs/_internal/governance/generated-files-registry.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
         "docs/_internal/governance/governance-ssot.md"
       ],
       "path": "docs/_internal/governance/governance-ssot.md"
@@ -3836,6 +3871,15 @@
         "docs/_internal/governance/readers-guide.md"
       ],
       "path": "docs/_internal/governance/readers-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/real-data-runs-contract.md"
+      ],
+      "path": "docs/_internal/governance/real-data-runs-contract.md"
     },
     {
       "breadcrumbs": [
@@ -4061,6 +4105,15 @@
         "docs/_internal/governance/triage-validation-failures.md"
       ],
       "path": "docs/_internal/governance/triage-validation-failures.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/tutorials-legacy-automation-map.md"
+      ],
+      "path": "docs/_internal/governance/tutorials-legacy-automation-map.md"
     },
     {
       "breadcrumbs": [
@@ -6978,6 +7031,15 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/deploy",
+        "docs/operations/deploy/installing-ops-product.md"
+      ],
+      "path": "docs/operations/deploy/installing-ops-product.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/deprecation-lifecycle-policy.md"
       ],
       "path": "docs/operations/deprecation-lifecycle-policy.md"
@@ -8684,6 +8746,14 @@
         "docs/operations/ops-chart-upgrade-guide.md"
       ],
       "path": "docs/operations/ops-chart-upgrade-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-compatibility-matrix.md"
+      ],
+      "path": "docs/operations/ops-compatibility-matrix.md"
     },
     {
       "breadcrumbs": [
@@ -11876,6 +11946,14 @@
       "breadcrumbs": [
         "docs",
         "docs/product",
+        "docs/product/for-operators.md"
+      ],
+      "path": "docs/product/for-operators.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/product",
         "docs/product/for-reviewers.md"
       ],
       "path": "docs/product/for-reviewers.md"
@@ -12032,6 +12110,14 @@
         "docs/reference/api/index.md"
       ],
       "path": "docs/reference/api/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/artifacts-locator.md"
+      ],
+      "path": "docs/reference/artifacts-locator.md"
     },
     {
       "breadcrumbs": [
@@ -13512,6 +13598,15 @@
       "breadcrumbs": [
         "docs",
         "docs/reference",
+        "docs/reference/reports",
+        "docs/reference/reports/real-data-runs.md"
+      ],
+      "path": "docs/reference/reports/real-data-runs.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
         "docs/reference/runtime",
         "docs/reference/runtime/config.md"
       ],
@@ -13863,6 +13958,160 @@
         "docs/tutorials/reading-metrics.md"
       ],
       "path": "docs/tutorials/reading-metrics.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/evidence-summary-dashboard.md"
+      ],
+      "path": "docs/tutorials/real-data/evidence-summary-dashboard.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/index.md"
+      ],
+      "path": "docs/tutorials/real-data/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/overview.md"
+      ],
+      "path": "docs/tutorials/real-data/overview.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/reproduce-all-runs.md"
+      ],
+      "path": "docs/tutorials/real-data/reproduce-all-runs.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/reproduce-single-run.md"
+      ],
+      "path": "docs/tutorials/real-data/reproduce-single-run.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/reviewer-quick-path.md"
+      ],
+      "path": "docs/tutorials/real-data/reviewer-quick-path.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/runs",
+        "docs/tutorials/real-data/runs/rdr-001-genes-baseline.md"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-001-genes-baseline.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/runs",
+        "docs/tutorials/real-data/runs/rdr-002-transcripts-baseline.md"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-002-transcripts-baseline.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/runs",
+        "docs/tutorials/real-data/runs/rdr-003-variants-mini.md"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-003-variants-mini.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/runs",
+        "docs/tutorials/real-data/runs/rdr-004-expression-medium.md"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-004-expression-medium.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/runs",
+        "docs/tutorials/real-data/runs/rdr-005-population-medium.md"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-005-population-medium.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/runs",
+        "docs/tutorials/real-data/runs/rdr-006-phenotype-medium.md"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-006-phenotype-medium.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/runs",
+        "docs/tutorials/real-data/runs/rdr-007-assembly-large-sample.md"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-007-assembly-large-sample.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/runs",
+        "docs/tutorials/real-data/runs/rdr-008-annotation-large-sample.md"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-008-annotation-large-sample.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/runs",
+        "docs/tutorials/real-data/runs/rdr-009-clinvar-large-sample.md"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-009-clinvar-large-sample.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data",
+        "docs/tutorials/real-data/runs",
+        "docs/tutorials/real-data/runs/rdr-010-combined-release.md"
+      ],
+      "path": "docs/tutorials/real-data/runs/rdr-010-combined-release.md"
     },
     {
       "breadcrumbs": [

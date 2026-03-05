@@ -1683,6 +1683,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_generated/real-data-runs-table.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_generated/schema-snippets.md"
     },
     {
@@ -1893,6 +1898,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-consolidation-inventory.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/docs-consolidation.md"
     },
     {
@@ -1924,6 +1934,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/_internal/governance/docs-inventory-taxonomy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/docs-linking-rules.md"
     },
     {
       "crate": null,
@@ -2033,6 +2048,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/governance/generated-files-registry.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/governance-ssot.md"
     },
     {
@@ -2099,6 +2119,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/_internal/governance/readers-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/real-data-runs-contract.md"
     },
     {
       "crate": null,
@@ -2219,6 +2244,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/_internal/governance/triage-validation-failures.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_internal/governance/tutorials-legacy-automation-map.md"
     },
     {
       "crate": null,
@@ -3983,6 +4013,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/deploy/installing-ops-product.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/deprecation-lifecycle-policy.md"
     },
     {
@@ -4964,6 +4999,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/ops-chart-upgrade-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/ops-compatibility-matrix.md"
     },
     {
       "crate": null,
@@ -6803,6 +6843,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/product/for-operators.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/product/for-reviewers.md"
     },
     {
@@ -6899,6 +6944,11 @@
       "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/api/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/artifacts-locator.md"
     },
     {
       "crate": null,
@@ -7728,6 +7778,11 @@
     {
       "crate": null,
       "doc_type": "reference",
+      "from": "docs/reference/reports/real-data-runs.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
       "from": "docs/reference/runtime/config.md"
     },
     {
@@ -7944,6 +7999,86 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/tutorials/reading-metrics.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/evidence-summary-dashboard.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/overview.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/reproduce-all-runs.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/reproduce-single-run.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/reviewer-quick-path.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/runs/rdr-001-genes-baseline.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/runs/rdr-002-transcripts-baseline.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/runs/rdr-003-variants-mini.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/runs/rdr-004-expression-medium.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/runs/rdr-005-population-medium.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/runs/rdr-006-phenotype-medium.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/runs/rdr-007-assembly-large-sample.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/runs/rdr-008-annotation-large-sample.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/runs/rdr-009-clinvar-large-sample.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data/runs/rdr-010-combined-release.md"
     },
     {
       "crate": null,

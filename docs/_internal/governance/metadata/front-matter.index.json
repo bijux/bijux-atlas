@@ -2693,6 +2693,14 @@
       "area": "_generated",
       "audience": "contributors",
       "owner": "docs-governance",
+      "path": "docs/_generated/real-data-runs-table.md",
+      "stability": "stable",
+      "title": "Real Data Runs Table"
+    },
+    {
+      "area": "_generated",
+      "audience": "contributors",
+      "owner": "docs-governance",
       "path": "docs/_generated/schema-snippets.md",
       "stability": "stable",
       "title": "Generated Schema Snippets"
@@ -3029,6 +3037,14 @@
       "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-consolidation-inventory.md",
+      "stability": "stable",
+      "title": "Docs Consolidation Inventory"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
       "path": "docs/_internal/governance/docs-consolidation.md",
       "stability": "stable",
       "title": "Docs Consolidation"
@@ -3080,6 +3096,14 @@
       "path": "docs/_internal/governance/docs-inventory-taxonomy.md",
       "stability": "stable",
       "title": "Docs Inventory Taxonomy"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/docs-linking-rules.md",
+      "stability": "stable",
+      "title": "Docs Linking Rules"
     },
     {
       "area": "_internal",
@@ -3251,6 +3275,14 @@
     },
     {
       "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/generated-files-registry.md",
+      "stability": "stable",
+      "title": "Generated Files Registry"
+    },
+    {
+      "area": "_internal",
       "audience": "contributor",
       "owner": "docs-governance",
       "path": "docs/_internal/governance/governance-ssot.md",
@@ -3360,6 +3392,14 @@
       "path": "docs/_internal/governance/readers-guide.md",
       "stability": "stable",
       "title": "Governance Readers Guide"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/real-data-runs-contract.md",
+      "stability": "stable",
+      "title": "Real Data Runs Contract"
     },
     {
       "area": "_internal",
@@ -3552,6 +3592,14 @@
       "path": "docs/_internal/governance/triage-validation-failures.md",
       "stability": "stable",
       "title": "Triage Validation Failures"
+    },
+    {
+      "area": "_internal",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_internal/governance/tutorials-legacy-automation-map.md",
+      "stability": "stable",
+      "title": "Tutorials Legacy Automation Map"
     },
     {
       "area": "_internal",
@@ -6373,6 +6421,14 @@
       "area": "operations",
       "audience": "operators",
       "owner": "docs-governance",
+      "path": "docs/operations/deploy/installing-ops-product.md",
+      "stability": "stable",
+      "title": "Installing Ops Product"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
       "path": "docs/operations/deprecation-lifecycle-policy.md",
       "stability": "stable",
       "title": "Deprecation Lifecycle Policy"
@@ -7944,6 +8000,14 @@
       "path": "docs/operations/ops-chart-upgrade-guide.md",
       "stability": "stable",
       "title": "Ops Chart Upgrade Guide"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-compatibility-matrix.md",
+      "stability": "stable",
+      "title": "Ops Compatibility Matrix"
     },
     {
       "area": "operations",
@@ -10885,6 +10949,14 @@
       "area": "product",
       "audience": "mixed",
       "owner": "docs-governance",
+      "path": "docs/product/for-operators.md",
+      "stability": "stable",
+      "title": "For Operators"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "owner": "docs-governance",
       "path": "docs/product/for-reviewers.md",
       "stability": "stable",
       "title": "For Reviewers"
@@ -11040,6 +11112,14 @@
       "path": "docs/reference/api/index.md",
       "stability": "stable",
       "title": "API Reference"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/artifacts-locator.md",
+      "stability": "stable",
+      "title": "Artifacts Locator"
     },
     {
       "area": "reference",
@@ -12363,6 +12443,14 @@
     },
     {
       "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/reports/real-data-runs.md",
+      "stability": "stable",
+      "title": "Real Data Runs Report"
+    },
+    {
+      "area": "reference",
       "audience": "user",
       "owner": "bijux-atlas-server",
       "path": "docs/reference/runtime/config.md",
@@ -12712,6 +12800,134 @@
       "path": "docs/tutorials/reading-metrics.md",
       "stability": "stable",
       "title": "Tutorial: Reading Metrics"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/evidence-summary-dashboard.md",
+      "stability": "stable",
+      "title": "Real Data Evidence Summary Dashboard"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/index.md",
+      "stability": "stable",
+      "title": "Real Data Runs"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/overview.md",
+      "stability": "stable",
+      "title": "Real Data Runs Overview"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/reproduce-all-runs.md",
+      "stability": "stable",
+      "title": "Reproduce All Real Data Runs"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/reproduce-single-run.md",
+      "stability": "stable",
+      "title": "Reproduce Single Real Data Run"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/reviewer-quick-path.md",
+      "stability": "stable",
+      "title": "Reviewer Quick Path"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-001-genes-baseline.md",
+      "stability": "stable",
+      "title": "Genes Baseline Tiny"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-002-transcripts-baseline.md",
+      "stability": "stable",
+      "title": "Transcripts Baseline Tiny"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-003-variants-mini.md",
+      "stability": "stable",
+      "title": "Variants Mini Tiny"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-004-expression-medium.md",
+      "stability": "stable",
+      "title": "Expression Medium"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-005-population-medium.md",
+      "stability": "stable",
+      "title": "Population Medium"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-006-phenotype-medium.md",
+      "stability": "stable",
+      "title": "Phenotype Medium"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-007-assembly-large-sample.md",
+      "stability": "stable",
+      "title": "Assembly Large Sample"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-008-annotation-large-sample.md",
+      "stability": "stable",
+      "title": "Annotation Large Sample"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-009-clinvar-large-sample.md",
+      "stability": "stable",
+      "title": "ClinVar Large Sample"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data/runs/rdr-010-combined-release.md",
+      "stability": "stable",
+      "title": "Combined Release Validation"
     },
     {
       "area": "tutorials",
