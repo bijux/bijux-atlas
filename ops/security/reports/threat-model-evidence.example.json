@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "kind": "security_threat_model_evidence",
+  "generated_at": "2026-03-05T00:00:00Z",
+  "sources": {
+    "taxonomy": "security/threat-model/classification-taxonomy.yaml",
+    "registry": "security/threat-model/threat-registry.yaml",
+    "threats": "security/threat-model/threats.yaml",
+    "mitigations": "security/threat-model/mitigations.yaml"
+  },
+  "verification": {
+    "command": "bijux-dev-atlas security threats verify --format json",
+    "coverage_report": "artifacts/security/security-threat-coverage-report.json",
+    "status": "ok",
+    "coverage_percent": 100.0
+  },
+  "audit_scenario": "ops/security/scenarios/threat-model-audit.json",
+  "notes": "Reference evidence shape for governance and external reviews."
+}
