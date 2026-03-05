@@ -81,4 +81,5 @@ Endpoint and schema facts live in [Reference](../reference/index.md).
 - [Python client quickstart](client-python-quickstart.md)
 - [Python client architecture](client-python-architecture.md)
 - [Python client API reference](client-python-api-reference.md)
+- [Python client guide](client-python/index.md)
 - [API completion report](api-completion-report.md)

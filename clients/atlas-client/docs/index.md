@@ -1,4 +1,7 @@
-# Python Client
+# Python Client Documentation
 
 - [Architecture](architecture.md)
-- [API reference](api-reference.md)
+- [API Reference](api-reference.md)
+- [Quickstart](quickstart.md)
+- [Troubleshooting](troubleshooting.md)
+- [Version Compatibility Matrix](version-compatibility-matrix.md)
