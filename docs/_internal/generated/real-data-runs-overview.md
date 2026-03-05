@@ -5,36 +5,15 @@
 
 # Real Data Runs Overview
 
-You are here: `docs/_internal/generated/real-data-runs-overview.md`
-
-Return to: [Real Data Runs index](../../tutorials/real-data/index.md)
-
-This page is generated from `configs/tutorials/real-data-runs.json`.
-
-## Coverage Summary
-
-- Total runs: `10`
-- Tiny runs: `3`
-- Medium runs: `3`
-- Large-sample runs: `4`
-
-## Run Links
-
-- `Genes Baseline Tiny`: [tutorials/real-data/runs/rdr-001-genes-baseline.md](../../tutorials/real-data/runs/rdr-001-genes-baseline.md)
-- `Transcripts Baseline Tiny`: [tutorials/real-data/runs/rdr-002-transcripts-baseline.md](../../tutorials/real-data/runs/rdr-002-transcripts-baseline.md)
-- `Variants Mini Tiny`: [tutorials/real-data/runs/rdr-003-variants-mini.md](../../tutorials/real-data/runs/rdr-003-variants-mini.md)
-- `Expression Medium`: [tutorials/real-data/runs/rdr-004-expression-medium.md](../../tutorials/real-data/runs/rdr-004-expression-medium.md)
-- `Population Medium`: [tutorials/real-data/runs/rdr-005-population-medium.md](../../tutorials/real-data/runs/rdr-005-population-medium.md)
-- `Phenotype Medium`: [tutorials/real-data/runs/rdr-006-phenotype-medium.md](../../tutorials/real-data/runs/rdr-006-phenotype-medium.md)
-- `Assembly Large Sample`: [tutorials/real-data/runs/rdr-007-assembly-large-sample.md](../../tutorials/real-data/runs/rdr-007-assembly-large-sample.md)
-- `Annotation Large Sample`: [tutorials/real-data/runs/rdr-008-annotation-large-sample.md](../../tutorials/real-data/runs/rdr-008-annotation-large-sample.md)
-- `ClinVar Large Sample`: [tutorials/real-data/runs/rdr-009-clinvar-large-sample.md](../../tutorials/real-data/runs/rdr-009-clinvar-large-sample.md)
-- `Combined Release Validation`: [tutorials/real-data/runs/rdr-010-combined-release.md](../../tutorials/real-data/runs/rdr-010-combined-release.md)
-
-## Related pages
-
-- [Real Data Runs table](../../_generated/real-data-runs-table.md)
-- [Real Data Runs report](../../reference/reports/real-data-runs.md)
-
----
-Parent index: [Tutorials](../../tutorials/index.md)
+| Run ID | Evidence | Manifest |
+|---|---|---|
+| `rdr-001-genes-baseline` | `true` | `true` |
+| `rdr-002-transcripts-baseline` | `true` | `true` |
+| `rdr-003-variants-mini` | `true` | `true` |
+| `rdr-004-expression-medium` | `true` | `true` |
+| `rdr-005-population-medium` | `true` | `true` |
+| `rdr-006-phenotype-medium` | `true` | `true` |
+| `rdr-007-assembly-large-sample` | `true` | `true` |
+| `rdr-008-annotation-large-sample` | `true` | `true` |
+| `rdr-009-clinvar-large-sample` | `true` | `true` |
+| `rdr-010-combined-release` | `true` | `true` |
