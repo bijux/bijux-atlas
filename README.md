@@ -27,10 +27,10 @@ Ten deterministic end-to-end runs are the core proof surface.
 
 Run these checks as the fastest evaluator path:
 
-1. `bijux-dev-atlas tutorials list-runs --format json`
-2. `bijux-dev-atlas tutorials plan-run --run-id rdr-001-genes-baseline --format json`
-3. `bijux-dev-atlas tutorials docs-report --format json`
-4. `bijux-dev-atlas docs generate real-data-pages --allow-write --format json`
+1. `cargo run -p bijux-dev-atlas -- tutorials real-data list --format json`
+2. `cargo run -p bijux-dev-atlas -- tutorials real-data plan --run-id rdr-001-genes-baseline --format json`
+3. `cargo run -p bijux-dev-atlas -- tutorials run dataset-e2e --dataset-id genes-baseline --profile local --format json`
+4. `cargo run -p bijux-dev-atlas -- tutorials run dataset-e2e --dataset-id genes-baseline --profile local --no-fetch --format json`
 5. `cargo run -p bijux-dev-atlas -- tutorials real-data run-all --profile local --format json`
 
 ## Evidence First

@@ -17,6 +17,7 @@ This section is the product proof surface for governed end-to-end runs over ten 
 - [Evidence summary dashboard](evidence-summary-dashboard.md)
 - [Reproduce all runs](reproduce-all-runs.md)
 - [Reproduce single run](reproduce-single-run.md)
+- [End-to-end execution tutorial](../real-data-e2e.md)
 
 ## Runs table
 

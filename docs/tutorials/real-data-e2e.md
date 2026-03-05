@@ -1,4 +1,4 @@
-# Real Data E2E Tutorial
+# End-to-end: ingest -> store -> query (10 datasets)
 
 This tutorial records the end-to-end execution path on real public datasets using `bijux-dev-atlas` commands only.
 
@@ -14,6 +14,18 @@ This tutorial records the end-to-end execution path on real public datasets usin
 cargo run -p bijux-dev-atlas -- tutorials real-data list --format json
 cargo run -p bijux-dev-atlas -- tutorials real-data doctor --format json
 cargo run -p bijux-dev-atlas -- tutorials real-data run-all --profile local --format json
+```
+
+Single dataset end-to-end command:
+
+```bash
+cargo run -p bijux-dev-atlas -- tutorials run dataset-e2e --dataset-id genes-baseline --profile local --format json
+```
+
+Offline replay (no network fetch):
+
+```bash
+cargo run -p bijux-dev-atlas -- tutorials run dataset-e2e --dataset-id genes-baseline --profile local --no-fetch --format json
 ```
 
 Per-run replay:
@@ -32,6 +44,19 @@ cargo run -p bijux-dev-atlas -- tutorials real-data export-evidence --run-id <ru
 - Heavy-run verification report: `artifacts/tutorials/real-data-examples/check-results-heavy-partial.json`
 - Run outputs root: `artifacts/tutorials/runs/<run_id>/`
 - Downloaded datasets root: `artifacts/tutorials/datasets/<dataset>/`
+
+## Runtime Configuration
+
+- Runtime profile flag: `--profile local|kind|minimal`
+- Dataset cache path: `artifacts/tutorials/cache/<dataset>/dataset.bin`
+- Run output path: `artifacts/tutorials/runs/<run_id>/`
+- Required output files:
+  - `ingest-report.json`
+  - `dataset-summary.json`
+  - `query-results-summary.json`
+  - `evidence-bundle.json`
+  - `manifest.json`
+  - `bundle.sha256`
 
 ## Latest Results
 
