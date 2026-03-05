@@ -173,7 +173,10 @@ fn run_tutorials_verify(args: &TutorialsCommandArgs) -> Result<(String, i32), St
     let (evidence_ok, evidence_detail) = validate_evidence(&assets.evidence_items);
     let (contract_ok, contract_detail) =
         validate_dataset_contract_semantics(&assets.dataset_contract);
-    let success = dashboards_ok && evidence_ok && contract_ok;
+    let (legacy_ok, legacy_detail) = validate_tutorials_legacy_automation_policy(&repo_root);
+    let (run_artifacts_ok, run_artifacts_detail) = validate_real_data_run_artifacts(&repo_root);
+    let success =
+        dashboards_ok && evidence_ok && contract_ok && legacy_ok && run_artifacts_ok;
     let report = serde_json::json!({
         "schema_version": 1,
         "domain": "tutorials",
@@ -182,7 +185,9 @@ fn run_tutorials_verify(args: &TutorialsCommandArgs) -> Result<(String, i32), St
         "checks": {
             "dashboards": dashboards_detail,
             "evidence": evidence_detail,
-            "dataset_contract": contract_detail
+            "dataset_contract": contract_detail,
+            "legacy_automation_policy": legacy_detail,
+            "run_artifacts": run_artifacts_detail
         },
         "catalog": {
             "domain_contract_entries": tutorial_contracts.len(),
@@ -201,6 +206,183 @@ fn run_tutorials_verify(args: &TutorialsCommandArgs) -> Result<(String, i32), St
         Some(render_tutorial_summary_markdown("verify", &report)),
     )?;
     Ok((rendered, if success { 0 } else { 1 }))
+}
+
+fn validate_tutorials_legacy_automation_policy(repo_root: &Path) -> (bool, serde_json::Value) {
+    let exceptions_path = repo_root.join("configs/tutorials/legacy-script-exceptions.json");
+    let exceptions_json: serde_json::Value = fs::read_to_string(&exceptions_path)
+        .ok()
+        .and_then(|text| serde_json::from_str(&text).ok())
+        .unwrap_or_else(|| serde_json::json!({"entries":[]}));
+    let entries = exceptions_json["entries"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
+    let mut violations = Vec::new();
+    let mut allow = std::collections::BTreeSet::new();
+    for row in entries {
+        let path = row["path"].as_str().unwrap_or_default().to_string();
+        let reason = row["reason"].as_str().unwrap_or_default().to_string();
+        let expires = row["expires_on"].as_str().unwrap_or_default().to_string();
+        if path.is_empty() || reason.is_empty() || expires.is_empty() {
+            violations.push("legacy-script exception entries require path, reason, and expires_on".to_string());
+            continue;
+        }
+        if is_iso_date(&expires) {
+            allow.insert(path);
+        } else {
+            violations.push(format!(
+                "legacy-script exception has invalid expires_on format (expected YYYY-MM-DD): {path} ({expires})"
+            ));
+        }
+    }
+    let tutorials_root = repo_root.join("tutorials");
+    let mut offenders = Vec::new();
+    for path in walk_files_local(&tutorials_root) {
+        let rel = path
+            .strip_prefix(repo_root)
+            .unwrap_or(&path)
+            .display()
+            .to_string();
+        let ext = path.extension().and_then(|v| v.to_str()).unwrap_or("");
+        let is_forbidden = ext == "sh" || ext == "py";
+        if is_forbidden && !allow.contains(&rel) {
+            offenders.push(rel);
+        }
+    }
+    if !offenders.is_empty() {
+        violations.push(format!(
+            "tutorials legacy automation sources are forbidden unless explicitly allowlisted: {}",
+            offenders.join(", ")
+        ));
+    }
+    (
+        violations.is_empty(),
+        serde_json::json!({
+            "exceptions_file": exceptions_path.display().to_string(),
+            "violations": violations
+        }),
+    )
+}
+
+fn is_iso_date(value: &str) -> bool {
+    let bytes = value.as_bytes();
+    if bytes.len() != 10 || bytes[4] != b'-' || bytes[7] != b'-' {
+        return false;
+    }
+    bytes
+        .iter()
+        .enumerate()
+        .all(|(idx, c)| idx == 4 || idx == 7 || c.is_ascii_digit())
+}
+
+fn validate_real_data_run_artifacts(repo_root: &Path) -> (bool, serde_json::Value) {
+    let mut violations = Vec::new();
+    let mut skipped_incomplete_runs = Vec::new();
+    let runs_root = repo_root.join("artifacts/tutorials/runs");
+    let nondeterministic_policy = repo_root.join("configs/tutorials/nondeterministic-fields-policy.json");
+    let redaction_policy = repo_root.join("configs/tutorials/redaction-policy.json");
+    for required in [&nondeterministic_policy, &redaction_policy] {
+        if !required.exists() {
+            violations.push(format!("required tutorials policy file is missing: {}", required.display()));
+        }
+    }
+    if runs_root.exists() {
+        for entry in fs::read_dir(&runs_root).into_iter().flatten().flatten() {
+            let run_dir = entry.path();
+            if !run_dir.is_dir() {
+                continue;
+            }
+            let run_id = run_dir
+                .file_name()
+                .and_then(|v| v.to_str())
+                .unwrap_or("unknown")
+                .to_string();
+            let required_files = [
+                "ingest-report.json",
+                "dataset-summary.json",
+                "query-results-summary.json",
+                "evidence-bundle.json",
+                "manifest.json",
+                "bundle.sha256",
+            ];
+            let manifest_path = run_dir.join("manifest.json");
+            if !manifest_path.exists() {
+                skipped_incomplete_runs.push(run_id);
+                continue;
+            }
+            for name in required_files {
+                if !run_dir.join(name).exists() {
+                    violations.push(format!("run `{run_id}` missing required artifact `{name}`"));
+                }
+            }
+            let manifest_text = match fs::read_to_string(&manifest_path) {
+                Ok(v) => v,
+                Err(err) => {
+                    violations.push(format!("run `{run_id}` cannot read manifest: {err}"));
+                    continue;
+                }
+            };
+            let manifest_json: serde_json::Value = match serde_json::from_str(&manifest_text) {
+                Ok(v) => v,
+                Err(err) => {
+                    violations.push(format!("run `{run_id}` manifest invalid json: {err}"));
+                    continue;
+                }
+            };
+            let files = manifest_json["files"].as_array().cloned().unwrap_or_default();
+            let mut listed = std::collections::BTreeSet::new();
+            for row in &files {
+                let Some(path) = row["path"].as_str() else {
+                    violations.push(format!("run `{run_id}` manifest entry missing path"));
+                    continue;
+                };
+                let Some(sha) = row["sha256"].as_str() else {
+                    violations.push(format!("run `{run_id}` manifest entry missing sha256 for `{path}`"));
+                    continue;
+                };
+                let target = run_dir.join(path);
+                if !target.exists() {
+                    violations.push(format!("run `{run_id}` manifest references missing file `{path}`"));
+                    continue;
+                }
+                if path == "manifest.json" || path == "bundle.sha256" {
+                    listed.insert(path.to_string());
+                    continue;
+                }
+                let actual = fs::read(&target).map(|bytes| sha256_hex(&bytes)).unwrap_or_default();
+                if actual != sha {
+                    violations.push(format!("run `{run_id}` manifest hash mismatch for `{path}`"));
+                }
+                listed.insert(path.to_string());
+            }
+            for entry in fs::read_dir(&run_dir).into_iter().flatten().flatten() {
+                let p = entry.path();
+                if !p.is_file() {
+                    continue;
+                }
+                let rel = p
+                    .strip_prefix(&run_dir)
+                    .unwrap_or(&p)
+                    .display()
+                    .to_string();
+                if rel == "manifest.json" || rel == "bundle.sha256" || rel == "evidence-summary.md" {
+                    continue;
+                }
+                if !listed.contains(&rel) {
+                    violations.push(format!("run `{run_id}` file `{rel}` is not listed in manifest"));
+                }
+            }
+        }
+    }
+    (
+        violations.is_empty(),
+        serde_json::json!({
+            "runs_root": runs_root.display().to_string(),
+            "skipped_incomplete_runs": skipped_incomplete_runs,
+            "violations": violations
+        }),
+    )
 }
 
 fn run_tutorials_workflow(args: &TutorialsWorkflowArgs) -> Result<(String, i32), String> {
@@ -770,6 +952,27 @@ fn validate_dataset_contract_semantics(contract: &serde_json::Value) -> (bool, s
             "violations": violations
         }),
     )
+}
+
+fn walk_files_local(root: &Path) -> Vec<PathBuf> {
+    let mut files = Vec::new();
+    let mut stack = vec![root.to_path_buf()];
+    while let Some(path) = stack.pop() {
+        let entries = match fs::read_dir(&path) {
+            Ok(entries) => entries,
+            Err(_) => continue,
+        };
+        for entry in entries.flatten() {
+            let entry_path = entry.path();
+            if entry_path.is_dir() {
+                stack.push(entry_path);
+            } else {
+                files.push(entry_path);
+            }
+        }
+    }
+    files.sort();
+    files
 }
 
 fn write_tutorial_report(
@@ -1452,6 +1655,16 @@ fn run_tutorials_real_data_export_evidence(
         ),
     )
     .map_err(|err| format!("failed to write {}: {err}", evidence_path.display()))?;
+    let summary_md = format!(
+        "# Real Data Run Evidence\n\n- Run ID: `{}`\n- Dataset: `{}`\n- Profile: `{}`\n- Evidence Bundle: `{}`\n",
+        run.id,
+        run.dataset,
+        args.profile,
+        evidence_path.display()
+    );
+    let summary_path = run_dir.join("evidence-summary.md");
+    fs::write(&summary_path, summary_md)
+        .map_err(|err| format!("failed to write {}: {err}", summary_path.display()))?;
     let mut manifest_entries = Vec::new();
     for entry in fs::read_dir(&run_dir).map_err(|err| format!("failed to read {}: {err}", run_dir.display()))? {
         let entry = entry.map_err(|err| format!("failed to read run-dir entry: {err}"))?;
@@ -1492,18 +1705,6 @@ fn run_tutorials_real_data_export_evidence(
     let bundle_path = run_dir.join("bundle.sha256");
     fs::write(&bundle_path, format!("{bundle_checksum}\n"))
         .map_err(|err| format!("failed to write {}: {err}", bundle_path.display()))?;
-    let summary_md = format!(
-        "# Real Data Run Evidence\n\n- Run ID: `{}`\n- Dataset: `{}`\n- Profile: `{}`\n- Evidence Bundle: `{}`\n- Manifest: `{}`\n- Bundle Checksum: `{}`\n",
-        run.id,
-        run.dataset,
-        args.profile,
-        evidence_path.display(),
-        manifest_path.display(),
-        bundle_path.display()
-    );
-    let summary_path = run_dir.join("evidence-summary.md");
-    fs::write(&summary_path, summary_md)
-        .map_err(|err| format!("failed to write {}: {err}", summary_path.display()))?;
     update_real_data_overview_outputs(&repo_root)?;
     let payload = serde_json::json!({
         "schema_version": 1,
