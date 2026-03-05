@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "scenarios": [
+    {
+      "id": "rebuild-crates",
+      "kind": "crates",
+      "description": "Rebuild crate packages and compare checksums."
+    },
+    {
+      "id": "rebuild-docker-image",
+      "kind": "docker_image",
+      "description": "Rebuild runtime image and compare digest metadata."
+    },
+    {
+      "id": "rebuild-helm-chart",
+      "kind": "helm_chart",
+      "description": "Rebuild chart package and compare tarball hash."
+    },
+    {
+      "id": "rebuild-docs-site",
+      "kind": "docs_site",
+      "description": "Rebuild docs site and compare stable output hashes."
+    },
+    {
+      "id": "rebuild-release-bundle",
+      "kind": "release_bundle",
+      "description": "Rebuild release bundle and compare manifest-linked hash."
+    }
+  ]
+}

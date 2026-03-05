@@ -3,8 +3,7 @@
 use crate::cli::{
     ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand, Command,
     ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, DriftCommand,
-    FormatArg, IngestCommand, InvariantsCommand, MakeCommand, OpsCommand, PerfCommand,
-    PoliciesCommand, RegistryCommand,
+    FormatArg, IngestCommand, InvariantsCommand, MakeCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand, ReproduceCommand,
     ReleaseApiSurfaceCommand, ReleaseChecksumsCommand, ReleaseCommand, ReleaseCratesCommand,
     ReleaseImagesCommand, ReleaseMsrvCommand, ReleaseOpsCommand, ReleaseSemverCommand,
     ReportsCommand, SecurityCommand, TestsCommand,
@@ -55,6 +54,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Audit { command } => force_json_audit(command),
         Command::Invariants { command } => force_json_invariants(command),
         Command::Drift { command } => force_json_drift(command),
+        Command::Reproduce { command } => force_json_reproduce(command),
         Command::Datasets { command } => force_json_datasets(command),
         Command::Ingest { command } => force_json_ingest(command),
         Command::Perf { command } => force_json_perf(command),
@@ -191,9 +191,17 @@ fn force_json_invariants(command: &mut InvariantsCommand) {
 fn force_json_drift(command: &mut DriftCommand) {
     match command {
         DriftCommand::Detect(args) | DriftCommand::Report(args) => args.common.format = FormatArg::Json,
+        DriftCommand::Coverage(args) => args.common.format = FormatArg::Json,
         DriftCommand::Explain(args) => args.common.format = FormatArg::Json,
         DriftCommand::Baseline(args) => args.detect.common.format = FormatArg::Json,
         DriftCommand::Compare(args) => args.detect.common.format = FormatArg::Json,
+    }
+}
+
+fn force_json_reproduce(command: &mut ReproduceCommand) {
+    match command {
+        ReproduceCommand::Run(args) | ReproduceCommand::Verify(args) => args.format = FormatArg::Json,
+        ReproduceCommand::Explain(args) => args.common.format = FormatArg::Json,
     }
 }
 
@@ -1495,9 +1503,16 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             DriftCommand::Detect(args) | DriftCommand::Report(args) => {
                 args.common.repo_root = Some(root.clone())
             }
+            DriftCommand::Coverage(args) => args.common.repo_root = Some(root.clone()),
             DriftCommand::Explain(args) => args.common.repo_root = Some(root.clone()),
             DriftCommand::Baseline(args) => args.detect.common.repo_root = Some(root.clone()),
             DriftCommand::Compare(args) => args.detect.common.repo_root = Some(root.clone()),
+        },
+        Command::Reproduce { command } => match command {
+            ReproduceCommand::Run(args) | ReproduceCommand::Verify(args) => {
+                args.repo_root = Some(root.clone())
+            }
+            ReproduceCommand::Explain(args) => args.common.repo_root = Some(root.clone()),
         },
         Command::Datasets { command } => match command {
             DatasetsCommand::Validate(args) => args.repo_root = Some(root.clone()),

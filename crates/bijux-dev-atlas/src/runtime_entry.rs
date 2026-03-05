@@ -48,6 +48,7 @@ pub(crate) use invariants_commands::run_invariants_command;
 pub(crate) use make_commands::run_make_command;
 pub(crate) use ops_commands::{emit_payload, normalize_tool_version_with_regex, run_ops_command};
 pub(crate) use perf_commands::run_perf_command;
+pub(crate) use reproduce_commands::run_reproduce_command;
 pub(crate) use release_commands::run_release_command;
 pub(crate) use governance_commands::run_registry_command;
 pub(crate) use security_commands::run_security_command;

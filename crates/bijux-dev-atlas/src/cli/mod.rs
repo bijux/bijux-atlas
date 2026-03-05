@@ -143,6 +143,11 @@ pub enum Command {
         #[command(subcommand)]
         command: DriftCommand,
     },
+    #[command(hide = true)]
+    Reproduce {
+        #[command(subcommand)]
+        command: ReproduceCommand,
+    },
     Security {
         #[command(subcommand)]
         command: SecurityCommand,
@@ -349,6 +354,7 @@ pub enum DriftCommand {
     Detect(DriftDetectArgs),
     Explain(DriftExplainArgs),
     Report(DriftDetectArgs),
+    Coverage(DriftDetectArgs),
     Baseline(DriftBaselineArgs),
     Compare(DriftCompareArgs),
 }
@@ -385,6 +391,31 @@ pub struct DriftCompareArgs {
     pub baseline: PathBuf,
     #[arg(long)]
     pub current: Option<PathBuf>,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ReproduceCommand {
+    Run(ReproduceCommonArgs),
+    Verify(ReproduceCommonArgs),
+    Explain(ReproduceExplainArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReproduceCommonArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReproduceExplainArgs {
+    #[arg()]
+    pub scenario: Option<String>,
+    #[command(flatten)]
+    pub common: ReproduceCommonArgs,
 }
 
 #[derive(Args, Debug, Clone)]

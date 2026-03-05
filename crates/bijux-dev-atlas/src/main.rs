@@ -40,6 +40,8 @@ mod ops_execution_runtime;
 mod ops_support;
 #[path = "commands/perf.rs"]
 mod perf_commands;
+#[path = "commands/reproduce.rs"]
+mod reproduce_commands;
 #[path = "commands/release.rs"]
 mod release_commands;
 #[path = "commands/security.rs"]

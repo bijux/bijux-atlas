@@ -22,6 +22,7 @@ sha2 = "0.10"
 regex = "1"
 toml = "0.8"
 base64 = "0.22"
+walkdir = "2"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
 bijux-atlas-core = { path = "../bijux-atlas-core" }
 
@@ -59,4 +60,8 @@ harness = false
 
 [[bench]]
 name = "invariants"
+harness = false
+
+[[bench]]
+name = "drift"
 harness = false

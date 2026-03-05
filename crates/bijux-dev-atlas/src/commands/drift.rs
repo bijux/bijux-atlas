@@ -349,6 +349,16 @@ fn summarize(findings: &[DriftFinding]) -> DriftSummary {
     }
 }
 
+fn drift_type_key(kind: DriftType) -> &'static str {
+    match kind {
+        DriftType::Configuration => "configuration",
+        DriftType::Artifact => "artifact",
+        DriftType::Registry => "registry",
+        DriftType::RuntimeConfig => "runtime_config",
+        DriftType::OpsProfile => "ops_profile",
+    }
+}
+
 fn parse_drift_type(value: &str) -> Option<DriftType> {
     match value {
         "configuration" | "config" => Some(DriftType::Configuration),
@@ -458,6 +468,33 @@ fn detect(args: DriftDetectArgs) -> Result<(String, i32), String> {
 
 fn report(args: DriftDetectArgs) -> Result<(String, i32), String> {
     detect(args)
+}
+
+fn coverage(args: DriftDetectArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.common.repo_root.clone())?;
+    let rules = load_ignore_rules(args.ignore_file.as_deref())?;
+    let raw = detect_all(&root);
+    let (findings, ignored_count) = apply_ignores(raw, &rules);
+    let mut by_type = BTreeMap::<String, usize>::new();
+    for row in &findings {
+        *by_type.entry(drift_type_key(row.drift_type).to_string()).or_insert(0) += 1;
+    }
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "drift_coverage",
+        "status": "ok",
+        "detectors": [
+            "configuration",
+            "artifact",
+            "registry",
+            "runtime_config",
+            "ops_profile"
+        ],
+        "ignored_count": ignored_count,
+        "type_counts": by_type
+    });
+    let rendered = emit_payload(args.common.format, args.common.out, &payload)?;
+    Ok((rendered, 0))
 }
 
 fn baseline(args: crate::cli::DriftBaselineArgs) -> Result<(String, i32), String> {
@@ -591,6 +628,7 @@ pub(crate) fn run_drift_command(_quiet: bool, command: DriftCommand) -> Result<(
         DriftCommand::Detect(args) => detect(args),
         DriftCommand::Explain(args) => explain(args.drift_type, args.common),
         DriftCommand::Report(args) => report(args),
+        DriftCommand::Coverage(args) => coverage(args),
         DriftCommand::Baseline(args) => baseline(args),
         DriftCommand::Compare(args) => compare(args),
     }

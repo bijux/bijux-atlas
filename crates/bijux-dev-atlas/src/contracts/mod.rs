@@ -15,6 +15,7 @@ pub mod docker;
 pub mod docs;
 pub mod make;
 pub mod ops;
+pub mod reproducibility;
 pub mod repo;
 pub mod root;
 pub mod runtime;

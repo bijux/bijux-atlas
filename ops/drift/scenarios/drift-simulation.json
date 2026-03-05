@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "scenario_id": "drift-simulation-default",
+  "description": "Simulate drift detection against known fixture classes and aggregate findings.",
+  "fixtures": [
+    "ops/drift/fixtures/modified-config-file.json",
+    "ops/drift/fixtures/missing-artifact.json",
+    "ops/drift/fixtures/altered-registry-entry.json",
+    "ops/drift/fixtures/altered-helm-values.json",
+    "ops/drift/fixtures/modified-profile.json"
+  ]
+}
