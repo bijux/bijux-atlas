@@ -7,6 +7,7 @@ use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::process;
 use std::time::{Instant, SystemTime, UNIX_EPOCH};
 
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
@@ -41,27 +42,57 @@ fn walk_files(root: &Path) -> Result<Vec<PathBuf>, String> {
     Ok(files)
 }
 
-fn collect_source_snapshot_hash(root: &Path) -> Result<String, String> {
-    let mut files = Vec::new();
-    for path in walk_files(root)? {
-        let rel = path
-            .strip_prefix(root)
-            .map_err(|err| err.to_string())?
-            .to_path_buf();
-        let rel_str = rel.to_string_lossy();
-        if rel_str.starts_with(".git/")
-            || rel_str.starts_with("artifacts/")
-            || rel_str.starts_with("target/")
-        {
-            continue;
-        }
-        files.push(rel);
+fn tracked_files_from_git(root: &Path) -> Option<Vec<PathBuf>> {
+    let output = process::Command::new("git")
+        .current_dir(root)
+        .args(["ls-files", "-z"])
+        .output()
+        .ok()?;
+    if !output.status.success() {
+        return None;
     }
+    let mut files = output
+        .stdout
+        .split(|byte| *byte == 0)
+        .filter(|bytes| !bytes.is_empty())
+        .map(|bytes| PathBuf::from(String::from_utf8_lossy(bytes).to_string()))
+        .collect::<Vec<_>>();
+    files.sort();
+    Some(files)
+}
+
+fn skip_source_snapshot_path(rel_str: &str) -> bool {
+    rel_str.starts_with(".git/") || rel_str.starts_with("artifacts/") || rel_str.starts_with("target/")
+}
+
+fn collect_source_snapshot_hash(root: &Path) -> Result<String, String> {
+    let mut files = if let Some(tracked) = tracked_files_from_git(root) {
+        tracked
+            .into_iter()
+            .filter(|rel| !skip_source_snapshot_path(&rel.to_string_lossy()))
+            .collect::<Vec<_>>()
+    } else {
+        let mut walked = Vec::new();
+        for path in walk_files(root)? {
+            let rel = path
+                .strip_prefix(root)
+                .map_err(|err| err.to_string())?
+                .to_path_buf();
+            if !skip_source_snapshot_path(&rel.to_string_lossy()) {
+                walked.push(rel);
+            }
+        }
+        walked
+    };
     files.sort();
     let mut hasher = Sha256::new();
     for rel in files {
+        let abs = root.join(&rel);
+        if !abs.exists() {
+            continue;
+        }
         hasher.update(rel.to_string_lossy().as_bytes());
-        let digest = file_sha(&root.join(&rel))?;
+        let digest = file_sha(&abs)?;
         hasher.update(digest.as_bytes());
     }
     Ok(format!("{:x}", hasher.finalize()))
