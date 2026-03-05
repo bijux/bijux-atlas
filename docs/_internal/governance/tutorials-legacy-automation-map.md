@@ -4,7 +4,7 @@ This document maps legacy tutorial script responsibilities to governed `bijux-de
 
 ## Current State
 
-- `tutorials/scripts/`: not present.
+- legacy tutorial script directory: not present.
 - `tutorials/tests/*.py`: not present.
 
 ## Command Mapping

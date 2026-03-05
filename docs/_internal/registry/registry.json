@@ -1192,6 +1192,31 @@
       "topic": "README"
     },
     {
+      "area": "configs",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "configs",
+        "readme",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/tutorials/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "readme",
+        "tutorials"
+      ],
+      "title": "Tutorials Configs",
+      "topic": "README"
+    },
+    {
       "area": "crates",
       "audience": "contributors",
       "crate": null,
@@ -37702,6 +37727,31 @@
       "doc_type": "reference",
       "doc_version": "v1",
       "keywords": [
+        "real-data-e2e-execution",
+        "reference",
+        "reports"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/reports/real-data-e2e-execution.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "real-data-e2e-execution",
+        "reference",
+        "reports"
+      ],
+      "title": "Real Data E2E Execution Report",
+      "topic": "real-data-e2e-execution"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
         "real-data-runs",
         "reference",
         "reports"
@@ -38739,6 +38789,75 @@
       ],
       "title": "Tutorial: Reading Metrics",
       "topic": "reading-metrics"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "real-data-e2e",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data-e2e.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "real-data-e2e",
+        "tutorials"
+      ],
+      "title": "Real Data E2E Tutorial",
+      "topic": "real-data-e2e"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "real-data-examples",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data-examples.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "real-data-examples",
+        "tutorials"
+      ],
+      "title": "Tutorial Real Data Examples",
+      "topic": "real-data-examples"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "real-data-execution-log",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data-execution-log.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "real-data-execution-log",
+        "tutorials"
+      ],
+      "title": "Real Data Execution Log",
+      "topic": "real-data-execution-log"
     },
     {
       "area": "tutorials",

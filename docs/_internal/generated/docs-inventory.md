@@ -56,6 +56,7 @@ License: Apache-2.0
 | `configs/shellcheck/README.md` | `concept` | `platform` | `stable` |
 | `configs/slo/README.md` | `concept` | `ops` | `stable` |
 | `configs/system/README.md` | `concept` | `docs-governance` | `stable` |
+| `configs/tutorials/README.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-atlas-api/CONTRACT.md` | `concept` | `bijux-atlas-api` | `stable` |
 | `crates/bijux-atlas-api/README.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-atlas-api/docs/api-contract.md` | `concept` | `bijux-atlas-api` | `stable` |
@@ -1562,6 +1563,7 @@ License: Apache-2.0
 | `docs/reference/reports/checks/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/reports/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/reports/migrations/index.md` | `reference` | `bijux-atlas-governance` | `stable` |
+| `docs/reference/reports/real-data-e2e-execution.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/reports/real-data-runs.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/runtime/config.md` | `reference` | `bijux-atlas-server` | `stable` |
 | `docs/reference/runtime/index.md` | `reference` | `docs-governance` | `stable` |
@@ -1607,6 +1609,9 @@ License: Apache-2.0
 | `docs/tutorials/query-via-rust-client.md` | `concept` | `docs-governance` | `stable` |
 | `docs/tutorials/quickstart.md` | `concept` | `docs-governance` | `stable` |
 | `docs/tutorials/reading-metrics.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data-e2e.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data-examples.md` | `concept` | `docs-governance` | `stable` |
+| `docs/tutorials/real-data-execution-log.md` | `concept` | `docs-governance` | `stable` |
 | `docs/tutorials/real-data/evidence-summary-dashboard.md` | `concept` | `docs-governance` | `stable` |
 | `docs/tutorials/real-data/index.md` | `concept` | `docs-governance` | `stable` |
 | `docs/tutorials/real-data/overview.md` | `concept` | `docs-governance` | `stable` |

@@ -394,6 +394,14 @@
       "title": "System Simulation Configurations"
     },
     {
+      "area": "configs",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "configs/tutorials/README.md",
+      "stability": "stable",
+      "title": "Tutorials Configs"
+    },
+    {
       "area": "crates",
       "audience": "contributors",
       "owner": "bijux-atlas-api",
@@ -12445,6 +12453,14 @@
       "area": "reference",
       "audience": "mixed",
       "owner": "docs-governance",
+      "path": "docs/reference/reports/real-data-e2e-execution.md",
+      "stability": "stable",
+      "title": "Real Data E2E Execution Report"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
       "path": "docs/reference/reports/real-data-runs.md",
       "stability": "stable",
       "title": "Real Data Runs Report"
@@ -12800,6 +12816,30 @@
       "path": "docs/tutorials/reading-metrics.md",
       "stability": "stable",
       "title": "Tutorial: Reading Metrics"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data-e2e.md",
+      "stability": "stable",
+      "title": "Real Data E2E Tutorial"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data-examples.md",
+      "stability": "stable",
+      "title": "Tutorial Real Data Examples"
+    },
+    {
+      "area": "tutorials",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/tutorials/real-data-execution-log.md",
+      "stability": "stable",
+      "title": "Real Data Execution Log"
     },
     {
       "area": "tutorials",

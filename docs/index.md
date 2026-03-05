@@ -21,7 +21,7 @@ related:
 
 Atlas documentation is organized by system understanding first, then execution detail.
 
-## What Exists
+## Platform Surface
 
 | Surface | Location | Purpose |
 | --- | --- | --- |
@@ -30,12 +30,12 @@ Atlas documentation is organized by system understanding first, then execution d
 | Docs | `docs/` | canonical reader and operator guides |
 | Docker | `docker/` | image build and runtime definitions |
 
-## What Is Proven
+## Proven Coverage
 
 - Ten real-data runs: [Real Data Runs](tutorials/real-data/index.md)
 - Combined run report: [Real data runs report](reference/reports/real-data-runs.md)
 - E2E runbook with commands/results: [Real data E2E tutorial](tutorials/real-data-e2e.md)
-- Contract coverage: [_internal generated coverage](_internal/generated/docs-contract-coverage.json)
+- Contract and governance guide: [Reference governance](reference/governance.md)
 
 ## Evidence-first Evaluation Path
 
@@ -67,7 +67,6 @@ Atlas documentation is organized by system understanding first, then execution d
 - Control-plane: [Control-plane Index](control-plane/index.md)
 - Reference: [Reference Index](reference/index.md)
 - Governance: [Governance Index](governance/index.md)
-
 ## Next steps
 
 - Platform summary: [What We Built](what-we-built.md)

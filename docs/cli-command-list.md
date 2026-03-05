@@ -18,3 +18,4 @@
 | `security` | `security` | Run security validation commands |
 | `suites` | `engine` | Run grouped runnable suites |
 | `tutorials` | `tutorials` | Run tutorial inventory, workflow, and verification commands |
+| `tutorials real-data` | `tutorials` | Run governed real-data tutorial catalog, planning, fetch, ingest, and health commands |

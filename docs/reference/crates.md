@@ -17,7 +17,9 @@ related:
 ## Workspace crates
 
 - `bijux-atlas-api`: shared API models and contract surface.
+- `bijux-atlas-bench`: benchmark harnesses and performance scenario execution.
 - `bijux-atlas-cli`: end-user runtime CLI.
+- `bijux-atlas-client`: Rust client SDK for runtime consumption.
 - `bijux-atlas-core`: core domain primitives and utilities.
 - `bijux-atlas-ingest`: ingestion pipeline primitives.
 - `bijux-atlas-model`: data model and schema-level semantics.

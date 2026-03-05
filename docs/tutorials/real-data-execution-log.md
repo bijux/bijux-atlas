@@ -3,7 +3,7 @@
 This page records the exact reproducible command sequence for real-data examples.
 
 Source of truth:
-- `configs/tutorials/real-data-examples-workflow.json`
+- `configs/tutorials/real-data-runs-workflow.json`
 
 Execution log artifact:
 - `artifacts/tutorials/real-data-examples/command-log.json`

@@ -654,6 +654,20 @@
     },
     {
       "keywords": [
+        "configs",
+        "readme",
+        "tutorials"
+      ],
+      "path": "configs/tutorials/README.md",
+      "tags": [
+        "configs",
+        "readme",
+        "tutorials"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
         "bijux-atlas-api",
         "contract"
       ],
@@ -20592,6 +20606,20 @@
     },
     {
       "keywords": [
+        "real-data-e2e-execution",
+        "reference",
+        "reports"
+      ],
+      "path": "docs/reference/reports/real-data-e2e-execution.md",
+      "tags": [
+        "real-data-e2e-execution",
+        "reference",
+        "reports"
+      ],
+      "topic": "real-data-e2e-execution"
+    },
+    {
+      "keywords": [
         "real-data-runs",
         "reference",
         "reports"
@@ -21139,6 +21167,42 @@
         "tutorials"
       ],
       "topic": "reading-metrics"
+    },
+    {
+      "keywords": [
+        "real-data-e2e",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data-e2e.md",
+      "tags": [
+        "real-data-e2e",
+        "tutorials"
+      ],
+      "topic": "real-data-e2e"
+    },
+    {
+      "keywords": [
+        "real-data-examples",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data-examples.md",
+      "tags": [
+        "real-data-examples",
+        "tutorials"
+      ],
+      "topic": "real-data-examples"
+    },
+    {
+      "keywords": [
+        "real-data-execution-log",
+        "tutorials"
+      ],
+      "path": "docs/tutorials/real-data-execution-log.md",
+      "tags": [
+        "real-data-execution-log",
+        "tutorials"
+      ],
+      "topic": "real-data-execution-log"
     },
     {
       "keywords": [

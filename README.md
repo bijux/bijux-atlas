@@ -6,7 +6,7 @@ Deterministic genomics data infrastructure with executable governance.
 
 | Surface | Location | Purpose |
 | --- | --- | --- |
-| Crates | `crates/` | Runtime, API, ingest, query, and control-plane binaries/libraries |
+| Crates | `crates/` | Runtime, API, client SDK, ingest, query, benchmark, and control-plane binaries/libraries |
 | Ops | `ops/` | Deploy, profile, schema, and evidence inputs |
 | Docs | `docs/` | Canonical user/operator/contributor documentation |
 | Docker | `docker/` | Container build and runtime image definitions |
@@ -21,7 +21,7 @@ Ten deterministic end-to-end runs are the core proof surface.
 - Evidence dashboard: [`docs/tutorials/real-data/evidence-summary-dashboard.md`](docs/tutorials/real-data/evidence-summary-dashboard.md)
 - E2E tutorial (commands + results): [`docs/tutorials/real-data-e2e.md`](docs/tutorials/real-data-e2e.md)
 - E2E report page: [`docs/reference/reports/real-data-e2e-execution.md`](docs/reference/reports/real-data-e2e-execution.md)
-- Reproducible workflow definition: [`configs/tutorials/real-data-examples-workflow.json`](configs/tutorials/real-data-examples-workflow.json)
+- Reproducible workflow definition: [`configs/tutorials/real-data-runs-workflow.json`](configs/tutorials/real-data-runs-workflow.json)
 
 ## How To Evaluate
 
@@ -128,6 +128,7 @@ CLI UX perf benchmarks are executed through `bijux-dev-atlas perf cli-ux bench` 
 
 - `crates/bijux-dev-atlas`: governance control-plane command surface
 - `crates/bijux-atlas-server`: runtime service implementation
+- `crates/bijux-atlas-client`: Rust client SDK crate for runtime consumers
 - `configs/`: policy/schema/configuration SSOTs
 - `ops/`: deploy/release/validation operational surfaces
 - `docs/`: canonical documentation plus internal generated evidence references
@@ -168,7 +169,9 @@ Published by workflow: [`.github/workflows/docs-deploy.yml`](.github/workflows/d
 ## Crate Versions
 
 - `bijux-atlas-api`: workspace-managed version, API model surface
+- `bijux-atlas-bench`: workspace-managed version, benchmark harness and perf scenarios
 - `bijux-atlas-cli`: workspace-managed version, user CLI
+- `bijux-atlas-client`: workspace-managed version, Rust client SDK
 - `bijux-atlas-core`: workspace-managed version, domain core
 - `bijux-atlas-ingest`: workspace-managed version, ingest pipeline
 - `bijux-atlas-model`: workspace-managed version, model semantics

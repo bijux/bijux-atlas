@@ -13,7 +13,7 @@
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `CONTRACT` appears 27 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `INDEX` appears 5 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `OWNER` appears 11 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 90 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 91 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `REQUIRED_FILES` appears 11 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `api-contract-documentation` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `api-schema-reference` appears 2 times",
@@ -558,7 +558,7 @@
   "summary": {
     "errors": 97,
     "reference_date": "2026-02-25",
-    "registered": 1704,
+    "registered": 1709,
     "stale_pages": 0,
     "warnings": 600
   }

@@ -34,7 +34,7 @@ Atlas validates dataset inputs, builds immutable artifacts, and serves stable AP
 
 ## Primary proof path
 
-Start with [Real Data Runs](tutorials/real-data/index.md). This is the fastest path to verify end-to-end ingest, query, and evidence behavior on real datasets.
+Start with the Real Data Runs guide. This is the fastest path to verify end-to-end ingest, query, and evidence behavior on real datasets.
 
 ## Quickstart
 

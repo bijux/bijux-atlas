@@ -27,7 +27,7 @@ cargo run -p bijux-dev-atlas -- tutorials real-data export-evidence --run-id <ru
 
 ## Reports And Logs
 
-- Command sequence definition: `configs/tutorials/real-data-examples-workflow.json`
+- Command sequence definition: `configs/tutorials/real-data-runs-workflow.json`
 - Command log: `artifacts/tutorials/real-data-examples/command-log.json`
 - Heavy-run verification report: `artifacts/tutorials/real-data-examples/check-results-heavy-partial.json`
 - Run outputs root: `artifacts/tutorials/runs/<run_id>/`

@@ -119,6 +119,7 @@
       "configs/shellcheck/README.md",
       "configs/slo/README.md",
       "configs/system/README.md",
+      "configs/tutorials/README.md",
       "crates/bijux-atlas-api/README.md",
       "crates/bijux-atlas-api/tests/README.md",
       "crates/bijux-atlas-bench/README.md",
@@ -3159,6 +3160,18 @@
     ],
     "reading-metrics": [
       "docs/tutorials/reading-metrics.md"
+    ],
+    "real-data-e2e": [
+      "docs/tutorials/real-data-e2e.md"
+    ],
+    "real-data-e2e-execution": [
+      "docs/reference/reports/real-data-e2e-execution.md"
+    ],
+    "real-data-examples": [
+      "docs/tutorials/real-data-examples.md"
+    ],
+    "real-data-execution-log": [
+      "docs/tutorials/real-data-execution-log.md"
     ],
     "real-data-runs": [
       "docs/reference/reports/real-data-runs.md"

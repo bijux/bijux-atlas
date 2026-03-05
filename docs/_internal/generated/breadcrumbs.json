@@ -379,6 +379,14 @@
     },
     {
       "breadcrumbs": [
+        "configs",
+        "configs/tutorials",
+        "configs/tutorials/README.md"
+      ],
+      "path": "configs/tutorials/README.md"
+    },
+    {
+      "breadcrumbs": [
         "crates",
         "crates/bijux-atlas-api",
         "crates/bijux-atlas-api/CONTRACT.md"
@@ -13599,6 +13607,15 @@
         "docs",
         "docs/reference",
         "docs/reference/reports",
+        "docs/reference/reports/real-data-e2e-execution.md"
+      ],
+      "path": "docs/reference/reports/real-data-e2e-execution.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/reports",
         "docs/reference/reports/real-data-runs.md"
       ],
       "path": "docs/reference/reports/real-data-runs.md"
@@ -13958,6 +13975,30 @@
         "docs/tutorials/reading-metrics.md"
       ],
       "path": "docs/tutorials/reading-metrics.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data-e2e.md"
+      ],
+      "path": "docs/tutorials/real-data-e2e.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data-examples.md"
+      ],
+      "path": "docs/tutorials/real-data-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/real-data-execution-log.md"
+      ],
+      "path": "docs/tutorials/real-data-execution-log.md"
     },
     {
       "breadcrumbs": [

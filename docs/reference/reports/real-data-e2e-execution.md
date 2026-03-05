@@ -4,7 +4,7 @@ This report explains how to reproduce and inspect real-data end-to-end runs exec
 
 ## Inputs
 
-- Workflow contract: `configs/tutorials/real-data-examples-workflow.json`
+- Workflow contract: `configs/tutorials/real-data-runs-workflow.json`
 - Run catalog: `configs/tutorials/real-data-runs.json`
 - Dataset fetch specs: `tutorials/datasets/*/fetch-spec.json`
 

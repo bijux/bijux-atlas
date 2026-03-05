@@ -248,6 +248,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "configs/tutorials/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "crates/bijux-atlas-api/CONTRACT.md"
     },
     {
@@ -7778,6 +7783,11 @@
     {
       "crate": null,
       "doc_type": "reference",
+      "from": "docs/reference/reports/real-data-e2e-execution.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
       "from": "docs/reference/reports/real-data-runs.md"
     },
     {
@@ -7999,6 +8009,21 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/tutorials/reading-metrics.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data-e2e.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data-examples.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/tutorials/real-data-execution-log.md"
     },
     {
       "crate": null,
