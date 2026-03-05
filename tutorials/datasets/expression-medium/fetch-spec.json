@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "expression-medium",
-  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/co2-concentration.csv",
-  "expected_sha256": "c1a4a970864145940a28225cae288618b156cb32f9a2a1b6606ba7124134febb",
+  "url": "https://www.ebi.ac.uk/ena/browser/api/embl/AB000263.1?download=true",
+  "expected_sha256": "2d6333a43d3a96873a102027324b1d32881309116e044748bceea36944a6cfc2",
   "retrieval_method": "https-get"
 }

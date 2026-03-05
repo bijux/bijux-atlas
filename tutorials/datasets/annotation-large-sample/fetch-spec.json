@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "annotation-large-sample",
-  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/birdstrikes.csv",
-  "expected_sha256": "45777edf69984b37599e73dbfb34dbc976055243547407214261a4fcb9466462",
+  "url": "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.gff.gz",
+  "expected_sha256": "7aa71ffaef2caa51e5cb00da96d567c8001c19f029a173d3df3b273331a587b2",
   "retrieval_method": "https-get"
 }

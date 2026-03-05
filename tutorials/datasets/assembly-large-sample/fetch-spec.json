@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "assembly-large-sample",
-  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/stocks.csv",
-  "expected_sha256": "f9953ac6693e587476b4ebf2f0b00d9bb95371ca8c39da4cc6155077b3e417cd",
+  "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=U00096.3&rettype=fasta&retmode=text",
+  "expected_sha256": "28a7167d8bab60570cd6e3ddacdde75d5c51db60e1009fb8c241f1da446b6152",
   "retrieval_method": "https-get"
 }

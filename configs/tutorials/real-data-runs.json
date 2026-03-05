@@ -12,9 +12,9 @@
         "dataset-summary"
       ],
       "input_provenance": {
-        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/seattle-weather.csv",
+        "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_045512.2&rettype=fasta&retmode=text",
         "retrieval_method": "https-get",
-        "license_note": "BSD-3-Clause (vega-datasets repository)"
+        "license_note": "NCBI Nucleotide (public domain U.S. Government work)"
       },
       "expected_query_set": [
         {
@@ -45,9 +45,9 @@
         "dataset-summary"
       ],
       "input_provenance": {
-        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/airports.csv",
+        "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_045512.2&rettype=gb&retmode=text",
         "retrieval_method": "https-get",
-        "license_note": "BSD-3-Clause (vega-datasets repository)"
+        "license_note": "NCBI Nucleotide (public domain U.S. Government work)"
       },
       "expected_query_set": [
         {
@@ -78,9 +78,9 @@
         "dataset-summary"
       ],
       "input_provenance": {
-        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/cars.json",
+        "url": "https://www.ebi.ac.uk/ena/browser/api/fasta/AB000263.1?download=true",
         "retrieval_method": "https-get",
-        "license_note": "BSD-3-Clause (vega-datasets repository)"
+        "license_note": "ENA/EMBL-EBI public archival sequence data"
       },
       "expected_query_set": [
         {
@@ -112,9 +112,9 @@
         "query-summary"
       ],
       "input_provenance": {
-        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/co2-concentration.csv",
+        "url": "https://www.ebi.ac.uk/ena/browser/api/embl/AB000263.1?download=true",
         "retrieval_method": "https-get",
-        "license_note": "BSD-3-Clause (vega-datasets repository)"
+        "license_note": "ENA/EMBL-EBI public archival sequence data"
       },
       "expected_query_set": [
         {
@@ -147,9 +147,9 @@
         "query-summary"
       ],
       "input_provenance": {
-        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/gapminder-health-income.csv",
+        "url": "https://www.ebi.ac.uk/ena/portal/api/filereport?accession=SRR390728&result=read_run&fields=run_accession,scientific_name,library_layout,fastq_bytes,fastq_ftp&format=tsv",
         "retrieval_method": "https-get",
-        "license_note": "BSD-3-Clause (vega-datasets repository)"
+        "license_note": "ENA Portal API read-run metadata (public)"
       },
       "expected_query_set": [
         {
@@ -182,9 +182,9 @@
         "query-summary"
       ],
       "input_provenance": {
-        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/iowa-electricity.csv",
+        "url": "https://www.ebi.ac.uk/ena/portal/api/filereport?accession=ERR194147&result=read_run&fields=run_accession,scientific_name,library_layout,fastq_bytes,fastq_ftp&format=tsv",
         "retrieval_method": "https-get",
-        "license_note": "BSD-3-Clause (vega-datasets repository)"
+        "license_note": "ENA Portal API read-run metadata (public)"
       },
       "expected_query_set": [
         {
@@ -217,9 +217,9 @@
         "query-summary"
       ],
       "input_provenance": {
-        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/stocks.csv",
+        "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=U00096.3&rettype=fasta&retmode=text",
         "retrieval_method": "https-get",
-        "license_note": "BSD-3-Clause (vega-datasets repository)"
+        "license_note": "NCBI Nucleotide (public domain U.S. Government work)"
       },
       "expected_query_set": [
         {
@@ -252,9 +252,9 @@
         "query-summary"
       ],
       "input_provenance": {
-        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/birdstrikes.csv",
+        "url": "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.gff.gz",
         "retrieval_method": "https-get",
-        "license_note": "BSD-3-Clause (vega-datasets repository)"
+        "license_note": "NCBI RefSeq FTP distribution (public domain U.S. Government work)"
       },
       "expected_query_set": [
         {
@@ -287,9 +287,9 @@
         "query-summary"
       ],
       "input_provenance": {
-        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/us-state-capitals.json",
+        "url": "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_protein.faa.gz",
         "retrieval_method": "https-get",
-        "license_note": "BSD-3-Clause (vega-datasets repository)"
+        "license_note": "NCBI RefSeq FTP distribution (public domain U.S. Government work)"
       },
       "expected_query_set": [
         {
@@ -323,9 +323,9 @@
         "release-readiness"
       ],
       "input_provenance": {
-        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/flights-airport.csv",
+        "url": "https://www.ebi.ac.uk/ena/browser/api/fasta/K03455.1?download=true",
         "retrieval_method": "https-get",
-        "license_note": "BSD-3-Clause (vega-datasets repository)"
+        "license_note": "ENA/EMBL-EBI public archival sequence data"
       },
       "expected_query_set": [
         {

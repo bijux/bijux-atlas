@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "phenotype-medium",
-  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/iowa-electricity.csv",
-  "expected_sha256": "6071c2e657d91509885a1f3eec0884b2854d66990b5c556dbead15e263f9506b",
+  "url": "https://www.ebi.ac.uk/ena/portal/api/filereport?accession=ERR194147&result=read_run&fields=run_accession,scientific_name,library_layout,fastq_bytes,fastq_ftp&format=tsv",
+  "expected_sha256": "65b6addf71ff41fd26f5a71305f4f6497d88e4f1561865e009c7888c1f3f1cba",
   "retrieval_method": "https-get"
 }

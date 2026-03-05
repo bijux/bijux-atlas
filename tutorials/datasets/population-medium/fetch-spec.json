@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "population-medium",
-  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/gapminder-health-income.csv",
-  "expected_sha256": "27366350362387628fa50ad9db85358e60bb31c3b7a3523e4e11e9561ca64eda",
+  "url": "https://www.ebi.ac.uk/ena/portal/api/filereport?accession=SRR390728&result=read_run&fields=run_accession,scientific_name,library_layout,fastq_bytes,fastq_ftp&format=tsv",
+  "expected_sha256": "b8e2d35856b99cf8ca39ff79968abc376c4bd797be4dba0be83030e7e259acb6",
   "retrieval_method": "https-get"
 }

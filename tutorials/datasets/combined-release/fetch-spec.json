@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "combined-release",
-  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/flights-airport.csv",
-  "expected_sha256": "f9f66bc27adebf459e39fbdb6d71402c4355584f27ea1062606219d771ea4bcf",
+  "url": "https://www.ebi.ac.uk/ena/browser/api/fasta/K03455.1?download=true",
+  "expected_sha256": "1f16e62e7200ab281484e90940b91e69a28cf5952e963b13528c78d7ca8deaea",
   "retrieval_method": "https-get"
 }

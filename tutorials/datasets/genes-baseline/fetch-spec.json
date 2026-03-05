@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "genes-baseline",
-  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/seattle-weather.csv",
-  "expected_sha256": "0845078a290b48e3149ab8639966824110a251db4e06fc144c06ebb534af23be",
+  "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_045512.2&rettype=fasta&retmode=text",
+  "expected_sha256": "0891c00cc2d503f58e0c600ce5ee64e9c64b939525c70d5486bc46cbc7cb073e",
   "retrieval_method": "https-get"
 }

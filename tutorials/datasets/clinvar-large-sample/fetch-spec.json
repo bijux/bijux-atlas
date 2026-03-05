@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "clinvar-large-sample",
-  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/us-state-capitals.json",
-  "expected_sha256": "070b12ff2db958b12c2df2287330f4598611404d7e7ef8211a3b578a26c0827f",
+  "url": "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_protein.faa.gz",
+  "expected_sha256": "283c91ff66d0597f2488fd1c00ad40f8d0a0b37a92f981b6148d75fa4a934896",
   "retrieval_method": "https-get"
 }

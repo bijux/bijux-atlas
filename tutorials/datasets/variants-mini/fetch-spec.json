@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "variants-mini",
-  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/cars.json",
-  "expected_sha256": "f686a53678b21f4231e2f6a5ba7ce5761d9d39204fccdea1caa29fb8c460e319",
+  "url": "https://www.ebi.ac.uk/ena/browser/api/fasta/AB000263.1?download=true",
+  "expected_sha256": "e98bf42b008b9b5f81fca2f559cbec5fb101c55b90a9b9168c5626906d06a67d",
   "retrieval_method": "https-get"
 }

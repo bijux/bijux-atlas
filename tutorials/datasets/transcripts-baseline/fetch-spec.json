@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "transcripts-baseline",
-  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/airports.csv",
-  "expected_sha256": "caeb10d97cf2946792f7f2b4e28b692c655bb6c5f0a8e048ea3625b538266dd3",
+  "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_045512.2&rettype=gb&retmode=text",
+  "expected_sha256": "87744b176aa9ce71350c8becf0d062950dbc485a59766fcfe723ec859f6b6d5c",
   "retrieval_method": "https-get"
 }
