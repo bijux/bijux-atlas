@@ -298,11 +298,20 @@ pub enum ConfigsCommand {
 #[derive(Subcommand, Debug)]
 pub enum MakeCommand {
     VerifyModule(MakeVerifyArgs),
+    Wrappers {
+        #[command(subcommand)]
+        command: MakeWrappersCommand,
+    },
     Surface(MakeCommonArgs),
     List(MakeCommonArgs),
     Explain(MakeExplainArgs),
     TargetList(MakeCommonArgs),
     LintPolicyReport(MakeCommonArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum MakeWrappersCommand {
+    Verify(MakeCommonArgs),
 }
 
 #[derive(Args, Debug, Clone)]

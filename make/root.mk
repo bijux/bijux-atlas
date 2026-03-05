@@ -135,6 +135,12 @@ checks: ## Run the fast non-test quality gate lane
 checks-all: ## Run the full non-test quality gates
 	@$(DEV_ATLAS) checks run --suite deep --include-internal --include-slow --allow-subprocess --allow-git --allow-write --allow-network $(CHECK_FAIL_FAST_FLAG) --format $(FORMAT)
 
+release-plan: ## Generate release readiness plan through dev-atlas
+	@$(DEV_ATLAS) release plan --format $(FORMAT)
+
+openapi-generate: ## Regenerate OpenAPI contract artifacts through dev-atlas
+	@$(DEV_ATLAS) api contract --format $(FORMAT)
+
 checks-group: ## Run one checks suite group (GROUP=<name>)
 	@[ -n "$${GROUP:-}" ] || { echo "usage: make checks-group GROUP=<name>" >&2; exit 2; }
 	@$(DEV_ATLAS) checks run --suite "$${GROUP}" --include-internal --include-slow --allow-subprocess --allow-git --allow-write --allow-network $(CHECK_FAIL_FAST_FLAG) --format $(FORMAT)
@@ -162,4 +168,4 @@ registry-doctor: ## Validate governed suite registries and mappings
 tests-all: ## Run the deterministic test suite without external network
 	@$(DEV_ATLAS) tests run --mode all --artifacts-root $(ARTIFACT_ROOT) --run-id $(RUN_ID) --format $(FORMAT)
 
-.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean checks checks-all checks-effect checks-group checks-pure checks-tag clean doctor kind-down kind-reset kind-status kind-up registry-doctor root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly suites-all suites-list tests-all
+.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean checks checks-all checks-effect checks-group checks-pure checks-tag clean doctor kind-down kind-reset kind-status kind-up openapi-generate registry-doctor release-plan root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly suites-all suites-list tests-all

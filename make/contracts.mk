@@ -54,8 +54,7 @@ contracts-release: _contracts_guard ## Run full release contracts matrix
 	@CI=1 $(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode all --effects-policy allow --jobs $(JOBS) --color always --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-all: ## Deprecated alias for make contract-all
-	@printf '%s\n' "deprecated: use \`make contract-all\`"
-	@$(MAKE) -s contract-all JOBS="$(JOBS)" FAIL_FAST="$(FAIL_FAST)" NO_ANSI="$(NO_ANSI)" FORMAT="$(FORMAT)"
+	@$(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode all --effects-policy allow --jobs $(JOBS) $(CONTRACT_FAIL_FAST_FLAG) $(CONTRACT_NO_ANSI_FLAG) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-group: _contracts_guard ## Run one contracts suite group (GROUP=<name>)
 	@[ -n "$${GROUP:-}" ] || { echo "usage: make contracts-group GROUP=<name>" >&2; exit 2; }

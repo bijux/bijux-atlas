@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{MakeCommand, MakeExplainArgs, MakeVerifyArgs};
+use crate::cli::{MakeCommand, MakeExplainArgs, MakeVerifyArgs, MakeWrappersCommand};
 use crate::{emit_payload, resolve_repo_root};
 use std::collections::BTreeMap;
 use std::fs::{self, File};
@@ -15,6 +15,9 @@ pub(crate) fn run_make_command(quiet: bool, command: MakeCommand) -> i32 {
         let started = Instant::now();
         match command {
             MakeCommand::VerifyModule(args) => run_verify_module(args, started),
+            MakeCommand::Wrappers { command } => match command {
+                MakeWrappersCommand::Verify(common) => run_wrappers_verify(common, started),
+            },
             MakeCommand::Surface(common) => run_surface(common, started),
             MakeCommand::List(common) => run_list(common, started),
             MakeCommand::Explain(args) => run_explain(args, started),
@@ -204,6 +207,47 @@ fn run_lint_policy_report(
     });
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))
+}
+
+fn run_wrappers_verify(
+    common: crate::cli::MakeCommonArgs,
+    started: Instant,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root.clone())?;
+    let status = ProcessCommand::new("cargo")
+        .current_dir(&root)
+        .args([
+            "run",
+            "-q",
+            "-p",
+            "bijux-dev-atlas",
+            "--",
+            "contract",
+            "run",
+            "--mode",
+            "static",
+            "--domain",
+            "make",
+            "--format",
+            "json",
+        ])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()
+        .map_err(|e| format!("failed to execute make wrapper contract verification: {e}"))?;
+    let code = status.code().unwrap_or(1);
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "action": "wrappers_verify",
+        "kind": "make_wrappers_verify",
+        "text": if code == 0 { "make wrapper verification passed" } else { "make wrapper verification failed" },
+        "status": if code == 0 { "ok" } else { "failed" },
+        "verification_command": "cargo run -p bijux-dev-atlas -- contract run --mode static --domain make --format json",
+        "duration_ms": started.elapsed().as_millis() as u64,
+        "exit_code": code,
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, code))
 }
 
 fn run_verify_module(args: MakeVerifyArgs, started: Instant) -> Result<(String, i32), String> {

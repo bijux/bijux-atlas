@@ -570,6 +570,9 @@ fn force_json_docs(command: &mut DocsCommand) {
 fn force_json_make(command: &mut MakeCommand) {
     match command {
         MakeCommand::VerifyModule(args) => args.common.format = FormatArg::Json,
+        MakeCommand::Wrappers { command } => match command {
+            crate::cli::MakeWrappersCommand::Verify(common) => common.format = FormatArg::Json,
+        },
         MakeCommand::Surface(common)
         | MakeCommand::List(common)
         | MakeCommand::Explain(crate::cli::MakeExplainArgs { common, .. })
@@ -997,6 +1000,11 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
     match command {
         Command::Make { command } => match command {
             MakeCommand::VerifyModule(args) => args.common.repo_root = Some(root.clone()),
+            MakeCommand::Wrappers { command } => match command {
+                crate::cli::MakeWrappersCommand::Verify(common) => {
+                    common.repo_root = Some(root.clone())
+                }
+            },
             MakeCommand::Surface(common)
             | MakeCommand::List(common)
             | MakeCommand::Explain(crate::cli::MakeExplainArgs { common, .. })
