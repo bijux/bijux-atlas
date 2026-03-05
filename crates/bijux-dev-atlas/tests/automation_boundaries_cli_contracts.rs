@@ -49,14 +49,22 @@ fn checks_automation_boundaries_reports_fixture_violations() {
         .iter()
         .filter_map(|row| row["id"].as_str())
         .collect::<Vec<_>>();
-    assert!(
-        check_ids.contains(&"automation.tutorials.forbidden-patterns"),
-        "tutorial forbidden-patterns check must be present"
-    );
-    assert!(
-        check_ids.contains(&"automation.clients.forbidden-patterns"),
-        "client forbidden-patterns check must be present"
-    );
+    for required in [
+        "automation.directories.forbidden",
+        "automation.root-language-files.forbidden",
+        "automation.workflows.no-python",
+        "automation.workflows.no-repo-bash-scripts",
+        "automation.exec-bit.allowlist",
+        "automation.shebang.allowlist",
+        "automation.python-tooling.docs-only",
+        "automation.tutorials.forbidden-patterns",
+        "automation.clients.forbidden-patterns",
+    ] {
+        assert!(
+            check_ids.contains(&required),
+            "required automation boundary check is missing: {required}"
+        );
+    }
     let violations = payload["violations"]
         .as_array()
         .expect("violations array")

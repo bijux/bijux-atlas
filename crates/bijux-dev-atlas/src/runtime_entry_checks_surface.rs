@@ -271,15 +271,50 @@ fn collect_repo_files(root: &Path) -> Result<Vec<PathBuf>, String> {
     Ok(files)
 }
 
+fn collect_repo_dirs(root: &Path) -> Result<Vec<PathBuf>, String> {
+    let mut stack = vec![root.to_path_buf()];
+    let mut dirs = Vec::new();
+    while let Some(cursor) = stack.pop() {
+        let entries = fs::read_dir(&cursor)
+            .map_err(|err| format!("failed to read {}: {err}", cursor.display()))?;
+        for entry in entries {
+            let entry = entry.map_err(|err| format!("failed to read directory entry: {err}"))?;
+            let path = entry.path();
+            let rel = path
+                .strip_prefix(root)
+                .map_err(|err| format!("failed to normalize {}: {err}", path.display()))?;
+            if rel.starts_with(".git")
+                || rel.starts_with("target")
+                || rel.starts_with("node_modules")
+                || rel.starts_with("artifacts")
+            {
+                continue;
+            }
+            if path.is_dir() {
+                dirs.push(rel.to_path_buf());
+                stack.push(path);
+            }
+        }
+    }
+    dirs.sort();
+    Ok(dirs)
+}
+
 fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheckResult>, String> {
     let mut checks = Vec::new();
 
     let mut dir_violations = Vec::new();
-    for forbidden in ["tools", "scripts"] {
-        if root.join(forbidden).exists() {
-            dir_violations.push(format!("{forbidden}/"));
+    let dirs = collect_repo_dirs(root)?;
+    for rel in dirs {
+        let leaf = rel.file_name().and_then(|v| v.to_str()).unwrap_or_default();
+        if (leaf == "tools" || leaf == "scripts")
+            && !is_path_within(&rel, "crates/bijux-dev-atlas/")
+        {
+            dir_violations.push(format!("{}/", rel.display()));
         }
     }
+    dir_violations.sort();
+    dir_violations.dedup();
     checks.push(AutomationBoundaryCheckResult {
         id: "automation.directories.forbidden".to_string(),
         status: if dir_violations.is_empty() {
