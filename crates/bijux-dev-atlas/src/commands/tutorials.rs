@@ -1740,7 +1740,7 @@ fn update_real_data_overview_outputs(repo_root: &Path) -> Result<(), String> {
         }
     }
     rows.sort_by(|a, b| a["run_id"].as_str().cmp(&b["run_id"].as_str()));
-    let overview_json_path = repo_root.join("artifacts/tutorials/real-data-overview.json");
+    let overview_json_path = repo_root.join("docs/_internal/generated/real-data-runs-overview.json");
     fs::create_dir_all(
         overview_json_path
             .parent()
@@ -1773,8 +1773,9 @@ fn update_real_data_overview_outputs(repo_root: &Path) -> Result<(), String> {
             row["manifest_present"].as_bool().unwrap_or(false)
         ));
     }
-    fs::write(repo_root.join("artifacts/tutorials/real-data-overview.md"), markdown)
-        .map_err(|err| format!("failed to write overview markdown: {err}"))?;
+    let overview_md_path = repo_root.join("docs/_internal/generated/real-data-runs-overview.md");
+    fs::write(&overview_md_path, markdown)
+        .map_err(|err| format!("failed to write {}: {err}", overview_md_path.display()))?;
     Ok(())
 }
 
