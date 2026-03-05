@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "data_protection_capabilities",
+  "capabilities": {
+    "tls_configuration_support": true,
+    "certificate_loading": true,
+    "certificate_validation": true,
+    "certificate_rotation": true,
+    "artifact_checksum_verification": true,
+    "artifact_signature_verification": true,
+    "tamper_detection": true,
+    "dataset_integrity_verification": true,
+    "artifact_provenance_metadata": true
+  },
+  "status": "ok"
+}
