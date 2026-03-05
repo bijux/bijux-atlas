@@ -5,12 +5,8 @@ on:
     branches: [main]
     tags:
       - "v*"
-    paths:
-      - "docs/**"
-      - "mkdocs.yml"
-      - "configs/docs/**"
-      - "crates/bijux-dev-atlas/**"
-      - ".github/workflows/docs-deploy.yml"
+  release:
+    types: [published]
   workflow_dispatch:
 
 permissions:
@@ -53,16 +49,16 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
-import pathlib
-import yaml
-mkdocs = yaml.safe_load(pathlib.Path("mkdocs.yml").read_text())
-site_dir = mkdocs.get("site_dir", "site")
-exclude_docs = mkdocs.get("exclude_docs", "")
-if site_dir != "artifacts/docs/site":
-    raise SystemExit(f"mkdocs site_dir must be artifacts/docs/site, got: {site_dir}")
-if "_drafts/**" not in exclude_docs:
-    raise SystemExit("mkdocs exclude_docs must include _drafts/**")
-PY
+          import pathlib
+          import yaml
+          mkdocs = yaml.safe_load(pathlib.Path("mkdocs.yml").read_text())
+          site_dir = mkdocs.get("site_dir", "site")
+          exclude_docs = mkdocs.get("exclude_docs", "")
+          if site_dir != "artifacts/docs/site":
+              raise SystemExit(f"mkdocs site_dir must be artifacts/docs/site, got: {site_dir}")
+          if "_drafts/**" not in exclude_docs:
+              raise SystemExit("mkdocs exclude_docs must include _drafts/**")
+          PY
 
       - name: Install docs toolchain
         shell: bash
