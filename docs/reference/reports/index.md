@@ -94,5 +94,6 @@
 - [Reference Index](../index.md)
 - [Check Reports](checks/index.md)
 - [Real Data Runs Report](real-data-runs.md)
+- [Artifacts Locator](../artifacts-locator.md)
 - [Docs Site Output](../contracts/docs/site-output.md)
 - [Report Schema Migrations](migrations/index.md)

@@ -18,6 +18,7 @@ Ten deterministic end-to-end runs are the core proof surface.
 - Landing page: [`docs/tutorials/real-data/index.md`](docs/tutorials/real-data/index.md)
 - Run catalog and intent: [`configs/tutorials/real-data-runs.json`](configs/tutorials/real-data-runs.json)
 - Combined report: [`docs/reference/reports/real-data-runs.md`](docs/reference/reports/real-data-runs.md)
+- Evidence dashboard: [`docs/tutorials/real-data/evidence-summary-dashboard.md`](docs/tutorials/real-data/evidence-summary-dashboard.md)
 
 ## How To Evaluate
 

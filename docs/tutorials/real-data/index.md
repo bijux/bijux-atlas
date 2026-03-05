@@ -14,6 +14,9 @@ This section is the product proof surface for governed end-to-end runs over ten 
 - [Overview](overview.md)
 - [Reviewer quick path](reviewer-quick-path.md)
 - [Real-data evidence report](../../reference/reports/real-data-runs.md)
+- [Evidence summary dashboard](evidence-summary-dashboard.md)
+- [Reproduce all runs](reproduce-all-runs.md)
+- [Reproduce single run](reproduce-single-run.md)
 
 ## Runs table
 
