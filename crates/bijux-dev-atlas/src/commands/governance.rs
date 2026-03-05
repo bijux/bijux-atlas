@@ -5,6 +5,7 @@ use crate::cli::{
     GovernanceExceptionsCommand, RegistryCommand, RegistryMissingArg,
 };
 use crate::{emit_payload, resolve_repo_root};
+use bijux_dev_atlas::contracts::governance_enforcement;
 use bijux_dev_atlas::core::load_registry;
 use bijux_dev_atlas::docs::site_output::validate_named_report;
 use bijux_dev_atlas::governance_objects::{
@@ -538,6 +539,10 @@ fn breaking_changes_path(root: &Path) -> PathBuf {
 
 fn governance_doctor_path(root: &Path) -> PathBuf {
     root.join("artifacts/governance/governance-doctor.json")
+}
+
+fn governance_enforcement_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/enforcement-report.json")
 }
 
 fn institutional_delta_inputs_path(root: &Path) -> PathBuf {
@@ -2644,6 +2649,7 @@ pub(crate) fn run_governance_command(
             let orphan_checks_path = governance_orphan_checks_path(&root);
             let policy_surface_path = governance_policy_surface_path(&root);
             let drift_path = governance_drift_path(&root);
+            let enforcement_path = governance_enforcement_path(&root);
             if let Some(parent) = graph_path.parent() {
                 fs::create_dir_all(parent)
                     .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
@@ -2722,6 +2728,15 @@ pub(crate) fn run_governance_command(
                 .map_err(|e| format!("encode governance orphan report failed: {e}"))?,
             )
             .map_err(|e| format!("write {} failed: {e}", orphan_path.display()))?;
+            let enforcement_registry = governance_enforcement::load_registry(&root)?;
+            let enforcement_result =
+                governance_enforcement::evaluate_registry(&root, &enforcement_registry);
+            fs::write(
+                &enforcement_path,
+                serde_json::to_string_pretty(&enforcement_result)
+                    .map_err(|e| format!("encode governance enforcement report failed: {e}"))?,
+            )
+            .map_err(|e| format!("write {} failed: {e}", enforcement_path.display()))?;
             let mut governance_errors = validation.errors;
             governance_errors.extend(
                 checks_inventory["errors"]
@@ -2731,6 +2746,12 @@ pub(crate) fn run_governance_command(
                     .filter_map(|value| value.as_str().map(ToString::to_string)),
             );
             governance_errors.extend(validate_governance_registry(&root)?);
+            governance_errors.extend(
+                enforcement_result
+                    .violations
+                    .iter()
+                    .map(|v| format!("[{}] {}", v.rule_id, v.message)),
+            );
 
             let payload = serde_json::json!({
                 "schema_version": 1,
@@ -2744,6 +2765,7 @@ pub(crate) fn run_governance_command(
                 "objects": collect_governance_objects(&root)?,
                 "errors": governance_errors,
                 "checks_inventory": checks_inventory,
+                "enforcement": enforcement_result,
                 "artifacts": {
                     "governance_graph": graph_path.strip_prefix(&root).unwrap_or(&graph_path).display().to_string(),
                     "governance_summary": summary_path.strip_prefix(&root).unwrap_or(&summary_path).display().to_string(),
@@ -2755,6 +2777,7 @@ pub(crate) fn run_governance_command(
                     "governance_orphans": orphan_path.strip_prefix(&root).unwrap_or(&orphan_path).display().to_string(),
                     "policy_surface_map": policy_surface_path.strip_prefix(&root).unwrap_or(&policy_surface_path).display().to_string(),
                     "governance_drift": drift_path.strip_prefix(&root).unwrap_or(&drift_path).display().to_string(),
+                    "governance_enforcement": enforcement_path.strip_prefix(&root).unwrap_or(&enforcement_path).display().to_string(),
                     "checks_inventory": checks_inventory_path(&root).strip_prefix(&root).unwrap_or(&checks_inventory_path(&root)).display().to_string(),
                 }
             });

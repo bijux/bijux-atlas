@@ -120,9 +120,18 @@ fn governance_validate_emits_index_and_coverage_artifacts() {
         "orphan_checks",
         "policy_surface_map",
         "governance_drift",
+        "governance_enforcement",
     ] {
         assert!(artifacts.contains_key(key), "missing artifact key {key}");
     }
+    let enforcement = payload
+        .get("enforcement")
+        .and_then(|v| v.as_object())
+        .expect("enforcement object");
+    assert_eq!(
+        enforcement.get("kind").and_then(|v| v.as_str()),
+        Some("governance_enforcement_evaluation")
+    );
 }
 
 #[test]
