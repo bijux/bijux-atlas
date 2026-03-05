@@ -1521,7 +1521,10 @@ mod tests {
         for _ in 0..10_000 {
             let _ = store.validate(&api_key, now);
         }
-        assert!(start.elapsed() < Duration::from_millis(100));
+        // Keep this as a coarse regression guard rather than a tight microbenchmark.
+        // Debug/profile variance and shared CI runners can exceed 100ms without
+        // indicating a meaningful algorithmic regression.
+        assert!(start.elapsed() < Duration::from_millis(500));
     }
 }
 
