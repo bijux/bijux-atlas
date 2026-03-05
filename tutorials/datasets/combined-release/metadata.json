@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "dataset_id": "combined-release",
+  "expected_sha256": "1f16e62e7200ab281484e90940b91e69a28cf5952e963b13528c78d7ca8deaea",
+  "description": "ENA API FASTA response for accession K03455.1"
+}

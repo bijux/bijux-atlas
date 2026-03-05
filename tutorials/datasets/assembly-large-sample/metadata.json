@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "dataset_id": "assembly-large-sample",
+  "expected_sha256": "c0d8852d60a3e81d04f2c0363b04b2c98f82746b3bc5eafaed7764d9aff4fa8f",
+  "description": "ENA DRR000111 large assembly FASTQ sample"
+}

@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "dataset_id": "transcripts-baseline",
+  "expected_sha256": "e7781958faa932bf24f2054aa51fd9b83c6eefc3331fd76d94da62c49eee1a76",
+  "description": "ENA DRR000095 read 2 transcript FASTQ sample"
+}

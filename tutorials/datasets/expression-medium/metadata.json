@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "dataset_id": "expression-medium",
+  "expected_sha256": "0b5b1b36b8acb5899bf62f4b28938223a2a81a232e0fc5176d20bd3e97899e25",
+  "description": "ENA DRR000099 medium expression FASTQ sample"
+}

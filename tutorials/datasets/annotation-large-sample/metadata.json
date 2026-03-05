@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "dataset_id": "annotation-large-sample",
+  "expected_sha256": "c1af0c9595e14e241f4f79b9b8790c200d207ebb9d7faabd3cd11f7e25623fc4",
+  "description": "ENA DRR000541 read 1 large annotation FASTQ sample"
+}

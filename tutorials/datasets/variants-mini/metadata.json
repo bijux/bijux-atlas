@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "dataset_id": "variants-mini",
+  "expected_sha256": "1fc7ceddb27f45f827ee6d3e3c4aa9f3e13e719a9687204909ab542f2068acb7",
+  "description": "ENA DRR000098 compact FASTQ variant sample"
+}

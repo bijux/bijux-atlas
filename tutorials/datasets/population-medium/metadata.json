@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "dataset_id": "population-medium",
+  "expected_sha256": "568e1d9e598f3747e173abfcdc4b0ab9e09b80e4230999a61870dfde3b1e16ff",
+  "description": "ENA DRR000100 medium population FASTQ sample"
+}

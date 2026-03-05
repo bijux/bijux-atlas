@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "dataset_id": "genes-baseline",
+  "expected_sha256": "dcae85eaef655cd1847b84c45caada4f2134b80cf6e084e7f4ebd710c26c493d",
+  "description": "ENA DRR000095 read 1 baseline FASTQ sample"
+}

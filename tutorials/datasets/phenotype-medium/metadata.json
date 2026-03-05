@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "dataset_id": "phenotype-medium",
+  "expected_sha256": "be9e5833eb70fd5f9900a293377f87cce8a05d747bcca053a40fcc17f716a1fc",
+  "description": "ENA DRR000104 medium phenotype FASTQ sample"
+}

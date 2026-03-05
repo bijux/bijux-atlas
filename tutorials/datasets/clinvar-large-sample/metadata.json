@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "dataset_id": "clinvar-large-sample",
+  "expected_sha256": "283c91ff66d0597f2488fd1c00ad40f8d0a0b37a92f981b6148d75fa4a934896",
+  "description": "NCBI GCF_000005845.2 protein FASTA release file"
+}
