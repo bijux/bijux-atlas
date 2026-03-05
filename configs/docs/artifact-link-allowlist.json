@@ -1,0 +1,8 @@
+{
+  "entries": [
+    {
+      "file": "docs/reference/contracts/index.md",
+      "target": "artifacts/index.md"
+    }
+  ]
+}

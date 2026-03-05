@@ -8,6 +8,17 @@ struct ExternalLinkAllowlist {
     entries: Vec<ExternalLinkAllowlistEntry>,
 }
 
+#[derive(Debug, serde::Deserialize)]
+struct ArtifactLinkAllowlist {
+    entries: Vec<ArtifactLinkAllowlistEntry>,
+}
+
+#[derive(Debug, serde::Deserialize)]
+struct ArtifactLinkAllowlistEntry {
+    file: String,
+    target: String,
+}
+
 fn docs_budget_exempt(rel: &str) -> bool {
     rel.starts_with("_internal/")
         || rel.starts_with("_assets/")
@@ -46,6 +57,33 @@ pub(crate) fn docs_validate_payload(
             "DOCS_NAV_ERROR: mkdocs.yml docs_dir must be `docs`, got `{docs_dir}`"
         ));
     }
+    let has_navigation_path = yaml
+        .get("theme")
+        .and_then(|theme| theme.get("features"))
+        .and_then(|features| features.as_sequence())
+        .map(|rows| {
+            rows.iter().any(|row| {
+                row.as_str()
+                    .map(|value| value.trim() == "navigation.path")
+                    .unwrap_or(false)
+            })
+        })
+        .unwrap_or(false);
+    if !has_navigation_path {
+        issues.errors.push(
+            "DOCS_NAV_ERROR: mkdocs theme.features must include `navigation.path`".to_string(),
+        );
+    }
+    let not_in_nav = yaml
+        .get("not_in_nav")
+        .and_then(|v| v.as_str())
+        .unwrap_or_default()
+        .to_string();
+    if not_in_nav.contains("_generated/**") {
+        issues.errors.push(
+            "DOCS_NAV_ERROR: mkdocs not_in_nav must not exclude docs/_generated/**".to_string(),
+        );
+    }
     for required in ["index.md", "start-here.md"] {
         if !ctx.docs_root.join(required).exists() {
             issues.errors.push(format!(
@@ -77,6 +115,18 @@ pub(crate) fn docs_validate_payload(
             issues.warnings.push(format!(
                 "DOCS_BUDGET_WARN: docs category `{category}` has {pages} pages (soft budget=40)"
             ));
+        }
+    }
+    let site_paths = bijux_dev_atlas::docs::site_output::parse_mkdocs_site_paths(&ctx.repo_root)?;
+    let site_dir = ctx.repo_root.join(&site_paths.site_dir);
+    if site_dir.exists() {
+        for file in walk_files_local(&site_dir) {
+            if file.extension().and_then(|v| v.to_str()) == Some("md") {
+                issues.errors.push(format!(
+                    "DOCS_SITE_DIR_ERROR: site_dir must not contain markdown source files `{}`",
+                    file.display()
+                ));
+            }
         }
     }
     for (_, rel) in mkdocs_nav_refs(&ctx.repo_root)? {
@@ -422,6 +472,42 @@ pub(crate) fn docs_links_payload(
     let image_re = Regex::new(r"!\[([^\]]*)\]\(([^)]+)\)").map_err(|e| e.to_string())?;
     let mut internal_links = 0usize;
     let mut external_links = 0usize;
+    let mkdocs = parse_mkdocs_yaml(&ctx.repo_root)?;
+    let site_url = mkdocs
+        .get("site_url")
+        .and_then(|v| v.as_str())
+        .unwrap_or_default()
+        .trim_end_matches('/')
+        .to_string();
+    let artifact_rewrites = std::collections::BTreeMap::from([
+        (
+            "artifacts/docs/generated/",
+            "docs/_internal/generated/".to_string(),
+        ),
+        (
+            "artifacts/tutorials/real-data-overview.md",
+            "docs/_internal/generated/real-data-runs-overview.md".to_string(),
+        ),
+    ]);
+    let artifact_allowlist_path = ctx.repo_root.join("configs/docs/artifact-link-allowlist.json");
+    let artifact_allowlist: std::collections::BTreeSet<String> = if artifact_allowlist_path.exists() {
+        let text = fs::read_to_string(&artifact_allowlist_path)
+            .map_err(|e| format!("failed to read {}: {e}", artifact_allowlist_path.display()))?;
+        let parsed: ArtifactLinkAllowlist = serde_json::from_str(&text).map_err(|e| {
+            format!(
+                "failed to parse {}: {e}",
+                artifact_allowlist_path.display()
+            )
+        })?;
+        parsed
+            .entries
+            .into_iter()
+            .map(|entry| format!("{}::{}", entry.file, entry.target))
+            .collect()
+    } else {
+        std::collections::BTreeSet::new()
+    };
+    let mut autofix_count = 0usize;
     for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
         let rel = file
             .strip_prefix(&ctx.repo_root)
@@ -430,7 +516,32 @@ pub(crate) fn docs_links_payload(
             .to_string();
         let text = fs::read_to_string(&file).map_err(|e| format!("failed to read {rel}: {e}"))?;
         let anchors = markdown_anchors(&text);
+        let mut rewritten_text = text.clone();
         for (idx, line) in text.lines().enumerate() {
+            if let Some(include_target_raw) = line
+                .trim()
+                .strip_prefix("--8<-- \"")
+                .and_then(|v| v.strip_suffix('"'))
+            {
+                let include_target = include_target_raw
+                    .strip_prefix("docs/")
+                    .unwrap_or(include_target_raw);
+                let include_path = ctx.docs_root.join(include_target);
+                if !include_path.exists() {
+                    issues.errors.push(format!(
+                        "DOCS_INCLUDE_ERROR: {rel}:{} include target not found `{include_target}`",
+                        idx + 1
+                    ));
+                } else {
+                    let include_text = fs::read_to_string(&include_path).unwrap_or_default();
+                    if include_text.contains("](./") {
+                        issues.warnings.push(format!(
+                            "DOCS_INCLUDE_BASE_WARN: {rel}:{} include `{include_target}` contains `./` links; prefer docs-root-relative paths",
+                            idx + 1
+                        ));
+                    }
+                }
+            }
             for cap in image_re.captures_iter(line) {
                 let alt = cap.get(1).map(|m| m.as_str()).unwrap_or("").trim();
                 let target = cap.get(2).map(|m| m.as_str()).unwrap_or("").trim();
@@ -448,6 +559,18 @@ pub(crate) fn docs_links_payload(
                     || target.starts_with("mailto:")
                 {
                     external_links += 1;
+                    if target.contains("github.com/") && target.contains("/blob/") {
+                        issues.warnings.push(format!(
+                            "DOCS_GITHUB_BLOB_WARN: {rel}:{} github blob link should be replaced with site-relative docs or governed repo reference `{target}`",
+                            idx + 1
+                        ));
+                    }
+                    if !site_url.is_empty() && target.starts_with(&site_url) {
+                        issues.warnings.push(format!(
+                            "DOCS_SITE_URL_BYPASS_WARN: {rel}:{} absolute site link bypasses docs navigation context `{target}`",
+                            idx + 1
+                        ));
+                    }
                     let mut ok = true;
                     if common.allow_network
                         && (target.starts_with("http://") || target.starts_with("https://"))
@@ -485,8 +608,36 @@ pub(crate) fn docs_links_payload(
                 if path_part.is_empty() || path_part.ends_with('/') {
                     continue;
                 }
+                if path_part.ends_with(".html") {
+                    issues.errors.push(format!(
+                        "DOCS_LINK_STYLE_ERROR: {rel}:{} link `{target}` hardcodes .html while use_directory_urls=true",
+                        idx + 1
+                    ));
+                }
+                if path_part.starts_with("artifacts/")
+                    || path_part.starts_with("../artifacts/")
+                    || path_part.starts_with("/artifacts/")
+                {
+                    let fingerprint = format!("{rel}::{target}");
+                    if !artifact_allowlist.contains(&fingerprint) {
+                        issues.errors.push(format!(
+                            "DOCS_ARTIFACT_LINK_ERROR: {rel}:{} markdown links to artifacts are forbidden `{target}`",
+                            idx + 1
+                        ));
+                    }
+                }
                 internal_links += 1;
                 let resolved = file.parent().unwrap_or(&ctx.docs_root).join(path_part);
+                if path_part.ends_with(".md")
+                    && !resolved.starts_with(&ctx.docs_root)
+                    && !path_part.starts_with("http://")
+                    && !path_part.starts_with("https://")
+                {
+                    issues.errors.push(format!(
+                        "DOCS_EXTERNAL_MD_ERROR: {rel}:{} markdown link points outside docs_dir `{target}`",
+                        idx + 1
+                    ));
+                }
                 let exists = resolved.exists();
                 let mut ok = exists;
                 if exists {
@@ -515,6 +666,18 @@ pub(crate) fn docs_links_payload(
                 );
             }
         }
+        if common.allow_write {
+            for (from, to) in &artifact_rewrites {
+                if rewritten_text.contains(from) {
+                    rewritten_text = rewritten_text.replace(from, to);
+                    autofix_count += 1;
+                }
+            }
+            if rewritten_text != text {
+                fs::write(&file, rewritten_text)
+                    .map_err(|e| format!("failed to write {}: {e}", file.display()))?;
+            }
+        }
     }
     rows.sort_by(|a, b| {
         a["file"]
@@ -540,6 +703,7 @@ pub(crate) fn docs_links_payload(
         } else {"docs links failed"},
         "rows":rows,
         "stats": {"internal_links": internal_links, "external_links": external_links},
+        "autofix": {"enabled": common.allow_write, "rewrites_applied": autofix_count},
         "errors":issues.errors,
         "warnings": issues.warnings,
         "capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},
