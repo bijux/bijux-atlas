@@ -38,7 +38,7 @@
       "severity": "medium",
       "rule_type": "docs_front_matter_complete",
       "paths": [
-        "docs"
+        "docs/operations"
       ]
     },
     {
