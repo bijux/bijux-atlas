@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "kind": "core_capacity_scenarios",
+  "scenarios": [
+    {"id": "single_client_baseline", "title": "Single client baseline", "workload_kind": "query"},
+    {"id": "multi_client_concurrency", "title": "Multi client concurrency", "workload_kind": "mixed"},
+    {"id": "sustained_ingest", "title": "Sustained ingest", "workload_kind": "ingest"},
+    {"id": "burst_query_load", "title": "Burst query load", "workload_kind": "query"},
+    {"id": "mixed_workload", "title": "Mixed workload", "workload_kind": "mixed"}
+  ]
+}
