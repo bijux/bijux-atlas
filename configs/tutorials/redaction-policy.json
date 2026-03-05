@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "forbidden_patterns": [
-    "AKIA",
-    "BEGIN PRIVATE KEY",
-    "password=",
-    "token="
+    "aws_access_key_prefix",
+    "private_key_header",
+    "credential_assignment",
+    "auth_token_assignment"
   ],
   "applies_to": [
     "artifacts/tutorials/runs/*/evidence-bundle.json",

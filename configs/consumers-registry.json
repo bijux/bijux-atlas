@@ -306,6 +306,11 @@
       "bijux-dev-atlas",
       "runtime",
       "ci"
+    ],
+    "configs/tutorials/*.json": [
+      "bijux-dev-atlas",
+      "docs-build",
+      "runtime"
     ]
   },
   "groups": {
@@ -403,6 +408,11 @@
       "bijux-dev-atlas",
       "runtime",
       "ci"
+    ],
+    "tutorials": [
+      "bijux-dev-atlas",
+      "docs-build",
+      "runtime"
     ]
   },
   "schema_version": 1

@@ -33,7 +33,8 @@
     "configs/security/secrets.json": "security",
     "configs/system/failure-injection.json": "bijux-atlas-operations",
     "configs/system/simulation-scenarios.json": "bijux-atlas-operations",
-    "configs/system/system-simulation-report.schema.json": "bijux-atlas-operations"
+    "configs/system/system-simulation-report.schema.json": "bijux-atlas-operations",
+    "configs/tutorials/*.json": "platform"
   },
   "groups": {
     "audit": "atlas-governance",
@@ -59,7 +60,8 @@
     "schema": "platform",
     "security": "security",
     "slo": "bijux-atlas-operations",
-    "system": "bijux-atlas-operations"
+    "system": "bijux-atlas-operations",
+    "tutorials": "platform"
   },
   "schema_version": 1
 }

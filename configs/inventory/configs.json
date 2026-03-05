@@ -534,11 +534,32 @@
         "bijux dev atlas system simulate suite",
         "bijux dev atlas system simulate install"
       ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "tutorials",
+      "owner": "platform",
+      "public_files": [
+        "configs/tutorials/*.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json",
+        "configs/contracts/real-data-runs.schema.json",
+        "configs/contracts/tutorial-evidence.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas tutorials list",
+        "bijux dev atlas tutorials real-data list",
+        "bijux dev atlas tutorials real-data run-all"
+      ]
     }
   ],
   "max_depth": 4,
   "max_group_depth": 2,
-  "max_groups": 24,
+  "max_groups": 25,
   "root_files": [
     "configs/CONSUMERS.json",
     "configs/CONTRACT.md",

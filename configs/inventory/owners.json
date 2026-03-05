@@ -17,6 +17,7 @@
     "configs/rust": "rust-foundation",
     "configs/security": "security",
     "configs/shellcheck": "platform",
-    "configs/slo": "bijux-atlas-operations"
+    "configs/slo": "bijux-atlas-operations",
+    "configs/tutorials": "platform"
   }
 }

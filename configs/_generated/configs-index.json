@@ -144,20 +144,23 @@
     },
     {
       "counts": {
-        "covered": 14,
+        "covered": 17,
         "generated": 0,
         "internal": 0,
-        "public": 14,
+        "public": 17,
         "schemas": 3
       },
       "files": [
         "configs/docs/.markdownlint-cli2.jsonc",
         "configs/docs/.vale.ini",
+        "configs/docs/artifact-link-allowlist.json",
         "configs/docs/codespell-ignore-words.txt",
         "configs/docs/cspell.config.json",
         "configs/docs/depth-budget.json",
         "configs/docs/external-link-allowlist.json",
         "configs/docs/frontmatter.schema.json",
+        "configs/docs/generated-files-freshness-policy.json",
+        "configs/docs/generated-files-registry.json",
         "configs/docs/package-lock.json",
         "configs/docs/package.json",
         "configs/docs/quality-policy.json",
@@ -699,9 +702,9 @@
     },
     {
       "counts": {
-        "covered": 157,
+        "covered": 159,
         "generated": 1,
-        "internal": 136,
+        "internal": 138,
         "public": 20,
         "schemas": 13
       },
@@ -769,6 +772,7 @@
         "configs/contracts/perf/load-report.schema.json",
         "configs/contracts/perf/performance-metadata.schema.json",
         "configs/contracts/perf/slo.schema.json",
+        "configs/contracts/real-data-runs.schema.json",
         "configs/contracts/release/checksum-list.schema.json",
         "configs/contracts/release/packet-list.schema.json",
         "configs/contracts/release/provenance.schema.json",
@@ -826,6 +830,7 @@
         "configs/contracts/tooling-doctor-output.schema.json",
         "configs/contracts/tooling-surface-output.schema.json",
         "configs/contracts/tooling-tool-output.schema.json",
+        "configs/contracts/tutorial-evidence.schema.json",
         "configs/schema/README.md",
         "configs/schema/ci/lane-surface.schema.json",
         "configs/schema/ci/policy-exceptions.schema.json",
@@ -978,12 +983,46 @@
         "bijux dev atlas system simulate suite",
         "bijux dev atlas system simulate install"
       ]
+    },
+    {
+      "counts": {
+        "covered": 9,
+        "generated": 0,
+        "internal": 0,
+        "public": 9,
+        "schemas": 3
+      },
+      "files": [
+        "configs/tutorials/cache-eviction-policy.json",
+        "configs/tutorials/data-source-volatility-policy.json",
+        "configs/tutorials/fetch-retry-policy.json",
+        "configs/tutorials/legacy-script-exceptions.json",
+        "configs/tutorials/nondeterministic-fields-policy.json",
+        "configs/tutorials/real-data-runs-workflow.json",
+        "configs/tutorials/real-data-runs.json",
+        "configs/tutorials/redaction-policy.json",
+        "configs/tutorials/regression-threshold-policy.json"
+      ],
+      "name": "tutorials",
+      "owner": "platform",
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json",
+        "configs/contracts/real-data-runs.schema.json",
+        "configs/contracts/tutorial-evidence.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas tutorials list",
+        "bijux dev atlas tutorials real-data list",
+        "bijux dev atlas tutorials real-data run-all"
+      ]
     }
   ],
   "kind": "configs-index",
   "max_depth": 4,
   "max_group_depth": 2,
-  "max_groups": 24,
+  "max_groups": 25,
   "registry_path": "configs/inventory/configs.json",
   "root_files": [
     "configs/CONSUMERS.json",

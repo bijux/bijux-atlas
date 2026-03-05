@@ -74,6 +74,11 @@
     ],
     "slo": [
       "slo contract checks"
+    ],
+    "tutorials": [
+      "tutorial real-data workflow",
+      "tutorial data contracts",
+      "bijux-dev-atlas tutorials commands"
     ]
   }
 }

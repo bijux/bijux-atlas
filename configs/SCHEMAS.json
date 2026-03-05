@@ -66,7 +66,8 @@
     "configs/system/chaos-scenarios.json": "configs/contracts/inventory-ops.schema.json",
     "configs/system/failure-injection.json": "configs/contracts/inventory-ops.schema.json",
     "configs/system/resilience-policy.example.json": "configs/contracts/inventory-ops.schema.json",
-    "configs/system/simulation-scenarios.json": "configs/contracts/inventory-ops.schema.json"
+    "configs/system/simulation-scenarios.json": "configs/contracts/inventory-ops.schema.json",
+    "configs/tutorials/*.json": "configs/contracts/inventory-configs.schema.json"
   },
   "schema_version": 1
 }

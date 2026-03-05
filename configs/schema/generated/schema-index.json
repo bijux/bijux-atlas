@@ -103,7 +103,8 @@
     "configs/system/chaos-scenarios.json",
     "configs/system/failure-injection.json",
     "configs/system/resilience-policy.example.json",
-    "configs/system/simulation-scenarios.json"
+    "configs/system/simulation-scenarios.json",
+    "configs/tutorials/*.json"
   ],
   "orphan_input_schemas": [
     "configs/schema/config-compiler-report.schema.json",
@@ -183,6 +184,7 @@
     "configs/contracts/perf/load-report.schema.json",
     "configs/contracts/perf/performance-metadata.schema.json",
     "configs/contracts/perf/slo.schema.json",
+    "configs/contracts/real-data-runs.schema.json",
     "configs/contracts/release/checksum-list.schema.json",
     "configs/contracts/release/packet-list.schema.json",
     "configs/contracts/release/provenance.schema.json",
@@ -239,7 +241,8 @@
     "configs/contracts/security/threats.schema.json",
     "configs/contracts/tooling-doctor-output.schema.json",
     "configs/contracts/tooling-surface-output.schema.json",
-    "configs/contracts/tooling-tool-output.schema.json"
+    "configs/contracts/tooling-tool-output.schema.json",
+    "configs/contracts/tutorial-evidence.schema.json"
   ],
   "referenced_schemas": [
     "configs/contracts/env.schema.json",
