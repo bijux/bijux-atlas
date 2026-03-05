@@ -23,3 +23,20 @@ The following contract coverage had drift risk because historical exceptions and
 3. make-wrapper purity checks in `tests/repo_automation_doctrine_contracts.rs`
 
 This review keeps those controls and adds a single automation boundary scan/report command surface.
+
+## Boundary controls now locked
+
+The active boundary report surfaces now include explicit checks for:
+
+1. `automation.tutorials.forbidden-patterns` (forbidden `tutorials/**/*.py`, `tutorials/**/*.sh`, and legacy script paths).
+2. `automation.clients.forbidden-patterns` (forbidden client-local tooling paths such as `clients/**/tools/**`, `__pycache__`, and `*.pyc`).
+
+Exception policy state:
+
+1. `configs/governance/exceptions.yaml` remains empty for automation-boundary bypasses.
+2. `configs/governance/exceptions-archive.yaml` contains no archived script-era bypasses.
+
+Operational entrypoints:
+
+1. `bijux-dev-atlas checks automation-boundaries`
+2. `bijux-dev-atlas contract automation-boundaries`

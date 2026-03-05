@@ -44,6 +44,19 @@ fn checks_automation_boundaries_reports_fixture_violations() {
         &output.stdout
     };
     let payload: serde_json::Value = serde_json::from_slice(raw).expect("parse json");
+    let checks = payload["checks"].as_array().expect("checks array");
+    let check_ids = checks
+        .iter()
+        .filter_map(|row| row["id"].as_str())
+        .collect::<Vec<_>>();
+    assert!(
+        check_ids.contains(&"automation.tutorials.forbidden-patterns"),
+        "tutorial forbidden-patterns check must be present"
+    );
+    assert!(
+        check_ids.contains(&"automation.clients.forbidden-patterns"),
+        "client forbidden-patterns check must be present"
+    );
     let violations = payload["violations"]
         .as_array()
         .expect("violations array")

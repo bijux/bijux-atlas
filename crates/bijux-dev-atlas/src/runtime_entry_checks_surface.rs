@@ -323,6 +323,8 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
     let mut workflow_python_violations = Vec::new();
     let mut workflow_bash_script_violations = Vec::new();
     let mut python_tooling_violations = Vec::new();
+    let mut tutorials_forbidden_pattern_violations = Vec::new();
+    let mut clients_forbidden_pattern_violations = Vec::new();
     #[cfg(unix)]
     let mut exec_violations = Vec::new();
 
@@ -353,6 +355,19 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
         }
 
         let base = rel.file_name().and_then(|v| v.to_str()).unwrap_or_default();
+        let rel_text = rel.display().to_string();
+        if is_path_within(rel, "tutorials/") {
+            let ext = rel.extension().and_then(|v| v.to_str()).unwrap_or_default();
+            if ext == "py" || ext == "sh" || rel_text.contains("/scripts/") {
+                tutorials_forbidden_pattern_violations.push(rel_text.clone());
+            }
+        }
+        if is_path_within(rel, "clients/") {
+            if rel_text.contains("/tools/") || rel_text.contains("/__pycache__/") || rel_text.ends_with(".pyc")
+            {
+                clients_forbidden_pattern_violations.push(rel_text.clone());
+            }
+        }
         if (base == "requirements.txt"
             || base == "requirements-dev.txt"
             || base == "Pipfile"
@@ -382,6 +397,10 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
     workflow_python_violations.sort();
     workflow_bash_script_violations.sort();
     python_tooling_violations.sort();
+    tutorials_forbidden_pattern_violations.sort();
+    tutorials_forbidden_pattern_violations.dedup();
+    clients_forbidden_pattern_violations.sort();
+    clients_forbidden_pattern_violations.dedup();
     #[cfg(unix)]
     exec_violations.sort();
 
@@ -435,6 +454,26 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
         },
         violation_count: python_tooling_violations.len(),
         violations: python_tooling_violations,
+    });
+    checks.push(AutomationBoundaryCheckResult {
+        id: "automation.tutorials.forbidden-patterns".to_string(),
+        status: if tutorials_forbidden_pattern_violations.is_empty() {
+            "pass".to_string()
+        } else {
+            "fail".to_string()
+        },
+        violation_count: tutorials_forbidden_pattern_violations.len(),
+        violations: tutorials_forbidden_pattern_violations,
+    });
+    checks.push(AutomationBoundaryCheckResult {
+        id: "automation.clients.forbidden-patterns".to_string(),
+        status: if clients_forbidden_pattern_violations.is_empty() {
+            "pass".to_string()
+        } else {
+            "fail".to_string()
+        },
+        violation_count: clients_forbidden_pattern_violations.len(),
+        violations: clients_forbidden_pattern_violations,
     });
 
     Ok(checks)
