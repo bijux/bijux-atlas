@@ -12,6 +12,12 @@ use std::path::Path;
 
 const LABEL_BUDGET_POLICY: &str = "ops/observe/metrics/label-cardinality-budget.json";
 const REGISTRY_SNAPSHOT_ARTIFACT: &str = "artifacts/observe/metrics-registry-snapshot.json";
+const TRACE_SPAN_REGISTRY: &str = "ops/observe/tracing/span-registry.json";
+const TRACE_CORRELATION_POLICY: &str = "ops/observe/tracing/correlation-policy.json";
+const TRACE_STABILITY_CONTRACT: &str = "ops/observe/contracts/tracing-stability-contract.json";
+const TRACE_COVERAGE_REPORT_ARTIFACT: &str = "artifacts/observe/trace-coverage-report.json";
+const TRACE_COVERAGE_SUMMARY_ARTIFACT: &str = "artifacts/observe/trace-coverage-summary.md";
+const TRACE_TOPOLOGY_ARTIFACT: &str = "artifacts/observe/trace-topology-diagram.mmd";
 
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
     let text = fs::read_to_string(path)
@@ -180,6 +186,234 @@ fn explain_traces(common: ObserveTracesCommonArgs) -> Result<(String, i32), Stri
     Ok((rendered, 0))
 }
 
+fn trace_topology_mermaid() -> String {
+    let rows = tracing_registry::span_registry();
+    let mut out = vec![
+        "flowchart TD".to_string(),
+        "  RUNTIME[runtime.root] --> REQUEST[http.request]".to_string(),
+    ];
+    for row in rows {
+        if row.span_name == "runtime.root" || row.span_name == "http.request" {
+            continue;
+        }
+        let node_id = row.span_name.replace('.', "_").to_uppercase();
+        out.push(format!("  REQUEST --> {}[{}]", node_id, row.span_name));
+    }
+    out.join("\n")
+}
+
+fn trace_coverage_payload() -> serde_json::Value {
+    let contract = tracing_registry::tracing_contract();
+    let mut registry_spans = contract
+        .span_registry
+        .iter()
+        .map(|row| row.span_name)
+        .collect::<BTreeSet<_>>();
+    let mut rows = Vec::new();
+    for span in [
+        "runtime.root",
+        "http.request",
+        "query.execution",
+        "ingest.processing",
+        "artifact.load",
+        "registry.access",
+        "configuration.load",
+        "lifecycle.startup",
+        "lifecycle.shutdown",
+        "error.structured",
+    ] {
+        rows.push(serde_json::json!({
+            "span_name": span,
+            "covered": registry_spans.remove(span),
+        }));
+    }
+    let covered = rows
+        .iter()
+        .filter(|row| {
+            row.get("covered")
+                .and_then(|v| v.as_bool())
+                .unwrap_or(false)
+        })
+        .count();
+    serde_json::json!({
+        "schema_version": 1,
+        "kind": "trace_coverage_report",
+        "coverage": rows,
+        "summary": {
+            "required_count": 10,
+            "covered_count": covered,
+            "coverage_ratio": (covered as f64) / 10.0,
+        }
+    })
+}
+
+fn write_trace_coverage_summary(
+    root: &Path,
+    payload: &serde_json::Value,
+) -> Result<String, String> {
+    let rows = payload
+        .get("coverage")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let mut text = vec![
+        "# Trace Coverage Summary".to_string(),
+        "".to_string(),
+        "| Span | Covered |".to_string(),
+        "|---|---|".to_string(),
+    ];
+    for row in rows {
+        let span = row
+            .get("span_name")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("unknown");
+        let covered = row
+            .get("covered")
+            .and_then(serde_json::Value::as_bool)
+            .unwrap_or(false);
+        text.push(format!(
+            "| {} | {} |",
+            span,
+            if covered { "yes" } else { "no" }
+        ));
+    }
+    let out_path = root.join(TRACE_COVERAGE_SUMMARY_ARTIFACT);
+    if let Some(parent) = out_path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
+    fs::write(&out_path, format!("{}\n", text.join("\n")))
+        .map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
+    Ok(out_path
+        .strip_prefix(root)
+        .unwrap_or(&out_path)
+        .display()
+        .to_string())
+}
+
+fn run_trace_integrity_checks(root: &Path) -> Result<Vec<String>, String> {
+    let mut violations = Vec::new();
+    let span_registry = read_json(&root.join(TRACE_SPAN_REGISTRY))?;
+    let expected = span_registry
+        .get("required_spans")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(str::to_string))
+        .collect::<BTreeSet<_>>();
+    let actual = tracing_registry::span_registry()
+        .into_iter()
+        .map(|row| row.span_name.to_string())
+        .collect::<BTreeSet<_>>();
+    for span in expected.difference(&actual) {
+        violations.push(format!("missing required trace span `{span}`"));
+    }
+    for span in actual.difference(&expected) {
+        violations.push(format!("untracked trace span `{span}`"));
+    }
+
+    let correlation = read_json(&root.join(TRACE_CORRELATION_POLICY))?;
+    let correlation_has_request = correlation
+        .get("request_id")
+        .and_then(serde_json::Value::as_str)
+        .map(|text| text.contains("required"))
+        .unwrap_or(false);
+    if !correlation_has_request {
+        violations.push("trace correlation policy must require request identifiers".to_string());
+    }
+
+    let stability = read_json(&root.join(TRACE_STABILITY_CONTRACT))?;
+    let stable_ids = stability
+        .get("stable_trace_ids")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(str::to_string))
+        .collect::<BTreeSet<_>>();
+    let current_ids = tracing_registry::span_registry()
+        .into_iter()
+        .map(|row| row.id.to_string())
+        .collect::<BTreeSet<_>>();
+    for missing in stable_ids.difference(&current_ids) {
+        violations.push(format!(
+            "stable trace id missing from contract registry `{missing}`"
+        ));
+    }
+
+    Ok(violations)
+}
+
+fn coverage_traces(common: ObserveTracesCommonArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let payload = trace_coverage_payload();
+    write_json(&root.join(TRACE_COVERAGE_REPORT_ARTIFACT), &payload)?;
+    let summary_path = write_trace_coverage_summary(&root, &payload)?;
+    let result = serde_json::json!({
+        "schema_version": 1,
+        "kind": "observe_traces_coverage",
+        "status": "ok",
+        "report": payload,
+        "artifacts": {
+            "coverage_report": TRACE_COVERAGE_REPORT_ARTIFACT,
+            "coverage_summary": summary_path,
+        }
+    });
+    let rendered = emit_payload(common.format, common.out, &result)?;
+    Ok((rendered, 0))
+}
+
+fn topology_traces(common: ObserveTracesCommonArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let topology = trace_topology_mermaid();
+    let out_path = root.join(TRACE_TOPOLOGY_ARTIFACT);
+    if let Some(parent) = out_path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
+    fs::write(&out_path, format!("{topology}\n"))
+        .map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "observe_traces_topology",
+        "status": "ok",
+        "artifact": TRACE_TOPOLOGY_ARTIFACT,
+    });
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn verify_traces(common: ObserveTracesCommonArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let violations = run_trace_integrity_checks(&root)?;
+    let coverage = trace_coverage_payload();
+    write_json(&root.join(TRACE_COVERAGE_REPORT_ARTIFACT), &coverage)?;
+    write_trace_coverage_summary(&root, &coverage)?;
+    let topology = trace_topology_mermaid();
+    let topology_path = root.join(TRACE_TOPOLOGY_ARTIFACT);
+    if let Some(parent) = topology_path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
+    fs::write(&topology_path, format!("{topology}\n"))
+        .map_err(|err| format!("failed to write {}: {err}", topology_path.display()))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "observe_traces_verify",
+        "status": if violations.is_empty() { "ok" } else { "failed" },
+        "violations": violations,
+        "artifacts": {
+            "coverage_report": TRACE_COVERAGE_REPORT_ARTIFACT,
+            "coverage_summary": TRACE_COVERAGE_SUMMARY_ARTIFACT,
+            "topology_diagram": TRACE_TOPOLOGY_ARTIFACT,
+        }
+    });
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    let code = if payload["status"] == "ok" { 0 } else { 2 };
+    Ok((rendered, code))
+}
+
 pub(crate) fn run_observe_command(
     _quiet: bool,
     command: ObserveCommand,
@@ -192,6 +426,9 @@ pub(crate) fn run_observe_command(
         },
         ObserveCommand::Traces { command } => match command {
             ObserveTracesCommand::Explain(args) => explain_traces(args),
+            ObserveTracesCommand::Verify(args) => verify_traces(args),
+            ObserveTracesCommand::Coverage(args) => coverage_traces(args),
+            ObserveTracesCommand::Topology(args) => topology_traces(args),
         },
     }
 }

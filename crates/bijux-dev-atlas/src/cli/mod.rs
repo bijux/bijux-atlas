@@ -393,6 +393,9 @@ pub struct ObserveMetricsExplainArgs {
 #[derive(Subcommand, Debug)]
 pub enum ObserveTracesCommand {
     Explain(ObserveTracesCommonArgs),
+    Verify(ObserveTracesCommonArgs),
+    Coverage(ObserveTracesCommonArgs),
+    Topology(ObserveTracesCommonArgs),
 }
 
 #[derive(Args, Debug, Clone)]

@@ -766,7 +766,10 @@ fn force_json_observe(command: &mut ObserveCommand) {
             }
         },
         ObserveCommand::Traces { command } => match command {
-            crate::cli::ObserveTracesCommand::Explain(args) => args.format = FormatArg::Json,
+            crate::cli::ObserveTracesCommand::Explain(args)
+            | crate::cli::ObserveTracesCommand::Verify(args)
+            | crate::cli::ObserveTracesCommand::Coverage(args)
+            | crate::cli::ObserveTracesCommand::Topology(args) => args.format = FormatArg::Json,
         },
     }
 }
@@ -1533,7 +1536,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
             },
             ObserveCommand::Traces { command } => match command {
-                crate::cli::ObserveTracesCommand::Explain(args) => {
+                crate::cli::ObserveTracesCommand::Explain(args)
+                | crate::cli::ObserveTracesCommand::Verify(args)
+                | crate::cli::ObserveTracesCommand::Coverage(args)
+                | crate::cli::ObserveTracesCommand::Topology(args) => {
                     args.repo_root = Some(root.clone())
                 }
             },
