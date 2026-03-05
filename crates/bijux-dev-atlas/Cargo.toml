@@ -93,3 +93,11 @@ harness = false
 [[bench]]
 name = "load"
 harness = false
+
+[[bench]]
+name = "authentication"
+harness = false
+
+[[bench]]
+name = "authorization"
+harness = false
