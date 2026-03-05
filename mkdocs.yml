@@ -179,6 +179,8 @@ nav:
           - Docs Dashboard: _internal/governance/docs-dashboard.md
   - Reference:
       - Reference Index: reference/index.md
+      - CLI Reference: cli/index.md
+      - Performance Reference: perf/index.md
       - API:
           - API Overview: api/index.md
           - Errors: api/errors.md

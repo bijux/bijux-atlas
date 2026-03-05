@@ -19,7 +19,13 @@
     ".gitignore": {
       "kind": "file"
     },
+    "ARCHITECTURE.md": {
+      "kind": "file"
+    },
     "CHANGELOG.md": {
+      "kind": "file"
+    },
+    "CLIENTS.md": {
       "kind": "file"
     },
     "CONTRACT.md": {
@@ -73,6 +79,9 @@
     "ops": {
       "kind": "dir"
     },
+    "packages": {
+      "kind": "dir"
+    },
     "release": {
       "kind": "dir"
     },
@@ -80,6 +89,9 @@
       "kind": "file"
     },
     "security": {
+      "kind": "dir"
+    },
+    "tutorials": {
       "kind": "dir"
     }
   },
