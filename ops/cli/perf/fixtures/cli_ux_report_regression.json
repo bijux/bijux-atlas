@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "benchmark_id": "cli-ux-primary",
+  "latency_ms": {
+    "p95": 20.0,
+    "p99": 30.0
+  }
+}

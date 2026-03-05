@@ -1,0 +1,6 @@
+perf cli-ux diff
+| metric | baseline | current | regressed |
+|---|---:|---:|---|
+| p95 ms | 10.000 | 20.000 | true |
+| p99 ms | 11.000 | 30.000 | true |
+summary: status=failed report=artifacts/perf/cli-ux/latest-diff.json

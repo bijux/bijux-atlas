@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cli-ux-benchmark-diff",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "domain",
+    "action",
+    "baseline_report",
+    "current_report",
+    "threshold_flags",
+    "latency_ms",
+    "status"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "domain": { "const": "perf" },
+    "action": { "const": "cli-ux-diff" },
+    "baseline_report": { "type": "string", "minLength": 1 },
+    "current_report": { "type": "string", "minLength": 1 },
+    "threshold_flags": {
+      "type": "object",
+      "required": ["p95_regressed", "p99_regressed"],
+      "properties": {
+        "p95_regressed": { "type": "boolean" },
+        "p99_regressed": { "type": "boolean" }
+      }
+    },
+    "latency_ms": { "type": "object" },
+    "status": { "type": "string", "enum": ["ok", "failed"] }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cli-ux-benchmark-result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "benchmark_id",
+    "benchmark_kind",
+    "mode",
+    "command",
+    "runs",
+    "warmup_runs",
+    "measured_runs",
+    "thresholds_ms",
+    "latency_ms",
+    "failed_samples",
+    "samples",
+    "system_metadata",
+    "env_snapshot",
+    "status"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "benchmark_id": { "type": "string", "minLength": 1 },
+    "benchmark_kind": { "type": "string", "minLength": 1 },
+    "mode": { "type": "string", "enum": ["coldstart", "warmstart", "completion"] },
+    "command": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "runs": { "type": "integer", "minimum": 1 },
+    "warmup_runs": { "type": "integer", "minimum": 0 },
+    "measured_runs": { "type": "integer", "minimum": 1 },
+    "thresholds_ms": {
+      "type": "object",
+      "required": ["max_p95_ms", "max_p99_ms"],
+      "properties": {
+        "max_p95_ms": { "type": "number", "minimum": 0 },
+        "max_p99_ms": { "type": "number", "minimum": 0 }
+      }
+    },
+    "latency_ms": {
+      "type": "object",
+      "required": ["p50", "p95", "p99"],
+      "properties": {
+        "p50": { "type": "number", "minimum": 0 },
+        "p95": { "type": "number", "minimum": 0 },
+        "p99": { "type": "number", "minimum": 0 }
+      }
+    },
+    "failed_samples": { "type": "integer", "minimum": 0 },
+    "samples": { "type": "array" },
+    "system_metadata": { "type": "object" },
+    "env_snapshot": { "type": "object" },
+    "status": { "type": "string", "enum": ["ok", "failed"] }
+  }
+}

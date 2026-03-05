@@ -80,6 +80,40 @@ fn validate_benchmark_result_shape(report: &serde_json::Value) -> bool {
             .is_some()
 }
 
+fn validate_cli_ux_benchmark_result_shape(report: &serde_json::Value) -> bool {
+    report
+        .get("schema_version")
+        .and_then(serde_json::Value::as_i64)
+        == Some(1)
+        && report
+            .get("benchmark_id")
+            .and_then(serde_json::Value::as_str)
+            .is_some()
+        && report
+            .get("latency_ms")
+            .and_then(|v| v.get("p50"))
+            .and_then(serde_json::Value::as_f64)
+            .is_some()
+        && report
+            .get("latency_ms")
+            .and_then(|v| v.get("p95"))
+            .and_then(serde_json::Value::as_f64)
+            .is_some()
+        && report
+            .get("latency_ms")
+            .and_then(|v| v.get("p99"))
+            .and_then(serde_json::Value::as_f64)
+            .is_some()
+        && report
+            .get("system_metadata")
+            .and_then(serde_json::Value::as_object)
+            .is_some()
+        && report
+            .get("env_snapshot")
+            .and_then(serde_json::Value::as_object)
+            .is_some()
+}
+
 fn load_perf_scenario(name: &str) -> Result<serde_json::Value, String> {
     match name {
         "gene-lookup" => Ok(serde_json::json!({
@@ -958,6 +992,16 @@ fn run_perf_cli_ux_bench(args: PerfCliUxBenchArgs) -> Result<(String, i32), Stri
     let p99 = percentile_ms(&sorted, 0.99);
     let failed_samples = samples.iter().filter(|(_, _, ok, _, _)| !*ok).count();
     let regression = p95 > spec.thresholds.max_p95_ms || p99 > spec.thresholds.max_p99_ms;
+    let system_metadata = serde_json::json!({
+        "os": std::env::consts::OS,
+        "arch": std::env::consts::ARCH,
+        "family": std::env::consts::FAMILY
+    });
+    let env_snapshot = serde_json::json!({
+        "RUST_LOG": std::env::var("RUST_LOG").ok(),
+        "CI": std::env::var("CI").ok(),
+        "TERM": std::env::var("TERM").ok()
+    });
     let success = failed_samples == 0 && !regression;
 
     let report = serde_json::json!({
@@ -966,6 +1010,7 @@ fn run_perf_cli_ux_bench(args: PerfCliUxBenchArgs) -> Result<(String, i32), Stri
         "benchmark_kind": spec.benchmark_kind,
         "mode": format!("{:?}", mode).to_lowercase(),
         "command": command,
+        "command_line_used": spec.command.join(" "),
         "runs": runs,
         "warmup_runs": warmup,
         "measured_runs": measured.len(),
@@ -986,8 +1031,12 @@ fn run_perf_cli_ux_bench(args: PerfCliUxBenchArgs) -> Result<(String, i32), Stri
             "stdout_log": stdout_log.display().to_string(),
             "stderr_log": stderr_log.display().to_string()
         })).collect::<Vec<_>>(),
+        "system_metadata": system_metadata,
+        "env_snapshot": env_snapshot,
         "status": if success { "ok" } else { "failed" }
     });
+    ensure_json(&root.join("configs/contracts/perf/cli-ux-benchmark-result.schema.json"))?;
+    let schema_ok = validate_cli_ux_benchmark_result_shape(&report);
     let artifacts_root = root.join("artifacts/perf/cli-ux");
     fs::create_dir_all(&artifacts_root)
         .map_err(|err| format!("failed to create {}: {err}", artifacts_root.display()))?;
@@ -1003,16 +1052,17 @@ fn run_perf_cli_ux_bench(args: PerfCliUxBenchArgs) -> Result<(String, i32), Stri
 
     if matches!(args.format, crate::cli::FormatArg::Text) {
         progress_lines.push(format!(
-            "summary: total={} warmup={} measured={} failed_samples={} p95_ms={:.3} p99_ms={:.3}",
+            "summary: total={} warmup={} measured={} failed_samples={} p95_ms={:.3} p99_ms={:.3} schema_ok={}",
             runs,
             warmup,
             measured.len(),
             failed_samples,
             p95,
-            p99
+            p99,
+            schema_ok
         ));
         progress_lines.push(format!("artifacts: {}", report_path.display()));
-        return Ok((progress_lines.join("\n"), if success { 0 } else { 1 }));
+        return Ok((progress_lines.join("\n"), if success && schema_ok { 0 } else { 1 }));
     }
 
     let payload = serde_json::json!({
@@ -1022,12 +1072,13 @@ fn run_perf_cli_ux_bench(args: PerfCliUxBenchArgs) -> Result<(String, i32), Stri
         "status": if success { "ok" } else { "failed" },
         "report_path": report_path.display().to_string(),
         "summary_path": summary_path.display().to_string(),
+        "schema_ok": schema_ok,
         "latency_ms": report["latency_ms"].clone(),
         "thresholds_ms": report["thresholds_ms"].clone(),
         "failed_samples": failed_samples
     });
     let rendered = emit_payload(args.format, args.out, &payload)?;
-    Ok((rendered, if success { 0 } else { 1 }))
+    Ok((rendered, if success && schema_ok { 0 } else { 1 }))
 }
 
 fn run_perf_cli_ux_diff(args: PerfCliUxDiffArgs) -> Result<(String, i32), String> {
@@ -1066,6 +1117,7 @@ fn run_perf_cli_ux_diff(args: PerfCliUxDiffArgs) -> Result<(String, i32), String
         },
         "status": if regressed { "failed" } else { "ok" }
     });
+    ensure_json(&root.join("configs/contracts/perf/cli-ux-benchmark-diff.schema.json"))?;
     let artifacts_root = root.join("artifacts/perf/cli-ux");
     fs::create_dir_all(&artifacts_root)
         .map_err(|err| format!("failed to create {}: {err}", artifacts_root.display()))?;
