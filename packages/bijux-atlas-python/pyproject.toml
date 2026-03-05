@@ -21,7 +21,16 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Typing :: Typed"
 ]
-dependencies = []
+dependencies = [
+  "requests>=2.32.0,<3.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.2.0,<9.0.0",
+  "ruff>=0.6.0,<1.0.0",
+  "mypy>=1.11.0,<2.0.0"
+]
 
 [project.urls]
 Homepage = "https://github.com/bijux/bijux-atlas"
@@ -30,14 +39,38 @@ Repository = "https://github.com/bijux/bijux-atlas"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/bijux_atlas"]
-include = ["src/bijux_atlas/compatibility.json"]
+include = [
+  "src/bijux_atlas/compatibility.json",
+  "src/bijux_atlas/py.typed"
+]
 
 [tool.hatch.build.targets.sdist]
 include = [
   "src/bijux_atlas",
+  "src/bijux_atlas/py.typed",
   "compatibility.json",
   "README.md",
   "LICENSE",
   "CHANGELOG.md",
   "VERSIONING.md"
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+markers = [
+  "unit: fast unit tests",
+  "integration: runtime integration tests requiring explicit environment",
+  "perf: performance-sensitive optional tests"
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.mypy]
+python_version = "3.10"
+warn_unused_configs = true
+check_untyped_defs = true
+disallow_incomplete_defs = true
+no_implicit_optional = true
