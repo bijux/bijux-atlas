@@ -30,7 +30,7 @@ fn slow_reproduce_run_emits_source_snapshot_hash() {
         .output()
         .expect("reproduce run");
     assert_eq!(output.status.code(), Some(0));
-    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    let payload = parse_json_output(&output);
     assert_eq!(
         payload.get("schema_version").and_then(|v| v.as_u64()),
         Some(1)
@@ -49,7 +49,7 @@ fn slow_reproduce_verify_requires_all_core_scenarios() {
         .args(["reproduce", "verify", "--format", "json"])
         .output()
         .expect("reproduce verify");
-    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    let payload = parse_json_output(&output);
     assert_eq!(
         payload.get("kind").and_then(|v| v.as_str()),
         Some("reproduce_verify")
@@ -72,9 +72,8 @@ fn slow_reproduce_reports_are_deterministic_and_include_artifact_hashes() {
         .expect("second");
     assert_eq!(first.status.code(), Some(0));
     assert_eq!(second.status.code(), Some(0));
-    let first_json: serde_json::Value = serde_json::from_slice(&first.stdout).expect("first json");
-    let second_json: serde_json::Value =
-        serde_json::from_slice(&second.stdout).expect("second json");
+    let first_json = parse_json_output(&first);
+    let second_json = parse_json_output(&second);
     assert_eq!(
         first_json
             .get("environment")
@@ -97,7 +96,7 @@ fn slow_reproduce_status_reports_summary_shape() {
         .output()
         .expect("reproduce status");
     assert!(output.status.code().is_some());
-    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    let payload = parse_json_output(&output);
     assert_eq!(
         payload.get("kind").and_then(|v| v.as_str()),
         Some("reproduce_status")
