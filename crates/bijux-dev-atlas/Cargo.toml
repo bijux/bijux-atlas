@@ -81,3 +81,7 @@ harness = false
 [[bench]]
 name = "metrics"
 harness = false
+
+[[bench]]
+name = "tracing"
+harness = false
