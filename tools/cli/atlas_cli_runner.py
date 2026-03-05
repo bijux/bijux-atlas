@@ -6,6 +6,7 @@ import os
 import pathlib
 import subprocess
 import sys
+import time
 try:
     import tomllib  # type: ignore[attr-defined]
 except ModuleNotFoundError:  # pragma: no cover - python 3.10 fallback
@@ -88,11 +89,17 @@ def build_command(binary: str, config: dict[str, object], passthrough: list[str]
     return cmd
 
 
+from tools.cli.observability import ExecutionTelemetry, classify_error, emit_audit, emit_telemetry, emit_trace
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Config-aware wrapper for bijux-dev-atlas")
     parser.add_argument("--binary", default="target/debug/bijux-dev-atlas")
     parser.add_argument("--config", type=pathlib.Path, default=default_config_path())
     parser.add_argument("--print-effective-config", action="store_true")
+    parser.add_argument("--telemetry-out", type=pathlib.Path, default=pathlib.Path("artifacts/cli/command-telemetry.json"))
+    parser.add_argument("--trace-out", type=pathlib.Path, default=pathlib.Path("artifacts/cli/command-trace.json"))
+    parser.add_argument("--audit-out", type=pathlib.Path, default=pathlib.Path("artifacts/cli/command-audit.json"))
     parser.add_argument("args", nargs=argparse.REMAINDER)
     ns = parser.parse_args()
 
@@ -105,7 +112,20 @@ def main() -> int:
         return 0
 
     cmd = build_command(ns.binary, config, ns.args)
-    proc = subprocess.run(cmd, check=False)
+    start = time.time()
+    proc = subprocess.run(cmd, check=False, capture_output=True, text=True)
+    end = time.time()
+
+    telemetry = ExecutionTelemetry(command=cmd, started_at=start, finished_at=end, exit_code=proc.returncode)
+    emit_telemetry(ns.telemetry_out, telemetry)
+    emit_trace(ns.trace_out, "cli.command.completed", {"exit_code": proc.returncode, "duration_ms": telemetry.duration_ms})
+    err_class = classify_error(proc.returncode, proc.stderr or "")
+    emit_audit(ns.audit_out, "command_run", "success" if proc.returncode == 0 else "failure", {"classification": err_class})
+
+    if proc.stdout:
+        print(proc.stdout, end="")
+    if proc.stderr:
+        print(proc.stderr, end="", file=sys.stderr)
     return proc.returncode
 
 
