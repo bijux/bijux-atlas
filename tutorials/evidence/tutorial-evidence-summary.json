@@ -1,0 +1,14 @@
+{
+  "tutorial_suite": "dataset-onboarding",
+  "validation": "passed",
+  "integrity": "passed",
+  "reproducibility": "passed",
+  "tests": {
+    "scenario_integration": "passed",
+    "dataset_contract": "passed"
+  },
+  "dashboards": [
+    "tutorial-runtime-health.json",
+    "tutorial-query-analysis.json"
+  ]
+}

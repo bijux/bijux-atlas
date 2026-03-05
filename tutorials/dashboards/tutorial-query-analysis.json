@@ -1,0 +1,9 @@
+{
+  "title": "Tutorial Query Analysis",
+  "description": "Example dashboard for query latency and throughput",
+  "panels": [
+    {"name": "query_latency_histogram", "type": "heatmap"},
+    {"name": "query_concurrency", "type": "timeseries"},
+    {"name": "cache_hit_ratio", "type": "gauge"}
+  ]
+}

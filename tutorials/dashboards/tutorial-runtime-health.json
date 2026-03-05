@@ -1,0 +1,9 @@
+{
+  "title": "Tutorial Runtime Health",
+  "description": "Example dashboard for tutorial runtime checks",
+  "panels": [
+    {"name": "runtime_uptime_seconds", "type": "timeseries"},
+    {"name": "query_total", "type": "timeseries"},
+    {"name": "query_error_rate", "type": "stat"}
+  ]
+}

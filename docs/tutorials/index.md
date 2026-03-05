@@ -57,3 +57,4 @@ related:
 - [Tutorial documentation build integration](docs-build-integration.md)
 - [Tutorial dashboard examples](tutorial-dashboard-examples.md)
 - [Tutorial delivery report](delivery-report.md)
+- [Tutorial evidence artifacts](evidence-artifacts.md)
