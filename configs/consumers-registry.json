@@ -23,7 +23,15 @@
     "configs/ci/*.json": [
       "ci"
     ],
+    "configs/cli/*.toml": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
     "configs/cli/hidden-command-allowlist.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/clients/*.json": [
       "bijux-dev-atlas",
       "ci"
     ],
@@ -67,6 +75,23 @@
       "docs-build",
       "ci"
     ],
+    "configs/examples/**/*.json": [
+      "bijux-dev-atlas",
+      "docs-build",
+      "runtime"
+    ],
+    "configs/examples/**/*.jsonl": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/examples/**/*.md": [
+      "bijux-dev-atlas",
+      "docs-build"
+    ],
+    "configs/examples/**/*.toml": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
     "configs/gates/*.json": [
       "bijux-dev-atlas",
       "ci"
@@ -75,9 +100,17 @@
       "bijux-dev-atlas",
       "runtime"
     ],
+    "configs/governance/*.txt": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
     "configs/governance/*.yaml": [
       "bijux-dev-atlas",
       "runtime"
+    ],
+    "configs/governance/enforcement/*.json": [
+      "bijux-dev-atlas",
+      "ci"
     ],
     "configs/governance/suites/*.json": [
       "bijux-dev-atlas",
@@ -171,6 +204,10 @@
       "ci"
     ],
     "configs/product/*": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/release/*.json": [
       "bijux-dev-atlas",
       "ci"
     ],
@@ -283,6 +320,10 @@
       "bijux-dev-atlas",
       "ci"
     ],
+    "clients": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
     "datasets": [
       "bijux-dev-atlas",
       "runtime"
@@ -290,6 +331,11 @@
     "docs": [
       "docs-build",
       "ci"
+    ],
+    "examples": [
+      "bijux-dev-atlas",
+      "docs-build",
+      "runtime"
     ],
     "governance": [
       "bijux-dev-atlas",

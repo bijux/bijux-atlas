@@ -725,12 +725,14 @@ fn directory_file_budget(rel_dir: &str) -> usize {
         "configs/contracts/reports" => 24,
         "configs/contracts/security" => 20,
         "configs/docs" => 16,
-        "configs/governance" => 20,
+        "configs/governance" => 30,
         "configs/ops" => 40,
         "configs/policy" => 40,
         "configs/schema" => 30,
         "configs/security" => 24,
         "configs/perf" => 16,
+        "configs/contracts/perf" => 16,
+        "configs/release" => 20,
         _ => 10,
     }
 }

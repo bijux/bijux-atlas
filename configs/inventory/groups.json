@@ -4,6 +4,7 @@
     "audit",
     "ci",
     "cli",
+    "clients",
     "contracts",
     "coverage",
     "datasets",

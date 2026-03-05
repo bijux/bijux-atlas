@@ -56,7 +56,8 @@
       "name": "cli",
       "owner": "platform",
       "public_files": [
-        "configs/cli/*.json"
+        "configs/cli/*.json",
+        "configs/cli/*.toml"
       ],
       "schema_owner": "platform",
       "schemas": [
@@ -66,6 +67,25 @@
       "tool_entrypoints": [
         "bijux dev atlas help",
         "bijux dev atlas doctor"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "clients",
+      "owner": "platform",
+      "public_files": [
+        "configs/clients/*.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/clients/*.schema.json",
+        "configs/contracts/inventory-configs.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas docs client-index",
+        "bijux dev atlas release verify"
       ]
     },
     {
@@ -113,11 +133,35 @@
     {
       "generated_files": [],
       "internal_files": [],
+      "name": "examples",
+      "owner": "platform",
+      "public_files": [
+        "configs/examples/**/*.json",
+        "configs/examples/**/*.jsonl",
+        "configs/examples/**/*.toml",
+        "configs/examples/**/*.md"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json",
+        "configs/examples/datasets/schemas/*.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas tutorials verify",
+        "bijux dev atlas docs build"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
       "name": "governance",
       "owner": "atlas-governance",
       "public_files": [
         "configs/governance/*.json",
+        "configs/governance/*.txt",
         "configs/governance/*.yaml",
+        "configs/governance/enforcement/*.json",
         "configs/governance/suites/*.json"
       ],
       "schema_owner": "atlas-governance",
@@ -231,6 +275,25 @@
     {
       "generated_files": [],
       "internal_files": [],
+      "name": "observability",
+      "owner": "bijux-atlas-operations",
+      "public_files": [
+        "configs/observability/*.json",
+        "configs/observability/*.yaml"
+      ],
+      "schema_owner": "bijux-atlas-operations",
+      "schemas": [
+        "configs/contracts/observability/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas security validate",
+        "bijux dev atlas release verify"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
       "name": "openapi",
       "owner": "api-contracts",
       "public_files": [
@@ -267,25 +330,6 @@
       "tool_entrypoints": [
         "bijux dev atlas contracts ops",
         "bijux dev atlas ops list"
-      ]
-    },
-    {
-      "generated_files": [],
-      "internal_files": [],
-      "name": "observability",
-      "owner": "bijux-atlas-operations",
-      "public_files": [
-        "configs/observability/*.json",
-        "configs/observability/*.yaml"
-      ],
-      "schema_owner": "bijux-atlas-operations",
-      "schemas": [
-        "configs/contracts/observability/*.json"
-      ],
-      "stability": "stable",
-      "tool_entrypoints": [
-        "bijux dev atlas security validate",
-        "bijux dev atlas release verify"
       ]
     },
     {
@@ -332,6 +376,24 @@
     {
       "generated_files": [],
       "internal_files": [],
+      "name": "reports",
+      "owner": "platform",
+      "public_files": [
+        "configs/reports/*.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schema/reports/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas artifacts report inventory",
+        "bijux dev atlas artifacts report validate"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
       "name": "rust",
       "owner": "rust-foundation",
       "public_files": [
@@ -346,24 +408,6 @@
       "tool_entrypoints": [
         "cargo fmt",
         "cargo clippy"
-      ]
-    },
-    {
-      "generated_files": [],
-      "internal_files": [],
-      "name": "reports",
-      "owner": "platform",
-      "public_files": [
-        "configs/reports/*.json"
-      ],
-      "schema_owner": "platform",
-      "schemas": [
-        "configs/schema/reports/*.json"
-      ],
-      "stability": "stable",
-      "tool_entrypoints": [
-        "bijux dev atlas artifacts report inventory",
-        "bijux dev atlas artifacts report validate"
       ]
     },
     {

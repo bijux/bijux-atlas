@@ -70,13 +70,15 @@
     },
     {
       "counts": {
-        "covered": 1,
+        "covered": 3,
         "generated": 0,
         "internal": 0,
-        "public": 1,
+        "public": 3,
         "schemas": 1
       },
       "files": [
+        "configs/cli/config.example.toml",
+        "configs/cli/config.schema.json",
         "configs/cli/hidden-command-allowlist.json"
       ],
       "name": "cli",
@@ -89,6 +91,31 @@
       "tool_entrypoints": [
         "bijux dev atlas help",
         "bijux dev atlas doctor"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 2,
+        "generated": 0,
+        "internal": 0,
+        "public": 2,
+        "schemas": 2
+      },
+      "files": [
+        "configs/clients/atlas-client-docs.json",
+        "configs/clients/atlas-client-docs.schema.json"
+      ],
+      "name": "clients",
+      "owner": "platform",
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/clients/*.schema.json",
+        "configs/contracts/inventory-configs.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas docs client-index",
+        "bijux dev atlas release verify"
       ]
     },
     {
@@ -117,10 +144,10 @@
     },
     {
       "counts": {
-        "covered": 13,
+        "covered": 14,
         "generated": 0,
         "internal": 0,
-        "public": 13,
+        "public": 14,
         "schemas": 3
       },
       "files": [
@@ -136,7 +163,8 @@
         "configs/docs/quality-policy.json",
         "configs/docs/requirements.lock.txt",
         "configs/docs/requirements.txt",
-        "configs/docs/site-output-contract.json"
+        "configs/docs/site-output-contract.json",
+        "configs/docs/tag-vocabulary.json"
       ],
       "name": "docs",
       "owner": "docs-governance",
@@ -154,23 +182,66 @@
     },
     {
       "counts": {
-        "covered": 24,
+        "covered": 13,
         "generated": 0,
         "internal": 0,
-        "public": 24,
+        "public": 13,
+        "schemas": 2
+      },
+      "files": [
+        "configs/examples/README.md",
+        "configs/examples/datasets/atlas-example-large-synthetic/genes.jsonl",
+        "configs/examples/datasets/atlas-example-large-synthetic/metadata.json",
+        "configs/examples/datasets/atlas-example-medium/genes.jsonl",
+        "configs/examples/datasets/atlas-example-medium/metadata.json",
+        "configs/examples/datasets/atlas-example-minimal/genes.jsonl",
+        "configs/examples/datasets/atlas-example-minimal/metadata.json",
+        "configs/examples/datasets/python-client-tutorial/genes.jsonl",
+        "configs/examples/datasets/schemas/dataset-metadata.schema.json",
+        "configs/examples/datasets/schemas/gene-record.schema.json",
+        "configs/examples/datasets/specification.md",
+        "configs/examples/runtime/server-minimal.toml",
+        "configs/examples/runtime/server-observability.toml"
+      ],
+      "name": "examples",
+      "owner": "platform",
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json",
+        "configs/examples/datasets/schemas/*.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas tutorials verify",
+        "bijux dev atlas docs build"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 34,
+        "generated": 0,
+        "internal": 0,
+        "public": 34,
         "schemas": 1
       },
       "files": [
+        "configs/governance/allowed-nonrust.json",
         "configs/governance/check-groups.json",
         "configs/governance/check-policy-authority-map.json",
         "configs/governance/checks-output.schema.json",
         "configs/governance/checks.registry.json",
+        "configs/governance/cli-command-migrations.json",
+        "configs/governance/cli-dev-command-surface.json",
+        "configs/governance/cli-user-command-surface.json",
         "configs/governance/compatibility.yaml",
         "configs/governance/contract-groups.json",
         "configs/governance/contract-modes.json",
         "configs/governance/contract-policy-authority-map.json",
         "configs/governance/contracts.registry.json",
         "configs/governance/deprecations.yaml",
+        "configs/governance/enforcement/repo-layout-contract.json",
+        "configs/governance/enforcement/rules.json",
+        "configs/governance/enforcement/rules.schema.json",
         "configs/governance/exceptions-archive.yaml",
         "configs/governance/exceptions.yaml",
         "configs/governance/governance-version-history.json",
@@ -178,13 +249,16 @@
         "configs/governance/governance.schema.json",
         "configs/governance/perf-budgets.json",
         "configs/governance/registry-completeness-policy.json",
+        "configs/governance/repo-bin-allowlist.txt",
+        "configs/governance/repo-executable-allowlist.txt",
         "configs/governance/suites/baseline.json",
         "configs/governance/suites/checks.suite.json",
         "configs/governance/suites/contracts.suite.json",
         "configs/governance/suites/default-jobs.json",
         "configs/governance/suites/suites.index.json",
         "configs/governance/suites/tests.suite.json",
-        "configs/governance/tags.json"
+        "configs/governance/tags.json",
+        "configs/governance/workflow-python-allowlist.txt"
       ],
       "name": "governance",
       "owner": "atlas-governance",
@@ -232,10 +306,10 @@
     },
     {
       "counts": {
-        "covered": 23,
+        "covered": 35,
         "generated": 0,
         "internal": 0,
-        "public": 23,
+        "public": 35,
         "schemas": 1
       },
       "files": [
@@ -251,7 +325,19 @@
         "configs/product/README.md",
         "configs/product/artifact-manifest.schema.json",
         "configs/product/external-tools-manifest.json",
+        "configs/release/crate-package-policy.json",
+        "configs/release/dependency-policy.json",
+        "configs/release/feature-policy.json",
+        "configs/release/image-provenance-policy.json",
+        "configs/release/image-runtime-hardening-policy.json",
+        "configs/release/image-sbom-policy.json",
+        "configs/release/image-smoke-scenarios.json",
+        "configs/release/image-vulnerability-policy.json",
+        "configs/release/missing-docs-policy.json",
+        "configs/release/ops-distribution-policy.json",
+        "configs/release/publish-policy.json",
         "configs/release/reproducibility-policy.json",
+        "configs/release/semver-api-policy.json",
         "configs/release/version-policy.json",
         "configs/repo/generated-path-allowlist.json",
         "configs/repo/root-file-allowlist.json",
@@ -341,6 +427,34 @@
       "stability": "stable",
       "tool_entrypoints": [
         "cargo nextest run"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 6,
+        "generated": 0,
+        "internal": 0,
+        "public": 6,
+        "schemas": 1
+      },
+      "files": [
+        "configs/observability/audit-log.schema.json",
+        "configs/observability/log-field-inventory.schema.json",
+        "configs/observability/log-safe-fields.schema.json",
+        "configs/observability/log-safe-fields.yaml",
+        "configs/observability/retention.schema.json",
+        "configs/observability/retention.yaml"
+      ],
+      "name": "observability",
+      "owner": "bijux-atlas-operations",
+      "schema_owner": "bijux-atlas-operations",
+      "schemas": [
+        "configs/contracts/observability/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas security validate",
+        "bijux dev atlas release verify"
       ]
     },
     {
@@ -443,38 +557,10 @@
     },
     {
       "counts": {
-        "covered": 6,
+        "covered": 12,
         "generated": 0,
         "internal": 0,
-        "public": 6,
-        "schemas": 1
-      },
-      "files": [
-        "configs/observability/audit-log.schema.json",
-        "configs/observability/log-field-inventory.schema.json",
-        "configs/observability/log-safe-fields.schema.json",
-        "configs/observability/log-safe-fields.yaml",
-        "configs/observability/retention.schema.json",
-        "configs/observability/retention.yaml"
-      ],
-      "name": "observability",
-      "owner": "bijux-atlas-operations",
-      "schema_owner": "bijux-atlas-operations",
-      "schemas": [
-        "configs/contracts/observability/*.json"
-      ],
-      "stability": "stable",
-      "tool_entrypoints": [
-        "bijux dev atlas security validate",
-        "bijux dev atlas release verify"
-      ]
-    },
-    {
-      "counts": {
-        "covered": 11,
-        "generated": 0,
-        "internal": 0,
-        "public": 11,
+        "public": 12,
         "schemas": 2
       },
       "files": [
@@ -482,6 +568,7 @@
         "configs/perf/benchmark-config.json",
         "configs/perf/benchmark-datasets.json",
         "configs/perf/budgets.yaml",
+        "configs/perf/cli-ux-benchmark-spec.json",
         "configs/perf/critical_queries.json",
         "configs/perf/critical_queries_explain_snapshot.json",
         "configs/perf/exceptions.json",
@@ -560,31 +647,6 @@
     },
     {
       "counts": {
-        "covered": 3,
-        "generated": 0,
-        "internal": 0,
-        "public": 3,
-        "schemas": 1
-      },
-      "files": [
-        "configs/rust/clippy.toml",
-        "configs/rust/rustfmt.toml",
-        "configs/rust/toolchain.json"
-      ],
-      "name": "rust",
-      "owner": "rust-foundation",
-      "schema_owner": "rust-foundation",
-      "schemas": [
-        "configs/contracts/inventory-configs.schema.json"
-      ],
-      "stability": "stable",
-      "tool_entrypoints": [
-        "cargo fmt",
-        "cargo clippy"
-      ]
-    },
-    {
-      "counts": {
         "covered": 5,
         "generated": 0,
         "internal": 0,
@@ -612,9 +674,34 @@
     },
     {
       "counts": {
-        "covered": 155,
+        "covered": 3,
+        "generated": 0,
+        "internal": 0,
+        "public": 3,
+        "schemas": 1
+      },
+      "files": [
+        "configs/rust/clippy.toml",
+        "configs/rust/rustfmt.toml",
+        "configs/rust/toolchain.json"
+      ],
+      "name": "rust",
+      "owner": "rust-foundation",
+      "schema_owner": "rust-foundation",
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "cargo fmt",
+        "cargo clippy"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 157,
         "generated": 1,
-        "internal": 134,
+        "internal": 136,
         "public": 20,
         "schemas": 13
       },
@@ -675,6 +762,8 @@
         "configs/contracts/perf/benchmark-datasets.schema.json",
         "configs/contracts/perf/benchmark-result.schema.json",
         "configs/contracts/perf/budgets.schema.json",
+        "configs/contracts/perf/cli-ux-benchmark-diff.schema.json",
+        "configs/contracts/perf/cli-ux-benchmark-result.schema.json",
         "configs/contracts/perf/cold-start-report.schema.json",
         "configs/contracts/perf/exceptions.schema.json",
         "configs/contracts/perf/load-report.schema.json",

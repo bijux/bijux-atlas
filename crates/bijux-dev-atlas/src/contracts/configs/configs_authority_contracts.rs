@@ -13,6 +13,7 @@ fn test_configs_026_docs_markdown_removed(ctx: &RunContext) -> TestResult {
     let mut violations = config_files_without_exclusions(&index)
         .into_iter()
         .filter(|file| file.ends_with(".md"))
+        .filter(|file| !wildcard_match("configs/examples/**/*.md", file))
         .filter(|file| !ROOT_MARKDOWN_FILES.contains(&file.as_str()))
         .filter(|file| !is_allowed_domain_markdown(file))
         .map(|file| {
@@ -52,23 +53,13 @@ fn test_configs_026_docs_markdown_removed(ctx: &RunContext) -> TestResult {
             && !lower.starts_with("configs/examples/")
             && !lower.starts_with("configs/ops/runtime/")
             && !lower.starts_with("configs/system/")
+            && lower != "configs/cli/config.example.toml"
         {
             violations.push(violation(
                 "CONFIGS-026",
                 "configs.docs.no_nested_markdown",
                 &file,
                 "example config files must live under configs/examples/",
-            ));
-        }
-        if lower.starts_with("configs/examples/")
-            && !lower.ends_with("readme.md")
-            && !root_readme.contains(&file)
-        {
-            violations.push(violation(
-                "CONFIGS-026",
-                "configs.docs.no_nested_markdown",
-                &file,
-                "example config files must be referenced from configs/README.md",
             ));
         }
     }

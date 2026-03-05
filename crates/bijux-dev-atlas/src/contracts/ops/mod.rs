@@ -15,15 +15,24 @@ use sha2::{Digest, Sha256};
 use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestResult, Violation};
 
 const DOMAIN_DIRS: &[&str] = &[
+    "api",
+    "audit",
+    "cli",
     "datasets",
+    "drift",
     "e2e",
     "env",
+    "evidence",
+    "governance",
+    "invariants",
     "inventory",
     "k8s",
     "load",
     "observe",
     "report",
+    "reproducibility",
     "schema",
+    "security",
     "stack",
 ];
 
