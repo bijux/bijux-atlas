@@ -14,14 +14,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      ISO_ROOT: artifacts/isolates/compatibility-matrix
-      TMPDIR: artifacts/isolates/compatibility-matrix/tmp
-      TMP: artifacts/isolates/compatibility-matrix/tmp
-      TEMP: artifacts/isolates/compatibility-matrix/tmp
+      ISO_ROOT: ${{ github.workspace }}/artifacts/isolates/compatibility-matrix
+      CARGO_TARGET_DIR: ${{ github.workspace }}/.cache/cargo/target/compatibility-matrix
+      CARGO_HOME: ${{ github.workspace }}/.cache/cargo/home/compatibility-matrix
+      TMPDIR: ${{ github.workspace }}/artifacts/isolates/compatibility-matrix/tmp
+      TMP: ${{ github.workspace }}/artifacts/isolates/compatibility-matrix/tmp
+      TEMP: ${{ github.workspace }}/artifacts/isolates/compatibility-matrix/tmp
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           ref: main
+      - name: Prepare cache and temp roots
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${ISO_ROOT}" "${CARGO_TARGET_DIR}" "${CARGO_HOME}" "${TMPDIR}"
       - run: cargo run --locked -q -p bijux-dev-atlas -- docs validate --format json
       - name: Create compatibility matrix PR
         uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
