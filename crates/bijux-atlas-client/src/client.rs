@@ -28,12 +28,9 @@ pub struct AtlasClient {
 
 impl AtlasClient {
     pub fn new(config: ClientConfig) -> Result<Self, ClientError> {
-        if !config.base_url.starts_with("http://") && !config.base_url.starts_with("https://") {
-            return Err(ClientError::new(
-                ErrorClass::InvalidConfig,
-                "base_url must start with http:// or https://",
-            ));
-        }
+        config
+            .validate()
+            .map_err(|err| ClientError::new(ErrorClass::InvalidConfig, err))?;
 
         let mut headers = HeaderMap::new();
         for (k, v) in &config.default_headers {

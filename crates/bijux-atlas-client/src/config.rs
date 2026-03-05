@@ -23,3 +23,15 @@ impl Default for ClientConfig {
         }
     }
 }
+
+impl ClientConfig {
+    pub fn validate(&self) -> Result<(), String> {
+        if !self.base_url.starts_with("http://") && !self.base_url.starts_with("https://") {
+            return Err("base_url must start with http:// or https://".to_string());
+        }
+        if self.timeout_millis == 0 {
+            return Err("timeout_millis must be > 0".to_string());
+        }
+        Ok(())
+    }
+}

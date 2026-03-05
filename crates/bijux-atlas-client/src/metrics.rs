@@ -18,6 +18,25 @@ impl InMemoryMetrics {
             Err(_) => Vec::new(),
         }
     }
+
+    pub fn export_json(&self) -> serde_json::Value {
+        let rows = self
+            .snapshot()
+            .into_iter()
+            .map(|(endpoint, elapsed_millis, ok)| {
+                serde_json::json!({
+                    "endpoint": endpoint,
+                    "elapsed_millis": elapsed_millis,
+                    "ok": ok,
+                })
+            })
+            .collect::<Vec<_>>();
+        serde_json::json!({
+            "schema_version": 1,
+            "kind": "rust_client_request_metrics",
+            "rows": rows
+        })
+    }
 }
 
 impl ClientMetrics for InMemoryMetrics {
