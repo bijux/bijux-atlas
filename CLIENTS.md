@@ -1,10 +1,10 @@
 # Clients
 
-Client SDK products live under `crates/`.
+Client SDK products live under `packages/`.
 
 ## Canonical client locations
 
-- `crates/bijux-atlas-client-python/`
+- `packages/bijux-atlas-python/`
 
 ## Python client layout
 
@@ -18,4 +18,4 @@ Client SDK products live under `crates/`.
 
 - Root `clients/` is forbidden.
 - Repository automation for clients must run through `bijux-dev-atlas clients ...`.
-- Python and notebook files are only allowed in approved crate zones defined in `configs/governance/allowed-nonrust.json`.
+- Python and notebook files are only allowed in approved package and crate zones defined in `configs/governance/allowed-nonrust.json`.

@@ -3,6 +3,10 @@
   "policy_owner": "bijux-atlas-governance",
   "python": {
     "allowed_zones": [
+      "packages/bijux-atlas-python/src/**/*.py",
+      "packages/bijux-atlas-python/tests/**/*.py",
+      "packages/bijux-atlas-python/examples/**/*.py",
+      "packages/bijux-atlas-python/notebooks/**/*.ipynb",
       "crates/**/python/**/*.py",
       "crates/**/tests/**/*.py",
       "crates/**/examples/**/*.py",
@@ -20,7 +24,8 @@
   },
   "directory_purpose": {
     "tutorials": "Tutorial artifacts and tutorial-facing static assets. Automation executes via bijux-dev-atlas commands.",
-    "clients": "Legacy path retired. Client SDK products live under crates/. Repo automation executes via bijux-dev-atlas commands.",
+    "clients": "Legacy path retired. Client SDK products live under packages/ and governed crate zones. Repo automation executes via bijux-dev-atlas commands.",
+    "packages/bijux-atlas-python": "Python client package product containing SDK source, docs, examples, tests, and notebooks.",
     "crates/bijux-atlas-client-python": "Python client product crate containing python package source, docs, examples, tests, and notebooks."
   },
   "migration_status": {
