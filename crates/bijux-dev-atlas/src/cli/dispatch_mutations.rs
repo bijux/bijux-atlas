@@ -765,6 +765,9 @@ fn force_json_observe(command: &mut ObserveCommand) {
                 args.common.format = FormatArg::Json
             }
         },
+        ObserveCommand::Traces { command } => match command {
+            crate::cli::ObserveTracesCommand::Explain(args) => args.format = FormatArg::Json,
+        },
     }
 }
 
@@ -1527,6 +1530,11 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
                 crate::cli::ObserveMetricsCommand::Explain(args) => {
                     args.common.repo_root = Some(root.clone())
+                }
+            },
+            ObserveCommand::Traces { command } => match command {
+                crate::cli::ObserveTracesCommand::Explain(args) => {
+                    args.repo_root = Some(root.clone())
                 }
             },
         },

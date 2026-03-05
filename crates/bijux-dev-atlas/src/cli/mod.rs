@@ -359,6 +359,10 @@ pub enum ObserveCommand {
         #[command(subcommand)]
         command: ObserveMetricsCommand,
     },
+    Traces {
+        #[command(subcommand)]
+        command: ObserveTracesCommand,
+    },
 }
 
 #[derive(Subcommand, Debug)]
@@ -384,6 +388,21 @@ pub struct ObserveMetricsExplainArgs {
     pub id_or_name: String,
     #[command(flatten)]
     pub common: ObserveMetricsCommonArgs,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ObserveTracesCommand {
+    Explain(ObserveTracesCommonArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ObserveTracesCommonArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
 }
 
 #[derive(Subcommand, Debug)]

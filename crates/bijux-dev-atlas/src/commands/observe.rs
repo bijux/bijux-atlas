@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{ObserveCommand, ObserveMetricsCommand, ObserveMetricsCommonArgs};
+use crate::cli::{
+    ObserveCommand, ObserveMetricsCommand, ObserveMetricsCommonArgs, ObserveTracesCommand,
+    ObserveTracesCommonArgs,
+};
 use crate::{emit_payload, resolve_repo_root};
-use bijux_dev_atlas::contracts::metrics_registry;
+use bijux_dev_atlas::contracts::{metrics_registry, tracing_registry};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
@@ -165,6 +168,18 @@ fn generate_docs(common: ObserveMetricsCommonArgs) -> Result<(String, i32), Stri
     Ok((rendered, 0))
 }
 
+fn explain_traces(common: ObserveTracesCommonArgs) -> Result<(String, i32), String> {
+    let _root = resolve_repo_root(common.repo_root)?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "observe_traces_explain",
+        "status": "ok",
+        "contract": tracing_registry::tracing_contract(),
+    });
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    Ok((rendered, 0))
+}
+
 pub(crate) fn run_observe_command(
     _quiet: bool,
     command: ObserveCommand,
@@ -174,6 +189,9 @@ pub(crate) fn run_observe_command(
             ObserveMetricsCommand::List(args) => list_metrics(args),
             ObserveMetricsCommand::Explain(args) => explain_metric(args.id_or_name, args.common),
             ObserveMetricsCommand::Docs(args) => generate_docs(args),
+        },
+        ObserveCommand::Traces { command } => match command {
+            ObserveTracesCommand::Explain(args) => explain_traces(args),
         },
     }
 }

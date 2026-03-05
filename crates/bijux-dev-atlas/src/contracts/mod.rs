@@ -22,3 +22,4 @@ pub mod reproducibility;
 pub mod root;
 pub mod runtime;
 pub mod system_invariants;
+pub mod tracing_registry;
