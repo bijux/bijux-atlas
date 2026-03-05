@@ -57,6 +57,7 @@ pub(crate) use governance_commands::run_registry_command;
 pub(crate) use runtime_commands::run_runtime_command;
 pub(crate) use security_commands::run_security_command;
 pub(crate) use system_commands::run_system_command;
+pub(crate) use tutorials_commands::run_tutorials_command;
 pub(crate) use suites_commands::{
     run_registry_check_by_id, run_registry_contract_by_id, run_suites_command,
 };

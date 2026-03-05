@@ -92,6 +92,7 @@ fn domain_names_are_registered_once() {
             "perf",
             "release",
             "security",
+            "tutorials",
         ]
     );
 }

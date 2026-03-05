@@ -52,6 +52,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Governance { command } => force_json_governance(command),
         Command::Security { command } => force_json_security(command),
         Command::Runtime { command } => force_json_runtime(command),
+        Command::Tutorials { command } => force_json_tutorials(command),
         Command::System { command } => force_json_system(command),
         Command::Audit { command } => force_json_audit(command),
         Command::Observe { command } => force_json_observe(command),
@@ -723,6 +724,14 @@ fn force_json_runtime(command: &mut crate::cli::RuntimeCommand) {
         crate::cli::RuntimeCommand::SelfCheck(args)
         | crate::cli::RuntimeCommand::PrintConfigSchema(args)
         | crate::cli::RuntimeCommand::ExplainConfigSchema(args) => args.format = FormatArg::Json,
+    }
+}
+
+fn force_json_tutorials(command: &mut crate::cli::TutorialsCommand) {
+    match command {
+        crate::cli::TutorialsCommand::List(args)
+        | crate::cli::TutorialsCommand::Explain(args)
+        | crate::cli::TutorialsCommand::Verify(args) => args.format = FormatArg::Json,
     }
 }
 
@@ -1575,6 +1584,13 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             crate::cli::RuntimeCommand::SelfCheck(args)
             | crate::cli::RuntimeCommand::PrintConfigSchema(args)
             | crate::cli::RuntimeCommand::ExplainConfigSchema(args) => {
+                args.repo_root = Some(root.clone())
+            }
+        },
+        Command::Tutorials { command } => match command {
+            crate::cli::TutorialsCommand::List(args)
+            | crate::cli::TutorialsCommand::Explain(args)
+            | crate::cli::TutorialsCommand::Verify(args) => {
                 args.repo_root = Some(root.clone())
             }
         },

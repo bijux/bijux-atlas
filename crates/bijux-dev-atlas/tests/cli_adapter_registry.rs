@@ -33,6 +33,7 @@ fn command_routes_cover_top_level_runtime_commands() {
         "configs",
         "governance",
         "security",
+        "tutorials",
         "release",
         "perf",
         "contract",

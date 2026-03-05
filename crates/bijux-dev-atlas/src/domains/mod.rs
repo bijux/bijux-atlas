@@ -11,6 +11,7 @@ pub mod ops;
 pub mod perf;
 pub mod release;
 pub mod security;
+pub mod tutorials;
 
 pub const ALL_DOMAIN_NAMES: &[&str] = &[
     "configs",
@@ -21,6 +22,7 @@ pub const ALL_DOMAIN_NAMES: &[&str] = &[
     "perf",
     "release",
     "security",
+    "tutorials",
 ];
 
 pub fn all_domains() -> &'static [&'static str] {

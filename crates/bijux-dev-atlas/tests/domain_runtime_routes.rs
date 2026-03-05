@@ -8,6 +8,7 @@ use bijux_dev_atlas::domains::{
     perf::runtime::router::command_registry as perf_runtime_registry,
     release::runtime::router::command_registry as release_runtime_registry,
     security::runtime::router::command_registry as security_runtime_registry,
+    tutorials::runtime::router::command_registry as tutorials_runtime_registry,
 };
 
 fn crate_root() -> PathBuf {
@@ -37,6 +38,9 @@ fn domain_runtime_registries_reference_existing_entrypoints() {
         assert_entrypoint_exists(route.entrypoint);
     }
     for route in perf_runtime_registry() {
+        assert_entrypoint_exists(route.entrypoint);
+    }
+    for route in tutorials_runtime_registry() {
         assert_entrypoint_exists(route.entrypoint);
     }
 }

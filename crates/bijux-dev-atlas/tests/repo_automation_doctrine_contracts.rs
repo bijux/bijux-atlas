@@ -104,7 +104,10 @@ fn workflows_must_not_execute_repo_bash_scripts() {
         let text = fs::read_to_string(&path).expect("read workflow file");
         for line in text.lines() {
             let trimmed = line.trim();
-            if trimmed.contains("bash ./") || trimmed.contains("bash tutorials/") || trimmed.contains("bash ops/") {
+            if trimmed.contains("bash ./")
+                || trimmed.contains("bash tutorials/")
+                || trimmed.contains("bash ops/")
+            {
                 violations.push(format!("{rel}: {trimmed}"));
             }
         }
@@ -351,5 +354,67 @@ fn bin_utilities_outside_dev_atlas_must_be_allowlisted() {
         "bin utilities outside crates/bijux-dev-atlas must be explicitly allowlisted in {}:\n{}",
         allowlist_path.display(),
         violations.join("\n")
+    );
+}
+
+#[test]
+fn allowed_nonrust_policy_must_define_python_and_shell_boundaries() {
+    let root = repo_root();
+    let path = root.join("configs/governance/allowed-nonrust.json");
+    let text = fs::read_to_string(&path)
+        .unwrap_or_else(|e| panic!("failed to read {}: {e}", path.display()));
+    let json: serde_json::Value = serde_json::from_str(&text)
+        .unwrap_or_else(|e| panic!("failed to parse {}: {e}", path.display()));
+
+    let python_allowed = json["python"]["allowed_zones"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
+    let shell_allowed = json["shell"]["allowed_zones"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
+    assert!(
+        python_allowed
+            .iter()
+            .any(|item| item.as_str() == Some("clients/atlas-client/**/*.py")),
+        "allowed-nonrust policy must explicitly allow python only in client SDK product zones"
+    );
+    assert!(
+        python_allowed
+            .iter()
+            .any(|item| item.as_str() == Some("clients/atlas-client/**/*.ipynb")),
+        "allowed-nonrust policy must explicitly allow client notebooks when needed"
+    );
+    assert!(
+        shell_allowed.is_empty(),
+        "allowed-nonrust policy must keep shell allowlist empty for repository automation"
+    );
+}
+
+#[test]
+fn tutorials_python_and_script_paths_must_be_marked_forbidden_after_migration() {
+    let root = repo_root();
+    let path = root.join("configs/governance/allowed-nonrust.json");
+    let text = fs::read_to_string(&path)
+        .unwrap_or_else(|e| panic!("failed to read {}: {e}", path.display()));
+    let json: serde_json::Value = serde_json::from_str(&text)
+        .unwrap_or_else(|e| panic!("failed to parse {}: {e}", path.display()));
+    let forbidden = json["python"]["forbidden_after_migration_complete"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
+
+    assert!(
+        forbidden
+            .iter()
+            .any(|item| item.as_str() == Some("tutorials/**/*.py")),
+        "tutorial python files must be marked forbidden after migration completion"
+    );
+    assert!(
+        forbidden
+            .iter()
+            .any(|item| item.as_str() == Some("tutorials/scripts/**")),
+        "tutorial script directories must be marked forbidden after migration completion"
     );
 }

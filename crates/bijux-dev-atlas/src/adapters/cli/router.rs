@@ -8,6 +8,7 @@ pub fn route_name(command_name: &str) -> Option<&'static str> {
         "configs" => Some("configs"),
         "governance" => Some("governance"),
         "security" => Some("security"),
+        "tutorials" => Some("tutorials"),
         "release" => Some("release"),
         "perf" => Some("perf"),
         "contract" | "suites" | "reports" | "list" | "describe" | "run" => Some("engine"),

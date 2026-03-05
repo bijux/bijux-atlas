@@ -168,6 +168,10 @@ pub enum Command {
         #[command(subcommand)]
         command: RuntimeCommand,
     },
+    Tutorials {
+        #[command(subcommand)]
+        command: TutorialsCommand,
+    },
     Datasets {
         #[command(subcommand)]
         command: DatasetsCommand,
@@ -1213,6 +1217,23 @@ pub enum RuntimeCommand {
     SelfCheck(RuntimeCommandArgs),
     PrintConfigSchema(RuntimeCommandArgs),
     ExplainConfigSchema(RuntimeCommandArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum TutorialsCommand {
+    List(TutorialsCommandArgs),
+    Explain(TutorialsCommandArgs),
+    Verify(TutorialsCommandArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct TutorialsCommandArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
 }
 
 #[derive(Args, Debug, Clone)]

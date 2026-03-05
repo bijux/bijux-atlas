@@ -31,6 +31,7 @@
     "suites",
     "system",
     "tests",
+    "tutorials",
     "validate"
   ],
   "runtime_required_subcommands": [

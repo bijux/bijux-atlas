@@ -13,6 +13,7 @@ pub fn command_routes() -> Vec<CommandRoute> {
     routes.extend(domains::configs::routes());
     routes.extend(domains::governance::routes());
     routes.extend(domains::security::routes());
+    routes.extend(domains::tutorials::routes());
     routes.extend(domains::release::routes());
     routes.extend(domains::perf::routes());
     routes.extend(domains::docker::routes());

@@ -17,3 +17,4 @@
 | `run` | `engine` | Run one runnable by id |
 | `security` | `security` | Run security validation commands |
 | `suites` | `engine` | Run grouped runnable suites |
+| `tutorials` | `tutorials` | Run tutorial inventory, workflow, and verification commands |

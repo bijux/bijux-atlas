@@ -43,6 +43,7 @@ pub fn load_domains(repo_root: &std::path::Path) -> Result<Vec<DomainCatalog>, S
         Box::new(crate::domains::ops::plugin()),
         Box::new(crate::domains::governance::plugin()),
         Box::new(crate::domains::security::plugin()),
+        Box::new(crate::domains::tutorials::plugin()),
     ];
     Ok(domains
         .into_iter()

@@ -25,6 +25,7 @@ fn route_registry_covers_primary_domain_routes() {
         "configs",
         "governance",
         "security",
+        "tutorials",
         "release",
         "perf",
         "docker",

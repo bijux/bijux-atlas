@@ -58,6 +58,8 @@ mod security_commands;
 mod suites_commands;
 #[path = "commands/system.rs"]
 mod system_commands;
+#[path = "commands/tutorials.rs"]
+mod tutorials_commands;
 
 include!("runtime_entry.rs");
 
