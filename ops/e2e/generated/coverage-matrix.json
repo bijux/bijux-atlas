@@ -76,6 +76,13 @@
       ]
     },
     {
+      "scenario_id": "install-chart-from-oci",
+      "covers": [
+        "observe",
+        "stack"
+      ]
+    },
+    {
       "scenario_id": "k8s-suite",
       "covers": [
         "k8s",
@@ -120,6 +127,13 @@
       "scenario_id": "multi-dataset",
       "covers": [
         "datasets",
+        "observe",
+        "stack"
+      ]
+    },
+    {
+      "scenario_id": "offline-install-from-bundle",
+      "covers": [
         "observe",
         "stack"
       ]
@@ -219,6 +233,13 @@
       ]
     },
     {
+      "scenario_id": "rollback-chart-from-oci",
+      "covers": [
+        "observe",
+        "stack"
+      ]
+    },
+    {
       "scenario_id": "schema-evolution",
       "covers": [
         "datasets",
@@ -240,6 +261,13 @@
       "covers": [
         "datasets",
         "load",
+        "observe",
+        "stack"
+      ]
+    },
+    {
+      "scenario_id": "upgrade-chart-from-oci",
+      "covers": [
         "observe",
         "stack"
       ]
@@ -293,7 +321,5 @@
         "stack"
       ]
     }
-  ],
-  "missing_domains": [],
-  "generated_by": "bijux dev atlas ops generate"
+  ]
 }

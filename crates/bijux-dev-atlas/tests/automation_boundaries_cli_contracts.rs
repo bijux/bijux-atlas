@@ -90,8 +90,8 @@ fn checks_automation_boundaries_reports_fixture_violations() {
     assert!(
         violations
             .iter()
-            .any(|v| v.contains("ops/cli/perf/legacy_perf_helper.py")),
-        "expected ops purity violation, got: {violations:?}"
+            .any(|v| v.contains("clients/legacy-client.txt")),
+        "expected clients boundary violation, got: {violations:?}"
     );
 }
 

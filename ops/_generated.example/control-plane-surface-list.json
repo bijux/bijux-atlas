@@ -16,6 +16,7 @@
       "observe",
       "report",
       "runbook",
+      "scenario",
       "schema",
       "stack"
     ],
@@ -392,6 +393,24 @@
           "offline"
         ],
         "verb": "generate"
+      },
+      {
+        "domain": "scenario",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "list"
+      },
+      {
+        "domain": "scenario",
+        "subverb": null,
+        "tags": [
+          "slow",
+          "offline"
+        ],
+        "verb": "run"
       },
       {
         "domain": "schema",

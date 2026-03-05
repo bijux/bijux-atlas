@@ -47,6 +47,11 @@
       "max_duration_seconds": 1200
     },
     {
+      "scenario_id": "install-chart-from-oci",
+      "must_pass": true,
+      "max_duration_seconds": 1800
+    },
+    {
       "scenario_id": "k8s-suite",
       "must_pass": true,
       "max_duration_seconds": 1200
@@ -75,6 +80,11 @@
       "scenario_id": "multi-dataset",
       "must_pass": true,
       "max_duration_seconds": 1200
+    },
+    {
+      "scenario_id": "offline-install-from-bundle",
+      "must_pass": true,
+      "max_duration_seconds": 1800
     },
     {
       "scenario_id": "offline-mode",
@@ -137,6 +147,11 @@
       "max_duration_seconds": 1800
     },
     {
+      "scenario_id": "rollback-chart-from-oci",
+      "must_pass": true,
+      "max_duration_seconds": 1800
+    },
+    {
       "scenario_id": "schema-evolution",
       "must_pass": true,
       "max_duration_seconds": 1200
@@ -150,6 +165,11 @@
       "scenario_id": "smoke",
       "must_pass": true,
       "max_duration_seconds": 300
+    },
+    {
+      "scenario_id": "upgrade-chart-from-oci",
+      "must_pass": true,
+      "max_duration_seconds": 1800
     },
     {
       "scenario_id": "upgrade-config-migration",
