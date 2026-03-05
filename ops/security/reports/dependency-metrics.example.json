@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "kind": "dependency_metrics_report",
+  "metrics": {
+    "dependency_inventory_records": 1,
+    "vulnerability_records": 1,
+    "workflow_action_records": 112,
+    "sha_pinned_workflow_actions_percent": 100.0
+  },
+  "status": "ok"
+}

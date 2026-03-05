@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "kind": "supply_chain_risk_dashboard",
+  "panels": [
+    "dependency_risk_score",
+    "vulnerability_severity_distribution",
+    "workflow_action_pinning",
+    "sbom_coverage"
+  ],
+  "status": "ok"
+}

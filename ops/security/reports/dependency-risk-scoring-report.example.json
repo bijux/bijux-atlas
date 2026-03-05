@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "kind": "dependency_risk_scoring_report",
+  "score": 0,
+  "classification": "low",
+  "status": "ok"
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "kind": "supply_chain_compliance_report",
+  "checks": {
+    "dependency_source_policy": true,
+    "lockfile_posture": true,
+    "workflow_action_pinning": true,
+    "sbom_coverage": true
+  },
+  "status": "ok"
+}
