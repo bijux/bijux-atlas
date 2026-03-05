@@ -2,9 +2,13 @@
 
 Rust SDK for Atlas HTTP APIs.
 
-## Status
+## Purpose
 
-Early integration SDK surface for dataset query APIs.
+Provide a typed Rust client for Atlas HTTP endpoints used by services and tooling.
+
+## How to use
+
+Add the crate to your Rust workspace and call the client APIs from your service or CLI flows.
 
 ## Examples
 
@@ -13,3 +17,8 @@ Early integration SDK surface for dataset query APIs.
 - `cargo run -p bijux-atlas-client --example filtered-query`
 - `cargo run -p bijux-atlas-client --example streaming-results`
 - `cargo run -p bijux-atlas-client --example pagination`
+
+## Where docs live
+
+- Contract: [CONTRACT.md](./CONTRACT.md)
+- Internal crate docs: `crates/bijux-atlas-client/docs/`
