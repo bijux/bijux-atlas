@@ -5,7 +5,8 @@ use crate::cli::{
     ReleaseBundleHashArgs, ReleaseBundleVerifyArgs,
     ReleaseChangelogGenerateArgs, ReleaseChangelogValidateArgs, ReleaseCheckArgs, ReleaseCommand,
     ReleaseCompatibilityCheckArgs, ReleaseCratesCommand, ReleaseCratesDryRunArgs,
-    ReleaseCratesListArgs, ReleaseCratesValidateArgs, ReleaseDiffArgs,
+    ReleaseCratesListArgs, ReleaseCratesValidateArgs, ReleaseDiffArgs, ReleaseImagesCommand,
+    ReleaseImagesValidateArgs,
     ReleaseManifestGenerateArgs,
     ReleaseManifestValidateArgs, ReleaseMsrvCommand, ReleaseMsrvVerifyArgs, ReleasePacketArgs,
     ReleasePlanArgs, ReleaseRebuildVerifyArgs, ReleaseReproducibilityReportArgs,
@@ -382,6 +383,233 @@ fn read_crates_release_spec(root: &Path) -> Result<toml::Value, String> {
         &fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", path.display()))
+}
+
+fn read_images_release_spec(root: &Path) -> Result<toml::Value, String> {
+    let path = root.join("release/images-v0.1.toml");
+    toml::from_str(
+        &fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", path.display()))
+}
+
+fn dockerfile_label_map(path: &Path) -> Result<BTreeMap<String, String>, String> {
+    let mut labels = BTreeMap::new();
+    let text = fs::read_to_string(path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if !trimmed.starts_with("LABEL ") {
+            continue;
+        }
+        let rest = trimmed.trim_start_matches("LABEL ").trim();
+        if let Some((k, v)) = rest.split_once('=') {
+            labels.insert(k.trim().to_ascii_lowercase(), v.trim().trim_matches('"').to_string());
+        }
+    }
+    Ok(labels)
+}
+
+fn dockerfile_from_rows(path: &Path) -> Result<Vec<String>, String> {
+    let text = fs::read_to_string(path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    Ok(text
+        .lines()
+        .map(str::trim)
+        .filter(|line| line.starts_with("FROM "))
+        .map(|line| {
+            line.trim_start_matches("FROM ")
+                .split_whitespace()
+                .next()
+                .unwrap_or_default()
+                .to_string()
+        })
+        .collect())
+}
+
+fn run_release_images_validate_labels(
+    args: ReleaseImagesValidateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let policy = read_json(&root.join("docker/policy.json"))?;
+    let required = policy
+        .get("required_oci_labels")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|row| row.as_str().map(|v| v.to_ascii_lowercase()))
+        .collect::<Vec<_>>();
+    let dockerfile = root.join("docker/images/runtime/Dockerfile");
+    let labels = dockerfile_label_map(&dockerfile)?;
+    let mut errors = Vec::<String>::new();
+    for key in &required {
+        match labels.get(key) {
+            None => errors.push(format!("runtime Dockerfile missing label `{key}`")),
+            Some(value) if value.trim().is_empty() => {
+                errors.push(format!("runtime Dockerfile label `{key}` must be non-empty"))
+            }
+            _ => {}
+        }
+    }
+    for required in [
+        "org.opencontainers.image.version",
+        "org.opencontainers.image.revision",
+        "org.opencontainers.image.source",
+        "org.opencontainers.image.created",
+        "org.opencontainers.image.licenses",
+    ] {
+        if !labels.contains_key(required) {
+            errors.push(format!("runtime Dockerfile missing release label `{required}`"));
+        }
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_validate_labels",
+        "status": status,
+        "dockerfile": repo_rel(&root, &dockerfile),
+        "required_labels": required,
+        "present_labels": labels.keys().cloned().collect::<Vec<_>>(),
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_images_validate_tags(args: ReleaseImagesValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let spec = read_images_release_spec(&root)?;
+    let forbid_latest = spec
+        .get("policy")
+        .and_then(toml::Value::as_table)
+        .and_then(|v| v.get("forbid_latest_tag"))
+        .and_then(toml::Value::as_bool)
+        .unwrap_or(true);
+    let mut rows = Vec::<serde_json::Value>::new();
+    let mut errors = Vec::<String>::new();
+    for image in spec
+        .get("images")
+        .and_then(toml::Value::as_array)
+        .into_iter()
+        .flatten()
+    {
+        let name = image
+            .get("name")
+            .and_then(toml::Value::as_str)
+            .unwrap_or("unknown");
+        let tag_policy = image
+            .get("tag_policy")
+            .and_then(toml::Value::as_array)
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+            .collect::<Vec<_>>();
+        let allow_latest = image
+            .get("allow_latest")
+            .and_then(toml::Value::as_bool)
+            .unwrap_or(false);
+        if forbid_latest && allow_latest {
+            errors.push(format!("image `{name}` allows latest while policy forbids it"));
+        }
+        if tag_policy.is_empty() {
+            errors.push(format!("image `{name}` is missing tag policy"));
+        }
+        rows.push(serde_json::json!({
+            "name": name,
+            "tag_policy": tag_policy,
+            "allow_latest": allow_latest
+        }));
+    }
+    rows.sort_by(|a, b| a["name"].as_str().unwrap_or_default().cmp(b["name"].as_str().unwrap_or_default()));
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_validate_tags",
+        "status": status,
+        "forbid_latest": forbid_latest,
+        "images": rows,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_images_validate_base_digests(
+    args: ReleaseImagesValidateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let spec = read_images_release_spec(&root)?;
+    let pinning = spec
+        .get("base_image_pinning")
+        .and_then(toml::Value::as_table)
+        .cloned()
+        .unwrap_or_default();
+    let require_digest_pins = pinning
+        .get("require_digest_pins")
+        .and_then(toml::Value::as_bool)
+        .unwrap_or(true);
+    let lockfile = pinning
+        .get("lockfile")
+        .and_then(toml::Value::as_str)
+        .unwrap_or("docker/bases.lock");
+    let lock = read_json(&root.join(lockfile))?;
+    let lock_rows = lock
+        .get("images")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let lock_map = lock_rows
+        .into_iter()
+        .filter_map(|row| {
+            let image = row.get("image").and_then(serde_json::Value::as_str)?;
+            let digest = row.get("digest").and_then(serde_json::Value::as_str)?;
+            Some((image.to_string(), digest.to_string()))
+        })
+        .collect::<BTreeMap<_, _>>();
+    let dockerfile = root.join("docker/images/runtime/Dockerfile");
+    let mut rows = Vec::<serde_json::Value>::new();
+    let mut errors = Vec::<String>::new();
+    for from in dockerfile_from_rows(&dockerfile)? {
+        let (image_ref, digest) = if let Some((base, digest)) = from.split_once('@') {
+            (base.to_string(), Some(digest.to_string()))
+        } else {
+            (from.clone(), None)
+        };
+        if require_digest_pins && digest.is_none() {
+            errors.push(format!("FROM `{from}` is missing digest pin"));
+        }
+        if let Some(found) = lock_map.get(&image_ref) {
+            let actual = digest
+                .as_deref()
+                .map(|v| format!("@{v}"))
+                .unwrap_or_default();
+            if actual != format!("@{found}") {
+                errors.push(format!(
+                    "FROM `{from}` digest does not match lockfile `{image_ref}@{found}`"
+                ));
+            }
+        }
+        rows.push(serde_json::json!({
+            "from": from,
+            "image": image_ref,
+            "digest": digest
+        }));
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_validate_base_digests",
+        "status": status,
+        "lockfile": lockfile,
+        "require_digest_pins": require_digest_pins,
+        "dockerfile": repo_rel(&root, &dockerfile),
+        "rows": rows,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
 fn release_spec_allow_deny(spec: &toml::Value) -> (Vec<String>, Vec<String>) {
@@ -3315,6 +3543,13 @@ pub(crate) fn run_release_command(
         },
         ReleaseCommand::Msrv { command } => match command {
             ReleaseMsrvCommand::Verify(args) => run_release_msrv_verify(args),
+        },
+        ReleaseCommand::Images { command } => match command {
+            ReleaseImagesCommand::ValidateLabels(args) => run_release_images_validate_labels(args),
+            ReleaseImagesCommand::ValidateTags(args) => run_release_images_validate_tags(args),
+            ReleaseImagesCommand::ValidateBaseDigests(args) => {
+                run_release_images_validate_base_digests(args)
+            }
         },
     }
 }

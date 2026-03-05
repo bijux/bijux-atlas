@@ -310,6 +310,10 @@ pub enum ReleaseCommand {
         #[command(subcommand)]
         command: ReleaseMsrvCommand,
     },
+    Images {
+        #[command(subcommand)]
+        command: ReleaseImagesCommand,
+    },
 }
 
 #[derive(Subcommand, Debug)]
@@ -334,6 +338,13 @@ pub enum ReleaseSemverCommand {
 #[derive(Subcommand, Debug)]
 pub enum ReleaseMsrvCommand {
     Verify(ReleaseMsrvVerifyArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ReleaseImagesCommand {
+    ValidateLabels(ReleaseImagesValidateArgs),
+    ValidateTags(ReleaseImagesValidateArgs),
+    ValidateBaseDigests(ReleaseImagesValidateArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -1108,6 +1119,16 @@ pub struct ReleaseSemverCheckArgs {
 
 #[derive(Args, Debug, Clone)]
 pub struct ReleaseMsrvVerifyArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseImagesValidateArgs {
     #[arg(long)]
     pub repo_root: Option<PathBuf>,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]

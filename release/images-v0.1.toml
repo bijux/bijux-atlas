@@ -13,3 +13,7 @@ platforms = ["linux/amd64", "linux/arm64"]
 [policy]
 multi_arch_required = true
 forbid_latest_tag = true
+
+[base_image_pinning]
+require_digest_pins = true
+lockfile = "docker/bases.lock"

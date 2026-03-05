@@ -4,8 +4,8 @@ use crate::cli::{
     ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand, Command,
     ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, FormatArg,
     IngestCommand, MakeCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand,
-    ReleaseApiSurfaceCommand, ReleaseCommand, ReleaseCratesCommand, ReleaseMsrvCommand,
-    ReleaseSemverCommand, ReportsCommand, SecurityCommand, TestsCommand,
+    ReleaseApiSurfaceCommand, ReleaseCommand, ReleaseCratesCommand, ReleaseImagesCommand,
+    ReleaseMsrvCommand, ReleaseSemverCommand, ReportsCommand, SecurityCommand, TestsCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -114,6 +114,13 @@ pub(super) fn force_json_output(command: &mut Command) {
             },
             ReleaseCommand::Msrv { command } => match command {
                 ReleaseMsrvCommand::Verify(args) => args.format = FormatArg::Json,
+            },
+            ReleaseCommand::Images { command } => match command {
+                ReleaseImagesCommand::ValidateLabels(args)
+                | ReleaseImagesCommand::ValidateTags(args)
+                | ReleaseImagesCommand::ValidateBaseDigests(args) => {
+                    args.format = FormatArg::Json
+                }
             },
         },
         Command::Docker { .. }
@@ -1698,6 +1705,15 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             },
             ReleaseCommand::Msrv { command } => match command {
                 ReleaseMsrvCommand::Verify(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+            },
+            ReleaseCommand::Images { command } => match command {
+                ReleaseImagesCommand::ValidateLabels(args)
+                | ReleaseImagesCommand::ValidateTags(args)
+                | ReleaseImagesCommand::ValidateBaseDigests(args) => {
                     if args.repo_root.is_none() {
                         args.repo_root = Some(root.clone());
                     }
