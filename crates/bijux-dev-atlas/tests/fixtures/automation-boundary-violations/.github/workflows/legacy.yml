@@ -1,0 +1,8 @@
+name: legacy
+on: [push]
+jobs:
+  bad:
+    runs-on: ubuntu-latest
+    steps:
+      - run: bash -c "echo legacy"
+      - run: python scripts/tool.py

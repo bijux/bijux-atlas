@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "status": "fail",
+  "checks": [
+    {
+      "id": "automation.directories.forbidden",
+      "status": "fail",
+      "violation_count": 1,
+      "violations": [
+        "tools/"
+      ]
+    },
+    {
+      "id": "automation.root-language-files.forbidden",
+      "status": "fail",
+      "violation_count": 1,
+      "violations": [
+        "bad-root.sh"
+      ]
+    },
+    {
+      "id": "automation.workflows.no-python",
+      "status": "fail",
+      "violation_count": 1,
+      "violations": [
+        ".github/workflows/legacy.yml: - run: python scripts/tool.py"
+      ]
+    },
+    {
+      "id": "automation.workflows.no-repo-bash-scripts",
+      "status": "fail",
+      "violation_count": 1,
+      "violations": [
+        ".github/workflows/legacy.yml: - run: bash -c \"echo legacy\""
+      ]
+    },
+    {
+      "id": "automation.exec-bit.allowlist",
+      "status": "pass",
+      "violation_count": 0,
+      "violations": []
+    },
+    {
+      "id": "automation.shebang.allowlist",
+      "status": "fail",
+      "violation_count": 1,
+      "violations": [
+        "bad-root.sh"
+      ]
+    },
+    {
+      "id": "automation.python-tooling.docs-only",
+      "status": "fail",
+      "violation_count": 1,
+      "violations": [
+        "requirements.txt"
+      ]
+    }
+  ],
+  "violations": [
+    "tools/",
+    "bad-root.sh",
+    ".github/workflows/legacy.yml: - run: python scripts/tool.py",
+    ".github/workflows/legacy.yml: - run: bash -c \"echo legacy\"",
+    "bad-root.sh",
+    "requirements.txt"
+  ],
+  "evidence_path": "/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/tests/fixtures/automation-boundary-violations/artifacts/atlas-dev/doctrine/contract-automation-boundaries.report.json"
+}

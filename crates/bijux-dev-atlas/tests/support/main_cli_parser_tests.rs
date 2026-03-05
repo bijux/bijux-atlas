@@ -268,6 +268,7 @@ mod tests {
             ],
             vec!["bijux-dev-atlas", "contract", "describe", "ROOT-001"],
             vec!["bijux-dev-atlas", "contract", "run", "--mode", "static"],
+            vec!["bijux-dev-atlas", "contract", "automation-boundaries"],
             vec![
                 "bijux-dev-atlas",
                 "contract",
@@ -318,6 +319,7 @@ mod tests {
                 "explain",
                 "CHECK-DOCS-VALIDATE-001",
             ],
+            vec!["bijux-dev-atlas", "checks", "automation-boundaries"],
         ];
         for argv in commands {
             let cli = crate::Cli::try_parse_from(argv).expect("parse");
