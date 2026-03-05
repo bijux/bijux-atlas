@@ -21,3 +21,6 @@ related:
 - Compatibility lint policy blocks incompatible patch and minor transitions.
 - Upgrade and rollback evidence must be attached before release approval.
 - Compatibility table updates are required when release versions change.
+
+
+Enforcement reference: OPS-ROOT-023.

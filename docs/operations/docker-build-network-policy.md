@@ -26,3 +26,6 @@ Docker build network behavior is governed by `docker/policy.json` `build_network
 - Ad-hoc downloads (`curl`, `wget`, `git clone`)
 - Package manager calls outside allowlisted tokens
 - Arbitrary installer execution during image build
+
+
+Enforcement reference: OPS-ROOT-023.

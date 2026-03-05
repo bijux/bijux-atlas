@@ -45,3 +45,6 @@ Approved extensions:
 ## Enforcement
 
 Repository contracts in `crates/bijux-dev-atlas/tests/repo_automation_doctrine_contracts.rs` enforce these constraints on every test run.
+
+
+Enforcement reference: OPS-ROOT-023.

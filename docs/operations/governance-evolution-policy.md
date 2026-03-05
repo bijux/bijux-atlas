@@ -27,3 +27,6 @@ Governance enforcement rules must remain stable, explicit, and backward understa
 - Keep `configs/governance/enforcement/rules.json` as the source of truth.
 - Keep `ops/governance/enforcement/rules.snapshot.json` synchronized.
 - Keep operator docs synchronized with the active rule registry.
+
+
+Enforcement reference: OPS-ROOT-023.

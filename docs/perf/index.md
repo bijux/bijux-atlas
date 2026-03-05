@@ -2,7 +2,7 @@
 title: Performance
 audience: operator
 type: reference
-stability: evolving
+stability: stable
 owner: docs-governance
 last_reviewed: 2026-03-05
 tags:
@@ -10,8 +10,10 @@ tags:
   - cli
 related:
   - docs/start-here.md
-sources:
+  - docs/reference/index.md
+source:
   - docs/perf/cli-ux.md
+  - docs/perf/cli-ux-interpretation.md
 verification: true
 ---
 
@@ -20,7 +22,7 @@ verification: true
 - Owner: `docs-governance`
 - Type: `reference`
 - Audience: `operator`
-- Stability: `evolving`
+- Stability: `stable`
 - Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: provide a single performance docs entrypoint.
 

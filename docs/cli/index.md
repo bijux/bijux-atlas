@@ -1,8 +1,8 @@
 ---
 title: CLI User Experience
-audience: mixed
+audience: user
 type: reference
-stability: evolving
+stability: stable
 owner: docs-governance
 last_reviewed: 2026-03-05
 tags:
@@ -10,8 +10,10 @@ tags:
   - ux
 related:
   - docs/start-here.md
-sources:
+  - docs/reference/index.md
+source:
   - docs/cli/command-reference.md
+  - docs/cli/usage-guide.md
 verification: true
 ---
 
@@ -19,8 +21,8 @@ verification: true
 
 - Owner: `docs-governance`
 - Type: `reference`
-- Audience: `mixed`
-- Stability: `evolving`
+- Audience: `user`
+- Stability: `stable`
 - Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
 - Reason to exist: provide the CLI docs entrypoint.
 

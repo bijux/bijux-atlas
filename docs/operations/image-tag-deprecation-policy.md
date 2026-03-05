@@ -4,3 +4,6 @@
 - Deprecation notices are required in image release notes.
 - Deprecated tags are never repointed to new digests.
 - Consumers must migrate to versioned tags or pinned digests before retirement.
+
+
+Enforcement reference: OPS-ROOT-023.

@@ -26,3 +26,6 @@ Runtime image publication targets:
 
 - `linux/amd64`
 - `linux/arm64`
+
+
+Enforcement reference: OPS-ROOT-023.
