@@ -108,6 +108,14 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 75. [Ops profile selection guide](ops-profile-selection-guide.md)
 76. [Ops provenance](ops-provenance.md)
 
+77. [Ops as product](ops-as-product.md)
+78. [Verify ops artifacts authenticity](verify-ops-artifacts-authenticity.md)
+79. [Release artifacts overview](release-artifacts-overview.md)
+80. [Verify release artifacts](verify-release-artifacts.md)
+81. [Reproducible build posture](reproducible-build-posture.md)
+82. [Publishing channels](publishing-channels.md)
+83. [Release lifecycle and support window](release-lifecycle-support-window.md)
+
 ## What This Page Is Not
 
 This page is not a command reference and not an architecture deep dive.
