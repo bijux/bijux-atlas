@@ -10,6 +10,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
 
+const INVARIANT_REGISTRY_INDEX_PATH: &str = "ops/invariants/registry.json";
+
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
     serde_json::from_str(
         &fs::read_to_string(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
@@ -56,6 +58,66 @@ struct InvariantResult {
     group: InvariantGroup,
     status: String,
     violations: Vec<InvariantViolation>,
+}
+
+fn runtime_start_gate_result(failed_ids: &[String]) -> InvariantResult {
+    if failed_ids.is_empty() {
+        return InvariantResult {
+            id: "INV-RUNTIME-START-GATE-001".to_string(),
+            title: "Runtime start requires invariant pass".to_string(),
+            severity: InvariantSeverity::Critical,
+            group: InvariantGroup::Runtime,
+            status: "pass".to_string(),
+            violations: Vec::new(),
+        };
+    }
+
+    InvariantResult {
+        id: "INV-RUNTIME-START-GATE-001".to_string(),
+        title: "Runtime start requires invariant pass".to_string(),
+        severity: InvariantSeverity::Critical,
+        group: InvariantGroup::Runtime,
+        status: "fail".to_string(),
+        violations: vec![InvariantViolation {
+            class: ViolationClass::ReferenceMismatch,
+            message: format!(
+                "runtime start is blocked because invariants failed: {}",
+                failed_ids.join(", ")
+            ),
+            path: None,
+        }],
+    }
+}
+
+fn validate_registry_index(root: &Path) -> Result<(Vec<String>, Vec<String>), String> {
+    let index_path = root.join(INVARIANT_REGISTRY_INDEX_PATH);
+    let value = read_json(&index_path)?;
+    let listed_ids = value
+        .get("invariants")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|entry| {
+            entry
+                .get("id")
+                .and_then(serde_json::Value::as_str)
+                .map(str::to_string)
+        })
+        .collect::<BTreeSet<_>>();
+    let runtime_ids = registry()
+        .into_iter()
+        .map(|row| row.id.to_string())
+        .collect::<BTreeSet<_>>();
+    let missing_in_index = runtime_ids
+        .difference(&listed_ids)
+        .cloned()
+        .collect::<Vec<_>>();
+    let extra_in_index = listed_ids
+        .difference(&runtime_ids)
+        .cloned()
+        .collect::<Vec<_>>();
+    Ok((missing_in_index, extra_in_index))
 }
 
 fn record_missing(path: &Path, message: &str) -> InvariantViolation {
@@ -395,23 +457,47 @@ fn run_invariants(common: InvariantsCommonArgs) -> Result<(String, i32), String>
     let root = resolve_repo_root(common.repo_root)?;
     let mut results = registry()
         .into_iter()
+        .filter(|inv| inv.id != "INV-RUNTIME-START-GATE-001")
         .map(|inv| evaluate_one(&root, inv))
         .collect::<Vec<_>>();
+    let prereq_failures = results
+        .iter()
+        .filter(|row| row.status == "fail")
+        .map(|row| row.id.clone())
+        .collect::<Vec<_>>();
+    results.push(runtime_start_gate_result(&prereq_failures));
     results.sort_by(|a, b| a.id.cmp(&b.id));
+    let (missing_in_index, extra_in_index) = validate_registry_index(&root).unwrap_or_else(|_| {
+        (
+            vec!["index_unreadable".to_string()],
+            Vec::<String>::new(),
+        )
+    });
     let failed = results.iter().filter(|row| row.status == "fail").count();
+    let registry_complete = missing_in_index.is_empty() && extra_in_index.is_empty();
+    let status = if failed == 0 && registry_complete {
+        "ok"
+    } else {
+        "failed"
+    };
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "system_invariant_report",
-        "status": if failed == 0 { "ok" } else { "failed" },
+        "status": status,
         "summary": {
             "total": results.len(),
             "failed": failed,
             "passed": results.len().saturating_sub(failed)
         },
+        "registry_completeness": {
+            "status": if registry_complete { "pass" } else { "fail" },
+            "missing_in_index": missing_in_index,
+            "extra_in_index": extra_in_index
+        },
         "results": results
     });
     let rendered = emit_payload(common.format, common.out, &payload)?;
-    Ok((rendered, if failed == 0 { 0 } else { 3 }))
+    Ok((rendered, if failed == 0 && registry_complete { 0 } else { 3 }))
 }
 
 fn list_invariants(common: InvariantsCommonArgs) -> Result<(String, i32), String> {
@@ -458,6 +544,76 @@ fn explain_invariant(id: String, common: InvariantsCommonArgs) -> Result<(String
     Ok((rendered, 0))
 }
 
+fn coverage_report(common: InvariantsCommonArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let rows = registry();
+    let mut by_group = BTreeMap::<String, usize>::new();
+    let mut by_severity = BTreeMap::<String, usize>::new();
+    for row in &rows {
+        *by_group
+            .entry(format!("{:?}", row.group).to_lowercase())
+            .or_insert(0) += 1;
+        *by_severity
+            .entry(format!("{:?}", row.severity).to_lowercase())
+            .or_insert(0) += 1;
+    }
+    let (missing_in_index, extra_in_index) = validate_registry_index(&root)?;
+    let complete = missing_in_index.is_empty() && extra_in_index.is_empty();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "system_invariant_coverage",
+        "status": if complete { "ok" } else { "failed" },
+        "summary": {
+            "total_invariants": rows.len(),
+            "group_counts": by_group,
+            "severity_counts": by_severity
+        },
+        "registry_completeness": {
+            "missing_in_index": missing_in_index,
+            "extra_in_index": extra_in_index
+        }
+    });
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    Ok((rendered, if complete { 0 } else { 3 }))
+}
+
+fn generate_docs(common: InvariantsCommonArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let mut rows = registry();
+    rows.sort_by(|a, b| a.id.cmp(b.id));
+
+    let mut lines = vec![
+        "# System Invariants Reference".to_string(),
+        "".to_string(),
+        "Generated by `bijux-dev-atlas invariants docs`.".to_string(),
+        "".to_string(),
+    ];
+    for row in &rows {
+        lines.push(format!("## {}", row.id));
+        lines.push(String::new());
+        lines.push(format!("- title: {}", row.title));
+        lines.push(format!(
+            "- severity: {}",
+            format!("{:?}", row.severity).to_lowercase()
+        ));
+        lines.push(format!("- group: {}", format!("{:?}", row.group).to_lowercase()));
+        lines.push(format!("- summary: {}", row.summary));
+        lines.push(String::new());
+    }
+    let out_path = root.join("docs/operations/system-invariants-reference.md");
+    fs::write(&out_path, format!("{}\n", lines.join("\n")))
+        .map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "system_invariant_docs",
+        "status": "ok",
+        "output": out_path.display().to_string(),
+        "invariant_count": rows.len()
+    });
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    Ok((rendered, 0))
+}
+
 pub(crate) fn run_invariants_command(
     _quiet: bool,
     command: InvariantsCommand,
@@ -466,5 +622,44 @@ pub(crate) fn run_invariants_command(
         InvariantsCommand::Run(args) => run_invariants(args),
         InvariantsCommand::List(args) => list_invariants(args),
         InvariantsCommand::Explain(args) => explain_invariant(args.id, args.common),
+        InvariantsCommand::Coverage(args) => coverage_report(args),
+        InvariantsCommand::Docs(args) => generate_docs(args),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tempfile::tempdir;
+
+    #[test]
+    fn runtime_gate_fails_when_any_invariant_fails() {
+        let gate = runtime_start_gate_result(&["INV-A-001".to_string()]);
+        assert_eq!(gate.status, "fail");
+        assert_eq!(gate.id, "INV-RUNTIME-START-GATE-001");
+        assert!(!gate.violations.is_empty());
+    }
+
+    #[test]
+    fn runtime_gate_passes_when_no_failures() {
+        let gate = runtime_start_gate_result(&[]);
+        assert_eq!(gate.status, "pass");
+        assert!(gate.violations.is_empty());
+    }
+
+    #[test]
+    fn registry_index_completeness_detects_missing_entries() {
+        let dir = tempdir().expect("tempdir");
+        let root = dir.path();
+        let index_path = root.join(INVARIANT_REGISTRY_INDEX_PATH);
+        fs::create_dir_all(index_path.parent().expect("parent")).expect("mkdir");
+        fs::write(
+            &index_path,
+            r#"{"schema_version":1,"invariants":[{"id":"INV-CONFIG-SCHEMA-VERSION-001"}]}"#,
+        )
+        .expect("write index");
+        let (missing, extra) = validate_registry_index(root).expect("validate");
+        assert!(!missing.is_empty());
+        assert!(extra.is_empty());
     }
 }

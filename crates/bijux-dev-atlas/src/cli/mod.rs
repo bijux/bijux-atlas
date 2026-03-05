@@ -335,6 +335,8 @@ pub enum InvariantsCommand {
     Run(InvariantsCommonArgs),
     List(InvariantsCommonArgs),
     Explain(InvariantsExplainArgs),
+    Coverage(InvariantsCommonArgs),
+    Docs(InvariantsCommonArgs),
 }
 
 #[derive(Args, Debug, Clone)]

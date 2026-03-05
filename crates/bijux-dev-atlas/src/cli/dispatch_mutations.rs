@@ -177,7 +177,10 @@ pub(super) fn force_json_output(command: &mut Command) {
 
 fn force_json_invariants(command: &mut InvariantsCommand) {
     match command {
-        InvariantsCommand::Run(args) | InvariantsCommand::List(args) => {
+        InvariantsCommand::Run(args)
+        | InvariantsCommand::List(args)
+        | InvariantsCommand::Coverage(args)
+        | InvariantsCommand::Docs(args) => {
             args.format = FormatArg::Json
         }
         InvariantsCommand::Explain(args) => args.common.format = FormatArg::Json,
@@ -1470,7 +1473,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             },
         },
         Command::Invariants { command } => match command {
-            InvariantsCommand::Run(args) | InvariantsCommand::List(args) => {
+            InvariantsCommand::Run(args)
+            | InvariantsCommand::List(args)
+            | InvariantsCommand::Coverage(args)
+            | InvariantsCommand::Docs(args) => {
                 args.repo_root = Some(root.clone())
             }
             InvariantsCommand::Explain(args) => args.common.repo_root = Some(root.clone()),

@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "owner": "atlas-runtime-governance",
+  "invariants": [
+    {
+      "id": "INV-ARTIFACT-HASH-REGISTRY-001",
+      "title": "Artifact hashes match registry manifest entries",
+      "severity": "critical",
+      "group": "registry"
+    },
+    {
+      "id": "INV-CONFIG-DATASET-REF-001",
+      "title": "Config references only known datasets",
+      "severity": "high",
+      "group": "config"
+    },
+    {
+      "id": "INV-CONFIG-PROFILE-REF-001",
+      "title": "Config references only known profiles",
+      "severity": "high",
+      "group": "config"
+    },
+    {
+      "id": "INV-CONFIG-SCHEMA-VERSION-001",
+      "title": "Config schema version matches runtime loader version",
+      "severity": "critical",
+      "group": "config"
+    },
+    {
+      "id": "INV-DATASET-ID-UNIQUE-001",
+      "title": "Dataset IDs are globally unique",
+      "severity": "high",
+      "group": "registry"
+    },
+    {
+      "id": "INV-DATASET-SCHEMA-METADATA-001",
+      "title": "Dataset schema version matches stored metadata",
+      "severity": "high",
+      "group": "registry"
+    },
+    {
+      "id": "INV-PROFILE-INHERIT-CYCLE-001",
+      "title": "Profile inheritance has no cycles",
+      "severity": "medium",
+      "group": "ops"
+    },
+    {
+      "id": "INV-PROFILE-NAME-UNIQUE-001",
+      "title": "Profile names are unique",
+      "severity": "high",
+      "group": "ops"
+    },
+    {
+      "id": "INV-PROFILE-OVERRIDE-SCHEMA-001",
+      "title": "Profile overrides respect schema",
+      "severity": "high",
+      "group": "ops"
+    },
+    {
+      "id": "INV-REGISTRY-CHECKSUM-001",
+      "title": "Artifact registry entries include checksums",
+      "severity": "critical",
+      "group": "registry"
+    },
+    {
+      "id": "INV-REGISTRY-REF-EXISTS-001",
+      "title": "Registry references only existing artifacts",
+      "severity": "critical",
+      "group": "registry"
+    },
+    {
+      "id": "INV-RUNTIME-START-GATE-001",
+      "title": "Runtime start requires invariant pass",
+      "severity": "critical",
+      "group": "runtime"
+    },
+    {
+      "id": "INV-SHARD-DIR-REGISTRY-001",
+      "title": "Shard directories map to registry entries",
+      "severity": "high",
+      "group": "registry"
+    },
+    {
+      "id": "INV-SHARD-ID-DETERMINISTIC-001",
+      "title": "Shard identifiers are deterministic",
+      "severity": "high",
+      "group": "registry"
+    },
+    {
+      "id": "INV-SHARD-ORPHAN-001",
+      "title": "No shard exists without registry metadata",
+      "severity": "high",
+      "group": "registry"
+    }
+  ]
+}
