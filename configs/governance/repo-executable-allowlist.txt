@@ -1,3 +1,2 @@
 # Tracked executable files outside crates/bijux-dev-atlas.
-clients/atlas-client/tools/generate_docs.py
 ops/cli/perf/cli_ux_benchmark.py

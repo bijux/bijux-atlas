@@ -377,8 +377,20 @@ fn allowed_nonrust_policy_must_define_python_and_shell_boundaries() {
     assert!(
         python_allowed
             .iter()
-            .any(|item| item.as_str() == Some("clients/atlas-client/**/*.py")),
-        "allowed-nonrust policy must explicitly allow python only in client SDK product zones"
+            .any(|item| item.as_str() == Some("clients/atlas-client/atlas_client/**/*.py")),
+        "allowed-nonrust policy must explicitly allow python in client SDK package zones"
+    );
+    assert!(
+        python_allowed
+            .iter()
+            .any(|item| item.as_str() == Some("clients/atlas-client/tests/**/*.py")),
+        "allowed-nonrust policy must explicitly allow python in client SDK test zones"
+    );
+    assert!(
+        python_allowed
+            .iter()
+            .any(|item| item.as_str() == Some("clients/atlas-client/examples/**/*.py")),
+        "allowed-nonrust policy must explicitly allow python in client SDK examples zones"
     );
     assert!(
         python_allowed

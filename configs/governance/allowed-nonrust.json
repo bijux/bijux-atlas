@@ -3,7 +3,9 @@
   "policy_owner": "bijux-atlas-governance",
   "python": {
     "allowed_zones": [
-      "clients/atlas-client/**/*.py",
+      "clients/atlas-client/atlas_client/**/*.py",
+      "clients/atlas-client/tests/**/*.py",
+      "clients/atlas-client/examples/**/*.py",
       "clients/atlas-client/**/*.ipynb"
     ],
     "forbidden_after_migration_complete": [
@@ -21,6 +23,6 @@
     "clients": "Product SDK source, tests, examples, and docs. Repo automation executes via bijux-dev-atlas commands."
   },
   "migration_status": {
-    "tutorials_legacy_automation_removed": false
+    "tutorials_legacy_automation_removed": true
   }
 }
