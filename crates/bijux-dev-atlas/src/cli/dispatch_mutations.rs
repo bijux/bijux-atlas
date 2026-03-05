@@ -200,7 +200,9 @@ fn force_json_drift(command: &mut DriftCommand) {
 
 fn force_json_reproduce(command: &mut ReproduceCommand) {
     match command {
-        ReproduceCommand::Run(args) | ReproduceCommand::Verify(args) => args.format = FormatArg::Json,
+        ReproduceCommand::Run(args)
+        | ReproduceCommand::Verify(args)
+        | ReproduceCommand::Status(args) => args.format = FormatArg::Json,
         ReproduceCommand::Explain(args) => args.common.format = FormatArg::Json,
     }
 }
@@ -1509,7 +1511,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             DriftCommand::Compare(args) => args.detect.common.repo_root = Some(root.clone()),
         },
         Command::Reproduce { command } => match command {
-            ReproduceCommand::Run(args) | ReproduceCommand::Verify(args) => {
+            ReproduceCommand::Run(args)
+            | ReproduceCommand::Verify(args)
+            | ReproduceCommand::Status(args) => {
                 args.repo_root = Some(root.clone())
             }
             ReproduceCommand::Explain(args) => args.common.repo_root = Some(root.clone()),

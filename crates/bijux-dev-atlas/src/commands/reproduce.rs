@@ -2,10 +2,12 @@
 
 use crate::cli::{ReproduceCommand, ReproduceCommonArgs, ReproduceExplainArgs};
 use crate::{emit_payload, resolve_repo_root};
-use bijux_dev_atlas::contracts::reproducibility::scenario_catalog;
+use bijux_dev_atlas::contracts::reproducibility::{scenario_catalog, ReproFailureClass};
 use sha2::{Digest, Sha256};
+use std::collections::BTreeMap;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
+use std::time::Instant;
 
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
     let text =
@@ -48,28 +50,90 @@ fn collect_source_snapshot_hash(root: &Path) -> Result<String, String> {
     Ok(format!("{:x}", hasher.finalize()))
 }
 
-fn run(common: ReproduceCommonArgs) -> Result<(String, i32), String> {
-    let root = resolve_repo_root(common.repo_root)?;
-    let scenarios = scenario_catalog();
-    let source_hash = collect_source_snapshot_hash(&root)?;
+fn core_artifact_hashes(root: &Path) -> BTreeMap<String, String> {
+    let candidates = [
+        "Cargo.lock",
+        "ops/reproducibility/spec.json",
+        "ops/reproducibility/report.schema.json",
+        "ops/reproducibility/scenarios.json",
+        "release/manifest.json",
+    ];
+    let mut out = BTreeMap::new();
+    for rel in candidates {
+        let path = root.join(rel);
+        if path.exists() {
+            if let Ok(digest) = file_sha(&path) {
+                out.insert(rel.to_string(), digest);
+            }
+        }
+    }
+    out
+}
+
+fn run_payload(root: &Path) -> Result<serde_json::Value, String> {
+    let started = Instant::now();
+    let mut scenarios = scenario_catalog();
+    scenarios.sort_by(|a, b| a.id.cmp(&b.id));
+    let source_hash = collect_source_snapshot_hash(root)?;
     let manifest_path = root.join("release/manifest.json");
     let manifest = read_json(&manifest_path).unwrap_or_else(|_| serde_json::json!({}));
     let artifacts_count = manifest
         .get("artifacts")
         .and_then(serde_json::Value::as_array)
         .map_or(0, |v| v.len());
-
+    let environment = serde_json::json!({
+        "source_snapshot_hash": source_hash,
+        "os": std::env::consts::OS,
+        "arch": std::env::consts::ARCH,
+        "offline_safe": true
+    });
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "reproduce_run",
         "status": "ok",
-        "environment": {
-            "source_snapshot_hash": source_hash
+        "metrics": {
+            "execution_time_ms": started.elapsed().as_millis() as u64
         },
+        "environment": environment,
+        "artifact_hashes": core_artifact_hashes(root),
         "scenarios": scenarios,
         "release_manifest_artifact_count": artifacts_count
     });
-    let rendered = emit_payload(common.format, common.out, &payload)?;
+    Ok(payload)
+}
+
+fn normalize_for_determinism(mut payload: serde_json::Value) -> serde_json::Value {
+    if let Some(metrics) = payload.get_mut("metrics").and_then(serde_json::Value::as_object_mut) {
+        metrics.remove("execution_time_ms");
+    }
+    payload
+}
+
+fn write_run_evidence(root: &Path, payload: &serde_json::Value) -> Result<PathBuf, String> {
+    let out = root.join("artifacts/reproducibility/run-report.json");
+    if let Some(parent) = out.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
+    let text = serde_json::to_string_pretty(payload)
+        .map_err(|err| format!("failed to encode reproducibility payload: {err}"))?;
+    fs::write(&out, format!("{text}\n"))
+        .map_err(|err| format!("failed to write {}: {err}", out.display()))?;
+    Ok(out)
+}
+
+fn run(common: ReproduceCommonArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let payload = run_payload(&root)?;
+    let evidence_path = write_run_evidence(&root, &payload)?;
+    let mut emitted = payload;
+    if let Some(obj) = emitted.as_object_mut() {
+        obj.insert(
+            "evidence_path".to_string(),
+            serde_json::Value::String(evidence_path.display().to_string()),
+        );
+    }
+    let rendered = emit_payload(common.format, common.out, &emitted)?;
     Ok((rendered, 0))
 }
 
@@ -99,11 +163,46 @@ fn verify(common: ReproduceCommonArgs) -> Result<(String, i32), String> {
             missing.push(id.to_string());
         }
     }
+    missing.sort();
+
+    let first = run_payload(&root)?;
+    let second = run_payload(&root)?;
+    let deterministic =
+        normalize_for_determinism(first.clone()) == normalize_for_determinism(second.clone());
+
+    let mut failures = Vec::new();
+    if !missing.is_empty() {
+        failures.push(serde_json::json!({
+            "class": ReproFailureClass::MissingScenario,
+            "message": "required reproducibility scenarios are missing"
+        }));
+    }
+    if !deterministic {
+        failures.push(serde_json::json!({
+            "class": ReproFailureClass::NondeterministicOutput,
+            "message": "reproduce run payload is not deterministic"
+        }));
+    }
+    let offline_safe = first
+        .get("environment")
+        .and_then(|v| v.get("offline_safe"))
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
+    if !offline_safe {
+        failures.push(serde_json::json!({
+            "class": ReproFailureClass::OfflineViolation,
+            "message": "reproducibility run must be offline-safe"
+        }));
+    }
+
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "reproduce_verify",
-        "status": if missing.is_empty() { "ok" } else { "failed" },
+        "status": if failures.is_empty() { "ok" } else { "failed" },
         "missing_required_scenarios": missing,
+        "deterministic_report": deterministic,
+        "offline_safe": offline_safe,
+        "failure_classification": failures,
         "scenario_count": rows.len()
     });
     let rendered = emit_payload(common.format, common.out, &payload)?;
@@ -118,7 +217,8 @@ fn verify(common: ReproduceCommonArgs) -> Result<(String, i32), String> {
 }
 
 fn explain(args: ReproduceExplainArgs) -> Result<(String, i32), String> {
-    let all = scenario_catalog();
+    let mut all = scenario_catalog();
+    all.sort_by(|a, b| a.id.cmp(&b.id));
     let payload = if let Some(ref id) = args.scenario {
         if let Some(found) = all.iter().find(|row| &row.id == id) {
             serde_json::json!({
@@ -154,6 +254,34 @@ fn explain(args: ReproduceExplainArgs) -> Result<(String, i32), String> {
     ))
 }
 
+fn status(common: ReproduceCommonArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let evidence = root.join("artifacts/reproducibility/run-report.json");
+    let verify_payload = verify(ReproduceCommonArgs {
+        repo_root: Some(root.clone()),
+        format: crate::cli::FormatArg::Json,
+        out: None,
+    })?;
+    let verify_json: serde_json::Value =
+        serde_json::from_str(&verify_payload.0).map_err(|err| format!("failed to parse verify payload: {err}"))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "reproduce_status",
+        "status": verify_json.get("status").and_then(serde_json::Value::as_str).unwrap_or("failed"),
+        "evidence_present": evidence.exists(),
+        "verify": verify_json
+    });
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    Ok((
+        rendered,
+        if payload.get("status").and_then(serde_json::Value::as_str) == Some("ok") {
+            0
+        } else {
+            3
+        },
+    ))
+}
+
 pub(crate) fn run_reproduce_command(
     _quiet: bool,
     command: ReproduceCommand,
@@ -162,5 +290,6 @@ pub(crate) fn run_reproduce_command(
         ReproduceCommand::Run(args) => run(args),
         ReproduceCommand::Verify(args) => verify(args),
         ReproduceCommand::Explain(args) => explain(args),
+        ReproduceCommand::Status(args) => status(args),
     }
 }

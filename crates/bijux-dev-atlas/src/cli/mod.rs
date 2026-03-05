@@ -398,6 +398,7 @@ pub enum ReproduceCommand {
     Run(ReproduceCommonArgs),
     Verify(ReproduceCommonArgs),
     Explain(ReproduceExplainArgs),
+    Status(ReproduceCommonArgs),
 }
 
 #[derive(Args, Debug, Clone)]

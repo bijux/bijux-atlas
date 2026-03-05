@@ -65,3 +65,7 @@ harness = false
 [[bench]]
 name = "drift"
 harness = false
+
+[[bench]]
+name = "reproducibility"
+harness = false

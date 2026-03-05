@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "artifact": "artifacts/reproducibility/run-report.json",
+  "bundle_key": "reproducibility_run_report",
+  "description": "Reproducibility report location for evidence bundle collection."
+}

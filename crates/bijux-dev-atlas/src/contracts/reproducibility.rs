@@ -18,6 +18,15 @@ pub struct ReproScenario {
     pub description: String,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ReproFailureClass {
+    MissingScenario,
+    NondeterministicOutput,
+    MissingArtifactHash,
+    OfflineViolation,
+}
+
 pub fn scenario_catalog() -> Vec<ReproScenario> {
     vec![
         ReproScenario {
