@@ -208,6 +208,7 @@ pub enum DocsGenerateCommand {
     SchemaSnippets(DocsCommonArgs),
     OpenapiSnippets(DocsCommonArgs),
     OpsSnippets(DocsCommonArgs),
+    RealDataPages(DocsCommonArgs),
 }
 
 #[derive(Subcommand, Debug)]

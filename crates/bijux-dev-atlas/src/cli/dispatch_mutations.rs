@@ -580,7 +580,8 @@ fn force_json_docs(command: &mut DocsCommand) {
             | crate::cli::DocsGenerateCommand::CommandLists(common)
             | crate::cli::DocsGenerateCommand::SchemaSnippets(common)
             | crate::cli::DocsGenerateCommand::OpenapiSnippets(common)
-            | crate::cli::DocsGenerateCommand::OpsSnippets(common) => {
+            | crate::cli::DocsGenerateCommand::OpsSnippets(common)
+            | crate::cli::DocsGenerateCommand::RealDataPages(common) => {
                 common.format = FormatArg::Json
             }
         },
@@ -1079,7 +1080,8 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
                 | crate::cli::DocsGenerateCommand::CommandLists(_)
                 | crate::cli::DocsGenerateCommand::SchemaSnippets(_)
                 | crate::cli::DocsGenerateCommand::OpenapiSnippets(_)
-                | crate::cli::DocsGenerateCommand::OpsSnippets(_) => {}
+                | crate::cli::DocsGenerateCommand::OpsSnippets(_)
+                | crate::cli::DocsGenerateCommand::RealDataPages(_) => {}
             },
         },
         Command::Configs { command } => match command {
@@ -1565,7 +1567,8 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 | crate::cli::DocsGenerateCommand::CommandLists(common)
                 | crate::cli::DocsGenerateCommand::SchemaSnippets(common)
                 | crate::cli::DocsGenerateCommand::OpenapiSnippets(common)
-                | crate::cli::DocsGenerateCommand::OpsSnippets(common) => {
+                | crate::cli::DocsGenerateCommand::OpsSnippets(common)
+                | crate::cli::DocsGenerateCommand::RealDataPages(common) => {
                     common.repo_root = Some(root.clone())
                 }
             },
