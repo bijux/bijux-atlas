@@ -34,6 +34,7 @@ Atlas documentation is organized by system understanding first, then execution d
 
 - Ten real-data runs: [Real Data Runs](tutorials/real-data/index.md)
 - Combined run report: [Real data runs report](reference/reports/real-data-runs.md)
+- E2E runbook with commands/results: [Real data E2E tutorial](tutorials/real-data-e2e.md)
 - Contract coverage: [_internal generated coverage](_internal/generated/docs-contract-coverage.json)
 
 ## Evidence-first Evaluation Path
@@ -42,6 +43,7 @@ Atlas documentation is organized by system understanding first, then execution d
 2. `bijux-dev-atlas tutorials plan-run --run-id rdr-001-genes-baseline --format json`
 3. `bijux-dev-atlas tutorials docs-report --format json`
 4. `bijux-dev-atlas docs generate real-data-pages --allow-write --format json`
+5. `cargo run -p bijux-dev-atlas -- tutorials real-data run-all --profile local --format json`
 
 ## Primary Reader Paths
 

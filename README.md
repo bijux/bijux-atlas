@@ -19,6 +19,9 @@ Ten deterministic end-to-end runs are the core proof surface.
 - Run catalog and intent: [`configs/tutorials/real-data-runs.json`](configs/tutorials/real-data-runs.json)
 - Combined report: [`docs/reference/reports/real-data-runs.md`](docs/reference/reports/real-data-runs.md)
 - Evidence dashboard: [`docs/tutorials/real-data/evidence-summary-dashboard.md`](docs/tutorials/real-data/evidence-summary-dashboard.md)
+- E2E tutorial (commands + results): [`docs/tutorials/real-data-e2e.md`](docs/tutorials/real-data-e2e.md)
+- E2E report page: [`docs/reference/reports/real-data-e2e-execution.md`](docs/reference/reports/real-data-e2e-execution.md)
+- Reproducible workflow definition: [`configs/tutorials/real-data-examples-workflow.json`](configs/tutorials/real-data-examples-workflow.json)
 
 ## How To Evaluate
 
@@ -28,6 +31,7 @@ Run these checks as the fastest evaluator path:
 2. `bijux-dev-atlas tutorials plan-run --run-id rdr-001-genes-baseline --format json`
 3. `bijux-dev-atlas tutorials docs-report --format json`
 4. `bijux-dev-atlas docs generate real-data-pages --allow-write --format json`
+5. `cargo run -p bijux-dev-atlas -- tutorials real-data run-all --profile local --format json`
 
 ## Evidence First
 
@@ -35,6 +39,8 @@ Evidence is treated as a product contract, not an optional report.
 
 - Human-readable summaries: `docs/_internal/generated/`
 - Run-level artifacts: `artifacts/tutorials/runs/<run_id>/`
+- Command execution log: `artifacts/tutorials/real-data-examples/command-log.json`
+- Heavy-run verification report: `artifacts/tutorials/real-data-examples/check-results-heavy-partial.json`
 - Contract and checks index: [`docs/_internal/governance/checks-and-contracts.md`](docs/_internal/governance/checks-and-contracts.md)
 
 ## Architecture Map
