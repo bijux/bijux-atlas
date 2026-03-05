@@ -23,7 +23,7 @@ include make/runenv.mk
 include make/verification.mk
 
 CURATED_TARGETS := \
-	artifacts-clean build checks checks-all checks-effect checks-group checks-pure checks-tag clean contract contract-all contract-effect contract-list contract-report contracts contracts-all contracts-changed contracts-ci contracts-configs contracts-configs-required contracts-crates contracts-docker contracts-docs contracts-docs-required contracts-effect contracts-fast contracts-group contracts-help contracts-json contracts-make contracts-make-required contracts-merge contracts-ops contracts-pr contracts-pure contracts-release contracts-repo contracts-root contracts-runtime contracts-tag docker docker-contracts docker-contracts-effect docker-gate doctor help k8s-render k8s-validate kind-down kind-reset kind-status kind-up lint-make make-fast make-target-list openapi-generate ops-contracts ops-contracts-effect ops-fast ops-nightly ops-pr registry-doctor release-plan root-surface-explain stack-down stack-up suites-all suites-list tests-all
+	artifacts-clean build checks checks-all checks-effect checks-group checks-pure checks-tag clean contract contract-all contract-effect contract-list contract-report contracts contracts-all contracts-changed contracts-ci contracts-configs contracts-configs-required contracts-crates contracts-docker contracts-docs contracts-docs-required contracts-effect contracts-fast contracts-group contracts-help contracts-json contracts-make contracts-make-required contracts-merge contracts-ops contracts-pr contracts-pure contracts-release contracts-repo contracts-root contracts-runtime contracts-tag docker docker-contracts docker-contracts-effect docker-gate doctor help k8s-render k8s-validate kind-down kind-reset kind-status kind-up lint-make make-fast make-target-list openapi-generate ops-contracts ops-contracts-effect ops-fast ops-nightly ops-pr registry-doctor release-plan release-verify root-surface-explain stack-down stack-up suites-all suites-list tests-all
 
 help: ## Show curated make targets owned by Rust control-plane wrappers
 	@$(DEV_ATLAS) make surface --format $(FORMAT)
@@ -168,4 +168,34 @@ registry-doctor: ## Validate governed suite registries and mappings
 tests-all: ## Run the deterministic test suite without external network
 	@$(DEV_ATLAS) tests run --mode all --artifacts-root $(ARTIFACT_ROOT) --run-id $(RUN_ID) $(if $(filter 1 true yes,$(INCLUDE_CLIENT_PYTHON)),--include-client-python,) --format $(FORMAT)
 
-.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean checks checks-all checks-effect checks-group checks-pure checks-tag clean doctor kind-down kind-reset kind-status kind-up openapi-generate registry-doctor release-plan root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly suites-all suites-list tests-all
+release-verify: ## Run release verification lane through bijux-dev-atlas only
+	@mkdir -p $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)
+	@echo "run: $(DEV_ATLAS) checks run --suite deep --include-internal --include-slow --allow-subprocess --allow-git --allow-write --allow-network --format json"
+	@$(DEV_ATLAS) checks run --suite deep --include-internal --include-slow --allow-subprocess --allow-git --allow-write --allow-network --format json --out $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/checks-all.json \
+	|| { echo "release-verify failed at checks-all; next: inspect $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/checks-all.json and rerun with --verbose"; exit 1; }
+	@echo "run: $(DEV_ATLAS) contract run --mode all --effects-policy allow --allow-subprocess --allow-network --allow-k8s --allow-fs-write --allow-docker-daemon --format json"
+	@$(DEV_ATLAS) contract run --mode all --effects-policy allow --allow-subprocess --allow-network --allow-k8s --allow-fs-write --allow-docker-daemon --format json --out $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/contracts-all.json \
+	|| { echo "release-verify failed at contracts-all; next: inspect $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/contracts-all.json and rerun a focused domain with --domain <name>"; exit 1; }
+	@echo "run: $(DEV_ATLAS) tests run --mode all --artifacts-root $(ARTIFACT_ROOT) --run-id $(RUN_ID) --format json"
+	@$(DEV_ATLAS) tests run --mode all --artifacts-root $(ARTIFACT_ROOT) --run-id $(RUN_ID) --format json --out $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/tests-all.json \
+	|| { echo "release-verify failed at test-all; next: inspect $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/tests-all.json and rerun the failing suite"; exit 1; }
+	@echo "run: $(DEV_ATLAS) docs build --allow-subprocess --allow-write --format json"
+	@$(DEV_ATLAS) docs build --allow-subprocess --allow-write --format json --out $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/docs-build.json \
+	|| { echo "release-verify failed at docs build; next: inspect $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/docs-build.json and fix docs build errors"; exit 1; }
+	@echo "run: $(DEV_ATLAS) release crates dry-run --format json"
+	@$(DEV_ATLAS) release crates dry-run --format json --out $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/crates-dry-run.json \
+	|| { echo "release-verify failed at crates packaging dry-run; next: inspect $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/crates-dry-run.json"; exit 1; }
+	@echo "run: $(DEV_ATLAS) release ops publish-plan --format json"
+	@$(DEV_ATLAS) release ops publish-plan --format json --out $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/ops-packaging-dry-run.json \
+	|| { echo "release-verify failed at ops packaging dry-run; next: inspect $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/ops-packaging-dry-run.json"; exit 1; }
+	@printf '{\n  "schema_version": 1,\n  "status": "ok",\n  "text": "release verify passed",\n  "artifacts": {\n    "checks": "%s",\n    "contracts": "%s",\n    "tests": "%s",\n    "docs_build": "%s",\n    "crates_dry_run": "%s",\n    "ops_packaging_dry_run": "%s"\n  }\n}\n' \
+	"$(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/checks-all.json" \
+	"$(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/contracts-all.json" \
+	"$(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/tests-all.json" \
+	"$(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/docs-build.json" \
+	"$(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/crates-dry-run.json" \
+	"$(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/ops-packaging-dry-run.json" \
+	> $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/summary.json
+	@echo "release-verify summary: $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/summary.json"
+
+.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean checks checks-all checks-effect checks-group checks-pure checks-tag clean doctor kind-down kind-reset kind-status kind-up openapi-generate registry-doctor release-plan release-verify root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly suites-all suites-list tests-all
