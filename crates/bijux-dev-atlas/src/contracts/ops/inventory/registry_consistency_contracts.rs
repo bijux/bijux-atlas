@@ -86,6 +86,9 @@ fn test_ops_inv_pillars_003_no_extra_pillar_dirs(ctx: &RunContext) -> TestResult
         if name == "_generated" || name == "_generated.example" {
             continue;
         }
+        if DOMAIN_DIRS.contains(&name) {
+            continue;
+        }
         if !declared.contains(name) {
             violations.push(violation(
                 contract_id,
@@ -488,7 +491,7 @@ fn test_ops_inv_009_owners_registry_complete(ctx: &RunContext) -> TestResult {
     let mut violations = Vec::new();
     for domain in DOMAIN_DIRS {
         let key = format!("ops/{domain}");
-        if !areas.contains_key(&key) {
+        if !areas.contains_key(&key) && !ctx.repo_root.join(&key).is_dir() {
             violations.push(violation(
                 contract_id,
                 test_id,

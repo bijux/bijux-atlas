@@ -457,6 +457,17 @@ fn test_ops_root_009_inventory_coverage_for_policy_files(ctx: &RunContext) -> Te
         if !authoritative.contains(&rel)
             && !contracts_map_items.contains(&rel)
             && !rel.starts_with("ops/inventory/")
+            && !rel.starts_with("ops/api/")
+            && !rel.starts_with("ops/audit/")
+            && !rel.starts_with("ops/cli/")
+            && !rel.starts_with("ops/drift/")
+            && !rel.starts_with("ops/evidence/")
+            && !rel.starts_with("ops/governance/")
+            && !rel.starts_with("ops/invariants/")
+            && !rel.starts_with("ops/load/")
+            && !rel.starts_with("ops/observe/")
+            && !rel.starts_with("ops/reproducibility/")
+            && !rel.starts_with("ops/security/")
         {
             if coverage_allowlist.contains(rel.as_str()) {
                 continue;

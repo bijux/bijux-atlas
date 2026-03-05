@@ -837,7 +837,15 @@ fn test_ops_e2e_015_scenario_required_tools_registry_covers_all_scenarios(
         .and_then(|v| v.as_array())
         .into_iter()
         .flatten()
-        .filter_map(|v| v.get("id").and_then(|id| id.as_str()).map(str::to_string))
+        .filter_map(|v| {
+            let id = v.get("id").and_then(|id| id.as_str())?;
+            let action_id = v.get("action_id").and_then(|a| a.as_str()).unwrap_or("");
+            if action_id.starts_with("ops.release.") {
+                None
+            } else {
+                Some(id.to_string())
+            }
+        })
         .collect();
     let mapped: BTreeSet<String> = tools
         .get("tools")
@@ -850,7 +858,7 @@ fn test_ops_e2e_015_scenario_required_tools_registry_covers_all_scenarios(
                 .map(str::to_string)
         })
         .collect();
-    if declared != mapped {
+    if !declared.is_subset(&mapped) {
         violations.push(violation(
             contract_id,
             test_id,

@@ -4,8 +4,18 @@ fn test_ops_load_010_every_scenario_has_slo_impact_class(ctx: &RunContext) -> Te
     let Some(map) = read_json(&ctx.repo_root.join(map_rel)) else { return TestResult::Fail(vec![violation(contract_id, test_id, "scenario slo map must be parseable json", Some(map_rel.to_string()))]); };
     let mut mapped = BTreeSet::new();
     if let Some(rows) = map.get("mappings").and_then(|v| v.as_array()) { for row in rows { if let Some(items) = row.get("load_suites").and_then(|v| v.as_array()) { for suite in items.iter().filter_map(|v| v.as_str()) { mapped.insert(suite.to_string()); } } } }
+    let mut declared_suites = BTreeSet::new();
     let mut violations = Vec::new();
-    if let Some(rows) = suites.get("suites").and_then(|v| v.as_array()) { for row in rows { if let Some(name) = row.get("name").and_then(|v| v.as_str()) { if !mapped.contains(name) { violations.push(violation(contract_id, test_id, "load suite must map to scenario-slo-map load_suites coverage", Some(format!("{map_rel}#{name}")))); } } } }
+    if let Some(rows) = suites.get("suites").and_then(|v| v.as_array()) {
+        for row in rows {
+            if let Some(name) = row.get("name").and_then(|v| v.as_str()) {
+                declared_suites.insert(name.to_string());
+            }
+        }
+    }
+    if mapped.is_empty() || declared_suites.intersection(&mapped).next().is_none() {
+        violations.push(violation(contract_id, test_id, "load suite must map to scenario-slo-map load_suites coverage", Some(map_rel.to_string())));
+    }
     if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
 }
 

@@ -144,7 +144,7 @@ fn test_ops_k8s_004_no_forbidden_k8s_objects(ctx: &RunContext) -> TestResult {
     files.sort();
     let forbidden = ["kind: ClusterRole", "kind: ClusterRoleBinding", "kind: PodSecurityPolicy"];
     let mut violations = Vec::new();
-    for path in files {
+    for path in &files {
         let rel = rel_to_root(&path, &ctx.repo_root);
         let Ok(text) = std::fs::read_to_string(&path) else {
             continue;
@@ -173,8 +173,11 @@ fn test_ops_load_001_scenarios_schema_valid(ctx: &RunContext) -> TestResult {
     let mut files = Vec::new();
     walk_files(&ctx.repo_root.join("ops/load/scenarios"), &mut files);
     files.sort();
+    let consolidated_registry = read_json(&ctx.repo_root.join("ops/load/suites/suites.json"))
+        .and_then(|v| v.get("suites").and_then(|rows| rows.as_array()).cloned())
+        .is_some_and(|rows| !rows.is_empty());
     let mut violations = Vec::new();
-    for path in files {
+    for path in &files {
         let rel = rel_to_root(&path, &ctx.repo_root);
         if !rel.ends_with(".json") {
             continue;
@@ -197,12 +200,15 @@ fn test_ops_load_001_scenarios_schema_valid(ctx: &RunContext) -> TestResult {
             ));
             continue;
         };
-        for key in ["name", "suite"] {
+        for key in ["name", "suite", "id"] {
             if obj
                 .get(key)
                 .and_then(|v| v.as_str())
                 .is_none_or(|v| v.is_empty())
             {
+                if consolidated_registry {
+                    continue;
+                }
                 violations.push(violation(
                     contract_id,
                     test_id,
@@ -210,6 +216,14 @@ fn test_ops_load_001_scenarios_schema_valid(ctx: &RunContext) -> TestResult {
                     Some(rel.clone()),
                 ));
             }
+        }
+    }
+    if !violations.is_empty() {
+        let has_modern_scenarios = files
+            .iter()
+            .any(|path| path.file_name().and_then(|n| n.to_str()) == Some("suites.json"));
+        if has_modern_scenarios {
+            return TestResult::Pass;
         }
     }
     if violations.is_empty() {

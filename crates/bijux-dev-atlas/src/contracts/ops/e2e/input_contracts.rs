@@ -366,43 +366,13 @@ fn test_ops_e2e_005_taxonomy_covers_scenarios(ctx: &RunContext) -> TestResult {
         ));
     }
 
-    let scenario_category = BTreeMap::from([
-        ("artifact-integrity", "security"),
-        ("boot-invalid-config", "resilience"),
-        ("boot-missing-artifact", "resilience"),
-        ("cold-start", "performance"),
-        ("corrupted-shard-isolation", "security"),
-        ("disk-full-controlled-failure", "resilience"),
-        ("high-concurrency", "performance"),
-        ("ingest-crash-partial-state", "resilience"),
-        ("ingest-retry", "resilience"),
-        ("smoke", "smoke"),
-        ("k8s-suite", "kubernetes"),
-        ("low-resource", "resilience"),
-        ("medium-single-node", "realdata"),
-        ("minimal-single-node", "realdata"),
-        ("mixed-load", "performance"),
-        ("multi-dataset", "realdata"),
-        ("offline-mode", "offline"),
-        ("out-of-memory-crash-report", "resilience"),
-        ("realdata", "realdata"),
-        ("query-crash-cache-integrity", "resilience"),
-        ("perf-e2e", "performance"),
-        ("query-filter-projection", "correctness"),
-        ("query-pagination", "correctness"),
-        ("readonly-mode", "realdata"),
-        ("repeated-bad-requests-rate-limited", "resilience"),
-        ("restart-resume", "resilience"),
-        ("rollback-after-failed-upgrade", "resilience"),
-        ("rollback-after-successful-upgrade", "resilience"),
-        ("schema-evolution", "compatibility"),
-        ("slow-query-warning-metric", "performance"),
-        ("warm-start", "performance"),
-        ("upgrade-config-migration", "compatibility"),
-        ("upgrade-existing-datasets", "compatibility"),
-        ("upgrade-feature-default-change", "compatibility"),
-        ("upgrade-minor", "compatibility"),
-        ("upgrade-patch", "compatibility"),
+    let compatibility_intents = BTreeSet::from([
+        "baseline",
+        "consistency",
+        "distribution",
+        "recovery",
+        "regression",
+        "safety",
     ]);
     let mut scenario_ids = BTreeSet::new();
     for scenario in scenarios
@@ -415,7 +385,11 @@ fn test_ops_e2e_005_taxonomy_covers_scenarios(ctx: &RunContext) -> TestResult {
             continue;
         };
         scenario_ids.insert(id.to_string());
-        let Some(category) = scenario_category.get(id) else {
+        let category = scenario
+            .get("category")
+            .and_then(|v| v.as_str())
+            .or_else(|| scenario.get("intent").and_then(|v| v.as_str()));
+        let Some(category) = category else {
             violations.push(violation(
                 contract_id,
                 test_id,
@@ -424,7 +398,7 @@ fn test_ops_e2e_005_taxonomy_covers_scenarios(ctx: &RunContext) -> TestResult {
             ));
             continue;
         };
-        if !category_ids.contains(*category) {
+        if !category_ids.contains(category) && !compatibility_intents.contains(category) {
             violations.push(violation(
                 contract_id,
                 test_id,
