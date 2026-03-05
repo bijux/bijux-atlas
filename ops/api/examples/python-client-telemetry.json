@@ -1,0 +1,16 @@
+{
+  "client": "atlas-client",
+  "events": [
+    {
+      "event": "atlas.http.request.start",
+      "fields": {"url": "http://localhost:8080/v1/query", "attempt": 0}
+    },
+    {
+      "event": "atlas.http.request.complete",
+      "fields": {"status_code": 200, "attempt": 0}
+    }
+  ],
+  "logs": [
+    "atlas.http.request.complete | {'url': 'http://localhost:8080/v1/query', 'status_code': 200, 'attempt': 0}"
+  ]
+}
