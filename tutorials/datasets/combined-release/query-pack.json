@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "dataset": "combined-release",
+  "queries": [
+    {
+      "name": "total_record_count",
+      "class": "correctness",
+      "sql": "SELECT COUNT(*) AS total_record_count FROM combined_release;"
+    },
+    {
+      "name": "sample_lookup_latency",
+      "class": "performance",
+      "sql": "SELECT * FROM combined_release ORDER BY id LIMIT 10;"
+    }
+  ]
+}

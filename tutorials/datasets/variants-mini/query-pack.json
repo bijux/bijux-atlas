@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "dataset": "variants-mini",
+  "queries": [
+    {
+      "name": "total_record_count",
+      "class": "correctness",
+      "sql": "SELECT COUNT(*) AS total_record_count FROM variants_mini;"
+    },
+    {
+      "name": "sample_lookup_latency",
+      "class": "performance",
+      "sql": "SELECT * FROM variants_mini ORDER BY id LIMIT 10;"
+    }
+  ]
+}

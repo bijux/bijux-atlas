@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "dataset": "expression-medium",
+  "queries": [
+    {
+      "name": "total_record_count",
+      "class": "correctness",
+      "sql": "SELECT COUNT(*) AS total_record_count FROM expression_medium;"
+    },
+    {
+      "name": "sample_lookup_latency",
+      "class": "performance",
+      "sql": "SELECT * FROM expression_medium ORDER BY id LIMIT 10;"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "dataset": "population-medium",
+  "queries": [
+    {
+      "name": "total_record_count",
+      "class": "correctness",
+      "sql": "SELECT COUNT(*) AS total_record_count FROM population_medium;"
+    },
+    {
+      "name": "sample_lookup_latency",
+      "class": "performance",
+      "sql": "SELECT * FROM population_medium ORDER BY id LIMIT 10;"
+    }
+  ]
+}

@@ -1,5 +1,7 @@
--- named_query: record_count
-SELECT COUNT(*) AS record_count FROM phenotype_medium;
+-- named_query: total_record_count
+-- query_class: correctness
+SELECT COUNT(*) AS total_record_count FROM phenotype_medium;
 
--- named_query: sample_rows
-SELECT * FROM phenotype_medium LIMIT 10;
+-- named_query: sample_lookup_latency
+-- query_class: performance
+SELECT * FROM phenotype_medium ORDER BY id LIMIT 10;
