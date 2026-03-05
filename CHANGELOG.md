@@ -3,13 +3,14 @@
 ## v0.1.2
 
 ### Added
-- 
+- Ops purity governance reports: `artifacts/governance/ops_purity_report.json` and `artifacts/governance/ops_purity_report.md`.
 
 ### Changed
-- 
+- `migrations status` now fails when Python files are present under `ops/`.
+- Governance report now includes `Directory Purity` and `Repo purity` sections.
 
 ### Fixed
-- 
+- Removed `ops/cli/perf/cli_ux_benchmark.py`; CLI UX benchmark execution is now dev-atlas only.
 
 ### Breaking Changes
 - none

@@ -19,3 +19,11 @@ tags:
 - New explanatory command: `bijux-dev-atlas runtime explain-config-schema`.
 
 Rationale: runtime diagnostics are repository operations, not end-user product flows.
+
+## 2026-03-05: ops benchmark runner moved to dev-atlas perf domain
+
+- Removed: `python ops/cli/perf/cli_ux_benchmark.py`
+- Replacement: `bijux-dev-atlas perf cli-ux bench`
+- Comparison command: `bijux-dev-atlas perf cli-ux diff <baseline> <candidate>`
+
+Rationale: benchmark execution is governed as control-plane behavior and must not live as ad-hoc script tooling under `ops/`.

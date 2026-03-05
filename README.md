@@ -58,6 +58,10 @@ Planned publication surfaces:
 
 Tutorial automation is executed through `bijux-dev-atlas` commands. Legacy tutorial script entrypoints are removed. See [`docs/tutorials/run-with-dev-atlas.md`](docs/tutorials/run-with-dev-atlas.md).
 
+## Perf Benchmark Runtime
+
+CLI UX perf benchmarks are executed through `bijux-dev-atlas perf cli-ux bench` and `bijux-dev-atlas perf cli-ux diff`. The repository no longer keeps Python benchmark runners under `ops/`.
+
 ## Quickstart By Persona
 
 ### User
