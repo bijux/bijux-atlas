@@ -82,7 +82,7 @@ fn canonical_make_contract_targets_do_not_parse_output() {
 }
 
 #[test]
-fn make_wrappers_verify_command_runs_contract_verification() {
+fn slow_make_wrappers_verify_command_runs_contract_verification() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .args(["make", "wrappers", "verify", "--format", "json"])
         .output()

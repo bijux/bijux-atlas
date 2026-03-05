@@ -13,7 +13,7 @@ fn repo_root() -> PathBuf {
 }
 
 #[test]
-fn reproduce_run_emits_source_snapshot_hash() {
+fn slow_reproduce_run_emits_source_snapshot_hash() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["reproduce", "run", "--format", "json"])
