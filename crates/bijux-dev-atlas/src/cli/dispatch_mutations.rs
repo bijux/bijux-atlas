@@ -786,9 +786,10 @@ fn force_json_observe(command: &mut ObserveCommand) {
 
 fn force_json_api(command: &mut ApiCommand) {
     match command {
-        ApiCommand::List(args) | ApiCommand::Verify(args) | ApiCommand::Contract(args) => {
-            args.format = FormatArg::Json
-        }
+        ApiCommand::List(args)
+        | ApiCommand::Verify(args)
+        | ApiCommand::Validate(args)
+        | ApiCommand::Contract(args) => args.format = FormatArg::Json,
         ApiCommand::Explain(args) => args.common.format = FormatArg::Json,
         ApiCommand::Diff(args) => args.common.format = FormatArg::Json,
     }
@@ -1586,9 +1587,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             },
         },
         Command::Api { command } => match command {
-            ApiCommand::List(args) | ApiCommand::Verify(args) | ApiCommand::Contract(args) => {
-                args.repo_root = Some(root.clone())
-            }
+            ApiCommand::List(args)
+            | ApiCommand::Verify(args)
+            | ApiCommand::Validate(args)
+            | ApiCommand::Contract(args) => args.repo_root = Some(root.clone()),
             ApiCommand::Explain(args) => args.common.repo_root = Some(root.clone()),
             ApiCommand::Diff(args) => args.common.repo_root = Some(root.clone()),
         },

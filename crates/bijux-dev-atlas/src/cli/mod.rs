@@ -401,6 +401,7 @@ pub enum ApiCommand {
     Explain(ApiExplainArgs),
     Diff(ApiDiffArgs),
     Verify(ApiCommonArgs),
+    Validate(ApiCommonArgs),
     Contract(ApiCommonArgs),
 }
 

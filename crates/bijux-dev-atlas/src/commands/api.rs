@@ -14,9 +14,17 @@ const OPENAPI_VALIDATION_CONTRACT: &str =
 const OPENAPI_GOLDEN: &str = "ops/api/goldens/openapi-v1.snapshot.json";
 const API_DIFF_ARTIFACT: &str = "artifacts/api/openapi-diff-report.json";
 const API_COVERAGE_ARTIFACT: &str = "artifacts/api/api-coverage-report.json";
+const API_COMPATIBILITY_REPORT_ARTIFACT: &str = "artifacts/api/api-compatibility-report.json";
 const API_EVIDENCE_BUNDLE: &str = "artifacts/api/api-contract-evidence-bundle.json";
+const API_REGISTRY_SNAPSHOT_ARTIFACT: &str = "artifacts/api/api-contract-registry-snapshot.json";
+const API_EXAMPLE_REQUESTS_ARTIFACT: &str = "artifacts/api/api-example-requests.json";
+const API_EXAMPLE_RESPONSES_ARTIFACT: &str = "artifacts/api/api-example-responses.json";
+const API_EXAMPLE_DATASET_QUERIES_ARTIFACT: &str = "artifacts/api/api-example-dataset-queries.json";
 const API_DOC_INDEX: &str = "docs/api/generated/endpoint-index.md";
 const API_DOC_TEMPLATES: &str = "docs/api/generated/endpoint-templates.md";
+const API_SCHEMA_REFERENCE: &str = "docs/api/generated/api-schema-reference.md";
+const API_CONTRACT_DOC: &str = "docs/api/generated/api-contract-documentation.md";
+const API_COMPATIBILITY_HARNESS: &str = "ops/api/contracts/api-compatibility-harness.json";
 
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
     let text = fs::read_to_string(path)
@@ -92,7 +100,127 @@ fn ensure_api_docs_generated(root: &Path, spec: &serde_json::Value) -> Result<()
         "- Security notes:",
     ]
     .join("\n");
-    write_text(&root.join(API_DOC_TEMPLATES), &format!("{}\n", templates))
+    write_text(&root.join(API_DOC_TEMPLATES), &format!("{}\n", templates))?;
+
+    let mut schema_lines = vec![
+        "# API Schema Reference".to_string(),
+        "".to_string(),
+        "| Schema | Kind |".to_string(),
+        "|---|---|".to_string(),
+    ];
+    if let Some(schemas) = spec
+        .get("components")
+        .and_then(|v| v.get("schemas"))
+        .and_then(serde_json::Value::as_object)
+    {
+        let mut keys = schemas.keys().cloned().collect::<Vec<_>>();
+        keys.sort();
+        for key in keys {
+            schema_lines.push(format!("| `{}` | `component` |", key));
+        }
+    }
+    write_text(
+        &root.join(API_SCHEMA_REFERENCE),
+        &format!("{}\n", schema_lines.join("\n")),
+    )?;
+
+    let contract_lines = [
+        "# API Contract Documentation",
+        "",
+        "- OpenAPI source: `configs/openapi/v1/openapi.generated.json`",
+        "- Surface registry: `ops/api/surface-registry.json`",
+        "- Validation contract: `ops/api/contracts/openapi-schema-validation-contract.json`",
+        "- Version tracking: `ops/api/openapi-version-tracking.json`",
+        "- Compatibility harness: `ops/api/contracts/api-compatibility-harness.json`",
+    ]
+    .join("\n");
+    write_text(
+        &root.join(API_CONTRACT_DOC),
+        &format!("{}\n", contract_lines),
+    )
+}
+
+fn generate_examples(root: &Path, spec: &serde_json::Value) -> Result<(), String> {
+    let paths = spec
+        .get("paths")
+        .and_then(serde_json::Value::as_object)
+        .cloned()
+        .unwrap_or_default();
+    let mut request_rows = Vec::new();
+    let mut response_rows = Vec::new();
+    for (path, operations) in paths {
+        if let Some(obj) = operations.as_object() {
+            for (method, _) in obj {
+                request_rows.push(serde_json::json!({
+                    "method": method.to_uppercase(),
+                    "path": path,
+                    "example": format!("curl -X {} http://127.0.0.1:8080{}", method.to_uppercase(), path),
+                }));
+                response_rows.push(serde_json::json!({
+                    "method": method.to_uppercase(),
+                    "path": path,
+                    "status": 200,
+                    "body_shape": "application/json",
+                }));
+            }
+        }
+    }
+    let dataset_queries = serde_json::json!({
+        "schema_version": 1,
+        "kind": "api_example_dataset_queries",
+        "queries": [
+            "/v1/datasets?release=110&species=homo_sapiens&assembly=GRCh38&limit=5",
+            "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=ENSG000001",
+            "/v1/genes/ENSG000001/transcripts?release=110&species=homo_sapiens&assembly=GRCh38&limit=20"
+        ]
+    });
+    write_json(
+        &root.join(API_EXAMPLE_REQUESTS_ARTIFACT),
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "api_example_requests",
+            "requests": request_rows
+        }),
+    )?;
+    write_json(
+        &root.join(API_EXAMPLE_RESPONSES_ARTIFACT),
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "api_example_responses",
+            "responses": response_rows
+        }),
+    )?;
+    write_json(
+        &root.join(API_EXAMPLE_DATASET_QUERIES_ARTIFACT),
+        &dataset_queries,
+    )
+}
+
+fn compatibility_report(
+    root: &Path,
+    spec: &serde_json::Value,
+) -> Result<serde_json::Value, String> {
+    let harness = read_json(&root.join(API_COMPATIBILITY_HARNESS))?;
+    let tracked = read_json(&root.join(OPENAPI_VERSION_TRACKING))?;
+    let current_version = spec
+        .get("info")
+        .and_then(|v| v.get("version"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("unknown");
+    let expected = tracked
+        .get("active_openapi_version")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("unknown");
+    let report = serde_json::json!({
+        "schema_version": 1,
+        "kind": "api_compatibility_report",
+        "status": if current_version == expected { "ok" } else { "failed" },
+        "harness": harness,
+        "current_version": current_version,
+        "expected_version": expected
+    });
+    write_json(&root.join(API_COMPATIBILITY_REPORT_ARTIFACT), &report)?;
+    Ok(report)
 }
 
 fn list_api(common: ApiCommonArgs) -> Result<(String, i32), String> {
@@ -206,6 +334,7 @@ fn verify_api(common: ApiCommonArgs) -> Result<(String, i32), String> {
         "paths": endpoints,
     });
     write_json(&root.join(API_COVERAGE_ARTIFACT), &coverage)?;
+    let compatibility = compatibility_report(&root, &spec)?;
     let status = if version == expected { "ok" } else { "failed" };
     let payload = serde_json::json!({
         "schema_version": 1,
@@ -218,17 +347,52 @@ fn verify_api(common: ApiCommonArgs) -> Result<(String, i32), String> {
             "validation_contract": contract,
         },
         "artifacts": {
-            "coverage": API_COVERAGE_ARTIFACT
-        }
+            "coverage": API_COVERAGE_ARTIFACT,
+            "compatibility_report": API_COMPATIBILITY_REPORT_ARTIFACT
+        },
+        "compatibility": compatibility
     });
     let code = if status == "ok" { 0 } else { 2 };
     Ok((emit_payload(common.format, common.out, &payload)?, code))
+}
+
+fn validate_api_contract(common: ApiCommonArgs) -> Result<(String, i32), String> {
+    let (rendered, code) = verify_api(common.clone())?;
+    let parsed = serde_json::from_str::<serde_json::Value>(&rendered).unwrap_or_else(|_| {
+        serde_json::json!({
+            "schema_version": 1,
+            "kind": "api_validate_contract",
+            "status": if code == 0 { "ok" } else { "failed" },
+        })
+    });
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "api_validate_contract",
+        "status": parsed.get("status").and_then(serde_json::Value::as_str).unwrap_or("failed"),
+        "verify": parsed
+    });
+    Ok((emit_payload(common.format, common.out, &payload)?, code))
+}
+
+fn contract_registry_snapshot(root: &Path) -> Result<(), String> {
+    let registry = read_json(&root.join(API_SURFACE_REGISTRY))?;
+    write_json(
+        &root.join(API_REGISTRY_SNAPSHOT_ARTIFACT),
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "api_contract_registry_snapshot",
+            "registry": registry,
+        }),
+    )
 }
 
 fn contract_api(common: ApiCommonArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(common.repo_root)?;
     let spec = read_json(&root.join(OPENAPI_GENERATED))?;
     ensure_api_docs_generated(&root, &spec)?;
+    generate_examples(&root, &spec)?;
+    compatibility_report(&root, &spec)?;
+    contract_registry_snapshot(&root)?;
     let registry = read_json(&root.join(API_SURFACE_REGISTRY))?;
     let payload = serde_json::json!({
         "schema_version": 1,
@@ -238,6 +402,12 @@ fn contract_api(common: ApiCommonArgs) -> Result<(String, i32), String> {
             "evidence_bundle": API_EVIDENCE_BUNDLE,
             "endpoint_index": API_DOC_INDEX,
             "endpoint_templates": API_DOC_TEMPLATES,
+            "schema_reference": API_SCHEMA_REFERENCE,
+            "contract_documentation": API_CONTRACT_DOC,
+            "registry_snapshot": API_REGISTRY_SNAPSHOT_ARTIFACT,
+            "example_requests": API_EXAMPLE_REQUESTS_ARTIFACT,
+            "example_responses": API_EXAMPLE_RESPONSES_ARTIFACT,
+            "example_dataset_queries": API_EXAMPLE_DATASET_QUERIES_ARTIFACT,
         }
     });
     write_json(
@@ -250,10 +420,22 @@ fn contract_api(common: ApiCommonArgs) -> Result<(String, i32), String> {
             "contracts": [
                 OPENAPI_VALIDATION_CONTRACT,
                 OPENAPI_VERSION_TRACKING,
+                API_COMPATIBILITY_HARNESS,
             ],
             "docs": [
                 API_DOC_INDEX,
                 API_DOC_TEMPLATES,
+                API_SCHEMA_REFERENCE,
+                API_CONTRACT_DOC,
+            ],
+            "examples": [
+                API_EXAMPLE_REQUESTS_ARTIFACT,
+                API_EXAMPLE_RESPONSES_ARTIFACT,
+                API_EXAMPLE_DATASET_QUERIES_ARTIFACT,
+            ],
+            "snapshots": [
+                OPENAPI_GOLDEN,
+                API_REGISTRY_SNAPSHOT_ARTIFACT,
             ]
         }),
     )?;
@@ -266,6 +448,7 @@ pub(crate) fn run_api_command(_quiet: bool, command: ApiCommand) -> Result<(Stri
         ApiCommand::Explain(args) => explain_api(args),
         ApiCommand::Diff(args) => diff_api(args),
         ApiCommand::Verify(args) => verify_api(args),
+        ApiCommand::Validate(args) => validate_api_contract(args),
         ApiCommand::Contract(args) => contract_api(args),
     }
 }
