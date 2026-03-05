@@ -1,0 +1,11 @@
+{
+  "benchmarks": [
+    {
+      "commands_counted": 40000,
+      "elapsed_ms": 28.151,
+      "iterations": 5000,
+      "name": "help_parse",
+      "ops_per_sec": 177611.22
+    }
+  ]
+}

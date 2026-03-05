@@ -1,0 +1,9 @@
+{
+  "scenarios": [
+    {"id": "discover-domains", "goal": "find command groups quickly"},
+    {"id": "enable-completions", "goal": "reduce typing errors"},
+    {"id": "use-config-overrides", "goal": "enforce deterministic defaults"},
+    {"id": "interactive-help", "goal": "onboard users faster"},
+    {"id": "consume-telemetry", "goal": "audit CLI command executions"}
+  ]
+}

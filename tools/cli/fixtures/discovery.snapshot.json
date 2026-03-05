@@ -1,0 +1,6 @@
+{
+  "integration": ["api"],
+  "operations": ["load", "observe", "ops"],
+  "verification": ["check", "registry", "tests"],
+  "governance": ["docs"]
+}

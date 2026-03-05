@@ -1,0 +1,11 @@
+Usage: bijux-dev-atlas [OPTIONS] [COMMAND]
+
+Commands:
+  api        API contract operations
+  observe    Observability commands
+  load       Load testing commands
+  ops        Operations workflows
+  docs       Documentation workflows
+  check      Check execution commands
+  tests      Test suite commands
+  registry   Registry and reports
