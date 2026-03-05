@@ -138,6 +138,10 @@ pub enum Command {
         #[command(subcommand)]
         command: ObserveCommand,
     },
+    Load {
+        #[command(subcommand)]
+        command: LoadCommand,
+    },
     Invariants {
         #[command(subcommand)]
         command: InvariantsCommand,
@@ -425,6 +429,38 @@ pub struct ObserveTracesCommonArgs {
     pub format: FormatArg,
     #[arg(long)]
     pub out: Option<PathBuf>,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum LoadCommand {
+    Run(LoadCommonArgs),
+    Compare(LoadCompareArgs),
+    Baseline(LoadCommonArgs),
+    Explain(LoadCommonArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct LoadCommonArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long, default_value = "mixed_workload")]
+    pub scenario: String,
+    #[arg(long, default_value_t = 300)]
+    pub duration_secs: u32,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct LoadCompareArgs {
+    #[command(flatten)]
+    pub common: LoadCommonArgs,
+    #[arg(long)]
+    pub baseline: Option<PathBuf>,
+    #[arg(long)]
+    pub current: Option<PathBuf>,
 }
 
 #[derive(Subcommand, Debug)]

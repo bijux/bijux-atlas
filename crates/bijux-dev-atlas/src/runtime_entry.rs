@@ -46,6 +46,7 @@ pub(crate) use drift_commands::run_drift_command;
 pub(crate) use governance_commands::run_governance_command;
 pub(crate) use invariants_commands::run_invariants_command;
 pub(crate) use make_commands::run_make_command;
+pub(crate) use load_commands::run_load_command;
 pub(crate) use observe_commands::run_observe_command;
 pub(crate) use ops_commands::{emit_payload, normalize_tool_version_with_regex, run_ops_command};
 pub(crate) use perf_commands::run_perf_command;

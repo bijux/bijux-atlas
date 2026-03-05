@@ -12,8 +12,8 @@ use crate::{
     run_check_run, run_check_tree_budgets, run_checks_catalog_explain, run_checks_catalog_list,
     run_configs_command, run_contracts_command, run_data_command, run_demo_command,
     run_docker_command, run_docs_command, run_drift_command, run_gates_command,
-    run_governance_command, run_help_inventory_command, run_invariants_command, run_make_command,
-    run_observe_command, run_ops_command, run_perf_command, run_policies_command,
+    run_governance_command, run_help_inventory_command, run_invariants_command, run_load_command,
+    run_make_command, run_observe_command, run_ops_command, run_perf_command, run_policies_command,
     run_print_boundaries_command, run_registry_check_by_id, run_registry_command,
     run_registry_contract_by_id, run_release_command, run_reproduce_command, run_security_command,
     run_suites_command, run_system_command, run_version_command, run_workflows_command,
@@ -215,6 +215,22 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
             }
             Err(err) => {
                 let _ = writeln!(io::stderr(), "bijux-dev-atlas observe failed: {err}");
+                1
+            }
+        },
+        Command::Load { command } => match run_load_command(cli.quiet, command) {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    if code == 0 {
+                        let _ = writeln!(io::stdout(), "{rendered}");
+                    } else {
+                        let _ = writeln!(io::stderr(), "{rendered}");
+                    }
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas load failed: {err}");
                 1
             }
         },
