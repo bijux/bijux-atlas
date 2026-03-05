@@ -89,7 +89,8 @@ fn user_cli_commands_match_governance_surface_registry() {
         .collect();
     expected.sort();
     assert_eq!(
-        observed, expected,
+        observed,
+        expected,
         "user CLI command surface must match {}",
         config_path.display()
     );
@@ -107,7 +108,8 @@ fn user_cli_commands_match_documented_catalog() {
     let catalog_path = root.join("docs/architecture/user-cli-command-catalog.md");
     let documented = parse_markdown_command_catalog(&catalog_path);
     assert_eq!(
-        observed, documented,
+        observed,
+        documented,
         "user CLI command list must stay in sync with {}",
         catalog_path.display()
     );

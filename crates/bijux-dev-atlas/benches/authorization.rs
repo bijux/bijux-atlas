@@ -42,7 +42,10 @@ fn load_engine() -> AuthorizationEngine {
     for role in role_catalog.roles {
         registry.upsert_role(role);
     }
-    if let Some(rows) = assignments.get("assignments").and_then(serde_yaml::Value::as_sequence) {
+    if let Some(rows) = assignments
+        .get("assignments")
+        .and_then(serde_yaml::Value::as_sequence)
+    {
         for row in rows {
             let Some(principal) = row.get("principal").and_then(serde_yaml::Value::as_str) else {
                 continue;
@@ -54,7 +57,11 @@ fn load_engine() -> AuthorizationEngine {
         }
     }
 
-    AuthorizationEngine::new(registry, PermissionEvaluator::new(permission_catalog), policy)
+    AuthorizationEngine::new(
+        registry,
+        PermissionEvaluator::new(permission_catalog),
+        policy,
+    )
 }
 
 fn authorization_benchmarks(c: &mut Criterion) {

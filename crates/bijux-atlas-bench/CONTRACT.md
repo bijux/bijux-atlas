@@ -1,4 +1,4 @@
-# CONTRACT (bijux-atlas-benchmark)
+# CONTRACT (bijux-atlas-bench)
 
 - Owner: bijux-atlas-performance
 - Stability: stable

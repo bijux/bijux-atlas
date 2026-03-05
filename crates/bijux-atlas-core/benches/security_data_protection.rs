@@ -52,5 +52,8 @@ fn security_data_protection_benchmarks(c: &mut Criterion) {
     });
 }
 
-criterion_group!(security_data_protection, security_data_protection_benchmarks);
+criterion_group!(
+    security_data_protection,
+    security_data_protection_benchmarks
+);
 criterion_main!(security_data_protection);

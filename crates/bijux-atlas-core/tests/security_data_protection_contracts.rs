@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use bijux_atlas_core::domain::CertificateRotationState;
 use bijux_atlas_core::{
     calculate_manifest_checksum, detect_tampering, https_enforced, load_certificate_bundle,
     tls_handshake_allowed, validate_certificate_bundle, verify_artifact_checksum,
     verify_artifact_signature, verify_dataset_manifest_integrity, DatasetManifestIntegrity,
     TlsConfig,
 };
-use bijux_atlas_core::domain::CertificateRotationState;
 use std::collections::BTreeMap;
 use std::fs;
 
@@ -16,12 +16,21 @@ fn tls_bundle_and_rotation_contract() {
     let cert = temp.path().join("tls.crt");
     let key = temp.path().join("tls.key");
     let ca = temp.path().join("ca.crt");
-    fs::write(&cert, "-----BEGIN CERTIFICATE-----\nABC\n-----END CERTIFICATE-----\n")
-        .expect("write cert");
-    fs::write(&key, "-----BEGIN PRIVATE KEY-----\nABC\n-----END PRIVATE KEY-----\n")
-        .expect("write key");
-    fs::write(&ca, "-----BEGIN CERTIFICATE-----\nABC\n-----END CERTIFICATE-----\n")
-        .expect("write ca");
+    fs::write(
+        &cert,
+        "-----BEGIN CERTIFICATE-----\nABC\n-----END CERTIFICATE-----\n",
+    )
+    .expect("write cert");
+    fs::write(
+        &key,
+        "-----BEGIN PRIVATE KEY-----\nABC\n-----END PRIVATE KEY-----\n",
+    )
+    .expect("write key");
+    fs::write(
+        &ca,
+        "-----BEGIN CERTIFICATE-----\nABC\n-----END CERTIFICATE-----\n",
+    )
+    .expect("write ca");
 
     let bundle = load_certificate_bundle(&TlsConfig {
         enabled: true,
@@ -66,7 +75,11 @@ fn encryption_integrity_and_tamper_contract() {
         hasher.update(signature_input.as_bytes());
         format!("{:x}", hasher.finalize())
     };
-    assert!(verify_artifact_signature(&checksum, signing_key, &signature));
+    assert!(verify_artifact_signature(
+        &checksum,
+        signing_key,
+        &signature
+    ));
 
     assert!(detect_tampering(&checksum, "mismatch", None, None));
     assert!(!detect_tampering(&checksum, &checksum, None, None));

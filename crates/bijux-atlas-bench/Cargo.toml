@@ -1,5 +1,5 @@
 [package]
-name = "bijux-atlas-benchmark"
+name = "bijux-atlas-bench"
 version.workspace = true
 edition.workspace = true
 license = "Apache-2.0"

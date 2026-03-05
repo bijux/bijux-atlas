@@ -29,7 +29,8 @@ fn security_supply_chain_benchmarks(c: &mut Criterion) {
 
     c.bench_function("security_actions_inventory_parse", |b| {
         b.iter(|| {
-            let raw = fs::read_to_string(black_box(&actions_inventory_path)).expect("read actions inventory");
+            let raw = fs::read_to_string(black_box(&actions_inventory_path))
+                .expect("read actions inventory");
             let value: serde_json::Value =
                 serde_json::from_str(black_box(&raw)).expect("parse actions inventory");
             let rows = value

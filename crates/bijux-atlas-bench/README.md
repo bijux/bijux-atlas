@@ -1,4 +1,4 @@
-# bijux-atlas-benchmark
+# bijux-atlas-bench
 
 Benchmark models and harness primitives for reproducible Atlas performance evidence.
 
@@ -12,8 +12,8 @@ Import this crate from benchmark runners and report generators to load benchmark
 
 ## Where docs live
 
-- Crate docs index: `crates/bijux-atlas-benchmark/docs/index.md`
-- Contract: `crates/bijux-atlas-benchmark/CONTRACT.md`
+- Crate docs index: `crates/bijux-atlas-bench/docs/index.md`
+- Contract: `crates/bijux-atlas-bench/CONTRACT.md`
 
 ## Modules
 
