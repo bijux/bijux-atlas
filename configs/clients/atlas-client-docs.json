@@ -1,0 +1,13 @@
+{
+  "client": "atlas-client",
+  "python_sdk": "0.1.x",
+  "atlas_runtime": "0.1.x",
+  "api_surface": "v1 query and dataset endpoints",
+  "docs_entries": [
+    {"title": "Architecture", "path": "architecture.md"},
+    {"title": "API Reference", "path": "api-reference.md"},
+    {"title": "Quickstart", "path": "quickstart.md"},
+    {"title": "Troubleshooting", "path": "troubleshooting.md"},
+    {"title": "Version Compatibility Matrix", "path": "version-compatibility-matrix.md"}
+  ]
+}

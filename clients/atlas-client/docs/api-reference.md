@@ -1,44 +1,21 @@
 # Python Client API Reference
 
-## `ClientConfig`
+Generated from repository OpenAPI snapshot.
 
-```python
-ClientConfig(
-    base_url: str,
-    timeout_seconds: float = 10.0,
-    max_retries: int = 2,
-    backoff_seconds: float = 0.2,
-    user_agent: str = "atlas-client/0.1.0",
-    default_headers: dict[str, str] = {},
-)
-```
+## Supported Runtime Endpoints
 
-## `AtlasClient`
-
-```python
-AtlasClient(config: ClientConfig, logger: logging.Logger | None = None, trace_hook: TraceHook | None = None)
-```
-
-Methods:
-
-- `query(request: QueryRequest) -> Page`
-- `stream_query(request: QueryRequest) -> Iterator[dict[str, object]]`
-
-## `QueryRequest`
-
-```python
-QueryRequest(
-    dataset: str,
-    filters: dict[str, Any] = {},
-    fields: list[str] = [],
-    limit: int | None = None,
-    page_token: str | None = None,
-)
-```
-
-## Errors
-
-- `AtlasClientError`
-- `AtlasConfigError`
-- `AtlasApiError`
-- `AtlasRetryExhaustedError`
+- `/v1/_debug/echo`
+- `/v1/datasets`
+- `/v1/datasets/{release}/{species}/{assembly}`
+- `/v1/diff/genes`
+- `/v1/diff/region`
+- `/v1/genes`
+- `/v1/genes/count`
+- `/v1/genes/{gene_id}/sequence`
+- `/v1/genes/{gene_id}/transcripts`
+- `/v1/openapi.json`
+- `/v1/query/validate`
+- `/v1/releases/{release}/species/{species}/assemblies/{assembly}`
+- `/v1/sequence/region`
+- `/v1/transcripts/{tx_id}`
+- `/v1/version`

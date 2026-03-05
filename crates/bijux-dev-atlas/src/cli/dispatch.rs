@@ -19,6 +19,7 @@ use crate::{
     run_registry_command, run_registry_contract_by_id, run_release_command, run_reproduce_command,
     run_runtime_command, run_security_command, run_suites_command, run_system_command,
     run_tutorials_command,
+    run_clients_command,
     run_version_command, run_workflows_command,
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions, ChecksCatalogListOptions};
@@ -190,6 +191,7 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
             }
         },
         Command::Tutorials { command } => run_tutorials_command(cli.quiet, command),
+        Command::Clients { command } => run_clients_command(cli.quiet, command),
         Command::System { command } => match run_system_command(cli.quiet, command) {
             Ok((rendered, code)) => {
                 if !cli.quiet && !rendered.is_empty() {

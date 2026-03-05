@@ -53,6 +53,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Security { command } => force_json_security(command),
         Command::Runtime { command } => force_json_runtime(command),
         Command::Tutorials { command } => force_json_tutorials(command),
+        Command::Clients { command } => force_json_clients(command),
         Command::System { command } => force_json_system(command),
         Command::Audit { command } => force_json_audit(command),
         Command::Observe { command } => force_json_observe(command),
@@ -761,6 +762,20 @@ fn force_json_tutorials(command: &mut crate::cli::TutorialsCommand) {
         crate::cli::TutorialsCommand::Contracts { command } => match command {
             crate::cli::TutorialsContractsCommand::Validate(args)
             | crate::cli::TutorialsContractsCommand::Explain(args) => args.format = FormatArg::Json,
+        },
+    }
+}
+
+fn force_json_clients(command: &mut crate::cli::ClientsCommand) {
+    match command {
+        crate::cli::ClientsCommand::List(args)
+        | crate::cli::ClientsCommand::Verify(args)
+        | crate::cli::ClientsCommand::DocsGenerate(args)
+        | crate::cli::ClientsCommand::DocsVerify(args)
+        | crate::cli::ClientsCommand::ExamplesVerify(args)
+        | crate::cli::ClientsCommand::SchemaVerify(args) => args.format = FormatArg::Json,
+        crate::cli::ClientsCommand::CompatMatrix { command } => match command {
+            crate::cli::ClientsCompatMatrixCommand::Verify(args) => args.format = FormatArg::Json,
         },
     }
 }
@@ -1662,6 +1677,21 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             crate::cli::TutorialsCommand::Contracts { command } => match command {
                 crate::cli::TutorialsContractsCommand::Validate(args)
                 | crate::cli::TutorialsContractsCommand::Explain(args) => {
+                    args.repo_root = Some(root.clone())
+                }
+            },
+        },
+        Command::Clients { command } => match command {
+            crate::cli::ClientsCommand::List(args)
+            | crate::cli::ClientsCommand::Verify(args)
+            | crate::cli::ClientsCommand::DocsGenerate(args)
+            | crate::cli::ClientsCommand::DocsVerify(args)
+            | crate::cli::ClientsCommand::ExamplesVerify(args)
+            | crate::cli::ClientsCommand::SchemaVerify(args) => {
+                args.repo_root = Some(root.clone())
+            }
+            crate::cli::ClientsCommand::CompatMatrix { command } => match command {
+                crate::cli::ClientsCompatMatrixCommand::Verify(args) => {
                     args.repo_root = Some(root.clone())
                 }
             },

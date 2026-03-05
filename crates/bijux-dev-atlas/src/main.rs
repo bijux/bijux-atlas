@@ -19,6 +19,8 @@ mod cli;
 mod commands_data;
 #[path = "commands/configs.rs"]
 mod configs_commands;
+#[path = "commands/clients.rs"]
+mod clients_commands;
 #[path = "commands/control_plane.rs"]
 mod control_plane_commands;
 #[path = "commands/docs.rs"]

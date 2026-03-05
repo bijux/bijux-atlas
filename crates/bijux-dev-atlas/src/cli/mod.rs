@@ -172,6 +172,10 @@ pub enum Command {
         #[command(subcommand)]
         command: TutorialsCommand,
     },
+    Clients {
+        #[command(subcommand)]
+        command: ClientsCommand,
+    },
     Datasets {
         #[command(subcommand)]
         command: DatasetsCommand,
@@ -1346,6 +1350,39 @@ pub enum TutorialsEvidenceCommand {
 pub enum TutorialsContractsCommand {
     Validate(TutorialsCommandArgs),
     Explain(TutorialsCommandArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ClientsCommand {
+    List(ClientsCommandArgs),
+    Verify(ClientsCommandArgs),
+    DocsGenerate(ClientsCommandArgs),
+    DocsVerify(ClientsCommandArgs),
+    ExamplesVerify(ClientsCommandArgs),
+    SchemaVerify(ClientsCommandArgs),
+    CompatMatrix {
+        #[command(subcommand)]
+        command: ClientsCompatMatrixCommand,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ClientsCompatMatrixCommand {
+    Verify(ClientsCommandArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ClientsCommandArgs {
+    #[arg(long, default_value = "atlas-client")]
+    pub client: String,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    pub markdown: bool,
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
 }
 
 #[derive(Args, Debug, Clone)]
