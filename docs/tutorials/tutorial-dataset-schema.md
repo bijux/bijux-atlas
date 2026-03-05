@@ -25,4 +25,4 @@ These schemas are used by tutorial dataset validation scripts and dataset contra
 
 Generated runtime schema excerpt:
 
---8<-- "docs/_generated/schema-snippets.md"
+--8<-- "_generated/schema-snippets.md"

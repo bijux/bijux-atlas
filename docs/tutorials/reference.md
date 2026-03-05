@@ -17,7 +17,7 @@ related:
 
 ## Command entrypoints
 
---8<-- "docs/_generated/command-lists.md"
+--8<-- "_generated/command-lists.md"
 
 ## Generated snippets
 

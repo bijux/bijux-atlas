@@ -27,7 +27,7 @@ Run a query using the canonical query surface and verify response behavior.
 
 Generated API surface excerpt:
 
---8<-- "docs/_generated/openapi-snippets.md"
+--8<-- "_generated/openapi-snippets.md"
 
 ## Expected result
 

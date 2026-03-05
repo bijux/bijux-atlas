@@ -28,7 +28,7 @@ Deploy Atlas runtime into Kubernetes using Helm values.
 
 Generated Helm values inventory:
 
---8<-- "docs/_generated/ops-snippets.md"
+--8<-- "_generated/ops-snippets.md"
 
 ## Expected result
 
