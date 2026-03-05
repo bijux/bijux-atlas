@@ -27,6 +27,18 @@ fn read_yaml(path: &Path) -> Result<serde_yaml::Value, String> {
     .map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
+fn auth_method_count(auth_model: &serde_yaml::Value) -> usize {
+    ["methods", "supported_methods"]
+        .into_iter()
+        .find_map(|key| {
+            auth_model
+                .get(key)
+                .and_then(serde_yaml::Value::as_sequence)
+                .map(std::vec::Vec::len)
+        })
+        .unwrap_or(0)
+}
+
 fn report_path(root: &Path) -> Result<PathBuf, String> {
     let path = root.join("artifacts/security/security-threat-model.json");
     if let Some(parent) = path.parent() {
@@ -382,10 +394,7 @@ pub(crate) fn run_security_command(
 fn run_security_auth_api_keys(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     let auth_model = read_yaml(&root.join("configs/security/auth-model.yaml"))?;
-    let methods = auth_model
-        .get("methods")
-        .and_then(serde_yaml::Value::as_sequence)
-        .map_or(0, std::vec::Vec::len);
+    let methods = auth_method_count(&auth_model);
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "authentication_api_key_management_report",
@@ -464,10 +473,7 @@ fn run_security_auth_policy_validate(args: SecurityValidateArgs) -> Result<(Stri
     let root = resolve_repo_root(args.repo_root)?;
     let auth_model = read_yaml(&root.join("configs/security/auth-model.yaml"))?;
     let policy = read_yaml(&root.join("configs/security/policy.yaml"))?;
-    let method_count = auth_model
-        .get("methods")
-        .and_then(serde_yaml::Value::as_sequence)
-        .map_or(0, std::vec::Vec::len);
+    let method_count = auth_method_count(&auth_model);
     let rule_count = policy
         .get("rules")
         .and_then(serde_yaml::Value::as_sequence)
@@ -3400,6 +3406,35 @@ threat_ids: []
             policy_value["kind"],
             "authentication_policy_validation_report"
         );
+    }
+
+    #[test]
+    fn security_authentication_policy_validate_accepts_supported_methods_key() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        write_minimal_security_files(temp.path());
+
+        let auth_model_path = temp.path().join("configs/security/auth-model.yaml");
+        fs::write(
+            &auth_model_path,
+            r#"default_stance: zero-trust
+auth_support: supported
+supported_methods: [api-key, token, oidc, mtls]
+runtime_auth_mode_env: ATLAS_AUTH_MODE
+"#,
+        )
+        .expect("write auth-model.yaml");
+
+        let (policy, code) = run_security_auth_policy_validate(SecurityValidateArgs {
+            repo_root: Some(temp.path().to_path_buf()),
+            format: FormatArg::Json,
+            out: None,
+        })
+        .expect("run auth policy validate");
+        assert_eq!(code, 0);
+        let policy_value: serde_json::Value =
+            serde_json::from_str(&policy).expect("parse policy report");
+        assert_eq!(policy_value["status"], "ok");
+        assert_eq!(policy_value["auth_methods"], 4);
     }
 
     #[test]

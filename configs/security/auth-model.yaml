@@ -3,6 +3,7 @@ default_stance: internal
 auth_support: supported
 supported_methods:
   - api-key
+  - token
   - oidc
   - mtls
 runtime_auth_mode_env: ATLAS_AUTH_MODE
