@@ -12,6 +12,16 @@ fn repo_root() -> PathBuf {
         .to_path_buf()
 }
 
+fn parse_json_output(output: &std::process::Output) -> serde_json::Value {
+    if !output.stdout.is_empty() {
+        return serde_json::from_slice(&output.stdout).expect("json");
+    }
+    if !output.stderr.is_empty() {
+        return serde_json::from_slice(&output.stderr).expect("json");
+    }
+    panic!("expected json output on stdout or stderr");
+}
+
 #[test]
 fn slow_reproduce_run_emits_source_snapshot_hash() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
@@ -113,7 +123,7 @@ fn slow_reproduce_audit_metrics_lineage_and_summary_emit_expected_kinds() {
             output.status.code().is_some(),
             "command {subcommand} did not exit cleanly"
         );
-        let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+        let payload = parse_json_output(&output);
         assert_eq!(payload.get("kind").and_then(|v| v.as_str()), Some(kind));
     }
 }
