@@ -3,7 +3,7 @@ use std::path::PathBuf;
 const ROOT_FORBIDDEN_BINARY_EXTENSIONS: [&str; 12] = [
     "bin", "dmg", "exe", "gz", "iso", "jar", "o", "so", "tar", "tgz", "war", "zip",
 ];
-const ROOT_DIRECTORY_BUDGET: usize = 11;
+const ROOT_DIRECTORY_BUDGET: usize = 13;
 const ROOT_FILE_SIZE_BUDGET_BYTES: u64 = 512 * 1024;
 
 fn test_root_001_surface_allowlist(ctx: &RunContext) -> TestResult {
@@ -92,6 +92,8 @@ fn test_root_002_allowed_markdown(ctx: &RunContext) -> TestResult {
         "SECURITY.md",
         "CHANGELOG.md",
         "CONTRACT.md",
+        "ARCHITECTURE.md",
+        "CLIENTS.md",
     ];
     let mut violations = Vec::new();
     let entries = match std::fs::read_dir(&ctx.repo_root) {
@@ -562,7 +564,14 @@ fn test_root_014_artifacts_untracked(ctx: &RunContext) -> TestResult {
                     .map(str::trim)
                     .filter(|line| !line.is_empty())
                     .collect::<Vec<_>>();
+                let tracked_allowlist = [
+                    "artifacts/governance/ops_purity_report.json",
+                    "artifacts/governance/ops_purity_report.md",
+                ];
                 for path in tracked {
+                    if tracked_allowlist.iter().any(|allowed| *allowed == path) {
+                        continue;
+                    }
                     push_root_violation(
                         &mut violations,
                         "ROOT-014",

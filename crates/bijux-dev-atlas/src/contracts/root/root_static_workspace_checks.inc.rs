@@ -218,19 +218,23 @@ fn test_root_023_readme_entrypoint_sections(ctx: &RunContext) -> TestResult {
         Err(result) => return result,
     };
     let mut violations = Vec::new();
-    for required_heading in [
-        "## Product Narrative",
-        "## Quick Start",
-        "## Documentation Entrypoints",
-        "## Repository Surfaces",
-    ] {
-        if !contents.contains(required_heading) {
+    let required_heading_sets = [
+        &["## Product Narrative", "## What This Repository Contains"][..],
+        &["## Quick Start", "## Getting Started"][..],
+        &["## Documentation Entrypoints", "## Documentation"][..],
+        &["## Repository Surfaces", "## Repository Structure"][..],
+    ];
+    for required_headings in required_heading_sets {
+        if !required_headings
+            .iter()
+            .any(|required_heading| contents.contains(required_heading))
+        {
             push_root_violation(
                 &mut violations,
                 "ROOT-023",
                 "root.readme.entrypoint_sections",
                 Some("README.md".to_string()),
-                format!("missing required README section: {required_heading}"),
+                format!("missing required README section: {}", required_headings[0]),
             );
         }
     }

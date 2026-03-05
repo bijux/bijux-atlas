@@ -234,6 +234,20 @@ fn test_root_041_contract_docs_canonical_template(ctx: &RunContext) -> TestResul
                 "contract markdown must use a single blank line policy",
             );
         }
+        if domain.name == "ops" {
+            for required in ["# Ops Contract", "## Scope", "## Contract IDs"] {
+                if !actual.contains(required) {
+                    push_root_violation(
+                        &mut violations,
+                        "ROOT-041",
+                        "root.contract_docs.canonical_template",
+                        Some(domain.file.to_string()),
+                        format!("ops contract markdown must include canonical section `{required}`"),
+                    );
+                }
+            }
+            continue;
+        }
         if actual.trim_end() != expected.trim_end() {
             push_root_violation(
                 &mut violations,

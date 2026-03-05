@@ -2,7 +2,7 @@
 
 Deterministic genomics data infrastructure with executable governance.
 
-## What Exists
+## Product Narrative
 
 | Surface | Location | Purpose |
 | --- | --- | --- |
@@ -62,7 +62,7 @@ Tutorial automation is executed through `bijux-dev-atlas` commands. Legacy tutor
 
 CLI UX perf benchmarks are executed through `bijux-dev-atlas perf cli-ux bench` and `bijux-dev-atlas perf cli-ux diff`. The repository no longer keeps Python benchmark runners under `ops/`.
 
-## Quickstart By Persona
+## Quick Start
 
 ### User
 
@@ -82,7 +82,7 @@ CLI UX perf benchmarks are executed through `bijux-dev-atlas perf cli-ux bench` 
 2. Read [`docs/control-plane/index.md`](docs/control-plane/index.md).
 3. Extend safely using [`docs/control-plane/extend-control-plane.md`](docs/control-plane/extend-control-plane.md).
 
-## Repo Map
+## Repository Surfaces
 
 - `crates/bijux-dev-atlas`: governance control-plane command surface
 - `crates/bijux-atlas-server`: runtime service implementation
@@ -117,7 +117,7 @@ Repository architecture entrypoint: [`ARCHITECTURE.md`](ARCHITECTURE.md)
 
 Compatibility promise: [`docs/product/compatibility-promise.md`](docs/product/compatibility-promise.md)
 
-## Docs Site
+## Documentation Entrypoints
 
 ![Docs](https://img.shields.io/badge/docs-github%20pages-blue)
 
