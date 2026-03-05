@@ -2,11 +2,15 @@
 
 Python SDK for Atlas HTTP APIs.
 
+## Publication policy
+
+PyPI publication is deferred until release packaging is finalized. This crate directory is the canonical in-repo source for client packaging, verification, and documentation inputs.
+
 ## Quickstart
 
 ```bash
-python -m pip install -e clients/atlas-client
-python clients/atlas-client/examples/simple_query.py
+python -m pip install -e crates/bijux-atlas-client-python
+python crates/bijux-atlas-client-python/examples/simple_query.py
 ```
 
 ## Documentation And Verification
