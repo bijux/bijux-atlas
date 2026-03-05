@@ -16,6 +16,8 @@ Canonical usage examples for the Python SDK live in:
 
 - `crates/bijux-atlas-client-python/examples/`
 - `crates/bijux-atlas-client-python/examples/usage/`
+- `crates/bijux-atlas-client-python/examples/INDEX.md`
+- `crates/bijux-atlas-client-python/examples/MATURITY.md`
 
 Verification entrypoint:
 

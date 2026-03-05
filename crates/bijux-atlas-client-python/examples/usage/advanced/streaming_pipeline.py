@@ -1,3 +1,6 @@
+# Purpose: demonstrate Atlas Python client usage for a specific scenario.
+# Expected output: successful query or streaming rows for dataset `genes`.
+
 import os
 
 from atlas_client import AtlasClient, ClientConfig, QueryRequest
