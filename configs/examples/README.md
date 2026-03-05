@@ -10,3 +10,11 @@ Rules:
 Runtime examples:
 - `runtime/server-minimal.toml`
 - `runtime/server-observability.toml`
+
+
+## Dataset examples
+
+- `datasets/atlas-example-minimal`
+- `datasets/atlas-example-medium`
+- `datasets/atlas-example-large-synthetic`
+- `datasets/specification.md`

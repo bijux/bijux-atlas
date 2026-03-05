@@ -25,6 +25,7 @@ related:
 
 ## User workflow tutorials
 
+- [Example datasets](example-datasets.md)
 - [Ingest dataset](ingest-dataset.md)
 - [Validate dataset](validate-dataset.md)
 - [Query dataset](query-dataset.md)
