@@ -1,0 +1,21 @@
+name: publish-bijux-atlas-client
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "bijux-atlas-client-v*"
+
+jobs:
+  validate-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Validate Rust client crate
+        run: |
+          cargo test -p bijux-atlas-client -- --nocapture
+          cargo check -p bijux-atlas-client --examples
+          cargo bench -p bijux-atlas-client --no-run
+      - name: Package crate
+        run: cargo package -p bijux-atlas-client --allow-dirty
