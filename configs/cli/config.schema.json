@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "bijux-dev-atlas-cli-config",
+  "type": "object",
+  "properties": {
+    "repo_root": {"type": "string"},
+    "output_format": {"type": "string", "enum": ["human", "json", "both"]},
+    "quiet": {"type": "boolean"},
+    "profile": {"type": "string"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,4 @@
+repo_root = "/Users/example/work/bijux-atlas"
+output_format = "human"
+quiet = false
+profile = "kind"
