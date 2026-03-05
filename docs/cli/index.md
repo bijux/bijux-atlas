@@ -1,4 +1,28 @@
+---
+title: CLI User Experience
+audience: mixed
+type: reference
+stability: evolving
+owner: docs-governance
+last_reviewed: 2026-03-05
+tags:
+  - cli
+  - ux
+related:
+  - docs/start-here.md
+sources:
+  - docs/cli/command-reference.md
+verification: true
+---
+
 # CLI User Experience
+
+- Owner: `docs-governance`
+- Type: `reference`
+- Audience: `mixed`
+- Stability: `evolving`
+- Last verified against: `main@7dea4f4b9a65a61796b0f7ac8c2d185c0eaddb07`
+- Reason to exist: provide the CLI docs entrypoint.
 
 - [CLI UX Philosophy](ux-philosophy.md)
 - [Command naming conventions](command-naming-conventions.md)

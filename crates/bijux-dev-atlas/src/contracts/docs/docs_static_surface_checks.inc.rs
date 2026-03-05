@@ -200,7 +200,7 @@ fn test_docs_031_single_entrypoint(ctx: &RunContext) -> TestResult {
             "docs/index.md is required as the canonical docs entrypoint",
         );
     }
-    let uppercase = docs_root_path(ctx).join("INDEX.md");
+    let uppercase = docs_root_path(ctx).join("index.md");
     if !uppercase.is_file() {
         push_docs_violation(
             &mut violations,
@@ -419,7 +419,7 @@ fn test_docs_010_section_index_policy(ctx: &RunContext) -> TestResult {
     let docs_root = docs_root_path(ctx);
     for (name, config) in section_map {
         let expects_index = config["requires_index"].as_bool().unwrap_or(false);
-        let has_index = docs_root.join(name).join("INDEX.md").is_file();
+        let has_index = docs_root.join(name).join("index.md").is_file();
         if expects_index != has_index {
             push_docs_violation(
                 &mut violations,
@@ -427,9 +427,9 @@ fn test_docs_010_section_index_policy(ctx: &RunContext) -> TestResult {
                 "docs.sections.index_policy",
                 Some(format!("docs/{name}")),
                 if expects_index {
-                    "section requires INDEX.md but the file is missing".to_string()
+                    "section requires index.md but the file is missing".to_string()
                 } else {
-                    "section forbids INDEX.md but the file exists".to_string()
+                    "section forbids index.md but the file exists".to_string()
                 },
             );
         }

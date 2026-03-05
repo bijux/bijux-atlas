@@ -64,5 +64,4 @@ bijux dev atlas demo quickstart --format json
 - [Architecture Index](architecture/index.md)
 - [Operations Index](operations/index.md)
 - [Reference Index](reference/index.md)
-- [Development Index](development/index.md)
 - [What we built](what-we-built.md)

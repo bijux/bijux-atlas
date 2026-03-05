@@ -53,7 +53,7 @@ fn test_docs_027_section_indexes_list_local_pages(ctx: &RunContext) -> TestResul
         if name.starts_with('_') {
             continue;
         }
-        let index_path = docs_root.join(name).join("INDEX.md");
+        let index_path = docs_root.join(name).join("index.md");
         let contents = match std::fs::read_to_string(&index_path) {
             Ok(contents) => contents,
             Err(err) => {

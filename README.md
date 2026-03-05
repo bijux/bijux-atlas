@@ -68,7 +68,7 @@ CLI UX perf benchmarks are executed through `bijux-dev-atlas perf cli-ux bench` 
 
 1. Start with [`docs/start-here.md`](docs/start-here.md).
 2. Review API lifecycle in [`docs/api/lifecycle.md`](docs/api/lifecycle.md).
-3. Use examples from [`docs/reference/examples/index.md`](docs/reference/examples/index.md).
+3. Use examples from [`docs/reference/examples/api-usage-examples.md`](docs/reference/examples/api-usage-examples.md).
 
 ### Operator
 

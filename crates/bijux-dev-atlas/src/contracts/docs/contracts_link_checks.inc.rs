@@ -99,7 +99,7 @@ fn test_docs_011_section_index_links_resolve(ctx: &RunContext) -> TestResult {
         }
         validate_markdown_links(
             ctx,
-            &docs_root.join(name).join("INDEX.md"),
+            &docs_root.join(name).join("index.md"),
             "DOC-011",
             "docs.links.section_indexes_resolve",
             &mut violations,
@@ -236,7 +236,7 @@ fn test_docs_028_section_indexes_unique_local_pages(ctx: &RunContext) -> TestRes
         if name.starts_with('_') || !config["requires_index"].as_bool().unwrap_or(false) {
             continue;
         }
-        let index_path = docs_root.join(name).join("INDEX.md");
+        let index_path = docs_root.join(name).join("index.md");
         let contents = match std::fs::read_to_string(&index_path) {
             Ok(contents) => contents,
             Err(err) => {
@@ -411,7 +411,7 @@ fn docs_index_correctness_report(ctx: &RunContext) -> Result<serde_json::Value, 
         if !config["requires_index"].as_bool().unwrap_or(false) {
             continue;
         }
-        let index_path = ctx.repo_root.join("docs").join(name).join("INDEX.md");
+        let index_path = ctx.repo_root.join("docs").join(name).join("index.md");
         let contents = std::fs::read_to_string(&index_path)
             .map_err(|err| format!("read {} failed: {err}", index_path.display()))?;
         let mut local_pages = std::collections::BTreeSet::new();
