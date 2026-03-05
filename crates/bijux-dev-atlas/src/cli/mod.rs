@@ -939,7 +939,18 @@ pub enum SecurityCommand {
         #[command(subcommand)]
         command: SecurityComplianceCommand,
     },
+    Threats {
+        #[command(subcommand)]
+        command: SecurityThreatCommand,
+    },
     ScanArtifacts(SecurityScanArtifactsArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum SecurityThreatCommand {
+    List(SecurityValidateArgs),
+    Explain(SecurityThreatExplainArgs),
+    Verify(SecurityValidateArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -1224,6 +1235,18 @@ pub struct SecurityIncidentReportArgs {
     pub status: String,
     #[arg(long)]
     pub runbook: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct SecurityThreatExplainArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg()]
+    pub threat_id: Option<String>,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]

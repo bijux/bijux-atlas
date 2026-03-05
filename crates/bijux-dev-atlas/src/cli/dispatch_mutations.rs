@@ -683,6 +683,11 @@ fn force_json_security(command: &mut SecurityCommand) {
         SecurityCommand::Compliance { command } => match command {
             crate::cli::SecurityComplianceCommand::Validate(args) => args.format = FormatArg::Json,
         },
+        SecurityCommand::Threats { command } => match command {
+            crate::cli::SecurityThreatCommand::List(args)
+            | crate::cli::SecurityThreatCommand::Verify(args) => args.format = FormatArg::Json,
+            crate::cli::SecurityThreatCommand::Explain(args) => args.format = FormatArg::Json,
+        },
         SecurityCommand::ScanArtifacts(args) => args.format = FormatArg::Json,
     }
 }
@@ -1475,6 +1480,15 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             },
             SecurityCommand::Compliance { command } => match command {
                 crate::cli::SecurityComplianceCommand::Validate(args) => {
+                    args.repo_root = Some(root.clone())
+                }
+            },
+            SecurityCommand::Threats { command } => match command {
+                crate::cli::SecurityThreatCommand::List(args)
+                | crate::cli::SecurityThreatCommand::Verify(args) => {
+                    args.repo_root = Some(root.clone())
+                }
+                crate::cli::SecurityThreatCommand::Explain(args) => {
                     args.repo_root = Some(root.clone())
                 }
             },

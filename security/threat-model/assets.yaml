@@ -25,3 +25,8 @@ assets:
     description: Generated reports under artifacts/ used for release, ops, and reviewer evidence.
     sensitivity: medium
     owner: bijux-atlas-operations
+  - id: audit_pipeline
+    type: system
+    description: Audit event collection, verification, and export surfaces.
+    sensitivity: high
+    owner: bijux-atlas-security

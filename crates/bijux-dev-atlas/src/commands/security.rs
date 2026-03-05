@@ -3,7 +3,8 @@
 use crate::cli::{
     SecurityAuthenticationCommand, SecurityAuthorizationCommand, SecurityCommand,
     SecurityIncidentReportArgs, SecurityPolicyInspectArgs, SecurityRoleAssignArgs,
-    SecurityScanArtifactsArgs, SecurityTokenInspectArgs, SecurityValidateArgs,
+    SecurityScanArtifactsArgs, SecurityThreatCommand, SecurityThreatExplainArgs,
+    SecurityTokenInspectArgs, SecurityValidateArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
 use base64::Engine as _;
@@ -368,6 +369,11 @@ pub(crate) fn run_security_command(
             crate::cli::SecurityComplianceCommand::Validate(args) => {
                 run_security_compliance_validate(args)
             }
+        },
+        SecurityCommand::Threats { command } => match command {
+            SecurityThreatCommand::List(args) => run_security_threats_list(args),
+            SecurityThreatCommand::Explain(args) => run_security_threats_explain(args),
+            SecurityThreatCommand::Verify(args) => run_security_threats_verify(args),
         },
         SecurityCommand::ScanArtifacts(args) => run_security_scan_artifacts(args),
     }
@@ -834,6 +840,285 @@ fn run_security_incident_report(args: SecurityIncidentReportArgs) -> Result<(Str
         }),
     )?;
     Ok((rendered, 0))
+}
+
+#[derive(Debug, Clone)]
+struct ThreatRow {
+    id: String,
+    category: String,
+    title: String,
+    severity: String,
+    likelihood: String,
+    affected_component: String,
+    mitigations: Vec<String>,
+    residual_risk: String,
+}
+
+fn parse_threat_rows(threats: &serde_yaml::Value) -> Vec<ThreatRow> {
+    let Some(rows) = threats
+        .get("threats")
+        .and_then(serde_yaml::Value::as_sequence)
+    else {
+        return Vec::new();
+    };
+    rows.iter()
+        .filter_map(|row| {
+            let map = row.as_mapping()?;
+            Some(ThreatRow {
+                id: map
+                    .get(serde_yaml::Value::String("id".to_string()))?
+                    .as_str()?
+                    .to_string(),
+                category: map
+                    .get(serde_yaml::Value::String("category".to_string()))?
+                    .as_str()?
+                    .to_string(),
+                title: map
+                    .get(serde_yaml::Value::String("title".to_string()))?
+                    .as_str()?
+                    .to_string(),
+                severity: map
+                    .get(serde_yaml::Value::String("severity".to_string()))?
+                    .as_str()?
+                    .to_string(),
+                likelihood: map
+                    .get(serde_yaml::Value::String("likelihood".to_string()))?
+                    .as_str()?
+                    .to_string(),
+                affected_component: map
+                    .get(serde_yaml::Value::String("affected_component".to_string()))?
+                    .as_str()?
+                    .to_string(),
+                mitigations: map
+                    .get(serde_yaml::Value::String("mitigations".to_string()))
+                    .and_then(serde_yaml::Value::as_sequence)
+                    .map(|items| {
+                        items
+                            .iter()
+                            .filter_map(serde_yaml::Value::as_str)
+                            .map(ToString::to_string)
+                            .collect::<Vec<_>>()
+                    })
+                    .unwrap_or_default(),
+                residual_risk: map
+                    .get(serde_yaml::Value::String("residual_risk".to_string()))?
+                    .as_str()?
+                    .to_string(),
+            })
+        })
+        .collect()
+}
+
+fn parse_string_list(value: &serde_yaml::Value, field: &str) -> Vec<String> {
+    let Some(rows) = value.get(field).and_then(serde_yaml::Value::as_sequence) else {
+        return Vec::new();
+    };
+    rows.iter()
+        .filter_map(serde_yaml::Value::as_str)
+        .map(ToString::to_string)
+        .collect()
+}
+
+fn run_security_threats_list(args: SecurityValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let threats = read_yaml(&root.join("security/threat-model/threats.yaml"))?;
+    let rows = parse_threat_rows(&threats);
+
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "security_threat_registry_list",
+        "status": "ok",
+        "rows": rows.iter().map(|row| serde_json::json!({
+            "id": row.id,
+            "category": row.category,
+            "severity": row.severity,
+            "likelihood": row.likelihood,
+            "affected_component": row.affected_component,
+            "mitigation_count": row.mitigations.len(),
+            "title": row.title
+        })).collect::<Vec<_>>(),
+        "summary": { "total": rows.len(), "errors": 0, "warnings": 0 }
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_security_threats_explain(args: SecurityThreatExplainArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let threats = read_yaml(&root.join("security/threat-model/threats.yaml"))?;
+    let taxonomy = read_yaml(&root.join("security/threat-model/classification-taxonomy.yaml"))?;
+    let registry = read_yaml(&root.join("security/threat-model/threat-registry.yaml"))?;
+    let rows = parse_threat_rows(&threats);
+
+    let selected = if let Some(id) = args.threat_id {
+        rows.into_iter()
+            .filter(|row| row.id == id)
+            .collect::<Vec<_>>()
+    } else {
+        rows
+    };
+
+    let found = !selected.is_empty();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "security_threat_registry_explain",
+        "status": if found { "ok" } else { "error" },
+        "taxonomy": taxonomy,
+        "registry": registry,
+        "rows": selected.iter().map(|row| serde_json::json!({
+            "id": row.id,
+            "category": row.category,
+            "severity": row.severity,
+            "likelihood": row.likelihood,
+            "title": row.title,
+            "affected_component": row.affected_component,
+            "mitigations": row.mitigations,
+            "residual_risk": row.residual_risk
+        })).collect::<Vec<_>>(),
+        "summary": { "total": selected.len(), "errors": if found { 0 } else { 1 }, "warnings": 0 }
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if found { 0 } else { 1 }))
+}
+
+fn run_security_threats_verify(args: SecurityValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let threats = read_yaml(&root.join("security/threat-model/threats.yaml"))?;
+    let mitigations = read_yaml(&root.join("security/threat-model/mitigations.yaml"))?;
+    let assets = read_yaml(&root.join("security/threat-model/assets.yaml"))?;
+    let taxonomy = read_yaml(&root.join("security/threat-model/classification-taxonomy.yaml"))?;
+    let registry = read_yaml(&root.join("security/threat-model/threat-registry.yaml"))?;
+
+    let rows = parse_threat_rows(&threats);
+    let severity_levels = parse_string_list(&taxonomy, "severity_levels");
+    let categories = parse_string_list(&taxonomy, "categories");
+    let likelihood_levels = parse_string_list(&taxonomy, "likelihood_levels");
+
+    let mitigation_ids = mitigations
+        .get("mitigations")
+        .and_then(serde_yaml::Value::as_sequence)
+        .map(|rows| {
+            rows.iter()
+                .filter_map(|row| row.get("id").and_then(serde_yaml::Value::as_str))
+                .map(ToString::to_string)
+                .collect::<std::collections::BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    let asset_ids = assets
+        .get("assets")
+        .and_then(serde_yaml::Value::as_sequence)
+        .map(|rows| {
+            rows.iter()
+                .filter_map(|row| row.get("id").and_then(serde_yaml::Value::as_str))
+                .map(ToString::to_string)
+                .collect::<std::collections::BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    let registry_ids = registry
+        .get("threat_ids")
+        .and_then(serde_yaml::Value::as_sequence)
+        .map(|rows| {
+            rows.iter()
+                .filter_map(serde_yaml::Value::as_str)
+                .map(ToString::to_string)
+                .collect::<std::collections::BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+
+    let mut errors = Vec::new();
+    let mut by_severity = std::collections::BTreeMap::<String, usize>::new();
+    let mut by_category = std::collections::BTreeMap::<String, usize>::new();
+
+    for row in &rows {
+        *by_severity.entry(row.severity.clone()).or_insert(0) += 1;
+        *by_category.entry(row.category.clone()).or_insert(0) += 1;
+        if !severity_levels.contains(&row.severity) {
+            errors.push(format!("{} has unknown severity {}", row.id, row.severity));
+        }
+        if !likelihood_levels.contains(&row.likelihood) {
+            errors.push(format!(
+                "{} has unknown likelihood {}",
+                row.id, row.likelihood
+            ));
+        }
+        if !categories.contains(&row.category) {
+            errors.push(format!("{} has unknown category {}", row.id, row.category));
+        }
+        if !asset_ids.contains(&row.affected_component) {
+            errors.push(format!(
+                "{} references unknown affected_component {}",
+                row.id, row.affected_component
+            ));
+        }
+        if row.mitigations.is_empty() {
+            errors.push(format!("{} must reference at least one mitigation", row.id));
+        }
+        for mitigation in &row.mitigations {
+            if !mitigation_ids.contains(mitigation) {
+                errors.push(format!(
+                    "{} references unknown mitigation {}",
+                    row.id, mitigation
+                ));
+            }
+        }
+        if !registry_ids.contains(&row.id) {
+            errors.push(format!("{} missing from threat-registry.yaml", row.id));
+        }
+    }
+
+    let coverage_percent = if rows.is_empty() {
+        0.0
+    } else {
+        (((rows.len()
+            - errors
+                .iter()
+                .filter(|item| item.contains("missing from threat-registry.yaml"))
+                .count()) as f64)
+            / (rows.len() as f64))
+            * 100.0
+    };
+    let coverage_payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "security_threat_coverage_report",
+        "status": if errors.is_empty() { "ok" } else { "error" },
+        "coverage_percent": (coverage_percent * 100.0).round() / 100.0,
+        "threats_total": rows.len(),
+        "by_severity": by_severity,
+        "by_category": by_category,
+        "errors": errors
+    });
+    let coverage_path = named_report_path(&root, "security-threat-coverage-report.json")?;
+    fs::write(
+        &coverage_path,
+        serde_json::to_string_pretty(&coverage_payload)
+            .map_err(|err| format!("encode threat coverage report failed: {err}"))?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", coverage_path.display()))?;
+
+    let rendered = emit_payload(
+        args.format,
+        args.out,
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "security_threat_registry_verification",
+            "status": coverage_payload["status"].clone(),
+            "rows": [{
+                "coverage_report_path": coverage_path.strip_prefix(&root).unwrap_or(&coverage_path).display().to_string(),
+                "threats_total": rows.len(),
+                "coverage_percent": coverage_payload["coverage_percent"].clone(),
+                "errors": coverage_payload["errors"].clone()
+            }],
+            "summary": { "total": 1, "errors": if coverage_payload["status"] == "ok" { 0 } else { 1 }, "warnings": 0 }
+        }),
+    )?;
+    Ok((
+        rendered,
+        if coverage_payload["status"] == "ok" {
+            0
+        } else {
+            1
+        },
+    ))
 }
 
 fn list_files_recursive(dir: &Path) -> Result<Vec<PathBuf>, String> {
@@ -2755,11 +3040,12 @@ mod tests {
         run_security_authorization_assign, run_security_authorization_diagnostics,
         run_security_authorization_permissions, run_security_authorization_roles,
         run_security_authorization_validate, run_security_config_validate,
-        run_security_diagnostics, run_security_policy_inspect,
+        run_security_diagnostics, run_security_policy_inspect, run_security_threats_explain,
+        run_security_threats_list, run_security_threats_verify,
     };
     use crate::cli::{
-        FormatArg, SecurityPolicyInspectArgs, SecurityRoleAssignArgs, SecurityTokenInspectArgs,
-        SecurityValidateArgs,
+        FormatArg, SecurityPolicyInspectArgs, SecurityRoleAssignArgs, SecurityThreatExplainArgs,
+        SecurityTokenInspectArgs, SecurityValidateArgs,
     };
     use base64::Engine as _;
     use std::fs;
@@ -2841,6 +3127,67 @@ permissions:
         .expect("write permissions.yaml");
     }
 
+    fn write_minimal_threat_model_files(root: &std::path::Path) {
+        let dir = root.join("security/threat-model");
+        fs::create_dir_all(&dir).expect("create threat model dir");
+        fs::write(
+            dir.join("assets.yaml"),
+            r#"schema_version: 1
+assets:
+  - id: runtime_api
+    type: endpoint
+    description: api
+    sensitivity: medium
+    owner: security
+"#,
+        )
+        .expect("write assets");
+        fs::write(
+            dir.join("threats.yaml"),
+            r#"schema_version: 1
+threats:
+  - id: SEC-THREAT-RUNTIME-SPOOF
+    category: spoofing
+    title: spoofing request
+    severity: high
+    likelihood: medium
+    affected_component: runtime_api
+    mitigations: [MIT-HTTP-BOUNDARY]
+    residual_risk: malformed traffic
+"#,
+        )
+        .expect("write threats");
+        fs::write(
+            dir.join("mitigations.yaml"),
+            r#"schema_version: 1
+mitigations:
+  - id: MIT-HTTP-BOUNDARY
+    title: boundary control
+"#,
+        )
+        .expect("write mitigations");
+        fs::write(
+            dir.join("classification-taxonomy.yaml"),
+            r#"schema_version: 1
+methodology: stride
+severity_levels: [critical, high, medium, low]
+likelihood_levels: [high, medium, low]
+categories: [spoofing, tampering, repudiation, information-disclosure, denial-of-service, elevation-of-privilege]
+attacker_capabilities:
+  - external unauthenticated caller
+"#,
+        )
+        .expect("write taxonomy");
+        fs::write(
+            dir.join("threat-registry.yaml"),
+            r#"schema_version: 1
+registry_name: atlas_security_threats
+threat_ids: [SEC-THREAT-RUNTIME-SPOOF]
+"#,
+        )
+        .expect("write threat registry");
+    }
+
     #[test]
     fn security_config_validate_command_returns_ok_payload() {
         let temp = tempfile::tempdir().expect("tempdir");
@@ -2855,6 +3202,90 @@ permissions:
         let value: serde_json::Value = serde_json::from_str(&rendered).expect("parse rendered");
         assert_eq!(value["kind"], "security_config_validation_report");
         assert_eq!(value["status"], "ok");
+    }
+
+    #[test]
+    fn security_threat_commands_emit_registry_outputs() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        write_minimal_threat_model_files(temp.path());
+
+        let (list_rendered, list_code) = run_security_threats_list(SecurityValidateArgs {
+            repo_root: Some(temp.path().to_path_buf()),
+            format: FormatArg::Json,
+            out: None,
+        })
+        .expect("run threat list");
+        assert_eq!(list_code, 0);
+        let list_value: serde_json::Value =
+            serde_json::from_str(&list_rendered).expect("parse list output");
+        assert_eq!(list_value["kind"], "security_threat_registry_list");
+
+        let (explain_rendered, explain_code) =
+            run_security_threats_explain(SecurityThreatExplainArgs {
+                repo_root: Some(temp.path().to_path_buf()),
+                threat_id: Some("SEC-THREAT-RUNTIME-SPOOF".to_string()),
+                format: FormatArg::Json,
+                out: None,
+            })
+            .expect("run threat explain");
+        assert_eq!(explain_code, 0);
+        let explain_value: serde_json::Value =
+            serde_json::from_str(&explain_rendered).expect("parse explain output");
+        assert_eq!(explain_value["kind"], "security_threat_registry_explain");
+
+        let (verify_rendered, verify_code) = run_security_threats_verify(SecurityValidateArgs {
+            repo_root: Some(temp.path().to_path_buf()),
+            format: FormatArg::Json,
+            out: None,
+        })
+        .expect("run threat verify");
+        assert_eq!(verify_code, 0);
+        let verify_value: serde_json::Value =
+            serde_json::from_str(&verify_rendered).expect("parse verify output");
+        assert_eq!(
+            verify_value["kind"],
+            "security_threat_registry_verification"
+        );
+        assert_eq!(
+            verify_value["rows"][0]["coverage_report_path"],
+            "artifacts/security/security-threat-coverage-report.json"
+        );
+    }
+
+    #[test]
+    fn security_threat_verify_reports_registry_mismatch() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        write_minimal_threat_model_files(temp.path());
+        fs::write(
+            temp.path().join("security/threat-model/threat-registry.yaml"),
+            r#"schema_version: 1
+registry_name: atlas_security_threats
+threat_ids: []
+"#,
+        )
+        .expect("write mismatched registry");
+
+        let (rendered, code) = run_security_threats_verify(SecurityValidateArgs {
+            repo_root: Some(temp.path().to_path_buf()),
+            format: FormatArg::Json,
+            out: None,
+        })
+        .expect("run verify");
+        assert_eq!(code, 1);
+        let value: serde_json::Value = serde_json::from_str(&rendered).expect("parse verify");
+        assert_eq!(value["status"], "error");
+        let errors = value["rows"][0]["errors"]
+            .as_array()
+            .expect("errors array")
+            .iter()
+            .filter_map(serde_json::Value::as_str)
+            .collect::<Vec<_>>();
+        assert!(
+            errors
+                .iter()
+                .any(|item| item.contains("missing from threat-registry.yaml")),
+            "expected registry mismatch error"
+        );
     }
 
     #[test]

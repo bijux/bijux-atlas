@@ -1,0 +1,24 @@
+schema_version: 1
+methodology: stride
+severity_levels:
+  - critical
+  - high
+  - medium
+  - low
+likelihood_levels:
+  - high
+  - medium
+  - low
+categories:
+  - spoofing
+  - tampering
+  - repudiation
+  - information-disclosure
+  - denial-of-service
+  - elevation-of-privilege
+attacker_capabilities:
+  - external unauthenticated caller
+  - authenticated but unauthorized caller
+  - compromised ci runner
+  - malicious dependency publisher
+  - operator misconfiguration
