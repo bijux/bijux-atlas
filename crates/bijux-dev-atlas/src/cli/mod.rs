@@ -1264,6 +1264,10 @@ pub struct TutorialsCommandArgs {
     pub format: FormatArg,
     #[arg(long)]
     pub out: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    pub markdown: bool,
+    #[arg(long, default_value_t = false)]
+    pub no_color: bool,
 }
 
 #[derive(Subcommand, Debug)]
