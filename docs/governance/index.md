@@ -31,6 +31,8 @@ This is the canonical governance index for repository-wide policy and SSOT bound
 - Automation doctrine rationale: [Why Scripts Are Forbidden](why-scripts-are-forbidden.md)
 - Automation extension workflow: [Extend Dev Atlas Automation](extend-dev-atlas-automation.md)
 - Governance checks and contracts authoring: [Add Governance Checks And Contracts](add-governance-checks-and-contracts.md)
+- Doctrine compliance report: [Doctrine Compliance Report](doctrine-compliance-report.md)
+- Migration completion marker: [Automation Migration Completion](automation-migration-completion.md)
 - Governance charter: [Governance Charter](governance-charter.md)
 - Governance overview: [Project Governance Overview](project-governance-overview.md)
 - Governance model: [Project Governance Model](project-governance-model.md)
