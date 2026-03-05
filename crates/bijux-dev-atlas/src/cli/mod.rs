@@ -138,6 +138,11 @@ pub enum Command {
         #[command(subcommand)]
         command: InvariantsCommand,
     },
+    #[command(hide = true)]
+    Drift {
+        #[command(subcommand)]
+        command: DriftCommand,
+    },
     Security {
         #[command(subcommand)]
         command: SecurityCommand,
@@ -337,6 +342,21 @@ pub enum InvariantsCommand {
     Explain(InvariantsExplainArgs),
     Coverage(InvariantsCommonArgs),
     Docs(InvariantsCommonArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum DriftCommand {
+    Detect(InvariantsCommonArgs),
+    Explain(DriftExplainArgs),
+    Report(InvariantsCommonArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct DriftExplainArgs {
+    #[arg()]
+    pub drift_type: String,
+    #[command(flatten)]
+    pub common: InvariantsCommonArgs,
 }
 
 #[derive(Args, Debug, Clone)]

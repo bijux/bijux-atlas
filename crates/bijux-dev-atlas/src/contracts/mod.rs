@@ -10,6 +10,7 @@ pub use crate::model::engine::*;
 pub mod configs;
 pub mod control_plane;
 pub mod crates;
+pub mod drift;
 pub mod docker;
 pub mod docs;
 pub mod make;

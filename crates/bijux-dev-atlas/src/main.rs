@@ -21,6 +21,8 @@ mod configs_commands;
 mod control_plane_commands;
 #[path = "commands/docs.rs"]
 mod docs_commands;
+#[path = "commands/drift.rs"]
+mod drift_commands;
 #[path = "commands/governance.rs"]
 mod governance_commands;
 #[path = "commands/invariants.rs"]

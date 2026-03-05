@@ -2,9 +2,9 @@
 
 use crate::cli::{
     ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand, Command,
-    ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, FormatArg,
-    IngestCommand, InvariantsCommand, MakeCommand, OpsCommand, PerfCommand, PoliciesCommand,
-    RegistryCommand,
+    ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, DriftCommand,
+    FormatArg, IngestCommand, InvariantsCommand, MakeCommand, OpsCommand, PerfCommand,
+    PoliciesCommand, RegistryCommand,
     ReleaseApiSurfaceCommand, ReleaseChecksumsCommand, ReleaseCommand, ReleaseCratesCommand,
     ReleaseImagesCommand, ReleaseMsrvCommand, ReleaseOpsCommand, ReleaseSemverCommand,
     ReportsCommand, SecurityCommand, TestsCommand,
@@ -54,6 +54,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::System { command } => force_json_system(command),
         Command::Audit { command } => force_json_audit(command),
         Command::Invariants { command } => force_json_invariants(command),
+        Command::Drift { command } => force_json_drift(command),
         Command::Datasets { command } => force_json_datasets(command),
         Command::Ingest { command } => force_json_ingest(command),
         Command::Perf { command } => force_json_perf(command),
@@ -184,6 +185,15 @@ fn force_json_invariants(command: &mut InvariantsCommand) {
             args.format = FormatArg::Json
         }
         InvariantsCommand::Explain(args) => args.common.format = FormatArg::Json,
+    }
+}
+
+fn force_json_drift(command: &mut DriftCommand) {
+    match command {
+        DriftCommand::Detect(args) | DriftCommand::Report(args) => {
+            args.format = FormatArg::Json
+        }
+        DriftCommand::Explain(args) => args.common.format = FormatArg::Json,
     }
 }
 
@@ -1480,6 +1490,12 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 args.repo_root = Some(root.clone())
             }
             InvariantsCommand::Explain(args) => args.common.repo_root = Some(root.clone()),
+        },
+        Command::Drift { command } => match command {
+            DriftCommand::Detect(args) | DriftCommand::Report(args) => {
+                args.repo_root = Some(root.clone())
+            }
+            DriftCommand::Explain(args) => args.common.repo_root = Some(root.clone()),
         },
         Command::Datasets { command } => match command {
             DatasetsCommand::Validate(args) => args.repo_root = Some(root.clone()),

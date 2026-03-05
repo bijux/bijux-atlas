@@ -42,6 +42,7 @@ pub(crate) use docs_commands::{
     docs_context, docs_links_payload, docs_validate_payload, walk_files_local,
 };
 pub(crate) use docs_commands::{docs_lint_payload, run_docs_command};
+pub(crate) use drift_commands::run_drift_command;
 pub(crate) use governance_commands::run_governance_command;
 pub(crate) use invariants_commands::run_invariants_command;
 pub(crate) use make_commands::run_make_command;
