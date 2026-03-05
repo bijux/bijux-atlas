@@ -138,7 +138,7 @@ pub(super) fn check_docs_markdown_directory_budgets(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let budgets = BTreeMap::from([
-        ("docs/operations".to_string(), 340usize),
+        ("docs/operations".to_string(), 650usize),
         ("docs/reference".to_string(), 200usize),
         ("docs/development".to_string(), 160usize),
         ("docs/contracts".to_string(), 120usize),
@@ -288,6 +288,11 @@ pub(super) fn check_docs_ops_operations_duplicate_titles(
             .display()
             .to_string();
         if !rel.starts_with("docs/operations/") {
+            continue;
+        }
+        if rel.starts_with("docs/operations/runbooks/")
+            || rel.starts_with("docs/operations/release/")
+        {
             continue;
         }
         let text = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;

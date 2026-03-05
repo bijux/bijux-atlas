@@ -1,4 +1,4 @@
-# Capacity Planning
+# Release Capacity Planning
 
 - Owner: `bijux-atlas-operations`
 - Type: `guide`
