@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas_benchmark::config::BenchmarkConfig;
-use bijux_atlas_benchmark::dataset::fixture_registry;
-use bijux_atlas_benchmark::harness::{
+use bijux_atlas_bench::config::BenchmarkConfig;
+use bijux_atlas_bench::dataset::fixture_registry;
+use bijux_atlas_bench::harness::{
     compare_results, reproducibility_ok, BenchmarkMetrics, BenchmarkResult,
 };
 
@@ -19,11 +19,11 @@ fn benchmark_config_validation_accepts_canonical_units() {
         namespace: "atlas_benchmark".to_string(),
         latency_unit: "milliseconds".to_string(),
         throughput_unit: "operations_per_second".to_string(),
-        isolation: bijux_atlas_benchmark::config::IsolationConfig {
+        isolation: bijux_atlas_bench::config::IsolationConfig {
             cpu_set: "0-3".to_string(),
             memory_limit_mb: 2048,
         },
-        reproducibility: bijux_atlas_benchmark::config::ReproducibilityConfig {
+        reproducibility: bijux_atlas_bench::config::ReproducibilityConfig {
             fixed_seed: 20260304,
             min_repeat_runs: 3,
             max_relative_delta_percent: 3.0,
