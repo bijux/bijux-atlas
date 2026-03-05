@@ -1,5 +1,12 @@
-# Benchmarks (Alias)
+# Benchmarks
 
-Canonical testing and benchmark documentation moved to `quality-system.md`.
+Benchmarking validates control-plane performance drift for critical surfaces.
 
-This file remains as a compatibility alias for existing links.
+Primary benchmark entrypoints:
+
+- `cargo bench -p bijux-dev-atlas`
+- `cargo bench -p bijux-dev-atlas --bench reproducibility`
+- `cargo bench -p bijux-dev-atlas --bench security_supply_chain`
+
+Benchmark governance, thresholds, and interpretation guidance are documented in
+`docs/quality-system.md`.

@@ -21,14 +21,30 @@ fn file_sha(path: &Path) -> Result<String, String> {
     Ok(format!("{:x}", Sha256::digest(bytes)))
 }
 
+fn walk_files(root: &Path) -> Result<Vec<PathBuf>, String> {
+    let mut files = Vec::new();
+    let mut stack = vec![root.to_path_buf()];
+    while let Some(cursor) = stack.pop() {
+        let entries = fs::read_dir(&cursor)
+            .map_err(|err| format!("failed to read {}: {err}", cursor.display()))?;
+        for entry in entries {
+            let entry = entry.map_err(|err| format!("failed to read directory entry: {err}"))?;
+            let path = entry.path();
+            if path.is_dir() {
+                stack.push(path);
+            } else {
+                files.push(path);
+            }
+        }
+    }
+    files.sort();
+    Ok(files)
+}
+
 fn collect_source_snapshot_hash(root: &Path) -> Result<String, String> {
     let mut files = Vec::new();
-    for entry in walkdir::WalkDir::new(root).into_iter().flatten() {
-        if !entry.file_type().is_file() {
-            continue;
-        }
-        let rel = entry
-            .path()
+    for path in walk_files(root)? {
+        let rel = path
             .strip_prefix(root)
             .map_err(|err| err.to_string())?
             .to_path_buf();

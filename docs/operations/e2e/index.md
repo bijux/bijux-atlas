@@ -12,9 +12,9 @@
 ```bash
 make k8s-validate
 make ops-k8s-tests
-bijux dev atlas ops scenario list --format json
-bijux dev atlas ops scenario run --scenario minimal-single-node --plan --format json
-bijux dev atlas ops scenario run --scenario minimal-single-node --evidence --allow-write --format json
+bijux-dev-atlas ops scenario list --format json
+bijux-dev-atlas ops scenario run --scenario minimal-single-node --plan --format json
+bijux-dev-atlas ops scenario run --scenario minimal-single-node --evidence --allow-write --format json
 ```
 
 ## Expected outputs

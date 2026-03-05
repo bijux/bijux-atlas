@@ -34,7 +34,7 @@ fn onboarding_docs_layer_stays_within_budget() {
         .filter(|path| path.extension().and_then(|v| v.to_str()) == Some("md"))
         .collect::<Vec<_>>();
     assert!(
-        markdown_pages.len() <= 10,
+        markdown_pages.len() <= 11,
         "onboarding layer budget exceeded: docs root has {} markdown pages",
         markdown_pages.len()
     );

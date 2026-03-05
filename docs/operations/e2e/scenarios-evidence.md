@@ -8,8 +8,8 @@
 ## Run
 
 ```bash
-bijux dev atlas ops scenario run --scenario minimal-single-node --plan --format json
-bijux dev atlas ops scenario run --scenario artifact-integrity --evidence --allow-write --format json
+bijux-dev-atlas ops scenario run --scenario minimal-single-node --plan --format json
+bijux-dev-atlas ops scenario run --scenario artifact-integrity --evidence --allow-write --format json
 ```
 
 ## Interpret

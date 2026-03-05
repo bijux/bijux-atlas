@@ -17,6 +17,10 @@ Commands:
   invariants  
   security    
   runtime     
+  tutorials   
+  packages    
+  clients     
+  migrations  
   datasets    
   ingest      
   perf        

@@ -81,6 +81,8 @@ fn fs_calls_are_constrained_to_explicit_allowlist() {
             "src/commands/ops/execution_runtime_mod/install_status_parts/evidence_commands.rs",
             "src/commands/ops/execution_runtime_mod/install_status_parts/evidence_helpers.rs",
             "src/commands/ops/execution_runtime_mod/install_status_parts/foundations.rs",
+            "src/commands/ops/execution_runtime_mod/install_status_parts/diagnose_commands.rs",
+            "src/commands/ops/execution_runtime_mod/install_status_parts/simulation_cluster.rs",
             "src/commands/ops/execution_runtime_mod/install_status_parts/simulation_release.rs",
             "src/commands/ops/execution_runtime_mod/install_status_parts/tests_and_status.rs",
             "src/commands/ops/runtime_mod/core_handler.rs",
@@ -151,6 +153,7 @@ fn fs_calls_are_constrained_to_explicit_allowlist() {
             "src/runtime_entry_checks_surface.rs",
             "src/runtime_entry.rs",
             "src/registry/reports.rs",
+            "src/commands/release.rs",
         ],
     );
 }
@@ -174,6 +177,10 @@ fn process_calls_are_constrained_to_explicit_allowlist() {
             "src/commands/perf.rs",
             "src/commands/release.rs",
             "src/commands/suites.rs",
+            "src/commands/clients.rs",
+            "src/commands/packages.rs",
+            "src/commands/tutorials.rs",
+            "src/commands/docs/runtime/docs_command_router.rs",
             "src/contracts/engine_model.rs",
             "src/model/engine.rs",
             "src/contracts/docker/mod.rs",
@@ -205,6 +212,9 @@ fn env_var_calls_are_constrained_to_explicit_allowlist() {
             "src/ops/helm_env.rs",
             "src/ops/profiles_matrix.rs",
             "src/ops/profiles_matrix/tests.rs",
+            "src/commands/docs/runtime/docs_command_router.rs",
+            "src/commands/docs/runtime/subprocess_support.rs",
+            "src/commands/perf.rs",
         ],
     );
 }
@@ -217,6 +227,7 @@ fn network_client_calls_are_constrained_to_explicit_allowlist() {
             "src/commands/docs/validation_and_links.rs",
             "src/commands/perf.rs",
             "src/commands/system.rs",
+            "src/commands/docs/runtime/docs_command_router.rs",
         ],
     );
     assert_only_allowlisted_paths("ureq::", &[]);

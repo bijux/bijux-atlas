@@ -20,6 +20,26 @@ fn client_root(repo_root: &Path, client: &str) -> std::path::PathBuf {
     }
 }
 
+fn walk_files(root: &Path) -> Result<Vec<PathBuf>, String> {
+    let mut files = Vec::new();
+    let mut stack = vec![root.to_path_buf()];
+    while let Some(cursor) = stack.pop() {
+        let entries = fs::read_dir(&cursor)
+            .map_err(|err| format!("failed to read {}: {err}", cursor.display()))?;
+        for entry in entries {
+            let entry = entry.map_err(|err| format!("failed to read directory entry: {err}"))?;
+            let path = entry.path();
+            if path.is_dir() {
+                stack.push(path);
+            } else {
+                files.push(path);
+            }
+        }
+    }
+    files.sort();
+    Ok(files)
+}
+
 pub(crate) fn run_clients_command(quiet: bool, command: ClientsCommand) -> i32 {
     let run = match command {
         ClientsCommand::List(args) => run_clients_list(&args),
@@ -231,22 +251,17 @@ fn run_clients_examples_verify(args: &ClientsCommandArgs) -> Result<(String, i32
     let examples_dir = client_root(&repo_root, &args.client).join("examples");
     let mut examples = Vec::new();
     let mut violations = Vec::new();
-    for entry in walkdir::WalkDir::new(&examples_dir) {
-        let entry = entry.map_err(|err| format!("failed to walk examples: {err}"))?;
-        if !entry.file_type().is_file() {
+    for path in walk_files(&examples_dir)? {
+        if path.extension().and_then(|v| v.to_str()) != Some("py") {
             continue;
         }
-        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
-            continue;
-        }
-        let rel = entry
-            .path()
+        let rel = path
             .strip_prefix(&repo_root)
-            .unwrap_or(entry.path())
+            .unwrap_or(&path)
             .display()
             .to_string();
-        let text = fs::read_to_string(entry.path())
-            .map_err(|err| format!("failed to read {}: {err}", entry.path().display()))?;
+        let text = fs::read_to_string(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
         if text.contains("tools/generate_docs.py") {
             violations.push(format!("{rel}: references forbidden local docs script"));
         }
@@ -277,22 +292,17 @@ fn run_clients_examples_run(args: &ClientsCommandArgs) -> Result<(String, i32), 
     let examples_dir = client_root(&repo_root, &args.client).join("examples");
     let mut ran = Vec::new();
     let mut failures = Vec::new();
-    for entry in walkdir::WalkDir::new(&examples_dir) {
-        let entry = entry.map_err(|err| format!("failed to walk examples: {err}"))?;
-        if !entry.file_type().is_file() {
+    for path in walk_files(&examples_dir)? {
+        if path.extension().and_then(|v| v.to_str()) != Some("py") {
             continue;
         }
-        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
-            continue;
-        }
-        let rel = entry
-            .path()
+        let rel = path
             .strip_prefix(&repo_root)
-            .unwrap_or(entry.path())
+            .unwrap_or(&path)
             .display()
             .to_string();
-        let text = fs::read_to_string(entry.path())
-            .map_err(|err| format!("failed to read {}: {err}", entry.path().display()))?;
+        let text = fs::read_to_string(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
         let uses_runtime_surface = text.contains("/v1/query")
             || text.contains("dataset=\"genes\"")
             || text.contains("QueryRequest(");
@@ -363,21 +373,17 @@ fn run_clients_python_test(args: &ClientsPythonTestArgs) -> Result<(String, i32)
     }
 
     let mut test_files = Vec::new();
-    for entry in walkdir::WalkDir::new(root.join("tests")) {
-        let entry = entry.map_err(|err| format!("walk tests failed: {err}"))?;
-        if entry.file_type().is_file()
-            && entry.path().extension().and_then(|v| v.to_str()) == Some("py")
-            && entry
-                .path()
+    for path in walk_files(&root.join("tests"))? {
+        if path.extension().and_then(|v| v.to_str()) == Some("py")
+            && path
                 .file_name()
                 .and_then(|v| v.to_str())
                 .unwrap_or_default()
                 .starts_with("test_")
         {
-            let rel = entry
-                .path()
+            let rel = path
                 .strip_prefix(&root)
-                .unwrap_or(entry.path())
+                .unwrap_or(&path)
                 .display()
                 .to_string();
             test_files.push(rel);

@@ -10,7 +10,7 @@ last_reviewed: 2026-03-05
 Run:
 
 ```bash
-bijux dev atlas ops evidence diff <bundle-a.tar> <bundle-b.tar> --format json
+bijux-dev-atlas ops evidence diff <bundle-a.tar> <bundle-b.tar> --format json
 ```
 
 Review:

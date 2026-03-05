@@ -158,7 +158,7 @@ Support is provided for governed, documented surfaces on `main` and release tags
 
 ## Security Posture
 
-Security controls and operating rules are documented in [`docs/control-plane/security-posture.md`](docs/control-plane/security-posture.md) and linked operational runbooks under [`docs/operations/security`](docs/operations/security).
+Security controls and operating rules are documented in [`docs/control-plane/security-posture.md`](docs/control-plane/security-posture.md) and linked operational guidance under [`docs/operations/security`](docs/operations/security).
 
 ## Ops Reproducibility Posture
 

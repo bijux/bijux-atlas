@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Tutorials domain registration.
 
-pub mod commands;
 pub mod checks;
+pub mod commands;
 pub mod contracts;
 pub mod runtime;
 
 use crate::contracts::Contract;
 use crate::domains::Domain;
-use crate::model::{CommandRoute, RunnableEntry};
+use crate::model::{CommandRoute, RunnableEntry, RunnableId, RunnableKind, RunnableMode, SuiteId};
 use crate::registry::RunnableRegistry;
 use std::path::Path;
 
@@ -43,11 +43,41 @@ impl Domain for TutorialsDomain {
     }
 
     fn load_runnables(&self, registry: &RunnableRegistry) -> Vec<RunnableEntry> {
-        registry
+        let mut runnables = registry
             .all()
             .iter()
-            .filter(|entry| entry.group.contains("tutorial") || entry.id.as_str().contains("TUTORIAL"))
+            .filter(|entry| {
+                entry.group.to_ascii_lowercase().contains("tutorial")
+                    || entry
+                        .id
+                        .as_str()
+                        .to_ascii_lowercase()
+                        .contains("tutorial")
+                    || entry
+                        .commands
+                        .iter()
+                        .any(|command| command.contains("tutorials"))
+            })
             .cloned()
-            .collect()
+            .collect::<Vec<_>>();
+        if runnables.is_empty() {
+            runnables.push(RunnableEntry {
+                id: RunnableId::parse("tutorials.verify.contract").expect("valid runnable id"),
+                suite: SuiteId::parse("tutorials").expect("valid suite"),
+                kind: RunnableKind::Contract,
+                mode: RunnableMode::Pure,
+                summary: "Validate tutorials contracts and generated artifacts".to_string(),
+                owner: "docs-governance".to_string(),
+                group: "tutorials".to_string(),
+                tags: Vec::new(),
+                commands: vec!["bijux-dev-atlas tutorials verify --format json".to_string()],
+                report_ids: vec!["tutorials_verify".to_string()],
+                reports: vec!["artifacts/tutorials/verify-report.json".to_string()],
+                required_tools: vec!["bijux-dev-atlas".to_string()],
+                missing_tools_policy: "fail".to_string(),
+                effects_required: Vec::new(),
+            });
+        }
+        runnables
     }
 }

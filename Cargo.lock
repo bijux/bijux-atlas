@@ -255,7 +255,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "bijux-atlas-benchmark"
+name = "bijux-atlas-bench"
 version = "0.1.0"
 dependencies = [
  "serde",
@@ -436,7 +436,6 @@ dependencies = [
  "tar",
  "tempfile",
  "toml",
- "walkdir",
 ]
 
 [[package]]
