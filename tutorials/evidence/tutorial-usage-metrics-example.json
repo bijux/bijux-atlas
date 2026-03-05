@@ -1,0 +1,10 @@
+{
+  "tutorial": "ingest-and-query",
+  "runs": 42,
+  "success_rate": 0.98,
+  "average_duration_seconds": 173.4,
+  "top_failures": [
+    "runtime not reachable",
+    "dataset validation mismatch"
+  ]
+}
