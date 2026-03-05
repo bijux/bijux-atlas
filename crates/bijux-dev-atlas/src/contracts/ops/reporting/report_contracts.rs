@@ -102,5 +102,15 @@ fn report_contracts() -> Vec<Contract> {
                 run: test_ops_rpt_010_lane_reports_aggregated_in_unified_report,
             }],
         },
+        Contract {
+            id: ContractId("OPS-REPORT-011".to_string()),
+            title: "report ops bundle reproducibility policy contract",
+            tests: vec![TestCase {
+                id: TestId("ops.report.ops_bundle_reproducibility_policy".to_string()),
+                title: "ops release spec keeps deterministic bundle settings and reproducibility policy",
+                kind: TestKind::Pure,
+                run: test_ops_rpt_011_ops_bundle_reproducibility_policy,
+            }],
+        },
     ]
 }

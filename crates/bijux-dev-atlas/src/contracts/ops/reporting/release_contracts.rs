@@ -344,6 +344,124 @@ fn test_ops_rpt_007_historical_comparison_schema_valid(ctx: &RunContext) -> Test
     }
 }
 
+fn test_ops_rpt_011_ops_bundle_reproducibility_policy(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-REPORT-011";
+    let test_id = "ops.report.ops_bundle_reproducibility_policy";
+    let rel = "release/ops-v0.1.toml";
+    let path = ctx.repo_root.join(rel);
+    let raw = match std::fs::read_to_string(&path) {
+        Ok(value) => value,
+        Err(_) => {
+            return TestResult::Fail(vec![violation(
+                contract_id,
+                test_id,
+                "ops release spec must exist",
+                Some(rel.to_string()),
+            )]);
+        }
+    };
+    let spec: toml::Value = match toml::from_str(&raw) {
+        Ok(value) => value,
+        Err(_) => {
+            return TestResult::Fail(vec![violation(
+                contract_id,
+                test_id,
+                "ops release spec must be valid toml",
+                Some(rel.to_string()),
+            )]);
+        }
+    };
+    let mut violations = Vec::new();
+    let distribution_primary = spec
+        .get("distribution")
+        .and_then(toml::Value::as_table)
+        .and_then(|row| row.get("primary"))
+        .and_then(toml::Value::as_str)
+        .unwrap_or_default();
+    if distribution_primary != "oci-helm-chart" {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "ops release distribution primary must be oci-helm-chart",
+            Some(rel.to_string()),
+        ));
+    }
+    let package_output = spec
+        .get("package")
+        .and_then(toml::Value::as_table)
+        .and_then(|row| row.get("output_dir"))
+        .and_then(toml::Value::as_str)
+        .unwrap_or_default();
+    if !package_output.starts_with("artifacts/release/ops/") {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "ops package output_dir must stay under artifacts/release/ops/",
+            Some(rel.to_string()),
+        ));
+    }
+    let bundle = spec
+        .get("bundle")
+        .and_then(toml::Value::as_table)
+        .cloned()
+        .unwrap_or_default();
+    let bundle_output = bundle
+        .get("output_dir")
+        .and_then(toml::Value::as_str)
+        .unwrap_or_default();
+    if !bundle_output.starts_with("artifacts/release/ops/") {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "ops bundle output_dir must stay under artifacts/release/ops/",
+            Some(rel.to_string()),
+        ));
+    }
+    if bundle
+        .get("name_prefix")
+        .and_then(toml::Value::as_str)
+        .unwrap_or_default()
+        .trim()
+        .is_empty()
+    {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "ops bundle name_prefix must be declared",
+            Some(rel.to_string()),
+        ));
+    }
+    if bundle
+        .get("offline_required")
+        .and_then(toml::Value::as_bool)
+        != Some(true)
+    {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "ops bundle must declare offline_required=true",
+            Some(rel.to_string()),
+        ));
+    }
+    if bundle
+        .get("include_tool_version_requirements")
+        .and_then(toml::Value::as_bool)
+        != Some(true)
+    {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "ops bundle must include tool version requirements",
+            Some(rel.to_string()),
+        ));
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_ops_rpt_008_unified_report_example_schema_valid(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-REPORT-008";
     let test_id = "ops.report.unified_report_example_schema_valid";
