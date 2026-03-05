@@ -27,9 +27,9 @@ fn clients_docs_generate_recreates_index_and_reference() {
     assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
     assert_eq!(payload["action"], "docs-generate");
-    assert!(root.join("clients/atlas-client/docs/index.md").exists());
-    assert!(root.join("clients/atlas-client/docs/api-reference.md").exists());
-    assert!(root.join("clients/atlas-client/docs/version-compatibility-matrix.md").exists());
+    assert!(root.join("crates/bijux-atlas-client-python/docs/index.md").exists());
+    assert!(root.join("crates/bijux-atlas-client-python/docs/api-reference.md").exists());
+    assert!(root.join("crates/bijux-atlas-client-python/docs/version-compatibility-matrix.md").exists());
 }
 
 #[test]
@@ -134,23 +134,23 @@ fn clients_docs_generation_is_deterministic() {
     };
     let first = run();
     assert!(first.status.success(), "{}", String::from_utf8_lossy(&first.stderr));
-    let index_one = std::fs::read_to_string(root.join("clients/atlas-client/docs/index.md"))
+    let index_one = std::fs::read_to_string(root.join("crates/bijux-atlas-client-python/docs/index.md"))
         .expect("read index one");
-    let api_one = std::fs::read_to_string(root.join("clients/atlas-client/docs/api-reference.md"))
+    let api_one = std::fs::read_to_string(root.join("crates/bijux-atlas-client-python/docs/api-reference.md"))
         .expect("read api one");
     let matrix_one = std::fs::read_to_string(
-        root.join("clients/atlas-client/docs/version-compatibility-matrix.md"),
+        root.join("crates/bijux-atlas-client-python/docs/version-compatibility-matrix.md"),
     )
     .expect("read matrix one");
 
     let second = run();
     assert!(second.status.success(), "{}", String::from_utf8_lossy(&second.stderr));
-    let index_two = std::fs::read_to_string(root.join("clients/atlas-client/docs/index.md"))
+    let index_two = std::fs::read_to_string(root.join("crates/bijux-atlas-client-python/docs/index.md"))
         .expect("read index two");
-    let api_two = std::fs::read_to_string(root.join("clients/atlas-client/docs/api-reference.md"))
+    let api_two = std::fs::read_to_string(root.join("crates/bijux-atlas-client-python/docs/api-reference.md"))
         .expect("read api two");
     let matrix_two = std::fs::read_to_string(
-        root.join("clients/atlas-client/docs/version-compatibility-matrix.md"),
+        root.join("crates/bijux-atlas-client-python/docs/version-compatibility-matrix.md"),
     )
     .expect("read matrix two");
 

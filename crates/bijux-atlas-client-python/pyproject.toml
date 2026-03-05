@@ -29,7 +29,7 @@ Documentation = "https://bijux.github.io/bijux-atlas/api/"
 include-package-data = true
 
 [tool.setuptools.packages.find]
-where = ["."]
+where = ["python"]
 include = ["atlas_client*"]
 
 [tool.pytest.ini_options]

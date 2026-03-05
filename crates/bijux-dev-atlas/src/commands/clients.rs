@@ -9,6 +9,13 @@ use std::path::Path;
 const CLIENT_DOCS_CONFIG: &str = "configs/clients/atlas-client-docs.json";
 const OPENAPI_SNAPSHOT: &str = "configs/openapi/v1/openapi.snapshot.json";
 
+fn client_root(repo_root: &Path, client: &str) -> std::path::PathBuf {
+    match client {
+        "atlas-client" => repo_root.join("crates/bijux-atlas-client-python"),
+        _ => repo_root.join("crates").join(client),
+    }
+}
+
 pub(crate) fn run_clients_command(quiet: bool, command: ClientsCommand) -> i32 {
     let run = match command {
         ClientsCommand::List(args) => run_clients_list(&args),
@@ -97,7 +104,7 @@ fn run_clients_docs_generate(args: &ClientsCommandArgs) -> Result<(String, i32),
     let repo_root = resolve_repo_root(args.repo_root.clone())?;
     let model = load_docs_model(&repo_root, &args.client)?;
     let openapi_paths = load_openapi_paths(&repo_root)?;
-    let docs_dir = repo_root.join("clients").join(&args.client).join("docs");
+    let docs_dir = client_root(&repo_root, &args.client).join("docs");
     fs::create_dir_all(&docs_dir)
         .map_err(|err| format!("failed to create {}: {err}", docs_dir.display()))?;
 
@@ -117,9 +124,9 @@ fn run_clients_docs_generate(args: &ClientsCommandArgs) -> Result<(String, i32),
         "action": "docs-generate",
         "client": args.client,
         "generated": [
-            format!("clients/{}/docs/index.md", args.client),
-            format!("clients/{}/docs/api-reference.md", args.client),
-            format!("clients/{}/docs/version-compatibility-matrix.md", args.client)
+            format!("crates/bijux-atlas-client-python/docs/index.md"),
+            format!("crates/bijux-atlas-client-python/docs/api-reference.md"),
+            format!("crates/bijux-atlas-client-python/docs/version-compatibility-matrix.md")
         ],
         "openapi_paths": openapi_paths.len(),
     });
@@ -130,7 +137,7 @@ fn run_clients_docs_verify(args: &ClientsCommandArgs) -> Result<(String, i32), S
     let repo_root = resolve_repo_root(args.repo_root.clone())?;
     let model = load_docs_model(&repo_root, &args.client)?;
     let paths = load_openapi_paths(&repo_root)?;
-    let docs_dir = repo_root.join("clients").join(&args.client).join("docs");
+    let docs_dir = client_root(&repo_root, &args.client).join("docs");
 
     let expected = vec![
         (docs_dir.join("index.md"), render_index_markdown(&model, &paths)),
@@ -167,7 +174,7 @@ fn run_clients_docs_verify(args: &ClientsCommandArgs) -> Result<(String, i32), S
 
 fn run_clients_examples_verify(args: &ClientsCommandArgs) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.repo_root.clone())?;
-    let examples_dir = repo_root.join("clients").join(&args.client).join("examples");
+    let examples_dir = client_root(&repo_root, &args.client).join("examples");
     let mut examples = Vec::new();
     let mut violations = Vec::new();
     for entry in walkdir::WalkDir::new(&examples_dir) {
@@ -209,7 +216,7 @@ fn run_clients_examples_verify(args: &ClientsCommandArgs) -> Result<(String, i32
 
 fn run_clients_examples_run(args: &ClientsCommandArgs) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.repo_root.clone())?;
-    let examples_dir = repo_root.join("clients").join(&args.client).join("examples");
+    let examples_dir = client_root(&repo_root, &args.client).join("examples");
     let mut ran = Vec::new();
     let mut failures = Vec::new();
     for entry in walkdir::WalkDir::new(&examples_dir) {
@@ -280,7 +287,7 @@ fn run_clients_examples_run(args: &ClientsCommandArgs) -> Result<(String, i32), 
 fn run_clients_schema_verify(args: &ClientsCommandArgs) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.repo_root.clone())?;
     let model = load_docs_model(&repo_root, &args.client)?;
-    let docs_dir = repo_root.join("clients").join(&args.client).join("docs");
+    let docs_dir = client_root(&repo_root, &args.client).join("docs");
     let mut missing = Vec::new();
     for entry in &model.docs_entries {
         if !docs_dir.join(&entry.path).exists() {
@@ -304,10 +311,7 @@ fn run_clients_schema_verify(args: &ClientsCommandArgs) -> Result<(String, i32),
 fn run_clients_compat_matrix_verify(args: &ClientsCommandArgs) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.repo_root.clone())?;
     let model = load_docs_model(&repo_root, &args.client)?;
-    let matrix_path = repo_root
-        .join("clients")
-        .join(&args.client)
-        .join("docs/version-compatibility-matrix.md");
+    let matrix_path = client_root(&repo_root, &args.client).join("docs/version-compatibility-matrix.md");
     let matrix = fs::read_to_string(&matrix_path)
         .map_err(|err| format!("failed to read {}: {err}", matrix_path.display()))?;
     let required = [&model.python_sdk, &model.atlas_runtime, &model.api_surface];
