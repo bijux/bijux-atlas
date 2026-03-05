@@ -1,0 +1,8 @@
+# Workflows intentionally using Python tooling.
+.github/workflows/ci-nightly.yml
+.github/workflows/ci-pr.yml
+.github/workflows/docs-audit.yml
+.github/workflows/docs-deploy.yml
+.github/workflows/docs-only.yml
+.github/workflows/publish-atlas-client-python.yml
+.github/workflows/release-atlas-client-python.yml
