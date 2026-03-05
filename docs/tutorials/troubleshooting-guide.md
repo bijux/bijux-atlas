@@ -26,9 +26,8 @@ related:
 - [API troubleshooting](../api/troubleshooting.md)
 - [Incident response](../operations/incident-response.md)
 
-
 ## Tutorial dataset checks
 
-- `tutorials/scripts/validate_example_dataset.py`
-- `tutorials/scripts/reproducibility_check.sh`
-- `tutorials/scripts/integrity_check.sh`
+- `bijux-dev-atlas datasets validate --format json`
+- `bijux-dev-atlas reproduce verify --format json`
+- `bijux-dev-atlas security validate --format json`

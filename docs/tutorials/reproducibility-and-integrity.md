@@ -10,8 +10,8 @@ tags:
   - reproducibility
   - integrity
 related:
-  - tutorials/scripts/reproducibility_check.sh
-  - tutorials/scripts/integrity_check.sh
+  - docs/operations/reproducibility-troubleshooting.md
+  - docs/operations/security/security-troubleshooting-guide.md
 ---
 
 # Tutorial Reproducibility and Integrity Checks
@@ -19,8 +19,8 @@ related:
 Run:
 
 ```bash
-tutorials/scripts/reproducibility_check.sh
-tutorials/scripts/integrity_check.sh
+bijux-dev-atlas reproduce verify --format json
+bijux-dev-atlas security validate --format json
 ```
 
-These checks confirm deterministic dataset bytes and valid checksum manifests.
+These checks confirm deterministic outputs and integrity policies.

@@ -1,8 +1,0 @@
-{
-  "cases": [
-    {"exit_code": 2, "stderr": "invalid config key", "expected": "cli.config"},
-    {"exit_code": 1, "stderr": "permission denied", "expected": "cli.authorization"},
-    {"exit_code": 1, "stderr": "file not found", "expected": "cli.input"},
-    {"exit_code": 1, "stderr": "panic in command", "expected": "cli.runtime"}
-  ]
-}

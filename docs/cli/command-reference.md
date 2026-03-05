@@ -25,5 +25,5 @@ Primary command groups:
 Generate grouped list:
 
 ```bash
-python3 tools/cli/discover_subcommands.py --format text
+bijux-dev-atlas help --format text
 ```

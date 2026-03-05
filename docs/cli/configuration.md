@@ -12,9 +12,9 @@ Supported fields:
 - `quiet`
 - `profile`
 
-Use wrapper:
+Use dev-atlas directly:
 
 ```bash
-python3 tools/cli/atlas_cli_runner.py --print-effective-config
-python3 tools/cli/atlas_cli_runner.py -- api list
+bijux-dev-atlas configs print --format json
+bijux-dev-atlas api list --format json
 ```

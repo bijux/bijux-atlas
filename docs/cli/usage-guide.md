@@ -3,18 +3,18 @@
 ## Discover
 
 ```bash
-python3 tools/cli/discover_subcommands.py --format text
+bijux-dev-atlas help --format text
 ```
 
 ## Configure defaults
 
 ```bash
-python3 tools/cli/atlas_cli_runner.py --print-effective-config
+bijux-dev-atlas configs print --format json
 ```
 
-## Run commands with wrapper
+## Run commands
 
 ```bash
-python3 tools/cli/atlas_cli_runner.py -- api list
-python3 tools/cli/atlas_cli_runner.py -- observe metrics list
+bijux-dev-atlas api list --format json
+bijux-dev-atlas observe metrics list --format json
 ```

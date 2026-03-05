@@ -1,14 +1,11 @@
 # CLI Integration with Tutorials
 
-Tutorial automation entrypoints:
+Tutorial automation is executed through dev-atlas commands.
 
-- `tutorials/scripts/tutorial_cli_workflow.sh`
-- `tutorials/scripts/validate_example_dataset.py`
-- `tutorials/scripts/reproducibility_check.sh`
-- `tutorials/scripts/integrity_check.sh`
+Canonical entrypoints:
 
-Use CLI wrapper with tutorial flows:
-
-```bash
-python3 tools/cli/atlas_cli_runner.py -- check list
-```
+- `bijux-dev-atlas datasets validate --format json`
+- `bijux-dev-atlas ingest dry-run --format json`
+- `bijux-dev-atlas check list --format json`
+- `bijux-dev-atlas reproduce verify --format json`
+- `bijux-dev-atlas security validate --format json`

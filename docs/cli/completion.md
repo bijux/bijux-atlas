@@ -6,14 +6,10 @@ Supported shells:
 - zsh
 - fish
 
-Install completion assets:
+Generate current command surface:
 
 ```bash
-tools/cli/shell-integration/install-completions.sh
+bijux-dev-atlas help --format text
 ```
 
-Then print activation instructions:
-
-```bash
-tools/cli/shell-integration/enable-shell-integration.sh
-```
+Use shell-native completion setup for your environment and bind to `bijux-dev-atlas`.

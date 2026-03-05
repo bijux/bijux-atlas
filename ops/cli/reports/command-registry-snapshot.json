@@ -1,5 +1,5 @@
 {
-  "generated_by": "tools/cli/discover_subcommands.py",
+  "generated_by": "bijux-dev-atlas help --format json",
   "groups": {
     "governance": [
       "docs",

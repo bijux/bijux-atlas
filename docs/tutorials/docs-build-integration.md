@@ -21,8 +21,8 @@ Validation command:
 mkdocs build --strict
 ```
 
-Recommended pre-check script:
+Recommended pre-check command:
 
 ```bash
-tutorials/scripts/build_tutorial_docs.sh
+bijux-dev-atlas docs validate --format json
 ```

@@ -3,18 +3,22 @@ from __future__ import annotations
 
 import json
 import pathlib
-import sys
+import re
 import time
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
-from tools.cli.discover_subcommands import parse_help_commands
+
+def parse_help_commands(help_text: str) -> list[str]:
+    commands: list[str] = []
+    for line in help_text.splitlines():
+        if re.match(r"^\s{2}[a-z0-9-]+\s{2,}", line):
+            commands.append(line.split()[0])
+    return commands
 
 
 def benchmark_help_parse(iterations: int = 5000) -> dict[str, object]:
-    sample = (ROOT / "tools/cli/fixtures/help-root.snapshot.txt").read_text(encoding="utf-8")
+    sample = (ROOT / "ops/cli/perf/fixtures/help-root.snapshot.txt").read_text(encoding="utf-8")
     started = time.perf_counter()
     total = 0
     for _ in range(iterations):

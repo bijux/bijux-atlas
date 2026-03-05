@@ -3,11 +3,11 @@
 Use:
 
 ```bash
-python3 tools/cli/discover_subcommands.py --format text
+bijux-dev-atlas help --format text
 ```
 
-Interactive mode:
+Machine-readable discovery:
 
 ```bash
-python3 tools/cli/interactive_help.py
+bijux-dev-atlas help --format json
 ```

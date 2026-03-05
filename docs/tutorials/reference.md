@@ -15,15 +15,13 @@ related:
 
 # Tutorial Reference
 
-## Scripts
+## Command entrypoints
 
-- `tutorials/scripts/package_example_datasets.sh`
-- `tutorials/scripts/ingest_example_dataset.sh`
-- `tutorials/scripts/validate_example_dataset.py`
-- `tutorials/scripts/cleanup_tutorial_workspace.sh`
-- `tutorials/scripts/reproducibility_check.sh`
-- `tutorials/scripts/integrity_check.sh`
-- `tutorials/scripts/tutorial_cli_workflow.sh`
+- `bijux-dev-atlas datasets validate --format json`
+- `bijux-dev-atlas ingest dry-run --format json`
+- `bijux-dev-atlas ingest run --format json`
+- `bijux-dev-atlas reproduce verify --format json`
+- `bijux-dev-atlas security validate --format json`
 
 ## Contracts and Evidence
 

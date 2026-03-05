@@ -8,5 +8,5 @@
 Generate live grouped snapshot:
 
 ```bash
-python3 tools/cli/discover_subcommands.py --format json
+bijux-dev-atlas help --format json
 ```

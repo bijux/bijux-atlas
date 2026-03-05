@@ -18,13 +18,13 @@ related:
 1. Validate tutorial dataset:
 
 ```bash
-tutorials/scripts/validate_example_dataset.py configs/examples/datasets/atlas-example-minimal
+bijux-dev-atlas datasets validate --format json
 ```
 
-2. Run tutorial CLI flow:
+2. Run tutorial ingestion preview:
 
 ```bash
-tutorials/scripts/tutorial_cli_workflow.sh
+bijux-dev-atlas ingest dry-run --format json
 ```
 
 3. Follow ingest and query tutorials.

@@ -2,13 +2,13 @@
 
 ## Config validation failed
 
-- Run `python3 tools/cli/atlas_cli_runner.py --print-effective-config`.
+- Run `bijux-dev-atlas configs print --format json`.
 - Compare keys to `configs/cli/config.schema.json`.
 
 ## Completion not loading
 
-- Re-run `tools/cli/shell-integration/install-completions.sh`.
-- Verify shell startup references.
+- Rebuild command inventory with `bijux-dev-atlas help --format text`.
+- Verify shell startup references your completion configuration.
 
 ## Unexpected command failure
 
