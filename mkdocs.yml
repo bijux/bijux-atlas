@@ -264,3 +264,5 @@ nav:
           - Build Info: reference/build-info.md
       - Errors and Exit Codes: reference/errors-and-exit-codes.md
       - Configs Reference: reference/configs/index.md
+  - Reference:
+      - Reference Index: reference/index.md

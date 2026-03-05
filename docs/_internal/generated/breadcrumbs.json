@@ -7040,6 +7040,15 @@
         "docs",
         "docs/operations",
         "docs/operations/deploy",
+        "docs/operations/deploy/installing-ops-bundle.md"
+      ],
+      "path": "docs/operations/deploy/installing-ops-bundle.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/deploy",
         "docs/operations/deploy/installing-ops-product.md"
       ],
       "path": "docs/operations/deploy/installing-ops-product.md"
@@ -12802,6 +12811,14 @@
         "docs/reference/docker.md"
       ],
       "path": "docs/reference/docker.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/docs-entrypoints.md"
+      ],
+      "path": "docs/reference/docs-entrypoints.md"
     },
     {
       "breadcrumbs": [

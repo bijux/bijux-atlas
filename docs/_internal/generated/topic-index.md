@@ -448,6 +448,7 @@
 | `docs-debt-backlog` | `docs/_internal/governance/docs-debt-backlog.md` |
 | `docs-deletion-safety-checklist` | `docs/_internal/governance/docs-deletion-safety-checklist.md` |
 | `docs-drift-dashboard` | `docs/_internal/governance/docs-drift-dashboard.md` |
+| `docs-entrypoints` | `docs/reference/docs-entrypoints.md` |
 | `docs-governance` | `.github/PULL_REQUEST_TEMPLATE/docs-governance.md` |
 | `docs-inventory-taxonomy` | `docs/_internal/governance/docs-inventory-taxonomy.md` |
 | `docs-linking-rules` | `docs/_internal/governance/docs-linking-rules.md` |
@@ -654,6 +655,7 @@
 | `ingestion-policies` | `docs/reference/datasets/ingestion-policies.md` |
 | `inspect-artifacts` | `docs/tutorials/inspect-artifacts.md` |
 | `install-verification-checklist` | `docs/operations/install-verification-checklist.md` |
+| `installing-ops-bundle` | `docs/operations/deploy/installing-ops-bundle.md` |
 | `installing-ops-product` | `docs/operations/deploy/installing-ops-product.md` |
 | `institutional-packet` | `docs/operations/institutional-packet.md` |
 | `institutional-reader` | `docs/institutional-reader.md` |

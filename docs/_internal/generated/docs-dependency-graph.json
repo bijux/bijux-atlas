@@ -4018,6 +4018,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/deploy/installing-ops-bundle.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/deploy/installing-ops-product.md"
     },
     {
@@ -7329,6 +7334,11 @@
       "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/docker.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/docs-entrypoints.md"
     },
     {
       "crate": null,

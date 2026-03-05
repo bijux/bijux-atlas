@@ -6429,6 +6429,14 @@
       "area": "operations",
       "audience": "operators",
       "owner": "docs-governance",
+      "path": "docs/operations/deploy/installing-ops-bundle.md",
+      "stability": "stable",
+      "title": "Installing Ops Bundle"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
       "path": "docs/operations/deploy/installing-ops-product.md",
       "stability": "stable",
       "title": "Installing Ops Product"
@@ -11731,6 +11739,14 @@
     },
     {
       "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/docs-entrypoints.md",
+      "stability": "stable",
+      "title": "Docs entrypoints"
+    },
+    {
+      "area": "reference",
       "audience": "contributors",
       "owner": "bijux-atlas-platform",
       "path": "docs/reference/errors-and-exit-codes.md",
@@ -12823,7 +12839,7 @@
       "owner": "docs-governance",
       "path": "docs/tutorials/real-data-e2e.md",
       "stability": "stable",
-      "title": "Real Data E2E Tutorial"
+      "title": "End-to-end: ingest -> store -> query (10 datasets)"
     },
     {
       "area": "tutorials",

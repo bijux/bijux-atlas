@@ -1004,6 +1004,32 @@
         }
       ],
       "title": "committed docs artifacts use one canonical regeneration path"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-078",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.links.no_internal_github_blob_links"
+        }
+      ],
+      "title": "internal docs references avoid GitHub blob links"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-079",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.links.published_local_links_resolve"
+        }
+      ],
+      "title": "published docs local links resolve in-tree"
     }
   ],
   "schema_version": 1

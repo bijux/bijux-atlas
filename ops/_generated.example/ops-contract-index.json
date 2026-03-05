@@ -2167,6 +2167,21 @@
       "command": "bijux dev atlas ops check",
       "effects_required": [],
       "gate_ids": [
+        "ops.gate.observe-coverage"
+      ],
+      "id": "OPS-REPORT-011",
+      "mode": "static",
+      "pillar": "report",
+      "static_only": true,
+      "test_ids": [
+        "ops.report.ops_bundle_reproducibility_policy"
+      ],
+      "title": "report ops bundle reproducibility policy contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
         "ops.gate.structure"
       ],
       "id": "OPS-ROOT-001",

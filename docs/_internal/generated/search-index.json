@@ -10493,6 +10493,20 @@
     {
       "keywords": [
         "deploy",
+        "installing-ops-bundle",
+        "operations"
+      ],
+      "path": "docs/operations/deploy/installing-ops-bundle.md",
+      "tags": [
+        "deploy",
+        "installing-ops-bundle",
+        "operations"
+      ],
+      "topic": "installing-ops-bundle"
+    },
+    {
+      "keywords": [
+        "deploy",
         "installing-ops-product",
         "operations"
       ],
@@ -19365,6 +19379,18 @@
         "reference"
       ],
       "topic": "docker"
+    },
+    {
+      "keywords": [
+        "docs-entrypoints",
+        "reference"
+      ],
+      "path": "docs/reference/docs-entrypoints.md",
+      "tags": [
+        "docs-entrypoints",
+        "reference"
+      ],
+      "topic": "docs-entrypoints"
     },
     {
       "keywords": [

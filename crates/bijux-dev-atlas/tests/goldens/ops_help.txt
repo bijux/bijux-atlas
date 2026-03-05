@@ -46,6 +46,7 @@ Commands:
   verify-tools      
   list-actions      
   plan              
+  package           
   release-plan      
   install-plan      
   up                

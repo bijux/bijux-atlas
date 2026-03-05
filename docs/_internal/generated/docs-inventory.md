@@ -810,6 +810,7 @@ License: Apache-2.0
 | `docs/operations/deploy-kubernetes-minimal.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/deploy-kubernetes.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/deploy.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/deploy/installing-ops-bundle.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/deploy/installing-ops-product.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/deprecation-lifecycle-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/docker-build-network-policy.md` | `concept` | `docs-governance` | `stable` |
@@ -1473,6 +1474,7 @@ License: Apache-2.0
 | `docs/reference/datasets/shard-layout.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/datasets/validation-policies.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/docker.md` | `reference` | `docs-governance` | `stable` |
+| `docs/reference/docs-entrypoints.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/errors-and-exit-codes.md` | `reference` | `bijux-atlas-platform` | `stable` |
 | `docs/reference/errors.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/examples/api-request-examples.md` | `reference` | `api-contracts` | `stable` |

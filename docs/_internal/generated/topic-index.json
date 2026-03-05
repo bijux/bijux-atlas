@@ -1520,6 +1520,9 @@
     "docs-drift-dashboard": [
       "docs/_internal/governance/docs-drift-dashboard.md"
     ],
+    "docs-entrypoints": [
+      "docs/reference/docs-entrypoints.md"
+    ],
     "docs-governance": [
       ".github/PULL_REQUEST_TEMPLATE/docs-governance.md"
     ],
@@ -2267,6 +2270,9 @@
     ],
     "install-verification-checklist": [
       "docs/operations/install-verification-checklist.md"
+    ],
+    "installing-ops-bundle": [
+      "docs/operations/deploy/installing-ops-bundle.md"
     ],
     "installing-ops-product": [
       "docs/operations/deploy/installing-ops-product.md"

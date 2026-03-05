@@ -1260,6 +1260,14 @@
       "used_in": []
     },
     {
+      "name": "release-verify",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "root-surface-explain",
       "defined_in": [
         "make/root.mk"

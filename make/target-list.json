@@ -63,6 +63,7 @@
     "ops-pr",
     "registry-doctor",
     "release-plan",
+    "release-verify",
     "root-surface-explain",
     "stack-down",
     "stack-up",

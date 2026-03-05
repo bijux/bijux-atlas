@@ -1391,6 +1391,16 @@
       "title": "report lane aggregation contract"
     },
     {
+      "id": "OPS-REPORT-011",
+      "tests": [
+        {
+          "test_id": "ops.report.ops_bundle_reproducibility_policy",
+          "title": "ops release spec keeps deterministic bundle settings and reproducibility policy"
+        }
+      ],
+      "title": "report ops bundle reproducibility policy contract"
+    },
+    {
       "id": "OPS-ROOT-001",
       "tests": [
         {

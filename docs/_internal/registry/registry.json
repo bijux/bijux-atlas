@@ -19331,6 +19331,31 @@
       "doc_version": "v1",
       "keywords": [
         "deploy",
+        "installing-ops-bundle",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/deploy/installing-ops-bundle.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "deploy",
+        "installing-ops-bundle",
+        "operations"
+      ],
+      "title": "Installing Ops Bundle",
+      "topic": "installing-ops-bundle"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "deploy",
         "installing-ops-product",
         "operations"
       ],
@@ -35494,6 +35519,29 @@
     },
     {
       "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "docs-entrypoints",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/docs-entrypoints.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "docs-entrypoints",
+        "reference"
+      ],
+      "title": "Docs entrypoints",
+      "topic": "docs-entrypoints"
+    },
+    {
+      "area": "reference",
       "audience": "contributors",
       "crate": null,
       "doc_type": "reference",
@@ -38810,7 +38858,7 @@
         "real-data-e2e",
         "tutorials"
       ],
-      "title": "Real Data E2E Tutorial",
+      "title": "End-to-end: ingest -> store -> query (10 datasets)",
       "topic": "real-data-e2e"
     },
     {

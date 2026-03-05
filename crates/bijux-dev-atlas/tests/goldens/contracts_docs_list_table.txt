@@ -76,4 +76,6 @@ docs     DOC-074            no                            must     docs section 
 docs     DOC-075            no                            must     operations runbooks keep required sections
 docs     DOC-076            no                            must     major docs spine changes require explicit governance owner approval
 docs     DOC-077            no                            must     committed docs artifacts use one canonical regeneration path
+docs     DOC-078            no                            must     internal docs references avoid GitHub blob links
+docs     DOC-079            no                            must     published docs local links resolve in-tree
 

@@ -556,9 +556,9 @@
   "schema_version": 1,
   "stale_pages": [],
   "summary": {
-    "errors": 97,
+    "errors": 98,
     "reference_date": "2026-02-25",
-    "registered": 1709,
+    "registered": 1711,
     "stale_pages": 0,
     "warnings": 600
   }
