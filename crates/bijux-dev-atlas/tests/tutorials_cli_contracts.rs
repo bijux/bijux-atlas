@@ -336,3 +336,71 @@ fn tutorials_real_data_fetch_and_ingest_write_run_artifacts() {
     let report_path = payload["ingest_report"].as_str().expect("ingest_report path");
     assert!(PathBuf::from(report_path).exists() || root.join(report_path).exists());
 }
+
+#[test]
+fn tutorials_real_data_run_all_writes_resume_state() {
+    let root = repo_root();
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args([
+            "tutorials",
+            "real-data",
+            "run-all",
+            "--no-fetch",
+            "--dry-run",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("tutorials real-data run-all");
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    let state_file = payload["state_file"].as_str().expect("state file");
+    assert!(PathBuf::from(state_file).exists() || root.join(state_file).exists());
+}
+
+#[test]
+fn tutorials_real_data_clean_run_supports_dry_run() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "tutorials",
+            "real-data",
+            "clean-run",
+            "--run-id",
+            "rdr-001-genes-baseline",
+            "--dry-run",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("tutorials real-data clean-run");
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    assert_eq!(payload["action"], "real-data-clean-run");
+    assert_eq!(payload["dry_run"], true);
+}
+
+#[test]
+fn tutorials_real_data_doctor_reports_tool_checks() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["tutorials", "real-data", "doctor", "--format", "json"])
+        .output()
+        .expect("tutorials real-data doctor");
+    assert!(
+        output.status.code().is_some(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    assert!(payload["tool_checks"].as_array().is_some());
+}

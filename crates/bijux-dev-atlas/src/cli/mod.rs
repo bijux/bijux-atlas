@@ -1392,6 +1392,10 @@ pub enum TutorialsRealDataCommand {
     Plan(TutorialsRealDataPlanArgs),
     Fetch(TutorialsRealDataRunArgs),
     Ingest(TutorialsRealDataRunArgs),
+    QueryPack(TutorialsRealDataRunArgs),
+    ExportEvidence(TutorialsRealDataRunArgs),
+    RunAll(TutorialsRealDataRunAllArgs),
+    CleanRun(TutorialsRealDataRunArgs),
     Doctor(TutorialsCommandArgs),
 }
 
@@ -1411,6 +1415,22 @@ pub struct TutorialsRealDataRunArgs {
     pub run_id: String,
     #[arg(long, default_value = "local")]
     pub profile: String,
+    #[arg(long, default_value_t = false)]
+    pub dry_run: bool,
+    #[arg(long, default_value_t = false)]
+    pub no_fetch: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct TutorialsRealDataRunAllArgs {
+    #[command(flatten)]
+    pub common: TutorialsCommandArgs,
+    #[arg(long, default_value = "local")]
+    pub profile: String,
+    #[arg(long, default_value_t = false)]
+    pub dry_run: bool,
+    #[arg(long, default_value_t = false)]
+    pub no_fetch: bool,
 }
 
 #[derive(Subcommand, Debug)]

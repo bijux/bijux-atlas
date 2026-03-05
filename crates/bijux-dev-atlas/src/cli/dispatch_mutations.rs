@@ -772,9 +772,13 @@ fn force_json_tutorials(command: &mut crate::cli::TutorialsCommand) {
             | crate::cli::TutorialsRealDataCommand::Doctor(args) => args.format = FormatArg::Json,
             crate::cli::TutorialsRealDataCommand::Plan(args) => args.common.format = FormatArg::Json,
             crate::cli::TutorialsRealDataCommand::Fetch(args)
-            | crate::cli::TutorialsRealDataCommand::Ingest(args) => {
+            | crate::cli::TutorialsRealDataCommand::Ingest(args)
+            | crate::cli::TutorialsRealDataCommand::QueryPack(args)
+            | crate::cli::TutorialsRealDataCommand::ExportEvidence(args)
+            | crate::cli::TutorialsRealDataCommand::CleanRun(args) => {
                 args.common.format = FormatArg::Json
             }
+            crate::cli::TutorialsRealDataCommand::RunAll(args) => args.common.format = FormatArg::Json,
         },
     }
 }
@@ -1722,7 +1726,13 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     args.common.repo_root = Some(root.clone())
                 }
                 crate::cli::TutorialsRealDataCommand::Fetch(args)
-                | crate::cli::TutorialsRealDataCommand::Ingest(args) => {
+                | crate::cli::TutorialsRealDataCommand::Ingest(args)
+                | crate::cli::TutorialsRealDataCommand::QueryPack(args)
+                | crate::cli::TutorialsRealDataCommand::ExportEvidence(args)
+                | crate::cli::TutorialsRealDataCommand::CleanRun(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+                crate::cli::TutorialsRealDataCommand::RunAll(args) => {
                     args.common.repo_root = Some(root.clone())
                 }
             },
