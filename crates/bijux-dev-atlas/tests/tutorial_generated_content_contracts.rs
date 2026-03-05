@@ -206,7 +206,7 @@ fn generated_docs_file_set_matches_expected_snapshot() {
 }
 
 #[test]
-fn docs_verify_generated_reports_clean_state() {
+fn slow_docs_verify_generated_reports_clean_state() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["docs", "verify-generated", "--format", "json"])

@@ -33,7 +33,7 @@ fn tutorials_list_reports_asset_counts() {
 }
 
 #[test]
-fn tutorials_workflow_text_uses_nextest_style_summary() {
+fn slow_tutorials_workflow_text_uses_nextest_style_summary() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["tutorials", "run", "workflow"])
@@ -56,7 +56,7 @@ fn tutorials_workflow_text_uses_nextest_style_summary() {
 }
 
 #[test]
-fn tutorials_workflow_only_runs_selected_step() {
+fn slow_tutorials_workflow_only_runs_selected_step() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args([
@@ -82,7 +82,7 @@ fn tutorials_workflow_only_runs_selected_step() {
 }
 
 #[test]
-fn tutorials_workflow_markdown_output_writes_report() {
+fn slow_tutorials_workflow_markdown_output_writes_report() {
     let root = repo_root();
     let out = root.join("artifacts/tutorials/tests-workflow.md");
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
@@ -110,7 +110,7 @@ fn tutorials_workflow_markdown_output_writes_report() {
 }
 
 #[test]
-fn tutorials_workflow_quiet_text_outputs_nothing() {
+fn slow_tutorials_workflow_quiet_text_outputs_nothing() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["tutorials", "run", "workflow", "--quiet"])
@@ -128,7 +128,7 @@ fn tutorials_workflow_quiet_text_outputs_nothing() {
 }
 
 #[test]
-fn tutorials_workflow_verbose_text_includes_step_details() {
+fn slow_tutorials_workflow_verbose_text_includes_step_details() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["tutorials", "run", "workflow", "--verbose"])
