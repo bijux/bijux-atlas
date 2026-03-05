@@ -1,10 +1,13 @@
 {
   "schema_version": 1,
   "allowed_paths": [
+    "crates/bijux-dev-atlas/tests/fixtures",
     "ops/e2e/fixtures",
     "ops/load/k6",
     "ops/load/k6/suites",
-    "crates/bijux-dev-atlas/tests/fixtures"
+    "packages/bijux-atlas-python",
+    "packages/bijux-atlas-python/examples",
+    "packages/bijux-atlas-python/src"
   ],
   "extensions": [
     ".js",

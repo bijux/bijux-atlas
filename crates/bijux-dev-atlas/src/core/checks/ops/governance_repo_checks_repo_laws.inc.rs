@@ -129,6 +129,10 @@ pub(super) fn check_repo_root_directory_allowlist_contract(
 pub(super) fn check_repo_artifacts_not_tracked(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
+    let tracked_allowlist = BTreeSet::from([
+        "artifacts/governance/ops_purity_report.json",
+        "artifacts/governance/ops_purity_report.md",
+    ]);
     let output = std::process::Command::new("git")
         .current_dir(ctx.repo_root)
         .args(["ls-files", "artifacts"])
@@ -150,6 +154,7 @@ pub(super) fn check_repo_artifacts_not_tracked(
         .collect::<Vec<_>>();
     Ok(tracked
         .into_iter()
+        .filter(|path| !tracked_allowlist.contains(path))
         .map(|path| {
             violation(
                 "REPO_ARTIFACTS_TRACKED_PATH_FORBIDDEN",

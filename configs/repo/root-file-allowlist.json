@@ -18,7 +18,9 @@
     "governance",
     "make",
     "ops",
+    "packages",
     "release",
-    "security"
+    "security",
+    "tutorials"
   ]
 }

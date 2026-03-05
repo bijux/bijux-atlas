@@ -6,6 +6,7 @@
     "configs/schema/generated/",
     "crates/",
     "docs/_internal/generated/",
+    "docs/api/generated/",
     "ops/"
   ]
 }
