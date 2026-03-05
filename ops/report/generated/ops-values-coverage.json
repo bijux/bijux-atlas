@@ -1,0 +1,228 @@
+{
+  "coverage_percent": 100.0,
+  "covered_values_keys": 43,
+  "documentation_map_path": "ops/k8s/values/documentation-map.json",
+  "errors": [],
+  "kind": "release_ops_values_coverage",
+  "rows": [
+    {
+      "docs": "docs/operations/profiles.md",
+      "internal_only": false,
+      "key": "affinity"
+    },
+    {
+      "docs": "docs/operations/observability-setup.md",
+      "internal_only": false,
+      "key": "alertRules"
+    },
+    {
+      "docs": "docs/operations/security-posture.md",
+      "internal_only": false,
+      "key": "audit"
+    },
+    {
+      "docs": "docs/operations/cluster-upgrade-and-compatibility.md",
+      "internal_only": false,
+      "key": "autoscaling"
+    },
+    {
+      "docs": "docs/operations/dataset-update.md",
+      "internal_only": false,
+      "key": "cache"
+    },
+    {
+      "docs": "docs/operations/dataset-update.md",
+      "internal_only": false,
+      "key": "catalog"
+    },
+    {
+      "docs": "docs/operations/dataset-update.md",
+      "internal_only": false,
+      "key": "catalogPublishJob"
+    },
+    {
+      "docs": "docs/operations/run-locally.md",
+      "internal_only": false,
+      "key": "config"
+    },
+    {
+      "docs": "docs/operations/run-locally.md",
+      "internal_only": false,
+      "key": "configMounts"
+    },
+    {
+      "docs": "docs/operations/security-posture.md",
+      "internal_only": false,
+      "key": "containerSecurityContext"
+    },
+    {
+      "docs": "docs/operations/ops-offline-install-guide.md",
+      "internal_only": false,
+      "key": "datasetWarmupJob"
+    },
+    {
+      "docs": "docs/operations/reference/tools.md",
+      "internal_only": false,
+      "key": "env"
+    },
+    {
+      "docs": "docs/operations/security-posture.md",
+      "internal_only": false,
+      "key": "envFromSecrets"
+    },
+    {
+      "docs": "docs/operations/profiles.md",
+      "internal_only": false,
+      "key": "extraAnnotations"
+    },
+    {
+      "docs": "docs/operations/run-locally.md",
+      "internal_only": false,
+      "key": "extraEnv"
+    },
+    {
+      "docs": "docs/operations/profiles.md",
+      "internal_only": false,
+      "key": "extraLabels"
+    },
+    {
+      "docs": "docs/operations/profiles.md",
+      "internal_only": false,
+      "key": "extraVolumeMounts"
+    },
+    {
+      "docs": "docs/operations/profiles.md",
+      "internal_only": false,
+      "key": "extraVolumes"
+    },
+    {
+      "docs": "docs/operations/cluster-node-health-monitoring.md",
+      "internal_only": false,
+      "key": "hpa"
+    },
+    {
+      "docs": "docs/operations/ops-oci-chart-consumer-workflow.md",
+      "internal_only": false,
+      "key": "image"
+    },
+    {
+      "docs": "docs/operations/deploy.md",
+      "internal_only": false,
+      "key": "ingress"
+    },
+    {
+      "docs": "docs/operations/ops-offline-install-guide.md",
+      "internal_only": false,
+      "key": "initContainers"
+    },
+    {
+      "docs": "docs/operations/observability-setup.md",
+      "internal_only": false,
+      "key": "metrics"
+    },
+    {
+      "docs": "docs/operations/security-posture.md",
+      "internal_only": false,
+      "key": "networkPolicy"
+    },
+    {
+      "docs": "docs/operations/performance.md",
+      "internal_only": false,
+      "key": "nodeLocalSsdProfile"
+    },
+    {
+      "docs": "docs/operations/cluster-deployment-models.md",
+      "internal_only": false,
+      "key": "nodeSelector"
+    },
+    {
+      "docs": "docs/operations/cluster-node-maintenance-procedures.md",
+      "internal_only": false,
+      "key": "pdb"
+    },
+    {
+      "docs": "docs/operations/security-posture.md",
+      "internal_only": false,
+      "key": "podSecurityContext"
+    },
+    {
+      "docs": "docs/operations/profiles.md",
+      "internal_only": false,
+      "key": "priorityClassName"
+    },
+    {
+      "docs": "docs/operations/install-verification-checklist.md",
+      "internal_only": false,
+      "key": "probes"
+    },
+    {
+      "docs": "docs/operations/security-posture.md",
+      "internal_only": false,
+      "key": "rbac"
+    },
+    {
+      "docs": "docs/operations/cluster-deployment-models.md",
+      "internal_only": false,
+      "key": "replicaCount"
+    },
+    {
+      "docs": "docs/operations/performance-optimization-guidelines.md",
+      "internal_only": false,
+      "key": "resources"
+    },
+    {
+      "docs": "docs/operations/ops-chart-upgrade-guide.md",
+      "internal_only": false,
+      "key": "rollout"
+    },
+    {
+      "docs": "docs/operations/security-posture.md",
+      "internal_only": false,
+      "key": "securityContext"
+    },
+    {
+      "docs": "docs/operations/performance.md",
+      "internal_only": false,
+      "key": "sequenceRateLimits"
+    },
+    {
+      "docs": "docs/operations/run-locally.md",
+      "internal_only": false,
+      "key": "server"
+    },
+    {
+      "docs": "docs/operations/deploy.md",
+      "internal_only": false,
+      "key": "service"
+    },
+    {
+      "docs": "docs/operations/security-posture.md",
+      "internal_only": false,
+      "key": "serviceAccount"
+    },
+    {
+      "docs": "docs/operations/observability-setup.md",
+      "internal_only": false,
+      "key": "serviceMonitor"
+    },
+    {
+      "docs": "docs/operations/data-retention-policy.md",
+      "internal_only": false,
+      "key": "store"
+    },
+    {
+      "docs": "docs/operations/ops-chart-rollback-guide.md",
+      "internal_only": false,
+      "key": "terminationGracePeriodSeconds"
+    },
+    {
+      "docs": "docs/operations/cluster-deployment-models.md",
+      "internal_only": false,
+      "key": "tolerations"
+    }
+  ],
+  "schema_path": "ops/k8s/charts/bijux-atlas/values.schema.json",
+  "schema_version": 1,
+  "status": "ok",
+  "total_values_keys": 43
+}

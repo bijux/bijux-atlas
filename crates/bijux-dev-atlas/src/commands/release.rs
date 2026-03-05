@@ -1738,6 +1738,8 @@ fn run_release_ops_bundle_build(args: ReleaseOpsBundleArgs) -> Result<(String, i
         root.join("ops/inventory"),
         root.join("ops/evidence/schema/v1/ops-evidence-bundle.schema.json"),
         root.join("ops/k8s/tests/goldens/render-kind.summary.json"),
+        root.join("ops/report/generated/ops-values-coverage.json"),
+        root.join("ops/report/generated/ops-artifact-lineage.json"),
         root.join("ops/report/generated/release-evidence-bundle.json"),
         root.join("ops/report/generated/readiness-score.json"),
     ];
@@ -1849,6 +1851,436 @@ fn run_release_ops_bundle_verify(args: ReleaseOpsBundleArgs) -> Result<(String, 
         "errors": errors
     });
     let rendered = emit_payload(args.common.format, args.common.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_ops_values_coverage(args: ReleaseOpsPackageArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let schema_path = root.join("ops/k8s/charts/bijux-atlas/values.schema.json");
+    let map_path = root.join("ops/k8s/values/documentation-map.json");
+    let schema = read_json(&schema_path)?;
+    let map = read_json(&map_path)?;
+    let schema_keys = schema
+        .get("properties")
+        .and_then(serde_json::Value::as_object)
+        .map(|rows| rows.keys().cloned().collect::<BTreeSet<_>>())
+        .unwrap_or_default();
+    let mapped = map
+        .get("keys")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let mut covered = BTreeSet::new();
+    let mut missing = Vec::<String>::new();
+    let mut rows = Vec::<serde_json::Value>::new();
+    for row in mapped {
+        let Some(key) = row.get("key").and_then(serde_json::Value::as_str) else {
+            continue;
+        };
+        covered.insert(key.to_string());
+        let has_docs = row
+            .get("docs")
+            .and_then(serde_json::Value::as_str)
+            .map(|value| !value.trim().is_empty())
+            .unwrap_or(false);
+        let internal = row
+            .get("internal_only")
+            .and_then(serde_json::Value::as_bool)
+            .unwrap_or(false);
+        if schema_keys.contains(key) && !has_docs && !internal {
+            missing.push(format!("values key `{key}` must reference docs or set internal_only=true"));
+        }
+        rows.push(row);
+    }
+    for key in &schema_keys {
+        if !covered.contains(key) {
+            missing.push(format!("values key `{key}` is missing from ops/k8s/values/documentation-map.json"));
+        }
+    }
+    rows.sort_by(|a, b| {
+        a.get("key")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default()
+            .cmp(
+                b.get("key")
+                    .and_then(serde_json::Value::as_str)
+                    .unwrap_or_default(),
+            )
+    });
+    let status = if missing.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_values_coverage",
+        "status": status,
+        "schema_path": repo_rel(&root, &schema_path),
+        "documentation_map_path": repo_rel(&root, &map_path),
+        "total_values_keys": schema_keys.len(),
+        "covered_values_keys": covered.len(),
+        "coverage_percent": if schema_keys.is_empty() { 0.0 } else { (covered.len() as f64 / schema_keys.len() as f64) * 100.0 },
+        "rows": rows,
+        "errors": missing
+    });
+    if args.allow_write {
+        write_json(&root.join("ops/report/generated/ops-values-coverage.json"), &payload)?;
+    }
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_ops_profiles_verify(args: ReleaseOpsPackageArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let profiles_path = root.join("ops/k8s/values/profiles.json");
+    let profiles = read_json(&profiles_path)?;
+    let rows = profiles
+        .get("profiles")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let mut errors = Vec::<String>::new();
+    let mut output_rows = Vec::<serde_json::Value>::new();
+    for row in rows {
+        let id = row.get("id").and_then(serde_json::Value::as_str).unwrap_or_default();
+        let owner = row.get("owner").and_then(serde_json::Value::as_str).unwrap_or_default();
+        let purpose = row.get("purpose").and_then(serde_json::Value::as_str).unwrap_or_default();
+        let env = row.get("intendedUse").and_then(serde_json::Value::as_str).unwrap_or_default();
+        let risk = row.get("risk_level").and_then(serde_json::Value::as_str).unwrap_or_default();
+        if owner.trim().is_empty() {
+            errors.push(format!("profile `{id}` must define owner"));
+        }
+        if purpose.trim().is_empty() {
+            errors.push(format!("profile `{id}` must define purpose"));
+        }
+        if env.trim().is_empty() {
+            errors.push(format!("profile `{id}` must define intendedUse"));
+        }
+        if risk.trim().is_empty() {
+            errors.push(format!("profile `{id}` must define risk_level"));
+        }
+        output_rows.push(serde_json::json!({
+            "id": id,
+            "owner": owner,
+            "intent": purpose,
+            "supported_environment": env,
+            "risk_tier": risk
+        }));
+    }
+    output_rows.sort_by(|a, b| {
+        a["id"]
+            .as_str()
+            .unwrap_or_default()
+            .cmp(b["id"].as_str().unwrap_or_default())
+    });
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_profiles_verify",
+        "status": status,
+        "profiles_path": repo_rel(&root, &profiles_path),
+        "profiles": output_rows,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_ops_lineage_generate(args: ReleaseOpsPackageArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let chart_digest_path = root.join("release/ops-chart-digest.json");
+    let chart_digest_payload = read_json(&chart_digest_path)?;
+    let chart_digest = chart_digest_payload
+        .get("sha256")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default()
+        .to_string();
+    let image_digest_path = root.join("artifacts/docker-publish/image-digests.json");
+    let mut image_digest_source = repo_rel(&root, &image_digest_path);
+    let image_digest = if image_digest_path.exists() {
+        read_json(&image_digest_path)?
+            .get("images")
+            .and_then(serde_json::Value::as_array)
+            .and_then(|rows| rows.first())
+            .and_then(|row| row.get("digest"))
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default()
+            .to_string()
+    } else {
+        let fallback = root.join("release/evidence/ops-distribution/install-chart-from-oci/evidence.json");
+        if fallback.exists() {
+            image_digest_source = repo_rel(&root, &fallback);
+            read_json(&fallback)?
+                .get("image_digest")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default()
+                .to_string()
+        } else {
+            String::new()
+        }
+    };
+    let schema_version = read_json(&root.join("ops/evidence/schema/v1/ops-evidence-bundle.schema.json"))?
+        .get("schema_version")
+        .and_then(serde_json::Value::as_i64)
+        .unwrap_or(1);
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_artifact_lineage",
+        "status": if chart_digest.is_empty() || image_digest.is_empty() { "failed" } else { "ok" },
+        "lineage": {
+            "chart_digest_sha256": chart_digest,
+            "image_digest": image_digest,
+            "ops_evidence_schema_version": schema_version
+        },
+        "sources": {
+            "chart_digest_path": repo_rel(&root, &chart_digest_path),
+            "image_digest_path": image_digest_source,
+            "ops_evidence_schema_path": "ops/evidence/schema/v1/ops-evidence-bundle.schema.json"
+        },
+        "errors": if chart_digest.is_empty() || image_digest.is_empty() {
+            serde_json::json!(["lineage report requires both chart and image digest"])
+        } else {
+            serde_json::json!([])
+        }
+    });
+    if args.allow_write {
+        write_json(&root.join("ops/report/generated/ops-artifact-lineage.json"), &payload)?;
+    }
+    let status = payload
+        .get("status")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("failed");
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_ops_provenance_verify(args: ReleaseOpsPackageArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let doc_path = root.join("docs/operations/ops-provenance.md");
+    let manifest_path = root.join("release/ops-release-manifest.json");
+    let digest_path = root.join("release/ops-chart-digest.json");
+    let mut errors = Vec::<String>::new();
+    if !doc_path.exists() {
+        errors.push("missing docs/operations/ops-provenance.md".to_string());
+    }
+    if !manifest_path.exists() {
+        errors.push("missing release/ops-release-manifest.json".to_string());
+    }
+    if !digest_path.exists() {
+        errors.push("missing release/ops-chart-digest.json".to_string());
+    }
+    if errors.is_empty() {
+        let doc = fs::read_to_string(&doc_path)
+            .map_err(|err| format!("failed to read {}: {err}", doc_path.display()))?;
+        for required_ref in ["release/ops-release-manifest.json", "release/ops-chart-digest.json"] {
+            if !doc.contains(required_ref) {
+                errors.push(format!("ops provenance document must reference `{required_ref}`"));
+            }
+        }
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_provenance_verify",
+        "status": status,
+        "doc_path": repo_rel(&root, &doc_path),
+        "manifest_path": repo_rel(&root, &manifest_path),
+        "chart_digest_path": repo_rel(&root, &digest_path),
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_ops_scenario_evidence_verify(
+    args: ReleaseOpsPackageArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let scenarios = [
+        "install-chart-from-oci",
+        "upgrade-chart-from-oci",
+        "rollback-chart-from-oci",
+        "offline-install-from-bundle",
+    ];
+    let required_keys = [
+        "cluster",
+        "helm_version",
+        "chart_digest",
+        "image_digest",
+        "profile",
+    ];
+    let mut errors = Vec::<String>::new();
+    let mut rows = Vec::<serde_json::Value>::new();
+    for scenario in scenarios {
+        let evidence_path = root
+            .join("release/evidence/ops-distribution")
+            .join(scenario)
+            .join("evidence.json");
+        if !evidence_path.exists() {
+            errors.push(format!("missing scenario evidence: {}", repo_rel(&root, &evidence_path)));
+            continue;
+        }
+        let evidence = read_json(&evidence_path)?;
+        let mut missing = Vec::<String>::new();
+        for key in required_keys {
+            if evidence.get(key).is_none() {
+                missing.push(key.to_string());
+            }
+        }
+        if !missing.is_empty() {
+            errors.push(format!(
+                "{} missing required evidence fields: {}",
+                repo_rel(&root, &evidence_path),
+                missing.join(", ")
+            ));
+        }
+        rows.push(serde_json::json!({
+            "scenario": scenario,
+            "evidence_path": repo_rel(&root, &evidence_path),
+            "status": if missing.is_empty() { "ok" } else { "failed" },
+            "missing_fields": missing
+        }));
+    }
+    rows.sort_by(|a, b| {
+        a["scenario"]
+            .as_str()
+            .unwrap_or_default()
+            .cmp(b["scenario"].as_str().unwrap_or_default())
+    });
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_scenario_evidence_verify",
+        "status": status,
+        "rows": rows,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_ops_readiness_summary(args: ReleaseOpsPackageArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let checks = vec![
+        (
+            "validate_package",
+            run_release_ops_validate_package(ReleaseOpsPackageArgs {
+                repo_root: Some(root.clone()),
+                format: FormatArg::Json,
+                out: None,
+                allow_write: false,
+                allow_subprocess: false,
+            })
+            .map(|(_, code)| code == 0)
+            .unwrap_or(false),
+        ),
+        (
+            "digest_verify",
+            run_release_ops_digest_verify(ReleaseOpsPackageArgs {
+                repo_root: Some(root.clone()),
+                format: FormatArg::Json,
+                out: None,
+                allow_write: false,
+                allow_subprocess: false,
+            })
+            .map(|(_, code)| code == 0)
+            .unwrap_or(false),
+        ),
+        (
+            "values_coverage",
+            run_release_ops_values_coverage(ReleaseOpsPackageArgs {
+                repo_root: Some(root.clone()),
+                format: FormatArg::Json,
+                out: None,
+                allow_write: false,
+                allow_subprocess: false,
+            })
+            .map(|(_, code)| code == 0)
+            .unwrap_or(false),
+        ),
+        (
+            "profiles_verify",
+            run_release_ops_profiles_verify(ReleaseOpsPackageArgs {
+                repo_root: Some(root.clone()),
+                format: FormatArg::Json,
+                out: None,
+                allow_write: false,
+                allow_subprocess: false,
+            })
+            .map(|(_, code)| code == 0)
+            .unwrap_or(false),
+        ),
+        (
+            "lineage_generate",
+            run_release_ops_lineage_generate(ReleaseOpsPackageArgs {
+                repo_root: Some(root.clone()),
+                format: FormatArg::Json,
+                out: None,
+                allow_write: false,
+                allow_subprocess: false,
+            })
+            .map(|(_, code)| code == 0)
+            .unwrap_or(false),
+        ),
+        (
+            "provenance_verify",
+            run_release_ops_provenance_verify(ReleaseOpsPackageArgs {
+                repo_root: Some(root.clone()),
+                format: FormatArg::Json,
+                out: None,
+                allow_write: false,
+                allow_subprocess: false,
+            })
+            .map(|(_, code)| code == 0)
+            .unwrap_or(false),
+        ),
+        (
+            "scenario_evidence_verify",
+            run_release_ops_scenario_evidence_verify(ReleaseOpsPackageArgs {
+                repo_root: Some(root.clone()),
+                format: FormatArg::Json,
+                out: None,
+                allow_write: false,
+                allow_subprocess: false,
+            })
+            .map(|(_, code)| code == 0)
+            .unwrap_or(false),
+        ),
+    ];
+    let rows = checks
+        .iter()
+        .map(|(name, ok)| serde_json::json!({"check": name, "status": if *ok { "ok" } else { "failed" }}))
+        .collect::<Vec<_>>();
+    let passed = checks.iter().filter(|(_, ok)| *ok).count();
+    let total = checks.len();
+    let status = if passed == total { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_readiness_summary",
+        "status": status,
+        "passed": passed,
+        "total": total,
+        "rows": rows
+    });
+    if args.allow_write {
+        let json_path = root.join("ops/report/generated/ops-release-readiness-summary.json");
+        write_json(&json_path, &payload)?;
+        let mut md = String::from("# Ops release readiness summary\n\n");
+        md.push_str(&format!("- status: `{status}`\n"));
+        md.push_str(&format!("- passed checks: `{passed}/{total}`\n\n"));
+        md.push_str("| check | status |\n| --- | --- |\n");
+        for row in payload
+            .get("rows")
+            .and_then(serde_json::Value::as_array)
+            .into_iter()
+            .flatten()
+        {
+            let check = row.get("check").and_then(serde_json::Value::as_str).unwrap_or_default();
+            let row_status = row.get("status").and_then(serde_json::Value::as_str).unwrap_or_default();
+            md.push_str(&format!("| `{check}` | `{row_status}` |\n"));
+        }
+        let md_path = root.join("ops/report/generated/ops-release-readiness-summary.md");
+        fs::write(&md_path, md)
+            .map_err(|err| format!("failed to write {}: {err}", md_path.display()))?;
+    }
+    let rendered = emit_payload(args.format, args.out, &payload)?;
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
@@ -4837,6 +5269,14 @@ pub(crate) fn run_release_command(
             ReleaseOpsCommand::PullTest(args) => run_release_ops_pull_test(args),
             ReleaseOpsCommand::BundleBuild(args) => run_release_ops_bundle_build(args),
             ReleaseOpsCommand::BundleVerify(args) => run_release_ops_bundle_verify(args),
+            ReleaseOpsCommand::ValuesCoverage(args) => run_release_ops_values_coverage(args),
+            ReleaseOpsCommand::ProfilesVerify(args) => run_release_ops_profiles_verify(args),
+            ReleaseOpsCommand::LineageGenerate(args) => run_release_ops_lineage_generate(args),
+            ReleaseOpsCommand::ProvenanceVerify(args) => run_release_ops_provenance_verify(args),
+            ReleaseOpsCommand::ReadinessSummary(args) => run_release_ops_readiness_summary(args),
+            ReleaseOpsCommand::ScenarioEvidenceVerify(args) => {
+                run_release_ops_scenario_evidence_verify(args)
+            }
         },
     }
 }

@@ -376,6 +376,12 @@ pub enum ReleaseOpsCommand {
     PullTest(ReleaseOpsPullTestArgs),
     BundleBuild(ReleaseOpsBundleArgs),
     BundleVerify(ReleaseOpsBundleArgs),
+    ValuesCoverage(ReleaseOpsPackageArgs),
+    ProfilesVerify(ReleaseOpsPackageArgs),
+    LineageGenerate(ReleaseOpsPackageArgs),
+    ProvenanceVerify(ReleaseOpsPackageArgs),
+    ReadinessSummary(ReleaseOpsPackageArgs),
+    ScenarioEvidenceVerify(ReleaseOpsPackageArgs),
 }
 
 #[derive(Args, Debug, Clone)]

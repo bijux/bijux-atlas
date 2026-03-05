@@ -1,0 +1,37 @@
+{
+  "kind": "release_ops_readiness_summary",
+  "passed": 7,
+  "rows": [
+    {
+      "check": "validate_package",
+      "status": "ok"
+    },
+    {
+      "check": "digest_verify",
+      "status": "ok"
+    },
+    {
+      "check": "values_coverage",
+      "status": "ok"
+    },
+    {
+      "check": "profiles_verify",
+      "status": "ok"
+    },
+    {
+      "check": "lineage_generate",
+      "status": "ok"
+    },
+    {
+      "check": "provenance_verify",
+      "status": "ok"
+    },
+    {
+      "check": "scenario_evidence_verify",
+      "status": "ok"
+    }
+  ],
+  "schema_version": 1,
+  "status": "ok",
+  "total": 7
+}

@@ -142,7 +142,13 @@ pub(super) fn force_json_output(command: &mut Command) {
             ReleaseCommand::Ops { command } => match command {
                 ReleaseOpsCommand::Package(args)
                 | ReleaseOpsCommand::ValidatePackage(args)
-                | ReleaseOpsCommand::DigestVerify(args) => args.format = FormatArg::Json,
+                | ReleaseOpsCommand::DigestVerify(args)
+                | ReleaseOpsCommand::ValuesCoverage(args)
+                | ReleaseOpsCommand::ProfilesVerify(args)
+                | ReleaseOpsCommand::LineageGenerate(args)
+                | ReleaseOpsCommand::ProvenanceVerify(args)
+                | ReleaseOpsCommand::ReadinessSummary(args)
+                | ReleaseOpsCommand::ScenarioEvidenceVerify(args) => args.format = FormatArg::Json,
                 ReleaseOpsCommand::Push(args) => args.common.format = FormatArg::Json,
                 ReleaseOpsCommand::PullTest(args) => args.common.format = FormatArg::Json,
                 ReleaseOpsCommand::BundleBuild(args) | ReleaseOpsCommand::BundleVerify(args) => {
@@ -1785,7 +1791,13 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             ReleaseCommand::Ops { command } => match command {
                 ReleaseOpsCommand::Package(args)
                 | ReleaseOpsCommand::ValidatePackage(args)
-                | ReleaseOpsCommand::DigestVerify(args) => {
+                | ReleaseOpsCommand::DigestVerify(args)
+                | ReleaseOpsCommand::ValuesCoverage(args)
+                | ReleaseOpsCommand::ProfilesVerify(args)
+                | ReleaseOpsCommand::LineageGenerate(args)
+                | ReleaseOpsCommand::ProvenanceVerify(args)
+                | ReleaseOpsCommand::ReadinessSummary(args)
+                | ReleaseOpsCommand::ScenarioEvidenceVerify(args) => {
                     if args.repo_root.is_none() {
                         args.repo_root = Some(root.clone());
                     }

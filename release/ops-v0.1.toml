@@ -19,8 +19,12 @@ include = [
   "ops/k8s/values",
   "ops/evidence/schema/v1/ops-evidence-bundle.schema.json",
   "ops/k8s/tests/goldens/render-kind.summary.json",
+  "ops/report/generated/ops-values-coverage.json",
+  "ops/report/generated/ops-artifact-lineage.json",
   "ops/report/generated/release-evidence-bundle.json",
-  "docs/operations/release-provenance.md"
+  "docs/operations/release-provenance.md",
+  "docs/operations/ops-provenance.md",
+  "release/evidence/ops-distribution"
 ]
 checksum = "sha256"
 
