@@ -36,7 +36,6 @@ This inventory is the canonical index for automation entrypoints as of 2026-03-0
 | --- | --- | --- |
 | `tutorials/scripts/*.sh` | tutorial-helper | tutorial-local; not root tooling surface |
 | `tutorials/scripts/validate_example_dataset.py` | tutorial-helper | tutorial-local dataset validation helper |
-| `ops/cli/perf/cli_ux_benchmark.py` | perf-helper | reads CLI fixture snapshots; not root toolchain entrypoint |
 
 ### Make target helper call sites (node/python)
 

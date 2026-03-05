@@ -427,8 +427,7 @@ fn repository_python_files_must_stay_in_allowed_crate_zones() {
     for path in stdout.lines() {
         let allowed = path.starts_with("crates/bijux-atlas-client-python/python/")
             || path.starts_with("crates/bijux-atlas-client-python/tests/")
-            || path.starts_with("crates/bijux-atlas-client-python/examples/")
-            || path == "ops/cli/perf/cli_ux_benchmark.py";
+            || path.starts_with("crates/bijux-atlas-client-python/examples/");
         if !allowed {
             violations.push(path.to_string());
         }
@@ -436,6 +435,95 @@ fn repository_python_files_must_stay_in_allowed_crate_zones() {
     assert!(
         violations.is_empty(),
         "python files outside approved crate zones are forbidden:\n{}",
+        violations.join("\n")
+    );
+}
+
+#[test]
+fn ops_tree_must_not_include_python_or_shell_sources() {
+    let root = repo_root();
+    let ops = root.join("ops");
+    let mut violations = Vec::new();
+    if ops.exists() {
+        for entry in walkdir::WalkDir::new(&ops) {
+            let entry = entry.expect("walk ops");
+            if !entry.file_type().is_file() {
+                continue;
+            }
+            let path = entry.path();
+            let ext = path.extension().and_then(|v| v.to_str()).unwrap_or_default();
+            if ext == "py" || ext == "sh" {
+                violations.push(
+                    path.strip_prefix(&root)
+                        .expect("relative path")
+                        .display()
+                        .to_string(),
+                );
+            }
+        }
+    }
+    assert!(
+        violations.is_empty(),
+        "ops directory must not include Python or shell sources:\n{}",
+        violations.join("\n")
+    );
+}
+
+#[test]
+fn ops_tree_must_use_allowed_artifact_extensions() {
+    let root = repo_root();
+    let ops = root.join("ops");
+    let mut violations = Vec::new();
+    if ops.exists() {
+        for entry in walkdir::WalkDir::new(&ops) {
+            let entry = entry.expect("walk ops");
+            if !entry.file_type().is_file() {
+                continue;
+            }
+            let rel = entry
+                .path()
+                .strip_prefix(&root)
+                .expect("relative path")
+                .display()
+                .to_string();
+            let file_name = entry.file_name().to_string_lossy();
+            if file_name == ".gitkeep" {
+                continue;
+            }
+            let ext = entry
+                .path()
+                .extension()
+                .and_then(|v| v.to_str())
+                .unwrap_or_default();
+            let allowed = matches!(
+                ext,
+                "json"
+                    | "jsonl"
+                    | "yaml"
+                    | "yml"
+                    | "toml"
+                    | "md"
+                    | "js"
+                    | "txt"
+                    | "lock"
+                    | "sqlite"
+                    | "prom"
+                    | "gz"
+                    | "fa"
+                    | "fai"
+                    | "gff3"
+                    | "tpl"
+                    | "mmd"
+                    | "env"
+            );
+            if !allowed {
+                violations.push(rel);
+            }
+        }
+    }
+    assert!(
+        violations.is_empty(),
+        "ops directory contains files with non-allowed extensions:\n{}",
         violations.join("\n")
     );
 }
