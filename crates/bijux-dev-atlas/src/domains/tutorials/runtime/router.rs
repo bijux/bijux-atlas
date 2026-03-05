@@ -7,8 +7,14 @@ pub struct TutorialsRuntimeRoute {
 }
 
 pub fn command_registry() -> Vec<TutorialsRuntimeRoute> {
-    vec![TutorialsRuntimeRoute {
-        command_name: "tutorials",
-        entrypoint: "crate::commands/tutorials.rs",
-    }]
+    vec![
+        TutorialsRuntimeRoute {
+            command_name: "tutorials",
+            entrypoint: "crate::commands/tutorials.rs",
+        },
+        TutorialsRuntimeRoute {
+            command_name: "tutorials real-data",
+            entrypoint: "crate::commands/tutorials.rs",
+        },
+    ]
 }

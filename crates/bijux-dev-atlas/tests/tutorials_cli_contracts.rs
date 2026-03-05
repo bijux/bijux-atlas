@@ -248,3 +248,91 @@ fn tutorials_contracts_explain_returns_schema_context() {
     assert_eq!(payload["action"], "contracts-explain");
     assert!(payload["required_keys"].as_array().is_some());
 }
+
+#[test]
+fn tutorials_real_data_list_reports_ten_runs() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["tutorials", "real-data", "list", "--format", "json"])
+        .output()
+        .expect("tutorials real-data list");
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    assert_eq!(payload["action"], "real-data-list");
+    assert_eq!(payload["runs"].as_array().map_or(0, |rows| rows.len()), 10);
+}
+
+#[test]
+fn tutorials_real_data_plan_returns_expected_steps() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "tutorials",
+            "real-data",
+            "plan",
+            "--run-id",
+            "rdr-001-genes-baseline",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("tutorials real-data plan");
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    assert_eq!(payload["action"], "real-data-plan");
+    assert_eq!(payload["plan"].as_array().map_or(0, |rows| rows.len()), 4);
+}
+
+#[test]
+fn tutorials_real_data_fetch_and_ingest_write_run_artifacts() {
+    let root = repo_root();
+    let fetch = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args([
+            "tutorials",
+            "real-data",
+            "fetch",
+            "--run-id",
+            "rdr-002-transcripts-baseline",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("tutorials real-data fetch");
+    assert!(
+        fetch.status.success(),
+        "{}",
+        String::from_utf8_lossy(&fetch.stderr)
+    );
+    let ingest = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args([
+            "tutorials",
+            "real-data",
+            "ingest",
+            "--run-id",
+            "rdr-002-transcripts-baseline",
+            "--profile",
+            "local",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("tutorials real-data ingest");
+    assert!(
+        ingest.status.success(),
+        "{}",
+        String::from_utf8_lossy(&ingest.stderr)
+    );
+    let payload: serde_json::Value = serde_json::from_slice(&ingest.stdout).expect("json");
+    let report_path = payload["ingest_report"].as_str().expect("ingest_report path");
+    assert!(PathBuf::from(report_path).exists() || root.join(report_path).exists());
+}

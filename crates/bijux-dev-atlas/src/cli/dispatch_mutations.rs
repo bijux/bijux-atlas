@@ -767,6 +767,15 @@ fn force_json_tutorials(command: &mut crate::cli::TutorialsCommand) {
             crate::cli::TutorialsContractsCommand::Validate(args)
             | crate::cli::TutorialsContractsCommand::Explain(args) => args.format = FormatArg::Json,
         },
+        crate::cli::TutorialsCommand::RealData { command } => match command {
+            crate::cli::TutorialsRealDataCommand::List(args)
+            | crate::cli::TutorialsRealDataCommand::Doctor(args) => args.format = FormatArg::Json,
+            crate::cli::TutorialsRealDataCommand::Plan(args) => args.common.format = FormatArg::Json,
+            crate::cli::TutorialsRealDataCommand::Fetch(args)
+            | crate::cli::TutorialsRealDataCommand::Ingest(args) => {
+                args.common.format = FormatArg::Json
+            }
+        },
     }
 }
 
@@ -1702,6 +1711,19 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 crate::cli::TutorialsContractsCommand::Validate(args)
                 | crate::cli::TutorialsContractsCommand::Explain(args) => {
                     args.repo_root = Some(root.clone())
+                }
+            },
+            crate::cli::TutorialsCommand::RealData { command } => match command {
+                crate::cli::TutorialsRealDataCommand::List(args)
+                | crate::cli::TutorialsRealDataCommand::Doctor(args) => {
+                    args.repo_root = Some(root.clone())
+                }
+                crate::cli::TutorialsRealDataCommand::Plan(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+                crate::cli::TutorialsRealDataCommand::Fetch(args)
+                | crate::cli::TutorialsRealDataCommand::Ingest(args) => {
+                    args.common.repo_root = Some(root.clone())
                 }
             },
         },

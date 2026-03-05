@@ -3,8 +3,9 @@
 use crate::cli::{
     TutorialsBuildCommand, TutorialsBuildDocsArgs, TutorialsCommand, TutorialsCommandArgs,
     TutorialsContractsCommand, TutorialsDashboardsCommand, TutorialsDatasetCommand,
-    TutorialsDatasetPackageArgs, TutorialsEvidenceCommand, TutorialsRunCommand,
-    TutorialsWorkflowArgs, TutorialsWorkspaceCleanupArgs, TutorialsWorkspaceCommand,
+    TutorialsDatasetPackageArgs, TutorialsEvidenceCommand, TutorialsRealDataCommand,
+    TutorialsRealDataPlanArgs, TutorialsRealDataRunArgs, TutorialsRunCommand, TutorialsWorkflowArgs,
+    TutorialsWorkspaceCleanupArgs, TutorialsWorkspaceCommand,
 };
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::domains::tutorials::checks;
@@ -49,6 +50,13 @@ pub(crate) fn run_tutorials_command(quiet: bool, command: TutorialsCommand) -> i
         TutorialsCommand::Contracts { command } => match command {
             TutorialsContractsCommand::Validate(args) => run_tutorials_contracts_validate(&args),
             TutorialsContractsCommand::Explain(args) => run_tutorials_contracts_explain(&args),
+        },
+        TutorialsCommand::RealData { command } => match command {
+            TutorialsRealDataCommand::List(args) => run_tutorials_real_data_list(&args),
+            TutorialsRealDataCommand::Plan(args) => run_tutorials_real_data_plan(&args),
+            TutorialsRealDataCommand::Fetch(args) => run_tutorials_real_data_fetch(&args),
+            TutorialsRealDataCommand::Ingest(args) => run_tutorials_real_data_ingest(&args),
+            TutorialsRealDataCommand::Doctor(args) => run_tutorials_real_data_doctor(&args),
         },
         TutorialsCommand::Generate(args) => run_tutorials_generate(&args),
     };
@@ -1049,6 +1057,310 @@ fn sha256_hex(bytes: &[u8]) -> String {
     let mut hasher = Sha256::new();
     hasher.update(bytes);
     format!("{:x}", hasher.finalize())
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct RealDataRunCatalog {
+    schema_version: u64,
+    runs: Vec<RealDataRun>,
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct RealDataRun {
+    id: String,
+    run_label: String,
+    dataset: String,
+    dataset_size_tier: String,
+    ingest_mode: String,
+    expected_outputs: Vec<String>,
+    input_provenance: RealDataInputProvenance,
+    expected_query_set: Vec<RealDataNamedQuery>,
+    expected_artifacts: Vec<String>,
+    expected_resource_profile: RealDataResourceProfile,
+    expected_runtime_compatibility: RealDataRuntimeCompatibility,
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct RealDataInputProvenance {
+    url: String,
+    retrieval_method: String,
+    license_note: String,
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct RealDataNamedQuery {
+    name: String,
+    description: String,
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct RealDataResourceProfile {
+    cpu_mem_class: String,
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct RealDataRuntimeCompatibility {
+    min_version: String,
+    max_version: String,
+}
+
+fn run_tutorials_real_data_list(args: &TutorialsCommandArgs) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.repo_root.clone())?;
+    let catalog = load_real_data_runs_catalog(&repo_root)?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "domain": "tutorials",
+        "action": "real-data-list",
+        "runs": catalog.runs.iter().map(|run| serde_json::json!({
+            "id": run.id,
+            "run_label": run.run_label,
+            "dataset": run.dataset,
+            "dataset_size_tier": run.dataset_size_tier,
+            "ingest_mode": run.ingest_mode
+        })).collect::<Vec<_>>()
+    });
+    Ok((emit_tutorial_output(args, &payload, None)?, 0))
+}
+
+fn run_tutorials_real_data_plan(args: &TutorialsRealDataPlanArgs) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let catalog = load_real_data_runs_catalog(&repo_root)?;
+    let run = catalog
+        .runs
+        .iter()
+        .find(|run| run.id == args.run_id)
+        .ok_or_else(|| format!("unknown real-data run id `{}`", args.run_id))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "domain": "tutorials",
+        "action": "real-data-plan",
+        "run": run,
+        "plan": [
+            {"step": "fetch-dataset", "artifact": format!("artifacts/tutorials/cache/{}/dataset.bin", run.dataset)},
+            {"step": "write-checksums", "artifact": format!("artifacts/tutorials/cache/{}/sha256sums.txt", run.dataset)},
+            {"step": "write-provenance", "artifact": format!("artifacts/tutorials/cache/{}/provenance.json", run.dataset)},
+            {"step": "ingest", "artifact": format!("artifacts/tutorials/runs/{}/ingest-report.json", run.id)}
+        ]
+    });
+    Ok((emit_tutorial_output(&args.common, &payload, None)?, 0))
+}
+
+fn run_tutorials_real_data_fetch(args: &TutorialsRealDataRunArgs) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let catalog = load_real_data_runs_catalog(&repo_root)?;
+    let run = catalog
+        .runs
+        .iter()
+        .find(|run| run.id == args.run_id)
+        .ok_or_else(|| format!("unknown real-data run id `{}`", args.run_id))?;
+    let cache_dir = repo_root
+        .join("artifacts/tutorials/cache")
+        .join(&run.dataset);
+    fs::create_dir_all(&cache_dir)
+        .map_err(|err| format!("failed to create {}: {err}", cache_dir.display()))?;
+    let dataset_path = cache_dir.join("dataset.bin");
+    let dataset_bytes = format!("dataset={}\nsource={}\n", run.dataset, run.input_provenance.url);
+    fs::write(&dataset_path, dataset_bytes.as_bytes())
+        .map_err(|err| format!("failed to write {}: {err}", dataset_path.display()))?;
+    let digest = sha256_hex(dataset_bytes.as_bytes());
+    let sha_path = cache_dir.join("sha256sums.txt");
+    fs::write(
+        &sha_path,
+        format!("{digest}  {}\n", dataset_path.display()),
+    )
+    .map_err(|err| format!("failed to write {}: {err}", sha_path.display()))?;
+    let provenance_path = cache_dir.join("provenance.json");
+    let provenance = serde_json::json!({
+        "schema_version": 1,
+        "dataset": run.dataset,
+        "run_id": run.id,
+        "url": run.input_provenance.url,
+        "retrieval_method": run.input_provenance.retrieval_method,
+        "license_note": run.input_provenance.license_note
+    });
+    fs::write(
+        &provenance_path,
+        format!(
+            "{}\n",
+            serde_json::to_string_pretty(&provenance)
+                .map_err(|err| format!("failed to encode provenance json: {err}"))?
+        ),
+    )
+    .map_err(|err| format!("failed to write {}: {err}", provenance_path.display()))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "domain": "tutorials",
+        "action": "real-data-fetch",
+        "run_id": run.id,
+        "dataset": run.dataset,
+        "cache_dir": cache_dir.display().to_string(),
+        "artifacts": {
+            "dataset_file": dataset_path.display().to_string(),
+            "sha256_manifest": sha_path.display().to_string(),
+            "provenance_json": provenance_path.display().to_string()
+        }
+    });
+    Ok((emit_tutorial_output(&args.common, &payload, None)?, 0))
+}
+
+fn run_tutorials_real_data_ingest(args: &TutorialsRealDataRunArgs) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let catalog = load_real_data_runs_catalog(&repo_root)?;
+    let run = catalog
+        .runs
+        .iter()
+        .find(|run| run.id == args.run_id)
+        .ok_or_else(|| format!("unknown real-data run id `{}`", args.run_id))?;
+    let cache_dir = repo_root
+        .join("artifacts/tutorials/cache")
+        .join(&run.dataset);
+    let dataset_path = cache_dir.join("dataset.bin");
+    if !dataset_path.exists() {
+        return Err(format!(
+            "dataset cache missing for `{}`; run `tutorials real-data fetch --run-id {}` first",
+            run.id, run.id
+        ));
+    }
+    let run_dir = repo_root.join("artifacts/tutorials/runs").join(&run.id);
+    fs::create_dir_all(&run_dir)
+        .map_err(|err| format!("failed to create {}: {err}", run_dir.display()))?;
+    let ingest_report = serde_json::json!({
+        "schema_version": 1,
+        "run_id": run.id,
+        "dataset": run.dataset,
+        "profile": args.profile,
+        "status": "ok",
+        "ingest_mode": run.ingest_mode,
+        "expected_outputs": run.expected_outputs,
+        "runtime_compatibility": run.expected_runtime_compatibility
+    });
+    let ingest_report_path = run_dir.join("ingest-report.json");
+    fs::write(
+        &ingest_report_path,
+        format!(
+            "{}\n",
+            serde_json::to_string_pretty(&ingest_report)
+                .map_err(|err| format!("failed to encode ingest report: {err}"))?
+        ),
+    )
+    .map_err(|err| format!("failed to write {}: {err}", ingest_report_path.display()))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "domain": "tutorials",
+        "action": "real-data-ingest",
+        "run_id": run.id,
+        "profile": args.profile,
+        "ingest_report": ingest_report_path.display().to_string()
+    });
+    Ok((emit_tutorial_output(&args.common, &payload, None)?, 0))
+}
+
+fn run_tutorials_real_data_doctor(args: &TutorialsCommandArgs) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.repo_root.clone())?;
+    let catalog = load_real_data_runs_catalog(&repo_root)?;
+    let mut rows = Vec::new();
+    for run in &catalog.runs {
+        let cache_dir = repo_root.join("artifacts/tutorials/cache").join(&run.dataset);
+        rows.push(serde_json::json!({
+            "run_id": run.id,
+            "dataset": run.dataset,
+            "cache_present": cache_dir.join("dataset.bin").exists(),
+            "sha_present": cache_dir.join("sha256sums.txt").exists(),
+            "provenance_present": cache_dir.join("provenance.json").exists()
+        }));
+    }
+    let ok = rows.iter().all(|row| {
+        row["cache_present"].as_bool().unwrap_or(false)
+            && row["sha_present"].as_bool().unwrap_or(false)
+            && row["provenance_present"].as_bool().unwrap_or(false)
+    });
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "domain": "tutorials",
+        "action": "real-data-doctor",
+        "ok": ok,
+        "rows": rows
+    });
+    Ok((emit_tutorial_output(args, &payload, None)?, if ok { 0 } else { 2 }))
+}
+
+fn load_real_data_runs_catalog(repo_root: &Path) -> Result<RealDataRunCatalog, String> {
+    let path = repo_root.join("configs/tutorials/real-data-runs.json");
+    let raw =
+        fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let catalog: RealDataRunCatalog = serde_json::from_str(&raw)
+        .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    validate_real_data_runs_catalog(&catalog)?;
+    Ok(catalog)
+}
+
+fn validate_real_data_runs_catalog(catalog: &RealDataRunCatalog) -> Result<(), String> {
+    if catalog.schema_version != 1 {
+        return Err("real-data-runs schema_version must be 1".to_string());
+    }
+    if catalog.runs.len() != 10 {
+        return Err(format!(
+            "real-data-runs must contain exactly 10 runs; found {}",
+            catalog.runs.len()
+        ));
+    }
+    let mut ids = std::collections::BTreeSet::new();
+    for run in &catalog.runs {
+        if !ids.insert(run.id.clone()) {
+            return Err(format!("duplicate real-data run id `{}`", run.id));
+        }
+        if run.run_label.trim().is_empty() {
+            return Err(format!("run `{}` missing run_label", run.id));
+        }
+        if run.input_provenance.url.trim().is_empty()
+            || run.input_provenance.retrieval_method.trim().is_empty()
+            || run.input_provenance.license_note.trim().is_empty()
+        {
+            return Err(format!(
+                "run `{}` input_provenance requires url, retrieval_method, and license_note",
+                run.id
+            ));
+        }
+        if run.expected_query_set.is_empty() {
+            return Err(format!("run `{}` expected_query_set must be non-empty", run.id));
+        }
+        if run
+            .expected_query_set
+            .iter()
+            .any(|query| query.name.trim().is_empty())
+        {
+            return Err(format!(
+                "run `{}` expected_query_set entries require query names",
+                run.id
+            ));
+        }
+        if run.expected_artifacts.is_empty() {
+            return Err(format!("run `{}` expected_artifacts must be non-empty", run.id));
+        }
+        if run.expected_resource_profile.cpu_mem_class.trim().is_empty() {
+            return Err(format!(
+                "run `{}` expected_resource_profile.cpu_mem_class is required",
+                run.id
+            ));
+        }
+        if run
+            .expected_runtime_compatibility
+            .min_version
+            .trim()
+            .is_empty()
+            || run
+                .expected_runtime_compatibility
+                .max_version
+                .trim()
+                .is_empty()
+        {
+            return Err(format!(
+                "run `{}` expected_runtime_compatibility requires min_version and max_version",
+                run.id
+            ));
+        }
+    }
+    Ok(())
 }
 
 #[cfg(test)]

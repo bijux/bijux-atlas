@@ -1287,6 +1287,10 @@ pub enum TutorialsCommand {
         #[command(subcommand)]
         command: TutorialsContractsCommand,
     },
+    RealData {
+        #[command(subcommand)]
+        command: TutorialsRealDataCommand,
+    },
     Generate(TutorialsCommandArgs),
 }
 
@@ -1380,6 +1384,33 @@ pub enum TutorialsEvidenceCommand {
 pub enum TutorialsContractsCommand {
     Validate(TutorialsCommandArgs),
     Explain(TutorialsCommandArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum TutorialsRealDataCommand {
+    List(TutorialsCommandArgs),
+    Plan(TutorialsRealDataPlanArgs),
+    Fetch(TutorialsRealDataRunArgs),
+    Ingest(TutorialsRealDataRunArgs),
+    Doctor(TutorialsCommandArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct TutorialsRealDataPlanArgs {
+    #[command(flatten)]
+    pub common: TutorialsCommandArgs,
+    #[arg(long)]
+    pub run_id: String,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct TutorialsRealDataRunArgs {
+    #[command(flatten)]
+    pub common: TutorialsCommandArgs,
+    #[arg(long)]
+    pub run_id: String,
+    #[arg(long, default_value = "local")]
+    pub profile: String,
 }
 
 #[derive(Subcommand, Debug)]
