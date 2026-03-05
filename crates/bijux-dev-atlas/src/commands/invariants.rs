@@ -9,6 +9,7 @@ use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
+use std::time::Instant;
 
 const INVARIANT_REGISTRY_INDEX_PATH: &str = "ops/invariants/registry.json";
 
@@ -454,6 +455,7 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
 }
 
 fn run_invariants(common: InvariantsCommonArgs) -> Result<(String, i32), String> {
+    let started = Instant::now();
     let root = resolve_repo_root(common.repo_root)?;
     let mut results = registry()
         .into_iter()
@@ -484,6 +486,9 @@ fn run_invariants(common: InvariantsCommonArgs) -> Result<(String, i32), String>
         "schema_version": 1,
         "kind": "system_invariant_report",
         "status": status,
+        "metrics": {
+            "execution_time_ms": started.elapsed().as_millis() as u64
+        },
         "summary": {
             "total": results.len(),
             "failed": failed,

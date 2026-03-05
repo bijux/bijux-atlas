@@ -56,3 +56,7 @@ harness = false
 [[bench]]
 name = "file_walk"
 harness = false
+
+[[bench]]
+name = "invariants"
+harness = false
