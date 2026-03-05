@@ -89,3 +89,7 @@ harness = false
 [[bench]]
 name = "logging"
 harness = false
+
+[[bench]]
+name = "load"
+harness = false
