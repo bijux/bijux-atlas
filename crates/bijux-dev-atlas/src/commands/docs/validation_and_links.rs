@@ -429,6 +429,24 @@ fn validate_docs_consolidation_inventory(
     ctx: &DocsContext,
     issues: &mut DocsIssues,
 ) -> Result<(), String> {
+    let quality_policy_path = ctx.repo_root.join("configs/docs/quality-policy.json");
+    let quality_policy: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(&quality_policy_path)
+            .map_err(|e| format!("failed to read {}: {e}", quality_policy_path.display()))?,
+    )
+    .map_err(|e| format!("failed to parse {}: {e}", quality_policy_path.display()))?;
+    let default_area_budget = quality_policy
+        .get("default_area_budget")
+        .and_then(|v| v.as_u64())
+        .unwrap_or(20);
+    let mut area_budgets = std::collections::BTreeMap::<String, u64>::new();
+    if let Some(map) = quality_policy.get("area_budgets").and_then(|v| v.as_object()) {
+        for (key, value) in map {
+            if let Some(limit) = value.as_u64() {
+                area_budgets.insert(key.to_string(), limit);
+            }
+        }
+    }
     let inventory_path = ctx
         .repo_root
         .join("docs/_internal/governance/docs-consolidation-inventory.json");
@@ -464,6 +482,7 @@ fn validate_docs_consolidation_inventory(
         "obsolete",
         "internal-only",
     ];
+    let mut area_counts = std::collections::BTreeMap::<String, u64>::new();
     for row in rows {
         let path = row
             .get("path")
@@ -488,6 +507,14 @@ fn validate_docs_consolidation_inventory(
             ));
             continue;
         }
+        let area = if path == "docs/index.md" || path == "docs/start-here.md" {
+            "docs-root".to_string()
+        } else if let Some(rest) = path.strip_prefix("docs/") {
+            rest.split('/').next().unwrap_or("docs-root").to_string()
+        } else {
+            "docs-root".to_string()
+        };
+        *area_counts.entry(area).or_insert(0) += 1;
         if classification == "redundant" || classification == "obsolete" {
             let canonical_target = row
                 .get("canonical_target")
@@ -511,6 +538,14 @@ fn validate_docs_consolidation_inventory(
                     "DOCS_CONSOLIDATION_ERROR: redirects.json must map `{redirect_key}` -> `{canonical_target}`"
                 ));
             }
+        }
+    }
+    for (area, count) in area_counts {
+        let budget = area_budgets.get(&area).copied().unwrap_or(default_area_budget);
+        if count > budget {
+            issues.warnings.push(format!(
+                "DOCS_BUDGET_WARN: area `{area}` has `{count}` pages, soft budget is `{budget}`"
+            ));
         }
     }
     Ok(())
