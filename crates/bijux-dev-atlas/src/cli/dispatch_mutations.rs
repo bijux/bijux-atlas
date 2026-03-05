@@ -5,7 +5,8 @@ use crate::cli::{
     ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, FormatArg,
     IngestCommand, MakeCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand,
     ReleaseApiSurfaceCommand, ReleaseCommand, ReleaseCratesCommand, ReleaseImagesCommand,
-    ReleaseMsrvCommand, ReleaseSemverCommand, ReportsCommand, SecurityCommand, TestsCommand,
+    ReleaseMsrvCommand, ReleaseOpsCommand, ReleaseSemverCommand, ReportsCommand, SecurityCommand,
+    TestsCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -132,6 +133,16 @@ pub(super) fn force_json_output(command: &mut Command) {
                 | ReleaseImagesCommand::ManifestVerify(args) => args.format = FormatArg::Json,
                 ReleaseImagesCommand::ReleaseNotesCheck(args) => args.format = FormatArg::Json,
                 ReleaseImagesCommand::ChangelogExtract(args) => args.format = FormatArg::Json,
+                ReleaseImagesCommand::IntegrationVerify(args) => args.format = FormatArg::Json,
+                ReleaseImagesCommand::BuildReproducibilityCheck(args)
+                | ReleaseImagesCommand::LockedDependenciesVerify(args)
+                | ReleaseImagesCommand::LockDriftVerify(args)
+                | ReleaseImagesCommand::ReadinessSummary(args) => args.format = FormatArg::Json,
+            },
+            ReleaseCommand::Ops { command } => match command {
+                ReleaseOpsCommand::Package(args) | ReleaseOpsCommand::ValidatePackage(args) => {
+                    args.format = FormatArg::Json
+                }
             },
         },
         Command::Docker { .. }
@@ -1748,6 +1759,26 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     }
                 }
                 ReleaseImagesCommand::ChangelogExtract(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+                ReleaseImagesCommand::IntegrationVerify(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+                ReleaseImagesCommand::BuildReproducibilityCheck(args)
+                | ReleaseImagesCommand::LockedDependenciesVerify(args)
+                | ReleaseImagesCommand::LockDriftVerify(args)
+                | ReleaseImagesCommand::ReadinessSummary(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+            },
+            ReleaseCommand::Ops { command } => match command {
+                ReleaseOpsCommand::Package(args) | ReleaseOpsCommand::ValidatePackage(args) => {
                     if args.repo_root.is_none() {
                         args.repo_root = Some(root.clone());
                     }

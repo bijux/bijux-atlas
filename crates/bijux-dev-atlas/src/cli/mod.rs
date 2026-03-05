@@ -314,6 +314,10 @@ pub enum ReleaseCommand {
         #[command(subcommand)]
         command: ReleaseImagesCommand,
     },
+    Ops {
+        #[command(subcommand)]
+        command: ReleaseOpsCommand,
+    },
 }
 
 #[derive(Subcommand, Debug)]
@@ -356,6 +360,17 @@ pub enum ReleaseImagesCommand {
     ManifestVerify(ReleaseImagesManifestArgs),
     ReleaseNotesCheck(ReleaseImagesNotesArgs),
     ChangelogExtract(ReleaseImagesChangelogArgs),
+    IntegrationVerify(ReleaseImagesIntegrationArgs),
+    BuildReproducibilityCheck(ReleaseImagesValidateArgs),
+    LockedDependenciesVerify(ReleaseImagesValidateArgs),
+    LockDriftVerify(ReleaseImagesValidateArgs),
+    ReadinessSummary(ReleaseImagesValidateArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ReleaseOpsCommand {
+    Package(ReleaseOpsPackageArgs),
+    ValidatePackage(ReleaseOpsPackageArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -1188,6 +1203,34 @@ pub struct ReleaseImagesChangelogArgs {
     pub out: Option<PathBuf>,
     #[arg(long, default_value_t = false)]
     pub allow_write: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseImagesIntegrationArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    pub allow_write: bool,
+    #[arg(long, default_value_t = false)]
+    pub by_digest: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseOpsPackageArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    pub allow_write: bool,
+    #[arg(long, default_value_t = false)]
+    pub allow_subprocess: bool,
 }
 
 #[derive(Args, Debug, Clone)]

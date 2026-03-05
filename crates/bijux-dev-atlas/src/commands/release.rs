@@ -6,8 +6,8 @@ use crate::cli::{
     ReleaseChangelogGenerateArgs, ReleaseChangelogValidateArgs, ReleaseCheckArgs, ReleaseCommand,
     ReleaseCompatibilityCheckArgs, ReleaseCratesCommand, ReleaseCratesDryRunArgs,
     ReleaseCratesListArgs, ReleaseCratesValidateArgs, ReleaseDiffArgs, ReleaseImagesCommand,
-    ReleaseImagesChangelogArgs, ReleaseImagesManifestArgs, ReleaseImagesNotesArgs,
-    ReleaseImagesValidateArgs,
+    ReleaseImagesChangelogArgs, ReleaseImagesIntegrationArgs, ReleaseImagesManifestArgs,
+    ReleaseImagesNotesArgs, ReleaseImagesValidateArgs, ReleaseOpsCommand, ReleaseOpsPackageArgs,
     ReleaseManifestGenerateArgs,
     ReleaseManifestValidateArgs, ReleaseMsrvCommand, ReleaseMsrvVerifyArgs, ReleasePacketArgs,
     ReleasePlanArgs, ReleaseRebuildVerifyArgs, ReleaseReproducibilityReportArgs,
@@ -1180,6 +1180,317 @@ fn run_release_images_changelog_extract(
     });
     let rendered = emit_payload(args.format, args.out, &payload)?;
     Ok((rendered, 0))
+}
+
+fn read_ops_release_spec(root: &Path) -> Result<toml::Value, String> {
+    let path = root.join("release/ops-v0.1.toml");
+    toml::from_str(
+        &fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", path.display()))
+}
+
+fn run_release_images_integration_verify(
+    args: ReleaseImagesIntegrationArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let image_spec = read_images_release_spec(&root)?;
+    let image_name = image_spec
+        .get("images")
+        .and_then(toml::Value::as_array)
+        .and_then(|rows| rows.first())
+        .and_then(|row| row.get("name"))
+        .and_then(toml::Value::as_str)
+        .unwrap_or("ghcr.io/bijux/bijux-atlas-server");
+    let digests_path = root.join("artifacts/docker-publish/image-digests.json");
+    let digest_payload = if digests_path.exists() {
+        Some(read_json(&digests_path)?)
+    } else {
+        None
+    };
+    let digest = digest_payload
+        .as_ref()
+        .and_then(|v| v.get("images"))
+        .and_then(serde_json::Value::as_array)
+        .and_then(|rows| rows.first())
+        .and_then(|row| row.get("digest"))
+        .and_then(serde_json::Value::as_str)
+        .map(ToOwned::to_owned);
+    let deploy_reference = if args.by_digest {
+        if let Some(digest) = &digest {
+            format!("{image_name}@{digest}")
+        } else {
+            format!("{image_name}:v0.1.0")
+        }
+    } else {
+        format!("{image_name}:v0.1.0")
+    };
+    let evidence_path = root.join("release/evidence/image-ops-integration.json");
+    if args.allow_write {
+        let payload = serde_json::json!({
+            "schema_version": 1,
+            "scenario": "image-ops-deploy-kind",
+            "status": "simulated",
+            "deployment_reference": deploy_reference,
+            "image_digest": digest,
+            "chart_reference": "ops/k8s/charts/bijux-atlas",
+            "evidence_contract": {
+                "includes_image_digest": true
+            }
+        });
+        write_json(&evidence_path, &payload)?;
+    }
+    let mut errors = Vec::<String>::new();
+    if args.by_digest && digest.is_none() {
+        errors.push("digest deployment requested but artifacts/docker-publish/image-digests.json is missing".to_string());
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_integration_verify",
+        "status": status,
+        "deployment_reference": deploy_reference,
+        "evidence_path": repo_rel(&root, &evidence_path),
+        "image_digest": digest,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_images_build_reproducibility_check(
+    args: ReleaseImagesValidateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let dockerfile = root.join("docker/images/runtime/Dockerfile");
+    let text = fs::read_to_string(&dockerfile)
+        .map_err(|err| format!("failed to read {}: {err}", dockerfile.display()))?;
+    let mut errors = Vec::<String>::new();
+    for token in ["ARG BUILD_DATE", "ARG SOURCE_DATE_EPOCH", "ARG VCS_REF", "ARG IMAGE_VERSION"] {
+        if !text.contains(token) {
+            errors.push(format!("Dockerfile missing reproducibility build arg `{token}`"));
+        }
+    }
+    if !text.contains("org.opencontainers.image.created=\"${BUILD_DATE}\"") {
+        errors.push("Dockerfile label must bind created timestamp to BUILD_DATE".to_string());
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_build_reproducibility_check",
+        "status": status,
+        "dockerfile": repo_rel(&root, &dockerfile),
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_images_locked_dependencies_verify(
+    args: ReleaseImagesValidateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let dockerfile = root.join("docker/images/runtime/Dockerfile");
+    let text = fs::read_to_string(&dockerfile)
+        .map_err(|err| format!("failed to read {}: {err}", dockerfile.display()))?;
+    let mut errors = Vec::<String>::new();
+    if !text.contains("cargo build --locked") {
+        errors.push("Dockerfile must build with cargo --locked".to_string());
+    }
+    if !root.join("Cargo.lock").exists() {
+        errors.push("Cargo.lock is missing".to_string());
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_locked_dependencies_verify",
+        "status": status,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_images_lock_drift_verify(
+    args: ReleaseImagesValidateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let output = ProcessCommand::new("cargo")
+        .args(["metadata", "--locked", "--format-version", "1"])
+        .current_dir(&root)
+        .output()
+        .map_err(|err| format!("failed to run cargo metadata --locked: {err}"))?;
+    let status = if output.status.success() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_lock_drift_verify",
+        "status": status,
+        "stderr": String::from_utf8_lossy(&output.stderr).to_string()
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_images_readiness_summary(
+    args: ReleaseImagesValidateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let checks = vec![
+        ("labels", run_release_images_validate_labels(ReleaseImagesValidateArgs { repo_root: Some(root.clone()), format: FormatArg::Json, out: None }).map(|(_, c)| c == 0).unwrap_or(false)),
+        ("tags", run_release_images_validate_tags(ReleaseImagesValidateArgs { repo_root: Some(root.clone()), format: FormatArg::Json, out: None }).map(|(_, c)| c == 0).unwrap_or(false)),
+        ("base_digests", run_release_images_validate_base_digests(ReleaseImagesValidateArgs { repo_root: Some(root.clone()), format: FormatArg::Json, out: None }).map(|(_, c)| c == 0).unwrap_or(false)),
+        ("runtime_hardening", run_release_images_runtime_hardening_verify(ReleaseImagesValidateArgs { repo_root: Some(root.clone()), format: FormatArg::Json, out: None }).map(|(_, c)| c == 0).unwrap_or(false)),
+        ("runtime_commands", run_release_images_runtime_command_verify(ReleaseImagesValidateArgs { repo_root: Some(root.clone()), format: FormatArg::Json, out: None }).map(|(_, c)| c == 0).unwrap_or(false)),
+        ("locked_dependencies", run_release_images_locked_dependencies_verify(ReleaseImagesValidateArgs { repo_root: Some(root.clone()), format: FormatArg::Json, out: None }).map(|(_, c)| c == 0).unwrap_or(false)),
+    ];
+    let rows = checks
+        .iter()
+        .map(|(name, ok)| serde_json::json!({"check": name, "status": if *ok { "ok" } else { "failed" }}))
+        .collect::<Vec<_>>();
+    let passed = checks.iter().filter(|(_, ok)| *ok).count();
+    let total = checks.len();
+    let status = if passed == total { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_readiness_summary",
+        "status": status,
+        "passed": passed,
+        "total": total,
+        "rows": rows
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_ops_package(args: ReleaseOpsPackageArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    if !args.allow_write {
+        return Err("release ops package requires --allow-write".to_string());
+    }
+    let spec = read_ops_release_spec(&root)?;
+    let chart_rel = spec
+        .get("chart")
+        .and_then(toml::Value::as_table)
+        .and_then(|v| v.get("path"))
+        .and_then(toml::Value::as_str)
+        .unwrap_or("ops/k8s/charts/bijux-atlas");
+    let out_rel = spec
+        .get("package")
+        .and_then(toml::Value::as_table)
+        .and_then(|v| v.get("output_dir"))
+        .and_then(toml::Value::as_str)
+        .unwrap_or("artifacts/release/ops/package");
+    let chart_path = root.join(chart_rel);
+    let out_dir = root.join(out_rel);
+    fs::create_dir_all(&out_dir).map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
+    let mut helm_package_stdout = String::new();
+    let mut helm_lint_stdout = String::new();
+    let mut errors = Vec::<String>::new();
+    if args.allow_subprocess {
+        let lint = ProcessCommand::new("helm")
+            .args(["lint", chart_path.to_string_lossy().as_ref()])
+            .current_dir(&root)
+            .output()
+            .map_err(|err| format!("failed to run helm lint: {err}"))?;
+        helm_lint_stdout = String::from_utf8_lossy(&lint.stdout).to_string();
+        if !lint.status.success() {
+            errors.push(format!("helm lint failed: {}", String::from_utf8_lossy(&lint.stderr).trim()));
+        }
+        let package = ProcessCommand::new("helm")
+            .args([
+                "package",
+                chart_path.to_string_lossy().as_ref(),
+                "--destination",
+                out_dir.to_string_lossy().as_ref(),
+            ])
+            .current_dir(&root)
+            .output()
+            .map_err(|err| format!("failed to run helm package: {err}"))?;
+        helm_package_stdout = String::from_utf8_lossy(&package.stdout).to_string();
+        if !package.status.success() {
+            errors.push(format!(
+                "helm package failed: {}",
+                String::from_utf8_lossy(&package.stderr).trim()
+            ));
+        }
+    } else {
+        errors.push("release ops package requires --allow-subprocess for helm package/lint".to_string());
+    }
+    let packages = fs::read_dir(&out_dir)
+        .map_err(|err| format!("failed to read {}: {err}", out_dir.display()))?
+        .filter_map(|entry| entry.ok().map(|e| e.path()))
+        .filter(|p| p.extension().and_then(|e| e.to_str()) == Some("tgz"))
+        .collect::<Vec<_>>();
+    let package_rows = packages
+        .iter()
+        .map(|path| {
+            serde_json::json!({
+                "path": repo_rel(&root, path),
+                "sha256": sha256_file(path).ok(),
+            })
+        })
+        .collect::<Vec<_>>();
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_package",
+        "status": status,
+        "chart_path": chart_rel,
+        "output_dir": out_rel,
+        "helm_lint_stdout": helm_lint_stdout,
+        "helm_package_stdout": helm_package_stdout,
+        "packages": package_rows,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_ops_validate_package(args: ReleaseOpsPackageArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let spec = read_ops_release_spec(&root)?;
+    let out_rel = spec
+        .get("package")
+        .and_then(toml::Value::as_table)
+        .and_then(|v| v.get("output_dir"))
+        .and_then(toml::Value::as_str)
+        .unwrap_or("artifacts/release/ops/package");
+    let out_dir = root.join(out_rel);
+    let mut errors = Vec::<String>::new();
+    let chart_tgz = if out_dir.exists() {
+        fs::read_dir(&out_dir)
+            .map_err(|err| format!("failed to read {}: {err}", out_dir.display()))?
+            .filter_map(|entry| entry.ok().map(|e| e.path()))
+            .find(|p| p.extension().and_then(|e| e.to_str()) == Some("tgz"))
+    } else {
+        errors.push(format!("ops package output directory missing: {}", out_dir.display()));
+        None
+    };
+    if chart_tgz.is_none() {
+        errors.push(format!("no chart package found in {}", out_dir.display()));
+    }
+    let chart_path = root.join("ops/k8s/charts/bijux-atlas");
+    if !chart_path.join("values.schema.json").exists() {
+        errors.push("chart values.schema.json is missing".to_string());
+    }
+    if !chart_path.join("Chart.yaml").exists() {
+        errors.push("chart Chart.yaml is missing".to_string());
+    }
+    let evidence_marker = root.join("release/evidence/ops-install-evidence-bundle.json");
+    if !evidence_marker.exists() {
+        errors.push("ops install evidence bundle is missing: release/evidence/ops-install-evidence-bundle.json".to_string());
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_validate_package",
+        "status": status,
+        "output_dir": out_rel,
+        "chart_package_path": chart_tgz.as_ref().map(|p| repo_rel(&root, p)),
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
 fn release_spec_allow_deny(spec: &toml::Value) -> (Vec<String>, Vec<String>) {
@@ -4143,6 +4454,25 @@ pub(crate) fn run_release_command(
             ReleaseImagesCommand::ChangelogExtract(args) => {
                 run_release_images_changelog_extract(args)
             }
+            ReleaseImagesCommand::IntegrationVerify(args) => {
+                run_release_images_integration_verify(args)
+            }
+            ReleaseImagesCommand::BuildReproducibilityCheck(args) => {
+                run_release_images_build_reproducibility_check(args)
+            }
+            ReleaseImagesCommand::LockedDependenciesVerify(args) => {
+                run_release_images_locked_dependencies_verify(args)
+            }
+            ReleaseImagesCommand::LockDriftVerify(args) => {
+                run_release_images_lock_drift_verify(args)
+            }
+            ReleaseImagesCommand::ReadinessSummary(args) => {
+                run_release_images_readiness_summary(args)
+            }
+        },
+        ReleaseCommand::Ops { command } => match command {
+            ReleaseOpsCommand::Package(args) => run_release_ops_package(args),
+            ReleaseOpsCommand::ValidatePackage(args) => run_release_ops_validate_package(args),
         },
     }
 }

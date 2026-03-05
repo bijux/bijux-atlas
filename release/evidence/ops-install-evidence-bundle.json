@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "kind": "ops_install_evidence_bundle",
+  "status": "placeholder",
+  "note": "Replaced by pipeline-generated install evidence during release packaging"
+}

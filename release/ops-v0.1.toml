@@ -1,0 +1,31 @@
+schema_version = 1
+release_line = "v0.1"
+
+[distribution]
+primary = "oci-helm-chart"
+registry = "ghcr.io"
+chart_reference = "oci://ghcr.io/bijux/charts/bijux-atlas"
+
+[version_policy]
+chart = "release-version"
+profiles_bundle = "release-version"
+
+[artifacts]
+include = [
+  "ops/k8s/charts/bijux-atlas/Chart.yaml",
+  "ops/k8s/charts/bijux-atlas/values.yaml",
+  "ops/k8s/charts/bijux-atlas/values.schema.json",
+  "ops/inventory"
+]
+checksum = "sha256"
+
+[chart]
+path = "ops/k8s/charts/bijux-atlas"
+
+[package]
+output_dir = "artifacts/release/ops/package"
+
+[pipeline]
+require_helm_lint = true
+require_schema_validation = true
+require_install_evidence_bundle = true
