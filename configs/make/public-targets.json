@@ -1,6 +1,6 @@
 {
-  "max_public_targets": 69,
-  "target_public_targets": 69,
+  "max_public_targets": 70,
+  "target_public_targets": 70,
   "public_targets": [
     {
       "name": "artifacts-clean",
@@ -561,6 +561,15 @@
     {
       "name": "release-plan",
       "description": "Generate release readiness plan through dev-atlas",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
+    },
+    {
+      "name": "release-verify",
+      "description": "Run release verification lane through dev-atlas only",
       "lanes": [
         "dev",
         "ci"

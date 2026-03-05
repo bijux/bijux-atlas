@@ -719,7 +719,7 @@ fn test_make_surface_006_curated_target_budget(ctx: &RunContext) -> TestResult {
             )
         }
     };
-    let budget = 69usize;
+    let budget = 70usize;
     if curated.len() > budget {
         return fail(
             "MAKE-SURFACE-006",
