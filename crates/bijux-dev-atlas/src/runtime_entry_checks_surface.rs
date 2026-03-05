@@ -257,6 +257,7 @@ fn collect_repo_files(root: &Path) -> Result<Vec<PathBuf>, String> {
                 || rel.starts_with("target")
                 || rel.starts_with("node_modules")
                 || rel.starts_with("artifacts")
+                || rel.to_string_lossy().contains("__pycache__")
             {
                 continue;
             }
@@ -287,6 +288,7 @@ fn collect_repo_dirs(root: &Path) -> Result<Vec<PathBuf>, String> {
                 || rel.starts_with("target")
                 || rel.starts_with("node_modules")
                 || rel.starts_with("artifacts")
+                || rel.to_string_lossy().contains("__pycache__")
             {
                 continue;
             }
@@ -406,10 +408,16 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
             clients_forbidden_pattern_violations.push(rel_text.clone());
         }
         let ext = rel.extension().and_then(|v| v.to_str()).unwrap_or_default();
-        if ext == "py" && !is_path_within(rel, "packages/bijux-atlas-python/") {
+        if ext == "py"
+            && !is_path_within(rel, "packages/bijux-atlas-python/")
+            && !is_path_within(rel, "crates/bijux-dev-atlas/tests/fixtures/")
+        {
             packages_boundary_violations.push(rel_text.clone());
         }
-        if ext == "ipynb" && !is_path_within(rel, "packages/bijux-atlas-python/notebooks/") {
+        if ext == "ipynb"
+            && !is_path_within(rel, "packages/bijux-atlas-python/notebooks/")
+            && !is_path_within(rel, "crates/bijux-dev-atlas/tests/fixtures/")
+        {
             packages_boundary_violations.push(rel_text.clone());
         }
         if is_path_within(rel, "packages/bijux-atlas-python/tools/") {
@@ -451,6 +459,8 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
             || base == "poetry.lock"
             || base == "pyproject.toml")
             && !is_path_within(rel, "docs/")
+            && !is_path_within(rel, "packages/bijux-atlas-python/")
+            && !is_path_within(rel, "crates/bijux-dev-atlas/tests/fixtures/")
         {
             python_tooling_violations.push(rel.display().to_string());
         }
