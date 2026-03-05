@@ -8506,6 +8506,18 @@
     },
     {
       "keywords": [
+        "docker-build-network-policy",
+        "operations"
+      ],
+      "path": "docs/operations/docker-build-network-policy.md",
+      "tags": [
+        "docker-build-network-policy",
+        "operations"
+      ],
+      "topic": "docker-build-network-policy"
+    },
+    {
+      "keywords": [
         "docs-as-runbooks",
         "operations"
       ],
@@ -8620,6 +8632,62 @@
     },
     {
       "keywords": [
+        "e2e",
+        "operations",
+        "scenario-artifact-layout"
+      ],
+      "path": "docs/operations/e2e/scenario-artifact-layout.md",
+      "tags": [
+        "e2e",
+        "operations",
+        "scenario-artifact-layout"
+      ],
+      "topic": "scenario-artifact-layout"
+    },
+    {
+      "keywords": [
+        "e2e",
+        "operations",
+        "scenario-matrix"
+      ],
+      "path": "docs/operations/e2e/scenario-matrix.md",
+      "tags": [
+        "e2e",
+        "operations",
+        "scenario-matrix"
+      ],
+      "topic": "scenario-matrix"
+    },
+    {
+      "keywords": [
+        "e2e",
+        "operations",
+        "scenario-spec-reference"
+      ],
+      "path": "docs/operations/e2e/scenario-spec-reference.md",
+      "tags": [
+        "e2e",
+        "operations",
+        "scenario-spec-reference"
+      ],
+      "topic": "scenario-spec-reference"
+    },
+    {
+      "keywords": [
+        "e2e",
+        "operations",
+        "scenarios-evidence"
+      ],
+      "path": "docs/operations/e2e/scenarios-evidence.md",
+      "tags": [
+        "e2e",
+        "operations",
+        "scenarios-evidence"
+      ],
+      "topic": "scenarios-evidence"
+    },
+    {
+      "keywords": [
         "entrypoints",
         "operations"
       ],
@@ -8680,6 +8748,30 @@
     },
     {
       "keywords": [
+        "ghcr-runtime-usage",
+        "operations"
+      ],
+      "path": "docs/operations/ghcr-runtime-usage.md",
+      "tags": [
+        "ghcr-runtime-usage",
+        "operations"
+      ],
+      "topic": "ghcr-runtime-usage"
+    },
+    {
+      "keywords": [
+        "ghcr-usage",
+        "operations"
+      ],
+      "path": "docs/operations/ghcr-usage.md",
+      "tags": [
+        "ghcr-usage",
+        "operations"
+      ],
+      "topic": "ghcr-usage"
+    },
+    {
+      "keywords": [
         "governance-exception-closure",
         "operations"
       ],
@@ -8713,6 +8805,90 @@
         "operations"
       ],
       "topic": "governance-exceptions"
+    },
+    {
+      "keywords": [
+        "image-compatibility-policy",
+        "operations"
+      ],
+      "path": "docs/operations/image-compatibility-policy.md",
+      "tags": [
+        "image-compatibility-policy",
+        "operations"
+      ],
+      "topic": "image-compatibility-policy"
+    },
+    {
+      "keywords": [
+        "image-offline-usage",
+        "operations"
+      ],
+      "path": "docs/operations/image-offline-usage.md",
+      "tags": [
+        "image-offline-usage",
+        "operations"
+      ],
+      "topic": "image-offline-usage"
+    },
+    {
+      "keywords": [
+        "image-security-posture",
+        "operations"
+      ],
+      "path": "docs/operations/image-security-posture.md",
+      "tags": [
+        "image-security-posture",
+        "operations"
+      ],
+      "topic": "image-security-posture"
+    },
+    {
+      "keywords": [
+        "image-security-update-policy",
+        "operations"
+      ],
+      "path": "docs/operations/image-security-update-policy.md",
+      "tags": [
+        "image-security-update-policy",
+        "operations"
+      ],
+      "topic": "image-security-update-policy"
+    },
+    {
+      "keywords": [
+        "image-tag-deprecation-policy",
+        "operations"
+      ],
+      "path": "docs/operations/image-tag-deprecation-policy.md",
+      "tags": [
+        "image-tag-deprecation-policy",
+        "operations"
+      ],
+      "topic": "image-tag-deprecation-policy"
+    },
+    {
+      "keywords": [
+        "image-tags-and-compatibility",
+        "operations"
+      ],
+      "path": "docs/operations/image-tags-and-compatibility.md",
+      "tags": [
+        "image-tags-and-compatibility",
+        "operations"
+      ],
+      "topic": "image-tags-and-compatibility"
+    },
+    {
+      "keywords": [
+        "image-upgrade-guide",
+        "operations"
+      ],
+      "path": "docs/operations/image-upgrade-guide.md",
+      "tags": [
+        "image-upgrade-guide",
+        "operations"
+      ],
+      "topic": "image-upgrade-guide"
     },
     {
       "keywords": [
@@ -9048,6 +9224,18 @@
     },
     {
       "keywords": [
+        "local-docker-build-policy",
+        "operations"
+      ],
+      "path": "docs/operations/local-docker-build-policy.md",
+      "tags": [
+        "local-docker-build-policy",
+        "operations"
+      ],
+      "topic": "local-docker-build-policy"
+    },
+    {
+      "keywords": [
         "log-redaction-policy",
         "operations"
       ],
@@ -9081,6 +9269,18 @@
         "operations"
       ],
       "topic": "maintenance-policy"
+    },
+    {
+      "keywords": [
+        "minimal-install-proof",
+        "operations"
+      ],
+      "path": "docs/operations/minimal-install-proof.md",
+      "tags": [
+        "minimal-install-proof",
+        "operations"
+      ],
+      "topic": "minimal-install-proof"
     },
     {
       "keywords": [
@@ -9143,6 +9343,20 @@
         "operations"
       ],
       "topic": "alert-rule-examples"
+    },
+    {
+      "keywords": [
+        "alert-runbooks",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/alert-runbooks.md",
+      "tags": [
+        "alert-runbooks",
+        "observability",
+        "operations"
+      ],
+      "topic": "alert-runbooks"
     },
     {
       "keywords": [
@@ -9580,6 +9794,20 @@
     },
     {
       "keywords": [
+        "monitoring-quickstart",
+        "observability",
+        "operations"
+      ],
+      "path": "docs/operations/observability/monitoring-quickstart.md",
+      "tags": [
+        "monitoring-quickstart",
+        "observability",
+        "operations"
+      ],
+      "topic": "monitoring-quickstart"
+    },
+    {
+      "keywords": [
         "monitoring-setup-guide",
         "observability",
         "operations"
@@ -9820,6 +10048,20 @@
       "keywords": [
         "observability",
         "operations",
+        "slo-alerting-model"
+      ],
+      "path": "docs/operations/observability/slo-alerting-model.md",
+      "tags": [
+        "observability",
+        "operations",
+        "slo-alerting-model"
+      ],
+      "topic": "slo-alerting-model"
+    },
+    {
+      "keywords": [
+        "observability",
+        "operations",
         "slo-policy"
       ],
       "path": "docs/operations/observability/slo-policy.md",
@@ -10025,6 +10267,78 @@
     {
       "keywords": [
         "operations",
+        "ops-artifact-consumption"
+      ],
+      "path": "docs/operations/ops-artifact-consumption.md",
+      "tags": [
+        "operations",
+        "ops-artifact-consumption"
+      ],
+      "topic": "ops-artifact-consumption"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-artifact-lineage"
+      ],
+      "path": "docs/operations/ops-artifact-lineage.md",
+      "tags": [
+        "operations",
+        "ops-artifact-lineage"
+      ],
+      "topic": "ops-artifact-lineage"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-chart-rollback-guide"
+      ],
+      "path": "docs/operations/ops-chart-rollback-guide.md",
+      "tags": [
+        "operations",
+        "ops-chart-rollback-guide"
+      ],
+      "topic": "ops-chart-rollback-guide"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-chart-upgrade-guide"
+      ],
+      "path": "docs/operations/ops-chart-upgrade-guide.md",
+      "tags": [
+        "operations",
+        "ops-chart-upgrade-guide"
+      ],
+      "topic": "ops-chart-upgrade-guide"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-compatibility-promise"
+      ],
+      "path": "docs/operations/ops-compatibility-promise.md",
+      "tags": [
+        "operations",
+        "ops-compatibility-promise"
+      ],
+      "topic": "ops-compatibility-promise"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-distribution-policy"
+      ],
+      "path": "docs/operations/ops-distribution-policy.md",
+      "tags": [
+        "operations",
+        "ops-distribution-policy"
+      ],
+      "topic": "ops-distribution-policy"
+    },
+    {
+      "keywords": [
+        "operations",
         "ops-docs-contract"
       ],
       "path": "docs/operations/ops-docs-contract.md",
@@ -10037,6 +10351,42 @@
     {
       "keywords": [
         "operations",
+        "ops-evidence-bundles"
+      ],
+      "path": "docs/operations/ops-evidence-bundles.md",
+      "tags": [
+        "operations",
+        "ops-evidence-bundles"
+      ],
+      "topic": "ops-evidence-bundles"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-evidence-compare"
+      ],
+      "path": "docs/operations/ops-evidence-compare.md",
+      "tags": [
+        "operations",
+        "ops-evidence-compare"
+      ],
+      "topic": "ops-evidence-compare"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-evidence-support-tickets"
+      ],
+      "path": "docs/operations/ops-evidence-support-tickets.md",
+      "tags": [
+        "operations",
+        "ops-evidence-support-tickets"
+      ],
+      "topic": "ops-evidence-support-tickets"
+    },
+    {
+      "keywords": [
+        "operations",
         "ops-map"
       ],
       "path": "docs/operations/ops-map.md",
@@ -10045,6 +10395,78 @@
         "ops-map"
       ],
       "topic": "ops-map"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-oci-chart-consumer-workflow"
+      ],
+      "path": "docs/operations/ops-oci-chart-consumer-workflow.md",
+      "tags": [
+        "operations",
+        "ops-oci-chart-consumer-workflow"
+      ],
+      "topic": "ops-oci-chart-consumer-workflow"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-offline-bundle-consumer-workflow"
+      ],
+      "path": "docs/operations/ops-offline-bundle-consumer-workflow.md",
+      "tags": [
+        "operations",
+        "ops-offline-bundle-consumer-workflow"
+      ],
+      "topic": "ops-offline-bundle-consumer-workflow"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-offline-install-guide"
+      ],
+      "path": "docs/operations/ops-offline-install-guide.md",
+      "tags": [
+        "operations",
+        "ops-offline-install-guide"
+      ],
+      "topic": "ops-offline-install-guide"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-profile-selection-guide"
+      ],
+      "path": "docs/operations/ops-profile-selection-guide.md",
+      "tags": [
+        "operations",
+        "ops-profile-selection-guide"
+      ],
+      "topic": "ops-profile-selection-guide"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-rollback-guide"
+      ],
+      "path": "docs/operations/ops-rollback-guide.md",
+      "tags": [
+        "operations",
+        "ops-rollback-guide"
+      ],
+      "topic": "ops-rollback-guide"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-upgrade-guide"
+      ],
+      "path": "docs/operations/ops-upgrade-guide.md",
+      "tags": [
+        "operations",
+        "ops-upgrade-guide"
+      ],
+      "topic": "ops-upgrade-guide"
     },
     {
       "keywords": [
@@ -10273,6 +10695,18 @@
         "prerequisites"
       ],
       "topic": "prerequisites"
+    },
+    {
+      "keywords": [
+        "operations",
+        "product-quality-ops-bundle-checklist"
+      ],
+      "path": "docs/operations/product-quality-ops-bundle-checklist.md",
+      "tags": [
+        "operations",
+        "product-quality-ops-bundle-checklist"
+      ],
+      "topic": "product-quality-ops-bundle-checklist"
     },
     {
       "keywords": [
@@ -10575,6 +11009,18 @@
     {
       "keywords": [
         "operations",
+        "release-breaking-change-policy"
+      ],
+      "path": "docs/operations/release-breaking-change-policy.md",
+      "tags": [
+        "operations",
+        "release-breaking-change-policy"
+      ],
+      "topic": "release-breaking-change-policy"
+    },
+    {
+      "keywords": [
+        "operations",
         "release-candidate-checklist"
       ],
       "path": "docs/operations/release-candidate-checklist.md",
@@ -10583,6 +11029,18 @@
         "release-candidate-checklist"
       ],
       "topic": "release-candidate-checklist"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release-compatibility-promises"
+      ],
+      "path": "docs/operations/release-compatibility-promises.md",
+      "tags": [
+        "operations",
+        "release-compatibility-promises"
+      ],
+      "topic": "release-compatibility-promises"
     },
     {
       "keywords": [
@@ -10671,6 +11129,18 @@
     {
       "keywords": [
         "operations",
+        "release-rollback-guide"
+      ],
+      "path": "docs/operations/release-rollback-guide.md",
+      "tags": [
+        "operations",
+        "release-rollback-guide"
+      ],
+      "topic": "release-rollback-guide"
+    },
+    {
+      "keywords": [
+        "operations",
         "release-signature-rotation"
       ],
       "path": "docs/operations/release-signature-rotation.md",
@@ -10715,6 +11185,18 @@
         "release-trust-root"
       ],
       "topic": "release-trust-root"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release-upgrade-guide"
+      ],
+      "path": "docs/operations/release-upgrade-guide.md",
+      "tags": [
+        "operations",
+        "release-upgrade-guide"
+      ],
+      "topic": "release-upgrade-guide"
     },
     {
       "keywords": [
@@ -11050,6 +11532,34 @@
     },
     {
       "keywords": [
+        "error-taxonomy",
+        "operations",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/error-taxonomy.md",
+      "tags": [
+        "error-taxonomy",
+        "operations",
+        "resilience"
+      ],
+      "topic": "error-taxonomy"
+    },
+    {
+      "keywords": [
+        "failure-evidence-interpretation",
+        "operations",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/failure-evidence-interpretation.md",
+      "tags": [
+        "failure-evidence-interpretation",
+        "operations",
+        "resilience"
+      ],
+      "topic": "failure-evidence-interpretation"
+    },
+    {
+      "keywords": [
         "failure-injection-guide",
         "operations",
         "resilience"
@@ -11064,6 +11574,20 @@
     },
     {
       "keywords": [
+        "failure-patterns-remediation",
+        "operations",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/failure-patterns-remediation.md",
+      "tags": [
+        "failure-patterns-remediation",
+        "operations",
+        "resilience"
+      ],
+      "topic": "failure-patterns-remediation"
+    },
+    {
+      "keywords": [
         "failure-scenarios",
         "operations",
         "resilience"
@@ -11075,6 +11599,62 @@
         "resilience"
       ],
       "topic": "failure-scenarios"
+    },
+    {
+      "keywords": [
+        "failure-tests-local",
+        "operations",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/failure-tests-local.md",
+      "tags": [
+        "failure-tests-local",
+        "operations",
+        "resilience"
+      ],
+      "topic": "failure-tests-local"
+    },
+    {
+      "keywords": [
+        "high-severity-runbooks",
+        "operations",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/high-severity-runbooks.md",
+      "tags": [
+        "high-severity-runbooks",
+        "operations",
+        "resilience"
+      ],
+      "topic": "high-severity-runbooks"
+    },
+    {
+      "keywords": [
+        "operations",
+        "operator-playbook-top-actions",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/operator-playbook-top-actions.md",
+      "tags": [
+        "operations",
+        "operator-playbook-top-actions",
+        "resilience"
+      ],
+      "topic": "operator-playbook-top-actions"
+    },
+    {
+      "keywords": [
+        "operations",
+        "postmortem-template",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/postmortem-template.md",
+      "tags": [
+        "operations",
+        "postmortem-template",
+        "resilience"
+      ],
+      "topic": "postmortem-template"
     },
     {
       "keywords": [
@@ -11117,6 +11697,20 @@
         "resilience"
       ],
       "topic": "recovery-workflows"
+    },
+    {
+      "keywords": [
+        "operations",
+        "reliability-guarantees",
+        "resilience"
+      ],
+      "path": "docs/operations/resilience/reliability-guarantees.md",
+      "tags": [
+        "operations",
+        "reliability-guarantees",
+        "resilience"
+      ],
+      "topic": "reliability-guarantees"
     },
     {
       "keywords": [
@@ -11206,6 +11800,20 @@
     },
     {
       "keywords": [
+        "capacity-planning",
+        "operations",
+        "runbooks"
+      ],
+      "path": "docs/operations/runbooks/capacity-planning.md",
+      "tags": [
+        "capacity-planning",
+        "operations",
+        "runbooks"
+      ],
+      "topic": "capacity-planning"
+    },
+    {
+      "keywords": [
         "dataset-corruption",
         "operations",
         "runbooks"
@@ -11217,6 +11825,48 @@
         "runbooks"
       ],
       "topic": "dataset-corruption"
+    },
+    {
+      "keywords": [
+        "disk-pressure",
+        "operations",
+        "runbooks"
+      ],
+      "path": "docs/operations/runbooks/disk-pressure.md",
+      "tags": [
+        "disk-pressure",
+        "operations",
+        "runbooks"
+      ],
+      "topic": "disk-pressure"
+    },
+    {
+      "keywords": [
+        "high-error-rate",
+        "operations",
+        "runbooks"
+      ],
+      "path": "docs/operations/runbooks/high-error-rate.md",
+      "tags": [
+        "high-error-rate",
+        "operations",
+        "runbooks"
+      ],
+      "topic": "high-error-rate"
+    },
+    {
+      "keywords": [
+        "high-latency",
+        "operations",
+        "runbooks"
+      ],
+      "path": "docs/operations/runbooks/high-latency.md",
+      "tags": [
+        "high-latency",
+        "operations",
+        "runbooks"
+      ],
+      "topic": "high-latency"
     },
     {
       "keywords": [
@@ -11234,6 +11884,20 @@
     },
     {
       "keywords": [
+        "incident-triage-workflow",
+        "operations",
+        "runbooks"
+      ],
+      "path": "docs/operations/runbooks/incident-triage-workflow.md",
+      "tags": [
+        "incident-triage-workflow",
+        "operations",
+        "runbooks"
+      ],
+      "topic": "incident-triage-workflow"
+    },
+    {
+      "keywords": [
         "index",
         "operations",
         "runbooks"
@@ -11245,6 +11909,34 @@
         "runbooks"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "ingest-failures",
+        "operations",
+        "runbooks"
+      ],
+      "path": "docs/operations/runbooks/ingest-failures.md",
+      "tags": [
+        "ingest-failures",
+        "operations",
+        "runbooks"
+      ],
+      "topic": "ingest-failures"
+    },
+    {
+      "keywords": [
+        "integrity-violation",
+        "operations",
+        "runbooks"
+      ],
+      "path": "docs/operations/runbooks/integrity-violation.md",
+      "tags": [
+        "integrity-violation",
+        "operations",
+        "runbooks"
+      ],
+      "topic": "integrity-violation"
     },
     {
       "keywords": [
@@ -11277,6 +11969,20 @@
     {
       "keywords": [
         "operations",
+        "restart-loop",
+        "runbooks"
+      ],
+      "path": "docs/operations/runbooks/restart-loop.md",
+      "tags": [
+        "operations",
+        "restart-loop",
+        "runbooks"
+      ],
+      "topic": "restart-loop"
+    },
+    {
+      "keywords": [
+        "operations",
         "rollback-playbook",
         "runbooks"
       ],
@@ -11287,6 +11993,90 @@
         "runbooks"
       ],
       "topic": "rollback-playbook"
+    },
+    {
+      "keywords": [
+        "operations",
+        "rollback-procedure",
+        "runbooks"
+      ],
+      "path": "docs/operations/runbooks/rollback-procedure.md",
+      "tags": [
+        "operations",
+        "rollback-procedure",
+        "runbooks"
+      ],
+      "topic": "rollback-procedure"
+    },
+    {
+      "keywords": [
+        "operations",
+        "runbooks",
+        "safe-upgrade-procedure"
+      ],
+      "path": "docs/operations/runbooks/safe-upgrade-procedure.md",
+      "tags": [
+        "operations",
+        "runbooks",
+        "safe-upgrade-procedure"
+      ],
+      "topic": "safe-upgrade-procedure"
+    },
+    {
+      "keywords": [
+        "operations",
+        "runbooks",
+        "slo-cheap-burn"
+      ],
+      "path": "docs/operations/runbooks/slo-cheap-burn.md",
+      "tags": [
+        "operations",
+        "runbooks",
+        "slo-cheap-burn"
+      ],
+      "topic": "slo-cheap-burn"
+    },
+    {
+      "keywords": [
+        "operations",
+        "runbooks",
+        "slo-overload-survival"
+      ],
+      "path": "docs/operations/runbooks/slo-overload-survival.md",
+      "tags": [
+        "operations",
+        "runbooks",
+        "slo-overload-survival"
+      ],
+      "topic": "slo-overload-survival"
+    },
+    {
+      "keywords": [
+        "operations",
+        "runbooks",
+        "slo-registry-refresh-stale"
+      ],
+      "path": "docs/operations/runbooks/slo-registry-refresh-stale.md",
+      "tags": [
+        "operations",
+        "runbooks",
+        "slo-registry-refresh-stale"
+      ],
+      "topic": "slo-registry-refresh-stale"
+    },
+    {
+      "keywords": [
+        "operations",
+        "runbooks",
+        "slo-standard-burn"
+      ],
+      "path": "docs/operations/runbooks/slo-standard-burn.md",
+      "tags": [
+        "operations",
+        "runbooks",
+        "slo-standard-burn"
+      ],
+      "topic": "slo-standard-burn"
     },
     {
       "keywords": [
@@ -11329,6 +12119,18 @@
         "traffic-spike"
       ],
       "topic": "traffic-spike"
+    },
+    {
+      "keywords": [
+        "operations",
+        "runtime-image-contract"
+      ],
+      "path": "docs/operations/runtime-image-contract.md",
+      "tags": [
+        "operations",
+        "runtime-image-contract"
+      ],
+      "topic": "runtime-image-contract"
     },
     {
       "keywords": [
@@ -12565,6 +13367,30 @@
     {
       "keywords": [
         "product",
+        "reliability-boundaries"
+      ],
+      "path": "docs/product/reliability-boundaries.md",
+      "tags": [
+        "product",
+        "reliability-boundaries"
+      ],
+      "topic": "reliability-boundaries"
+    },
+    {
+      "keywords": [
+        "product",
+        "reviewer-onboarding-checklist"
+      ],
+      "path": "docs/product/reviewer-onboarding-checklist.md",
+      "tags": [
+        "product",
+        "reviewer-onboarding-checklist"
+      ],
+      "topic": "reviewer-onboarding-checklist"
+    },
+    {
+      "keywords": [
+        "product",
         "sequence-threat-model"
       ],
       "path": "docs/product/sequence-threat-model.md",
@@ -12648,6 +13474,18 @@
     },
     {
       "keywords": [
+        "product",
+        "why-trust-this"
+      ],
+      "path": "docs/product/why-trust-this.md",
+      "tags": [
+        "product",
+        "why-trust-this"
+      ],
+      "topic": "why-trust-this"
+    },
+    {
+      "keywords": [
         "api",
         "index",
         "reference"
@@ -12671,6 +13509,18 @@
         "reference"
       ],
       "topic": "audience-legend"
+    },
+    {
+      "keywords": [
+        "breaking-change-checklist",
+        "reference"
+      ],
+      "path": "docs/reference/breaking-change-checklist.md",
+      "tags": [
+        "breaking-change-checklist",
+        "reference"
+      ],
+      "topic": "breaking-change-checklist"
     },
     {
       "keywords": [
@@ -13336,6 +14186,90 @@
     },
     {
       "keywords": [
+        "crate-api-stability",
+        "reference"
+      ],
+      "path": "docs/reference/crate-api-stability.md",
+      "tags": [
+        "crate-api-stability",
+        "reference"
+      ],
+      "topic": "crate-api-stability"
+    },
+    {
+      "keywords": [
+        "crate-dependency-graph",
+        "reference"
+      ],
+      "path": "docs/reference/crate-dependency-graph.md",
+      "tags": [
+        "crate-dependency-graph",
+        "reference"
+      ],
+      "topic": "crate-dependency-graph"
+    },
+    {
+      "keywords": [
+        "crate-dependency-policy",
+        "reference"
+      ],
+      "path": "docs/reference/crate-dependency-policy.md",
+      "tags": [
+        "crate-dependency-policy",
+        "reference"
+      ],
+      "topic": "crate-dependency-policy"
+    },
+    {
+      "keywords": [
+        "crate-feature-flags",
+        "reference"
+      ],
+      "path": "docs/reference/crate-feature-flags.md",
+      "tags": [
+        "crate-feature-flags",
+        "reference"
+      ],
+      "topic": "crate-feature-flags"
+    },
+    {
+      "keywords": [
+        "crate-release-policy",
+        "reference"
+      ],
+      "path": "docs/reference/crate-release-policy.md",
+      "tags": [
+        "crate-release-policy",
+        "reference"
+      ],
+      "topic": "crate-release-policy"
+    },
+    {
+      "keywords": [
+        "crates-consumption-guide",
+        "reference"
+      ],
+      "path": "docs/reference/crates-consumption-guide.md",
+      "tags": [
+        "crates-consumption-guide",
+        "reference"
+      ],
+      "topic": "crates-consumption-guide"
+    },
+    {
+      "keywords": [
+        "crates",
+        "reference"
+      ],
+      "path": "docs/reference/crates.md",
+      "tags": [
+        "crates",
+        "reference"
+      ],
+      "topic": "crates"
+    },
+    {
+      "keywords": [
         "dataset-operations",
         "reference"
       ],
@@ -13597,6 +14531,18 @@
         "validation-policies"
       ],
       "topic": "validation-policies"
+    },
+    {
+      "keywords": [
+        "docker",
+        "reference"
+      ],
+      "path": "docs/reference/docker.md",
+      "tags": [
+        "docker",
+        "reference"
+      ],
+      "topic": "docker"
     },
     {
       "keywords": [
@@ -13989,6 +14935,20 @@
     {
       "keywords": [
         "examples",
+        "library-getting-started",
+        "reference"
+      ],
+      "path": "docs/reference/examples/library-getting-started.md",
+      "tags": [
+        "examples",
+        "library-getting-started",
+        "reference"
+      ],
+      "topic": "library-getting-started"
+    },
+    {
+      "keywords": [
+        "examples",
         "local-development-setup-example",
         "reference"
       ],
@@ -14041,6 +15001,20 @@
         "reference"
       ],
       "topic": "performance-metrics-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "policies-getting-started",
+        "reference"
+      ],
+      "path": "docs/reference/examples/policies-getting-started.md",
+      "tags": [
+        "examples",
+        "policies-getting-started",
+        "reference"
+      ],
+      "topic": "policies-getting-started"
     },
     {
       "keywords": [
@@ -14144,6 +15118,20 @@
       "keywords": [
         "examples",
         "reference",
+        "server-local-run"
+      ],
+      "path": "docs/reference/examples/server-local-run.md",
+      "tags": [
+        "examples",
+        "reference",
+        "server-local-run"
+      ],
+      "topic": "server-local-run"
+    },
+    {
+      "keywords": [
+        "examples",
+        "reference",
         "system-audit-example"
       ],
       "path": "docs/reference/examples/system-audit-example.md",
@@ -14238,6 +15226,18 @@
     },
     {
       "keywords": [
+        "governance",
+        "reference"
+      ],
+      "path": "docs/reference/governance.md",
+      "tags": [
+        "governance",
+        "reference"
+      ],
+      "topic": "governance"
+    },
+    {
+      "keywords": [
         "index",
         "reference"
       ],
@@ -14299,6 +15299,18 @@
         "reference"
       ],
       "topic": "make"
+    },
+    {
+      "keywords": [
+        "msrv-policy",
+        "reference"
+      ],
+      "path": "docs/reference/msrv-policy.md",
+      "tags": [
+        "msrv-policy",
+        "reference"
+      ],
+      "topic": "msrv-policy"
     },
     {
       "keywords": [
@@ -14381,6 +15393,18 @@
         "reference"
       ],
       "topic": "ops-surface"
+    },
+    {
+      "keywords": [
+        "ops",
+        "reference"
+      ],
+      "path": "docs/reference/ops.md",
+      "tags": [
+        "ops",
+        "reference"
+      ],
+      "topic": "ops"
     },
     {
       "keywords": [
@@ -14665,6 +15689,30 @@
     {
       "keywords": [
         "reference",
+        "release-bundle-index"
+      ],
+      "path": "docs/reference/release-bundle-index.md",
+      "tags": [
+        "reference",
+        "release-bundle-index"
+      ],
+      "topic": "release-bundle-index"
+    },
+    {
+      "keywords": [
+        "reference",
+        "release-plan"
+      ],
+      "path": "docs/reference/release-plan.md",
+      "tags": [
+        "reference",
+        "release-plan"
+      ],
+      "topic": "release-plan"
+    },
+    {
+      "keywords": [
+        "reference",
         "repo-map"
       ],
       "path": "docs/reference/repo-map.md",
@@ -14775,6 +15823,18 @@
     {
       "keywords": [
         "reference",
+        "semver-api-rules"
+      ],
+      "path": "docs/reference/semver-api-rules.md",
+      "tags": [
+        "reference",
+        "semver-api-rules"
+      ],
+      "topic": "semver-api-rules"
+    },
+    {
+      "keywords": [
+        "reference",
         "stability-legend"
       ],
       "path": "docs/reference/stability-legend.md",
@@ -14825,6 +15885,30 @@
         "store"
       ],
       "topic": "integrity-model"
+    },
+    {
+      "keywords": [
+        "reference",
+        "versioning-model"
+      ],
+      "path": "docs/reference/versioning-model.md",
+      "tags": [
+        "reference",
+        "versioning-model"
+      ],
+      "topic": "versioning-model"
+    },
+    {
+      "keywords": [
+        "reference",
+        "workspace-versioning-policy"
+      ],
+      "path": "docs/reference/workspace-versioning-policy.md",
+      "tags": [
+        "reference",
+        "workspace-versioning-policy"
+      ],
+      "topic": "workspace-versioning-policy"
     },
     {
       "keywords": [
@@ -15370,6 +16454,24 @@
     },
     {
       "keywords": [
+        "artifact-integrity.summary",
+        "e2e",
+        "goldens",
+        "ops",
+        "scenarios"
+      ],
+      "path": "ops/e2e/scenarios/goldens/artifact-integrity.summary.md",
+      "tags": [
+        "artifact-integrity.summary",
+        "e2e",
+        "goldens",
+        "ops",
+        "scenarios"
+      ],
+      "topic": "artifact-integrity.summary"
+    },
+    {
+      "keywords": [
         "contract",
         "env",
         "ops"
@@ -15423,6 +16525,20 @@
         "required-files"
       ],
       "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
+        "evidence",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/evidence/README.md",
+      "tags": [
+        "evidence",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
     },
     {
       "keywords": [

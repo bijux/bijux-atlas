@@ -5725,6 +5725,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/docker-build-network-policy.md"
+      ],
+      "path": "docs/operations/docker-build-network-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/docs-as-runbooks.md"
       ],
       "path": "docs/operations/docs-as-runbooks.md"
@@ -5800,6 +5808,42 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/e2e",
+        "docs/operations/e2e/scenario-artifact-layout.md"
+      ],
+      "path": "docs/operations/e2e/scenario-artifact-layout.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/e2e",
+        "docs/operations/e2e/scenario-matrix.md"
+      ],
+      "path": "docs/operations/e2e/scenario-matrix.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/e2e",
+        "docs/operations/e2e/scenario-spec-reference.md"
+      ],
+      "path": "docs/operations/e2e/scenario-spec-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/e2e",
+        "docs/operations/e2e/scenarios-evidence.md"
+      ],
+      "path": "docs/operations/e2e/scenarios-evidence.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/entrypoints.md"
       ],
       "path": "docs/operations/entrypoints.md"
@@ -5840,6 +5884,22 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/ghcr-runtime-usage.md"
+      ],
+      "path": "docs/operations/ghcr-runtime-usage.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ghcr-usage.md"
+      ],
+      "path": "docs/operations/ghcr-usage.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/governance-exception-closure.md"
       ],
       "path": "docs/operations/governance-exception-closure.md"
@@ -5859,6 +5919,62 @@
         "docs/operations/governance-exceptions.md"
       ],
       "path": "docs/operations/governance-exceptions.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/image-compatibility-policy.md"
+      ],
+      "path": "docs/operations/image-compatibility-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/image-offline-usage.md"
+      ],
+      "path": "docs/operations/image-offline-usage.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/image-security-posture.md"
+      ],
+      "path": "docs/operations/image-security-posture.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/image-security-update-policy.md"
+      ],
+      "path": "docs/operations/image-security-update-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/image-tag-deprecation-policy.md"
+      ],
+      "path": "docs/operations/image-tag-deprecation-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/image-tags-and-compatibility.md"
+      ],
+      "path": "docs/operations/image-tags-and-compatibility.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/image-upgrade-guide.md"
+      ],
+      "path": "docs/operations/image-upgrade-guide.md"
     },
     {
       "breadcrumbs": [
@@ -6081,6 +6197,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/local-docker-build-policy.md"
+      ],
+      "path": "docs/operations/local-docker-build-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/log-redaction-policy.md"
       ],
       "path": "docs/operations/log-redaction-policy.md"
@@ -6100,6 +6224,14 @@
         "docs/operations/maintenance-policy.md"
       ],
       "path": "docs/operations/maintenance-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/minimal-install-proof.md"
+      ],
+      "path": "docs/operations/minimal-install-proof.md"
     },
     {
       "breadcrumbs": [
@@ -6141,6 +6273,15 @@
         "docs/operations/observability/alert-rule-examples.md"
       ],
       "path": "docs/operations/observability/alert-rule-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/alert-runbooks.md"
+      ],
+      "path": "docs/operations/observability/alert-runbooks.md"
     },
     {
       "breadcrumbs": [
@@ -6426,6 +6567,15 @@
         "docs",
         "docs/operations",
         "docs/operations/observability",
+        "docs/operations/observability/monitoring-quickstart.md"
+      ],
+      "path": "docs/operations/observability/monitoring-quickstart.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
         "docs/operations/observability/monitoring-setup-guide.md"
       ],
       "path": "docs/operations/observability/monitoring-setup-guide.md"
@@ -6579,6 +6729,15 @@
         "docs",
         "docs/operations",
         "docs/operations/observability",
+        "docs/operations/observability/slo-alerting-model.md"
+      ],
+      "path": "docs/operations/observability/slo-alerting-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
         "docs/operations/observability/slo-policy.md"
       ],
       "path": "docs/operations/observability/slo-policy.md"
@@ -6711,6 +6870,54 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/ops-artifact-consumption.md"
+      ],
+      "path": "docs/operations/ops-artifact-consumption.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-artifact-lineage.md"
+      ],
+      "path": "docs/operations/ops-artifact-lineage.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-chart-rollback-guide.md"
+      ],
+      "path": "docs/operations/ops-chart-rollback-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-chart-upgrade-guide.md"
+      ],
+      "path": "docs/operations/ops-chart-upgrade-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-compatibility-promise.md"
+      ],
+      "path": "docs/operations/ops-compatibility-promise.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-distribution-policy.md"
+      ],
+      "path": "docs/operations/ops-distribution-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/ops-docs-contract.md"
       ],
       "path": "docs/operations/ops-docs-contract.md"
@@ -6719,9 +6926,81 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/ops-evidence-bundles.md"
+      ],
+      "path": "docs/operations/ops-evidence-bundles.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-evidence-compare.md"
+      ],
+      "path": "docs/operations/ops-evidence-compare.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-evidence-support-tickets.md"
+      ],
+      "path": "docs/operations/ops-evidence-support-tickets.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/ops-map.md"
       ],
       "path": "docs/operations/ops-map.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-oci-chart-consumer-workflow.md"
+      ],
+      "path": "docs/operations/ops-oci-chart-consumer-workflow.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-offline-bundle-consumer-workflow.md"
+      ],
+      "path": "docs/operations/ops-offline-bundle-consumer-workflow.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-offline-install-guide.md"
+      ],
+      "path": "docs/operations/ops-offline-install-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-profile-selection-guide.md"
+      ],
+      "path": "docs/operations/ops-profile-selection-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-rollback-guide.md"
+      ],
+      "path": "docs/operations/ops-rollback-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-upgrade-guide.md"
+      ],
+      "path": "docs/operations/ops-upgrade-guide.md"
     },
     {
       "breadcrumbs": [
@@ -6874,6 +7153,14 @@
         "docs/operations/prerequisites.md"
       ],
       "path": "docs/operations/prerequisites.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/product-quality-ops-bundle-checklist.md"
+      ],
+      "path": "docs/operations/product-quality-ops-bundle-checklist.md"
     },
     {
       "breadcrumbs": [
@@ -7074,9 +7361,25 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/release-breaking-change-policy.md"
+      ],
+      "path": "docs/operations/release-breaking-change-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/release-candidate-checklist.md"
       ],
       "path": "docs/operations/release-candidate-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-compatibility-promises.md"
+      ],
+      "path": "docs/operations/release-compatibility-promises.md"
     },
     {
       "breadcrumbs": [
@@ -7138,6 +7441,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/release-rollback-guide.md"
+      ],
+      "path": "docs/operations/release-rollback-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/release-signature-rotation.md"
       ],
       "path": "docs/operations/release-signature-rotation.md"
@@ -7165,6 +7476,14 @@
         "docs/operations/release-trust-root.md"
       ],
       "path": "docs/operations/release-trust-root.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-upgrade-guide.md"
+      ],
+      "path": "docs/operations/release-upgrade-guide.md"
     },
     {
       "breadcrumbs": [
@@ -7385,6 +7704,24 @@
         "docs",
         "docs/operations",
         "docs/operations/resilience",
+        "docs/operations/resilience/error-taxonomy.md"
+      ],
+      "path": "docs/operations/resilience/error-taxonomy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/resilience",
+        "docs/operations/resilience/failure-evidence-interpretation.md"
+      ],
+      "path": "docs/operations/resilience/failure-evidence-interpretation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/resilience",
         "docs/operations/resilience/failure-injection-guide.md"
       ],
       "path": "docs/operations/resilience/failure-injection-guide.md"
@@ -7394,9 +7731,54 @@
         "docs",
         "docs/operations",
         "docs/operations/resilience",
+        "docs/operations/resilience/failure-patterns-remediation.md"
+      ],
+      "path": "docs/operations/resilience/failure-patterns-remediation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/resilience",
         "docs/operations/resilience/failure-scenarios.md"
       ],
       "path": "docs/operations/resilience/failure-scenarios.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/resilience",
+        "docs/operations/resilience/failure-tests-local.md"
+      ],
+      "path": "docs/operations/resilience/failure-tests-local.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/resilience",
+        "docs/operations/resilience/high-severity-runbooks.md"
+      ],
+      "path": "docs/operations/resilience/high-severity-runbooks.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/resilience",
+        "docs/operations/resilience/operator-playbook-top-actions.md"
+      ],
+      "path": "docs/operations/resilience/operator-playbook-top-actions.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/resilience",
+        "docs/operations/resilience/postmortem-template.md"
+      ],
+      "path": "docs/operations/resilience/postmortem-template.md"
     },
     {
       "breadcrumbs": [
@@ -7424,6 +7806,15 @@
         "docs/operations/resilience/recovery-workflows.md"
       ],
       "path": "docs/operations/resilience/recovery-workflows.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/resilience",
+        "docs/operations/resilience/reliability-guarantees.md"
+      ],
+      "path": "docs/operations/resilience/reliability-guarantees.md"
     },
     {
       "breadcrumbs": [
@@ -7487,9 +7878,45 @@
         "docs",
         "docs/operations",
         "docs/operations/runbooks",
+        "docs/operations/runbooks/capacity-planning.md"
+      ],
+      "path": "docs/operations/runbooks/capacity-planning.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbooks",
         "docs/operations/runbooks/dataset-corruption.md"
       ],
       "path": "docs/operations/runbooks/dataset-corruption.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbooks",
+        "docs/operations/runbooks/disk-pressure.md"
+      ],
+      "path": "docs/operations/runbooks/disk-pressure.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbooks",
+        "docs/operations/runbooks/high-error-rate.md"
+      ],
+      "path": "docs/operations/runbooks/high-error-rate.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbooks",
+        "docs/operations/runbooks/high-latency.md"
+      ],
+      "path": "docs/operations/runbooks/high-latency.md"
     },
     {
       "breadcrumbs": [
@@ -7505,9 +7932,36 @@
         "docs",
         "docs/operations",
         "docs/operations/runbooks",
+        "docs/operations/runbooks/incident-triage-workflow.md"
+      ],
+      "path": "docs/operations/runbooks/incident-triage-workflow.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbooks",
         "docs/operations/runbooks/index.md"
       ],
       "path": "docs/operations/runbooks/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbooks",
+        "docs/operations/runbooks/ingest-failures.md"
+      ],
+      "path": "docs/operations/runbooks/ingest-failures.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbooks",
+        "docs/operations/runbooks/integrity-violation.md"
+      ],
+      "path": "docs/operations/runbooks/integrity-violation.md"
     },
     {
       "breadcrumbs": [
@@ -7532,9 +7986,72 @@
         "docs",
         "docs/operations",
         "docs/operations/runbooks",
+        "docs/operations/runbooks/restart-loop.md"
+      ],
+      "path": "docs/operations/runbooks/restart-loop.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbooks",
         "docs/operations/runbooks/rollback-playbook.md"
       ],
       "path": "docs/operations/runbooks/rollback-playbook.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbooks",
+        "docs/operations/runbooks/rollback-procedure.md"
+      ],
+      "path": "docs/operations/runbooks/rollback-procedure.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbooks",
+        "docs/operations/runbooks/safe-upgrade-procedure.md"
+      ],
+      "path": "docs/operations/runbooks/safe-upgrade-procedure.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbooks",
+        "docs/operations/runbooks/slo-cheap-burn.md"
+      ],
+      "path": "docs/operations/runbooks/slo-cheap-burn.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbooks",
+        "docs/operations/runbooks/slo-overload-survival.md"
+      ],
+      "path": "docs/operations/runbooks/slo-overload-survival.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbooks",
+        "docs/operations/runbooks/slo-registry-refresh-stale.md"
+      ],
+      "path": "docs/operations/runbooks/slo-registry-refresh-stale.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbooks",
+        "docs/operations/runbooks/slo-standard-burn.md"
+      ],
+      "path": "docs/operations/runbooks/slo-standard-burn.md"
     },
     {
       "breadcrumbs": [
@@ -7562,6 +8079,14 @@
         "docs/operations/runbooks/traffic-spike.md"
       ],
       "path": "docs/operations/runbooks/traffic-spike.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runtime-image-contract.md"
+      ],
+      "path": "docs/operations/runtime-image-contract.md"
     },
     {
       "breadcrumbs": [
@@ -8367,6 +8892,22 @@
       "breadcrumbs": [
         "docs",
         "docs/product",
+        "docs/product/reliability-boundaries.md"
+      ],
+      "path": "docs/product/reliability-boundaries.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/product",
+        "docs/product/reviewer-onboarding-checklist.md"
+      ],
+      "path": "docs/product/reviewer-onboarding-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/product",
         "docs/product/sequence-threat-model.md"
       ],
       "path": "docs/product/sequence-threat-model.md"
@@ -8422,6 +8963,14 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/product",
+        "docs/product/why-trust-this.md"
+      ],
+      "path": "docs/product/why-trust-this.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
         "docs/reference",
         "docs/reference/api",
         "docs/reference/api/index.md"
@@ -8435,6 +8984,14 @@
         "docs/reference/audience-legend.md"
       ],
       "path": "docs/reference/audience-legend.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/breaking-change-checklist.md"
+      ],
+      "path": "docs/reference/breaking-change-checklist.md"
     },
     {
       "breadcrumbs": [
@@ -8866,6 +9423,62 @@
       "breadcrumbs": [
         "docs",
         "docs/reference",
+        "docs/reference/crate-api-stability.md"
+      ],
+      "path": "docs/reference/crate-api-stability.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/crate-dependency-graph.md"
+      ],
+      "path": "docs/reference/crate-dependency-graph.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/crate-dependency-policy.md"
+      ],
+      "path": "docs/reference/crate-dependency-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/crate-feature-flags.md"
+      ],
+      "path": "docs/reference/crate-feature-flags.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/crate-release-policy.md"
+      ],
+      "path": "docs/reference/crate-release-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/crates-consumption-guide.md"
+      ],
+      "path": "docs/reference/crates-consumption-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/crates.md"
+      ],
+      "path": "docs/reference/crates.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
         "docs/reference/dataset-operations.md"
       ],
       "path": "docs/reference/dataset-operations.md"
@@ -9031,6 +9644,14 @@
         "docs/reference/datasets/validation-policies.md"
       ],
       "path": "docs/reference/datasets/validation-policies.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/docker.md"
+      ],
+      "path": "docs/reference/docker.md"
     },
     {
       "breadcrumbs": [
@@ -9287,6 +9908,15 @@
         "docs",
         "docs/reference",
         "docs/reference/examples",
+        "docs/reference/examples/library-getting-started.md"
+      ],
+      "path": "docs/reference/examples/library-getting-started.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/examples",
         "docs/reference/examples/local-development-setup-example.md"
       ],
       "path": "docs/reference/examples/local-development-setup-example.md"
@@ -9317,6 +9947,15 @@
         "docs/reference/examples/performance-metrics-example.md"
       ],
       "path": "docs/reference/examples/performance-metrics-example.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/examples",
+        "docs/reference/examples/policies-getting-started.md"
+      ],
+      "path": "docs/reference/examples/policies-getting-started.md"
     },
     {
       "breadcrumbs": [
@@ -9386,6 +10025,15 @@
         "docs",
         "docs/reference",
         "docs/reference/examples",
+        "docs/reference/examples/server-local-run.md"
+      ],
+      "path": "docs/reference/examples/server-local-run.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/examples",
         "docs/reference/examples/system-audit-example.md"
       ],
       "path": "docs/reference/examples/system-audit-example.md"
@@ -9447,6 +10095,14 @@
       "breadcrumbs": [
         "docs",
         "docs/reference",
+        "docs/reference/governance.md"
+      ],
+      "path": "docs/reference/governance.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
         "docs/reference/index.md"
       ],
       "path": "docs/reference/index.md"
@@ -9484,6 +10140,14 @@
         "docs/reference/make.md"
       ],
       "path": "docs/reference/make.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/msrv-policy.md"
+      ],
+      "path": "docs/reference/msrv-policy.md"
     },
     {
       "breadcrumbs": [
@@ -9537,6 +10201,14 @@
         "docs/reference/ops-surface.md"
       ],
       "path": "docs/reference/ops-surface.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/ops.md"
+      ],
+      "path": "docs/reference/ops.md"
     },
     {
       "breadcrumbs": [
@@ -9722,6 +10394,22 @@
       "breadcrumbs": [
         "docs",
         "docs/reference",
+        "docs/reference/release-bundle-index.md"
+      ],
+      "path": "docs/reference/release-bundle-index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/release-plan.md"
+      ],
+      "path": "docs/reference/release-plan.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
         "docs/reference/repo-map.md"
       ],
       "path": "docs/reference/repo-map.md"
@@ -9793,6 +10481,14 @@
       "breadcrumbs": [
         "docs",
         "docs/reference",
+        "docs/reference/semver-api-rules.md"
+      ],
+      "path": "docs/reference/semver-api-rules.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
         "docs/reference/stability-legend.md"
       ],
       "path": "docs/reference/stability-legend.md"
@@ -9823,6 +10519,22 @@
         "docs/reference/store/integrity-model.md"
       ],
       "path": "docs/reference/store/integrity-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/versioning-model.md"
+      ],
+      "path": "docs/reference/versioning-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/workspace-versioning-policy.md"
+      ],
+      "path": "docs/reference/workspace-versioning-policy.md"
     },
     {
       "breadcrumbs": [
@@ -10153,6 +10865,16 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/e2e",
+        "ops/e2e/scenarios",
+        "ops/e2e/scenarios/goldens",
+        "ops/e2e/scenarios/goldens/artifact-integrity.summary.md"
+      ],
+      "path": "ops/e2e/scenarios/goldens/artifact-integrity.summary.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/env",
         "ops/env/CONTRACT.md"
       ],
@@ -10181,6 +10903,14 @@
         "ops/env/REQUIRED_FILES.md"
       ],
       "path": "ops/env/REQUIRED_FILES.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/evidence",
+        "ops/evidence/README.md"
+      ],
+      "path": "ops/evidence/README.md"
     },
     {
       "breadcrumbs": [

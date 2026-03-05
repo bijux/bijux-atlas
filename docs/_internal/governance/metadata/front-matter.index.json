@@ -5171,6 +5171,14 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/docker-build-network-policy.md",
+      "stability": "stable",
+      "title": "Docker build network policy"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/docs-as-runbooks.md",
@@ -5245,6 +5253,38 @@
       "area": "operations",
       "audience": "operators",
       "owner": "docs-governance",
+      "path": "docs/operations/e2e/scenario-artifact-layout.md",
+      "stability": "stable",
+      "title": "Scenario Artifact Layout"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/e2e/scenario-matrix.md",
+      "stability": "stable",
+      "title": "Scenario Matrix"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/e2e/scenario-spec-reference.md",
+      "stability": "stable",
+      "title": "Scenario Spec Reference"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/e2e/scenarios-evidence.md",
+      "stability": "stable",
+      "title": "Scenarios As Evidence"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
       "path": "docs/operations/entrypoints.md",
       "stability": "stable",
       "title": "Entrypoints"
@@ -5283,6 +5323,22 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ghcr-runtime-usage.md",
+      "stability": "stable",
+      "title": "Running Atlas From GHCR"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ghcr-usage.md",
+      "stability": "stable",
+      "title": "GHCR usage"
+    },
+    {
+      "area": "operations",
       "audience": "contributor",
       "owner": "bijux-atlas-governance",
       "path": "docs/operations/governance-exception-closure.md",
@@ -5304,6 +5360,62 @@
       "path": "docs/operations/governance-exceptions.md",
       "stability": "stable",
       "title": "Governance Exceptions"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/image-compatibility-policy.md",
+      "stability": "stable",
+      "title": "Image compatibility policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/image-offline-usage.md",
+      "stability": "stable",
+      "title": "Offline Image Usage"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/image-security-posture.md",
+      "stability": "stable",
+      "title": "Image Security Posture"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/image-security-update-policy.md",
+      "stability": "stable",
+      "title": "Image security update policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/image-tag-deprecation-policy.md",
+      "stability": "stable",
+      "title": "Image Tag Deprecation Policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/image-tags-and-compatibility.md",
+      "stability": "stable",
+      "title": "Image Tags And Compatibility"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/image-upgrade-guide.md",
+      "stability": "stable",
+      "title": "Upgrading Images Safely"
     },
     {
       "area": "operations",
@@ -5507,6 +5619,14 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/local-docker-build-policy.md",
+      "stability": "stable",
+      "title": "Local docker build policy"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/log-redaction-policy.md",
@@ -5528,6 +5648,14 @@
       "path": "docs/operations/maintenance-policy.md",
       "stability": "stable",
       "title": "Maintenance Policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/minimal-install-proof.md",
+      "stability": "stable",
+      "title": "Minimal install proof"
     },
     {
       "area": "operations",
@@ -5568,6 +5696,14 @@
       "path": "docs/operations/observability/alert-rule-examples.md",
       "stability": "stable",
       "title": "Alert Rule Examples"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/observability/alert-runbooks.md",
+      "stability": "stable",
+      "title": "Alert runbooks"
     },
     {
       "area": "operations",
@@ -5821,6 +5957,14 @@
       "area": "operations",
       "audience": "operators",
       "owner": "docs-governance",
+      "path": "docs/operations/observability/monitoring-quickstart.md",
+      "stability": "stable",
+      "title": "Monitoring quickstart"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
       "path": "docs/operations/observability/monitoring-setup-guide.md",
       "stability": "stable",
       "title": "Monitoring Setup Guide"
@@ -5955,6 +6099,14 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/observability/slo-alerting-model.md",
+      "stability": "stable",
+      "title": "SLOs and alerting model"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/observability/slo-policy.md",
@@ -6075,6 +6227,54 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-artifact-consumption.md",
+      "stability": "stable",
+      "title": "Ops artifact consumption"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-artifact-lineage.md",
+      "stability": "stable",
+      "title": "Ops artifact lineage"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-chart-rollback-guide.md",
+      "stability": "stable",
+      "title": "Ops Chart Rollback Guide"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-chart-upgrade-guide.md",
+      "stability": "stable",
+      "title": "Ops Chart Upgrade Guide"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-compatibility-promise.md",
+      "stability": "stable",
+      "title": "Ops compatibility promise"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-distribution-policy.md",
+      "stability": "stable",
+      "title": "Ops distribution policy"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/ops-docs-contract.md",
@@ -6084,10 +6284,82 @@
     {
       "area": "operations",
       "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-evidence-bundles.md",
+      "stability": "stable",
+      "title": "Ops evidence bundles"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-evidence-compare.md",
+      "stability": "stable",
+      "title": "Compare ops evidence bundles"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-evidence-support-tickets.md",
+      "stability": "stable",
+      "title": "Attach ops evidence to support tickets"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/ops-map.md",
       "stability": "stable",
       "title": "Ops Map"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-oci-chart-consumer-workflow.md",
+      "stability": "stable",
+      "title": "Ops OCI Chart Consumer Workflow"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-offline-bundle-consumer-workflow.md",
+      "stability": "stable",
+      "title": "Ops Offline Bundle Consumer Workflow"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-offline-install-guide.md",
+      "stability": "stable",
+      "title": "Ops offline install guide"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-profile-selection-guide.md",
+      "stability": "stable",
+      "title": "Ops Profile Selection Guide"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-rollback-guide.md",
+      "stability": "stable",
+      "title": "Ops rollback guide"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-upgrade-guide.md",
+      "stability": "stable",
+      "title": "Ops upgrade guide"
     },
     {
       "area": "operations",
@@ -6240,6 +6512,14 @@
       "path": "docs/operations/prerequisites.md",
       "stability": "stable",
       "title": "Operations Prerequisites"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/product-quality-ops-bundle-checklist.md",
+      "stability": "stable",
+      "title": "Product quality ops bundle checklist"
     },
     {
       "area": "operations",
@@ -6427,11 +6707,27 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/release-breaking-change-policy.md",
+      "stability": "stable",
+      "title": "Release breaking change policy"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/release-candidate-checklist.md",
       "stability": "stable",
       "title": "Release Candidate Checklist"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/release-compatibility-promises.md",
+      "stability": "stable",
+      "title": "Release compatibility promises"
     },
     {
       "area": "operations",
@@ -6491,6 +6787,14 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/release-rollback-guide.md",
+      "stability": "stable",
+      "title": "Release rollback guide"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/release-signature-rotation.md",
@@ -6520,6 +6824,14 @@
       "path": "docs/operations/release-trust-root.md",
       "stability": "stable",
       "title": "Release Trust Root"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/release-upgrade-guide.md",
+      "stability": "stable",
+      "title": "Release upgrade guide"
     },
     {
       "area": "operations",
@@ -6717,6 +7029,22 @@
       "area": "operations",
       "audience": "operators",
       "owner": "docs-governance",
+      "path": "docs/operations/resilience/error-taxonomy.md",
+      "stability": "stable",
+      "title": "Error taxonomy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/resilience/failure-evidence-interpretation.md",
+      "stability": "stable",
+      "title": "Interpret failure evidence bundles"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
       "path": "docs/operations/resilience/failure-injection-guide.md",
       "stability": "stable",
       "title": "Failure Injection Guide"
@@ -6725,9 +7053,49 @@
       "area": "operations",
       "audience": "operators",
       "owner": "docs-governance",
+      "path": "docs/operations/resilience/failure-patterns-remediation.md",
+      "stability": "stable",
+      "title": "Failure patterns and remediation"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
       "path": "docs/operations/resilience/failure-scenarios.md",
       "stability": "stable",
       "title": "Resilience Failure Scenarios"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/resilience/failure-tests-local.md",
+      "stability": "stable",
+      "title": "Run failure tests locally"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/resilience/high-severity-runbooks.md",
+      "stability": "stable",
+      "title": "High severity runbooks"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/resilience/operator-playbook-top-actions.md",
+      "stability": "stable",
+      "title": "Operator playbook top actions"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/resilience/postmortem-template.md",
+      "stability": "stable",
+      "title": "Resilience postmortem template"
     },
     {
       "area": "operations",
@@ -6752,6 +7120,14 @@
       "path": "docs/operations/resilience/recovery-workflows.md",
       "stability": "stable",
       "title": "Recovery Workflows"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/resilience/reliability-guarantees.md",
+      "stability": "stable",
+      "title": "Reliability guarantees and boundaries"
     },
     {
       "area": "operations",
@@ -6811,11 +7187,43 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/capacity-planning.md",
+      "stability": "stable",
+      "title": "Capacity planning"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/runbooks/dataset-corruption.md",
       "stability": "stable",
       "title": "Dataset corruption"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/disk-pressure.md",
+      "stability": "stable",
+      "title": "Disk pressure"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/high-error-rate.md",
+      "stability": "stable",
+      "title": "High error rate"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/high-latency.md",
+      "stability": "stable",
+      "title": "High latency"
     },
     {
       "area": "operations",
@@ -6827,11 +7235,35 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/incident-triage-workflow.md",
+      "stability": "stable",
+      "title": "Incident triage workflow"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/runbooks/index.md",
       "stability": "stable",
       "title": "Runbooks"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/ingest-failures.md",
+      "stability": "stable",
+      "title": "Ingest failures"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/integrity-violation.md",
+      "stability": "stable",
+      "title": "Integrity violation"
     },
     {
       "area": "operations",
@@ -6851,11 +7283,67 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/restart-loop.md",
+      "stability": "stable",
+      "title": "Restart loop"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/runbooks/rollback-playbook.md",
       "stability": "stable",
       "title": "Rollback playbook"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/rollback-procedure.md",
+      "stability": "stable",
+      "title": "Rollback procedure"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/safe-upgrade-procedure.md",
+      "stability": "stable",
+      "title": "Safe upgrade procedure"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/slo-cheap-burn.md",
+      "stability": "stable",
+      "title": "SLO Cheap Burn Response"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/slo-overload-survival.md",
+      "stability": "stable",
+      "title": "SLO Overload Survival Response"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/slo-registry-refresh-stale.md",
+      "stability": "stable",
+      "title": "SLO Registry Refresh Stale Response"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/slo-standard-burn.md",
+      "stability": "stable",
+      "title": "SLO Standard Burn Response"
     },
     {
       "area": "operations",
@@ -6880,6 +7368,14 @@
       "path": "docs/operations/runbooks/traffic-spike.md",
       "stability": "stable",
       "title": "Traffic spike"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runtime-image-contract.md",
+      "stability": "stable",
+      "title": "Runtime image contract"
     },
     {
       "area": "operations",
@@ -7621,6 +8117,22 @@
       "area": "product",
       "audience": "mixed",
       "owner": "docs-governance",
+      "path": "docs/product/reliability-boundaries.md",
+      "stability": "stable",
+      "title": "Reliability boundaries"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/product/reviewer-onboarding-checklist.md",
+      "stability": "stable",
+      "title": "Reviewer onboarding checklist"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "owner": "docs-governance",
       "path": "docs/product/sequence-threat-model.md",
       "stability": "stable",
       "title": "Sequence Endpoint Threat Model"
@@ -7674,6 +8186,14 @@
       "title": "What We Built"
     },
     {
+      "area": "product",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/product/why-trust-this.md",
+      "stability": "stable",
+      "title": "Why trust this"
+    },
+    {
       "area": "reference",
       "audience": "mixed",
       "owner": "docs-governance",
@@ -7688,6 +8208,14 @@
       "path": "docs/reference/audience-legend.md",
       "stability": "stable",
       "title": "Audience Legend"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/breaking-change-checklist.md",
+      "stability": "stable",
+      "title": "Breaking change checklist"
     },
     {
       "area": "reference",
@@ -8061,6 +8589,62 @@
       "area": "reference",
       "audience": "mixed",
       "owner": "docs-governance",
+      "path": "docs/reference/crate-api-stability.md",
+      "stability": "stable",
+      "title": "Crate API stability boundaries"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/crate-dependency-graph.md",
+      "stability": "stable",
+      "title": "Crate dependency graph"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/crate-dependency-policy.md",
+      "stability": "stable",
+      "title": "Crate dependency policy"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/crate-feature-flags.md",
+      "stability": "stable",
+      "title": "Crate feature flags"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/crate-release-policy.md",
+      "stability": "stable",
+      "title": "Crate release policy"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/crates-consumption-guide.md",
+      "stability": "stable",
+      "title": "Crates you can depend on"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/crates.md",
+      "stability": "stable",
+      "title": "Crates reference"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
       "path": "docs/reference/dataset-operations.md",
       "stability": "stable",
       "title": "Dataset Operations Reference"
@@ -8208,6 +8792,14 @@
       "path": "docs/reference/datasets/validation-policies.md",
       "stability": "stable",
       "title": "Validation Policies"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/docker.md",
+      "stability": "stable",
+      "title": "Docker reference"
     },
     {
       "area": "reference",
@@ -8435,6 +9027,14 @@
     },
     {
       "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/examples/library-getting-started.md",
+      "stability": "stable",
+      "title": "Library getting started"
+    },
+    {
+      "area": "reference",
       "audience": "contributor",
       "owner": "docs-governance",
       "path": "docs/reference/examples/local-development-setup-example.md",
@@ -8464,6 +9064,14 @@
       "path": "docs/reference/examples/performance-metrics-example.md",
       "stability": "stable",
       "title": "Performance Metrics Example"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/examples/policies-getting-started.md",
+      "stability": "stable",
+      "title": "Policies getting started"
     },
     {
       "area": "reference",
@@ -8523,6 +9131,14 @@
     },
     {
       "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/examples/server-local-run.md",
+      "stability": "stable",
+      "title": "Server local run example"
+    },
+    {
+      "area": "reference",
       "audience": "operator",
       "owner": "docs-governance",
       "path": "docs/reference/examples/system-audit-example.md",
@@ -8579,6 +9195,14 @@
     },
     {
       "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/governance.md",
+      "stability": "stable",
+      "title": "Governance reference"
+    },
+    {
+      "area": "reference",
       "audience": "user",
       "owner": "docs-governance",
       "path": "docs/reference/index.md",
@@ -8616,6 +9240,14 @@
       "path": "docs/reference/make.md",
       "stability": "stable",
       "title": "Make reference"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/msrv-policy.md",
+      "stability": "stable",
+      "title": "MSRV policy"
     },
     {
       "area": "reference",
@@ -8664,6 +9296,14 @@
       "path": "docs/reference/ops-surface.md",
       "stability": "stable",
       "title": "Operations Surface Reference"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/ops.md",
+      "stability": "stable",
+      "title": "Ops artifacts reference"
     },
     {
       "area": "reference",
@@ -8827,6 +9467,22 @@
     },
     {
       "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/release-bundle-index.md",
+      "stability": "stable",
+      "title": "Release bundle index"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/release-plan.md",
+      "stability": "stable",
+      "title": "Release planning reference"
+    },
+    {
+      "area": "reference",
       "audience": "operator",
       "owner": "bijux-atlas-operations",
       "path": "docs/reference/repo-map.md",
@@ -8893,6 +9549,14 @@
       "area": "reference",
       "audience": "mixed",
       "owner": "docs-governance",
+      "path": "docs/reference/semver-api-rules.md",
+      "stability": "stable",
+      "title": "Semver API rules"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
       "path": "docs/reference/stability-legend.md",
       "stability": "stable",
       "title": "Stability Legend"
@@ -8920,6 +9584,22 @@
       "path": "docs/reference/store/integrity-model.md",
       "stability": "stable",
       "title": "integrity model"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/versioning-model.md",
+      "stability": "stable",
+      "title": "Versioning model"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/reference/workspace-versioning-policy.md",
+      "stability": "stable",
+      "title": "Workspace versioning policy"
     },
     {
       "area": "site-map.md",
@@ -9260,6 +9940,14 @@
     {
       "area": "ops",
       "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/e2e/scenarios/goldens/artifact-integrity.summary.md",
+      "stability": "stable",
+      "title": "Scenario Evidence"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
       "owner": "bijux-atlas-operations",
       "path": "ops/env/CONTRACT.md",
       "stability": "stable",
@@ -9288,6 +9976,14 @@
       "path": "ops/env/REQUIRED_FILES.md",
       "stability": "stable",
       "title": "Required Files"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/evidence/README.md",
+      "stability": "stable",
+      "title": "Ops Evidence Bundle"
     },
     {
       "area": "ops",

@@ -15612,6 +15612,29 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "docker-build-network-policy",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/docker-build-network-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "docker-build-network-policy",
+        "operations"
+      ],
+      "title": "Docker build network policy",
+      "topic": "docker-build-network-policy"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -15830,6 +15853,106 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "e2e",
+        "operations",
+        "scenario-artifact-layout"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/e2e/scenario-artifact-layout.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "e2e",
+        "operations",
+        "scenario-artifact-layout"
+      ],
+      "title": "Scenario Artifact Layout",
+      "topic": "scenario-artifact-layout"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "e2e",
+        "operations",
+        "scenario-matrix"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/e2e/scenario-matrix.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "e2e",
+        "operations",
+        "scenario-matrix"
+      ],
+      "title": "Scenario Matrix",
+      "topic": "scenario-matrix"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "e2e",
+        "operations",
+        "scenario-spec-reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/e2e/scenario-spec-reference.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "e2e",
+        "operations",
+        "scenario-spec-reference"
+      ],
+      "title": "Scenario Spec Reference",
+      "topic": "scenario-spec-reference"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "e2e",
+        "operations",
+        "scenarios-evidence"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/e2e/scenarios-evidence.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "e2e",
+        "operations",
+        "scenarios-evidence"
+      ],
+      "title": "Scenarios As Evidence",
+      "topic": "scenarios-evidence"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "entrypoints",
         "operations"
       ],
@@ -15940,6 +16063,52 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "ghcr-runtime-usage",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ghcr-runtime-usage.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ghcr-runtime-usage",
+        "operations"
+      ],
+      "title": "Running Atlas From GHCR",
+      "topic": "ghcr-runtime-usage"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "ghcr-usage",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ghcr-usage.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ghcr-usage",
+        "operations"
+      ],
+      "title": "GHCR usage",
+      "topic": "ghcr-usage"
+    },
+    {
+      "area": "operations",
       "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
@@ -16006,6 +16175,167 @@
       ],
       "title": "Governance Exceptions",
       "topic": "governance-exceptions"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "image-compatibility-policy",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/image-compatibility-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "image-compatibility-policy",
+        "operations"
+      ],
+      "title": "Image compatibility policy",
+      "topic": "image-compatibility-policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "image-offline-usage",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/image-offline-usage.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "image-offline-usage",
+        "operations"
+      ],
+      "title": "Offline Image Usage",
+      "topic": "image-offline-usage"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "image-security-posture",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/image-security-posture.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "image-security-posture",
+        "operations"
+      ],
+      "title": "Image Security Posture",
+      "topic": "image-security-posture"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "image-security-update-policy",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/image-security-update-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "image-security-update-policy",
+        "operations"
+      ],
+      "title": "Image security update policy",
+      "topic": "image-security-update-policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "image-tag-deprecation-policy",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/image-tag-deprecation-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "image-tag-deprecation-policy",
+        "operations"
+      ],
+      "title": "Image Tag Deprecation Policy",
+      "topic": "image-tag-deprecation-policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "image-tags-and-compatibility",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/image-tags-and-compatibility.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "image-tags-and-compatibility",
+        "operations"
+      ],
+      "title": "Image Tags And Compatibility",
+      "topic": "image-tags-and-compatibility"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "image-upgrade-guide",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/image-upgrade-guide.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "image-upgrade-guide",
+        "operations"
+      ],
+      "title": "Upgrading Images Safely",
+      "topic": "image-upgrade-guide"
     },
     {
       "area": "operations",
@@ -16616,6 +16946,29 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "local-docker-build-policy",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/local-docker-build-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "local-docker-build-policy",
+        "operations"
+      ],
+      "title": "Local docker build policy",
+      "topic": "local-docker-build-policy"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -16682,6 +17035,29 @@
       ],
       "title": "Maintenance Policy",
       "topic": "maintenance-policy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "minimal-install-proof",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/minimal-install-proof.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "minimal-install-proof",
+        "operations"
+      ],
+      "title": "Minimal install proof",
+      "topic": "minimal-install-proof"
     },
     {
       "area": "operations",
@@ -16799,6 +17175,31 @@
       ],
       "title": "Alert Rule Examples",
       "topic": "alert-rule-examples"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "alert-runbooks",
+        "observability",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/observability/alert-runbooks.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "alert-runbooks",
+        "observability",
+        "operations"
+      ],
+      "title": "Alert runbooks",
+      "topic": "alert-runbooks"
     },
     {
       "area": "operations",
@@ -17582,6 +17983,31 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "monitoring-quickstart",
+        "observability",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/observability/monitoring-quickstart.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "monitoring-quickstart",
+        "observability",
+        "operations"
+      ],
+      "title": "Monitoring quickstart",
+      "topic": "monitoring-quickstart"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "monitoring-setup-guide",
         "observability",
         "operations"
@@ -18002,6 +18428,31 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "observability",
+        "operations",
+        "slo-alerting-model"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/observability/slo-alerting-model.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "observability",
+        "operations",
+        "slo-alerting-model"
+      ],
+      "title": "SLOs and alerting model",
+      "topic": "slo-alerting-model"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -18373,6 +18824,144 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-artifact-consumption"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-artifact-consumption.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-artifact-consumption"
+      ],
+      "title": "Ops artifact consumption",
+      "topic": "ops-artifact-consumption"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-artifact-lineage"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-artifact-lineage.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-artifact-lineage"
+      ],
+      "title": "Ops artifact lineage",
+      "topic": "ops-artifact-lineage"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-chart-rollback-guide"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-chart-rollback-guide.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-chart-rollback-guide"
+      ],
+      "title": "Ops Chart Rollback Guide",
+      "topic": "ops-chart-rollback-guide"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-chart-upgrade-guide"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-chart-upgrade-guide.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-chart-upgrade-guide"
+      ],
+      "title": "Ops Chart Upgrade Guide",
+      "topic": "ops-chart-upgrade-guide"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-compatibility-promise"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-compatibility-promise.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-compatibility-promise"
+      ],
+      "title": "Ops compatibility promise",
+      "topic": "ops-compatibility-promise"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-distribution-policy"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-distribution-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-distribution-policy"
+      ],
+      "title": "Ops distribution policy",
+      "topic": "ops-distribution-policy"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -18402,6 +18991,75 @@
       "doc_version": "v1",
       "keywords": [
         "operations",
+        "ops-evidence-bundles"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-evidence-bundles.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-evidence-bundles"
+      ],
+      "title": "Ops evidence bundles",
+      "topic": "ops-evidence-bundles"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-evidence-compare"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-evidence-compare.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-evidence-compare"
+      ],
+      "title": "Compare ops evidence bundles",
+      "topic": "ops-evidence-compare"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-evidence-support-tickets"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-evidence-support-tickets.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-evidence-support-tickets"
+      ],
+      "title": "Attach ops evidence to support tickets",
+      "topic": "ops-evidence-support-tickets"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
         "ops-map"
       ],
       "last_reviewed": "2026-02-25",
@@ -18416,6 +19074,144 @@
       ],
       "title": "Ops Map",
       "topic": "ops-map"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-oci-chart-consumer-workflow"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-oci-chart-consumer-workflow.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-oci-chart-consumer-workflow"
+      ],
+      "title": "Ops OCI Chart Consumer Workflow",
+      "topic": "ops-oci-chart-consumer-workflow"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-offline-bundle-consumer-workflow"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-offline-bundle-consumer-workflow.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-offline-bundle-consumer-workflow"
+      ],
+      "title": "Ops Offline Bundle Consumer Workflow",
+      "topic": "ops-offline-bundle-consumer-workflow"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-offline-install-guide"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-offline-install-guide.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-offline-install-guide"
+      ],
+      "title": "Ops offline install guide",
+      "topic": "ops-offline-install-guide"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-profile-selection-guide"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-profile-selection-guide.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-profile-selection-guide"
+      ],
+      "title": "Ops Profile Selection Guide",
+      "topic": "ops-profile-selection-guide"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-rollback-guide"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-rollback-guide.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-rollback-guide"
+      ],
+      "title": "Ops rollback guide",
+      "topic": "ops-rollback-guide"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-upgrade-guide"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-upgrade-guide.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-upgrade-guide"
+      ],
+      "title": "Ops upgrade guide",
+      "topic": "ops-upgrade-guide"
     },
     {
       "area": "operations",
@@ -18853,6 +19649,29 @@
       ],
       "title": "Operations Prerequisites",
       "topic": "prerequisites"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "product-quality-ops-bundle-checklist"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/product-quality-ops-bundle-checklist.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "product-quality-ops-bundle-checklist"
+      ],
+      "title": "Product quality ops bundle checklist",
+      "topic": "product-quality-ops-bundle-checklist"
     },
     {
       "area": "operations",
@@ -19407,6 +20226,29 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "release-breaking-change-policy"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/release-breaking-change-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "release-breaking-change-policy"
+      ],
+      "title": "Release breaking change policy",
+      "topic": "release-breaking-change-policy"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -19427,6 +20269,29 @@
       ],
       "title": "Release Candidate Checklist",
       "topic": "release-candidate-checklist"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "release-compatibility-promises"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/release-compatibility-promises.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "release-compatibility-promises"
+      ],
+      "title": "Release compatibility promises",
+      "topic": "release-compatibility-promises"
     },
     {
       "area": "operations",
@@ -19591,6 +20456,29 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "release-rollback-guide"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/release-rollback-guide.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "release-rollback-guide"
+      ],
+      "title": "Release rollback guide",
+      "topic": "release-rollback-guide"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "concept",
@@ -19680,6 +20568,29 @@
       ],
       "title": "Release Trust Root",
       "topic": "release-trust-root"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "release-upgrade-guide"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/release-upgrade-guide.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "release-upgrade-guide"
+      ],
+      "title": "Release upgrade guide",
+      "topic": "release-upgrade-guide"
     },
     {
       "area": "operations",
@@ -20284,6 +21195,56 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "error-taxonomy",
+        "operations",
+        "resilience"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/resilience/error-taxonomy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "error-taxonomy",
+        "operations",
+        "resilience"
+      ],
+      "title": "Error taxonomy",
+      "topic": "error-taxonomy"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "failure-evidence-interpretation",
+        "operations",
+        "resilience"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/resilience/failure-evidence-interpretation.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "failure-evidence-interpretation",
+        "operations",
+        "resilience"
+      ],
+      "title": "Interpret failure evidence bundles",
+      "topic": "failure-evidence-interpretation"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "failure-injection-guide",
         "operations",
         "resilience"
@@ -20309,6 +21270,31 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "failure-patterns-remediation",
+        "operations",
+        "resilience"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/resilience/failure-patterns-remediation.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "failure-patterns-remediation",
+        "operations",
+        "resilience"
+      ],
+      "title": "Failure patterns and remediation",
+      "topic": "failure-patterns-remediation"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "failure-scenarios",
         "operations",
         "resilience"
@@ -20326,6 +21312,106 @@
       ],
       "title": "Resilience Failure Scenarios",
       "topic": "failure-scenarios"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "failure-tests-local",
+        "operations",
+        "resilience"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/resilience/failure-tests-local.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "failure-tests-local",
+        "operations",
+        "resilience"
+      ],
+      "title": "Run failure tests locally",
+      "topic": "failure-tests-local"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "high-severity-runbooks",
+        "operations",
+        "resilience"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/resilience/high-severity-runbooks.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "high-severity-runbooks",
+        "operations",
+        "resilience"
+      ],
+      "title": "High severity runbooks",
+      "topic": "high-severity-runbooks"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "operator-playbook-top-actions",
+        "resilience"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/resilience/operator-playbook-top-actions.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "operator-playbook-top-actions",
+        "resilience"
+      ],
+      "title": "Operator playbook top actions",
+      "topic": "operator-playbook-top-actions"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "postmortem-template",
+        "resilience"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/resilience/postmortem-template.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "postmortem-template",
+        "resilience"
+      ],
+      "title": "Resilience postmortem template",
+      "topic": "postmortem-template"
     },
     {
       "area": "operations",
@@ -20401,6 +21487,31 @@
       ],
       "title": "Recovery Workflows",
       "topic": "recovery-workflows"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "reliability-guarantees",
+        "resilience"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/resilience/reliability-guarantees.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "reliability-guarantees",
+        "resilience"
+      ],
+      "title": "Reliability guarantees and boundaries",
+      "topic": "reliability-guarantees"
     },
     {
       "area": "operations",
@@ -20567,6 +21678,31 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "runbook",
+      "doc_version": "v1",
+      "keywords": [
+        "capacity-planning",
+        "operations",
+        "runbooks"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/capacity-planning.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "capacity-planning",
+        "operations",
+        "runbooks"
+      ],
+      "title": "Capacity planning",
+      "topic": "capacity-planning"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "runbook",
@@ -20589,6 +21725,81 @@
       ],
       "title": "Dataset corruption",
       "topic": "dataset-corruption"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "runbook",
+      "doc_version": "v1",
+      "keywords": [
+        "disk-pressure",
+        "operations",
+        "runbooks"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/disk-pressure.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "disk-pressure",
+        "operations",
+        "runbooks"
+      ],
+      "title": "Disk pressure",
+      "topic": "disk-pressure"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "runbook",
+      "doc_version": "v1",
+      "keywords": [
+        "high-error-rate",
+        "operations",
+        "runbooks"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/high-error-rate.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "high-error-rate",
+        "operations",
+        "runbooks"
+      ],
+      "title": "High error rate",
+      "topic": "high-error-rate"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "runbook",
+      "doc_version": "v1",
+      "keywords": [
+        "high-latency",
+        "operations",
+        "runbooks"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/high-latency.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "high-latency",
+        "operations",
+        "runbooks"
+      ],
+      "title": "High latency",
+      "topic": "high-latency"
     },
     {
       "area": "operations",
@@ -20617,6 +21828,31 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "runbook",
+      "doc_version": "v1",
+      "keywords": [
+        "incident-triage-workflow",
+        "operations",
+        "runbooks"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/incident-triage-workflow.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "incident-triage-workflow",
+        "operations",
+        "runbooks"
+      ],
+      "title": "Incident triage workflow",
+      "topic": "incident-triage-workflow"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "runbook",
@@ -20639,6 +21875,56 @@
       ],
       "title": "Runbooks",
       "topic": "index"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "runbook",
+      "doc_version": "v1",
+      "keywords": [
+        "ingest-failures",
+        "operations",
+        "runbooks"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/ingest-failures.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ingest-failures",
+        "operations",
+        "runbooks"
+      ],
+      "title": "Ingest failures",
+      "topic": "ingest-failures"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "runbook",
+      "doc_version": "v1",
+      "keywords": [
+        "integrity-violation",
+        "operations",
+        "runbooks"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/integrity-violation.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "integrity-violation",
+        "operations",
+        "runbooks"
+      ],
+      "title": "Integrity violation",
+      "topic": "integrity-violation"
     },
     {
       "area": "operations",
@@ -20692,6 +21978,31 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "runbook",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "restart-loop",
+        "runbooks"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/restart-loop.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "restart-loop",
+        "runbooks"
+      ],
+      "title": "Restart loop",
+      "topic": "restart-loop"
+    },
+    {
+      "area": "operations",
       "audience": "operator",
       "crate": null,
       "doc_type": "runbook",
@@ -20714,6 +22025,156 @@
       ],
       "title": "Rollback playbook",
       "topic": "rollback-playbook"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "runbook",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "rollback-procedure",
+        "runbooks"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/rollback-procedure.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "rollback-procedure",
+        "runbooks"
+      ],
+      "title": "Rollback procedure",
+      "topic": "rollback-procedure"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "runbook",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "runbooks",
+        "safe-upgrade-procedure"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/safe-upgrade-procedure.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "runbooks",
+        "safe-upgrade-procedure"
+      ],
+      "title": "Safe upgrade procedure",
+      "topic": "safe-upgrade-procedure"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "runbook",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "runbooks",
+        "slo-cheap-burn"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/slo-cheap-burn.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "runbooks",
+        "slo-cheap-burn"
+      ],
+      "title": "SLO Cheap Burn Response",
+      "topic": "slo-cheap-burn"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "runbook",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "runbooks",
+        "slo-overload-survival"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/slo-overload-survival.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "runbooks",
+        "slo-overload-survival"
+      ],
+      "title": "SLO Overload Survival Response",
+      "topic": "slo-overload-survival"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "runbook",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "runbooks",
+        "slo-registry-refresh-stale"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/slo-registry-refresh-stale.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "runbooks",
+        "slo-registry-refresh-stale"
+      ],
+      "title": "SLO Registry Refresh Stale Response",
+      "topic": "slo-registry-refresh-stale"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "runbook",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "runbooks",
+        "slo-standard-burn"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbooks/slo-standard-burn.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "runbooks",
+        "slo-standard-burn"
+      ],
+      "title": "SLO Standard Burn Response",
+      "topic": "slo-standard-burn"
     },
     {
       "area": "operations",
@@ -20789,6 +22250,29 @@
       ],
       "title": "Traffic spike",
       "topic": "traffic-spike"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "runtime-image-contract"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runtime-image-contract.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "runtime-image-contract"
+      ],
+      "title": "Runtime image contract",
+      "topic": "runtime-image-contract"
     },
     {
       "area": "operations",
@@ -23042,6 +24526,52 @@
       "doc_version": "v1",
       "keywords": [
         "product",
+        "reliability-boundaries"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/product/reliability-boundaries.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "product",
+        "reliability-boundaries"
+      ],
+      "title": "Reliability boundaries",
+      "topic": "reliability-boundaries"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "product",
+        "reviewer-onboarding-checklist"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/product/reviewer-onboarding-checklist.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "product",
+        "reviewer-onboarding-checklist"
+      ],
+      "title": "Reviewer onboarding checklist",
+      "topic": "reviewer-onboarding-checklist"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "product",
         "sequence-threat-model"
       ],
       "last_reviewed": "2026-02-25",
@@ -23196,6 +24726,29 @@
       "topic": "what-we-built"
     },
     {
+      "area": "product",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "product",
+        "why-trust-this"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/product/why-trust-this.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "product",
+        "why-trust-this"
+      ],
+      "title": "Why trust this",
+      "topic": "why-trust-this"
+    },
+    {
       "area": "reference",
       "audience": "mixed",
       "crate": null,
@@ -23242,6 +24795,29 @@
       ],
       "title": "Audience Legend",
       "topic": "audience-legend"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "breaking-change-checklist",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/breaking-change-checklist.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "breaking-change-checklist",
+        "reference"
+      ],
+      "title": "Breaking change checklist",
+      "topic": "breaking-change-checklist"
     },
     {
       "area": "reference",
@@ -24418,6 +25994,167 @@
       "doc_type": "reference",
       "doc_version": "v1",
       "keywords": [
+        "crate-api-stability",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/crate-api-stability.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "crate-api-stability",
+        "reference"
+      ],
+      "title": "Crate API stability boundaries",
+      "topic": "crate-api-stability"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "crate-dependency-graph",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/crate-dependency-graph.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "crate-dependency-graph",
+        "reference"
+      ],
+      "title": "Crate dependency graph",
+      "topic": "crate-dependency-graph"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "crate-dependency-policy",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/crate-dependency-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "crate-dependency-policy",
+        "reference"
+      ],
+      "title": "Crate dependency policy",
+      "topic": "crate-dependency-policy"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "crate-feature-flags",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/crate-feature-flags.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "crate-feature-flags",
+        "reference"
+      ],
+      "title": "Crate feature flags",
+      "topic": "crate-feature-flags"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "crate-release-policy",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/crate-release-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "crate-release-policy",
+        "reference"
+      ],
+      "title": "Crate release policy",
+      "topic": "crate-release-policy"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "crates-consumption-guide",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/crates-consumption-guide.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "crates-consumption-guide",
+        "reference"
+      ],
+      "title": "Crates you can depend on",
+      "topic": "crates-consumption-guide"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "crates",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/crates.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "crates",
+        "reference"
+      ],
+      "title": "Crates reference",
+      "topic": "crates"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
         "dataset-operations",
         "reference"
       ],
@@ -24883,6 +26620,29 @@
       ],
       "title": "Validation Policies",
       "topic": "validation-policies"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "docker",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/docker.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "docker",
+        "reference"
+      ],
+      "title": "Docker reference",
+      "topic": "docker"
     },
     {
       "area": "reference",
@@ -25582,6 +27342,31 @@
     },
     {
       "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "examples",
+        "library-getting-started",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/examples/library-getting-started.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "examples",
+        "library-getting-started",
+        "reference"
+      ],
+      "title": "Library getting started",
+      "topic": "library-getting-started"
+    },
+    {
+      "area": "reference",
       "audience": "contributor",
       "crate": null,
       "doc_type": "reference",
@@ -25679,6 +27464,31 @@
       ],
       "title": "Performance Metrics Example",
       "topic": "performance-metrics-example"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "examples",
+        "policies-getting-started",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/examples/policies-getting-started.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "examples",
+        "policies-getting-started",
+        "reference"
+      ],
+      "title": "Policies getting started",
+      "topic": "policies-getting-started"
     },
     {
       "area": "reference",
@@ -25857,6 +27667,31 @@
     },
     {
       "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "examples",
+        "reference",
+        "server-local-run"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/examples/server-local-run.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "examples",
+        "reference",
+        "server-local-run"
+      ],
+      "title": "Server local run example",
+      "topic": "server-local-run"
+    },
+    {
+      "area": "reference",
       "audience": "operator",
       "crate": null,
       "doc_type": "reference",
@@ -26030,6 +27865,29 @@
     },
     {
       "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/governance.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "reference"
+      ],
+      "title": "Governance reference",
+      "topic": "governance"
+    },
+    {
+      "area": "reference",
       "audience": "user",
       "crate": null,
       "doc_type": "reference",
@@ -26146,6 +28004,29 @@
       ],
       "title": "Make reference",
       "topic": "make"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "msrv-policy",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/msrv-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "msrv-policy",
+        "reference"
+      ],
+      "title": "MSRV policy",
+      "topic": "msrv-policy"
     },
     {
       "area": "reference",
@@ -26294,6 +28175,29 @@
       ],
       "title": "Operations Surface Reference",
       "topic": "ops-surface"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "ops",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/ops.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "reference"
+      ],
+      "title": "Ops artifacts reference",
+      "topic": "ops"
     },
     {
       "area": "reference",
@@ -26797,6 +28701,52 @@
     },
     {
       "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "reference",
+        "release-bundle-index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/release-bundle-index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "reference",
+        "release-bundle-index"
+      ],
+      "title": "Release bundle index",
+      "topic": "release-bundle-index"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "reference",
+        "release-plan"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/release-plan.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "reference",
+        "release-plan"
+      ],
+      "title": "Release planning reference",
+      "topic": "release-plan"
+    },
+    {
+      "area": "reference",
       "audience": "operator",
       "crate": null,
       "doc_type": "reference",
@@ -27001,6 +28951,29 @@
       "doc_version": "v1",
       "keywords": [
         "reference",
+        "semver-api-rules"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/semver-api-rules.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "reference",
+        "semver-api-rules"
+      ],
+      "title": "Semver API rules",
+      "topic": "semver-api-rules"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "reference",
         "stability-legend"
       ],
       "last_reviewed": "2026-02-25",
@@ -27090,6 +29063,52 @@
       ],
       "title": "integrity model",
       "topic": "integrity-model"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "reference",
+        "versioning-model"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/versioning-model.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "reference",
+        "versioning-model"
+      ],
+      "title": "Versioning model",
+      "topic": "versioning-model"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "reference",
+        "workspace-versioning-policy"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/workspace-versioning-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "reference",
+        "workspace-versioning-policy"
+      ],
+      "title": "Workspace versioning policy",
+      "topic": "workspace-versioning-policy"
     },
     {
       "area": "site-map.md",
@@ -28102,6 +30121,35 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "artifact-integrity.summary",
+        "e2e",
+        "goldens",
+        "ops",
+        "scenarios"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/e2e/scenarios/goldens/artifact-integrity.summary.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "artifact-integrity.summary",
+        "e2e",
+        "goldens",
+        "ops",
+        "scenarios"
+      ],
+      "title": "Scenario Evidence",
+      "topic": "artifact-integrity.summary"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "contract",
         "env",
         "ops"
@@ -28194,6 +30242,31 @@
       ],
       "title": "Required Files",
       "topic": "REQUIRED_FILES"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "evidence",
+        "ops",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/evidence/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "evidence",
+        "ops",
+        "readme"
+      ],
+      "title": "Ops Evidence Bundle",
+      "topic": "README"
     },
     {
       "area": "ops",
