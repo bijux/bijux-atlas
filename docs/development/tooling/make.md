@@ -34,10 +34,17 @@ related:
 4. Regenerate `make/target-list.json` with `make make-target-list`.
 5. Run `make make-contract-check`.
 
+Additional guidance:
+
+- [Makefile Is Wrapper Only](make-wrapper-only.md)
+- [How To Add A Make Wrapper](how-to-add-make-wrapper.md)
+- [Make Wrapper Snippet](make-wrapper-snippet.md)
+
 ## Discovery commands
 
 - `bijux dev atlas make list --format json`
 - `bijux dev atlas make explain <target> --format json`
+- `bijux dev atlas make wrappers verify --format json`
 - `make make-fast`
 - `make help`
 
