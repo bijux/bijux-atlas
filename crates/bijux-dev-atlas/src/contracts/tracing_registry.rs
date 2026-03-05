@@ -225,4 +225,30 @@ mod tests {
             assert!(ids.contains(required));
         }
     }
+
+    #[test]
+    fn tracing_sampling_strategy_is_ratio_and_deterministic() {
+        let contract = tracing_contract();
+        assert!(contract.sampling_strategy.contains("ratio"));
+        assert!(contract.sampling_strategy.contains("deterministic"));
+    }
+
+    #[test]
+    fn tracing_context_policy_mentions_traceparent_and_async_boundaries() {
+        let contract = tracing_contract();
+        assert!(contract.context_propagation_policy.contains("traceparent"));
+        assert!(contract
+            .context_propagation_policy
+            .contains("async boundaries"));
+    }
+
+    #[test]
+    fn error_span_declares_classification_attributes() {
+        let error_span = span_registry()
+            .into_iter()
+            .find(|row| row.id == "TRACE-ERROR-STRUCTURED-001")
+            .expect("error span");
+        assert!(error_span.required_attributes.contains(&"error_code"));
+        assert!(error_span.required_attributes.contains(&"error_class"));
+    }
 }

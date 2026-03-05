@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "kind": "trace_simulated_workload",
+  "requests": [
+    {"route": "/v1/query", "count": 300, "error_rate": 0.01},
+    {"route": "/v1/ingest", "count": 120, "error_rate": 0.02},
+    {"route": "/v1/query", "count": 80, "error_rate": 0.08, "workload_class": "overload"}
+  ]
+}
