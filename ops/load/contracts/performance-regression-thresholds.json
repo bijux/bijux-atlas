@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "kind": "performance_regression_thresholds",
+  "thresholds": {
+    "latency_p99_regression_pct": 15,
+    "throughput_drop_pct": 10,
+    "error_rate_increase_pct": 2,
+    "cpu_saturation_pct": 90,
+    "memory_growth_pct": 20
+  }
+}

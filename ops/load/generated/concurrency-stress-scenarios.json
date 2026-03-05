@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "kind": "concurrency_stress_scenarios",
+  "scenarios": [
+    {
+      "id": "load-single-client-baseline",
+      "title": "Single client baseline",
+      "workload_kind": "query",
+      "concurrency_profile": "single_client"
+    },
+    {
+      "id": "load-multi-client-concurrency",
+      "title": "Multi client concurrency",
+      "workload_kind": "mixed",
+      "concurrency_profile": "multi_client"
+    },
+    {
+      "id": "load-saturation-stress",
+      "title": "Saturation stress",
+      "workload_kind": "mixed",
+      "concurrency_profile": "saturation"
+    }
+  ]
+}

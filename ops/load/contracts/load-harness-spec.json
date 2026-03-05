@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "kind": "load_harness_spec",
+  "workload_kinds": ["query", "ingest", "mixed"],
+  "concurrency_profiles": ["single_client", "multi_client", "saturation"],
+  "required_fields": [
+    "schema_version",
+    "kind",
+    "concurrency_profile",
+    "duration_secs",
+    "target_rps",
+    "ingest_ops_per_sec",
+    "query_mix_read_ratio"
+  ]
+}
