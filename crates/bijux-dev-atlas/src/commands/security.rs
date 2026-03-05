@@ -543,6 +543,7 @@ fn run_security_authorization_diagnostics(
     let roles = read_yaml(&root.join("configs/security/roles.yaml"))?;
     let permissions = read_yaml(&root.join("configs/security/permissions.yaml"))?;
     let policy = read_yaml(&root.join("configs/security/policy.yaml"))?;
+    let assignments = read_yaml(&root.join("configs/security/role-assignments.yaml")).ok();
     let role_count = roles
         .get("roles")
         .and_then(serde_yaml::Value::as_sequence)
@@ -555,13 +556,24 @@ fn run_security_authorization_diagnostics(
         .get("rules")
         .and_then(serde_yaml::Value::as_sequence)
         .map_or(0, std::vec::Vec::len);
+    let assignment_count = assignments
+        .as_ref()
+        .and_then(|value| value.get("assignments"))
+        .and_then(serde_yaml::Value::as_sequence)
+        .map_or(0, std::vec::Vec::len);
+    let default_decision = policy
+        .get("default_decision")
+        .and_then(serde_yaml::Value::as_str)
+        .unwrap_or("deny");
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "authorization_diagnostics_report",
         "status": "ok",
         "role_count": role_count,
         "permission_count": permission_count,
-        "policy_rule_count": policy_rules
+        "policy_rule_count": policy_rules,
+        "assignment_count": assignment_count,
+        "default_decision": default_decision
     });
     let rendered = emit_payload(args.format, args.out, &payload)?;
     Ok((rendered, 0))
@@ -3131,6 +3143,15 @@ permissions:
 "#,
         )
         .expect("write permissions.yaml");
+        fs::write(
+            config_dir.join("role-assignments.yaml"),
+            r#"schema_version: 1
+assignments:
+  - principal: user
+    role_id: role.user.readonly
+"#,
+        )
+        .expect("write role-assignments.yaml");
     }
 
     fn write_minimal_threat_model_files(root: &std::path::Path) {
@@ -3468,6 +3489,8 @@ runtime_auth_mode_env: ATLAS_AUTH_MODE
         assert_eq!(code, 0);
         let diag_value: serde_json::Value = serde_json::from_str(&diag).expect("diag json");
         assert_eq!(diag_value["kind"], "authorization_diagnostics_report");
+        assert_eq!(diag_value["assignment_count"], 1);
+        assert_eq!(diag_value["default_decision"], "deny");
 
         let (assign, code) = run_security_authorization_assign(SecurityRoleAssignArgs {
             repo_root: Some(temp.path().to_path_buf()),
