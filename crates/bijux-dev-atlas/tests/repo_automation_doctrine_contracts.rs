@@ -418,3 +418,46 @@ fn tutorials_python_and_script_paths_must_be_marked_forbidden_after_migration() 
         "tutorial script directories must be marked forbidden after migration completion"
     );
 }
+
+#[test]
+fn tutorials_legacy_script_and_test_directories_must_not_exist() {
+    let root = repo_root();
+    assert!(
+        !root.join("tutorials/scripts").exists(),
+        "tutorials/scripts must be removed after dev-atlas parity"
+    );
+    assert!(
+        !root.join("tutorials/tests").exists(),
+        "tutorials/tests must be removed after Rust contract parity"
+    );
+}
+
+#[test]
+fn tutorials_tree_must_not_include_python_or_shell_sources() {
+    let root = repo_root();
+    let tutorials = root.join("tutorials");
+    let mut violations = Vec::new();
+    if tutorials.exists() {
+        for entry in walkdir::WalkDir::new(&tutorials) {
+            let entry = entry.expect("walk tutorials");
+            if !entry.file_type().is_file() {
+                continue;
+            }
+            let path = entry.path();
+            let ext = path.extension().and_then(|v| v.to_str()).unwrap_or_default();
+            if ext == "py" || ext == "sh" {
+                violations.push(
+                    path.strip_prefix(&root)
+                        .expect("relative path")
+                        .display()
+                        .to_string(),
+                );
+            }
+        }
+    }
+    assert!(
+        violations.is_empty(),
+        "tutorials directory must not include Python or shell sources:\n{}",
+        violations.join("\n")
+    );
+}
