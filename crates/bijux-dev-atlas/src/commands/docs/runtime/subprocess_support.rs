@@ -60,14 +60,37 @@ fn docs_build_or_serve_subprocess(
             })?;
         }
     }
-    let mut cmd = ProcessCommand::new("mkdocs");
-    cmd.args(args).current_dir(&ctx.repo_root);
-    let out = cmd
-        .output()
-        .map_err(|e| format!("failed to run mkdocs: {e}"))?;
-    let stdout = String::from_utf8_lossy(&out.stdout).to_string();
-    let stderr = String::from_utf8_lossy(&out.stderr).to_string();
-    let code = out.status.code().unwrap_or(1);
+    let mut effective_args = args.to_vec();
+    if label == "docs serve" {
+        let mut attempts = 0u8;
+        while attempts < 6 && !dev_addr_is_available(&effective_args) {
+            if let Some(next) = bump_dev_addr_port(&effective_args) {
+                effective_args = next;
+            } else {
+                break;
+            }
+            attempts += 1;
+        }
+    }
+    let (stdout, stderr, code) = loop {
+        let mut cmd = ProcessCommand::new("mkdocs");
+        cmd.args(&effective_args).current_dir(&ctx.repo_root);
+        if label == "docs serve" {
+            let status = cmd
+                .stdout(std::process::Stdio::inherit())
+                .stderr(std::process::Stdio::inherit())
+                .status()
+                .map_err(|e| format!("failed to run mkdocs: {e}"))?;
+            break (String::new(), String::new(), status.code().unwrap_or(1));
+        }
+        let out = cmd
+            .output()
+            .map_err(|e| format!("failed to run mkdocs: {e}"))?;
+        let stdout = String::from_utf8_lossy(&out.stdout).to_string();
+        let stderr = String::from_utf8_lossy(&out.stderr).to_string();
+        let code = out.status.code().unwrap_or(1);
+        break (stdout, stderr, code);
+    };
     let mut files = Vec::<serde_json::Value>::new();
     if label == "docs build" && output_dir.exists() {
         for path in walk_files_local(&output_dir) {
@@ -113,11 +136,33 @@ fn docs_build_or_serve_subprocess(
             "run_id": ctx.run_id.as_str(),
             "error_code": if code == 0 { serde_json::Value::Null } else { serde_json::Value::String("DOCS_BUILD_ERROR".to_string()) },
             "text": format!("{label} {}", if code==0 {"ok"} else {"failed"}),
-            "rows":[{"command": args, "exit_code": code, "stdout": stdout, "stderr": stderr, "site_dir": output_dir.display().to_string(), "docs_dir": site_paths.docs_dir.display().to_string()}],
+            "rows":[{"command": effective_args, "exit_code": code, "stdout": stdout, "stderr": stderr, "site_dir": output_dir.display().to_string(), "docs_dir": site_paths.docs_dir.display().to_string()}],
             "artifacts": {"site_dir": output_dir.display().to_string(), "build_index": ctx.artifacts_root.join("dist").join("docs-site").join(ctx.run_id.as_str()).join("build.index.json").display().to_string(), "files": files},
             "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
             "options": {"strict": common.strict, "include_drafts": common.include_drafts}
         }),
         code,
     ))
+}
+
+fn bump_dev_addr_port(args: &[String]) -> Option<Vec<String>> {
+    let mut bumped = args.to_vec();
+    let idx = bumped.iter().position(|v| v == "--dev-addr")?;
+    let current = bumped.get(idx + 1)?.clone();
+    let (host, port_str) = current.rsplit_once(':')?;
+    let port = port_str.parse::<u16>().ok()?;
+    let next_port = port.saturating_add(1);
+    *bumped.get_mut(idx + 1)? = format!("{host}:{next_port}");
+    Some(bumped)
+}
+
+fn dev_addr_is_available(args: &[String]) -> bool {
+    let idx = match args.iter().position(|v| v == "--dev-addr") {
+        Some(value) => value,
+        None => return true,
+    };
+    let Some(addr) = args.get(idx + 1) else {
+        return true;
+    };
+    std::net::TcpListener::bind(addr).is_ok()
 }
