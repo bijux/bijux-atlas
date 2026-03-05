@@ -660,7 +660,7 @@ fn ops_status_supports_json_format() {
 }
 
 #[test]
-fn ops_doctor_and_validate_do_not_require_subprocess_flag() {
+fn slow_ops_doctor_and_validate_do_not_require_subprocess_flag() {
     for args in [
         ["ops", "doctor", "--format", "json"],
         ["ops", "validate", "--format", "json"],
