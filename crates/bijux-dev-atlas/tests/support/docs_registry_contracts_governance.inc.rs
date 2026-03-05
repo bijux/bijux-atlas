@@ -115,7 +115,7 @@ fn runbook_and_decision_templates_are_canonical_and_enforced() {
 }
 
 #[test]
-fn docs_links_and_images_follow_governance_rules() {
+fn slow_docs_links_and_images_follow_governance_rules() {
     let root = repo_root();
     let allowlist = load_json(&root.join("docs/operations/external-link-allowlist.json"));
     let allowed_http = allowlist["entries"]
