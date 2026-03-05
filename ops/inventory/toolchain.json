@@ -36,6 +36,10 @@
       "ref": "v3",
       "sha": "56afc609e74202658d3ffba0e8f6dda462b719fa"
     },
+    "azure/setup-helm": {
+      "sha": "1a275c3b69536ee54be43f2070a358922e12c8d4",
+      "version": "v4"
+    },
     "dorny/paths-filter": {
       "ref": "v3",
       "sha": "de90cc6fb38fc0963ad72b210f1f284cd68cea36"
@@ -51,10 +55,6 @@
     "peter-evans/create-pull-request": {
       "ref": "v6",
       "sha": "c5a7806660adbe173f04e3e038b0ccdcd758773c"
-    },
-    "azure/setup-helm": {
-      "sha": "1a275c3b69536ee54be43f2070a358922e12c8d4",
-      "version": "v4"
     }
   },
   "images": {
