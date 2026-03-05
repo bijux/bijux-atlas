@@ -1,0 +1,13 @@
+{
+  "title": "Atlas Drift Detection Summary",
+  "uid": "atlas-drift-detection-v1",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "utc",
+  "tags": ["drift", "ops"],
+  "panels": [
+    {"title": "Drift Findings by Type", "type": "timeseries", "targets": [{"expr": "sum by (drift_type) (atlas_drift_findings_total)"}]},
+    {"title": "Critical Drift Findings", "type": "timeseries", "targets": [{"expr": "atlas_drift_critical_total"}]},
+    {"title": "Drift Resolution Lag", "type": "timeseries", "targets": [{"expr": "atlas_drift_resolution_seconds"}]}
+  ]
+}

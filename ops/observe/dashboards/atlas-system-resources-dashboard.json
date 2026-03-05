@@ -1,0 +1,14 @@
+{
+  "title": "Atlas System Resources",
+  "uid": "atlas-system-resources-v1",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "utc",
+  "tags": ["runtime", "resources"],
+  "panels": [
+    {"title": "CPU Utilization", "type": "timeseries", "targets": [{"expr": "atlas_runtime_cpu_utilization_percent"}]},
+    {"title": "Memory Usage", "type": "timeseries", "targets": [{"expr": "atlas_runtime_memory_bytes"}]},
+    {"title": "Request Queue Depth", "type": "timeseries", "targets": [{"expr": "bijux_request_queue_depth"}]},
+    {"title": "Cache Pressure", "type": "timeseries", "targets": [{"expr": "atlas_artifact_cache_pressure_percent"}]}
+  ]
+}

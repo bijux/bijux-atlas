@@ -1,0 +1,13 @@
+{
+  "title": "Atlas Latency Distribution",
+  "uid": "atlas-latency-distribution-v1",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "utc",
+  "tags": ["query", "latency"],
+  "panels": [
+    {"title": "Latency p50", "type": "timeseries", "targets": [{"expr": "atlas_query_latency_p50_seconds"}]},
+    {"title": "Latency p95", "type": "timeseries", "targets": [{"expr": "atlas_query_latency_p95_seconds"}]},
+    {"title": "Latency p99", "type": "timeseries", "targets": [{"expr": "atlas_query_latency_p99_seconds"}]}
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "title": "Atlas Runtime Health",
+  "uid": "atlas-runtime-health-v1",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "utc",
+  "tags": ["runtime", "health"],
+  "panels": [
+    {"title": "Process Uptime", "type": "timeseries", "targets": [{"expr": "atlas_runtime_uptime_seconds"}]},
+    {"title": "Process Memory Usage", "type": "timeseries", "targets": [{"expr": "atlas_runtime_memory_bytes"}]},
+    {"title": "CPU Utilization", "type": "timeseries", "targets": [{"expr": "atlas_runtime_cpu_utilization_percent"}]},
+    {"title": "Thread Count", "type": "timeseries", "targets": [{"expr": "atlas_runtime_thread_count"}]},
+    {"title": "Open File Descriptors", "type": "timeseries", "targets": [{"expr": "atlas_runtime_open_file_descriptors"}]}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Atlas Error Classification",
+  "uid": "atlas-error-classification-v1",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "utc",
+  "tags": ["errors", "classification"],
+  "panels": [
+    {"title": "Errors by Class", "type": "timeseries", "targets": [{"expr": "sum by (error_class) (rate(atlas_errors_total[5m]))"}]},
+    {"title": "Errors by Severity", "type": "timeseries", "targets": [{"expr": "sum by (severity) (rate(atlas_errors_total[5m]))"}]}
+  ]
+}

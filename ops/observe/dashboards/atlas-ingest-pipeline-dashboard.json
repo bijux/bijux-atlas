@@ -1,0 +1,15 @@
+{
+  "title": "Atlas Ingest Pipeline",
+  "uid": "atlas-ingest-pipeline-v1",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "utc",
+  "tags": ["ingest", "pipeline"],
+  "panels": [
+    {"title": "Ingest Throughput", "type": "timeseries", "targets": [{"expr": "atlas_ingest_throughput_per_second"}]},
+    {"title": "Ingest Errors", "type": "timeseries", "targets": [{"expr": "atlas_ingest_errors_total"}]},
+    {"title": "Ingest Queue Depth", "type": "timeseries", "targets": [{"expr": "atlas_ingest_queue_depth"}]},
+    {"title": "Ingest Latency", "type": "timeseries", "targets": [{"expr": "atlas_ingest_latency_p95_seconds"}]},
+    {"title": "Artifact Validation Failures", "type": "timeseries", "targets": [{"expr": "atlas_artifact_validation_failures_total"}]}
+  ]
+}

@@ -14,6 +14,19 @@
 3. Dataset pipeline dashboard: ingest failures, promotion lag, and dataset freshness.
 4. Platform dashboard: pod churn, resource pressure, restart rate, and node health.
 
+## Dashboard artifacts
+
+- `ops/observe/dashboards/atlas-runtime-health-dashboard.json`
+- `ops/observe/dashboards/atlas-query-performance-dashboard.json`
+- `ops/observe/dashboards/atlas-ingest-pipeline-dashboard.json`
+- `ops/observe/dashboards/atlas-artifact-registry-dashboard.json`
+- `ops/observe/dashboards/atlas-system-resources-dashboard.json`
+- `ops/observe/dashboards/atlas-slo-compliance-dashboard.json`
+- `ops/observe/dashboards/atlas-error-classification-dashboard.json`
+- `ops/observe/dashboards/atlas-latency-distribution-dashboard.json`
+- `ops/observe/dashboards/atlas-artifact-cache-performance-dashboard.json`
+- `ops/observe/dashboards/atlas-drift-detection-dashboard.json`
+
 ## Triage order
 
 1. Start with service health to confirm whether the incident is user-visible.

@@ -1,0 +1,15 @@
+{
+  "title": "Atlas Artifact Registry",
+  "uid": "atlas-artifact-registry-v1",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "utc",
+  "tags": ["artifact", "registry"],
+  "panels": [
+    {"title": "Artifact Load Latency", "type": "timeseries", "targets": [{"expr": "atlas_artifact_load_latency_p95_seconds"}]},
+    {"title": "Artifact Cache Size", "type": "timeseries", "targets": [{"expr": "atlas_artifact_cache_size_bytes"}]},
+    {"title": "Artifact Integrity Failures", "type": "timeseries", "targets": [{"expr": "atlas_artifact_integrity_failures_total"}]},
+    {"title": "Registry Access Time", "type": "timeseries", "targets": [{"expr": "atlas_artifact_registry_access_latency_p95_seconds"}]},
+    {"title": "Artifact Verification Count", "type": "timeseries", "targets": [{"expr": "atlas_artifact_verification_total"}]}
+  ]
+}

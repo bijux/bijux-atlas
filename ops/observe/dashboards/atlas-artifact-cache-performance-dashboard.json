@@ -1,0 +1,13 @@
+{
+  "title": "Atlas Artifact Cache Performance",
+  "uid": "atlas-artifact-cache-performance-v1",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "utc",
+  "tags": ["artifact", "cache"],
+  "panels": [
+    {"title": "Artifact Cache Hit Ratio", "type": "timeseries", "targets": [{"expr": "atlas_query_cache_hit_ratio"}]},
+    {"title": "Artifact Cache Size", "type": "timeseries", "targets": [{"expr": "atlas_artifact_cache_size_bytes"}]},
+    {"title": "Artifact Cache Pressure", "type": "timeseries", "targets": [{"expr": "atlas_artifact_cache_pressure_percent"}]}
+  ]
+}

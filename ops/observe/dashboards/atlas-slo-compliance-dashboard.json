@@ -1,0 +1,13 @@
+{
+  "title": "Atlas SLO Compliance Overview",
+  "uid": "atlas-slo-compliance-v1",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "utc",
+  "tags": ["slo", "compliance"],
+  "panels": [
+    {"title": "SLO Burn Rate 5m", "type": "timeseries", "targets": [{"expr": "atlas_slo_burn_rate_5m"}]},
+    {"title": "SLO Burn Rate 1h", "type": "timeseries", "targets": [{"expr": "atlas_slo_burn_rate_1h"}]},
+    {"title": "Error Budget Remaining", "type": "timeseries", "targets": [{"expr": "atlas_error_budget_remaining_ratio"}]}
+  ]
+}

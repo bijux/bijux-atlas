@@ -1,0 +1,15 @@
+{
+  "title": "Atlas Query Performance",
+  "uid": "atlas-query-performance-v1",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "utc",
+  "tags": ["query", "performance"],
+  "panels": [
+    {"title": "Total Queries", "type": "timeseries", "targets": [{"expr": "atlas_query_total"}]},
+    {"title": "Query Latency p95", "type": "timeseries", "targets": [{"expr": "atlas_query_latency_p95_seconds"}]},
+    {"title": "Query Error Rate", "type": "timeseries", "targets": [{"expr": "atlas_query_error_rate"}]},
+    {"title": "Query Concurrency", "type": "timeseries", "targets": [{"expr": "atlas_query_concurrency"}]},
+    {"title": "Cache Hit Ratio", "type": "timeseries", "targets": [{"expr": "atlas_query_cache_hit_ratio"}]}
+  ]
+}

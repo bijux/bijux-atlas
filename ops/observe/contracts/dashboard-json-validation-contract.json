@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "kind": "dashboard_json_validation_contract",
+  "schema": "ops/schema/observe/dashboard.schema.json",
+  "dashboards": [
+    "ops/observe/dashboards/atlas-runtime-health-dashboard.json",
+    "ops/observe/dashboards/atlas-query-performance-dashboard.json",
+    "ops/observe/dashboards/atlas-ingest-pipeline-dashboard.json",
+    "ops/observe/dashboards/atlas-artifact-registry-dashboard.json",
+    "ops/observe/dashboards/atlas-system-resources-dashboard.json",
+    "ops/observe/dashboards/atlas-slo-compliance-dashboard.json",
+    "ops/observe/dashboards/atlas-error-classification-dashboard.json",
+    "ops/observe/dashboards/atlas-latency-distribution-dashboard.json",
+    "ops/observe/dashboards/atlas-artifact-cache-performance-dashboard.json",
+    "ops/observe/dashboards/atlas-drift-detection-dashboard.json"
+  ]
+}
