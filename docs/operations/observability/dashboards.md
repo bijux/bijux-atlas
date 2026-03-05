@@ -26,6 +26,8 @@
 - `ops/observe/dashboards/atlas-latency-distribution-dashboard.json`
 - `ops/observe/dashboards/atlas-artifact-cache-performance-dashboard.json`
 - `ops/observe/dashboards/atlas-drift-detection-dashboard.json`
+- `ops/observe/dashboard-registry.json`
+- `ops/observe/dashboard-metadata.schema.json`
 
 ## Triage order
 

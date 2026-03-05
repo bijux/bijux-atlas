@@ -1,0 +1,17 @@
+{
+  "title": "Atlas Fixture Dashboard",
+  "uid": "atlas-fixture-dashboard-v1",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "utc",
+  "tags": ["fixture"],
+  "panels": [
+    {
+      "title": "Fixture Panel",
+      "type": "timeseries",
+      "targets": [
+        {"expr": "atlas_runtime_uptime_seconds"}
+      ]
+    }
+  ]
+}

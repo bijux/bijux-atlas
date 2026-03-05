@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schema/observe/dashboard-metadata.schema.json",
+  "title": "Dashboard Registry Metadata",
+  "type": "object",
+  "required": ["schema_version", "kind", "dashboards"],
+  "properties": {
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "kind": { "type": "string", "const": "dashboard_registry" },
+    "dashboards": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "path", "category", "datasource"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "path": { "type": "string", "minLength": 1 },
+          "category": { "type": "string", "enum": ["runtime", "ingest", "query", "ops"] },
+          "datasource": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

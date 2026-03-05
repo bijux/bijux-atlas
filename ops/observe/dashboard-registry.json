@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "kind": "dashboard_registry",
+  "dashboards": [
+    {
+      "id": "runtime-health",
+      "title": "Atlas Runtime Health",
+      "path": "ops/observe/dashboards/atlas-runtime-health-dashboard.json",
+      "category": "runtime",
+      "datasource": "prometheus"
+    },
+    {
+      "id": "query-performance",
+      "title": "Atlas Query Performance",
+      "path": "ops/observe/dashboards/atlas-query-performance-dashboard.json",
+      "category": "query",
+      "datasource": "prometheus"
+    },
+    {
+      "id": "ingest-pipeline",
+      "title": "Atlas Ingest Pipeline",
+      "path": "ops/observe/dashboards/atlas-ingest-pipeline-dashboard.json",
+      "category": "ingest",
+      "datasource": "prometheus"
+    },
+    {
+      "id": "artifact-registry",
+      "title": "Atlas Artifact Registry",
+      "path": "ops/observe/dashboards/atlas-artifact-registry-dashboard.json",
+      "category": "ops",
+      "datasource": "prometheus"
+    },
+    {
+      "id": "system-resources",
+      "title": "Atlas System Resources",
+      "path": "ops/observe/dashboards/atlas-system-resources-dashboard.json",
+      "category": "runtime",
+      "datasource": "prometheus"
+    },
+    {
+      "id": "slo-compliance",
+      "title": "Atlas SLO Compliance Overview",
+      "path": "ops/observe/dashboards/atlas-slo-compliance-dashboard.json",
+      "category": "ops",
+      "datasource": "prometheus"
+    },
+    {
+      "id": "error-classification",
+      "title": "Atlas Error Classification",
+      "path": "ops/observe/dashboards/atlas-error-classification-dashboard.json",
+      "category": "ops",
+      "datasource": "prometheus"
+    },
+    {
+      "id": "latency-distribution",
+      "title": "Atlas Latency Distribution",
+      "path": "ops/observe/dashboards/atlas-latency-distribution-dashboard.json",
+      "category": "query",
+      "datasource": "prometheus"
+    },
+    {
+      "id": "artifact-cache-performance",
+      "title": "Atlas Artifact Cache Performance",
+      "path": "ops/observe/dashboards/atlas-artifact-cache-performance-dashboard.json",
+      "category": "ops",
+      "datasource": "prometheus"
+    },
+    {
+      "id": "drift-detection",
+      "title": "Atlas Drift Detection Summary",
+      "path": "ops/observe/dashboards/atlas-drift-detection-dashboard.json",
+      "category": "ops",
+      "datasource": "prometheus"
+    }
+  ]
+}
