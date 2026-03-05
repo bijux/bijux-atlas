@@ -946,6 +946,14 @@
       "used_in": []
     },
     {
+      "name": "openapi-generate",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "ops",
       "defined_in": [
         "make/ops.mk"
@@ -1237,6 +1245,14 @@
     },
     {
       "name": "registry-doctor",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "release-plan",
       "defined_in": [
         "make/root.mk"
       ],

@@ -31,8 +31,10 @@ Canonical top-level commands for `bijux-dev-atlas`:
 - `invariants`
 - `list`
 - `load`
+- `migrations`
 - `observe`
 - `ops`
+- `packages`
 - `perf`
 - `policies`
 - `registry`

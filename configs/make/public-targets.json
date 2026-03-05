@@ -1,6 +1,6 @@
 {
-  "max_public_targets": 68,
-  "target_public_targets": 67,
+  "max_public_targets": 69,
+  "target_public_targets": 69,
   "public_targets": [
     {
       "name": "artifacts-clean",
@@ -497,6 +497,15 @@
       "area": "make"
     },
     {
+      "name": "openapi-generate",
+      "description": "Regenerate OpenAPI contract artifacts through dev-atlas",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
+    },
+    {
       "name": "ops-contracts",
       "description": "Run static ops contracts",
       "lanes": [
@@ -543,6 +552,15 @@
     {
       "name": "registry-doctor",
       "description": "Run registry-doctor through the governed make surface",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
+    },
+    {
+      "name": "release-plan",
+      "description": "Generate release readiness plan through dev-atlas",
       "lanes": [
         "dev",
         "ci"

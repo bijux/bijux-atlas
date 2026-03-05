@@ -1,6 +1,4 @@
 {
-  "schema_version": 1,
-  "source": "make/root.mk:CURATED_TARGETS",
   "public_targets": [
     "artifacts-clean",
     "build",
@@ -57,17 +55,21 @@
     "lint-make",
     "make-fast",
     "make-target-list",
+    "openapi-generate",
     "ops-contracts",
     "ops-contracts-effect",
     "ops-fast",
     "ops-nightly",
     "ops-pr",
     "registry-doctor",
+    "release-plan",
     "root-surface-explain",
     "stack-down",
     "stack-up",
     "suites-all",
     "suites-list",
     "tests-all"
-  ]
+  ],
+  "schema_version": 1,
+  "source": "make/root.mk:CURATED_TARGETS"
 }
