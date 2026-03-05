@@ -941,6 +941,53 @@ fn run_release_images_runtime_hardening_verify(
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
+fn run_release_images_runtime_command_verify(
+    args: ReleaseImagesValidateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let cli_dispatch = root.join("crates/bijux-atlas-cli/src/atlas_command_dispatch.rs");
+    let cli_lib = root.join("crates/bijux-atlas-cli/src/lib.rs");
+    let schema_path = root.join("crates/bijux-atlas-server/docs/generated/runtime-startup-config.schema.json");
+    let dispatch_text = fs::read_to_string(&cli_dispatch)
+        .map_err(|err| format!("failed to read {}: {err}", cli_dispatch.display()))?;
+    let cli_text = fs::read_to_string(&cli_lib)
+        .map_err(|err| format!("failed to read {}: {err}", cli_lib.display()))?;
+    let mut errors = Vec::<String>::new();
+    if !cli_text.contains("print-config-schema") {
+        errors.push("runtime CLI is missing print-config-schema command declaration".to_string());
+    }
+    if !dispatch_text.contains("AtlasCommand::PrintConfigSchema") {
+        errors.push("runtime CLI dispatcher is missing PrintConfigSchema route".to_string());
+    }
+    if !cli_text.contains("self-check") {
+        errors.push("runtime CLI is missing self-check command declaration".to_string());
+    }
+    if !dispatch_text.contains("AtlasCommand::SelfCheck") {
+        errors.push("runtime CLI dispatcher is missing SelfCheck route".to_string());
+    }
+    if !schema_path.exists() {
+        errors.push(format!(
+            "runtime config schema is missing: {}",
+            schema_path.display()
+        ));
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_runtime_command_verify",
+        "status": status,
+        "checks": [
+            {"id":"runtime_print_config_schema_command","status": if cli_text.contains("print-config-schema") {"ok"} else {"failed"}},
+            {"id":"runtime_self_check_command","status": if cli_text.contains("self-check") {"ok"} else {"failed"}},
+            {"id":"runtime_schema_reference_exists","status": if schema_path.exists() {"ok"} else {"failed"}},
+            {"id":"runtime_self_check_offline_contract","status": if dispatch_text.contains("AtlasCommand::SelfCheck") {"ok"} else {"failed"}}
+        ],
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
 fn release_spec_allow_deny(spec: &toml::Value) -> (Vec<String>, Vec<String>) {
     let allow = spec
         .get("publish")
@@ -3888,6 +3935,9 @@ pub(crate) fn run_release_command(
             ReleaseImagesCommand::SizeReport(args) => run_release_images_size_report(args),
             ReleaseImagesCommand::RuntimeHardeningVerify(args) => {
                 run_release_images_runtime_hardening_verify(args)
+            }
+            ReleaseImagesCommand::RuntimeCommandVerify(args) => {
+                run_release_images_runtime_command_verify(args)
             }
         },
     }

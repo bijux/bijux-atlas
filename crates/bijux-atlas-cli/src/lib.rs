@@ -95,6 +95,16 @@ enum AtlasCommand {
         #[arg(long, default_value_t = false)]
         canonical: bool,
     },
+    #[command(name = "print-config-schema")]
+    PrintConfigSchema {
+        #[arg(long, default_value_t = false)]
+        canonical: bool,
+    },
+    #[command(name = "self-check")]
+    SelfCheck {
+        #[arg(long, default_value_t = false)]
+        canonical: bool,
+    },
     Catalog {
         #[command(subcommand)]
         command: CatalogCommand,

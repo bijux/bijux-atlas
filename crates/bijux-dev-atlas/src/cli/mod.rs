@@ -351,6 +351,7 @@ pub enum ReleaseImagesCommand {
     SmokeVerify(ReleaseImagesValidateArgs),
     SizeReport(ReleaseImagesValidateArgs),
     RuntimeHardeningVerify(ReleaseImagesValidateArgs),
+    RuntimeCommandVerify(ReleaseImagesValidateArgs),
 }
 
 #[derive(Args, Debug, Clone)]
