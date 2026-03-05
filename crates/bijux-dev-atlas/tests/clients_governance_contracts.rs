@@ -207,3 +207,137 @@ fn usage_examples_must_be_routed_through_docs_examples_page() {
         "usage examples page must point to crates/bijux-atlas-client-python/examples/usage"
     );
 }
+
+#[test]
+fn examples_index_must_exist_and_reference_all_example_scripts() {
+    let root = repo_root();
+    let index_path = root.join("crates/bijux-atlas-client-python/examples/INDEX.md");
+    assert!(index_path.exists(), "examples index must exist");
+    let index = fs::read_to_string(&index_path).expect("read examples index");
+
+    let examples = root.join("crates/bijux-atlas-client-python/examples");
+    let mut scripts = Vec::new();
+    for entry in walkdir::WalkDir::new(&examples) {
+        let entry = entry.expect("walk examples");
+        if !entry.file_type().is_file() {
+            continue;
+        }
+        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
+            continue;
+        }
+        let rel = entry
+            .path()
+            .strip_prefix(&examples)
+            .expect("relative path")
+            .to_string_lossy()
+            .replace('\\', "/");
+        scripts.push(rel);
+    }
+    scripts.sort();
+    for script in scripts {
+        assert!(
+            index.contains(&format!("`{script}`")),
+            "examples/INDEX.md must reference `{script}`"
+        );
+    }
+}
+
+#[test]
+fn examples_must_include_header_and_stay_within_complexity_budget() {
+    let root = repo_root();
+    let examples = root.join("crates/bijux-atlas-client-python/examples");
+    let mut violations = Vec::new();
+    for entry in walkdir::WalkDir::new(&examples) {
+        let entry = entry.expect("walk examples");
+        if !entry.file_type().is_file() {
+            continue;
+        }
+        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
+            continue;
+        }
+        let text = fs::read_to_string(entry.path()).expect("read example");
+        let line_count = text.lines().count();
+        if !text.contains("# Purpose:") || !text.contains("# Expected output:") {
+            violations.push(format!("{}: missing required header", entry.path().display()));
+        }
+        if line_count > 200 {
+            violations.push(format!(
+                "{}: exceeds 200 LOC budget ({line_count})",
+                entry.path().display()
+            ));
+        }
+    }
+    assert!(
+        violations.is_empty(),
+        "example quality violations:\n{}",
+        violations.join("\n")
+    );
+}
+
+#[test]
+fn examples_must_use_documented_runtime_endpoint_variable() {
+    let root = repo_root();
+    let examples = root.join("crates/bijux-atlas-client-python/examples");
+    let mut violations = Vec::new();
+    for entry in walkdir::WalkDir::new(&examples) {
+        let entry = entry.expect("walk examples");
+        if !entry.file_type().is_file() {
+            continue;
+        }
+        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
+            continue;
+        }
+        let text = fs::read_to_string(entry.path()).expect("read example");
+        if !text.contains("ATLAS_BASE_URL") {
+            violations.push(format!(
+                "{}: examples must use ATLAS_BASE_URL (no hardcoded runtime endpoint)",
+                entry.path().display()
+            ));
+        }
+    }
+
+    let usage_readme = fs::read_to_string(
+        root.join("crates/bijux-atlas-client-python/examples/usage/README.md"),
+    )
+    .expect("read usage readme");
+    assert!(
+        usage_readme.contains("ATLAS_BASE_URL"),
+        "usage README must document ATLAS_BASE_URL"
+    );
+
+    assert!(
+        violations.is_empty(),
+        "endpoint configuration violations:\n{}",
+        violations.join("\n")
+    );
+}
+
+#[test]
+fn examples_must_not_use_external_network_clients_directly() {
+    let root = repo_root();
+    let examples = root.join("crates/bijux-atlas-client-python/examples");
+    let mut violations = Vec::new();
+    for entry in walkdir::WalkDir::new(&examples) {
+        let entry = entry.expect("walk examples");
+        if !entry.file_type().is_file() {
+            continue;
+        }
+        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
+            continue;
+        }
+        let text = fs::read_to_string(entry.path()).expect("read example");
+        let lower = text.to_ascii_lowercase();
+        let has_external_client = lower.contains("import requests")
+            || lower.contains("import httpx")
+            || lower.contains("urllib.request")
+            || lower.contains("socket.socket(");
+        if has_external_client {
+            violations.push(entry.path().display().to_string());
+        }
+    }
+    assert!(
+        violations.is_empty(),
+        "examples must use atlas_client and avoid direct external network clients:\n{}",
+        violations.join("\n")
+    );
+}

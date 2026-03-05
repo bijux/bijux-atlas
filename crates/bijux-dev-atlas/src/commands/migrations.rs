@@ -67,7 +67,8 @@ fn collect_repo_dirs(root: &Path) -> Result<Vec<PathBuf>, String> {
 
 fn is_legacy_path(rel: &Path) -> bool {
     let text = rel.display().to_string();
-    text == "tools"
+    text == "clients"
+        || text == "tools"
         || text == "scripts"
         || text == "tutorials/scripts"
         || text == "tutorials/tests"

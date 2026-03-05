@@ -31,6 +31,15 @@ fn scripts_root_directory_is_forbidden() {
 }
 
 #[test]
+fn clients_root_directory_is_forbidden() {
+    let root = repo_root();
+    assert!(
+        !root.join("clients").exists(),
+        "`clients/` is forbidden; client products must live under crates/"
+    );
+}
+
+#[test]
 fn root_shell_and_python_files_are_forbidden() {
     let root = repo_root();
     let mut violations = Vec::new();
@@ -401,6 +410,121 @@ fn allowed_nonrust_policy_must_define_python_and_shell_boundaries() {
     assert!(
         shell_allowed.is_empty(),
         "allowed-nonrust policy must keep shell allowlist empty for repository automation"
+    );
+}
+
+#[test]
+fn repository_python_files_must_stay_in_allowed_crate_zones() {
+    let root = repo_root();
+    let output = std::process::Command::new("git")
+        .args(["ls-files", "**/*.py"])
+        .current_dir(&root)
+        .output()
+        .expect("git ls-files");
+    assert!(output.status.success(), "git ls-files failed");
+    let stdout = String::from_utf8(output.stdout).expect("utf8");
+    let mut violations = Vec::new();
+    for path in stdout.lines() {
+        let allowed = path.starts_with("crates/bijux-atlas-client-python/python/")
+            || path.starts_with("crates/bijux-atlas-client-python/tests/")
+            || path.starts_with("crates/bijux-atlas-client-python/examples/")
+            || path == "ops/cli/perf/cli_ux_benchmark.py";
+        if !allowed {
+            violations.push(path.to_string());
+        }
+    }
+    assert!(
+        violations.is_empty(),
+        "python files outside approved crate zones are forbidden:\n{}",
+        violations.join("\n")
+    );
+}
+
+#[test]
+fn repository_notebooks_must_stay_in_allowed_crate_zones() {
+    let root = repo_root();
+    let output = std::process::Command::new("git")
+        .args(["ls-files", "**/*.ipynb"])
+        .current_dir(&root)
+        .output()
+        .expect("git ls-files");
+    assert!(output.status.success(), "git ls-files failed");
+    let stdout = String::from_utf8(output.stdout).expect("utf8");
+    let mut violations = Vec::new();
+    for path in stdout.lines() {
+        if !path.starts_with("crates/bijux-atlas-client-python/notebooks/") {
+            violations.push(path.to_string());
+        }
+    }
+    assert!(
+        violations.is_empty(),
+        "notebooks outside approved crate zones are forbidden:\n{}",
+        violations.join("\n")
+    );
+}
+
+#[test]
+fn tracked_pycache_and_pyc_are_forbidden_repo_wide() {
+    let root = repo_root();
+    let output = std::process::Command::new("git")
+        .args(["ls-files", "**/__pycache__/*", "**/*.pyc"])
+        .current_dir(&root)
+        .output()
+        .expect("git ls-files");
+    assert!(output.status.success(), "git ls-files failed");
+    let stdout = String::from_utf8(output.stdout).expect("utf8");
+    assert!(
+        stdout.trim().is_empty(),
+        "tracked __pycache__ and .pyc files are forbidden:\n{}",
+        stdout
+    );
+}
+
+#[test]
+fn legacy_clients_root_references_are_forbidden_in_docs_make_and_workflows() {
+    let root = repo_root();
+    let scan_roots = [
+        root.join("docs"),
+        root.join(".github/workflows"),
+        root.join("Makefile"),
+    ];
+    let mut violations = Vec::new();
+    let has_legacy_client_root_reference = |text: &str| {
+        text.contains("cd clients/atlas-client")
+            || text.contains("cd ./clients/atlas-client")
+            || text.contains("`clients/atlas-client`")
+            || text.contains("`clients/atlas-client/")
+            || text.contains("clients/atlas-client/tests/")
+            || text.contains("clients/atlas-client/examples/")
+            || text.contains("clients/atlas-client/docs/")
+            || text.contains("clients/atlas-client-usage-examples/")
+    };
+    for scan_root in scan_roots {
+        if scan_root.is_file() {
+            let text = std::fs::read_to_string(&scan_root).expect("read scan file");
+            if has_legacy_client_root_reference(&text) {
+                violations.push(scan_root.display().to_string());
+            }
+            continue;
+        }
+        if !scan_root.exists() {
+            continue;
+        }
+        for entry in walkdir::WalkDir::new(scan_root) {
+            let entry = entry.expect("walk scan root");
+            if !entry.file_type().is_file() {
+                continue;
+            }
+            let text = std::fs::read_to_string(entry.path()).unwrap_or_default();
+            if has_legacy_client_root_reference(&text) {
+                violations.push(entry.path().display().to_string());
+            }
+        }
+    }
+    assert!(
+        violations.is_empty(),
+        "legacy client path references are forbidden:\n{}",
+        violations.join("\n")
     );
 }
 
