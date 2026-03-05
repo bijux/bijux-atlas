@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "variants-mini",
-  "url": "https://www.ebi.ac.uk/ena/browser/api/fasta/AB000263.1?download=true",
-  "expected_sha256": "e98bf42b008b9b5f81fca2f559cbec5fb101c55b90a9b9168c5626906d06a67d",
+  "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000098/DRR000098.fastq.gz",
+  "expected_sha256": "2fb614d8284af52890a519655c14284508776da4566c6e6ae3010dd9021f1e29",
   "retrieval_method": "https-get"
 }

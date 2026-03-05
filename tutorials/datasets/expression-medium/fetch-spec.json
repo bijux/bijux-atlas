@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "expression-medium",
-  "url": "https://www.ebi.ac.uk/ena/browser/api/embl/AB000263.1?download=true",
-  "expected_sha256": "2d6333a43d3a96873a102027324b1d32881309116e044748bceea36944a6cfc2",
+  "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000099/DRR000099.fastq.gz",
+  "expected_sha256": "0b5b1b36b8acb5899bf62f4b28938223a2a81a232e0fc5176d20bd3e97899e25",
   "retrieval_method": "https-get"
 }

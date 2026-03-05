@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "genes-baseline",
-  "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_045512.2&rettype=fasta&retmode=text",
-  "expected_sha256": "0891c00cc2d503f58e0c600ce5ee64e9c64b939525c70d5486bc46cbc7cb073e",
+  "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000095/DRR000095_1.fastq.gz",
+  "expected_sha256": "dcae85eaef655cd1847b84c45caada4f2134b80cf6e084e7f4ebd710c26c493d",
   "retrieval_method": "https-get"
 }

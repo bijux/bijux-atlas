@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "phenotype-medium",
-  "url": "https://www.ebi.ac.uk/ena/portal/api/filereport?accession=ERR194147&result=read_run&fields=run_accession,scientific_name,library_layout,fastq_bytes,fastq_ftp&format=tsv",
-  "expected_sha256": "65b6addf71ff41fd26f5a71305f4f6497d88e4f1561865e009c7888c1f3f1cba",
+  "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000104/DRR000104.fastq.gz",
+  "expected_sha256": "be9e5833eb70fd5f9900a293377f87cce8a05d747bcca053a40fcc17f716a1fc",
   "retrieval_method": "https-get"
 }

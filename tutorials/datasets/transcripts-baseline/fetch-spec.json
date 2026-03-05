@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "transcripts-baseline",
-  "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_045512.2&rettype=gb&retmode=text",
-  "expected_sha256": "87744b176aa9ce71350c8becf0d062950dbc485a59766fcfe723ec859f6b6d5c",
+  "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000095/DRR000095_2.fastq.gz",
+  "expected_sha256": "7e9895254a8ddf712ca1aa3583edeed2ea8a169b3b380b846b2cabc570fdcad5",
   "retrieval_method": "https-get"
 }

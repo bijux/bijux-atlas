@@ -12,9 +12,9 @@
         "dataset-summary"
       ],
       "input_provenance": {
-        "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_045512.2&rettype=fasta&retmode=text",
+        "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000095/DRR000095_1.fastq.gz",
         "retrieval_method": "https-get",
-        "license_note": "NCBI Nucleotide (public domain U.S. Government work)"
+        "license_note": "ENA read run FASTQ (public)"
       },
       "expected_query_set": [
         {
@@ -45,9 +45,9 @@
         "dataset-summary"
       ],
       "input_provenance": {
-        "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_045512.2&rettype=gb&retmode=text",
+        "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000095/DRR000095_2.fastq.gz",
         "retrieval_method": "https-get",
-        "license_note": "NCBI Nucleotide (public domain U.S. Government work)"
+        "license_note": "ENA read run FASTQ (public)"
       },
       "expected_query_set": [
         {
@@ -78,9 +78,9 @@
         "dataset-summary"
       ],
       "input_provenance": {
-        "url": "https://www.ebi.ac.uk/ena/browser/api/fasta/AB000263.1?download=true",
+        "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000098/DRR000098.fastq.gz",
         "retrieval_method": "https-get",
-        "license_note": "ENA/EMBL-EBI public archival sequence data"
+        "license_note": "ENA read run FASTQ (public)"
       },
       "expected_query_set": [
         {
@@ -112,9 +112,9 @@
         "query-summary"
       ],
       "input_provenance": {
-        "url": "https://www.ebi.ac.uk/ena/browser/api/embl/AB000263.1?download=true",
+        "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000099/DRR000099.fastq.gz",
         "retrieval_method": "https-get",
-        "license_note": "ENA/EMBL-EBI public archival sequence data"
+        "license_note": "ENA read run FASTQ (public)"
       },
       "expected_query_set": [
         {
@@ -147,9 +147,9 @@
         "query-summary"
       ],
       "input_provenance": {
-        "url": "https://www.ebi.ac.uk/ena/portal/api/filereport?accession=SRR390728&result=read_run&fields=run_accession,scientific_name,library_layout,fastq_bytes,fastq_ftp&format=tsv",
+        "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000100/DRR000100.fastq.gz",
         "retrieval_method": "https-get",
-        "license_note": "ENA Portal API read-run metadata (public)"
+        "license_note": "ENA read run FASTQ (public)"
       },
       "expected_query_set": [
         {
@@ -182,9 +182,9 @@
         "query-summary"
       ],
       "input_provenance": {
-        "url": "https://www.ebi.ac.uk/ena/portal/api/filereport?accession=ERR194147&result=read_run&fields=run_accession,scientific_name,library_layout,fastq_bytes,fastq_ftp&format=tsv",
+        "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000104/DRR000104.fastq.gz",
         "retrieval_method": "https-get",
-        "license_note": "ENA Portal API read-run metadata (public)"
+        "license_note": "ENA read run FASTQ (public)"
       },
       "expected_query_set": [
         {
@@ -217,9 +217,9 @@
         "query-summary"
       ],
       "input_provenance": {
-        "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=U00096.3&rettype=fasta&retmode=text",
+        "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000111/DRR000111.fastq.gz",
         "retrieval_method": "https-get",
-        "license_note": "NCBI Nucleotide (public domain U.S. Government work)"
+        "license_note": "ENA read run FASTQ (public)"
       },
       "expected_query_set": [
         {
@@ -252,9 +252,9 @@
         "query-summary"
       ],
       "input_provenance": {
-        "url": "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.gff.gz",
+        "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000541/DRR000541_1.fastq.gz",
         "retrieval_method": "https-get",
-        "license_note": "NCBI RefSeq FTP distribution (public domain U.S. Government work)"
+        "license_note": "ENA read run FASTQ (public)"
       },
       "expected_query_set": [
         {

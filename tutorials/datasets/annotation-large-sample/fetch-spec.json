@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "annotation-large-sample",
-  "url": "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.gff.gz",
-  "expected_sha256": "7aa71ffaef2caa51e5cb00da96d567c8001c19f029a173d3df3b273331a587b2",
+  "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000541/DRR000541_1.fastq.gz",
+  "expected_sha256": "c1af0c9595e14e241f4f79b9b8790c200d207ebb9d7faabd3cd11f7e25623fc4",
   "retrieval_method": "https-get"
 }
