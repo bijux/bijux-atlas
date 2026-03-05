@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "kind": "governance_enforcement_coverage",
+  "rule_count": 10,
+  "coverage": {
+    "by_severity": {
+      "high": 6,
+      "medium": 4
+    },
+    "by_rule_type": {
+      "required_files_exist": 1,
+      "prohibited_files_absent": 1,
+      "repo_layout_contract": 1,
+      "docs_front_matter_complete": 1,
+      "contract_registry_complete": 1,
+      "checks_registry_complete": 1,
+      "scenario_registry_complete": 1,
+      "ops_artifact_registry_complete": 1,
+      "release_artifact_registry_complete": 1,
+      "docs_navigation_consistent": 1
+    }
+  }
+}

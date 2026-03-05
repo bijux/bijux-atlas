@@ -158,6 +158,12 @@ fn governance_check_emits_enforcement_evaluation() {
             .and_then(|v| v.as_str()),
         Some("governance_enforcement_evaluation")
     );
+    let artifacts = payload
+        .get("artifacts")
+        .and_then(|v| v.as_object())
+        .expect("artifacts");
+    assert!(artifacts.contains_key("governance_enforcement"));
+    assert!(artifacts.contains_key("governance_enforcement_coverage"));
 }
 
 #[test]
@@ -182,6 +188,22 @@ fn governance_rules_lists_enforcement_registry() {
     assert!(rules.iter().any(|row| {
         row.get("rule_type").and_then(|v| v.as_str()) == Some("checks_registry_complete")
     }));
+}
+
+#[test]
+fn governance_explain_accepts_enforcement_rule_ids() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["governance", "explain", "GOV-RULE-010", "--format", "json"])
+        .output()
+        .expect("governance explain rule");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(
+        payload.get("kind").and_then(|v| v.as_str()),
+        Some("governance_rule_explain")
+    );
 }
 
 #[test]

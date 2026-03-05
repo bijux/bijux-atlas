@@ -545,6 +545,38 @@ fn governance_enforcement_path(root: &Path) -> PathBuf {
     root.join("artifacts/governance/enforcement-report.json")
 }
 
+fn governance_enforcement_coverage_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/enforcement-coverage.json")
+}
+
+fn governance_enforcement_coverage_payload(
+    registry: &governance_enforcement::GovernanceRuleRegistry,
+) -> serde_json::Value {
+    let mut by_severity: BTreeMap<String, usize> = BTreeMap::new();
+    let mut by_rule_type: BTreeMap<String, usize> = BTreeMap::new();
+    for rule in &registry.rules {
+        let sev = serde_json::to_value(&rule.severity)
+            .ok()
+            .and_then(|v| v.as_str().map(ToString::to_string))
+            .unwrap_or_else(|| "unknown".to_string());
+        *by_severity.entry(sev).or_insert(0) += 1;
+        let rule_type = serde_json::to_value(&rule.rule_type)
+            .ok()
+            .and_then(|v| v.as_str().map(ToString::to_string))
+            .unwrap_or_else(|| "unknown".to_string());
+        *by_rule_type.entry(rule_type).or_insert(0) += 1;
+    }
+    serde_json::json!({
+        "schema_version": 1,
+        "kind": "governance_enforcement_coverage",
+        "rule_count": registry.rules.len(),
+        "coverage": {
+            "by_severity": by_severity,
+            "by_rule_type": by_rule_type,
+        }
+    })
+}
+
 fn institutional_delta_inputs_path(root: &Path) -> PathBuf {
     root.join("artifacts/governance/institutional-delta-inputs.json")
 }
@@ -2649,11 +2681,11 @@ pub(crate) fn run_governance_command(
             out,
         } => {
             let root = resolve_repo_root(repo_root)?;
-            let evaluation = governance_enforcement::evaluate_registry(
-                &root,
-                &governance_enforcement::load_registry(&root)?,
-            );
+            let registry = governance_enforcement::load_registry(&root)?;
+            let evaluation = governance_enforcement::evaluate_registry(&root, &registry);
             let enforcement_path = governance_enforcement_path(&root);
+            let coverage_path = governance_enforcement_coverage_path(&root);
+            let coverage_payload = governance_enforcement_coverage_payload(&registry);
             if let Some(parent) = enforcement_path.parent() {
                 fs::create_dir_all(parent)
                     .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
@@ -2664,13 +2696,21 @@ pub(crate) fn run_governance_command(
                     .map_err(|e| format!("encode governance enforcement report failed: {e}"))?,
             )
             .map_err(|e| format!("write {} failed: {e}", enforcement_path.display()))?;
+            fs::write(
+                &coverage_path,
+                serde_json::to_string_pretty(&coverage_payload)
+                    .map_err(|e| format!("encode governance enforcement coverage failed: {e}"))?,
+            )
+            .map_err(|e| format!("write {} failed: {e}", coverage_path.display()))?;
             let payload = serde_json::json!({
                 "schema_version": 1,
                 "kind": "governance_check",
                 "status": evaluation.status,
                 "evaluation": evaluation,
+                "coverage": coverage_payload,
                 "artifacts": {
                     "governance_enforcement": enforcement_path.strip_prefix(&root).unwrap_or(&enforcement_path).display().to_string(),
+                    "governance_enforcement_coverage": coverage_path.strip_prefix(&root).unwrap_or(&coverage_path).display().to_string(),
                 }
             });
             let rendered = emit_payload(format, out, &payload)?;
@@ -2713,6 +2753,7 @@ pub(crate) fn run_governance_command(
             let policy_surface_path = governance_policy_surface_path(&root);
             let drift_path = governance_drift_path(&root);
             let enforcement_path = governance_enforcement_path(&root);
+            let enforcement_coverage_path = governance_enforcement_coverage_path(&root);
             if let Some(parent) = graph_path.parent() {
                 fs::create_dir_all(parent)
                     .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
@@ -2794,12 +2835,20 @@ pub(crate) fn run_governance_command(
             let enforcement_registry = governance_enforcement::load_registry(&root)?;
             let enforcement_result =
                 governance_enforcement::evaluate_registry(&root, &enforcement_registry);
+            let enforcement_coverage =
+                governance_enforcement_coverage_payload(&enforcement_registry);
             fs::write(
                 &enforcement_path,
                 serde_json::to_string_pretty(&enforcement_result)
                     .map_err(|e| format!("encode governance enforcement report failed: {e}"))?,
             )
             .map_err(|e| format!("write {} failed: {e}", enforcement_path.display()))?;
+            fs::write(
+                &enforcement_coverage_path,
+                serde_json::to_string_pretty(&enforcement_coverage)
+                    .map_err(|e| format!("encode governance enforcement coverage failed: {e}"))?,
+            )
+            .map_err(|e| format!("write {} failed: {e}", enforcement_coverage_path.display()))?;
             let mut governance_errors = validation.errors;
             governance_errors.extend(
                 checks_inventory["errors"]
@@ -2829,6 +2878,7 @@ pub(crate) fn run_governance_command(
                 "errors": governance_errors,
                 "checks_inventory": checks_inventory,
                 "enforcement": enforcement_result,
+                "enforcement_coverage": enforcement_coverage,
                 "artifacts": {
                     "governance_graph": graph_path.strip_prefix(&root).unwrap_or(&graph_path).display().to_string(),
                     "governance_summary": summary_path.strip_prefix(&root).unwrap_or(&summary_path).display().to_string(),
@@ -2841,6 +2891,7 @@ pub(crate) fn run_governance_command(
                     "policy_surface_map": policy_surface_path.strip_prefix(&root).unwrap_or(&policy_surface_path).display().to_string(),
                     "governance_drift": drift_path.strip_prefix(&root).unwrap_or(&drift_path).display().to_string(),
                     "governance_enforcement": enforcement_path.strip_prefix(&root).unwrap_or(&enforcement_path).display().to_string(),
+                    "governance_enforcement_coverage": enforcement_coverage_path.strip_prefix(&root).unwrap_or(&enforcement_coverage_path).display().to_string(),
                     "checks_inventory": checks_inventory_path(&root).strip_prefix(&root).unwrap_or(&checks_inventory_path(&root)).display().to_string(),
                 }
             });

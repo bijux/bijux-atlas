@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "kind": "governance_enforcement_violation_examples",
+  "examples": [
+    {
+      "rule_id": "GOV-RULE-001",
+      "severity": "high",
+      "message": "required file is missing",
+      "path": "configs/governance/governance.json"
+    },
+    {
+      "rule_id": "GOV-RULE-006",
+      "severity": "high",
+      "message": "checks registry has no checks entries",
+      "path": "configs/governance/checks.registry.json"
+    },
+    {
+      "rule_id": "GOV-RULE-010",
+      "severity": "medium",
+      "message": "docs navigation is missing or empty",
+      "path": "mkdocs.yml"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "fixture_id": "governance-missing-required-file",
+  "rule_id": "GOV-RULE-001",
+  "description": "Simulates absence of required governance file paths.",
+  "expected_violation": "required file is missing"
+}

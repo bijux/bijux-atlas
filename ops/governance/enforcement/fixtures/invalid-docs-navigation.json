@@ -1,0 +1,6 @@
+{
+  "fixture_id": "governance-invalid-docs-navigation",
+  "rule_id": "GOV-RULE-010",
+  "description": "Simulates missing documentation nav entries.",
+  "expected_violation": "docs navigation is missing or empty"
+}

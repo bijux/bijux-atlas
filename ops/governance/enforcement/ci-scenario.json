@@ -1,0 +1,12 @@
+{
+  "scenario_id": "governance-enforcement-ci",
+  "description": "Runs governance enforcement checks and persists deterministic enforcement artifacts.",
+  "commands": [
+    "bijux-dev-atlas governance check --format json",
+    "bijux-dev-atlas governance validate --format json"
+  ],
+  "expected_artifacts": [
+    "artifacts/governance/enforcement-report.json",
+    "artifacts/governance/enforcement-coverage.json"
+  ]
+}

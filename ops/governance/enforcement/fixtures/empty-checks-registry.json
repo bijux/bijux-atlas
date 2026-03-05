@@ -1,0 +1,6 @@
+{
+  "fixture_id": "governance-empty-checks-registry",
+  "rule_id": "GOV-RULE-006",
+  "description": "Simulates checks registry completeness failure.",
+  "expected_violation": "checks registry has no checks entries"
+}
