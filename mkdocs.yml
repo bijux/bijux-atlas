@@ -5,6 +5,8 @@ repo_name: bijux/bijux-atlas
 repo_url: https://github.com/bijux/bijux-atlas
 edit_uri: edit/main/docs/
 strict: true
+use_directory_urls: true
+dev_addr: 127.0.0.1:8000
 docs_dir: docs
 site_dir: artifacts/docs/site
 
@@ -17,14 +19,47 @@ exclude_docs: |
 
 theme:
   name: material
+  custom_dir: docs/_internal/overrides
+  logo: _assets/bijux_logo_hq.png
+  favicon: _assets/bijux_icon.png
   features:
+    - navigation.tabs
+    - navigation.tabs.sticky
     - announce.dismiss
     - navigation.sections
+    - navigation.indexes
     - navigation.top
+    - navigation.path
+    - navigation.tracking
+    - navigation.instant
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotate
     - content.code.copy
+    - content.code.select
+    - content.action.edit
+    - content.action.view
+    - navigation.footer
   font:
-    text: Inter
-    code: JetBrains Mono
+    text: Roboto
+    code: Roboto Mono
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      primary: teal
+      accent: lime
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
 
 markdown_extensions:
   - admonition
@@ -139,12 +174,16 @@ plugins:
 
 extra:
   announcement: "This site is generated from main or a release tag."
+  release_tag: !ENV [RELEASE_TAG, "main"]
 
 not_in_nav: |
   _assets/**
   _drafts/**
   _internal/**
   contracts/**/*.json
+
+extra_css:
+  - _assets/styles/extra.css
 
 nav:
   - Home: index.md
@@ -167,6 +206,11 @@ nav:
       - Architecture Evolution: architecture/evolution.md
   - Operations:
       - Operations Index: operations/index.md
+      - Prerequisites: operations/prerequisites.md
+      - Run Locally: operations/run-locally.md
+      - Deploy to Kind: operations/deploy-kind.md
+      - Deploy Overview: operations/deploy.md
+      - Kind Profile: operations/kind-profile.md
       - Ops Reference: reference/ops/index.md
       - Releases: operations/release/index.md
   - Development:
