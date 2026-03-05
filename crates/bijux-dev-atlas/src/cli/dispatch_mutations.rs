@@ -597,6 +597,8 @@ fn force_json_governance(command: &mut crate::cli::GovernanceCommand) {
         | crate::cli::GovernanceCommand::List { format, .. }
         | crate::cli::GovernanceCommand::Explain { format, .. }
         | crate::cli::GovernanceCommand::Validate { format, .. }
+        | crate::cli::GovernanceCommand::Check { format, .. }
+        | crate::cli::GovernanceCommand::Rules { format, .. }
         | crate::cli::GovernanceCommand::Doctor { format, .. } => *format = FormatArg::Json,
         crate::cli::GovernanceCommand::Exceptions { command } => match command {
             crate::cli::GovernanceExceptionsCommand::List { format, .. }
@@ -1368,6 +1370,8 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | crate::cli::GovernanceCommand::List { repo_root, .. }
             | crate::cli::GovernanceCommand::Explain { repo_root, .. }
             | crate::cli::GovernanceCommand::Validate { repo_root, .. }
+            | crate::cli::GovernanceCommand::Check { repo_root, .. }
+            | crate::cli::GovernanceCommand::Rules { repo_root, .. }
             | crate::cli::GovernanceCommand::Doctor { repo_root, .. } => {
                 *repo_root = Some(root.clone())
             }

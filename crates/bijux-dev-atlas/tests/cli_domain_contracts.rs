@@ -135,6 +135,56 @@ fn governance_validate_emits_index_and_coverage_artifacts() {
 }
 
 #[test]
+fn governance_check_emits_enforcement_evaluation() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["governance", "check", "--format", "json"])
+        .output()
+        .expect("governance check");
+    let bytes = if output.stdout.is_empty() {
+        &output.stderr
+    } else {
+        &output.stdout
+    };
+    let payload: serde_json::Value = serde_json::from_slice(bytes).expect("valid json output");
+    assert_eq!(
+        payload.get("kind").and_then(|v| v.as_str()),
+        Some("governance_check")
+    );
+    assert_eq!(
+        payload
+            .get("evaluation")
+            .and_then(|v| v.get("kind"))
+            .and_then(|v| v.as_str()),
+        Some("governance_enforcement_evaluation")
+    );
+}
+
+#[test]
+fn governance_rules_lists_enforcement_registry() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["governance", "rules", "--format", "json"])
+        .output()
+        .expect("governance rules");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(
+        payload.get("kind").and_then(|v| v.as_str()),
+        Some("governance_rules")
+    );
+    let rules = payload
+        .get("registry")
+        .and_then(|v| v.get("rules"))
+        .and_then(|v| v.as_array())
+        .expect("rules array");
+    assert!(rules.iter().any(|row| {
+        row.get("rule_type").and_then(|v| v.as_str()) == Some("checks_registry_complete")
+    }));
+}
+
+#[test]
 fn ops_list_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())

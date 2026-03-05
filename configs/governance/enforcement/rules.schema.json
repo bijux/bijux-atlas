@@ -22,7 +22,12 @@
               "prohibited_files_absent",
               "repo_layout_contract",
               "docs_front_matter_complete",
-              "contract_registry_complete"
+              "contract_registry_complete",
+              "checks_registry_complete",
+              "scenario_registry_complete",
+              "ops_artifact_registry_complete",
+              "release_artifact_registry_complete",
+              "docs_navigation_consistent"
             ]
           },
           "paths": {

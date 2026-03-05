@@ -49,6 +49,51 @@
       "paths": [
         "configs/governance/contracts.registry.json"
       ]
+    },
+    {
+      "id": "GOV-RULE-006",
+      "title": "checks registry completeness",
+      "severity": "high",
+      "rule_type": "checks_registry_complete",
+      "paths": [
+        "configs/governance/checks.registry.json"
+      ]
+    },
+    {
+      "id": "GOV-RULE-007",
+      "title": "scenario registry completeness",
+      "severity": "high",
+      "rule_type": "scenario_registry_complete",
+      "paths": [
+        "ops/e2e/scenarios/scenarios.json"
+      ]
+    },
+    {
+      "id": "GOV-RULE-008",
+      "title": "ops artifact registry completeness",
+      "severity": "medium",
+      "rule_type": "ops_artifact_registry_complete",
+      "paths": [
+        "ops/k8s/generated/render-artifact-index.json"
+      ]
+    },
+    {
+      "id": "GOV-RULE-009",
+      "title": "release artifact registry completeness",
+      "severity": "high",
+      "rule_type": "release_artifact_registry_complete",
+      "paths": [
+        "release/evidence/manifest.json"
+      ]
+    },
+    {
+      "id": "GOV-RULE-010",
+      "title": "docs navigation consistency",
+      "severity": "medium",
+      "rule_type": "docs_navigation_consistent",
+      "paths": [
+        "mkdocs.yml"
+      ]
     }
   ]
 }

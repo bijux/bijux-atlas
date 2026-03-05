@@ -15,6 +15,11 @@ pub enum GovernanceRuleType {
     RepoLayoutContract,
     DocsFrontMatterComplete,
     ContractRegistryComplete,
+    ChecksRegistryComplete,
+    ScenarioRegistryComplete,
+    OpsArtifactRegistryComplete,
+    ReleaseArtifactRegistryComplete,
+    DocsNavigationConsistent,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -63,6 +68,48 @@ pub struct GovernanceEvaluation {
 struct RepoLayoutContract {
     schema_version: u64,
     required_directories: Vec<String>,
+}
+
+fn evaluate_registry_file(
+    repo_root: &Path,
+    rel: &str,
+    array_key: &str,
+    rule: &GovernanceRule,
+    violations: &mut Vec<GovernanceViolation>,
+    missing_message: &str,
+) {
+    let path = repo_root.join(rel);
+    match fs::read_to_string(&path) {
+        Ok(text) => match serde_json::from_str::<serde_json::Value>(&text) {
+            Ok(value) => {
+                let has_entries = value
+                    .get(array_key)
+                    .and_then(serde_json::Value::as_array)
+                    .map(|rows| !rows.is_empty())
+                    .unwrap_or(false);
+                if !has_entries {
+                    violations.push(GovernanceViolation {
+                        rule_id: rule.id.clone(),
+                        severity: rule.severity.clone(),
+                        message: missing_message.to_string(),
+                        path: Some(rel.to_string()),
+                    });
+                }
+            }
+            Err(err) => violations.push(GovernanceViolation {
+                rule_id: rule.id.clone(),
+                severity: rule.severity.clone(),
+                message: format!("registry parse failed: {err}"),
+                path: Some(rel.to_string()),
+            }),
+        },
+        Err(err) => violations.push(GovernanceViolation {
+            rule_id: rule.id.clone(),
+            severity: rule.severity.clone(),
+            message: format!("registry read failed: {err}"),
+            path: Some(rel.to_string()),
+        }),
+    }
 }
 
 pub fn load_registry(repo_root: &Path) -> Result<GovernanceRuleRegistry, String> {
@@ -200,21 +247,67 @@ pub fn evaluate_registry(
             }
             GovernanceRuleType::ContractRegistryComplete => {
                 if let Some(rel) = rule.paths.first() {
+                    evaluate_registry_file(
+                        repo_root,
+                        rel,
+                        "contracts",
+                        rule,
+                        &mut violations,
+                        "contract registry has no contracts entries",
+                    );
+                }
+            }
+            GovernanceRuleType::ChecksRegistryComplete => {
+                if let Some(rel) = rule.paths.first() {
+                    evaluate_registry_file(
+                        repo_root,
+                        rel,
+                        "checks",
+                        rule,
+                        &mut violations,
+                        "checks registry has no checks entries",
+                    );
+                }
+            }
+            GovernanceRuleType::ScenarioRegistryComplete => {
+                if let Some(rel) = rule.paths.first() {
+                    evaluate_registry_file(
+                        repo_root,
+                        rel,
+                        "scenarios",
+                        rule,
+                        &mut violations,
+                        "scenario registry has no scenarios entries",
+                    );
+                }
+            }
+            GovernanceRuleType::OpsArtifactRegistryComplete => {
+                if let Some(rel) = rule.paths.first() {
+                    evaluate_registry_file(
+                        repo_root,
+                        rel,
+                        "render_outputs",
+                        rule,
+                        &mut violations,
+                        "ops artifact registry has no render outputs",
+                    );
+                }
+            }
+            GovernanceRuleType::ReleaseArtifactRegistryComplete => {
+                if let Some(rel) = rule.paths.first() {
                     let path = repo_root.join(rel);
                     match fs::read_to_string(&path) {
                         Ok(text) => match serde_json::from_str::<serde_json::Value>(&text) {
                             Ok(value) => {
-                                let has_contracts = value
-                                    .get("contracts")
-                                    .and_then(serde_json::Value::as_array)
-                                    .map(|rows| !rows.is_empty())
-                                    .unwrap_or(false);
-                                if !has_contracts {
+                                let has_schema = value.get("schema_version").is_some();
+                                let has_release_assets = value.get("image_artifacts").is_some()
+                                    || value.get("reports").is_some()
+                                    || value.get("sboms").is_some();
+                                if !(has_schema && has_release_assets) {
                                     violations.push(GovernanceViolation {
                                         rule_id: rule.id.clone(),
                                         severity: rule.severity.clone(),
-                                        message: "contract registry has no contracts entries"
-                                            .to_string(),
+                                        message: "release artifact registry is missing required release asset sections".to_string(),
                                         path: Some(rel.clone()),
                                     });
                                 }
@@ -222,14 +315,49 @@ pub fn evaluate_registry(
                             Err(err) => violations.push(GovernanceViolation {
                                 rule_id: rule.id.clone(),
                                 severity: rule.severity.clone(),
-                                message: format!("contract registry parse failed: {err}"),
+                                message: format!("release artifact registry parse failed: {err}"),
                                 path: Some(rel.clone()),
                             }),
                         },
                         Err(err) => violations.push(GovernanceViolation {
                             rule_id: rule.id.clone(),
                             severity: rule.severity.clone(),
-                            message: format!("contract registry read failed: {err}"),
+                            message: format!("release artifact registry read failed: {err}"),
+                            path: Some(rel.clone()),
+                        }),
+                    }
+                }
+            }
+            GovernanceRuleType::DocsNavigationConsistent => {
+                if let Some(rel) = rule.paths.first() {
+                    let path = repo_root.join(rel);
+                    match fs::read_to_string(&path) {
+                        Ok(text) => match serde_yaml::from_str::<serde_yaml::Value>(&text) {
+                            Ok(value) => {
+                                let nav_len = value
+                                    .get("nav")
+                                    .and_then(serde_yaml::Value::as_sequence)
+                                    .map_or(0, |rows| rows.len());
+                                if nav_len == 0 {
+                                    violations.push(GovernanceViolation {
+                                        rule_id: rule.id.clone(),
+                                        severity: rule.severity.clone(),
+                                        message: "docs navigation is missing or empty".to_string(),
+                                        path: Some(rel.clone()),
+                                    });
+                                }
+                            }
+                            Err(err) => violations.push(GovernanceViolation {
+                                rule_id: rule.id.clone(),
+                                severity: rule.severity.clone(),
+                                message: format!("docs navigation parse failed: {err}"),
+                                path: Some(rel.clone()),
+                            }),
+                        },
+                        Err(err) => violations.push(GovernanceViolation {
+                            rule_id: rule.id.clone(),
+                            severity: rule.severity.clone(),
+                            message: format!("docs navigation read failed: {err}"),
                             path: Some(rel.clone()),
                         }),
                     }

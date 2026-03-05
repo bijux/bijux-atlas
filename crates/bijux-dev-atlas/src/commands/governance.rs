@@ -2611,6 +2611,18 @@ pub(crate) fn run_governance_command(
             out,
         } => {
             let root = resolve_repo_root(repo_root)?;
+            if let Ok(registry) = governance_enforcement::load_registry(&root) {
+                if let Some(rule) = registry.rules.iter().find(|row| row.id == id) {
+                    let payload = serde_json::json!({
+                        "schema_version": 1,
+                        "kind": "governance_rule_explain",
+                        "status": "ok",
+                        "rule": rule,
+                    });
+                    let rendered = emit_payload(format, out, &payload)?;
+                    return Ok((rendered, 0));
+                }
+            }
             let objects = collect_governance_objects(&root)?;
             let Some(object) = find_governance_object(&objects, &id) else {
                 let payload = serde_json::json!({
@@ -2627,6 +2639,57 @@ pub(crate) fn run_governance_command(
                 "kind": "governance_explain",
                 "status": "ok",
                 "object": object,
+            });
+            let rendered = emit_payload(format, out, &payload)?;
+            Ok((rendered, 0))
+        }
+        GovernanceCommand::Check {
+            repo_root,
+            format,
+            out,
+        } => {
+            let root = resolve_repo_root(repo_root)?;
+            let evaluation = governance_enforcement::evaluate_registry(
+                &root,
+                &governance_enforcement::load_registry(&root)?,
+            );
+            let enforcement_path = governance_enforcement_path(&root);
+            if let Some(parent) = enforcement_path.parent() {
+                fs::create_dir_all(parent)
+                    .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
+            }
+            fs::write(
+                &enforcement_path,
+                serde_json::to_string_pretty(&evaluation)
+                    .map_err(|e| format!("encode governance enforcement report failed: {e}"))?,
+            )
+            .map_err(|e| format!("write {} failed: {e}", enforcement_path.display()))?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "governance_check",
+                "status": evaluation.status,
+                "evaluation": evaluation,
+                "artifacts": {
+                    "governance_enforcement": enforcement_path.strip_prefix(&root).unwrap_or(&enforcement_path).display().to_string(),
+                }
+            });
+            let rendered = emit_payload(format, out, &payload)?;
+            let code = if payload["status"] == "ok" { 0 } else { 1 };
+            Ok((rendered, code))
+        }
+        GovernanceCommand::Rules {
+            repo_root,
+            format,
+            out,
+        } => {
+            let root = resolve_repo_root(repo_root)?;
+            let mut registry = governance_enforcement::load_registry(&root)?;
+            registry.rules.sort_by(|a, b| a.id.cmp(&b.id));
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "governance_rules",
+                "status": "ok",
+                "registry": registry,
             });
             let rendered = emit_payload(format, out, &payload)?;
             Ok((rendered, 0))
