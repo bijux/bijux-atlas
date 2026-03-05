@@ -1,0 +1,20 @@
+{
+  "by_category": {
+    "denial-of-service": 2,
+    "elevation-of-privilege": 1,
+    "information-disclosure": 1,
+    "repudiation": 1,
+    "spoofing": 1,
+    "tampering": 2
+  },
+  "by_severity": {
+    "high": 6,
+    "medium": 2
+  },
+  "coverage_percent": 100.0,
+  "errors": [],
+  "kind": "security_threat_coverage_report",
+  "schema_version": 1,
+  "status": "ok",
+  "threats_total": 8
+}
