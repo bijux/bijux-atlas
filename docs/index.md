@@ -44,6 +44,7 @@ Atlas documentation is organized by system understanding first, then execution d
 
 ## Next steps
 
+- Platform summary: [What We Built](what-we-built.md)
 - Run locally: [Run locally](operations/run-locally.md)
 - Deploy to kind: [Deploy to kind](operations/deploy-kind.md)
 - Deploy to Kubernetes: [Deploy to Kubernetes](operations/deploy-kubernetes-minimal.md)
