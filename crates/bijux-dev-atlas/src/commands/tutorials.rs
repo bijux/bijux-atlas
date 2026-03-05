@@ -3,7 +3,7 @@
 use crate::cli::{
     TutorialsBuildCommand, TutorialsBuildDocsArgs, TutorialsCommand, TutorialsCommandArgs,
     TutorialsContractsCommand, TutorialsDashboardsCommand, TutorialsDatasetCommand,
-    TutorialsDatasetPackageArgs, TutorialsEvidenceCommand, TutorialsRealDataCommand,
+    TutorialsDatasetE2eArgs, TutorialsDatasetPackageArgs, TutorialsEvidenceCommand, TutorialsRealDataCommand,
     TutorialsRealDataPlanArgs, TutorialsRealDataRunAllArgs, TutorialsRealDataRunArgs,
     TutorialsRunCommand, TutorialsWorkflowArgs, TutorialsWorkspaceCleanupArgs,
     TutorialsWorkspaceCommand,
@@ -27,6 +27,7 @@ pub(crate) fn run_tutorials_command(quiet: bool, command: TutorialsCommand) -> i
         TutorialsCommand::Verify(args) => run_tutorials_verify(&args),
         TutorialsCommand::Run { command } => match command {
             TutorialsRunCommand::Workflow(args) => run_tutorials_workflow(&args),
+            TutorialsRunCommand::DatasetE2e(args) => run_tutorials_dataset_e2e(&args),
         },
         TutorialsCommand::Build { command } => match command {
             TutorialsBuildCommand::Docs(args) => run_tutorials_build_docs(&args),
@@ -465,6 +466,62 @@ fn run_tutorials_workflow(args: &TutorialsWorkflowArgs) -> Result<(String, i32),
         rendered
     };
     Ok((rendered, if failures == 0 { 0 } else { 1 }))
+}
+
+fn run_tutorials_dataset_e2e(args: &TutorialsDatasetE2eArgs) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let catalog = load_real_data_runs_catalog(&repo_root)?;
+    let run = catalog
+        .runs
+        .iter()
+        .find(|row| row.dataset == args.dataset_id)
+        .ok_or_else(|| {
+            format!(
+                "unknown dataset-id `{}`; run `tutorials real-data list --format json` to discover valid ids",
+                args.dataset_id
+            )
+        })?;
+
+    let run_args = TutorialsRealDataRunArgs {
+        common: args.common.clone(),
+        run_id: run.id.clone(),
+        profile: args.profile.clone(),
+        dry_run: false,
+        no_fetch: args.no_fetch,
+    };
+
+    let mut steps = Vec::new();
+    if !args.no_fetch {
+        let _ = run_tutorials_real_data_fetch(&run_args)?;
+        steps.push("fetch");
+    }
+    let _ = run_tutorials_real_data_ingest(&run_args)?;
+    steps.push("ingest");
+    let _ = run_tutorials_real_data_query_pack(&run_args)?;
+    steps.push("query-pack");
+    let _ = run_tutorials_real_data_export_evidence(&run_args)?;
+    steps.push("export-evidence");
+
+    let run_root = repo_root.join("artifacts/tutorials/runs").join(&run.id);
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "domain": "tutorials",
+        "action": "dataset-e2e",
+        "dataset_id": args.dataset_id,
+        "run_id": run.id,
+        "profile": args.profile,
+        "no_fetch": args.no_fetch,
+        "steps": steps,
+        "artifacts": {
+            "ingest_report": run_root.join("ingest-report.json").display().to_string(),
+            "dataset_summary": run_root.join("dataset-summary.json").display().to_string(),
+            "query_results_summary": run_root.join("query-results-summary.json").display().to_string(),
+            "evidence_bundle": run_root.join("evidence-bundle.json").display().to_string(),
+            "manifest": run_root.join("manifest.json").display().to_string(),
+            "bundle_checksum": run_root.join("bundle.sha256").display().to_string()
+        }
+    });
+    Ok((emit_tutorial_output(&args.common, &payload, None)?, 0))
 }
 
 fn run_tutorials_build_docs(args: &TutorialsBuildDocsArgs) -> Result<(String, i32), String> {
@@ -2152,6 +2209,14 @@ struct DatasetFetchSpec {
     retrieval_method: String,
 }
 
+#[derive(Debug, Clone, serde::Deserialize)]
+struct DatasetMetadata {
+    schema_version: u64,
+    dataset_id: String,
+    expected_sha256: String,
+    description: String,
+}
+
 #[derive(Debug, Clone)]
 struct CachedDatasetInfo {
     path: PathBuf,
@@ -2182,6 +2247,16 @@ fn load_dataset_fetch_spec(repo_root: &Path, dataset: &str) -> Result<DatasetFet
         .join("tutorials/datasets")
         .join(dataset)
         .join("fetch-spec.json");
+    let text =
+        fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
+}
+
+fn load_dataset_metadata(repo_root: &Path, dataset: &str) -> Result<DatasetMetadata, String> {
+    let path = repo_root
+        .join("tutorials/datasets")
+        .join(dataset)
+        .join("metadata.json");
     let text =
         fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
@@ -2363,6 +2438,7 @@ fn validate_real_data_runs_catalog(
         let required_files = [
             "README.md",
             "fetch-spec.json",
+            "metadata.json",
             "normalization-rules.json",
             "ingest-map.json",
             "queries.sql",
@@ -2405,6 +2481,31 @@ fn validate_real_data_runs_catalog(
         {
             return Err(format!(
                 "dataset `{}` fetch-spec expected_sha256 must be a real digest",
+                run.dataset
+            ));
+        }
+        let metadata = load_dataset_metadata(repo_root, &run.dataset)?;
+        if metadata.schema_version != 1 {
+            return Err(format!(
+                "dataset `{}` metadata.schema_version must be 1",
+                run.dataset
+            ));
+        }
+        if metadata.dataset_id != run.dataset {
+            return Err(format!(
+                "dataset `{}` metadata dataset_id mismatch: `{}`",
+                run.dataset, metadata.dataset_id
+            ));
+        }
+        if metadata.expected_sha256 != fetch_spec.expected_sha256 {
+            return Err(format!(
+                "dataset `{}` metadata expected_sha256 must match fetch-spec",
+                run.dataset
+            ));
+        }
+        if metadata.description.trim().is_empty() {
+            return Err(format!(
+                "dataset `{}` metadata description must be non-empty",
                 run.dataset
             ));
         }

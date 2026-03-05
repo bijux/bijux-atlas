@@ -1316,6 +1316,7 @@ pub struct TutorialsCommandArgs {
 #[derive(Subcommand, Debug)]
 pub enum TutorialsRunCommand {
     Workflow(TutorialsWorkflowArgs),
+    DatasetE2e(TutorialsDatasetE2eArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -1324,6 +1325,18 @@ pub struct TutorialsWorkflowArgs {
     pub common: TutorialsCommandArgs,
     #[arg(long)]
     pub only: Option<String>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct TutorialsDatasetE2eArgs {
+    #[command(flatten)]
+    pub common: TutorialsCommandArgs,
+    #[arg(long)]
+    pub dataset_id: String,
+    #[arg(long, default_value = "local")]
+    pub profile: String,
+    #[arg(long, default_value_t = false)]
+    pub no_fetch: bool,
 }
 
 #[derive(Subcommand, Debug)]

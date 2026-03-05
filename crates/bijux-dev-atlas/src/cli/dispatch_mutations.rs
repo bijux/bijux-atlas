@@ -745,6 +745,9 @@ fn force_json_tutorials(command: &mut crate::cli::TutorialsCommand) {
         | crate::cli::TutorialsCommand::Generate(args) => args.format = FormatArg::Json,
         crate::cli::TutorialsCommand::Run { command } => match command {
             crate::cli::TutorialsRunCommand::Workflow(args) => args.common.format = FormatArg::Json,
+            crate::cli::TutorialsRunCommand::DatasetE2e(args) => {
+                args.common.format = FormatArg::Json
+            }
         },
         crate::cli::TutorialsCommand::Build { command } => match command {
             crate::cli::TutorialsBuildCommand::Docs(args) => args.common.format = FormatArg::Json,
@@ -1697,6 +1700,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | crate::cli::TutorialsCommand::Generate(args) => args.repo_root = Some(root.clone()),
             crate::cli::TutorialsCommand::Run { command } => match command {
                 crate::cli::TutorialsRunCommand::Workflow(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+                crate::cli::TutorialsRunCommand::DatasetE2e(args) => {
                     args.common.repo_root = Some(root.clone())
                 }
             },
