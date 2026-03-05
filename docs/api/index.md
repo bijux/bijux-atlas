@@ -42,6 +42,11 @@ Use this section to integrate clients with Atlas API surfaces safely and predict
 ## Consumer policies
 
 - [API lifecycle](lifecycle.md)
+- [Public API contract](public-api-contract.md)
+- [API stability guarantees](api-stability-guarantees.md)
+- [API versioning strategy](api-versioning-strategy.md)
+- [API deprecation policy](api-deprecation-policy.md)
+- [API compatibility matrix](api-compatibility-matrix.md)
 - [Deprecation lifecycle](deprecation.md)
 - [Client retries and backoff](client-retries-and-backoff.md)
 - [Performance expectations](performance-expectations.md)
