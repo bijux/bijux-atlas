@@ -25,3 +25,10 @@ related:
 
 - [API troubleshooting](../api/troubleshooting.md)
 - [Incident response](../operations/incident-response.md)
+
+
+## Tutorial dataset checks
+
+- `tutorials/scripts/validate_example_dataset.py`
+- `tutorials/scripts/reproducibility_check.sh`
+- `tutorials/scripts/integrity_check.sh`
