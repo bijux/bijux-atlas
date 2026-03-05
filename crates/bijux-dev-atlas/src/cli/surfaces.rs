@@ -149,6 +149,10 @@ pub enum DocsCommand {
         #[command(subcommand)]
         command: DocsReferenceCommand,
     },
+    Generate {
+        #[command(subcommand)]
+        command: DocsGenerateCommand,
+    },
     Redirects {
         #[command(subcommand)]
         command: DocsRedirectsCommand,
@@ -165,6 +169,7 @@ pub enum DocsCommand {
         #[command(subcommand)]
         command: DocsRegistryCommand,
     },
+    VerifyGenerated(DocsCommonArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -183,6 +188,15 @@ pub enum DocsRegistryCommand {
 pub enum DocsReferenceCommand {
     Generate(DocsCommonArgs),
     Check(DocsCommonArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum DocsGenerateCommand {
+    Examples(DocsCommonArgs),
+    CommandLists(DocsCommonArgs),
+    SchemaSnippets(DocsCommonArgs),
+    OpenapiSnippets(DocsCommonArgs),
+    OpsSnippets(DocsCommonArgs),
 }
 
 #[derive(Subcommand, Debug)]

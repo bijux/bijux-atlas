@@ -538,7 +538,8 @@ fn force_json_docs(command: &mut DocsCommand) {
         | DocsCommand::Dead(common)
         | DocsCommand::Duplicates(common)
         | DocsCommand::ShrinkReport(common)
-        | DocsCommand::HealthDashboard(common) => common.format = FormatArg::Json,
+        | DocsCommand::HealthDashboard(common)
+        | DocsCommand::VerifyGenerated(common) => common.format = FormatArg::Json,
         DocsCommand::Top(args) => args.common.format = FormatArg::Json,
         DocsCommand::PagesSmoke(args) => args.common.format = FormatArg::Json,
         DocsCommand::Serve(args) => args.common.format = FormatArg::Json,
@@ -563,6 +564,15 @@ fn force_json_docs(command: &mut DocsCommand) {
         DocsCommand::Reference { command } => match command {
             crate::cli::DocsReferenceCommand::Generate(common)
             | crate::cli::DocsReferenceCommand::Check(common) => common.format = FormatArg::Json,
+        },
+        DocsCommand::Generate { command } => match command {
+            crate::cli::DocsGenerateCommand::Examples(common)
+            | crate::cli::DocsGenerateCommand::CommandLists(common)
+            | crate::cli::DocsGenerateCommand::SchemaSnippets(common)
+            | crate::cli::DocsGenerateCommand::OpenapiSnippets(common)
+            | crate::cli::DocsGenerateCommand::OpsSnippets(common) => {
+                common.format = FormatArg::Json
+            }
         },
     }
 }
@@ -937,7 +947,8 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | DocsCommand::HealthDashboard(_)
             | DocsCommand::LifecycleSummaryTable(_)
             | DocsCommand::DrillSummaryTable(_)
-            | DocsCommand::Where(_) => {}
+            | DocsCommand::Where(_)
+            | DocsCommand::VerifyGenerated(_) => {}
             DocsCommand::Redirects { command } => match command {
                 crate::cli::DocsRedirectsCommand::Sync(_) => {}
             },
@@ -955,6 +966,13 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             DocsCommand::Reference { command } => match command {
                 crate::cli::DocsReferenceCommand::Generate(_)
                 | crate::cli::DocsReferenceCommand::Check(_) => {}
+            },
+            DocsCommand::Generate { command } => match command {
+                crate::cli::DocsGenerateCommand::Examples(_)
+                | crate::cli::DocsGenerateCommand::CommandLists(_)
+                | crate::cli::DocsGenerateCommand::SchemaSnippets(_)
+                | crate::cli::DocsGenerateCommand::OpenapiSnippets(_)
+                | crate::cli::DocsGenerateCommand::OpsSnippets(_) => {}
             },
         },
         Command::Configs { command } => match command {
@@ -1393,7 +1411,8 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | DocsCommand::Dead(common)
             | DocsCommand::Duplicates(common)
             | DocsCommand::ShrinkReport(common)
-            | DocsCommand::HealthDashboard(common) => common.repo_root = Some(root.clone()),
+            | DocsCommand::HealthDashboard(common)
+            | DocsCommand::VerifyGenerated(common) => common.repo_root = Some(root.clone()),
             DocsCommand::Top(args) => args.common.repo_root = Some(root.clone()),
             DocsCommand::PagesSmoke(args) => args.common.repo_root = Some(root.clone()),
             DocsCommand::Serve(args) => args.common.repo_root = Some(root.clone()),
@@ -1426,6 +1445,15 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             DocsCommand::Reference { command } => match command {
                 crate::cli::DocsReferenceCommand::Generate(common)
                 | crate::cli::DocsReferenceCommand::Check(common) => {
+                    common.repo_root = Some(root.clone())
+                }
+            },
+            DocsCommand::Generate { command } => match command {
+                crate::cli::DocsGenerateCommand::Examples(common)
+                | crate::cli::DocsGenerateCommand::CommandLists(common)
+                | crate::cli::DocsGenerateCommand::SchemaSnippets(common)
+                | crate::cli::DocsGenerateCommand::OpenapiSnippets(common)
+                | crate::cli::DocsGenerateCommand::OpsSnippets(common) => {
                     common.repo_root = Some(root.clone())
                 }
             },
