@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ObserveCommand, ObserveLogsCommand, ObserveLogsCommonArgs, ObserveMetricsCommand,
-    ObserveMetricsCommonArgs, ObserveTracesCommand, ObserveTracesCommonArgs,
+    ObserveCommand, ObserveDashboardsCommand, ObserveDashboardsCommonArgs, ObserveLogsCommand,
+    ObserveLogsCommonArgs, ObserveMetricsCommand, ObserveMetricsCommonArgs, ObserveTracesCommand,
+    ObserveTracesCommonArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::contracts::{logging_registry, metrics_registry, tracing_registry};
@@ -21,6 +22,14 @@ const TRACE_TOPOLOGY_ARTIFACT: &str = "artifacts/observe/trace-topology-diagram.
 const LOG_FORMAT_VALIDATOR_CONTRACT: &str = "ops/observe/logging/format-validator-contract.json";
 const LOG_FIELDS_CONTRACT: &str = "ops/observe/contracts/logs-fields-contract.json";
 const LOG_EXAMPLES_CONTRACT: &str = "ops/observe/contracts/logs.example.jsonl";
+const DASHBOARD_REGISTRY: &str = "ops/observe/dashboard-registry.json";
+const DASHBOARD_METADATA_SCHEMA: &str = "ops/observe/dashboard-metadata.schema.json";
+const DASHBOARD_VALIDATION_CONTRACT: &str =
+    "ops/observe/contracts/dashboard-json-validation-contract.json";
+const DASHBOARD_COVERAGE_ARTIFACT: &str = "artifacts/observe/dashboard-coverage-report.json";
+const DASHBOARD_HEALTH_SUMMARY_ARTIFACT: &str = "artifacts/observe/dashboard-health-summary.json";
+const OPERATIONAL_READINESS_ARTIFACT: &str = "artifacts/observe/operational-readiness-report.json";
+const TELEMETRY_SUMMARY_ARTIFACT: &str = "artifacts/observe/operational-telemetry-summary.json";
 
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
     let text = fs::read_to_string(path)
@@ -452,6 +461,135 @@ fn explain_logs(common: ObserveLogsCommonArgs) -> Result<(String, i32), String> 
     Ok((rendered, 0))
 }
 
+fn list_dashboards(common: ObserveDashboardsCommonArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let registry = read_json(&root.join(DASHBOARD_REGISTRY))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "observe_dashboards_list",
+        "status": "ok",
+        "registry": registry,
+    });
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn verify_dashboards(common: ObserveDashboardsCommonArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let contract = read_json(&root.join(DASHBOARD_VALIDATION_CONTRACT))?;
+    let schema = read_json(&root.join("ops/schema/observe/dashboard.schema.json"))?;
+    let dashboards = contract
+        .get("dashboards")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let mut validation_rows = Vec::new();
+    let mut missing = Vec::new();
+    for row in dashboards {
+        let rel = row.as_str().unwrap_or_default();
+        let abs = root.join(rel);
+        if !abs.exists() {
+            missing.push(rel.to_string());
+            validation_rows.push(serde_json::json!({
+                "path": rel,
+                "status": "missing",
+            }));
+            continue;
+        }
+        let payload = read_json(&abs)?;
+        let has_title = payload.get("title").is_some();
+        let has_uid = payload.get("uid").is_some();
+        let has_panels = payload
+            .get("panels")
+            .and_then(serde_json::Value::as_array)
+            .map(|v| !v.is_empty())
+            .unwrap_or(false);
+        validation_rows.push(serde_json::json!({
+            "path": rel,
+            "status": if has_title && has_uid && has_panels { "ok" } else { "failed" },
+            "checks": {
+                "title": has_title,
+                "uid": has_uid,
+                "panels": has_panels
+            }
+        }));
+    }
+    let covered = validation_rows
+        .iter()
+        .filter(|row| row.get("status").and_then(serde_json::Value::as_str) == Some("ok"))
+        .count();
+    let coverage_payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "dashboard_coverage_report",
+        "covered_count": covered,
+        "required_count": validation_rows.len(),
+        "rows": validation_rows,
+    });
+    write_json(&root.join(DASHBOARD_COVERAGE_ARTIFACT), &coverage_payload)?;
+    write_json(
+        &root.join(DASHBOARD_HEALTH_SUMMARY_ARTIFACT),
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "dashboard_health_summary",
+            "status": if missing.is_empty() { "ok" } else { "failed" },
+            "missing_dashboards": missing,
+            "coverage_ratio": if coverage_payload["required_count"].as_u64().unwrap_or(0) == 0 { 0.0 } else { covered as f64 / coverage_payload["required_count"].as_u64().unwrap_or(1) as f64 },
+        }),
+    )?;
+    write_json(
+        &root.join(OPERATIONAL_READINESS_ARTIFACT),
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "operational_readiness_report",
+            "dashboard_contract": DASHBOARD_VALIDATION_CONTRACT,
+            "dashboard_schema": "ops/schema/observe/dashboard.schema.json",
+            "ready": missing.is_empty(),
+        }),
+    )?;
+    write_json(
+        &root.join(TELEMETRY_SUMMARY_ARTIFACT),
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "operational_telemetry_summary",
+            "dashboard_count": coverage_payload["required_count"],
+            "metrics_contract": "ops/observe/contracts/metrics-contract.json",
+            "trace_contract": TRACE_STABILITY_CONTRACT,
+            "log_contract": LOG_FIELDS_CONTRACT,
+        }),
+    )?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "observe_dashboards_verify",
+        "status": if missing.is_empty() { "ok" } else { "failed" },
+        "schema": schema,
+        "artifacts": {
+            "dashboard_coverage_report": DASHBOARD_COVERAGE_ARTIFACT,
+            "dashboard_health_summary": DASHBOARD_HEALTH_SUMMARY_ARTIFACT,
+            "operational_readiness_report": OPERATIONAL_READINESS_ARTIFACT,
+            "operational_telemetry_summary": TELEMETRY_SUMMARY_ARTIFACT,
+        }
+    });
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    let code = if missing.is_empty() { 0 } else { 2 };
+    Ok((rendered, code))
+}
+
+fn explain_dashboards(common: ObserveDashboardsCommonArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let registry = read_json(&root.join(DASHBOARD_REGISTRY))?;
+    let metadata_schema = read_json(&root.join(DASHBOARD_METADATA_SCHEMA))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "observe_dashboards_explain",
+        "status": "ok",
+        "registry": registry,
+        "metadata_schema": metadata_schema,
+        "validation_contract": DASHBOARD_VALIDATION_CONTRACT,
+    });
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    Ok((rendered, 0))
+}
+
 pub(crate) fn run_observe_command(
     _quiet: bool,
     command: ObserveCommand,
@@ -461,6 +599,11 @@ pub(crate) fn run_observe_command(
             ObserveMetricsCommand::List(args) => list_metrics(args),
             ObserveMetricsCommand::Explain(args) => explain_metric(args.id_or_name, args.common),
             ObserveMetricsCommand::Docs(args) => generate_docs(args),
+        },
+        ObserveCommand::Dashboards { command } => match command {
+            ObserveDashboardsCommand::List(args) => list_dashboards(args),
+            ObserveDashboardsCommand::Verify(args) => verify_dashboards(args),
+            ObserveDashboardsCommand::Explain(args) => explain_dashboards(args),
         },
         ObserveCommand::Logs { command } => match command {
             ObserveLogsCommand::Explain(args) => explain_logs(args),

@@ -363,6 +363,10 @@ pub enum ObserveCommand {
         #[command(subcommand)]
         command: ObserveMetricsCommand,
     },
+    Dashboards {
+        #[command(subcommand)]
+        command: ObserveDashboardsCommand,
+    },
     Logs {
         #[command(subcommand)]
         command: ObserveLogsCommand,
@@ -378,6 +382,13 @@ pub enum ObserveMetricsCommand {
     List(ObserveMetricsCommonArgs),
     Explain(ObserveMetricsExplainArgs),
     Docs(ObserveMetricsCommonArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ObserveDashboardsCommand {
+    List(ObserveDashboardsCommonArgs),
+    Verify(ObserveDashboardsCommonArgs),
+    Explain(ObserveDashboardsCommonArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -396,6 +407,16 @@ pub struct ObserveMetricsExplainArgs {
     pub id_or_name: String,
     #[command(flatten)]
     pub common: ObserveMetricsCommonArgs,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ObserveDashboardsCommonArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
 }
 
 #[derive(Subcommand, Debug)]
