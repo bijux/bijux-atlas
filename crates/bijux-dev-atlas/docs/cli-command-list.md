@@ -1,24 +1,5 @@
-ops
-docs
-reports
-demo
-configs
-governance
-system
-audit
-security
-datasets
-ingest
-perf
-policies
-ci
-check
-checks
-contract
-registry
-suites
-tests
-list
-describe
-run
-validate
+# CLI Command List (Alias)
+
+Canonical command list documentation moved into `commands.md` and `command-surface.md`.
+
+This alias remains for compatibility with existing links.

@@ -7,5 +7,8 @@ This index maps crate documentation for bijux-dev-atlas.
 
 - Crate README: ../README.md
 - Central docs index: docs/index.md
-- Engine contract: ENGINE_CONTRACT.md
-- Registry contract: REGISTRY_CONTRACT.md
+- Command surface: commands.md
+- Control-plane contracts: control-plane-contracts.md
+- Errors and exit codes: errors-and-exit-codes.md
+- Quality system: quality-system.md
+- Internal authoring model: internal/docs-authoring-model.md

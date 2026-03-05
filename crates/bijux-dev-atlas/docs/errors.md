@@ -1,9 +1,5 @@
-# ERROR_TAXONOMY (bijux-dev-atlas)
+# Errors (Alias)
 
-- Owner: bijux-dev-atlas
-- Stability: stable
+Canonical error and exit behavior moved to `errors-and-exit-codes.md`.
 
-Error classes and stable identifiers for this crate are documented in crate docs and source error modules.
-
-- Crate docs index: crates/bijux-dev-atlas/docs/index.md
-- Central docs index: docs/index.md
+This file remains as a compatibility alias for existing links.
