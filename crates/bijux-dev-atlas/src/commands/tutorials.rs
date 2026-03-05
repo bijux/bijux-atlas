@@ -815,14 +815,25 @@ fn run_tutorials_query_probe(args: &TutorialsCommandArgs) -> Result<(), String> 
 fn render_workflow_nextest(steps: &[serde_json::Value], color: bool, verbose: bool) -> String {
     let total = steps.len();
     let mut lines = vec!["tutorials workflow".to_string()];
+    let mut skipped = 0usize;
     for (index, row) in steps.iter().enumerate() {
         let success = row["success"].as_bool().unwrap_or(false);
-        let style = if success { LineStyle::Pass } else { LineStyle::Fail };
+        let is_skipped = row["skipped"].as_bool().unwrap_or(false);
+        let style = if is_skipped {
+            skipped += 1;
+            LineStyle::Skip
+        } else if success {
+            LineStyle::Pass
+        } else {
+            LineStyle::Fail
+        };
         let duration = row["duration_ms"].as_u64().unwrap_or(0);
         let name = row["name"].as_str().unwrap_or("unknown");
         let mut line = render_status_line(style, color, duration, index + 1, total, "tutorials", name);
-        if let Some(error) = row["error"].as_str() {
-            line.push_str(&format!(" ({error})"));
+        if !is_skipped {
+            if let Some(error) = row["error"].as_str() {
+                line.push_str(&format!(" ({error})"));
+            }
         }
         lines.push(line);
         if verbose {
@@ -835,13 +846,19 @@ fn render_workflow_nextest(steps: &[serde_json::Value], color: bool, verbose: bo
     }
     let failed = steps
         .iter()
-        .filter(|row| !row["success"].as_bool().unwrap_or(false))
+        .filter(|row| {
+            let success = row["success"].as_bool().unwrap_or(false);
+            let is_skipped = row["skipped"].as_bool().unwrap_or(false);
+            !success && !is_skipped
+        })
         .count();
+    let passed = total.saturating_sub(failed).saturating_sub(skipped);
     lines.push(format!(
-        "summary: total={} passed={} failed={} skipped=0",
+        "summary: total={} passed={} failed={} skipped={}",
         total,
-        total.saturating_sub(failed),
-        failed
+        passed,
+        failed,
+        skipped
     ));
     lines.join("\n")
 }
@@ -986,4 +1003,156 @@ fn sha256_hex(bytes: &[u8]) -> String {
     let mut hasher = Sha256::new();
     hasher.update(bytes);
     format!("{:x}", hasher.finalize())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tempfile::tempdir;
+
+    #[test]
+    fn dataset_contract_validator_accepts_valid_contract() {
+        let contract = serde_json::json!({
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "required": ["dataset_id", "schema_version", "record_count", "description"],
+            "properties": {
+                "dataset_id": {"type": "string"},
+                "schema_version": {"type": "string"},
+                "record_count": {"type": "integer"},
+                "description": {"type": "string"}
+            }
+        });
+        let (ok, detail) = validate_dataset_contract_semantics(&contract);
+        assert!(ok, "expected valid contract, got {detail}");
+    }
+
+    #[test]
+    fn deterministic_packager_stable_mode_has_equal_hashes() {
+        let dir = tempdir().expect("tempdir");
+        let repo = dir.path();
+        fs::create_dir_all(repo.join("data")).expect("mkdir");
+        fs::write(repo.join("data/b.txt"), "beta\n").expect("write");
+        fs::write(repo.join("data/a.txt"), "alpha\n").expect("write");
+        let files = vec!["data/b.txt".to_string(), "data/a.txt".to_string()];
+        let out1 = repo.join("one.tar");
+        let out2 = repo.join("two.tar");
+        build_deterministic_tar(repo, &files, &out1, true).expect("package one");
+        build_deterministic_tar(repo, &files, &out2, true).expect("package two");
+        let h1 = sha256_hex(&fs::read(out1).expect("read one"));
+        let h2 = sha256_hex(&fs::read(out2).expect("read two"));
+        assert_eq!(h1, h2, "stable packaging must be deterministic");
+    }
+
+    #[test]
+    fn sha256_manifest_roundtrip_is_consistent() {
+        let dir = tempdir().expect("tempdir");
+        let repo = dir.path();
+        fs::create_dir_all(repo.join("data")).expect("mkdir");
+        fs::write(repo.join("data/sample.json"), "{\"ok\":true}\n").expect("write");
+        let manifest = repo.join("atlas.sha256");
+        let files = vec!["data/sample.json".to_string()];
+        update_sha256_manifest(repo, &files, &manifest).expect("update manifest");
+        let pairs = load_sha256_pairs(&manifest).expect("load pairs");
+        assert_eq!(pairs.len(), 1);
+        assert_eq!(pairs[0].1, "data/sample.json");
+        let digest = sha256_hex(&fs::read(repo.join("data/sample.json")).expect("read"));
+        assert_eq!(pairs[0].0, digest);
+    }
+
+    #[test]
+    fn dashboard_validator_rejects_missing_panels() {
+        let dashboards = vec![(
+            "bad.json".to_string(),
+            serde_json::json!({
+                "title": "Broken"
+            }),
+        )];
+        let (ok, detail) = validate_dashboards(&dashboards);
+        assert!(!ok);
+        assert_eq!(detail["checked"], 1);
+        assert!(detail["violations"]
+            .as_array()
+            .expect("violations")
+            .iter()
+            .any(|v| v.as_str().unwrap_or_default().contains("missing required")));
+    }
+
+    #[test]
+    fn evidence_validator_rejects_invalid_shape() {
+        let evidence = vec![(
+            "bad.json".to_string(),
+            serde_json::json!({
+                "id": 12,
+                "metrics": "not-an-object"
+            }),
+        )];
+        let (ok, detail) = validate_evidence(&evidence);
+        assert!(!ok);
+        assert_eq!(detail["checked"], 1);
+    }
+
+    #[test]
+    fn workflow_step_reports_failure_status_and_error() {
+        let row = run_timed_step("ingest", || Err("boom".to_string()));
+        assert_eq!(row["name"], "ingest");
+        assert_eq!(row["success"], false);
+        assert_eq!(row["error"], "boom");
+        assert!(row["duration_ms"].as_u64().is_some());
+    }
+
+    #[test]
+    fn workflow_step_reports_success_status() {
+        let row = run_timed_step("verify", || Ok(()));
+        assert_eq!(row["name"], "verify");
+        assert_eq!(row["success"], true);
+        assert!(row.get("error").is_none());
+    }
+
+    #[test]
+    fn workflow_output_mixed_status_golden() {
+        let steps = vec![
+            serde_json::json!({"name":"setup","success":true,"duration_ms":1}),
+            serde_json::json!({"name":"ingest","success":false,"error":"fail","duration_ms":2}),
+            serde_json::json!({"name":"query","success":false,"skipped":true,"duration_ms":0}),
+        ];
+        let text = render_workflow_nextest(&steps, false, false);
+        assert!(text.contains("PASS"));
+        assert!(text.contains("FAIL"));
+        assert!(text.contains("SKIP"));
+        assert!(text.contains("summary: total=3 passed=1 failed=1 skipped=1"));
+    }
+
+    #[test]
+    fn workflow_output_long_name_golden() {
+        let steps = vec![serde_json::json!({
+            "name":"validate-dashboard-and-evidence-with-very-long-step-name",
+            "success":true,
+            "duration_ms":4
+        })];
+        let text = render_workflow_nextest(&steps, false, false);
+        assert!(text.contains("validate-dashboard-and-evidence-with-very-long-step-name"));
+    }
+
+    #[test]
+    fn workflow_output_counter_width_golden() {
+        let steps = (0..12)
+            .map(|i| {
+                serde_json::json!({
+                    "name": format!("step-{i}"),
+                    "success": true,
+                    "duration_ms": 1
+                })
+            })
+            .collect::<Vec<_>>();
+        let text = render_workflow_nextest(&steps, false, false);
+        assert!(text.contains("(10/12)"), "counter should include multi-digit index");
+        assert!(text.contains("(12/12)"), "counter should include final index");
+    }
+
+    #[test]
+    fn workflow_output_no_ansi_golden() {
+        let steps = vec![serde_json::json!({"name":"setup","success":true,"duration_ms":1})];
+        let text = render_workflow_nextest(&steps, false, false);
+        assert!(!text.contains('\u{1b}'));
+    }
 }
