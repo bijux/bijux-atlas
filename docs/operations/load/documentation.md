@@ -20,3 +20,8 @@ Provide the canonical documentation entry for Atlas load testing execution and e
 - [Load testing troubleshooting](troubleshooting.md)
 - [Load architecture diagram](architecture-diagram.md)
 - [Load example configs](example-configs.md)
+- [Capacity planning guide](capacity-planning-guide.md)
+- [Load test interpretation guide](interpretation-guide.md)
+- [Performance troubleshooting guide](performance-troubleshooting-guide.md)
+- [Load test example datasets](example-datasets.md)
+- [Capacity engineering summary](capacity-engineering-summary.md)

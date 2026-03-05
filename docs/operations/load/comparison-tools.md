@@ -7,15 +7,16 @@
 
 ## Purpose
 
-Document the supported comparison tool for baseline versus candidate load reports.
+Document supported tools for baseline-versus-candidate load comparisons.
 
-## Tool
+## Primary CLI
 
-- `bijux dev atlas ops load report`
+- `bijux-dev-atlas load compare --format json`
 
-## Usage
+## Supporting Artifacts
 
-Use the committed load summary and drift report artifacts as the canonical comparison surfaces:
-
-- `ops/load/generated/load-summary.json`
+- `artifacts/load/comparison-report.json`
+- `artifacts/load/performance-trend-report.json`
+- `artifacts/load/performance-stability-index.json`
 - `ops/load/generated/load-drift-report.json`
+- `ops/load/generated/load-summary.json`

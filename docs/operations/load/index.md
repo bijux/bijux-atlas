@@ -24,6 +24,10 @@
 - [Load test metrics](metrics.md)
 - [Performance baseline metrics](performance-baseline-metrics.md)
 - [Capacity planning methodology](capacity-planning-methodology.md)
+- [Capacity planning guide](capacity-planning-guide.md)
+- [Load test interpretation guide](interpretation-guide.md)
+- [Performance troubleshooting guide](performance-troubleshooting-guide.md)
+- [Load test example datasets](example-datasets.md)
 - [Performance regression thresholds](performance-regression-thresholds.md)
 - [Load harness and generators](harness-and-generators.md)
 - [Load command reference](load-command-reference.md)
@@ -34,6 +38,7 @@
 - [Load example configs](example-configs.md)
 - [Load comparison tools](comparison-tools.md)
 - [Load summary report](summary-report.md)
+- [Capacity engineering summary](capacity-engineering-summary.md)
 - [Load Failure Triage](../runbooks/load-failure-triage.md)
 
 ## Threshold interpretation
