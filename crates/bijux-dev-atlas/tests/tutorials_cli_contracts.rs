@@ -42,6 +42,20 @@ fn tutorials_workflow_text_uses_nextest_style_summary() {
 }
 
 #[test]
+fn tutorials_workflow_only_runs_selected_step() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["tutorials", "run", "workflow", "--only", "ingest", "--format", "json"])
+        .output()
+        .expect("tutorials run workflow only");
+    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    let steps = payload["steps"].as_array().expect("steps array");
+    assert_eq!(steps.len(), 1);
+    assert_eq!(steps[0]["name"], "ingest");
+}
+
+#[test]
 fn tutorials_workflow_markdown_output_writes_report() {
     let root = repo_root();
     let out = root.join("artifacts/tutorials/tests-workflow.md");
@@ -79,6 +93,26 @@ fn tutorials_dataset_package_writes_tar_artifact() {
 }
 
 #[test]
+fn tutorials_dataset_package_can_refresh_sha256_manifest() {
+    let root = repo_root();
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args([
+            "tutorials",
+            "dataset",
+            "package",
+            "--update-sha256",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("tutorials dataset package --update-sha256");
+    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    assert_eq!(payload["sha256_manifest_updated"], true);
+}
+
+#[test]
 fn tutorials_dataset_integrity_check_passes_for_current_fixture() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
@@ -90,3 +124,31 @@ fn tutorials_dataset_integrity_check_passes_for_current_fixture() {
     assert_eq!(payload["success"], true);
 }
 
+#[test]
+fn tutorials_reproducibility_check_writes_evidence_artifact() {
+    let root = repo_root();
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args(["tutorials", "reproducibility-check", "--format", "json"])
+        .output()
+        .expect("tutorials reproducibility-check");
+    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    assert_eq!(
+        payload["evidence_artifact"].as_str().unwrap_or_default(),
+        "artifacts/tutorials/reproducibility-evidence.json"
+    );
+}
+
+#[test]
+fn tutorials_contracts_explain_returns_schema_context() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["tutorials", "contracts", "explain", "--format", "json"])
+        .output()
+        .expect("tutorials contracts explain");
+    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    assert_eq!(payload["action"], "contracts-explain");
+    assert!(payload["required_keys"].as_array().is_some());
+}
