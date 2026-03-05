@@ -783,6 +783,7 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                     run_id,
                     mode,
                     fail_fast,
+                    include_client_python,
                     format,
                     out,
                 } => run_tests_run(
@@ -791,6 +792,7 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                     run_id,
                     mode,
                     fail_fast,
+                    include_client_python,
                     format,
                     out,
                 ),
@@ -940,6 +942,7 @@ fn run_tests_doctor(
         run_id,
         TestsModeArg::Fast,
         true,
+        false,
         format,
         out,
     )
@@ -951,6 +954,7 @@ fn run_tests_run(
     run_id: Option<String>,
     mode: TestsModeArg,
     fail_fast: bool,
+    include_client_python: bool,
     format: FormatArg,
     out: Option<PathBuf>,
 ) -> Result<(String, i32), String> {
@@ -973,15 +977,45 @@ fn run_tests_run(
         .current_dir(&repo_root)
         .status()
         .map_err(|err| format!("run make {target} failed: {err}"))?;
+    let mut client_python_status_code = None;
+    if include_client_python {
+        let exe = std::env::current_exe()
+            .map_err(|err| format!("resolve current executable failed: {err}"))?;
+        let python_status = ProcessCommand::new(exe)
+            .arg("clients")
+            .arg("python")
+            .arg("test")
+            .arg("--client")
+            .arg("atlas-client")
+            .arg("--format")
+            .arg("json")
+            .current_dir(&repo_root)
+            .status()
+            .map_err(|err| format!("run clients python test failed: {err}"))?;
+        client_python_status_code = python_status.code();
+    }
     let duration_ms = started.elapsed().as_millis() as u64;
-    let exit_code = status.code().unwrap_or(1);
+    let make_exit_code = status.code().unwrap_or(1);
+    let make_success = status.success();
+    let client_success = client_python_status_code
+        .map(|code| code == 0)
+        .unwrap_or(true);
+    let exit_code = if make_success && client_success {
+        0
+    } else if !make_success {
+        make_exit_code
+    } else {
+        client_python_status_code.unwrap_or(1)
+    };
     let payload = serde_json::json!({
         "schema_version": 1,
         "suite": "tests",
         "run_id": run_id,
         "target": target,
         "mode": match mode { TestsModeArg::Fast => "fast", TestsModeArg::All => "all" },
-        "status": if status.success() { "PASS" } else { "FAIL" },
+        "status": if exit_code == 0 { "PASS" } else { "FAIL" },
+        "include_client_python": include_client_python,
+        "client_python_status_code": client_python_status_code,
         "exit_code": exit_code,
         "duration_ms": duration_ms,
         "artifacts_root": artifacts_root.display().to_string()
@@ -1014,7 +1048,7 @@ fn run_tests_run(
         fs::write(&path, format!("{rendered}\n"))
             .map_err(|err| format!("write {} failed: {err}", path.display()))?;
     }
-    Ok((rendered, if status.success() { 0 } else { 1 }))
+    Ok((rendered, if exit_code == 0 { 0 } else { 1 }))
 }
 
 pub(crate) fn deprecated_contracts_warning() -> &'static str {

@@ -27,6 +27,8 @@ pub enum TestsCommand {
         mode: TestsModeArg,
         #[arg(long, default_value_t = false)]
         fail_fast: bool,
+        #[arg(long, default_value_t = false)]
+        include_client_python: bool,
         #[arg(long, value_enum, default_value_t = FormatArg::Text)]
         format: FormatArg,
         #[arg(long)]

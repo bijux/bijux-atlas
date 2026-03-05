@@ -362,17 +362,36 @@ fn run_clients_python_test(args: &ClientsPythonTestArgs) -> Result<(String, i32)
     }
     test_files.sort();
     let mut rows = Vec::new();
+    let logs_root = repo_artifact_root(&args.common, &args.common.client).join("python-test-logs");
+    fs::create_dir_all(&logs_root)
+        .map_err(|err| format!("failed to create {}: {err}", logs_root.display()))?;
     for test_file in &test_files {
         let mut cmd_args = vec!["-m", "pytest", test_file.as_str()];
         if args.skip_network {
             cmd_args.extend(["-m", "not integration and not network"]);
         }
         let started = std::time::Instant::now();
-        let status = run_allowlisted_python_status(&root, &cmd_args, args.skip_network)?;
+        let output = run_allowlisted_python_output(&root, &cmd_args, args.skip_network)?;
         let duration_ms = started.elapsed().as_millis() as u64;
-        rows.push((test_file.clone(), status.success(), duration_ms));
+        let log_name = test_file
+            .replace('/', "__")
+            .replace('\\', "__")
+            .replace(".py", "");
+        let stdout_path = logs_root.join(format!("{log_name}.stdout.log"));
+        let stderr_path = logs_root.join(format!("{log_name}.stderr.log"));
+        fs::write(&stdout_path, &output.stdout)
+            .map_err(|err| format!("failed to write {}: {err}", stdout_path.display()))?;
+        fs::write(&stderr_path, &output.stderr)
+            .map_err(|err| format!("failed to write {}: {err}", stderr_path.display()))?;
+        rows.push((
+            test_file.clone(),
+            output.status.success(),
+            duration_ms,
+            stdout_path.display().to_string(),
+            stderr_path.display().to_string(),
+        ));
     }
-    let passed = rows.iter().filter(|(_, ok, _)| *ok).count();
+    let passed = rows.iter().filter(|(_, ok, _, _, _)| *ok).count();
     let failed = rows.len().saturating_sub(passed);
     let evidence_root = repo_artifact_root(&args.common, &args.common.client);
     fs::create_dir_all(&evidence_root)
@@ -387,10 +406,12 @@ fn run_clients_python_test(args: &ClientsPythonTestArgs) -> Result<(String, i32)
         "install_deps": args.install_deps,
         "lockfile": "requirements.lock",
         "summary": {"total": rows.len(), "passed": passed, "failed": failed},
-        "tests": rows.iter().map(|(id, ok, duration_ms)| serde_json::json!({
+        "tests": rows.iter().map(|(id, ok, duration_ms, stdout_log, stderr_log)| serde_json::json!({
             "id": id,
             "status": if *ok { "pass" } else { "fail" },
-            "duration_ms": duration_ms
+            "duration_ms": duration_ms,
+            "stdout_log": stdout_log,
+            "stderr_log": stderr_log
         })).collect::<Vec<_>>()
     });
     fs::write(
@@ -403,7 +424,7 @@ fn run_clients_python_test(args: &ClientsPythonTestArgs) -> Result<(String, i32)
     .map_err(|err| format!("failed to write {}: {err}", evidence_path.display()))?;
     if matches!(args.common.format, crate::cli::FormatArg::Text) && !args.common.markdown {
         let mut lines = vec!["clients python test".to_string()];
-        for (idx, (id, ok, duration_ms)) in rows.iter().enumerate() {
+        for (idx, (id, ok, duration_ms, _, _)) in rows.iter().enumerate() {
             let status = if *ok { "PASS" } else { "FAIL" };
             lines.push(format!(
                 "{status} ({}/{}) clients python {} [{} ms]",
@@ -593,18 +614,18 @@ fn normalize_newlines(text: &str) -> String {
 }
 
 fn run_allowlisted_python(cwd: &Path, args: &[&str], reason: &str) -> Result<(), String> {
-    let status = run_allowlisted_python_status(cwd, args, false)?;
-    if !status.success() {
+    let output = run_allowlisted_python_output(cwd, args, false)?;
+    if !output.status.success() {
         return Err(format!("python command failed while attempting to {reason}"));
     }
     Ok(())
 }
 
-fn run_allowlisted_python_status(
+fn run_allowlisted_python_output(
     cwd: &Path,
     args: &[&str],
     skip_network: bool,
-) -> Result<std::process::ExitStatus, String> {
+) -> Result<std::process::Output, String> {
     let python = resolve_python_interpreter(cwd)?;
     if !cwd.ends_with(Path::new("crates/bijux-atlas-client-python")) {
         return Err(format!(
@@ -617,7 +638,7 @@ fn run_allowlisted_python_status(
     if skip_network {
         cmd.env("ATLAS_CLIENT_SKIP_NETWORK", "1");
     }
-    cmd.status()
+    cmd.output()
         .map_err(|err| format!("execute `{python}` failed: {err}"))
 }
 

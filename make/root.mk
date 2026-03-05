@@ -166,6 +166,6 @@ registry-doctor: ## Validate governed suite registries and mappings
 	@$(DEV_ATLAS) registry doctor --format $(FORMAT)
 
 tests-all: ## Run the deterministic test suite without external network
-	@$(DEV_ATLAS) tests run --mode all --artifacts-root $(ARTIFACT_ROOT) --run-id $(RUN_ID) --format $(FORMAT)
+	@$(DEV_ATLAS) tests run --mode all --artifacts-root $(ARTIFACT_ROOT) --run-id $(RUN_ID) $(if $(filter 1 true yes,$(INCLUDE_CLIENT_PYTHON)),--include-client-python,) --format $(FORMAT)
 
 .PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean checks checks-all checks-effect checks-group checks-pure checks-tag clean doctor kind-down kind-reset kind-status kind-up openapi-generate registry-doctor release-plan root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly suites-all suites-list tests-all
