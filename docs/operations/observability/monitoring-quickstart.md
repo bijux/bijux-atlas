@@ -22,5 +22,6 @@ last_reviewed: 2026-03-05
    - `bijux dev atlas ops observe slo verify --allow-write --format json`
    - `bijux dev atlas ops observe alerts verify --allow-write --format json`
    - `bijux dev atlas ops observe runbooks verify --allow-write --format json`
+   - `bijux-dev-atlas observe dashboards verify --format json`
 4. Generate readiness report:
    - `bijux dev atlas ops readiness --allow-write --format json`

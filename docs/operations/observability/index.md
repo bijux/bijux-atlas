@@ -88,15 +88,21 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - [Dashboard provisioning instructions](dashboard-provisioning-instructions.md): provisioning steps for k8s and compose
 - [Dashboard installation guide](dashboard-installation-guide.md): import and verification flow
 - [Dashboard troubleshooting guide](dashboard-troubleshooting-guide.md): recovery flow for panel/query failures
+- [Operational dashboard index](operational-dashboard-index.md): quick index of production dashboard assets
 - [Prometheus query examples](prometheus-query-examples.md): operational query snippets
 - [Tracing dashboard examples](tracing-dashboard-examples.md): span and latency panel examples
 - [Log analysis query examples](log-analysis-query-examples.md): repeatable log query snippets
 - [Alert rule examples](alert-rule-examples.md): rule templates for core signals
 - [Observability quickstart](observability-quickstart.md): shortest path to usable monitoring
 - [Monitoring setup guide](monitoring-setup-guide.md): full setup sequence
+- [Monitoring quickstart](monitoring-quickstart.md): shortest command sequence for dashboard bring-up
+- [Monitoring troubleshooting guide](monitoring-troubleshooting-guide.md): monitoring-specific diagnostic sequence
 - [Alerting configuration guide](alerting-configuration-guide.md): alert wiring and ownership
 - [Production monitoring checklist](production-monitoring-checklist.md): go-live checks
 - [Observability architecture diagram](observability-architecture-diagram.md): end-to-end telemetry flow
+- [Operational intelligence documentation](operational-intelligence-documentation.md): control-plane documentation for dashboards and readiness
+- [Production operations handbook](production-operations-handbook.md): operator workflow for production incidents
+- [Incident response playbook](incident-response-playbook.md): dashboard-led response and verification workflow
 - [Observability FAQ](observability-faq.md): frequent operational decisions
 - [Observability glossary](observability-glossary.md): canonical terminology
 - [Observability troubleshooting guide](observability-troubleshooting-guide.md): failure-mode focused fixes
@@ -108,6 +114,7 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - Alert rule source: `ops/observe/alerts/atlas-alert-rules.yaml`
 - Dashboard source: `ops/observe/dashboards/atlas-observability-dashboard.json`
 - Contract reference: [Observability Contracts](../../reference/contracts/observability.md)
+- [Observability completion report](observability-completion-report.md): final observability output summary
 
 ## Verify success
 
