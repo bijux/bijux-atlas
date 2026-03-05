@@ -7,6 +7,9 @@ rust-version.workspace = true
 description = "Rust client SDK for Atlas HTTP APIs"
 repository.workspace = true
 homepage.workspace = true
+documentation = "https://docs.rs/bijux-atlas-client"
+readme = "README.md"
+categories = ["api-bindings", "science"]
 keywords = ["atlas", "client", "sdk", "api", "http"]
 
 [lints]

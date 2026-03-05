@@ -6,6 +6,7 @@ versioning_model = "workspace-unified"
 allow = [
   "bijux-atlas-api",
   "bijux-atlas-cli",
+  "bijux-atlas-client",
   "bijux-atlas-core",
   "bijux-atlas-ingest",
   "bijux-atlas-model",
@@ -21,6 +22,7 @@ deny = [
 
 [roles]
 "bijux-atlas-server" = "runtime-server"
+"bijux-atlas-client" = "client-sdk"
 "bijux-atlas-core" = "core-library"
 "bijux-atlas-policies" = "policy-library"
 "bijux-dev-atlas" = "developer-tool-private"

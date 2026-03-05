@@ -24,6 +24,19 @@ Blocked from crates.io by policy:
 - `bijux-dev-atlas`
 - `bijux-atlas-bench`
 
+Current publishable crates:
+
+- `bijux-atlas-api`
+- `bijux-atlas-cli`
+- `bijux-atlas-client`
+- `bijux-atlas-core`
+- `bijux-atlas-ingest`
+- `bijux-atlas-model`
+- `bijux-atlas-policies`
+- `bijux-atlas-query`
+- `bijux-atlas-server`
+- `bijux-atlas-store`
+
 ## Versioning model
 
 - Workspace uses a unified version (`0.1.0` at this snapshot).
@@ -44,3 +57,14 @@ Each publishable crate has:
 - `bijux dev atlas release validate --format text|json`
 - `bijux dev atlas release tag --version <v> --tag <tag>`
 - `bijux dev atlas release notes --version <v>`
+
+## Crates.io readiness checks
+
+- `cargo package -p <crate>`
+- `cargo publish --dry-run -p <crate>`
+- `cargo doc -p <crate> --no-deps`
+- `cargo clippy --workspace --all-targets --all-features -- -D warnings`
+- `cargo fmt --check`
+- `cargo test`
+- `cargo nextest run --workspace --all-features`
+- `cargo audit`

@@ -28,6 +28,7 @@ Publishable crates:
 
 - `bijux-atlas-api`
 - `bijux-atlas-cli`
+- `bijux-atlas-client`
 - `bijux-atlas-core`
 - `bijux-atlas-ingest`
 - `bijux-atlas-model`
@@ -40,4 +41,4 @@ Each publishable crate must maintain:
 
 - `CONTRACT.md` with compatibility and breaking-change rules.
 - `README.md` as crates.io-facing summary.
-- Cargo metadata fields: `description`, `license`, `repository`, `documentation`.
+- Cargo metadata fields: `description`, `license`, `repository`, `homepage`, `documentation`, `readme`, `categories`, `keywords`, `edition`, `rust-version`.
