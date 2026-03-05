@@ -800,16 +800,60 @@ fn run_release_images_size_report(args: ReleaseImagesValidateArgs) -> Result<(St
     } else {
         None
     };
+    let measured_image_size_path = root.join("artifacts/docker-publish/image-size-bytes.json");
+    let measured_image_size = if measured_image_size_path.exists() {
+        Some(
+            read_json(&measured_image_size_path)?
+                .get("bytes")
+                .and_then(serde_json::Value::as_u64)
+                .unwrap_or_default(),
+        )
+    } else {
+        None
+    };
+    let waiver_path = policy
+        .get("size_waiver_path")
+        .and_then(serde_json::Value::as_str)
+        .map(|rel| root.join(rel));
+    let waiver_present = waiver_path.as_ref().is_some_and(|path| path.exists());
+    let mut warnings = Vec::<String>::new();
+    let mut errors = Vec::<String>::new();
+    if let Some(actual) = measured_image_size {
+        if actual > budget && !waiver_present {
+            errors.push(format!(
+                "runtime image size {} exceeds budget {} bytes without waiver",
+                actual, budget
+            ));
+        }
+    } else {
+        warnings.push(
+            "missing artifacts/docker-publish/image-size-bytes.json; measured image budget check skipped"
+                .to_string(),
+        );
+    }
+    let status = if errors.is_empty() {
+        if warnings.is_empty() {
+            "ok"
+        } else {
+            "warn"
+        }
+    } else {
+        "failed"
+    };
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "release_images_size_report",
-        "status": "ok",
+        "status": status,
         "runtime_image_budget_bytes": budget,
         "atlas_server_binary_bytes": binary_bytes,
-        "note": "budget tracks image bytes; binary size is included as a local deterministic proxy signal"
+        "measured_image_size_bytes": measured_image_size,
+        "waiver_present": waiver_present,
+        "note": "budget tracks image bytes; binary size is included as a local deterministic proxy signal",
+        "warnings": warnings,
+        "errors": errors
     });
     let rendered = emit_payload(args.format, args.out, &payload)?;
-    Ok((rendered, 0))
+    Ok((rendered, if status == "failed" { 1 } else { 0 }))
 }
 
 fn run_release_images_runtime_hardening_verify(
@@ -860,6 +904,30 @@ fn run_release_images_runtime_hardening_verify(
         && (runtime_section.contains("chmod 777") || runtime_section.contains("chown -R"))
     {
         errors.push("runtime Dockerfile must avoid broad write-surface permission grants".to_string());
+    }
+    let allowed_runtime_binaries = policy
+        .get("allowed_runtime_binaries")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|row| row.as_str().map(ToOwned::to_owned))
+        .collect::<Vec<_>>();
+    let runtime_copy_targets = runtime_section
+        .lines()
+        .map(str::trim)
+        .filter(|line| line.starts_with("COPY --from=builder "))
+        .filter_map(|line| line.split_whitespace().last())
+        .collect::<Vec<_>>();
+    for target in runtime_copy_targets {
+        if !allowed_runtime_binaries
+            .iter()
+            .any(|allowed| allowed == target)
+        {
+            errors.push(format!(
+                "runtime COPY target `{target}` is not listed in allowed_runtime_binaries"
+            ));
+        }
     }
     let status = if errors.is_empty() { "ok" } else { "failed" };
     let payload = serde_json::json!({

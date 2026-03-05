@@ -2,7 +2,9 @@
   "schema_version": 1,
   "require_non_root": true,
   "require_minimal_runtime_base": true,
+  "allowed_runtime_binaries": ["/app/atlas-server", "/app/bijux-atlas"],
   "forbidden_runtime_tokens": ["sudo", "apk add", "apt-get install"],
   "runtime_image_max_bytes": 450000000,
+  "size_waiver_path": "release/waivers/image-size-waiver.json",
   "require_minimal_write_surface": true
 }
