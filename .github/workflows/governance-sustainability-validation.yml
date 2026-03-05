@@ -1,0 +1,27 @@
+name: Governance Sustainability Validation
+
+on:
+  pull_request:
+    paths:
+      - "docs/governance/**"
+      - "configs/governance/**"
+      - "ops/governance/**"
+      - "crates/bijux-dev-atlas/src/commands/governance.rs"
+      - "crates/bijux-dev-atlas/tests/*governance*"
+  workflow_dispatch: {}
+
+jobs:
+  governance-sustainability:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+      - uses: dtolnay/rust-toolchain@fe0d6af7d5ee8c1144f8f120ce1f75d2f1c56c3e
+        with:
+          toolchain: stable
+      - name: Governance checks
+        run: |
+          cargo run -q -p bijux-dev-atlas -- governance check --format json
+          cargo run -q -p bijux-dev-atlas -- governance validate --format json
+          cargo run -q -p bijux-dev-atlas -- governance report --format json
+      - name: Governance sustainability contracts
+        run: cargo test -p bijux-dev-atlas --test governance_sustainability_contracts -- --nocapture
