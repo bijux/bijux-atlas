@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "stale_days": 90,
+  "stale_fail_grace_days": 30,
+  "reference_date": "2026-02-25",
+  "stale_override_policy_path": "docs/_internal/policies/stale-page-overrides.json",
+  "default_area_budget": 20,
+  "area_budgets": {
+    "docs-root": 800,
+    "bijux-dev-atlas": 20
+  },
+  "naming": {
+    "forbidden_words": ["phase", "task", "legacy", "migration"],
+    "allow_uppercase": ["README.md", "INDEX.md"]
+  },
+  "terminology": {
+    "forbidden_terms": ["atlasctl", "xtask", "python era", "script migration"]
+  },
+  "markdown": {
+    "max_line_length": 180,
+    "require_h1": true,
+    "require_sections": ["Purpose", "Stability"]
+  },
+  "diagrams": {
+    "extensions": [".svg", ".png", ".jpg", ".jpeg", ".drawio"],
+    "roots": ["docs/_assets", "docs/assets"]
+  }
+}

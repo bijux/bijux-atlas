@@ -2,6 +2,6 @@
   "schema_version": 1,
   "dataset": "transcripts-baseline",
   "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000095/DRR000095_2.fastq.gz",
-  "expected_sha256": "7e9895254a8ddf712ca1aa3583edeed2ea8a169b3b380b846b2cabc570fdcad5",
+  "expected_sha256": "e7781958faa932bf24f2054aa51fd9b83c6eefc3331fd76d94da62c49eee1a76",
   "retrieval_method": "https-get"
 }

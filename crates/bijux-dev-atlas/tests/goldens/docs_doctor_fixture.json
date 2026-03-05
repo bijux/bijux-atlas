@@ -11,7 +11,7 @@
     "subprocess": false
   },
   "counts": {
-    "errors": 1
+    "errors": 16
   },
   "duration_ms": 0,
   "error_code": "DOCS_NAV_ERROR",
@@ -21,7 +21,7 @@
   },
   "rows": [
     {
-      "errors": 0,
+      "errors": 1,
       "name": "validate"
     },
     {
@@ -29,7 +29,7 @@
       "name": "links"
     },
     {
-      "errors": 1,
+      "errors": 15,
       "name": "lint"
     },
     {
@@ -53,5 +53,5 @@
     },
     "status": "skipped"
   },
-  "text": "docs: 5 checks collected, 1 failed, build=skipped"
+  "text": "docs: 5 checks collected, 16 failed, build=skipped"
 }

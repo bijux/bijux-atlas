@@ -89,6 +89,7 @@ fn generated_docs_directory_contains_required_example_snippets() {
         "docs/_generated/schema-snippets.md",
         "docs/_generated/openapi-snippets.md",
         "docs/_generated/ops-snippets.md",
+        "docs/_generated/real-data-runs-table.md",
     ];
     let missing = required
         .iter()
@@ -197,6 +198,7 @@ fn generated_docs_file_set_matches_expected_snapshot() {
         "docs/_generated/examples.md".to_string(),
         "docs/_generated/openapi-snippets.md".to_string(),
         "docs/_generated/ops-snippets.md".to_string(),
+        "docs/_generated/real-data-runs-table.md".to_string(),
         "docs/_generated/schema-snippets.md".to_string(),
     ];
     assert_eq!(

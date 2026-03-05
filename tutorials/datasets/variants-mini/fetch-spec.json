@@ -2,6 +2,6 @@
   "schema_version": 1,
   "dataset": "variants-mini",
   "url": "https://ftp.sra.ebi.ac.uk/vol1/fastq/DRR000/DRR000098/DRR000098.fastq.gz",
-  "expected_sha256": "2fb614d8284af52890a519655c14284508776da4566c6e6ae3010dd9021f1e29",
+  "expected_sha256": "1fc7ceddb27f45f827ee6d3e3c4aa9f3e13e719a9687204909ab542f2068acb7",
   "retrieval_method": "https-get"
 }

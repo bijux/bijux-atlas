@@ -50,14 +50,22 @@ mod tests {
     use crate::runtime::AdapterError;
     use std::fs;
     use std::path::PathBuf;
+    use std::sync::atomic::{AtomicU64, Ordering};
     use std::time::{SystemTime, UNIX_EPOCH};
+
+    static TEMP_ROOT_COUNTER: AtomicU64 = AtomicU64::new(0);
 
     fn temp_root() -> PathBuf {
         let suffix = match SystemTime::now().duration_since(UNIX_EPOCH) {
             Ok(d) => d.as_nanos(),
             Err(_) => 0,
         };
-        let root = std::env::temp_dir().join(format!("bijux-dev-atlas-workspace-root-{suffix}"));
+        let counter = TEMP_ROOT_COUNTER.fetch_add(1, Ordering::Relaxed);
+        let pid = std::process::id();
+        let root = std::env::temp_dir().join(format!(
+            "bijux-dev-atlas-workspace-root-{pid}-{suffix}-{counter}"
+        ));
+        let _ = fs::remove_dir_all(&root);
         let _ = fs::create_dir_all(&root);
         root
     }
