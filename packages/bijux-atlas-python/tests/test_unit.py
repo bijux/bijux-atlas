@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import unittest
+from unittest import mock
 try:
     import pytest
 except ImportError:  # pragma: no cover
@@ -25,6 +26,21 @@ class UnitTests(unittest.TestCase):
         self.assertEqual(payload["dataset"], "genes")
         self.assertEqual(payload["filters"], {"chromosome": "1"})
         self.assertEqual(payload["limit"], 10)
+
+    def test_config_from_env(self) -> None:
+        with mock.patch.dict(
+            "os.environ",
+            {
+                "BIJUX_ATLAS_URL": "https://atlas.example",
+                "BIJUX_ATLAS_TOKEN": "secret-token",
+                "BIJUX_ATLAS_MAX_RETRIES": "3",
+            },
+            clear=True,
+        ):
+            cfg = ClientConfig.from_env()
+        self.assertEqual(cfg.base_url, "https://atlas.example")
+        self.assertEqual(cfg.auth_token, "secret-token")
+        self.assertEqual(cfg.max_retries, 3)
 
 
 if __name__ == "__main__":

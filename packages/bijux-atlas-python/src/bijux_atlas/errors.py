@@ -14,10 +14,23 @@ class AtlasConfigError(AtlasClientError):
 class AtlasApiError(AtlasClientError):
     """Raised when the server returns a non-success status."""
 
-    def __init__(self, status_code: int, body: str) -> None:
-        super().__init__(f"atlas api error: status={status_code} body={body}")
+    def __init__(
+        self,
+        status_code: int,
+        body: str,
+        request_id: str | None = None,
+        trace_id: str | None = None,
+    ) -> None:
+        details = f"atlas api error: status={status_code} body={body}"
+        if request_id:
+            details = f"{details} request_id={request_id}"
+        if trace_id:
+            details = f"{details} trace_id={trace_id}"
+        super().__init__(details)
         self.status_code = status_code
         self.body = body
+        self.request_id = request_id
+        self.trace_id = trace_id
 
 
 class AtlasRetryExhaustedError(AtlasClientError):
