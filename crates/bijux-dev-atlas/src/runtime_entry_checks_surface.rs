@@ -452,9 +452,10 @@ fn render_automation_boundaries_report(
                 "checks:".to_string(),
             ];
             for check in &report.checks {
+                let badge = if check.status == "pass" { "PASS" } else { "FAIL" };
                 lines.push(format!(
-                    "- {}: {} (violations={})",
-                    check.id, check.status, check.violation_count
+                    "{badge} {} violations={}",
+                    check.id, check.violation_count
                 ));
                 for violation in &check.violations {
                     lines.push(format!("  - {violation}"));
