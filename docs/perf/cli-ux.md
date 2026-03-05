@@ -43,3 +43,9 @@ cargo run -p bijux-dev-atlas -- perf cli-ux diff \
 - `artifacts/perf/cli-ux/latest-summary.md`
 - `artifacts/perf/cli-ux/latest-diff.json`
 - `artifacts/perf/cli-ux/raw/*.log`
+
+## Related references
+
+- [CLI UX Benchmark Mechanics](./cli-ux-how-it-works.md)
+- [CLI UX Benchmark Interpretation](./cli-ux-interpretation.md)
+- [CLI UX Baseline Update Procedure](./cli-ux-baseline-update.md)
