@@ -17,10 +17,15 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - [Dashboards](dashboards.md): dashboard set for incident triage
 - [Query benchmark dashboards](query-benchmark-dashboards.md): benchmark-focused latency and throughput panels
 - [Metrics architecture](metrics-architecture.md): naming, labels, cardinality, and required runtime metrics
+- [Metrics philosophy](metrics-philosophy.md): foundational metrics intent and operational decision focus
 - [Metrics naming conventions](metrics-naming-conventions.md): canonical naming and unit suffix rules
 - [Metric types](metric-types.md): counter, gauge, and histogram selection rules
 - [Metric labels](metric-labels.md): stable label vocabulary
 - [Cardinality policy](cardinality-policy.md): label cardinality controls
+- [Metrics stability policy](metrics-stability-policy.md): stable vs experimental governance
+- [Metrics versioning policy](metrics-versioning-policy.md): semantic evolution and migration expectations
+- [Metrics registry reference](metrics-registry-reference.md): generated canonical metric catalog
+- [Metrics completion report](metrics-completion-report.md): delivered metrics engineering scope
 - [Metric retention policy](metric-retention-policy.md): retention tiers and budget alignment
 - [Logging architecture](logging-architecture.md): structured schema, levels, and metadata policy
 - [Logging debugging guide](logging-debugging-guide.md): request and query log triage flow

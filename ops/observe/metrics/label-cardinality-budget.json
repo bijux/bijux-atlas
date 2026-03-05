@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "policy_id": "observe-metrics-label-cardinality-budget",
+  "max_cardinality_budget": 200,
+  "allowed_labels": [
+    "artifact_type",
+    "cache_layer",
+    "dataset",
+    "error_class",
+    "failure_class",
+    "operation",
+    "pipeline",
+    "result",
+    "route",
+    "status_code",
+    "subsystem",
+    "validation_rule",
+    "version"
+  ]
+}
