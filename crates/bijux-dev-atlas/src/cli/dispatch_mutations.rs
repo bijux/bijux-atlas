@@ -160,6 +160,7 @@ pub(super) fn force_json_output(command: &mut Command) {
             ReleaseCommand::Ops { command } => match command {
                 ReleaseOpsCommand::Package(args)
                 | ReleaseOpsCommand::ValidatePackage(args)
+                | ReleaseOpsCommand::CompatibilityMatrix(args)
                 | ReleaseOpsCommand::DigestVerify(args)
                 | ReleaseOpsCommand::ValuesCoverage(args)
                 | ReleaseOpsCommand::ProfilesVerify(args)
@@ -777,6 +778,8 @@ fn force_json_tutorials(command: &mut crate::cli::TutorialsCommand) {
             | crate::cli::TutorialsRealDataCommand::Ingest(args)
             | crate::cli::TutorialsRealDataCommand::QueryPack(args)
             | crate::cli::TutorialsRealDataCommand::ExportEvidence(args)
+            | crate::cli::TutorialsRealDataCommand::CompareRegression(args)
+            | crate::cli::TutorialsRealDataCommand::VerifyIdempotency(args)
             | crate::cli::TutorialsRealDataCommand::CleanRun(args) => {
                 args.common.format = FormatArg::Json
             }
@@ -1735,6 +1738,8 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 | crate::cli::TutorialsRealDataCommand::Ingest(args)
                 | crate::cli::TutorialsRealDataCommand::QueryPack(args)
                 | crate::cli::TutorialsRealDataCommand::ExportEvidence(args)
+                | crate::cli::TutorialsRealDataCommand::CompareRegression(args)
+                | crate::cli::TutorialsRealDataCommand::VerifyIdempotency(args)
                 | crate::cli::TutorialsRealDataCommand::CleanRun(args) => {
                     args.common.repo_root = Some(root.clone())
                 }
@@ -2277,6 +2282,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             ReleaseCommand::Ops { command } => match command {
                 ReleaseOpsCommand::Package(args)
                 | ReleaseOpsCommand::ValidatePackage(args)
+                | ReleaseOpsCommand::CompatibilityMatrix(args)
                 | ReleaseOpsCommand::DigestVerify(args)
                 | ReleaseOpsCommand::ValuesCoverage(args)
                 | ReleaseOpsCommand::ProfilesVerify(args)

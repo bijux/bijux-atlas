@@ -687,6 +687,7 @@ pub enum ReleaseImagesCommand {
 pub enum ReleaseOpsCommand {
     Package(ReleaseOpsPackageArgs),
     ValidatePackage(ReleaseOpsPackageArgs),
+    CompatibilityMatrix(ReleaseOpsPackageArgs),
     Push(ReleaseOpsPushArgs),
     DigestVerify(ReleaseOpsPackageArgs),
     PullTest(ReleaseOpsPullTestArgs),
@@ -1394,6 +1395,8 @@ pub enum TutorialsRealDataCommand {
     Ingest(TutorialsRealDataRunArgs),
     QueryPack(TutorialsRealDataRunArgs),
     ExportEvidence(TutorialsRealDataRunArgs),
+    CompareRegression(TutorialsRealDataRunArgs),
+    VerifyIdempotency(TutorialsRealDataRunArgs),
     RunAll(TutorialsRealDataRunAllArgs),
     CleanRun(TutorialsRealDataRunArgs),
     Doctor(TutorialsCommandArgs),
