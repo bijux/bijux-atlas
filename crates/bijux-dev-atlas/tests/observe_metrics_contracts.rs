@@ -34,6 +34,13 @@ fn observe_metrics_list_emits_registry_snapshot() {
         .get("artifacts")
         .and_then(|v| v.get("metrics_registry_snapshot"))
         .is_some());
+    assert_eq!(
+        payload
+            .get("budget_validation_errors")
+            .and_then(|v| v.as_array())
+            .map(|v| v.len()),
+        Some(0)
+    );
 }
 
 #[test]
