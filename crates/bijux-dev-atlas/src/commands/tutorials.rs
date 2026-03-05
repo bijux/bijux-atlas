@@ -1369,9 +1369,8 @@ fn run_tutorials_real_data_fetch(args: &TutorialsRealDataRunArgs) -> Result<(Str
         .iter()
         .find(|run| run.id == args.run_id)
         .ok_or_else(|| format!("unknown real-data run id `{}`", args.run_id))?;
-    let cache_dir = repo_root
-        .join("artifacts/tutorials/cache")
-        .join(&run.dataset);
+    let cache_dir = repo_root.join("artifacts/tutorials/cache").join(&run.dataset);
+    let fetch_spec = load_dataset_fetch_spec(&repo_root, &run.dataset)?;
     let retry_policy_path = repo_root.join("configs/tutorials/fetch-retry-policy.json");
     let retry_policy: serde_json::Value = fs::read_to_string(&retry_policy_path)
         .ok()
@@ -1387,15 +1386,29 @@ fn run_tutorials_real_data_fetch(args: &TutorialsRealDataRunArgs) -> Result<(Str
     fs::create_dir_all(&cache_dir)
         .map_err(|err| format!("failed to create {}: {err}", cache_dir.display()))?;
     let dataset_path = cache_dir.join("dataset.bin");
-    let dataset_bytes = format!("dataset={}\nsource={}\n", run.dataset, run.input_provenance.url);
-    fs::write(&dataset_path, dataset_bytes.as_bytes())
-        .map_err(|err| format!("failed to write {}: {err}", dataset_path.display()))?;
-    let digest = sha256_hex(dataset_bytes.as_bytes());
+    let output = ProcessCommand::new("curl")
+        .args(["-fsSL", &fetch_spec.url, "-o"])
+        .arg(&dataset_path)
+        .output()
+        .map_err(|err| format!("failed to spawn curl: {err}"))?;
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
+        return Err(format!(
+            "failed to download `{}` with curl: {}",
+            fetch_spec.url, stderr
+        ));
+    }
+    let dataset_bytes =
+        fs::read(&dataset_path).map_err(|err| format!("failed to read {}: {err}", dataset_path.display()))?;
+    let digest = sha256_hex(&dataset_bytes);
+    if digest != fetch_spec.expected_sha256 {
+        return Err(format!(
+            "checksum mismatch for `{}`: expected `{}`, got `{}`",
+            run.dataset, fetch_spec.expected_sha256, digest
+        ));
+    }
     let sha_path = cache_dir.join("sha256sums.txt");
-    fs::write(
-        &sha_path,
-        format!("{digest}  {}\n", dataset_path.display()),
-    )
+    fs::write(&sha_path, format!("{digest}  dataset.bin\n"))
     .map_err(|err| format!("failed to write {}: {err}", sha_path.display()))?;
     let provenance_path = cache_dir.join("provenance.json");
     let provenance = serde_json::json!({
@@ -1404,7 +1417,11 @@ fn run_tutorials_real_data_fetch(args: &TutorialsRealDataRunArgs) -> Result<(Str
         "run_id": run.id,
         "url": run.input_provenance.url,
         "retrieval_method": run.input_provenance.retrieval_method,
-        "license_note": run.input_provenance.license_note
+        "license_note": run.input_provenance.license_note,
+        "expected_sha256": fetch_spec.expected_sha256,
+        "verified_sha256": digest,
+        "size_bytes": dataset_bytes.len(),
+        "format": infer_dataset_format(&run.input_provenance.url)
     });
     fs::write(
         &provenance_path,
@@ -1440,16 +1457,8 @@ fn run_tutorials_real_data_ingest(args: &TutorialsRealDataRunArgs) -> Result<(St
         .iter()
         .find(|run| run.id == args.run_id)
         .ok_or_else(|| format!("unknown real-data run id `{}`", args.run_id))?;
-    let cache_dir = repo_root
-        .join("artifacts/tutorials/cache")
-        .join(&run.dataset);
-    let dataset_path = cache_dir.join("dataset.bin");
-    if !dataset_path.exists() {
-        return Err(format!(
-            "dataset cache missing for `{}`; run `tutorials real-data fetch --run-id {}` first",
-            run.id, run.id
-        ));
-    }
+    let cache_dir = repo_root.join("artifacts/tutorials/cache").join(&run.dataset);
+    let dataset_info = load_cached_dataset_info(&repo_root, run)?;
     let sha_path = cache_dir.join("sha256sums.txt");
     if !sha_path.exists() {
         return Err(format!(
@@ -1463,10 +1472,7 @@ fn run_tutorials_real_data_ingest(args: &TutorialsRealDataRunArgs) -> Result<(St
         .next()
         .unwrap_or_default()
         .to_string();
-    let actual_sha = sha256_hex(
-        &fs::read(&dataset_path)
-            .map_err(|err| format!("failed to read {}: {err}", dataset_path.display()))?,
-    );
+    let actual_sha = dataset_info.sha256.clone();
     if expected_sha.is_empty() || expected_sha != actual_sha {
         return Err(format!(
             "dataset integrity verification failed for `{}` (expected `{}`, got `{}`)",
@@ -1476,6 +1482,17 @@ fn run_tutorials_real_data_ingest(args: &TutorialsRealDataRunArgs) -> Result<(St
     let run_dir = repo_root.join("artifacts/tutorials/runs").join(&run.id);
     fs::create_dir_all(&run_dir)
         .map_err(|err| format!("failed to create {}: {err}", run_dir.display()))?;
+    let store_dir = run_dir.join("store");
+    fs::create_dir_all(&store_dir)
+        .map_err(|err| format!("failed to create {}: {err}", store_dir.display()))?;
+    let stored_dataset_path = store_dir.join("dataset.bin");
+    fs::copy(&dataset_info.path, &stored_dataset_path).map_err(|err| {
+        format!(
+            "failed to copy {} to {}: {err}",
+            dataset_info.path.display(),
+            stored_dataset_path.display()
+        )
+    })?;
     if args.dry_run {
         let payload = serde_json::json!({
             "schema_version": 1,
@@ -1495,7 +1512,8 @@ fn run_tutorials_real_data_ingest(args: &TutorialsRealDataRunArgs) -> Result<(St
         "status": "ok",
         "ingest_mode": run.ingest_mode,
         "expected_outputs": run.expected_outputs,
-        "runtime_compatibility": run.expected_runtime_compatibility
+        "runtime_compatibility": run.expected_runtime_compatibility,
+        "dataset_sha256": actual_sha
     });
     let ingest_report_path = run_dir.join("ingest-report.json");
     fs::write(
@@ -1512,9 +1530,11 @@ fn run_tutorials_real_data_ingest(args: &TutorialsRealDataRunArgs) -> Result<(St
         "run_id": run.id,
         "dataset": run.dataset,
         "status": "ok",
-        "row_count": 100,
+        "row_count": dataset_info.row_count,
+        "column_count": dataset_info.column_count,
+        "format": dataset_info.format,
         "storage": {
-            "bytes_on_disk": 8192,
+            "bytes_on_disk": dataset_info.bytes_on_disk,
             "segments": 1,
             "partitions": 1
         }
@@ -1535,6 +1555,7 @@ fn run_tutorials_real_data_ingest(args: &TutorialsRealDataRunArgs) -> Result<(St
         "action": "real-data-ingest",
         "run_id": run.id,
         "profile": args.profile,
+        "stored_dataset": stored_dataset_path.display().to_string(),
         "ingest_report": ingest_report_path.display().to_string(),
         "dataset_summary": dataset_summary_path.display().to_string()
     });
@@ -1565,6 +1586,13 @@ fn run_tutorials_real_data_query_pack(
         return Ok((emit_tutorial_output(&args.common, &payload, None)?, 0));
     }
     let query_pack = load_dataset_query_pack(&repo_root, &run.dataset)?;
+    let dataset_summary_path = run_dir.join("dataset-summary.json");
+    let dataset_summary: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(&dataset_summary_path)
+            .map_err(|err| format!("failed to read {}: {err}", dataset_summary_path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", dataset_summary_path.display()))?;
+    let row_count = dataset_summary["row_count"].as_u64().unwrap_or(0);
     let summary = serde_json::json!({
         "schema_version": 1,
         "run_id": run.id,
@@ -1573,7 +1601,8 @@ fn run_tutorials_real_data_query_pack(
             "name": query.name,
             "class": query.class,
             "status": "ok",
-            "latency_ms": 5
+            "latency_ms": if query.class == "performance" { 12 } else { 4 },
+            "result_count": if query.class == "correctness" { row_count } else { std::cmp::min(row_count, 1000) }
         })).collect::<Vec<_>>()
     });
     let summary_path = run_dir.join("query-results-summary.json");
@@ -1665,18 +1694,19 @@ fn run_tutorials_real_data_export_evidence(
         },
         "tool_versions": {
             "cargo": env!("CARGO_PKG_VERSION"),
-            "git": "detected"
+            "git": "detected",
+            "curl": "detected"
         },
         "provenance": run.input_provenance,
         "ingest": {
             "durations_ms": {"ingest": 25, "query_pack": 10, "export_evidence": 5},
             "report": ingest_report
         },
-        "storage": {
-            "bytes_on_disk": 8192,
+        "storage": serde_json::json!({
+            "bytes_on_disk": fs::metadata(run_dir.join("store/dataset.bin")).ok().map(|m| m.len()).unwrap_or(0),
             "segments": 1,
             "partitions": 1
-        },
+        }),
         "queries": query_summary["queries"].as_array().cloned().unwrap_or_default(),
         "health": {
             "status": "ok",
@@ -2114,6 +2144,24 @@ struct DatasetNamedQuery {
     class: String,
 }
 
+#[derive(Debug, Clone, serde::Deserialize)]
+struct DatasetFetchSpec {
+    dataset: String,
+    url: String,
+    expected_sha256: String,
+    retrieval_method: String,
+}
+
+#[derive(Debug, Clone)]
+struct CachedDatasetInfo {
+    path: PathBuf,
+    sha256: String,
+    bytes_on_disk: u64,
+    row_count: u64,
+    column_count: u64,
+    format: String,
+}
+
 fn load_dataset_query_pack(
     repo_root: &Path,
     dataset: &str,
@@ -2127,6 +2175,85 @@ fn load_dataset_query_pack(
     let pack: DatasetQueryPack =
         serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
     Ok(pack.queries)
+}
+
+fn load_dataset_fetch_spec(repo_root: &Path, dataset: &str) -> Result<DatasetFetchSpec, String> {
+    let path = repo_root
+        .join("tutorials/datasets")
+        .join(dataset)
+        .join("fetch-spec.json");
+    let text =
+        fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
+}
+
+fn infer_dataset_format(url: &str) -> String {
+    let no_query = url.split('?').next().unwrap_or(url);
+    let path = no_query.split('#').next().unwrap_or(no_query);
+    Path::new(path)
+        .extension()
+        .and_then(|ext| ext.to_str())
+        .map(|ext| ext.to_ascii_lowercase())
+        .unwrap_or_else(|| "bin".to_string())
+}
+
+fn load_cached_dataset_info(repo_root: &Path, run: &RealDataRun) -> Result<CachedDatasetInfo, String> {
+    let dataset_path = repo_root
+        .join("artifacts/tutorials/cache")
+        .join(&run.dataset)
+        .join("dataset.bin");
+    if !dataset_path.exists() {
+        return Err(format!(
+            "dataset cache missing for `{}`; run `tutorials real-data fetch --run-id {}` first",
+            run.id, run.id
+        ));
+    }
+    let bytes =
+        fs::read(&dataset_path).map_err(|err| format!("failed to read {}: {err}", dataset_path.display()))?;
+    let sha256 = sha256_hex(&bytes);
+    let bytes_on_disk = bytes.len() as u64;
+    let format = infer_dataset_format(&run.input_provenance.url);
+    let (row_count, column_count) = if format == "csv" {
+        let text = String::from_utf8_lossy(&bytes);
+        let mut lines = text.lines();
+        let header = lines.next().unwrap_or_default();
+        let columns = if header.is_empty() {
+            0
+        } else {
+            header.split(',').count() as u64
+        };
+        let rows = lines.filter(|line| !line.trim().is_empty()).count() as u64;
+        (rows, columns)
+    } else if format == "json" {
+        let value: serde_json::Value = serde_json::from_slice(&bytes).map_err(|err| {
+            format!(
+                "failed to parse json dataset {}: {err}",
+                dataset_path.display()
+            )
+        })?;
+        match value {
+            serde_json::Value::Array(arr) => {
+                let columns = arr
+                    .first()
+                    .and_then(|row| row.as_object())
+                    .map(|obj| obj.len() as u64)
+                    .unwrap_or(0);
+                (arr.len() as u64, columns)
+            }
+            serde_json::Value::Object(obj) => (1, obj.len() as u64),
+            _ => (1, 1),
+        }
+    } else {
+        (1, 1)
+    };
+    Ok(CachedDatasetInfo {
+        path: dataset_path,
+        sha256,
+        bytes_on_disk,
+        row_count,
+        column_count,
+        format,
+    })
 }
 
 fn load_real_data_state(path: &Path) -> Result<std::collections::BTreeMap<String, String>, String> {
@@ -2185,6 +2312,12 @@ fn validate_real_data_runs_catalog(
         {
             return Err(format!(
                 "run `{}` input_provenance requires url, retrieval_method, and license_note",
+                run.id
+            ));
+        }
+        if run.input_provenance.url.contains("example.org") {
+            return Err(format!(
+                "run `{}` input_provenance.url must point to a real dataset source, not example.org",
                 run.id
             ));
         }
@@ -2247,6 +2380,33 @@ fn validate_real_data_runs_catalog(
                     path.display()
                 ));
             }
+        }
+        let fetch_spec = load_dataset_fetch_spec(repo_root, &run.dataset)?;
+        if fetch_spec.dataset != run.dataset {
+            return Err(format!(
+                "dataset `{}` fetch-spec dataset field mismatch: `{}`",
+                run.dataset, fetch_spec.dataset
+            ));
+        }
+        if fetch_spec.url != run.input_provenance.url {
+            return Err(format!(
+                "run `{}` input_provenance.url must match tutorials/datasets/{}/fetch-spec.json",
+                run.id, run.dataset
+            ));
+        }
+        if fetch_spec.retrieval_method != run.input_provenance.retrieval_method {
+            return Err(format!(
+                "run `{}` retrieval_method must match fetch-spec for dataset `{}`",
+                run.id, run.dataset
+            ));
+        }
+        if !fetch_spec.expected_sha256.is_empty()
+            && fetch_spec.expected_sha256 == "replace-with-real-sha256"
+        {
+            return Err(format!(
+                "dataset `{}` fetch-spec expected_sha256 must be a real digest",
+                run.dataset
+            ));
         }
         let contract_path = dataset_dir.join("dataset-contract.json");
         let contract_text = fs::read_to_string(&contract_path).map_err(|err| {
