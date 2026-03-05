@@ -43,6 +43,8 @@ helm pull oci://ghcr.io/bijux/charts/bijux-atlas --version 0.1.0
 helm install atlas ./bijux-atlas-0.1.0.tgz -f ops/k8s/values/prod.yaml
 ```
 
+For offline bundle installation, see [Installing Ops Bundle](installing-ops-bundle.md).
+
 ## Verify
 
 1. Run `bijux-dev-atlas release ops provenance verify --format json`
