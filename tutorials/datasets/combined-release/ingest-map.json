@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "dataset": "combined-release",
+  "source_format": "csv",
+  "target_table": "combined_release",
+  "field_mappings": [
+    {"source": "id", "target": "id", "type": "string"},
+    {"source": "value", "target": "value", "type": "string"}
+  ]
+}

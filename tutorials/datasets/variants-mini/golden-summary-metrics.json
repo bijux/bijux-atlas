@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "dataset": "variants-mini",
+  "metrics": {
+    "record_count": {"min": 1, "max": 100000000},
+    "distinct_id": {"min": 1},
+    "non_null_value": {"min": 1}
+  }
+}

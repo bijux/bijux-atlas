@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "dataset": "variants-mini",
+  "source_format": "csv",
+  "target_table": "variants_mini",
+  "field_mappings": [
+    {"source": "id", "target": "id", "type": "string"},
+    {"source": "value", "target": "value", "type": "string"}
+  ]
+}

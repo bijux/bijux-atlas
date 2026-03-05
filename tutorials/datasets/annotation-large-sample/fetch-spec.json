@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "dataset": "annotation-large-sample",
+  "url": "https://example.org/datasets/annotation-large-sample.csv",
+  "expected_sha256": "replace-with-real-sha256",
+  "retrieval_method": "https-get"
+}

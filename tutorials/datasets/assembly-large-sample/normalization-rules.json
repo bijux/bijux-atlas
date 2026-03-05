@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "rules": [
+    {"kind": "trim-whitespace", "fields": ["*"]},
+    {"kind": "lowercase-field-names"},
+    {"kind": "normalize-null-literals", "values": ["", "NA", "null"]}
+  ]
+}

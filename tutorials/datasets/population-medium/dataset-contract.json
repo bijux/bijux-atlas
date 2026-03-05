@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "dataset": "population-medium",
+  "expected_row_count_range": {"min": 1, "max": 100000000},
+  "expected_schema": [
+    {"name": "id", "type": "string"},
+    {"name": "value", "type": "string"}
+  ],
+  "expected_index_rule": "primary-key(id)",
+  "expected_partition_rule": "single-partition",
+  "expected_golden_summary_metrics": "golden-summary-metrics.json"
+}

@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "dataset": "phenotype-medium",
+  "url": "https://example.org/datasets/phenotype-medium.csv",
+  "expected_sha256": "replace-with-real-sha256",
+  "retrieval_method": "https-get"
+}
