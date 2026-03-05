@@ -11,7 +11,8 @@
         "README.md",
         "Cargo.toml",
         "configs/governance/governance.json"
-      ]
+      ],
+      "classification": "repository"
     },
     {
       "id": "GOV-RULE-002",
@@ -21,7 +22,8 @@
       "paths": [
         "tmp/governance-dump.json",
         "artifacts/tmp/governance-debug.log"
-      ]
+      ],
+      "classification": "repository"
     },
     {
       "id": "GOV-RULE-003",
@@ -30,7 +32,8 @@
       "rule_type": "repo_layout_contract",
       "paths": [
         "configs/governance/enforcement/repo-layout-contract.json"
-      ]
+      ],
+      "classification": "repository"
     },
     {
       "id": "GOV-RULE-004",
@@ -39,7 +42,8 @@
       "rule_type": "docs_front_matter_complete",
       "paths": [
         "docs/operations"
-      ]
+      ],
+      "classification": "documentation"
     },
     {
       "id": "GOV-RULE-005",
@@ -48,7 +52,8 @@
       "rule_type": "contract_registry_complete",
       "paths": [
         "configs/governance/contracts.registry.json"
-      ]
+      ],
+      "classification": "registry"
     },
     {
       "id": "GOV-RULE-006",
@@ -57,7 +62,8 @@
       "rule_type": "checks_registry_complete",
       "paths": [
         "configs/governance/checks.registry.json"
-      ]
+      ],
+      "classification": "registry"
     },
     {
       "id": "GOV-RULE-007",
@@ -66,7 +72,8 @@
       "rule_type": "scenario_registry_complete",
       "paths": [
         "ops/e2e/scenarios/scenarios.json"
-      ]
+      ],
+      "classification": "registry"
     },
     {
       "id": "GOV-RULE-008",
@@ -75,7 +82,8 @@
       "rule_type": "ops_artifact_registry_complete",
       "paths": [
         "ops/k8s/generated/render-artifact-index.json"
-      ]
+      ],
+      "classification": "deployment"
     },
     {
       "id": "GOV-RULE-009",
@@ -84,7 +92,8 @@
       "rule_type": "release_artifact_registry_complete",
       "paths": [
         "release/evidence/manifest.json"
-      ]
+      ],
+      "classification": "registry"
     },
     {
       "id": "GOV-RULE-010",
@@ -93,7 +102,8 @@
       "rule_type": "docs_navigation_consistent",
       "paths": [
         "mkdocs.yml"
-      ]
+      ],
+      "classification": "documentation"
     }
   ]
 }

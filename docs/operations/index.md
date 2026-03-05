@@ -120,6 +120,8 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 86. [Governance enforcement workflow](governance-enforcement-workflow.md)
 87. [Governance enforcement troubleshooting](governance-enforcement-troubleshooting.md)
 88. [Governance evolution policy](governance-evolution-policy.md)
+89. [Governance rule schema](governance-rule-schema.md)
+90. [Governance enforcement completion report](governance-enforcement-completion-report.md)
 
 ## What This Page Is Not
 

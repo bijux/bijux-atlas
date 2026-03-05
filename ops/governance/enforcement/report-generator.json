@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "generator_id": "governance-enforcement-report-generator",
+  "command": "bijux-dev-atlas governance check --format json",
+  "outputs": [
+    "artifacts/governance/enforcement-report.json",
+    "artifacts/governance/enforcement-coverage.json",
+    "artifacts/governance/enforcement-metrics.json"
+  ]
+}

@@ -11,11 +11,14 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "title", "severity", "rule_type"],
+        "required": ["id", "title", "severity", "classification", "rule_type"],
         "properties": {
           "id": { "type": "string" },
           "title": { "type": "string" },
           "severity": { "enum": ["low", "medium", "high"] },
+          "classification": {
+            "enum": ["repository", "documentation", "registry", "deployment"]
+          },
           "rule_type": {
             "enum": [
               "required_files_exist",

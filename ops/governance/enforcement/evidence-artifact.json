@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "artifact_id": "governance-enforcement-evidence",
+  "description": "Canonical governance enforcement evidence artifact locations.",
+  "artifacts": [
+    "artifacts/governance/enforcement-report.json",
+    "artifacts/governance/enforcement-coverage.json",
+    "artifacts/governance/enforcement-metrics.json"
+  ]
+}

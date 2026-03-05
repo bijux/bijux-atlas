@@ -30,11 +30,21 @@ pub enum GovernanceSeverity {
     High,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum GovernanceRuleClassification {
+    Repository,
+    Documentation,
+    Registry,
+    Deployment,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GovernanceRule {
     pub id: String,
     pub title: String,
     pub severity: GovernanceSeverity,
+    pub classification: GovernanceRuleClassification,
     pub rule_type: GovernanceRuleType,
     #[serde(default)]
     pub paths: Vec<String>,
@@ -51,6 +61,7 @@ pub struct GovernanceRuleRegistry {
 pub struct GovernanceViolation {
     pub rule_id: String,
     pub severity: GovernanceSeverity,
+    pub classification: GovernanceRuleClassification,
     pub message: String,
     pub path: Option<String>,
 }
@@ -91,6 +102,7 @@ fn evaluate_registry_file(
                     violations.push(GovernanceViolation {
                         rule_id: rule.id.clone(),
                         severity: rule.severity.clone(),
+                        classification: rule.classification.clone(),
                         message: missing_message.to_string(),
                         path: Some(rel.to_string()),
                     });
@@ -99,6 +111,7 @@ fn evaluate_registry_file(
             Err(err) => violations.push(GovernanceViolation {
                 rule_id: rule.id.clone(),
                 severity: rule.severity.clone(),
+                classification: rule.classification.clone(),
                 message: format!("registry parse failed: {err}"),
                 path: Some(rel.to_string()),
             }),
@@ -106,6 +119,7 @@ fn evaluate_registry_file(
         Err(err) => violations.push(GovernanceViolation {
             rule_id: rule.id.clone(),
             severity: rule.severity.clone(),
+            classification: rule.classification.clone(),
             message: format!("registry read failed: {err}"),
             path: Some(rel.to_string()),
         }),
@@ -138,6 +152,7 @@ pub fn evaluate_registry(
                         violations.push(GovernanceViolation {
                             rule_id: rule.id.clone(),
                             severity: rule.severity.clone(),
+                            classification: rule.classification.clone(),
                             message: "required file is missing".to_string(),
                             path: Some(rel.clone()),
                         });
@@ -151,6 +166,7 @@ pub fn evaluate_registry(
                         violations.push(GovernanceViolation {
                             rule_id: rule.id.clone(),
                             severity: rule.severity.clone(),
+                            classification: rule.classification.clone(),
                             message: "prohibited file exists".to_string(),
                             path: Some(rel.clone()),
                         });
@@ -169,6 +185,7 @@ pub fn evaluate_registry(
                                         violations.push(GovernanceViolation {
                                             rule_id: rule.id.clone(),
                                             severity: rule.severity.clone(),
+                                            classification: rule.classification.clone(),
                                             message:
                                                 "repo layout contract schema_version must be 1"
                                                     .to_string(),
@@ -180,6 +197,7 @@ pub fn evaluate_registry(
                                             violations.push(GovernanceViolation {
                                                 rule_id: rule.id.clone(),
                                                 severity: rule.severity.clone(),
+                                                classification: rule.classification.clone(),
                                                 message:
                                                     "required directory missing from repo layout"
                                                         .to_string(),
@@ -191,6 +209,7 @@ pub fn evaluate_registry(
                                 Err(err) => violations.push(GovernanceViolation {
                                     rule_id: rule.id.clone(),
                                     severity: rule.severity.clone(),
+                                    classification: rule.classification.clone(),
                                     message: format!("repo layout contract parse failed: {err}"),
                                     path: Some(contract_path.clone()),
                                 }),
@@ -199,6 +218,7 @@ pub fn evaluate_registry(
                         Err(err) => violations.push(GovernanceViolation {
                             rule_id: rule.id.clone(),
                             severity: rule.severity.clone(),
+                            classification: rule.classification.clone(),
                             message: format!("repo layout contract read failed: {err}"),
                             path: Some(contract_path.clone()),
                         }),
@@ -237,6 +257,7 @@ pub fn evaluate_registry(
                                 violations.push(GovernanceViolation {
                                     rule_id: rule.id.clone(),
                                     severity: rule.severity.clone(),
+                                    classification: rule.classification.clone(),
                                     message: "markdown file missing front matter block".to_string(),
                                     path: Some(rel_path),
                                 });
@@ -307,6 +328,7 @@ pub fn evaluate_registry(
                                     violations.push(GovernanceViolation {
                                         rule_id: rule.id.clone(),
                                         severity: rule.severity.clone(),
+                                        classification: rule.classification.clone(),
                                         message: "release artifact registry is missing required release asset sections".to_string(),
                                         path: Some(rel.clone()),
                                     });
@@ -315,6 +337,7 @@ pub fn evaluate_registry(
                             Err(err) => violations.push(GovernanceViolation {
                                 rule_id: rule.id.clone(),
                                 severity: rule.severity.clone(),
+                                classification: rule.classification.clone(),
                                 message: format!("release artifact registry parse failed: {err}"),
                                 path: Some(rel.clone()),
                             }),
@@ -322,6 +345,7 @@ pub fn evaluate_registry(
                         Err(err) => violations.push(GovernanceViolation {
                             rule_id: rule.id.clone(),
                             severity: rule.severity.clone(),
+                            classification: rule.classification.clone(),
                             message: format!("release artifact registry read failed: {err}"),
                             path: Some(rel.clone()),
                         }),
@@ -342,6 +366,7 @@ pub fn evaluate_registry(
                                     violations.push(GovernanceViolation {
                                         rule_id: rule.id.clone(),
                                         severity: rule.severity.clone(),
+                                        classification: rule.classification.clone(),
                                         message: "docs navigation is missing or empty".to_string(),
                                         path: Some(rel.clone()),
                                     });
@@ -350,6 +375,7 @@ pub fn evaluate_registry(
                             Err(err) => violations.push(GovernanceViolation {
                                 rule_id: rule.id.clone(),
                                 severity: rule.severity.clone(),
+                                classification: rule.classification.clone(),
                                 message: format!("docs navigation parse failed: {err}"),
                                 path: Some(rel.clone()),
                             }),
@@ -357,6 +383,7 @@ pub fn evaluate_registry(
                         Err(err) => violations.push(GovernanceViolation {
                             rule_id: rule.id.clone(),
                             severity: rule.severity.clone(),
+                            classification: rule.classification.clone(),
                             message: format!("docs navigation read failed: {err}"),
                             path: Some(rel.clone()),
                         }),

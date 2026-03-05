@@ -69,3 +69,7 @@ harness = false
 [[bench]]
 name = "reproducibility"
 harness = false
+
+[[bench]]
+name = "governance"
+harness = false

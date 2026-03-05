@@ -83,3 +83,18 @@ fn governance_enforcement_coverage_report_is_current() {
     );
     assert_eq!(report.get("rule_count").and_then(|v| v.as_u64()), Some(10));
 }
+
+#[test]
+fn governance_rules_declare_classification() {
+    let root = repo_root();
+    let value: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(root.join("configs/governance/enforcement/rules.json"))
+            .expect("read governance rules"),
+    )
+    .expect("parse governance rules");
+    let rows = value
+        .get("rules")
+        .and_then(|v| v.as_array())
+        .expect("rules array");
+    assert!(rows.iter().all(|row| row.get("classification").is_some()));
+}

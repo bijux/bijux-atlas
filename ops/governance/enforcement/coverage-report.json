@@ -18,6 +18,12 @@
       "ops_artifact_registry_complete": 1,
       "release_artifact_registry_complete": 1,
       "docs_navigation_consistent": 1
+    },
+    "by_classification": {
+      "repository": 3,
+      "documentation": 2,
+      "registry": 4,
+      "deployment": 1
     }
   }
 }

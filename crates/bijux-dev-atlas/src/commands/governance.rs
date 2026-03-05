@@ -549,11 +549,16 @@ fn governance_enforcement_coverage_path(root: &Path) -> PathBuf {
     root.join("artifacts/governance/enforcement-coverage.json")
 }
 
+fn governance_enforcement_metrics_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/enforcement-metrics.json")
+}
+
 fn governance_enforcement_coverage_payload(
     registry: &governance_enforcement::GovernanceRuleRegistry,
 ) -> serde_json::Value {
     let mut by_severity: BTreeMap<String, usize> = BTreeMap::new();
     let mut by_rule_type: BTreeMap<String, usize> = BTreeMap::new();
+    let mut by_classification: BTreeMap<String, usize> = BTreeMap::new();
     for rule in &registry.rules {
         let sev = serde_json::to_value(&rule.severity)
             .ok()
@@ -565,6 +570,11 @@ fn governance_enforcement_coverage_payload(
             .and_then(|v| v.as_str().map(ToString::to_string))
             .unwrap_or_else(|| "unknown".to_string());
         *by_rule_type.entry(rule_type).or_insert(0) += 1;
+        let classification = serde_json::to_value(&rule.classification)
+            .ok()
+            .and_then(|v| v.as_str().map(ToString::to_string))
+            .unwrap_or_else(|| "unknown".to_string());
+        *by_classification.entry(classification).or_insert(0) += 1;
     }
     serde_json::json!({
         "schema_version": 1,
@@ -573,6 +583,7 @@ fn governance_enforcement_coverage_payload(
         "coverage": {
             "by_severity": by_severity,
             "by_rule_type": by_rule_type,
+            "by_classification": by_classification,
         }
     })
 }
@@ -2685,6 +2696,7 @@ pub(crate) fn run_governance_command(
             let evaluation = governance_enforcement::evaluate_registry(&root, &registry);
             let enforcement_path = governance_enforcement_path(&root);
             let coverage_path = governance_enforcement_coverage_path(&root);
+            let metrics_path = governance_enforcement_metrics_path(&root);
             let coverage_payload = governance_enforcement_coverage_payload(&registry);
             if let Some(parent) = enforcement_path.parent() {
                 fs::create_dir_all(parent)
@@ -2702,15 +2714,45 @@ pub(crate) fn run_governance_command(
                     .map_err(|e| format!("encode governance enforcement coverage failed: {e}"))?,
             )
             .map_err(|e| format!("write {} failed: {e}", coverage_path.display()))?;
+            let mut high = 0usize;
+            let mut medium = 0usize;
+            let mut low = 0usize;
+            for violation in &evaluation.violations {
+                match violation.severity {
+                    governance_enforcement::GovernanceSeverity::High => high += 1,
+                    governance_enforcement::GovernanceSeverity::Medium => medium += 1,
+                    governance_enforcement::GovernanceSeverity::Low => low += 1,
+                }
+            }
+            let metrics_payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "governance_enforcement_metrics",
+                "rule_count": evaluation.rule_count,
+                "violation_count": evaluation.violations.len(),
+                "status": evaluation.status,
+                "violation_breakdown": {
+                    "high": high,
+                    "medium": medium,
+                    "low": low
+                }
+            });
+            fs::write(
+                &metrics_path,
+                serde_json::to_string_pretty(&metrics_payload)
+                    .map_err(|e| format!("encode governance enforcement metrics failed: {e}"))?,
+            )
+            .map_err(|e| format!("write {} failed: {e}", metrics_path.display()))?;
             let payload = serde_json::json!({
                 "schema_version": 1,
                 "kind": "governance_check",
                 "status": evaluation.status,
                 "evaluation": evaluation,
                 "coverage": coverage_payload,
+                "metrics": metrics_payload,
                 "artifacts": {
                     "governance_enforcement": enforcement_path.strip_prefix(&root).unwrap_or(&enforcement_path).display().to_string(),
                     "governance_enforcement_coverage": coverage_path.strip_prefix(&root).unwrap_or(&coverage_path).display().to_string(),
+                    "governance_enforcement_metrics": metrics_path.strip_prefix(&root).unwrap_or(&metrics_path).display().to_string(),
                 }
             });
             let rendered = emit_payload(format, out, &payload)?;
@@ -2754,6 +2796,7 @@ pub(crate) fn run_governance_command(
             let drift_path = governance_drift_path(&root);
             let enforcement_path = governance_enforcement_path(&root);
             let enforcement_coverage_path = governance_enforcement_coverage_path(&root);
+            let enforcement_metrics_path = governance_enforcement_metrics_path(&root);
             if let Some(parent) = graph_path.parent() {
                 fs::create_dir_all(parent)
                     .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
@@ -2849,6 +2892,19 @@ pub(crate) fn run_governance_command(
                     .map_err(|e| format!("encode governance enforcement coverage failed: {e}"))?,
             )
             .map_err(|e| format!("write {} failed: {e}", enforcement_coverage_path.display()))?;
+            let enforcement_metrics = serde_json::json!({
+                "schema_version": 1,
+                "kind": "governance_enforcement_metrics",
+                "rule_count": enforcement_result.rule_count,
+                "violation_count": enforcement_result.violations.len(),
+                "status": enforcement_result.status,
+            });
+            fs::write(
+                &enforcement_metrics_path,
+                serde_json::to_string_pretty(&enforcement_metrics)
+                    .map_err(|e| format!("encode governance enforcement metrics failed: {e}"))?,
+            )
+            .map_err(|e| format!("write {} failed: {e}", enforcement_metrics_path.display()))?;
             let mut governance_errors = validation.errors;
             governance_errors.extend(
                 checks_inventory["errors"]
@@ -2879,6 +2935,7 @@ pub(crate) fn run_governance_command(
                 "checks_inventory": checks_inventory,
                 "enforcement": enforcement_result,
                 "enforcement_coverage": enforcement_coverage,
+                "enforcement_metrics": enforcement_metrics,
                 "artifacts": {
                     "governance_graph": graph_path.strip_prefix(&root).unwrap_or(&graph_path).display().to_string(),
                     "governance_summary": summary_path.strip_prefix(&root).unwrap_or(&summary_path).display().to_string(),
@@ -2892,6 +2949,7 @@ pub(crate) fn run_governance_command(
                     "governance_drift": drift_path.strip_prefix(&root).unwrap_or(&drift_path).display().to_string(),
                     "governance_enforcement": enforcement_path.strip_prefix(&root).unwrap_or(&enforcement_path).display().to_string(),
                     "governance_enforcement_coverage": enforcement_coverage_path.strip_prefix(&root).unwrap_or(&enforcement_coverage_path).display().to_string(),
+                    "governance_enforcement_metrics": enforcement_metrics_path.strip_prefix(&root).unwrap_or(&enforcement_metrics_path).display().to_string(),
                     "checks_inventory": checks_inventory_path(&root).strip_prefix(&root).unwrap_or(&checks_inventory_path(&root)).display().to_string(),
                 }
             });
