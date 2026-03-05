@@ -46,6 +46,7 @@ Provide governance rules that keep reader docs accurate, minimal, and stable.
 - [Governance source of truth](governance-ssot.md)
 - [Broken Link Policy](broken-link-policy.md)
 - [Docs Linking Rules](docs-linking-rules.md)
+- [Generated Files Registry](generated-files-registry.md)
 - [Verification Metadata](verification-metadata.md)
 - [Docs reviewability policy](docs-reviewability-policy.md)
 - [Style Lints](style-lints.md)

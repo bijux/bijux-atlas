@@ -1318,6 +1318,42 @@ fn docs_generate_all(repo_root: &std::path::Path) -> Result<Vec<String>, String>
 fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
     let catalog = load_docs_real_data_catalog(repo_root)?;
     let link_rows = docs_markdown_link_inventory(repo_root)?;
+    let workspace_version = fs::read_to_string(repo_root.join("Cargo.toml"))
+        .ok()
+        .and_then(|text| text.lines().find(|line| line.trim_start().starts_with("version = ")).map(str::to_string))
+        .and_then(|line| line.split('"').nth(1).map(str::to_string))
+        .unwrap_or_else(|| "0.1.0".to_string());
+    let ops_manifest_path = repo_root.join("release/ops-release-manifest.json");
+    let ops_manifest: serde_json::Value = fs::read_to_string(&ops_manifest_path)
+        .ok()
+        .and_then(|text| serde_json::from_str(&text).ok())
+        .unwrap_or_else(|| serde_json::json!({}));
+    let chart_version = ops_manifest
+        .get("chart_version")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or(workspace_version.as_str());
+    let chart_reference = ops_manifest
+        .get("chart_reference")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("oci://ghcr.io/bijux/charts/bijux-atlas");
+    let ops_matrix_json = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_compatibility_matrix",
+        "status": "ok",
+        "rows": [{
+            "runtime_version": workspace_version,
+            "chart_version": chart_version,
+            "client_version": workspace_version,
+            "chart_reference": chart_reference
+        }]
+    });
+    let ops_matrix_md = format!(
+        "# Ops Compatibility Matrix\n\n| Runtime version | Chart version | Client version | Chart reference |\n| --- | --- | --- | --- |\n| `{}` | `{}` | `{}` | `{}` |\n",
+        ops_matrix_json["rows"][0]["runtime_version"].as_str().unwrap_or_default(),
+        ops_matrix_json["rows"][0]["chart_version"].as_str().unwrap_or_default(),
+        ops_matrix_json["rows"][0]["client_version"].as_str().unwrap_or_default(),
+        ops_matrix_json["rows"][0]["chart_reference"].as_str().unwrap_or_default()
+    );
     let expected = [
         (
             "docs/_generated/examples.md",
@@ -1347,6 +1383,18 @@ fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Valu
             "docs/_internal/generated/docs-artifact-link-inventory.md",
             format_generated_doc_content(&build_artifact_link_inventory_body(&link_rows)),
         ),
+        (
+            "docs/_internal/generated/ops-compatibility-matrix.md",
+            format_generated_doc_content(&ops_matrix_md),
+        ),
+        (
+            "docs/_internal/generated/ops-compatibility-matrix.json",
+            format!(
+                "{}\n",
+                serde_json::to_string_pretty(&ops_matrix_json)
+                    .map_err(|e| format!("encode ops compatibility matrix failed: {e}"))?
+            ),
+        ),
     ];
     let mut missing = Vec::new();
     let mut missing_header = Vec::new();
@@ -1359,21 +1407,103 @@ fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Valu
         }
         let actual = fs::read_to_string(&path)
             .map_err(|e| format!("read {} failed: {e}", path.display()))?;
-        if !actual.starts_with(generated_docs_header()) {
+        if rel.ends_with(".md") && !actual.starts_with(generated_docs_header()) {
             missing_header.push((*rel).to_string());
         }
-        if actual != *expected_content {
+        if rel.ends_with(".json") {
+            let actual_json: serde_json::Value = serde_json::from_str(&actual)
+                .map_err(|e| format!("parse {} failed: {e}", path.display()))?;
+            let expected_json: serde_json::Value = serde_json::from_str(expected_content)
+                .map_err(|e| format!("parse expected json for {} failed: {e}", rel))?;
+            if actual_json != expected_json {
+                stale.push((*rel).to_string());
+            }
+        } else if actual != *expected_content {
             stale.push((*rel).to_string());
+        }
+    }
+    let registry_path = repo_root.join("configs/docs/generated-files-registry.json");
+    let registry_json: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(&registry_path)
+            .map_err(|e| format!("read {} failed: {e}", registry_path.display()))?,
+    )
+    .map_err(|e| format!("parse {} failed: {e}", registry_path.display()))?;
+    let registry_entries = registry_json
+        .get("entries")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let required_set = expected
+        .iter()
+        .map(|(path, _)| path.to_string())
+        .collect::<std::collections::BTreeSet<_>>();
+    let mut registry_missing = Vec::new();
+    let mut registry_extra = Vec::new();
+    let mut registry_paths = std::collections::BTreeSet::new();
+    for row in &registry_entries {
+        if let Some(path) = row.get("path").and_then(serde_json::Value::as_str) {
+            registry_paths.insert(path.to_string());
+        }
+    }
+    for required in &required_set {
+        if !registry_paths.contains(required) {
+            registry_missing.push(required.clone());
+        }
+    }
+    let allowed_registry_only = std::collections::BTreeSet::from([
+        "docs/_internal/generated/real-data-runs-overview.md".to_string(),
+        "docs/_internal/generated/real-data-runs-overview.json".to_string(),
+    ]);
+    for path in &registry_paths {
+        if !required_set.contains(path) {
+            if !allowed_registry_only.contains(path) {
+                registry_extra.push(path.clone());
+            }
+        }
+    }
+
+    let freshness_path = repo_root.join("configs/docs/generated-files-freshness-policy.json");
+    let freshness_json: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(&freshness_path)
+            .map_err(|e| format!("read {} failed: {e}", freshness_path.display()))?,
+    )
+    .map_err(|e| format!("parse {} failed: {e}", freshness_path.display()))?;
+    let max_age_days = freshness_json
+        .get("max_age_days")
+        .and_then(serde_json::Value::as_u64)
+        .unwrap_or(30);
+    let now = std::time::SystemTime::now();
+    let max_age = std::time::Duration::from_secs(max_age_days * 24 * 60 * 60);
+    let mut stale_freshness = Vec::new();
+    for rel in required_set {
+        let path = repo_root.join(&rel);
+        if !path.exists() {
+            continue;
+        }
+        let modified = fs::metadata(&path)
+            .and_then(|m| m.modified())
+            .unwrap_or(now);
+        if now.duration_since(modified).unwrap_or_default() > max_age {
+            stale_freshness.push(rel);
         }
     }
     Ok(serde_json::json!({
         "schema_version": 1,
         "kind": "docs_verify_generated",
-        "status": if missing.is_empty() && missing_header.is_empty() && stale.is_empty() { "ok" } else { "failed" },
+        "status": if missing.is_empty()
+            && missing_header.is_empty()
+            && stale.is_empty()
+            && registry_missing.is_empty()
+            && registry_extra.is_empty()
+            && stale_freshness.is_empty()
+        { "ok" } else { "failed" },
         "required": expected.iter().map(|(path, _)| *path).collect::<Vec<_>>(),
         "missing": missing,
         "missing_header": missing_header,
         "stale": stale,
+        "registry_missing": registry_missing,
+        "registry_extra": registry_extra,
+        "freshness_stale": stale_freshness,
     }))
 }
 
