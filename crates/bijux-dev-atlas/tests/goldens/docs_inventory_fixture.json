@@ -44,31 +44,52 @@
   "pages": [
     {
       "in_nav": true,
-      "path": "index.md"
+      "last_reviewed": null,
+      "owner": null,
+      "path": "index.md",
+      "stability": null
     },
     {
       "in_nav": true,
-      "path": "reference/commands.md"
+      "last_reviewed": null,
+      "owner": null,
+      "path": "reference/commands.md",
+      "stability": null
     },
     {
       "in_nav": true,
-      "path": "reference/configs.md"
+      "last_reviewed": null,
+      "owner": null,
+      "path": "reference/configs.md",
+      "stability": null
     },
     {
       "in_nav": true,
-      "path": "reference/make-targets.md"
+      "last_reviewed": null,
+      "owner": null,
+      "path": "reference/make-targets.md",
+      "stability": null
     },
     {
       "in_nav": true,
-      "path": "reference/schemas.md"
+      "last_reviewed": null,
+      "owner": null,
+      "path": "reference/schemas.md",
+      "stability": null
     },
     {
       "in_nav": true,
-      "path": "start-here.md"
+      "last_reviewed": null,
+      "owner": null,
+      "path": "start-here.md",
+      "stability": null
     },
     {
       "in_nav": true,
-      "path": "sub/intro.md"
+      "last_reviewed": null,
+      "owner": null,
+      "path": "sub/intro.md",
+      "stability": null
     }
   ],
   "run_id": "docs_inventory_fixture",
