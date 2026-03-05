@@ -40,3 +40,7 @@ harness = false
 [[bench]]
 name = "stable_selector"
 harness = false
+
+[[bench]]
+name = "security_data_protection"
+harness = false
