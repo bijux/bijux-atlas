@@ -2,6 +2,9 @@
 
 use std::path::PathBuf;
 use std::process::Command;
+use std::sync::Mutex;
+
+static CLIENT_DOCS_TEST_LOCK: Mutex<()> = Mutex::new(());
 
 fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -14,6 +17,7 @@ fn repo_root() -> PathBuf {
 
 #[test]
 fn clients_docs_generate_recreates_index_and_reference() {
+    let _guard = CLIENT_DOCS_TEST_LOCK.lock().expect("lock");
     let root = repo_root();
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)
@@ -30,6 +34,7 @@ fn clients_docs_generate_recreates_index_and_reference() {
 
 #[test]
 fn clients_docs_verify_passes_for_generated_files() {
+    let _guard = CLIENT_DOCS_TEST_LOCK.lock().expect("lock");
     let root = repo_root();
     let generated = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)
@@ -49,6 +54,7 @@ fn clients_docs_verify_passes_for_generated_files() {
 
 #[test]
 fn clients_examples_verify_passes_without_local_script_references() {
+    let _guard = CLIENT_DOCS_TEST_LOCK.lock().expect("lock");
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["clients", "examples-verify", "--client", "atlas-client", "--format", "json"])
@@ -60,7 +66,23 @@ fn clients_examples_verify_passes_without_local_script_references() {
 }
 
 #[test]
+fn clients_examples_run_writes_evidence_bundle() {
+    let _guard = CLIENT_DOCS_TEST_LOCK.lock().expect("lock");
+    let root = repo_root();
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args(["clients", "examples-run", "--client", "atlas-client", "--format", "json"])
+        .output()
+        .expect("clients examples-run");
+    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    let evidence = payload["evidence"].as_str().expect("evidence path");
+    assert!(PathBuf::from(evidence).exists(), "evidence bundle must exist");
+}
+
+#[test]
 fn clients_schema_verify_passes_for_docs_model() {
+    let _guard = CLIENT_DOCS_TEST_LOCK.lock().expect("lock");
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["clients", "schema-verify", "--client", "atlas-client", "--format", "json"])
@@ -73,6 +95,7 @@ fn clients_schema_verify_passes_for_docs_model() {
 
 #[test]
 fn clients_compat_matrix_verify_passes() {
+    let _guard = CLIENT_DOCS_TEST_LOCK.lock().expect("lock");
     let root = repo_root();
     let generated = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)
@@ -100,6 +123,7 @@ fn clients_compat_matrix_verify_passes() {
 
 #[test]
 fn clients_docs_generation_is_deterministic() {
+    let _guard = CLIENT_DOCS_TEST_LOCK.lock().expect("lock");
     let root = repo_root();
     let run = || {
         Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
@@ -133,4 +157,31 @@ fn clients_docs_generation_is_deterministic() {
     assert_eq!(index_one, index_two);
     assert_eq!(api_one, api_two);
     assert_eq!(matrix_one, matrix_two);
+}
+
+#[test]
+fn clients_verify_text_uses_nextest_style_summary() {
+    let _guard = CLIENT_DOCS_TEST_LOCK.lock().expect("lock");
+    let root = repo_root();
+    let generated = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args(["clients", "docs-generate", "--client", "atlas-client", "--format", "json"])
+        .output()
+        .expect("clients docs-generate");
+    assert!(generated.status.success(), "{}", String::from_utf8_lossy(&generated.stderr));
+
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(root)
+        .args(["clients", "verify", "--client", "atlas-client"])
+        .output()
+        .expect("clients verify text");
+    assert!(
+        output.status.success(),
+        "{}\n{}",
+        String::from_utf8_lossy(&output.stderr),
+        String::from_utf8_lossy(&output.stdout)
+    );
+    let text = String::from_utf8(output.stdout).expect("utf8");
+    assert!(text.contains("PASS"), "verify text should include PASS rows");
+    assert!(text.contains("summary: total="), "verify text should include summary line");
 }

@@ -16,6 +16,7 @@ pub(crate) fn run_clients_command(quiet: bool, command: ClientsCommand) -> i32 {
         ClientsCommand::DocsGenerate(args) => run_clients_docs_generate(&args),
         ClientsCommand::DocsVerify(args) => run_clients_docs_verify(&args),
         ClientsCommand::ExamplesVerify(args) => run_clients_examples_verify(&args),
+        ClientsCommand::ExamplesRun(args) => run_clients_examples_run(&args),
         ClientsCommand::SchemaVerify(args) => run_clients_schema_verify(&args),
         ClientsCommand::CompatMatrix { command } => match command {
             ClientsCompatMatrixCommand::Verify(args) => run_clients_compat_matrix_verify(&args),
@@ -53,14 +54,23 @@ fn run_clients_list(args: &ClientsCommandArgs) -> Result<(String, i32), String> 
 }
 
 fn run_clients_verify(args: &ClientsCommandArgs) -> Result<(String, i32), String> {
-    let (_, docs_code) = run_clients_docs_verify(args)?;
-    let (_, examples_code) = run_clients_examples_verify(args)?;
-    let (_, schema_code) = run_clients_schema_verify(args)?;
-    let (_, matrix_code) = run_clients_compat_matrix_verify(args)?;
+    let (docs_text, docs_code) = run_clients_docs_verify(args)?;
+    let (examples_text, examples_code) = run_clients_examples_verify(args)?;
+    let (schema_text, schema_code) = run_clients_schema_verify(args)?;
+    let (matrix_text, matrix_code) = run_clients_compat_matrix_verify(args)?;
     let passed = [docs_code, examples_code, schema_code, matrix_code]
         .iter()
         .filter(|code| **code == 0)
         .count();
+    if matches!(args.format, crate::cli::FormatArg::Text) && !args.markdown {
+        let nextest = render_clients_verify_nextest(&[
+            ("docs-verify", docs_code),
+            ("examples-verify", examples_code),
+            ("schema-verify", schema_code),
+            ("compat-matrix-verify", matrix_code),
+        ]);
+        return Ok((nextest, if passed == 4 { 0 } else { 1 }));
+    }
     let payload = serde_json::json!({
         "schema_version": 1,
         "domain": "clients",
@@ -72,6 +82,12 @@ fn run_clients_verify(args: &ClientsCommandArgs) -> Result<(String, i32), String
             {"id": "schema-verify", "status": if schema_code == 0 {"pass"} else {"fail"}},
             {"id": "compat-matrix-verify", "status": if matrix_code == 0 {"pass"} else {"fail"}}
         ],
+        "details": {
+            "docs_verify": docs_text,
+            "examples_verify": examples_text,
+            "schema_verify": schema_text,
+            "compat_matrix_verify": matrix_text
+        },
         "summary": {"total": 4, "passed": passed, "failed": 4 - passed}
     });
     Ok((emit_payload(args.format, args.out.clone(), &payload)?, if passed == 4 { 0 } else { 1 }))
@@ -184,6 +200,76 @@ fn run_clients_examples_verify(args: &ClientsCommandArgs) -> Result<(String, i32
         "examples": examples,
         "violations": violations,
         "success": violations.is_empty()
+    });
+    Ok((
+        emit_payload(args.format, args.out.clone(), &payload)?,
+        if payload["success"].as_bool().unwrap_or(false) { 0 } else { 1 },
+    ))
+}
+
+fn run_clients_examples_run(args: &ClientsCommandArgs) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.repo_root.clone())?;
+    let examples_dir = repo_root.join("clients").join(&args.client).join("examples");
+    let mut ran = Vec::new();
+    let mut failures = Vec::new();
+    for entry in walkdir::WalkDir::new(&examples_dir) {
+        let entry = entry.map_err(|err| format!("failed to walk examples: {err}"))?;
+        if !entry.file_type().is_file() {
+            continue;
+        }
+        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
+            continue;
+        }
+        let rel = entry
+            .path()
+            .strip_prefix(&repo_root)
+            .unwrap_or(entry.path())
+            .display()
+            .to_string();
+        let text = fs::read_to_string(entry.path())
+            .map_err(|err| format!("failed to read {}: {err}", entry.path().display()))?;
+        let uses_runtime_surface = text.contains("/v1/query")
+            || text.contains("dataset=\"genes\"")
+            || text.contains("QueryRequest(");
+        if !uses_runtime_surface {
+            failures.push(format!("{rel}: missing runtime query surface usage"));
+        }
+        ran.push(rel);
+    }
+    ran.sort();
+    let evidence = serde_json::json!({
+        "schema_version": 1,
+        "domain": "clients",
+        "action": "examples-run",
+        "client": args.client,
+        "examples_checked": ran,
+        "violations": failures,
+        "success": failures.is_empty()
+    });
+    let evidence_path = repo_root
+        .join("artifacts/clients")
+        .join(&args.client)
+        .join("examples-run-evidence.json");
+    if let Some(parent) = evidence_path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
+    fs::write(
+        &evidence_path,
+        format!(
+            "{}\n",
+            serde_json::to_string_pretty(&evidence).map_err(|err| format!("serialize failed: {err}"))?
+        ),
+    )
+    .map_err(|err| format!("failed to write {}: {err}", evidence_path.display()))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "domain": "clients",
+        "action": "examples-run",
+        "client": args.client,
+        "success": failures.is_empty(),
+        "evidence": evidence_path.display().to_string(),
+        "violations": failures
     });
     Ok((
         emit_payload(args.format, args.out.clone(), &payload)?,
@@ -348,4 +434,20 @@ fn render_matrix_markdown(model: &ClientsDocsModel) -> String {
 
 fn normalize_newlines(text: &str) -> String {
     text.replace("\r\n", "\n").trim().to_string()
+}
+
+fn render_clients_verify_nextest(rows: &[(&str, i32)]) -> String {
+    let mut out = vec!["clients verify".to_string()];
+    for (index, (id, code)) in rows.iter().enumerate() {
+        let status = if *code == 0 { "PASS" } else { "FAIL" };
+        out.push(format!("{status} ({}/{}) clients {}", index + 1, rows.len(), id));
+    }
+    let passed = rows.iter().filter(|(_, code)| *code == 0).count();
+    out.push(format!(
+        "summary: total={} passed={} failed={}",
+        rows.len(),
+        passed,
+        rows.len() - passed
+    ));
+    out.join("\n")
 }

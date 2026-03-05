@@ -1359,6 +1359,7 @@ pub enum ClientsCommand {
     DocsGenerate(ClientsCommandArgs),
     DocsVerify(ClientsCommandArgs),
     ExamplesVerify(ClientsCommandArgs),
+    ExamplesRun(ClientsCommandArgs),
     SchemaVerify(ClientsCommandArgs),
     CompatMatrix {
         #[command(subcommand)]
