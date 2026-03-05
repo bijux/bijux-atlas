@@ -75,7 +75,7 @@ PY
         shell: bash
         run: |
           set -euo pipefail
-          cargo run --locked -q -p bijux-dev-atlas -- docs build --allow-subprocess --allow-write --strict --format json
+          mkdocs build --strict
           test -f artifacts/docs/site/index.html
 
       - name: Upload Pages artifact

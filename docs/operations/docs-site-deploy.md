@@ -25,7 +25,7 @@ This repository publishes the documentation site to GitHub Pages from `.github/w
 
 1. Validate `mkdocs.yml` `site_dir` is `artifacts/docs/site`.
 2. Install pinned docs dependencies from `configs/docs/requirements.lock.txt` and `configs/docs/package-lock.json`.
-3. Build docs using `bijux-dev-atlas` (`docs build`) in strict mode.
+3. Build docs using `mkdocs build --strict`.
 4. Upload `artifacts/docs/site` using `actions/upload-pages-artifact`.
 5. Deploy with `actions/deploy-pages`.
 
@@ -41,6 +41,18 @@ The governance source of truth is:
 - Built site directory: `artifacts/docs/site`
 - Pages environment: `github-pages`
 - Deployment URL: provided by GitHub Pages deployment output
+- Canonical published URL: `https://bijux.github.io/bijux-atlas/`
+- `mkdocs.yml` canonical source:
+  - `site_url: https://bijux.github.io/bijux-atlas/`
+  - `use_directory_urls: true`
+
+## Internal Link Safety
+
+- Internal docs must not link through `github.com/.../blob/.../*.md`.
+- Published markdown local links must resolve to in-tree files under `docs/`.
+- These are enforced by docs contracts:
+  - `DOC-078` `docs.links.no_internal_github_blob_links`
+  - `DOC-079` `docs.links.published_local_links_resolve`
 
 ## CNAME Support
 
