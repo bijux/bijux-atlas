@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "kind": "api_compatibility_harness",
+  "version_matrix": [
+    {"runtime": "0.1.x", "api": "v1", "compatibility": "full"}
+  ],
+  "checks": [
+    "openapi_version_matches_tracking",
+    "endpoint_registry_paths_present",
+    "deprecated_endpoints_marked"
+  ]
+}
