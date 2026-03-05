@@ -1,0 +1,21 @@
+[package]
+name = "bijux-atlas-client"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Rust client SDK for Atlas HTTP APIs"
+repository.workspace = true
+homepage.workspace = true
+keywords = ["atlas", "client", "sdk", "api", "http"]
+
+[lints]
+workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "json"] }
+
+[dev-dependencies]
+serde_json.workspace = true

@@ -287,6 +287,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "bijux-atlas-client"
+version = "0.1.0"
+dependencies = [
+ "reqwest",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "bijux-atlas-core"
 version = "0.1.0"
 dependencies = [
