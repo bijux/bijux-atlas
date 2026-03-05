@@ -17,11 +17,7 @@ related:
 
 ## Command entrypoints
 
-- `bijux-dev-atlas datasets validate --format json`
-- `bijux-dev-atlas ingest dry-run --format json`
-- `bijux-dev-atlas ingest run --format json`
-- `bijux-dev-atlas reproduce verify --format json`
-- `bijux-dev-atlas security validate --format json`
+--8<-- "docs/_generated/command-lists.md"
 
 ## Generated snippets
 

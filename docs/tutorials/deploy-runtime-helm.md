@@ -26,6 +26,10 @@ Deploy Atlas runtime into Kubernetes using Helm values.
 2. Run Helm install or upgrade for target namespace.
 3. Validate pod readiness and service reachability.
 
+Generated Helm values inventory:
+
+--8<-- "docs/_generated/ops-snippets.md"
+
 ## Expected result
 
 Cluster runtime is reachable and ready for ingest/query workloads.

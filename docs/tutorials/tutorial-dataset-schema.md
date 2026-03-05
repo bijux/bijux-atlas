@@ -22,3 +22,7 @@ Canonical schema files:
 - `configs/examples/datasets/schemas/dataset-metadata.schema.json`
 
 These schemas are used by tutorial dataset validation scripts and dataset contract tests.
+
+Generated runtime schema excerpt:
+
+--8<-- "docs/_generated/schema-snippets.md"
