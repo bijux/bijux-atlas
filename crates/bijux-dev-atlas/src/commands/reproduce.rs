@@ -7,16 +7,17 @@ use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::time::Instant;
+use std::time::{Instant, SystemTime, UNIX_EPOCH};
 
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
-    let text =
-        fs::read_to_string(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let text = fs::read_to_string(path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
 fn file_sha(path: &Path) -> Result<String, String> {
-    let bytes = fs::read(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let bytes =
+        fs::read(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     Ok(format!("{:x}", Sha256::digest(bytes)))
 }
 
@@ -103,7 +104,10 @@ fn run_payload(root: &Path) -> Result<serde_json::Value, String> {
 }
 
 fn normalize_for_determinism(mut payload: serde_json::Value) -> serde_json::Value {
-    if let Some(metrics) = payload.get_mut("metrics").and_then(serde_json::Value::as_object_mut) {
+    if let Some(metrics) = payload
+        .get_mut("metrics")
+        .and_then(serde_json::Value::as_object_mut)
+    {
         metrics.remove("execution_time_ms");
     }
     payload
@@ -262,8 +266,8 @@ fn status(common: ReproduceCommonArgs) -> Result<(String, i32), String> {
         format: crate::cli::FormatArg::Json,
         out: None,
     })?;
-    let verify_json: serde_json::Value =
-        serde_json::from_str(&verify_payload.0).map_err(|err| format!("failed to parse verify payload: {err}"))?;
+    let verify_json: serde_json::Value = serde_json::from_str(&verify_payload.0)
+        .map_err(|err| format!("failed to parse verify payload: {err}"))?;
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "reproduce_status",
@@ -282,6 +286,165 @@ fn status(common: ReproduceCommonArgs) -> Result<(String, i32), String> {
     ))
 }
 
+fn write_json_artifact(
+    root: &Path,
+    rel_path: &str,
+    payload: &serde_json::Value,
+) -> Result<(), String> {
+    let path = root.join(rel_path);
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
+    let text = serde_json::to_string_pretty(payload)
+        .map_err(|err| format!("failed to encode reproducibility payload: {err}"))?;
+    fs::write(&path, format!("{text}\n"))
+        .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
+    Ok(())
+}
+
+fn audit_report(common: ReproduceCommonArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let now_unix = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map_err(|err| format!("system clock is before unix epoch: {err}"))?
+        .as_secs();
+    let verify_payload = verify(ReproduceCommonArgs {
+        repo_root: Some(root.clone()),
+        format: crate::cli::FormatArg::Json,
+        out: None,
+    })?;
+    let verify_json: serde_json::Value = serde_json::from_str(&verify_payload.0)
+        .map_err(|err| format!("failed to parse verify payload: {err}"))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "reproducibility_audit_report",
+        "status": verify_json.get("status").and_then(serde_json::Value::as_str).unwrap_or("failed"),
+        "recorded_at_unix": now_unix,
+        "verify": verify_json
+    });
+    write_json_artifact(
+        &root,
+        "artifacts/reproducibility/audit-report.json",
+        &payload,
+    )?;
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    Ok((
+        rendered,
+        if payload.get("status").and_then(serde_json::Value::as_str) == Some("ok") {
+            0
+        } else {
+            3
+        },
+    ))
+}
+
+fn metrics(common: ReproduceCommonArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let run = run_payload(&root)?;
+    let scenario_count = run
+        .get("scenarios")
+        .and_then(serde_json::Value::as_array)
+        .map_or(0_u64, |rows| rows.len() as u64);
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "reproducibility_metrics",
+        "status": "ok",
+        "metrics": {
+            "scenario_count": scenario_count,
+            "artifact_hash_count": run.get("artifact_hashes").and_then(serde_json::Value::as_object).map_or(0, |rows| rows.len()) as u64,
+            "source_snapshot_present": run
+                .get("environment")
+                .and_then(|v| v.get("source_snapshot_hash"))
+                .and_then(serde_json::Value::as_str)
+                .is_some()
+        }
+    });
+    write_json_artifact(&root, "artifacts/reproducibility/metrics.json", &payload)?;
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn lineage_validate(common: ReproduceCommonArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let run = run_payload(&root)?;
+    let required = [
+        "Cargo.lock",
+        "ops/reproducibility/spec.json",
+        "ops/reproducibility/report.schema.json",
+        "ops/reproducibility/scenarios.json",
+    ];
+    let hashes = run
+        .get("artifact_hashes")
+        .and_then(serde_json::Value::as_object)
+        .cloned()
+        .unwrap_or_default();
+    let mut missing = Vec::new();
+    for id in required {
+        if !hashes.contains_key(id) {
+            missing.push(id.to_string());
+        }
+    }
+    missing.sort();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "reproducibility_lineage_validate",
+        "status": if missing.is_empty() { "ok" } else { "failed" },
+        "required_artifacts": required,
+        "missing_artifacts": missing
+    });
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    Ok((
+        rendered,
+        if payload.get("status").and_then(serde_json::Value::as_str) == Some("ok") {
+            0
+        } else {
+            3
+        },
+    ))
+}
+
+fn summary_table(common: ReproduceCommonArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let run = run_payload(&root)?;
+    let scenarios = run
+        .get("scenarios")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let mut markdown = String::from("| Scenario | Kind | Stability |\n|---|---|---|\n");
+    for row in scenarios {
+        let id = row
+            .get("id")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("unknown");
+        let kind = row
+            .get("kind")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("unknown");
+        let stability = row
+            .get("stability")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("unknown");
+        markdown.push_str(&format!("| {id} | {kind} | {stability} |\n"));
+    }
+    let out_path = root.join("artifacts/reproducibility/summary-table.md");
+    if let Some(parent) = out_path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
+    fs::write(&out_path, markdown)
+        .map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "reproducibility_summary_table",
+        "status": "ok",
+        "path": out_path.display().to_string()
+    });
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    Ok((rendered, 0))
+}
+
 pub(crate) fn run_reproduce_command(
     _quiet: bool,
     command: ReproduceCommand,
@@ -291,5 +454,9 @@ pub(crate) fn run_reproduce_command(
         ReproduceCommand::Verify(args) => verify(args),
         ReproduceCommand::Explain(args) => explain(args),
         ReproduceCommand::Status(args) => status(args),
+        ReproduceCommand::AuditReport(args) => audit_report(args),
+        ReproduceCommand::Metrics(args) => metrics(args),
+        ReproduceCommand::LineageValidate(args) => lineage_validate(args),
+        ReproduceCommand::SummaryTable(args) => summary_table(args),
     }
 }

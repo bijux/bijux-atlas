@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "scenario_id": "reproducibility-ci",
+  "description": "Runs reproducibility verification in CI with deterministic JSON outputs.",
+  "steps": [
+    "bijux-dev-atlas reproduce run --format json",
+    "bijux-dev-atlas reproduce verify --format json",
+    "bijux-dev-atlas reproduce lineage-validate --format json",
+    "bijux-dev-atlas reproduce audit-report --format json"
+  ],
+  "required_artifacts": [
+    "artifacts/reproducibility/run-report.json",
+    "artifacts/reproducibility/audit-report.json",
+    "artifacts/reproducibility/metrics.json",
+    "artifacts/reproducibility/summary-table.md"
+  ]
+}

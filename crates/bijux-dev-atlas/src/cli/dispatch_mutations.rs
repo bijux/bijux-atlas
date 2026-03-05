@@ -3,10 +3,11 @@
 use crate::cli::{
     ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand, Command,
     ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, DriftCommand,
-    FormatArg, IngestCommand, InvariantsCommand, MakeCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand, ReproduceCommand,
-    ReleaseApiSurfaceCommand, ReleaseChecksumsCommand, ReleaseCommand, ReleaseCratesCommand,
-    ReleaseImagesCommand, ReleaseMsrvCommand, ReleaseOpsCommand, ReleaseSemverCommand,
-    ReportsCommand, SecurityCommand, TestsCommand,
+    FormatArg, IngestCommand, InvariantsCommand, MakeCommand, OpsCommand, PerfCommand,
+    PoliciesCommand, RegistryCommand, ReleaseApiSurfaceCommand, ReleaseChecksumsCommand,
+    ReleaseCommand, ReleaseCratesCommand, ReleaseImagesCommand, ReleaseMsrvCommand,
+    ReleaseOpsCommand, ReleaseSemverCommand, ReportsCommand, ReproduceCommand, SecurityCommand,
+    TestsCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -95,8 +96,9 @@ pub(super) fn force_json_output(command: &mut Command) {
                 crate::cli::ReleaseManifestCommand::Validate(args) => args.format = FormatArg::Json,
             },
             ReleaseCommand::Checksums { command } => match command {
-                ReleaseChecksumsCommand::Generate(args)
-                | ReleaseChecksumsCommand::Verify(args) => args.format = FormatArg::Json,
+                ReleaseChecksumsCommand::Generate(args) | ReleaseChecksumsCommand::Verify(args) => {
+                    args.format = FormatArg::Json
+                }
             },
             ReleaseCommand::Bundle { command } => match command {
                 crate::cli::ReleaseBundleCommand::Build(args) => args.format = FormatArg::Json,
@@ -136,9 +138,7 @@ pub(super) fn force_json_output(command: &mut Command) {
                 | ReleaseImagesCommand::SmokeVerify(args)
                 | ReleaseImagesCommand::SizeReport(args)
                 | ReleaseImagesCommand::RuntimeHardeningVerify(args)
-                | ReleaseImagesCommand::RuntimeCommandVerify(args) => {
-                    args.format = FormatArg::Json
-                }
+                | ReleaseImagesCommand::RuntimeCommandVerify(args) => args.format = FormatArg::Json,
                 ReleaseImagesCommand::ManifestGenerate(args)
                 | ReleaseImagesCommand::ManifestVerify(args) => args.format = FormatArg::Json,
                 ReleaseImagesCommand::ReleaseNotesCheck(args) => args.format = FormatArg::Json,
@@ -181,16 +181,16 @@ fn force_json_invariants(command: &mut InvariantsCommand) {
         InvariantsCommand::Run(args)
         | InvariantsCommand::List(args)
         | InvariantsCommand::Coverage(args)
-        | InvariantsCommand::Docs(args) => {
-            args.format = FormatArg::Json
-        }
+        | InvariantsCommand::Docs(args) => args.format = FormatArg::Json,
         InvariantsCommand::Explain(args) => args.common.format = FormatArg::Json,
     }
 }
 
 fn force_json_drift(command: &mut DriftCommand) {
     match command {
-        DriftCommand::Detect(args) | DriftCommand::Report(args) => args.common.format = FormatArg::Json,
+        DriftCommand::Detect(args) | DriftCommand::Report(args) => {
+            args.common.format = FormatArg::Json
+        }
         DriftCommand::Coverage(args) => args.common.format = FormatArg::Json,
         DriftCommand::Explain(args) => args.common.format = FormatArg::Json,
         DriftCommand::Baseline(args) => args.detect.common.format = FormatArg::Json,
@@ -202,7 +202,11 @@ fn force_json_reproduce(command: &mut ReproduceCommand) {
     match command {
         ReproduceCommand::Run(args)
         | ReproduceCommand::Verify(args)
-        | ReproduceCommand::Status(args) => args.format = FormatArg::Json,
+        | ReproduceCommand::Status(args)
+        | ReproduceCommand::AuditReport(args)
+        | ReproduceCommand::Metrics(args)
+        | ReproduceCommand::LineageValidate(args)
+        | ReproduceCommand::SummaryTable(args) => args.format = FormatArg::Json,
         ReproduceCommand::Explain(args) => args.common.format = FormatArg::Json,
     }
 }
@@ -381,9 +385,7 @@ fn force_json_ops(command: &mut OpsCommand) {
         },
         OpsCommand::Evidence { command } => match command {
             crate::cli::OpsEvidenceCommand::Collect(common) => common.format = FormatArg::Json,
-            crate::cli::OpsEvidenceCommand::Summarize(args) => {
-                args.common.format = FormatArg::Json
-            }
+            crate::cli::OpsEvidenceCommand::Summarize(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsEvidenceCommand::Verify(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsEvidenceCommand::Diff(args) => args.common.format = FormatArg::Json,
         },
@@ -502,7 +504,9 @@ fn force_json_ops(command: &mut OpsCommand) {
                 crate::cli::OpsObsAlertsCommand::Verify(common) => common.format = FormatArg::Json,
             },
             crate::cli::OpsObsCommand::Runbooks { command } => match command {
-                crate::cli::OpsObsRunbooksCommand::Verify(common) => common.format = FormatArg::Json,
+                crate::cli::OpsObsRunbooksCommand::Verify(common) => {
+                    common.format = FormatArg::Json
+                }
             },
             crate::cli::OpsObsCommand::Drill { command } => match command {
                 crate::cli::OpsObsDrillCommand::Run(common) => common.format = FormatArg::Json,
@@ -1496,9 +1500,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             InvariantsCommand::Run(args)
             | InvariantsCommand::List(args)
             | InvariantsCommand::Coverage(args)
-            | InvariantsCommand::Docs(args) => {
-                args.repo_root = Some(root.clone())
-            }
+            | InvariantsCommand::Docs(args) => args.repo_root = Some(root.clone()),
             InvariantsCommand::Explain(args) => args.common.repo_root = Some(root.clone()),
         },
         Command::Drift { command } => match command {
@@ -1513,9 +1515,11 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         Command::Reproduce { command } => match command {
             ReproduceCommand::Run(args)
             | ReproduceCommand::Verify(args)
-            | ReproduceCommand::Status(args) => {
-                args.repo_root = Some(root.clone())
-            }
+            | ReproduceCommand::Status(args)
+            | ReproduceCommand::AuditReport(args)
+            | ReproduceCommand::Metrics(args)
+            | ReproduceCommand::LineageValidate(args)
+            | ReproduceCommand::SummaryTable(args) => args.repo_root = Some(root.clone()),
             ReproduceCommand::Explain(args) => args.common.repo_root = Some(root.clone()),
         },
         Command::Datasets { command } => match command {
@@ -1727,8 +1731,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
             },
             ReleaseCommand::Checksums { command } => match command {
-                ReleaseChecksumsCommand::Generate(args)
-                | ReleaseChecksumsCommand::Verify(args) => {
+                ReleaseChecksumsCommand::Generate(args) | ReleaseChecksumsCommand::Verify(args) => {
                     if args.repo_root.is_none() {
                         args.repo_root = Some(root.clone());
                     }

@@ -21,7 +21,10 @@ fn reproduce_run_emits_source_snapshot_hash() {
         .expect("reproduce run");
     assert_eq!(output.status.code(), Some(0));
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
-    assert_eq!(payload.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+    assert_eq!(
+        payload.get("schema_version").and_then(|v| v.as_u64()),
+        Some(1)
+    );
     assert!(payload
         .get("environment")
         .and_then(|v| v.get("source_snapshot_hash"))
@@ -37,7 +40,10 @@ fn reproduce_verify_requires_all_core_scenarios() {
         .output()
         .expect("reproduce verify");
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
-    assert_eq!(payload.get("kind").and_then(|v| v.as_str()), Some("reproduce_verify"));
+    assert_eq!(
+        payload.get("kind").and_then(|v| v.as_str()),
+        Some("reproduce_verify")
+    );
     assert_eq!(payload.get("status").and_then(|v| v.as_str()), Some("ok"));
 }
 
@@ -57,10 +63,15 @@ fn reproduce_reports_are_deterministic_and_include_artifact_hashes() {
     assert_eq!(first.status.code(), Some(0));
     assert_eq!(second.status.code(), Some(0));
     let first_json: serde_json::Value = serde_json::from_slice(&first.stdout).expect("first json");
-    let second_json: serde_json::Value = serde_json::from_slice(&second.stdout).expect("second json");
+    let second_json: serde_json::Value =
+        serde_json::from_slice(&second.stdout).expect("second json");
     assert_eq!(
-        first_json.get("environment").and_then(|v| v.get("source_snapshot_hash")),
-        second_json.get("environment").and_then(|v| v.get("source_snapshot_hash"))
+        first_json
+            .get("environment")
+            .and_then(|v| v.get("source_snapshot_hash")),
+        second_json
+            .get("environment")
+            .and_then(|v| v.get("source_snapshot_hash"))
     );
     assert!(first_json
         .get("artifact_hashes")
@@ -77,6 +88,32 @@ fn reproduce_status_reports_summary_shape() {
         .expect("reproduce status");
     assert!(output.status.code().is_some());
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
-    assert_eq!(payload.get("kind").and_then(|v| v.as_str()), Some("reproduce_status"));
+    assert_eq!(
+        payload.get("kind").and_then(|v| v.as_str()),
+        Some("reproduce_status")
+    );
     assert!(payload.get("verify").is_some());
+}
+
+#[test]
+fn reproduce_audit_metrics_lineage_and_summary_emit_expected_kinds() {
+    let commands = [
+        ("audit-report", "reproducibility_audit_report"),
+        ("metrics", "reproducibility_metrics"),
+        ("lineage-validate", "reproducibility_lineage_validate"),
+        ("summary-table", "reproducibility_summary_table"),
+    ];
+    for (subcommand, kind) in commands {
+        let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+            .current_dir(repo_root())
+            .args(["reproduce", subcommand, "--format", "json"])
+            .output()
+            .expect("repro command");
+        assert!(
+            output.status.code().is_some(),
+            "command {subcommand} did not exit cleanly"
+        );
+        let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+        assert_eq!(payload.get("kind").and_then(|v| v.as_str()), Some(kind));
+    }
 }
