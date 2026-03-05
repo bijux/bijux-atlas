@@ -360,6 +360,7 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
     let mut python_tooling_violations = Vec::new();
     let mut tutorials_forbidden_pattern_violations = Vec::new();
     let mut clients_forbidden_pattern_violations = Vec::new();
+    let mut packages_boundary_violations = Vec::new();
     let mut ops_directory_purity_violations = Vec::new();
     #[cfg(unix)]
     let mut exec_violations = Vec::new();
@@ -399,13 +400,22 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
             }
         }
         if is_path_within(rel, "clients/") {
-            if rel_text.contains("/tools/") || rel_text.contains("/__pycache__/") || rel_text.ends_with(".pyc")
-            {
-                clients_forbidden_pattern_violations.push(rel_text.clone());
-            }
+            clients_forbidden_pattern_violations.push(rel_text.clone());
+        }
+        if rel_text.contains("/__pycache__/") || rel_text.ends_with(".pyc") {
+            clients_forbidden_pattern_violations.push(rel_text.clone());
+        }
+        let ext = rel.extension().and_then(|v| v.to_str()).unwrap_or_default();
+        if ext == "py" && !is_path_within(rel, "packages/bijux-atlas-python/") {
+            packages_boundary_violations.push(rel_text.clone());
+        }
+        if ext == "ipynb" && !is_path_within(rel, "packages/bijux-atlas-python/notebooks/") {
+            packages_boundary_violations.push(rel_text.clone());
+        }
+        if is_path_within(rel, "packages/bijux-atlas-python/tools/") {
+            packages_boundary_violations.push(rel_text.clone());
         }
         if is_path_within(rel, "ops/") {
-            let ext = rel.extension().and_then(|v| v.to_str()).unwrap_or_default();
             if ext == "py" || ext == "sh" {
                 ops_directory_purity_violations.push(rel_text.clone());
             } else if base != ".gitkeep" {
@@ -468,6 +478,8 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
     tutorials_forbidden_pattern_violations.dedup();
     clients_forbidden_pattern_violations.sort();
     clients_forbidden_pattern_violations.dedup();
+    packages_boundary_violations.sort();
+    packages_boundary_violations.dedup();
     ops_directory_purity_violations.sort();
     ops_directory_purity_violations.dedup();
     #[cfg(unix)]
@@ -543,6 +555,16 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
         },
         violation_count: clients_forbidden_pattern_violations.len(),
         violations: clients_forbidden_pattern_violations,
+    });
+    checks.push(AutomationBoundaryCheckResult {
+        id: "automation.packages.boundary-compliance".to_string(),
+        status: if packages_boundary_violations.is_empty() {
+            "pass".to_string()
+        } else {
+            "fail".to_string()
+        },
+        violation_count: packages_boundary_violations.len(),
+        violations: packages_boundary_violations,
     });
     checks.push(AutomationBoundaryCheckResult {
         id: "automation.ops.directory-purity".to_string(),

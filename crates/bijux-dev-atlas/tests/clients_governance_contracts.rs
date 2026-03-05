@@ -16,15 +16,15 @@ fn repo_root() -> PathBuf {
 fn client_tools_directory_is_forbidden() {
     let root = repo_root();
     assert!(
-        !root.join("crates/bijux-atlas-client-python/tools").exists(),
-        "crates/bijux-atlas-client-python/tools must be removed; use dev-atlas clients commands"
+        !root.join("packages/bijux-atlas-python/tools").exists(),
+        "packages/bijux-atlas-python/tools must be removed; use dev-atlas clients commands"
     );
 }
 
 #[test]
 fn client_docs_must_not_reference_local_script_paths() {
     let root = repo_root();
-    let docs_dir = root.join("crates/bijux-atlas-client-python/docs");
+    let docs_dir = root.join("packages/bijux-atlas-python/docs");
     let mut violations = Vec::new();
     for entry in walkdir::WalkDir::new(docs_dir) {
         let entry = entry.expect("walk docs");
@@ -35,7 +35,7 @@ fn client_docs_must_not_reference_local_script_paths() {
             continue;
         }
         let text = fs::read_to_string(entry.path()).expect("read docs file");
-        if text.contains("tools/generate_docs.py") || text.contains("crates/bijux-atlas-client-python/tools/") {
+        if text.contains("tools/generate_docs.py") || text.contains("packages/bijux-atlas-python/tools/") {
             violations.push(entry.path().display().to_string());
         }
     }
@@ -50,7 +50,7 @@ fn client_docs_must_not_reference_local_script_paths() {
 fn client_python_paths_must_stay_in_product_zones_only() {
     let root = repo_root();
     let output = std::process::Command::new("git")
-        .args(["ls-files", "crates/bijux-atlas-client-python/**/**/*.py", "crates/bijux-atlas-client-python/**/**/*.ipynb"])
+        .args(["ls-files", "packages/bijux-atlas-python/**/**/*.py", "packages/bijux-atlas-python/**/**/*.ipynb"])
         .current_dir(&root)
         .output()
         .expect("git ls-files");
@@ -58,10 +58,10 @@ fn client_python_paths_must_stay_in_product_zones_only() {
     let stdout = String::from_utf8(output.stdout).expect("utf8");
     let mut violations = Vec::new();
     for path in stdout.lines() {
-        let allowed = path.starts_with("crates/bijux-atlas-client-python/python/atlas_client/")
-            || path.starts_with("crates/bijux-atlas-client-python/tests/")
-            || path.starts_with("crates/bijux-atlas-client-python/examples/")
-            || path.starts_with("crates/bijux-atlas-client-python/notebooks/");
+        let allowed = path.starts_with("packages/bijux-atlas-python/src/bijux_atlas/")
+            || path.starts_with("packages/bijux-atlas-python/tests/")
+            || path.starts_with("packages/bijux-atlas-python/examples/")
+            || path.starts_with("packages/bijux-atlas-python/notebooks/");
         if !allowed {
             violations.push(path.to_string());
         }
@@ -79,8 +79,8 @@ fn client_pycache_and_pyc_must_not_be_tracked() {
     let output = std::process::Command::new("git")
         .args([
             "ls-files",
-            "crates/bijux-atlas-client-python/**/__pycache__/*",
-            "crates/bijux-atlas-client-python/**/*.pyc",
+            "packages/bijux-atlas-python/**/__pycache__/*",
+            "packages/bijux-atlas-python/**/*.pyc",
         ])
         .current_dir(&root)
         .output()
@@ -97,11 +97,11 @@ fn client_pycache_and_pyc_must_not_be_tracked() {
 #[test]
 fn client_pyproject_metadata_must_be_complete() {
     let root = repo_root();
-    let pyproject = fs::read_to_string(root.join("crates/bijux-atlas-client-python/pyproject.toml"))
+    let pyproject = fs::read_to_string(root.join("packages/bijux-atlas-python/pyproject.toml"))
         .expect("read pyproject");
     for needle in [
         "[project]",
-        "name = \"atlas-client\"",
+        "name = \"bijux-atlas\"",
         "version = ",
         "description = ",
         "requires-python = ",
@@ -117,7 +117,7 @@ fn client_pyproject_metadata_must_be_complete() {
 #[test]
 fn client_docs_must_reference_runtime_endpoints() {
     let root = repo_root();
-    let api_ref = fs::read_to_string(root.join("crates/bijux-atlas-client-python/docs/api-reference.md"))
+    let api_ref = fs::read_to_string(root.join("packages/bijux-atlas-python/docs/api-reference.md"))
         .expect("read api-reference.md");
     assert!(
         api_ref.contains("/v1/"),
@@ -128,7 +128,7 @@ fn client_docs_must_reference_runtime_endpoints() {
 #[test]
 fn client_examples_must_target_tutorial_dataset_scenario() {
     let root = repo_root();
-    let examples = root.join("crates/bijux-atlas-client-python/examples");
+    let examples = root.join("packages/bijux-atlas-python/examples");
     let mut checked = 0usize;
     let mut violations = Vec::new();
     for entry in walkdir::WalkDir::new(examples) {
@@ -157,7 +157,7 @@ fn client_examples_must_target_tutorial_dataset_scenario() {
 #[test]
 fn client_tests_must_not_require_external_network() {
     let root = repo_root();
-    let tests_dir = root.join("crates/bijux-atlas-client-python/tests");
+    let tests_dir = root.join("packages/bijux-atlas-python/tests");
     let mut violations = Vec::new();
     for entry in walkdir::WalkDir::new(tests_dir) {
         let entry = entry.expect("walk tests");
@@ -188,7 +188,7 @@ fn client_tests_must_not_require_external_network() {
 #[test]
 fn client_tests_must_support_offline_mock_server_mode() {
     let root = repo_root();
-    let integration = fs::read_to_string(root.join("crates/bijux-atlas-client-python/tests/test_integration.py"))
+    let integration = fs::read_to_string(root.join("packages/bijux-atlas-python/tests/test_integration.py"))
         .expect("read integration test");
     assert!(
         integration.contains("HTTPServer") && integration.contains("127.0.0.1"),
@@ -203,15 +203,15 @@ fn usage_examples_must_be_routed_through_docs_examples_page() {
     assert!(page.exists(), "usage examples page must exist");
     let text = fs::read_to_string(&page).expect("read examples page");
     assert!(
-        text.contains("crates/bijux-atlas-client-python/examples/usage"),
-        "usage examples page must point to crates/bijux-atlas-client-python/examples/usage"
+        text.contains("packages/bijux-atlas-python/examples/usage"),
+        "usage examples page must point to packages/bijux-atlas-python/examples/usage"
     );
 }
 
 #[test]
 fn client_tests_must_be_tagged_unit_integration_or_perf() {
     let root = repo_root();
-    let tests_dir = root.join("crates/bijux-atlas-client-python/tests");
+    let tests_dir = root.join("packages/bijux-atlas-python/tests");
     let mut violations = Vec::new();
     for entry in walkdir::WalkDir::new(tests_dir) {
         let entry = entry.expect("walk tests");
@@ -242,7 +242,7 @@ fn client_tests_must_be_tagged_unit_integration_or_perf() {
 #[test]
 fn perf_tests_must_be_opt_in_and_integration_tests_must_require_env() {
     let root = repo_root();
-    let tests_dir = root.join("crates/bijux-atlas-client-python/tests");
+    let tests_dir = root.join("packages/bijux-atlas-python/tests");
     let mut perf_violations = Vec::new();
     let mut integration_violations = Vec::new();
     for entry in walkdir::WalkDir::new(tests_dir) {
@@ -256,19 +256,19 @@ fn perf_tests_must_be_opt_in_and_integration_tests_must_require_env() {
         let text = fs::read_to_string(entry.path()).expect("read test file");
         let filename = entry.path().file_name().and_then(|v| v.to_str()).unwrap_or_default();
         if text.contains("# test_scope: perf")
-            && !text.contains("ATLAS_CLIENT_RUN_PERF")
+            && !text.contains("BIJUX_ATLAS_RUN_PERF")
             && !text.contains("skipUnless")
         {
             perf_violations.push(format!(
-                "{}: perf tests must be guarded by ATLAS_CLIENT_RUN_PERF or skipUnless",
+                "{}: perf tests must be guarded by BIJUX_ATLAS_RUN_PERF or skipUnless",
                 entry.path().display()
             ));
         }
         if text.contains("# test_scope: integration")
-            && !text.contains("ATLAS_CLIENT_ALLOW_INTEGRATION")
+            && !text.contains("BIJUX_ATLAS_URL")
         {
             integration_violations.push(format!(
-                "{}: integration tests must require ATLAS_CLIENT_ALLOW_INTEGRATION",
+                "{}: integration tests must require BIJUX_ATLAS_URL",
                 entry.path().display()
             ));
         }
@@ -294,11 +294,11 @@ fn perf_tests_must_be_opt_in_and_integration_tests_must_require_env() {
 #[test]
 fn examples_index_must_exist_and_reference_all_example_scripts() {
     let root = repo_root();
-    let index_path = root.join("crates/bijux-atlas-client-python/examples/INDEX.md");
+    let index_path = root.join("packages/bijux-atlas-python/examples/INDEX.md");
     assert!(index_path.exists(), "examples index must exist");
     let index = fs::read_to_string(&index_path).expect("read examples index");
 
-    let examples = root.join("crates/bijux-atlas-client-python/examples");
+    let examples = root.join("packages/bijux-atlas-python/examples");
     let mut scripts = Vec::new();
     for entry in walkdir::WalkDir::new(&examples) {
         let entry = entry.expect("walk examples");
@@ -328,7 +328,7 @@ fn examples_index_must_exist_and_reference_all_example_scripts() {
 #[test]
 fn examples_must_include_header_and_stay_within_complexity_budget() {
     let root = repo_root();
-    let examples = root.join("crates/bijux-atlas-client-python/examples");
+    let examples = root.join("packages/bijux-atlas-python/examples");
     let mut violations = Vec::new();
     for entry in walkdir::WalkDir::new(&examples) {
         let entry = entry.expect("walk examples");
@@ -360,7 +360,7 @@ fn examples_must_include_header_and_stay_within_complexity_budget() {
 #[test]
 fn examples_must_use_documented_runtime_endpoint_variable() {
     let root = repo_root();
-    let examples = root.join("crates/bijux-atlas-client-python/examples");
+    let examples = root.join("packages/bijux-atlas-python/examples");
     let mut violations = Vec::new();
     for entry in walkdir::WalkDir::new(&examples) {
         let entry = entry.expect("walk examples");
@@ -371,21 +371,21 @@ fn examples_must_use_documented_runtime_endpoint_variable() {
             continue;
         }
         let text = fs::read_to_string(entry.path()).expect("read example");
-        if !text.contains("ATLAS_BASE_URL") {
+        if !text.contains("BIJUX_ATLAS_URL") {
             violations.push(format!(
-                "{}: examples must use ATLAS_BASE_URL (no hardcoded runtime endpoint)",
+                "{}: examples must use BIJUX_ATLAS_URL (no hardcoded runtime endpoint)",
                 entry.path().display()
             ));
         }
     }
 
     let usage_readme = fs::read_to_string(
-        root.join("crates/bijux-atlas-client-python/examples/usage/README.md"),
+        root.join("packages/bijux-atlas-python/examples/usage/README.md"),
     )
     .expect("read usage readme");
     assert!(
-        usage_readme.contains("ATLAS_BASE_URL"),
-        "usage README must document ATLAS_BASE_URL"
+        usage_readme.contains("BIJUX_ATLAS_URL"),
+        "usage README must document BIJUX_ATLAS_URL"
     );
 
     assert!(
@@ -398,7 +398,7 @@ fn examples_must_use_documented_runtime_endpoint_variable() {
 #[test]
 fn examples_must_not_use_external_network_clients_directly() {
     let root = repo_root();
-    let examples = root.join("crates/bijux-atlas-client-python/examples");
+    let examples = root.join("packages/bijux-atlas-python/examples");
     let mut violations = Vec::new();
     for entry in walkdir::WalkDir::new(&examples) {
         let entry = entry.expect("walk examples");

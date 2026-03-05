@@ -2944,6 +2944,15 @@ pub(crate) fn run_governance_command(
                 })
                 .cloned()
                 .unwrap_or_else(|| serde_json::json!({"id":"automation.ops.directory-purity","status":"missing"}));
+            let packages_boundary = checks_report["checks"]
+                .as_array()
+                .and_then(|rows| {
+                    rows.iter().find(|row| {
+                        row["id"].as_str() == Some("automation.packages.boundary-compliance")
+                    })
+                })
+                .cloned()
+                .unwrap_or_else(|| serde_json::json!({"id":"automation.packages.boundary-compliance","status":"missing"}));
             let repo_purity = serde_json::json!({
                 "status": if checks_code == 0 { "ok" } else { "failed" },
                 "automation_boundary_violations": checks_report["violations"].as_array().map_or(0, |rows| rows.len()),
@@ -2985,6 +2994,7 @@ pub(crate) fn run_governance_command(
                     "Automation purity": checks_report,
                     "Tutorials purity": tutorials_purity,
                     "Clients tooling purity": clients_purity,
+                    "Packages boundary compliance": packages_boundary,
                     "Directory Purity": directory_purity,
                     "Repo purity": repo_purity,
                 }

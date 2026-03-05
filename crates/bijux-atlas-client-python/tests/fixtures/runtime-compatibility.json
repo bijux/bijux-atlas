@@ -1,5 +1,0 @@
-{
-  "python_sdk": "atlas-client",
-  "supported_runtime_versions": ["0.1.x"],
-  "compatibility_notes": "SDK targets Atlas API v1 query endpoint"
-}
