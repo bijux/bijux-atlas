@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "forbidden_patterns": [
+    "AKIA",
+    "BEGIN PRIVATE KEY",
+    "password=",
+    "token="
+  ],
+  "applies_to": [
+    "artifacts/tutorials/runs/*/evidence-bundle.json",
+    "artifacts/tutorials/runs/*/logs/*"
+  ],
+  "rule": "Evidence and logs must not contain secrets or credentials."
+}

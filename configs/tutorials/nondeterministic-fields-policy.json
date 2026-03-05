@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "allowed_files": [
+    "ingest-report.json"
+  ],
+  "allowed_fields": [
+    "ingest.durations_ms"
+  ],
+  "rule": "All non-deterministic fields must stay isolated to declared files and paths."
+}
