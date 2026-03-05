@@ -846,6 +846,9 @@ pub enum SystemClusterCommand {
 
 #[derive(Subcommand, Debug)]
 pub enum AuditCommand {
+    Run(AuditBundleArgs),
+    Report(AuditBundleArgs),
+    Explain(AuditBundleArgs),
     Bundle {
         #[command(subcommand)]
         command: AuditBundleCommand,

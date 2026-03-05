@@ -739,6 +739,9 @@ fn force_json_system(command: &mut crate::cli::SystemCommand) {
 
 fn force_json_audit(command: &mut AuditCommand) {
     match command {
+        AuditCommand::Run(args) | AuditCommand::Report(args) | AuditCommand::Explain(args) => {
+            args.format = FormatArg::Json
+        }
         AuditCommand::Bundle { command } => match command {
             crate::cli::AuditBundleCommand::Generate(args)
             | crate::cli::AuditBundleCommand::Validate(args) => args.format = FormatArg::Json,
@@ -1483,6 +1486,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             },
         },
         Command::Audit { command } => match command {
+            AuditCommand::Run(args) | AuditCommand::Report(args) | AuditCommand::Explain(args) => {
+                args.repo_root = Some(root.clone())
+            }
             AuditCommand::Bundle { command } => match command {
                 crate::cli::AuditBundleCommand::Generate(args)
                 | crate::cli::AuditBundleCommand::Validate(args) => {

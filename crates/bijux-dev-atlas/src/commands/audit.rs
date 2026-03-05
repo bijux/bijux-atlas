@@ -38,6 +38,18 @@ fn readiness_report_path(root: &Path) -> PathBuf {
     root.join("artifacts/audit/readiness-report.json")
 }
 
+fn audit_run_path(root: &Path) -> PathBuf {
+    root.join("artifacts/audit/run-report.json")
+}
+
+fn audit_event_schema_path(root: &Path) -> PathBuf {
+    root.join("ops/audit/event.schema.json")
+}
+
+fn audit_report_schema_path(root: &Path) -> PathBuf {
+    root.join("ops/audit/report.schema.json")
+}
+
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
     serde_json::from_str(
         &fs::read_to_string(path)
@@ -289,11 +301,176 @@ fn readiness_validate(
     Ok((rendered, code))
 }
 
+fn run_audit_checks(root: &Path) -> serde_json::Value {
+    let mut checks = Vec::new();
+
+    // configuration integrity
+    let config_path = root.join("configs/inventory.json");
+    let config_status = match read_json(&config_path) {
+        Ok(v) if v.get("schema_version").and_then(serde_json::Value::as_i64) == Some(1) => "ok",
+        _ => "failed",
+    };
+    checks.push(serde_json::json!({
+        "id": "AUDIT-CONFIG-INTEGRITY-001",
+        "title": "configuration integrity",
+        "classification": "configuration",
+        "severity": "high",
+        "status": config_status,
+        "path": "configs/inventory.json"
+    }));
+
+    // artifact integrity
+    let artifact_manifest = root.join("release/evidence/manifest.json");
+    let artifact_status = match read_json(&artifact_manifest) {
+        Ok(v) if v.get("schema_version").is_some() => "ok",
+        _ => "failed",
+    };
+    checks.push(serde_json::json!({
+        "id": "AUDIT-ARTIFACT-INTEGRITY-001",
+        "title": "artifact integrity",
+        "classification": "artifact",
+        "severity": "high",
+        "status": artifact_status,
+        "path": "release/evidence/manifest.json"
+    }));
+
+    // registry consistency
+    let registry_path = root.join("ops/invariants/registry.json");
+    let registry_status = match read_json(&registry_path) {
+        Ok(v) => {
+            if v.get("invariants")
+                .and_then(serde_json::Value::as_array)
+                .is_some_and(|rows| !rows.is_empty())
+            {
+                "ok"
+            } else {
+                "failed"
+            }
+        }
+        _ => "failed",
+    };
+    checks.push(serde_json::json!({
+        "id": "AUDIT-REGISTRY-CONSISTENCY-001",
+        "title": "registry consistency",
+        "classification": "registry",
+        "severity": "high",
+        "status": registry_status,
+        "path": "ops/invariants/registry.json"
+    }));
+
+    // runtime configuration state
+    let runtime_path = root.join("ops/k8s/values/offline.yaml");
+    let runtime_status = match fs::read_to_string(&runtime_path) {
+        Ok(text) if serde_yaml::from_str::<serde_yaml::Value>(&text).is_ok() => "ok",
+        _ => "failed",
+    };
+    checks.push(serde_json::json!({
+        "id": "AUDIT-RUNTIME-CONFIG-STATE-001",
+        "title": "runtime configuration state",
+        "classification": "runtime",
+        "severity": "medium",
+        "status": runtime_status,
+        "path": "ops/k8s/values/offline.yaml"
+    }));
+
+    // ops deployment integrity
+    let deploy_path = root.join("ops/k8s/charts/bijux-atlas/Chart.yaml");
+    let deploy_status = match fs::read_to_string(&deploy_path) {
+        Ok(text) if serde_yaml::from_str::<serde_yaml::Value>(&text).is_ok() => "ok",
+        _ => "failed",
+    };
+    checks.push(serde_json::json!({
+        "id": "AUDIT-OPS-DEPLOY-INTEGRITY-001",
+        "title": "ops deployment integrity",
+        "classification": "ops",
+        "severity": "medium",
+        "status": deploy_status,
+        "path": "ops/k8s/charts/bijux-atlas/Chart.yaml"
+    }));
+
+    let failed_count = checks
+        .iter()
+        .filter(|row| row.get("status").and_then(serde_json::Value::as_str) == Some("failed"))
+        .count();
+    let status = if failed_count == 0 { "ok" } else { "failed" };
+    serde_json::json!({
+        "schema_version": 1,
+        "kind": "audit_run",
+        "status": status,
+        "checks": checks,
+        "metrics": {
+            "total_checks": 5,
+            "failed_checks": failed_count,
+            "passed_checks": 5 - failed_count
+        }
+    })
+}
+
+fn audit_run(common: crate::cli::AuditBundleArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let payload = run_audit_checks(&root);
+    write_json(&audit_run_path(&root), &payload)?;
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    let code = if payload["status"] == "ok" { 0 } else { 1 };
+    Ok((rendered, code))
+}
+
+fn audit_report(common: crate::cli::AuditBundleArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let payload = if audit_run_path(&root).exists() {
+        read_json(&audit_run_path(&root))?
+    } else {
+        let generated = run_audit_checks(&root);
+        write_json(&audit_run_path(&root), &generated)?;
+        generated
+    };
+    let report = serde_json::json!({
+        "schema_version": 1,
+        "kind": "audit_report",
+        "status": payload["status"],
+        "source": audit_run_path(&root).strip_prefix(&root).unwrap_or(&audit_run_path(&root)).display().to_string(),
+        "report": payload
+    });
+    let rendered = emit_payload(common.format, common.out, &report)?;
+    let code = if report["status"] == "ok" { 0 } else { 1 };
+    Ok((rendered, code))
+}
+
+fn audit_explain(common: crate::cli::AuditBundleArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "audit_explain",
+        "status": "ok",
+        "schemas": {
+            "event": audit_event_schema_path(&root).strip_prefix(&root).unwrap_or(&audit_event_schema_path(&root)).display().to_string(),
+            "report": audit_report_schema_path(&root).strip_prefix(&root).unwrap_or(&audit_report_schema_path(&root)).display().to_string()
+        },
+        "checks": [
+            "configuration integrity",
+            "artifact integrity",
+            "registry consistency",
+            "runtime configuration state",
+            "ops deployment integrity"
+        ],
+        "commands": [
+            "bijux-dev-atlas audit run --format json",
+            "bijux-dev-atlas audit report --format json",
+            "bijux-dev-atlas audit explain --format json"
+        ]
+    });
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    Ok((rendered, 0))
+}
+
 pub(crate) fn run_audit_command(
     _quiet: bool,
     command: AuditCommand,
 ) -> Result<(String, i32), String> {
     match command {
+        AuditCommand::Run(args) => audit_run(args),
+        AuditCommand::Report(args) => audit_report(args),
+        AuditCommand::Explain(args) => audit_explain(args),
         AuditCommand::Bundle { command } => match command {
             AuditBundleCommand::Generate(args) => {
                 bundle_generate(args.repo_root, args.format, args.out)

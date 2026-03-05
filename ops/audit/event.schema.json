@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ops/audit/event.schema.json",
+  "title": "Atlas audit event",
+  "type": "object",
+  "required": ["id", "title", "status", "path"],
+  "properties": {
+    "id": { "type": "string" },
+    "title": { "type": "string" },
+    "status": { "enum": ["ok", "failed"] },
+    "path": { "type": "string" }
+  }
+}

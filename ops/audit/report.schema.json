@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ops/audit/report.schema.json",
+  "title": "Atlas audit run report",
+  "type": "object",
+  "required": ["schema_version", "kind", "status", "checks", "metrics"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "kind": { "const": "audit_run" },
+    "status": { "enum": ["ok", "failed"] },
+    "checks": { "type": "array", "items": { "$ref": "event.schema.json" } },
+    "metrics": { "type": "object" }
+  }
+}

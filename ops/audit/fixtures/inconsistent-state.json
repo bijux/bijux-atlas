@@ -1,0 +1,9 @@
+{
+  "fixture_id": "audit-inconsistent-state",
+  "description": "Simulates inconsistent runtime and registry state for audit failure classification.",
+  "expected_status": "failed",
+  "checks": [
+    "registry consistency",
+    "runtime configuration state"
+  ]
+}
