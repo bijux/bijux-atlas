@@ -440,6 +440,23 @@ fn repository_python_files_must_stay_in_allowed_crate_zones() {
 }
 
 #[test]
+fn repository_shell_files_must_be_empty() {
+    let root = repo_root();
+    let output = std::process::Command::new("git")
+        .args(["ls-files", "**/*.sh"])
+        .current_dir(&root)
+        .output()
+        .expect("git ls-files");
+    assert!(output.status.success(), "git ls-files failed");
+    let stdout = String::from_utf8(output.stdout).expect("utf8");
+    assert!(
+        stdout.trim().is_empty(),
+        "shell files are forbidden in the repository:\n{}",
+        stdout
+    );
+}
+
+#[test]
 fn ops_tree_must_not_include_python_or_shell_sources() {
     let root = repo_root();
     let ops = root.join("ops");

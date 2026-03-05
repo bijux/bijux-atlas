@@ -74,4 +74,12 @@ fn migrations_status_reports_legacy_fixture_paths() {
         rows.iter().any(|row| row.contains("tools/")),
         "fixture must report legacy tools path: {rows:?}"
     );
+    assert!(
+        rows.iter().any(|row| row.contains("clients/")),
+        "fixture must report legacy clients path: {rows:?}"
+    );
+    assert!(
+        rows.iter().any(|row| row.contains("ops/") && row.ends_with(".py")),
+        "fixture must report python-in-ops paths: {rows:?}"
+    );
 }

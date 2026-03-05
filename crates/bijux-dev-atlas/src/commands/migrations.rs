@@ -78,6 +78,9 @@ fn is_legacy_path(rel: &Path) -> bool {
 fn is_legacy_file(rel: &Path) -> bool {
     let text = rel.display().to_string();
     let ext = rel.extension().and_then(|v| v.to_str()).unwrap_or_default();
+    if text.starts_with("ops/") && ext == "py" {
+        return true;
+    }
     if text.starts_with("tutorials/") && (ext == "py" || ext == "sh") {
         return true;
     }
