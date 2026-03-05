@@ -43,6 +43,8 @@ bijux dev atlas demo quickstart --format json
 - [ ] Follow [Run locally (5 minutes)](operations/run-locally.md)
 - [ ] Start stack and run smoke checks
 - [ ] Verify success and read outputs
+- [ ] Run tutorial workflow via `bijux-dev-atlas tutorials run workflow`
+- [ ] Verify SDK surface via `bijux-dev-atlas clients verify --client atlas-client`
 
 ## Deploy
 

@@ -56,7 +56,7 @@ Planned publication surfaces:
 
 ## Tutorial Automation Migration
 
-Tutorial automation is executed through `bijux-dev-atlas` commands. Legacy tutorial script entrypoints are being retired as migration completes. See [`docs/tutorials/run-with-dev-atlas.md`](docs/tutorials/run-with-dev-atlas.md).
+Tutorial automation is executed through `bijux-dev-atlas` commands. Legacy tutorial script entrypoints are removed. See [`docs/tutorials/run-with-dev-atlas.md`](docs/tutorials/run-with-dev-atlas.md).
 
 ## Quickstart By Persona
 

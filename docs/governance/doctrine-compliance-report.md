@@ -26,5 +26,6 @@ The report consolidates:
 
 1. `checks automation-boundaries`
 2. `contract automation-boundaries`
+3. `migrations status`
 
 It exists to provide a single reviewer-facing signal that the repository still honors delegation-first automation boundaries.
