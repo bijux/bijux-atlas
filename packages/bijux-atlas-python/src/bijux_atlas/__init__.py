@@ -9,6 +9,7 @@ from .errors import (
     AtlasRetryExhaustedError,
 )
 from .query import QueryRequest
+from .version import __version__
 
 __all__ = [
     "AtlasApiError",
@@ -18,4 +19,5 @@ __all__ = [
     "AtlasRetryExhaustedError",
     "ClientConfig",
     "QueryRequest",
+    "__version__",
 ]

@@ -30,10 +30,12 @@ Repository = "https://github.com/bijux/bijux-atlas"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/bijux_atlas"]
+include = ["src/bijux_atlas/compatibility.json"]
 
 [tool.hatch.build.targets.sdist]
 include = [
   "src/bijux_atlas",
+  "compatibility.json",
   "README.md",
   "LICENSE",
   "CHANGELOG.md",
