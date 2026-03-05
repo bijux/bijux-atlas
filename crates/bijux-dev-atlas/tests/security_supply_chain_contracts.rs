@@ -36,8 +36,14 @@ fn security_validate_emits_dependency_and_vulnerability_reports() {
 
     let dependency_inventory = root.join("artifacts/security/dependency-inventory.json");
     let vulnerability_scan = root.join("artifacts/security/security-vulnerability-scan.json");
-    assert!(dependency_inventory.exists(), "missing dependency inventory artifact");
-    assert!(vulnerability_scan.exists(), "missing vulnerability scan artifact");
+    assert!(
+        dependency_inventory.exists(),
+        "missing dependency inventory artifact"
+    );
+    assert!(
+        vulnerability_scan.exists(),
+        "missing vulnerability scan artifact"
+    );
 
     let dependency_value: serde_json::Value = serde_json::from_str(
         &fs::read_to_string(dependency_inventory).expect("read dependency inventory"),

@@ -25,7 +25,10 @@ fn fixture_repo_with_profile_cycle() -> TempDir {
     let dir = TempDir::new().expect("tempdir");
     let root = dir.path();
 
-    write(&root.join("configs/inventory.json"), r#"{"schema_version":1}"#);
+    write(
+        &root.join("configs/inventory.json"),
+        r#"{"schema_version":1}"#,
+    );
     write(
         &root.join("release/evidence/manifest.json"),
         r#"{"artifact_list":[]}"#,
@@ -55,7 +58,10 @@ fn fixture_repo_with_profile_cycle() -> TempDir {
         r#"{"profiles":[{"id":"local","inherits_from":"hardened","values_file":"ops/k8s/values/local.yaml"},{"id":"hardened","inherits_from":"local","values_file":"ops/k8s/values/hardened.yaml"}]}"#,
     );
     write(&root.join("ops/k8s/values/local.yaml"), "replicaCount: 1\n");
-    write(&root.join("ops/k8s/values/hardened.yaml"), "replicaCount: 2\n");
+    write(
+        &root.join("ops/k8s/values/hardened.yaml"),
+        "replicaCount: 2\n",
+    );
 
     let registry = fs::read_to_string(repo_root().join("ops/invariants/registry.json"))
         .expect("source registry");
@@ -91,8 +97,7 @@ fn invariants_fail_with_stable_exit_code_when_contracts_break() {
         .and_then(serde_json::Value::as_array)
         .and_then(|rows| {
             rows.iter().find(|row| {
-                row.get("id")
-                    .and_then(serde_json::Value::as_str)
+                row.get("id").and_then(serde_json::Value::as_str)
                     == Some("INV-RUNTIME-START-GATE-001")
             })
         })

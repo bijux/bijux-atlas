@@ -60,16 +60,37 @@
     },
     {
       "id": "automation.clients.forbidden-patterns",
-      "status": "pass",
-      "violation_count": 0,
-      "violations": []
+      "status": "fail",
+      "violation_count": 1,
+      "violations": [
+        "clients/legacy-client.txt"
+      ]
+    },
+    {
+      "id": "automation.packages.boundary-compliance",
+      "status": "fail",
+      "violation_count": 1,
+      "violations": [
+        "ops/legacy_script.py"
+      ]
+    },
+    {
+      "id": "automation.ops.directory-purity",
+      "status": "fail",
+      "violation_count": 1,
+      "violations": [
+        "ops/legacy_script.py"
+      ]
     }
   ],
   "violations": [
     "tools/",
     ".github/workflows/legacy.yml: - run: python scripts/tool.py",
     ".github/workflows/legacy.yml: - run: bash -c \"echo legacy\"",
-    "requirements.txt"
+    "requirements.txt",
+    "clients/legacy-client.txt",
+    "ops/legacy_script.py",
+    "ops/legacy_script.py"
   ],
   "evidence_path": "/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/tests/fixtures/automation-boundary-violations/artifacts/atlas-dev/doctrine/contract-automation-boundaries.report.json"
 }

@@ -93,7 +93,8 @@ fn dev_cli_commands_match_governance_surface_registry() {
         .collect();
     expected.sort();
     assert_eq!(
-        observed, expected,
+        observed,
+        expected,
         "dev CLI command surface must match {}",
         config_path.display()
     );
@@ -111,7 +112,8 @@ fn dev_cli_commands_match_documented_catalog() {
     let catalog_path = root.join("docs/architecture/dev-cli-command-catalog.md");
     let documented = parse_markdown_command_catalog(&catalog_path);
     assert_eq!(
-        observed, documented,
+        observed,
+        documented,
         "dev CLI command list must stay in sync with {}",
         catalog_path.display()
     );
@@ -126,8 +128,9 @@ fn dev_cli_must_not_expose_user_runtime_flows() {
         .expect("run help");
     assert!(out.status.success());
     let text = String::from_utf8_lossy(&out.stdout);
-    let config_text = fs::read_to_string(root.join("configs/governance/cli-dev-command-surface.json"))
-        .expect("read cli surface config");
+    let config_text =
+        fs::read_to_string(root.join("configs/governance/cli-dev-command-surface.json"))
+            .expect("read cli surface config");
     let config_json: serde_json::Value = serde_json::from_str(&config_text).expect("parse config");
     for forbidden in config_json["forbidden_user_flow_commands"]
         .as_array()
@@ -160,7 +163,10 @@ fn cli_command_migrations_must_have_documented_notes() {
     let migrations: serde_json::Value =
         serde_json::from_str(&migrations_text).expect("parse migrations");
     let entries = migrations["entries"].as_array().expect("entries array");
-    assert!(!entries.is_empty(), "command migration registry must not be empty");
+    assert!(
+        !entries.is_empty(),
+        "command migration registry must not be empty"
+    );
     for entry in entries {
         let note_rel = entry["migration_note"]
             .as_str()

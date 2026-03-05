@@ -1,0 +1,13 @@
+{
+  "kind": "migration_status",
+  "legacy_paths": [
+    "clients/",
+    "ops/legacy_script.py",
+    "tools/"
+  ],
+  "schema_version": 1,
+  "status": "failed",
+  "summary": {
+    "legacy_path_count": 3
+  }
+}

@@ -82,7 +82,15 @@ fn tutorial_gene_row_contains_required_fields() {
 fn tutorial_workflow_command_replaces_legacy_script() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["tutorials", "run", "workflow", "--only", "verify", "--format", "json"])
+        .args([
+            "tutorials",
+            "run",
+            "workflow",
+            "--only",
+            "verify",
+            "--format",
+            "json",
+        ])
         .output()
         .expect("run workflow");
     assert!(
@@ -106,11 +114,13 @@ fn tutorial_dataset_package_command_replaces_legacy_script() {
         String::from_utf8_lossy(&output.stderr)
     );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
-    let package_path = payload["package_path"]
-        .as_str()
-        .expect("package_path");
+    let package_path = payload["package_path"].as_str().expect("package_path");
     let resolved = root.join(package_path);
-    assert!(resolved.exists(), "package must exist at {}", resolved.display());
+    assert!(
+        resolved.exists(),
+        "package must exist at {}",
+        resolved.display()
+    );
 }
 
 #[test]
@@ -245,7 +255,11 @@ fn unstable_timestamp_fixture_yields_different_archives_when_disabled() {
         ])
         .output()
         .expect("first package run");
-    assert!(first.status.success(), "{}", String::from_utf8_lossy(&first.stderr));
+    assert!(
+        first.status.success(),
+        "{}",
+        String::from_utf8_lossy(&first.stderr)
+    );
     let first_hash = sha256(&archive);
     thread::sleep(Duration::from_secs(1));
     let second = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
@@ -262,7 +276,14 @@ fn unstable_timestamp_fixture_yields_different_archives_when_disabled() {
         ])
         .output()
         .expect("second package run");
-    assert!(second.status.success(), "{}", String::from_utf8_lossy(&second.stderr));
+    assert!(
+        second.status.success(),
+        "{}",
+        String::from_utf8_lossy(&second.stderr)
+    );
     let second_hash = sha256(&archive);
-    assert_ne!(first_hash, second_hash, "archive hash should change when timestamps are unstable");
+    assert_ne!(
+        first_hash, second_hash,
+        "archive hash should change when timestamps are unstable"
+    );
 }

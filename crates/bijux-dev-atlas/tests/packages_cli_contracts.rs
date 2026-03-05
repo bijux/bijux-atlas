@@ -19,11 +19,18 @@ fn packages_list_reports_python_package_inventory() {
         .args(["packages", "list", "--format", "json"])
         .output()
         .expect("run packages list");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json payload");
     assert_eq!(payload["domain"], "packages");
     assert_eq!(payload["action"], "list");
-    assert_eq!(payload["packages"][0]["path"], "packages/bijux-atlas-python");
+    assert_eq!(
+        payload["packages"][0]["path"],
+        "packages/bijux-atlas-python"
+    );
 }
 
 #[test]
@@ -33,7 +40,11 @@ fn packages_verify_passes_for_current_layout() {
         .args(["packages", "verify", "--format", "json"])
         .output()
         .expect("run packages verify");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json payload");
     assert_eq!(payload["domain"], "packages");
     assert_eq!(payload["action"], "verify");

@@ -17,13 +17,7 @@ fn run(args: &[&str]) -> serde_json::Value {
 
 #[test]
 fn security_authorization_cli_commands_emit_reports() {
-    let roles = run(&[
-        "security",
-        "authorization",
-        "roles",
-        "--format",
-        "json",
-    ]);
+    let roles = run(&["security", "authorization", "roles", "--format", "json"]);
     assert_eq!(roles["kind"], "authorization_role_management_report");
     assert!(roles["role_count"].as_u64().unwrap_or_default() >= 1);
 
@@ -50,14 +44,11 @@ fn security_authorization_cli_commands_emit_reports() {
     assert!(diagnostics["assignment_count"].as_u64().unwrap_or_default() >= 1);
     assert_eq!(diagnostics["default_decision"], "deny");
 
-    let validate = run(&[
-        "security",
-        "authorization",
-        "validate",
-        "--format",
-        "json",
-    ]);
-    assert_eq!(validate["kind"], "authorization_permission_validation_report");
+    let validate = run(&["security", "authorization", "validate", "--format", "json"]);
+    assert_eq!(
+        validate["kind"],
+        "authorization_permission_validation_report"
+    );
     assert_eq!(validate["status"], "ok");
 }
 

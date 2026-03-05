@@ -20,10 +20,9 @@ fn runtime_command_surface_exposes_schema_and_self_check() {
         .expect("run runtime help");
     assert!(out.status.success());
     let text = String::from_utf8_lossy(&out.stdout);
-    let config_text = fs::read_to_string(
-        repo_root().join("configs/governance/cli-dev-command-surface.json"),
-    )
-    .expect("read dev cli governance surface");
+    let config_text =
+        fs::read_to_string(repo_root().join("configs/governance/cli-dev-command-surface.json"))
+            .expect("read dev cli governance surface");
     let config_json: serde_json::Value = serde_json::from_str(&config_text).expect("parse json");
     for command in config_json["runtime_required_subcommands"]
         .as_array()

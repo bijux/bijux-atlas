@@ -17,13 +17,7 @@ fn run(args: &[&str]) -> serde_json::Value {
 
 #[test]
 fn security_authentication_cli_commands_emit_reports() {
-    let api_keys = run(&[
-        "security",
-        "authentication",
-        "api-keys",
-        "--format",
-        "json",
-    ]);
+    let api_keys = run(&["security", "authentication", "api-keys", "--format", "json"]);
     assert_eq!(api_keys["kind"], "authentication_api_key_management_report");
 
     let diagnostics = run(&[

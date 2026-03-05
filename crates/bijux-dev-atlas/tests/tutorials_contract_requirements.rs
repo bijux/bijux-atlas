@@ -51,7 +51,10 @@ fn tutorial_contract_references_existing_files() {
         ])
         .output()
         .expect("integrity check");
-    assert!(!output.status.success(), "missing file must fail integrity check");
+    assert!(
+        !output.status.success(),
+        "missing file must fail integrity check"
+    );
 }
 
 #[test]
@@ -70,7 +73,10 @@ fn tutorial_sha256_manifest_matches_packaged_files() {
         ])
         .output()
         .expect("integrity check");
-    assert!(!output.status.success(), "wrong digest must fail integrity check");
+    assert!(
+        !output.status.success(),
+        "wrong digest must fail integrity check"
+    );
 }
 
 #[test]
@@ -108,7 +114,10 @@ fn tutorial_evidence_validate_against_required_shape() {
         ])
         .output()
         .expect("evidence validate");
-    assert!(!output.status.success(), "invalid evidence schema must fail");
+    assert!(
+        !output.status.success(),
+        "invalid evidence schema must fail"
+    );
 }
 
 #[test]

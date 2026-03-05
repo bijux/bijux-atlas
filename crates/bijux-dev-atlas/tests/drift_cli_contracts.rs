@@ -22,7 +22,10 @@ fn drift_explain_registry_returns_schema_and_detectors() {
         .expect("drift explain");
     assert_eq!(output.status.code(), Some(0));
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
-    assert_eq!(payload.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+    assert_eq!(
+        payload.get("schema_version").and_then(|v| v.as_u64()),
+        Some(1)
+    );
     assert_eq!(payload.get("status").and_then(|v| v.as_str()), Some("ok"));
 }
 

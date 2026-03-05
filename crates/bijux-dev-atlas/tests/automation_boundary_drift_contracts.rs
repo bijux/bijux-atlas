@@ -41,7 +41,13 @@ fn governance_exceptions_must_not_reintroduce_script_automation_bypasses() {
         .unwrap_or_else(|err| panic!("failed to read {}: {err}", exceptions.display()));
     let archive_text = fs::read_to_string(&archive)
         .unwrap_or_else(|err| panic!("failed to read {}: {err}", archive.display()));
-    for needle in ["tools/", "scripts/", "tutorials/scripts", "root script", "bash -c"] {
+    for needle in [
+        "tools/",
+        "scripts/",
+        "tutorials/scripts",
+        "root script",
+        "bash -c",
+    ] {
         assert!(
             !exceptions_text.contains(needle) && !archive_text.contains(needle),
             "governance exception registries must not include automation bypass `{needle}`"

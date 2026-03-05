@@ -14,7 +14,8 @@ fn repo_root() -> PathBuf {
 
 fn load_json(path: &str) -> serde_json::Value {
     let root = repo_root();
-    serde_json::from_str(&fs::read_to_string(root.join(path)).expect("read json")).expect("parse json")
+    serde_json::from_str(&fs::read_to_string(root.join(path)).expect("read json"))
+        .expect("parse json")
 }
 
 #[test]
@@ -29,7 +30,10 @@ fn sustainability_artifacts_exist_with_schema() {
         "ops/governance/sustainability/governance-maturity-index-report.json",
     ] {
         let value = load_json(path);
-        assert_eq!(value.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+        assert_eq!(
+            value.get("schema_version").and_then(|v| v.as_u64()),
+            Some(1)
+        );
     }
 }
 
@@ -41,6 +45,9 @@ fn sustainability_scenarios_and_workflow_exist() {
         "ops/governance/sustainability/governance-audit-scenario.json",
         ".github/workflows/governance-sustainability-validation.yml",
     ] {
-        assert!(root.join(path).exists(), "missing required governance file: {path}");
+        assert!(
+            root.join(path).exists(),
+            "missing required governance file: {path}"
+        );
     }
 }

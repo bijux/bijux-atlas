@@ -17,7 +17,8 @@ fn workspace_root() -> PathBuf {
 fn rbac_assignments_reference_defined_roles() {
     let root = workspace_root();
 
-    let roles_yaml = fs::read_to_string(root.join("configs/security/roles.yaml")).expect("read roles");
+    let roles_yaml =
+        fs::read_to_string(root.join("configs/security/roles.yaml")).expect("read roles");
     let roles_value: serde_yaml::Value = serde_yaml::from_str(&roles_yaml).expect("parse roles");
     let role_ids: BTreeSet<String> = roles_value["roles"]
         .as_sequence()
@@ -26,8 +27,8 @@ fn rbac_assignments_reference_defined_roles() {
         .filter_map(|entry| entry["id"].as_str().map(ToOwned::to_owned))
         .collect();
 
-    let assignments_yaml =
-        fs::read_to_string(root.join("configs/security/role-assignments.yaml")).expect("read assignments");
+    let assignments_yaml = fs::read_to_string(root.join("configs/security/role-assignments.yaml"))
+        .expect("read assignments");
     let assignments_value: serde_yaml::Value =
         serde_yaml::from_str(&assignments_yaml).expect("parse assignments");
 
@@ -47,8 +48,8 @@ fn rbac_assignments_reference_defined_roles() {
 fn rbac_roles_reference_defined_permissions_and_inheritance() {
     let root = workspace_root();
 
-    let permissions_yaml =
-        fs::read_to_string(root.join("configs/security/permissions.yaml")).expect("read permissions");
+    let permissions_yaml = fs::read_to_string(root.join("configs/security/permissions.yaml"))
+        .expect("read permissions");
     let permissions_value: serde_yaml::Value =
         serde_yaml::from_str(&permissions_yaml).expect("parse permissions");
     let permission_ids: BTreeSet<String> = permissions_value["permissions"]
@@ -58,7 +59,8 @@ fn rbac_roles_reference_defined_permissions_and_inheritance() {
         .filter_map(|entry| entry["id"].as_str().map(ToOwned::to_owned))
         .collect();
 
-    let roles_yaml = fs::read_to_string(root.join("configs/security/roles.yaml")).expect("read roles");
+    let roles_yaml =
+        fs::read_to_string(root.join("configs/security/roles.yaml")).expect("read roles");
     let roles_value: serde_yaml::Value = serde_yaml::from_str(&roles_yaml).expect("parse roles");
     let role_ids: BTreeSet<String> = roles_value["roles"]
         .as_sequence()

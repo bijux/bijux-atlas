@@ -20,7 +20,9 @@ fn governance_adr_index_command_emits_registry() {
     assert_eq!(value["kind"], "governance_adr_index");
     assert_eq!(value["status"], "ok");
     assert!(
-        value["entries"].as_array().is_some_and(|rows| !rows.is_empty()),
+        value["entries"]
+            .as_array()
+            .is_some_and(|rows| !rows.is_empty()),
         "expected at least one adr entry"
     );
 }

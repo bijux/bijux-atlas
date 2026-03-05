@@ -16,7 +16,11 @@ fn threat_model_registry_files_exist_and_are_well_formed() {
     let registry = root.join("security/threat-model/threat-registry.yaml");
 
     for path in [&assets, &threats, &mitigations, &taxonomy, &registry] {
-        assert!(path.exists(), "missing required threat model file: {}", path.display());
+        assert!(
+            path.exists(),
+            "missing required threat model file: {}",
+            path.display()
+        );
         let raw = std::fs::read_to_string(path).expect("read threat model file");
         let value: serde_yaml::Value = serde_yaml::from_str(&raw).expect("parse yaml");
         assert!(

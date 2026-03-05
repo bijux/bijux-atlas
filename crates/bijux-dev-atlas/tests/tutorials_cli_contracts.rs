@@ -20,7 +20,11 @@ fn tutorials_list_reports_asset_counts() {
         .args(["tutorials", "list", "--format", "json"])
         .output()
         .expect("tutorials list");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
     assert_eq!(payload["action"], "list");
     assert!(payload["counts"]["contract_files"].as_u64().unwrap_or(0) >= 1);
@@ -35,20 +39,42 @@ fn tutorials_workflow_text_uses_nextest_style_summary() {
         .args(["tutorials", "run", "workflow"])
         .output()
         .expect("tutorials run workflow");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let text = String::from_utf8(output.stdout).expect("utf8");
-    assert!(text.contains("PASS"), "workflow output must include PASS lines");
-    assert!(text.contains("summary: total="), "workflow output must include summary line");
+    assert!(
+        text.contains("PASS"),
+        "workflow output must include PASS lines"
+    );
+    assert!(
+        text.contains("summary: total="),
+        "workflow output must include summary line"
+    );
 }
 
 #[test]
 fn tutorials_workflow_only_runs_selected_step() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["tutorials", "run", "workflow", "--only", "ingest", "--format", "json"])
+        .args([
+            "tutorials",
+            "run",
+            "workflow",
+            "--only",
+            "ingest",
+            "--format",
+            "json",
+        ])
         .output()
         .expect("tutorials run workflow only");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
     let steps = payload["steps"].as_array().expect("steps array");
     assert_eq!(steps.len(), 1);
@@ -71,9 +97,16 @@ fn tutorials_workflow_markdown_output_writes_report() {
         ])
         .output()
         .expect("tutorials workflow markdown");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let markdown = fs::read_to_string(&out).expect("read markdown");
-    assert!(markdown.starts_with("# Tutorials"), "markdown summary should be rendered");
+    assert!(
+        markdown.starts_with("# Tutorials"),
+        "markdown summary should be rendered"
+    );
 }
 
 #[test]
@@ -83,7 +116,11 @@ fn tutorials_workflow_quiet_text_outputs_nothing() {
         .args(["tutorials", "run", "workflow", "--quiet"])
         .output()
         .expect("tutorials run workflow quiet");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     assert!(
         String::from_utf8_lossy(&output.stdout).trim().is_empty(),
         "quiet mode should suppress text output"
@@ -97,7 +134,11 @@ fn tutorials_workflow_verbose_text_includes_step_details() {
         .args(["tutorials", "run", "workflow", "--verbose"])
         .output()
         .expect("tutorials run workflow verbose");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let text = String::from_utf8(output.stdout).expect("utf8");
     assert!(
         text.contains("detail: step="),
@@ -113,7 +154,11 @@ fn tutorials_dataset_package_writes_tar_artifact() {
         .args(["tutorials", "dataset", "package", "--format", "json"])
         .output()
         .expect("tutorials dataset package");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
     let package_path = payload["package_path"]
         .as_str()
@@ -136,7 +181,11 @@ fn tutorials_dataset_package_can_refresh_sha256_manifest() {
         ])
         .output()
         .expect("tutorials dataset package --update-sha256");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
     assert_eq!(payload["sha256_manifest_updated"], true);
 }
@@ -145,10 +194,20 @@ fn tutorials_dataset_package_can_refresh_sha256_manifest() {
 fn tutorials_dataset_integrity_check_passes_for_current_fixture() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["tutorials", "dataset", "integrity-check", "--format", "json"])
+        .args([
+            "tutorials",
+            "dataset",
+            "integrity-check",
+            "--format",
+            "json",
+        ])
         .output()
         .expect("tutorials dataset integrity-check");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
     assert_eq!(payload["success"], true);
 }
@@ -161,7 +220,11 @@ fn tutorials_reproducibility_check_writes_evidence_artifact() {
         .args(["tutorials", "reproducibility-check", "--format", "json"])
         .output()
         .expect("tutorials reproducibility-check");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
     assert_eq!(
         payload["evidence_artifact"].as_str().unwrap_or_default(),
@@ -176,7 +239,11 @@ fn tutorials_contracts_explain_returns_schema_context() {
         .args(["tutorials", "contracts", "explain", "--format", "json"])
         .output()
         .expect("tutorials contracts explain");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
     assert_eq!(payload["action"], "contracts-explain");
     assert!(payload["required_keys"].as_array().is_some());

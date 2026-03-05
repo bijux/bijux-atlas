@@ -55,7 +55,11 @@ fn perf_cli_ux_diff_writes_regression_report() {
         .args(["perf", "cli-ux", "bench", "--format", "json"])
         .output()
         .expect("run perf cli-ux bench command");
-    assert!(bench.status.success(), "{}", String::from_utf8_lossy(&bench.stderr));
+    assert!(
+        bench.status.success(),
+        "{}",
+        String::from_utf8_lossy(&bench.stderr)
+    );
 
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)
@@ -135,8 +139,14 @@ fn perf_cli_ux_diff_regression_fixture_sets_threshold_flags() {
     };
     let payload: serde_json::Value = serde_json::from_slice(raw).expect("parse json");
     assert_eq!(payload["status"], serde_json::json!("failed"));
-    assert_eq!(payload["threshold_flags"]["p95_regressed"], serde_json::json!(true));
-    assert_eq!(payload["threshold_flags"]["p99_regressed"], serde_json::json!(true));
+    assert_eq!(
+        payload["threshold_flags"]["p95_regressed"],
+        serde_json::json!(true)
+    );
+    assert_eq!(
+        payload["threshold_flags"]["p99_regressed"],
+        serde_json::json!(true)
+    );
 }
 
 #[test]

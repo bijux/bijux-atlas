@@ -130,7 +130,11 @@ fn canonical_docs_pages_require_type_and_owner_front_matter() {
                 rel.display(),
                 if !has_type { "`type`" } else { "" },
                 if !has_owner {
-                    if !has_type { " and `owner`" } else { "`owner`" }
+                    if !has_type {
+                        " and `owner`"
+                    } else {
+                        "`owner`"
+                    }
                 } else {
                     ""
                 }
@@ -181,7 +185,11 @@ fn no_empty_public_docs_pages() {
             );
         }
     }
-    assert!(empty.is_empty(), "empty public docs pages found: {:?}", empty);
+    assert!(
+        empty.is_empty(),
+        "empty public docs pages found: {:?}",
+        empty
+    );
 }
 
 #[test]

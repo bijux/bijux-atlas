@@ -39,7 +39,8 @@ fn supply_chain_docs_reports_and_workflows_are_present() {
     }
 
     assert!(
-        root.join(".github/workflows/security-supply-chain-validation.yml").exists(),
+        root.join(".github/workflows/security-supply-chain-validation.yml")
+            .exists(),
         "missing supply chain validation workflow"
     );
 }

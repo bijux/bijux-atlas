@@ -21,15 +21,32 @@ fn clients_docs_generate_recreates_index_and_reference() {
     let root = repo_root();
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)
-        .args(["clients", "docs-generate", "--client", "atlas-client", "--format", "json"])
+        .args([
+            "clients",
+            "docs-generate",
+            "--client",
+            "atlas-client",
+            "--format",
+            "json",
+        ])
         .output()
         .expect("clients docs-generate");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
     assert_eq!(payload["action"], "docs-generate");
-    assert!(root.join("crates/bijux-atlas-client-python/docs/index.md").exists());
-    assert!(root.join("crates/bijux-atlas-client-python/docs/api-reference.md").exists());
-    assert!(root.join("crates/bijux-atlas-client-python/docs/version-compatibility-matrix.md").exists());
+    assert!(root
+        .join("packages/bijux-atlas-python/docs/index.md")
+        .exists());
+    assert!(root
+        .join("packages/bijux-atlas-python/docs/api-reference.md")
+        .exists());
+    assert!(root
+        .join("packages/bijux-atlas-python/docs/version-compatibility-matrix.md")
+        .exists());
 }
 
 #[test]
@@ -38,16 +55,38 @@ fn clients_docs_verify_passes_for_generated_files() {
     let root = repo_root();
     let generated = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)
-        .args(["clients", "docs-generate", "--client", "atlas-client", "--format", "json"])
+        .args([
+            "clients",
+            "docs-generate",
+            "--client",
+            "atlas-client",
+            "--format",
+            "json",
+        ])
         .output()
         .expect("clients docs-generate");
-    assert!(generated.status.success(), "{}", String::from_utf8_lossy(&generated.stderr));
+    assert!(
+        generated.status.success(),
+        "{}",
+        String::from_utf8_lossy(&generated.stderr)
+    );
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)
-        .args(["clients", "docs-verify", "--client", "atlas-client", "--format", "json"])
+        .args([
+            "clients",
+            "docs-verify",
+            "--client",
+            "atlas-client",
+            "--format",
+            "json",
+        ])
         .output()
         .expect("clients docs-verify");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
     assert_eq!(payload["success"], true);
 }
@@ -57,10 +96,21 @@ fn clients_examples_verify_passes_without_local_script_references() {
     let _guard = CLIENT_DOCS_TEST_LOCK.lock().expect("lock");
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["clients", "examples-verify", "--client", "atlas-client", "--format", "json"])
+        .args([
+            "clients",
+            "examples-verify",
+            "--client",
+            "atlas-client",
+            "--format",
+            "json",
+        ])
         .output()
         .expect("clients examples-verify");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
     assert_eq!(payload["success"], true);
 }
@@ -71,13 +121,27 @@ fn clients_examples_run_writes_evidence_bundle() {
     let root = repo_root();
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)
-        .args(["clients", "examples-run", "--client", "atlas-client", "--format", "json"])
+        .args([
+            "clients",
+            "examples-run",
+            "--client",
+            "atlas-client",
+            "--format",
+            "json",
+        ])
         .output()
         .expect("clients examples-run");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
     let evidence = payload["evidence"].as_str().expect("evidence path");
-    assert!(PathBuf::from(evidence).exists(), "evidence bundle must exist");
+    assert!(
+        PathBuf::from(evidence).exists(),
+        "evidence bundle must exist"
+    );
 }
 
 #[test]
@@ -85,10 +149,21 @@ fn clients_schema_verify_passes_for_docs_model() {
     let _guard = CLIENT_DOCS_TEST_LOCK.lock().expect("lock");
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["clients", "schema-verify", "--client", "atlas-client", "--format", "json"])
+        .args([
+            "clients",
+            "schema-verify",
+            "--client",
+            "atlas-client",
+            "--format",
+            "json",
+        ])
         .output()
         .expect("clients schema-verify");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
     assert_eq!(payload["success"], true);
 }
@@ -99,10 +174,21 @@ fn clients_compat_matrix_verify_passes() {
     let root = repo_root();
     let generated = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)
-        .args(["clients", "docs-generate", "--client", "atlas-client", "--format", "json"])
+        .args([
+            "clients",
+            "docs-generate",
+            "--client",
+            "atlas-client",
+            "--format",
+            "json",
+        ])
         .output()
         .expect("clients docs-generate");
-    assert!(generated.status.success(), "{}", String::from_utf8_lossy(&generated.stderr));
+    assert!(
+        generated.status.success(),
+        "{}",
+        String::from_utf8_lossy(&generated.stderr)
+    );
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(root)
         .args([
@@ -116,7 +202,11 @@ fn clients_compat_matrix_verify_passes() {
         ])
         .output()
         .expect("clients compat-matrix verify");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
     assert_eq!(payload["success"], true);
 }
@@ -128,29 +218,46 @@ fn clients_docs_generation_is_deterministic() {
     let run = || {
         Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
             .current_dir(&root)
-            .args(["clients", "docs-generate", "--client", "atlas-client", "--format", "json"])
+            .args([
+                "clients",
+                "docs-generate",
+                "--client",
+                "atlas-client",
+                "--format",
+                "json",
+            ])
             .output()
             .expect("clients docs-generate")
     };
     let first = run();
-    assert!(first.status.success(), "{}", String::from_utf8_lossy(&first.stderr));
-    let index_one = std::fs::read_to_string(root.join("crates/bijux-atlas-client-python/docs/index.md"))
+    assert!(
+        first.status.success(),
+        "{}",
+        String::from_utf8_lossy(&first.stderr)
+    );
+    let index_one = std::fs::read_to_string(root.join("packages/bijux-atlas-python/docs/index.md"))
         .expect("read index one");
-    let api_one = std::fs::read_to_string(root.join("crates/bijux-atlas-client-python/docs/api-reference.md"))
-        .expect("read api one");
+    let api_one =
+        std::fs::read_to_string(root.join("packages/bijux-atlas-python/docs/api-reference.md"))
+            .expect("read api one");
     let matrix_one = std::fs::read_to_string(
-        root.join("crates/bijux-atlas-client-python/docs/version-compatibility-matrix.md"),
+        root.join("packages/bijux-atlas-python/docs/version-compatibility-matrix.md"),
     )
     .expect("read matrix one");
 
     let second = run();
-    assert!(second.status.success(), "{}", String::from_utf8_lossy(&second.stderr));
-    let index_two = std::fs::read_to_string(root.join("crates/bijux-atlas-client-python/docs/index.md"))
+    assert!(
+        second.status.success(),
+        "{}",
+        String::from_utf8_lossy(&second.stderr)
+    );
+    let index_two = std::fs::read_to_string(root.join("packages/bijux-atlas-python/docs/index.md"))
         .expect("read index two");
-    let api_two = std::fs::read_to_string(root.join("crates/bijux-atlas-client-python/docs/api-reference.md"))
-        .expect("read api two");
+    let api_two =
+        std::fs::read_to_string(root.join("packages/bijux-atlas-python/docs/api-reference.md"))
+            .expect("read api two");
     let matrix_two = std::fs::read_to_string(
-        root.join("crates/bijux-atlas-client-python/docs/version-compatibility-matrix.md"),
+        root.join("packages/bijux-atlas-python/docs/version-compatibility-matrix.md"),
     )
     .expect("read matrix two");
 
@@ -165,10 +272,21 @@ fn clients_verify_text_uses_nextest_style_summary() {
     let root = repo_root();
     let generated = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)
-        .args(["clients", "docs-generate", "--client", "atlas-client", "--format", "json"])
+        .args([
+            "clients",
+            "docs-generate",
+            "--client",
+            "atlas-client",
+            "--format",
+            "json",
+        ])
         .output()
         .expect("clients docs-generate");
-    assert!(generated.status.success(), "{}", String::from_utf8_lossy(&generated.stderr));
+    assert!(
+        generated.status.success(),
+        "{}",
+        String::from_utf8_lossy(&generated.stderr)
+    );
 
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(root)
@@ -182,8 +300,14 @@ fn clients_verify_text_uses_nextest_style_summary() {
         String::from_utf8_lossy(&output.stdout)
     );
     let text = String::from_utf8(output.stdout).expect("utf8");
-    assert!(text.contains("PASS"), "verify text should include PASS rows");
-    assert!(text.contains("summary: total="), "verify text should include summary line");
+    assert!(
+        text.contains("PASS"),
+        "verify text should include PASS rows"
+    );
+    assert!(
+        text.contains("summary: total="),
+        "verify text should include summary line"
+    );
 }
 
 #[test]
@@ -192,30 +316,57 @@ fn clients_verify_writes_json_and_markdown_evidence() {
     let root = repo_root();
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)
-        .args(["clients", "verify", "--client", "atlas-client", "--format", "json"])
+        .args([
+            "clients",
+            "verify",
+            "--client",
+            "atlas-client",
+            "--format",
+            "json",
+        ])
         .output()
         .expect("clients verify");
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
-    let evidence_json = payload["evidence"]["json"].as_str().expect("evidence json path");
+    let evidence_json = payload["evidence"]["json"]
+        .as_str()
+        .expect("evidence json path");
     let evidence_md = payload["evidence"]["markdown"]
         .as_str()
         .expect("evidence markdown path");
-    assert!(PathBuf::from(evidence_json).exists(), "json evidence must exist");
-    assert!(PathBuf::from(evidence_md).exists(), "markdown evidence must exist");
+    assert!(
+        PathBuf::from(evidence_json).exists(),
+        "json evidence must exist"
+    );
+    assert!(
+        PathBuf::from(evidence_md).exists(),
+        "markdown evidence must exist"
+    );
 }
 
 #[test]
 fn clients_python_test_reports_missing_lockfile() {
     let _guard = CLIENT_DOCS_TEST_LOCK.lock().expect("lock");
     let root = repo_root();
-    let lock = root.join("crates/bijux-atlas-client-python/requirements.lock");
+    let lock = root.join("packages/bijux-atlas-python/requirements.lock");
     assert!(lock.exists(), "requirements.lock must exist");
-    let backup = root.join("crates/bijux-atlas-client-python/requirements.lock.bak-test");
+    let backup = root.join("packages/bijux-atlas-python/requirements.lock.bak-test");
     std::fs::rename(&lock, &backup).expect("rename lock");
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)
-        .args(["clients", "python", "test", "--client", "atlas-client", "--format", "json"])
+        .args([
+            "clients",
+            "python",
+            "test",
+            "--client",
+            "atlas-client",
+            "--format",
+            "json",
+        ])
         .output()
         .expect("clients python test");
     std::fs::rename(&backup, &lock).expect("restore lock");
