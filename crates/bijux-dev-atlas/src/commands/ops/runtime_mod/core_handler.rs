@@ -661,6 +661,85 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
         OpsCommand::Readiness(common) => {
             crate::ops_execution_runtime::run_ops_observe_readiness(&common)
         }
+        OpsCommand::Package(args) => {
+            if !args.common.allow_write {
+                return Err(
+                    "ops package requires --allow-write; next: rerun with --allow-write"
+                        .to_string(),
+                );
+            }
+            if !args.common.allow_subprocess {
+                return Err(
+                    "ops package requires --allow-subprocess; next: rerun with --allow-subprocess"
+                        .to_string(),
+                );
+            }
+            let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+            let exe = std::env::current_exe()
+                .map_err(|err| format!("ops package failed to locate executable: {err}"))?;
+            let repo_root_text = repo_root.display().to_string();
+            let package_args = vec![
+                "release".to_string(),
+                "ops".to_string(),
+                "package".to_string(),
+                "--repo-root".to_string(),
+                repo_root_text.clone(),
+                "--allow-write".to_string(),
+                "--allow-subprocess".to_string(),
+                "--format".to_string(),
+                "json".to_string(),
+            ];
+            let package = std::process::Command::new(&exe)
+                .args(&package_args)
+                .output()
+                .map_err(|err| format!("ops package failed to run release ops package: {err}"))?;
+            if !package.status.success() {
+                return Err(format!(
+                    "ops package failed during chart packaging; next: inspect helm/tooling and rerun with `ops package --allow-write --allow-subprocess`: {}",
+                    String::from_utf8_lossy(&package.stderr).trim()
+                ));
+            }
+            let bundle_args = vec![
+                "release".to_string(),
+                "ops".to_string(),
+                "bundle-build".to_string(),
+                "--repo-root".to_string(),
+                repo_root_text,
+                "--allow-write".to_string(),
+                "--version".to_string(),
+                args.version.clone(),
+                "--format".to_string(),
+                "json".to_string(),
+            ];
+            let bundle = std::process::Command::new(&exe)
+                .args(&bundle_args)
+                .output()
+                .map_err(|err| format!("ops package failed to run release ops bundle-build: {err}"))?;
+            if !bundle.status.success() {
+                return Err(format!(
+                    "ops package failed during bundle build; next: ensure release ops package completed and rerun: {}",
+                    String::from_utf8_lossy(&bundle.stderr).trim()
+                ));
+            }
+            let package_payload: serde_json::Value = serde_json::from_slice(&package.stdout)
+                .unwrap_or_else(|_| serde_json::json!({"raw_stdout": String::from_utf8_lossy(&package.stdout).to_string()}));
+            let bundle_payload: serde_json::Value = serde_json::from_slice(&bundle.stdout)
+                .unwrap_or_else(|_| serde_json::json!({"raw_stdout": String::from_utf8_lossy(&bundle.stdout).to_string()}));
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "ops_package",
+                "status": "ok",
+                "version": args.version,
+                "packaging": package_payload,
+                "bundle": bundle_payload,
+                "next_steps": [
+                    "run `bijux-dev-atlas release ops validate-package --format json`",
+                    "run `bijux-dev-atlas release ops readiness-summary --format json`"
+                ]
+            });
+            let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
+            Ok((rendered, ops_exit::PASS))
+        }
         OpsCommand::Render(args) => crate::ops_execution_runtime::run_ops_render(&args),
         OpsCommand::Logs { command } => match command {
             crate::cli::OpsCollectCommand::Collect(args) => {

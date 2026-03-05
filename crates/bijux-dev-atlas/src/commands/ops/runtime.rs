@@ -131,6 +131,7 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
         | OpsCommand::LoadRun { common, .. }
         | OpsCommand::LoadReport { common, .. } => Some(common),
         OpsCommand::Render(args) => Some(&args.common),
+        OpsCommand::Package(args) => Some(&args.common),
         OpsCommand::Scenario { command } => match command {
             OpsScenarioCommand::Run(args) => Some(&args.common),
             OpsScenarioCommand::List(common) => Some(common),

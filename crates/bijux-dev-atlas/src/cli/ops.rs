@@ -131,6 +131,7 @@ pub enum OpsCommand {
     VerifyTools(OpsCommonArgs),
     ListActions(OpsCommonArgs),
     Plan(OpsCommonArgs),
+    Package(OpsPackageArgs),
     ReleasePlan(OpsCommonArgs),
     InstallPlan(OpsCommonArgs),
     Up(OpsCommonArgs),
@@ -586,6 +587,14 @@ pub struct OpsRenderArgs {
     pub diff: bool,
     #[arg(long)]
     pub helm_binary: Option<String>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsPackageArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long, default_value = "0.1.0")]
+    pub version: String,
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]
