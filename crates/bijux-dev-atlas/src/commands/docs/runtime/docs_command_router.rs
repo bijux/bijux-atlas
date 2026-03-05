@@ -654,6 +654,70 @@ fn docs_merge_validate_payload(
     }))
 }
 
+fn docs_includes_check_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Result<serde_json::Value, String> {
+    let docs_root = ctx.repo_root.join("docs");
+    let markdown_files = docs_markdown_files(&docs_root, common.include_drafts);
+    let include_re = regex::Regex::new(r#"--8<--\s*"([^"]+)""#).map_err(|e| e.to_string())?;
+    let mut rows = Vec::new();
+    let mut errors = Vec::new();
+    for file in markdown_files {
+        let rel = file
+            .strip_prefix(&docs_root)
+            .unwrap_or(&file)
+            .display()
+            .to_string();
+        let text = fs::read_to_string(&file)
+            .map_err(|e| format!("failed to read {}: {e}", file.display()))?;
+        for cap in include_re.captures_iter(&text) {
+            let include_target = cap.get(1).map(|m| m.as_str()).unwrap_or_default();
+            let include_path = docs_root.join(include_target);
+            let exists = include_path.exists();
+            if !exists {
+                errors.push(format!(
+                    "include target missing: `{include_target}` referenced from `docs/{rel}`"
+                ));
+            }
+            rows.push(serde_json::json!({
+                "source": format!("docs/{rel}"),
+                "include_target": include_target,
+                "exists": exists
+            }));
+        }
+    }
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "run_id": ctx.run_id.as_str(),
+        "text": if errors.is_empty() { "docs includes check passed" } else { "docs includes check failed" },
+        "rows": rows,
+        "errors": errors
+    }))
+}
+
+fn docs_nav_integrity_payload(ctx: &DocsContext) -> Result<serde_json::Value, String> {
+    let nav_refs = mkdocs_nav_refs(&ctx.repo_root)?;
+    let mut errors = Vec::new();
+    let mut rows = Vec::new();
+    for (label, rel) in nav_refs {
+        let path = ctx.repo_root.join("docs").join(&rel);
+        let exists = path.is_file();
+        if !exists {
+            errors.push(format!("mkdocs nav entry `{label}` points to missing file `docs/{rel}`"));
+        }
+        rows.push(serde_json::json!({
+            "label": label,
+            "path": format!("docs/{rel}"),
+            "exists": exists
+        }));
+    }
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "run_id": ctx.run_id.as_str(),
+        "text": if errors.is_empty() { "docs nav integrity passed" } else { "docs nav integrity failed" },
+        "rows": rows,
+        "errors": errors
+    }))
+}
+
 fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
     let docs_root = repo_root.join("docs");
     let output_path = docs_root.join("_internal/generated/docs-health-dashboard.md");
@@ -1997,6 +2061,21 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 }
                 Ok((emit_payload(common.format, common.out, &payload)?, code))
             }
+            DocsCommand::NavIntegrity(common) => {
+                let ctx = docs_context(&common)?;
+                let mut payload = docs_nav_integrity_payload(&ctx)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
+                    1
+                } else {
+                    0
+                };
+                Ok((emit_payload(common.format, common.out, &payload)?, code))
+            }
+            DocsCommand::SitemapRegenerate(common) => run_docs_registry_command(
+                &started,
+                crate::cli::DocsRegistryCommand::Build(common),
+            ),
             DocsCommand::ExternalLinks(args) => {
                 let ctx = docs_context(&args.common)?;
                 let mut payload =
@@ -2015,6 +2094,17 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
             DocsCommand::Lint(common) => {
                 let ctx = docs_context(&common)?;
                 let mut payload = docs_lint_payload(&ctx, &common)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
+                    1
+                } else {
+                    0
+                };
+                Ok((emit_payload(common.format, common.out, &payload)?, code))
+            }
+            DocsCommand::IncludesCheck(common) => {
+                let ctx = docs_context(&common)?;
+                let mut payload = docs_includes_check_payload(&ctx, &common)?;
                 payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
                     1
