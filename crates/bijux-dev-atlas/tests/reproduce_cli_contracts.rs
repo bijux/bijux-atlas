@@ -33,7 +33,7 @@ fn reproduce_run_emits_source_snapshot_hash() {
 }
 
 #[test]
-fn reproduce_verify_requires_all_core_scenarios() {
+fn slow_reproduce_verify_requires_all_core_scenarios() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["reproduce", "verify", "--format", "json"])
@@ -48,7 +48,7 @@ fn reproduce_verify_requires_all_core_scenarios() {
 }
 
 #[test]
-fn reproduce_reports_are_deterministic_and_include_artifact_hashes() {
+fn slow_reproduce_reports_are_deterministic_and_include_artifact_hashes() {
     let args = ["reproduce", "run", "--format", "json"];
     let first = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
@@ -80,7 +80,7 @@ fn reproduce_reports_are_deterministic_and_include_artifact_hashes() {
 }
 
 #[test]
-fn reproduce_status_reports_summary_shape() {
+fn slow_reproduce_status_reports_summary_shape() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["reproduce", "status", "--format", "json"])
@@ -96,7 +96,7 @@ fn reproduce_status_reports_summary_shape() {
 }
 
 #[test]
-fn reproduce_audit_metrics_lineage_and_summary_emit_expected_kinds() {
+fn slow_reproduce_audit_metrics_lineage_and_summary_emit_expected_kinds() {
     let commands = [
         ("audit-report", "reproducibility_audit_report"),
         ("metrics", "reproducibility_metrics"),
