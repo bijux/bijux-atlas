@@ -537,6 +537,8 @@ fn force_json_docs(command: &mut DocsCommand) {
         | DocsCommand::Graph(common)
         | DocsCommand::Dead(common)
         | DocsCommand::Duplicates(common)
+        | DocsCommand::PrunePlan(common)
+        | DocsCommand::DedupeReport(common)
         | DocsCommand::ShrinkReport(common)
         | DocsCommand::HealthDashboard(common)
         | DocsCommand::VerifyGenerated(common) => common.format = FormatArg::Json,
@@ -560,6 +562,9 @@ fn force_json_docs(command: &mut DocsCommand) {
         DocsCommand::Registry { command } => match command {
             crate::cli::DocsRegistryCommand::Build(common)
             | crate::cli::DocsRegistryCommand::Validate(common) => common.format = FormatArg::Json,
+        },
+        DocsCommand::Toc { command } => match command {
+            crate::cli::DocsTocCommand::Verify(common) => common.format = FormatArg::Json,
         },
         DocsCommand::Reference { command } => match command {
             crate::cli::DocsReferenceCommand::Generate(common)
@@ -935,6 +940,8 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | DocsCommand::Graph(common)
             | DocsCommand::Dead(common)
             | DocsCommand::Duplicates(common)
+            | DocsCommand::PrunePlan(common)
+            | DocsCommand::DedupeReport(common)
             | DocsCommand::VerifyContracts(common) => common.strict = true,
             DocsCommand::Build(_)
             | DocsCommand::Serve(_)
@@ -962,6 +969,9 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             DocsCommand::Registry { command } => match command {
                 crate::cli::DocsRegistryCommand::Build(_)
                 | crate::cli::DocsRegistryCommand::Validate(_) => {}
+            },
+            DocsCommand::Toc { command } => match command {
+                crate::cli::DocsTocCommand::Verify(_) => {}
             },
             DocsCommand::Reference { command } => match command {
                 crate::cli::DocsReferenceCommand::Generate(_)
@@ -1410,6 +1420,8 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | DocsCommand::Graph(common)
             | DocsCommand::Dead(common)
             | DocsCommand::Duplicates(common)
+            | DocsCommand::PrunePlan(common)
+            | DocsCommand::DedupeReport(common)
             | DocsCommand::ShrinkReport(common)
             | DocsCommand::HealthDashboard(common)
             | DocsCommand::VerifyGenerated(common) => common.repo_root = Some(root.clone()),
@@ -1439,6 +1451,11 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             DocsCommand::Registry { command } => match command {
                 crate::cli::DocsRegistryCommand::Build(common)
                 | crate::cli::DocsRegistryCommand::Validate(common) => {
+                    common.repo_root = Some(root.clone())
+                }
+            },
+            DocsCommand::Toc { command } => match command {
+                crate::cli::DocsTocCommand::Verify(common) => {
                     common.repo_root = Some(root.clone())
                 }
             },

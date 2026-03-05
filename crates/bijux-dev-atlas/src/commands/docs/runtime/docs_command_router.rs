@@ -1315,6 +1315,27 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 Ok((emit_payload(common.format, common.out, &payload)?, 0))
             }
+            DocsCommand::DedupeReport(common) => {
+                let ctx = docs_context(&common)?;
+                let mut payload = docs_duplicates_payload(&ctx, &common)?;
+                payload["kind"] = serde_json::json!("docs_dedupe_report");
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                Ok((emit_payload(common.format, common.out, &payload)?, 0))
+            }
+            DocsCommand::PrunePlan(common) => {
+                let ctx = docs_context(&common)?;
+                let dead = docs_dead_payload(&ctx, &common)?;
+                let duplicates = docs_duplicates_payload(&ctx, &common)?;
+                let mut payload = serde_json::json!({
+                    "schema_version": 1,
+                    "kind": "docs_prune_plan",
+                    "status": "ok",
+                    "dead_pages": dead.get("rows").cloned().unwrap_or_else(|| serde_json::json!([])),
+                    "duplicate_clusters": duplicates.get("rows").cloned().unwrap_or_else(|| serde_json::json!([])),
+                });
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                Ok((emit_payload(common.format, common.out, &payload)?, 0))
+            }
             DocsCommand::ShrinkReport(common) => {
                 let ctx = docs_context(&common)?;
                 let mut payload = docs_shrink_report_payload(&ctx, &common)?;
@@ -1586,6 +1607,23 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 }
             },
             DocsCommand::Registry { command } => run_docs_registry_command(&started, command),
+            DocsCommand::Toc { command } => match command {
+                crate::cli::DocsTocCommand::Verify(common) => {
+                    let ctx = docs_context(&common)?;
+                    let mut payload = docs_links_payload(&ctx, &common)?;
+                    payload["kind"] = serde_json::json!("docs_toc_verify");
+                    payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                    let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
+                        1
+                    } else {
+                        0
+                    };
+                    if code != 0 {
+                        payload["error_code"] = serde_json::json!("DOCS_TOC_ERROR");
+                    }
+                    Ok((emit_payload(common.format, common.out, &payload)?, code))
+                }
+            },
             DocsCommand::Links(common) => {
                 let ctx = docs_context(&common)?;
                 let mut payload = docs_links_payload(&ctx, &common)?;

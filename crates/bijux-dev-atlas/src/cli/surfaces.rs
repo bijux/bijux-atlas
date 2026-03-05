@@ -140,6 +140,8 @@ pub enum DocsCommand {
     Top(DocsTopArgs),
     Dead(DocsCommonArgs),
     Duplicates(DocsCommonArgs),
+    PrunePlan(DocsCommonArgs),
+    DedupeReport(DocsCommonArgs),
     ShrinkReport(DocsCommonArgs),
     Grep(DocsGrepArgs),
     HealthDashboard(DocsCommonArgs),
@@ -169,6 +171,10 @@ pub enum DocsCommand {
         #[command(subcommand)]
         command: DocsRegistryCommand,
     },
+    Toc {
+        #[command(subcommand)]
+        command: DocsTocCommand,
+    },
     VerifyGenerated(DocsCommonArgs),
 }
 
@@ -182,6 +188,11 @@ pub enum DocsSpineCommand {
 pub enum DocsRegistryCommand {
     Build(DocsCommonArgs),
     Validate(DocsCommonArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum DocsTocCommand {
+    Verify(DocsCommonArgs),
 }
 
 #[derive(Subcommand, Debug)]
