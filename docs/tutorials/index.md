@@ -56,6 +56,7 @@ related:
 - [Tutorial generated content workflow](generated-content-workflow.md)
 - [Tutorial generated content update guide](generated-content-update-guide.md)
 - [Tutorial generated content rules](generated-content-rules.md)
+- [Generated example authoring](generated-example-authoring.md)
 - [Tutorial consolidation roadmap](consolidation-roadmap.md)
 - [Tutorial advanced guide](advanced-guide.md)
 - [Troubleshooting guide](troubleshooting-guide.md)

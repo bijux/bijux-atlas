@@ -51,6 +51,16 @@ The same implementation detail may appear in both layers only as a documented co
 | `checks-all` | quality gate verification | fmt, lint, docs, config, supply-chain, and fast control-plane lanes | yes, except `severity=info` unless `--strict` |
 | `contract all` | governance invariant verification | schema, policy, release, docs, and operational contracts | yes |
 
+## Automation Boundary Governance
+
+- Delegation-first rule: repository automation must execute through `bijux-dev-atlas` command surfaces.
+- Temporary exceptions for root scripts are removed and must not be reintroduced.
+- Outdated assumptions and restored boundaries are tracked in:
+  - `crates/bijux-dev-atlas/docs/automation-boundary-gap-review.md`
+- Boundary verification entrypoints:
+  - `bijux-dev-atlas checks automation-boundaries`
+  - `bijux-dev-atlas contract automation-boundaries`
+
 ## Linking Policy Authority
 
 - Canonical linking boundaries are defined in `docs/_internal/linking.md`.
