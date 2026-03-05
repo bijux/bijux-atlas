@@ -28,11 +28,14 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - [Metrics completion report](metrics-completion-report.md): delivered metrics engineering scope
 - [Metric retention policy](metric-retention-policy.md): retention tiers and budget alignment
 - [Logging architecture](logging-architecture.md): structured schema, levels, and metadata policy
+- [Logging philosophy](logging-philosophy.md): stable principles for production log design
+- [Structured log schema](structured-log-schema.md): required fields and validation contract
 - [Logging debugging guide](logging-debugging-guide.md): request and query log triage flow
 - [Logging ingestion examples](logging-ingestion-examples.md): parser and field mapping patterns
 - [Logging aggregation examples](logging-aggregation-examples.md): incident-oriented aggregation slices
 - [Logging dashboard examples](logging-dashboard-examples.md): operator panel ideas from logs
 - [Logging best practices](logging-best-practices.md): stable authoring conventions
+- [Log message conventions](log-message-conventions.md): canonical message authoring and event naming rules
 - [Log levels](log-levels.md): operational severity policy
 - [Log metadata fields](log-metadata-fields.md): stable structured field contract
 - [Log correlation IDs](log-correlation-ids.md): cross-signal request correlation flow
