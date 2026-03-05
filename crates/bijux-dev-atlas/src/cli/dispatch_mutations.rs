@@ -530,6 +530,7 @@ fn force_json_docs(command: &mut DocsCommand) {
         | DocsCommand::VerifyContracts(common)
         | DocsCommand::Doctor(common)
         | DocsCommand::DeployPlan(common)
+        | DocsCommand::UxSmoke(common)
         | DocsCommand::Where(common)
         | DocsCommand::SiteDir(common)
         | DocsCommand::Validate(common)
@@ -1040,7 +1041,8 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | DocsCommand::Duplicates(common)
             | DocsCommand::PrunePlan(common)
             | DocsCommand::DedupeReport(common)
-            | DocsCommand::VerifyContracts(common) => common.strict = true,
+            | DocsCommand::VerifyContracts(common)
+            | DocsCommand::UxSmoke(common) => common.strict = true,
             DocsCommand::Build(_)
             | DocsCommand::Serve(_)
             | DocsCommand::PagesSmoke(_)
@@ -1507,6 +1509,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | DocsCommand::VerifyContracts(common)
             | DocsCommand::Doctor(common)
             | DocsCommand::DeployPlan(common)
+            | DocsCommand::UxSmoke(common)
             | DocsCommand::Where(common)
             | DocsCommand::SiteDir(common)
             | DocsCommand::Validate(common)

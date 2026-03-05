@@ -1979,6 +1979,113 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 let code = if status < 400 && marker_found { 0 } else { 1 };
                 Ok((emit_payload(args.common.format, args.common.out, &payload)?, code))
             }
+            DocsCommand::UxSmoke(common) => {
+                if !common.allow_subprocess || !common.allow_write {
+                    return Err("docs ux-smoke requires --allow-subprocess --allow-write".to_string());
+                }
+                let ctx = docs_context(&common)?;
+                docs_build_or_serve_subprocess(
+                    &["build".to_string()],
+                    &common,
+                    "docs build",
+                )?;
+                let site_paths =
+                    bijux_dev_atlas::docs::site_output::parse_mkdocs_site_paths(&ctx.repo_root)?;
+                let site_dir = ctx.repo_root.join(&site_paths.site_dir);
+                let breadcrumbs_path = ctx
+                    .repo_root
+                    .join("docs/_internal/generated/breadcrumbs.json");
+                let breadcrumb_map: std::collections::BTreeSet<String> = if breadcrumbs_path.exists()
+                {
+                    let value: serde_json::Value = serde_json::from_str(
+                        &fs::read_to_string(&breadcrumbs_path).unwrap_or_default(),
+                    )
+                    .unwrap_or_default();
+                    value
+                        .get("rows")
+                        .and_then(|v| v.as_array())
+                        .cloned()
+                        .unwrap_or_default()
+                        .into_iter()
+                        .filter_map(|row| row.get("path").and_then(|v| v.as_str()).map(str::to_string))
+                        .collect()
+                } else {
+                    std::collections::BTreeSet::new()
+                };
+                let samples = [
+                    "index.html",
+                    "tutorials/real-data/index.html",
+                    "_generated/real-data-runs-table/index.html",
+                    "_internal/generated/real-data-runs-overview/index.html",
+                ];
+                let mut rows = Vec::new();
+                let mut failures = Vec::new();
+                let mut warnings = Vec::new();
+                for sample in samples {
+                    let page = site_dir.join(sample);
+                    if !page.exists() {
+                        failures.push(format!("missing sample page `{}`", page.display()));
+                        rows.push(serde_json::json!({
+                            "sample": sample,
+                            "exists": false,
+                            "has_top_nav": false,
+                            "has_side_nav": false,
+                            "has_breadcrumb": false
+                        }));
+                        continue;
+                    }
+                    let text = fs::read_to_string(&page).unwrap_or_default();
+                    let has_top_nav =
+                        text.contains("md-header") || text.contains("md-tabs") || text.contains("md-tabs__item");
+                    let has_side_nav = text.contains("md-nav") || text.contains("md-sidebar");
+                    let expected_doc_path = if sample == "index.html" {
+                        "docs/index.md".to_string()
+                    } else {
+                        "docs/".to_string()
+                            + &sample
+                            .trim_end_matches("index.html")
+                            .trim_end_matches('/')
+                            .to_string()
+                            + ".md"
+                    };
+                    let has_breadcrumb = text.contains("md-path")
+                        || text.contains("md-path__item")
+                        || breadcrumb_map.contains(&expected_doc_path);
+                    if !has_top_nav {
+                        failures.push(format!("sample `{sample}` missing top navigation markers"));
+                    }
+                    if !has_side_nav {
+                        failures.push(format!("sample `{sample}` missing side navigation markers"));
+                    }
+                    if !has_breadcrumb {
+                        warnings.push(format!("sample `{sample}` missing breadcrumb path markers"));
+                    }
+                    rows.push(serde_json::json!({
+                        "sample": sample,
+                        "exists": true,
+                        "has_top_nav": has_top_nav,
+                        "has_side_nav": has_side_nav,
+                        "has_breadcrumb": has_breadcrumb
+                    }));
+                }
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "run_id": ctx.run_id.as_str(),
+                    "text": if failures.is_empty() { "docs ux smoke passed" } else { "docs ux smoke failed" },
+                    "rows": rows,
+                    "sample_set": samples,
+                    "site_dir": site_dir.display().to_string(),
+                    "errors": failures,
+                    "warnings": warnings,
+                    "duration_ms": started.elapsed().as_millis() as u64
+                });
+                let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
+                    1
+                } else {
+                    0
+                };
+                Ok((emit_payload(common.format, common.out, &payload)?, code))
+            }
             DocsCommand::SiteDir(common) => {
                 let ctx = docs_context(&common)?;
                 let mut payload = bijux_dev_atlas::docs::site_output::site_output_report(&ctx.repo_root)?;

@@ -126,6 +126,7 @@ pub enum DocsCommand {
     Doctor(DocsCommonArgs),
     DeployPlan(DocsCommonArgs),
     PagesSmoke(DocsPagesSmokeArgs),
+    UxSmoke(DocsCommonArgs),
     Where(DocsCommonArgs),
     SiteDir(DocsCommonArgs),
     Validate(DocsCommonArgs),
