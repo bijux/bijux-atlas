@@ -214,6 +214,307 @@ pub(crate) struct ChecksCatalogListOptions {
     out: Option<PathBuf>,
 }
 
+pub(crate) struct AutomationBoundariesOptions {
+    pub repo_root: Option<PathBuf>,
+    pub format: FormatArg,
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Debug, Serialize)]
+struct AutomationBoundariesReport {
+    schema_version: u32,
+    status: String,
+    checks: Vec<AutomationBoundaryCheckResult>,
+    violations: Vec<String>,
+    evidence_path: String,
+}
+
+#[derive(Debug, Serialize)]
+struct AutomationBoundaryCheckResult {
+    id: String,
+    status: String,
+    violation_count: usize,
+    violations: Vec<String>,
+}
+
+fn is_path_within(rel: &Path, prefix: &str) -> bool {
+    rel.starts_with(Path::new(prefix))
+}
+
+fn collect_repo_files(root: &Path) -> Result<Vec<PathBuf>, String> {
+    let mut stack = vec![root.to_path_buf()];
+    let mut files = Vec::new();
+    while let Some(cursor) = stack.pop() {
+        let entries = fs::read_dir(&cursor)
+            .map_err(|err| format!("failed to read {}: {err}", cursor.display()))?;
+        for entry in entries {
+            let entry = entry.map_err(|err| format!("failed to read directory entry: {err}"))?;
+            let path = entry.path();
+            let rel = path
+                .strip_prefix(root)
+                .map_err(|err| format!("failed to normalize {}: {err}", path.display()))?;
+            if rel.starts_with(".git")
+                || rel.starts_with("target")
+                || rel.starts_with("node_modules")
+                || rel.starts_with("artifacts")
+            {
+                continue;
+            }
+            if path.is_dir() {
+                stack.push(path);
+                continue;
+            }
+            files.push(rel.to_path_buf());
+        }
+    }
+    files.sort();
+    Ok(files)
+}
+
+fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheckResult>, String> {
+    let mut checks = Vec::new();
+
+    let mut dir_violations = Vec::new();
+    for forbidden in ["tools", "scripts"] {
+        if root.join(forbidden).exists() {
+            dir_violations.push(format!("{forbidden}/"));
+        }
+    }
+    checks.push(AutomationBoundaryCheckResult {
+        id: "automation.directories.forbidden".to_string(),
+        status: if dir_violations.is_empty() {
+            "pass".to_string()
+        } else {
+            "fail".to_string()
+        },
+        violation_count: dir_violations.len(),
+        violations: dir_violations,
+    });
+
+    let mut root_lang_violations = Vec::new();
+    for entry in fs::read_dir(root).map_err(|err| format!("failed to read root: {err}"))? {
+        let entry = entry.map_err(|err| format!("failed to read root entry: {err}"))?;
+        let path = entry.path();
+        if !path.is_file() {
+            continue;
+        }
+        let ext = path.extension().and_then(|v| v.to_str()).unwrap_or_default();
+        if ext == "sh" || ext == "py" {
+            let rel = path
+                .strip_prefix(root)
+                .map_err(|err| format!("failed to normalize {}: {err}", path.display()))?;
+            root_lang_violations.push(rel.display().to_string());
+        }
+    }
+    root_lang_violations.sort();
+    checks.push(AutomationBoundaryCheckResult {
+        id: "automation.root-language-files.forbidden".to_string(),
+        status: if root_lang_violations.is_empty() {
+            "pass".to_string()
+        } else {
+            "fail".to_string()
+        },
+        violation_count: root_lang_violations.len(),
+        violations: root_lang_violations,
+    });
+
+    let files = collect_repo_files(root)?;
+    let mut shebang_violations = Vec::new();
+    let mut workflow_python_violations = Vec::new();
+    let mut workflow_bash_script_violations = Vec::new();
+    let mut python_tooling_violations = Vec::new();
+    #[cfg(unix)]
+    let mut exec_violations = Vec::new();
+
+    for rel in &files {
+        let path = root.join(rel);
+        let text = fs::read_to_string(&path).unwrap_or_default();
+        if text.starts_with("#!") && !(is_path_within(rel, "docs/") || is_path_within(rel, "ops/"))
+        {
+            shebang_violations.push(rel.display().to_string());
+        }
+
+        if is_path_within(rel, ".github/workflows/") {
+            for line in text.lines().map(str::trim) {
+                if line.contains("bash -c") {
+                    workflow_bash_script_violations
+                        .push(format!("{}: {}", rel.display(), line.to_string()));
+                }
+                if line.contains("python ") || line.contains("python3 ") {
+                    workflow_python_violations
+                        .push(format!("{}: {}", rel.display(), line.to_string()));
+                }
+                if line.contains("bash ./") || line.contains("bash scripts/") || line.contains(".sh")
+                {
+                    workflow_bash_script_violations
+                        .push(format!("{}: {}", rel.display(), line.to_string()));
+                }
+            }
+        }
+
+        let base = rel.file_name().and_then(|v| v.to_str()).unwrap_or_default();
+        if (base == "requirements.txt"
+            || base == "requirements-dev.txt"
+            || base == "Pipfile"
+            || base == "poetry.lock"
+            || base == "pyproject.toml")
+            && !is_path_within(rel, "docs/")
+        {
+            python_tooling_violations.push(rel.display().to_string());
+        }
+
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let mode = fs::metadata(&path)
+                .map_err(|err| format!("failed to read metadata {}: {err}", path.display()))?
+                .permissions()
+                .mode();
+            let executable = mode & 0o111 != 0;
+            let allowed = is_path_within(rel, "ops/") || is_path_within(rel, "docs/");
+            if executable && !allowed {
+                exec_violations.push(rel.display().to_string());
+            }
+        }
+    }
+
+    shebang_violations.sort();
+    workflow_python_violations.sort();
+    workflow_bash_script_violations.sort();
+    python_tooling_violations.sort();
+    #[cfg(unix)]
+    exec_violations.sort();
+
+    checks.push(AutomationBoundaryCheckResult {
+        id: "automation.workflows.no-python".to_string(),
+        status: if workflow_python_violations.is_empty() {
+            "pass".to_string()
+        } else {
+            "fail".to_string()
+        },
+        violation_count: workflow_python_violations.len(),
+        violations: workflow_python_violations,
+    });
+    checks.push(AutomationBoundaryCheckResult {
+        id: "automation.workflows.no-repo-bash-scripts".to_string(),
+        status: if workflow_bash_script_violations.is_empty() {
+            "pass".to_string()
+        } else {
+            "fail".to_string()
+        },
+        violation_count: workflow_bash_script_violations.len(),
+        violations: workflow_bash_script_violations,
+    });
+    #[cfg(unix)]
+    checks.push(AutomationBoundaryCheckResult {
+        id: "automation.exec-bit.allowlist".to_string(),
+        status: if exec_violations.is_empty() {
+            "pass".to_string()
+        } else {
+            "fail".to_string()
+        },
+        violation_count: exec_violations.len(),
+        violations: exec_violations,
+    });
+    checks.push(AutomationBoundaryCheckResult {
+        id: "automation.shebang.allowlist".to_string(),
+        status: if shebang_violations.is_empty() {
+            "pass".to_string()
+        } else {
+            "fail".to_string()
+        },
+        violation_count: shebang_violations.len(),
+        violations: shebang_violations,
+    });
+    checks.push(AutomationBoundaryCheckResult {
+        id: "automation.python-tooling.docs-only".to_string(),
+        status: if python_tooling_violations.is_empty() {
+            "pass".to_string()
+        } else {
+            "fail".to_string()
+        },
+        violation_count: python_tooling_violations.len(),
+        violations: python_tooling_violations,
+    });
+
+    Ok(checks)
+}
+
+fn render_automation_boundaries_report(
+    report: &AutomationBoundariesReport,
+    format: FormatArg,
+) -> Result<String, String> {
+    match format {
+        FormatArg::Text => {
+            let mut lines = vec![
+                format!("status: {}", report.status),
+                format!("evidence: {}", report.evidence_path),
+                "checks:".to_string(),
+            ];
+            for check in &report.checks {
+                lines.push(format!(
+                    "- {}: {} (violations={})",
+                    check.id, check.status, check.violation_count
+                ));
+                for violation in &check.violations {
+                    lines.push(format!("  - {violation}"));
+                }
+            }
+            Ok(lines.join("\n"))
+        }
+        FormatArg::Json => serde_json::to_string_pretty(report).map_err(|err| err.to_string()),
+        FormatArg::Jsonl => serde_json::to_string(report).map_err(|err| err.to_string()),
+    }
+}
+
+fn run_automation_boundaries_report(
+    options: AutomationBoundariesOptions,
+    report_kind: &str,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(options.repo_root)?;
+    let checks = scan_automation_boundaries(&root)?;
+    let violations = checks
+        .iter()
+        .flat_map(|check| check.violations.iter().cloned())
+        .collect::<Vec<_>>();
+    let status = if violations.is_empty() { "pass" } else { "fail" };
+
+    let evidence_dir = root.join("artifacts/atlas-dev/doctrine");
+    fs::create_dir_all(&evidence_dir)
+        .map_err(|err| format!("failed to create {}: {err}", evidence_dir.display()))?;
+    let evidence_path = evidence_dir.join(format!("{report_kind}.report.json"));
+
+    let report = AutomationBoundariesReport {
+        schema_version: 1,
+        status: status.to_string(),
+        checks,
+        violations,
+        evidence_path: evidence_path.display().to_string(),
+    };
+
+    fs::write(
+        &evidence_path,
+        serde_json::to_string_pretty(&report).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", evidence_path.display()))?;
+
+    let rendered = render_automation_boundaries_report(&report, options.format)?;
+    write_output_if_requested(options.out, &rendered)?;
+    Ok((rendered, if status == "pass" { 0 } else { 1 }))
+}
+
+pub(crate) fn run_checks_automation_boundaries(
+    options: AutomationBoundariesOptions,
+) -> Result<(String, i32), String> {
+    run_automation_boundaries_report(options, "checks-automation-boundaries")
+}
+
+pub(crate) fn run_contract_automation_boundaries(
+    options: AutomationBoundariesOptions,
+) -> Result<(String, i32), String> {
+    run_automation_boundaries_report(options, "contract-automation-boundaries")
+}
+
 pub(crate) fn run_checks_catalog_list(
     options: ChecksCatalogListOptions,
 ) -> Result<(String, i32), String> {

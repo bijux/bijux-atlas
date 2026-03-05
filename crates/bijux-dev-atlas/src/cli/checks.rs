@@ -213,6 +213,14 @@ pub enum ChecksCommand {
         #[arg(long, default_value_t = 0)]
         durations: usize,
     },
+    AutomationBoundaries {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
 }
 
 #[derive(Subcommand, Debug)]

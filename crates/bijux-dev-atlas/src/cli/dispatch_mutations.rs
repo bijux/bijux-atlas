@@ -242,6 +242,7 @@ fn force_json_contract(command: &mut ContractCommand) {
         }
         ContractCommand::Run(args) => args.format = FormatArg::Json,
         ContractCommand::Report(args) => args.format = FormatArg::Json,
+        ContractCommand::AutomationBoundaries(args) => args.format = FormatArg::Json,
     }
 }
 
@@ -890,7 +891,8 @@ fn force_json_checks(command: &mut ChecksCommand) {
         ChecksCommand::List { format, .. }
         | ChecksCommand::Explain { format, .. }
         | ChecksCommand::Doctor { format, .. }
-        | ChecksCommand::Run { format, .. } => *format = FormatArg::Json,
+        | ChecksCommand::Run { format, .. }
+        | ChecksCommand::AutomationBoundaries { format, .. } => *format = FormatArg::Json,
     }
 }
 
@@ -911,7 +913,8 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             ContractCommand::List(_)
             | ContractCommand::Explain(_)
             | ContractCommand::Describe(_)
-            | ContractCommand::Report(_) => {}
+            | ContractCommand::Report(_)
+            | ContractCommand::AutomationBoundaries(_) => {}
             ContractCommand::Run(args) => {
                 args.fail_fast = true;
                 args.no_fail_fast = false;
@@ -1455,9 +1458,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
             },
             DocsCommand::Toc { command } => match command {
-                crate::cli::DocsTocCommand::Verify(common) => {
-                    common.repo_root = Some(root.clone())
-                }
+                crate::cli::DocsTocCommand::Verify(common) => common.repo_root = Some(root.clone()),
             },
             DocsCommand::Reference { command } => match command {
                 crate::cli::DocsReferenceCommand::Generate(common)
@@ -1761,7 +1762,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             ChecksCommand::List { repo_root, .. }
             | ChecksCommand::Explain { repo_root, .. }
             | ChecksCommand::Doctor { repo_root, .. }
-            | ChecksCommand::Run { repo_root, .. } => *repo_root = Some(root.clone()),
+            | ChecksCommand::Run { repo_root, .. }
+            | ChecksCommand::AutomationBoundaries { repo_root, .. } => {
+                *repo_root = Some(root.clone())
+            }
         },
         Command::Suites { command } => match command {
             crate::cli::SuitesCommand::Run { repo_root, .. }
@@ -1785,6 +1789,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             }
             ContractCommand::Run(args) => args.repo_root = Some(root.clone()),
             ContractCommand::Report(args) => args.repo_root = Some(root.clone()),
+            ContractCommand::AutomationBoundaries(args) => args.repo_root = Some(root.clone()),
         },
         Command::List { repo_root, .. }
         | Command::Describe { repo_root, .. }
