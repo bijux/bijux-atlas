@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "kind": "log_format_validator_contract",
+  "required_fields": ["timestamp", "level", "target", "message", "request_id", "event_name"],
+  "accepted_levels": ["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "trace", "debug", "info", "warn", "error"],
+  "redaction_blocklist": ["password", "secret", "token"]
+}

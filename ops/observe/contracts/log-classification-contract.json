@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "kind": "log_classification_contract",
+  "classes": [
+    {"name": "runtime", "event_prefix": "runtime_"},
+    {"name": "query", "event_prefix": "query_"},
+    {"name": "ingest", "event_prefix": "ingest_"},
+    {"name": "artifact", "event_prefix": "artifact_"},
+    {"name": "configuration", "event_prefix": "config_"},
+    {"name": "startup", "event_prefix": "startup_"},
+    {"name": "shutdown", "event_prefix": "shutdown_"},
+    {"name": "security", "event_prefix": "security_"}
+  ],
+  "unknown_class_policy": "Unknown events are violations unless explicitly registered."
+}
