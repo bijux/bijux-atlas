@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand, Command,
-    ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, DriftCommand,
-    FormatArg, IngestCommand, InvariantsCommand, LoadCommand, MakeCommand, ObserveCommand,
-    OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand, ReleaseApiSurfaceCommand,
-    ReleaseChecksumsCommand, ReleaseCommand, ReleaseCratesCommand, ReleaseImagesCommand,
-    ReleaseMsrvCommand, ReleaseOpsCommand, ReleaseSemverCommand, ReportsCommand, ReproduceCommand,
-    SecurityCommand, TestsCommand,
+    ApiCommand, ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand,
+    Command, ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand,
+    DriftCommand, FormatArg, IngestCommand, InvariantsCommand, LoadCommand, MakeCommand,
+    ObserveCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand,
+    ReleaseApiSurfaceCommand, ReleaseChecksumsCommand, ReleaseCommand, ReleaseCratesCommand,
+    ReleaseImagesCommand, ReleaseMsrvCommand, ReleaseOpsCommand, ReleaseSemverCommand,
+    ReportsCommand, ReproduceCommand, SecurityCommand, TestsCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -54,6 +54,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::System { command } => force_json_system(command),
         Command::Audit { command } => force_json_audit(command),
         Command::Observe { command } => force_json_observe(command),
+        Command::Api { command } => force_json_api(command),
         Command::Load { command } => force_json_load(command),
         Command::Invariants { command } => force_json_invariants(command),
         Command::Drift { command } => force_json_drift(command),
@@ -780,6 +781,16 @@ fn force_json_observe(command: &mut ObserveCommand) {
             | crate::cli::ObserveTracesCommand::Coverage(args)
             | crate::cli::ObserveTracesCommand::Topology(args) => args.format = FormatArg::Json,
         },
+    }
+}
+
+fn force_json_api(command: &mut ApiCommand) {
+    match command {
+        ApiCommand::List(args) | ApiCommand::Verify(args) | ApiCommand::Contract(args) => {
+            args.format = FormatArg::Json
+        }
+        ApiCommand::Explain(args) => args.common.format = FormatArg::Json,
+        ApiCommand::Diff(args) => args.common.format = FormatArg::Json,
     }
 }
 
@@ -1573,6 +1584,13 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     args.repo_root = Some(root.clone())
                 }
             },
+        },
+        Command::Api { command } => match command {
+            ApiCommand::List(args) | ApiCommand::Verify(args) | ApiCommand::Contract(args) => {
+                args.repo_root = Some(root.clone())
+            }
+            ApiCommand::Explain(args) => args.common.repo_root = Some(root.clone()),
+            ApiCommand::Diff(args) => args.common.repo_root = Some(root.clone()),
         },
         Command::Load { command } => match command {
             LoadCommand::Run(args) | LoadCommand::Baseline(args) | LoadCommand::Explain(args) => {

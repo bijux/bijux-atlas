@@ -24,6 +24,7 @@ use bijux_dev_atlas::ui::terminal::report::render_check_run_report;
 pub(crate) use build_commands::run_build_command;
 pub(crate) use artifacts_commands::run_artifacts_command;
 pub(crate) use audit_commands::run_audit_command;
+pub(crate) use api_commands::run_api_command;
 #[cfg(test)]
 pub(crate) use configs_commands::parse_config_file;
 pub(crate) use configs_commands::{

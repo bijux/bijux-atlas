@@ -138,6 +138,10 @@ pub enum Command {
         #[command(subcommand)]
         command: ObserveCommand,
     },
+    Api {
+        #[command(subcommand)]
+        command: ApiCommand,
+    },
     Load {
         #[command(subcommand)]
         command: LoadCommand,
@@ -391,6 +395,15 @@ pub enum ObserveDashboardsCommand {
     Explain(ObserveDashboardsCommonArgs),
 }
 
+#[derive(Subcommand, Debug)]
+pub enum ApiCommand {
+    List(ApiCommonArgs),
+    Explain(ApiExplainArgs),
+    Diff(ApiDiffArgs),
+    Verify(ApiCommonArgs),
+    Contract(ApiCommonArgs),
+}
+
 #[derive(Args, Debug, Clone)]
 pub struct ObserveMetricsCommonArgs {
     #[arg(long)]
@@ -417,6 +430,32 @@ pub struct ObserveDashboardsCommonArgs {
     pub format: FormatArg,
     #[arg(long)]
     pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ApiCommonArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ApiExplainArgs {
+    #[arg()]
+    pub endpoint: Option<String>,
+    #[command(flatten)]
+    pub common: ApiCommonArgs,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ApiDiffArgs {
+    #[command(flatten)]
+    pub common: ApiCommonArgs,
+    #[arg(long)]
+    pub baseline: Option<PathBuf>,
 }
 
 #[derive(Subcommand, Debug)]

@@ -5,6 +5,8 @@
 #![cfg_attr(not(test), deny(clippy::unwrap_used, clippy::expect_used))]
 #![deny(clippy::todo)]
 
+#[path = "commands/api.rs"]
+mod api_commands;
 mod app;
 #[path = "commands/artifacts.rs"]
 mod artifacts_commands;
