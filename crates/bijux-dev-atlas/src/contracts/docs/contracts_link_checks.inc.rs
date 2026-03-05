@@ -761,12 +761,21 @@ fn test_docs_079_published_local_links_resolve(ctx: &RunContext) -> TestResult {
             {
                 continue;
             }
-            let resolved = if clean.starts_with('/') {
-                ctx.repo_root.join(clean.trim_start_matches('/'))
+            let base = if clean.starts_with('/') {
+                docs_root.clone()
             } else {
-                source.parent().unwrap_or(&source).join(clean)
+                source.parent().unwrap_or(&source).to_path_buf()
             };
-            if !resolved.exists() {
+            let rel = clean.trim_start_matches('/');
+            let rel_trimmed = rel.trim_end_matches('/');
+            let direct = base.join(rel);
+            let md = if rel_trimmed.is_empty() {
+                base.join("index.md")
+            } else {
+                base.join(format!("{rel_trimmed}.md"))
+            };
+            let index = base.join(rel_trimmed).join("index.md");
+            if !direct.exists() && !md.exists() && !index.exists() {
                 push_docs_violation(
                     &mut violations,
                     "DOC-079",
