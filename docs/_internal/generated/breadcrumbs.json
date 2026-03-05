@@ -139,6 +139,14 @@
     {
       "breadcrumbs": [
         "configs",
+        "configs/clients",
+        "configs/clients/README.md"
+      ],
+      "path": "configs/clients/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
         "configs/contracts",
         "configs/contracts/README.md"
       ],
@@ -175,6 +183,15 @@
         "configs/examples/README.md"
       ],
       "path": "configs/examples/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
+        "configs/examples",
+        "configs/examples/datasets",
+        "configs/examples/datasets/specification.md"
+      ],
+      "path": "configs/examples/datasets/specification.md"
     },
     {
       "breadcrumbs": [
@@ -543,63 +560,63 @@
     {
       "breadcrumbs": [
         "crates",
-        "crates/bijux-atlas-benchmark",
-        "crates/bijux-atlas-benchmark/CONTRACT.md"
+        "crates/bijux-atlas-bench",
+        "crates/bijux-atlas-bench/CONTRACT.md"
       ],
-      "path": "crates/bijux-atlas-benchmark/CONTRACT.md"
+      "path": "crates/bijux-atlas-bench/CONTRACT.md"
     },
     {
       "breadcrumbs": [
         "crates",
-        "crates/bijux-atlas-benchmark",
-        "crates/bijux-atlas-benchmark/README.md"
+        "crates/bijux-atlas-bench",
+        "crates/bijux-atlas-bench/README.md"
       ],
-      "path": "crates/bijux-atlas-benchmark/README.md"
+      "path": "crates/bijux-atlas-bench/README.md"
     },
     {
       "breadcrumbs": [
         "crates",
-        "crates/bijux-atlas-benchmark",
-        "crates/bijux-atlas-benchmark/docs",
-        "crates/bijux-atlas-benchmark/docs/benchmark-architecture.md"
+        "crates/bijux-atlas-bench",
+        "crates/bijux-atlas-bench/docs",
+        "crates/bijux-atlas-bench/docs/benchmark-architecture.md"
       ],
-      "path": "crates/bijux-atlas-benchmark/docs/benchmark-architecture.md"
+      "path": "crates/bijux-atlas-bench/docs/benchmark-architecture.md"
     },
     {
       "breadcrumbs": [
         "crates",
-        "crates/bijux-atlas-benchmark",
-        "crates/bijux-atlas-benchmark/docs",
-        "crates/bijux-atlas-benchmark/docs/benchmark-roadmap.md"
+        "crates/bijux-atlas-bench",
+        "crates/bijux-atlas-bench/docs",
+        "crates/bijux-atlas-bench/docs/benchmark-roadmap.md"
       ],
-      "path": "crates/bijux-atlas-benchmark/docs/benchmark-roadmap.md"
+      "path": "crates/bijux-atlas-bench/docs/benchmark-roadmap.md"
     },
     {
       "breadcrumbs": [
         "crates",
-        "crates/bijux-atlas-benchmark",
-        "crates/bijux-atlas-benchmark/docs",
-        "crates/bijux-atlas-benchmark/docs/benchmark-troubleshooting.md"
+        "crates/bijux-atlas-bench",
+        "crates/bijux-atlas-bench/docs",
+        "crates/bijux-atlas-bench/docs/benchmark-troubleshooting.md"
       ],
-      "path": "crates/bijux-atlas-benchmark/docs/benchmark-troubleshooting.md"
+      "path": "crates/bijux-atlas-bench/docs/benchmark-troubleshooting.md"
     },
     {
       "breadcrumbs": [
         "crates",
-        "crates/bijux-atlas-benchmark",
-        "crates/bijux-atlas-benchmark/docs",
-        "crates/bijux-atlas-benchmark/docs/benchmark-usage.md"
+        "crates/bijux-atlas-bench",
+        "crates/bijux-atlas-bench/docs",
+        "crates/bijux-atlas-bench/docs/benchmark-usage.md"
       ],
-      "path": "crates/bijux-atlas-benchmark/docs/benchmark-usage.md"
+      "path": "crates/bijux-atlas-bench/docs/benchmark-usage.md"
     },
     {
       "breadcrumbs": [
         "crates",
-        "crates/bijux-atlas-benchmark",
-        "crates/bijux-atlas-benchmark/docs",
-        "crates/bijux-atlas-benchmark/docs/index.md"
+        "crates/bijux-atlas-bench",
+        "crates/bijux-atlas-bench/docs",
+        "crates/bijux-atlas-bench/docs/index.md"
       ],
-      "path": "crates/bijux-atlas-benchmark/docs/index.md"
+      "path": "crates/bijux-atlas-bench/docs/index.md"
     },
     {
       "breadcrumbs": [
@@ -770,6 +787,31 @@
         "crates/bijux-atlas-cli/tests/README.md"
       ],
       "path": "crates/bijux-atlas-cli/tests/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-client",
+        "crates/bijux-atlas-client/CONTRACT.md"
+      ],
+      "path": "crates/bijux-atlas-client/CONTRACT.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-client",
+        "crates/bijux-atlas-client/README.md"
+      ],
+      "path": "crates/bijux-atlas-client/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-client",
+        "crates/bijux-atlas-client/docs",
+        "crates/bijux-atlas-client/docs/architecture.md"
+      ],
+      "path": "crates/bijux-atlas-client/docs/architecture.md"
     },
     {
       "breadcrumbs": [
@@ -2369,6 +2411,15 @@
         "crates",
         "crates/bijux-dev-atlas",
         "crates/bijux-dev-atlas/docs",
+        "crates/bijux-dev-atlas/docs/automation-boundary-gap-review.md"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/automation-boundary-gap-review.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/docs",
         "crates/bijux-dev-atlas/docs/benchmarks.md"
       ],
       "path": "crates/bijux-dev-atlas/docs/benchmarks.md"
@@ -2414,9 +2465,27 @@
         "crates",
         "crates/bijux-dev-atlas",
         "crates/bijux-dev-atlas/docs",
+        "crates/bijux-dev-atlas/docs/control-plane-contracts.md"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/control-plane-contracts.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/docs",
         "crates/bijux-dev-atlas/docs/error-codes.md"
       ],
       "path": "crates/bijux-dev-atlas/docs/error-codes.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/docs",
+        "crates/bijux-dev-atlas/docs/errors-and-exit-codes.md"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/errors-and-exit-codes.md"
     },
     {
       "breadcrumbs": [
@@ -2499,6 +2568,16 @@
         "crates/bijux-dev-atlas",
         "crates/bijux-dev-atlas/docs",
         "crates/bijux-dev-atlas/docs/internal",
+        "crates/bijux-dev-atlas/docs/internal/docs-authoring-model.md"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/internal/docs-authoring-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/docs",
+        "crates/bijux-dev-atlas/docs/internal",
         "crates/bijux-dev-atlas/docs/internal/domain-module-contract.md"
       ],
       "path": "crates/bijux-dev-atlas/docs/internal/domain-module-contract.md"
@@ -2528,9 +2607,57 @@
         "crates",
         "crates/bijux-dev-atlas",
         "crates/bijux-dev-atlas/docs",
+        "crates/bijux-dev-atlas/docs/migrations",
+        "crates/bijux-dev-atlas/docs/migrations/make-wrapper-delegation-audit.md"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/migrations/make-wrapper-delegation-audit.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/docs",
+        "crates/bijux-dev-atlas/docs/migrations",
+        "crates/bijux-dev-atlas/docs/migrations/tools-to-dev-atlas.md"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/migrations/tools-to-dev-atlas.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/docs",
+        "crates/bijux-dev-atlas/docs/migrations",
+        "crates/bijux-dev-atlas/docs/migrations/tutorial-generated-content-inventory.md"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/migrations/tutorial-generated-content-inventory.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/docs",
+        "crates/bijux-dev-atlas/docs/quality-system.md"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/quality-system.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/docs",
         "crates/bijux-dev-atlas/docs/registry-contract.md"
       ],
       "path": "crates/bijux-dev-atlas/docs/registry-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/docs",
+        "crates/bijux-dev-atlas/docs/repo-automation-inventory.md"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/repo-automation-inventory.md"
     },
     {
       "breadcrumbs": [
@@ -2897,10 +3024,57 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/README.md"
+      ],
+      "path": "docs/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
         "docs/_assets",
         "docs/_assets/index.md"
       ],
       "path": "docs/_assets/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_generated",
+        "docs/_generated/command-lists.md"
+      ],
+      "path": "docs/_generated/command-lists.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_generated",
+        "docs/_generated/examples.md"
+      ],
+      "path": "docs/_generated/examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_generated",
+        "docs/_generated/openapi-snippets.md"
+      ],
+      "path": "docs/_generated/openapi-snippets.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_generated",
+        "docs/_generated/ops-snippets.md"
+      ],
+      "path": "docs/_generated/ops-snippets.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_generated",
+        "docs/_generated/schema-snippets.md"
+      ],
+      "path": "docs/_generated/schema-snippets.md"
     },
     {
       "breadcrumbs": [
@@ -3621,6 +3795,16 @@
         "docs/_internal",
         "docs/_internal/governance",
         "docs/_internal/governance/policies",
+        "docs/_internal/governance/policies/automation-doctrine-rules.md"
+      ],
+      "path": "docs/_internal/governance/policies/automation-doctrine-rules.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
+        "docs/_internal/governance",
+        "docs/_internal/governance/policies",
         "docs/_internal/governance/policies/checks.md"
       ],
       "path": "docs/_internal/governance/policies/checks.md"
@@ -4075,6 +4259,134 @@
       "breadcrumbs": [
         "docs",
         "docs/api",
+        "docs/api/api-compatibility-harness.md"
+      ],
+      "path": "docs/api/api-compatibility-harness.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/api-compatibility-matrix.md"
+      ],
+      "path": "docs/api/api-compatibility-matrix.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/api-completion-report.md"
+      ],
+      "path": "docs/api/api-completion-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/api-contract-documentation.md"
+      ],
+      "path": "docs/api/api-contract-documentation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/api-contract-registry-snapshot.md"
+      ],
+      "path": "docs/api/api-contract-registry-snapshot.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/api-deprecation-policy.md"
+      ],
+      "path": "docs/api/api-deprecation-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/api-documentation.md"
+      ],
+      "path": "docs/api/api-documentation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/api-endpoint-index.md"
+      ],
+      "path": "docs/api/api-endpoint-index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/api-error-code-reference.md"
+      ],
+      "path": "docs/api/api-error-code-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/api-rate-limit-policy.md"
+      ],
+      "path": "docs/api/api-rate-limit-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/api-schema-reference.md"
+      ],
+      "path": "docs/api/api-schema-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/api-security-considerations.md"
+      ],
+      "path": "docs/api/api-security-considerations.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/api-stability-guarantees.md"
+      ],
+      "path": "docs/api/api-stability-guarantees.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/api-troubleshooting-guide.md"
+      ],
+      "path": "docs/api/api-troubleshooting-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/api-usage-examples.md"
+      ],
+      "path": "docs/api/api-usage-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/api-versioning-strategy.md"
+      ],
+      "path": "docs/api/api-versioning-strategy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
         "docs/api/caching.md"
       ],
       "path": "docs/api/caching.md"
@@ -4091,9 +4403,213 @@
       "breadcrumbs": [
         "docs",
         "docs/api",
+        "docs/api/client-python-api-reference.md"
+      ],
+      "path": "docs/api/client-python-api-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-python-architecture.md"
+      ],
+      "path": "docs/api/client-python-architecture.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-python-quickstart.md"
+      ],
+      "path": "docs/api/client-python-quickstart.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-python",
+        "docs/api/client-python/client-test-policy.md"
+      ],
+      "path": "docs/api/client-python/client-test-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-python",
+        "docs/api/client-python/client-test-troubleshooting.md"
+      ],
+      "path": "docs/api/client-python/client-test-troubleshooting.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-python",
+        "docs/api/client-python/client-verification.md"
+      ],
+      "path": "docs/api/client-python/client-verification.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-python",
+        "docs/api/client-python/delivery-summary.md"
+      ],
+      "path": "docs/api/client-python/delivery-summary.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-python",
+        "docs/api/client-python/ecosystem-integrations.md"
+      ],
+      "path": "docs/api/client-python/ecosystem-integrations.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-python",
+        "docs/api/client-python/index.md"
+      ],
+      "path": "docs/api/client-python/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-python",
+        "docs/api/client-python/jupyter-tutorial.md"
+      ],
+      "path": "docs/api/client-python/jupyter-tutorial.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-python",
+        "docs/api/client-python/package-location-and-policy.md"
+      ],
+      "path": "docs/api/client-python/package-location-and-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-python",
+        "docs/api/client-python/release-packages.md"
+      ],
+      "path": "docs/api/client-python/release-packages.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-python",
+        "docs/api/client-python/troubleshooting.md"
+      ],
+      "path": "docs/api/client-python/troubleshooting.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-python",
+        "docs/api/client-python/update-generated-docs.md"
+      ],
+      "path": "docs/api/client-python/update-generated-docs.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-python",
+        "docs/api/client-python/version-compatibility-matrix.md"
+      ],
+      "path": "docs/api/client-python/version-compatibility-matrix.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
         "docs/api/client-retries-and-backoff.md"
       ],
       "path": "docs/api/client-retries-and-backoff.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-rust",
+        "docs/api/client-rust/api-reference.md"
+      ],
+      "path": "docs/api/client-rust/api-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-rust",
+        "docs/api/client-rust/completion-report.md"
+      ],
+      "path": "docs/api/client-rust/completion-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-rust",
+        "docs/api/client-rust/documentation-examples.md"
+      ],
+      "path": "docs/api/client-rust/documentation-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-rust",
+        "docs/api/client-rust/publish-workflow.md"
+      ],
+      "path": "docs/api/client-rust/publish-workflow.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-rust",
+        "docs/api/client-rust/release-packaging.md"
+      ],
+      "path": "docs/api/client-rust/release-packaging.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-rust",
+        "docs/api/client-rust/telemetry-examples.md"
+      ],
+      "path": "docs/api/client-rust/telemetry-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-rust",
+        "docs/api/client-rust/troubleshooting-guide.md"
+      ],
+      "path": "docs/api/client-rust/troubleshooting-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/client-rust",
+        "docs/api/client-rust/usage-guide.md"
+      ],
+      "path": "docs/api/client-rust/usage-guide.md"
     },
     {
       "breadcrumbs": [
@@ -4139,6 +4655,42 @@
       "breadcrumbs": [
         "docs",
         "docs/api",
+        "docs/api/generated",
+        "docs/api/generated/api-contract-documentation.md"
+      ],
+      "path": "docs/api/generated/api-contract-documentation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/generated",
+        "docs/api/generated/api-schema-reference.md"
+      ],
+      "path": "docs/api/generated/api-schema-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/generated",
+        "docs/api/generated/endpoint-index.md"
+      ],
+      "path": "docs/api/generated/endpoint-index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/generated",
+        "docs/api/generated/endpoint-templates.md"
+      ],
+      "path": "docs/api/generated/endpoint-templates.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
         "docs/api/index.md"
       ],
       "path": "docs/api/index.md"
@@ -4174,6 +4726,14 @@
         "docs/api/performance-expectations.md"
       ],
       "path": "docs/api/performance-expectations.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/api",
+        "docs/api/public-api-contract.md"
+      ],
+      "path": "docs/api/public-api-contract.md"
     },
     {
       "breadcrumbs": [
@@ -4219,6 +4779,14 @@
       "breadcrumbs": [
         "docs",
         "docs/architecture",
+        "docs/architecture/adding-automation.md"
+      ],
+      "path": "docs/architecture/adding-automation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
         "docs/architecture/architecture-map.md"
       ],
       "path": "docs/architecture/architecture-map.md"
@@ -4235,6 +4803,14 @@
       "breadcrumbs": [
         "docs",
         "docs/architecture",
+        "docs/architecture/automation-doctrine.md"
+      ],
+      "path": "docs/architecture/automation-doctrine.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
         "docs/architecture/boundaries.md"
       ],
       "path": "docs/architecture/boundaries.md"
@@ -4246,6 +4822,54 @@
         "docs/architecture/boundary-maps.md"
       ],
       "path": "docs/architecture/boundary-maps.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/cli-boundaries.md"
+      ],
+      "path": "docs/architecture/cli-boundaries.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/cli-command-migrations.md"
+      ],
+      "path": "docs/architecture/cli-command-migrations.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/cli-deprecation-process.md"
+      ],
+      "path": "docs/architecture/cli-deprecation-process.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/cli-exit-code-policy.md"
+      ],
+      "path": "docs/architecture/cli-exit-code-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/cli-taxonomy-diagram.md"
+      ],
+      "path": "docs/architecture/cli-taxonomy-diagram.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/clients-doctrine.md"
+      ],
+      "path": "docs/architecture/clients-doctrine.md"
     },
     {
       "breadcrumbs": [
@@ -4351,6 +4975,22 @@
         "docs/architecture/design-principles.md"
       ],
       "path": "docs/architecture/design-principles.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/dev-cli-command-catalog.md"
+      ],
+      "path": "docs/architecture/dev-cli-command-catalog.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/dev-cli-output-style.md"
+      ],
+      "path": "docs/architecture/dev-cli-output-style.md"
     },
     {
       "breadcrumbs": [
@@ -4544,6 +5184,14 @@
       "breadcrumbs": [
         "docs",
         "docs/architecture",
+        "docs/architecture/docs-architecture.md"
+      ],
+      "path": "docs/architecture/docs-architecture.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
         "docs/architecture/effects.md"
       ],
       "path": "docs/architecture/effects.md"
@@ -4579,6 +5227,14 @@
         "docs/architecture/faq.md"
       ],
       "path": "docs/architecture/faq.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/forbidden-repo-patterns.md"
+      ],
+      "path": "docs/architecture/forbidden-repo-patterns.md"
     },
     {
       "breadcrumbs": [
@@ -4627,6 +5283,14 @@
         "docs/architecture/layering-rules.md"
       ],
       "path": "docs/architecture/layering-rules.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/migrating-legacy-automation.md"
+      ],
+      "path": "docs/architecture/migrating-legacy-automation.md"
     },
     {
       "breadcrumbs": [
@@ -5007,6 +5671,22 @@
       "breadcrumbs": [
         "docs",
         "docs/architecture",
+        "docs/architecture/tutorials-doctrine.md"
+      ],
+      "path": "docs/architecture/tutorials-doctrine.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/user-cli-command-catalog.md"
+      ],
+      "path": "docs/architecture/user-cli-command-catalog.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
         "docs/architecture/what-belongs-where.md"
       ],
       "path": "docs/architecture/what-belongs-where.md"
@@ -5033,6 +5713,166 @@
         "docs/cli-command-list.md"
       ],
       "path": "docs/cli-command-list.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/automation-examples.md"
+      ],
+      "path": "docs/cli/automation-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/command-grouping.md"
+      ],
+      "path": "docs/cli/command-grouping.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/command-naming-conventions.md"
+      ],
+      "path": "docs/cli/command-naming-conventions.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/command-reference.md"
+      ],
+      "path": "docs/cli/command-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/completion.md"
+      ],
+      "path": "docs/cli/completion.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/configuration-examples.md"
+      ],
+      "path": "docs/cli/configuration-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/configuration.md"
+      ],
+      "path": "docs/cli/configuration.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/delivery-report.md"
+      ],
+      "path": "docs/cli/delivery-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/error-message-conventions.md"
+      ],
+      "path": "docs/cli/error-message-conventions.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/help-examples.md"
+      ],
+      "path": "docs/cli/help-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/help-formatting-rules.md"
+      ],
+      "path": "docs/cli/help-formatting-rules.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/index.md"
+      ],
+      "path": "docs/cli/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/output-format-standards.md"
+      ],
+      "path": "docs/cli/output-format-standards.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/output-json-schema.md"
+      ],
+      "path": "docs/cli/output-json-schema.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/scripting-examples.md"
+      ],
+      "path": "docs/cli/scripting-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/subcommand-discovery.md"
+      ],
+      "path": "docs/cli/subcommand-discovery.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/troubleshooting.md"
+      ],
+      "path": "docs/cli/troubleshooting.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/tutorial-integration.md"
+      ],
+      "path": "docs/cli/tutorial-integration.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/usage-guide.md"
+      ],
+      "path": "docs/cli/usage-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/cli",
+        "docs/cli/ux-philosophy.md"
+      ],
+      "path": "docs/cli/ux-philosophy.md"
     },
     {
       "breadcrumbs": [
@@ -5455,9 +6295,54 @@
         "docs",
         "docs/development",
         "docs/development/tooling",
+        "docs/development/tooling/how-to-add-make-wrapper.md"
+      ],
+      "path": "docs/development/tooling/how-to-add-make-wrapper.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/tooling",
         "docs/development/tooling/index.md"
       ],
       "path": "docs/development/tooling/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/tooling",
+        "docs/development/tooling/make-evolution-policy.md"
+      ],
+      "path": "docs/development/tooling/make-evolution-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/tooling",
+        "docs/development/tooling/make-wrapper-migration-notes.md"
+      ],
+      "path": "docs/development/tooling/make-wrapper-migration-notes.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/tooling",
+        "docs/development/tooling/make-wrapper-only.md"
+      ],
+      "path": "docs/development/tooling/make-wrapper-only.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/tooling",
+        "docs/development/tooling/make-wrapper-snippet.md"
+      ],
+      "path": "docs/development/tooling/make-wrapper-snippet.md"
     },
     {
       "breadcrumbs": [
@@ -5495,9 +6380,297 @@
       "breadcrumbs": [
         "docs",
         "docs/governance",
+        "docs/governance/add-governance-checks-and-contracts.md"
+      ],
+      "path": "docs/governance/add-governance-checks-and-contracts.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/adr-registry.md"
+      ],
+      "path": "docs/governance/adr-registry.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/adr-template.md"
+      ],
+      "path": "docs/governance/adr-template.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/automation-migration-completion.md"
+      ],
+      "path": "docs/governance/automation-migration-completion.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/code-review-guidelines.md"
+      ],
+      "path": "docs/governance/code-review-guidelines.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/compatibility-guarantees.md"
+      ],
+      "path": "docs/governance/compatibility-guarantees.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/component-stability-classification.md"
+      ],
+      "path": "docs/governance/component-stability-classification.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/contributor-environment-setup-guide.md"
+      ],
+      "path": "docs/governance/contributor-environment-setup-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/contributor-onboarding-tutorial.md"
+      ],
+      "path": "docs/governance/contributor-onboarding-tutorial.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/contributor-onboarding-workflow.md"
+      ],
+      "path": "docs/governance/contributor-onboarding-workflow.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/contributor-troubleshooting-guide.md"
+      ],
+      "path": "docs/governance/contributor-troubleshooting-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/decision-process.md"
+      ],
+      "path": "docs/governance/decision-process.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/decisions",
+        "docs/governance/decisions/adr-0001-governance-authority-boundaries.md"
+      ],
+      "path": "docs/governance/decisions/adr-0001-governance-authority-boundaries.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/decisions",
+        "docs/governance/decisions/adr-0002-automation-engine-boundary.md"
+      ],
+      "path": "docs/governance/decisions/adr-0002-automation-engine-boundary.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/decisions",
+        "docs/governance/decisions/adr-0003-user-and-dev-cli-separation.md"
+      ],
+      "path": "docs/governance/decisions/adr-0003-user-and-dev-cli-separation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/decisions",
+        "docs/governance/decisions/adr-0004-generated-reference-model.md"
+      ],
+      "path": "docs/governance/decisions/adr-0004-generated-reference-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/decisions",
+        "docs/governance/decisions/adr-0005-ops-artifact-directory-purity.md"
+      ],
+      "path": "docs/governance/decisions/adr-0005-ops-artifact-directory-purity.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/decisions",
+        "docs/governance/decisions/adr-0006-tutorial-structure-and-consolidation.md"
+      ],
+      "path": "docs/governance/decisions/adr-0006-tutorial-structure-and-consolidation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/decisions",
+        "docs/governance/decisions/adr-0007-tutorial-automation-domain-migration.md"
+      ],
+      "path": "docs/governance/decisions/adr-0007-tutorial-automation-domain-migration.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/decisions",
+        "docs/governance/decisions/adr-0008-client-doc-generation-governance.md"
+      ],
+      "path": "docs/governance/decisions/adr-0008-client-doc-generation-governance.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/deprecation-lifecycle.md"
+      ],
+      "path": "docs/governance/deprecation-lifecycle.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/docs-changelog-policy.md"
+      ],
+      "path": "docs/governance/docs-changelog-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/docs-minimization-policy.md"
+      ],
+      "path": "docs/governance/docs-minimization-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/docs-ssot-rule.md"
+      ],
+      "path": "docs/governance/docs-ssot-rule.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/docs-surface-boundaries.md"
+      ],
+      "path": "docs/governance/docs-surface-boundaries.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/doctrine-compliance-report.md"
+      ],
+      "path": "docs/governance/doctrine-compliance-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/documentation-structure.md"
+      ],
+      "path": "docs/governance/documentation-structure.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/extend-dev-atlas-automation.md"
+      ],
+      "path": "docs/governance/extend-dev-atlas-automation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/governance-charter.md"
+      ],
+      "path": "docs/governance/governance-charter.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/governance-troubleshooting-guide.md"
+      ],
+      "path": "docs/governance/governance-troubleshooting-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
         "docs/governance/index.md"
       ],
       "path": "docs/governance/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/long-term-roadmap.md"
+      ],
+      "path": "docs/governance/long-term-roadmap.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/maintainers-and-roles.md"
+      ],
+      "path": "docs/governance/maintainers-and-roles.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/maintainership-policy.md"
+      ],
+      "path": "docs/governance/maintainership-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/maintainership-transition-guide.md"
+      ],
+      "path": "docs/governance/maintainership-transition-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/migration-completion.md"
+      ],
+      "path": "docs/governance/migration-completion.md"
     },
     {
       "breadcrumbs": [
@@ -5542,6 +6715,70 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/governance",
+        "docs/governance/project-governance-model.md"
+      ],
+      "path": "docs/governance/project-governance-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/project-governance-overview.md"
+      ],
+      "path": "docs/governance/project-governance-overview.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/pull-request-checklist.md"
+      ],
+      "path": "docs/governance/pull-request-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/release-cadence-policy.md"
+      ],
+      "path": "docs/governance/release-cadence-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/roadmap-governance.md"
+      ],
+      "path": "docs/governance/roadmap-governance.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/support-window-policy.md"
+      ],
+      "path": "docs/governance/support-window-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/sustainability-delivery-report.md"
+      ],
+      "path": "docs/governance/sustainability-delivery-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/why-scripts-are-forbidden.md"
+      ],
+      "path": "docs/governance/why-scripts-are-forbidden.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
         "docs/index.md"
       ],
       "path": "docs/index.md"
@@ -5560,6 +6797,30 @@
         "docs/operations/audit-procedure.md"
       ],
       "path": "docs/operations/audit-procedure.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/audit-report-schema.md"
+      ],
+      "path": "docs/operations/audit-report-schema.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/audit-runbook.md"
+      ],
+      "path": "docs/operations/audit-runbook.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/audit-troubleshooting-guide.md"
+      ],
+      "path": "docs/operations/audit-troubleshooting-guide.md"
     },
     {
       "breadcrumbs": [
@@ -5765,6 +7026,30 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/drift-detection-completion-report.md"
+      ],
+      "path": "docs/operations/drift-detection-completion-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/drift-detection.md"
+      ],
+      "path": "docs/operations/drift-detection.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/drift-troubleshooting-guide.md"
+      ],
+      "path": "docs/operations/drift-troubleshooting-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/drills-program.md"
       ],
       "path": "docs/operations/drills-program.md"
@@ -5900,6 +7185,46 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/governance-enforcement-completion-report.md"
+      ],
+      "path": "docs/operations/governance-enforcement-completion-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/governance-enforcement-troubleshooting.md"
+      ],
+      "path": "docs/operations/governance-enforcement-troubleshooting.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/governance-enforcement-workflow.md"
+      ],
+      "path": "docs/operations/governance-enforcement-workflow.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/governance-enforcement.md"
+      ],
+      "path": "docs/operations/governance-enforcement.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/governance-evolution-policy.md"
+      ],
+      "path": "docs/operations/governance-evolution-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/governance-exception-closure.md"
       ],
       "path": "docs/operations/governance-exception-closure.md"
@@ -5919,6 +7244,38 @@
         "docs/operations/governance-exceptions.md"
       ],
       "path": "docs/operations/governance-exceptions.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/governance-health-report.md"
+      ],
+      "path": "docs/operations/governance-health-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/governance-rule-reference.md"
+      ],
+      "path": "docs/operations/governance-rule-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/governance-rule-schema.md"
+      ],
+      "path": "docs/operations/governance-rule-schema.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/how-invariants-enforce-system-safety.md"
+      ],
+      "path": "docs/operations/how-invariants-enforce-system-safety.md"
     },
     {
       "breadcrumbs": [
@@ -6028,6 +7385,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/invariant-violation-troubleshooting.md"
+      ],
+      "path": "docs/operations/invariant-violation-troubleshooting.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/k8s",
         "docs/operations/k8s/chart-contracts.md"
       ],
@@ -6081,6 +7446,33 @@
         "docs",
         "docs/operations",
         "docs/operations/load",
+        "docs/operations/load/capacity-engineering-summary.md"
+      ],
+      "path": "docs/operations/load/capacity-engineering-summary.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/load",
+        "docs/operations/load/capacity-planning-guide.md"
+      ],
+      "path": "docs/operations/load/capacity-planning-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/load",
+        "docs/operations/load/capacity-planning-methodology.md"
+      ],
+      "path": "docs/operations/load/capacity-planning-methodology.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/load",
         "docs/operations/load/comparison-tools.md"
       ],
       "path": "docs/operations/load/comparison-tools.md"
@@ -6117,6 +7509,15 @@
         "docs",
         "docs/operations",
         "docs/operations/load",
+        "docs/operations/load/example-datasets.md"
+      ],
+      "path": "docs/operations/load/example-datasets.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/load",
         "docs/operations/load/harness-and-generators.md"
       ],
       "path": "docs/operations/load/harness-and-generators.md"
@@ -6135,6 +7536,15 @@
         "docs",
         "docs/operations",
         "docs/operations/load",
+        "docs/operations/load/interpretation-guide.md"
+      ],
+      "path": "docs/operations/load/interpretation-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/load",
         "docs/operations/load/k6.md"
       ],
       "path": "docs/operations/load/k6.md"
@@ -6144,9 +7554,63 @@
         "docs",
         "docs/operations",
         "docs/operations/load",
+        "docs/operations/load/load-command-reference.md"
+      ],
+      "path": "docs/operations/load/load-command-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/load",
+        "docs/operations/load/load-scenario-specification.md"
+      ],
+      "path": "docs/operations/load/load-scenario-specification.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/load",
+        "docs/operations/load/load-testing-philosophy.md"
+      ],
+      "path": "docs/operations/load/load-testing-philosophy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/load",
         "docs/operations/load/metrics.md"
       ],
       "path": "docs/operations/load/metrics.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/load",
+        "docs/operations/load/performance-baseline-metrics.md"
+      ],
+      "path": "docs/operations/load/performance-baseline-metrics.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/load",
+        "docs/operations/load/performance-regression-thresholds.md"
+      ],
+      "path": "docs/operations/load/performance-regression-thresholds.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/load",
+        "docs/operations/load/performance-troubleshooting-guide.md"
+      ],
+      "path": "docs/operations/load/performance-troubleshooting-guide.md"
     },
     {
       "breadcrumbs": [
@@ -6324,6 +7788,69 @@
         "docs",
         "docs/operations",
         "docs/operations/observability",
+        "docs/operations/observability/dashboard-data-sources.md"
+      ],
+      "path": "docs/operations/observability/dashboard-data-sources.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/dashboard-installation-guide.md"
+      ],
+      "path": "docs/operations/observability/dashboard-installation-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/dashboard-provisioning-instructions.md"
+      ],
+      "path": "docs/operations/observability/dashboard-provisioning-instructions.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/dashboard-schema-documentation.md"
+      ],
+      "path": "docs/operations/observability/dashboard-schema-documentation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/dashboard-taxonomy.md"
+      ],
+      "path": "docs/operations/observability/dashboard-taxonomy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/dashboard-troubleshooting-guide.md"
+      ],
+      "path": "docs/operations/observability/dashboard-troubleshooting-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/dashboard-update-policy.md"
+      ],
+      "path": "docs/operations/observability/dashboard-update-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
         "docs/operations/observability/dashboards.md"
       ],
       "path": "docs/operations/observability/dashboards.md"
@@ -6336,6 +7863,15 @@
         "docs/operations/observability/debug-commands.md"
       ],
       "path": "docs/operations/observability/debug-commands.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/debugging-with-traces.md"
+      ],
+      "path": "docs/operations/observability/debugging-with-traces.md"
     },
     {
       "breadcrumbs": [
@@ -6378,9 +7914,27 @@
         "docs",
         "docs/operations",
         "docs/operations/observability",
+        "docs/operations/observability/incident-response-playbook.md"
+      ],
+      "path": "docs/operations/observability/incident-response-playbook.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
         "docs/operations/observability/index.md"
       ],
       "path": "docs/operations/observability/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/log-analysis-guide.md"
+      ],
+      "path": "docs/operations/observability/log-analysis-guide.md"
     },
     {
       "breadcrumbs": [
@@ -6423,9 +7977,45 @@
         "docs",
         "docs/operations",
         "docs/operations/observability",
+        "docs/operations/observability/log-message-conventions.md"
+      ],
+      "path": "docs/operations/observability/log-message-conventions.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
         "docs/operations/observability/log-metadata-fields.md"
       ],
       "path": "docs/operations/observability/log-metadata-fields.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/log-output-examples.md"
+      ],
+      "path": "docs/operations/observability/log-output-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/log-schema-documentation.md"
+      ],
+      "path": "docs/operations/observability/log-schema-documentation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/log-troubleshooting-guide.md"
+      ],
+      "path": "docs/operations/observability/log-troubleshooting-guide.md"
     },
     {
       "breadcrumbs": [
@@ -6459,6 +8049,15 @@
         "docs",
         "docs/operations",
         "docs/operations/observability",
+        "docs/operations/observability/logging-completion-report.md"
+      ],
+      "path": "docs/operations/observability/logging-completion-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
         "docs/operations/observability/logging-dashboard-examples.md"
       ],
       "path": "docs/operations/observability/logging-dashboard-examples.md"
@@ -6480,6 +8079,15 @@
         "docs/operations/observability/logging-ingestion-examples.md"
       ],
       "path": "docs/operations/observability/logging-ingestion-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/logging-philosophy.md"
+      ],
+      "path": "docs/operations/observability/logging-philosophy.md"
     },
     {
       "breadcrumbs": [
@@ -6558,9 +8166,63 @@
         "docs",
         "docs/operations",
         "docs/operations/observability",
+        "docs/operations/observability/metrics-completion-report.md"
+      ],
+      "path": "docs/operations/observability/metrics-completion-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
         "docs/operations/observability/metrics-naming-conventions.md"
       ],
       "path": "docs/operations/observability/metrics-naming-conventions.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/metrics-philosophy.md"
+      ],
+      "path": "docs/operations/observability/metrics-philosophy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/metrics-registry-reference.md"
+      ],
+      "path": "docs/operations/observability/metrics-registry-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/metrics-stability-policy.md"
+      ],
+      "path": "docs/operations/observability/metrics-stability-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/metrics-versioning-policy.md"
+      ],
+      "path": "docs/operations/observability/metrics-versioning-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/monitoring-architecture-diagram.md"
+      ],
+      "path": "docs/operations/observability/monitoring-architecture-diagram.md"
     },
     {
       "breadcrumbs": [
@@ -6585,9 +8247,27 @@
         "docs",
         "docs/operations",
         "docs/operations/observability",
+        "docs/operations/observability/monitoring-troubleshooting-guide.md"
+      ],
+      "path": "docs/operations/observability/monitoring-troubleshooting-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
         "docs/operations/observability/observability-architecture-diagram.md"
       ],
       "path": "docs/operations/observability/observability-architecture-diagram.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/observability-completion-report.md"
+      ],
+      "path": "docs/operations/observability/observability-completion-report.md"
     },
     {
       "breadcrumbs": [
@@ -6648,6 +8328,33 @@
         "docs",
         "docs/operations",
         "docs/operations/observability",
+        "docs/operations/observability/operational-dashboard-index.md"
+      ],
+      "path": "docs/operations/observability/operational-dashboard-index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/operational-intelligence-documentation.md"
+      ],
+      "path": "docs/operations/observability/operational-intelligence-documentation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/operational-intelligence-philosophy.md"
+      ],
+      "path": "docs/operations/observability/operational-intelligence-philosophy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
         "docs/operations/observability/operational-troubleshooting-guide.md"
       ],
       "path": "docs/operations/observability/operational-troubleshooting-guide.md"
@@ -6669,6 +8376,15 @@
         "docs/operations/observability/production-monitoring-checklist.md"
       ],
       "path": "docs/operations/observability/production-monitoring-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/production-operations-handbook.md"
+      ],
+      "path": "docs/operations/observability/production-operations-handbook.md"
     },
     {
       "breadcrumbs": [
@@ -6756,9 +8472,36 @@
         "docs",
         "docs/operations",
         "docs/operations/observability",
+        "docs/operations/observability/structured-log-schema.md"
+      ],
+      "path": "docs/operations/observability/structured-log-schema.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
         "docs/operations/observability/system-state-visualization.md"
       ],
       "path": "docs/operations/observability/system-state-visualization.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/trace-analysis-guide.md"
+      ],
+      "path": "docs/operations/observability/trace-analysis-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/trace-context-propagation-policy.md"
+      ],
+      "path": "docs/operations/observability/trace-context-propagation-policy.md"
     },
     {
       "breadcrumbs": [
@@ -6792,9 +8535,36 @@
         "docs",
         "docs/operations",
         "docs/operations/observability",
+        "docs/operations/observability/trace-retention-policy.md"
+      ],
+      "path": "docs/operations/observability/trace-retention-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
         "docs/operations/observability/trace-sampling-policy.md"
       ],
       "path": "docs/operations/observability/trace-sampling-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/trace-schema-reference.md"
+      ],
+      "path": "docs/operations/observability/trace-schema-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/trace-span-naming-conventions.md"
+      ],
+      "path": "docs/operations/observability/trace-span-naming-conventions.md"
     },
     {
       "breadcrumbs": [
@@ -6822,6 +8592,15 @@
         "docs/operations/observability/tracing-architecture.md"
       ],
       "path": "docs/operations/observability/tracing-architecture.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/observability",
+        "docs/operations/observability/tracing-completion-report.md"
+      ],
+      "path": "docs/operations/observability/tracing-completion-report.md"
     },
     {
       "breadcrumbs": [
@@ -6886,6 +8665,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/ops-as-product.md"
+      ],
+      "path": "docs/operations/ops-as-product.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/ops-chart-rollback-guide.md"
       ],
       "path": "docs/operations/ops-chart-rollback-guide.md"
@@ -6905,6 +8692,14 @@
         "docs/operations/ops-compatibility-promise.md"
       ],
       "path": "docs/operations/ops-compatibility-promise.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-directory-purity-policy.md"
+      ],
+      "path": "docs/operations/ops-directory-purity-policy.md"
     },
     {
       "breadcrumbs": [
@@ -6958,6 +8753,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/ops-no-python-rationale.md"
+      ],
+      "path": "docs/operations/ops-no-python-rationale.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/ops-oci-chart-consumer-workflow.md"
       ],
       "path": "docs/operations/ops-oci-chart-consumer-workflow.md"
@@ -6982,9 +8785,25 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/ops-perf-benchmark-extension.md"
+      ],
+      "path": "docs/operations/ops-perf-benchmark-extension.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/ops-profile-selection-guide.md"
       ],
       "path": "docs/operations/ops-profile-selection-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-provenance.md"
+      ],
+      "path": "docs/operations/ops-provenance.md"
     },
     {
       "breadcrumbs": [
@@ -7230,6 +9049,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/publishing-channels.md"
+      ],
+      "path": "docs/operations/publishing-channels.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/query-benchmark-summary-report.md"
       ],
       "path": "docs/operations/query-benchmark-summary-report.md"
@@ -7361,6 +9188,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/release-artifacts-overview.md"
+      ],
+      "path": "docs/operations/release-artifacts-overview.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/release-breaking-change-policy.md"
       ],
       "path": "docs/operations/release-breaking-change-policy.md"
@@ -7404,6 +9239,14 @@
         "docs/operations/release-external-reviewer.md"
       ],
       "path": "docs/operations/release-external-reviewer.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release-lifecycle-support-window.md"
+      ],
+      "path": "docs/operations/release-lifecycle-support-window.md"
     },
     {
       "breadcrumbs": [
@@ -7671,6 +9514,78 @@
         "docs/operations/replication/troubleshooting.md"
       ],
       "path": "docs/operations/replication/troubleshooting.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reproducibility-command-reference.md"
+      ],
+      "path": "docs/operations/reproducibility-command-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reproducibility-completion-report.md"
+      ],
+      "path": "docs/operations/reproducibility-completion-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reproducibility-guarantees.md"
+      ],
+      "path": "docs/operations/reproducibility-guarantees.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reproducibility-limitations.md"
+      ],
+      "path": "docs/operations/reproducibility-limitations.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reproducibility-program-overview.md"
+      ],
+      "path": "docs/operations/reproducibility-program-overview.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reproducibility-report-schema.md"
+      ],
+      "path": "docs/operations/reproducibility-report-schema.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reproducibility-status-summary.md"
+      ],
+      "path": "docs/operations/reproducibility-status-summary.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reproducibility-troubleshooting.md"
+      ],
+      "path": "docs/operations/reproducibility-troubleshooting.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/reproducible-build-posture.md"
+      ],
+      "path": "docs/operations/reproducible-build-posture.md"
     },
     {
       "breadcrumbs": [
@@ -8117,6 +10032,24 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/access-control-best-practices.md"
+      ],
+      "path": "docs/operations/security/access-control-best-practices.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/access-control-troubleshooting.md"
+      ],
+      "path": "docs/operations/security/access-control-troubleshooting.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/action-pin-refresh.md"
       ],
       "path": "docs/operations/security/action-pin-refresh.md"
@@ -8153,6 +10086,15 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/api-key-authentication-support.md"
+      ],
+      "path": "docs/operations/security/api-key-authentication-support.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/api-key-usage.md"
       ],
       "path": "docs/operations/security/api-key-usage.md"
@@ -8162,9 +10104,99 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/api-key-validation.md"
+      ],
+      "path": "docs/operations/security/api-key-validation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/artifact-checksum-verification.md"
+      ],
+      "path": "docs/operations/security/artifact-checksum-verification.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/artifact-integrity-attack-vectors.md"
+      ],
+      "path": "docs/operations/security/artifact-integrity-attack-vectors.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/artifact-integrity-guarantees.md"
+      ],
+      "path": "docs/operations/security/artifact-integrity-guarantees.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/artifact-integrity-troubleshooting-guide.md"
+      ],
+      "path": "docs/operations/security/artifact-integrity-troubleshooting-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/artifact-integrity-verification.md"
       ],
       "path": "docs/operations/security/artifact-integrity-verification.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/artifact-provenance-metadata.md"
+      ],
+      "path": "docs/operations/security/artifact-provenance-metadata.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/artifact-provenance-requirements.md"
+      ],
+      "path": "docs/operations/security/artifact-provenance-requirements.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/artifact-signature-verification.md"
+      ],
+      "path": "docs/operations/security/artifact-signature-verification.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/attack-surface-inventory.md"
+      ],
+      "path": "docs/operations/security/attack-surface-inventory.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/attacker-capability-model.md"
+      ],
+      "path": "docs/operations/security/attacker-capability-model.md"
     },
     {
       "breadcrumbs": [
@@ -8216,9 +10248,63 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/authentication-architecture.md"
+      ],
+      "path": "docs/operations/security/authentication-architecture.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/authentication-authorization-delivery-report.md"
+      ],
+      "path": "docs/operations/security/authentication-authorization-delivery-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/authentication-error-classification.md"
+      ],
+      "path": "docs/operations/security/authentication-error-classification.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/authentication-examples.md"
       ],
       "path": "docs/operations/security/authentication-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/authentication-middleware.md"
+      ],
+      "path": "docs/operations/security/authentication-middleware.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/authentication-protocol-options.md"
+      ],
+      "path": "docs/operations/security/authentication-protocol-options.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/authentication-reference.md"
+      ],
+      "path": "docs/operations/security/authentication-reference.md"
     },
     {
       "breadcrumbs": [
@@ -8234,9 +10320,54 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/authorization-documentation.md"
+      ],
+      "path": "docs/operations/security/authorization-documentation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/authorization-engine.md"
+      ],
+      "path": "docs/operations/security/authorization-engine.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/authorization-examples.md"
       ],
       "path": "docs/operations/security/authorization-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/authorization-failure-logging.md"
+      ],
+      "path": "docs/operations/security/authorization-failure-logging.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/authorization-metrics.md"
+      ],
+      "path": "docs/operations/security/authorization-metrics.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/authorization-model.md"
+      ],
+      "path": "docs/operations/security/authorization-model.md"
     },
     {
       "breadcrumbs": [
@@ -8261,6 +10392,33 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/certificate-loading-module.md"
+      ],
+      "path": "docs/operations/security/certificate-loading-module.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/certificate-rotation-support.md"
+      ],
+      "path": "docs/operations/security/certificate-rotation-support.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/certificate-validation-checks.md"
+      ],
+      "path": "docs/operations/security/certificate-validation-checks.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/compliance.md"
       ],
       "path": "docs/operations/security/compliance.md"
@@ -8270,9 +10428,27 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/configuration-injection-risks.md"
+      ],
+      "path": "docs/operations/security/configuration-injection-risks.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/data-classification-model.md"
       ],
       "path": "docs/operations/security/data-classification-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/data-classification-policy.md"
+      ],
+      "path": "docs/operations/security/data-classification-policy.md"
     },
     {
       "breadcrumbs": [
@@ -8291,6 +10467,51 @@
         "docs/operations/security/data-protection-best-practices.md"
       ],
       "path": "docs/operations/security/data-protection-best-practices.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/data-protection-ci-validation.md"
+      ],
+      "path": "docs/operations/security/data-protection-ci-validation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/data-protection-delivery-report.md"
+      ],
+      "path": "docs/operations/security/data-protection-delivery-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/data-protection-documentation.md"
+      ],
+      "path": "docs/operations/security/data-protection-documentation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/data-protection-governance-integration.md"
+      ],
+      "path": "docs/operations/security/data-protection-governance-integration.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/data-protection-policy-reference.md"
+      ],
+      "path": "docs/operations/security/data-protection-policy-reference.md"
     },
     {
       "breadcrumbs": [
@@ -8324,9 +10545,108 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/dataset-integrity-verification.md"
+      ],
+      "path": "docs/operations/security/dataset-integrity-verification.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/dataset-security-guarantees.md"
       ],
       "path": "docs/operations/security/dataset-security-guarantees.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/dependency-freshness-checks.md"
+      ],
+      "path": "docs/operations/security/dependency-freshness-checks.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/dependency-governance-integration.md"
+      ],
+      "path": "docs/operations/security/dependency-governance-integration.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/dependency-governance-policy-reference.md"
+      ],
+      "path": "docs/operations/security/dependency-governance-policy-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/dependency-health-monitoring-artifact.md"
+      ],
+      "path": "docs/operations/security/dependency-health-monitoring-artifact.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/dependency-health-report.md"
+      ],
+      "path": "docs/operations/security/dependency-health-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/dependency-lifecycle-documentation.md"
+      ],
+      "path": "docs/operations/security/dependency-lifecycle-documentation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/dependency-management-guide.md"
+      ],
+      "path": "docs/operations/security/dependency-management-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/dependency-metrics.md"
+      ],
+      "path": "docs/operations/security/dependency-metrics.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/dependency-risk-classification.md"
+      ],
+      "path": "docs/operations/security/dependency-risk-classification.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/dependency-risk-scoring-report.md"
+      ],
+      "path": "docs/operations/security/dependency-risk-scoring-report.md"
     },
     {
       "breadcrumbs": [
@@ -8351,9 +10671,45 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/dependency-trust-model.md"
+      ],
+      "path": "docs/operations/security/dependency-trust-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/dependency-update-policy.md"
+      ],
+      "path": "docs/operations/security/dependency-update-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/dependency-update-workflow-documentation.md"
+      ],
+      "path": "docs/operations/security/dependency-update-workflow-documentation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/dependency-version-monitoring.md"
       ],
       "path": "docs/operations/security/dependency-version-monitoring.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/dependency-version-pinning-validation.md"
+      ],
+      "path": "docs/operations/security/dependency-version-pinning-validation.md"
     },
     {
       "breadcrumbs": [
@@ -8378,9 +10734,99 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/encrypted-artifact-storage-option.md"
+      ],
+      "path": "docs/operations/security/encrypted-artifact-storage-option.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/encryption-architecture-diagram.md"
+      ],
+      "path": "docs/operations/security/encryption-architecture-diagram.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/encryption-compliance-checklist.md"
+      ],
+      "path": "docs/operations/security/encryption-compliance-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/encryption-configuration-guide.md"
+      ],
+      "path": "docs/operations/security/encryption-configuration-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/encryption-error-logging.md"
+      ],
+      "path": "docs/operations/security/encryption-error-logging.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/encryption-metrics.md"
+      ],
+      "path": "docs/operations/security/encryption-metrics.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/encryption-strategy.md"
+      ],
+      "path": "docs/operations/security/encryption-strategy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/encryption-trace-spans.md"
+      ],
+      "path": "docs/operations/security/encryption-trace-spans.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/export-audit-logs-to-siem.md"
       ],
       "path": "docs/operations/security/export-audit-logs-to-siem.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/identity-management-integration.md"
+      ],
+      "path": "docs/operations/security/identity-management-integration.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/incident-classification-policy.md"
+      ],
+      "path": "docs/operations/security/incident-classification-policy.md"
     },
     {
       "breadcrumbs": [
@@ -8414,6 +10860,15 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/integrity-violation-alert-definitions.md"
+      ],
+      "path": "docs/operations/security/integrity-violation-alert-definitions.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/key-rotation.md"
       ],
       "path": "docs/operations/security/key-rotation.md"
@@ -8432,6 +10887,15 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/mitigation-strategy.md"
+      ],
+      "path": "docs/operations/security/mitigation-strategy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/model-scope.md"
       ],
       "path": "docs/operations/security/model-scope.md"
@@ -8441,9 +10905,99 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/multi-tenant-access-boundaries.md"
+      ],
+      "path": "docs/operations/security/multi-tenant-access-boundaries.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/permission-schema.md"
+      ],
+      "path": "docs/operations/security/permission-schema.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/privacy-stance.md"
       ],
       "path": "docs/operations/security/privacy-stance.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/privileged-components.md"
+      ],
+      "path": "docs/operations/security/privileged-components.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/rbac-configuration-guide.md"
+      ],
+      "path": "docs/operations/security/rbac-configuration-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/rbac-evaluation.md"
+      ],
+      "path": "docs/operations/security/rbac-evaluation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/rbac-role-model.md"
+      ],
+      "path": "docs/operations/security/rbac-role-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/request-identity-context.md"
+      ],
+      "path": "docs/operations/security/request-identity-context.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/residual-risk-register.md"
+      ],
+      "path": "docs/operations/security/residual-risk-register.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/resource-access-policy-model.md"
+      ],
+      "path": "docs/operations/security/resource-access-policy-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/resource-permission-checks.md"
+      ],
+      "path": "docs/operations/security/resource-permission-checks.md"
     },
     {
       "breadcrumbs": [
@@ -8495,6 +11049,60 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/sbom-evidence-bundle-integration.md"
+      ],
+      "path": "docs/operations/security/sbom-evidence-bundle-integration.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/sbom-generation-crates.md"
+      ],
+      "path": "docs/operations/security/sbom-generation-crates.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/sbom-generation-docker-images.md"
+      ],
+      "path": "docs/operations/security/sbom-generation-docker-images.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/sbom-generation-helm-charts.md"
+      ],
+      "path": "docs/operations/security/sbom-generation-helm-charts.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/sbom-schema-validation.md"
+      ],
+      "path": "docs/operations/security/sbom-schema-validation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/secure-deployment-guide.md"
+      ],
+      "path": "docs/operations/security/secure-deployment-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/secure-deployment-guidelines.md"
       ],
       "path": "docs/operations/security/secure-deployment-guidelines.md"
@@ -8507,6 +11115,24 @@
         "docs/operations/security/secure-development-practices.md"
       ],
       "path": "docs/operations/security/secure-development-practices.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/security-architecture-documentation.md"
+      ],
+      "path": "docs/operations/security/security-architecture-documentation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/security-architecture-overview.md"
+      ],
+      "path": "docs/operations/security/security-architecture-overview.md"
     },
     {
       "breadcrumbs": [
@@ -8549,9 +11175,27 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/security-monitoring-strategy.md"
+      ],
+      "path": "docs/operations/security/security-monitoring-strategy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/security-patch-policy.md"
       ],
       "path": "docs/operations/security/security-patch-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/security-philosophy.md"
+      ],
+      "path": "docs/operations/security/security-philosophy.md"
     },
     {
       "breadcrumbs": [
@@ -8612,6 +11256,15 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/sensitive-data-flows.md"
+      ],
+      "path": "docs/operations/security/sensitive-data-flows.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/sensitive-data-handling-rules.md"
       ],
       "path": "docs/operations/security/sensitive-data-handling-rules.md"
@@ -8630,9 +11283,261 @@
         "docs",
         "docs/operations",
         "docs/operations/security",
+        "docs/operations/security/supply-chain-architecture-diagram.md"
+      ],
+      "path": "docs/operations/security/supply-chain-architecture-diagram.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/supply-chain-audit-scenario.md"
+      ],
+      "path": "docs/operations/security/supply-chain-audit-scenario.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/supply-chain-ci-validation.md"
+      ],
+      "path": "docs/operations/security/supply-chain-ci-validation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/supply-chain-compliance-report.md"
+      ],
+      "path": "docs/operations/security/supply-chain-compliance-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/supply-chain-delivery-report.md"
+      ],
+      "path": "docs/operations/security/supply-chain-delivery-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/supply-chain-documentation.md"
+      ],
+      "path": "docs/operations/security/supply-chain-documentation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/supply-chain-risk-dashboard.md"
+      ],
+      "path": "docs/operations/security/supply-chain-risk-dashboard.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/supply-chain-security-benchmarks.md"
+      ],
+      "path": "docs/operations/security/supply-chain-security-benchmarks.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/supply-chain-security-policy.md"
+      ],
+      "path": "docs/operations/security/supply-chain-security-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/tamper-detection-alert-definitions.md"
+      ],
+      "path": "docs/operations/security/tamper-detection-alert-definitions.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/tamper-detection-system.md"
+      ],
+      "path": "docs/operations/security/tamper-detection-system.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-classification-taxonomy.md"
+      ],
+      "path": "docs/operations/security/threat-classification-taxonomy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-model-audit-scenario.md"
+      ],
+      "path": "docs/operations/security/threat-model-audit-scenario.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-model-ci-validation.md"
+      ],
+      "path": "docs/operations/security/threat-model-ci-validation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-model-coverage-report.md"
+      ],
+      "path": "docs/operations/security/threat-model-coverage-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-model-delivery-report.md"
+      ],
+      "path": "docs/operations/security/threat-model-delivery-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-model-diagram.md"
+      ],
+      "path": "docs/operations/security/threat-model-diagram.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-model-evidence.md"
+      ],
+      "path": "docs/operations/security/threat-model-evidence.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-model-metrics.md"
+      ],
+      "path": "docs/operations/security/threat-model-metrics.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-model-reference.md"
+      ],
+      "path": "docs/operations/security/threat-model-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-model-review-checklist.md"
+      ],
+      "path": "docs/operations/security/threat-model-review-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-model-troubleshooting.md"
+      ],
+      "path": "docs/operations/security/threat-model-troubleshooting.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-model-update-policy.md"
+      ],
+      "path": "docs/operations/security/threat-model-update-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-model-workshop-guide.md"
+      ],
+      "path": "docs/operations/security/threat-model-workshop-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-model.md"
+      ],
+      "path": "docs/operations/security/threat-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-modeling-methodology.md"
+      ],
+      "path": "docs/operations/security/threat-modeling-methodology.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/threat-registry-reference.md"
+      ],
+      "path": "docs/operations/security/threat-registry-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
         "docs/operations/security/tls-configuration-examples.md"
       ],
       "path": "docs/operations/security/tls-configuration-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/tls-configuration-requirements.md"
+      ],
+      "path": "docs/operations/security/tls-configuration-requirements.md"
     },
     {
       "breadcrumbs": [
@@ -8651,6 +11556,69 @@
         "docs/operations/security/token-authentication-flow.md"
       ],
       "path": "docs/operations/security/token-authentication-flow.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/token-authentication-strategy.md"
+      ],
+      "path": "docs/operations/security/token-authentication-strategy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/token-verification.md"
+      ],
+      "path": "docs/operations/security/token-verification.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/trust-boundary-diagram.md"
+      ],
+      "path": "docs/operations/security/trust-boundary-diagram.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/vulnerability-disclosure-policy.md"
+      ],
+      "path": "docs/operations/security/vulnerability-disclosure-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/vulnerability-monitoring-integration.md"
+      ],
+      "path": "docs/operations/security/vulnerability-monitoring-integration.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/vulnerability-remediation-guide.md"
+      ],
+      "path": "docs/operations/security/vulnerability-remediation-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security",
+        "docs/operations/security/vulnerability-remediation-policy.md"
+      ],
+      "path": "docs/operations/security/vulnerability-remediation-policy.md"
     },
     {
       "breadcrumbs": [
@@ -8732,6 +11700,38 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/system-audit-completion-report.md"
+      ],
+      "path": "docs/operations/system-audit-completion-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/system-invariant-report-schema.md"
+      ],
+      "path": "docs/operations/system-invariant-report-schema.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/system-invariants-completion-report.md"
+      ],
+      "path": "docs/operations/system-invariants-completion-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/system-invariants-reference.md"
+      ],
+      "path": "docs/operations/system-invariants-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/upgrade-compatibility-guide.md"
       ],
       "path": "docs/operations/upgrade-compatibility-guide.md"
@@ -8772,6 +11772,22 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/verify-ops-artifacts-authenticity.md"
+      ],
+      "path": "docs/operations/verify-ops-artifacts-authenticity.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/verify-release-artifacts.md"
+      ],
+      "path": "docs/operations/verify-release-artifacts.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/warmup-lock.md"
       ],
       "path": "docs/operations/warmup-lock.md"
@@ -8783,6 +11799,46 @@
         "docs/operations/workflows.md"
       ],
       "path": "docs/operations/workflows.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/perf",
+        "docs/perf/cli-ux-baseline-update.md"
+      ],
+      "path": "docs/perf/cli-ux-baseline-update.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/perf",
+        "docs/perf/cli-ux-how-it-works.md"
+      ],
+      "path": "docs/perf/cli-ux-how-it-works.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/perf",
+        "docs/perf/cli-ux-interpretation.md"
+      ],
+      "path": "docs/perf/cli-ux-interpretation.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/perf",
+        "docs/perf/cli-ux.md"
+      ],
+      "path": "docs/perf/cli-ux.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/perf",
+        "docs/perf/index.md"
+      ],
+      "path": "docs/perf/index.md"
     },
     {
       "breadcrumbs": [
@@ -9737,6 +12793,15 @@
         "docs",
         "docs/reference",
         "docs/reference/examples",
+        "docs/reference/examples/atlas-client-usage-examples.md"
+      ],
+      "path": "docs/reference/examples/atlas-client-usage-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/examples",
         "docs/reference/examples/catalog-example.md"
       ],
       "path": "docs/reference/examples/catalog-example.md"
@@ -10561,9 +13626,99 @@
       "breadcrumbs": [
         "docs",
         "docs/tutorials",
+        "docs/tutorials/advanced-guide.md"
+      ],
+      "path": "docs/tutorials/advanced-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/aggregation-queries.md"
+      ],
+      "path": "docs/tutorials/aggregation-queries.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/analyzing-evidence-bundles.md"
+      ],
+      "path": "docs/tutorials/analyzing-evidence-bundles.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/clients",
+        "docs/tutorials/clients/python",
+        "docs/tutorials/clients/python/jupyter_tutorial.md"
+      ],
+      "path": "docs/tutorials/clients/python/jupyter_tutorial.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/consolidation-roadmap.md"
+      ],
+      "path": "docs/tutorials/consolidation-roadmap.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
         "docs/tutorials/debug-pipeline.md"
       ],
       "path": "docs/tutorials/debug-pipeline.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/debugging-with-logs.md"
+      ],
+      "path": "docs/tutorials/debugging-with-logs.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/debugging-with-traces.md"
+      ],
+      "path": "docs/tutorials/debugging-with-traces.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/delivery-report.md"
+      ],
+      "path": "docs/tutorials/delivery-report.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/deploy-runtime-helm.md"
+      ],
+      "path": "docs/tutorials/deploy-runtime-helm.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/deploy-runtime-locally.md"
+      ],
+      "path": "docs/tutorials/deploy-runtime-locally.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/docs-build-integration.md"
+      ],
+      "path": "docs/tutorials/docs-build-integration.md"
     },
     {
       "breadcrumbs": [
@@ -10577,9 +13732,65 @@
       "breadcrumbs": [
         "docs",
         "docs/tutorials",
+        "docs/tutorials/evidence-artifacts.md"
+      ],
+      "path": "docs/tutorials/evidence-artifacts.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/example-datasets.md"
+      ],
+      "path": "docs/tutorials/example-datasets.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
         "docs/tutorials/faq.md"
       ],
       "path": "docs/tutorials/faq.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/filtering-queries.md"
+      ],
+      "path": "docs/tutorials/filtering-queries.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/generated-content-rules.md"
+      ],
+      "path": "docs/tutorials/generated-content-rules.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/generated-content-update-guide.md"
+      ],
+      "path": "docs/tutorials/generated-content-update-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/generated-content-workflow.md"
+      ],
+      "path": "docs/tutorials/generated-content-workflow.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/generated-example-authoring.md"
+      ],
+      "path": "docs/tutorials/generated-example-authoring.md"
     },
     {
       "breadcrumbs": [
@@ -10609,6 +13820,14 @@
       "breadcrumbs": [
         "docs",
         "docs/tutorials",
+        "docs/tutorials/interpreting-dashboards.md"
+      ],
+      "path": "docs/tutorials/interpreting-dashboards.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
         "docs/tutorials/query-dataset.md"
       ],
       "path": "docs/tutorials/query-dataset.md"
@@ -10617,9 +13836,105 @@
       "breadcrumbs": [
         "docs",
         "docs/tutorials",
+        "docs/tutorials/query-via-python-client.md"
+      ],
+      "path": "docs/tutorials/query-via-python-client.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/query-via-rust-client.md"
+      ],
+      "path": "docs/tutorials/query-via-rust-client.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/quickstart.md"
+      ],
+      "path": "docs/tutorials/quickstart.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/reading-metrics.md"
+      ],
+      "path": "docs/tutorials/reading-metrics.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/reference.md"
+      ],
+      "path": "docs/tutorials/reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/reproducibility-and-integrity.md"
+      ],
+      "path": "docs/tutorials/reproducibility-and-integrity.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/run-with-dev-atlas.md"
+      ],
+      "path": "docs/tutorials/run-with-dev-atlas.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/running-load-tests.md"
+      ],
+      "path": "docs/tutorials/running-load-tests.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/streaming-queries.md"
+      ],
+      "path": "docs/tutorials/streaming-queries.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/style-guide.md"
+      ],
+      "path": "docs/tutorials/style-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
         "docs/tutorials/troubleshooting-guide.md"
       ],
       "path": "docs/tutorials/troubleshooting-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/tutorial-dashboard-examples.md"
+      ],
+      "path": "docs/tutorials/tutorial-dashboard-examples.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/tutorials",
+        "docs/tutorials/tutorial-dataset-schema.md"
+      ],
+      "path": "docs/tutorials/tutorial-dataset-schema.md"
     },
     {
       "breadcrumbs": [
@@ -10635,6 +13950,13 @@
         "docs/what-to-read-next.md"
       ],
       "path": "docs/what-to-read-next.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/what-we-built.md"
+      ],
+      "path": "docs/what-we-built.md"
     },
     {
       "breadcrumbs": [
@@ -10801,6 +14123,22 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/audit",
+        "ops/audit/health-dashboard.md"
+      ],
+      "path": "ops/audit/health-dashboard.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/audit",
+        "ops/audit/summary-table.md"
+      ],
+      "path": "ops/audit/summary-table.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/datasets",
         "ops/datasets/CONTRACT.md"
       ],
@@ -10829,6 +14167,15 @@
         "ops/datasets/REQUIRED_FILES.md"
       ],
       "path": "ops/datasets/REQUIRED_FILES.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/drift",
+        "ops/drift/artifacts",
+        "ops/drift/artifacts/drift-visualization-table.md"
+      ],
+      "path": "ops/drift/artifacts/drift-visualization-table.md"
     },
     {
       "breadcrumbs": [
@@ -11061,6 +14408,24 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/observe",
+        "ops/observe/dashboards",
+        "ops/observe/dashboards/README.md"
+      ],
+      "path": "ops/observe/dashboards/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/observe",
+        "ops/observe/tracing",
+        "ops/observe/tracing/coverage-summary.md"
+      ],
+      "path": "ops/observe/tracing/coverage-summary.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/report",
         "ops/report/CONTRACT.md"
       ],
@@ -11089,6 +14454,15 @@
         "ops/report/REQUIRED_FILES.md"
       ],
       "path": "ops/report/REQUIRED_FILES.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/generated",
+        "ops/report/generated/ops-release-readiness-summary.md"
+      ],
+      "path": "ops/report/generated/ops-release-readiness-summary.md"
     },
     {
       "breadcrumbs": [

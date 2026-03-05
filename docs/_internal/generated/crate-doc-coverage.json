@@ -5,12 +5,16 @@
       "doc_count": 17
     },
     {
-      "crate": "bijux-atlas-benchmark",
+      "crate": "bijux-atlas-bench",
       "doc_count": 5
     },
     {
       "crate": "bijux-atlas-cli",
       "doc_count": 16
+    },
+    {
+      "crate": "bijux-atlas-client",
+      "doc_count": 1
     },
     {
       "crate": "bijux-atlas-core",
@@ -42,7 +46,7 @@
     },
     {
       "crate": "bijux-dev-atlas",
-      "doc_count": 21
+      "doc_count": 30
     }
   ],
   "schema_version": 1

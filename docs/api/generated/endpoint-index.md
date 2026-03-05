@@ -34,5 +34,5 @@
 | `/v1/query/validate` | `post` |
 | `/v1/releases/{release}/species/{species}/assemblies/{assembly}` | `get` |
 | `/v1/sequence/region` | `get` |
-| `/v1/tranautomation/{tx_id}` | `get` |
+| `/v1/transcripts/{tx_id}` | `get` |
 | `/v1/version` | `get` |

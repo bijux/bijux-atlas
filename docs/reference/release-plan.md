@@ -22,7 +22,7 @@ Publishable crates are defined in `configs/release/publish-policy.json`.
 Blocked from crates.io by policy:
 
 - `bijux-dev-atlas`
-- `bijux-atlas-benchmark`
+- `bijux-atlas-bench`
 
 ## Versioning model
 

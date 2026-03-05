@@ -397,117 +397,117 @@
         "topic": "versioning"
       }
     ],
-    "bijux-atlas-benchmark": [
+    "bijux-atlas-bench": [
       {
-        "area": "bijux-atlas-benchmark",
+        "area": "bijux-atlas-bench",
         "audience": "contributors",
-        "crate": "bijux-atlas-benchmark",
+        "crate": "bijux-atlas-bench",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
           "benchmark-architecture",
-          "bijux-atlas-benchmark"
+          "bijux-atlas-bench"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-benchmark/docs/benchmark-architecture.md",
+        "path": "crates/bijux-atlas-bench/docs/benchmark-architecture.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
           "benchmark-architecture",
-          "bijux-atlas-benchmark"
+          "bijux-atlas-bench"
         ],
         "title": "Benchmark Architecture",
         "topic": "benchmark-architecture"
       },
       {
-        "area": "bijux-atlas-benchmark",
+        "area": "bijux-atlas-bench",
         "audience": "contributors",
-        "crate": "bijux-atlas-benchmark",
+        "crate": "bijux-atlas-bench",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
           "benchmark-roadmap",
-          "bijux-atlas-benchmark"
+          "bijux-atlas-bench"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-benchmark/docs/benchmark-roadmap.md",
+        "path": "crates/bijux-atlas-bench/docs/benchmark-roadmap.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
           "benchmark-roadmap",
-          "bijux-atlas-benchmark"
+          "bijux-atlas-bench"
         ],
         "title": "Benchmark Roadmap",
         "topic": "benchmark-roadmap"
       },
       {
-        "area": "bijux-atlas-benchmark",
+        "area": "bijux-atlas-bench",
         "audience": "contributors",
-        "crate": "bijux-atlas-benchmark",
+        "crate": "bijux-atlas-bench",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
           "benchmark-troubleshooting",
-          "bijux-atlas-benchmark"
+          "bijux-atlas-bench"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-benchmark/docs/benchmark-troubleshooting.md",
+        "path": "crates/bijux-atlas-bench/docs/benchmark-troubleshooting.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
           "benchmark-troubleshooting",
-          "bijux-atlas-benchmark"
+          "bijux-atlas-bench"
         ],
         "title": "Benchmark Troubleshooting",
         "topic": "benchmark-troubleshooting"
       },
       {
-        "area": "bijux-atlas-benchmark",
+        "area": "bijux-atlas-bench",
         "audience": "contributors",
-        "crate": "bijux-atlas-benchmark",
+        "crate": "bijux-atlas-bench",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
           "benchmark-usage",
-          "bijux-atlas-benchmark"
+          "bijux-atlas-bench"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-benchmark/docs/benchmark-usage.md",
+        "path": "crates/bijux-atlas-bench/docs/benchmark-usage.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
           "benchmark-usage",
-          "bijux-atlas-benchmark"
+          "bijux-atlas-bench"
         ],
         "title": "Benchmark Usage",
         "topic": "benchmark-usage"
       },
       {
-        "area": "bijux-atlas-benchmark",
+        "area": "bijux-atlas-bench",
         "audience": "contributors",
-        "crate": "bijux-atlas-benchmark",
+        "crate": "bijux-atlas-bench",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-benchmark",
+          "bijux-atlas-bench",
           "index"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-benchmark/docs/index.md",
+        "path": "crates/bijux-atlas-bench/docs/index.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "bijux-atlas-benchmark",
+          "bijux-atlas-bench",
           "index"
         ],
         "title": "Benchmark crate docs",
@@ -884,6 +884,31 @@
         ],
         "title": "VERSIONING (bijux-atlas-cli)",
         "topic": "versioning"
+      }
+    ],
+    "bijux-atlas-client": [
+      {
+        "area": "bijux-atlas-client",
+        "audience": "user",
+        "crate": "bijux-atlas-client",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "architecture",
+          "bijux-atlas-client"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "api-contracts",
+        "path": "crates/bijux-atlas-client/docs/architecture.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "architecture",
+          "bijux-atlas-client"
+        ],
+        "title": "Rust Client Architecture",
+        "topic": "architecture"
       }
     ],
     "bijux-atlas-core": [
@@ -4337,12 +4362,35 @@
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
+          "automation-boundary-gap-review",
+          "bijux-dev-atlas"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/automation-boundary-gap-review.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "automation-boundary-gap-review",
+          "bijux-dev-atlas"
+        ],
+        "title": "Automation Boundary Gap Review",
+        "topic": "automation-boundary-gap-review"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
           "benchmarks",
           "bijux-dev-atlas"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "bijux-dev-atlas",
+        "owner": "docs-governance",
         "path": "crates/bijux-dev-atlas/docs/benchmarks.md",
         "review_due": "2026-08-24",
         "stability": "stable",
@@ -4350,7 +4398,7 @@
           "benchmarks",
           "bijux-dev-atlas"
         ],
-        "title": "BENCHMARKS (bijux-dev-atlas)",
+        "title": "Benchmarks",
         "topic": "benchmarks"
       },
       {
@@ -4419,7 +4467,7 @@
           "bijux-dev-atlas",
           "commands"
         ],
-        "title": "Commands",
+        "title": "Command Surface",
         "topic": "commands"
       },
       {
@@ -4442,7 +4490,7 @@
           "bijux-dev-atlas",
           "contract"
         ],
-        "title": "Dev Control Plane Contract",
+        "title": "Contract (Alias)",
         "topic": "contract"
       },
       {
@@ -4453,11 +4501,34 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-dev-atlas",
+          "control-plane-contracts"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/control-plane-contracts.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "control-plane-contracts"
+        ],
+        "title": "Control Plane Contracts",
+        "topic": "control-plane-contracts"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
           "error-codes"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "bijux-dev-atlas",
+        "owner": "docs-governance",
         "path": "crates/bijux-dev-atlas/docs/error-codes.md",
         "review_due": "2026-08-24",
         "stability": "stable",
@@ -4465,8 +4536,31 @@
           "bijux-dev-atlas",
           "error-codes"
         ],
-        "title": "ERRORS (bijux-dev-atlas)",
+        "title": "Error Codes (Alias)",
         "topic": "error-codes"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
+          "errors-and-exit-codes"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/errors-and-exit-codes.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "errors-and-exit-codes"
+        ],
+        "title": "Errors and Exit Codes",
+        "topic": "errors-and-exit-codes"
       },
       {
         "area": "bijux-dev-atlas",
@@ -4480,7 +4574,7 @@
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "bijux-dev-atlas",
+        "owner": "docs-governance",
         "path": "crates/bijux-dev-atlas/docs/errors.md",
         "review_due": "2026-08-24",
         "stability": "stable",
@@ -4488,7 +4582,7 @@
           "bijux-dev-atlas",
           "errors"
         ],
-        "title": "ERROR_TAXONOMY (bijux-dev-atlas)",
+        "title": "Errors (Alias)",
         "topic": "errors"
       },
       {
@@ -4534,7 +4628,7 @@
           "bijux-dev-atlas",
           "exit-codes"
         ],
-        "title": "Dev Control Plane Exit Codes",
+        "title": "Exit Codes (Alias)",
         "topic": "exit-codes"
       },
       {
@@ -4666,6 +4760,31 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-dev-atlas",
+          "docs-authoring-model",
+          "internal"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/internal/docs-authoring-model.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "docs-authoring-model",
+          "internal"
+        ],
+        "title": "Internal Docs Authoring Model",
+        "topic": "docs-authoring-model"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
           "domain-module-contract",
           "internal"
         ],
@@ -4741,20 +4860,141 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-dev-atlas",
+          "make-wrapper-delegation-audit",
+          "migrations"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/migrations/make-wrapper-delegation-audit.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "make-wrapper-delegation-audit",
+          "migrations"
+        ],
+        "title": "Make Wrapper Delegation Audit",
+        "topic": "make-wrapper-delegation-audit"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
+          "migrations",
+          "tools-to-dev-atlas"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/migrations/tools-to-dev-atlas.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "migrations",
+          "tools-to-dev-atlas"
+        ],
+        "title": "Migration Map: tools/scripts to bijux-dev-atlas",
+        "topic": "tools-to-dev-atlas"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
+          "migrations",
+          "tutorial-generated-content-inventory"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/migrations/tutorial-generated-content-inventory.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "migrations",
+          "tutorial-generated-content-inventory"
+        ],
+        "title": "Tutorial Generated Content Inventory",
+        "topic": "tutorial-generated-content-inventory"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
+          "quality-system"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/quality-system.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "quality-system"
+        ],
+        "title": "Quality System",
+        "topic": "quality-system"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
           "registry-contract"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "bijux-dev-atlas",
+        "owner": "docs-governance",
         "path": "crates/bijux-dev-atlas/docs/registry-contract.md",
         "review_due": "2026-08-24",
-        "stability": "evolving",
+        "stability": "stable",
         "tags": [
           "bijux-dev-atlas",
           "registry-contract"
         ],
-        "title": "Dev Control Plane Registry Contract",
+        "title": "Registry Contract (Alias)",
         "topic": "registry-contract"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
+          "repo-automation-inventory"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/repo-automation-inventory.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-dev-atlas",
+          "repo-automation-inventory"
+        ],
+        "title": "Repository Automation Inventory",
+        "topic": "repo-automation-inventory"
       },
       {
         "area": "bijux-dev-atlas",
@@ -4768,7 +5008,7 @@
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "bijux-dev-atlas",
+        "owner": "docs-governance",
         "path": "crates/bijux-dev-atlas/docs/testing.md",
         "review_due": "2026-08-24",
         "stability": "stable",
@@ -4776,7 +5016,7 @@
           "bijux-dev-atlas",
           "testing"
         ],
-        "title": "TESTING (bijux-dev-atlas)",
+        "title": "Testing",
         "topic": "testing"
       },
       {
