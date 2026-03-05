@@ -15,6 +15,7 @@ use std::fs;
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command as ProcessCommand;
+use std::time::{SystemTime, UNIX_EPOCH};
 use std::time::Instant;
 
 pub(crate) fn run_tutorials_command(quiet: bool, command: TutorialsCommand) -> i32 {
@@ -656,10 +657,17 @@ fn validate_evidence(
 ) -> (bool, serde_json::Value) {
     let mut violations = Vec::new();
     for (name, item) in evidence {
-        let has_id = item.get("id").is_some();
+        let has_id = item.get("id").and_then(|v| v.as_str()).is_some();
         let has_summary = item.get("summary").is_some() || item.get("metrics").is_some();
         if !has_id || !has_summary {
             violations.push(format!("{name}: missing required evidence keys"));
+            continue;
+        }
+        if item.get("summary").is_some_and(|v| !v.is_string()) {
+            violations.push(format!("{name}: `summary` must be a string"));
+        }
+        if item.get("metrics").is_some_and(|v| !v.is_object()) {
+            violations.push(format!("{name}: `metrics` must be an object when provided"));
         }
     }
     (
@@ -938,7 +946,11 @@ fn build_deterministic_tar(
         header.set_mode(0o644);
         header.set_uid(0);
         header.set_gid(0);
-        header.set_mtime(if stable_timestamps { 0 } else { 1 });
+        let dynamic_mtime = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map_err(|err| format!("failed to read system clock: {err}"))?
+            .as_secs();
+        header.set_mtime(if stable_timestamps { 0 } else { dynamic_mtime });
         header.set_cksum();
         builder
             .append_data(&mut header, archive_path, data.as_slice())

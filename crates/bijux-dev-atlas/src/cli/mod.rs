@@ -1315,7 +1315,7 @@ pub struct TutorialsDatasetPackageArgs {
     pub common: TutorialsCommandArgs,
     #[arg(long, default_value_t = false)]
     pub update_sha256: bool,
-    #[arg(long, default_value_t = true)]
+    #[arg(long, default_value_t = true, action = clap::ArgAction::Set)]
     pub stable_timestamps: bool,
 }
 
