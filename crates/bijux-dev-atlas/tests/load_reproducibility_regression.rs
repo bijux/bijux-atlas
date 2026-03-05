@@ -69,7 +69,7 @@ fn load_reproducibility_and_baseline_assets_are_present() {
 }
 
 #[test]
-fn load_comparison_is_available_via_control_plane_command() {
+fn slow_load_comparison_is_available_via_control_plane_command() {
     let output = std::process::Command::new("cargo")
         .args([
             "run",
