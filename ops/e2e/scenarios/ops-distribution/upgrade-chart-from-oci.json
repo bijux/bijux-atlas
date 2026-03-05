@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "id": "upgrade-chart-from-oci",
+  "name": "Upgrade chart from OCI",
+  "environment": "kind",
+  "profile": "kind",
+  "chart_source": "oci://ghcr.io/bijux/charts/bijux-atlas",
+  "image_source": "ghcr.io/bijux/bijux-atlas-server",
+  "steps": [
+    "helm install atlas oci://ghcr.io/bijux/charts/bijux-atlas --version v0.0.9 -f ops/k8s/values/kind.yaml",
+    "helm upgrade atlas oci://ghcr.io/bijux/charts/bijux-atlas --version v0.1.0 -f ops/k8s/values/kind.yaml",
+    "kubectl rollout status deployment/atlas-bijux-atlas-server --timeout=180s"
+  ],
+  "evidence_path": "release/evidence/ops-distribution/upgrade-chart-from-oci/evidence.json"
+}

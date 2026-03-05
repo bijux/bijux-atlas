@@ -128,6 +128,20 @@
       "evidence_class": "fast"
     },
     {
+      "id": "install-chart-from-oci",
+      "description": "Kind install scenario consuming the published OCI chart with GHCR image.",
+      "action_id": "ops.release.install",
+      "entrypoint": "bijux dev atlas release ops scenario-evidence-verify",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": false,
+        "load": false
+      },
+      "intent": "distribution",
+      "evidence_class": "slow"
+    },
+    {
       "id": "k8s-suite",
       "description": "Kubernetes invariant suite composed with stack and observability dependencies.",
       "action_id": "ops.e2e.run",
@@ -209,6 +223,20 @@
         "load": false
       },
       "intent": "consistency",
+      "evidence_class": "slow"
+    },
+    {
+      "id": "offline-install-from-bundle",
+      "description": "Kind offline install scenario consuming the packaged ops bundle with no network fetch.",
+      "action_id": "ops.release.offline-install",
+      "entrypoint": "bijux dev atlas release ops scenario-evidence-verify",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": false,
+        "load": false
+      },
+      "intent": "offline",
       "evidence_class": "slow"
     },
     {
@@ -380,6 +408,20 @@
       "evidence_class": "slow"
     },
     {
+      "id": "rollback-chart-from-oci",
+      "description": "Kind rollback scenario to validate release reversion using helm revision history.",
+      "action_id": "ops.release.rollback",
+      "entrypoint": "bijux dev atlas release ops scenario-evidence-verify",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": false,
+        "load": false
+      },
+      "intent": "recovery",
+      "evidence_class": "slow"
+    },
+    {
       "id": "schema-evolution",
       "description": "Dataset schema evolves from v1 to v2 with compatibility verification.",
       "action_id": "ops.e2e.run",
@@ -420,6 +462,20 @@
       },
       "intent": "smoke",
       "evidence_class": "fast"
+    },
+    {
+      "id": "upgrade-chart-from-oci",
+      "description": "Kind upgrade scenario for chart release migration from previous to current version.",
+      "action_id": "ops.release.upgrade",
+      "entrypoint": "bijux dev atlas release ops scenario-evidence-verify",
+      "compose": {
+        "stack": true,
+        "observe": true,
+        "datasets": false,
+        "load": false
+      },
+      "intent": "compatibility",
+      "evidence_class": "slow"
     },
     {
       "id": "upgrade-config-migration",

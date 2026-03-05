@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "rollback-chart-from-oci",
+  "name": "Rollback chart from OCI",
+  "environment": "kind",
+  "profile": "kind",
+  "chart_source": "oci://ghcr.io/bijux/charts/bijux-atlas",
+  "image_source": "ghcr.io/bijux/bijux-atlas-server",
+  "steps": [
+    "helm install atlas oci://ghcr.io/bijux/charts/bijux-atlas --version v0.0.9 -f ops/k8s/values/kind.yaml",
+    "helm upgrade atlas oci://ghcr.io/bijux/charts/bijux-atlas --version v0.1.0 -f ops/k8s/values/kind.yaml",
+    "helm rollback atlas 1",
+    "kubectl rollout status deployment/atlas-bijux-atlas-server --timeout=180s"
+  ],
+  "evidence_path": "release/evidence/ops-distribution/rollback-chart-from-oci/evidence.json"
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "scenario": "upgrade-chart-from-oci",
+  "status": "simulated",
+  "cluster": {
+    "name": "kind-bijux-atlas-sim",
+    "kubernetes_version": "v1.31.0",
+    "nodes": ["bijux-atlas-control-plane"]
+  },
+  "helm_version": "v3.16.0",
+  "chart_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "image_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "profile": "kind"
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "scenario": "rollback-chart-from-oci",
+  "status": "simulated",
+  "cluster": {
+    "name": "kind-bijux-atlas-sim",
+    "kubernetes_version": "v1.31.0",
+    "nodes": ["bijux-atlas-control-plane"]
+  },
+  "helm_version": "v3.16.0",
+  "chart_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+  "image_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "profile": "kind"
+}
