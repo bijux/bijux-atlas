@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "kind": "data_protection_evidence_bundle",
+  "reports": [
+    "ops/security/reports/data-protection-capabilities.example.json",
+    "ops/security/reports/encryption-metrics.example.json"
+  ],
+  "tests": [
+    "cargo test -p bijux-atlas-core --test security_data_protection_contracts"
+  ],
+  "status": "ok"
+}

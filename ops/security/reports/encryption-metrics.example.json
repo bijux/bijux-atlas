@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "kind": "security_encryption_metrics",
+  "metrics": {
+    "atlas_encryption_operations_total": 1200,
+    "atlas_integrity_violations_total": 0,
+    "atlas_tamper_detections_total": 0
+  },
+  "status": "ok"
+}

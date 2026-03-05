@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "kind": "encryption_configuration_audit_report",
+  "config_file": "configs/security/data-protection.yaml",
+  "checks": {
+    "transport_tls_required": true,
+    "min_tls_version_configured": true,
+    "dataset_encryption_option_declared": true
+  },
+  "status": "ok"
+}
