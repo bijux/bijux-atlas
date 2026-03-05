@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cli-command-output-envelope",
+  "type": "object",
+  "required": ["command", "exit_code", "duration_ms"],
+  "properties": {
+    "command": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "exit_code": {"type": "integer", "minimum": 0},
+    "duration_ms": {"type": "integer", "minimum": 0},
+    "classification": {"type": "string"},
+    "timestamp": {"type": "number"}
+  },
+  "additionalProperties": true
+}

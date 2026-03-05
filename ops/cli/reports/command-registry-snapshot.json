@@ -1,0 +1,34 @@
+{
+  "generated_by": "tools/cli/discover_subcommands.py",
+  "groups": {
+    "governance": [
+      "docs",
+      "configs",
+      "security"
+    ],
+    "integration": [
+      "api"
+    ],
+    "integrity": [
+      "invariants",
+      "drift",
+      "reproduce",
+      "governance",
+      "system"
+    ],
+    "operations": [
+      "ops",
+      "observe",
+      "load",
+      "audit"
+    ],
+    "verification": [
+      "check",
+      "checks",
+      "contract",
+      "registry",
+      "suites",
+      "tests"
+    ]
+  }
+}

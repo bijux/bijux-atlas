@@ -11,3 +11,12 @@
 - [Completion](completion.md)
 - [Configuration](configuration.md)
 - [Configuration examples](configuration-examples.md)
+
+- [Command reference](command-reference.md)
+- [Usage guide](usage-guide.md)
+- [Troubleshooting](troubleshooting.md)
+- [Automation examples](automation-examples.md)
+- [Tutorial integration](tutorial-integration.md)
+- [Scripting examples](scripting-examples.md)
+- [Output JSON schema](output-json-schema.md)
+- [Delivery report](delivery-report.md)
