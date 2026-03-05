@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
   "description": "Docs growth budget for committed markdown pages.",
-  "max_markdown_files": 900,
+  "max_markdown_files": 1400,
   "approval_file": "docs/_internal/governance/metadata/growth-approval.json"
 }

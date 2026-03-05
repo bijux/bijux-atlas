@@ -41,6 +41,8 @@
     "science": "mixed",
     "security": "mixed",
     "start": "mixed",
-    "tutorials": "mixed"
+    "tutorials": "mixed",
+    "cli": "mixed",
+    "perf": "mixed"
   }
 }

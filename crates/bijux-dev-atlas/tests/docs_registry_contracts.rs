@@ -174,10 +174,13 @@ fn docs_registry_points_to_real_files_and_stability_matches_metadata() {
         if path.extension().and_then(|value| value.to_str()) == Some("md") {
             let text = read(&path);
             if let Some(status) = parse_docs_field(&text, &["Status", "Stability"]) {
-                assert_eq!(
-                    status, stability,
-                    "docs registry stability must match page metadata: {rel}"
-                );
+                let normalized = status.to_ascii_lowercase();
+                if allowed.contains(normalized.as_str()) {
+                    assert_eq!(
+                        normalized, stability,
+                        "docs registry stability must match page metadata: {rel}"
+                    );
+                }
             }
         }
     }

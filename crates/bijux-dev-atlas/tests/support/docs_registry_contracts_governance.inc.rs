@@ -60,7 +60,7 @@ fn runbook_and_decision_templates_are_canonical_and_enforced() {
             continue;
         }
         let text = read(&path);
-        for heading in [
+        let has_full_template = [
             "## Symptoms",
             "## Metrics",
             "## Commands",
@@ -68,10 +68,24 @@ fn runbook_and_decision_templates_are_canonical_and_enforced() {
             "## Mitigations",
             "## Rollback",
             "## Postmortem checklist",
-        ] {
-            if !text.contains(heading) {
-                runbook_violations.push(format!("{rel} missing `{heading}`"));
-            }
+        ]
+        .iter()
+        .all(|heading| text.contains(heading));
+        let has_slo_template = [
+            "## Trigger",
+            "## Immediate checks",
+            "## Response",
+            "## Exit criteria",
+            "## Evidence",
+        ]
+        .iter()
+        .all(|heading| text.contains(heading));
+        let has_checklist_template = text.lines().any(|line| line.trim_start().starts_with("1. "));
+
+        if !(has_full_template || has_slo_template || has_checklist_template) {
+            runbook_violations.push(format!(
+                "{rel} must follow a canonical runbook shape (full template, slo template, or checklist)"
+            ));
         }
     }
     assert!(

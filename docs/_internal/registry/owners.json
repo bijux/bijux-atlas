@@ -12,6 +12,9 @@
     "product": "product",
     "reference": "docs-governance",
     "control-plane": "platform",
-    "tutorials": "docs-governance"
+    "tutorials": "docs-governance",
+    "_generated": "docs-governance",
+    "cli": "docs-governance",
+    "perf": "docs-governance"
   }
 }
