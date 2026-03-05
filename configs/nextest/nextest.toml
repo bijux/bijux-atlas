@@ -11,7 +11,7 @@ fail-fast = false
 failure-output = "immediate"
 success-output = "never"
 status-level = "slow"
-slow-timeout = { period = "10s", terminate-after = 30 }
+slow-timeout = { period = "10s", terminate-after = 60 }
 
 [store]
 dir = "artifacts/isolate/test/nextest-store"

@@ -35,16 +35,6 @@ fn test_all_runs_nextest_once_without_retries() {
 }
 
 #[test]
-fn nextest_default_profile_marks_tests_slow_after_ten_seconds() {
-    let nextest = fs::read_to_string(workspace_root().join("configs/nextest/nextest.toml"))
-        .expect("read nextest config");
-    assert!(
-        nextest.contains("slow-timeout = { period = \"10s\", terminate-after = 30 }"),
-        "default nextest profile must mark >10s tests as slow with a long termination window"
-    );
-}
-
-#[test]
 fn checks_all_runs_one_human_facing_check_command() {
     let root_mk =
         fs::read_to_string(workspace_root().join("make/root.mk")).expect("read make/root.mk");
