@@ -13,13 +13,22 @@ fn repo_root() -> PathBuf {
 }
 
 fn parse_json_output(output: &std::process::Output) -> serde_json::Value {
-    if !output.stdout.is_empty() {
-        return serde_json::from_slice(&output.stdout).expect("json");
+    if let Some(stdout) = (!output.stdout.is_empty())
+        .then(|| String::from_utf8_lossy(&output.stdout))
+        .filter(|s| !s.trim().is_empty())
+    {
+        return serde_json::from_str(stdout.as_ref()).expect("json stdout");
     }
-    if !output.stderr.is_empty() {
-        return serde_json::from_slice(&output.stderr).expect("json");
+    if let Some(stderr) = (!output.stderr.is_empty())
+        .then(|| String::from_utf8_lossy(&output.stderr))
+        .filter(|s| !s.trim().is_empty())
+    {
+        return serde_json::from_str(stderr.as_ref()).expect("json stderr");
     }
-    panic!("expected json output on stdout or stderr");
+    panic!(
+        "expected json output on stdout or stderr, status={:?}",
+        output.status.code()
+    );
 }
 
 #[test]
