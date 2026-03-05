@@ -106,6 +106,7 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 73. [Ops chart upgrade guide](ops-chart-upgrade-guide.md)
 74. [Ops chart rollback guide](ops-chart-rollback-guide.md)
 75. [Ops profile selection guide](ops-profile-selection-guide.md)
+76. [Ops provenance](ops-provenance.md)
 
 ## What This Page Is Not
 
