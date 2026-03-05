@@ -1,0 +1,26 @@
+{
+  "version": "2026-03-05",
+  "policy_owner": "bijux-atlas-governance",
+  "python": {
+    "allowed_zones": [
+      "clients/atlas-client/**/*.py",
+      "clients/atlas-client/**/*.ipynb"
+    ],
+    "forbidden_after_migration_complete": [
+      "tutorials/**/*.py",
+      "tutorials/scripts/**"
+    ],
+    "notes": "Python is allowed only for client SDK product code and artifacts."
+  },
+  "shell": {
+    "allowed_zones": [],
+    "notes": "Repository automation shell scripts are not allowed."
+  },
+  "directory_purpose": {
+    "tutorials": "Tutorial artifacts and tutorial-facing static assets. Automation executes via bijux-dev-atlas commands.",
+    "clients": "Product SDK source, tests, examples, and docs. Repo automation executes via bijux-dev-atlas commands."
+  },
+  "migration_status": {
+    "tutorials_legacy_automation_removed": false
+  }
+}

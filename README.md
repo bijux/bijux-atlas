@@ -54,6 +54,10 @@ Planned publication surfaces:
 - Build output: `artifacts/docs/site`
 - Operator guide: [`docs/operations/docs-site-deploy.md`](docs/operations/docs-site-deploy.md)
 
+## Tutorial Automation Migration
+
+Tutorial automation is executed through `bijux-dev-atlas` commands. Legacy tutorial script entrypoints are being retired as migration completes. See [`docs/tutorials/run-with-dev-atlas.md`](docs/tutorials/run-with-dev-atlas.md).
+
 ## Quickstart By Persona
 
 ### User

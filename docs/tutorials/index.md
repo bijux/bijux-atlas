@@ -26,6 +26,7 @@ related:
 ## Learning path
 
 - [Tutorial quickstart](quickstart.md)
+- [Run tutorials with dev-atlas](run-with-dev-atlas.md)
 - [Example datasets](example-datasets.md)
 - [Ingest dataset](ingest-dataset.md)
 - [Validate dataset](validate-dataset.md)
