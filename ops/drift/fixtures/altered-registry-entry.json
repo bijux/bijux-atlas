@@ -1,0 +1,10 @@
+{
+  "fixture_id": "altered-registry-entry",
+  "description": "Registry index includes unknown invariant ID.",
+  "registry_mutation": {
+    "id": "INV-NONEXISTENT-REGISTRY-ENTRY-001",
+    "severity": "high",
+    "group": "registry"
+  },
+  "expected_drift_type": "registry"
+}

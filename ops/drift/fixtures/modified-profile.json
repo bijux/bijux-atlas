@@ -1,0 +1,12 @@
+{
+  "fixture_id": "modified-profile",
+  "description": "Install matrix references profiles absent from profile registry.",
+  "install_matrix_mutation": {
+    "profiles": [
+      {
+        "name": "unknown-profile"
+      }
+    ]
+  },
+  "expected_drift_type": "ops_profile"
+}

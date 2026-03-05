@@ -1,0 +1,8 @@
+{
+  "fixture_id": "modified-config-file",
+  "description": "Configuration schema version drift sample for detector validation.",
+  "configs_inventory": {
+    "schema_version": 2
+  },
+  "expected_drift_type": "configuration"
+}

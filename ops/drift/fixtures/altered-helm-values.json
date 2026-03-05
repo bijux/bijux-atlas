@@ -1,0 +1,12 @@
+{
+  "fixture_id": "altered-helm-values",
+  "description": "Runtime pinned datasets reference unknown dataset IDs.",
+  "offline_values_mutation": {
+    "cache": {
+      "pinnedDatasets": [
+        "dataset-not-in-index"
+      ]
+    }
+  },
+  "expected_drift_type": "runtime_config"
+}
