@@ -1,0 +1,6 @@
+{
+  "title": "Tutorial Runtime Health",
+  "panels": [
+    {"id": 1, "title": "Requests", "type": "timeseries"}
+  ]
+}
