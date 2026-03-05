@@ -7,18 +7,32 @@
       "dataset": "genes-baseline",
       "dataset_size_tier": "tiny",
       "ingest_mode": "full-rebuild",
-      "expected_outputs": ["ingest-report", "dataset-summary"],
+      "expected_outputs": [
+        "ingest-report",
+        "dataset-summary"
+      ],
       "input_provenance": {
-        "url": "https://example.org/datasets/genes-baseline.csv",
+        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/seattle-weather.csv",
         "retrieval_method": "https-get",
-        "license_note": "Public domain demonstration dataset"
+        "license_note": "BSD-3-Clause (vega-datasets repository)"
       },
       "expected_query_set": [
-        {"name": "gene_count_total", "description": "count all ingested genes"}
+        {
+          "name": "gene_count_total",
+          "description": "count all ingested genes"
+        }
       ],
-      "expected_artifacts": ["ingest-report.json", "dataset-summary.json"],
-      "expected_resource_profile": {"cpu_mem_class": "small"},
-      "expected_runtime_compatibility": {"min_version": "0.1.0", "max_version": "0.2.0"}
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json"
+      ],
+      "expected_resource_profile": {
+        "cpu_mem_class": "small"
+      },
+      "expected_runtime_compatibility": {
+        "min_version": "0.1.0",
+        "max_version": "0.2.0"
+      }
     },
     {
       "id": "rdr-002-transcripts-baseline",
@@ -26,12 +40,32 @@
       "dataset": "transcripts-baseline",
       "dataset_size_tier": "tiny",
       "ingest_mode": "full-rebuild",
-      "expected_outputs": ["ingest-report", "dataset-summary"],
-      "input_provenance": {"url": "https://example.org/datasets/transcripts-baseline.csv", "retrieval_method": "https-get", "license_note": "Public domain demonstration dataset"},
-      "expected_query_set": [{"name": "transcript_count_total", "description": "count all ingested transcripts"}],
-      "expected_artifacts": ["ingest-report.json", "dataset-summary.json"],
-      "expected_resource_profile": {"cpu_mem_class": "small"},
-      "expected_runtime_compatibility": {"min_version": "0.1.0", "max_version": "0.2.0"}
+      "expected_outputs": [
+        "ingest-report",
+        "dataset-summary"
+      ],
+      "input_provenance": {
+        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/airports.csv",
+        "retrieval_method": "https-get",
+        "license_note": "BSD-3-Clause (vega-datasets repository)"
+      },
+      "expected_query_set": [
+        {
+          "name": "transcript_count_total",
+          "description": "count all ingested transcripts"
+        }
+      ],
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json"
+      ],
+      "expected_resource_profile": {
+        "cpu_mem_class": "small"
+      },
+      "expected_runtime_compatibility": {
+        "min_version": "0.1.0",
+        "max_version": "0.2.0"
+      }
     },
     {
       "id": "rdr-003-variants-mini",
@@ -39,12 +73,32 @@
       "dataset": "variants-mini",
       "dataset_size_tier": "tiny",
       "ingest_mode": "full-rebuild",
-      "expected_outputs": ["ingest-report", "dataset-summary"],
-      "input_provenance": {"url": "https://example.org/datasets/variants-mini.csv", "retrieval_method": "https-get", "license_note": "Public domain demonstration dataset"},
-      "expected_query_set": [{"name": "variant_count_total", "description": "count all ingested variants"}],
-      "expected_artifacts": ["ingest-report.json", "dataset-summary.json"],
-      "expected_resource_profile": {"cpu_mem_class": "small"},
-      "expected_runtime_compatibility": {"min_version": "0.1.0", "max_version": "0.2.0"}
+      "expected_outputs": [
+        "ingest-report",
+        "dataset-summary"
+      ],
+      "input_provenance": {
+        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/cars.json",
+        "retrieval_method": "https-get",
+        "license_note": "BSD-3-Clause (vega-datasets repository)"
+      },
+      "expected_query_set": [
+        {
+          "name": "variant_count_total",
+          "description": "count all ingested variants"
+        }
+      ],
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json"
+      ],
+      "expected_resource_profile": {
+        "cpu_mem_class": "small"
+      },
+      "expected_runtime_compatibility": {
+        "min_version": "0.1.0",
+        "max_version": "0.2.0"
+      }
     },
     {
       "id": "rdr-004-expression-medium",
@@ -52,12 +106,34 @@
       "dataset": "expression-medium",
       "dataset_size_tier": "medium",
       "ingest_mode": "incremental-merge",
-      "expected_outputs": ["ingest-report", "dataset-summary", "query-summary"],
-      "input_provenance": {"url": "https://example.org/datasets/expression-medium.csv", "retrieval_method": "https-get", "license_note": "CC0 data sample"},
-      "expected_query_set": [{"name": "expression_top_genes", "description": "top genes by expression"}],
-      "expected_artifacts": ["ingest-report.json", "dataset-summary.json", "query-results-summary.json"],
-      "expected_resource_profile": {"cpu_mem_class": "medium"},
-      "expected_runtime_compatibility": {"min_version": "0.1.0", "max_version": "0.2.0"}
+      "expected_outputs": [
+        "ingest-report",
+        "dataset-summary",
+        "query-summary"
+      ],
+      "input_provenance": {
+        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/co2-concentration.csv",
+        "retrieval_method": "https-get",
+        "license_note": "BSD-3-Clause (vega-datasets repository)"
+      },
+      "expected_query_set": [
+        {
+          "name": "expression_top_genes",
+          "description": "top genes by expression"
+        }
+      ],
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json",
+        "query-results-summary.json"
+      ],
+      "expected_resource_profile": {
+        "cpu_mem_class": "medium"
+      },
+      "expected_runtime_compatibility": {
+        "min_version": "0.1.0",
+        "max_version": "0.2.0"
+      }
     },
     {
       "id": "rdr-005-population-medium",
@@ -65,12 +141,34 @@
       "dataset": "population-medium",
       "dataset_size_tier": "medium",
       "ingest_mode": "incremental-merge",
-      "expected_outputs": ["ingest-report", "dataset-summary", "query-summary"],
-      "input_provenance": {"url": "https://example.org/datasets/population-medium.csv", "retrieval_method": "https-get", "license_note": "CC0 data sample"},
-      "expected_query_set": [{"name": "population_distribution", "description": "distribution by population group"}],
-      "expected_artifacts": ["ingest-report.json", "dataset-summary.json", "query-results-summary.json"],
-      "expected_resource_profile": {"cpu_mem_class": "medium"},
-      "expected_runtime_compatibility": {"min_version": "0.1.0", "max_version": "0.2.0"}
+      "expected_outputs": [
+        "ingest-report",
+        "dataset-summary",
+        "query-summary"
+      ],
+      "input_provenance": {
+        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/gapminder-health-income.csv",
+        "retrieval_method": "https-get",
+        "license_note": "BSD-3-Clause (vega-datasets repository)"
+      },
+      "expected_query_set": [
+        {
+          "name": "population_distribution",
+          "description": "distribution by population group"
+        }
+      ],
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json",
+        "query-results-summary.json"
+      ],
+      "expected_resource_profile": {
+        "cpu_mem_class": "medium"
+      },
+      "expected_runtime_compatibility": {
+        "min_version": "0.1.0",
+        "max_version": "0.2.0"
+      }
     },
     {
       "id": "rdr-006-phenotype-medium",
@@ -78,12 +176,34 @@
       "dataset": "phenotype-medium",
       "dataset_size_tier": "medium",
       "ingest_mode": "incremental-merge",
-      "expected_outputs": ["ingest-report", "dataset-summary", "query-summary"],
-      "input_provenance": {"url": "https://example.org/datasets/phenotype-medium.csv", "retrieval_method": "https-get", "license_note": "CC0 data sample"},
-      "expected_query_set": [{"name": "phenotype_match_count", "description": "count matches by phenotype"}],
-      "expected_artifacts": ["ingest-report.json", "dataset-summary.json", "query-results-summary.json"],
-      "expected_resource_profile": {"cpu_mem_class": "medium"},
-      "expected_runtime_compatibility": {"min_version": "0.1.0", "max_version": "0.2.0"}
+      "expected_outputs": [
+        "ingest-report",
+        "dataset-summary",
+        "query-summary"
+      ],
+      "input_provenance": {
+        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/iowa-electricity.csv",
+        "retrieval_method": "https-get",
+        "license_note": "BSD-3-Clause (vega-datasets repository)"
+      },
+      "expected_query_set": [
+        {
+          "name": "phenotype_match_count",
+          "description": "count matches by phenotype"
+        }
+      ],
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json",
+        "query-results-summary.json"
+      ],
+      "expected_resource_profile": {
+        "cpu_mem_class": "medium"
+      },
+      "expected_runtime_compatibility": {
+        "min_version": "0.1.0",
+        "max_version": "0.2.0"
+      }
     },
     {
       "id": "rdr-007-assembly-large-sample",
@@ -91,12 +211,34 @@
       "dataset": "assembly-large-sample",
       "dataset_size_tier": "large-sample",
       "ingest_mode": "partitioned-import",
-      "expected_outputs": ["ingest-report", "dataset-summary", "query-summary"],
-      "input_provenance": {"url": "https://example.org/datasets/assembly-large-sample.csv", "retrieval_method": "https-get", "license_note": "Public domain demonstration dataset"},
-      "expected_query_set": [{"name": "assembly_partition_check", "description": "verify partition-level counts"}],
-      "expected_artifacts": ["ingest-report.json", "dataset-summary.json", "query-results-summary.json"],
-      "expected_resource_profile": {"cpu_mem_class": "large"},
-      "expected_runtime_compatibility": {"min_version": "0.1.0", "max_version": "0.2.0"}
+      "expected_outputs": [
+        "ingest-report",
+        "dataset-summary",
+        "query-summary"
+      ],
+      "input_provenance": {
+        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/stocks.csv",
+        "retrieval_method": "https-get",
+        "license_note": "BSD-3-Clause (vega-datasets repository)"
+      },
+      "expected_query_set": [
+        {
+          "name": "assembly_partition_check",
+          "description": "verify partition-level counts"
+        }
+      ],
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json",
+        "query-results-summary.json"
+      ],
+      "expected_resource_profile": {
+        "cpu_mem_class": "large"
+      },
+      "expected_runtime_compatibility": {
+        "min_version": "0.1.0",
+        "max_version": "0.2.0"
+      }
     },
     {
       "id": "rdr-008-annotation-large-sample",
@@ -104,12 +246,34 @@
       "dataset": "annotation-large-sample",
       "dataset_size_tier": "large-sample",
       "ingest_mode": "partitioned-import",
-      "expected_outputs": ["ingest-report", "dataset-summary", "query-summary"],
-      "input_provenance": {"url": "https://example.org/datasets/annotation-large-sample.csv", "retrieval_method": "https-get", "license_note": "Public domain demonstration dataset"},
-      "expected_query_set": [{"name": "annotation_lookup_latency", "description": "measure lookup latency"}],
-      "expected_artifacts": ["ingest-report.json", "dataset-summary.json", "query-results-summary.json"],
-      "expected_resource_profile": {"cpu_mem_class": "large"},
-      "expected_runtime_compatibility": {"min_version": "0.1.0", "max_version": "0.2.0"}
+      "expected_outputs": [
+        "ingest-report",
+        "dataset-summary",
+        "query-summary"
+      ],
+      "input_provenance": {
+        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/birdstrikes.csv",
+        "retrieval_method": "https-get",
+        "license_note": "BSD-3-Clause (vega-datasets repository)"
+      },
+      "expected_query_set": [
+        {
+          "name": "annotation_lookup_latency",
+          "description": "measure lookup latency"
+        }
+      ],
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json",
+        "query-results-summary.json"
+      ],
+      "expected_resource_profile": {
+        "cpu_mem_class": "large"
+      },
+      "expected_runtime_compatibility": {
+        "min_version": "0.1.0",
+        "max_version": "0.2.0"
+      }
     },
     {
       "id": "rdr-009-clinvar-large-sample",
@@ -117,12 +281,34 @@
       "dataset": "clinvar-large-sample",
       "dataset_size_tier": "large-sample",
       "ingest_mode": "partitioned-import",
-      "expected_outputs": ["ingest-report", "dataset-summary", "query-summary"],
-      "input_provenance": {"url": "https://example.org/datasets/clinvar-large-sample.csv", "retrieval_method": "https-get", "license_note": "Public domain demonstration dataset"},
-      "expected_query_set": [{"name": "clinvar_significance_counts", "description": "count significance buckets"}],
-      "expected_artifacts": ["ingest-report.json", "dataset-summary.json", "query-results-summary.json"],
-      "expected_resource_profile": {"cpu_mem_class": "large"},
-      "expected_runtime_compatibility": {"min_version": "0.1.0", "max_version": "0.2.0"}
+      "expected_outputs": [
+        "ingest-report",
+        "dataset-summary",
+        "query-summary"
+      ],
+      "input_provenance": {
+        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/us-state-capitals.json",
+        "retrieval_method": "https-get",
+        "license_note": "BSD-3-Clause (vega-datasets repository)"
+      },
+      "expected_query_set": [
+        {
+          "name": "clinvar_significance_counts",
+          "description": "count significance buckets"
+        }
+      ],
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json",
+        "query-results-summary.json"
+      ],
+      "expected_resource_profile": {
+        "cpu_mem_class": "large"
+      },
+      "expected_runtime_compatibility": {
+        "min_version": "0.1.0",
+        "max_version": "0.2.0"
+      }
     },
     {
       "id": "rdr-010-combined-release",
@@ -130,12 +316,36 @@
       "dataset": "combined-release",
       "dataset_size_tier": "large-sample",
       "ingest_mode": "full-rebuild",
-      "expected_outputs": ["ingest-report", "dataset-summary", "query-summary", "release-readiness"],
-      "input_provenance": {"url": "https://example.org/datasets/combined-release.csv", "retrieval_method": "https-get", "license_note": "Public domain demonstration dataset"},
-      "expected_query_set": [{"name": "release_readiness_probe", "description": "validate end-to-end release query surface"}],
-      "expected_artifacts": ["ingest-report.json", "dataset-summary.json", "query-results-summary.json", "release-readiness.json"],
-      "expected_resource_profile": {"cpu_mem_class": "large"},
-      "expected_runtime_compatibility": {"min_version": "0.1.0", "max_version": "0.2.0"}
+      "expected_outputs": [
+        "ingest-report",
+        "dataset-summary",
+        "query-summary",
+        "release-readiness"
+      ],
+      "input_provenance": {
+        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/flights-airport.csv",
+        "retrieval_method": "https-get",
+        "license_note": "BSD-3-Clause (vega-datasets repository)"
+      },
+      "expected_query_set": [
+        {
+          "name": "release_readiness_probe",
+          "description": "validate end-to-end release query surface"
+        }
+      ],
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json",
+        "query-results-summary.json",
+        "release-readiness.json"
+      ],
+      "expected_resource_profile": {
+        "cpu_mem_class": "large"
+      },
+      "expected_runtime_compatibility": {
+        "min_version": "0.1.0",
+        "max_version": "0.2.0"
+      }
     }
   ]
 }
