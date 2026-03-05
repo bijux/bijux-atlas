@@ -40,3 +40,43 @@ fn reproduce_verify_requires_all_core_scenarios() {
     assert_eq!(payload.get("kind").and_then(|v| v.as_str()), Some("reproduce_verify"));
     assert_eq!(payload.get("status").and_then(|v| v.as_str()), Some("ok"));
 }
+
+#[test]
+fn reproduce_reports_are_deterministic_and_include_artifact_hashes() {
+    let args = ["reproduce", "run", "--format", "json"];
+    let first = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(args)
+        .output()
+        .expect("first");
+    let second = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(args)
+        .output()
+        .expect("second");
+    assert_eq!(first.status.code(), Some(0));
+    assert_eq!(second.status.code(), Some(0));
+    let first_json: serde_json::Value = serde_json::from_slice(&first.stdout).expect("first json");
+    let second_json: serde_json::Value = serde_json::from_slice(&second.stdout).expect("second json");
+    assert_eq!(
+        first_json.get("environment").and_then(|v| v.get("source_snapshot_hash")),
+        second_json.get("environment").and_then(|v| v.get("source_snapshot_hash"))
+    );
+    assert!(first_json
+        .get("artifact_hashes")
+        .and_then(serde_json::Value::as_object)
+        .is_some());
+}
+
+#[test]
+fn reproduce_status_reports_summary_shape() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["reproduce", "status", "--format", "json"])
+        .output()
+        .expect("reproduce status");
+    assert!(output.status.code().is_some());
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    assert_eq!(payload.get("kind").and_then(|v| v.as_str()), Some("reproduce_status"));
+    assert!(payload.get("verify").is_some());
+}

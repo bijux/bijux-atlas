@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "fixture_id": "reproducible-docs-build",
+  "description": "Known-good reproducible docs build input snapshot.",
+  "scenario_id": "rebuild-docs-site",
+  "expected_signal": "source_snapshot_hash"
+}

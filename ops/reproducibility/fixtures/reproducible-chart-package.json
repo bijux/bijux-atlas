@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "fixture_id": "reproducible-chart-package",
+  "description": "Known-good reproducible chart package input snapshot.",
+  "scenario_id": "rebuild-helm-chart",
+  "expected_signal": "artifact_hashes"
+}

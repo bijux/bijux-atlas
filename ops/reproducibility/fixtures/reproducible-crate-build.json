@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "fixture_id": "reproducible-crate-build",
+  "description": "Known-good reproducible crate build input snapshot.",
+  "scenario_id": "rebuild-crates",
+  "expected_signal": "artifact_hashes"
+}
