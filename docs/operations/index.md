@@ -101,6 +101,11 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 68. [Resilience recovery timeline examples](resilience/recovery-timeline-examples.md)
 69. [Resilience dashboard examples](resilience/dashboard-examples.md)
 70. [Resilience completion report](resilience/completion-report.md)
+71. [Ops OCI chart consumer workflow](ops-oci-chart-consumer-workflow.md)
+72. [Ops offline bundle consumer workflow](ops-offline-bundle-consumer-workflow.md)
+73. [Ops chart upgrade guide](ops-chart-upgrade-guide.md)
+74. [Ops chart rollback guide](ops-chart-rollback-guide.md)
+75. [Ops profile selection guide](ops-profile-selection-guide.md)
 
 ## What This Page Is Not
 
