@@ -13,6 +13,11 @@ last_reviewed: 2026-03-05
 2. Import dashboards from:
    - `ops/observe/dashboards/atlas-observability-dashboard.json`
    - `ops/observe/dashboards/atlas-slo-dashboard.json`
+   - `ops/observe/dashboards/atlas-runtime-health-dashboard.json`
+   - `ops/observe/dashboards/atlas-query-performance-dashboard.json`
+   - `ops/observe/dashboards/atlas-ingest-pipeline-dashboard.json`
+   - `ops/observe/dashboards/atlas-artifact-registry-dashboard.json`
+   - `ops/observe/dashboards/atlas-system-resources-dashboard.json`
 3. Verify contracts:
    - `bijux dev atlas ops observe slo verify --allow-write --format json`
    - `bijux dev atlas ops observe alerts verify --allow-write --format json`

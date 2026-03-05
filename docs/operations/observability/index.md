@@ -15,6 +15,11 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 
 - [Alerts](alerts.md): alert-to-runbook routing and severity model
 - [Dashboards](dashboards.md): dashboard set for incident triage
+- [Operational intelligence philosophy](operational-intelligence-philosophy.md): operating model for telemetry-based decisions
+- [Monitoring architecture diagram](monitoring-architecture-diagram.md): production monitoring flow from signals to dashboards
+- [Dashboard taxonomy](dashboard-taxonomy.md): runtime, ingest, query, and ops dashboard categories
+- [Dashboard data sources](dashboard-data-sources.md): canonical telemetry sources used by dashboards
+- [Dashboard update policy](dashboard-update-policy.md): governance rules for dashboard changes
 - [Query benchmark dashboards](query-benchmark-dashboards.md): benchmark-focused latency and throughput panels
 - [Metrics architecture](metrics-architecture.md): naming, labels, cardinality, and required runtime metrics
 - [Metrics philosophy](metrics-philosophy.md): foundational metrics intent and operational decision focus
@@ -79,6 +84,10 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - [Failure analysis examples](failure-analysis-examples.md): common incident patterns and required checks
 - [System state visualization](system-state-visualization.md): stable panel model for incident dashboards
 - [Grafana dashboard examples](grafana-dashboard-examples.md): recommended panel families
+- [Dashboard schema documentation](dashboard-schema-documentation.md): schema and required field rules
+- [Dashboard provisioning instructions](dashboard-provisioning-instructions.md): provisioning steps for k8s and compose
+- [Dashboard installation guide](dashboard-installation-guide.md): import and verification flow
+- [Dashboard troubleshooting guide](dashboard-troubleshooting-guide.md): recovery flow for panel/query failures
 - [Prometheus query examples](prometheus-query-examples.md): operational query snippets
 - [Tracing dashboard examples](tracing-dashboard-examples.md): span and latency panel examples
 - [Log analysis query examples](log-analysis-query-examples.md): repeatable log query snippets
