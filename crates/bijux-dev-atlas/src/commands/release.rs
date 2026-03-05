@@ -612,6 +612,267 @@ fn run_release_images_validate_base_digests(
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
+fn run_release_images_sbom_verify(args: ReleaseImagesValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let policy = read_json(&root.join("configs/release/image-sbom-policy.json"))?;
+    let required = policy
+        .get("required")
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(true);
+    let formats = policy
+        .get("formats")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let required_artifacts = policy
+        .get("required_artifacts")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let schema_reference = policy
+        .get("schema_reference")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    let mut errors = Vec::<String>::new();
+    if schema_reference.is_empty() || !root.join(schema_reference).exists() {
+        errors.push("SBOM schema reference is missing or does not exist".to_string());
+    }
+    let mut rows = Vec::<serde_json::Value>::new();
+    for artifact in &required_artifacts {
+        let Some(path) = artifact.as_str() else { continue };
+        let full = root.join(path);
+        let exists = full.exists();
+        if required && !exists {
+            errors.push(format!("required SBOM artifact missing: {path}"));
+        }
+        rows.push(serde_json::json!({
+            "path": path,
+            "exists": exists
+        }));
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_sbom_verify",
+        "status": status,
+        "required": required,
+        "formats": formats,
+        "schema_reference": schema_reference,
+        "artifacts": rows,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_images_provenance_verify(
+    args: ReleaseImagesValidateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let policy = read_json(&root.join("configs/release/image-provenance-policy.json"))?;
+    let required = policy
+        .get("required")
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(true);
+    let schema_reference = policy
+        .get("schema_reference")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    let required_artifacts = policy
+        .get("required_artifacts")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let push_policy = read_json(&root.join("docker/push-policy.json"))?;
+    let require_provenance_bundle = push_policy
+        .get("require_provenance_bundle")
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
+    let mut errors = Vec::<String>::new();
+    if required && !require_provenance_bundle {
+        errors.push("docker/push-policy.json must require provenance bundle".to_string());
+    }
+    if schema_reference.is_empty() || !root.join(schema_reference).exists() {
+        errors.push("provenance schema reference is missing or does not exist".to_string());
+    }
+    let mut rows = Vec::<serde_json::Value>::new();
+    for artifact in &required_artifacts {
+        let Some(path) = artifact.as_str() else { continue };
+        let exists = root.join(path).exists();
+        if required && !exists {
+            errors.push(format!("required provenance artifact missing: {path}"));
+        }
+        rows.push(serde_json::json!({"path": path, "exists": exists}));
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_provenance_verify",
+        "status": status,
+        "required": required,
+        "schema_reference": schema_reference,
+        "push_policy_requires_bundle": require_provenance_bundle,
+        "artifacts": rows,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_images_scan_verify(args: ReleaseImagesValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let policy = read_json(&root.join("configs/release/image-vulnerability-policy.json"))?;
+    let required_artifacts = policy
+        .get("required_artifacts")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let mut errors = Vec::<String>::new();
+    let mut rows = Vec::<serde_json::Value>::new();
+    for artifact in required_artifacts {
+        let Some(path) = artifact.as_str() else { continue };
+        let exists = root.join(path).exists();
+        if !exists {
+            errors.push(format!("required vulnerability artifact missing: {path}"));
+        }
+        rows.push(serde_json::json!({"path": path, "exists": exists}));
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_scan_verify",
+        "status": status,
+        "mode": policy.get("mode").cloned().unwrap_or(serde_json::Value::String("informational".to_string())),
+        "severity_budget": policy.get("severity_budget").cloned().unwrap_or(serde_json::Value::Null),
+        "artifacts": rows,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_images_smoke_verify(args: ReleaseImagesValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let spec = read_json(&root.join("configs/release/image-smoke-scenarios.json"))?;
+    let checks = spec
+        .get("required_checks")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let mut errors = Vec::<String>::new();
+    for required in ["healthz", "readyz", "version", "config_parse_error"] {
+        let found = checks.iter().any(|row| {
+            row.get("id")
+                .and_then(serde_json::Value::as_str)
+                .is_some_and(|id| id == required)
+        });
+        if !found {
+            errors.push(format!("smoke scenario is missing check `{required}`"));
+        }
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_smoke_verify",
+        "status": status,
+        "scenario": spec.get("scenario").cloned().unwrap_or(serde_json::Value::String("runtime-minimal-config".to_string())),
+        "checks": checks,
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_images_size_report(args: ReleaseImagesValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let policy = read_json(&root.join("configs/release/image-runtime-hardening-policy.json"))?;
+    let budget = policy
+        .get("runtime_image_max_bytes")
+        .and_then(serde_json::Value::as_u64)
+        .unwrap_or(450_000_000);
+    let binary = root.join("artifacts/target/release/atlas-server");
+    let binary_bytes = if binary.exists() {
+        Some(
+            fs::metadata(&binary)
+                .map_err(|err| format!("failed to stat {}: {err}", binary.display()))?
+                .len(),
+        )
+    } else {
+        None
+    };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_size_report",
+        "status": "ok",
+        "runtime_image_budget_bytes": budget,
+        "atlas_server_binary_bytes": binary_bytes,
+        "note": "budget tracks image bytes; binary size is included as a local deterministic proxy signal"
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_release_images_runtime_hardening_verify(
+    args: ReleaseImagesValidateArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let policy = read_json(&root.join("configs/release/image-runtime-hardening-policy.json"))?;
+    let dockerfile = root.join("docker/images/runtime/Dockerfile");
+    let text = fs::read_to_string(&dockerfile)
+        .map_err(|err| format!("failed to read {}: {err}", dockerfile.display()))?;
+    let mut errors = Vec::<String>::new();
+    let runtime_section = text
+        .split("\nFROM ")
+        .find(|chunk| chunk.contains(" AS runtime") || chunk.contains(" as runtime"))
+        .unwrap_or(text.as_str())
+        .to_string();
+    if policy
+        .get("require_non_root")
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(true)
+        && !runtime_section.contains("USER nonroot:nonroot")
+    {
+        errors.push("runtime image must run as non-root user".to_string());
+    }
+    if policy
+        .get("require_minimal_runtime_base")
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(true)
+        && !runtime_section.contains("distroless")
+    {
+        errors.push("runtime base image must be minimal (distroless expected)".to_string());
+    }
+    let forbidden_tokens = policy
+        .get("forbidden_runtime_tokens")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    for token in forbidden_tokens {
+        let Some(token_text) = token.as_str() else { continue };
+        if runtime_section.contains(token_text) {
+            errors.push(format!("runtime Dockerfile contains forbidden token `{token_text}`"));
+        }
+    }
+    if policy
+        .get("require_minimal_write_surface")
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(true)
+        && (runtime_section.contains("chmod 777") || runtime_section.contains("chown -R"))
+    {
+        errors.push("runtime Dockerfile must avoid broad write-surface permission grants".to_string());
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_runtime_hardening_verify",
+        "status": status,
+        "dockerfile": repo_rel(&root, &dockerfile),
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
 fn release_spec_allow_deny(spec: &toml::Value) -> (Vec<String>, Vec<String>) {
     let allow = spec
         .get("publish")
@@ -3549,6 +3810,16 @@ pub(crate) fn run_release_command(
             ReleaseImagesCommand::ValidateTags(args) => run_release_images_validate_tags(args),
             ReleaseImagesCommand::ValidateBaseDigests(args) => {
                 run_release_images_validate_base_digests(args)
+            }
+            ReleaseImagesCommand::SbomVerify(args) => run_release_images_sbom_verify(args),
+            ReleaseImagesCommand::ProvenanceVerify(args) => {
+                run_release_images_provenance_verify(args)
+            }
+            ReleaseImagesCommand::ScanVerify(args) => run_release_images_scan_verify(args),
+            ReleaseImagesCommand::SmokeVerify(args) => run_release_images_smoke_verify(args),
+            ReleaseImagesCommand::SizeReport(args) => run_release_images_size_report(args),
+            ReleaseImagesCommand::RuntimeHardeningVerify(args) => {
+                run_release_images_runtime_hardening_verify(args)
             }
         },
     }

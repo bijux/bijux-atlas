@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "scenario": "runtime-minimal-config",
+  "required_checks": [
+    {"id": "healthz", "path": "/healthz", "expect_status": 200},
+    {"id": "readyz", "path": "/readyz", "expect_status": 200},
+    {"id": "version", "path": "/v1/version", "expect_status": 200},
+    {"id": "config_parse_error", "expect_exit_code": 2}
+  ]
+}

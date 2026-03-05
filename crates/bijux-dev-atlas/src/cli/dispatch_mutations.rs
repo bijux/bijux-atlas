@@ -118,7 +118,13 @@ pub(super) fn force_json_output(command: &mut Command) {
             ReleaseCommand::Images { command } => match command {
                 ReleaseImagesCommand::ValidateLabels(args)
                 | ReleaseImagesCommand::ValidateTags(args)
-                | ReleaseImagesCommand::ValidateBaseDigests(args) => {
+                | ReleaseImagesCommand::ValidateBaseDigests(args)
+                | ReleaseImagesCommand::SbomVerify(args)
+                | ReleaseImagesCommand::ProvenanceVerify(args)
+                | ReleaseImagesCommand::ScanVerify(args)
+                | ReleaseImagesCommand::SmokeVerify(args)
+                | ReleaseImagesCommand::SizeReport(args)
+                | ReleaseImagesCommand::RuntimeHardeningVerify(args) => {
                     args.format = FormatArg::Json
                 }
             },
@@ -1713,7 +1719,13 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             ReleaseCommand::Images { command } => match command {
                 ReleaseImagesCommand::ValidateLabels(args)
                 | ReleaseImagesCommand::ValidateTags(args)
-                | ReleaseImagesCommand::ValidateBaseDigests(args) => {
+                | ReleaseImagesCommand::ValidateBaseDigests(args)
+                | ReleaseImagesCommand::SbomVerify(args)
+                | ReleaseImagesCommand::ProvenanceVerify(args)
+                | ReleaseImagesCommand::ScanVerify(args)
+                | ReleaseImagesCommand::SmokeVerify(args)
+                | ReleaseImagesCommand::SizeReport(args)
+                | ReleaseImagesCommand::RuntimeHardeningVerify(args) => {
                     if args.repo_root.is_none() {
                         args.repo_root = Some(root.clone());
                     }

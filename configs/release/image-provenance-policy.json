@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "required": true,
+  "required_artifacts": [
+    "artifacts/docker-publish/provenance-bundle.json",
+    "artifacts/docker-publish/image-digests.json"
+  ],
+  "schema_reference": "configs/contracts/release/provenance.schema.json"
+}

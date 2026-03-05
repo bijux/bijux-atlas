@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "require_non_root": true,
+  "require_minimal_runtime_base": true,
+  "forbidden_runtime_tokens": ["sudo", "apk add", "apt-get install"],
+  "runtime_image_max_bytes": 450000000,
+  "require_minimal_write_surface": true
+}

@@ -345,6 +345,12 @@ pub enum ReleaseImagesCommand {
     ValidateLabels(ReleaseImagesValidateArgs),
     ValidateTags(ReleaseImagesValidateArgs),
     ValidateBaseDigests(ReleaseImagesValidateArgs),
+    SbomVerify(ReleaseImagesValidateArgs),
+    ProvenanceVerify(ReleaseImagesValidateArgs),
+    ScanVerify(ReleaseImagesValidateArgs),
+    SmokeVerify(ReleaseImagesValidateArgs),
+    SizeReport(ReleaseImagesValidateArgs),
+    RuntimeHardeningVerify(ReleaseImagesValidateArgs),
 }
 
 #[derive(Args, Debug, Clone)]
