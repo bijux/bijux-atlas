@@ -13,3 +13,4 @@ last_reviewed: 2026-03-05
 - Release manifest: `artifacts/release/<version>/manifest.json`
 - Release bundle: `artifacts/release/<version>/bundle.tar`
 - Provenance and checksums: `release/provenance.json`, `release/signing/checksums.json`
+- Ops chart/workspace version binding: `release/ops-release-bundle-manifest.json`

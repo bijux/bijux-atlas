@@ -33,6 +33,7 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 2. [Operator quickstart](operator-quickstart.md)
 3. [Run locally](run-locally.md)
 4. [Deploy](deploy.md)
+5. [Installing ops product](deploy/installing-ops-product.md)
 5. [Minimal production overrides](minimal-production-overrides.md)
 6. [Install verification checklist](install-verification-checklist.md)
 7. [Observability setup](observability-setup.md)

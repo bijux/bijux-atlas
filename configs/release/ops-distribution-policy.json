@@ -2,9 +2,10 @@
   "schema_version": 1,
   "distribution": "oci-helm-and-versioned-bundle",
   "chart": {
-    "oci_registry": "ghcr.io/<owner>/charts",
+    "oci_registry": "ghcr.io/bijux/charts",
     "chart_name": "bijux-atlas",
-    "version_source": "release version"
+    "version_source": "release version",
+    "digest_pin_required": true
   },
   "bundle": {
     "required_members": [
