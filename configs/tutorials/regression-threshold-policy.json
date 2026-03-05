@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "row_count_delta_max": 0,
+  "latency_delta_ms_max": 50,
+  "storage_bytes_delta_max": 16384,
+  "review_required_on_exceed": true
+}

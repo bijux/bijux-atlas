@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "max_cache_bytes": 1073741824,
+  "eviction_strategy": "least-recently-used",
+  "protected_paths": [
+    "artifacts/tutorials/runs"
+  ]
+}

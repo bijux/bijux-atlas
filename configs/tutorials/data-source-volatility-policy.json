@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "strategy": "snapshot-or-mirror",
+  "rules": {
+    "prefer_snapshot_urls": true,
+    "allow_live_source_only_with_checksum_pin": true,
+    "require_mirror_for_large_tier": true
+  }
+}

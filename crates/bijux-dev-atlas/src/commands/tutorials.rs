@@ -61,6 +61,12 @@ pub(crate) fn run_tutorials_command(quiet: bool, command: TutorialsCommand) -> i
             TutorialsRealDataCommand::ExportEvidence(args) => {
                 run_tutorials_real_data_export_evidence(&args)
             }
+            TutorialsRealDataCommand::CompareRegression(args) => {
+                run_tutorials_real_data_compare_regression(&args)
+            }
+            TutorialsRealDataCommand::VerifyIdempotency(args) => {
+                run_tutorials_real_data_verify_idempotency(&args)
+            }
             TutorialsRealDataCommand::RunAll(args) => run_tutorials_real_data_run_all(&args),
             TutorialsRealDataCommand::CleanRun(args) => run_tutorials_real_data_clean_run(&args),
             TutorialsRealDataCommand::Doctor(args) => run_tutorials_real_data_doctor(&args),
@@ -1366,6 +1372,18 @@ fn run_tutorials_real_data_fetch(args: &TutorialsRealDataRunArgs) -> Result<(Str
     let cache_dir = repo_root
         .join("artifacts/tutorials/cache")
         .join(&run.dataset);
+    let retry_policy_path = repo_root.join("configs/tutorials/fetch-retry-policy.json");
+    let retry_policy: serde_json::Value = fs::read_to_string(&retry_policy_path)
+        .ok()
+        .and_then(|text| serde_json::from_str(&text).ok())
+        .unwrap_or_else(|| {
+            serde_json::json!({
+                "schema_version": 1,
+                "max_attempts": 3,
+                "backoff_ms": [100, 200, 400],
+                "deterministic": true
+            })
+        });
     fs::create_dir_all(&cache_dir)
         .map_err(|err| format!("failed to create {}: {err}", cache_dir.display()))?;
     let dataset_path = cache_dir.join("dataset.bin");
@@ -1408,7 +1426,8 @@ fn run_tutorials_real_data_fetch(args: &TutorialsRealDataRunArgs) -> Result<(Str
             "dataset_file": dataset_path.display().to_string(),
             "sha256_manifest": sha_path.display().to_string(),
             "provenance_json": provenance_path.display().to_string()
-        }
+        },
+        "fetch_policy": retry_policy
     });
     Ok((emit_tutorial_output(&args.common, &payload, None)?, 0))
 }
@@ -1429,6 +1448,29 @@ fn run_tutorials_real_data_ingest(args: &TutorialsRealDataRunArgs) -> Result<(St
         return Err(format!(
             "dataset cache missing for `{}`; run `tutorials real-data fetch --run-id {}` first",
             run.id, run.id
+        ));
+    }
+    let sha_path = cache_dir.join("sha256sums.txt");
+    if !sha_path.exists() {
+        return Err(format!(
+            "checksum manifest missing for `{}`; run `tutorials real-data fetch --run-id {}` first",
+            run.id, run.id
+        ));
+    }
+    let expected_sha = fs::read_to_string(&sha_path)
+        .map_err(|err| format!("failed to read {}: {err}", sha_path.display()))?
+        .split_whitespace()
+        .next()
+        .unwrap_or_default()
+        .to_string();
+    let actual_sha = sha256_hex(
+        &fs::read(&dataset_path)
+            .map_err(|err| format!("failed to read {}: {err}", dataset_path.display()))?,
+    );
+    if expected_sha.is_empty() || expected_sha != actual_sha {
+        return Err(format!(
+            "dataset integrity verification failed for `{}` (expected `{}`, got `{}`)",
+            run.id, expected_sha, actual_sha
         ));
     }
     let run_dir = repo_root.join("artifacts/tutorials/runs").join(&run.id);
@@ -1915,6 +1957,125 @@ fn run_tutorials_real_data_doctor(args: &TutorialsCommandArgs) -> Result<(String
         emit_tutorial_output(args, &payload, None)?,
         if ok && tools_ok { 0 } else { 2 },
     ))
+}
+
+fn run_tutorials_real_data_compare_regression(
+    args: &TutorialsRealDataRunArgs,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let run_dir = repo_root.join("artifacts/tutorials/runs").join(&args.run_id);
+    let thresholds_path = repo_root.join("configs/tutorials/regression-threshold-policy.json");
+    let thresholds: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(&thresholds_path)
+            .map_err(|err| format!("failed to read {}: {err}", thresholds_path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", thresholds_path.display()))?;
+    let golden_path = repo_root.join("artifacts/tutorials/goldens").join(&args.run_id).join("summary.json");
+    let current_summary_path = run_dir.join("dataset-summary.json");
+    if !current_summary_path.exists() {
+        return Err(format!(
+            "missing current summary `{}`; run ingest first",
+            current_summary_path.display()
+        ));
+    }
+    let current: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(&current_summary_path)
+            .map_err(|err| format!("failed to read {}: {err}", current_summary_path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", current_summary_path.display()))?;
+    let baseline: serde_json::Value = if golden_path.exists() {
+        serde_json::from_str(
+            &fs::read_to_string(&golden_path)
+                .map_err(|err| format!("failed to read {}: {err}", golden_path.display()))?,
+        )
+        .map_err(|err| format!("failed to parse {}: {err}", golden_path.display()))?
+    } else {
+        current.clone()
+    };
+    let current_rows = current["row_count"].as_i64().unwrap_or_default();
+    let baseline_rows = baseline["row_count"].as_i64().unwrap_or_default();
+    let max_row_delta = thresholds["row_count_delta_max"].as_i64().unwrap_or(0);
+    let row_delta = (current_rows - baseline_rows).abs();
+    let pass = row_delta <= max_row_delta;
+    let failure_class = if pass {
+        "none"
+    } else if !golden_path.exists() {
+        "data-source-failure"
+    } else {
+        "contract-failure"
+    };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "domain": "tutorials",
+        "action": "real-data-compare-regression",
+        "run_id": args.run_id,
+        "thresholds_path": thresholds_path.display().to_string(),
+        "golden_summary_path": golden_path.display().to_string(),
+        "current_summary_path": current_summary_path.display().to_string(),
+        "checks": {
+            "row_count_delta": row_delta,
+            "row_count_delta_max": max_row_delta,
+            "pass": pass
+        },
+        "failure_classification": failure_class
+    });
+    Ok((emit_tutorial_output(&args.common, &payload, None)?, if pass { 0 } else { 1 }))
+}
+
+fn run_tutorials_real_data_verify_idempotency(
+    args: &TutorialsRealDataRunArgs,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let run_dir = repo_root.join("artifacts/tutorials/runs").join(&args.run_id);
+    let ingest_path = run_dir.join("ingest-report.json");
+    let query_path = run_dir.join("query-results-summary.json");
+    if !ingest_path.exists() || !query_path.exists() {
+        return Err(format!(
+            "missing required run artifacts for idempotency check in `{}`",
+            run_dir.display()
+        ));
+    }
+    let ingest_before = sha256_hex(
+        &fs::read(&ingest_path).map_err(|err| format!("failed to read {}: {err}", ingest_path.display()))?,
+    );
+    let query_before = sha256_hex(
+        &fs::read(&query_path).map_err(|err| format!("failed to read {}: {err}", query_path.display()))?,
+    );
+    let rerun_args = TutorialsRealDataRunArgs {
+        common: args.common.clone(),
+        run_id: args.run_id.clone(),
+        profile: args.profile.clone(),
+        dry_run: false,
+        no_fetch: true,
+    };
+    let _ = run_tutorials_real_data_ingest(&rerun_args)?;
+    let _ = run_tutorials_real_data_query_pack(&rerun_args)?;
+    let ingest_after = sha256_hex(
+        &fs::read(&ingest_path).map_err(|err| format!("failed to read {}: {err}", ingest_path.display()))?,
+    );
+    let query_after = sha256_hex(
+        &fs::read(&query_path).map_err(|err| format!("failed to read {}: {err}", query_path.display()))?,
+    );
+    let ingest_idempotent = ingest_before == ingest_after;
+    let query_idempotent = query_before == query_after;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "domain": "tutorials",
+        "action": "real-data-verify-idempotency",
+        "run_id": args.run_id,
+        "ingest": {
+            "before_sha256": ingest_before,
+            "after_sha256": ingest_after,
+            "idempotent": ingest_idempotent
+        },
+        "query_pack": {
+            "before_sha256": query_before,
+            "after_sha256": query_after,
+            "idempotent": query_idempotent
+        }
+    });
+    let ok = ingest_idempotent && query_idempotent;
+    Ok((emit_tutorial_output(&args.common, &payload, None)?, if ok { 0 } else { 1 }))
 }
 
 fn validate_real_data_run_layout(run_dir: &Path) -> bool {

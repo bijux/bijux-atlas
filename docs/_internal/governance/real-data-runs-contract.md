@@ -21,7 +21,15 @@ Execution expectations for the first implementation slice:
 - `tutorials real-data fetch --run-id <id>`: write dataset cache payload, checksum manifest, and provenance record.
 - `tutorials real-data ingest --run-id <id>`: produce run-scoped ingest report under `artifacts/tutorials/runs/<run_id>/`.
 - `tutorials real-data doctor`: verify cache integrity surfaces for every run.
+- `tutorials real-data compare-regression --run-id <id>`: compare run summaries against golden summaries using policy thresholds.
+- `tutorials real-data verify-idempotency --run-id <id>`: verify ingest and query outputs are hash-stable across reruns.
 - `docs generate real-data-pages --allow-write`: generate the runs table and overview pages under `docs/`.
+
+Regression and runtime policy files:
+- `configs/tutorials/regression-threshold-policy.json`
+- `configs/tutorials/data-source-volatility-policy.json`
+- `configs/tutorials/cache-eviction-policy.json`
+- `configs/tutorials/fetch-retry-policy.json`
 
 Reader-facing generated outputs:
 - `docs/_generated/real-data-runs-table.md`
