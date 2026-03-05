@@ -37,3 +37,8 @@ make ops-readiness-scorecard
 ## Expected result
 
 A new artifact set is generated with stable manifest and readiness checks passing.
+
+
+## Tutorial dataset
+
+Use `configs/examples/datasets/atlas-example-minimal` for reproducible results.

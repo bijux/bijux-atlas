@@ -28,3 +28,8 @@ Run a query using the canonical query surface and verify response behavior.
 ## Expected result
 
 Stable response fields, deterministic ordering, and valid pagination metadata.
+
+
+## Tutorial dataset
+
+Use `configs/examples/datasets/atlas-example-minimal` for reproducible results.
