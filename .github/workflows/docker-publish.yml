@@ -77,7 +77,7 @@ jobs:
             --label "org.opencontainers.image.created=${BUILD_DATE}" \
             --label "org.opencontainers.image.licenses=Apache-2.0" \
             .
-          docker run --rm "${IMAGE_NAME}:local-smoke" version > artifacts/docker-publish/startup-smoke.txt
+          docker run --rm --entrypoint /app/bijux-atlas "${IMAGE_NAME}:local-smoke" version > artifacts/docker-publish/startup-smoke.txt
           size_bytes="$(docker image inspect "${IMAGE_NAME}:local-smoke" --format '{{.Size}}')"
           budget_bytes="$(jq -r '.runtime_image_max_bytes' docker/policy.json)"
           jq -n \
