@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ObserveCommand, ObserveMetricsCommand, ObserveMetricsCommonArgs, ObserveTracesCommand,
-    ObserveTracesCommonArgs,
+    ObserveCommand, ObserveLogsCommand, ObserveLogsCommonArgs, ObserveMetricsCommand,
+    ObserveMetricsCommonArgs, ObserveTracesCommand, ObserveTracesCommonArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
-use bijux_dev_atlas::contracts::{metrics_registry, tracing_registry};
+use bijux_dev_atlas::contracts::{logging_registry, metrics_registry, tracing_registry};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
@@ -18,6 +18,9 @@ const TRACE_STABILITY_CONTRACT: &str = "ops/observe/contracts/tracing-stability-
 const TRACE_COVERAGE_REPORT_ARTIFACT: &str = "artifacts/observe/trace-coverage-report.json";
 const TRACE_COVERAGE_SUMMARY_ARTIFACT: &str = "artifacts/observe/trace-coverage-summary.md";
 const TRACE_TOPOLOGY_ARTIFACT: &str = "artifacts/observe/trace-topology-diagram.mmd";
+const LOG_FORMAT_VALIDATOR_CONTRACT: &str = "ops/observe/logging/format-validator-contract.json";
+const LOG_FIELDS_CONTRACT: &str = "ops/observe/contracts/logs-fields-contract.json";
+const LOG_EXAMPLES_CONTRACT: &str = "ops/observe/contracts/logs.example.jsonl";
 
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
     let text = fs::read_to_string(path)
@@ -414,6 +417,41 @@ fn verify_traces(common: ObserveTracesCommonArgs) -> Result<(String, i32), Strin
     Ok((rendered, code))
 }
 
+fn explain_logs(common: ObserveLogsCommonArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(common.repo_root)?;
+    let fields_contract = read_json(&root.join(LOG_FIELDS_CONTRACT))?;
+    let format_validator = read_json(&root.join(LOG_FORMAT_VALIDATOR_CONTRACT))?;
+    let sample_rows = fs::read_to_string(root.join(LOG_EXAMPLES_CONTRACT))
+        .map_err(|err| format!("failed to read {LOG_EXAMPLES_CONTRACT}: {err}"))?
+        .lines()
+        .take(3)
+        .filter(|line| !line.trim().is_empty())
+        .map(|line| {
+            serde_json::from_str::<serde_json::Value>(line)
+                .unwrap_or_else(|_| serde_json::json!({}))
+        })
+        .collect::<Vec<_>>();
+    let classification = logging_registry::summarize_classes(&sample_rows);
+    let sample_validation = sample_rows
+        .iter()
+        .map(logging_registry::validate_log_record)
+        .collect::<Vec<_>>();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "observe_logs_explain",
+        "status": "ok",
+        "logging_contract": logging_registry::schema_contract(),
+        "ops_contracts": {
+            "log_fields": fields_contract,
+            "format_validator": format_validator,
+        },
+        "sample_classification": classification,
+        "sample_validation": sample_validation,
+    });
+    let rendered = emit_payload(common.format, common.out, &payload)?;
+    Ok((rendered, 0))
+}
+
 pub(crate) fn run_observe_command(
     _quiet: bool,
     command: ObserveCommand,
@@ -423,6 +461,9 @@ pub(crate) fn run_observe_command(
             ObserveMetricsCommand::List(args) => list_metrics(args),
             ObserveMetricsCommand::Explain(args) => explain_metric(args.id_or_name, args.common),
             ObserveMetricsCommand::Docs(args) => generate_docs(args),
+        },
+        ObserveCommand::Logs { command } => match command {
+            ObserveLogsCommand::Explain(args) => explain_logs(args),
         },
         ObserveCommand::Traces { command } => match command {
             ObserveTracesCommand::Explain(args) => explain_traces(args),
