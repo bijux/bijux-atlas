@@ -13,6 +13,6 @@ tags:
 
 # Python Client API Reference
 
-Source of truth: `clients/atlas-client/docs/api-reference.md`.
+Source of truth: `crates/bijux-atlas-client-python/docs/api-reference.md`.
 
 Public surface includes `ClientConfig`, `AtlasClient`, `QueryRequest`, and typed client errors.

@@ -9,5 +9,5 @@ last_reviewed: 2026-03-05
 
 # Python Client Jupyter Tutorial
 
-Source: `clients/atlas-client/tutorials/jupyter_tutorial.md`.
-Notebook: `clients/atlas-client/notebooks/simple_query.ipynb`.
+Source: `docs/tutorials/clients/python/jupyter_tutorial.md`.
+Notebook: `crates/bijux-atlas-client-python/notebooks/simple_query.ipynb`.

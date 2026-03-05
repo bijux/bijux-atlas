@@ -14,7 +14,7 @@ tags:
 # Python Client Quickstart
 
 ```bash
-python -m pip install -e clients/atlas-client
+python -m pip install -e crates/bijux-atlas-client-python
 ```
 
 ```python

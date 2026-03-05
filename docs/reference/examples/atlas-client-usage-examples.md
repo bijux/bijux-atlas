@@ -14,8 +14,8 @@ tags:
 
 Canonical usage examples for the Python SDK live in:
 
-- `clients/atlas-client/examples/`
-- `clients/atlas-client-usage-examples/`
+- `crates/bijux-atlas-client-python/examples/`
+- `crates/bijux-atlas-client-python/examples/usage/`
 
 Verification entrypoint:
 

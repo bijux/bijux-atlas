@@ -22,7 +22,7 @@ Execute dataset queries through `atlas-client` package.
 
 ## Steps
 
-1. Install local package from `clients/atlas-client`.
+1. Install local package from `crates/bijux-atlas-client-python`.
 2. Run example scripts for simple, filtered, and streaming queries.
 3. Validate response fields and pagination token behavior.
 

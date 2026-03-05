@@ -3,9 +3,9 @@
 ## Setup
 
 ```bash
-python -m pip install -e clients/atlas-client
+python -m pip install -e crates/bijux-atlas-client-python
 python -m pip install jupyter
-jupyter notebook clients/atlas-client/notebooks/simple_query.ipynb
+jupyter notebook crates/bijux-atlas-client-python/notebooks/simple_query.ipynb
 ```
 
 ## Walkthrough
