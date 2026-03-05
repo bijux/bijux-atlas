@@ -1224,6 +1224,36 @@ pub enum TutorialsCommand {
     List(TutorialsCommandArgs),
     Explain(TutorialsCommandArgs),
     Verify(TutorialsCommandArgs),
+    Run {
+        #[command(subcommand)]
+        command: TutorialsRunCommand,
+    },
+    Build {
+        #[command(subcommand)]
+        command: TutorialsBuildCommand,
+    },
+    Dataset {
+        #[command(subcommand)]
+        command: TutorialsDatasetCommand,
+    },
+    ReproducibilityCheck(TutorialsCommandArgs),
+    Workspace {
+        #[command(subcommand)]
+        command: TutorialsWorkspaceCommand,
+    },
+    Dashboards {
+        #[command(subcommand)]
+        command: TutorialsDashboardsCommand,
+    },
+    Evidence {
+        #[command(subcommand)]
+        command: TutorialsEvidenceCommand,
+    },
+    Contracts {
+        #[command(subcommand)]
+        command: TutorialsContractsCommand,
+    },
+    Generate(TutorialsCommandArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -1234,6 +1264,61 @@ pub struct TutorialsCommandArgs {
     pub format: FormatArg,
     #[arg(long)]
     pub out: Option<PathBuf>,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum TutorialsRunCommand {
+    Workflow(TutorialsCommandArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum TutorialsBuildCommand {
+    Docs(TutorialsBuildDocsArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct TutorialsBuildDocsArgs {
+    #[command(flatten)]
+    pub common: TutorialsCommandArgs,
+    #[arg(long, default_value_t = false)]
+    pub strict: bool,
+    #[arg(long)]
+    pub site_dir: Option<PathBuf>,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum TutorialsDatasetCommand {
+    Package(TutorialsCommandArgs),
+    Ingest(TutorialsCommandArgs),
+    IntegrityCheck(TutorialsCommandArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum TutorialsWorkspaceCommand {
+    Cleanup(TutorialsWorkspaceCleanupArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct TutorialsWorkspaceCleanupArgs {
+    #[command(flatten)]
+    pub common: TutorialsCommandArgs,
+    #[arg(long, default_value_t = false)]
+    pub dry_run: bool,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum TutorialsDashboardsCommand {
+    Validate(TutorialsCommandArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum TutorialsEvidenceCommand {
+    Validate(TutorialsCommandArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum TutorialsContractsCommand {
+    Validate(TutorialsCommandArgs),
 }
 
 #[derive(Args, Debug, Clone)]
