@@ -32,6 +32,13 @@ Choose one guided track based on your goal.
 4. [Deploy](operations/deploy.md)
 5. [Incident response](operations/incident-response.md)
 
+## Reviewer track
+
+1. [Real data runs](tutorials/real-data/index.md)
+2. [Reviewer quick path](tutorials/real-data/reviewer-quick-path.md)
+3. [Real data runs report](reference/reports/real-data-runs.md)
+4. [Docs health dashboard](_internal/generated/docs-health-dashboard.md)
+
 ## Contributor track
 
 1. [Start here](start-here.md)

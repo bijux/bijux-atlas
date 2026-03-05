@@ -46,3 +46,5 @@ tags:
 - Each major domain keeps one canonical `index.md`.
 - New duplicate narrative pages are not allowed when an existing canonical page exists.
 - Canonical merge decisions are tracked in `docs/_internal/governance/docs-merge-plan.md`.
+- Inventory classification is tracked in `docs/_internal/governance/docs-consolidation-inventory.json`.
+- Every `redundant` and `obsolete` inventory entry must have a matching redirect in `docs/redirects.json`.
