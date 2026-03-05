@@ -113,6 +113,23 @@ fn docs_and_automation_surfaces_do_not_reference_removed_control_plane_paths() {
     ] {
         files.push(path);
     }
+    fn contains_forbidden_path_segment(content: &str, segment: &str) -> bool {
+        let mut search_from = 0usize;
+        while let Some(index) = content[search_from..].find(segment) {
+            let absolute = search_from + index;
+            let boundary_ok = absolute == 0
+                || !content[..absolute]
+                    .chars()
+                    .last()
+                    .is_some_and(|ch| ch.is_ascii_alphanumeric() || ch == '_');
+            if boundary_ok {
+                return true;
+            }
+            search_from = absolute + segment.len();
+        }
+        false
+    }
+
     let forbidden = ["atlasctl", "scripts/", "xtask", "tools/"];
     let mut violations = Vec::new();
     for file in files {
@@ -123,7 +140,11 @@ fn docs_and_automation_surfaces_do_not_reference_removed_control_plane_paths() {
             .display()
             .to_string();
         for needle in forbidden {
-            if content.contains(needle) {
+            let found = match needle {
+                "scripts/" | "tools/" => contains_forbidden_path_segment(&content, needle),
+                _ => content.contains(needle),
+            };
+            if found {
                 violations.push(format!("{rel} contains `{needle}`"));
             }
         }
