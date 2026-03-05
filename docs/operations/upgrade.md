@@ -44,7 +44,7 @@ bijux-dev-atlas ops helm rollback --profile profile-baseline --cluster kind --to
 
 ## Render Summary Table
 
-Use `bijux-dev-atlas docs lifecycle-summary-table --input artifacts/ops/<run_id>/reports/ops-lifecycle-summary.json --output artifacts/docs/generated/ops-lifecycle-summary-table.md`.
+Use `bijux-dev-atlas docs lifecycle-summary-table --input artifacts/ops/<run_id>/reports/ops-lifecycle-summary.json --output docs/_internal/generated/ops-lifecycle-summary-table.md`.
 
 ## Rollback
 

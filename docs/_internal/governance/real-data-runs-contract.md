@@ -21,3 +21,9 @@ Execution expectations for the first implementation slice:
 - `tutorials real-data fetch --run-id <id>`: write dataset cache payload, checksum manifest, and provenance record.
 - `tutorials real-data ingest --run-id <id>`: produce run-scoped ingest report under `artifacts/tutorials/runs/<run_id>/`.
 - `tutorials real-data doctor`: verify cache integrity surfaces for every run.
+- `docs generate real-data-pages --allow-write`: generate the runs table and overview pages under `docs/`.
+
+Reader-facing generated outputs:
+- `docs/_generated/real-data-runs-table.md`
+- `docs/_internal/generated/real-data-runs-overview.md`
+- `docs/_internal/generated/docs-artifact-link-inventory.md`
