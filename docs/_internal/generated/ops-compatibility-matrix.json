@@ -1,0 +1,13 @@
+{
+  "kind": "release_ops_compatibility_matrix",
+  "rows": [
+    {
+      "chart_reference": "oci://ghcr.io/bijux/charts/bijux-atlas",
+      "chart_version": "0.1.0",
+      "client_version": "0.1.0",
+      "runtime_version": "0.1.0"
+    }
+  ],
+  "schema_version": 1,
+  "status": "ok"
+}

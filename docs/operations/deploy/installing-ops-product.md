@@ -13,6 +13,7 @@ related:
   - docs/operations/ops-distribution-policy.md
   - docs/operations/ops-provenance.md
   - docs/operations/release-artifacts-overview.md
+  - docs/operations/ops-compatibility-matrix.md
 ---
 
 # Installing Ops Product
@@ -47,3 +48,4 @@ helm install atlas ./bijux-atlas-0.1.0.tgz -f ops/k8s/values/prod.yaml
 1. Run `bijux-dev-atlas release ops provenance verify --format json`
 2. Confirm digest match between pulled chart and `release/ops-chart-digest.json`
 3. Confirm version linkage in `release/ops-release-bundle-manifest.json`
+4. Confirm compatibility row with `bijux-dev-atlas release ops compatibility-matrix --format json`
