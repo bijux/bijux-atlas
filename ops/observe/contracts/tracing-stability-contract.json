@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "kind": "tracing_stability_contract",
+  "stable_trace_ids": [
+    "TRACE-ARTIFACT-LOAD-001",
+    "TRACE-CONFIG-LOAD-001",
+    "TRACE-ERROR-STRUCTURED-001",
+    "TRACE-INGEST-PIPELINE-001",
+    "TRACE-QUERY-EXEC-001",
+    "TRACE-REGISTRY-ACCESS-001",
+    "TRACE-REQUEST-ENTRY-001",
+    "TRACE-RUNTIME-ROOT-001",
+    "TRACE-SHUTDOWN-001",
+    "TRACE-STARTUP-INIT-001"
+  ],
+  "id_change_policy": "Trace identifiers are immutable. Additive IDs are allowed; renames or deletions require explicit migration docs.",
+  "span_name_change_policy": "Stable spans must keep canonical names for longitudinal incident analysis."
+}

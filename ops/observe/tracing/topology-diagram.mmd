@@ -1,0 +1,10 @@
+flowchart TD
+  RUNTIME[runtime.root] --> REQUEST[http.request]
+  REQUEST --> QUERY_EXECUTION[query.execution]
+  REQUEST --> INGEST_PROCESSING[ingest.processing]
+  REQUEST --> ARTIFACT_LOAD[artifact.load]
+  REQUEST --> REGISTRY_ACCESS[registry.access]
+  REQUEST --> CONFIGURATION_LOAD[configuration.load]
+  REQUEST --> LIFECYCLE_STARTUP[lifecycle.startup]
+  REQUEST --> LIFECYCLE_SHUTDOWN[lifecycle.shutdown]
+  REQUEST --> ERROR_STRUCTURED[error.structured]
