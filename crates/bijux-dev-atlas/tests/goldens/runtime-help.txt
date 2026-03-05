@@ -1,0 +1,11 @@
+Usage: bijux-dev-atlas runtime [OPTIONS] <COMMAND>
+
+Commands:
+  self-check             
+  print-config-schema    
+  explain-config-schema  
+
+Options:
+      --output-format <OUTPUT_FORMAT>  [possible values: human, json, both]
+      --no-deprecation-warn            
+  -h, --help                           Print help

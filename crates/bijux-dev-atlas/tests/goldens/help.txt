@@ -11,7 +11,12 @@ Commands:
   governance  
   system      
   audit       
+  observe     
+  api         
+  load        
+  invariants  
   security    
+  runtime     
   datasets    
   ingest      
   perf        
