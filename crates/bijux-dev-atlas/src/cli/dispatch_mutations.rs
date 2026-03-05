@@ -128,6 +128,10 @@ pub(super) fn force_json_output(command: &mut Command) {
                 | ReleaseImagesCommand::RuntimeCommandVerify(args) => {
                     args.format = FormatArg::Json
                 }
+                ReleaseImagesCommand::ManifestGenerate(args)
+                | ReleaseImagesCommand::ManifestVerify(args) => args.format = FormatArg::Json,
+                ReleaseImagesCommand::ReleaseNotesCheck(args) => args.format = FormatArg::Json,
+                ReleaseImagesCommand::ChangelogExtract(args) => args.format = FormatArg::Json,
             },
         },
         Command::Docker { .. }
@@ -1728,6 +1732,22 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 | ReleaseImagesCommand::SizeReport(args)
                 | ReleaseImagesCommand::RuntimeHardeningVerify(args)
                 | ReleaseImagesCommand::RuntimeCommandVerify(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+                ReleaseImagesCommand::ManifestGenerate(args)
+                | ReleaseImagesCommand::ManifestVerify(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+                ReleaseImagesCommand::ReleaseNotesCheck(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+                ReleaseImagesCommand::ChangelogExtract(args) => {
                     if args.repo_root.is_none() {
                         args.repo_root = Some(root.clone());
                     }

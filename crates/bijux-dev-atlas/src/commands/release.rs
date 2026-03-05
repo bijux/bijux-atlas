@@ -6,6 +6,7 @@ use crate::cli::{
     ReleaseChangelogGenerateArgs, ReleaseChangelogValidateArgs, ReleaseCheckArgs, ReleaseCommand,
     ReleaseCompatibilityCheckArgs, ReleaseCratesCommand, ReleaseCratesDryRunArgs,
     ReleaseCratesListArgs, ReleaseCratesValidateArgs, ReleaseDiffArgs, ReleaseImagesCommand,
+    ReleaseImagesChangelogArgs, ReleaseImagesManifestArgs, ReleaseImagesNotesArgs,
     ReleaseImagesValidateArgs,
     ReleaseManifestGenerateArgs,
     ReleaseManifestValidateArgs, ReleaseMsrvCommand, ReleaseMsrvVerifyArgs, ReleasePacketArgs,
@@ -513,6 +514,15 @@ fn run_release_images_validate_tags(args: ReleaseImagesValidateArgs) -> Result<(
         if forbid_latest && allow_latest {
             errors.push(format!("image `{name}` allows latest while policy forbids it"));
         }
+        if forbid_latest
+            && tag_policy
+                .iter()
+                .any(|tag| tag.eq_ignore_ascii_case("latest") || tag.contains(":latest"))
+        {
+            errors.push(format!(
+                "image `{name}` tag policy includes forbidden latest reference"
+            ));
+        }
         if tag_policy.is_empty() {
             errors.push(format!("image `{name}` is missing tag policy"));
         }
@@ -986,6 +996,190 @@ fn run_release_images_runtime_command_verify(
     });
     let rendered = emit_payload(args.format, args.out, &payload)?;
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_images_manifest_generate(
+    args: ReleaseImagesManifestArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    if !args.allow_write {
+        return Err("release images manifest-generate requires --allow-write".to_string());
+    }
+    let digests_path = root.join("artifacts/docker-publish/image-digests.json");
+    let digests = read_json(&digests_path)?;
+    let docker_manifest_path = root.join("docker/images.manifest.json");
+    let docker_manifest = read_json(&docker_manifest_path)?;
+    let out_path = root.join("release/images/image-artifact-manifest.v0.1.json");
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_image_artifact_manifest",
+        "generated_at_utc": "1970-01-01T00:00:00Z",
+        "sources": {
+            "image_digests": repo_rel(&root, &digests_path),
+            "docker_manifest": repo_rel(&root, &docker_manifest_path)
+        },
+        "image_digests": digests.get("images").cloned().unwrap_or(serde_json::Value::Null),
+        "declared_images": docker_manifest.get("images").cloned().unwrap_or(serde_json::Value::Null)
+    });
+    write_json(&out_path, &payload)?;
+    let rendered_payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_manifest_generate",
+        "status": "ok",
+        "path": repo_rel(&root, &out_path),
+        "sha256": sha256_file(&out_path)?
+    });
+    let rendered = emit_payload(args.format, args.out, &rendered_payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_release_images_manifest_verify(
+    args: ReleaseImagesManifestArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let manifest_path = root.join("release/images/image-artifact-manifest.v0.1.json");
+    let manifest = read_json(&manifest_path)?;
+    let mut errors = Vec::<String>::new();
+    let image_digests = manifest
+        .get("image_digests")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let declared = manifest
+        .get("declared_images")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let declared_set = declared
+        .iter()
+        .filter_map(|row| row.get("name").and_then(serde_json::Value::as_str))
+        .collect::<BTreeSet<_>>();
+    for row in &image_digests {
+        let Some(tag) = row.get("tag").and_then(serde_json::Value::as_str) else { continue };
+        let Some(digest) = row.get("digest").and_then(serde_json::Value::as_str) else { continue };
+        if !digest.starts_with("sha256:") {
+            errors.push(format!("image digest must be sha256-prefixed: {tag}"));
+        }
+        let image_name = tag.split(':').next().unwrap_or_default();
+        if !declared_set.contains(image_name) {
+            errors.push(format!("image tag `{tag}` is not declared in docker/images.manifest.json"));
+        }
+    }
+    let registry_path = root.join("release/image-digest-registry.json");
+    if registry_path.exists() {
+        let registry = read_json(&registry_path)?;
+        let immutables = registry
+            .get("released")
+            .and_then(serde_json::Value::as_array)
+            .cloned()
+            .unwrap_or_default();
+        for row in immutables {
+            let Some(tag) = row.get("tag").and_then(serde_json::Value::as_str) else { continue };
+            let Some(digest) = row.get("digest").and_then(serde_json::Value::as_str) else { continue };
+            let changed = image_digests.iter().any(|candidate| {
+                candidate.get("tag").and_then(serde_json::Value::as_str) == Some(tag)
+                    && candidate.get("digest").and_then(serde_json::Value::as_str) != Some(digest)
+            });
+            if changed {
+                errors.push(format!("digest registry immutability violation for tag `{tag}`"));
+            }
+        }
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_manifest_verify",
+        "status": status,
+        "manifest_path": repo_rel(&root, &manifest_path),
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_images_release_notes_check(
+    args: ReleaseImagesNotesArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let version = args.version.unwrap_or_else(|| workspace_version(&root).unwrap_or_else(|_| "0.1.0".to_string()));
+    let template_path = root.join("release/notes/image-release-notes-template.md");
+    let notes_path = root.join(format!("release/notes/images/{version}.md"));
+    let mut errors = Vec::<String>::new();
+    if !template_path.exists() {
+        errors.push("image release notes template is missing".to_string());
+    }
+    if !notes_path.exists() {
+        errors.push(format!(
+            "image release notes missing for version `{version}` at {}",
+            notes_path.display()
+        ));
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_release_notes_check",
+        "status": status,
+        "version": version,
+        "template_path": repo_rel(&root, &template_path),
+        "notes_path": repo_rel(&root, &notes_path),
+        "errors": errors
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_images_changelog_extract(
+    args: ReleaseImagesChangelogArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let from_ref = args.from_ref.unwrap_or_else(|| "HEAD~30".to_string());
+    let to_ref = args.to_ref.unwrap_or_else(|| "HEAD".to_string());
+    let version = args.version.unwrap_or_else(|| workspace_version(&root).unwrap_or_else(|_| "0.1.0".to_string()));
+    let output = ProcessCommand::new("git")
+        .args(["log", "--oneline", &format!("{from_ref}..{to_ref}"), "--", "docker", "crates/bijux-atlas-cli", "crates/bijux-atlas-server"])
+        .current_dir(&root)
+        .output()
+        .map_err(|err| format!("failed to run git log: {err}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "git log failed: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        ));
+    }
+    let lines = String::from_utf8_lossy(&output.stdout)
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .map(ToOwned::to_owned)
+        .collect::<Vec<_>>();
+    let out_path = root.join(format!("release/notes/images/changelog-{version}.md"));
+    if args.allow_write {
+        if let Some(parent) = out_path.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+        }
+        let mut body = format!("# Image Changelog {version}\n\n");
+        for line in &lines {
+            body.push_str("- ");
+            body.push_str(line);
+            body.push('\n');
+        }
+        fs::write(&out_path, body)
+            .map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
+    }
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_images_changelog_extract",
+        "status": "ok",
+        "version": version,
+        "from_ref": from_ref,
+        "to_ref": to_ref,
+        "entries": lines,
+        "output_path": repo_rel(&root, &out_path),
+        "wrote_file": args.allow_write
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
 }
 
 fn release_spec_allow_deny(spec: &toml::Value) -> (Vec<String>, Vec<String>) {
@@ -3938,6 +4132,16 @@ pub(crate) fn run_release_command(
             }
             ReleaseImagesCommand::RuntimeCommandVerify(args) => {
                 run_release_images_runtime_command_verify(args)
+            }
+            ReleaseImagesCommand::ManifestGenerate(args) => {
+                run_release_images_manifest_generate(args)
+            }
+            ReleaseImagesCommand::ManifestVerify(args) => run_release_images_manifest_verify(args),
+            ReleaseImagesCommand::ReleaseNotesCheck(args) => {
+                run_release_images_release_notes_check(args)
+            }
+            ReleaseImagesCommand::ChangelogExtract(args) => {
+                run_release_images_changelog_extract(args)
             }
         },
     }

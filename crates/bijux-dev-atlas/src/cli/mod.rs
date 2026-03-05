@@ -352,6 +352,10 @@ pub enum ReleaseImagesCommand {
     SizeReport(ReleaseImagesValidateArgs),
     RuntimeHardeningVerify(ReleaseImagesValidateArgs),
     RuntimeCommandVerify(ReleaseImagesValidateArgs),
+    ManifestGenerate(ReleaseImagesManifestArgs),
+    ManifestVerify(ReleaseImagesManifestArgs),
+    ReleaseNotesCheck(ReleaseImagesNotesArgs),
+    ChangelogExtract(ReleaseImagesChangelogArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -1142,6 +1146,48 @@ pub struct ReleaseImagesValidateArgs {
     pub format: FormatArg,
     #[arg(long)]
     pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseImagesManifestArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    pub allow_write: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseImagesNotesArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub version: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseImagesChangelogArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub from_ref: Option<String>,
+    #[arg(long)]
+    pub to_ref: Option<String>,
+    #[arg(long)]
+    pub version: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    pub allow_write: bool,
 }
 
 #[derive(Args, Debug, Clone)]
