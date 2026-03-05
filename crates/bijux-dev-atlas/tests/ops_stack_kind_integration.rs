@@ -24,6 +24,8 @@ fn assert_success_or_environment_skip(output: &std::process::Output, test_name: 
         "kubectl context guard failed",
         "no kind cluster",
         "namespaces \"bijux-atlas\" not found",
+        "connection to the server",
+        "was refused - did you specify the right host or port?",
     ];
     if skip_markers.iter().any(|marker| stderr.contains(marker)) {
         eprintln!("skipping {test_name}: {stderr}");
