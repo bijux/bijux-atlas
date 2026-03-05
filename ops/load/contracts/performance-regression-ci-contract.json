@@ -1,0 +1,10 @@
+{
+  "failure_exit_code": 2,
+  "kind": "performance_regression_ci_contract",
+  "required_commands": [
+    "bijux-dev-atlas load baseline --format json",
+    "bijux-dev-atlas load run --format json",
+    "bijux-dev-atlas load compare --format json"
+  ],
+  "schema_version": 1
+}
