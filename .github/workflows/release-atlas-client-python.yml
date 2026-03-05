@@ -16,10 +16,10 @@ jobs:
           python-version: "3.11"
       - name: Run python client tests
         run: |
-          cd clients/atlas-client
+          cd crates/bijux-atlas-client-python
           python -m unittest discover -s tests -p 'test_*.py' -v
       - name: Build package artifacts
         run: |
           python -m pip install --upgrade pip build
-          cd clients/atlas-client
+          cd crates/bijux-atlas-client-python
           python -m build

@@ -28,7 +28,7 @@ Client SDK code is product code. Repository automation for clients is owned by `
 - `crates/bijux-atlas-client-python/tests`: SDK tests.
 - `crates/bijux-atlas-client-python/examples`: SDK usage examples.
 - `crates/bijux-atlas-client-python/docs`: generated and maintained client docs.
-- Root `clients/` is deprecated and must be removed.
+- Root `clients/` is forbidden.
 
 ## Required replacement command surface
 
