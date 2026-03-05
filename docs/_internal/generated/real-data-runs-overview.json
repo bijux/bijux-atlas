@@ -1,0 +1,20 @@
+{
+  "rows": [
+    {
+      "evidence_present": false,
+      "manifest_present": false,
+      "run_id": "rdr-002-transcripts-baseline"
+    },
+    {
+      "evidence_present": true,
+      "manifest_present": true,
+      "run_id": "rdr-003-variants-mini"
+    },
+    {
+      "evidence_present": true,
+      "manifest_present": true,
+      "run_id": "rdr-004-expression-medium"
+    }
+  ],
+  "schema_version": 1
+}
