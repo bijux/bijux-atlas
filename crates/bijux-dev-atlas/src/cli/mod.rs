@@ -872,6 +872,10 @@ pub enum GovernanceCommand {
         #[arg(long)]
         out: Option<PathBuf>,
     },
+    Adr {
+        #[command(subcommand)]
+        command: GovernanceAdrCommand,
+    },
 }
 
 #[derive(Subcommand, Debug)]
@@ -909,6 +913,18 @@ pub enum GovernanceDeprecationsCommand {
 #[derive(Subcommand, Debug)]
 pub enum GovernanceBreakingCommand {
     Validate {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum GovernanceAdrCommand {
+    Index {
         #[arg(long)]
         repo_root: Option<PathBuf>,
         #[arg(long, value_enum, default_value_t = FormatArg::Text)]

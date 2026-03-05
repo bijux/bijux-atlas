@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    GovernanceBreakingCommand, GovernanceCommand, GovernanceDeprecationsCommand,
-    GovernanceExceptionsCommand, RegistryCommand, RegistryMissingArg,
+    GovernanceAdrCommand, GovernanceBreakingCommand, GovernanceCommand,
+    GovernanceDeprecationsCommand, GovernanceExceptionsCommand, RegistryCommand,
+    RegistryMissingArg,
 };
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::contracts::governance_enforcement;
@@ -539,6 +540,10 @@ fn breaking_changes_path(root: &Path) -> PathBuf {
 
 fn governance_doctor_path(root: &Path) -> PathBuf {
     root.join("artifacts/governance/governance-doctor.json")
+}
+
+fn governance_adr_index_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/adr-index.json")
 }
 
 fn governance_enforcement_path(root: &Path) -> PathBuf {
@@ -2608,6 +2613,66 @@ fn render_institutional_delta_markdown(inputs: &serde_json::Value) -> String {
     out
 }
 
+fn adr_field_from_markdown(markdown: &str, key: &str) -> Option<String> {
+    let prefix = format!("- {key}:");
+    markdown.lines().find_map(|line| {
+        line.trim()
+            .strip_prefix(&prefix)
+            .map(|value| value.trim().to_string())
+    })
+}
+
+fn governance_adr_index_payload(root: &Path) -> Result<serde_json::Value, String> {
+    let decisions_dir = root.join("docs/governance/decisions");
+    let mut rows = Vec::new();
+    if decisions_dir.exists() {
+        for entry in fs::read_dir(&decisions_dir)
+            .map_err(|e| format!("read {} failed: {e}", decisions_dir.display()))?
+        {
+            let entry =
+                entry.map_err(|e| format!("read {} entry failed: {e}", decisions_dir.display()))?;
+            let path = entry.path();
+            if path.extension().and_then(|value| value.to_str()) != Some("md") {
+                continue;
+            }
+            let rel = path
+                .strip_prefix(root)
+                .unwrap_or(&path)
+                .display()
+                .to_string();
+            let text = fs::read_to_string(&path)
+                .map_err(|e| format!("read {} failed: {e}", path.display()))?;
+            let status = adr_field_from_markdown(&text, "Status").unwrap_or_default();
+            let date = adr_field_from_markdown(&text, "Date").unwrap_or_default();
+            let owners = adr_field_from_markdown(&text, "Owners").unwrap_or_default();
+            let title = text
+                .lines()
+                .find_map(|line| line.strip_prefix("# ").map(ToString::to_string))
+                .unwrap_or_else(|| rel.clone());
+            rows.push(serde_json::json!({
+                "id": path.file_stem().and_then(|value| value.to_str()).unwrap_or_default(),
+                "title": title,
+                "status": status,
+                "date": date,
+                "owners": owners,
+                "path": rel,
+            }));
+        }
+    }
+    rows.sort_by(|left, right| {
+        left["id"]
+            .as_str()
+            .unwrap_or_default()
+            .cmp(right["id"].as_str().unwrap_or_default())
+    });
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "kind": "governance_adr_index",
+        "count": rows.len(),
+        "entries": rows,
+    }))
+}
+
 pub(crate) fn run_governance_command(
     _quiet: bool,
     command: GovernanceCommand,
@@ -3872,6 +3937,28 @@ pub(crate) fn run_governance_command(
                 let rendered = emit_payload(format, out, &payload)?;
                 let exit_code = if summary["status"] == "ok" { 0 } else { 1 };
                 Ok((rendered, exit_code))
+            }
+        },
+        GovernanceCommand::Adr { command } => match command {
+            GovernanceAdrCommand::Index {
+                repo_root,
+                format,
+                out,
+            } => {
+                let root = resolve_repo_root(repo_root)?;
+                let index_path = governance_adr_index_path(&root);
+                let payload = governance_adr_index_payload(&root)?;
+                write_pretty_json(&index_path, &payload)?;
+                let output = serde_json::json!({
+                    "schema_version": 1,
+                    "kind": "governance_adr_index",
+                    "status": "ok",
+                    "count": payload["count"].clone(),
+                    "entries": payload["entries"].clone(),
+                    "artifact": index_path.strip_prefix(&root).unwrap_or(&index_path).display().to_string(),
+                });
+                let rendered = emit_payload(format, out, &output)?;
+                Ok((rendered, 0))
             }
         },
         GovernanceCommand::Doctor {
