@@ -31,14 +31,19 @@ jobs:
     timeout-minutes: 60
     env:
       NETWORK_ACCESS: required
-      ISO_ROOT: artifacts/isolates/release-candidate
-      CARGO_TARGET_DIR: .cache/cargo/target/release-candidate
-      CARGO_HOME: .cache/cargo/home/release-candidate
-      TMPDIR: artifacts/isolates/release-candidate/tmp
-      TMP: artifacts/isolates/release-candidate/tmp
-      TEMP: artifacts/isolates/release-candidate/tmp
+      ISO_ROOT: ${{ github.workspace }}/artifacts/isolates/release-candidate
+      CARGO_TARGET_DIR: ${{ github.workspace }}/.cache/cargo/target/release-candidate
+      CARGO_HOME: ${{ github.workspace }}/.cache/cargo/home/release-candidate
+      TMPDIR: ${{ github.workspace }}/artifacts/isolates/release-candidate/tmp
+      TMP: ${{ github.workspace }}/artifacts/isolates/release-candidate/tmp
+      TEMP: ${{ github.workspace }}/artifacts/isolates/release-candidate/tmp
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - name: Prepare cache and temp roots
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${ISO_ROOT}" "${CARGO_TARGET_DIR}" "${CARGO_HOME}" "${TMPDIR}"
       - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
         with:
           toolchain: 1.84.1
