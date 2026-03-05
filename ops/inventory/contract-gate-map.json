@@ -1478,6 +1478,15 @@
     },
     {
       "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-REPORT-011",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.observe-coverage"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
       "contract_id": "OPS-ROOT-001",
       "effects_required": [],
       "gate_ids": [

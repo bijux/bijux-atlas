@@ -83,8 +83,8 @@
     },
     {
       "pillar": "report",
-      "target": 10,
-      "max": 10,
+      "target": 11,
+      "max": 11,
       "required_classes": [
         "determinism"
       ]
