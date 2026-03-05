@@ -15,7 +15,7 @@ const OPENAPI_SNAPSHOT: &str = "configs/openapi/v1/openapi.snapshot.json";
 
 fn client_root(repo_root: &Path, client: &str) -> std::path::PathBuf {
     match client {
-        "atlas-client" => repo_root.join("crates/bijux-atlas-client-python"),
+        "atlas-client" => repo_root.join("packages/bijux-atlas-python"),
         _ => repo_root.join("crates").join(client),
     }
 }
@@ -113,7 +113,8 @@ fn run_clients_verify(args: &ClientsCommandArgs) -> Result<(String, i32), String
         &evidence_json_path,
         format!(
             "{}\n",
-            serde_json::to_string_pretty(&evidence).map_err(|err| format!("serialize failed: {err}"))?
+            serde_json::to_string_pretty(&evidence)
+                .map_err(|err| format!("serialize failed: {err}"))?
         ),
     )
     .map_err(|err| format!("failed to write {}: {err}", evidence_json_path.display()))?;
@@ -137,7 +138,10 @@ fn run_clients_verify(args: &ClientsCommandArgs) -> Result<(String, i32), String
             "markdown": evidence_md_path.display().to_string()
         }
     });
-    Ok((emit_payload(args.format, args.out.clone(), &payload)?, if success { 0 } else { 1 }))
+    Ok((
+        emit_payload(args.format, args.out.clone(), &payload)?,
+        if success { 0 } else { 1 },
+    ))
 }
 
 fn run_clients_docs_generate(args: &ClientsCommandArgs) -> Result<(String, i32), String> {
@@ -155,8 +159,11 @@ fn run_clients_docs_generate(args: &ClientsCommandArgs) -> Result<(String, i32),
         .map_err(|err| format!("failed to write index.md: {err}"))?;
     fs::write(docs_dir.join("api-reference.md"), api_reference_text)
         .map_err(|err| format!("failed to write api-reference.md: {err}"))?;
-    fs::write(docs_dir.join("version-compatibility-matrix.md"), matrix_text)
-        .map_err(|err| format!("failed to write version-compatibility-matrix.md: {err}"))?;
+    fs::write(
+        docs_dir.join("version-compatibility-matrix.md"),
+        matrix_text,
+    )
+    .map_err(|err| format!("failed to write version-compatibility-matrix.md: {err}"))?;
 
     let payload = serde_json::json!({
         "schema_version": 1,
@@ -164,9 +171,9 @@ fn run_clients_docs_generate(args: &ClientsCommandArgs) -> Result<(String, i32),
         "action": "docs-generate",
         "client": args.client,
         "generated": [
-            format!("crates/bijux-atlas-client-python/docs/index.md"),
-            format!("crates/bijux-atlas-client-python/docs/api-reference.md"),
-            format!("crates/bijux-atlas-client-python/docs/version-compatibility-matrix.md")
+            format!("packages/bijux-atlas-python/docs/index.md"),
+            format!("packages/bijux-atlas-python/docs/api-reference.md"),
+            format!("packages/bijux-atlas-python/docs/version-compatibility-matrix.md")
         ],
         "openapi_paths": openapi_paths.len(),
     });
@@ -180,7 +187,10 @@ fn run_clients_docs_verify(args: &ClientsCommandArgs) -> Result<(String, i32), S
     let docs_dir = client_root(&repo_root, &args.client).join("docs");
 
     let expected = vec![
-        (docs_dir.join("index.md"), render_index_markdown(&model, &paths)),
+        (
+            docs_dir.join("index.md"),
+            render_index_markdown(&model, &paths),
+        ),
         (
             docs_dir.join("api-reference.md"),
             render_api_reference_markdown(&paths),
@@ -208,7 +218,11 @@ fn run_clients_docs_verify(args: &ClientsCommandArgs) -> Result<(String, i32), S
     });
     Ok((
         emit_payload(args.format, args.out.clone(), &payload)?,
-        if payload["success"].as_bool().unwrap_or(false) { 0 } else { 1 },
+        if payload["success"].as_bool().unwrap_or(false) {
+            0
+        } else {
+            1
+        },
     ))
 }
 
@@ -250,7 +264,11 @@ fn run_clients_examples_verify(args: &ClientsCommandArgs) -> Result<(String, i32
     });
     Ok((
         emit_payload(args.format, args.out.clone(), &payload)?,
-        if payload["success"].as_bool().unwrap_or(false) { 0 } else { 1 },
+        if payload["success"].as_bool().unwrap_or(false) {
+            0
+        } else {
+            1
+        },
     ))
 }
 
@@ -302,7 +320,8 @@ fn run_clients_examples_run(args: &ClientsCommandArgs) -> Result<(String, i32), 
         &evidence_path,
         format!(
             "{}\n",
-            serde_json::to_string_pretty(&evidence).map_err(|err| format!("serialize failed: {err}"))?
+            serde_json::to_string_pretty(&evidence)
+                .map_err(|err| format!("serialize failed: {err}"))?
         ),
     )
     .map_err(|err| format!("failed to write {}: {err}", evidence_path.display()))?;
@@ -317,7 +336,11 @@ fn run_clients_examples_run(args: &ClientsCommandArgs) -> Result<(String, i32), 
     });
     Ok((
         emit_payload(args.format, args.out.clone(), &payload)?,
-        if payload["success"].as_bool().unwrap_or(false) { 0 } else { 1 },
+        if payload["success"].as_bool().unwrap_or(false) {
+            0
+        } else {
+            1
+        },
     ))
 }
 
@@ -373,10 +396,7 @@ fn run_clients_python_test(args: &ClientsPythonTestArgs) -> Result<(String, i32)
         let started = std::time::Instant::now();
         let output = run_allowlisted_python_output(&root, &cmd_args, args.skip_network)?;
         let duration_ms = started.elapsed().as_millis() as u64;
-        let log_name = test_file
-            .replace('/', "__")
-            .replace('\\', "__")
-            .replace(".py", "");
+        let log_name = test_file.replace(['/', '\\'], "__").replace(".py", "");
         let stdout_path = logs_root.join(format!("{log_name}.stdout.log"));
         let stderr_path = logs_root.join(format!("{log_name}.stderr.log"));
         fs::write(&stdout_path, &output.stdout)
@@ -418,7 +438,8 @@ fn run_clients_python_test(args: &ClientsPythonTestArgs) -> Result<(String, i32)
         &evidence_path,
         format!(
             "{}\n",
-            serde_json::to_string_pretty(&payload).map_err(|err| format!("serialize failed: {err}"))?
+            serde_json::to_string_pretty(&payload)
+                .map_err(|err| format!("serialize failed: {err}"))?
         ),
     )
     .map_err(|err| format!("failed to write {}: {err}", evidence_path.display()))?;
@@ -477,14 +498,19 @@ fn run_clients_schema_verify(args: &ClientsCommandArgs) -> Result<(String, i32),
     });
     Ok((
         emit_payload(args.format, args.out.clone(), &payload)?,
-        if payload["success"].as_bool().unwrap_or(false) { 0 } else { 1 },
+        if payload["success"].as_bool().unwrap_or(false) {
+            0
+        } else {
+            1
+        },
     ))
 }
 
 fn run_clients_compat_matrix_verify(args: &ClientsCommandArgs) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.repo_root.clone())?;
     let model = load_docs_model(&repo_root, &args.client)?;
-    let matrix_path = client_root(&repo_root, &args.client).join("docs/version-compatibility-matrix.md");
+    let matrix_path =
+        client_root(&repo_root, &args.client).join("docs/version-compatibility-matrix.md");
     let matrix = fs::read_to_string(&matrix_path)
         .map_err(|err| format!("failed to read {}: {err}", matrix_path.display()))?;
     let required = [&model.python_sdk, &model.atlas_runtime, &model.api_surface];
@@ -503,7 +529,11 @@ fn run_clients_compat_matrix_verify(args: &ClientsCommandArgs) -> Result<(String
     });
     Ok((
         emit_payload(args.format, args.out.clone(), &payload)?,
-        if payload["success"].as_bool().unwrap_or(false) { 0 } else { 1 },
+        if payload["success"].as_bool().unwrap_or(false) {
+            0
+        } else {
+            1
+        },
     ))
 }
 
@@ -524,8 +554,8 @@ struct DocsEntry {
 
 fn load_docs_model(repo_root: &Path, client: &str) -> Result<ClientsDocsModel, String> {
     let path = repo_root.join(CLIENT_DOCS_CONFIG);
-    let text =
-        fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let text = fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     let model: ClientsDocsModel = serde_json::from_str(&text)
         .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
     if model.client != client {
@@ -542,8 +572,8 @@ fn load_docs_model(repo_root: &Path, client: &str) -> Result<ClientsDocsModel, S
 
 fn load_openapi_paths(repo_root: &Path) -> Result<Vec<String>, String> {
     let path = repo_root.join(OPENAPI_SNAPSHOT);
-    let text =
-        fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let text = fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     let value: serde_json::Value = serde_json::from_str(&text)
         .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
     let mut paths = value
@@ -616,7 +646,9 @@ fn normalize_newlines(text: &str) -> String {
 fn run_allowlisted_python(cwd: &Path, args: &[&str], reason: &str) -> Result<(), String> {
     let output = run_allowlisted_python_output(cwd, args, false)?;
     if !output.status.success() {
-        return Err(format!("python command failed while attempting to {reason}"));
+        return Err(format!(
+            "python command failed while attempting to {reason}"
+        ));
     }
     Ok(())
 }
@@ -627,7 +659,7 @@ fn run_allowlisted_python_output(
     skip_network: bool,
 ) -> Result<std::process::Output, String> {
     let python = resolve_python_interpreter(cwd)?;
-    if !cwd.ends_with(Path::new("crates/bijux-atlas-client-python")) {
+    if !cwd.ends_with(Path::new("packages/bijux-atlas-python")) {
         return Err(format!(
             "python execution outside allowed client crate is forbidden: {}",
             cwd.display()
@@ -656,7 +688,8 @@ fn resolve_python_interpreter(cwd: &Path) -> Result<String, String> {
 }
 
 fn repo_artifact_root(args: &ClientsCommandArgs, client: &str) -> PathBuf {
-    let repo_root = resolve_repo_root(args.repo_root.clone()).unwrap_or_else(|_| PathBuf::from("."));
+    let repo_root =
+        resolve_repo_root(args.repo_root.clone()).unwrap_or_else(|_| PathBuf::from("."));
     repo_root.join("artifacts/clients").join(client)
 }
 
@@ -689,7 +722,12 @@ fn render_clients_verify_nextest(rows: &[(&str, i32)]) -> String {
     let mut out = vec!["clients verify".to_string()];
     for (index, (id, code)) in rows.iter().enumerate() {
         let status = if *code == 0 { "PASS" } else { "FAIL" };
-        out.push(format!("{status} ({}/{}) clients {}", index + 1, rows.len(), id));
+        out.push(format!(
+            "{status} ({}/{}) clients {}",
+            index + 1,
+            rows.len(),
+            id
+        ));
     }
     let passed = rows.iter().filter(|(_, code)| *code == 0).count();
     out.push(format!(

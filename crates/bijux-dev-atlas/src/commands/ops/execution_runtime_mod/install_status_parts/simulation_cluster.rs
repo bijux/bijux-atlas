@@ -342,7 +342,7 @@ pub(crate) fn run_ops_observe_readiness(common: &OpsCommonArgs) -> Result<(Strin
         std::fs::create_dir_all(&out_dir)
             .map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
         let out_path = out_dir.join("operational-readiness-report.md");
-        let lines = vec![
+        let lines = [
             "# Operational Readiness Report".to_string(),
             format!("- Status: {}", status),
             format!("- Completeness: {:.2}", completeness),

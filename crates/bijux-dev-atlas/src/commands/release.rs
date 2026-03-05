@@ -1000,7 +1000,8 @@ fn run_release_images_runtime_command_verify(
         .map_err(|err| format!("failed to read {}: {err}", dev_cli_mod.display()))?;
     let mut errors = Vec::<String>::new();
     if !cli_text.contains("PrintConfigSchema(RuntimeCommandArgs)") {
-        errors.push("dev CLI is missing runtime print-config-schema command declaration".to_string());
+        errors
+            .push("dev CLI is missing runtime print-config-schema command declaration".to_string());
     }
     if !dispatch_text.contains("Command::Runtime { command }") {
         errors.push("dev CLI dispatcher is missing Runtime command route".to_string());
@@ -1009,7 +1010,9 @@ fn run_release_images_runtime_command_verify(
         errors.push("dev CLI is missing runtime self-check command declaration".to_string());
     }
     if !cli_text.contains("ExplainConfigSchema(RuntimeCommandArgs)") {
-        errors.push("dev CLI is missing runtime explain-config-schema command declaration".to_string());
+        errors.push(
+            "dev CLI is missing runtime explain-config-schema command declaration".to_string(),
+        );
     }
     if !schema_path.exists() {
         errors.push(format!(
@@ -1408,7 +1411,7 @@ fn run_release_images_readiness_summary(
     args: ReleaseImagesValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let checks = vec![
+    let checks = [
         (
             "labels",
             run_release_images_validate_labels(ReleaseImagesValidateArgs {
@@ -2352,7 +2355,7 @@ fn run_release_ops_scenario_evidence_verify(
 
 fn run_release_ops_readiness_summary(args: ReleaseOpsPackageArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let checks = vec![
+    let checks = [
         (
             "validate_package",
             run_release_ops_validate_package(ReleaseOpsPackageArgs {
@@ -2772,11 +2775,10 @@ fn run_release_crates_validate_publish_flags(
     let mut checked = Vec::<String>::new();
     for crate_name in publishable {
         let package = crate_manifest_table(&root, &crate_name)?;
-        if package
+        if !package
             .get("publish")
             .and_then(toml::Value::as_bool)
             .unwrap_or(true)
-            == false
         {
             errors.push(format!(
                 "crate `{crate_name}` is publishable but has package.publish = false"
@@ -3492,20 +3494,18 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
                 continue;
             };
             for (dep_name, value) in deps {
-                if dep_name == "bijux-atlas-core"
+                if (dep_name == "bijux-atlas-core"
                     || dep_name.starts_with("bijux-atlas-")
-                    || dep_name == "bijux-dev-atlas"
-                {
-                    if value
+                    || dep_name == "bijux-dev-atlas")
+                    && value
                         .as_table()
                         .and_then(|table| table.get("path"))
                         .is_some()
-                    {
-                        errors.push(format!(
-                            "{} section `{section}` dependency `{dep_name}` uses path, forbidden for publishable crate manifests",
-                            manifest_path.display(),
-                        ));
-                    }
+                {
+                    errors.push(format!(
+                        "{} section `{section}` dependency `{dep_name}` uses path, forbidden for publishable crate manifests",
+                        manifest_path.display(),
+                    ));
                 }
                 if value
                     .as_table()

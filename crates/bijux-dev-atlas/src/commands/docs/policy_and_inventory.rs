@@ -315,7 +315,7 @@ pub(crate) fn docs_inventory_payload(
 
 fn extract_frontmatter_docs_metadata(
     path: &Path,
-) -> Result<(Option<String>, Option<String>, Option<String>), String> {
+) -> Result<FrontmatterDocsMetadata, String> {
     let text = fs::read_to_string(path).map_err(|e| format!("read {}: {e}", path.display()))?;
     let mut lines = text.lines();
     if lines.next().map(str::trim) != Some("---") {
@@ -343,6 +343,8 @@ fn extract_frontmatter_docs_metadata(
     }
     Ok((owner, stability, last_reviewed))
 }
+
+type FrontmatterDocsMetadata = (Option<String>, Option<String>, Option<String>);
 
 fn scan_registry_markdown_files(repo_root: &Path) -> Vec<PathBuf> {
     let mut files = Vec::new();

@@ -379,16 +379,16 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
             for line in text.lines().map(str::trim) {
                 if line.contains("bash -c") {
                     workflow_bash_script_violations
-                        .push(format!("{}: {}", rel.display(), line.to_string()));
+                        .push(format!("{}: {}", rel.display(), line));
                 }
                 if line.contains("python ") || line.contains("python3 ") {
                     workflow_python_violations
-                        .push(format!("{}: {}", rel.display(), line.to_string()));
+                        .push(format!("{}: {}", rel.display(), line));
                 }
                 if line.contains("bash ./") || line.contains("bash scripts/") || line.contains(".sh")
                 {
                     workflow_bash_script_violations
-                        .push(format!("{}: {}", rel.display(), line.to_string()));
+                        .push(format!("{}: {}", rel.display(), line));
                 }
             }
         }
