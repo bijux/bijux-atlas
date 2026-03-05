@@ -1,0 +1,8 @@
+{
+  "fixture_id": "invalid-artifact-checksum",
+  "description": "Manifest checksum differs from computed file digest.",
+  "artifact": {
+    "path": "ops/datasets/generated/fixture-inventory.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  }
+}

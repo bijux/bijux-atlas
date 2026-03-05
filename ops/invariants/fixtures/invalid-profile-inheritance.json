@@ -1,0 +1,16 @@
+{
+  "fixture_id": "invalid-profile-inheritance",
+  "description": "Profile inheritance cycle between baseline and hardened profiles.",
+  "profiles": [
+    {
+      "id": "baseline",
+      "inherits_from": "hardened",
+      "values_file": "ops/k8s/values/local.yaml"
+    },
+    {
+      "id": "hardened",
+      "inherits_from": "baseline",
+      "values_file": "ops/k8s/values/offline.yaml"
+    }
+  ]
+}
