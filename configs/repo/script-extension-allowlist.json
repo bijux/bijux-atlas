@@ -2,6 +2,7 @@
   "schema_version": 1,
   "allowed_paths": [
     "crates/bijux-dev-atlas/tests/fixtures",
+    "docs/_assets/javascripts/mermaid-init.js",
     "ops/e2e/fixtures",
     "ops/load/k6",
     "ops/load/k6/suites",
