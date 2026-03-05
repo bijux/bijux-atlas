@@ -90,7 +90,7 @@ fn perf_cli_ux_diff_writes_regression_report() {
 }
 
 #[test]
-fn perf_cli_ux_completion_mode_executes() {
+fn slow_perf_cli_ux_completion_mode_executes() {
     let root = repo_root();
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)

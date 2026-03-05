@@ -292,7 +292,7 @@ fn tutorials_real_data_plan_returns_expected_steps() {
 }
 
 #[test]
-fn tutorials_real_data_fetch_and_ingest_write_run_artifacts() {
+fn slow_tutorials_real_data_fetch_and_ingest_write_run_artifacts() {
     let root = repo_root();
     let fetch = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)
