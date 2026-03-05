@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "kind": "api_surface_registry",
+  "endpoints": [
+    {
+      "id": "api-healthz",
+      "path": "/healthz",
+      "methods": ["get"],
+      "stability": "stable",
+      "lifecycle": "active"
+    },
+    {
+      "id": "api-readyz",
+      "path": "/readyz",
+      "methods": ["get"],
+      "stability": "stable",
+      "lifecycle": "active"
+    },
+    {
+      "id": "api-v1-genes",
+      "path": "/v1/genes",
+      "methods": ["get"],
+      "stability": "stable",
+      "lifecycle": "active"
+    },
+    {
+      "id": "api-v1-genes-count",
+      "path": "/v1/genes/count",
+      "methods": ["get"],
+      "stability": "stable",
+      "lifecycle": "deprecated"
+    },
+    {
+      "id": "api-v1-openapi",
+      "path": "/v1/openapi.json",
+      "methods": ["get"],
+      "stability": "stable",
+      "lifecycle": "active"
+    }
+  ]
+}

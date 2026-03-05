@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "kind": "openapi_version_tracking",
+  "active_openapi_version": "v1",
+  "document_path": "configs/openapi/v1/openapi.generated.json",
+  "history": [
+    {
+      "version": "v1",
+      "status": "active"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "openapi_schema_validation_contract",
+  "required_fields": [
+    "openapi",
+    "info",
+    "paths"
+  ],
+  "required_info_fields": [
+    "title",
+    "version"
+  ],
+  "openapi_document": "configs/openapi/v1/openapi.generated.json",
+  "registry": "ops/api/surface-registry.json",
+  "version_tracking": "ops/api/openapi-version-tracking.json"
+}
