@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "atlas-example-dataset-metadata",
+  "type": "object",
+  "required": ["dataset_id", "schema_version", "record_count", "description"],
+  "properties": {
+    "dataset_id": {"type": "string"},
+    "schema_version": {"type": "string"},
+    "record_count": {"type": "integer", "minimum": 1},
+    "description": {"type": "string"}
+  },
+  "additionalProperties": false
+}

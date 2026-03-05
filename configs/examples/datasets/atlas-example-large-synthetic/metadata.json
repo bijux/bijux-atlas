@@ -1,0 +1,6 @@
+{
+  "dataset_id": "atlas_example_large_synthetic",
+  "schema_version": "v1",
+  "record_count": 100000,
+  "description": "Large synthetic dataset for streaming, load, and dashboard tutorial flows"
+}

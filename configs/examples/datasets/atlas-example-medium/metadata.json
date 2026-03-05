@@ -1,0 +1,6 @@
+{
+  "dataset_id": "atlas_example_medium",
+  "schema_version": "v1",
+  "record_count": 1000,
+  "description": "Medium tutorial dataset for query, filter, aggregation, and pagination examples"
+}

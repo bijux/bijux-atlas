@@ -1,0 +1,10 @@
+{"gene_id":"g0001","symbol":"BRCA1","chromosome":"17","biotype":"protein_coding","length_bp":81189,"gc_content":0.41}
+{"gene_id":"g0002","symbol":"TP53","chromosome":"17","biotype":"protein_coding","length_bp":20312,"gc_content":0.48}
+{"gene_id":"g0003","symbol":"EGFR","chromosome":"7","biotype":"protein_coding","length_bp":120191,"gc_content":0.49}
+{"gene_id":"g0004","symbol":"MYC","chromosome":"8","biotype":"protein_coding","length_bp":43985,"gc_content":0.52}
+{"gene_id":"g0005","symbol":"CFTR","chromosome":"7","biotype":"protein_coding","length_bp":189137,"gc_content":0.42}
+{"gene_id":"g0006","symbol":"APOE","chromosome":"19","biotype":"protein_coding","length_bp":3597,"gc_content":0.61}
+{"gene_id":"g0007","symbol":"HBB","chromosome":"11","biotype":"protein_coding","length_bp":1606,"gc_content":0.55}
+{"gene_id":"g0008","symbol":"FTO","chromosome":"16","biotype":"protein_coding","length_bp":412418,"gc_content":0.39}
+{"gene_id":"g0009","symbol":"ACE2","chromosome":"X","biotype":"protein_coding","length_bp":39859,"gc_content":0.44}
+{"gene_id":"g0010","symbol":"MTHFR","chromosome":"1","biotype":"protein_coding","length_bp":20263,"gc_content":0.47}
