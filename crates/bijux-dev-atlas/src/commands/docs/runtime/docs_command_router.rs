@@ -1132,7 +1132,7 @@ fn build_real_data_runs_table_body(catalog: &DocsRealDataCatalog) -> String {
 
 fn build_real_data_overview_body(catalog: &DocsRealDataCatalog) -> String {
     let mut out = String::from(
-        "# Real Data Runs Overview\n\nThis page is generated from `configs/tutorials/real-data-runs.json`.\n\n",
+        "# Real Data Runs Overview\n\nYou are here: `docs/_internal/generated/real-data-runs-overview.md`\n\nReturn to: [Real Data Runs index](../../tutorials/real-data/index.md)\n\nThis page is generated from `configs/tutorials/real-data-runs.json`.\n\n",
     );
     out.push_str("## Coverage Summary\n\n");
     out.push_str(&format!("- Total runs: `{}`\n", catalog.runs.len()));
@@ -1161,6 +1161,10 @@ fn build_real_data_overview_body(catalog: &DocsRealDataCatalog) -> String {
             run.run_label, run.id, run.id
         ));
     }
+    out.push_str("\n## Related pages\n\n");
+    out.push_str("- [Real Data Runs table](../../_generated/real-data-runs-table.md)\n");
+    out.push_str("- [Real Data Runs report](../../reference/reports/real-data-runs.md)\n");
+    out.push_str("\n---\nParent index: [Tutorials](../../tutorials/index.md)\n");
     out
 }
 
@@ -1204,7 +1208,9 @@ fn build_artifact_link_inventory_body(rows: &[(String, String)]) -> String {
             docs_or_ops.push((page.clone(), link.clone()));
         }
     }
-    let mut out = String::from("# Docs Artifact Link Inventory\n\n");
+    let mut out = String::from(
+        "# Docs Artifact Link Inventory\n\nYou are here: `docs/_internal/generated/docs-artifact-link-inventory.md`\n\nReturn to: [Docs governance index](../governance/index.md)\n\n",
+    );
     out.push_str("## Links Containing `artifacts/`\n\n");
     if artifacts.is_empty() {
         out.push_str("- none\n");
@@ -1221,6 +1227,7 @@ fn build_artifact_link_inventory_body(rows: &[(String, String)]) -> String {
             out.push_str(&format!("- `{page}` -> `{link}`\n"));
         }
     }
+    out.push_str("\n---\nParent index: [Reference reports](../../reference/reports/index.md)\n");
     out
 }
 

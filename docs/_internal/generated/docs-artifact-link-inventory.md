@@ -5,6 +5,10 @@
 
 # Docs Artifact Link Inventory
 
+You are here: `docs/_internal/generated/docs-artifact-link-inventory.md`
+
+Return to: [Docs governance index](../governance/index.md)
+
 ## Links Containing `artifacts/`
 
 - `reference/contracts/index.md` -> `artifacts/index.md`
@@ -12,3 +16,6 @@
 ## Links Containing `artifacts/docs/` or `artifacts/ops/`
 
 - none
+
+---
+Parent index: [Reference reports](../../reference/reports/index.md)

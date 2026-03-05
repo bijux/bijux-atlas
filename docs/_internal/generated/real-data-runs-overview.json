@@ -1,19 +1,202 @@
 {
-  "rows": [
+  "runs": [
     {
-      "evidence_present": false,
-      "manifest_present": false,
-      "run_id": "rdr-002-transcripts-baseline"
+      "dataset": "genes-baseline",
+      "dataset_size_tier": "tiny",
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json"
+      ],
+      "id": "rdr-001-genes-baseline",
+      "ingest_mode": "full-rebuild",
+      "input_provenance": {
+        "license_note": "Public domain demonstration dataset",
+        "retrieval_method": "https-get",
+        "url": "https://example.org/datasets/genes-baseline.csv"
+      },
+      "query_names": [
+        "gene_count_total"
+      ],
+      "run_label": "Genes Baseline Tiny"
     },
     {
-      "evidence_present": true,
-      "manifest_present": true,
-      "run_id": "rdr-003-variants-mini"
+      "dataset": "transcripts-baseline",
+      "dataset_size_tier": "tiny",
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json"
+      ],
+      "id": "rdr-002-transcripts-baseline",
+      "ingest_mode": "full-rebuild",
+      "input_provenance": {
+        "license_note": "Public domain demonstration dataset",
+        "retrieval_method": "https-get",
+        "url": "https://example.org/datasets/transcripts-baseline.csv"
+      },
+      "query_names": [
+        "transcript_count_total"
+      ],
+      "run_label": "Transcripts Baseline Tiny"
     },
     {
-      "evidence_present": true,
-      "manifest_present": true,
-      "run_id": "rdr-004-expression-medium"
+      "dataset": "variants-mini",
+      "dataset_size_tier": "tiny",
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json"
+      ],
+      "id": "rdr-003-variants-mini",
+      "ingest_mode": "full-rebuild",
+      "input_provenance": {
+        "license_note": "Public domain demonstration dataset",
+        "retrieval_method": "https-get",
+        "url": "https://example.org/datasets/variants-mini.csv"
+      },
+      "query_names": [
+        "variant_count_total"
+      ],
+      "run_label": "Variants Mini Tiny"
+    },
+    {
+      "dataset": "expression-medium",
+      "dataset_size_tier": "medium",
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json",
+        "query-results-summary.json"
+      ],
+      "id": "rdr-004-expression-medium",
+      "ingest_mode": "incremental-merge",
+      "input_provenance": {
+        "license_note": "CC0 data sample",
+        "retrieval_method": "https-get",
+        "url": "https://example.org/datasets/expression-medium.csv"
+      },
+      "query_names": [
+        "expression_top_genes"
+      ],
+      "run_label": "Expression Medium"
+    },
+    {
+      "dataset": "population-medium",
+      "dataset_size_tier": "medium",
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json",
+        "query-results-summary.json"
+      ],
+      "id": "rdr-005-population-medium",
+      "ingest_mode": "incremental-merge",
+      "input_provenance": {
+        "license_note": "CC0 data sample",
+        "retrieval_method": "https-get",
+        "url": "https://example.org/datasets/population-medium.csv"
+      },
+      "query_names": [
+        "population_distribution"
+      ],
+      "run_label": "Population Medium"
+    },
+    {
+      "dataset": "phenotype-medium",
+      "dataset_size_tier": "medium",
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json",
+        "query-results-summary.json"
+      ],
+      "id": "rdr-006-phenotype-medium",
+      "ingest_mode": "incremental-merge",
+      "input_provenance": {
+        "license_note": "CC0 data sample",
+        "retrieval_method": "https-get",
+        "url": "https://example.org/datasets/phenotype-medium.csv"
+      },
+      "query_names": [
+        "phenotype_match_count"
+      ],
+      "run_label": "Phenotype Medium"
+    },
+    {
+      "dataset": "assembly-large-sample",
+      "dataset_size_tier": "large-sample",
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json",
+        "query-results-summary.json"
+      ],
+      "id": "rdr-007-assembly-large-sample",
+      "ingest_mode": "partitioned-import",
+      "input_provenance": {
+        "license_note": "Public domain demonstration dataset",
+        "retrieval_method": "https-get",
+        "url": "https://example.org/datasets/assembly-large-sample.csv"
+      },
+      "query_names": [
+        "assembly_partition_check"
+      ],
+      "run_label": "Assembly Large Sample"
+    },
+    {
+      "dataset": "annotation-large-sample",
+      "dataset_size_tier": "large-sample",
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json",
+        "query-results-summary.json"
+      ],
+      "id": "rdr-008-annotation-large-sample",
+      "ingest_mode": "partitioned-import",
+      "input_provenance": {
+        "license_note": "Public domain demonstration dataset",
+        "retrieval_method": "https-get",
+        "url": "https://example.org/datasets/annotation-large-sample.csv"
+      },
+      "query_names": [
+        "annotation_lookup_latency"
+      ],
+      "run_label": "Annotation Large Sample"
+    },
+    {
+      "dataset": "clinvar-large-sample",
+      "dataset_size_tier": "large-sample",
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json",
+        "query-results-summary.json"
+      ],
+      "id": "rdr-009-clinvar-large-sample",
+      "ingest_mode": "partitioned-import",
+      "input_provenance": {
+        "license_note": "Public domain demonstration dataset",
+        "retrieval_method": "https-get",
+        "url": "https://example.org/datasets/clinvar-large-sample.csv"
+      },
+      "query_names": [
+        "clinvar_significance_counts"
+      ],
+      "run_label": "ClinVar Large Sample"
+    },
+    {
+      "dataset": "combined-release",
+      "dataset_size_tier": "large-sample",
+      "expected_artifacts": [
+        "ingest-report.json",
+        "dataset-summary.json",
+        "query-results-summary.json",
+        "release-readiness.json"
+      ],
+      "id": "rdr-010-combined-release",
+      "ingest_mode": "full-rebuild",
+      "input_provenance": {
+        "license_note": "Public domain demonstration dataset",
+        "retrieval_method": "https-get",
+        "url": "https://example.org/datasets/combined-release.csv"
+      },
+      "query_names": [
+        "release_readiness_probe"
+      ],
+      "run_label": "Combined Release Validation"
     }
   ],
   "schema_version": 1
