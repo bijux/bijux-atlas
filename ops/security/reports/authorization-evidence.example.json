@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "kind": "authorization_evidence_bundle",
+  "diagnostics_command": "bijux-dev-atlas security authorization diagnostics --format json",
+  "validate_command": "bijux-dev-atlas security authorization validate --format json",
+  "policy_inspector_command": "bijux-dev-atlas security policy-inspect --format json",
+  "expected_reports": [
+    "authorization_diagnostics_report",
+    "authorization_permission_validation_report",
+    "security_policy_inspection_report"
+  ],
+  "status": "ok"
+}

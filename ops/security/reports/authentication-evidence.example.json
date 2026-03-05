@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "kind": "authentication_evidence_bundle",
+  "diagnostics_command": "bijux-dev-atlas security authentication diagnostics --format json",
+  "policy_validation_command": "bijux-dev-atlas security authentication policy-validate --format json",
+  "token_inspection_command": "bijux-dev-atlas security authentication token-inspect --token <jwt> --format json",
+  "expected_reports": [
+    "authentication_diagnostics_report",
+    "authentication_policy_validation_report",
+    "authentication_token_inspection_report"
+  ],
+  "status": "ok"
+}

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "kind": "rbac_policy_registry_snapshot",
+  "roles_file": "configs/security/roles.yaml",
+  "permissions_file": "configs/security/permissions.yaml",
+  "assignments_file": "configs/security/role-assignments.yaml",
+  "policy_file": "configs/security/policy.yaml",
+  "counts": {
+    "roles": 4,
+    "permissions": 4,
+    "assignments": 4,
+    "policy_rules": 3
+  },
+  "status": "ok"
+}

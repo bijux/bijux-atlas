@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "kind": "security_access_audit_report",
+  "scope": "authentication_and_authorization",
+  "checks": [
+    {
+      "id": "SEC-ACCESS-CLI-001",
+      "description": "authentication command surfaces emit stable report kinds",
+      "status": "ok"
+    },
+    {
+      "id": "SEC-ACCESS-CLI-002",
+      "description": "authorization command surfaces emit stable report kinds",
+      "status": "ok"
+    },
+    {
+      "id": "SEC-ACCESS-RBAC-001",
+      "description": "rbac assignments and role references are internally consistent",
+      "status": "ok"
+    }
+  ],
+  "status": "ok"
+}
