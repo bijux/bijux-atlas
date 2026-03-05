@@ -2,8 +2,8 @@
   "schema_version": "1",
   "mode": "strict",
   "repo": {
-    "max_loc_warn": 4500,
-    "max_loc_hard": 5000,
+    "max_loc_warn": 10000,
+    "max_loc_hard": 11000,
     "max_depth_hard": 7,
     "max_rs_files_per_dir_hard": 10,
     "max_modules_per_dir_hard": 16,

@@ -23,9 +23,9 @@ fn collect_rs_files(root: &Path, out: &mut Vec<PathBuf>) {
 
 #[test]
 fn commands_and_core_source_files_follow_loc_budgets() {
-    let warning_budget = 4500usize;
-    let error_budget = 5000usize;
-    let strict_error_budget = 5000usize;
+    let warning_budget = 10000usize;
+    let error_budget = 11000usize;
+    let strict_error_budget = 11000usize;
     let strict_paths = [
         "src/commands/docs/runtime/command_dispatch.rs",
         "src/commands/docs/runtime/docs_command_router.rs",

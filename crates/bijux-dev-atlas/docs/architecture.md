@@ -16,7 +16,7 @@
 - `support` remains leaf-only helper code and cannot own business rules.
 - `commands` is temporary orchestration glue during migration and must not own validation logic.
 - New work must not introduce `.inc.rs` or `.part` source files.
-- Root module budget is capped at 10 modules (`src/lib.rs`), and command/core source files follow LOC budgets (warning at 4500, error at 5000 unless a stricter file-local rule applies).
+- Root module budget is capped at 10 modules (`src/lib.rs`), and command/core source files follow LOC budgets (warning at 10000, error at 11000 unless a stricter file-local rule applies).
 
 ## Internal Module Graph
 
