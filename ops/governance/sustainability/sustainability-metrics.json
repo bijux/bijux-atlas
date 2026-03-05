@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "metric_set": "governance-sustainability",
+  "metrics": {
+    "documentation_freshness_percent": 98,
+    "maintainer_coverage_percent": 100,
+    "policy_enforcement_pass_percent": 94,
+    "onboarding_completion_percent": 91
+  }
+}

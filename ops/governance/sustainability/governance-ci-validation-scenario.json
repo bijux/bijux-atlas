@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "scenario_id": "governance-ci-validation",
+  "description": "validate governance policy surfaces on pull requests",
+  "commands": [
+    "bijux-dev-atlas governance check --format json",
+    "bijux-dev-atlas governance validate --format json",
+    "bijux-dev-atlas governance report --format json"
+  ],
+  "expected_status": "ok"
+}

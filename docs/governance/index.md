@@ -45,6 +45,7 @@ This is the canonical governance index for repository-wide policy and SSOT bound
 - Component stability classes: [Component Stability Classification](component-stability-classification.md)
 - Long-term roadmap: [Long-Term Governance Roadmap](long-term-roadmap.md)
 - Governance troubleshooting: [Governance Troubleshooting Guide](governance-troubleshooting-guide.md)
+- Sustainability report: [Sustainability Delivery Report](sustainability-delivery-report.md)
 
 ## Operational Governance
 

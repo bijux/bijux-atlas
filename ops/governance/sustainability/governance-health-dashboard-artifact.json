@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "artifact_id": "governance-health-dashboard",
+  "status": "ok",
+  "widgets": [
+    "governance_compliance_status",
+    "policy_enforcement_violations",
+    "contributor_onboarding_completion",
+    "maintainership_coverage"
+  ]
+}

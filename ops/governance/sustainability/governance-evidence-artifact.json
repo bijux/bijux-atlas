@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "artifact_id": "governance-evidence-artifact",
+  "generated_at": "2026-03-05T00:00:00Z",
+  "sources": [
+    "docs/governance/governance-charter.md",
+    "docs/governance/maintainers-and-roles.md",
+    "configs/governance/enforcement/rules.json",
+    "artifacts/governance/governance-health-report.json"
+  ],
+  "status": "ok"
+}

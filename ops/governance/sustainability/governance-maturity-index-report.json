@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "report_id": "governance-maturity-index",
+  "maturity_index": 4.4,
+  "scale_max": 5.0,
+  "status": "ok",
+  "dimensions": {
+    "policy_clarity": 4.6,
+    "enforcement_automation": 4.2,
+    "evidence_quality": 4.5,
+    "maintainership_continuity": 4.3
+  }
+}

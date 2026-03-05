@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "report_id": "governance-compliance-report",
+  "status": "ok",
+  "controls": {
+    "documentation": "pass",
+    "ownership": "pass",
+    "review_process": "pass",
+    "evidence_integrity": "pass"
+  },
+  "summary": {
+    "total_controls": 4,
+    "passed_controls": 4,
+    "failed_controls": 0
+  }
+}

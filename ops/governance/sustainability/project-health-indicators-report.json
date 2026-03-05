@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "report_id": "project-health-indicators",
+  "status": "ok",
+  "indicators": {
+    "review_latency_days": 1.8,
+    "release_predictability_percent": 93,
+    "governance_incident_count": 0,
+    "critical_policy_violations": 0
+  }
+}

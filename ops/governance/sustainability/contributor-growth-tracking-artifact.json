@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "artifact_id": "contributor-growth-tracking",
+  "status": "ok",
+  "period": "rolling-90-days",
+  "values": {
+    "new_contributors": 12,
+    "first_pr_merged": 10,
+    "retained_contributors": 8
+  }
+}

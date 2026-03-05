@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "scenario_id": "governance-audit-review",
+  "description": "perform periodic governance audit with evidence verification",
+  "checks": [
+    "rule_registry_snapshot_matches",
+    "governance_report_present",
+    "evidence_artifact_current"
+  ],
+  "expected_outcome": "audit_pass"
+}
