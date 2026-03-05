@@ -13,5 +13,6 @@ recommended_auth_placement:
   - built-in
 deployment_boundary_requirement: Atlas must remain behind an ingress auth proxy or equivalent institutional boundary when exposed beyond a private trusted network.
 docs:
-  model: docs/architecture/security/auth-model.md
+  model: docs/operations/security/authentication-architecture.md
+  protocol_options: docs/operations/security/authentication-protocol-options.md
   runbook: docs/operations/security/deploy-behind-auth-proxy.md

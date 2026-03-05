@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "kind": "security_access_control_metrics",
+  "authentication": {
+    "supported_methods": [
+      "api-key",
+      "token",
+      "oidc",
+      "mtls"
+    ],
+    "policy_rule_count": 3
+  },
+  "authorization": {
+    "role_count": 4,
+    "permission_count": 4,
+    "policy_rule_count": 3,
+    "assignment_count": 4
+  },
+  "status": "ok"
+}
