@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling>=1.26.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bijux-atlas"
+version = "0.1.0"
+description = "Python SDK for Bijux Atlas"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "Bijux Atlas" }]
+keywords = ["bijux", "atlas", "sdk", "genomics"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Typing :: Typed"
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/bijux/bijux-atlas"
+Documentation = "https://bijux.github.io/bijux-atlas/"
+Repository = "https://github.com/bijux/bijux-atlas"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bijux_atlas"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "src/bijux_atlas",
+  "README.md",
+  "LICENSE",
+  "CHANGELOG.md",
+  "VERSIONING.md"
+]
