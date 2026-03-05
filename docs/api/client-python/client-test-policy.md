@@ -35,7 +35,7 @@ Each python test file must declare one `# test_scope:` tag:
 
 ## Deterministic dependencies
 
-`clients python test` requires `crates/bijux-atlas-client-python/requirements.lock`.
+`clients python test` requires `packages/bijux-atlas-python/requirements.lock`.
 
 ## Evidence
 

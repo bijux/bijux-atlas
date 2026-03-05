@@ -4,7 +4,7 @@
   "supported_runtime_versions": ["0.1.x"],
   "api_surface": ["POST /v1/query"],
   "validation": {
-    "integration_test": "crates/bijux-atlas-client-python/tests/test_integration.py",
-    "compatibility_test": "crates/bijux-atlas-client-python/tests/test_runtime_compatibility.py"
+    "integration_test": "packages/bijux-atlas-python/tests/test_integration.py",
+    "compatibility_test": "packages/bijux-atlas-python/tests/test_runtime_compatibility.py"
   }
 }
