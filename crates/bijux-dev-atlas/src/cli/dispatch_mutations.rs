@@ -4,9 +4,9 @@ use crate::cli::{
     ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand, Command,
     ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, FormatArg,
     IngestCommand, MakeCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand,
-    ReleaseApiSurfaceCommand, ReleaseCommand, ReleaseCratesCommand, ReleaseImagesCommand,
-    ReleaseMsrvCommand, ReleaseOpsCommand, ReleaseSemverCommand, ReportsCommand, SecurityCommand,
-    TestsCommand,
+    ReleaseApiSurfaceCommand, ReleaseChecksumsCommand, ReleaseCommand, ReleaseCratesCommand,
+    ReleaseImagesCommand, ReleaseMsrvCommand, ReleaseOpsCommand, ReleaseSemverCommand,
+    ReportsCommand, SecurityCommand, TestsCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -91,11 +91,18 @@ pub(super) fn force_json_output(command: &mut Command) {
                 crate::cli::ReleaseManifestCommand::Generate(args) => args.format = FormatArg::Json,
                 crate::cli::ReleaseManifestCommand::Validate(args) => args.format = FormatArg::Json,
             },
+            ReleaseCommand::Checksums { command } => match command {
+                ReleaseChecksumsCommand::Generate(args)
+                | ReleaseChecksumsCommand::Verify(args) => args.format = FormatArg::Json,
+            },
             ReleaseCommand::Bundle { command } => match command {
                 crate::cli::ReleaseBundleCommand::Build(args) => args.format = FormatArg::Json,
                 crate::cli::ReleaseBundleCommand::Verify(args) => args.format = FormatArg::Json,
                 crate::cli::ReleaseBundleCommand::Hash(args) => args.format = FormatArg::Json,
             },
+            ReleaseCommand::ReadinessReport(args) | ReleaseCommand::LaunchChecklist(args) => {
+                args.format = FormatArg::Json
+            }
             ReleaseCommand::Sign(args) => args.format = FormatArg::Json,
             ReleaseCommand::Verify(args) => args.format = FormatArg::Json,
             ReleaseCommand::Diff(args) => args.format = FormatArg::Json,
@@ -148,7 +155,8 @@ pub(super) fn force_json_output(command: &mut Command) {
                 | ReleaseOpsCommand::LineageGenerate(args)
                 | ReleaseOpsCommand::ProvenanceVerify(args)
                 | ReleaseOpsCommand::ReadinessSummary(args)
-                | ReleaseOpsCommand::ScenarioEvidenceVerify(args) => args.format = FormatArg::Json,
+                | ReleaseOpsCommand::ScenarioEvidenceVerify(args)
+                | ReleaseOpsCommand::PublishPlan(args) => args.format = FormatArg::Json,
                 ReleaseOpsCommand::Push(args) => args.common.format = FormatArg::Json,
                 ReleaseOpsCommand::PullTest(args) => args.common.format = FormatArg::Json,
                 ReleaseOpsCommand::BundleBuild(args) | ReleaseOpsCommand::BundleVerify(args) => {
@@ -1658,6 +1666,14 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     }
                 }
             },
+            ReleaseCommand::Checksums { command } => match command {
+                ReleaseChecksumsCommand::Generate(args)
+                | ReleaseChecksumsCommand::Verify(args) => {
+                    if args.repo_root.is_none() {
+                        args.repo_root = Some(root.clone());
+                    }
+                }
+            },
             ReleaseCommand::Bundle { command } => match command {
                 crate::cli::ReleaseBundleCommand::Build(args) => {
                     if args.repo_root.is_none() {
@@ -1675,6 +1691,11 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     }
                 }
             },
+            ReleaseCommand::ReadinessReport(args) | ReleaseCommand::LaunchChecklist(args) => {
+                if args.repo_root.is_none() {
+                    args.repo_root = Some(root.clone());
+                }
+            }
             ReleaseCommand::Sign(args) => {
                 if args.repo_root.is_none() {
                     args.repo_root = Some(root.clone());
@@ -1797,7 +1818,8 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 | ReleaseOpsCommand::LineageGenerate(args)
                 | ReleaseOpsCommand::ProvenanceVerify(args)
                 | ReleaseOpsCommand::ReadinessSummary(args)
-                | ReleaseOpsCommand::ScenarioEvidenceVerify(args) => {
+                | ReleaseOpsCommand::ScenarioEvidenceVerify(args)
+                | ReleaseOpsCommand::PublishPlan(args) => {
                     if args.repo_root.is_none() {
                         args.repo_root = Some(root.clone());
                     }

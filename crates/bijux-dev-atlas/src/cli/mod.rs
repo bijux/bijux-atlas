@@ -286,10 +286,16 @@ pub enum ReleaseCommand {
         #[command(subcommand)]
         command: ReleaseManifestCommand,
     },
+    Checksums {
+        #[command(subcommand)]
+        command: ReleaseChecksumsCommand,
+    },
     Bundle {
         #[command(subcommand)]
         command: ReleaseBundleCommand,
     },
+    ReadinessReport(ReleaseBundleBuildArgs),
+    LaunchChecklist(ReleaseBundleBuildArgs),
     Sign(ReleaseSignArgs),
     Verify(ReleaseVerifyArgs),
     Diff(ReleaseDiffArgs),
@@ -382,6 +388,13 @@ pub enum ReleaseOpsCommand {
     ProvenanceVerify(ReleaseOpsPackageArgs),
     ReadinessSummary(ReleaseOpsPackageArgs),
     ScenarioEvidenceVerify(ReleaseOpsPackageArgs),
+    PublishPlan(ReleaseOpsPackageArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ReleaseChecksumsCommand {
+    Generate(ReleaseCheckArgs),
+    Verify(ReleaseCheckArgs),
 }
 
 #[derive(Args, Debug, Clone)]

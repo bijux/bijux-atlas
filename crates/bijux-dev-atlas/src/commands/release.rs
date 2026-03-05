@@ -2284,6 +2284,116 @@ fn run_release_ops_readiness_summary(args: ReleaseOpsPackageArgs) -> Result<(Str
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
+fn run_release_ops_publish_plan(args: ReleaseOpsPackageArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let spec = read_ops_release_spec(&root)?;
+    let chart_reference = spec
+        .get("distribution")
+        .and_then(toml::Value::as_table)
+        .and_then(|v| v.get("chart_reference"))
+        .and_then(toml::Value::as_str)
+        .unwrap_or("oci://ghcr.io/bijux/charts/bijux-atlas")
+        .to_string();
+    let bundle_output = spec
+        .get("bundle")
+        .and_then(toml::Value::as_table)
+        .and_then(|v| v.get("output_dir"))
+        .and_then(toml::Value::as_str)
+        .unwrap_or("artifacts/release/ops/bundle")
+        .to_string();
+    let mut artifacts = spec
+        .get("artifacts")
+        .and_then(toml::Value::as_table)
+        .and_then(|v| v.get("include"))
+        .and_then(toml::Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+        .collect::<Vec<_>>();
+    artifacts.sort();
+    let rows = artifacts
+        .iter()
+        .map(|path| {
+            serde_json::json!({
+                "artifact": path,
+                "destination": "ops-bundle"
+            })
+        })
+        .chain([
+            serde_json::json!({"artifact":"chart package (.tgz)","destination": chart_reference}),
+            serde_json::json!({"artifact":"ops bundle tarball","destination": bundle_output}),
+        ])
+        .collect::<Vec<_>>();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_publish_plan",
+        "status": "ok",
+        "chart_reference": chart_reference,
+        "bundle_output_dir": bundle_output,
+        "artifacts": rows
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_release_checksums_generate(args: ReleaseCheckArgs) -> Result<(String, i32), String> {
+    let result = run_release_sign(ReleaseSignArgs {
+        repo_root: args.repo_root,
+        evidence: std::path::PathBuf::from("release/evidence"),
+        format: FormatArg::Json,
+        out: None,
+    })?;
+    let payload: serde_json::Value = serde_json::from_str(&result.0).unwrap_or_else(|_| {
+        serde_json::json!({"schema_version":1,"kind":"release_checksums_generate","status":"failed","errors":["failed to parse release sign output"]})
+    });
+    let checksums = payload
+        .get("checksums_path")
+        .cloned()
+        .unwrap_or(serde_json::json!("release/signing/checksums.json"));
+    let status = payload
+        .get("status")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("failed");
+    let wrapped = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_checksums_generate",
+        "status": status,
+        "checksums_path": checksums
+    });
+    let rendered = emit_payload(args.format, args.out, &wrapped)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn run_release_checksums_verify(args: ReleaseCheckArgs) -> Result<(String, i32), String> {
+    let result = run_release_verify(ReleaseVerifyArgs {
+        repo_root: args.repo_root,
+        evidence: std::path::PathBuf::from("release/evidence/bundle.tar"),
+        format: FormatArg::Json,
+        out: None,
+    })?;
+    let payload: serde_json::Value = serde_json::from_str(&result.0).unwrap_or_else(|_| {
+        serde_json::json!({"schema_version":1,"kind":"release_checksums_verify","status":"failed","errors":["failed to parse release verify output"]})
+    });
+    let checksums = payload
+        .get("checksums_path")
+        .cloned()
+        .unwrap_or(serde_json::json!("release/signing/checksums.json"));
+    let status = payload
+        .get("status")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("failed");
+    let wrapped = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_checksums_verify",
+        "status": status,
+        "checksums_path": checksums,
+        "errors": payload.get("errors").cloned().unwrap_or(serde_json::json!([]))
+    });
+    let rendered = emit_payload(args.format, args.out, &wrapped)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
 fn release_spec_allow_deny(spec: &toml::Value) -> (Vec<String>, Vec<String>) {
     let allow = spec
         .get("publish")
@@ -5024,6 +5134,174 @@ fn run_release_version_check(args: ReleaseVersionCheckArgs) -> Result<(String, i
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
+fn generate_release_readiness_report(
+    root: &Path,
+    version: &str,
+) -> Result<serde_json::Value, String> {
+    let manifest_check = validate_release_manifest(root, version)?;
+    let bundle_check = run_release_bundle_verify(ReleaseBundleVerifyArgs {
+        repo_root: Some(root.to_path_buf()),
+        version: Some(version.to_string()),
+        format: FormatArg::Json,
+        out: None,
+    })?;
+    let bundle_payload: serde_json::Value =
+        serde_json::from_str(&bundle_check.0).unwrap_or(serde_json::json!({"status":"failed"}));
+    let release_dir = release_root(root, version);
+    let required = [
+        release_dir.join("manifest.json"),
+        release_dir.join("bundle.sha256"),
+        root.join("release/evidence/bundle.tar"),
+        root.join("release/signing/checksums.json"),
+        root.join("release/provenance.json"),
+    ];
+    let mut missing_required = Vec::<String>::new();
+    for path in required {
+        if !path.exists() {
+            missing_required.push(repo_rel(root, &path));
+        }
+    }
+    let optional = [
+        root.join("release/ops-release-manifest.json"),
+        root.join("release/ops-chart-digest.json"),
+        root.join("ops/report/generated/ops-release-readiness-summary.json"),
+    ];
+    let mut optional_rows = optional
+        .iter()
+        .map(|path| {
+            serde_json::json!({
+                "path": repo_rel(root, path),
+                "status": if path.exists() { "present" } else { "missing" }
+            })
+        })
+        .collect::<Vec<_>>();
+    optional_rows.sort_by(|a, b| {
+        a["path"]
+            .as_str()
+            .unwrap_or_default()
+            .cmp(b["path"].as_str().unwrap_or_default())
+    });
+    let status = if manifest_check["status"] == "ok"
+        && bundle_payload["status"] == "ok"
+        && missing_required.is_empty()
+    {
+        "ok"
+    } else {
+        "failed"
+    };
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_readiness_report",
+        "status": status,
+        "version": version,
+        "manifest_check": manifest_check,
+        "bundle_check": bundle_payload,
+        "missing_required_artifacts": missing_required,
+        "optional_artifacts": optional_rows
+    }))
+}
+
+fn run_release_readiness_report(
+    args: ReleaseBundleBuildArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let version = args.version.unwrap_or_else(|| default_release_version(&root));
+    let report = generate_release_readiness_report(&root, &version)?;
+    let out_path = release_root(&root, &version).join("readiness-report.json");
+    write_json(&out_path, &report)?;
+    let rendered = emit_payload(
+        args.format,
+        args.out,
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "release_readiness_report_generate",
+            "status": report["status"],
+            "version": version,
+            "path": repo_rel(&root, &out_path),
+            "missing_required_artifacts": report["missing_required_artifacts"],
+            "optional_artifacts": report["optional_artifacts"]
+        }),
+    )?;
+    let code = if report["status"] == "ok" { 0 } else { 1 };
+    Ok((rendered, code))
+}
+
+fn run_release_launch_checklist(
+    args: ReleaseBundleBuildArgs,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let version = args.version.unwrap_or_else(|| default_release_version(&root));
+    let report = generate_release_readiness_report(&root, &version)?;
+    let manifest = read_json(&release_manifest_path(&root, &version))?;
+    let out_path = release_root(&root, &version).join("launch-checklist.md");
+    let mut doc = String::new();
+    doc.push_str("# v0.1 launch checklist\n\n");
+    doc.push_str(&format!("- release version: `{version}`\n"));
+    doc.push_str(&format!(
+        "- readiness status: `{}`\n",
+        report["status"].as_str().unwrap_or("failed")
+    ));
+    doc.push_str(&format!(
+        "- manifest path: `{}`\n\n",
+        repo_rel(&root, &release_manifest_path(&root, &version))
+    ));
+    doc.push_str("## Required artifacts\n\n");
+    for path in report
+        .get("missing_required_artifacts")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+    {
+        doc.push_str(&format!("- [ ] missing: `{path}`\n"));
+    }
+    if report
+        .get("missing_required_artifacts")
+        .and_then(serde_json::Value::as_array)
+        .is_some_and(|rows| rows.is_empty())
+    {
+        doc.push_str("- [x] all required artifacts present\n");
+    }
+    doc.push_str("\n## Optional artifacts\n\n");
+    for row in report
+        .get("optional_artifacts")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+    {
+        let path = row.get("path").and_then(serde_json::Value::as_str).unwrap_or_default();
+        let status = row.get("status").and_then(serde_json::Value::as_str).unwrap_or_default();
+        doc.push_str(&format!("- [{status}] `{path}`\n"));
+    }
+    doc.push_str("\n## Manifest summary\n\n");
+    doc.push_str(&format!(
+        "- git sha: `{}`\n",
+        manifest.get("git_sha").and_then(serde_json::Value::as_str).unwrap_or("unknown")
+    ));
+    doc.push_str(&format!(
+        "- chart: `{}`\n",
+        manifest
+            .get("chart")
+            .and_then(|v| v.get("path"))
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("unknown")
+    ));
+    fs::write(&out_path, doc).map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
+    let status = report["status"].as_str().unwrap_or("failed");
+    let rendered = emit_payload(
+        args.format,
+        args.out,
+        &serde_json::json!({
+            "schema_version": 1,
+            "kind": "release_launch_checklist_generate",
+            "status": status,
+            "version": version,
+            "path": repo_rel(&root, &out_path)
+        }),
+    )?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
 fn run_release_changelog_generate(
     args: ReleaseChangelogGenerateArgs,
 ) -> Result<(String, i32), String> {
@@ -5189,11 +5467,19 @@ pub(crate) fn run_release_command(
                 run_release_manifest_validate(args)
             }
         },
+        ReleaseCommand::Checksums { command } => match command {
+            crate::cli::ReleaseChecksumsCommand::Generate(args) => {
+                run_release_checksums_generate(args)
+            }
+            crate::cli::ReleaseChecksumsCommand::Verify(args) => run_release_checksums_verify(args),
+        },
         ReleaseCommand::Bundle { command } => match command {
             crate::cli::ReleaseBundleCommand::Build(args) => run_release_bundle_build(args),
             crate::cli::ReleaseBundleCommand::Verify(args) => run_release_bundle_verify(args),
             crate::cli::ReleaseBundleCommand::Hash(args) => run_release_bundle_hash(args),
         },
+        ReleaseCommand::ReadinessReport(args) => run_release_readiness_report(args),
+        ReleaseCommand::LaunchChecklist(args) => run_release_launch_checklist(args),
         ReleaseCommand::Sign(args) => run_release_sign(args),
         ReleaseCommand::Verify(args) => run_release_verify(args),
         ReleaseCommand::Diff(args) => run_release_diff(args),
@@ -5277,6 +5563,7 @@ pub(crate) fn run_release_command(
             ReleaseOpsCommand::ScenarioEvidenceVerify(args) => {
                 run_release_ops_scenario_evidence_verify(args)
             }
+            ReleaseOpsCommand::PublishPlan(args) => run_release_ops_publish_plan(args),
         },
     }
 }
