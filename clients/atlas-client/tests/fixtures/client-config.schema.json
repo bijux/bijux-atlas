@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "atlas-client-config",
+  "type": "object",
+  "required": ["base_url"],
+  "properties": {
+    "base_url": {"type": "string", "pattern": "^https?://"},
+    "timeout_seconds": {"type": "number", "exclusiveMinimum": 0},
+    "max_retries": {"type": "integer", "minimum": 0},
+    "backoff_seconds": {"type": "number", "minimum": 0}
+  },
+  "additionalProperties": true
+}
