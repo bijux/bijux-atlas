@@ -149,7 +149,11 @@ not_in_nav: |
 nav:
   - Home: index.md
   - Start Here: start-here.md
-  - Product: product/index.md
+  - Product:
+      - Product Index: product/index.md
+      - FAQ: product/faq.md
+      - Tutorials: tutorials/index.md
+      - What We Built: what-we-built.md
   - Architecture:
       - Architecture Index: architecture/index.md
       - System Architecture Specification: architecture/system-architecture-specification.md
@@ -161,35 +165,46 @@ nav:
       - Architecture Diagrams: architecture/diagrams/index.md
       - Internal Architecture: architecture/internal-architecture.md
       - Architecture Evolution: architecture/evolution.md
-  - API:
-      - API Overview: api/index.md
-      - Errors: api/errors.md
-      - OpenAPI Generation: api/openapi-generation.md
-      - Client Behavior: api/client-behavior.md
-      - Compatibility Test Plan: api/compatibility-test-plan.md
-      - Client Retries and Backoff: api/client-retries-and-backoff.md
-      - Compatibility: api/compatibility.md
-      - Default Field Set: api/default-field-set.md
-      - Deprecation: api/deprecation.md
-      - Caching: api/caching.md
-      - Pagination: api/pagination.md
-      - Performance Expectations: api/performance-expectations.md
-      - Quick Reference: api/quick-reference.md
-      - SDK Strategy: api/sdk-strategy.md
-      - Troubleshooting: api/troubleshooting.md
-      - v1 Surface: api/v1-surface.md
-      - Versioning: api/versioning.md
-  - Operations: operations/index.md
-  - Control-plane: control-plane/index.md
+  - Operations:
+      - Operations Index: operations/index.md
+      - Ops Reference: reference/ops/index.md
+      - Releases: operations/release/index.md
   - Development:
       - Development Overview: development/index.md
       - Tooling: development/tooling/index.md
       - Governance Index: governance/index.md
-      - Docs governance: _internal/governance/index.md
-      - Docs Dashboard: _internal/governance/docs-dashboard.md
-  - Tutorials: tutorials/index.md
-  - Reference: reference/index.md
-  - Build Info: reference/build-info.md
-  - Errors and Exit Codes: reference/errors-and-exit-codes.md
-  - Ops Reference: reference/ops/index.md
-  - Configs Reference: reference/configs/index.md
+      - Control-plane: control-plane/index.md
+      - Developer Internals:
+          - Docs governance: _internal/governance/index.md
+          - Docs Dashboard: _internal/governance/docs-dashboard.md
+  - Reference:
+      - Reference Index: reference/index.md
+      - API:
+          - API Overview: api/index.md
+          - Errors: api/errors.md
+          - OpenAPI Generation: api/openapi-generation.md
+          - Client Behavior: api/client-behavior.md
+          - Compatibility Test Plan: api/compatibility-test-plan.md
+          - Client Retries and Backoff: api/client-retries-and-backoff.md
+          - Compatibility: api/compatibility.md
+          - Default Field Set: api/default-field-set.md
+          - Deprecation: api/deprecation.md
+          - Caching: api/caching.md
+          - Pagination: api/pagination.md
+          - Performance Expectations: api/performance-expectations.md
+          - Quick Reference: api/quick-reference.md
+          - SDK Strategy: api/sdk-strategy.md
+          - Troubleshooting: api/troubleshooting.md
+          - v1 Surface: api/v1-surface.md
+          - Versioning: api/versioning.md
+      - SDKs:
+          - Rust SDK Tutorial: tutorials/query-via-rust-client.md
+          - Python SDK Tutorial: tutorials/query-via-python-client.md
+      - Evidence and Guarantees:
+          - Contracts Index: reference/contracts/index.md
+          - Checks and Contracts Governance: _internal/governance/checks-and-contracts.md
+      - Releases:
+          - Release Operations: operations/release/index.md
+          - Build Info: reference/build-info.md
+      - Errors and Exit Codes: reference/errors-and-exit-codes.md
+      - Configs Reference: reference/configs/index.md

@@ -58,10 +58,9 @@ bijux dev atlas demo quickstart --format json
 
 ## Next steps
 
-- API integration: [API](api/index.md)
-- Runtime model: [Architecture dataflow](architecture/dataflow.md)
-- Operator workflows: [Operations](operations/index.md)
-- Guided tracks: [What to read next](what-to-read-next.md)
-- Product FAQ: [Product FAQ](product/faq.md)
-- Onboarding rubric: [Contributor onboarding rubric (30 minutes)](development/contributor-onboarding-rubric.md)
-- Terms: [Glossary](glossary.md)
+- [Product Index](product/index.md)
+- [Architecture Index](architecture/index.md)
+- [Operations Index](operations/index.md)
+- [Reference Index](reference/index.md)
+- [Development Index](development/index.md)
+- [What we built](what-we-built.md)

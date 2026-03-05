@@ -26,6 +26,8 @@ This is the canonical governance index for repository-wide policy and SSOT bound
 - Documentation governance: [Development](../development/index.md)
 - Contract and checks reference: [Reference](../reference/contracts/index.md)
 - Operational governance reference: [Ops Reference](../reference/ops/index.md)
+- Docs boundaries: [Docs Surface Boundaries](docs-surface-boundaries.md)
+- Docs changelog policy: [Docs Changelog Policy](docs-changelog-policy.md)
 - Governance charter: [Governance Charter](governance-charter.md)
 - Governance overview: [Project Governance Overview](project-governance-overview.md)
 - Governance model: [Project Governance Model](project-governance-model.md)
