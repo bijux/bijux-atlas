@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "configs/governance/enforcement/rules.schema.json",
+  "title": "Atlas governance enforcement rules",
+  "type": "object",
+  "required": ["schema_version", "registry_id", "rules"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "registry_id": { "type": "string" },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "severity", "rule_type"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "severity": { "enum": ["low", "medium", "high"] },
+          "rule_type": {
+            "enum": [
+              "required_files_exist",
+              "prohibited_files_absent",
+              "repo_layout_contract",
+              "docs_front_matter_complete",
+              "contract_registry_complete"
+            ]
+          },
+          "paths": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "contract_id": "repo-layout-core",
+  "required_directories": [
+    "crates",
+    "docs",
+    "ops",
+    "configs",
+    "release"
+  ]
+}

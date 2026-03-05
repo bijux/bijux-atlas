@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "registry_id": "governance-enforcement-rules",
+  "rules": [
+    {
+      "id": "GOV-RULE-001",
+      "title": "required files must exist",
+      "severity": "high",
+      "rule_type": "required_files_exist",
+      "paths": [
+        "README.md",
+        "Cargo.toml",
+        "configs/governance/governance.json"
+      ]
+    },
+    {
+      "id": "GOV-RULE-002",
+      "title": "prohibited files must not exist",
+      "severity": "medium",
+      "rule_type": "prohibited_files_absent",
+      "paths": [
+        "tmp/governance-dump.json",
+        "artifacts/tmp/governance-debug.log"
+      ]
+    },
+    {
+      "id": "GOV-RULE-003",
+      "title": "repo layout must match contract",
+      "severity": "high",
+      "rule_type": "repo_layout_contract",
+      "paths": [
+        "configs/governance/enforcement/repo-layout-contract.json"
+      ]
+    },
+    {
+      "id": "GOV-RULE-004",
+      "title": "docs front matter completeness",
+      "severity": "medium",
+      "rule_type": "docs_front_matter_complete",
+      "paths": [
+        "docs"
+      ]
+    },
+    {
+      "id": "GOV-RULE-005",
+      "title": "contract registry completeness",
+      "severity": "high",
+      "rule_type": "contract_registry_complete",
+      "paths": [
+        "configs/governance/contracts.registry.json"
+      ]
+    }
+  ]
+}
