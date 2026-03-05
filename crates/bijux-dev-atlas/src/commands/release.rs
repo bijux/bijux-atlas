@@ -5827,7 +5827,6 @@ mod tests {
     use super::*;
     use std::path::PathBuf;
     use std::sync::atomic::{AtomicU64, Ordering};
-    use std::time::{SystemTime, UNIX_EPOCH};
 
     static TEST_REPO_SEQUENCE: AtomicU64 = AtomicU64::new(1);
 
@@ -5838,11 +5837,7 @@ mod tests {
     fn create_release_test_repo(changelog: &str, policy: &str) -> PathBuf {
         let stamp = TEST_REPO_SEQUENCE.fetch_add(1, Ordering::Relaxed);
         let pid = std::process::id();
-        let nanos = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .map(|d| d.as_nanos())
-            .unwrap_or(0);
-        let root = std::env::temp_dir().join(format!("bijux-release-tests-{pid}-{nanos}-{stamp}"));
+        let root = std::env::temp_dir().join(format!("bijux-release-tests-{pid}-{stamp}"));
         cleanup_release_test_repo(&root);
         fs::create_dir_all(root.join("configs/release")).expect("create release config directory");
         fs::write(root.join("CHANGELOG.md"), changelog).expect("write changelog");
