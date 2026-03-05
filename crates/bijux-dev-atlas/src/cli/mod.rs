@@ -134,6 +134,10 @@ pub enum Command {
         #[command(subcommand)]
         command: AuditCommand,
     },
+    Observe {
+        #[command(subcommand)]
+        command: ObserveCommand,
+    },
     Invariants {
         #[command(subcommand)]
         command: InvariantsCommand,
@@ -347,6 +351,39 @@ pub enum InvariantsCommand {
     Explain(InvariantsExplainArgs),
     Coverage(InvariantsCommonArgs),
     Docs(InvariantsCommonArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ObserveCommand {
+    Metrics {
+        #[command(subcommand)]
+        command: ObserveMetricsCommand,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ObserveMetricsCommand {
+    List(ObserveMetricsCommonArgs),
+    Explain(ObserveMetricsExplainArgs),
+    Docs(ObserveMetricsCommonArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ObserveMetricsCommonArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ObserveMetricsExplainArgs {
+    #[arg()]
+    pub id_or_name: String,
+    #[command(flatten)]
+    pub common: ObserveMetricsCommonArgs,
 }
 
 #[derive(Subcommand, Debug)]

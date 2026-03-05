@@ -3,11 +3,11 @@
 use crate::cli::{
     ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand, Command,
     ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand, DriftCommand,
-    FormatArg, IngestCommand, InvariantsCommand, MakeCommand, OpsCommand, PerfCommand,
-    PoliciesCommand, RegistryCommand, ReleaseApiSurfaceCommand, ReleaseChecksumsCommand,
-    ReleaseCommand, ReleaseCratesCommand, ReleaseImagesCommand, ReleaseMsrvCommand,
-    ReleaseOpsCommand, ReleaseSemverCommand, ReportsCommand, ReproduceCommand, SecurityCommand,
-    TestsCommand,
+    FormatArg, IngestCommand, InvariantsCommand, MakeCommand, ObserveCommand, OpsCommand,
+    PerfCommand, PoliciesCommand, RegistryCommand, ReleaseApiSurfaceCommand,
+    ReleaseChecksumsCommand, ReleaseCommand, ReleaseCratesCommand, ReleaseImagesCommand,
+    ReleaseMsrvCommand, ReleaseOpsCommand, ReleaseSemverCommand, ReportsCommand, ReproduceCommand,
+    SecurityCommand, TestsCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -53,6 +53,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Security { command } => force_json_security(command),
         Command::System { command } => force_json_system(command),
         Command::Audit { command } => force_json_audit(command),
+        Command::Observe { command } => force_json_observe(command),
         Command::Invariants { command } => force_json_invariants(command),
         Command::Drift { command } => force_json_drift(command),
         Command::Reproduce { command } => force_json_reproduce(command),
@@ -751,6 +752,18 @@ fn force_json_audit(command: &mut AuditCommand) {
         },
         AuditCommand::Readiness { command } => match command {
             crate::cli::AuditReadinessCommand::Validate(args) => args.format = FormatArg::Json,
+        },
+    }
+}
+
+fn force_json_observe(command: &mut ObserveCommand) {
+    match command {
+        ObserveCommand::Metrics { command } => match command {
+            crate::cli::ObserveMetricsCommand::List(args)
+            | crate::cli::ObserveMetricsCommand::Docs(args) => args.format = FormatArg::Json,
+            crate::cli::ObserveMetricsCommand::Explain(args) => {
+                args.common.format = FormatArg::Json
+            }
         },
     }
 }
@@ -1503,6 +1516,17 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             AuditCommand::Readiness { command } => match command {
                 crate::cli::AuditReadinessCommand::Validate(args) => {
                     args.repo_root = Some(root.clone())
+                }
+            },
+        },
+        Command::Observe { command } => match command {
+            ObserveCommand::Metrics { command } => match command {
+                crate::cli::ObserveMetricsCommand::List(args)
+                | crate::cli::ObserveMetricsCommand::Docs(args) => {
+                    args.repo_root = Some(root.clone())
+                }
+                crate::cli::ObserveMetricsCommand::Explain(args) => {
+                    args.common.repo_root = Some(root.clone())
                 }
             },
         },

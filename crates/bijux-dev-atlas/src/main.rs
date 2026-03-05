@@ -32,6 +32,8 @@ mod invariants_commands;
 mod main_tests;
 #[path = "commands/make.rs"]
 mod make_commands;
+#[path = "commands/observe.rs"]
+mod observe_commands;
 #[path = "commands/ops.rs"]
 mod ops_commands;
 #[path = "commands/ops/execution_runtime.rs"]
@@ -40,10 +42,10 @@ mod ops_execution_runtime;
 mod ops_support;
 #[path = "commands/perf.rs"]
 mod perf_commands;
-#[path = "commands/reproduce.rs"]
-mod reproduce_commands;
 #[path = "commands/release.rs"]
 mod release_commands;
+#[path = "commands/reproduce.rs"]
+mod reproduce_commands;
 #[path = "commands/security.rs"]
 mod security_commands;
 #[path = "commands/suites.rs"]

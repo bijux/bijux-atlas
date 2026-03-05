@@ -15,6 +15,7 @@ pub mod docs;
 pub mod drift;
 pub mod governance_enforcement;
 pub mod make;
+pub mod metrics_registry;
 pub mod ops;
 pub mod repo;
 pub mod reproducibility;
