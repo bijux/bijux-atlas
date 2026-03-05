@@ -1,0 +1,7 @@
+include src/bijux_atlas/compatibility.json
+include src/bijux_atlas/py.typed
+include compatibility.json
+include README.md
+include LICENSE
+include CHANGELOG.md
+include VERSIONING.md

@@ -45,16 +45,19 @@ Optional environment variables:
 
 Compatibility is declared in `compatibility.json` and checked by `AtlasClient.check_compatibility()`.
 Runtime metadata is discovered from `/version` with fallback to `/health`.
+Compatibility policy is based on server semantic version and API surface expectations derived from OpenAPI `v1` endpoints.
 
 ## Error Handling
 
 Client failures raise typed exceptions from `bijux_atlas.errors`.
 Server-side errors include `request_id` and `trace_id` when returned by the runtime.
+Response schema shape validation is optional and disabled by default (`validate_response_schema=False`).
 
 ## Retries And Timeouts
 
 Retries apply only to idempotent calls and use bounded linear backoff.
 Timeouts and retry budgets are configurable via `ClientConfig`.
+Streaming query traversal is supported through `AtlasClient.stream_query()`.
 
 ## Pagination
 
@@ -65,6 +68,7 @@ Paged responses are exposed via `Page` and `next_token`.
 
 `ClientConfig` supports TLS verification control (`verify_ssl`) and proxy routing (`proxy_url`).
 Auth tokens are sent via `Authorization: Bearer <token>`.
+Request correlation is supported through `BIJUX_ATLAS_REQUEST_ID` / `request_id`.
 
 ## Telemetry
 
