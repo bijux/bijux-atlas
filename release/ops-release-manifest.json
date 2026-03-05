@@ -2,6 +2,8 @@
   "chart_package_path": "artifacts/release/ops/package/bijux-atlas-0.1.0.tgz",
   "chart_reference": "oci://ghcr.io/bijux/charts/bijux-atlas",
   "chart_sha256": "1a02cb7bb5f2b227977417fbedf89ace537cbe30c863921485663dcf06d46c8f",
+  "chart_version": "0.1.0",
   "kind": "ops_release_manifest",
-  "schema_version": 1
+  "schema_version": 1,
+  "workspace_version": "0.1.0"
 }

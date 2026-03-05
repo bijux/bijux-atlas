@@ -1712,8 +1712,17 @@ fn run_release_ops_push(args: ReleaseOpsPushArgs) -> Result<(String, i32), Strin
         );
     }
     let digest = sha256_file(&chart_pkg)?;
+    let workspace_ver = workspace_version(&root).unwrap_or_else(|_| "0.1.0".to_string());
+    let chart_version = chart_pkg
+        .file_name()
+        .and_then(|v| v.to_str())
+        .and_then(|name| name.strip_prefix("bijux-atlas-"))
+        .and_then(|name| name.strip_suffix(".tgz"))
+        .unwrap_or(workspace_ver.as_str())
+        .to_string();
     let digest_report_path = root.join("release/ops-chart-digest.json");
     let release_manifest_path = root.join("release/ops-release-manifest.json");
+    let release_bundle_manifest_path = root.join("release/ops-release-bundle-manifest.json");
     if args.common.allow_write {
         write_json(
             &digest_report_path,
@@ -1731,7 +1740,31 @@ fn run_release_ops_push(args: ReleaseOpsPushArgs) -> Result<(String, i32), Strin
                 "kind": "ops_release_manifest",
                 "chart_reference": chart_ref,
                 "chart_package_path": repo_rel(&root, &chart_pkg),
-                "chart_sha256": digest
+                "chart_sha256": digest,
+                "chart_version": chart_version,
+                "workspace_version": workspace_ver
+            }),
+        )?;
+        write_json(
+            &release_bundle_manifest_path,
+            &serde_json::json!({
+                "schema_version": 1,
+                "kind": "ops_release_bundle_manifest",
+                "workspace_version": workspace_ver,
+                "chart": {
+                    "name": "bijux-atlas",
+                    "reference": chart_ref,
+                    "version": chart_version,
+                    "sha256": digest
+                },
+                "crates": {
+                    "workspace": workspace_ver,
+                    "ops_control_plane": "bijux-dev-atlas"
+                },
+                "source_files": {
+                    "ops_release_spec": "release/ops-v0.1.toml",
+                    "workspace_manifest": "Cargo.toml"
+                }
             }),
         )?;
     }
@@ -1745,6 +1778,7 @@ fn run_release_ops_push(args: ReleaseOpsPushArgs) -> Result<(String, i32), Strin
         "sha256": digest,
         "digest_report_path": repo_rel(&root, &digest_report_path),
         "release_manifest_path": repo_rel(&root, &release_manifest_path),
+        "release_bundle_manifest_path": repo_rel(&root, &release_bundle_manifest_path),
         "stdout": stdout,
         "errors": errors
     });
