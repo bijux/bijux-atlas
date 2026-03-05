@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "annotation-large-sample",
-  "url": "https://example.org/datasets/annotation-large-sample.csv",
-  "expected_sha256": "replace-with-real-sha256",
+  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/birdstrikes.csv",
+  "expected_sha256": "45777edf69984b37599e73dbfb34dbc976055243547407214261a4fcb9466462",
   "retrieval_method": "https-get"
 }

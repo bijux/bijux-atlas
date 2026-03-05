@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "clinvar-large-sample",
-  "url": "https://example.org/datasets/clinvar-large-sample.csv",
-  "expected_sha256": "replace-with-real-sha256",
+  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/us-state-capitals.json",
+  "expected_sha256": "070b12ff2db958b12c2df2287330f4598611404d7e7ef8211a3b578a26c0827f",
   "retrieval_method": "https-get"
 }

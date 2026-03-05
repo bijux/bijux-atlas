@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "genes-baseline",
-  "url": "https://example.org/datasets/genes-baseline.csv",
-  "expected_sha256": "replace-with-real-sha256",
+  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/seattle-weather.csv",
+  "expected_sha256": "0845078a290b48e3149ab8639966824110a251db4e06fc144c06ebb534af23be",
   "retrieval_method": "https-get"
 }

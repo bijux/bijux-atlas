@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "variants-mini",
-  "url": "https://example.org/datasets/variants-mini.csv",
-  "expected_sha256": "replace-with-real-sha256",
+  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/cars.json",
+  "expected_sha256": "f686a53678b21f4231e2f6a5ba7ce5761d9d39204fccdea1caa29fb8c460e319",
   "retrieval_method": "https-get"
 }

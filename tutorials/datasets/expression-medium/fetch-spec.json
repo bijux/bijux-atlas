@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "expression-medium",
-  "url": "https://example.org/datasets/expression-medium.csv",
-  "expected_sha256": "replace-with-real-sha256",
+  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/co2-concentration.csv",
+  "expected_sha256": "c1a4a970864145940a28225cae288618b156cb32f9a2a1b6606ba7124134febb",
   "retrieval_method": "https-get"
 }

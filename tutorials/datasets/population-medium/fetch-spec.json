@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "population-medium",
-  "url": "https://example.org/datasets/population-medium.csv",
-  "expected_sha256": "replace-with-real-sha256",
+  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/gapminder-health-income.csv",
+  "expected_sha256": "27366350362387628fa50ad9db85358e60bb31c3b7a3523e4e11e9561ca64eda",
   "retrieval_method": "https-get"
 }

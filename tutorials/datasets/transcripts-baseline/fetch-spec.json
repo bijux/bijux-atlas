@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "transcripts-baseline",
-  "url": "https://example.org/datasets/transcripts-baseline.csv",
-  "expected_sha256": "replace-with-real-sha256",
+  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/airports.csv",
+  "expected_sha256": "caeb10d97cf2946792f7f2b4e28b692c655bb6c5f0a8e048ea3625b538266dd3",
   "retrieval_method": "https-get"
 }

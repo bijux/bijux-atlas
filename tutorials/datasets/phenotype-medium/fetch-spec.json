@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "dataset": "phenotype-medium",
-  "url": "https://example.org/datasets/phenotype-medium.csv",
-  "expected_sha256": "replace-with-real-sha256",
+  "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/iowa-electricity.csv",
+  "expected_sha256": "6071c2e657d91509885a1f3eec0884b2854d66990b5c556dbead15e263f9506b",
   "retrieval_method": "https-get"
 }
