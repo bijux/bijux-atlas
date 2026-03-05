@@ -546,6 +546,10 @@ fn governance_adr_index_path(root: &Path) -> PathBuf {
     root.join("artifacts/governance/adr-index.json")
 }
 
+fn governance_health_report_path(root: &Path) -> PathBuf {
+    root.join("artifacts/governance/governance-health-report.json")
+}
+
 fn governance_enforcement_path(root: &Path) -> PathBuf {
     root.join("artifacts/governance/enforcement-report.json")
 }
@@ -2673,6 +2677,55 @@ fn governance_adr_index_payload(root: &Path) -> Result<serde_json::Value, String
     }))
 }
 
+fn required_governance_docs() -> &'static [&'static str] {
+    &[
+        "docs/governance/governance-charter.md",
+        "docs/governance/project-governance-model.md",
+        "docs/governance/maintainers-and-roles.md",
+        "docs/governance/decision-process.md",
+        "docs/governance/contributor-onboarding-workflow.md",
+        "docs/governance/adr-registry.md",
+        "docs/governance/adr-template.md",
+    ]
+}
+
+fn governance_docs_validation_errors(root: &Path) -> Vec<String> {
+    required_governance_docs()
+        .iter()
+        .filter_map(|rel| {
+            let path = root.join(rel);
+            (!path.exists()).then(|| format!("required governance document missing: {rel}"))
+        })
+        .collect()
+}
+
+fn contributor_guideline_validation_errors(root: &Path) -> Vec<String> {
+    let mut errors = Vec::new();
+    let onboarding_path = root.join("docs/governance/contributor-onboarding-workflow.md");
+    let text = match fs::read_to_string(&onboarding_path) {
+        Ok(value) => value,
+        Err(_) => {
+            errors.push(format!(
+                "contributor onboarding workflow missing: {}",
+                onboarding_path.strip_prefix(root).unwrap_or(&onboarding_path).display()
+            ));
+            return errors;
+        }
+    };
+    for required in [
+        "governance check --format json",
+        "governance validate --format json",
+        "maintainer signoff",
+    ] {
+        if !text.contains(required) {
+            errors.push(format!(
+                "contributor onboarding workflow missing required guidance: {required}"
+            ));
+        }
+    }
+    errors
+}
+
 pub(crate) fn run_governance_command(
     _quiet: bool,
     command: GovernanceCommand,
@@ -2841,6 +2894,61 @@ pub(crate) fn run_governance_command(
             let rendered = emit_payload(format, out, &payload)?;
             Ok((rendered, 0))
         }
+        GovernanceCommand::Report {
+            repo_root,
+            format,
+            out,
+        } => {
+            let root = resolve_repo_root(repo_root)?;
+            let docs_errors = governance_docs_validation_errors(&root);
+            let contributor_errors = contributor_guideline_validation_errors(&root);
+            let adr_index = governance_adr_index_payload(&root)?;
+            let enforcement_registry = governance_enforcement::load_registry(&root)?;
+            let enforcement = governance_enforcement::evaluate_registry(&root, &enforcement_registry);
+            let status = if docs_errors.is_empty()
+                && contributor_errors.is_empty()
+                && enforcement.status == "ok"
+            {
+                "ok"
+            } else {
+                "failed"
+            };
+            let report = serde_json::json!({
+                "schema_version": 1,
+                "kind": "governance_health_report",
+                "status": status,
+                "summary": {
+                    "required_governance_documents": required_governance_docs().len(),
+                    "missing_governance_documents": docs_errors.len(),
+                    "contributor_guideline_findings": contributor_errors.len(),
+                    "enforcement_rule_count": enforcement.rule_count,
+                    "enforcement_violation_count": enforcement.violations.len(),
+                    "adr_count": adr_index["count"].clone(),
+                },
+                "governance_docs_validation": {
+                    "status": if docs_errors.is_empty() { "ok" } else { "failed" },
+                    "errors": docs_errors,
+                },
+                "contributor_guidelines_validation": {
+                    "status": if contributor_errors.is_empty() { "ok" } else { "failed" },
+                    "errors": contributor_errors,
+                },
+                "enforcement": enforcement,
+                "adr_index": adr_index,
+            });
+            let report_path = governance_health_report_path(&root);
+            write_pretty_json(&report_path, &report)?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "kind": "governance_report",
+                "status": report["status"].clone(),
+                "report_path": report_path.strip_prefix(&root).unwrap_or(&report_path).display().to_string(),
+                "summary": report["summary"].clone(),
+            });
+            let rendered = emit_payload(format, out, &payload)?;
+            let exit_code = if payload["status"] == "ok" { 0 } else { 1 };
+            Ok((rendered, exit_code))
+        }
         GovernanceCommand::Validate {
             repo_root,
             format,
@@ -2971,6 +3079,10 @@ pub(crate) fn run_governance_command(
             )
             .map_err(|e| format!("write {} failed: {e}", enforcement_metrics_path.display()))?;
             let mut governance_errors = validation.errors;
+            let governance_docs_errors = governance_docs_validation_errors(&root);
+            let contributor_guideline_errors = contributor_guideline_validation_errors(&root);
+            governance_errors.extend(governance_docs_errors.clone());
+            governance_errors.extend(contributor_guideline_errors.clone());
             governance_errors.extend(
                 checks_inventory["errors"]
                     .as_array()
@@ -2998,6 +3110,15 @@ pub(crate) fn run_governance_command(
                 "objects": collect_governance_objects(&root)?,
                 "errors": governance_errors,
                 "checks_inventory": checks_inventory,
+                "governance_docs_validation": {
+                    "status": if governance_docs_errors.is_empty() { "ok" } else { "failed" },
+                    "errors": governance_docs_errors,
+                    "required_documents": required_governance_docs(),
+                },
+                "contributor_guidelines_validation": {
+                    "status": if contributor_guideline_errors.is_empty() { "ok" } else { "failed" },
+                    "errors": contributor_guideline_errors,
+                },
                 "enforcement": enforcement_result,
                 "enforcement_coverage": enforcement_coverage,
                 "enforcement_metrics": enforcement_metrics,
