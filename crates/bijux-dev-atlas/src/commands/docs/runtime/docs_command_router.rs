@@ -1337,10 +1337,6 @@ fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Valu
             format_generated_doc_content(&build_real_data_runs_table_body(&catalog)),
         ),
         (
-            "docs/_internal/generated/real-data-runs-overview.md",
-            format_generated_doc_content(&build_real_data_overview_body(&catalog)),
-        ),
-        (
             "docs/_internal/generated/docs-artifact-link-inventory.md",
             format_generated_doc_content(&build_artifact_link_inventory_body(&link_rows)),
         ),
