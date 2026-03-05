@@ -44,6 +44,13 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
 
+      - name: Install docs toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -r configs/docs/requirements.lock.txt
+          npm ci --prefix configs/docs
+
       - name: Validate docs output directory contract
         shell: bash
         run: |
@@ -59,13 +66,6 @@ jobs:
           if "_drafts/**" not in exclude_docs:
               raise SystemExit("mkdocs exclude_docs must include _drafts/**")
           PY
-
-      - name: Install docs toolchain
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 -m pip install -r configs/docs/requirements.lock.txt
-          npm ci --prefix configs/docs
 
       - name: Build docs site
         shell: bash
