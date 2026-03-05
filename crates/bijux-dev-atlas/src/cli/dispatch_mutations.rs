@@ -735,14 +735,14 @@ fn force_json_tutorials(command: &mut crate::cli::TutorialsCommand) {
         | crate::cli::TutorialsCommand::ReproducibilityCheck(args)
         | crate::cli::TutorialsCommand::Generate(args) => args.format = FormatArg::Json,
         crate::cli::TutorialsCommand::Run { command } => match command {
-            crate::cli::TutorialsRunCommand::Workflow(args) => args.format = FormatArg::Json,
+            crate::cli::TutorialsRunCommand::Workflow(args) => args.common.format = FormatArg::Json,
         },
         crate::cli::TutorialsCommand::Build { command } => match command {
             crate::cli::TutorialsBuildCommand::Docs(args) => args.common.format = FormatArg::Json,
         },
         crate::cli::TutorialsCommand::Dataset { command } => match command {
-            crate::cli::TutorialsDatasetCommand::Package(args)
-            | crate::cli::TutorialsDatasetCommand::Ingest(args)
+            crate::cli::TutorialsDatasetCommand::Package(args) => args.common.format = FormatArg::Json,
+            crate::cli::TutorialsDatasetCommand::Ingest(args)
             | crate::cli::TutorialsDatasetCommand::IntegrityCheck(args) => {
                 args.format = FormatArg::Json
             }
@@ -759,7 +759,8 @@ fn force_json_tutorials(command: &mut crate::cli::TutorialsCommand) {
             crate::cli::TutorialsEvidenceCommand::Validate(args) => args.format = FormatArg::Json,
         },
         crate::cli::TutorialsCommand::Contracts { command } => match command {
-            crate::cli::TutorialsContractsCommand::Validate(args) => args.format = FormatArg::Json,
+            crate::cli::TutorialsContractsCommand::Validate(args)
+            | crate::cli::TutorialsContractsCommand::Explain(args) => args.format = FormatArg::Json,
         },
     }
 }
@@ -1625,7 +1626,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 args.repo_root = Some(root.clone())
             }
             crate::cli::TutorialsCommand::Run { command } => match command {
-                crate::cli::TutorialsRunCommand::Workflow(args) => args.repo_root = Some(root.clone()),
+                crate::cli::TutorialsRunCommand::Workflow(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
             },
             crate::cli::TutorialsCommand::Build { command } => match command {
                 crate::cli::TutorialsBuildCommand::Docs(args) => {
@@ -1633,8 +1636,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
             },
             crate::cli::TutorialsCommand::Dataset { command } => match command {
-                crate::cli::TutorialsDatasetCommand::Package(args)
-                | crate::cli::TutorialsDatasetCommand::Ingest(args)
+                crate::cli::TutorialsDatasetCommand::Package(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+                crate::cli::TutorialsDatasetCommand::Ingest(args)
                 | crate::cli::TutorialsDatasetCommand::IntegrityCheck(args) => {
                     args.repo_root = Some(root.clone())
                 }
@@ -1655,7 +1660,8 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
             },
             crate::cli::TutorialsCommand::Contracts { command } => match command {
-                crate::cli::TutorialsContractsCommand::Validate(args) => {
+                crate::cli::TutorialsContractsCommand::Validate(args)
+                | crate::cli::TutorialsContractsCommand::Explain(args) => {
                     args.repo_root = Some(root.clone())
                 }
             },

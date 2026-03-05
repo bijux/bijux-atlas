@@ -1265,6 +1265,10 @@ pub struct TutorialsCommandArgs {
     #[arg(long)]
     pub out: Option<PathBuf>,
     #[arg(long, default_value_t = false)]
+    pub quiet: bool,
+    #[arg(long, default_value_t = false)]
+    pub verbose: bool,
+    #[arg(long, default_value_t = false)]
     pub markdown: bool,
     #[arg(long, default_value_t = false)]
     pub no_color: bool,
@@ -1272,7 +1276,15 @@ pub struct TutorialsCommandArgs {
 
 #[derive(Subcommand, Debug)]
 pub enum TutorialsRunCommand {
-    Workflow(TutorialsCommandArgs),
+    Workflow(TutorialsWorkflowArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct TutorialsWorkflowArgs {
+    #[command(flatten)]
+    pub common: TutorialsCommandArgs,
+    #[arg(long)]
+    pub only: Option<String>,
 }
 
 #[derive(Subcommand, Debug)]
@@ -1292,9 +1304,19 @@ pub struct TutorialsBuildDocsArgs {
 
 #[derive(Subcommand, Debug)]
 pub enum TutorialsDatasetCommand {
-    Package(TutorialsCommandArgs),
+    Package(TutorialsDatasetPackageArgs),
     Ingest(TutorialsCommandArgs),
     IntegrityCheck(TutorialsCommandArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct TutorialsDatasetPackageArgs {
+    #[command(flatten)]
+    pub common: TutorialsCommandArgs,
+    #[arg(long, default_value_t = false)]
+    pub update_sha256: bool,
+    #[arg(long, default_value_t = true)]
+    pub stable_timestamps: bool,
 }
 
 #[derive(Subcommand, Debug)]
@@ -1323,6 +1345,7 @@ pub enum TutorialsEvidenceCommand {
 #[derive(Subcommand, Debug)]
 pub enum TutorialsContractsCommand {
     Validate(TutorialsCommandArgs),
+    Explain(TutorialsCommandArgs),
 }
 
 #[derive(Args, Debug, Clone)]

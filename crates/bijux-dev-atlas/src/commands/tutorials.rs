@@ -3,15 +3,14 @@
 use crate::cli::{
     TutorialsBuildCommand, TutorialsBuildDocsArgs, TutorialsCommand, TutorialsCommandArgs,
     TutorialsContractsCommand, TutorialsDashboardsCommand, TutorialsDatasetCommand,
-    TutorialsEvidenceCommand, TutorialsRunCommand, TutorialsWorkspaceCommand,
-    TutorialsWorkspaceCleanupArgs,
+    TutorialsDatasetPackageArgs, TutorialsEvidenceCommand, TutorialsRunCommand,
+    TutorialsWorkflowArgs, TutorialsWorkspaceCommand, TutorialsWorkspaceCleanupArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::domains::tutorials::checks;
 use bijux_dev_atlas::domains::tutorials::contracts;
 use bijux_dev_atlas::domains::tutorials::runtime::workspace::TutorialWorkspaceManager;
 use bijux_dev_atlas::ui::terminal::report::{render_status_line, LineStyle};
-use std::collections::BTreeMap;
 use std::fs;
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
@@ -48,6 +47,7 @@ pub(crate) fn run_tutorials_command(quiet: bool, command: TutorialsCommand) -> i
         },
         TutorialsCommand::Contracts { command } => match command {
             TutorialsContractsCommand::Validate(args) => run_tutorials_contracts_validate(&args),
+            TutorialsContractsCommand::Explain(args) => run_tutorials_contracts_explain(&args),
         },
         TutorialsCommand::Generate(args) => run_tutorials_generate(&args),
     };
@@ -140,6 +140,7 @@ fn run_tutorials_explain(args: &TutorialsCommandArgs) -> Result<(String, i32), S
             "tutorials dashboards validate",
             "tutorials evidence validate",
             "tutorials contracts validate",
+            "tutorials contracts explain",
             "tutorials generate"
         ]
     });
@@ -185,19 +186,34 @@ fn run_tutorials_verify(args: &TutorialsCommandArgs) -> Result<(String, i32), St
     Ok((rendered, if success { 0 } else { 1 }))
 }
 
-fn run_tutorials_workflow(args: &TutorialsCommandArgs) -> Result<(String, i32), String> {
-    let repo_root = resolve_repo_root(args.repo_root.clone())?;
+fn run_tutorials_workflow(args: &TutorialsWorkflowArgs) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let mut selected = vec!["setup", "ingest", "query", "dashboards-validate", "evidence-validate"];
+    if let Some(only) = args.only.as_deref() {
+        selected = vec![only];
+    }
     let mut steps = Vec::new();
-    steps.push(run_timed_step("contracts-validate", || {
-        run_tutorials_contracts_validate(args).map(|_| ())
-    }));
-    steps.push(run_timed_step("dashboards-validate", || {
-        run_tutorials_dashboards_validate(args).map(|_| ())
-    }));
-    steps.push(run_timed_step("evidence-validate", || {
-        run_tutorials_evidence_validate(args).map(|_| ())
-    }));
-    steps.push(run_timed_step("verify", || run_tutorials_verify(args).map(|_| ())));
+    for step in selected {
+        let row = match step {
+            "setup" => run_timed_step("setup", || run_tutorials_workspace_setup(&args.common)),
+            "ingest" => run_timed_step("ingest", || run_tutorials_dataset_ingest(&args.common).map(|_| ())),
+            "query" => run_timed_step("query", || run_tutorials_query_probe(&args.common)),
+            "dashboards-validate" => {
+                run_timed_step("dashboards-validate", || run_tutorials_dashboards_validate(&args.common).map(|_| ()))
+            }
+            "evidence-validate" => {
+                run_timed_step("evidence-validate", || run_tutorials_evidence_validate(&args.common).map(|_| ()))
+            }
+            "verify" => run_timed_step("verify", || run_tutorials_verify(&args.common).map(|_| ())),
+            unknown => serde_json::json!({
+                "name": unknown,
+                "success": false,
+                "error": format!("unknown workflow step `{unknown}`"),
+                "duration_ms": 0
+            }),
+        };
+        steps.push(row);
+    }
     let failures = steps
         .iter()
         .filter(|row| !row["success"].as_bool().unwrap_or(false))
@@ -209,8 +225,8 @@ fn run_tutorials_workflow(args: &TutorialsCommandArgs) -> Result<(String, i32), 
         "success": failures == 0,
         "steps": steps,
         "summary": {
-            "total": 4,
-            "passed": 4 - failures,
+            "total": steps.len(),
+            "passed": steps.len().saturating_sub(failures),
             "failed": failures
         }
     });
@@ -220,12 +236,12 @@ fn run_tutorials_workflow(args: &TutorialsCommandArgs) -> Result<(String, i32), 
         "workflow-report.md",
         &render_tutorial_summary_markdown("run-workflow", &report),
     )?;
-    let rendered = match args.format {
-        crate::cli::FormatArg::Text if !args.markdown => {
-            render_workflow_nextest(&steps, !args.no_color)
+    let rendered = match args.common.format {
+        crate::cli::FormatArg::Text if !args.common.markdown => {
+            render_workflow_nextest(&steps, !args.common.no_color, args.common.verbose)
         }
         _ => emit_tutorial_output(
-            args,
+            &args.common,
             &report,
             Some(render_tutorial_summary_markdown("run-workflow", &report)),
         )?,
@@ -262,24 +278,29 @@ fn run_tutorials_build_docs(args: &TutorialsBuildDocsArgs) -> Result<(String, i3
     Ok((rendered, if status.success() { 0 } else { 1 }))
 }
 
-fn run_tutorials_dataset_package(args: &TutorialsCommandArgs) -> Result<(String, i32), String> {
-    let repo_root = resolve_repo_root(args.repo_root.clone())?;
+fn run_tutorials_dataset_package(args: &TutorialsDatasetPackageArgs) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
     let sha_file_path = repo_root.join("tutorials/contracts/atlas-example-minimal.sha256");
     let files = load_files_from_sha256_manifest(&sha_file_path)?;
     let package_dir = repo_root.join("artifacts/tutorials/datasets");
     fs::create_dir_all(&package_dir)
         .map_err(|err| format!("failed to create {}: {err}", package_dir.display()))?;
     let package_path = package_dir.join("atlas-example-minimal.tar");
-    build_deterministic_tar(&repo_root, &files, &package_path)?;
+    build_deterministic_tar(&repo_root, &files, &package_path, args.stable_timestamps)?;
+    if args.update_sha256 {
+        update_sha256_manifest(&repo_root, &files, &sha_file_path)?;
+    }
     let payload = serde_json::json!({
         "schema_version": 1,
         "domain": "tutorials",
         "action": "dataset-package",
         "text": "dataset packaged with deterministic ordering",
         "input_files": files,
-        "package_path": package_path.display().to_string()
+        "package_path": package_path.display().to_string(),
+        "stable_timestamps": args.stable_timestamps,
+        "sha256_manifest_updated": args.update_sha256
     });
-    let rendered = emit_tutorial_output(args, &payload, None)?;
+    let rendered = emit_tutorial_output(&args.common, &payload, None)?;
     Ok((rendered, 0))
 }
 
@@ -373,25 +394,51 @@ fn run_tutorials_reproducibility_check(
     let files = load_files_from_sha256_manifest(
         &repo_root.join("tutorials/contracts/atlas-example-minimal.sha256"),
     )?;
-    let mut signatures = BTreeMap::new();
-    for file in files {
-        let candidate = repo_root.join(file.as_str());
-        if candidate.exists() {
-            let bytes = fs::read(&candidate)
-                .map_err(|err| format!("failed to read {}: {err}", candidate.display()))?;
-            let digest = sha256_hex(&bytes);
-            signatures.insert(file, digest);
-        }
-    }
+    let run_dir = repo_root.join("artifacts/tutorials/reproducibility");
+    fs::create_dir_all(&run_dir)
+        .map_err(|err| format!("failed to create {}: {err}", run_dir.display()))?;
+    let run_one = run_dir.join("atlas-example-minimal.run1.tar");
+    let run_two = run_dir.join("atlas-example-minimal.run2.tar");
+    build_deterministic_tar(&repo_root, &files, &run_one, true)?;
+    build_deterministic_tar(&repo_root, &files, &run_two, true)?;
+    let run_one_hash =
+        sha256_hex(&fs::read(&run_one).map_err(|err| format!("failed to read {}: {err}", run_one.display()))?);
+    let run_two_hash =
+        sha256_hex(&fs::read(&run_two).map_err(|err| format!("failed to read {}: {err}", run_two.display()))?);
+    let reproducible = run_one_hash == run_two_hash;
+    let file_level_diffs = if reproducible {
+        Vec::new()
+    } else {
+        files
+            .iter()
+            .map(|file| {
+                let candidate = repo_root.join(file.as_str());
+                let digest = fs::read(&candidate)
+                    .map(|bytes| sha256_hex(&bytes))
+                    .unwrap_or_else(|_| "missing".to_string());
+                format!("{file}: {digest}")
+            })
+            .collect::<Vec<_>>()
+    };
+    let evidence = serde_json::json!({
+        "schema_version": 1,
+        "kind": "tutorial_reproducibility_evidence",
+        "run_one": {"path": run_one.display().to_string(), "sha256": run_one_hash},
+        "run_two": {"path": run_two.display().to_string(), "sha256": run_two_hash},
+        "reproducible": reproducible,
+        "file_level_diffs": file_level_diffs
+    });
+    write_tutorial_report(&repo_root, "reproducibility-evidence.json", &evidence)?;
     let payload = serde_json::json!({
         "schema_version": 1,
         "domain": "tutorials",
         "action": "reproducibility-check",
-        "text": "baseline dataset signatures collected for reproducibility comparison",
-        "signatures": signatures
+        "text": "two deterministic package runs compared",
+        "reproducible": reproducible,
+        "evidence_artifact": "artifacts/tutorials/reproducibility-evidence.json"
     });
     let rendered = emit_tutorial_output(args, &payload, None)?;
-    Ok((rendered, 0))
+    Ok((rendered, if reproducible { 0 } else { 1 }))
 }
 
 fn run_tutorials_workspace_cleanup(
@@ -459,6 +506,30 @@ fn run_tutorials_contracts_validate(args: &TutorialsCommandArgs) -> Result<(Stri
     });
     let rendered = emit_tutorial_output(args, &payload, None)?;
     Ok((rendered, if success { 0 } else { 1 }))
+}
+
+fn run_tutorials_contracts_explain(args: &TutorialsCommandArgs) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.repo_root.clone())?;
+    let assets = load_tutorial_assets(&repo_root)?;
+    let required_keys = assets
+        .dataset_contract
+        .get("required")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+        .collect::<Vec<_>>();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "domain": "tutorials",
+        "action": "contracts-explain",
+        "contract_path": "tutorials/contracts/tutorial-dataset-contract.json",
+        "required_keys": required_keys,
+        "properties": assets.dataset_contract.get("properties").cloned().unwrap_or(serde_json::json!({}))
+    });
+    let rendered = emit_tutorial_output(args, &payload, None)?;
+    Ok((rendered, 0))
 }
 
 fn run_tutorials_generate(args: &TutorialsCommandArgs) -> Result<(String, i32), String> {
@@ -612,11 +683,27 @@ fn validate_dataset_contract_semantics(contract: &serde_json::Value) -> (bool, s
         .collect::<Vec<_>>();
     for key in ["dataset_id", "schema_version", "record_count", "description"] {
         if !required_keys.iter().any(|found| found == key) {
-            violations.push(format!("dataset contract missing required key `{key}`"));
+            violations.push(serde_json::json!({
+                "pointer": "/required",
+                "message": format!("dataset contract missing required key `{key}`")
+            }));
         }
     }
     if contract.get("properties").is_none() {
-        violations.push("dataset contract must declare `properties`".to_string());
+        violations.push(serde_json::json!({
+            "pointer": "/properties",
+            "message": "dataset contract must declare `properties`"
+        }));
+    }
+    let schema_ok = contract
+        .get("$schema")
+        .and_then(|v| v.as_str())
+        .is_some_and(|v| v.contains("json-schema.org"));
+    if !schema_ok {
+        violations.push(serde_json::json!({
+            "pointer": "/$schema",
+            "message": "dataset contract must declare a JSON Schema URI"
+        }));
     }
     (
         violations.is_empty(),
@@ -686,7 +773,38 @@ where
     serde_json::Value::Object(object)
 }
 
-fn render_workflow_nextest(steps: &[serde_json::Value], color: bool) -> String {
+fn run_tutorials_workspace_setup(args: &TutorialsCommandArgs) -> Result<(), String> {
+    let repo_root = resolve_repo_root(args.repo_root.clone())?;
+    let workspace = TutorialWorkspaceManager::new(&repo_root);
+    workspace.ensure()?;
+    Ok(())
+}
+
+fn run_tutorials_query_probe(args: &TutorialsCommandArgs) -> Result<(), String> {
+    let repo_root = resolve_repo_root(args.repo_root.clone())?;
+    let output = ProcessCommand::new("cargo")
+        .current_dir(repo_root)
+        .args([
+            "run",
+            "-q",
+            "-p",
+            "bijux-dev-atlas",
+            "--",
+            "datasets",
+            "validate",
+            "--format",
+            "json",
+        ])
+        .output()
+        .map_err(|err| format!("failed to run datasets validate: {err}"))?;
+    if output.status.success() {
+        Ok(())
+    } else {
+        Err("datasets validate command failed during tutorial query probe".to_string())
+    }
+}
+
+fn render_workflow_nextest(steps: &[serde_json::Value], color: bool, verbose: bool) -> String {
     let total = steps.len();
     let mut lines = vec!["tutorials workflow".to_string()];
     for (index, row) in steps.iter().enumerate() {
@@ -699,6 +817,13 @@ fn render_workflow_nextest(steps: &[serde_json::Value], color: bool) -> String {
             line.push_str(&format!(" ({error})"));
         }
         lines.push(line);
+        if verbose {
+            lines.push(format!(
+                "  detail: step={} duration_ms={}",
+                name,
+                duration
+            ));
+        }
     }
     let failed = steps
         .iter()
@@ -744,7 +869,12 @@ fn emit_tutorial_output(
         }
         return Ok(content);
     }
-    emit_payload(args.format, args.out.clone(), payload)
+    let rendered = emit_payload(args.format, args.out.clone(), payload)?;
+    if args.quiet {
+        Ok(String::new())
+    } else {
+        Ok(rendered)
+    }
 }
 
 fn load_sha256_pairs(path: &Path) -> Result<Vec<(String, String)>, String> {
@@ -778,7 +908,12 @@ fn load_files_from_sha256_manifest(path: &Path) -> Result<Vec<String>, String> {
     Ok(files)
 }
 
-fn build_deterministic_tar(repo_root: &Path, files: &[String], output: &Path) -> Result<(), String> {
+fn build_deterministic_tar(
+    repo_root: &Path,
+    files: &[String],
+    output: &Path,
+    stable_timestamps: bool,
+) -> Result<(), String> {
     let file = fs::File::create(output)
         .map_err(|err| format!("failed to create {}: {err}", output.display()))?;
     let mut builder = tar::Builder::new(file);
@@ -803,13 +938,35 @@ fn build_deterministic_tar(repo_root: &Path, files: &[String], output: &Path) ->
         header.set_mode(0o644);
         header.set_uid(0);
         header.set_gid(0);
-        header.set_mtime(0);
+        header.set_mtime(if stable_timestamps { 0 } else { 1 });
         header.set_cksum();
         builder
             .append_data(&mut header, archive_path, data.as_slice())
             .map_err(|err| format!("failed to add {} to tar: {err}", src.display()))?;
     }
     builder.finish().map_err(|err| format!("failed to finalize tar: {err}"))
+}
+
+fn update_sha256_manifest(
+    repo_root: &Path,
+    files: &[String],
+    manifest: &Path,
+) -> Result<(), String> {
+    let mut lines = Vec::new();
+    for rel in files {
+        let path = if Path::new(rel).is_absolute() {
+            PathBuf::from(rel)
+        } else {
+            repo_root.join(rel)
+        };
+        let digest = sha256_hex(
+            &fs::read(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+        );
+        lines.push(format!("{digest}  {}", path.display()));
+    }
+    lines.sort();
+    fs::write(manifest, format!("{}\n", lines.join("\n")))
+        .map_err(|err| format!("failed to write {}: {err}", manifest.display()))
 }
 
 fn sha256_hex(bytes: &[u8]) -> String {
