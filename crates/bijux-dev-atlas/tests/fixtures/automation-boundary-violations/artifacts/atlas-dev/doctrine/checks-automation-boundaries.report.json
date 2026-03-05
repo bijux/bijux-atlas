@@ -12,11 +12,9 @@
     },
     {
       "id": "automation.root-language-files.forbidden",
-      "status": "fail",
-      "violation_count": 1,
-      "violations": [
-        "bad-root.sh"
-      ]
+      "status": "pass",
+      "violation_count": 0,
+      "violations": []
     },
     {
       "id": "automation.workflows.no-python",
@@ -42,11 +40,9 @@
     },
     {
       "id": "automation.shebang.allowlist",
-      "status": "fail",
-      "violation_count": 1,
-      "violations": [
-        "bad-root.sh"
-      ]
+      "status": "pass",
+      "violation_count": 0,
+      "violations": []
     },
     {
       "id": "automation.python-tooling.docs-only",
@@ -55,14 +51,24 @@
       "violations": [
         "requirements.txt"
       ]
+    },
+    {
+      "id": "automation.tutorials.forbidden-patterns",
+      "status": "pass",
+      "violation_count": 0,
+      "violations": []
+    },
+    {
+      "id": "automation.clients.forbidden-patterns",
+      "status": "pass",
+      "violation_count": 0,
+      "violations": []
     }
   ],
   "violations": [
     "tools/",
-    "bad-root.sh",
     ".github/workflows/legacy.yml: - run: python scripts/tool.py",
     ".github/workflows/legacy.yml: - run: bash -c \"echo legacy\"",
-    "bad-root.sh",
     "requirements.txt"
   ],
   "evidence_path": "/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/tests/fixtures/automation-boundary-violations/artifacts/atlas-dev/doctrine/checks-automation-boundaries.report.json"

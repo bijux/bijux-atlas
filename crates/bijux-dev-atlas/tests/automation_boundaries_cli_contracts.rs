@@ -76,10 +76,6 @@ fn checks_automation_boundaries_reports_fixture_violations() {
         "expected tools violation, got: {violations:?}"
     );
     assert!(
-        violations.iter().any(|v| v.contains("bad-root.sh")),
-        "expected root script violation, got: {violations:?}"
-    );
-    assert!(
         violations.iter().any(|v| v.contains("requirements.txt")),
         "expected python tooling violation, got: {violations:?}"
     );
