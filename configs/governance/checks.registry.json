@@ -661,6 +661,51 @@
       "overlaps_with": [],
       "cpu_hint": "heavy",
       "mem_hint": "high"
+    },
+    {
+      "check_id": "CHECK-AUTOMATION-BOUNDARIES-001",
+      "summary": "Verify repository automation boundaries remain delegated to bijux-dev-atlas and no forbidden script-era patterns reappear.",
+      "owner": "team:atlas-governance",
+      "mode": "pure",
+      "group": "governance",
+      "inputs": [
+        "repository filesystem",
+        "workflow definitions",
+        "governance allowlists"
+      ],
+      "outputs": [
+        "automation boundaries report"
+      ],
+      "commands": [
+        "bijux-dev-atlas checks automation-boundaries --format json"
+      ],
+      "report_ids": [
+        "check-automation-boundaries"
+      ],
+      "reports": [
+        "artifacts/atlas-dev/doctrine/checks-automation-boundaries.report.json"
+      ],
+      "suite_membership": [
+        "checks"
+      ],
+      "severity": "blocker",
+      "stage": "pr",
+      "runtime_cost": "low",
+      "determinism": "strict",
+      "tags": [
+        "governance",
+        "automation",
+        "boundaries"
+      ],
+      "retries": 0,
+      "requires_tools": [
+        "bijux-dev-atlas"
+      ],
+      "missing_tools_policy": "fail",
+      "overlaps_with": [],
+      "since_version": "0.1.0",
+      "cpu_hint": "light",
+      "mem_hint": "low"
     }
   ]
 }

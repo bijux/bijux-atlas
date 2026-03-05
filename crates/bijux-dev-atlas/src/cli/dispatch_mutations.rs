@@ -4,7 +4,7 @@ use crate::cli::{
     ApiCommand, ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand,
     Command, ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand,
     DriftCommand, FormatArg, IngestCommand, InvariantsCommand, LoadCommand, MakeCommand,
-    ObserveCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand,
+    MigrationsCommand, ObserveCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand,
     ReleaseApiSurfaceCommand, ReleaseChecksumsCommand, ReleaseCommand, ReleaseCratesCommand,
     ReleaseImagesCommand, ReleaseMsrvCommand, ReleaseOpsCommand, ReleaseSemverCommand,
     ReportsCommand, ReproduceCommand, SecurityCommand, TestsCommand,
@@ -54,6 +54,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Runtime { command } => force_json_runtime(command),
         Command::Tutorials { command } => force_json_tutorials(command),
         Command::Clients { command } => force_json_clients(command),
+        Command::Migrations { command } => force_json_migrations(command),
         Command::System { command } => force_json_system(command),
         Command::Audit { command } => force_json_audit(command),
         Command::Observe { command } => force_json_observe(command),
@@ -778,6 +779,12 @@ fn force_json_clients(command: &mut crate::cli::ClientsCommand) {
         crate::cli::ClientsCommand::CompatMatrix { command } => match command {
             crate::cli::ClientsCompatMatrixCommand::Verify(args) => args.format = FormatArg::Json,
         },
+    }
+}
+
+fn force_json_migrations(command: &mut MigrationsCommand) {
+    match command {
+        MigrationsCommand::Status { format, .. } => *format = FormatArg::Json,
     }
 }
 
@@ -1697,6 +1704,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     args.repo_root = Some(root.clone())
                 }
             },
+        },
+        Command::Migrations { command } => match command {
+            MigrationsCommand::Status { repo_root, .. } => *repo_root = Some(root.clone()),
         },
         Command::System { command } => match command {
             crate::cli::SystemCommand::Simulate { command } => match command {

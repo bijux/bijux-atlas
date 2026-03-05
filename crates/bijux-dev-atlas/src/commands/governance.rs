@@ -2909,9 +2909,36 @@ pub(crate) fn run_governance_command(
             let enforcement_registry = governance_enforcement::load_registry(&root)?;
             let enforcement =
                 governance_enforcement::evaluate_registry(&root, &enforcement_registry);
+            let (checks_rendered, checks_code) =
+                crate::run_checks_automation_boundaries(crate::AutomationBoundariesOptions {
+                    repo_root: Some(root.clone()),
+                    format: FormatArg::Json,
+                    out: None,
+                })?;
+            let checks_report: serde_json::Value = serde_json::from_str(&checks_rendered)
+                .map_err(|e| format!("parse checks automation report failed: {e}"))?;
+            let tutorials_purity = checks_report["checks"]
+                .as_array()
+                .and_then(|rows| {
+                    rows.iter().find(|row| {
+                        row["id"].as_str() == Some("automation.tutorials.forbidden-patterns")
+                    })
+                })
+                .cloned()
+                .unwrap_or_else(|| serde_json::json!({"id":"automation.tutorials.forbidden-patterns","status":"missing"}));
+            let clients_purity = checks_report["checks"]
+                .as_array()
+                .and_then(|rows| {
+                    rows.iter().find(|row| {
+                        row["id"].as_str() == Some("automation.clients.forbidden-patterns")
+                    })
+                })
+                .cloned()
+                .unwrap_or_else(|| serde_json::json!({"id":"automation.clients.forbidden-patterns","status":"missing"}));
             let status = if docs_errors.is_empty()
                 && contributor_errors.is_empty()
                 && enforcement.status == "ok"
+                && checks_code == 0
             {
                 "ok"
             } else {
@@ -2928,6 +2955,7 @@ pub(crate) fn run_governance_command(
                     "enforcement_rule_count": enforcement.rule_count,
                     "enforcement_violation_count": enforcement.violations.len(),
                     "adr_count": adr_index["count"].clone(),
+                    "automation_boundary_violations": checks_report["violations"].as_array().map_or(0, |rows| rows.len()),
                 },
                 "governance_docs_validation": {
                     "status": if docs_errors.is_empty() { "ok" } else { "failed" },
@@ -2939,6 +2967,11 @@ pub(crate) fn run_governance_command(
                 },
                 "enforcement": enforcement,
                 "adr_index": adr_index,
+                "sections": {
+                    "Automation purity": checks_report,
+                    "Tutorials purity": tutorials_purity,
+                    "Clients tooling purity": clients_purity,
+                }
             });
             let report_path = governance_health_report_path(&root);
             write_pretty_json(&report_path, &report)?;

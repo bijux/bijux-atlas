@@ -176,6 +176,10 @@ pub enum Command {
         #[command(subcommand)]
         command: ClientsCommand,
     },
+    Migrations {
+        #[command(subcommand)]
+        command: MigrationsCommand,
+    },
     Datasets {
         #[command(subcommand)]
         command: DatasetsCommand,
@@ -799,6 +803,18 @@ pub enum PerfCommand {
 #[derive(Subcommand, Debug)]
 pub enum DatasetsCommand {
     Validate(DatasetsValidateArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum MigrationsCommand {
+    Status {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
 }
 
 #[derive(Subcommand, Debug)]

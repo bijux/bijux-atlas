@@ -38,6 +38,8 @@ mod load_commands;
 mod main_tests;
 #[path = "commands/make.rs"]
 mod make_commands;
+#[path = "commands/migrations.rs"]
+mod migrations_commands;
 #[path = "commands/observe.rs"]
 mod observe_commands;
 #[path = "commands/ops.rs"]
