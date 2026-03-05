@@ -10,8 +10,14 @@ use std::net::TcpListener;
 use std::thread;
 
 fn spawn_json_server(body: &'static str) -> String {
-    let listener = TcpListener::bind("127.0.0.1:0").expect("bind test server");
-    let addr = listener.local_addr().expect("local addr");
+    let listener = match TcpListener::bind("127.0.0.1:0") {
+        Ok(listener) => listener,
+        Err(error) => panic!("failed to bind test server: {error}"),
+    };
+    let addr = match listener.local_addr() {
+        Ok(address) => address,
+        Err(error) => panic!("failed to get local test addr: {error}"),
+    };
     thread::spawn(move || {
         if let Ok((mut stream, _)) = listener.accept() {
             let mut buf = [0_u8; 1024];
@@ -24,7 +30,7 @@ fn spawn_json_server(body: &'static str) -> String {
             let _ = stream.write_all(response.as_bytes());
         }
     });
-    format!("http://{}", addr)
+    format!("http://{addr}")
 }
 
 #[test]
@@ -35,9 +41,15 @@ fn dataset_query_parses_response_rows() {
         base_url,
         ..ClientConfig::default()
     };
-    let client = AtlasClient::new(config).expect("client init");
+    let client = match AtlasClient::new(config) {
+        Ok(client) => client,
+        Err(error) => panic!("client init failed: {error}"),
+    };
     let query = DatasetQuery::new("110", "homo_sapiens", "GRCh38");
-    let page = client.dataset_query(&query, None).expect("query result");
+    let page = match client.dataset_query(&query, None) {
+        Ok(page) => page,
+        Err(error) => panic!("query failed: {error}"),
+    };
     assert_eq!(page.items.len(), 1);
     assert!(page.next.is_some());
 }

@@ -17,7 +17,7 @@ fn dataset_query_builder_bench(c: &mut Criterion) {
                 .include_biotype()
                 .include_coords();
             black_box(q);
-        })
+        });
     });
 }
 
@@ -25,17 +25,19 @@ fn retry_strategy_bench(c: &mut Criterion) {
     c.bench_function("retry_strategy_success", |b| {
         b.iter(|| {
             let mut tries = 0;
-            let value = run_with_retry(black_box(3), 0, || {
+            let value = match run_with_retry(black_box(3), 0, || {
                 tries += 1;
                 if tries == 1 {
                     Err(ClientError::new(ErrorClass::Transport, "transient"))
                 } else {
                     Ok(1_u32)
                 }
-            })
-            .expect("retry success");
+            }) {
+                Ok(value) => value,
+                Err(error) => panic!("retry benchmark setup failed: {error}"),
+            };
             black_box(value);
-        })
+        });
     });
 }
 

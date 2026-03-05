@@ -16,10 +16,7 @@ fn main() {
     };
     let client = match AtlasClient::new(config) {
         Ok(client) => client,
-        Err(err) => {
-            eprintln!("client init failed: {err}");
-            std::process::exit(2);
-        }
+        Err(_err) => std::process::exit(2),
     };
 
     let query = if let Some(gene_id) = gene_id {
@@ -29,10 +26,7 @@ fn main() {
     };
 
     match client.dataset_query(&query, None) {
-        Ok(page) => println!("rows={} next={}", page.items.len(), page.next.is_some()),
-        Err(err) => {
-            eprintln!("query failed: {err}");
-            std::process::exit(1);
-        }
+        Ok(_page) => {}
+        Err(_err) => std::process::exit(1),
     }
 }

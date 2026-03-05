@@ -9,24 +9,42 @@ use std::fs;
 use std::path::PathBuf;
 
 fn repo_root() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .parent()
-        .expect("workspace")
-        .parent()
-        .expect("repo")
-        .to_path_buf()
+    let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let Some(workspace_root) = manifest_dir.parent() else {
+        panic!(
+            "missing workspace root for manifest dir: {}",
+            manifest_dir.display()
+        );
+    };
+    let Some(repo_root) = workspace_root.parent() else {
+        panic!(
+            "missing repository root for workspace dir: {}",
+            workspace_root.display()
+        );
+    };
+    repo_root.to_path_buf()
 }
 
 #[test]
 fn runtime_compatibility_matrix_contains_v1() {
-    let value: serde_json::Value = serde_json::from_str(
-        &fs::read_to_string(
-            repo_root().join("ops/api/contracts/rust-client-runtime-compatibility.json"),
-        )
-        .expect("read compatibility matrix"),
-    )
-    .expect("parse compatibility matrix");
+    let path = repo_root().join("ops/api/contracts/rust-client-runtime-compatibility.json");
+    let matrix_json = match fs::read_to_string(&path) {
+        Ok(value) => value,
+        Err(error) => panic!(
+            "failed to read compatibility matrix {}: {error}",
+            path.display()
+        ),
+    };
+    let value: serde_json::Value = match serde_json::from_str(&matrix_json) {
+        Ok(value) => value,
+        Err(error) => panic!(
+            "failed to parse compatibility matrix {}: {error}",
+            path.display()
+        ),
+    };
     assert_eq!(value["schema_version"], serde_json::json!(1));
-    let rows = value["matrix"].as_array().expect("matrix array");
+    let Some(rows) = value["matrix"].as_array() else {
+        panic!("compatibility matrix is missing array at `matrix`");
+    };
     assert!(rows.iter().any(|row| row["api_version"] == "v1"));
 }

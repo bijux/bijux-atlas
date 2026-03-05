@@ -9,12 +9,20 @@ use std::fs;
 use std::path::PathBuf;
 
 fn repo_root() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .parent()
-        .expect("workspace")
-        .parent()
-        .expect("repo")
-        .to_path_buf()
+    let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let Some(workspace_root) = manifest_dir.parent() else {
+        panic!(
+            "missing workspace root for manifest dir: {}",
+            manifest_dir.display()
+        );
+    };
+    let Some(repo_root) = workspace_root.parent() else {
+        panic!(
+            "missing repository root for workspace dir: {}",
+            workspace_root.display()
+        );
+    };
+    repo_root.to_path_buf()
 }
 
 #[test]
@@ -32,9 +40,14 @@ fn metrics_export_emits_expected_shape() {
 #[test]
 fn client_config_schema_is_parseable() {
     let path = repo_root().join("crates/bijux-atlas-client/config/client-config.schema.json");
-    let value: serde_json::Value =
-        serde_json::from_str(&fs::read_to_string(path).expect("schema read"))
-            .expect("schema parse");
+    let schema = match fs::read_to_string(&path) {
+        Ok(value) => value,
+        Err(error) => panic!("failed to read schema {}: {error}", path.display()),
+    };
+    let value: serde_json::Value = match serde_json::from_str(&schema) {
+        Ok(value) => value,
+        Err(error) => panic!("failed to parse schema {}: {error}", path.display()),
+    };
     assert_eq!(
         value["title"],
         serde_json::json!("Atlas Rust Client Configuration")

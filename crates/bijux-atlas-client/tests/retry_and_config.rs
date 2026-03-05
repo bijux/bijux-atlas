@@ -39,7 +39,10 @@ fn retry_helper_retries_until_success() {
         } else {
             Ok(42)
         }
-    })
-    .expect("retry result");
+    });
+    let result = match result {
+        Ok(value) => value,
+        Err(error) => panic!("retry helper should succeed: {error}"),
+    };
     assert_eq!(result, 42);
 }
