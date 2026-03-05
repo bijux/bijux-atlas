@@ -172,6 +172,10 @@ pub enum Command {
         #[command(subcommand)]
         command: TutorialsCommand,
     },
+    Packages {
+        #[command(subcommand)]
+        command: PackagesCommand,
+    },
     Clients {
         #[command(subcommand)]
         command: ClientsCommand,
@@ -1405,6 +1409,22 @@ pub enum ClientsCompatMatrixCommand {
 #[derive(Subcommand, Debug)]
 pub enum ClientsPythonCommand {
     Test(ClientsPythonTestArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum PackagesCommand {
+    List(PackagesCommandArgs),
+    Verify(PackagesCommandArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct PackagesCommandArgs {
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
 }
 
 #[derive(Args, Debug, Clone)]

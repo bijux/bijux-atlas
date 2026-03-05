@@ -4,7 +4,7 @@ use crate::cli::{
     ApiCommand, ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand,
     Command, ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand,
     DriftCommand, FormatArg, IngestCommand, InvariantsCommand, LoadCommand, MakeCommand,
-    MigrationsCommand, ObserveCommand, OpsCommand, PerfCommand, PoliciesCommand, RegistryCommand,
+    MigrationsCommand, ObserveCommand, OpsCommand, PackagesCommand, PerfCommand, PoliciesCommand, RegistryCommand,
     ReleaseApiSurfaceCommand, ReleaseChecksumsCommand, ReleaseCommand, ReleaseCratesCommand,
     ReleaseImagesCommand, ReleaseMsrvCommand, ReleaseOpsCommand, ReleaseSemverCommand,
     ReportsCommand, ReproduceCommand, SecurityCommand, TestsCommand,
@@ -53,6 +53,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Security { command } => force_json_security(command),
         Command::Runtime { command } => force_json_runtime(command),
         Command::Tutorials { command } => force_json_tutorials(command),
+        Command::Packages { command } => force_json_packages(command),
         Command::Clients { command } => force_json_clients(command),
         Command::Migrations { command } => force_json_migrations(command),
         Command::System { command } => force_json_system(command),
@@ -788,6 +789,12 @@ fn force_json_clients(command: &mut crate::cli::ClientsCommand) {
 fn force_json_migrations(command: &mut MigrationsCommand) {
     match command {
         MigrationsCommand::Status { format, .. } => *format = FormatArg::Json,
+    }
+}
+
+fn force_json_packages(command: &mut PackagesCommand) {
+    match command {
+        PackagesCommand::List(args) | PackagesCommand::Verify(args) => args.format = FormatArg::Json,
     }
 }
 
@@ -1695,6 +1702,11 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                     args.repo_root = Some(root.clone())
                 }
             },
+        },
+        Command::Packages { command } => match command {
+            crate::cli::PackagesCommand::List(args) | crate::cli::PackagesCommand::Verify(args) => {
+                args.repo_root = Some(root.clone())
+            }
         },
         Command::Clients { command } => match command {
             crate::cli::ClientsCommand::List(args)

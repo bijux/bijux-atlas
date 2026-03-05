@@ -52,6 +52,7 @@ pub(crate) use migrations_commands::run_migrations_command;
 pub(crate) use load_commands::run_load_command;
 pub(crate) use observe_commands::run_observe_command;
 pub(crate) use ops_commands::{emit_payload, normalize_tool_version_with_regex, run_ops_command};
+pub(crate) use packages_commands::run_packages_command;
 pub(crate) use perf_commands::run_perf_command;
 pub(crate) use reproduce_commands::run_reproduce_command;
 pub(crate) use release_commands::run_release_command;

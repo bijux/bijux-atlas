@@ -59,6 +59,7 @@ fn checks_automation_boundaries_reports_fixture_violations() {
         "automation.python-tooling.docs-only",
         "automation.tutorials.forbidden-patterns",
         "automation.clients.forbidden-patterns",
+        "automation.packages.boundary-compliance",
         "automation.ops.directory-purity",
     ] {
         assert!(

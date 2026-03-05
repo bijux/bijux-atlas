@@ -20,6 +20,8 @@ tags:
 - [Jupyter tutorial](jupyter-tutorial.md)
 - [Version compatibility matrix](version-compatibility-matrix.md)
 - [Client verification](client-verification.md)
+- [Package location and policy](package-location-and-policy.md)
+- [Package release workflow](release-packages.md)
 - [Update generated docs](update-generated-docs.md)
 - [Ecosystem integration examples](ecosystem-integrations.md)
 - [Delivery summary](delivery-summary.md)

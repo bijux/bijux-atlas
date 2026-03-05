@@ -60,6 +60,9 @@ The same implementation detail may appear in both layers only as a documented co
 - Boundary verification entrypoints:
   - `bijux-dev-atlas checks automation-boundaries`
   - `bijux-dev-atlas contract automation-boundaries`
+  - `bijux-dev-atlas packages list`
+  - `bijux-dev-atlas packages verify`
+- Required report sections include `Packages boundary compliance` so package policy drift is visible in governance outputs.
 
 ## Linking Policy Authority
 
