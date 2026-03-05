@@ -2366,29 +2366,46 @@ fn run_release_checksums_generate(args: ReleaseCheckArgs) -> Result<(String, i32
 }
 
 fn run_release_checksums_verify(args: ReleaseCheckArgs) -> Result<(String, i32), String> {
-    let result = run_release_verify(ReleaseVerifyArgs {
-        repo_root: args.repo_root,
-        evidence: std::path::PathBuf::from("release/evidence/bundle.tar"),
-        format: FormatArg::Json,
-        out: None,
-    })?;
-    let payload: serde_json::Value = serde_json::from_str(&result.0).unwrap_or_else(|_| {
-        serde_json::json!({"schema_version":1,"kind":"release_checksums_verify","status":"failed","errors":["failed to parse release verify output"]})
-    });
-    let checksums = payload
-        .get("checksums_path")
+    let root = resolve_repo_root(args.repo_root)?;
+    let checksums_path = root.join("release/signing/checksums.json");
+    let checksums = read_json(&checksums_path)?;
+    let rows = checksums
+        .get("checksums")
+        .or_else(|| checksums.get("items"))
+        .and_then(serde_json::Value::as_array)
         .cloned()
-        .unwrap_or(serde_json::json!("release/signing/checksums.json"));
-    let status = payload
-        .get("status")
-        .and_then(serde_json::Value::as_str)
-        .unwrap_or("failed");
+        .unwrap_or_default();
+    let mut errors = Vec::<String>::new();
+    let mut verified = 0usize;
+    for row in rows {
+        let Some(path) = row.get("path").and_then(serde_json::Value::as_str) else {
+            errors.push("checksums row missing path".to_string());
+            continue;
+        };
+        let Some(expected) = row.get("sha256").and_then(serde_json::Value::as_str) else {
+            errors.push(format!("checksums row missing sha256 for {path}"));
+            continue;
+        };
+        let abs = root.join(path);
+        if !abs.exists() {
+            errors.push(format!("checksums target missing: {path}"));
+            continue;
+        }
+        let actual = sha256_file(&abs)?;
+        if actual != expected {
+            errors.push(format!("checksum mismatch: {path}"));
+            continue;
+        }
+        verified += 1;
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
     let wrapped = serde_json::json!({
         "schema_version": 1,
         "kind": "release_checksums_verify",
         "status": status,
-        "checksums_path": checksums,
-        "errors": payload.get("errors").cloned().unwrap_or(serde_json::json!([]))
+        "checksums_path": repo_rel(&root, &checksums_path),
+        "verified_entries": verified,
+        "errors": errors
     });
     let rendered = emit_payload(args.format, args.out, &wrapped)?;
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
@@ -4734,7 +4751,11 @@ fn run_release_bundle_verify(args: ReleaseBundleVerifyArgs) -> Result<(String, i
         {
             let entry = entry.map_err(|err| format!("failed to read release tree entry: {err}"))?;
             let name = entry.file_name().to_string_lossy().to_string();
-            if !required.contains(name.as_str()) && name != "bundle.sha256" {
+            if !required.contains(name.as_str())
+                && name != "bundle.sha256"
+                && name != "launch-checklist.md"
+                && name != "readiness-report.json"
+            {
                 errors.push(format!("unexpected file in release tree: {name}"));
             }
         }
@@ -5207,7 +5228,13 @@ fn run_release_readiness_report(
     let root = resolve_repo_root(args.repo_root)?;
     let version = args.version.unwrap_or_else(|| default_release_version(&root));
     let report = generate_release_readiness_report(&root, &version)?;
-    let out_path = release_root(&root, &version).join("readiness-report.json");
+    let out_path = root
+        .join("artifacts/release/reports")
+        .join(format!("{version}-readiness-report.json"));
+    if let Some(parent) = out_path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
     write_json(&out_path, &report)?;
     let rendered = emit_payload(
         args.format,
@@ -5233,7 +5260,13 @@ fn run_release_launch_checklist(
     let version = args.version.unwrap_or_else(|| default_release_version(&root));
     let report = generate_release_readiness_report(&root, &version)?;
     let manifest = read_json(&release_manifest_path(&root, &version))?;
-    let out_path = release_root(&root, &version).join("launch-checklist.md");
+    let out_path = root
+        .join("artifacts/release/reports")
+        .join(format!("{version}-launch-checklist.md"));
+    if let Some(parent) = out_path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
     let mut doc = String::new();
     doc.push_str("# v0.1 launch checklist\n\n");
     doc.push_str(&format!("- release version: `{version}`\n"));
