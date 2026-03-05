@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "id": "cli-ux-primary",
+  "benchmark_kind": "dev-only",
+  "command": ["help", "--format", "json"],
+  "thresholds": {
+    "max_p95_ms": 75.0,
+    "max_p99_ms": 120.0
+  }
+}

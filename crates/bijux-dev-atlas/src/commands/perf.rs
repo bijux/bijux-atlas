@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    PerfBenchesCommand, PerfCommand, PerfDiffArgs, PerfKindArgs, PerfRunArgs, PerfValidateArgs,
+    PerfBenchesCommand, PerfCliUxBenchArgs, PerfCliUxCommand, PerfCliUxDiffArgs, PerfCommand,
+    PerfDiffArgs, PerfKindArgs, PerfRunArgs, PerfValidateArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
 use reqwest::blocking::Client;
@@ -859,6 +860,215 @@ fn run_perf_benches_list(args: PerfValidateArgs) -> Result<(String, i32), String
     ))
 }
 
+#[derive(Debug, serde::Deserialize)]
+struct CliUxSpec {
+    schema_version: u64,
+    id: String,
+    benchmark_kind: String,
+    command: Vec<String>,
+    thresholds: CliUxThresholds,
+}
+
+#[derive(Debug, serde::Deserialize)]
+struct CliUxThresholds {
+    max_p95_ms: f64,
+    max_p99_ms: f64,
+}
+
+fn load_cli_ux_spec(root: &Path) -> Result<CliUxSpec, String> {
+    let path = root.join("configs/perf/cli-ux-benchmark-spec.json");
+    let text = fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let spec: CliUxSpec =
+        serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    if spec.schema_version != 1 {
+        return Err("cli-ux benchmark spec must declare schema_version=1".to_string());
+    }
+    if spec.command.is_empty() {
+        return Err("cli-ux benchmark spec command must not be empty".to_string());
+    }
+    Ok(spec)
+}
+
+fn run_perf_cli_ux_bench(args: PerfCliUxBenchArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let spec = load_cli_ux_spec(&root)?;
+    let exe = std::env::current_exe().map_err(|err| format!("resolve current executable failed: {err}"))?;
+    let runs = args.runs.max(1);
+    let warmup = args.warmup.min(runs.saturating_sub(1));
+
+    let mut samples = Vec::new();
+    let mut progress_lines = vec!["perf cli-ux bench".to_string()];
+    let logs_root = root.join("artifacts/perf/cli-ux/raw");
+    fs::create_dir_all(&logs_root)
+        .map_err(|err| format!("failed to create {}: {err}", logs_root.display()))?;
+
+    for index in 0..runs {
+        let started = Instant::now();
+        let output = ProcessCommand::new(&exe)
+            .args(&spec.command)
+            .output()
+            .map_err(|err| format!("run cli-ux sample failed: {err}"))?;
+        let elapsed_ms = started.elapsed().as_secs_f64() * 1000.0;
+        let sample_id = index + 1;
+        let stdout_path = logs_root.join(format!("sample-{sample_id:03}.stdout.log"));
+        let stderr_path = logs_root.join(format!("sample-{sample_id:03}.stderr.log"));
+        fs::write(&stdout_path, &output.stdout)
+            .map_err(|err| format!("failed to write {}: {err}", stdout_path.display()))?;
+        fs::write(&stderr_path, &output.stderr)
+            .map_err(|err| format!("failed to write {}: {err}", stderr_path.display()))?;
+
+        let status = if output.status.success() { "PASS" } else { "FAIL" };
+        progress_lines.push(format!(
+            "{status} ({}/{}) perf cli-ux sample [{:.3} ms]",
+            sample_id, runs, elapsed_ms
+        ));
+        samples.push((sample_id, elapsed_ms, output.status.success(), stdout_path, stderr_path));
+    }
+
+    let measured = samples
+        .iter()
+        .skip(warmup as usize)
+        .map(|(_, ms, _, _, _)| *ms)
+        .collect::<Vec<_>>();
+    let mut sorted = measured.clone();
+    sorted.sort_by(f64::total_cmp);
+    let p50 = percentile_ms(&sorted, 0.50);
+    let p95 = percentile_ms(&sorted, 0.95);
+    let p99 = percentile_ms(&sorted, 0.99);
+    let failed_samples = samples.iter().filter(|(_, _, ok, _, _)| !*ok).count();
+    let regression = p95 > spec.thresholds.max_p95_ms || p99 > spec.thresholds.max_p99_ms;
+    let success = failed_samples == 0 && !regression;
+
+    let report = serde_json::json!({
+        "schema_version": 1,
+        "benchmark_id": spec.id,
+        "benchmark_kind": spec.benchmark_kind,
+        "command": spec.command,
+        "runs": runs,
+        "warmup_runs": warmup,
+        "measured_runs": measured.len(),
+        "thresholds_ms": {
+            "max_p95_ms": spec.thresholds.max_p95_ms,
+            "max_p99_ms": spec.thresholds.max_p99_ms
+        },
+        "latency_ms": {
+            "p50": p50,
+            "p95": p95,
+            "p99": p99
+        },
+        "failed_samples": failed_samples,
+        "samples": samples.iter().map(|(id, ms, ok, stdout_log, stderr_log)| serde_json::json!({
+            "id": id,
+            "duration_ms": ms,
+            "status": if *ok { "pass" } else { "fail" },
+            "stdout_log": stdout_log.display().to_string(),
+            "stderr_log": stderr_log.display().to_string()
+        })).collect::<Vec<_>>(),
+        "status": if success { "ok" } else { "failed" }
+    });
+    let artifacts_root = root.join("artifacts/perf/cli-ux");
+    fs::create_dir_all(&artifacts_root)
+        .map_err(|err| format!("failed to create {}: {err}", artifacts_root.display()))?;
+    let report_path = artifacts_root.join("latest-report.json");
+    write_json(&report_path, &report)?;
+    let summary_path = artifacts_root.join("latest-summary.md");
+    let summary_md = format!(
+        "# CLI UX Benchmark Summary\n\n| Metric | Value |\n|---|---|\n| p50 ms | {:.3} |\n| p95 ms | {:.3} |\n| p99 ms | {:.3} |\n| failed samples | {} |\n| warmup runs | {} |\n| measured runs | {} |\n",
+        p50, p95, p99, failed_samples, warmup, measured.len()
+    );
+    fs::write(&summary_path, summary_md)
+        .map_err(|err| format!("failed to write {}: {err}", summary_path.display()))?;
+
+    if matches!(args.format, crate::cli::FormatArg::Text) {
+        progress_lines.push(format!(
+            "summary: total={} warmup={} measured={} failed_samples={} p95_ms={:.3} p99_ms={:.3}",
+            runs,
+            warmup,
+            measured.len(),
+            failed_samples,
+            p95,
+            p99
+        ));
+        progress_lines.push(format!("artifacts: {}", report_path.display()));
+        return Ok((progress_lines.join("\n"), if success { 0 } else { 1 }));
+    }
+
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "domain": "perf",
+        "action": "cli-ux-bench",
+        "status": if success { "ok" } else { "failed" },
+        "report_path": report_path.display().to_string(),
+        "summary_path": summary_path.display().to_string(),
+        "latency_ms": report["latency_ms"].clone(),
+        "thresholds_ms": report["thresholds_ms"].clone(),
+        "failed_samples": failed_samples
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if success { 0 } else { 1 }))
+}
+
+fn run_perf_cli_ux_diff(args: PerfCliUxDiffArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root)?;
+    let baseline_path = if args.baseline_report.is_absolute() {
+        args.baseline_report
+    } else {
+        root.join(args.baseline_report)
+    };
+    let current_path = if args.current_report.is_absolute() {
+        args.current_report
+    } else {
+        root.join(args.current_report)
+    };
+    let baseline = read_json(&baseline_path)?;
+    let current = read_json(&current_path)?;
+
+    let b_p95 = baseline["latency_ms"]["p95"].as_f64().unwrap_or(0.0);
+    let c_p95 = current["latency_ms"]["p95"].as_f64().unwrap_or(0.0);
+    let b_p99 = baseline["latency_ms"]["p99"].as_f64().unwrap_or(0.0);
+    let c_p99 = current["latency_ms"]["p99"].as_f64().unwrap_or(0.0);
+    let regressed = c_p95 > b_p95 || c_p99 > b_p99;
+    let diff_report = serde_json::json!({
+        "schema_version": 1,
+        "domain": "perf",
+        "action": "cli-ux-diff",
+        "baseline_report": baseline_path.display().to_string(),
+        "current_report": current_path.display().to_string(),
+        "threshold_flags": {
+            "p95_regressed": c_p95 > b_p95,
+            "p99_regressed": c_p99 > b_p99
+        },
+        "latency_ms": {
+            "p95": {"from": b_p95, "to": c_p95},
+            "p99": {"from": b_p99, "to": c_p99}
+        },
+        "status": if regressed { "failed" } else { "ok" }
+    });
+    let artifacts_root = root.join("artifacts/perf/cli-ux");
+    fs::create_dir_all(&artifacts_root)
+        .map_err(|err| format!("failed to create {}: {err}", artifacts_root.display()))?;
+    let report_path = artifacts_root.join("latest-diff.json");
+    write_json(&report_path, &diff_report)?;
+
+    if matches!(args.format, crate::cli::FormatArg::Text) {
+        let table = format!(
+            "perf cli-ux diff\n| metric | baseline | current | regressed |\n|---|---:|---:|---|\n| p95 ms | {:.3} | {:.3} | {} |\n| p99 ms | {:.3} | {:.3} | {} |\nsummary: status={} report={}",
+            b_p95,
+            c_p95,
+            c_p95 > b_p95,
+            b_p99,
+            c_p99,
+            c_p99 > b_p99,
+            if regressed { "failed" } else { "ok" },
+            report_path.display()
+        );
+        return Ok((table, if regressed { 1 } else { 0 }));
+    }
+
+    let rendered = emit_payload(args.format, args.out, &diff_report)?;
+    Ok((rendered, if regressed { 1 } else { 0 }))
+}
+
 pub(crate) fn run_perf_command(
     _quiet: bool,
     command: PerfCommand,
@@ -871,6 +1081,10 @@ pub(crate) fn run_perf_command(
         PerfCommand::Kind(args) => run_perf_kind(args),
         PerfCommand::Benches { command } => match command {
             PerfBenchesCommand::List(args) => run_perf_benches_list(args),
+        },
+        PerfCommand::CliUx { command } => match command {
+            PerfCliUxCommand::Bench(args) => run_perf_cli_ux_bench(args),
+            PerfCliUxCommand::Diff(args) => run_perf_cli_ux_diff(args),
         },
     }
 }

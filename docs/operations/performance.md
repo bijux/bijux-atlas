@@ -53,8 +53,10 @@ Related ops contracts: `OPS-ROOT-023`, `PERF-KIND-001`.
 4. `bijux-dev-atlas perf cold-start --format json`
 5. `bijux-dev-atlas perf kind --profile perf --format json`
 6. `bijux-dev-atlas perf benches list --format json`
-7. `cargo bench -p bijux-atlas-query --no-run`
-8. `cargo test -p bijux-atlas-query --test query_benchmark_regression -- --nocapture`
+7. `bijux-dev-atlas perf cli-ux bench --format json`
+8. `bijux-dev-atlas perf cli-ux diff artifacts/perf/cli-ux/latest-report.json artifacts/perf/cli-ux/latest-report.json --format json`
+9. `cargo bench -p bijux-atlas-query --no-run`
+10. `cargo test -p bijux-atlas-query --test query_benchmark_regression -- --nocapture`
 
 ## Query Benchmark References
 

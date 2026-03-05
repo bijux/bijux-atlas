@@ -918,6 +918,10 @@ fn force_json_perf(command: &mut PerfCommand) {
         PerfCommand::Benches { command } => match command {
             crate::cli::PerfBenchesCommand::List(args) => args.format = FormatArg::Json,
         },
+        PerfCommand::CliUx { command } => match command {
+            crate::cli::PerfCliUxCommand::Bench(args) => args.format = FormatArg::Json,
+            crate::cli::PerfCliUxCommand::Diff(args) => args.format = FormatArg::Json,
+        },
     }
 }
 
@@ -1877,6 +1881,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             PerfCommand::Kind(args) => args.repo_root = Some(root.clone()),
             PerfCommand::Benches { command } => match command {
                 crate::cli::PerfBenchesCommand::List(args) => args.repo_root = Some(root.clone()),
+            },
+            PerfCommand::CliUx { command } => match command {
+                crate::cli::PerfCliUxCommand::Bench(args) => args.repo_root = Some(root.clone()),
+                crate::cli::PerfCliUxCommand::Diff(args) => args.repo_root = Some(root.clone()),
             },
         },
         Command::Policies { command } => match command {

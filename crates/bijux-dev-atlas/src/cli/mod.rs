@@ -798,6 +798,10 @@ pub enum PerfCommand {
         #[command(subcommand)]
         command: PerfBenchesCommand,
     },
+    CliUx {
+        #[command(subcommand)]
+        command: PerfCliUxCommand,
+    },
 }
 
 #[derive(Subcommand, Debug)]
@@ -826,6 +830,12 @@ pub enum IngestCommand {
 #[derive(Subcommand, Debug)]
 pub enum PerfBenchesCommand {
     List(PerfValidateArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum PerfCliUxCommand {
+    Bench(PerfCliUxBenchArgs),
+    Diff(PerfCliUxDiffArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -1919,6 +1929,34 @@ pub struct PerfKindArgs {
     pub repo_root: Option<PathBuf>,
     #[arg(long, default_value = "perf")]
     pub profile: String,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct PerfCliUxBenchArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, default_value_t = 12)]
+    pub runs: u32,
+    #[arg(long, default_value_t = 2)]
+    pub warmup: u32,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct PerfCliUxDiffArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg()]
+    pub baseline_report: PathBuf,
+    #[arg()]
+    pub current_report: PathBuf,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]
