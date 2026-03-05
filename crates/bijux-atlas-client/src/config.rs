@@ -25,6 +25,11 @@ impl Default for ClientConfig {
 }
 
 impl ClientConfig {
+    /// Validates client configuration invariants.
+    ///
+    /// # Errors
+    /// Returns a human-readable message when the base URL is invalid or timeout
+    /// is zero.
     pub fn validate(&self) -> Result<(), String> {
         if !self.base_url.starts_with("http://") && !self.base_url.starts_with("https://") {
             return Err("base_url must start with http:// or https://".to_string());

@@ -27,6 +27,11 @@ pub struct AtlasClient {
 }
 
 impl AtlasClient {
+    /// Creates a configured client with validated base URL and default headers.
+    ///
+    /// # Errors
+    /// Returns [`ClientError`] when configuration validation fails, headers are
+    /// invalid, or the underlying HTTP client cannot be constructed.
     pub fn new(config: ClientConfig) -> Result<Self, ClientError> {
         config
             .validate()
@@ -55,16 +60,23 @@ impl AtlasClient {
         })
     }
 
+    #[must_use]
     pub fn with_metrics(mut self, metrics: Arc<dyn ClientMetrics>) -> Self {
         self.metrics = Some(metrics);
         self
     }
 
+    #[must_use]
     pub fn with_logger(mut self, logger: Arc<dyn ClientLogger>) -> Self {
         self.logger = Some(logger);
         self
     }
 
+    /// Executes a dataset query and returns a single page of results.
+    ///
+    /// # Errors
+    /// Returns [`ClientError`] when request construction, transport, decoding,
+    /// or response classification fails.
     pub fn dataset_query(
         &self,
         query: &DatasetQuery,
@@ -100,7 +112,7 @@ impl AtlasClient {
         if !include.is_empty() {
             builder = builder.with_param("include", include.join(","));
         }
-        let json = self.send(builder, trace)?;
+        let json = self.send(&builder, trace)?;
         let rows = json
             .get("data")
             .and_then(|v| v.get("rows"))
@@ -119,6 +131,10 @@ impl AtlasClient {
         Ok(Page { items, next })
     }
 
+    /// Iterates all pages for a query and collects every row.
+    ///
+    /// # Errors
+    /// Returns [`ClientError`] if any page request fails.
     pub fn dataset_scan(&self, query: &DatasetQuery) -> Result<Vec<QueryResult>, ClientError> {
         let mut current = query.clone();
         let mut all = Vec::new();
@@ -133,10 +149,18 @@ impl AtlasClient {
         Ok(all)
     }
 
+    /// Executes a filtered query using the standard dataset endpoint.
+    ///
+    /// # Errors
+    /// Returns [`ClientError`] if the request fails.
     pub fn filtered_query(&self, query: &DatasetQuery) -> Result<Page<QueryResult>, ClientError> {
         self.dataset_query(query, None)
     }
 
+    /// Executes a query and materializes all paginated pages into memory.
+    ///
+    /// # Errors
+    /// Returns [`ClientError`] if any page request fails.
     pub fn stream_query(&self, query: &DatasetQuery) -> Result<StreamQuery, ClientError> {
         let mut current = query.clone();
         let mut pages = Vec::new();
@@ -152,13 +176,17 @@ impl AtlasClient {
         Ok(StreamQuery { pages })
     }
 
+    /// Executes a paginated query and returns one page.
+    ///
+    /// # Errors
+    /// Returns [`ClientError`] if the request fails.
     pub fn paginate(&self, query: &DatasetQuery) -> Result<Page<QueryResult>, ClientError> {
         self.dataset_query(query, None)
     }
 
     fn send(
         &self,
-        request: RequestBuilder,
+        request: &RequestBuilder,
         trace: Option<&TraceContext>,
     ) -> Result<Value, ClientError> {
         run_with_retry(
@@ -206,13 +234,13 @@ impl AtlasClient {
                 if status.is_server_error() {
                     return Err(ClientError::new(
                         ErrorClass::Server,
-                        format!("server error {}", status),
+                        format!("server error {status}"),
                     ));
                 }
                 if status.is_client_error() {
                     return Err(ClientError::new(
                         ErrorClass::Client,
-                        format!("client error {}", status),
+                        format!("client error {status}"),
                     ));
                 }
                 serde_json::from_str(&body)

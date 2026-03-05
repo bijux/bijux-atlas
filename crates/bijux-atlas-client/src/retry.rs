@@ -4,6 +4,10 @@ use crate::error::{ClientError, ErrorClass};
 use std::thread;
 use std::time::Duration;
 
+/// Runs an operation with fixed-delay retries.
+///
+/// # Errors
+/// Returns the last operation error after all attempts are exhausted.
 pub fn run_with_retry<T, F>(attempts: u32, backoff_millis: u64, mut f: F) -> Result<T, ClientError>
 where
     F: FnMut() -> Result<T, ClientError>,

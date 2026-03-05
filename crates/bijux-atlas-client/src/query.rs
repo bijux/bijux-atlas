@@ -30,6 +30,7 @@ pub struct DatasetQuery {
 }
 
 impl DatasetQuery {
+    #[must_use]
     pub fn new(
         release: impl Into<String>,
         species: impl Into<String>,
@@ -46,41 +47,49 @@ impl DatasetQuery {
         }
     }
 
+    #[must_use]
     pub fn with_limit(mut self, limit: u32) -> Self {
         self.limit = limit;
         self
     }
 
+    #[must_use]
     pub fn with_cursor(mut self, cursor: impl Into<String>) -> Self {
         self.cursor = Some(cursor.into());
         self
     }
 
+    #[must_use]
     pub fn with_gene_id(mut self, gene_id: impl Into<String>) -> Self {
         self.filter.gene_id = Some(gene_id.into());
         self
     }
 
+    #[must_use]
     pub fn with_biotype(mut self, biotype: impl Into<String>) -> Self {
         self.filter.biotype = Some(biotype.into());
         self
     }
 
+    #[must_use]
     pub fn with_contig(mut self, contig: impl Into<String>) -> Self {
         self.filter.contig = Some(contig.into());
         self
     }
 
+    #[must_use]
     pub fn include_coords(mut self) -> Self {
         self.projection.include_coords = true;
         self
     }
 
+    #[must_use]
     pub fn include_counts(mut self) -> Self {
         self.projection.include_counts = true;
         self
     }
 
+    #[must_use]
     pub fn include_biotype(mut self) -> Self {
         self.projection.include_biotype = true;
         self

@@ -12,6 +12,7 @@ pub struct InMemoryMetrics {
 }
 
 impl InMemoryMetrics {
+    #[must_use]
     pub fn snapshot(&self) -> Vec<(String, u128, bool)> {
         match self.inner.lock() {
             Ok(guard) => guard.clone(),
@@ -19,6 +20,7 @@ impl InMemoryMetrics {
         }
     }
 
+    #[must_use]
     pub fn export_json(&self) -> serde_json::Value {
         let rows = self
             .snapshot()
