@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "kind": "audit_metrics",
+  "metrics": [
+    "total_checks",
+    "failed_checks",
+    "passed_checks"
+  ]
+}

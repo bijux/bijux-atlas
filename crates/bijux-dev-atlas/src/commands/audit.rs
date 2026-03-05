@@ -392,12 +392,25 @@ fn run_audit_checks(root: &Path) -> serde_json::Value {
         .iter()
         .filter(|row| row.get("status").and_then(serde_json::Value::as_str) == Some("failed"))
         .count();
+    let failure_classification = checks
+        .iter()
+        .filter(|row| row.get("status").and_then(serde_json::Value::as_str) == Some("failed"))
+        .map(|row| {
+            serde_json::json!({
+                "id": row.get("id").cloned().unwrap_or(serde_json::Value::Null),
+                "title": row.get("title").cloned().unwrap_or(serde_json::Value::Null),
+                "classification": row.get("classification").cloned().unwrap_or(serde_json::Value::Null),
+                "severity": row.get("severity").cloned().unwrap_or(serde_json::Value::Null),
+            })
+        })
+        .collect::<Vec<_>>();
     let status = if failed_count == 0 { "ok" } else { "failed" };
     serde_json::json!({
         "schema_version": 1,
         "kind": "audit_run",
         "status": status,
         "checks": checks,
+        "failure_classification": failure_classification,
         "metrics": {
             "total_checks": 5,
             "failed_checks": failed_count,

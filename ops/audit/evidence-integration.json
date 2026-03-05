@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "artifact": "artifacts/audit/run-report.json",
+  "bundle_key": "audit_run_report",
+  "description": "Audit run report location for evidence bundle collection."
+}
