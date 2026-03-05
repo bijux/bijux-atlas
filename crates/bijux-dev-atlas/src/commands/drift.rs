@@ -2,9 +2,7 @@
 
 use crate::cli::{DriftCommand, DriftCompareArgs, DriftDetectArgs, InvariantsCommonArgs};
 use crate::{emit_payload, resolve_repo_root};
-use bijux_dev_atlas::contracts::drift::{
-    explain_drift_type, DriftClass, DriftSeverity, DriftType,
-};
+use bijux_dev_atlas::contracts::drift::{explain_drift_type, DriftClass, DriftSeverity, DriftType};
 use bijux_dev_atlas::contracts::system_invariants;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
@@ -44,14 +42,14 @@ struct DriftIgnoreRule {
 }
 
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
-    let text =
-        fs::read_to_string(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let text = fs::read_to_string(path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
 fn read_yaml(path: &Path) -> Result<serde_yaml::Value, String> {
-    let text =
-        fs::read_to_string(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let text = fs::read_to_string(path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     serde_yaml::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
@@ -376,8 +374,12 @@ fn load_ignore_rules(path: Option<&Path>) -> Result<Vec<DriftIgnoreRule>, String
     };
     let text = fs::read_to_string(path)
         .map_err(|err| format!("failed to read drift ignore file {}: {err}", path.display()))?;
-    let file: DriftIgnoreFile = serde_json::from_str(&text)
-        .map_err(|err| format!("failed to parse drift ignore file {}: {err}", path.display()))?;
+    let file: DriftIgnoreFile = serde_json::from_str(&text).map_err(|err| {
+        format!(
+            "failed to parse drift ignore file {}: {err}",
+            path.display()
+        )
+    })?;
     if file.schema_version != 1 {
         return Err(format!(
             "invalid drift ignore file {}: schema_version must be 1",
@@ -385,7 +387,10 @@ fn load_ignore_rules(path: Option<&Path>) -> Result<Vec<DriftIgnoreRule>, String
         ));
     }
     for (idx, rule) in file.ignores.iter().enumerate() {
-        if rule.drift_type.is_none() && rule.message_contains.is_none() && rule.path_contains.is_none() {
+        if rule.drift_type.is_none()
+            && rule.message_contains.is_none()
+            && rule.path_contains.is_none()
+        {
             return Err(format!(
                 "invalid drift ignore rule #{idx}: must set at least one of drift_type, message_contains, path_contains"
             ));
@@ -424,7 +429,12 @@ fn apply_ignores(
                 }
             }
             if let Some(ref path_filter) = rule.path_contains {
-                if !row.path.as_deref().unwrap_or_default().contains(path_filter) {
+                if !row
+                    .path
+                    .as_deref()
+                    .unwrap_or_default()
+                    .contains(path_filter)
+                {
                     continue;
                 }
             }
@@ -477,7 +487,9 @@ fn coverage(args: DriftDetectArgs) -> Result<(String, i32), String> {
     let (findings, ignored_count) = apply_ignores(raw, &rules);
     let mut by_type = BTreeMap::<String, usize>::new();
     for row in &findings {
-        *by_type.entry(drift_type_key(row.drift_type).to_string()).or_insert(0) += 1;
+        *by_type
+            .entry(drift_type_key(row.drift_type).to_string())
+            .or_insert(0) += 1;
     }
     let payload = serde_json::json!({
         "schema_version": 1,
@@ -498,7 +510,8 @@ fn coverage(args: DriftDetectArgs) -> Result<(String, i32), String> {
 }
 
 fn baseline(args: crate::cli::DriftBaselineArgs) -> Result<(String, i32), String> {
-    let (payload, code) = detect_with_ignores(&args.detect.common, args.detect.ignore_file.as_deref())?;
+    let (payload, code) =
+        detect_with_ignores(&args.detect.common, args.detect.ignore_file.as_deref())?;
     let root = resolve_repo_root(args.detect.common.repo_root.clone())?;
     let out_path = args
         .snapshot_out
@@ -518,7 +531,11 @@ fn baseline(args: crate::cli::DriftBaselineArgs) -> Result<(String, i32), String
             serde_json::Value::String(out_path.display().to_string()),
         );
     }
-    let rendered = emit_payload(args.detect.common.format, args.detect.common.out, &report_payload)?;
+    let rendered = emit_payload(
+        args.detect.common.format,
+        args.detect.common.out,
+        &report_payload,
+    )?;
     Ok((rendered, code))
 }
 
@@ -561,11 +578,27 @@ fn compare(args: DriftCompareArgs) -> Result<(String, i32), String> {
 
     let baseline_set = baseline_findings
         .iter()
-        .map(|row| format!("{:?}|{:?}|{}|{}", row.drift_type, row.class, row.path.as_deref().unwrap_or_default(), row.message))
+        .map(|row| {
+            format!(
+                "{:?}|{:?}|{}|{}",
+                row.drift_type,
+                row.class,
+                row.path.as_deref().unwrap_or_default(),
+                row.message
+            )
+        })
         .collect::<BTreeSet<_>>();
     let current_set = current_findings
         .iter()
-        .map(|row| format!("{:?}|{:?}|{}|{}", row.drift_type, row.class, row.path.as_deref().unwrap_or_default(), row.message))
+        .map(|row| {
+            format!(
+                "{:?}|{:?}|{}|{}",
+                row.drift_type,
+                row.class,
+                row.path.as_deref().unwrap_or_default(),
+                row.message
+            )
+        })
         .collect::<BTreeSet<_>>();
 
     let mut added = current_set
@@ -623,7 +656,10 @@ fn explain(drift_type: String, common: InvariantsCommonArgs) -> Result<(String, 
     Ok((rendered, if known { 0 } else { 2 }))
 }
 
-pub(crate) fn run_drift_command(_quiet: bool, command: DriftCommand) -> Result<(String, i32), String> {
+pub(crate) fn run_drift_command(
+    _quiet: bool,
+    command: DriftCommand,
+) -> Result<(String, i32), String> {
     match command {
         DriftCommand::Detect(args) => detect(args),
         DriftCommand::Explain(args) => explain(args.drift_type, args.common),

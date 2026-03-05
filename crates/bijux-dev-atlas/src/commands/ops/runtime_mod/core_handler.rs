@@ -369,18 +369,17 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             });
             if common.evidence {
                 if !common.allow_write {
-                    return Err(
-                        OpsCommandError::Effect(
-                            "ops validate --evidence requires --allow-write".to_string(),
-                        )
-                        .to_stable_message(),
-                    );
+                    return Err(OpsCommandError::Effect(
+                        "ops validate --evidence requires --allow-write".to_string(),
+                    )
+                    .to_stable_message());
                 }
                 let run_id = common
                     .run_id
                     .clone()
                     .unwrap_or_else(|| "local-ops-validate".to_string());
-                let evidence_rel = format!("artifacts/ops/evidence/{run_id}/validate-evidence.json");
+                let evidence_rel =
+                    format!("artifacts/ops/evidence/{run_id}/validate-evidence.json");
                 let evidence_path = repo_root.join(&evidence_rel);
                 if let Some(parent) = evidence_path.parent() {
                     std::fs::create_dir_all(parent).map_err(|err| {
@@ -390,12 +389,11 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                         )
                     })?;
                 }
-                let install_matrix_snapshot = std::fs::read_to_string(
-                    ops_root.join("k8s/install-matrix.json"),
-                )
-                .ok()
-                .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
-                .unwrap_or_else(|| serde_json::json!({}));
+                let install_matrix_snapshot =
+                    std::fs::read_to_string(ops_root.join("k8s/install-matrix.json"))
+                        .ok()
+                        .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
+                        .unwrap_or_else(|| serde_json::json!({}));
                 let evidence_payload = serde_json::json!({
                     "schema_version": 1,
                     "kind": "ops_validate_evidence",
@@ -660,7 +658,9 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             };
             Ok((rendered, code))
         }
-        OpsCommand::Readiness(common) => crate::ops_execution_runtime::run_ops_observe_readiness(&common),
+        OpsCommand::Readiness(common) => {
+            crate::ops_execution_runtime::run_ops_observe_readiness(&common)
+        }
         OpsCommand::Render(args) => crate::ops_execution_runtime::run_ops_render(&args),
         OpsCommand::Logs { command } => match command {
             crate::cli::OpsCollectCommand::Collect(args) => {

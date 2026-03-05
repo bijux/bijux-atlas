@@ -11,4 +11,3 @@ pub fn routes() -> Vec<CommandRoute> {
         "Run tutorial inventory, workflow, and verification commands",
     )]
 }
-

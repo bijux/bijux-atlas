@@ -3143,8 +3143,7 @@ mod tests {
         run_security_authorization_permissions, run_security_authorization_roles,
         run_security_authorization_validate, run_security_config_validate,
         run_security_dependency_audit, run_security_diagnostics, run_security_policy_inspect,
-        run_security_threats_explain,
-        run_security_threats_list, run_security_threats_verify,
+        run_security_threats_explain, run_security_threats_list, run_security_threats_verify,
     };
     use crate::cli::{
         FormatArg, SecurityPolicyInspectArgs, SecurityRoleAssignArgs, SecurityThreatExplainArgs,
@@ -3369,7 +3368,8 @@ threat_ids: [SEC-THREAT-RUNTIME-SPOOF]
         let temp = tempfile::tempdir().expect("tempdir");
         write_minimal_threat_model_files(temp.path());
         fs::write(
-            temp.path().join("security/threat-model/threat-registry.yaml"),
+            temp.path()
+                .join("security/threat-model/threat-registry.yaml"),
             r#"schema_version: 1
 registry_name: atlas_security_threats
 threat_ids: []

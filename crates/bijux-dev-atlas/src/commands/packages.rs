@@ -41,10 +41,7 @@ fn collect_package_entries(repo_root: &Path) -> Result<Vec<String>, String> {
 fn run_packages_list(args: &PackagesCommandArgs) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.repo_root.clone())?;
     let entries = collect_package_entries(&repo_root)?;
-    let python_files = entries
-        .iter()
-        .filter(|path| path.ends_with(".py"))
-        .count();
+    let python_files = entries.iter().filter(|path| path.ends_with(".py")).count();
     let notebook_files = entries
         .iter()
         .filter(|path| path.ends_with(".ipynb"))
@@ -106,7 +103,8 @@ fn run_packages_verify(args: &PackagesCommandArgs) -> Result<(String, i32), Stri
     let readme = fs::read_to_string(repo_root.join("packages/bijux-atlas-python/README.md"))
         .map_err(|err| format!("failed to read package README: {err}"))?;
     if !readme.contains("Bijux Atlas") {
-        violations.push("package README must describe the Bijux Atlas server requirement".to_string());
+        violations
+            .push("package README must describe the Bijux Atlas server requirement".to_string());
     }
     let success = violations.is_empty();
     let payload = serde_json::json!({
@@ -117,7 +115,10 @@ fn run_packages_verify(args: &PackagesCommandArgs) -> Result<(String, i32), Stri
         "success": success,
         "violations": violations
     });
-    Ok((emit_payload(args.format, args.out.clone(), &payload)?, if success { 0 } else { 1 }))
+    Ok((
+        emit_payload(args.format, args.out.clone(), &payload)?,
+        if success { 0 } else { 1 },
+    ))
 }
 
 pub(crate) fn run_packages_command(quiet: bool, command: PackagesCommand) -> i32 {

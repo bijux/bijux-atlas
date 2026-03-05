@@ -45,4 +45,3 @@ impl TutorialWorkspaceManager {
         Ok(false)
     }
 }
-

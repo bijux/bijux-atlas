@@ -10,8 +10,8 @@ fn collect_repo_files(root: &Path) -> Result<Vec<PathBuf>, String> {
     let mut files = Vec::new();
     let mut stack = vec![root.to_path_buf()];
     while let Some(cursor) = stack.pop() {
-        let entries =
-            fs::read_dir(&cursor).map_err(|err| format!("read {} failed: {err}", cursor.display()))?;
+        let entries = fs::read_dir(&cursor)
+            .map_err(|err| format!("read {} failed: {err}", cursor.display()))?;
         for entry in entries {
             let entry = entry.map_err(|err| format!("read directory entry failed: {err}"))?;
             let path = entry.path();
@@ -40,8 +40,8 @@ fn collect_repo_dirs(root: &Path) -> Result<Vec<PathBuf>, String> {
     let mut dirs = Vec::new();
     let mut stack = vec![root.to_path_buf()];
     while let Some(cursor) = stack.pop() {
-        let entries =
-            fs::read_dir(&cursor).map_err(|err| format!("read {} failed: {err}", cursor.display()))?;
+        let entries = fs::read_dir(&cursor)
+            .map_err(|err| format!("read {} failed: {err}", cursor.display()))?;
         for entry in entries {
             let entry = entry.map_err(|err| format!("read directory entry failed: {err}"))?;
             let path = entry.path();
@@ -113,7 +113,11 @@ fn run_migrations_status(
     violations.sort();
     violations.dedup();
 
-    let status = if violations.is_empty() { "ok" } else { "failed" };
+    let status = if violations.is_empty() {
+        "ok"
+    } else {
+        "failed"
+    };
     let report = serde_json::json!({
         "schema_version": 1,
         "kind": "migration_status",
@@ -148,10 +152,7 @@ fn run_migrations_status(
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
-pub(crate) fn run_migrations_command(
-    quiet: bool,
-    command: MigrationsCommand,
-) -> i32 {
+pub(crate) fn run_migrations_command(quiet: bool, command: MigrationsCommand) -> i32 {
     let result = match command {
         MigrationsCommand::Status {
             repo_root,
@@ -171,7 +172,10 @@ pub(crate) fn run_migrations_command(
             code
         }
         Err(err) => {
-            let _ = writeln!(std::io::stderr(), "bijux-dev-atlas migrations failed: {err}");
+            let _ = writeln!(
+                std::io::stderr(),
+                "bijux-dev-atlas migrations failed: {err}"
+            );
             1
         }
     }

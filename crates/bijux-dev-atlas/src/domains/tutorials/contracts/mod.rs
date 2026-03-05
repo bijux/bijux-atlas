@@ -13,4 +13,3 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
     let _ = repo_root;
     Ok(Vec::new())
 }
-

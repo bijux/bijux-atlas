@@ -12,4 +12,3 @@ pub fn command_registry() -> Vec<TutorialsRuntimeRoute> {
         entrypoint: "crate::commands/tutorials.rs",
     }]
 }
-

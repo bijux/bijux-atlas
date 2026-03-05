@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    PerfBenchesCommand, PerfCliUxBenchArgs, PerfCliUxCommand, PerfCliUxDiffArgs,
-    PerfCliUxModeArg, PerfCommand, PerfDiffArgs, PerfKindArgs, PerfRunArgs, PerfValidateArgs,
+    PerfBenchesCommand, PerfCliUxBenchArgs, PerfCliUxCommand, PerfCliUxDiffArgs, PerfCliUxModeArg,
+    PerfCommand, PerfDiffArgs, PerfKindArgs, PerfRunArgs, PerfValidateArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
 use reqwest::blocking::Client;
@@ -914,9 +914,10 @@ struct CliUxThresholds {
 
 fn load_cli_ux_spec(root: &Path) -> Result<CliUxSpec, String> {
     let path = root.join("configs/perf/cli-ux-benchmark-spec.json");
-    let text = fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
-    let spec: CliUxSpec =
-        serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    let text = fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let spec: CliUxSpec = serde_json::from_str(&text)
+        .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
     if spec.schema_version != 1 {
         return Err("cli-ux benchmark spec must declare schema_version=1".to_string());
     }
@@ -939,15 +940,19 @@ fn run_perf_cli_ux_bench(args: PerfCliUxBenchArgs) -> Result<(String, i32), Stri
             .warm_start_command
             .clone()
             .unwrap_or_else(|| spec.command.clone()),
-        PerfCliUxModeArg::Completion => spec
-            .completion_command
-            .clone()
-            .unwrap_or_else(|| vec!["list".to_string(), "--format".to_string(), "json".to_string()]),
+        PerfCliUxModeArg::Completion => spec.completion_command.clone().unwrap_or_else(|| {
+            vec![
+                "list".to_string(),
+                "--format".to_string(),
+                "json".to_string(),
+            ]
+        }),
     };
     if command.is_empty() {
         return Err("cli-ux benchmark command for selected mode is empty".to_string());
     }
-    let exe = std::env::current_exe().map_err(|err| format!("resolve current executable failed: {err}"))?;
+    let exe = std::env::current_exe()
+        .map_err(|err| format!("resolve current executable failed: {err}"))?;
     let runs = args.runs.max(1);
     let warmup = args.warmup.min(runs.saturating_sub(1));
 
@@ -972,12 +977,22 @@ fn run_perf_cli_ux_bench(args: PerfCliUxBenchArgs) -> Result<(String, i32), Stri
         fs::write(&stderr_path, &output.stderr)
             .map_err(|err| format!("failed to write {}: {err}", stderr_path.display()))?;
 
-        let status = if output.status.success() { "PASS" } else { "FAIL" };
+        let status = if output.status.success() {
+            "PASS"
+        } else {
+            "FAIL"
+        };
         progress_lines.push(format!(
             "{status} ({}/{}) perf cli-ux sample [{:.3} ms]",
             sample_id, runs, elapsed_ms
         ));
-        samples.push((sample_id, elapsed_ms, output.status.success(), stdout_path, stderr_path));
+        samples.push((
+            sample_id,
+            elapsed_ms,
+            output.status.success(),
+            stdout_path,
+            stderr_path,
+        ));
     }
 
     let measured = samples
@@ -1062,7 +1077,10 @@ fn run_perf_cli_ux_bench(args: PerfCliUxBenchArgs) -> Result<(String, i32), Stri
             schema_ok
         ));
         progress_lines.push(format!("artifacts: {}", report_path.display()));
-        return Ok((progress_lines.join("\n"), if success && schema_ok { 0 } else { 1 }));
+        return Ok((
+            progress_lines.join("\n"),
+            if success && schema_ok { 0 } else { 1 },
+        ));
     }
 
     let payload = serde_json::json!({

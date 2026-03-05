@@ -15,20 +15,23 @@ const INVARIANT_REGISTRY_INDEX_PATH: &str = "ops/invariants/registry.json";
 
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
     serde_json::from_str(
-        &fs::read_to_string(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+        &fs::read_to_string(path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
 fn read_yaml(path: &Path) -> Result<serde_yaml::Value, String> {
     serde_yaml::from_str(
-        &fs::read_to_string(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+        &fs::read_to_string(path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
 fn sha256_file(path: &Path) -> Result<String, String> {
-    let bytes = fs::read(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let bytes =
+        fs::read(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     Ok(format!("{:x}", Sha256::digest(bytes)))
 }
 
@@ -129,7 +132,11 @@ fn record_missing(path: &Path, message: &str) -> InvariantViolation {
     }
 }
 
-fn record_violation(class: ViolationClass, message: String, path: Option<&Path>) -> InvariantViolation {
+fn record_violation(
+    class: ViolationClass,
+    message: String,
+    path: Option<&Path>,
+) -> InvariantViolation {
     InvariantViolation {
         class,
         message,
@@ -144,7 +151,10 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
             let cfg = root.join("configs/inventory.json");
             match read_json(&cfg) {
                 Ok(value) => {
-                    let got = value.get("schema_version").and_then(serde_json::Value::as_i64).unwrap_or(0);
+                    let got = value
+                        .get("schema_version")
+                        .and_then(serde_json::Value::as_i64)
+                        .unwrap_or(0);
                     if got != 1 {
                         violations.push(record_violation(
                             ViolationClass::SchemaMismatch,
@@ -153,7 +163,10 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
                         ));
                     }
                 }
-                Err(_) => violations.push(record_missing(&cfg, "config inventory schema file is missing")),
+                Err(_) => violations.push(record_missing(
+                    &cfg,
+                    "config inventory schema file is missing",
+                )),
             }
         }
         "INV-ARTIFACT-HASH-REGISTRY-001"
@@ -164,13 +177,29 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
             let manifest_path = root.join("release/evidence/manifest.json");
             match read_json(&manifest_path) {
                 Ok(value) => {
-                    let rows = value.get("artifact_list").and_then(serde_json::Value::as_array).cloned().unwrap_or_default();
+                    let rows = value
+                        .get("artifact_list")
+                        .and_then(serde_json::Value::as_array)
+                        .cloned()
+                        .unwrap_or_default();
                     let mut seen_paths = BTreeSet::<String>::new();
                     for row in rows {
-                        let path = row.get("path").and_then(serde_json::Value::as_str).unwrap_or_default().to_string();
-                        let sha = row.get("sha256").and_then(serde_json::Value::as_str).unwrap_or_default().to_string();
+                        let path = row
+                            .get("path")
+                            .and_then(serde_json::Value::as_str)
+                            .unwrap_or_default()
+                            .to_string();
+                        let sha = row
+                            .get("sha256")
+                            .and_then(serde_json::Value::as_str)
+                            .unwrap_or_default()
+                            .to_string();
                         if path.is_empty() {
-                            violations.push(record_violation(ViolationClass::InvalidValue, "manifest artifact_list entry has empty path".to_string(), Some(&manifest_path)));
+                            violations.push(record_violation(
+                                ViolationClass::InvalidValue,
+                                "manifest artifact_list entry has empty path".to_string(),
+                                Some(&manifest_path),
+                            ));
                             continue;
                         }
                         seen_paths.insert(path.clone());
@@ -214,7 +243,8 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
                             for entry in fs::read_dir(&shard_like).into_iter().flatten().flatten() {
                                 let p = entry.path();
                                 if p.extension().and_then(|v| v.to_str()) == Some("json") {
-                                    let rel = p.strip_prefix(root).unwrap_or(&p).display().to_string();
+                                    let rel =
+                                        p.strip_prefix(root).unwrap_or(&p).display().to_string();
                                     if !seen_paths.contains(&rel) {
                                         violations.push(record_violation(
                                             ViolationClass::ReferenceMismatch,
@@ -227,10 +257,15 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
                         }
                     }
                 }
-                Err(_) => violations.push(record_missing(&manifest_path, "release evidence manifest is missing")),
+                Err(_) => violations.push(record_missing(
+                    &manifest_path,
+                    "release evidence manifest is missing",
+                )),
             }
         }
-        "INV-DATASET-ID-UNIQUE-001" | "INV-DATASET-SCHEMA-METADATA-001" | "INV-SHARD-ID-DETERMINISTIC-001" => {
+        "INV-DATASET-ID-UNIQUE-001"
+        | "INV-DATASET-SCHEMA-METADATA-001"
+        | "INV-SHARD-ID-DETERMINISTIC-001" => {
             let index_path = root.join("ops/datasets/generated/dataset-index.json");
             let lock_path = root.join("ops/datasets/manifest.lock");
             let index = read_json(&index_path);
@@ -258,8 +293,14 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
                         }
                     }
                     if inv.id == "INV-DATASET-SCHEMA-METADATA-001" {
-                        let index_version = index.get("schema_version").and_then(serde_json::Value::as_i64).unwrap_or(0);
-                        let lock_version = lock.get("schema_version").and_then(serde_json::Value::as_i64).unwrap_or(0);
+                        let index_version = index
+                            .get("schema_version")
+                            .and_then(serde_json::Value::as_i64)
+                            .unwrap_or(0);
+                        let lock_version = lock
+                            .get("schema_version")
+                            .and_then(serde_json::Value::as_i64)
+                            .unwrap_or(0);
                         if index_version != lock_version {
                             violations.push(record_violation(
                                 ViolationClass::SchemaMismatch,
@@ -280,8 +321,13 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
                         }
                     }
                 }
-                (Err(_), _) => violations.push(record_missing(&index_path, "dataset index is missing")),
-                (_, Err(_)) => violations.push(record_missing(&lock_path, "dataset manifest lock is missing")),
+                (Err(_), _) => {
+                    violations.push(record_missing(&index_path, "dataset index is missing"))
+                }
+                (_, Err(_)) => violations.push(record_missing(
+                    &lock_path,
+                    "dataset manifest lock is missing",
+                )),
             }
         }
         "INV-CONFIG-DATASET-REF-001" => {
@@ -300,7 +346,9 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
                     let pinned = values
                         .get("cache")
                         .and_then(serde_yaml::Value::as_mapping)
-                        .and_then(|cache| cache.get(serde_yaml::Value::String("pinnedDatasets".to_string())))
+                        .and_then(|cache| {
+                            cache.get(serde_yaml::Value::String("pinnedDatasets".to_string()))
+                        })
                         .and_then(serde_yaml::Value::as_sequence)
                         .cloned()
                         .unwrap_or_default()
@@ -317,8 +365,13 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
                         }
                     }
                 }
-                (Err(_), _) => violations.push(record_missing(&index_path, "dataset index is missing")),
-                (_, Err(_)) => violations.push(record_missing(&offline_values, "offline values file is missing")),
+                (Err(_), _) => {
+                    violations.push(record_missing(&index_path, "dataset index is missing"))
+                }
+                (_, Err(_)) => violations.push(record_missing(
+                    &offline_values,
+                    "offline values file is missing",
+                )),
             }
         }
         "INV-CONFIG-PROFILE-REF-001" | "INV-PROFILE-NAME-UNIQUE-001" => {
@@ -332,7 +385,11 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
                         .cloned()
                         .unwrap_or_default()
                         .into_iter()
-                        .filter_map(|v| v.get("id").and_then(serde_json::Value::as_str).map(str::to_string))
+                        .filter_map(|v| {
+                            v.get("id")
+                                .and_then(serde_json::Value::as_str)
+                                .map(str::to_string)
+                        })
                         .collect::<Vec<_>>();
                     if inv.id == "INV-PROFILE-NAME-UNIQUE-001" {
                         let mut seen = BTreeSet::new();
@@ -354,11 +411,14 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
                             .cloned()
                             .unwrap_or_default()
                         {
-                            if let Some(name) = row.get("name").and_then(serde_json::Value::as_str) {
+                            if let Some(name) = row.get("name").and_then(serde_json::Value::as_str)
+                            {
                                 if !known.contains(name) {
                                     violations.push(record_violation(
                                         ViolationClass::ReferenceMismatch,
-                                        format!("install matrix references unknown profile `{name}`"),
+                                        format!(
+                                            "install matrix references unknown profile `{name}`"
+                                        ),
                                         Some(&matrix_path),
                                     ));
                                 }
@@ -366,8 +426,13 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
                         }
                     }
                 }
-                (Err(_), _) => violations.push(record_missing(&profiles_path, "profile registry is missing")),
-                (_, Err(_)) => violations.push(record_missing(&matrix_path, "install matrix is missing")),
+                (Err(_), _) => violations.push(record_missing(
+                    &profiles_path,
+                    "profile registry is missing",
+                )),
+                (_, Err(_)) => {
+                    violations.push(record_missing(&matrix_path, "install matrix is missing"))
+                }
             }
         }
         "INV-PROFILE-INHERIT-CYCLE-001" => {
@@ -381,8 +446,15 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
                         .unwrap_or_default();
                     let mut graph = BTreeMap::<String, Option<String>>::new();
                     for row in rows {
-                        let id = row.get("id").and_then(serde_json::Value::as_str).unwrap_or_default().to_string();
-                        let parent = row.get("inherits_from").and_then(serde_json::Value::as_str).map(str::to_string);
+                        let id = row
+                            .get("id")
+                            .and_then(serde_json::Value::as_str)
+                            .unwrap_or_default()
+                            .to_string();
+                        let parent = row
+                            .get("inherits_from")
+                            .and_then(serde_json::Value::as_str)
+                            .map(str::to_string);
                         if !id.is_empty() {
                             graph.insert(id, parent);
                         }
@@ -403,7 +475,10 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
                         }
                     }
                 }
-                Err(_) => violations.push(record_missing(&path, "profile inheritance source is missing")),
+                Err(_) => violations.push(record_missing(
+                    &path,
+                    "profile inheritance source is missing",
+                )),
             }
         }
         "INV-PROFILE-OVERRIDE-SCHEMA-001" => {
@@ -416,7 +491,10 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
                         .cloned()
                         .unwrap_or_default()
                     {
-                        let values_file = row.get("values_file").and_then(serde_json::Value::as_str).unwrap_or_default();
+                        let values_file = row
+                            .get("values_file")
+                            .and_then(serde_json::Value::as_str)
+                            .unwrap_or_default();
                         if values_file.is_empty() {
                             continue;
                         }
@@ -438,7 +516,9 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
                         }
                     }
                 }
-                Err(_) => violations.push(record_missing(&path, "profile values source is missing")),
+                Err(_) => {
+                    violations.push(record_missing(&path, "profile values source is missing"))
+                }
             }
         }
         "INV-RUNTIME-START-GATE-001" => {}
@@ -449,7 +529,11 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
         title: inv.title.to_string(),
         severity: inv.severity,
         group: inv.group,
-        status: if violations.is_empty() { "pass".to_string() } else { "fail".to_string() },
+        status: if violations.is_empty() {
+            "pass".to_string()
+        } else {
+            "fail".to_string()
+        },
         violations,
     }
 }
@@ -469,12 +553,8 @@ fn run_invariants(common: InvariantsCommonArgs) -> Result<(String, i32), String>
         .collect::<Vec<_>>();
     results.push(runtime_start_gate_result(&prereq_failures));
     results.sort_by(|a, b| a.id.cmp(&b.id));
-    let (missing_in_index, extra_in_index) = validate_registry_index(&root).unwrap_or_else(|_| {
-        (
-            vec!["index_unreadable".to_string()],
-            Vec::<String>::new(),
-        )
-    });
+    let (missing_in_index, extra_in_index) = validate_registry_index(&root)
+        .unwrap_or_else(|_| (vec!["index_unreadable".to_string()], Vec::<String>::new()));
     let failed = results.iter().filter(|row| row.status == "fail").count();
     let registry_complete = missing_in_index.is_empty() && extra_in_index.is_empty();
     let status = if failed == 0 && registry_complete {
@@ -502,7 +582,14 @@ fn run_invariants(common: InvariantsCommonArgs) -> Result<(String, i32), String>
         "results": results
     });
     let rendered = emit_payload(common.format, common.out, &payload)?;
-    Ok((rendered, if failed == 0 && registry_complete { 0 } else { 3 }))
+    Ok((
+        rendered,
+        if failed == 0 && registry_complete {
+            0
+        } else {
+            3
+        },
+    ))
 }
 
 fn list_invariants(common: InvariantsCommonArgs) -> Result<(String, i32), String> {
@@ -517,7 +604,12 @@ fn list_invariants(common: InvariantsCommonArgs) -> Result<(String, i32), String
             })
         })
         .collect::<Vec<_>>();
-    rows.sort_by(|a, b| a["id"].as_str().unwrap_or_default().cmp(b["id"].as_str().unwrap_or_default()));
+    rows.sort_by(|a, b| {
+        a["id"]
+            .as_str()
+            .unwrap_or_default()
+            .cmp(b["id"].as_str().unwrap_or_default())
+    });
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "system_invariant_list",
@@ -601,7 +693,10 @@ fn generate_docs(common: InvariantsCommonArgs) -> Result<(String, i32), String> 
             "- severity: {}",
             format!("{:?}", row.severity).to_lowercase()
         ));
-        lines.push(format!("- group: {}", format!("{:?}", row.group).to_lowercase()));
+        lines.push(format!(
+            "- group: {}",
+            format!("{:?}", row.group).to_lowercase()
+        ));
         lines.push(format!("- summary: {}", row.summary));
         lines.push(String::new());
     }

@@ -544,9 +544,21 @@ pub(super) fn dispatch_execution(
                                 "snapshot": "deterministic",
                                 "profile": common.profile
                             }))
-                            .map_err(|err| OpsCommandError::Manifest(format!("failed to encode config snapshot {}: {err}", config_path.display())).to_stable_message())?,
+                            .map_err(|err| {
+                                OpsCommandError::Manifest(format!(
+                                    "failed to encode config snapshot {}: {err}",
+                                    config_path.display()
+                                ))
+                                .to_stable_message()
+                            })?,
                         )
-                        .map_err(|err| OpsCommandError::Manifest(format!("failed to write config snapshot {}: {err}", config_path.display())).to_stable_message())?;
+                        .map_err(|err| {
+                            OpsCommandError::Manifest(format!(
+                                "failed to write config snapshot {}: {err}",
+                                config_path.display()
+                            ))
+                            .to_stable_message()
+                        })?;
                         std::fs::write(
                             &logs_path,
                             format!(
@@ -1334,18 +1346,21 @@ pub(super) fn dispatch_execution(
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
                 let run_id = run_id_or_default(common.run_id.clone())?;
                 let scenarios_path = repo_root.join("ops/e2e/scenarios/scenarios.json");
-                let failure_catalog_path = repo_root.join("ops/e2e/scenarios/failure/injection-catalog.json");
+                let failure_catalog_path =
+                    repo_root.join("ops/e2e/scenarios/failure/injection-catalog.json");
                 let scenarios: serde_json::Value = serde_json::from_str(
-                    &std::fs::read_to_string(&scenarios_path)
-                        .map_err(|err| format!("failed to read {}: {err}", scenarios_path.display()))?,
-                )
-                .map_err(|err| format!("failed to parse {}: {err}", scenarios_path.display()))?;
-                let failure_catalog: serde_json::Value = serde_json::from_str(
-                    &std::fs::read_to_string(&failure_catalog_path).map_err(|err| {
-                        format!("failed to read {}: {err}", failure_catalog_path.display())
+                    &std::fs::read_to_string(&scenarios_path).map_err(|err| {
+                        format!("failed to read {}: {err}", scenarios_path.display())
                     })?,
                 )
-                .map_err(|err| format!("failed to parse {}: {err}", failure_catalog_path.display()))?;
+                .map_err(|err| format!("failed to parse {}: {err}", scenarios_path.display()))?;
+                let failure_catalog: serde_json::Value =
+                    serde_json::from_str(&std::fs::read_to_string(&failure_catalog_path).map_err(
+                        |err| format!("failed to read {}: {err}", failure_catalog_path.display()),
+                    )?)
+                    .map_err(|err| {
+                        format!("failed to parse {}: {err}", failure_catalog_path.display())
+                    })?;
                 let resilience_scenarios = scenarios
                     .get("scenarios")
                     .and_then(|v| v.as_array())

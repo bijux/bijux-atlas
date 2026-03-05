@@ -17,4 +17,3 @@ pub fn checks(repo_root: &Path) -> Result<Vec<CheckCatalogEntry>, String> {
         .cloned()
         .collect())
 }
-

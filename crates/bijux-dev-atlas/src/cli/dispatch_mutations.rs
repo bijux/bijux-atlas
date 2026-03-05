@@ -4,10 +4,10 @@ use crate::cli::{
     ApiCommand, ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand,
     Command, ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand,
     DriftCommand, FormatArg, IngestCommand, InvariantsCommand, LoadCommand, MakeCommand,
-    MigrationsCommand, ObserveCommand, OpsCommand, PackagesCommand, PerfCommand, PoliciesCommand, RegistryCommand,
-    ReleaseApiSurfaceCommand, ReleaseChecksumsCommand, ReleaseCommand, ReleaseCratesCommand,
-    ReleaseImagesCommand, ReleaseMsrvCommand, ReleaseOpsCommand, ReleaseSemverCommand,
-    ReportsCommand, ReproduceCommand, SecurityCommand, TestsCommand,
+    MigrationsCommand, ObserveCommand, OpsCommand, PackagesCommand, PerfCommand, PoliciesCommand,
+    RegistryCommand, ReleaseApiSurfaceCommand, ReleaseChecksumsCommand, ReleaseCommand,
+    ReleaseCratesCommand, ReleaseImagesCommand, ReleaseMsrvCommand, ReleaseOpsCommand,
+    ReleaseSemverCommand, ReportsCommand, ReproduceCommand, SecurityCommand, TestsCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -744,7 +744,9 @@ fn force_json_tutorials(command: &mut crate::cli::TutorialsCommand) {
             crate::cli::TutorialsBuildCommand::Docs(args) => args.common.format = FormatArg::Json,
         },
         crate::cli::TutorialsCommand::Dataset { command } => match command {
-            crate::cli::TutorialsDatasetCommand::Package(args) => args.common.format = FormatArg::Json,
+            crate::cli::TutorialsDatasetCommand::Package(args) => {
+                args.common.format = FormatArg::Json
+            }
             crate::cli::TutorialsDatasetCommand::Ingest(args)
             | crate::cli::TutorialsDatasetCommand::IntegrityCheck(args) => {
                 args.format = FormatArg::Json
@@ -794,7 +796,9 @@ fn force_json_migrations(command: &mut MigrationsCommand) {
 
 fn force_json_packages(command: &mut PackagesCommand) {
     match command {
-        PackagesCommand::List(args) | PackagesCommand::Verify(args) => args.format = FormatArg::Json,
+        PackagesCommand::List(args) | PackagesCommand::Verify(args) => {
+            args.format = FormatArg::Json
+        }
     }
 }
 
@@ -1659,9 +1663,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | crate::cli::TutorialsCommand::Explain(args)
             | crate::cli::TutorialsCommand::Verify(args)
             | crate::cli::TutorialsCommand::ReproducibilityCheck(args)
-            | crate::cli::TutorialsCommand::Generate(args) => {
-                args.repo_root = Some(root.clone())
-            }
+            | crate::cli::TutorialsCommand::Generate(args) => args.repo_root = Some(root.clone()),
             crate::cli::TutorialsCommand::Run { command } => match command {
                 crate::cli::TutorialsRunCommand::Workflow(args) => {
                     args.common.repo_root = Some(root.clone())
@@ -1715,9 +1717,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | crate::cli::ClientsCommand::DocsVerify(args)
             | crate::cli::ClientsCommand::ExamplesVerify(args)
             | crate::cli::ClientsCommand::ExamplesRun(args)
-            | crate::cli::ClientsCommand::SchemaVerify(args) => {
-                args.repo_root = Some(root.clone())
-            }
+            | crate::cli::ClientsCommand::SchemaVerify(args) => args.repo_root = Some(root.clone()),
             crate::cli::ClientsCommand::CompatMatrix { command } => match command {
                 crate::cli::ClientsCompatMatrixCommand::Verify(args) => {
                     args.repo_root = Some(root.clone())
