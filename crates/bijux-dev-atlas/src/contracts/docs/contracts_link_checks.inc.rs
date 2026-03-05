@@ -656,3 +656,136 @@ fn test_docs_050_operator_golden_paths_no_internal(ctx: &RunContext) -> TestResu
         TestResult::Fail(violations)
     }
 }
+
+fn collect_docs_markdown_paths(root: &std::path::Path, out: &mut Vec<std::path::PathBuf>) {
+    let entries = match std::fs::read_dir(root) {
+        Ok(entries) => entries,
+        Err(_) => return,
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.is_dir() {
+            collect_docs_markdown_paths(&path, out);
+            continue;
+        }
+        if path.extension().and_then(|v| v.to_str()) == Some("md") {
+            out.push(path);
+        }
+    }
+}
+
+fn test_docs_078_no_internal_github_blob_links(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    let docs_root = docs_root_path(ctx);
+    let mut markdown_files = Vec::new();
+    collect_docs_markdown_paths(&docs_root, &mut markdown_files);
+    markdown_files.sort();
+    for file in markdown_files {
+        let rel = match file.strip_prefix(&ctx.repo_root) {
+            Ok(path) => path.display().to_string(),
+            Err(_) => continue,
+        };
+        let contents = match std::fs::read_to_string(&file) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-078",
+                    "docs.links.no_internal_github_blob_links",
+                    Some(rel),
+                    format!("read failed: {err}"),
+                );
+                continue;
+            }
+        };
+        for target in markdown_links(&contents) {
+            if target.starts_with("https://github.com/bijux/bijux-atlas/blob/")
+                && target.ends_with(".md")
+            {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-078",
+                    "docs.links.no_internal_github_blob_links",
+                    Some(
+                        file.strip_prefix(&ctx.repo_root)
+                            .map(|p| p.display().to_string())
+                            .unwrap_or_else(|_| file.display().to_string()),
+                    ),
+                    format!("internal docs must not link via GitHub blob URL: {target}"),
+                );
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_docs_079_published_local_links_resolve(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    let docs_root = docs_root_path(ctx);
+    let mut markdown_files = Vec::new();
+    collect_docs_markdown_paths(&docs_root, &mut markdown_files);
+    markdown_files.sort();
+    for source in markdown_files {
+        let source_rel = match source.strip_prefix(&ctx.repo_root) {
+            Ok(path) => path.display().to_string(),
+            Err(_) => continue,
+        };
+        if source_rel.starts_with("docs/_internal/") || source_rel.starts_with("docs/_generated/") {
+            continue;
+        }
+        let contents = match std::fs::read_to_string(&source) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-079",
+                    "docs.links.published_local_links_resolve",
+                    Some(source_rel),
+                    format!("read failed: {err}"),
+                );
+                continue;
+            }
+        };
+        for target in markdown_links(&contents) {
+            let clean = target.split('#').next().unwrap_or(&target);
+            if clean.is_empty()
+                || clean.starts_with("http://")
+                || clean.starts_with("https://")
+                || clean.starts_with("mailto:")
+                || clean.starts_with('#')
+            {
+                continue;
+            }
+            let resolved = if clean.starts_with('/') {
+                ctx.repo_root.join(clean.trim_start_matches('/'))
+            } else {
+                source.parent().unwrap_or(&source).join(clean)
+            };
+            if !resolved.exists() {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-079",
+                    "docs.links.published_local_links_resolve",
+                    Some(
+                        source
+                            .strip_prefix(&ctx.repo_root)
+                            .map(|p| p.display().to_string())
+                            .unwrap_or_else(|_| source.display().to_string()),
+                    ),
+                    format!("published docs local link does not resolve: {target}"),
+                );
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}

@@ -90,6 +90,8 @@
 | `DOC-075` | operations runbooks keep required sections | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
 | `DOC-076` | major docs spine changes require explicit governance owner approval | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
 | `DOC-077` | committed docs artifacts use one canonical regeneration path | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-078` | internal docs references avoid GitHub blob links | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-079` | published docs local links resolve in-tree | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
 
 ## Enforcement mapping
 
@@ -172,6 +174,8 @@
 | `DOC-075` | `bijux dev atlas contracts docs --mode static` |
 | `DOC-076` | `bijux dev atlas contracts docs --mode static` |
 | `DOC-077` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-078` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-079` | `bijux dev atlas contracts docs --mode static` |
 
 ## Output artifacts
 

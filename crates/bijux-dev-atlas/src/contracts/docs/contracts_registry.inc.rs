@@ -809,5 +809,25 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_077_committed_docs_artifacts_use_canonical_regeneration_flow,
             }],
         },
+        Contract {
+            id: ContractId("DOC-078".to_string()),
+            title: "internal docs references avoid GitHub blob links",
+            tests: vec![TestCase {
+                id: TestId("docs.links.no_internal_github_blob_links".to_string()),
+                title: "docs markdown may not link internal docs through github blob URLs",
+                kind: TestKind::Pure,
+                run: test_docs_078_no_internal_github_blob_links,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-079".to_string()),
+            title: "published docs local links resolve in-tree",
+            tests: vec![TestCase {
+                id: TestId("docs.links.published_local_links_resolve".to_string()),
+                title: "published docs markdown local links must resolve under docs/",
+                kind: TestKind::Pure,
+                run: test_docs_079_published_local_links_resolve,
+            }],
+        },
     ])
 }
