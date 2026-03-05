@@ -42,6 +42,9 @@
 ```bash
 make ops-observability-verify
 make ops-traces-check
+bijux-dev-atlas observe traces verify --format json
+bijux-dev-atlas observe traces coverage --format json
+bijux-dev-atlas observe traces topology --format json
 ```
 
 Expected result: traces can be filtered by route and correlated to failing component spans.

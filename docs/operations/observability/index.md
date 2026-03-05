@@ -48,13 +48,17 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - [Trace context propagation policy](trace-context-propagation-policy.md): context handoff requirements across boundaries
 - [Tracing spans](tracing-spans.md): required span coverage surface
 - [Trace span naming conventions](trace-span-naming-conventions.md): canonical span naming policy
+- [Trace schema reference](trace-schema-reference.md): contract schema for trace verification outputs
 - [Trace fields](trace-fields.md): required trace identity and attributes
 - [Trace exporters](trace-exporters.md): supported exporter modes and fallback
 - [Trace sampling policy](trace-sampling-policy.md): sampling defaults and change rules
 - [Trace retention policy](trace-retention-policy.md): retention tiers for high-fidelity and summarized traces
+- [Trace analysis guide](trace-analysis-guide.md): deterministic trace interpretation steps
+- [Debugging with traces](debugging-with-traces.md): short trace-led debug sequence
 - [Trace timeline examples](trace-timeline-examples.md): healthy and failure span sequences
 - [Trace dashboard examples](trace-dashboard-examples.md): practical dashboard panels and filters
 - [Trace troubleshooting](trace-troubleshooting.md): exporter and propagation triage
+- [Tracing completion report](tracing-completion-report.md): delivered tracing controls and evidence
 - [Runtime diagnostics](runtime-diagnostics.md): debug endpoint contract and capture flow
 - [Health endpoint semantics](health-endpoint-semantics.md): health and liveliness meaning
 - [Readiness semantics](readiness-semantics.md): readiness gating behavior and status model
