@@ -27,6 +27,7 @@ related:
 
 - [Tutorial quickstart](quickstart.md)
 - [Real data runs](real-data/index.md)
+- [Tutorial real data examples](real-data-examples.md)
 - [Run tutorials with dev-atlas](run-with-dev-atlas.md)
 - [Example datasets](example-datasets.md)
 - [Ingest dataset](ingest-dataset.md)
