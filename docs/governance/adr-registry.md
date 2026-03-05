@@ -20,3 +20,5 @@ Decision records live under `docs/governance/decisions/`.
 - [ADR-0004: Generated reference model](decisions/adr-0004-generated-reference-model.md)
 - [ADR-0005: Ops artifact directory purity](decisions/adr-0005-ops-artifact-directory-purity.md)
 - [ADR-0006: Tutorial structure and consolidation](decisions/adr-0006-tutorial-structure-and-consolidation.md)
+- [ADR-0007: Tutorial automation domain migration](decisions/adr-0007-tutorial-automation-domain-migration.md)
+- [ADR-0008: Client documentation generation governance](decisions/adr-0008-client-doc-generation-governance.md)

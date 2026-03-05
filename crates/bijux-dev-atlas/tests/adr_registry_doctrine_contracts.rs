@@ -24,6 +24,8 @@ fn adr_registry_must_include_doctrine_decisions() {
         "decisions/adr-0004-generated-reference-model.md",
         "decisions/adr-0005-ops-artifact-directory-purity.md",
         "decisions/adr-0006-tutorial-structure-and-consolidation.md",
+        "decisions/adr-0007-tutorial-automation-domain-migration.md",
+        "decisions/adr-0008-client-doc-generation-governance.md",
     ];
 
     let mut missing = Vec::new();
