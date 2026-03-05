@@ -26,6 +26,16 @@ This is the canonical governance index for repository-wide policy and SSOT bound
 - Documentation governance: [Development](../development/index.md)
 - Contract and checks reference: [Reference](../reference/contracts/index.md)
 - Operational governance reference: [Ops Reference](../reference/ops/index.md)
+- Governance charter: [Governance Charter](governance-charter.md)
+- Governance model: [Project Governance Model](project-governance-model.md)
+- Contributor workflow: [Contributor Onboarding Workflow](contributor-onboarding-workflow.md)
+- Maintainers: [Maintainers and Roles](maintainers-and-roles.md)
+- Decision process: [Project Decision Process](decision-process.md)
+- ADR registry: [ADR Registry](adr-registry.md)
+- Release cadence: [Release Cadence Policy](release-cadence-policy.md)
+- Support windows: [Version Support Window Policy](support-window-policy.md)
+- Compatibility guarantees: [Compatibility Guarantees](compatibility-guarantees.md)
+- Component stability classes: [Component Stability Classification](component-stability-classification.md)
 
 ## Operational Governance
 
