@@ -115,6 +115,11 @@ Give operators one stable entrypoint for deploy, observe, rollback, and incident
 81. [Reproducible build posture](reproducible-build-posture.md)
 82. [Publishing channels](publishing-channels.md)
 83. [Release lifecycle and support window](release-lifecycle-support-window.md)
+84. [Governance enforcement](governance-enforcement.md)
+85. [Governance rule reference](governance-rule-reference.md)
+86. [Governance enforcement workflow](governance-enforcement-workflow.md)
+87. [Governance enforcement troubleshooting](governance-enforcement-troubleshooting.md)
+88. [Governance evolution policy](governance-evolution-policy.md)
 
 ## What This Page Is Not
 
