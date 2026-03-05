@@ -37,6 +37,7 @@ Client SDK code is product code. Repository automation for clients is owned by `
 - `bijux-dev-atlas clients docs-generate --client atlas-client`
 - `bijux-dev-atlas clients docs-verify --client atlas-client`
 - `bijux-dev-atlas clients examples-verify --client atlas-client`
+- `bijux-dev-atlas clients examples-run --client atlas-client`
 - `bijux-dev-atlas clients schema-verify --client atlas-client`
 - `bijux-dev-atlas clients compat-matrix verify --client atlas-client`
 - `bijux-dev-atlas clients doctor --client atlas-client`

@@ -19,5 +19,7 @@ tags:
 - [Troubleshooting](troubleshooting.md)
 - [Jupyter tutorial](jupyter-tutorial.md)
 - [Version compatibility matrix](version-compatibility-matrix.md)
+- [Client verification](client-verification.md)
+- [Update generated docs](update-generated-docs.md)
 - [Ecosystem integration examples](ecosystem-integrations.md)
 - [Delivery summary](delivery-summary.md)
