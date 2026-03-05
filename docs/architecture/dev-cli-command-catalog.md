@@ -19,6 +19,7 @@ Canonical top-level commands for `bijux-dev-atlas`:
 - `check`
 - `checks`
 - `ci`
+- `clients`
 - `configs`
 - `contract`
 - `datasets`
@@ -42,4 +43,5 @@ Canonical top-level commands for `bijux-dev-atlas`:
 - `suites`
 - `system`
 - `tests`
+- `tutorials`
 - `validate`

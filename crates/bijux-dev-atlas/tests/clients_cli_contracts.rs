@@ -1,0 +1,136 @@
+// SPDX-License-Identifier: Apache-2.0
+
+use std::path::PathBuf;
+use std::process::Command;
+
+fn repo_root() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("workspace")
+        .parent()
+        .expect("repo")
+        .to_path_buf()
+}
+
+#[test]
+fn clients_docs_generate_recreates_index_and_reference() {
+    let root = repo_root();
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args(["clients", "docs-generate", "--client", "atlas-client", "--format", "json"])
+        .output()
+        .expect("clients docs-generate");
+    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    assert_eq!(payload["action"], "docs-generate");
+    assert!(root.join("clients/atlas-client/docs/index.md").exists());
+    assert!(root.join("clients/atlas-client/docs/api-reference.md").exists());
+    assert!(root.join("clients/atlas-client/docs/version-compatibility-matrix.md").exists());
+}
+
+#[test]
+fn clients_docs_verify_passes_for_generated_files() {
+    let root = repo_root();
+    let generated = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args(["clients", "docs-generate", "--client", "atlas-client", "--format", "json"])
+        .output()
+        .expect("clients docs-generate");
+    assert!(generated.status.success(), "{}", String::from_utf8_lossy(&generated.stderr));
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args(["clients", "docs-verify", "--client", "atlas-client", "--format", "json"])
+        .output()
+        .expect("clients docs-verify");
+    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    assert_eq!(payload["success"], true);
+}
+
+#[test]
+fn clients_examples_verify_passes_without_local_script_references() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["clients", "examples-verify", "--client", "atlas-client", "--format", "json"])
+        .output()
+        .expect("clients examples-verify");
+    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    assert_eq!(payload["success"], true);
+}
+
+#[test]
+fn clients_schema_verify_passes_for_docs_model() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["clients", "schema-verify", "--client", "atlas-client", "--format", "json"])
+        .output()
+        .expect("clients schema-verify");
+    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    assert_eq!(payload["success"], true);
+}
+
+#[test]
+fn clients_compat_matrix_verify_passes() {
+    let root = repo_root();
+    let generated = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args(["clients", "docs-generate", "--client", "atlas-client", "--format", "json"])
+        .output()
+        .expect("clients docs-generate");
+    assert!(generated.status.success(), "{}", String::from_utf8_lossy(&generated.stderr));
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(root)
+        .args([
+            "clients",
+            "compat-matrix",
+            "verify",
+            "--client",
+            "atlas-client",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("clients compat-matrix verify");
+    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    assert_eq!(payload["success"], true);
+}
+
+#[test]
+fn clients_docs_generation_is_deterministic() {
+    let root = repo_root();
+    let run = || {
+        Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+            .current_dir(&root)
+            .args(["clients", "docs-generate", "--client", "atlas-client", "--format", "json"])
+            .output()
+            .expect("clients docs-generate")
+    };
+    let first = run();
+    assert!(first.status.success(), "{}", String::from_utf8_lossy(&first.stderr));
+    let index_one = std::fs::read_to_string(root.join("clients/atlas-client/docs/index.md"))
+        .expect("read index one");
+    let api_one = std::fs::read_to_string(root.join("clients/atlas-client/docs/api-reference.md"))
+        .expect("read api one");
+    let matrix_one = std::fs::read_to_string(
+        root.join("clients/atlas-client/docs/version-compatibility-matrix.md"),
+    )
+    .expect("read matrix one");
+
+    let second = run();
+    assert!(second.status.success(), "{}", String::from_utf8_lossy(&second.stderr));
+    let index_two = std::fs::read_to_string(root.join("clients/atlas-client/docs/index.md"))
+        .expect("read index two");
+    let api_two = std::fs::read_to_string(root.join("clients/atlas-client/docs/api-reference.md"))
+        .expect("read api two");
+    let matrix_two = std::fs::read_to_string(
+        root.join("clients/atlas-client/docs/version-compatibility-matrix.md"),
+    )
+    .expect("read matrix two");
+
+    assert_eq!(index_one, index_two);
+    assert_eq!(api_one, api_two);
+    assert_eq!(matrix_one, matrix_two);
+}
