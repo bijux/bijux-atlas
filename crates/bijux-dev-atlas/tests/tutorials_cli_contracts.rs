@@ -77,6 +77,35 @@ fn tutorials_workflow_markdown_output_writes_report() {
 }
 
 #[test]
+fn tutorials_workflow_quiet_text_outputs_nothing() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["tutorials", "run", "workflow", "--quiet"])
+        .output()
+        .expect("tutorials run workflow quiet");
+    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        String::from_utf8_lossy(&output.stdout).trim().is_empty(),
+        "quiet mode should suppress text output"
+    );
+}
+
+#[test]
+fn tutorials_workflow_verbose_text_includes_step_details() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["tutorials", "run", "workflow", "--verbose"])
+        .output()
+        .expect("tutorials run workflow verbose");
+    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    let text = String::from_utf8(output.stdout).expect("utf8");
+    assert!(
+        text.contains("detail: step="),
+        "verbose mode should include per-step detail lines"
+    );
+}
+
+#[test]
 fn tutorials_dataset_package_writes_tar_artifact() {
     let root = repo_root();
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))

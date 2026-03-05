@@ -247,6 +247,11 @@ fn run_tutorials_workflow(args: &TutorialsWorkflowArgs) -> Result<(String, i32),
             Some(render_tutorial_summary_markdown("run-workflow", &report)),
         )?,
     };
+    let rendered = if args.common.quiet {
+        String::new()
+    } else {
+        rendered
+    };
     Ok((rendered, if failures == 0 { 0 } else { 1 }))
 }
 
