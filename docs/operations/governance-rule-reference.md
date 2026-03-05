@@ -26,5 +26,7 @@ Canonical registry: `configs/governance/enforcement/rules.json`
 - `GOV-RULE-008`: ops artifact registry completeness
 - `GOV-RULE-009`: release artifact registry completeness
 - `GOV-RULE-010`: docs navigation consistency
+- `GOV-RULE-011`: governance foundation documents must exist
+- `GOV-RULE-012`: contributor governance documents must exist
 
 Use `bijux-dev-atlas governance rules --format json` for machine-readable rule metadata.

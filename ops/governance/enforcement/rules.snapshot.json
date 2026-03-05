@@ -104,6 +104,31 @@
         "mkdocs.yml"
       ],
       "classification": "documentation"
+    },
+    {
+      "id": "GOV-RULE-011",
+      "title": "governance foundation documents must exist",
+      "severity": "high",
+      "rule_type": "required_files_exist",
+      "paths": [
+        "docs/governance/governance-charter.md",
+        "docs/governance/project-governance-model.md",
+        "docs/governance/maintainers-and-roles.md",
+        "docs/governance/decision-process.md"
+      ],
+      "classification": "documentation"
+    },
+    {
+      "id": "GOV-RULE-012",
+      "title": "contributor governance documents must exist",
+      "severity": "high",
+      "rule_type": "required_files_exist",
+      "paths": [
+        "docs/governance/contributor-onboarding-workflow.md",
+        "docs/governance/adr-registry.md",
+        "docs/governance/adr-template.md"
+      ],
+      "classification": "documentation"
     }
   ]
 }

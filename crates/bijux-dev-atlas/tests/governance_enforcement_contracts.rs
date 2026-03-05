@@ -81,7 +81,7 @@ fn governance_enforcement_coverage_report_is_current() {
         report.get("schema_version").and_then(|v| v.as_u64()),
         Some(1)
     );
-    assert_eq!(report.get("rule_count").and_then(|v| v.as_u64()), Some(10));
+    assert_eq!(report.get("rule_count").and_then(|v| v.as_u64()), Some(12));
 }
 
 #[test]
