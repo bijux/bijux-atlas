@@ -1,8 +1,11 @@
 """Integration tests for atlas-client against a local HTTP server."""
+# test_scope: integration
+# requires_env: ATLAS_CLIENT_ALLOW_INTEGRATION=1
 
 from __future__ import annotations
 
 import json
+import os
 import threading
 import unittest
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -69,12 +72,20 @@ class IntegrationTests(unittest.TestCase):
         cls.server.server_close()
         cls.thread.join(timeout=2)
 
+    @unittest.skipUnless(
+        os.getenv("ATLAS_CLIENT_ALLOW_INTEGRATION") == "1",
+        "set ATLAS_CLIENT_ALLOW_INTEGRATION=1 to run integration tests",
+    )
     def test_query_single_page(self) -> None:
         client = AtlasClient(ClientConfig(base_url=self.base_url))
         page = client.query(QueryRequest(dataset="genes", limit=1))
         self.assertEqual(page.items, [{"gene_id": "g1"}])
         self.assertEqual(page.next_token, "p1")
 
+    @unittest.skipUnless(
+        os.getenv("ATLAS_CLIENT_ALLOW_INTEGRATION") == "1",
+        "set ATLAS_CLIENT_ALLOW_INTEGRATION=1 to run integration tests",
+    )
     def test_stream_query(self) -> None:
         client = AtlasClient(ClientConfig(base_url=self.base_url))
         rows = list(client.stream_query(QueryRequest(dataset="genes", limit=1)))

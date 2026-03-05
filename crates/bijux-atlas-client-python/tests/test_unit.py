@@ -1,4 +1,5 @@
 """Focused unit checks for config and request encoding."""
+# test_scope: unit
 
 from __future__ import annotations
 

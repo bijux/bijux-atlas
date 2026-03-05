@@ -209,6 +209,89 @@ fn usage_examples_must_be_routed_through_docs_examples_page() {
 }
 
 #[test]
+fn client_tests_must_be_tagged_unit_integration_or_perf() {
+    let root = repo_root();
+    let tests_dir = root.join("crates/bijux-atlas-client-python/tests");
+    let mut violations = Vec::new();
+    for entry in walkdir::WalkDir::new(tests_dir) {
+        let entry = entry.expect("walk tests");
+        if !entry.file_type().is_file() {
+            continue;
+        }
+        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
+            continue;
+        }
+        let text = fs::read_to_string(entry.path()).expect("read test file");
+        let has_scope_tag = text.contains("# test_scope: unit")
+            || text.contains("# test_scope: integration")
+            || text.contains("# test_scope: perf");
+        if !has_scope_tag {
+            violations.push(format!(
+                "{}: missing # test_scope tag",
+                entry.path().display()
+            ));
+        }
+    }
+    assert!(
+        violations.is_empty(),
+        "client tests must be tagged unit/integration/perf:\n{}",
+        violations.join("\n")
+    );
+}
+
+#[test]
+fn perf_tests_must_be_opt_in_and_integration_tests_must_require_env() {
+    let root = repo_root();
+    let tests_dir = root.join("crates/bijux-atlas-client-python/tests");
+    let mut perf_violations = Vec::new();
+    let mut integration_violations = Vec::new();
+    for entry in walkdir::WalkDir::new(tests_dir) {
+        let entry = entry.expect("walk tests");
+        if !entry.file_type().is_file() {
+            continue;
+        }
+        if entry.path().extension().and_then(|v| v.to_str()) != Some("py") {
+            continue;
+        }
+        let text = fs::read_to_string(entry.path()).expect("read test file");
+        let filename = entry.path().file_name().and_then(|v| v.to_str()).unwrap_or_default();
+        if text.contains("# test_scope: perf")
+            && !text.contains("ATLAS_CLIENT_RUN_PERF")
+            && !text.contains("skipUnless")
+        {
+            perf_violations.push(format!(
+                "{}: perf tests must be guarded by ATLAS_CLIENT_RUN_PERF or skipUnless",
+                entry.path().display()
+            ));
+        }
+        if text.contains("# test_scope: integration")
+            && !text.contains("ATLAS_CLIENT_ALLOW_INTEGRATION")
+        {
+            integration_violations.push(format!(
+                "{}: integration tests must require ATLAS_CLIENT_ALLOW_INTEGRATION",
+                entry.path().display()
+            ));
+        }
+        if filename.contains("integration") && !text.contains("# test_scope: integration") {
+            integration_violations.push(format!(
+                "{}: integration-named file must carry integration scope tag",
+                entry.path().display()
+            ));
+        }
+    }
+    assert!(
+        perf_violations.is_empty(),
+        "perf test opt-in violations:\n{}",
+        perf_violations.join("\n")
+    );
+    assert!(
+        integration_violations.is_empty(),
+        "integration test env gate violations:\n{}",
+        integration_violations.join("\n")
+    );
+}
+
+#[test]
 fn examples_index_must_exist_and_reference_all_example_scripts() {
     let root = repo_root();
     let index_path = root.join("crates/bijux-atlas-client-python/examples/INDEX.md");
@@ -339,5 +422,31 @@ fn examples_must_not_use_external_network_clients_directly() {
         violations.is_empty(),
         "examples must use atlas_client and avoid direct external network clients:\n{}",
         violations.join("\n")
+    );
+}
+
+#[test]
+fn client_test_policy_docs_must_exist() {
+    let root = repo_root();
+    assert!(
+        root.join("docs/api/client-python/client-test-policy.md").exists(),
+        "client test policy doc must exist"
+    );
+    assert!(
+        root.join("docs/api/client-python/client-test-troubleshooting.md")
+            .exists(),
+        "client test troubleshooting doc must exist"
+    );
+}
+
+#[test]
+fn make_tests_all_must_support_optional_client_python_lane() {
+    let root = repo_root();
+    let makefile = fs::read_to_string(root.join("make/root.mk")).expect("read make/root.mk");
+    assert!(
+        makefile.contains("tests run --mode all")
+            && makefile.contains("INCLUDE_CLIENT_PYTHON")
+            && makefile.contains("--include-client-python"),
+        "make tests-all must optionally include client python tests via dev-atlas"
     );
 }

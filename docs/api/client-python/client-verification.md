@@ -28,3 +28,11 @@ Verification scope:
 Evidence artifacts:
 
 - `artifacts/clients/atlas-client/examples-run-evidence.json`
+- `artifacts/clients/atlas-client/verify-evidence.json`
+- `artifacts/clients/atlas-client/verify-evidence.md`
+- `artifacts/clients/atlas-client/python-test-evidence.json`
+
+Related guides:
+
+- [Client Test Policy](./client-test-policy.md)
+- [Client Test Troubleshooting](./client-test-troubleshooting.md)

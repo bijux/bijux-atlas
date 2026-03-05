@@ -1,3 +1,4 @@
+# test_scope: unit
 from __future__ import annotations
 
 import json
