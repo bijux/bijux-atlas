@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    SecurityAuthenticationCommand, SecurityAuthorizationCommand, SecurityCommand,
+    FormatArg, SecurityAuthenticationCommand, SecurityAuthorizationCommand, SecurityCommand,
     SecurityIncidentReportArgs, SecurityPolicyInspectArgs, SecurityRoleAssignArgs,
     SecurityScanArtifactsArgs, SecurityThreatCommand, SecurityThreatExplainArgs,
     SecurityTokenInspectArgs, SecurityValidateArgs,
@@ -353,6 +353,7 @@ pub(crate) fn run_security_command(
         SecurityCommand::PolicyInspect(args) => run_security_policy_inspect(args),
         SecurityCommand::Audit(args) => run_security_audit(args),
         SecurityCommand::VulnerabilityReport(args) => run_security_vulnerability_report(args),
+        SecurityCommand::DependencyAudit(args) => run_security_dependency_audit(args),
         SecurityCommand::IncidentReport(args) => run_security_incident_report(args),
         SecurityCommand::Authentication { command } => match command {
             SecurityAuthenticationCommand::ApiKeys(args) => run_security_auth_api_keys(args),
@@ -806,6 +807,89 @@ fn run_security_vulnerability_report(args: SecurityValidateArgs) -> Result<(Stri
         }),
     )?;
     Ok((rendered, 0))
+}
+
+fn run_security_dependency_audit(args: SecurityValidateArgs) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(args.repo_root.clone())?;
+    let (validate_rendered, validate_code) = run_security_validate(SecurityValidateArgs {
+        repo_root: Some(root.clone()),
+        format: FormatArg::Json,
+        out: None,
+    })?;
+    let validate_payload: serde_json::Value = serde_json::from_str(&validate_rendered)
+        .map_err(|err| format!("parse security validation payload failed: {err}"))?;
+
+    let dependency_inventory_path = root.join("artifacts/security/dependency-inventory.json");
+    let vulnerability_scan_path = root.join("artifacts/security/security-vulnerability-scan.json");
+    let actions_inventory_path = root.join("artifacts/security/security-github-actions.json");
+
+    let dependency_inventory = if dependency_inventory_path.exists() {
+        Some(read_json(&dependency_inventory_path)?)
+    } else {
+        None
+    };
+    let vulnerability_scan = if vulnerability_scan_path.exists() {
+        Some(read_json(&vulnerability_scan_path)?)
+    } else {
+        None
+    };
+    let actions_inventory = if actions_inventory_path.exists() {
+        Some(read_json(&actions_inventory_path)?)
+    } else {
+        None
+    };
+
+    let dependency_rows = dependency_inventory
+        .as_ref()
+        .and_then(|value| value.get("rows"))
+        .and_then(serde_json::Value::as_array)
+        .map_or(0, std::vec::Vec::len);
+    let vulnerability_rows = vulnerability_scan
+        .as_ref()
+        .and_then(|value| value.get("rows"))
+        .and_then(serde_json::Value::as_array)
+        .map_or(0, std::vec::Vec::len);
+    let action_rows = actions_inventory
+        .as_ref()
+        .and_then(|value| value.get("rows"))
+        .and_then(serde_json::Value::as_array)
+        .map_or(0, std::vec::Vec::len);
+
+    let status = if validate_code == 0
+        && dependency_inventory.is_some()
+        && vulnerability_scan.is_some()
+        && actions_inventory.is_some()
+    {
+        "ok"
+    } else {
+        "failed"
+    };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "security_dependency_audit_report",
+        "status": status,
+        "summary": {
+            "dependency_inventory_rows": dependency_rows,
+            "vulnerability_rows": vulnerability_rows,
+            "workflow_action_rows": action_rows
+        },
+        "artifacts": {
+            "dependency_inventory": dependency_inventory_path.strip_prefix(&root).unwrap_or(&dependency_inventory_path).display().to_string(),
+            "vulnerability_scan": vulnerability_scan_path.strip_prefix(&root).unwrap_or(&vulnerability_scan_path).display().to_string(),
+            "workflow_action_inventory": actions_inventory_path.strip_prefix(&root).unwrap_or(&actions_inventory_path).display().to_string()
+        },
+        "security_validation": {
+            "status": validate_payload.get("status"),
+            "summary": validate_payload.get("summary"),
+            "report_path": validate_payload
+                .get("rows")
+                .and_then(serde_json::Value::as_array)
+                .and_then(|rows| rows.first())
+                .and_then(|row| row.get("report_path"))
+        }
+    });
+    let rendered = emit_payload(args.format, args.out, &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 2 }))
 }
 
 fn run_security_incident_report(args: SecurityIncidentReportArgs) -> Result<(String, i32), String> {
@@ -3058,7 +3142,8 @@ mod tests {
         run_security_authorization_assign, run_security_authorization_diagnostics,
         run_security_authorization_permissions, run_security_authorization_roles,
         run_security_authorization_validate, run_security_config_validate,
-        run_security_diagnostics, run_security_policy_inspect, run_security_threats_explain,
+        run_security_dependency_audit, run_security_diagnostics, run_security_policy_inspect,
+        run_security_threats_explain,
         run_security_threats_list, run_security_threats_verify,
     };
     use crate::cli::{
@@ -3364,6 +3449,27 @@ threat_ids: []
         let value: serde_json::Value = serde_json::from_str(&rendered).expect("parse rendered");
         assert_eq!(value["kind"], "security_audit_report");
         assert_eq!(value["artifacts_present"], false);
+    }
+
+    #[test]
+    fn security_dependency_audit_command_emits_report() {
+        let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .expect("workspace crates root")
+            .parent()
+            .expect("workspace root")
+            .to_path_buf();
+
+        let (rendered, code) = run_security_dependency_audit(SecurityValidateArgs {
+            repo_root: Some(root),
+            format: FormatArg::Json,
+            out: None,
+        })
+        .expect("run dependency audit");
+        assert_eq!(code, 0);
+        let value: serde_json::Value = serde_json::from_str(&rendered).expect("parse report");
+        assert_eq!(value["kind"], "security_dependency_audit_report");
+        assert_eq!(value["status"], "ok");
     }
 
     #[test]

@@ -926,6 +926,7 @@ pub enum SecurityCommand {
     PolicyInspect(SecurityPolicyInspectArgs),
     Audit(SecurityValidateArgs),
     VulnerabilityReport(SecurityValidateArgs),
+    DependencyAudit(SecurityValidateArgs),
     IncidentReport(SecurityIncidentReportArgs),
     Authentication {
         #[command(subcommand)]
