@@ -28,6 +28,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p artifacts/system/simulation
           cargo run --locked -q -p bijux-dev-atlas -- system simulate suite --output-format json > artifacts/system/simulation/run.json
           test -f artifacts/system/simulation/index.json
           test -f artifacts/system/simulation/coverage.json

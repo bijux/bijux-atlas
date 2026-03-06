@@ -8,6 +8,12 @@ on:
 jobs:
   validate-supply-chain:
     runs-on: ubuntu-latest
+    env:
+      CARGO_TARGET_DIR: ${{ github.workspace }}/.cache/cargo/target/security-supply-chain
+      CARGO_HOME: ${{ github.workspace }}/.cache/cargo/home/security-supply-chain
+      TMPDIR: artifacts/isolates/security-supply-chain/tmp
+      TMP: artifacts/isolates/security-supply-chain/tmp
+      TEMP: artifacts/isolates/security-supply-chain/tmp
     steps:
       - name: checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
@@ -15,12 +21,45 @@ jobs:
       - name: setup-rust
         uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
 
+      - name: Normalize temp roots to absolute workspace paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "TMPDIR=${GITHUB_WORKSPACE}/${TMPDIR}" >> "${GITHUB_ENV}"
+          echo "TMP=${GITHUB_WORKSPACE}/${TMP}" >> "${GITHUB_ENV}"
+          echo "TEMP=${GITHUB_WORKSPACE}/${TEMP}" >> "${GITHUB_ENV}"
+
+      - name: Prepare cache and temp roots
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${CARGO_TARGET_DIR}" "${CARGO_HOME}" "${TMPDIR}" artifacts/governance
+
       - name: generate governance evidence required by security policy
         run: |
-          cargo run --locked -q -p bijux-dev-atlas -- governance exceptions validate --format json || true
-          cargo run --locked -q -p bijux-dev-atlas -- governance deprecations validate --format json || true
-          cargo run --locked -q -p bijux-dev-atlas -- governance breaking validate --format json || true
-          cargo run --locked -q -p bijux-dev-atlas -- governance doctor --format json || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance exceptions validate --repo-root "${GITHUB_WORKSPACE}" --format json || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance deprecations validate --repo-root "${GITHUB_WORKSPACE}" --format json || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance breaking validate --repo-root "${GITHUB_WORKSPACE}" --format json || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance doctor --repo-root "${GITHUB_WORKSPACE}" --format json || true
+
+      - name: verify governance evidence files exist
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            "artifacts/governance/exceptions-summary.json"
+            "artifacts/governance/exceptions-expiry-warning.json"
+            "artifacts/governance/exceptions-churn.json"
+            "artifacts/governance/deprecations-summary.json"
+            "artifacts/governance/compat-warnings.json"
+            "artifacts/governance/breaking-changes.json"
+            "artifacts/governance/governance-doctor.json"
+            "artifacts/governance/institutional-delta.md"
+            "artifacts/governance/institutional-delta-inputs.json"
+          )
+          for file in "${required[@]}"; do
+            test -f "${file}" || { echo "missing governance evidence file: ${file}" >&2; exit 1; }
+          done
 
       - name: run dependency security validation
         run: cargo run --locked -q -p bijux-dev-atlas -- security validate --format json
