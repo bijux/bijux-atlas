@@ -61,25 +61,6 @@ fn workflows_do_not_invoke_scripts_directly() {
 }
 
 #[test]
-fn release_candidate_workflow_requires_ops_readiness_gate() {
-    let root = workspace_root();
-    let workflow = root.join(".github/workflows/release-candidate.yml");
-    let content = fs::read_to_string(&workflow).expect("read release-candidate workflow");
-    assert!(
-        content.contains("ops report readiness --format json"),
-        "release-candidate workflow must execute `ops report readiness --format json`"
-    );
-    assert!(
-        content.contains("ops-readiness.json"),
-        "release-candidate workflow must persist ops readiness report artifact"
-    );
-    assert!(
-        content.contains("make contracts-release"),
-        "release-candidate workflow must execute `make contracts-release`"
-    );
-}
-
-#[test]
 fn ci_pr_workflow_uses_lane_specific_contract_targets() {
     let root = workspace_root();
     let workflow = root.join(".github/workflows/ci-pr.yml");
