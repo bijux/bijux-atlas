@@ -82,14 +82,45 @@ jobs:
         run: |
           set -euo pipefail
 
+          version="${{ steps.release_tag.outputs.version }}"
+
+          crate_is_published() {
+            crate="$1"
+            curl --fail --silent --show-error \
+              "https://crates.io/api/v1/crates/${crate}/${version}" >/dev/null 2>&1
+          }
+
+          wait_for_crate_index_visibility() {
+            crate="$1"
+            attempts=20
+            delay=15
+            for i in $(seq 1 "${attempts}"); do
+              if crate_is_published "${crate}"; then
+                echo "${crate}@${version} is visible on crates.io"
+                return 0
+              fi
+              if [[ "${i}" -lt "${attempts}" ]]; then
+                echo "waiting for ${crate}@${version} to appear on crates.io (${i}/${attempts})"
+                sleep "${delay}"
+              fi
+            done
+            echo "${crate}@${version} did not become visible on crates.io in time" >&2
+            return 1
+          }
+
           publish_with_retry() {
             crate="$1"
             attempts=10
             delay=30
+            if crate_is_published "${crate}"; then
+              echo "skipping ${crate}; ${crate}@${version} already published"
+              return 0
+            fi
             for i in $(seq 1 "${attempts}"); do
               echo "publishing ${crate} (attempt ${i}/${attempts})"
               if cargo publish --locked -p "${crate}"; then
-                return 0
+                wait_for_crate_index_visibility "${crate}"
+                return $?
               fi
               if [[ "${i}" -lt "${attempts}" ]]; then
                 echo "publish failed for ${crate}; waiting ${delay}s for crates.io index propagation"
