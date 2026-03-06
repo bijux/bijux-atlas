@@ -31,14 +31,21 @@ jobs:
     timeout-minutes: 60
     env:
       NETWORK_ACCESS: required
-      ISO_ROOT: ${{ github.workspace }}/artifacts/isolates/release-candidate
+      ISO_ROOT: artifacts/isolates/release-candidate
       CARGO_TARGET_DIR: ${{ github.workspace }}/.cache/cargo/target/release-candidate
       CARGO_HOME: ${{ github.workspace }}/.cache/cargo/home/release-candidate
-      TMPDIR: ${{ github.workspace }}/artifacts/isolates/release-candidate/tmp
-      TMP: ${{ github.workspace }}/artifacts/isolates/release-candidate/tmp
-      TEMP: ${{ github.workspace }}/artifacts/isolates/release-candidate/tmp
+      TMPDIR: artifacts/isolates/release-candidate/tmp
+      TMP: artifacts/isolates/release-candidate/tmp
+      TEMP: artifacts/isolates/release-candidate/tmp
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - name: Normalize temp roots to absolute workspace paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "TMPDIR=${GITHUB_WORKSPACE}/${TMPDIR}" >> "${GITHUB_ENV}"
+          echo "TMP=${GITHUB_WORKSPACE}/${TMP}" >> "${GITHUB_ENV}"
+          echo "TEMP=${GITHUB_WORKSPACE}/${TEMP}" >> "${GITHUB_ENV}"
       - name: Prepare cache and temp roots
         shell: bash
         run: |

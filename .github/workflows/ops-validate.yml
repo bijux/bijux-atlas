@@ -25,14 +25,21 @@ jobs:
     timeout-minutes: 25
     env:
       NETWORK_ACCESS: required
-      ISO_ROOT: ${{ github.workspace }}/artifacts/isolates/ops-validate
+      ISO_ROOT: artifacts/isolates/ops-validate
       CARGO_TARGET_DIR: ${{ github.workspace }}/.cache/cargo/target/ops-validate
       CARGO_HOME: ${{ github.workspace }}/.cache/cargo/home/ops-validate
-      TMPDIR: ${{ github.workspace }}/artifacts/isolates/ops-validate/tmp
-      TMP: ${{ github.workspace }}/artifacts/isolates/ops-validate/tmp
-      TEMP: ${{ github.workspace }}/artifacts/isolates/ops-validate/tmp
+      TMPDIR: artifacts/isolates/ops-validate/tmp
+      TMP: artifacts/isolates/ops-validate/tmp
+      TEMP: artifacts/isolates/ops-validate/tmp
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - name: Normalize temp roots to absolute workspace paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "TMPDIR=${GITHUB_WORKSPACE}/${TMPDIR}" >> "${GITHUB_ENV}"
+          echo "TMP=${GITHUB_WORKSPACE}/${TMP}" >> "${GITHUB_ENV}"
+          echo "TEMP=${GITHUB_WORKSPACE}/${TEMP}" >> "${GITHUB_ENV}"
       - name: Prepare cache and temp roots
         shell: bash
         run: |
