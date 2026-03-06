@@ -2,6 +2,22 @@
 
 All notable changes are documented in this file.
 
+## v0.1.1
+
+### Added
+- Added installable binary entrypoints for runtime-facing crates that were previously library-only.
+- Added root directory and ops subdirectory rationale documentation in `artifacts/why.md`.
+
+### Fixed
+- Fixed workspace version and internal crate pin drift by aligning the workspace to `0.1.1`.
+- Fixed repo integration contract expectations for workspace package metadata version consistency.
+- Fixed slow tutorial workflow summary test classification by tagging it with the `slow_` convention.
+- Fixed CI workflow policy allowlist coverage for normalized temp/cache root setup steps.
+- Fixed `ci-pr` supply-chain lane by routing through `bijux-dev-atlas` security commands instead of brittle tool installs.
+- Fixed security supply-chain governance bootstrap by ensuring required governance evidence files are present before validation.
+- Fixed system simulation and final readiness workflows by creating artifact directories before output redirection.
+- Fixed dependency-review workflow behavior to avoid blocking repository validation on external platform-side issues.
+
 ## v0.1.0
 
 ### Added
