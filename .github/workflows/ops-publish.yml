@@ -116,10 +116,22 @@ jobs:
           if ! gh release view "${tag}" >/dev/null 2>&1; then
             gh release create "${tag}" --title "${tag}" --notes "Automated ops release artifacts"
           fi
-          gh release upload "${tag}" \
-            "${ARTIFACT_ROOT}/ops-bundle-manifest.json" \
-            "${ARTIFACT_ROOT}/ops-bundle-checksums.json" \
-            "${ARTIFACT_ROOT}/install-matrix-report.json" \
-            "${ARTIFACT_ROOT}/profiles-bundle-${RELEASE_VERSION}.tar.gz" \
-            "${ARTIFACT_ROOT}/charts/"*.tgz \
-            --clobber
+          attempts=5
+          delay=15
+          for i in $(seq 1 "${attempts}"); do
+            if gh release upload "${tag}" \
+              "${ARTIFACT_ROOT}/ops-bundle-manifest.json" \
+              "${ARTIFACT_ROOT}/ops-bundle-checksums.json" \
+              "${ARTIFACT_ROOT}/install-matrix-report.json" \
+              "${ARTIFACT_ROOT}/profiles-bundle-${RELEASE_VERSION}.tar.gz" \
+              "${ARTIFACT_ROOT}/charts/"*.tgz \
+              --clobber; then
+              exit 0
+            fi
+            if [[ "${i}" -lt "${attempts}" ]]; then
+              echo "gh release upload failed (attempt ${i}/${attempts}); retrying in ${delay}s"
+              sleep "${delay}"
+            fi
+          done
+          echo "gh release upload failed after ${attempts} attempts" >&2
+          exit 1
