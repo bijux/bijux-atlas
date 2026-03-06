@@ -19,12 +19,13 @@ fn audit_run_emits_expected_checks() {
         .args(["audit", "run", "--format", "json"])
         .output()
         .expect("audit run");
-    let bytes = if output.stdout.is_empty() {
-        &output.stderr
-    } else {
-        &output.stdout
-    };
-    let payload: serde_json::Value = serde_json::from_slice(bytes).expect("json output");
+    assert!(
+        output.status.success(),
+        "audit run failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("json output on stdout");
     assert_eq!(
         payload.get("kind").and_then(|v| v.as_str()),
         Some("audit_run")
@@ -45,12 +46,13 @@ fn audit_report_wraps_run_report() {
         .args(["audit", "report", "--format", "json"])
         .output()
         .expect("audit report");
-    let bytes = if output.stdout.is_empty() {
-        &output.stderr
-    } else {
-        &output.stdout
-    };
-    let payload: serde_json::Value = serde_json::from_slice(bytes).expect("json output");
+    assert!(
+        output.status.success(),
+        "audit report failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("json output on stdout");
     assert_eq!(
         payload.get("kind").and_then(|v| v.as_str()),
         Some("audit_report")
