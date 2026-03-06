@@ -57,14 +57,14 @@ jobs:
         run: |
           set -euo pipefail
           workspace_version="$(python3 - <<'PY'
-import pathlib, re
-text = pathlib.Path("Cargo.toml").read_text(encoding="utf-8")
-m = re.search(r'^\[workspace\.package\][\s\S]*?^version\s*=\s*"([^"]+)"', text, re.M)
-if not m:
-    raise SystemExit("workspace.package.version not found")
-print(m.group(1))
-PY
-)"
+          import pathlib, re
+          text = pathlib.Path("Cargo.toml").read_text(encoding="utf-8")
+          m = re.search(r'^\[workspace\.package\][\s\S]*?^version\s*=\s*"([^"]+)"', text, re.M)
+          if not m:
+              raise SystemExit("workspace.package.version not found")
+          print(m.group(1))
+          PY
+          )"
           if [[ "${workspace_version}" != "${{ steps.release_tag.outputs.version }}" ]]; then
             echo "workspace version ${workspace_version} does not match tag version ${{ steps.release_tag.outputs.version }}" >&2
             exit 1
