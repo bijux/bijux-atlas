@@ -2,7 +2,7 @@
   "chart": {
     "name": "bijux-atlas",
     "reference": "oci://ghcr.io/bijux/charts/bijux-atlas",
-    "sha256": "1a02cb7bb5f2b227977417fbedf89ace537cbe30c863921485663dcf06d46c8f",
+    "sha256": "9f4d29feaae55f9b6cef4a65043e429bd110d8725637f20c57088e838bbac09e",
     "version": "0.1.0"
   },
   "crates": {

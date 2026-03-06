@@ -24,6 +24,10 @@ proptest = "1"
 [lib]
 path = "src/lib.rs"
 
+[[bin]]
+name = "bijux-atlas-model"
+path = "src/bin/bijux-atlas-model.rs"
+
 [[bench]]
 name = "dataset_parse"
 harness = false

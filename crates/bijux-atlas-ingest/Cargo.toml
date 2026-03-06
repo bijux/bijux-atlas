@@ -34,6 +34,10 @@ tempfile = "=3.13.0"
 [lib]
 path = "src/lib.rs"
 
+[[bin]]
+name = "bijux-atlas-ingest"
+path = "src/bin/bijux-atlas-ingest.rs"
+
 [[bench]]
 name = "ingest_throughput"
 harness = false

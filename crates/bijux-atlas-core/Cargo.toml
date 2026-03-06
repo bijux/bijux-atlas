@@ -33,6 +33,10 @@ tempfile = "=3.13.0"
 [lib]
 path = "src/lib.rs"
 
+[[bin]]
+name = "bijux-atlas-core"
+path = "src/bin/bijux-atlas-core.rs"
+
 [[bench]]
 name = "canonical_hash"
 harness = false

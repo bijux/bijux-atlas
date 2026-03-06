@@ -57,3 +57,7 @@ harness = false
 
 [lib]
 path = "src/lib.rs"
+
+[[bin]]
+name = "bijux-atlas-query"
+path = "src/bin/bijux-atlas-query.rs"

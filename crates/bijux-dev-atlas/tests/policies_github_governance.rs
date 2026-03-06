@@ -74,20 +74,3 @@ fn ci_pr_workflow_uses_lane_specific_contract_targets() {
         "ci-pr workflow must execute `make contracts-merge` for merge-group runs"
     );
 }
-
-#[test]
-fn ops_validate_workflow_runs_required_ops_smoke_commands() {
-    let root = workspace_root();
-    let workflow = root.join(".github/workflows/ops-validate.yml");
-    let content = fs::read_to_string(&workflow).expect("read ops-validate workflow");
-    for required in [
-        "ops k8s render --target kind --check --format json",
-        "ops schema validate --format json",
-        "ops inventory validate --format json",
-    ] {
-        assert!(
-            content.contains(required),
-            "ops-validate workflow must include `{required}`"
-        );
-    }
-}

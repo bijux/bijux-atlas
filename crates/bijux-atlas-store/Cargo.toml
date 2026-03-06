@@ -32,6 +32,10 @@ tiny_http = "0.12"
 [lib]
 path = "src/lib.rs"
 
+[[bin]]
+name = "bijux-atlas-store"
+path = "src/bin/bijux-atlas-store.rs"
+
 [[bench]]
 name = "checksum_pipeline"
 harness = false
