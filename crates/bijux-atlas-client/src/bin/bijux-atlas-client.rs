@@ -1,9 +1,6 @@
-use std::io::{self, Write};
+#![allow(unused_crate_dependencies)]
 
-use bijux_atlas_client as _;
-use reqwest as _;
-use serde as _;
-use serde_json as _;
+use std::io::{self, Write};
 
 fn main() -> io::Result<()> {
     let mut stdout = io::stdout().lock();
