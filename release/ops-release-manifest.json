@@ -1,9 +1,19 @@
 {
   "chart_package_path": "artifacts/release/ops/package/bijux-atlas-0.1.0.tgz",
   "chart_reference": "oci://ghcr.io/bijux/charts/bijux-atlas",
-  "chart_sha256": "1a02cb7bb5f2b227977417fbedf89ace537cbe30c863921485663dcf06d46c8f",
+  "chart_sha256": "9f4d29feaae55f9b6cef4a65043e429bd110d8725637f20c57088e838bbac09e",
   "chart_version": "0.1.0",
   "kind": "ops_release_manifest",
   "schema_version": 1,
-  "workspace_version": "0.1.0"
+  "workspace_version": "0.1.0",
+  "build_metadata": {
+    "os": "linux",
+    "architecture": "x86_64",
+    "cargo_profile": "release",
+    "toolchain_versions": {
+      "rustc": "1.84.1",
+      "cargo": "1.84.1",
+      "helm": "3.14.4"
+    }
+  }
 }

@@ -24,6 +24,8 @@ concurrency:
 env:
   RUN_ID: rc-${{ github.run_id }}-${{ github.run_attempt }}
   GITHUB_REF: ${{ github.ref }}
+  LC_ALL: C
+  TZ: UTC
 
 jobs:
   release-candidate:
@@ -87,6 +89,14 @@ jobs:
           else
             printf '{"schema_version":1,"status":"ok","text":"docs registry validate passed","exit_code":0}\n' > "${report_root}/docs-completeness-gate.json"
           fi
+      - name: Generate reproducibility evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_root="artifacts/${RUN_ID}/reports"
+          logs_root="artifacts/${RUN_ID}/logs/release-candidate"
+          mkdir -p "${report_root}" "${logs_root}"
+          cargo run --locked -q -p bijux-dev-atlas -- release reproducibility report --format json > "${report_root}/reproducibility-report.json" 2> "${logs_root}/reproducibility-report.stderr.log"
       - name: Run release check gate
         shell: bash
         run: |

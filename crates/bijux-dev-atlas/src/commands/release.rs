@@ -1742,7 +1742,13 @@ fn run_release_ops_push(args: ReleaseOpsPushArgs) -> Result<(String, i32), Strin
                 "chart_package_path": repo_rel(&root, &chart_pkg),
                 "chart_sha256": digest,
                 "chart_version": chart_version,
-                "workspace_version": workspace_ver
+                "workspace_version": workspace_ver,
+                "build_metadata": {
+                    "os": std::env::consts::OS,
+                    "architecture": std::env::consts::ARCH,
+                    "cargo_profile": env_var_text("PROFILE").unwrap_or_else(|| "release".to_string()),
+                    "toolchain_versions": collect_toolchain_versions(&root)
+                }
             }),
         )?;
         write_json(
