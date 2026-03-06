@@ -28,7 +28,7 @@ criterion = "0.5"
 proptest = "1"
 serde_json.workspace = true
 walkdir = "2"
-tempfile = "=3.13.0"
+tempfile = "=3.25.0"
 
 [lib]
 path = "src/lib.rs"
