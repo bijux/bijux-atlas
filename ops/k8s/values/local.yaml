@@ -2,7 +2,8 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/bijux/bijux-atlas
-  tag: "0.1.0"
+  tag: ""
+  digest: "sha256:db683a63110a7310ab949a21231845a9abce1aec04c05edbc44023875a9e4adb"
   pullPolicy: IfNotPresent
 
 service:
