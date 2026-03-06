@@ -139,6 +139,24 @@
       "needle": "sha256sum",
       "allowed": true,
       "notes": "Checksum emission is allowed for atlas-generated artifacts and reports."
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-normalize-temp-roots",
+      "step_kind": "run",
+      "classification": "orchestration",
+      "match_mode": "contains",
+      "needle": "GITHUB_WORKSPACE",
+      "allowed": true,
+      "notes": "Absolute temp and cache path normalization is allowed for deterministic CI runners."
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-prepare-temp-and-cache-roots",
+      "step_kind": "run",
+      "classification": "orchestration",
+      "match_mode": "contains",
+      "needle": "mkdir -p \"${ISO_ROOT}\" \"${CARGO_TARGET_DIR}\" \"${CARGO_HOME}\" \"${TMPDIR}\"",
+      "allowed": true,
+      "notes": "Preparing isolated temp and cargo roots is allowed for reproducible workflow execution."
     }
   ]
 }
