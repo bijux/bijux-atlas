@@ -25,6 +25,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
+        with:
+          toolchain: stable
+
       - name: Derive release version
         shell: bash
         run: |
@@ -36,33 +41,30 @@ jobs:
           fi
           echo "RELEASE_VERSION=${version}" >> "${GITHUB_ENV}"
 
-      - name: Setup Helm
-        uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4
-        with:
-          version: v3.14.4
-
-      - name: Verify Helm
-        shell: bash
-        run: helm version
-
-      - name: Package Helm chart
+      - name: Package ops chart through dev-atlas
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p "${ARTIFACT_ROOT}/charts"
-          helm dependency update "${CHART_PATH}" || true
-          helm package "${CHART_PATH}" \
-            --destination "${ARTIFACT_ROOT}/charts" \
-            --version "${RELEASE_VERSION}" \
-            --app-version "${RELEASE_VERSION}"
+          cargo run --locked -q -p bijux-dev-atlas -- release ops package \
+            --allow-write \
+            --allow-subprocess \
+            --format json \
+            --out "${ARTIFACT_ROOT}/ops-package-report.json"
+          cp -f artifacts/release/ops/package/*.tgz "${ARTIFACT_ROOT}/charts/"
 
-      - name: Push Helm chart to GHCR OCI
+      - name: Push ops chart through dev-atlas
         shell: bash
         run: |
           set -euo pipefail
-          chart="$(ls -1 ${ARTIFACT_ROOT}/charts/*.tgz | head -n1)"
-          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
-          helm push "${chart}" "oci://ghcr.io/${{ github.repository_owner }}/charts"
+          export CRATES_IO_TOKEN="${{ secrets.CARGO_REGISTRY_TOKEN }}"
+          export GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          cargo run --locked -q -p bijux-dev-atlas -- release ops push \
+            --allow-write \
+            --allow-subprocess \
+            --allow-network \
+            --format json \
+            --out "${ARTIFACT_ROOT}/ops-push-report.json"
 
       - name: Build profiles bundle and manifests
         shell: bash

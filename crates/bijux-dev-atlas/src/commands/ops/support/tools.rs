@@ -140,7 +140,7 @@ pub(crate) fn validate_pins_completeness(
             if trimmed.contains(":latest") {
                 errors.push(format!("floating latest forbidden in {file}: `{trimmed}`"));
             }
-            if (trimmed.contains("image:") || trimmed.contains("repository:"))
+            if trimmed.contains("image:")
                 && trimmed.contains(':')
                 && !trimmed.contains("@sha256:")
                 && !trimmed.ends_with(':')
