@@ -244,7 +244,7 @@ checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 
 [[package]]
 name = "bijux-atlas-api"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bijux-atlas-core",
  "bijux-atlas-model",
@@ -256,7 +256,7 @@ dependencies = [
 
 [[package]]
 name = "bijux-atlas-bench"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "serde",
  "serde_json",
@@ -264,7 +264,7 @@ dependencies = [
 
 [[package]]
 name = "bijux-atlas-cli"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "assert_cmd",
  "bijux-atlas-core",
@@ -288,7 +288,7 @@ dependencies = [
 
 [[package]]
 name = "bijux-atlas-client"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "criterion",
  "reqwest",
@@ -298,7 +298,7 @@ dependencies = [
 
 [[package]]
 name = "bijux-atlas-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64",
  "criterion",
@@ -313,7 +313,7 @@ dependencies = [
 
 [[package]]
 name = "bijux-atlas-ingest"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bijux-atlas-core",
  "bijux-atlas-model",
@@ -329,7 +329,7 @@ dependencies = [
 
 [[package]]
 name = "bijux-atlas-model"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "criterion",
  "proptest",
@@ -339,7 +339,7 @@ dependencies = [
 
 [[package]]
 name = "bijux-atlas-policies"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "criterion",
  "serde",
@@ -348,7 +348,7 @@ dependencies = [
 
 [[package]]
 name = "bijux-atlas-query"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64",
  "bijux-atlas-core",
@@ -368,7 +368,7 @@ dependencies = [
 
 [[package]]
 name = "bijux-atlas-server"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-trait",
  "axum",
@@ -406,7 +406,7 @@ dependencies = [
 
 [[package]]
 name = "bijux-atlas-store"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bijux-atlas-core",
  "bijux-atlas-model",
@@ -420,7 +420,7 @@ dependencies = [
 
 [[package]]
 name = "bijux-dev-atlas"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "assert_cmd",
  "base64",

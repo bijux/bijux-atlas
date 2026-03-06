@@ -17,7 +17,7 @@ resolver = "2"
 
 [workspace.package]
 edition = "2021"
-version = "0.1.0"
+version = "0.1.1"
 license = "Apache-2.0"
 rust-version = "1.84.1"
 description = "Deterministic atlas data platform and Rust control-plane"
@@ -42,15 +42,15 @@ todo = "deny"
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-bijux-atlas-core = { version = "=0.1.0", path = "crates/bijux-atlas-core" }
-bijux-atlas-model = { version = "=0.1.0", path = "crates/bijux-atlas-model" }
-bijux-atlas-ingest = { version = "=0.1.0", path = "crates/bijux-atlas-ingest" }
-bijux-atlas-store = { version = "=0.1.0", path = "crates/bijux-atlas-store" }
-bijux-atlas-query = { version = "=0.1.0", path = "crates/bijux-atlas-query" }
-bijux-atlas-api = { version = "=0.1.0", path = "crates/bijux-atlas-api" }
-bijux-atlas-cli = { version = "=0.1.0", path = "crates/bijux-atlas-cli" }
-bijux-atlas-server = { version = "=0.1.0", path = "crates/bijux-atlas-server" }
-bijux-atlas-policies = { version = "=0.1.0", path = "crates/bijux-atlas-policies" }
-bijux-atlas-bench = { version = "=0.1.0", path = "crates/bijux-atlas-bench" }
-bijux-dev-atlas = { version = "=0.1.0", path = "crates/bijux-dev-atlas" }
-bijux-atlas-client = { version = "=0.1.0", path = "crates/bijux-atlas-client" }
+bijux-atlas-core = { version = "=0.1.1", path = "crates/bijux-atlas-core" }
+bijux-atlas-model = { version = "=0.1.1", path = "crates/bijux-atlas-model" }
+bijux-atlas-ingest = { version = "=0.1.1", path = "crates/bijux-atlas-ingest" }
+bijux-atlas-store = { version = "=0.1.1", path = "crates/bijux-atlas-store" }
+bijux-atlas-query = { version = "=0.1.1", path = "crates/bijux-atlas-query" }
+bijux-atlas-api = { version = "=0.1.1", path = "crates/bijux-atlas-api" }
+bijux-atlas-cli = { version = "=0.1.1", path = "crates/bijux-atlas-cli" }
+bijux-atlas-server = { version = "=0.1.1", path = "crates/bijux-atlas-server" }
+bijux-atlas-policies = { version = "=0.1.1", path = "crates/bijux-atlas-policies" }
+bijux-atlas-bench = { version = "=0.1.1", path = "crates/bijux-atlas-bench" }
+bijux-dev-atlas = { version = "=0.1.1", path = "crates/bijux-dev-atlas" }
+bijux-atlas-client = { version = "=0.1.1", path = "crates/bijux-atlas-client" }
