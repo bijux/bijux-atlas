@@ -73,7 +73,7 @@ jobs:
           make make-target-list > "${logs_root}/make-target-list.stdout.log" 2> "${logs_root}/make-target-list.stderr.log"
           cp make/target-list.json "${report_root}/make-target-list.json"
           make k8s-validate > "${report_root}/ops-validate.json" 2> "${logs_root}/ops-validate.stderr.log"
-          printf "- lane: ops-validate\n- report: %s\n- cache target hit: %s\n" \
+          printf -- "- lane: ops-validate\n- report: %s\n- cache target hit: %s\n" \
             "${report_root}/ops-validate.json" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Run ops doctor required gate
