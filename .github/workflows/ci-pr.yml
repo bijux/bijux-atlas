@@ -75,6 +75,9 @@ jobs:
           key: cargo-target-pr-minimal-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Run minimal lane
         shell: bash
+        env:
+          CACHE_REGISTRY_HIT: ${{ steps.cache-registry.outputs.cache-hit || 'false' }}
+          CACHE_TARGET_HIT: ${{ steps.cache-target.outputs.cache-hit || 'false' }}
         run: |
           set -euo pipefail
           report_root="artifacts/${RUN_ID}/reports"
@@ -1367,7 +1370,7 @@ jobs:
           cargo run --locked -q -p bijux-dev-atlas -- docs shrink-report --strict --format json > "${report_root}/docs-shrink-report.json"
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-fast.json"
           printf "- lane: ci-fast\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
-            "${report_root}/ci-fast.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
+            "${report_root}/ci-fast.json" "${CACHE_REGISTRY_HIT}" "${CACHE_TARGET_HIT}" > "artifacts/${RUN_ID}/summary.md"
           printf "\n- contracts all: %s\n- docs required: %s\n- docs required membership: %s\n- configs required: %s\n- configs required membership: %s\n- wrappers required: %s\n- wrappers required membership: %s\n- repo required: %s\n- repo required membership: %s\n- repo integrity summary: %s\n- contracts runtime static: %s\n- contracts control-plane static: %s\n- contracts configs static: %s\n- contracts wrappers static: %s\n- contracts ops static: %s\n- contracts docker static: %s\n- coverage: %s\n" \
             "${contracts_root}/all.json" "${contracts_root}/docs-required.json" "${report_root}/suite-membership-docs_required.json" "${contracts_root}/configs-required.json" "${report_root}/suite-membership-configs_required.json" "${contracts_root}/make-required.json" "${report_root}/suite-membership-make_required.json" "${contracts_root}/repo-required.json" "${report_root}/suite-membership-repo_required.json" "${report_root}/repo-integrity-summary.json" "${contracts_root}/runtime-static.json" "${contracts_root}/control-plane-static.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-static.json" "${contracts_root}/docker-static.json" "${contracts_root}/coverage-summary.json" >> "artifacts/${RUN_ID}/summary.md"
           printf "- repo surface diff: %s\n- root change report: %s\n- governance validate: %s\n- governance coverage diff: %s\n- semantic drift summary: %s\n- wrapper surface drift: %s\n- deterministic check order: %s\n- check metadata catalog: %s\n- artifact schema check: %s\n- artifact naming and size: %s\n- docs golden workflow verification: %s\n- docs link allowlist policy: %s\n- alert runbook slo load e2e mapping: %s\n- registry group coverage: %s\n- contract coverage heatmap: %s\n- missing proof report: %s\n- proof debt ledger: %s\n- contract flake detector: %s\n- contract performance budget: %s\n- docs entrypoint and budget contracts: %s\n- docs navigation and semantics contracts: %s\n- docs quality contracts: %s\n- configs taxonomy contracts: %s\n- configs semantic diff: %s\n- config debt ledger: %s\n- config key usage map: %s\n- configs graph: %s\n- configs explain: %s\n- configs diff: %s\n- docs shrink report: %s\n" "${report_root}/repo-surface-diff.json" "${report_root}/root-change-report.json" "${report_root}/governance-validate.json" "${report_root}/governance-coverage-diff.json" "${report_root}/semantic-drift-summary.json" "${report_root}/make-surface-drift.json" "${report_root}/deterministic-check-order.json" "${report_root}/check-metadata-catalog.json" "${report_root}/artifact-schema-version-check.json" "${report_root}/artifact-naming-and-size.json" "${report_root}/docs-golden-workflow-verification.json" "${report_root}/docs-link-allowlist-policy.json" "${report_root}/ops-alert-runbook-slo-load-e2e-map.json" "${report_root}/registry-group-coverage.json" "${report_root}/contract-coverage-heatmap.json" "${report_root}/missing-proof-report.json" "${report_root}/proof-debt-ledger.json" "${report_root}/contract-flake-detector.json" "${report_root}/contract-performance-budget.json" "${report_root}/docs-entrypoint-and-budget-contracts.json" "${report_root}/docs-navigation-and-semantics-contracts.json" "${report_root}/docs-quality-contracts.json" "${report_root}/configs-taxonomy-contracts.json" "${report_root}/configs-semantic-diff.json" "${report_root}/config-debt-ledger.json" "${report_root}/config-key-usage-map.json" "${report_root}/configs-graph.json" "${report_root}/configs-explain-configs-json.json" "${report_root}/configs-diff.json" "${report_root}/docs-shrink-report.json" >> "artifacts/${RUN_ID}/summary.md"
@@ -1449,6 +1452,9 @@ jobs:
           python3 -m pip install -r configs/docs/requirements.lock.txt
       - name: Run PR lane
         shell: bash
+        env:
+          CACHE_REGISTRY_HIT: ${{ steps.cache-registry.outputs.cache-hit || 'false' }}
+          CACHE_TARGET_HIT: ${{ steps.cache-target.outputs.cache-hit || 'false' }}
         run: |
           set -euo pipefail
           report_root="artifacts/${RUN_ID}/reports"
@@ -1489,7 +1495,7 @@ jobs:
           cargo run --locked -q -p bijux-dev-atlas -- check list --suite ci_pr --include-internal --include-slow --format json > "${report_root}/suite-membership-ci_pr.json"
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-pr.json"
           printf "- lane: ci-pr\n- report: %s\n- docs build: %s\n- docs linkcheck: %s\n- docs preview: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
-            "${report_root}/ci-pr.json" "${report_root}/mkdocs-build.json" "${report_root}/docs-linkcheck.json" "artifacts/${RUN_ID}/site-preview" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
+            "${report_root}/ci-pr.json" "${report_root}/mkdocs-build.json" "${report_root}/docs-linkcheck.json" "artifacts/${RUN_ID}/site-preview" "${CACHE_REGISTRY_HIT}" "${CACHE_TARGET_HIT}" > "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
@@ -1545,6 +1551,9 @@ jobs:
           key: cargo-target-pr-supply-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Run audit lane
         shell: bash
+        env:
+          CACHE_REGISTRY_HIT: ${{ steps.cache-registry.outputs.cache-hit || 'false' }}
+          CACHE_TARGET_HIT: ${{ steps.cache-target.outputs.cache-hit || 'false' }}
         run: |
           set -euo pipefail
           report_root="artifacts/${RUN_ID}/reports"
@@ -1556,7 +1565,7 @@ jobs:
           printf '{"schema_version":1,"kind":"supply_chain_report_v1","commands":["cargo deny --config configs/security/deny.toml check","cargo audit"],"status":"ok"}\n' > "${report_root}/supply-chain.json"
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/supply-chain.json"
           printf "- lane: supply-chain\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
-            "${report_root}/supply-chain.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
+            "${report_root}/supply-chain.json" "${CACHE_REGISTRY_HIT}" "${CACHE_TARGET_HIT}" > "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
