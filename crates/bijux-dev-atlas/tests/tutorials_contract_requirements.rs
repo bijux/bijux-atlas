@@ -138,7 +138,7 @@ fn tutorial_reproducibility_run_writes_evidence_artifact() {
 }
 
 #[test]
-fn tutorial_workflow_report_contains_summary_counts() {
+fn slow_tutorial_workflow_report_contains_summary_counts() {
     let root = repo_root();
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)

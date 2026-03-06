@@ -425,7 +425,7 @@ fn workspace_package_metadata_stays_acyclic_and_consistent() {
         assert!(previous.is_none(), "duplicate crate name detected: {name}");
     }
 
-    let expected_version = "0.1.0";
+    let expected_version = "0.1.1";
     let expected_rust_version = "1.84.1";
     let expected_license = "Apache-2.0";
     let mut adjacency = BTreeMap::<String, Vec<String>>::new();
