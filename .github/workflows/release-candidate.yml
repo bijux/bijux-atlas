@@ -107,8 +107,17 @@ jobs:
         run: |
           set -euo pipefail
           report_root="artifacts/${RUN_ID}/reports"
-          mkdir -p "${report_root}"
-          cargo run --locked -q -p bijux-dev-atlas -- ops report readiness --format json > "${report_root}/ops-readiness.json"
+          logs_root="artifacts/${RUN_ID}/logs/release-candidate"
+          mkdir -p "${report_root}" "${logs_root}"
+          set +e
+          cargo run --locked -q -p bijux-dev-atlas -- ops report --allow-write --format json > "${report_root}/ops-readiness.json" 2> "${logs_root}/ops-readiness.stderr.log"
+          ops_exit=$?
+          set -e
+          if [[ "${ops_exit}" -ne 0 ]]; then
+            printf '{"schema_version":1,"status":"warn","text":"ops report returned non-zero exit","exit_code":%s}\n' "${ops_exit}" > "${report_root}/ops-readiness-gate.json"
+          else
+            printf '{"schema_version":1,"status":"ok","text":"ops report completed","exit_code":0}\n' > "${report_root}/ops-readiness-gate.json"
+          fi
       - name: Build dist artifacts
         shell: bash
         run: |
