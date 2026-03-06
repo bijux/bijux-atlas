@@ -42,8 +42,8 @@ jobs:
     env:
       NETWORK_ACCESS: required
       ISO_ROOT: artifacts/isolates/ci-pr-minimal
-      CARGO_TARGET_DIR: .cache/cargo/target/ci-pr-minimal
-      CARGO_HOME: .cache/cargo/home/ci-pr-minimal
+      CARGO_TARGET_DIR: ${{ github.workspace }}/.cache/cargo/target/ci-pr-minimal
+      CARGO_HOME: ${{ github.workspace }}/.cache/cargo/home/ci-pr-minimal
       NEXTEST_CACHE_DIR: .cache/cargo/nextest/ci-pr-minimal
       TMPDIR: artifacts/isolates/ci-pr-minimal/tmp
       TMP: artifacts/isolates/ci-pr-minimal/tmp
@@ -53,6 +53,18 @@ jobs:
       - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
         with:
           toolchain: 1.84.1
+      - name: Normalize temp roots to absolute workspace paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "TMPDIR=${GITHUB_WORKSPACE}/${TMPDIR}" >> "${GITHUB_ENV}"
+          echo "TMP=${GITHUB_WORKSPACE}/${TMP}" >> "${GITHUB_ENV}"
+          echo "TEMP=${GITHUB_WORKSPACE}/${TEMP}" >> "${GITHUB_ENV}"
+      - name: Prepare cache and temp roots
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${ISO_ROOT}" "${CARGO_TARGET_DIR}" "${CARGO_HOME}" "${TMPDIR}"
       - name: Prepare run artifact directory
         shell: bash
         run: |
@@ -1571,6 +1583,23 @@ jobs:
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/ci-supply-chain"
           mkdir -p "${report_root}" "${logs_root}"
+          mkdir -p artifacts/governance
+          cargo run --locked -q -p bijux-dev-atlas -- governance exceptions validate --repo-root "${GITHUB_WORKSPACE}" --format json > "${logs_root}/governance-exceptions.stdout.log" 2> "${logs_root}/governance-exceptions.stderr.log" || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance deprecations validate --repo-root "${GITHUB_WORKSPACE}" --format json > "${logs_root}/governance-deprecations.stdout.log" 2> "${logs_root}/governance-deprecations.stderr.log" || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance breaking validate --repo-root "${GITHUB_WORKSPACE}" --format json > "${logs_root}/governance-breaking.stdout.log" 2> "${logs_root}/governance-breaking.stderr.log" || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance doctor --repo-root "${GITHUB_WORKSPACE}" --format json > "${logs_root}/governance-doctor.stdout.log" 2> "${logs_root}/governance-doctor.stderr.log" || true
+          for file in \
+            artifacts/governance/exceptions-summary.json \
+            artifacts/governance/exceptions-expiry-warning.json \
+            artifacts/governance/exceptions-churn.json \
+            artifacts/governance/deprecations-summary.json \
+            artifacts/governance/compat-warnings.json \
+            artifacts/governance/breaking-changes.json \
+            artifacts/governance/governance-doctor.json \
+            artifacts/governance/institutional-delta.md \
+            artifacts/governance/institutional-delta-inputs.json; do
+            test -f "${file}" || { echo "missing governance evidence file: ${file}" >&2; exit 1; }
+          done
           cargo run --locked -q -p bijux-dev-atlas -- security validate --format json > "${report_root}/security-validate.json" 2> "${logs_root}/security-validate.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- security dependency-audit --format json > "${report_root}/security-dependency-audit.json" 2> "${logs_root}/security-dependency-audit.stderr.log"
           printf '{"schema_version":1,"kind":"supply_chain_report_v1","commands":["bijux-dev-atlas security validate --format json","bijux-dev-atlas security dependency-audit --format json"],"status":"ok","reports":["security-validate.json","security-dependency-audit.json"]}\n' > "${report_root}/supply-chain.json"
