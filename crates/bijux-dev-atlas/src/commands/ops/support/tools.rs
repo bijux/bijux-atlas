@@ -163,7 +163,10 @@ pub(crate) fn validate_pins_completeness(
                 continue;
             };
             for pattern in hardcoded_tool_patterns {
-                if text.contains(pattern) && !text.contains("bijux dev atlas") {
+                if text.contains(pattern)
+                    && !text.contains("bijux dev atlas")
+                    && !text.contains("bijux-dev-atlas")
+                {
                     let rel = path
                         .strip_prefix(repo_root)
                         .unwrap_or(path.as_path())

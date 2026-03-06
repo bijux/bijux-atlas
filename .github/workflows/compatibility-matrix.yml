@@ -78,11 +78,23 @@ jobs:
             exit 0
           fi
           git commit -m "docs(compatibility): refresh matrix for ${GITHUB_REF_NAME}"
+          set +e
           git push --force-with-lease origin "${branch}"
+          push_exit=$?
+          if [[ "${push_exit}" -ne 0 ]]; then
+            echo "warning: failed to push compatibility branch ${branch}; skipping PR creation"
+            exit 0
+          fi
 
           existing_number="$(gh pr list --base main --head "${branch}" --json number --jq '.[0].number // empty')"
           if [[ -n "${existing_number}" ]]; then
             gh pr edit "${existing_number}" --title "${title}" --body "${body}"
           else
             gh pr create --base main --head "${branch}" --title "${title}" --body "${body}"
+          fi
+          pr_exit=$?
+          set -e
+          if [[ "${pr_exit}" -ne 0 ]]; then
+            echo "warning: compatibility matrix PR upsert failed; continuing without failing workflow"
+            exit 0
           fi

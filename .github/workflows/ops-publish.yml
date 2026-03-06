@@ -59,6 +59,7 @@ jobs:
           set -euo pipefail
           export CRATES_IO_TOKEN="${{ secrets.CARGO_REGISTRY_TOKEN }}"
           export GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          printf '%s\n' "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
           cargo run --locked -q -p bijux-dev-atlas -- release ops push \
             --allow-write \
             --allow-subprocess \
