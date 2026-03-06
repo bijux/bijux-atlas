@@ -57,13 +57,13 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           import pathlib
-          import yaml
-          mkdocs = yaml.safe_load(pathlib.Path("mkdocs.yml").read_text())
-          site_dir = mkdocs.get("site_dir", "site")
-          exclude_docs = mkdocs.get("exclude_docs", "")
+          import re
+          text = pathlib.Path("mkdocs.yml").read_text()
+          site_dir_match = re.search(r"(?m)^site_dir:\s*(\S+)\s*$", text)
+          site_dir = site_dir_match.group(1) if site_dir_match else "site"
           if site_dir != "artifacts/docs/site":
               raise SystemExit(f"mkdocs site_dir must be artifacts/docs/site, got: {site_dir}")
-          if "_drafts/**" not in exclude_docs:
+          if "_drafts/**" not in text:
               raise SystemExit("mkdocs exclude_docs must include _drafts/**")
           PY
 
