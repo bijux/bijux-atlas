@@ -1,61 +1,17 @@
 # Changelog
 
-## v0.1.2
-
-### Added
-- Ops purity governance reports: `artifacts/governance/ops_purity_report.json` and `artifacts/governance/ops_purity_report.md`.
-
-### Changed
-- `migrations status` now fails when Python files are present under `ops/`.
-- Governance report now includes `Directory Purity` and `Repo purity` sections.
-
-### Fixed
-- Removed `ops/cli/perf/cli_ux_benchmark.py`; CLI UX benchmark execution is now dev-atlas only.
-
-### Breaking Changes
-- none
-
-
-## v0.1.1
-
-### Added
-- 
-
-### Changed
-- 
-
-### Fixed
-- 
-
-### Breaking Changes
-- none
-
-
 All notable changes are documented in this file.
 
 ## v0.1.0
 
 ### Added
-- Deterministic Rust workspace split between runtime (`bijux-atlas`) and control plane (`bijux-dev-atlas`).
-- Canonical command surfaces for atlas runtime and dev control-plane workflows.
-- SSOT governance for ops/config/docs policies and contracts.
-- Registry-driven documentation inventory, validation, and generated indexes.
-- Structured reports and CI lanes for check, lint, audit, test, docs, and ops validation.
-- Apache-2.0 licensing metadata across workspace crates.
-
-### Changed
-- Harmonized governance contracts and generated registries for deterministic policy enforcement.
-
-### Fixed
-- Stabilized control-plane output normalization and deterministic artifact serialization.
-
-### Breaking Changes
-- none
-
-### Included Surfaces
-- `ops/`: stack, render, validation, k8s and load orchestration contracts.
-- `configs/`: policy/config schema and inventory contracts.
-- `makefiles/`: thin wrapper targets around canonical crate commands.
-
-### Notes
-- `v0.1.0` establishes the stable baseline for command, contract, and policy governance.
+- Established a Rust workspace with runtime crates and a dedicated control-plane crate.
+- Delivered runtime crates for core, model, policies, store, query, ingest, api, client, cli, and server.
+- Standardized command surfaces so make/workflows route through `bijux-dev-atlas`.
+- Built contract-driven governance across `ops/`, `configs/`, `docs/`, `make/`, and root surfaces.
+- Added docs inventory, link validation, nav integrity checks, and generated docs registries.
+- Introduced real-data tutorial run contracts, dataset metadata, and evidence-oriented docs pages.
+- Added release and compatibility reporting surfaces with machine-readable JSON outputs.
+- Added GitHub Actions lanes for release candidate, docs deploy, ops validate/publish, and crates publish.
+- Added container, helm, and ops packaging workflows aligned with deterministic artifact generation.
+- Set Apache-2.0 licensing and release metadata baseline for `v0.1.0`.
