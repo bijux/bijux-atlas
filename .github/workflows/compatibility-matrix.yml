@@ -43,7 +43,23 @@ jobs:
           else
             printf '{"schema_version":1,"status":"ok","text":"docs validate passed","exit_code":0}\n' > artifacts/compatibility-matrix/docs-validate-gate.json
           fi
+      - name: Refresh compatibility matrix artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo run --locked -q -p bijux-dev-atlas -- release ops compatibility-matrix --allow-write --format json > artifacts/compatibility-matrix/release-ops-compatibility-matrix.json
+      - name: Detect matrix diff
+        id: matrix-diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "has_changes=false" >> "${GITHUB_OUTPUT}"
+          else
+            echo "has_changes=true" >> "${GITHUB_OUTPUT}"
+          fi
       - name: Create compatibility matrix PR
+        if: steps.matrix-diff.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
         with:
           commit-message: "docs(compatibility): refresh umbrella-atlas matrix for ${GITHUB_REF_NAME}"
