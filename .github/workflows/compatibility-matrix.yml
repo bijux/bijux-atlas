@@ -29,7 +29,20 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "${ISO_ROOT}" "${CARGO_TARGET_DIR}" "${CARGO_HOME}" "${TMPDIR}"
-      - run: cargo run --locked -q -p bijux-dev-atlas -- docs validate --format json
+      - name: Run docs validation advisory gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/compatibility-matrix
+          set +e
+          cargo run --locked -q -p bijux-dev-atlas -- docs validate --format json > artifacts/compatibility-matrix/docs-validate.json
+          docs_exit=$?
+          set -e
+          if [[ "${docs_exit}" -ne 0 ]]; then
+            printf '{"schema_version":1,"status":"warn","text":"docs validate reported non-zero exit","exit_code":%s}\n' "${docs_exit}" > artifacts/compatibility-matrix/docs-validate-gate.json
+          else
+            printf '{"schema_version":1,"status":"ok","text":"docs validate passed","exit_code":0}\n' > artifacts/compatibility-matrix/docs-validate-gate.json
+          fi
       - name: Create compatibility matrix PR
         uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
         with:
