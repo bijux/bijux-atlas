@@ -4,5 +4,6 @@
 .github/workflows/docs-audit.yml
 .github/workflows/docs-deploy.yml
 .github/workflows/docs-only.yml
+.github/workflows/publish-crates-io.yml
 .github/workflows/publish-atlas-client-python.yml
 .github/workflows/release-atlas-client-python.yml
