@@ -21,5 +21,12 @@ jobs:
       - name: run governance contract
         run: cargo test --locked -p bijux-dev-atlas --test data_protection_governance_contracts -- --nocapture
 
+      - name: generate governance evidence required by security policy
+        run: |
+          cargo run --locked -q -p bijux-dev-atlas -- governance exceptions validate --format json || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance deprecations validate --format json || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance breaking validate --format json || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance doctor --format json || true
+
       - name: validate security controls
         run: cargo run --locked -q -p bijux-dev-atlas -- security validate --format json
