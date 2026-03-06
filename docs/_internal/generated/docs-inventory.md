@@ -652,6 +652,7 @@ License: Apache-2.0
 | `docs/architecture/user-cli-command-catalog.md` | `concept` | `docs-governance` | `stable` |
 | `docs/architecture/what-belongs-where.md` | `concept` | `architecture` | `stable` |
 | `docs/architecture/why-effects-are-gated.md` | `concept` | `architecture` | `stable` |
+| `docs/architecture/why-this-structure-exists.md` | `concept` | `docs-governance` | `stable` |
 | `docs/architecture/workspace-boundaries-rules.md` | `concept` | `architecture` | `stable` |
 | `docs/cli-command-list.md` | `concept` | `docs-governance` | `stable` |
 | `docs/cli/automation-examples.md` | `concept` | `docs-governance` | `stable` |

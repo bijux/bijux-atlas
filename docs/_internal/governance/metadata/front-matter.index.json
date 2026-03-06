@@ -5163,6 +5163,14 @@
     },
     {
       "area": "architecture",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/architecture/why-this-structure-exists.md",
+      "stability": "stable",
+      "title": "Why This Structure Exists"
+    },
+    {
+      "area": "architecture",
       "audience": "contributor",
       "owner": "architecture",
       "path": "docs/architecture/workspace-boundaries-rules.md",

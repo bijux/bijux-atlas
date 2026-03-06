@@ -1325,6 +1325,7 @@
 | `why-a-control-plane` | `docs/control-plane/why-a-control-plane.md` |
 | `why-effects-are-gated` | `docs/architecture/why-effects-are-gated.md` |
 | `why-scripts-are-forbidden` | `docs/governance/why-scripts-are-forbidden.md` |
+| `why-this-structure-exists` | `docs/architecture/why-this-structure-exists.md` |
 | `why-trust-this` | `docs/product/why-trust-this.md` |
 | `wire-compatibility` | `crates/bijux-atlas-api/docs/internal/wire-compatibility.md` |
 | `workflows` | `docs/operations/workflows.md` |

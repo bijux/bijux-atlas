@@ -204,6 +204,7 @@ nav:
       - What We Built: what-we-built.md
   - Architecture:
       - Architecture Index: architecture/index.md
+      - Why This Structure Exists: architecture/why-this-structure-exists.md
       - System Architecture Specification: architecture/system-architecture-specification.md
       - Architecture Summary: architecture/summary.md
       - Architecture Overview: architecture/overview.md

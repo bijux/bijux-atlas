@@ -645,6 +645,7 @@
     "docs/architecture/user-cli-command-catalog.md",
     "docs/architecture/what-belongs-where.md",
     "docs/architecture/why-effects-are-gated.md",
+    "docs/architecture/why-this-structure-exists.md",
     "docs/architecture/workspace-boundaries-rules.md",
     "docs/cli-command-list.md",
     "docs/cli/automation-examples.md",

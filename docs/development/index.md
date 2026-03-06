@@ -37,6 +37,7 @@ Guide contributors through repository structure, CI behavior, control-plane oper
 - [Config change checklist](config-change-checklist.md)
 - [Toolchain](toolchain.md)
 - [Tooling](tooling/index.md)
+- [Why this structure exists](../architecture/why-this-structure-exists.md)
 - [Add a check in 30 minutes](../control-plane/add-a-check-in-30-minutes.md)
 - [Where truth lives](where-truth-lives.md)
 

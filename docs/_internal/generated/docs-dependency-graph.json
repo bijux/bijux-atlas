@@ -3228,6 +3228,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/why-this-structure-exists.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/workspace-boundaries-rules.md"
     },
     {

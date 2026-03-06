@@ -15669,6 +15669,29 @@
     },
     {
       "area": "architecture",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "architecture",
+        "why-this-structure-exists"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/architecture/why-this-structure-exists.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "why-this-structure-exists"
+      ],
+      "title": "Why This Structure Exists",
+      "topic": "why-this-structure-exists"
+    },
+    {
+      "area": "architecture",
       "audience": "contributor",
       "crate": null,
       "doc_type": "concept",

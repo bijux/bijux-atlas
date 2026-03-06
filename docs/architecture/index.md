@@ -76,6 +76,7 @@ Describe how Atlas is structured so contributors and operators share one durable
 Continue with [Operations](../operations/index.md) for runtime procedures or [Development](../development/index.md) for contributor workflows.
 Also review the glossary for canonical terms.
 Anchor the product model in [What is Bijux Atlas](../product/what-is-bijux-atlas.md).
+Repository shape rationale lives in [Why This Structure Exists](why-this-structure-exists.md).
 
 ## Document Taxonomy
 

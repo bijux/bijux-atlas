@@ -49,12 +49,12 @@ Atlas documentation is organized by system understanding first, then execution d
 
 - New to Atlas: [Architecture Summary](architecture/summary.md)
 - System understanding: [Architecture Overview](architecture/overview.md)
+- Repository structure rationale: [Why This Structure Exists](architecture/why-this-structure-exists.md)
 - Runtime operation: [Deploy Overview](operations/deploy.md)
 - API consumer path: [API v1 Surface](api/v1-surface.md)
 - Contributor path: [Contributor Onboarding Rubric](development/contributor-onboarding-rubric.md)
 - Reviewer path: [For reviewers](product/for-reviewers.md)
 - Operator path: [For operators](product/for-operators.md)
-
 ## Docs Spine
 
 - Start: [Start Here](start-here.md)

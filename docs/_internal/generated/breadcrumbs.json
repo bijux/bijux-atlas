@@ -5764,6 +5764,14 @@
       "breadcrumbs": [
         "docs",
         "docs/architecture",
+        "docs/architecture/why-this-structure-exists.md"
+      ],
+      "path": "docs/architecture/why-this-structure-exists.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
         "docs/architecture/workspace-boundaries-rules.md"
       ],
       "path": "docs/architecture/workspace-boundaries-rules.md"

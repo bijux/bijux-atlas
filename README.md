@@ -166,6 +166,7 @@ Repository constitution: [`CONTRACT.md`](CONTRACT.md)
 ## Architecture
 
 Repository architecture entrypoint: [`ARCHITECTURE.md`](ARCHITECTURE.md)
+Canonical structure rationale: [`docs/architecture/why-this-structure-exists.md`](docs/architecture/why-this-structure-exists.md)
 
 ## Version And Compatibility
 

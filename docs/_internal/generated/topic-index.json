@@ -4347,6 +4347,9 @@
     "why-scripts-are-forbidden": [
       "docs/governance/why-scripts-are-forbidden.md"
     ],
+    "why-this-structure-exists": [
+      "docs/architecture/why-this-structure-exists.md"
+    ],
     "why-trust-this": [
       "docs/product/why-trust-this.md"
     ],
