@@ -15,6 +15,13 @@ jobs:
       - name: setup-rust
         uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
 
+      - name: generate governance evidence required by security policy
+        run: |
+          cargo run --locked -q -p bijux-dev-atlas -- governance exceptions validate --format json || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance deprecations validate --format json || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance breaking validate --format json || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance doctor --format json || true
+
       - name: run dependency security validation
         run: cargo run --locked -q -p bijux-dev-atlas -- security validate --format json
 
