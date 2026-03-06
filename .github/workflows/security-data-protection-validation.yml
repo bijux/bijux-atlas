@@ -23,10 +23,28 @@ jobs:
 
       - name: generate governance evidence required by security policy
         run: |
-          cargo run --locked -q -p bijux-dev-atlas -- governance exceptions validate --format json || true
-          cargo run --locked -q -p bijux-dev-atlas -- governance deprecations validate --format json || true
-          cargo run --locked -q -p bijux-dev-atlas -- governance breaking validate --format json || true
-          cargo run --locked -q -p bijux-dev-atlas -- governance doctor --format json || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance exceptions validate --repo-root "${GITHUB_WORKSPACE}" --format json || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance deprecations validate --repo-root "${GITHUB_WORKSPACE}" --format json || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance breaking validate --repo-root "${GITHUB_WORKSPACE}" --format json || true
+          cargo run --locked -q -p bijux-dev-atlas -- governance doctor --repo-root "${GITHUB_WORKSPACE}" --format json || true
+      - name: verify governance evidence files exist
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            "artifacts/governance/exceptions-summary.json"
+            "artifacts/governance/exceptions-expiry-warning.json"
+            "artifacts/governance/exceptions-churn.json"
+            "artifacts/governance/deprecations-summary.json"
+            "artifacts/governance/compat-warnings.json"
+            "artifacts/governance/breaking-changes.json"
+            "artifacts/governance/governance-doctor.json"
+            "artifacts/governance/institutional-delta.md"
+            "artifacts/governance/institutional-delta-inputs.json"
+          )
+          for file in "${required[@]}"; do
+            test -f "${file}" || { echo "missing governance evidence file: ${file}" >&2; exit 1; }
+          done
 
       - name: validate security controls
         run: cargo run --locked -q -p bijux-dev-atlas -- security validate --format json
