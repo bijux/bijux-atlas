@@ -198,14 +198,14 @@ async fn metrics_endpoint_matches_metrics_contract() {
     )
     .expect("parse endpoints");
     let server_sources = [
-        root.join("crates/bijux-atlas/src/runtime/server_runtime_app.rs"),
-        root.join("crates/bijux-atlas/src/http/genes.rs"),
-        root.join("crates/bijux-atlas/src/http/handlers.rs"),
-        root.join("crates/bijux-atlas/src/http/diff.rs"),
-        root.join("crates/bijux-atlas/src/http/sequence.rs"),
-        root.join("crates/bijux-atlas/src/http/transcript_endpoints.rs"),
-        root.join("crates/bijux-atlas/src/http/handlers_endpoints.rs"),
-        root.join("crates/bijux-atlas/src/http/handlers_utilities.rs"),
+        root.join("crates/bijux-atlas/src/server/runtime/server_runtime_app.rs"),
+        root.join("crates/bijux-atlas/src/server/http/genes.rs"),
+        root.join("crates/bijux-atlas/src/server/http/handlers.rs"),
+        root.join("crates/bijux-atlas/src/server/http/diff.rs"),
+        root.join("crates/bijux-atlas/src/server/http/sequence.rs"),
+        root.join("crates/bijux-atlas/src/server/http/transcript_endpoints.rs"),
+        root.join("crates/bijux-atlas/src/server/http/handlers_endpoints.rs"),
+        root.join("crates/bijux-atlas/src/server/http/handlers_utilities.rs"),
     ];
     let source_concat = server_sources
         .iter()

@@ -41,7 +41,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -80,7 +80,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -121,7 +121,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -164,7 +164,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -206,7 +206,7 @@
         "raw_path"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -248,7 +248,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -291,7 +291,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -334,7 +334,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -372,7 +372,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -411,7 +411,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -450,7 +450,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -492,7 +492,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -534,7 +534,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -575,7 +575,7 @@
         "raw_path"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -618,7 +618,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -662,7 +662,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -700,7 +700,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -738,7 +738,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -776,7 +776,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -814,7 +814,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -852,7 +852,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -891,7 +891,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -929,7 +929,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -970,7 +970,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -1009,7 +1009,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -1053,7 +1053,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -1092,7 +1092,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -1130,7 +1130,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -1168,7 +1168,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -1207,7 +1207,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -1245,7 +1245,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -1283,7 +1283,7 @@
         "raw_path"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -1323,7 +1323,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -1360,7 +1360,7 @@
         "raw_path"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -1400,7 +1400,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -1438,7 +1438,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -1479,7 +1479,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -1517,7 +1517,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
@@ -1562,7 +1562,7 @@
         "trace_id"
       ],
       "owner": {
-        "crate": "bijux-atlas-server",
+        "crate": "bijux-atlas",
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [

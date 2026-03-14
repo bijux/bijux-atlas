@@ -8,35 +8,43 @@ extern crate self as bijux_atlas;
 mod adapters;
 mod artifact_validation;
 pub mod api;
+#[path = "server/cache/mod.rs"]
 mod cache;
 pub mod cli;
 pub mod client;
 mod config;
 pub mod core;
+#[path = "server/cache/shards.rs"]
 mod dataset_shards;
 pub mod domain;
 mod effect_adapters;
 pub mod effects;
 pub mod errors;
 mod generated;
+#[path = "server/http/mod.rs"]
 mod http;
 pub mod ingest;
+#[path = "server/middleware/mod.rs"]
 mod middleware;
 pub mod model;
 pub mod policies;
 pub mod ports;
 pub mod query;
+#[path = "server/routing.rs"]
 mod routing_hash;
-mod services;
+pub mod server;
+#[path = "server/registry/mod.rs"]
 mod server_store;
+mod services;
 pub mod store;
+#[path = "server/cache/resilience.rs"]
 mod store_resilience;
 mod telemetry;
 pub mod types;
 
-include!("runtime/state/mod.rs");
-include!("runtime/effects/mod.rs");
-include!("runtime/orchestrator/mod.rs");
+include!("server/runtime/state/mod.rs");
+include!("server/runtime/effects/mod.rs");
+include!("server/runtime/orchestrator/mod.rs");
 
 pub use crate::cli::main_entry;
 pub use crate::telemetry::generated::metrics_contract::CONTRACT_METRIC_NAMES;
