@@ -7,10 +7,7 @@
   "default_area_budget": 20,
   "area_budgets": {
     "docs-root": 800,
-    "bijux-atlas-api": 20,
-    "bijux-atlas-server": 20,
     "bijux-atlas": 20,
-    "bijux-dev-atlas": 20,
     "bijux-dev-atlas": 20
   },
   "naming": {

@@ -4,7 +4,7 @@ allowed_licenses:
 datasets:
   - id: 110/homo_sapiens/GRCh38
     version: tiny-fixture-v1
-    source: crates/bijux-atlas-ingest/tests/fixtures/tiny
+    source: crates/bijux-atlas/tests/fixtures/tiny
     license: CC-BY-4.0
     checksum: 30bebd3617dddc3d04e69a9f9abcd2ff23dd61db130a9c9c88ea608e42436e31
     size: 456

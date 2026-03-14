@@ -2,10 +2,7 @@
   "schema_version": 1,
   "versioning_strategy": "workspace-unified",
   "publishable_crates": [
-    "bijux-atlas-api",
-    "bijux-atlas",
-    "bijux-atlas-client",
-    "bijux-atlas-server"
+    "bijux-atlas"
   ],
   "blocked_crates": [
     "bijux-dev-atlas",

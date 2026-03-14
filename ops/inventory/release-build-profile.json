@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "kind": "release_build_profile_v1",
-  "component": "bijux-atlas-store",
+  "component": "bijux-atlas",
   "default_compiled_backends": [
     "local"
   ],

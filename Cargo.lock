@@ -247,67 +247,12 @@ name = "bijux-atlas"
 version = "0.1.1"
 dependencies = [
  "assert_cmd",
- "base64",
- "clap",
- "clap_complete",
- "criterion",
- "flate2",
- "hmac",
- "predicates",
- "proptest",
- "reqwest",
- "rusqlite",
- "serde",
- "serde_json",
- "serde_yaml",
- "sha2",
- "tar",
- "tempfile",
- "tiny_http",
- "unicode-normalization",
- "walkdir",
- "zstd",
-]
-
-[[package]]
-name = "bijux-atlas-api"
-version = "0.1.1"
-dependencies = [
- "bijux-atlas",
- "criterion",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "bijux-atlas-bench"
-version = "0.1.1"
-dependencies = [
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "bijux-atlas-client"
-version = "0.1.1"
-dependencies = [
- "criterion",
- "reqwest",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "bijux-atlas-server"
-version = "0.1.1"
-dependencies = [
  "async-trait",
  "axum",
  "base64",
- "bijux-atlas",
- "bijux-atlas-api",
  "brotli",
  "clap",
+ "clap_complete",
  "criterion",
  "flate2",
  "hex",
@@ -315,6 +260,8 @@ dependencies = [
  "opentelemetry",
  "opentelemetry-otlp",
  "opentelemetry_sdk",
+ "predicates",
+ "proptest",
  "redis",
  "regex",
  "reqwest",
@@ -323,13 +270,26 @@ dependencies = [
  "serde_json",
  "serde_yaml",
  "sha2",
+ "tar",
  "tempfile",
  "tikv-jemallocator",
+ "tiny_http",
  "tokio",
  "toml",
  "tracing",
  "tracing-opentelemetry",
  "tracing-subscriber",
+ "unicode-normalization",
+ "walkdir",
+ "zstd",
+]
+
+[[package]]
+name = "bijux-atlas-bench"
+version = "0.1.1"
+dependencies = [
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "owner": "bijux-atlas-platform",
   "areas": {
-    "docs/api": "bijux-atlas-api",
+    "docs/api": "bijux-atlas",
     "docs/architecture": "bijux-atlas-platform",
     "docs/control-plane": "bijux-atlas-platform",
     "docs/development": "bijux-atlas-platform",

@@ -4,10 +4,7 @@ versioning_model = "workspace-unified"
 
 [publish]
 allow = [
-  "bijux-atlas-api",
   "bijux-atlas",
-  "bijux-atlas-client",
-  "bijux-atlas-server",
 ]
 deny = [
   "bijux-dev-atlas",
@@ -15,11 +12,8 @@ deny = [
 ]
 
 [roles]
-"bijux-atlas-server" = "runtime-server"
-"bijux-atlas-client" = "client-sdk"
 "bijux-dev-atlas" = "developer-tool-private"
-"bijux-atlas-api" = "api-library"
-"bijux-atlas" = "operator-cli"
+"bijux-atlas" = "atlas-platform"
 "bijux-atlas-bench" = "benchmark-private"
 
 [metadata_requirements]

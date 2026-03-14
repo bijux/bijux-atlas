@@ -1,9 +1,6 @@
 {
   "schema_version": 1,
   "crate_policy": {
-    "bijux-atlas-api": {"enforce_deny_missing_docs": false, "exception": "public modules documented; full rustdoc lint staged incrementally"},
-    "bijux-atlas": {"enforce_deny_missing_docs": false, "exception": "merged runtime modules are documented at module level while the public surface is being consolidated"},
-    "bijux-atlas-server": {"enforce_deny_missing_docs": false, "exception": "runtime crate exports focus on service contracts"},
-    "bijux-atlas-client": {"enforce_deny_missing_docs": false, "exception": "client surface is still under initial documentation rollout"}
+    "bijux-atlas": {"enforce_deny_missing_docs": false, "exception": "the merged crate carries CLI, API, client, ingest, model, store, and runtime surfaces while rustdoc coverage is being unified"}
   }
 }
