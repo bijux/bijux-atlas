@@ -6,4 +6,5 @@
 | Crate | Public API Doc |
 |---|---|
 | `bijux-atlas` | `missing` |
+| `bijux-atlas-python` | `missing` |
 | `bijux-dev-atlas` | `missing` |

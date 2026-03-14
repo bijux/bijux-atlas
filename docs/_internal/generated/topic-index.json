@@ -1,6 +1,9 @@
 {
   "schema_version": 1,
   "topics": {
+    "0.1.0": [
+      "ops/release/notes/images/0.1.0.md"
+    ],
     "ARCHITECTURE": [
       "crates/bijux-atlas/src/cache/ARCHITECTURE.md"
     ],
@@ -8,16 +11,17 @@
       "ops/schema/BUDGET_POLICY.md"
     ],
     "CHANGELOG": [
-      "CHANGELOG.md"
+      "CHANGELOG.md",
+      "crates/bijux-atlas-python/CHANGELOG.md"
     ],
     "CONTRACT": [
       "configs/CONTRACT.md",
       "crates/bijux-dev-atlas/CONTRACT.md",
-      "docker/CONTRACT.md",
       "docs/bijux-atlas-crate/CONTRACT.md",
       "make/CONTRACT.md",
       "ops/CONTRACT.md",
       "ops/datasets/CONTRACT.md",
+      "ops/docker/CONTRACT.md",
       "ops/e2e/CONTRACT.md",
       "ops/env/CONTRACT.md",
       "ops/inventory/CONTRACT.md",
@@ -36,6 +40,7 @@
     ],
     "INDEX": [
       "configs/INDEX.md",
+      "crates/bijux-atlas-python/examples/INDEX.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/INDEX.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/INDEX.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/INDEX.md",
@@ -46,6 +51,9 @@
     ],
     "MAKE_LAWS": [
       "make/_internal/contracts/MAKE_LAWS.md"
+    ],
+    "MATURITY": [
+      "crates/bijux-atlas-python/examples/MATURITY.md"
     ],
     "MINIMAL_RELEASE_SURFACE": [
       "ops/MINIMAL_RELEASE_SURFACE.md"
@@ -109,6 +117,8 @@
       "configs/slo/README.md",
       "configs/system/README.md",
       "configs/tutorials/README.md",
+      "crates/bijux-atlas-python/README.md",
+      "crates/bijux-atlas-python/examples/usage/README.md",
       "crates/bijux-atlas/README.md",
       "crates/bijux-atlas/tests/README.md",
       "crates/bijux-atlas/tests/api/README.md",
@@ -129,7 +139,6 @@
       "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_latest/docker/README.md",
       "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_patterns/docker/README.md",
       "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/pass/docker/README.md",
-      "docker/README.md",
       "docs/README.md",
       "docs/_internal/contracts/configs/README.md",
       "docs/_internal/contracts/docs/README.md",
@@ -140,9 +149,11 @@
       "ops/README.md",
       "ops/_generated.example/README.md",
       "ops/datasets/README.md",
+      "ops/docker/README.md",
       "ops/e2e/README.md",
       "ops/env/README.md",
       "ops/evidence/README.md",
+      "ops/governance/repository/README.md",
       "ops/inventory/README.md",
       "ops/k8s/README.md",
       "ops/k8s/kind/README.md",
@@ -151,7 +162,19 @@
       "ops/observe/dashboards/README.md",
       "ops/report/README.md",
       "ops/schema/README.md",
-      "ops/stack/README.md"
+      "ops/security/threat-model/README.md",
+      "ops/stack/README.md",
+      "ops/tutorials/datasets/README.md",
+      "ops/tutorials/datasets/annotation-large-sample/README.md",
+      "ops/tutorials/datasets/assembly-large-sample/README.md",
+      "ops/tutorials/datasets/clinvar-large-sample/README.md",
+      "ops/tutorials/datasets/combined-release/README.md",
+      "ops/tutorials/datasets/expression-medium/README.md",
+      "ops/tutorials/datasets/genes-baseline/README.md",
+      "ops/tutorials/datasets/phenotype-medium/README.md",
+      "ops/tutorials/datasets/population-medium/README.md",
+      "ops/tutorials/datasets/transcripts-baseline/README.md",
+      "ops/tutorials/datasets/variants-mini/README.md"
     ],
     "REQUIRED_FILES": [
       "ops/_generated.example/REQUIRED_FILES.md",
@@ -180,6 +203,9 @@
     ],
     "SSOT": [
       "ops/SSOT.md"
+    ],
+    "VERSIONING": [
+      "crates/bijux-atlas-python/VERSIONING.md"
     ],
     "VERSIONING_POLICY": [
       "ops/schema/VERSIONING_POLICY.md"
@@ -351,6 +377,7 @@
       "docs/api/api-rate-limit-policy.md"
     ],
     "api-reference": [
+      "crates/bijux-atlas-python/docs/api-reference.md",
       "docs/api/client-rust/api-reference.md"
     ],
     "api-request-examples": [
@@ -383,6 +410,7 @@
       "docs/api/api-versioning-strategy.md"
     ],
     "architecture": [
+      "crates/bijux-atlas-python/docs/architecture.md",
       "crates/bijux-dev-atlas/docs/architecture.md",
       "crates/bijux-dev-atlas/docs/benchmarks/architecture.md",
       "docs/bijux-atlas-crate/api/architecture.md",
@@ -467,6 +495,9 @@
     ],
     "atlas-client-usage-examples": [
       "docs/reference/examples/atlas-client-usage-examples.md"
+    ],
+    "attack-surface": [
+      "ops/security/threat-model/attack-surface.md"
     ],
     "attack-surface-analysis": [
       "docs/architecture/security/attack-surface-analysis.md"
@@ -624,6 +655,9 @@
     ],
     "boundary-maps": [
       "docs/architecture/boundary-maps.md"
+    ],
+    "breaking": [
+      "ops/release/notes/breaking.md"
     ],
     "breaking-change-checklist": [
       "docs/reference/breaking-change-checklist.md"
@@ -1189,6 +1223,9 @@
     "dataflow": [
       "docs/architecture/dataflow.md"
     ],
+    "dataflows": [
+      "ops/security/threat-model/dataflows.md"
+    ],
     "dataset-access-policies": [
       "docs/operations/security/dataset-access-policies.md"
     ],
@@ -1289,6 +1326,7 @@
       "docs/tutorials/delivery-report.md"
     ],
     "delivery-summary": [
+      "crates/bijux-atlas-python/docs/delivery-summary.md",
       "docs/api/client-python/delivery-summary.md",
       "docs/operations/replication/delivery-summary.md"
     ],
@@ -1632,6 +1670,7 @@
       "docs/operations/drills-program.md"
     ],
     "ecosystem-integrations": [
+      "crates/bijux-atlas-python/docs/ecosystem-integrations.md",
       "docs/api/client-python/ecosystem-integrations.md"
     ],
     "effect-boundary-map": [
@@ -2062,6 +2101,9 @@
     "image-offline-usage": [
       "docs/operations/image-offline-usage.md"
     ],
+    "image-release-notes-template": [
+      "ops/release/notes/image-release-notes-template.md"
+    ],
     "image-security-posture": [
       "docs/operations/image-security-posture.md"
     ],
@@ -2103,6 +2145,7 @@
       "docs/operations/runbooks/incident-triage-workflow.md"
     ],
     "index": [
+      "crates/bijux-atlas-python/docs/index.md",
       "crates/bijux-dev-atlas/docs/benchmarks/index.md",
       "crates/bijux-dev-atlas/docs/index.md",
       "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/index.md",
@@ -3090,6 +3133,7 @@
       "docs/api/quick-reference.md"
     ],
     "quickstart": [
+      "crates/bijux-atlas-python/docs/quickstart.md",
       "docs/operations/load/quickstart.md",
       "docs/tutorials/quickstart.md"
     ],
@@ -4158,6 +4202,7 @@
       "docs/_internal/governance/triage-validation-failures.md"
     ],
     "troubleshooting": [
+      "crates/bijux-atlas-python/docs/troubleshooting.md",
       "crates/bijux-dev-atlas/docs/benchmarks/troubleshooting.md",
       "docs/api/client-python/troubleshooting.md",
       "docs/api/troubleshooting.md",
@@ -4170,7 +4215,8 @@
       "docs/tutorials/troubleshooting-guide.md"
     ],
     "trust-boundaries": [
-      "docs/architecture/security/trust-boundaries.md"
+      "docs/architecture/security/trust-boundaries.md",
+      "ops/security/threat-model/trust-boundaries.md"
     ],
     "trust-boundary-diagram": [
       "docs/operations/security/trust-boundary-diagram.md"
@@ -4267,6 +4313,7 @@
       "docs/operations/verify-release-artifacts.md"
     ],
     "version-compatibility-matrix": [
+      "crates/bijux-atlas-python/docs/version-compatibility-matrix.md",
       "docs/api/client-python/version-compatibility-matrix.md"
     ],
     "versioning": [

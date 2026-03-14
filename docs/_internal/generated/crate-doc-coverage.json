@@ -1,6 +1,10 @@
 {
   "rows": [
     {
+      "crate": "bijux-atlas-python",
+      "doc_count": 8
+    },
+    {
       "crate": "bijux-dev-atlas",
       "doc_count": 35
     }

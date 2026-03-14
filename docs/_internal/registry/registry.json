@@ -1202,6 +1202,336 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "bijux-atlas-python",
+        "changelog"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/CHANGELOG.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-python",
+        "changelog"
+      ],
+      "title": "Changelog",
+      "topic": "CHANGELOG"
+    },
+    {
+      "area": "crates",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-python",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-python",
+        "readme"
+      ],
+      "title": "bijux-atlas (Python SDK)",
+      "topic": "README"
+    },
+    {
+      "area": "crates",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-python",
+        "versioning"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/VERSIONING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-python",
+        "versioning"
+      ],
+      "title": "Versioning",
+      "topic": "VERSIONING"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "api-reference",
+        "bijux-atlas-python"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/api-reference.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "api-reference",
+        "bijux-atlas-python"
+      ],
+      "title": "Python Client API Reference",
+      "topic": "api-reference"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "architecture",
+        "bijux-atlas-python"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/architecture.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "bijux-atlas-python"
+      ],
+      "title": "Python Client Architecture",
+      "topic": "architecture"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-python",
+        "delivery-summary"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/delivery-summary.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-python",
+        "delivery-summary"
+      ],
+      "title": "Python Client Delivery Summary",
+      "topic": "delivery-summary"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-python",
+        "ecosystem-integrations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/ecosystem-integrations.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-python",
+        "ecosystem-integrations"
+      ],
+      "title": "Python Client Ecosystem Integrations",
+      "topic": "ecosystem-integrations"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-python",
+        "index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-python",
+        "index"
+      ],
+      "title": "Python Client Documentation",
+      "topic": "index"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-python",
+        "quickstart"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/quickstart.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-python",
+        "quickstart"
+      ],
+      "title": "Python Client Quickstart",
+      "topic": "quickstart"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-python",
+        "troubleshooting"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/troubleshooting.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-python",
+        "troubleshooting"
+      ],
+      "title": "Python Client Troubleshooting",
+      "topic": "troubleshooting"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-python",
+        "version-compatibility-matrix"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/version-compatibility-matrix.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-python",
+        "version-compatibility-matrix"
+      ],
+      "title": "Python Client Version Compatibility Matrix",
+      "topic": "version-compatibility-matrix"
+    },
+    {
+      "area": "crates",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-python",
+        "examples",
+        "index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/examples/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-python",
+        "examples",
+        "index"
+      ],
+      "title": "Atlas Python client examples",
+      "topic": "INDEX"
+    },
+    {
+      "area": "crates",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-python",
+        "examples",
+        "maturity"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/examples/MATURITY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-python",
+        "examples",
+        "maturity"
+      ],
+      "title": "Example maturity policy",
+      "topic": "MATURITY"
+    },
+    {
+      "area": "crates",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-python",
+        "examples",
+        "readme",
+        "usage"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/examples/usage/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-python",
+        "examples",
+        "readme",
+        "usage"
+      ],
+      "title": "bijux-atlas-usage-examples",
+      "topic": "README"
+    },
+    {
+      "area": "crates",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "bijux-atlas",
         "readme"
       ],
@@ -3236,52 +3566,6 @@
       ],
       "title": "Intro",
       "topic": "intro"
-    },
-    {
-      "area": "docker",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "contract",
-        "docker"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-platform",
-      "path": "docker/CONTRACT.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contract",
-        "docker"
-      ],
-      "title": "Docker Contract",
-      "topic": "CONTRACT"
-    },
-    {
-      "area": "docker",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docker",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docker/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docker",
-        "readme"
-      ],
-      "title": "Docker",
-      "topic": "README"
     },
     {
       "area": "README.md",
@@ -40374,6 +40658,56 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "contract",
+        "docker",
+        "ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-platform",
+      "path": "ops/docker/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contract",
+        "docker",
+        "ops"
+      ],
+      "title": "Docker Contract",
+      "topic": "CONTRACT"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "docker",
+        "ops",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/docker/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "docker",
+        "ops",
+        "readme"
+      ],
+      "title": "Docker",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "artifacts",
         "drift",
         "drift-visualization-table",
@@ -40646,6 +40980,33 @@
         "readme"
       ],
       "title": "Ops Evidence Bundle",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "ops",
+        "readme",
+        "repository"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/governance/repository/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "ops",
+        "readme",
+        "repository"
+      ],
+      "title": "Governance Objects",
       "topic": "README"
     },
     {
@@ -41163,6 +41524,89 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "breaking",
+        "notes",
+        "ops",
+        "release"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/release/notes/breaking.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "breaking",
+        "notes",
+        "ops",
+        "release"
+      ],
+      "title": "Breaking Changes",
+      "topic": "breaking"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "image-release-notes-template",
+        "notes",
+        "ops",
+        "release"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/release/notes/image-release-notes-template.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "image-release-notes-template",
+        "notes",
+        "ops",
+        "release"
+      ],
+      "title": "Image Release Notes Template",
+      "topic": "image-release-notes-template"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "0.1.0",
+        "images",
+        "notes",
+        "ops",
+        "release"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/release/notes/images/0.1.0.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "0.1.0",
+        "images",
+        "notes",
+        "ops",
+        "release"
+      ],
+      "title": "Image Release Notes 0.1.0",
+      "topic": "0.1.0"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "contract",
         "ops",
         "report"
@@ -41517,6 +41961,114 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "ops",
+        "readme",
+        "security",
+        "threat-model"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/security/threat-model/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "readme",
+        "security",
+        "threat-model"
+      ],
+      "title": "Threat Model",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "attack-surface",
+        "ops",
+        "security",
+        "threat-model"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/security/threat-model/attack-surface.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "attack-surface",
+        "ops",
+        "security",
+        "threat-model"
+      ],
+      "title": "Attack Surface",
+      "topic": "attack-surface"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "dataflows",
+        "ops",
+        "security",
+        "threat-model"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/security/threat-model/dataflows.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "dataflows",
+        "ops",
+        "security",
+        "threat-model"
+      ],
+      "title": "Data Flows",
+      "topic": "dataflows"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "ops",
+        "security",
+        "threat-model",
+        "trust-boundaries"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/security/threat-model/trust-boundaries.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "security",
+        "threat-model",
+        "trust-boundaries"
+      ],
+      "title": "Trust Boundaries",
+      "topic": "trust-boundaries"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "contract",
         "ops",
         "stack"
@@ -41609,6 +42161,323 @@
       ],
       "title": "Required Files",
       "topic": "REQUIRED_FILES"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "title": "Real Dataset Catalog",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "annotation-large-sample",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/annotation-large-sample/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "annotation-large-sample",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "title": "annotation-large-sample",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "assembly-large-sample",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/assembly-large-sample/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "assembly-large-sample",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "title": "assembly-large-sample",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "clinvar-large-sample",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/clinvar-large-sample/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "clinvar-large-sample",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "title": "clinvar-large-sample",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "combined-release",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/combined-release/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "combined-release",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "title": "combined-release",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "datasets",
+        "expression-medium",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/expression-medium/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "datasets",
+        "expression-medium",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "title": "expression-medium",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "datasets",
+        "genes-baseline",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/genes-baseline/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "datasets",
+        "genes-baseline",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "title": "genes-baseline",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "datasets",
+        "ops",
+        "phenotype-medium",
+        "readme",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/phenotype-medium/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "datasets",
+        "ops",
+        "phenotype-medium",
+        "readme",
+        "tutorials"
+      ],
+      "title": "phenotype-medium",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "datasets",
+        "ops",
+        "population-medium",
+        "readme",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/population-medium/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "datasets",
+        "ops",
+        "population-medium",
+        "readme",
+        "tutorials"
+      ],
+      "title": "population-medium",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "datasets",
+        "ops",
+        "readme",
+        "transcripts-baseline",
+        "tutorials"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/transcripts-baseline/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "datasets",
+        "ops",
+        "readme",
+        "transcripts-baseline",
+        "tutorials"
+      ],
+      "title": "transcripts-baseline",
+      "topic": "README"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials",
+        "variants-mini"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/variants-mini/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials",
+        "variants-mini"
+      ],
+      "title": "variants-mini",
+      "topic": "README"
     }
   ],
   "generated_by": "bijux dev atlas docs registry build",

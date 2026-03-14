@@ -7,7 +7,7 @@
 
 You are here: `docs/_internal/generated/docs-artifact-link-inventory.md`
 
-Return to: [Docs governance index](../governance/index.md)
+Return to: [Docs governance index](../ops/governance/repository/index.md)
 
 ## Links Containing `artifacts/`
 

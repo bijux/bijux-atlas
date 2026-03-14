@@ -1,5 +1,191 @@
 {
   "crates": {
+    "bijux-atlas-python": [
+      {
+        "area": "bijux-atlas-python",
+        "audience": "contributors",
+        "crate": "bijux-atlas-python",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "api-reference",
+          "bijux-atlas-python"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-python/docs/api-reference.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "api-reference",
+          "bijux-atlas-python"
+        ],
+        "title": "Python Client API Reference",
+        "topic": "api-reference"
+      },
+      {
+        "area": "bijux-atlas-python",
+        "audience": "contributors",
+        "crate": "bijux-atlas-python",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "architecture",
+          "bijux-atlas-python"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-python/docs/architecture.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "architecture",
+          "bijux-atlas-python"
+        ],
+        "title": "Python Client Architecture",
+        "topic": "architecture"
+      },
+      {
+        "area": "bijux-atlas-python",
+        "audience": "contributors",
+        "crate": "bijux-atlas-python",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-python",
+          "delivery-summary"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-python/docs/delivery-summary.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-python",
+          "delivery-summary"
+        ],
+        "title": "Python Client Delivery Summary",
+        "topic": "delivery-summary"
+      },
+      {
+        "area": "bijux-atlas-python",
+        "audience": "contributors",
+        "crate": "bijux-atlas-python",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-python",
+          "ecosystem-integrations"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-python/docs/ecosystem-integrations.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-python",
+          "ecosystem-integrations"
+        ],
+        "title": "Python Client Ecosystem Integrations",
+        "topic": "ecosystem-integrations"
+      },
+      {
+        "area": "bijux-atlas-python",
+        "audience": "contributors",
+        "crate": "bijux-atlas-python",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-python",
+          "index"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-python/docs/index.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-python",
+          "index"
+        ],
+        "title": "Python Client Documentation",
+        "topic": "index"
+      },
+      {
+        "area": "bijux-atlas-python",
+        "audience": "contributors",
+        "crate": "bijux-atlas-python",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-python",
+          "quickstart"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-python/docs/quickstart.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-python",
+          "quickstart"
+        ],
+        "title": "Python Client Quickstart",
+        "topic": "quickstart"
+      },
+      {
+        "area": "bijux-atlas-python",
+        "audience": "contributors",
+        "crate": "bijux-atlas-python",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-python",
+          "troubleshooting"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-python/docs/troubleshooting.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-python",
+          "troubleshooting"
+        ],
+        "title": "Python Client Troubleshooting",
+        "topic": "troubleshooting"
+      },
+      {
+        "area": "bijux-atlas-python",
+        "audience": "contributors",
+        "crate": "bijux-atlas-python",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-python",
+          "version-compatibility-matrix"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-python/docs/version-compatibility-matrix.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-python",
+          "version-compatibility-matrix"
+        ],
+        "title": "Python Client Version Compatibility Matrix",
+        "topic": "version-compatibility-matrix"
+      }
+    ],
     "bijux-dev-atlas": [
       {
         "area": "bijux-dev-atlas",

@@ -382,6 +382,130 @@
     {
       "breadcrumbs": [
         "crates",
+        "crates/bijux-atlas-python",
+        "crates/bijux-atlas-python/CHANGELOG.md"
+      ],
+      "path": "crates/bijux-atlas-python/CHANGELOG.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-python",
+        "crates/bijux-atlas-python/README.md"
+      ],
+      "path": "crates/bijux-atlas-python/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-python",
+        "crates/bijux-atlas-python/VERSIONING.md"
+      ],
+      "path": "crates/bijux-atlas-python/VERSIONING.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-python",
+        "crates/bijux-atlas-python/docs",
+        "crates/bijux-atlas-python/docs/api-reference.md"
+      ],
+      "path": "crates/bijux-atlas-python/docs/api-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-python",
+        "crates/bijux-atlas-python/docs",
+        "crates/bijux-atlas-python/docs/architecture.md"
+      ],
+      "path": "crates/bijux-atlas-python/docs/architecture.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-python",
+        "crates/bijux-atlas-python/docs",
+        "crates/bijux-atlas-python/docs/delivery-summary.md"
+      ],
+      "path": "crates/bijux-atlas-python/docs/delivery-summary.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-python",
+        "crates/bijux-atlas-python/docs",
+        "crates/bijux-atlas-python/docs/ecosystem-integrations.md"
+      ],
+      "path": "crates/bijux-atlas-python/docs/ecosystem-integrations.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-python",
+        "crates/bijux-atlas-python/docs",
+        "crates/bijux-atlas-python/docs/index.md"
+      ],
+      "path": "crates/bijux-atlas-python/docs/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-python",
+        "crates/bijux-atlas-python/docs",
+        "crates/bijux-atlas-python/docs/quickstart.md"
+      ],
+      "path": "crates/bijux-atlas-python/docs/quickstart.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-python",
+        "crates/bijux-atlas-python/docs",
+        "crates/bijux-atlas-python/docs/troubleshooting.md"
+      ],
+      "path": "crates/bijux-atlas-python/docs/troubleshooting.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-python",
+        "crates/bijux-atlas-python/docs",
+        "crates/bijux-atlas-python/docs/version-compatibility-matrix.md"
+      ],
+      "path": "crates/bijux-atlas-python/docs/version-compatibility-matrix.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-python",
+        "crates/bijux-atlas-python/examples",
+        "crates/bijux-atlas-python/examples/INDEX.md"
+      ],
+      "path": "crates/bijux-atlas-python/examples/INDEX.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-python",
+        "crates/bijux-atlas-python/examples",
+        "crates/bijux-atlas-python/examples/MATURITY.md"
+      ],
+      "path": "crates/bijux-atlas-python/examples/MATURITY.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-python",
+        "crates/bijux-atlas-python/examples",
+        "crates/bijux-atlas-python/examples/usage",
+        "crates/bijux-atlas-python/examples/usage/README.md"
+      ],
+      "path": "crates/bijux-atlas-python/examples/usage/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
         "crates/bijux-atlas",
         "crates/bijux-atlas/README.md"
       ],
@@ -1185,20 +1309,6 @@
         "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/sub/intro.md"
       ],
       "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/sub/intro.md"
-    },
-    {
-      "breadcrumbs": [
-        "docker",
-        "docker/CONTRACT.md"
-      ],
-      "path": "docker/CONTRACT.md"
-    },
-    {
-      "breadcrumbs": [
-        "docker",
-        "docker/README.md"
-      ],
-      "path": "docker/README.md"
     },
     {
       "breadcrumbs": [
@@ -14390,6 +14500,22 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/docker",
+        "ops/docker/CONTRACT.md"
+      ],
+      "path": "ops/docker/CONTRACT.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/docker",
+        "ops/docker/README.md"
+      ],
+      "path": "ops/docker/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/drift",
         "ops/drift/artifacts",
         "ops/drift/artifacts/drift-visualization-table.md"
@@ -14477,6 +14603,15 @@
         "ops/evidence/README.md"
       ],
       "path": "ops/evidence/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/governance",
+        "ops/governance/repository",
+        "ops/governance/repository/README.md"
+      ],
+      "path": "ops/governance/repository/README.md"
     },
     {
       "breadcrumbs": [
@@ -14645,6 +14780,34 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/release",
+        "ops/release/notes",
+        "ops/release/notes/breaking.md"
+      ],
+      "path": "ops/release/notes/breaking.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/release",
+        "ops/release/notes",
+        "ops/release/notes/image-release-notes-template.md"
+      ],
+      "path": "ops/release/notes/image-release-notes-template.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/release",
+        "ops/release/notes",
+        "ops/release/notes/images",
+        "ops/release/notes/images/0.1.0.md"
+      ],
+      "path": "ops/release/notes/images/0.1.0.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/report",
         "ops/report/CONTRACT.md"
       ],
@@ -14759,6 +14922,42 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/security",
+        "ops/security/threat-model",
+        "ops/security/threat-model/README.md"
+      ],
+      "path": "ops/security/threat-model/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/security",
+        "ops/security/threat-model",
+        "ops/security/threat-model/attack-surface.md"
+      ],
+      "path": "ops/security/threat-model/attack-surface.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/security",
+        "ops/security/threat-model",
+        "ops/security/threat-model/dataflows.md"
+      ],
+      "path": "ops/security/threat-model/dataflows.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/security",
+        "ops/security/threat-model",
+        "ops/security/threat-model/trust-boundaries.md"
+      ],
+      "path": "ops/security/threat-model/trust-boundaries.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/stack",
         "ops/stack/CONTRACT.md"
       ],
@@ -14787,6 +14986,115 @@
         "ops/stack/REQUIRED_FILES.md"
       ],
       "path": "ops/stack/REQUIRED_FILES.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/tutorials",
+        "ops/tutorials/datasets",
+        "ops/tutorials/datasets/README.md"
+      ],
+      "path": "ops/tutorials/datasets/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/tutorials",
+        "ops/tutorials/datasets",
+        "ops/tutorials/datasets/annotation-large-sample",
+        "ops/tutorials/datasets/annotation-large-sample/README.md"
+      ],
+      "path": "ops/tutorials/datasets/annotation-large-sample/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/tutorials",
+        "ops/tutorials/datasets",
+        "ops/tutorials/datasets/assembly-large-sample",
+        "ops/tutorials/datasets/assembly-large-sample/README.md"
+      ],
+      "path": "ops/tutorials/datasets/assembly-large-sample/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/tutorials",
+        "ops/tutorials/datasets",
+        "ops/tutorials/datasets/clinvar-large-sample",
+        "ops/tutorials/datasets/clinvar-large-sample/README.md"
+      ],
+      "path": "ops/tutorials/datasets/clinvar-large-sample/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/tutorials",
+        "ops/tutorials/datasets",
+        "ops/tutorials/datasets/combined-release",
+        "ops/tutorials/datasets/combined-release/README.md"
+      ],
+      "path": "ops/tutorials/datasets/combined-release/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/tutorials",
+        "ops/tutorials/datasets",
+        "ops/tutorials/datasets/expression-medium",
+        "ops/tutorials/datasets/expression-medium/README.md"
+      ],
+      "path": "ops/tutorials/datasets/expression-medium/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/tutorials",
+        "ops/tutorials/datasets",
+        "ops/tutorials/datasets/genes-baseline",
+        "ops/tutorials/datasets/genes-baseline/README.md"
+      ],
+      "path": "ops/tutorials/datasets/genes-baseline/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/tutorials",
+        "ops/tutorials/datasets",
+        "ops/tutorials/datasets/phenotype-medium",
+        "ops/tutorials/datasets/phenotype-medium/README.md"
+      ],
+      "path": "ops/tutorials/datasets/phenotype-medium/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/tutorials",
+        "ops/tutorials/datasets",
+        "ops/tutorials/datasets/population-medium",
+        "ops/tutorials/datasets/population-medium/README.md"
+      ],
+      "path": "ops/tutorials/datasets/population-medium/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/tutorials",
+        "ops/tutorials/datasets",
+        "ops/tutorials/datasets/transcripts-baseline",
+        "ops/tutorials/datasets/transcripts-baseline/README.md"
+      ],
+      "path": "ops/tutorials/datasets/transcripts-baseline/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/tutorials",
+        "ops/tutorials/datasets",
+        "ops/tutorials/datasets/variants-mini",
+        "ops/tutorials/datasets/variants-mini/README.md"
+      ],
+      "path": "ops/tutorials/datasets/variants-mini/README.md"
     }
   ],
   "schema_version": 1

@@ -8,7 +8,7 @@ Generated from current repository layout and canonical docs entrypoints.
 - `configs/`: schema-backed configuration and policy SSOT
 - `ops/`: operational deployment, validation, and release inputs
 - `docs/`: user/operator/developer/reviewer documentation
-- `docker/`: container image build and runtime definitions
+- `ops/docker/`: container image build and runtime definitions
 - `.github/workflows/`: CI/CD automation surfaces
 
 ## Evidence links

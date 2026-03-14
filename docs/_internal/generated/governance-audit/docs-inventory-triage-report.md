@@ -26,7 +26,7 @@ High-value duplicate clusters requiring consolidation:
 - `errors.md` across API, contracts, and reference.
 - `glossary` content split across root and `operations/slo`.
 - `make-targets.md` split across generated, development, and reference.
-- Governance duplication between `_style/` and `governance/` for review/removal/style guides.
+- Governance duplication between `_style/` and `ops/governance/repository/` for review/removal/style guides.
 - Duplicate boundary content: `architecture/no-layer-fixups.md` and `architecture/layering/no-layer-fixups.md`.
 
 ## Dead-End Page Findings
@@ -94,7 +94,7 @@ Map-like pages detected: `10`.
 
 Concept registry surfaces:
 
-- `docs/_internal/generated/concept-governance/metadata/registry.json`
+- `docs/_internal/generated/concept-ops/governance/repository/metadata/registry.json`
 - `docs/_internal/generated/concept-registry.md`
 - `docs/_internal/style/CONCEPT_REGISTRY.md`
 

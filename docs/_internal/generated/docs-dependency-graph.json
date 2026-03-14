@@ -248,6 +248,76 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "crates/bijux-atlas-python/CHANGELOG.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-python/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-python/VERSIONING.md"
+    },
+    {
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-python/docs/api-reference.md"
+    },
+    {
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-python/docs/architecture.md"
+    },
+    {
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-python/docs/delivery-summary.md"
+    },
+    {
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-python/docs/ecosystem-integrations.md"
+    },
+    {
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-python/docs/index.md"
+    },
+    {
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-python/docs/quickstart.md"
+    },
+    {
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-python/docs/troubleshooting.md"
+    },
+    {
+      "crate": "bijux-atlas-python",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-python/docs/version-compatibility-matrix.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-python/examples/INDEX.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-python/examples/MATURITY.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-python/examples/usage/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "crates/bijux-atlas/README.md"
     },
     {
@@ -624,16 +694,6 @@
       "crate": null,
       "doc_type": "concept",
       "from": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/sub/intro.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docker/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docker/README.md"
     },
     {
       "crate": null,
@@ -8258,6 +8318,16 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/docker/CONTRACT.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/docker/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/drift/artifacts/drift-visualization-table.md"
     },
     {
@@ -8309,6 +8379,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/evidence/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/governance/repository/README.md"
     },
     {
       "crate": null,
@@ -8413,6 +8488,21 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/release/notes/breaking.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/release/notes/image-release-notes-template.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/release/notes/images/0.1.0.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/report/CONTRACT.md"
     },
     {
@@ -8483,6 +8573,26 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/security/threat-model/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/security/threat-model/attack-surface.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/security/threat-model/dataflows.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/security/threat-model/trust-boundaries.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/stack/CONTRACT.md"
     },
     {
@@ -8499,6 +8609,61 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/stack/REQUIRED_FILES.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/tutorials/datasets/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/tutorials/datasets/annotation-large-sample/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/tutorials/datasets/assembly-large-sample/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/tutorials/datasets/clinvar-large-sample/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/tutorials/datasets/combined-release/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/tutorials/datasets/expression-medium/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/tutorials/datasets/genes-baseline/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/tutorials/datasets/phenotype-medium/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/tutorials/datasets/population-medium/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/tutorials/datasets/transcripts-baseline/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/tutorials/datasets/variants-mini/README.md"
     }
   ],
   "schema_version": 1

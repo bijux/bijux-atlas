@@ -658,6 +658,182 @@
     },
     {
       "keywords": [
+        "bijux-atlas-python",
+        "changelog"
+      ],
+      "path": "crates/bijux-atlas-python/CHANGELOG.md",
+      "tags": [
+        "bijux-atlas-python",
+        "changelog"
+      ],
+      "topic": "CHANGELOG"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-python",
+        "readme"
+      ],
+      "path": "crates/bijux-atlas-python/README.md",
+      "tags": [
+        "bijux-atlas-python",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-python",
+        "versioning"
+      ],
+      "path": "crates/bijux-atlas-python/VERSIONING.md",
+      "tags": [
+        "bijux-atlas-python",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
+    },
+    {
+      "keywords": [
+        "api-reference",
+        "bijux-atlas-python"
+      ],
+      "path": "crates/bijux-atlas-python/docs/api-reference.md",
+      "tags": [
+        "api-reference",
+        "bijux-atlas-python"
+      ],
+      "topic": "api-reference"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "bijux-atlas-python"
+      ],
+      "path": "crates/bijux-atlas-python/docs/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-python"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-python",
+        "delivery-summary"
+      ],
+      "path": "crates/bijux-atlas-python/docs/delivery-summary.md",
+      "tags": [
+        "bijux-atlas-python",
+        "delivery-summary"
+      ],
+      "topic": "delivery-summary"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-python",
+        "ecosystem-integrations"
+      ],
+      "path": "crates/bijux-atlas-python/docs/ecosystem-integrations.md",
+      "tags": [
+        "bijux-atlas-python",
+        "ecosystem-integrations"
+      ],
+      "topic": "ecosystem-integrations"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-python",
+        "index"
+      ],
+      "path": "crates/bijux-atlas-python/docs/index.md",
+      "tags": [
+        "bijux-atlas-python",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-python",
+        "quickstart"
+      ],
+      "path": "crates/bijux-atlas-python/docs/quickstart.md",
+      "tags": [
+        "bijux-atlas-python",
+        "quickstart"
+      ],
+      "topic": "quickstart"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-python",
+        "troubleshooting"
+      ],
+      "path": "crates/bijux-atlas-python/docs/troubleshooting.md",
+      "tags": [
+        "bijux-atlas-python",
+        "troubleshooting"
+      ],
+      "topic": "troubleshooting"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-python",
+        "version-compatibility-matrix"
+      ],
+      "path": "crates/bijux-atlas-python/docs/version-compatibility-matrix.md",
+      "tags": [
+        "bijux-atlas-python",
+        "version-compatibility-matrix"
+      ],
+      "topic": "version-compatibility-matrix"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-python",
+        "examples",
+        "index"
+      ],
+      "path": "crates/bijux-atlas-python/examples/INDEX.md",
+      "tags": [
+        "bijux-atlas-python",
+        "examples",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-python",
+        "examples",
+        "maturity"
+      ],
+      "path": "crates/bijux-atlas-python/examples/MATURITY.md",
+      "tags": [
+        "bijux-atlas-python",
+        "examples",
+        "maturity"
+      ],
+      "topic": "MATURITY"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-python",
+        "examples",
+        "readme",
+        "usage"
+      ],
+      "path": "crates/bijux-atlas-python/examples/usage/README.md",
+      "tags": [
+        "bijux-atlas-python",
+        "examples",
+        "readme",
+        "usage"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
         "bijux-atlas",
         "readme"
       ],
@@ -1861,30 +2037,6 @@
         "tests"
       ],
       "topic": "intro"
-    },
-    {
-      "keywords": [
-        "contract",
-        "docker"
-      ],
-      "path": "docker/CONTRACT.md",
-      "tags": [
-        "contract",
-        "docker"
-      ],
-      "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "docker",
-        "readme"
-      ],
-      "path": "docker/README.md",
-      "tags": [
-        "docker",
-        "readme"
-      ],
-      "topic": "README"
     },
     {
       "keywords": [
@@ -22208,6 +22360,34 @@
     },
     {
       "keywords": [
+        "contract",
+        "docker",
+        "ops"
+      ],
+      "path": "ops/docker/CONTRACT.md",
+      "tags": [
+        "contract",
+        "docker",
+        "ops"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "keywords": [
+        "docker",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/docker/README.md",
+      "tags": [
+        "docker",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
         "artifacts",
         "drift",
         "drift-visualization-table",
@@ -22363,6 +22543,22 @@
         "evidence",
         "ops",
         "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "governance",
+        "ops",
+        "readme",
+        "repository"
+      ],
+      "path": "ops/governance/repository/README.md",
+      "tags": [
+        "governance",
+        "ops",
+        "readme",
+        "repository"
       ],
       "topic": "README"
     },
@@ -22656,6 +22852,56 @@
     },
     {
       "keywords": [
+        "breaking",
+        "notes",
+        "ops",
+        "release"
+      ],
+      "path": "ops/release/notes/breaking.md",
+      "tags": [
+        "breaking",
+        "notes",
+        "ops",
+        "release"
+      ],
+      "topic": "breaking"
+    },
+    {
+      "keywords": [
+        "image-release-notes-template",
+        "notes",
+        "ops",
+        "release"
+      ],
+      "path": "ops/release/notes/image-release-notes-template.md",
+      "tags": [
+        "image-release-notes-template",
+        "notes",
+        "ops",
+        "release"
+      ],
+      "topic": "image-release-notes-template"
+    },
+    {
+      "keywords": [
+        "0.1.0",
+        "images",
+        "notes",
+        "ops",
+        "release"
+      ],
+      "path": "ops/release/notes/images/0.1.0.md",
+      "tags": [
+        "0.1.0",
+        "images",
+        "notes",
+        "ops",
+        "release"
+      ],
+      "topic": "0.1.0"
+    },
+    {
+      "keywords": [
         "contract",
         "ops",
         "report"
@@ -22856,6 +23102,70 @@
     },
     {
       "keywords": [
+        "ops",
+        "readme",
+        "security",
+        "threat-model"
+      ],
+      "path": "ops/security/threat-model/README.md",
+      "tags": [
+        "ops",
+        "readme",
+        "security",
+        "threat-model"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "attack-surface",
+        "ops",
+        "security",
+        "threat-model"
+      ],
+      "path": "ops/security/threat-model/attack-surface.md",
+      "tags": [
+        "attack-surface",
+        "ops",
+        "security",
+        "threat-model"
+      ],
+      "topic": "attack-surface"
+    },
+    {
+      "keywords": [
+        "dataflows",
+        "ops",
+        "security",
+        "threat-model"
+      ],
+      "path": "ops/security/threat-model/dataflows.md",
+      "tags": [
+        "dataflows",
+        "ops",
+        "security",
+        "threat-model"
+      ],
+      "topic": "dataflows"
+    },
+    {
+      "keywords": [
+        "ops",
+        "security",
+        "threat-model",
+        "trust-boundaries"
+      ],
+      "path": "ops/security/threat-model/trust-boundaries.md",
+      "tags": [
+        "ops",
+        "security",
+        "threat-model",
+        "trust-boundaries"
+      ],
+      "topic": "trust-boundaries"
+    },
+    {
+      "keywords": [
         "contract",
         "ops",
         "stack"
@@ -22909,6 +23219,202 @@
         "stack"
       ],
       "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "path": "ops/tutorials/datasets/README.md",
+      "tags": [
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "annotation-large-sample",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "path": "ops/tutorials/datasets/annotation-large-sample/README.md",
+      "tags": [
+        "annotation-large-sample",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "assembly-large-sample",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "path": "ops/tutorials/datasets/assembly-large-sample/README.md",
+      "tags": [
+        "assembly-large-sample",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "clinvar-large-sample",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "path": "ops/tutorials/datasets/clinvar-large-sample/README.md",
+      "tags": [
+        "clinvar-large-sample",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "combined-release",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "path": "ops/tutorials/datasets/combined-release/README.md",
+      "tags": [
+        "combined-release",
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "expression-medium",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "path": "ops/tutorials/datasets/expression-medium/README.md",
+      "tags": [
+        "datasets",
+        "expression-medium",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "genes-baseline",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "path": "ops/tutorials/datasets/genes-baseline/README.md",
+      "tags": [
+        "datasets",
+        "genes-baseline",
+        "ops",
+        "readme",
+        "tutorials"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "ops",
+        "phenotype-medium",
+        "readme",
+        "tutorials"
+      ],
+      "path": "ops/tutorials/datasets/phenotype-medium/README.md",
+      "tags": [
+        "datasets",
+        "ops",
+        "phenotype-medium",
+        "readme",
+        "tutorials"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "ops",
+        "population-medium",
+        "readme",
+        "tutorials"
+      ],
+      "path": "ops/tutorials/datasets/population-medium/README.md",
+      "tags": [
+        "datasets",
+        "ops",
+        "population-medium",
+        "readme",
+        "tutorials"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "ops",
+        "readme",
+        "transcripts-baseline",
+        "tutorials"
+      ],
+      "path": "ops/tutorials/datasets/transcripts-baseline/README.md",
+      "tags": [
+        "datasets",
+        "ops",
+        "readme",
+        "transcripts-baseline",
+        "tutorials"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials",
+        "variants-mini"
+      ],
+      "path": "ops/tutorials/datasets/variants-mini/README.md",
+      "tags": [
+        "datasets",
+        "ops",
+        "readme",
+        "tutorials",
+        "variants-mini"
+      ],
+      "topic": "README"
     }
   ],
   "schema_version": 1,

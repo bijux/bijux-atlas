@@ -397,6 +397,118 @@
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/CHANGELOG.md",
+      "stability": "stable",
+      "title": "Changelog"
+    },
+    {
+      "area": "crates",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/README.md",
+      "stability": "stable",
+      "title": "bijux-atlas (Python SDK)"
+    },
+    {
+      "area": "crates",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/VERSIONING.md",
+      "stability": "stable",
+      "title": "Versioning"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/api-reference.md",
+      "stability": "stable",
+      "title": "Python Client API Reference"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/architecture.md",
+      "stability": "stable",
+      "title": "Python Client Architecture"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/delivery-summary.md",
+      "stability": "stable",
+      "title": "Python Client Delivery Summary"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/ecosystem-integrations.md",
+      "stability": "stable",
+      "title": "Python Client Ecosystem Integrations"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/index.md",
+      "stability": "stable",
+      "title": "Python Client Documentation"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/quickstart.md",
+      "stability": "stable",
+      "title": "Python Client Quickstart"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/troubleshooting.md",
+      "stability": "stable",
+      "title": "Python Client Troubleshooting"
+    },
+    {
+      "area": "bijux-atlas-python",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/docs/version-compatibility-matrix.md",
+      "stability": "stable",
+      "title": "Python Client Version Compatibility Matrix"
+    },
+    {
+      "area": "crates",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/examples/INDEX.md",
+      "stability": "stable",
+      "title": "Atlas Python client examples"
+    },
+    {
+      "area": "crates",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/examples/MATURITY.md",
+      "stability": "stable",
+      "title": "Example maturity policy"
+    },
+    {
+      "area": "crates",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-python/examples/usage/README.md",
+      "stability": "stable",
+      "title": "bijux-atlas-usage-examples"
+    },
+    {
+      "area": "crates",
+      "audience": "contributors",
+      "owner": "docs-governance",
       "path": "crates/bijux-atlas/README.md",
       "stability": "stable",
       "title": "bijux-atlas"
@@ -1000,22 +1112,6 @@
       "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/sub/intro.md",
       "stability": "stable",
       "title": "Intro"
-    },
-    {
-      "area": "docker",
-      "audience": "contributors",
-      "owner": "bijux-atlas-platform",
-      "path": "docker/CONTRACT.md",
-      "stability": "stable",
-      "title": "Docker Contract"
-    },
-    {
-      "area": "docker",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "docker/README.md",
-      "stability": "stable",
-      "title": "Docker"
     },
     {
       "area": "README.md",
@@ -13212,6 +13308,22 @@
     {
       "area": "ops",
       "audience": "contributors",
+      "owner": "bijux-atlas-platform",
+      "path": "ops/docker/CONTRACT.md",
+      "stability": "stable",
+      "title": "Docker Contract"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/docker/README.md",
+      "stability": "stable",
+      "title": "Docker"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
       "owner": "docs-governance",
       "path": "ops/drift/artifacts/drift-visualization-table.md",
       "stability": "stable",
@@ -13296,6 +13408,14 @@
       "path": "ops/evidence/README.md",
       "stability": "stable",
       "title": "Ops Evidence Bundle"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/governance/repository/README.md",
+      "stability": "stable",
+      "title": "Governance Objects"
     },
     {
       "area": "ops",
@@ -13460,6 +13580,30 @@
     {
       "area": "ops",
       "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/release/notes/breaking.md",
+      "stability": "stable",
+      "title": "Breaking Changes"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/release/notes/image-release-notes-template.md",
+      "stability": "stable",
+      "title": "Image Release Notes Template"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/release/notes/images/0.1.0.md",
+      "stability": "stable",
+      "title": "Image Release Notes 0.1.0"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
       "owner": "bijux-atlas-operations",
       "path": "ops/report/CONTRACT.md",
       "stability": "stable",
@@ -13572,6 +13716,38 @@
     {
       "area": "ops",
       "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/security/threat-model/README.md",
+      "stability": "stable",
+      "title": "Threat Model"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/security/threat-model/attack-surface.md",
+      "stability": "stable",
+      "title": "Attack Surface"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/security/threat-model/dataflows.md",
+      "stability": "stable",
+      "title": "Data Flows"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/security/threat-model/trust-boundaries.md",
+      "stability": "stable",
+      "title": "Trust Boundaries"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
       "owner": "bijux-atlas-operations",
       "path": "ops/stack/CONTRACT.md",
       "stability": "stable",
@@ -13600,6 +13776,94 @@
       "path": "ops/stack/REQUIRED_FILES.md",
       "stability": "stable",
       "title": "Required Files"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/README.md",
+      "stability": "stable",
+      "title": "Real Dataset Catalog"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/annotation-large-sample/README.md",
+      "stability": "stable",
+      "title": "annotation-large-sample"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/assembly-large-sample/README.md",
+      "stability": "stable",
+      "title": "assembly-large-sample"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/clinvar-large-sample/README.md",
+      "stability": "stable",
+      "title": "clinvar-large-sample"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/combined-release/README.md",
+      "stability": "stable",
+      "title": "combined-release"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/expression-medium/README.md",
+      "stability": "stable",
+      "title": "expression-medium"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/genes-baseline/README.md",
+      "stability": "stable",
+      "title": "genes-baseline"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/phenotype-medium/README.md",
+      "stability": "stable",
+      "title": "phenotype-medium"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/population-medium/README.md",
+      "stability": "stable",
+      "title": "population-medium"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/transcripts-baseline/README.md",
+      "stability": "stable",
+      "title": "transcripts-baseline"
+    },
+    {
+      "area": "ops",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "ops/tutorials/datasets/variants-mini/README.md",
+      "stability": "stable",
+      "title": "variants-mini"
     }
   ],
   "schema_version": "v1",

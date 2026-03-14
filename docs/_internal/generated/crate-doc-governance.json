@@ -1,6 +1,8 @@
 {
   "errors": [
+    "CRATE_DOC_OWNER_ESCALATION_ERROR: `bijux-atlas-python` has no owner metadata in crate docs",
     "CRATE_DOC_OWNER_ESCALATION_ERROR: `bijux-atlas` has no owner metadata in crate docs",
+    "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas-python` missing `CONTRACT.md`",
     "CRATE_DOC_REQUIRED_ERROR: `bijux-atlas` missing `CONTRACT.md`"
   ],
   "rows": [
@@ -18,6 +20,23 @@
         "CONTRACT.md"
       ],
       "root_doc_count": 1
+    },
+    {
+      "crate": "bijux-atlas-python",
+      "diagram_count": 0,
+      "docs_dir_count": 8,
+      "freshness_docs": 0,
+      "has": [
+        "CHANGELOG.md",
+        "README.md",
+        "VERSIONING.md"
+      ],
+      "owner_metadata_docs": 0,
+      "required": [
+        "README.md",
+        "CONTRACT.md"
+      ],
+      "root_doc_count": 3
     },
     {
       "crate": "bijux-dev-atlas",
@@ -39,12 +58,20 @@
   "schema_version": 1,
   "warnings": [
     "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-dev-atlas` has 35 docs under crate/docs (budget=10)",
+    "CRATE_DOC_ALLOWED_TYPE_WARN: `bijux-atlas-python` has non-canonical root doc `CHANGELOG.md`",
+    "CRATE_DOC_ALLOWED_TYPE_WARN: `bijux-atlas-python` has non-canonical root doc `VERSIONING.md`",
+    "CRATE_DOC_CROSSLINK_WARN: `bijux-atlas-python` docs/INDEX.md should reference `public-api.md`",
+    "CRATE_DOC_CROSSLINK_WARN: `bijux-atlas-python` docs/INDEX.md should reference `testing.md`",
     "CRATE_DOC_CROSSLINK_WARN: `bijux-dev-atlas` docs/INDEX.md should reference `architecture.md`",
     "CRATE_DOC_CROSSLINK_WARN: `bijux-dev-atlas` docs/INDEX.md should reference `public-api.md`",
     "CRATE_DOC_CROSSLINK_WARN: `bijux-dev-atlas` docs/INDEX.md should reference `testing.md`",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `troubleshooting.md` appears across crates: bijux-atlas-python, bijux-dev-atlas",
+    "CRATE_DOC_EXAMPLE_TAG_WARN: `bijux-atlas-python` has untagged code fences; prefer ```rust for examples",
     "CRATE_DOC_EXAMPLE_TAG_WARN: `bijux-dev-atlas` has untagged code fences; prefer ```rust for examples",
+    "CRATE_DOC_FRESHNESS_WARN: `bijux-atlas-python` has no `Last Reviewed:` metadata in crate docs",
     "CRATE_DOC_FRESHNESS_WARN: `bijux-atlas` has no `Last Reviewed:` metadata in crate docs",
     "CRATE_DOC_FRESHNESS_WARN: `bijux-dev-atlas` has no `Last Reviewed:` metadata in crate docs",
+    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-python` owner metadata present in 0/11 docs",
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas` owner metadata present in 0/1 docs",
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-dev-atlas` owner metadata present in 8/37 docs"
   ]
