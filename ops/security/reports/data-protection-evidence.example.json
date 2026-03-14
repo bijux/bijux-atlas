@@ -6,7 +6,7 @@
     "ops/security/reports/encryption-metrics.example.json"
   ],
   "tests": [
-    "cargo test -p bijux-atlas-core --test security_data_protection_contracts"
+    "cargo test -p bijux-atlas --test core security_data_protection_contracts"
   ],
   "status": "ok"
 }

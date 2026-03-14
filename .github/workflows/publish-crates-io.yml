@@ -143,13 +143,4 @@ jobs:
             return 1
           }
 
-          publish_with_retry bijux-atlas-core
-          publish_with_retry bijux-atlas-model
-          publish_with_retry bijux-atlas-policies
-          publish_with_retry bijux-atlas-store
-          publish_with_retry bijux-atlas-query
-          publish_with_retry bijux-atlas-api
-          publish_with_retry bijux-atlas-ingest
-          publish_with_retry bijux-atlas-client
-          publish_with_retry bijux-atlas-cli
-          publish_with_retry bijux-atlas-server
+          publish_with_retry bijux-atlas

@@ -10,7 +10,7 @@
       "id": "ATLAS-EXC-0001",
       "policy": "generated_dead_code_allow",
       "scope": "repo",
-      "file": "crates/bijux-atlas-server/src/telemetry/generated/metrics_contract.rs",
+      "file": "crates/bijux-atlas/src/telemetry/generated/metrics_contract.rs",
       "justification": "Generated constants and effect-adapter scaffolding intentionally carry dead_code allowance for contract synchronization and compile hygiene.",
       "expiry": "2027-12-31",
       "owner": "platform",

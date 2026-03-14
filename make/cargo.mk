@@ -91,10 +91,10 @@ lint-policy-report: ## Emit effective lint policy report artifact
 lint-policy-enforce: ## Enforce repository lint drift guards
 	@! rg -n '\btodo!\(' crates
 	@! rg -n '\bdbg!\(' crates
-	@! rg -n '\b(?:println|eprintln)!\(' crates/bijux-atlas/src crates/bijux-atlas-server/src crates/bijux-atlas-api/src crates/bijux-dev-atlas/src --glob '!**/tests/**' --glob '!**/benches/**' --glob '!**/main.rs' --glob '!**/bin/**'
-	@! rg -n '\bpanic!\(' crates/bijux-atlas crates/bijux-atlas-api --glob '!**/tests/**' --glob '!**/benches/**'
-	@! rg -n 'reqwest\s*=.*blocking' crates/bijux-atlas-server/Cargo.toml
-	@! rg -n 'reqwest::blocking' crates/bijux-atlas-server/src
+	@! rg -n '\b(?:println|eprintln)!\(' crates/bijux-atlas/src crates/bijux-dev-atlas/src --glob '!**/tests/**' --glob '!**/benches/**' --glob '!**/main.rs' --glob '!**/bin/**'
+	@! rg -n '\bpanic!\(' crates/bijux-atlas --glob '!**/tests/**' --glob '!**/benches/**'
+	@! rg -n 'reqwest\s*=.*blocking' crates/bijux-atlas/Cargo.toml
+	@! rg -n 'reqwest::blocking' crates/bijux-atlas/src
 
 lint-clippy-json: ## Emit clippy diagnostics as a machine-readable artifact
 	@mkdir -p artifacts/lint

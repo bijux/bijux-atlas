@@ -2,7 +2,7 @@
   "schema_version": 1,
   "kind": "data_protection_validation_scenario",
   "steps": [
-    "cargo test -p bijux-atlas-core --test security_data_protection_contracts -- --nocapture",
+    "cargo test -p bijux-atlas --test core security_data_protection_contracts -- --nocapture",
     "cargo test -p bijux-dev-atlas --test data_protection_governance_contracts -- --nocapture",
     "cargo run -q -p bijux-dev-atlas -- security validate --format json"
   ],

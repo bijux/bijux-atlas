@@ -16,7 +16,7 @@ jobs:
         uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
 
       - name: run data protection contracts
-        run: cargo test --locked -p bijux-atlas-core --test security_data_protection_contracts -- --nocapture
+        run: cargo test --locked -p bijux-atlas --test core security_data_protection_contracts -- --nocapture
 
       - name: run governance contract
         run: cargo test --locked -p bijux-dev-atlas --test data_protection_governance_contracts -- --nocapture
