@@ -4,7 +4,7 @@ mod configs_path_drift;
 mod configs_payloads;
 
 use crate::*;
-use bijux_dev_atlas::contracts;
+use bijux_dev_atlas::registry::config_catalog;
 pub(crate) use configs_path_drift::configs_context;
 pub(crate) use configs_path_drift::parse_config_file;
 use configs_path_drift::{configs_files, configs_verify_payload};
@@ -37,20 +37,14 @@ pub(crate) fn run_configs_command(quiet: bool, command: ConfigsCommand) -> i32 {
             }
             ConfigsCommand::List(common) => {
                 let ctx = configs_context(&common)?;
-                let mut payload = contracts::configs::list_payload(&ctx.repo_root)?;
+                let mut payload = config_catalog::list_payload(&ctx.repo_root)?;
                 if common.allow_write {
-                    let index_path = contracts::configs::ensure_generated_index(&ctx.repo_root)?;
+                    let index_path = config_catalog::ensure_generated_index(&ctx.repo_root)?;
                     let schema_index_path =
-                        contracts::configs::ensure_generated_schema_index(&ctx.repo_root)?;
-                    let coverage_path = contracts::configs::write_cfg_contract_coverage_artifact(
-                        &ctx.repo_root,
-                        &ctx.artifacts_root,
-                        ctx.run_id.as_str(),
-                    )?;
+                        config_catalog::ensure_generated_schema_index(&ctx.repo_root)?;
                     payload["artifacts"] = serde_json::json!({
                         "generated_index": index_path,
-                        "schema_index": schema_index_path,
-                        "cfg_contract_coverage": coverage_path
+                        "schema_index": schema_index_path
                     });
                 }
                 payload["run_id"] = serde_json::json!(ctx.run_id.as_str());
@@ -68,7 +62,7 @@ pub(crate) fn run_configs_command(quiet: bool, command: ConfigsCommand) -> i32 {
             }
             ConfigsCommand::Graph(common) => {
                 let ctx = configs_context(&common)?;
-                let mut payload = contracts::configs::graph_payload(&ctx.repo_root)?;
+                let mut payload = config_catalog::graph_payload(&ctx.repo_root)?;
                 if common.allow_write {
                     let out_dir = configs_artifact_dir(&ctx);
                     fs::create_dir_all(&out_dir)
@@ -103,7 +97,7 @@ pub(crate) fn run_configs_command(quiet: bool, command: ConfigsCommand) -> i32 {
             }
             ConfigsCommand::Explain(args) => {
                 let ctx = configs_context(&args.common)?;
-                let mut payload = contracts::configs::explain_payload(&ctx.repo_root, &args.file)?;
+                let mut payload = config_catalog::explain_payload(&ctx.repo_root, &args.file)?;
                 payload["run_id"] = serde_json::json!(ctx.run_id.as_str());
                 payload["text"] = serde_json::json!("configs explain registry");
                 payload["capabilities"] = serde_json::json!({
