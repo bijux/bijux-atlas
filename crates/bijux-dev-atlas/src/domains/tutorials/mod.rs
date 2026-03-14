@@ -48,11 +48,7 @@ impl Domain for TutorialsDomain {
             .iter()
             .filter(|entry| {
                 entry.group.to_ascii_lowercase().contains("tutorial")
-                    || entry
-                        .id
-                        .as_str()
-                        .to_ascii_lowercase()
-                        .contains("tutorial")
+                    || entry.id.as_str().to_ascii_lowercase().contains("tutorial")
                     || entry
                         .commands
                         .iter()

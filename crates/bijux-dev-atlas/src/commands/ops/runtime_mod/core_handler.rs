@@ -714,7 +714,9 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             let bundle = std::process::Command::new(&exe)
                 .args(&bundle_args)
                 .output()
-                .map_err(|err| format!("ops package failed to run release ops bundle-build: {err}"))?;
+                .map_err(|err| {
+                    format!("ops package failed to run release ops bundle-build: {err}")
+                })?;
             if !bundle.status.success() {
                 return Err(format!(
                     "ops package failed during bundle build; next: ensure release ops package completed and rerun: {}",

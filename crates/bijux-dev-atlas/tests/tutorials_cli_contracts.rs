@@ -333,7 +333,9 @@ fn slow_tutorials_real_data_fetch_and_ingest_write_run_artifacts() {
         String::from_utf8_lossy(&ingest.stderr)
     );
     let payload: serde_json::Value = serde_json::from_slice(&ingest.stdout).expect("json");
-    let report_path = payload["ingest_report"].as_str().expect("ingest_report path");
+    let report_path = payload["ingest_report"]
+        .as_str()
+        .expect("ingest_report path");
     assert!(PathBuf::from(report_path).exists() || root.join(report_path).exists());
     let summary_path = payload["dataset_summary"]
         .as_str()

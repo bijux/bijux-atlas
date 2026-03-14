@@ -102,7 +102,6 @@ fn generated_docs_directory_contains_required_example_snippets() {
     );
 }
 
-
 #[test]
 fn every_generated_docs_markdown_file_is_referenced_by_docs_pages() {
     let root = repo_root();

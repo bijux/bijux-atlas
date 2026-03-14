@@ -62,7 +62,9 @@ fn tracked_files_from_git(root: &Path) -> Option<Vec<PathBuf>> {
 }
 
 fn skip_source_snapshot_path(rel_str: &str) -> bool {
-    rel_str.starts_with(".git/") || rel_str.starts_with("artifacts/") || rel_str.starts_with("target/")
+    rel_str.starts_with(".git/")
+        || rel_str.starts_with("artifacts/")
+        || rel_str.starts_with("target/")
 }
 
 fn collect_source_snapshot_hash(root: &Path) -> Result<String, String> {

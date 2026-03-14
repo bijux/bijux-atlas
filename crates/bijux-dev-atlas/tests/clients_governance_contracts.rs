@@ -16,8 +16,8 @@ fn walk_files(root: &Path) -> Result<Vec<PathBuf>, String> {
     let mut files = Vec::new();
     let mut stack = vec![root.to_path_buf()];
     while let Some(cursor) = stack.pop() {
-        let entries =
-            fs::read_dir(&cursor).map_err(|err| format!("read {} failed: {err}", cursor.display()))?;
+        let entries = fs::read_dir(&cursor)
+            .map_err(|err| format!("read {} failed: {err}", cursor.display()))?;
         for entry in entries {
             let entry = entry.map_err(|err| format!("read entry failed: {err}"))?;
             let path = entry.path();
@@ -341,7 +341,10 @@ fn examples_must_include_header_and_stay_within_complexity_budget() {
             violations.push(format!("{}: missing required header", path.display()));
         }
         if line_count > 200 {
-            violations.push(format!("{}: exceeds 200 LOC budget ({line_count})", path.display()));
+            violations.push(format!(
+                "{}: exceeds 200 LOC budget ({line_count})",
+                path.display()
+            ));
         }
     }
     assert!(

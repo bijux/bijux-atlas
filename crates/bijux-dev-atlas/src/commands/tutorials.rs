@@ -3,10 +3,10 @@
 use crate::cli::{
     TutorialsBuildCommand, TutorialsBuildDocsArgs, TutorialsCommand, TutorialsCommandArgs,
     TutorialsContractsCommand, TutorialsDashboardsCommand, TutorialsDatasetCommand,
-    TutorialsDatasetE2eArgs, TutorialsDatasetPackageArgs, TutorialsEvidenceCommand, TutorialsRealDataCommand,
-    TutorialsRealDataPlanArgs, TutorialsRealDataRunAllArgs, TutorialsRealDataRunArgs,
-    TutorialsRunCommand, TutorialsWorkflowArgs, TutorialsWorkspaceCleanupArgs,
-    TutorialsWorkspaceCommand,
+    TutorialsDatasetE2eArgs, TutorialsDatasetPackageArgs, TutorialsEvidenceCommand,
+    TutorialsRealDataCommand, TutorialsRealDataPlanArgs, TutorialsRealDataRunAllArgs,
+    TutorialsRealDataRunArgs, TutorialsRunCommand, TutorialsWorkflowArgs,
+    TutorialsWorkspaceCleanupArgs, TutorialsWorkspaceCommand,
 };
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::domains::tutorials::checks;
@@ -182,8 +182,7 @@ fn run_tutorials_verify(args: &TutorialsCommandArgs) -> Result<(String, i32), St
         validate_dataset_contract_semantics(&assets.dataset_contract);
     let (legacy_ok, legacy_detail) = validate_tutorials_legacy_automation_policy(&repo_root);
     let (run_artifacts_ok, run_artifacts_detail) = validate_real_data_run_artifacts(&repo_root);
-    let success =
-        dashboards_ok && evidence_ok && contract_ok && legacy_ok && run_artifacts_ok;
+    let success = dashboards_ok && evidence_ok && contract_ok && legacy_ok && run_artifacts_ok;
     let report = serde_json::json!({
         "schema_version": 1,
         "domain": "tutorials",
@@ -232,7 +231,9 @@ fn validate_tutorials_legacy_automation_policy(repo_root: &Path) -> (bool, serde
         let reason = row["reason"].as_str().unwrap_or_default().to_string();
         let expires = row["expires_on"].as_str().unwrap_or_default().to_string();
         if path.is_empty() || reason.is_empty() || expires.is_empty() {
-            violations.push("legacy-script exception entries require path, reason, and expires_on".to_string());
+            violations.push(
+                "legacy-script exception entries require path, reason, and expires_on".to_string(),
+            );
             continue;
         }
         if is_iso_date(&expires) {
@@ -287,11 +288,15 @@ fn validate_real_data_run_artifacts(repo_root: &Path) -> (bool, serde_json::Valu
     let mut violations = Vec::new();
     let mut skipped_incomplete_runs = Vec::new();
     let runs_root = repo_root.join("artifacts/tutorials/runs");
-    let nondeterministic_policy = repo_root.join("configs/tutorials/nondeterministic-fields-policy.json");
+    let nondeterministic_policy =
+        repo_root.join("configs/tutorials/nondeterministic-fields-policy.json");
     let redaction_policy = repo_root.join("configs/tutorials/redaction-policy.json");
     for required in [&nondeterministic_policy, &redaction_policy] {
         if !required.exists() {
-            violations.push(format!("required tutorials policy file is missing: {}", required.display()));
+            violations.push(format!(
+                "required tutorials policy file is missing: {}",
+                required.display()
+            ));
         }
     }
     if runs_root.exists() {
@@ -337,7 +342,10 @@ fn validate_real_data_run_artifacts(repo_root: &Path) -> (bool, serde_json::Valu
                     continue;
                 }
             };
-            let files = manifest_json["files"].as_array().cloned().unwrap_or_default();
+            let files = manifest_json["files"]
+                .as_array()
+                .cloned()
+                .unwrap_or_default();
             let mut listed = std::collections::BTreeSet::new();
             for row in &files {
                 let Some(path) = row["path"].as_str() else {
@@ -345,21 +353,29 @@ fn validate_real_data_run_artifacts(repo_root: &Path) -> (bool, serde_json::Valu
                     continue;
                 };
                 let Some(sha) = row["sha256"].as_str() else {
-                    violations.push(format!("run `{run_id}` manifest entry missing sha256 for `{path}`"));
+                    violations.push(format!(
+                        "run `{run_id}` manifest entry missing sha256 for `{path}`"
+                    ));
                     continue;
                 };
                 let target = run_dir.join(path);
                 if !target.exists() {
-                    violations.push(format!("run `{run_id}` manifest references missing file `{path}`"));
+                    violations.push(format!(
+                        "run `{run_id}` manifest references missing file `{path}`"
+                    ));
                     continue;
                 }
                 if path == "manifest.json" || path == "bundle.sha256" {
                     listed.insert(path.to_string());
                     continue;
                 }
-                let actual = fs::read(&target).map(|bytes| sha256_hex(&bytes)).unwrap_or_default();
+                let actual = fs::read(&target)
+                    .map(|bytes| sha256_hex(&bytes))
+                    .unwrap_or_default();
                 if actual != sha {
-                    violations.push(format!("run `{run_id}` manifest hash mismatch for `{path}`"));
+                    violations.push(format!(
+                        "run `{run_id}` manifest hash mismatch for `{path}`"
+                    ));
                 }
                 listed.insert(path.to_string());
             }
@@ -368,16 +384,15 @@ fn validate_real_data_run_artifacts(repo_root: &Path) -> (bool, serde_json::Valu
                 if !p.is_file() {
                     continue;
                 }
-                let rel = p
-                    .strip_prefix(&run_dir)
-                    .unwrap_or(&p)
-                    .display()
-                    .to_string();
-                if rel == "manifest.json" || rel == "bundle.sha256" || rel == "evidence-summary.md" {
+                let rel = p.strip_prefix(&run_dir).unwrap_or(&p).display().to_string();
+                if rel == "manifest.json" || rel == "bundle.sha256" || rel == "evidence-summary.md"
+                {
                     continue;
                 }
                 if !listed.contains(&rel) {
-                    violations.push(format!("run `{run_id}` file `{rel}` is not listed in manifest"));
+                    violations.push(format!(
+                        "run `{run_id}` file `{rel}` is not listed in manifest"
+                    ));
                 }
             }
         }
@@ -1426,7 +1441,9 @@ fn run_tutorials_real_data_fetch(args: &TutorialsRealDataRunArgs) -> Result<(Str
         .iter()
         .find(|run| run.id == args.run_id)
         .ok_or_else(|| format!("unknown real-data run id `{}`", args.run_id))?;
-    let cache_dir = repo_root.join("artifacts/tutorials/cache").join(&run.dataset);
+    let cache_dir = repo_root
+        .join("artifacts/tutorials/cache")
+        .join(&run.dataset);
     let fetch_spec = load_dataset_fetch_spec(&repo_root, &run.dataset)?;
     let retry_policy_path = repo_root.join("configs/tutorials/fetch-retry-policy.json");
     let retry_policy: serde_json::Value = fs::read_to_string(&retry_policy_path)
@@ -1455,8 +1472,8 @@ fn run_tutorials_real_data_fetch(args: &TutorialsRealDataRunArgs) -> Result<(Str
             fetch_spec.url, stderr
         ));
     }
-    let dataset_bytes =
-        fs::read(&dataset_path).map_err(|err| format!("failed to read {}: {err}", dataset_path.display()))?;
+    let dataset_bytes = fs::read(&dataset_path)
+        .map_err(|err| format!("failed to read {}: {err}", dataset_path.display()))?;
     let digest = sha256_hex(&dataset_bytes);
     if digest != fetch_spec.expected_sha256 {
         return Err(format!(
@@ -1466,7 +1483,7 @@ fn run_tutorials_real_data_fetch(args: &TutorialsRealDataRunArgs) -> Result<(Str
     }
     let sha_path = cache_dir.join("sha256sums.txt");
     fs::write(&sha_path, format!("{digest}  dataset.bin\n"))
-    .map_err(|err| format!("failed to write {}: {err}", sha_path.display()))?;
+        .map_err(|err| format!("failed to write {}: {err}", sha_path.display()))?;
     let provenance_path = cache_dir.join("provenance.json");
     let provenance = serde_json::json!({
         "schema_version": 1,
@@ -1506,7 +1523,9 @@ fn run_tutorials_real_data_fetch(args: &TutorialsRealDataRunArgs) -> Result<(Str
     Ok((emit_tutorial_output(&args.common, &payload, None)?, 0))
 }
 
-fn run_tutorials_real_data_ingest(args: &TutorialsRealDataRunArgs) -> Result<(String, i32), String> {
+fn run_tutorials_real_data_ingest(
+    args: &TutorialsRealDataRunArgs,
+) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
     let catalog = load_real_data_runs_catalog(&repo_root)?;
     let run = catalog
@@ -1514,7 +1533,9 @@ fn run_tutorials_real_data_ingest(args: &TutorialsRealDataRunArgs) -> Result<(St
         .iter()
         .find(|run| run.id == args.run_id)
         .ok_or_else(|| format!("unknown real-data run id `{}`", args.run_id))?;
-    let cache_dir = repo_root.join("artifacts/tutorials/cache").join(&run.dataset);
+    let cache_dir = repo_root
+        .join("artifacts/tutorials/cache")
+        .join(&run.dataset);
     let dataset_info = load_cached_dataset_info(&repo_root, run)?;
     let sha_path = cache_dir.join("sha256sums.txt");
     if !sha_path.exists() {
@@ -1795,7 +1816,9 @@ fn run_tutorials_real_data_export_evidence(
     fs::write(&summary_path, summary_md)
         .map_err(|err| format!("failed to write {}: {err}", summary_path.display()))?;
     let mut manifest_entries = Vec::new();
-    for entry in fs::read_dir(&run_dir).map_err(|err| format!("failed to read {}: {err}", run_dir.display()))? {
+    for entry in fs::read_dir(&run_dir)
+        .map_err(|err| format!("failed to read {}: {err}", run_dir.display()))?
+    {
         let entry = entry.map_err(|err| format!("failed to read run-dir entry: {err}"))?;
         let path = entry.path();
         if !path.is_file() {
@@ -1852,13 +1875,19 @@ fn update_real_data_overview_outputs(repo_root: &Path) -> Result<(), String> {
     let runs_root = repo_root.join("artifacts/tutorials/runs");
     let mut rows = Vec::new();
     if runs_root.exists() {
-        for entry in fs::read_dir(&runs_root).map_err(|err| format!("failed to read {}: {err}", runs_root.display()))? {
+        for entry in fs::read_dir(&runs_root)
+            .map_err(|err| format!("failed to read {}: {err}", runs_root.display()))?
+        {
             let entry = entry.map_err(|err| format!("failed to read runs entry: {err}"))?;
             let path = entry.path();
             if !path.is_dir() {
                 continue;
             }
-            let run_id = path.file_name().and_then(|v| v.to_str()).unwrap_or("").to_string();
+            let run_id = path
+                .file_name()
+                .and_then(|v| v.to_str())
+                .unwrap_or("")
+                .to_string();
             let evidence = path.join("evidence-bundle.json");
             let manifest = path.join("manifest.json");
             rows.push(serde_json::json!({
@@ -1869,7 +1898,8 @@ fn update_real_data_overview_outputs(repo_root: &Path) -> Result<(), String> {
         }
     }
     rows.sort_by(|a, b| a["run_id"].as_str().cmp(&b["run_id"].as_str()));
-    let overview_json_path = repo_root.join("docs/_internal/generated/real-data-runs-overview.json");
+    let overview_json_path =
+        repo_root.join("docs/_internal/generated/real-data-runs-overview.json");
     fs::create_dir_all(
         overview_json_path
             .parent()
@@ -1888,13 +1918,19 @@ fn update_real_data_overview_outputs(repo_root: &Path) -> Result<(), String> {
         ),
     )
     .map_err(|err| format!("failed to write {}: {err}", overview_json_path.display()))?;
-    let mut markdown = String::from("# Real Data Runs Overview\n\n| Run ID | Evidence | Manifest |\n|---|---|---|\n");
+    let mut markdown = String::from(
+        "# Real Data Runs Overview\n\n| Run ID | Evidence | Manifest |\n|---|---|---|\n",
+    );
     let overview_rows: serde_json::Value = serde_json::from_str(
         &fs::read_to_string(&overview_json_path)
             .map_err(|err| format!("failed to read {}: {err}", overview_json_path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", overview_json_path.display()))?;
-    for row in overview_rows["rows"].as_array().cloned().unwrap_or_default() {
+    for row in overview_rows["rows"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default()
+    {
         markdown.push_str(&format!(
             "| `{}` | `{}` | `{}` |\n",
             row["run_id"].as_str().unwrap_or(""),
@@ -1973,7 +2009,9 @@ fn run_tutorials_real_data_clean_run(
     args: &TutorialsRealDataRunArgs,
 ) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
-    let run_dir = repo_root.join("artifacts/tutorials/runs").join(&args.run_id);
+    let run_dir = repo_root
+        .join("artifacts/tutorials/runs")
+        .join(&args.run_id);
     let cache_dir = repo_root.join("artifacts/tutorials/cache");
     let removed = if args.dry_run {
         false
@@ -2002,7 +2040,9 @@ fn run_tutorials_real_data_doctor(args: &TutorialsCommandArgs) -> Result<(String
     let catalog = load_real_data_runs_catalog(&repo_root)?;
     let mut rows = Vec::new();
     for run in &catalog.runs {
-        let cache_dir = repo_root.join("artifacts/tutorials/cache").join(&run.dataset);
+        let cache_dir = repo_root
+            .join("artifacts/tutorials/cache")
+            .join(&run.dataset);
         rows.push(serde_json::json!({
             "run_id": run.id,
             "dataset": run.dataset,
@@ -2050,14 +2090,19 @@ fn run_tutorials_real_data_compare_regression(
     args: &TutorialsRealDataRunArgs,
 ) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
-    let run_dir = repo_root.join("artifacts/tutorials/runs").join(&args.run_id);
+    let run_dir = repo_root
+        .join("artifacts/tutorials/runs")
+        .join(&args.run_id);
     let thresholds_path = repo_root.join("configs/tutorials/regression-threshold-policy.json");
     let thresholds: serde_json::Value = serde_json::from_str(
         &fs::read_to_string(&thresholds_path)
             .map_err(|err| format!("failed to read {}: {err}", thresholds_path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", thresholds_path.display()))?;
-    let golden_path = repo_root.join("artifacts/tutorials/goldens").join(&args.run_id).join("summary.json");
+    let golden_path = repo_root
+        .join("artifacts/tutorials/goldens")
+        .join(&args.run_id)
+        .join("summary.json");
     let current_summary_path = run_dir.join("dataset-summary.json");
     if !current_summary_path.exists() {
         return Err(format!(
@@ -2106,14 +2151,19 @@ fn run_tutorials_real_data_compare_regression(
         },
         "failure_classification": failure_class
     });
-    Ok((emit_tutorial_output(&args.common, &payload, None)?, if pass { 0 } else { 1 }))
+    Ok((
+        emit_tutorial_output(&args.common, &payload, None)?,
+        if pass { 0 } else { 1 },
+    ))
 }
 
 fn run_tutorials_real_data_verify_idempotency(
     args: &TutorialsRealDataRunArgs,
 ) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
-    let run_dir = repo_root.join("artifacts/tutorials/runs").join(&args.run_id);
+    let run_dir = repo_root
+        .join("artifacts/tutorials/runs")
+        .join(&args.run_id);
     let ingest_path = run_dir.join("ingest-report.json");
     let query_path = run_dir.join("query-results-summary.json");
     if !ingest_path.exists() || !query_path.exists() {
@@ -2123,10 +2173,12 @@ fn run_tutorials_real_data_verify_idempotency(
         ));
     }
     let ingest_before = sha256_hex(
-        &fs::read(&ingest_path).map_err(|err| format!("failed to read {}: {err}", ingest_path.display()))?,
+        &fs::read(&ingest_path)
+            .map_err(|err| format!("failed to read {}: {err}", ingest_path.display()))?,
     );
     let query_before = sha256_hex(
-        &fs::read(&query_path).map_err(|err| format!("failed to read {}: {err}", query_path.display()))?,
+        &fs::read(&query_path)
+            .map_err(|err| format!("failed to read {}: {err}", query_path.display()))?,
     );
     let rerun_args = TutorialsRealDataRunArgs {
         common: args.common.clone(),
@@ -2138,10 +2190,12 @@ fn run_tutorials_real_data_verify_idempotency(
     let _ = run_tutorials_real_data_ingest(&rerun_args)?;
     let _ = run_tutorials_real_data_query_pack(&rerun_args)?;
     let ingest_after = sha256_hex(
-        &fs::read(&ingest_path).map_err(|err| format!("failed to read {}: {err}", ingest_path.display()))?,
+        &fs::read(&ingest_path)
+            .map_err(|err| format!("failed to read {}: {err}", ingest_path.display()))?,
     );
     let query_after = sha256_hex(
-        &fs::read(&query_path).map_err(|err| format!("failed to read {}: {err}", query_path.display()))?,
+        &fs::read(&query_path)
+            .map_err(|err| format!("failed to read {}: {err}", query_path.display()))?,
     );
     let ingest_idempotent = ingest_before == ingest_after;
     let query_idempotent = query_before == query_after;
@@ -2162,7 +2216,10 @@ fn run_tutorials_real_data_verify_idempotency(
         }
     });
     let ok = ingest_idempotent && query_idempotent;
-    Ok((emit_tutorial_output(&args.common, &payload, None)?, if ok { 0 } else { 1 }))
+    Ok((
+        emit_tutorial_output(&args.common, &payload, None)?,
+        if ok { 0 } else { 1 },
+    ))
 }
 
 fn validate_real_data_run_layout(run_dir: &Path) -> bool {
@@ -2182,8 +2239,8 @@ fn validate_real_data_run_layout(run_dir: &Path) -> bool {
 
 fn load_real_data_runs_catalog(repo_root: &Path) -> Result<RealDataRunCatalog, String> {
     let path = repo_root.join("configs/tutorials/real-data-runs.json");
-    let raw =
-        fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let raw = fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     let catalog: RealDataRunCatalog = serde_json::from_str(&raw)
         .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
     validate_real_data_runs_catalog(repo_root, &catalog)?;
@@ -2235,10 +2292,10 @@ fn load_dataset_query_pack(
         .join("tutorials/datasets")
         .join(dataset)
         .join("query-pack.json");
-    let text =
-        fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
-    let pack: DatasetQueryPack =
-        serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    let text = fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let pack: DatasetQueryPack = serde_json::from_str(&text)
+        .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
     Ok(pack.queries)
 }
 
@@ -2247,8 +2304,8 @@ fn load_dataset_fetch_spec(repo_root: &Path, dataset: &str) -> Result<DatasetFet
         .join("tutorials/datasets")
         .join(dataset)
         .join("fetch-spec.json");
-    let text =
-        fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let text = fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
@@ -2257,8 +2314,8 @@ fn load_dataset_metadata(repo_root: &Path, dataset: &str) -> Result<DatasetMetad
         .join("tutorials/datasets")
         .join(dataset)
         .join("metadata.json");
-    let text =
-        fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let text = fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
@@ -2272,7 +2329,10 @@ fn infer_dataset_format(url: &str) -> String {
         .unwrap_or_else(|| "bin".to_string())
 }
 
-fn load_cached_dataset_info(repo_root: &Path, run: &RealDataRun) -> Result<CachedDatasetInfo, String> {
+fn load_cached_dataset_info(
+    repo_root: &Path,
+    run: &RealDataRun,
+) -> Result<CachedDatasetInfo, String> {
     let dataset_path = repo_root
         .join("artifacts/tutorials/cache")
         .join(&run.dataset)
@@ -2283,8 +2343,8 @@ fn load_cached_dataset_info(repo_root: &Path, run: &RealDataRun) -> Result<Cache
             run.id, run.id
         ));
     }
-    let bytes =
-        fs::read(&dataset_path).map_err(|err| format!("failed to read {}: {err}", dataset_path.display()))?;
+    let bytes = fs::read(&dataset_path)
+        .map_err(|err| format!("failed to read {}: {err}", dataset_path.display()))?;
     let sha256 = sha256_hex(&bytes);
     let bytes_on_disk = bytes.len() as u64;
     let format = infer_dataset_format(&run.input_provenance.url);
@@ -2397,7 +2457,10 @@ fn validate_real_data_runs_catalog(
             ));
         }
         if run.expected_query_set.is_empty() {
-            return Err(format!("run `{}` expected_query_set must be non-empty", run.id));
+            return Err(format!(
+                "run `{}` expected_query_set must be non-empty",
+                run.id
+            ));
         }
         if run
             .expected_query_set
@@ -2410,9 +2473,17 @@ fn validate_real_data_runs_catalog(
             ));
         }
         if run.expected_artifacts.is_empty() {
-            return Err(format!("run `{}` expected_artifacts must be non-empty", run.id));
+            return Err(format!(
+                "run `{}` expected_artifacts must be non-empty",
+                run.id
+            ));
         }
-        if run.expected_resource_profile.cpu_mem_class.trim().is_empty() {
+        if run
+            .expected_resource_profile
+            .cpu_mem_class
+            .trim()
+            .is_empty()
+        {
             return Err(format!(
                 "run `{}` expected_resource_profile.cpu_mem_class is required",
                 run.id
@@ -2522,7 +2593,11 @@ fn validate_real_data_runs_catalog(
                 contract_path.display()
             )
         })?;
-        for key in ["expected_row_count_range", "expected_schema", "expected_index_rule"] {
+        for key in [
+            "expected_row_count_range",
+            "expected_schema",
+            "expected_index_rule",
+        ] {
             if contract.get(key).is_none() {
                 return Err(format!(
                     "dataset contract {} missing required key `{}`",

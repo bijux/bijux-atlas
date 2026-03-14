@@ -780,7 +780,9 @@ fn force_json_tutorials(command: &mut crate::cli::TutorialsCommand) {
         crate::cli::TutorialsCommand::RealData { command } => match command {
             crate::cli::TutorialsRealDataCommand::List(args)
             | crate::cli::TutorialsRealDataCommand::Doctor(args) => args.format = FormatArg::Json,
-            crate::cli::TutorialsRealDataCommand::Plan(args) => args.common.format = FormatArg::Json,
+            crate::cli::TutorialsRealDataCommand::Plan(args) => {
+                args.common.format = FormatArg::Json
+            }
             crate::cli::TutorialsRealDataCommand::Fetch(args)
             | crate::cli::TutorialsRealDataCommand::Ingest(args)
             | crate::cli::TutorialsRealDataCommand::QueryPack(args)
@@ -790,7 +792,9 @@ fn force_json_tutorials(command: &mut crate::cli::TutorialsCommand) {
             | crate::cli::TutorialsRealDataCommand::CleanRun(args) => {
                 args.common.format = FormatArg::Json
             }
-            crate::cli::TutorialsRealDataCommand::RunAll(args) => args.common.format = FormatArg::Json,
+            crate::cli::TutorialsRealDataCommand::RunAll(args) => {
+                args.common.format = FormatArg::Json
+            }
         },
     }
 }

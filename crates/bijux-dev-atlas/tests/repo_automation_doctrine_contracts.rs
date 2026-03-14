@@ -16,8 +16,8 @@ fn walk_files(root: &Path) -> Result<Vec<PathBuf>, String> {
     let mut files = Vec::new();
     let mut stack = vec![root.to_path_buf()];
     while let Some(cursor) = stack.pop() {
-        let entries =
-            fs::read_dir(&cursor).map_err(|err| format!("read {} failed: {err}", cursor.display()))?;
+        let entries = fs::read_dir(&cursor)
+            .map_err(|err| format!("read {} failed: {err}", cursor.display()))?;
         for entry in entries {
             let entry = entry.map_err(|err| format!("read entry failed: {err}"))?;
             let path = entry.path();
@@ -520,7 +520,10 @@ fn ops_tree_must_use_allowed_artifact_extensions() {
                 .expect("relative path")
                 .display()
                 .to_string();
-            let file_name = path.file_name().and_then(|n| n.to_str()).unwrap_or_default();
+            let file_name = path
+                .file_name()
+                .and_then(|n| n.to_str())
+                .unwrap_or_default();
             if file_name == ".gitkeep" {
                 continue;
             }
