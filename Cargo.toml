@@ -3,7 +3,6 @@ members = [
   "crates/bijux-dev-atlas",
   "crates/bijux-atlas",
   "crates/bijux-atlas-python",
-  "crates/bijux-umbrella",
 ]
 resolver = "2"
 

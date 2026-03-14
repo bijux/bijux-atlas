@@ -250,6 +250,7 @@ dependencies = [
  "async-trait",
  "axum",
  "base64",
+ "bijux-cli",
  "brotli",
  "clap",
  "clap_complete",
@@ -318,6 +319,7 @@ dependencies = [
  "assert_cmd",
  "base64",
  "bijux-atlas",
+ "bijux-cli",
  "clap",
  "criterion",
  "regex",
@@ -329,13 +331,6 @@ dependencies = [
  "tar",
  "tempfile",
  "toml",
-]
-
-[[package]]
-name = "bijux-umbrella"
-version = "0.1.1"
-dependencies = [
- "bijux-cli",
 ]
 
 [[package]]
