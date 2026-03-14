@@ -1519,10 +1519,8 @@ fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Valu
         "docs/_internal/generated/real-data-runs-overview.json".to_string(),
     ]);
     for path in &registry_paths {
-        if !required_set.contains(path) {
-            if !allowed_registry_only.contains(path) {
-                registry_extra.push(path.clone());
-            }
+        if !required_set.contains(path) && !allowed_registry_only.contains(path) {
+            registry_extra.push(path.clone());
         }
     }
 
@@ -2262,10 +2260,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         "docs/index.md".to_string()
                     } else {
                         "docs/".to_string()
-                            + &sample
-                            .trim_end_matches("index.html")
-                            .trim_end_matches('/')
-                            .to_string()
+                            + sample.trim_end_matches("index.html").trim_end_matches('/')
                             + ".md"
                     };
                     let has_breadcrumb = text.contains("md-path")

@@ -72,24 +72,23 @@ fn docs_build_or_serve_subprocess(
             attempts += 1;
         }
     }
-    let (stdout, stderr, code) = loop {
-        let mut cmd = ProcessCommand::new("mkdocs");
-        cmd.args(&effective_args).current_dir(&ctx.repo_root);
-        if label == "docs serve" {
-            let status = cmd
-                .stdout(std::process::Stdio::inherit())
-                .stderr(std::process::Stdio::inherit())
-                .status()
-                .map_err(|e| format!("failed to run mkdocs: {e}"))?;
-            break (String::new(), String::new(), status.code().unwrap_or(1));
-        }
+    let mut cmd = ProcessCommand::new("mkdocs");
+    cmd.args(&effective_args).current_dir(&ctx.repo_root);
+    let (stdout, stderr, code) = if label == "docs serve" {
+        let status = cmd
+            .stdout(std::process::Stdio::inherit())
+            .stderr(std::process::Stdio::inherit())
+            .status()
+            .map_err(|e| format!("failed to run mkdocs: {e}"))?;
+        (String::new(), String::new(), status.code().unwrap_or(1))
+    } else {
         let out = cmd
             .output()
             .map_err(|e| format!("failed to run mkdocs: {e}"))?;
         let stdout = String::from_utf8_lossy(&out.stdout).to_string();
         let stderr = String::from_utf8_lossy(&out.stderr).to_string();
         let code = out.status.code().unwrap_or(1);
-        break (stdout, stderr, code);
+        (stdout, stderr, code)
     };
     let mut files = Vec::<serde_json::Value>::new();
     if label == "docs build" && output_dir.exists() {

@@ -145,8 +145,8 @@ fn test_ops_k8s_004_no_forbidden_k8s_objects(ctx: &RunContext) -> TestResult {
     let forbidden = ["kind: ClusterRole", "kind: ClusterRoleBinding", "kind: PodSecurityPolicy"];
     let mut violations = Vec::new();
     for path in &files {
-        let rel = rel_to_root(&path, &ctx.repo_root);
-        let Ok(text) = std::fs::read_to_string(&path) else {
+        let rel = rel_to_root(path, &ctx.repo_root);
+        let Ok(text) = std::fs::read_to_string(path) else {
             continue;
         };
         for token in forbidden {
@@ -178,11 +178,11 @@ fn test_ops_load_001_scenarios_schema_valid(ctx: &RunContext) -> TestResult {
         .is_some_and(|rows| !rows.is_empty());
     let mut violations = Vec::new();
     for path in &files {
-        let rel = rel_to_root(&path, &ctx.repo_root);
+        let rel = rel_to_root(path, &ctx.repo_root);
         if !rel.ends_with(".json") {
             continue;
         }
-        let Some(value) = read_json(&path) else {
+        let Some(value) = read_json(path) else {
             violations.push(violation(
                 contract_id,
                 test_id,

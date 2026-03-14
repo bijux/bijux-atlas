@@ -44,12 +44,10 @@ fn test_ops_contract_doc_generated_match(ctx: &RunContext) -> TestResult {
     };
     let path = ctx.repo_root.join("ops/CONTRACT.md");
     let actual = std::fs::read_to_string(&path).unwrap_or_default();
-    if actual.trim_end() == expected.trim_end() {
-        TestResult::Pass
-    } else if actual.contains("# Ops Contract")
+    let has_legacy_ops_contract_sections = actual.contains("# Ops Contract")
         && actual.contains("## Contract IDs")
-        && actual.contains("## Scope")
-    {
+        && actual.contains("## Scope");
+    if actual.trim_end() == expected.trim_end() || has_legacy_ops_contract_sections {
         TestResult::Pass
     } else {
         TestResult::Fail(vec![violation(
