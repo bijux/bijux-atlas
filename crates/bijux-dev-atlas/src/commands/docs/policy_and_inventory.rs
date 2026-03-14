@@ -375,10 +375,8 @@ fn scan_registry_markdown_files(repo_root: &Path) -> Vec<PathBuf> {
 }
 
 fn is_allowed_doc_location(path: &str) -> bool {
-    matches!(
-        path,
-        "README.md" | "CONTRIBUTING.md" | "SECURITY.md" | "CHANGELOG.md" | "CONTRACT.md"
-    ) || path.starts_with("docs/")
+    matches!(path, "README.md" | "CONTRIBUTING.md" | "SECURITY.md" | "CHANGELOG.md")
+        || path.starts_with("docs/")
         || path.starts_with("crates/")
         || path.starts_with("ops/")
         || path.starts_with("configs/")

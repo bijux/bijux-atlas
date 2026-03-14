@@ -4,7 +4,6 @@
   "policy": "Root markdown surface allowlist",
   "files": [
     "CHANGELOG.md",
-    "CONTRACT.md",
     "CONTRIBUTING.md",
     "README.md",
     "SECURITY.md"

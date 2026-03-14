@@ -3,10 +3,7 @@
   "owner": "bijux-atlas-platform",
   "policy": "Root markdown allowlist",
   "files": [
-    "ARCHITECTURE.md",
     "CHANGELOG.md",
-    "CLIENTS.md",
-    "CONTRACT.md",
     "CONTRIBUTING.md",
     "README.md",
     "SECURITY.md"

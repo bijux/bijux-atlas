@@ -120,7 +120,6 @@ fn test_root_030_no_vendor_blobs(ctx: &RunContext) -> TestResult {
 fn test_root_031_root_file_size_budget(ctx: &RunContext) -> TestResult {
     let pinned_budget = [
         ("README.md", 24_u64 * 1024),
-        ("CONTRACT.md", 160_u64 * 1024),
     ]
     .into_iter()
     .collect::<std::collections::BTreeMap<_, _>>();

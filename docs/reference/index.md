@@ -34,6 +34,7 @@ Facts live here. Procedures do not. Use this section for stable names, keys, sch
 
 - Commands and automation: [Commands](commands.md), [Command inventory](command-inventory.md)
 - Reader navigation spine: [Docs entrypoints](docs-entrypoints.md)
+- Repository surfaces: [Repository contract](../repository-contract.md), [Clients](../clients.md)
 - Distribution and package surfaces: [Crates reference](crates.md), [Docker reference](docker.md), [Ops artifacts reference](ops.md)
 - Crate consumption guide: [Crates you can depend on](crates-consumption-guide.md)
 - Versioning model: [Versioning model](versioning-model.md)

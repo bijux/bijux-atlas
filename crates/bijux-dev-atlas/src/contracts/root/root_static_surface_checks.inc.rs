@@ -90,9 +90,6 @@ fn test_root_002_allowed_markdown(ctx: &RunContext) -> TestResult {
         "CONTRIBUTING.md",
         "SECURITY.md",
         "CHANGELOG.md",
-        "CONTRACT.md",
-        "ARCHITECTURE.md",
-        "CLIENTS.md",
     ];
     let mut violations = Vec::new();
     let entries = match std::fs::read_dir(&ctx.repo_root) {

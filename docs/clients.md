@@ -1,3 +1,15 @@
+---
+title: Clients
+audience: user
+type: reference
+stability: stable
+owner: product
+last_reviewed: 2026-03-14
+related:
+  - docs/api/index.md
+  - docs/tutorials/clients/index.md
+---
+
 # Clients
 
 Client SDK products live under `packages/`.

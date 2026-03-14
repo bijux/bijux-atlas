@@ -11,7 +11,8 @@ Authority documents and generated references live under `docs/`, `ops/`, or `con
 
 ## What Belongs At Root
 
-- lobby documents: `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CONTRACT.md`, `CHANGELOG.md`, `LICENSE`
+- lobby documents: `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`, `LICENSE`
+- repository governance docs: `docs/repository-contract.md`, `docs/repository-architecture.md`, `docs/clients.md`
 - workspace control files: `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml`, `Makefile`
 - top-level governed directories only
 

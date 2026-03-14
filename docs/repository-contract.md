@@ -2,7 +2,7 @@
 
 ## Scope
 
-- Governed surface: `root/` and `CONTRACT.md`.
+- Governed surface: `root/` and `docs/repository-contract.md`.
 - SSOT = bijux-dev-atlas contracts runner.
 - Effects boundary: this group runs static contracts only.
 - Non-goals:
@@ -43,7 +43,6 @@
 | `ROOT-016` | repo root keeps a machine-readable surface manifest | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
 | `ROOT-017` | repo root forbids undeclared binary-like artifacts | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
 | `ROOT-018` | repo root forbids committed environment files | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
-| `ROOT-019` | repo root keeps a bounded top-level directory surface | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
 | `ROOT-020` | repo root manifest keeps single-segment entry paths | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
 | `ROOT-021` | editorconfig exists for shared formatting contracts | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
 | `ROOT-022` | repo root keeps a single unambiguous license authority | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
@@ -61,7 +60,7 @@
 | `ROOT-034` | repo root keeps a single contracts command interface | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
 | `ROOT-035` | make contract wrappers delegate to the contracts runner | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
 | `ROOT-036` | docker make wrappers delegate to the contracts runner | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
-| `ROOT-037` | repo tree forbids editor backups and platform noise | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
+| `ROOT-037` | repo tree forbids editor backups and ad hoc note clutter | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
 | `ROOT-038` | gitattributes line ending policy stays consistent when present | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
 | `ROOT-039` | workspace members match the actual crate surface | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
 | `ROOT-040` | workspace crates keep canonical naming | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
@@ -97,7 +96,6 @@
 | `ROOT-016` | `bijux dev atlas contracts root --mode static` |
 | `ROOT-017` | `bijux dev atlas contracts root --mode static` |
 | `ROOT-018` | `bijux dev atlas contracts root --mode static` |
-| `ROOT-019` | `bijux dev atlas contracts root --mode static` |
 | `ROOT-020` | `bijux dev atlas contracts root --mode static` |
 | `ROOT-021` | `bijux dev atlas contracts root --mode static` |
 | `ROOT-022` | `bijux dev atlas contracts root --mode static` |

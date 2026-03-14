@@ -161,11 +161,11 @@ generated artifacts + checks/contracts + publishable evidence
 
 ## Constitution
 
-Repository constitution: [`CONTRACT.md`](CONTRACT.md)
+Repository constitution: [`docs/repository-contract.md`](docs/repository-contract.md)
 
 ## Architecture
 
-Repository architecture entrypoint: [`ARCHITECTURE.md`](ARCHITECTURE.md)
+Repository architecture entrypoint: [`docs/repository-architecture.md`](docs/repository-architecture.md)
 Canonical structure rationale: [`docs/architecture/why-this-structure-exists.md`](docs/architecture/why-this-structure-exists.md)
 
 ## Version And Compatibility

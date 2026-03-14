@@ -19,16 +19,7 @@
     ".gitignore": {
       "kind": "file"
     },
-    "ARCHITECTURE.md": {
-      "kind": "file"
-    },
     "CHANGELOG.md": {
-      "kind": "file"
-    },
-    "CLIENTS.md": {
-      "kind": "file"
-    },
-    "CONTRACT.md": {
       "kind": "file"
     },
     "CONTRIBUTING.md": {

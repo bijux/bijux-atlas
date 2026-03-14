@@ -1,14 +1,11 @@
-const ROOT_ALLOWED_VISIBLE: [&str; 23] = [
+const ROOT_ALLOWED_VISIBLE: [&str; 20] = [
     ".cargo",
     ".dockerignore",
     ".editorconfig",
     ".gitattributes",
     ".github",
     ".gitignore",
-    "ARCHITECTURE.md",
     "CHANGELOG.md",
-    "CLIENTS.md",
-    "CONTRACT.md",
     "CONTRIBUTING.md",
     "Cargo.lock",
     "Cargo.toml",

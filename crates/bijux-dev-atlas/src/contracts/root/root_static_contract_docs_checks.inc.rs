@@ -8,7 +8,7 @@ const CONTRACT_DOC_DOMAINS: [ContractDocDomain; 5] = [
     ContractDocDomain {
         name: "root",
         title: "Root",
-        file: "CONTRACT.md",
+        file: "docs/repository-contract.md",
     },
     ContractDocDomain {
         name: "configs",
