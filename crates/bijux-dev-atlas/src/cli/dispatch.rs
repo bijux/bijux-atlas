@@ -133,12 +133,6 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         Command::Docs { command } => run_docs_command(cli.quiet, command),
         Command::Artifacts { command } => run_artifacts_command(cli.quiet, command),
         Command::Make { command } => run_make_command(cli.quiet, command),
-        Command::Contracts { command } => {
-            if !cli.no_deprecation_warn {
-                let _ = writeln!(io::stderr(), "{}", deprecated_contracts_warning());
-            }
-            run_contracts_command(cli.quiet, command)
-        }
         Command::Demo { command } => run_demo_command(cli.quiet, command),
         Command::Configs { command } => run_configs_command(cli.quiet, command),
         Command::Governance { command } => match run_governance_command(cli.quiet, command) {
@@ -752,22 +746,6 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                 }
             }
         }
-        Command::Contract { command } => match run_contract_command(cli.output_format, command) {
-            Ok((rendered, code)) => {
-                if !cli.quiet && !rendered.is_empty() {
-                    if code == 0 {
-                        let _ = writeln!(io::stdout(), "{rendered}");
-                    } else {
-                        let _ = writeln!(io::stderr(), "{rendered}");
-                    }
-                }
-                code
-            }
-            Err(err) => {
-                let _ = writeln!(io::stderr(), "bijux-dev-atlas contract failed: {err}");
-                EXIT_FAILURE
-            }
-        },
         Command::Registry { command } => run_registry_command(cli.quiet, command),
         Command::Suites { command } => run_suites_command(cli.quiet, command),
         Command::Tests { command } => {
@@ -1079,7 +1057,7 @@ struct ContractDomainSource {
     load: fn(&Path) -> Result<Vec<contracts::Contract>, String>,
 }
 
-fn contract_domain_sources() -> [ContractDomainSource; 9] {
+fn contract_domain_sources() -> [ContractDomainSource; 8] {
     [
         ContractDomainSource {
             name: "root",
@@ -1104,10 +1082,6 @@ fn contract_domain_sources() -> [ContractDomainSource; 9] {
         ContractDomainSource {
             name: "configs",
             load: contracts::configs::contracts,
-        },
-        ContractDomainSource {
-            name: "docker",
-            load: contracts::docker::contracts,
         },
         ContractDomainSource {
             name: "make",

@@ -34,7 +34,7 @@ pub(crate) use configs_commands::{
     run_configs_command,
 };
 pub(crate) use control_plane_commands::{
-    help_inventory_payload, run_capabilities_command, run_contracts_command, run_docker_command,
+    help_inventory_payload, run_capabilities_command, run_docker_command,
     run_help_inventory_command, run_policies_command, run_print_boundaries_command,
     run_print_policies, run_version_command,
 };

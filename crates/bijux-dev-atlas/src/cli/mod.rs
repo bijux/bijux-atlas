@@ -109,11 +109,6 @@ pub enum Command {
         #[command(subcommand)]
         command: MakeCommand,
     },
-    #[command(hide = true)]
-    Contracts {
-        #[command(subcommand)]
-        command: ContractsCommand,
-    },
     Demo {
         #[command(subcommand)]
         command: DemoCommand,
@@ -238,10 +233,6 @@ pub enum Command {
     Checks {
         #[command(subcommand)]
         command: ChecksCommand,
-    },
-    Contract {
-        #[command(subcommand)]
-        command: ContractCommand,
     },
     Registry {
         #[command(subcommand)]

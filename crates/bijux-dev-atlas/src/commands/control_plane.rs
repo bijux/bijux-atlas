@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ContractsCommand, ContractsFormatArg, ContractsModeArg, ContractsSnapshotDomainArg,
     PoliciesCommand,
 };
 use crate::*;
@@ -56,13 +55,10 @@ pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32
     }
 }
 
-mod control_plane_contracts_support;
 mod control_plane_docker;
-use control_plane_contracts_support::*;
+mod control_plane_policies;
 pub(crate) use control_plane_docker::run_docker_command;
-use control_plane_docker::{run_policies_explain, run_policies_list, run_policies_report};
-
-include!("control_plane_contracts.rs");
+use control_plane_policies::{run_policies_explain, run_policies_list, run_policies_report};
 pub(crate) fn run_print_boundaries_command() -> Result<(String, i32), String> {
     let payload = serde_json::json!({
         "schema_version": CONTRACT_SCHEMA_VERSION,
@@ -296,7 +292,7 @@ pub(crate) fn help_inventory_payload() -> serde_json::Value {
         serde_json::json!({
             "id": "docker",
             "kind": "group",
-            "purpose": "run docker policy, contract, and release-oriented validations",
+            "purpose": "run docker validation and release-oriented commands",
             "effects": ["fs_read", "fs_write", "subprocess", "network"],
             "inputs": ["repo_root", "artifacts_root", "policy selection"],
             "outputs": ["docker validation reports"],

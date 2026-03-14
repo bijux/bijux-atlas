@@ -30,7 +30,6 @@ pub(super) fn force_json_output(command: &mut Command) {
             | crate::cli::SuitesCommand::Lint { format, .. } => *format = FormatArg::Json,
         },
         Command::Tests { command } => force_json_tests(command),
-        Command::Contract { command } => force_json_contract(command),
         Command::Registry { command } => match command {
             RegistryCommand::Status { format, .. } | RegistryCommand::Doctor { format, .. } => {
                 *format = FormatArg::Json
@@ -47,7 +46,6 @@ pub(super) fn force_json_output(command: &mut Command) {
             ReportsCommand::Validate(args) => args.format = FormatArg::Json,
         },
         Command::Demo { command } => force_json_demo(command),
-        Command::Contracts { command } => force_json_contracts(command),
         Command::Configs { command } => force_json_configs(command),
         Command::Governance { command } => force_json_governance(command),
         Command::Security { command } => force_json_security(command),
@@ -70,6 +68,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Policies { command } => force_json_policies(command),
         Command::Check { command } => force_json_check(command),
         Command::Checks { command } => force_json_checks(command),
+        Command::Docker { command } => force_json_docker(command),
         Command::Validate { format, .. } => *format = FormatArg::Json,
         Command::Release { command } => match command {
             ReleaseCommand::Plan(args) => args.format = FormatArg::Json,
@@ -176,8 +175,7 @@ pub(super) fn force_json_output(command: &mut Command) {
                 }
             },
         },
-        Command::Docker { .. }
-        | Command::Build { .. }
+        Command::Build { .. }
         | Command::Ci { .. }
         | Command::Workflows { .. }
         | Command::Gates { .. }
@@ -670,7 +668,6 @@ fn force_json_contracts(command: &mut ContractsCommand) {
         ContractsCommand::ControlPlane(args) => args.json = true,
         ContractsCommand::Configs(args) => args.json = true,
         ContractsCommand::Docs(args) => args.json = true,
-        ContractsCommand::Docker(args) => args.common.json = true,
         ContractsCommand::Make(args) => args.common.json = true,
         ContractsCommand::Ops(args) => args.common.json = true,
         ContractsCommand::SelfCheck(args) => args.json = true,
@@ -1019,17 +1016,6 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             command: TestsCommand::Run { fail_fast, .. },
         } => *fail_fast = true,
         Command::Tests { .. } => {}
-        Command::Contract { command } => match command {
-            ContractCommand::List(_)
-            | ContractCommand::Explain(_)
-            | ContractCommand::Describe(_)
-            | ContractCommand::Report(_)
-            | ContractCommand::AutomationBoundaries(_) => {}
-            ContractCommand::Run(args) => {
-                args.fail_fast = true;
-                args.no_fail_fast = false;
-            }
-        },
         Command::Suites {
             command:
                 crate::cli::SuitesCommand::Run {
@@ -1116,23 +1102,6 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | ConfigsCommand::List(_)
             | ConfigsCommand::Explain(_)
             | ConfigsCommand::Compile(_) => {}
-        },
-        Command::Contracts { command } => match command {
-            ContractsCommand::All(args) => args.fail_fast = true,
-            ContractsCommand::Pr(args) => args.fail_fast = true,
-            ContractsCommand::Doctor(args) => args.fail_fast = true,
-            ContractsCommand::Root(args) => args.fail_fast = true,
-            ContractsCommand::Repo(args) => args.fail_fast = true,
-            ContractsCommand::Crates(args) => args.fail_fast = true,
-            ContractsCommand::Runtime(args) => args.fail_fast = true,
-            ContractsCommand::ControlPlane(args) => args.fail_fast = true,
-            ContractsCommand::Configs(args) => args.fail_fast = true,
-            ContractsCommand::Docs(args) => args.fail_fast = true,
-            ContractsCommand::Docker(args) => args.common.fail_fast = true,
-            ContractsCommand::Make(args) => args.common.fail_fast = true,
-            ContractsCommand::Ops(args) => args.common.fail_fast = true,
-            ContractsCommand::SelfCheck(args) => args.fail_fast = true,
-            ContractsCommand::Snapshot(_) => {}
         },
         Command::Make { .. } => {}
         _ => {}
@@ -2006,15 +1975,6 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | TestsCommand::Run { repo_root, .. }
             | TestsCommand::Doctor { repo_root, .. } => *repo_root = Some(root.clone()),
         },
-        Command::Contract { command } => match command {
-            ContractCommand::List(args) => args.repo_root = Some(root.clone()),
-            ContractCommand::Explain(args) | ContractCommand::Describe(args) => {
-                args.repo_root = Some(root.clone())
-            }
-            ContractCommand::Run(args) => args.repo_root = Some(root.clone()),
-            ContractCommand::Report(args) => args.repo_root = Some(root.clone()),
-            ContractCommand::AutomationBoundaries(args) => args.repo_root = Some(root.clone()),
-        },
         Command::List { repo_root, .. }
         | Command::Describe { repo_root, .. }
         | Command::Run { repo_root, .. } => *repo_root = Some(root.clone()),
@@ -2024,23 +1984,6 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         },
         Command::Demo { command } => match command {
             crate::cli::DemoCommand::Quickstart(args) => args.repo_root = Some(root.clone()),
-        },
-        Command::Contracts { command } => match command {
-            ContractsCommand::All(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Pr(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Doctor(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Root(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Repo(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Crates(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Runtime(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::ControlPlane(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Configs(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Docs(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Docker(args) => args.common.repo_root = Some(root.clone()),
-            ContractsCommand::Make(args) => args.common.repo_root = Some(root.clone()),
-            ContractsCommand::Ops(args) => args.common.repo_root = Some(root.clone()),
-            ContractsCommand::SelfCheck(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Snapshot(args) => args.repo_root = Some(root.clone()),
         },
         Command::Ci { command } | Command::Workflows { command } => match command {
             crate::cli::WorkflowsCommand::Lanes { command } => match command {
@@ -2339,6 +2282,23 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         | Command::Build { .. }
         | Command::Gates { .. }
         | Command::Capabilities { .. } => {}
+    }
+}
+
+fn force_json_docker(command: &mut crate::cli::DockerCommand) {
+    match command {
+        crate::cli::DockerCommand::Build(args)
+        | crate::cli::DockerCommand::Check(args)
+        | crate::cli::DockerCommand::Smoke(args)
+        | crate::cli::DockerCommand::Scan(args)
+        | crate::cli::DockerCommand::Sbom(args)
+        | crate::cli::DockerCommand::Lock(args) => args.format = FormatArg::Json,
+        crate::cli::DockerCommand::Policy { command } => match command {
+            crate::cli::DockerPolicyCommand::Check(args) => args.format = FormatArg::Json,
+        },
+        crate::cli::DockerCommand::Push(args) | crate::cli::DockerCommand::Release(args) => {
+            args.common.format = FormatArg::Json
+        }
     }
 }
 
