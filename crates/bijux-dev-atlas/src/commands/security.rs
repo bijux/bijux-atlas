@@ -8,6 +8,7 @@ use crate::cli::{
 };
 use crate::{emit_payload, resolve_repo_root};
 use base64::Engine as _;
+use bijux_atlas::core as bijux_atlas_core;
 use std::fs;
 use std::path::{Path, PathBuf};
 

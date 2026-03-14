@@ -2,6 +2,9 @@
 
 #![forbid(unsafe_code)]
 
+#[allow(unused_imports)]
+use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
+
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_server::{
     build_router, effective_runtime_config_payload, init_tracing, load_runtime_config, AppState,

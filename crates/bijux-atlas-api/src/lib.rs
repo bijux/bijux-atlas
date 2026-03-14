@@ -3,7 +3,7 @@
 #![forbid(unsafe_code)]
 #![recursion_limit = "512"]
 
-use bijux_atlas_model::{LATEST_ALIAS_POLICY, NO_IMPLICIT_DEFAULT_DATASET_POLICY};
+use bijux_atlas::model::{LATEST_ALIAS_POLICY, NO_IMPLICIT_DEFAULT_DATASET_POLICY};
 
 pub const CRATE_NAME: &str = "bijux-atlas-api";
 pub const API_POLICY_LATEST_ALIAS: &str = LATEST_ALIAS_POLICY;
@@ -148,8 +148,8 @@ mod tests {
             assert!(spec["paths"].get(route).is_some(), "missing route: {route}");
         }
 
-        let a = bijux_atlas_core::canonical::stable_json_bytes(&spec).expect("stable bytes a");
-        let b = bijux_atlas_core::canonical::stable_json_bytes(&openapi_v1_spec())
+        let a = bijux_atlas::core::canonical::stable_json_bytes(&spec).expect("stable bytes a");
+        let b = bijux_atlas::core::canonical::stable_json_bytes(&openapi_v1_spec())
             .expect("stable bytes b");
         assert_eq!(a, b);
     }

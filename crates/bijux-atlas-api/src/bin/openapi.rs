@@ -2,6 +2,7 @@
 
 #![forbid(unsafe_code)]
 
+use bijux_atlas::core as bijux_atlas_core;
 use std::env;
 use std::fs;
 use std::path::PathBuf;

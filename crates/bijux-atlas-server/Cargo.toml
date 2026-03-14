@@ -14,10 +14,7 @@ keywords = ["atlas", "server", "http", "axum", "genomics"]
 
 [dependencies]
 bijux-atlas-api.workspace = true
-bijux-atlas-core.workspace = true
-bijux-atlas-model.workspace = true
 bijux-atlas.workspace = true
-bijux-atlas-store.workspace = true
 axum = "0.7"
 async-trait = "0.1"
 rusqlite = { version = "0.31", features = ["bundled", "hooks"] }

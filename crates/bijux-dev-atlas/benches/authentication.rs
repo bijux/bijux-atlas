@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use bijux_atlas::core as bijux_atlas_core;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use std::fs;
 use std::path::PathBuf;

@@ -6,6 +6,7 @@ use crate::cli::{
     SystemCommand, SystemDebugCommand, SystemSimulateCommand,
 };
 use crate::{emit_payload, resolve_repo_root};
+use bijux_atlas::core as bijux_atlas_core;
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
 use std::collections::BTreeSet;

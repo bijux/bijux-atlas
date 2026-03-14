@@ -34,4 +34,4 @@ pub const API_ERROR_CODES: &[&str] = &[
     "ValidationFailed",
 ];
 
-pub type ApiErrorCode = bijux_atlas_core::ErrorCode;
+pub type ApiErrorCode = bijux_atlas::core::ErrorCode;

@@ -270,8 +270,6 @@ name = "bijux-atlas-api"
 version = "0.1.1"
 dependencies = [
  "bijux-atlas",
- "bijux-atlas-core",
- "bijux-atlas-model",
  "criterion",
  "serde",
  "serde_json",
@@ -345,9 +343,6 @@ dependencies = [
  "base64",
  "bijux-atlas",
  "bijux-atlas-api",
- "bijux-atlas-core",
- "bijux-atlas-model",
- "bijux-atlas-store",
  "brotli",
  "clap",
  "criterion",
@@ -394,7 +389,7 @@ version = "0.1.1"
 dependencies = [
  "assert_cmd",
  "base64",
- "bijux-atlas-core",
+ "bijux-atlas",
  "clap",
  "criterion",
  "regex",

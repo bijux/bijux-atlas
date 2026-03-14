@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
+#[allow(unused_imports)]
+use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
+
 use std::sync::Arc;
 
 use bijux_atlas_core::sha256_hex;

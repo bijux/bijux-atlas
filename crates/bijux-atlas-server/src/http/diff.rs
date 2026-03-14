@@ -2,6 +2,9 @@
 
 #![deny(clippy::redundant_clone)]
 
+#[allow(unused_imports)]
+use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
+
 use crate::http::handlers::{
     api_error_response, dataset_artifact_hash, dataset_etag, error_json, if_none_match,
     maybe_compress_response, normalize_query, put_cache_headers, serialize_payload_with_capacity,

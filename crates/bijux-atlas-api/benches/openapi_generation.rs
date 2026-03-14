@@ -2,8 +2,8 @@
 
 #![allow(missing_docs)]
 
+use bijux_atlas::core::canonical;
 use bijux_atlas_api::openapi_v1_spec;
-use bijux_atlas_core::canonical;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 fn bench_openapi_generation(c: &mut Criterion) {
