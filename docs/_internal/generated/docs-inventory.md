@@ -56,13 +56,6 @@ License: Apache-2.0
 | `configs/slo/README.md` | `concept` | `ops` | `stable` |
 | `configs/system/README.md` | `concept` | `docs-governance` | `stable` |
 | `configs/tutorials/README.md` | `concept` | `docs-governance` | `stable` |
-| `crates/bijux-atlas-bench/CONTRACT.md` | `concept` | `bijux-atlas-performance` | `stable` |
-| `crates/bijux-atlas-bench/README.md` | `concept` | `docs-governance` | `stable` |
-| `crates/bijux-atlas-bench/docs/benchmark-architecture.md` | `concept` | `docs-governance` | `stable` |
-| `crates/bijux-atlas-bench/docs/benchmark-roadmap.md` | `concept` | `docs-governance` | `stable` |
-| `crates/bijux-atlas-bench/docs/benchmark-troubleshooting.md` | `concept` | `docs-governance` | `stable` |
-| `crates/bijux-atlas-bench/docs/benchmark-usage.md` | `concept` | `docs-governance` | `stable` |
-| `crates/bijux-atlas-bench/docs/index.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-atlas/README.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-atlas/src/cache/ARCHITECTURE.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-atlas/tests/README.md` | `concept` | `docs-governance` | `stable` |
@@ -81,6 +74,11 @@ License: Apache-2.0
 | `crates/bijux-dev-atlas/docs/architecture.md` | `concept` | `bijux-dev-atlas` | `stable` |
 | `crates/bijux-dev-atlas/docs/automation-boundary-gap-review.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/benchmarks.md` | `concept` | `docs-governance` | `stable` |
+| `crates/bijux-dev-atlas/docs/benchmarks/architecture.md` | `concept` | `docs-governance` | `stable` |
+| `crates/bijux-dev-atlas/docs/benchmarks/coverage-targets.md` | `concept` | `docs-governance` | `stable` |
+| `crates/bijux-dev-atlas/docs/benchmarks/index.md` | `concept` | `docs-governance` | `stable` |
+| `crates/bijux-dev-atlas/docs/benchmarks/troubleshooting.md` | `concept` | `docs-governance` | `stable` |
+| `crates/bijux-dev-atlas/docs/benchmarks/usage.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/cli-command-list.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/command-surface.md` | `concept` | `bijux-dev-atlas` | `stable` |
 | `crates/bijux-dev-atlas/docs/commands.md` | `concept` | `docs-governance` | `stable` |

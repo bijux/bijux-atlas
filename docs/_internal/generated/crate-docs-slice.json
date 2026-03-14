@@ -1,122 +1,5 @@
 {
   "crates": {
-    "bijux-atlas-bench": [
-      {
-        "area": "bijux-atlas-bench",
-        "audience": "contributors",
-        "crate": "bijux-atlas-bench",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "benchmark-architecture",
-          "bijux-atlas-bench"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-bench/docs/benchmark-architecture.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "benchmark-architecture",
-          "bijux-atlas-bench"
-        ],
-        "title": "Benchmark Architecture",
-        "topic": "benchmark-architecture"
-      },
-      {
-        "area": "bijux-atlas-bench",
-        "audience": "contributors",
-        "crate": "bijux-atlas-bench",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "benchmark-roadmap",
-          "bijux-atlas-bench"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-bench/docs/benchmark-roadmap.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "benchmark-roadmap",
-          "bijux-atlas-bench"
-        ],
-        "title": "Benchmark Roadmap",
-        "topic": "benchmark-roadmap"
-      },
-      {
-        "area": "bijux-atlas-bench",
-        "audience": "contributors",
-        "crate": "bijux-atlas-bench",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "benchmark-troubleshooting",
-          "bijux-atlas-bench"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-bench/docs/benchmark-troubleshooting.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "benchmark-troubleshooting",
-          "bijux-atlas-bench"
-        ],
-        "title": "Benchmark Troubleshooting",
-        "topic": "benchmark-troubleshooting"
-      },
-      {
-        "area": "bijux-atlas-bench",
-        "audience": "contributors",
-        "crate": "bijux-atlas-bench",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "benchmark-usage",
-          "bijux-atlas-bench"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-bench/docs/benchmark-usage.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "benchmark-usage",
-          "bijux-atlas-bench"
-        ],
-        "title": "Benchmark Usage",
-        "topic": "benchmark-usage"
-      },
-      {
-        "area": "bijux-atlas-bench",
-        "audience": "contributors",
-        "crate": "bijux-atlas-bench",
-        "doc_type": "concept",
-        "doc_version": "v1",
-        "keywords": [
-          "bijux-atlas-bench",
-          "index"
-        ],
-        "last_reviewed": "2026-02-25",
-        "lifecycle": "stable",
-        "owner": "docs-governance",
-        "path": "crates/bijux-atlas-bench/docs/index.md",
-        "review_due": "2026-08-24",
-        "stability": "stable",
-        "tags": [
-          "bijux-atlas-bench",
-          "index"
-        ],
-        "title": "Benchmark crate docs",
-        "topic": "index"
-      }
-    ],
     "bijux-dev-atlas": [
       {
         "area": "bijux-dev-atlas",
@@ -186,6 +69,131 @@
         ],
         "title": "Benchmarks",
         "topic": "benchmarks"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "architecture",
+          "benchmarks",
+          "bijux-dev-atlas"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/benchmarks/architecture.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "architecture",
+          "benchmarks",
+          "bijux-dev-atlas"
+        ],
+        "title": "Benchmark Architecture",
+        "topic": "architecture"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmarks",
+          "bijux-dev-atlas",
+          "coverage-targets"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/benchmarks/coverage-targets.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmarks",
+          "bijux-dev-atlas",
+          "coverage-targets"
+        ],
+        "title": "Benchmark Coverage Targets",
+        "topic": "coverage-targets"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmarks",
+          "bijux-dev-atlas",
+          "index"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/benchmarks/index.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmarks",
+          "bijux-dev-atlas",
+          "index"
+        ],
+        "title": "Benchmark Documentation",
+        "topic": "index"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmarks",
+          "bijux-dev-atlas",
+          "troubleshooting"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/benchmarks/troubleshooting.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmarks",
+          "bijux-dev-atlas",
+          "troubleshooting"
+        ],
+        "title": "Benchmark Troubleshooting",
+        "topic": "troubleshooting"
+      },
+      {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "benchmarks",
+          "bijux-dev-atlas",
+          "usage"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-dev-atlas/docs/benchmarks/usage.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "benchmarks",
+          "bijux-dev-atlas",
+          "usage"
+        ],
+        "title": "Benchmark Usage",
+        "topic": "usage"
       },
       {
         "area": "bijux-dev-atlas",

@@ -12,7 +12,6 @@
     ],
     "CONTRACT": [
       "configs/CONTRACT.md",
-      "crates/bijux-atlas-bench/CONTRACT.md",
       "crates/bijux-dev-atlas/CONTRACT.md",
       "docker/CONTRACT.md",
       "docs/bijux-atlas-crate/CONTRACT.md",
@@ -110,7 +109,6 @@
       "configs/slo/README.md",
       "configs/system/README.md",
       "configs/tutorials/README.md",
-      "crates/bijux-atlas-bench/README.md",
       "crates/bijux-atlas/README.md",
       "crates/bijux-atlas/tests/README.md",
       "crates/bijux-atlas/tests/api/README.md",
@@ -386,6 +384,7 @@
     ],
     "architecture": [
       "crates/bijux-dev-atlas/docs/architecture.md",
+      "crates/bijux-dev-atlas/docs/benchmarks/architecture.md",
       "docs/bijux-atlas-crate/api/architecture.md",
       "docs/bijux-atlas-crate/architecture.md",
       "docs/bijux-atlas-crate/client/architecture.md",
@@ -601,18 +600,6 @@
     ],
     "backward-compatibility-guarantee": [
       "docs/operations/backward-compatibility-guarantee.md"
-    ],
-    "benchmark-architecture": [
-      "crates/bijux-atlas-bench/docs/benchmark-architecture.md"
-    ],
-    "benchmark-roadmap": [
-      "crates/bijux-atlas-bench/docs/benchmark-roadmap.md"
-    ],
-    "benchmark-troubleshooting": [
-      "crates/bijux-atlas-bench/docs/benchmark-troubleshooting.md"
-    ],
-    "benchmark-usage": [
-      "crates/bijux-atlas-bench/docs/benchmark-usage.md"
     ],
     "benchmarks": [
       "crates/bijux-dev-atlas/docs/benchmarks.md",
@@ -1082,6 +1069,9 @@
     ],
     "coverage-summary": [
       "ops/observe/tracing/coverage-summary.md"
+    ],
+    "coverage-targets": [
+      "crates/bijux-dev-atlas/docs/benchmarks/coverage-targets.md"
     ],
     "crate-api-stability": [
       "docs/reference/crate-api-stability.md"
@@ -2113,7 +2103,7 @@
       "docs/operations/runbooks/incident-triage-workflow.md"
     ],
     "index": [
-      "crates/bijux-atlas-bench/docs/index.md",
+      "crates/bijux-dev-atlas/docs/benchmarks/index.md",
       "crates/bijux-dev-atlas/docs/index.md",
       "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/index.md",
       "docs/_assets/index.md",
@@ -4168,6 +4158,7 @@
       "docs/_internal/governance/triage-validation-failures.md"
     ],
     "troubleshooting": [
+      "crates/bijux-dev-atlas/docs/benchmarks/troubleshooting.md",
       "docs/api/client-python/troubleshooting.md",
       "docs/api/troubleshooting.md",
       "docs/cli/troubleshooting.md",
@@ -4228,6 +4219,9 @@
     ],
     "upgrade-procedure": [
       "docs/operations/release/upgrade-procedure.md"
+    ],
+    "usage": [
+      "crates/bijux-dev-atlas/docs/benchmarks/usage.md"
     ],
     "usage-guide": [
       "docs/api/client-rust/usage-guide.md",

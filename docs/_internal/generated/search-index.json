@@ -658,90 +658,6 @@
     },
     {
       "keywords": [
-        "bijux-atlas-bench",
-        "contract"
-      ],
-      "path": "crates/bijux-atlas-bench/CONTRACT.md",
-      "tags": [
-        "bijux-atlas-bench",
-        "contract"
-      ],
-      "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-bench",
-        "readme"
-      ],
-      "path": "crates/bijux-atlas-bench/README.md",
-      "tags": [
-        "bijux-atlas-bench",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "benchmark-architecture",
-        "bijux-atlas-bench"
-      ],
-      "path": "crates/bijux-atlas-bench/docs/benchmark-architecture.md",
-      "tags": [
-        "benchmark-architecture",
-        "bijux-atlas-bench"
-      ],
-      "topic": "benchmark-architecture"
-    },
-    {
-      "keywords": [
-        "benchmark-roadmap",
-        "bijux-atlas-bench"
-      ],
-      "path": "crates/bijux-atlas-bench/docs/benchmark-roadmap.md",
-      "tags": [
-        "benchmark-roadmap",
-        "bijux-atlas-bench"
-      ],
-      "topic": "benchmark-roadmap"
-    },
-    {
-      "keywords": [
-        "benchmark-troubleshooting",
-        "bijux-atlas-bench"
-      ],
-      "path": "crates/bijux-atlas-bench/docs/benchmark-troubleshooting.md",
-      "tags": [
-        "benchmark-troubleshooting",
-        "bijux-atlas-bench"
-      ],
-      "topic": "benchmark-troubleshooting"
-    },
-    {
-      "keywords": [
-        "benchmark-usage",
-        "bijux-atlas-bench"
-      ],
-      "path": "crates/bijux-atlas-bench/docs/benchmark-usage.md",
-      "tags": [
-        "benchmark-usage",
-        "bijux-atlas-bench"
-      ],
-      "topic": "benchmark-usage"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-bench",
-        "index"
-      ],
-      "path": "crates/bijux-atlas-bench/docs/index.md",
-      "tags": [
-        "bijux-atlas-bench",
-        "index"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
         "bijux-atlas",
         "readme"
       ],
@@ -1009,6 +925,76 @@
         "bijux-dev-atlas"
       ],
       "topic": "benchmarks"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "benchmarks",
+        "bijux-dev-atlas"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/benchmarks/architecture.md",
+      "tags": [
+        "architecture",
+        "benchmarks",
+        "bijux-dev-atlas"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "keywords": [
+        "benchmarks",
+        "bijux-dev-atlas",
+        "coverage-targets"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/benchmarks/coverage-targets.md",
+      "tags": [
+        "benchmarks",
+        "bijux-dev-atlas",
+        "coverage-targets"
+      ],
+      "topic": "coverage-targets"
+    },
+    {
+      "keywords": [
+        "benchmarks",
+        "bijux-dev-atlas",
+        "index"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/benchmarks/index.md",
+      "tags": [
+        "benchmarks",
+        "bijux-dev-atlas",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "benchmarks",
+        "bijux-dev-atlas",
+        "troubleshooting"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/benchmarks/troubleshooting.md",
+      "tags": [
+        "benchmarks",
+        "bijux-dev-atlas",
+        "troubleshooting"
+      ],
+      "topic": "troubleshooting"
+    },
+    {
+      "keywords": [
+        "benchmarks",
+        "bijux-dev-atlas",
+        "usage"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/benchmarks/usage.md",
+      "tags": [
+        "benchmarks",
+        "bijux-dev-atlas",
+        "usage"
+      ],
+      "topic": "usage"
     },
     {
       "keywords": [

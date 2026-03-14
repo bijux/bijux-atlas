@@ -1,12 +1,8 @@
 {
   "rows": [
     {
-      "crate": "bijux-atlas-bench",
-      "doc_count": 5
-    },
-    {
       "crate": "bijux-dev-atlas",
-      "doc_count": 30
+      "doc_count": 35
     }
   ],
   "schema_version": 1

@@ -20,25 +20,9 @@
       "root_doc_count": 1
     },
     {
-      "crate": "bijux-atlas-bench",
-      "diagram_count": 0,
-      "docs_dir_count": 5,
-      "freshness_docs": 0,
-      "has": [
-        "CONTRACT.md",
-        "README.md"
-      ],
-      "owner_metadata_docs": 1,
-      "required": [
-        "README.md",
-        "CONTRACT.md"
-      ],
-      "root_doc_count": 2
-    },
-    {
       "crate": "bijux-dev-atlas",
       "diagram_count": 3,
-      "docs_dir_count": 30,
+      "docs_dir_count": 35,
       "freshness_docs": 0,
       "has": [
         "CONTRACT.md",
@@ -54,18 +38,14 @@
   ],
   "schema_version": 1,
   "warnings": [
-    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-dev-atlas` has 30 docs under crate/docs (budget=10)",
-    "CRATE_DOC_CROSSLINK_WARN: `bijux-atlas-bench` docs/INDEX.md should reference `public-api.md`",
-    "CRATE_DOC_CROSSLINK_WARN: `bijux-atlas-bench` docs/INDEX.md should reference `testing.md`",
+    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-dev-atlas` has 35 docs under crate/docs (budget=10)",
     "CRATE_DOC_CROSSLINK_WARN: `bijux-dev-atlas` docs/INDEX.md should reference `architecture.md`",
     "CRATE_DOC_CROSSLINK_WARN: `bijux-dev-atlas` docs/INDEX.md should reference `public-api.md`",
     "CRATE_DOC_CROSSLINK_WARN: `bijux-dev-atlas` docs/INDEX.md should reference `testing.md`",
-    "CRATE_DOC_EXAMPLE_TAG_WARN: `bijux-atlas-bench` has untagged code fences; prefer ```rust for examples",
-    "CRATE_DOC_FRESHNESS_WARN: `bijux-atlas-bench` has no `Last Reviewed:` metadata in crate docs",
+    "CRATE_DOC_EXAMPLE_TAG_WARN: `bijux-dev-atlas` has untagged code fences; prefer ```rust for examples",
     "CRATE_DOC_FRESHNESS_WARN: `bijux-atlas` has no `Last Reviewed:` metadata in crate docs",
     "CRATE_DOC_FRESHNESS_WARN: `bijux-dev-atlas` has no `Last Reviewed:` metadata in crate docs",
-    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-bench` owner metadata present in 1/7 docs",
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas` owner metadata present in 0/1 docs",
-    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-dev-atlas` owner metadata present in 8/32 docs"
+    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-dev-atlas` owner metadata present in 8/37 docs"
   ]
 }

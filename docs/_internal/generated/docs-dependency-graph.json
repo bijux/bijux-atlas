@@ -248,41 +248,6 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-bench/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "crates/bijux-atlas-bench/README.md"
-    },
-    {
-      "crate": "bijux-atlas-bench",
-      "doc_type": "concept",
-      "from": "crates/bijux-atlas-bench/docs/benchmark-architecture.md"
-    },
-    {
-      "crate": "bijux-atlas-bench",
-      "doc_type": "concept",
-      "from": "crates/bijux-atlas-bench/docs/benchmark-roadmap.md"
-    },
-    {
-      "crate": "bijux-atlas-bench",
-      "doc_type": "concept",
-      "from": "crates/bijux-atlas-bench/docs/benchmark-troubleshooting.md"
-    },
-    {
-      "crate": "bijux-atlas-bench",
-      "doc_type": "concept",
-      "from": "crates/bijux-atlas-bench/docs/benchmark-usage.md"
-    },
-    {
-      "crate": "bijux-atlas-bench",
-      "doc_type": "concept",
-      "from": "crates/bijux-atlas-bench/docs/index.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "crates/bijux-atlas/README.md"
     },
     {
@@ -369,6 +334,31 @@
       "crate": "bijux-dev-atlas",
       "doc_type": "concept",
       "from": "crates/bijux-dev-atlas/docs/benchmarks.md"
+    },
+    {
+      "crate": "bijux-dev-atlas",
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/docs/benchmarks/architecture.md"
+    },
+    {
+      "crate": "bijux-dev-atlas",
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/docs/benchmarks/coverage-targets.md"
+    },
+    {
+      "crate": "bijux-dev-atlas",
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/docs/benchmarks/index.md"
+    },
+    {
+      "crate": "bijux-dev-atlas",
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/docs/benchmarks/troubleshooting.md"
+    },
+    {
+      "crate": "bijux-dev-atlas",
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/docs/benchmarks/usage.md"
     },
     {
       "crate": "bijux-dev-atlas",

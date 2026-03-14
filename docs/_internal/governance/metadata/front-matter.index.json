@@ -396,62 +396,6 @@
     {
       "area": "crates",
       "audience": "contributors",
-      "owner": "bijux-atlas-performance",
-      "path": "crates/bijux-atlas-bench/CONTRACT.md",
-      "stability": "stable",
-      "title": "CONTRACT (bijux-atlas-bench)"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-bench/README.md",
-      "stability": "stable",
-      "title": "bijux-atlas-bench"
-    },
-    {
-      "area": "bijux-atlas-bench",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-bench/docs/benchmark-architecture.md",
-      "stability": "stable",
-      "title": "Benchmark Architecture"
-    },
-    {
-      "area": "bijux-atlas-bench",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-bench/docs/benchmark-roadmap.md",
-      "stability": "stable",
-      "title": "Benchmark Roadmap"
-    },
-    {
-      "area": "bijux-atlas-bench",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-bench/docs/benchmark-troubleshooting.md",
-      "stability": "stable",
-      "title": "Benchmark Troubleshooting"
-    },
-    {
-      "area": "bijux-atlas-bench",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-bench/docs/benchmark-usage.md",
-      "stability": "stable",
-      "title": "Benchmark Usage"
-    },
-    {
-      "area": "bijux-atlas-bench",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-bench/docs/index.md",
-      "stability": "stable",
-      "title": "Benchmark crate docs"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
       "owner": "docs-governance",
       "path": "crates/bijux-atlas/README.md",
       "stability": "stable",
@@ -592,6 +536,46 @@
       "path": "crates/bijux-dev-atlas/docs/benchmarks.md",
       "stability": "stable",
       "title": "Benchmarks"
+    },
+    {
+      "area": "bijux-dev-atlas",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/docs/benchmarks/architecture.md",
+      "stability": "stable",
+      "title": "Benchmark Architecture"
+    },
+    {
+      "area": "bijux-dev-atlas",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/docs/benchmarks/coverage-targets.md",
+      "stability": "stable",
+      "title": "Benchmark Coverage Targets"
+    },
+    {
+      "area": "bijux-dev-atlas",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/docs/benchmarks/index.md",
+      "stability": "stable",
+      "title": "Benchmark Documentation"
+    },
+    {
+      "area": "bijux-dev-atlas",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/docs/benchmarks/troubleshooting.md",
+      "stability": "stable",
+      "title": "Benchmark Troubleshooting"
+    },
+    {
+      "area": "bijux-dev-atlas",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/docs/benchmarks/usage.md",
+      "stability": "stable",
+      "title": "Benchmark Usage"
     },
     {
       "area": "bijux-dev-atlas",

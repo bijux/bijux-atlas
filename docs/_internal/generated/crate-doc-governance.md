@@ -6,5 +6,4 @@
 | Crate | Root Docs | docs/ Files | Diagrams |
 |---|---:|---:|---:|
 | `bijux-atlas` | 1 | 0 | 3 |
-| `bijux-atlas-bench` | 2 | 5 | 0 |
-| `bijux-dev-atlas` | 2 | 30 | 3 |
+| `bijux-dev-atlas` | 2 | 35 | 3 |

@@ -382,67 +382,6 @@
     {
       "breadcrumbs": [
         "crates",
-        "crates/bijux-atlas-bench",
-        "crates/bijux-atlas-bench/CONTRACT.md"
-      ],
-      "path": "crates/bijux-atlas-bench/CONTRACT.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-atlas-bench",
-        "crates/bijux-atlas-bench/README.md"
-      ],
-      "path": "crates/bijux-atlas-bench/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-atlas-bench",
-        "crates/bijux-atlas-bench/docs",
-        "crates/bijux-atlas-bench/docs/benchmark-architecture.md"
-      ],
-      "path": "crates/bijux-atlas-bench/docs/benchmark-architecture.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-atlas-bench",
-        "crates/bijux-atlas-bench/docs",
-        "crates/bijux-atlas-bench/docs/benchmark-roadmap.md"
-      ],
-      "path": "crates/bijux-atlas-bench/docs/benchmark-roadmap.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-atlas-bench",
-        "crates/bijux-atlas-bench/docs",
-        "crates/bijux-atlas-bench/docs/benchmark-troubleshooting.md"
-      ],
-      "path": "crates/bijux-atlas-bench/docs/benchmark-troubleshooting.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-atlas-bench",
-        "crates/bijux-atlas-bench/docs",
-        "crates/bijux-atlas-bench/docs/benchmark-usage.md"
-      ],
-      "path": "crates/bijux-atlas-bench/docs/benchmark-usage.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
-        "crates/bijux-atlas-bench",
-        "crates/bijux-atlas-bench/docs",
-        "crates/bijux-atlas-bench/docs/index.md"
-      ],
-      "path": "crates/bijux-atlas-bench/docs/index.md"
-    },
-    {
-      "breadcrumbs": [
-        "crates",
         "crates/bijux-atlas",
         "crates/bijux-atlas/README.md"
       ],
@@ -613,6 +552,56 @@
         "crates/bijux-dev-atlas/docs/benchmarks.md"
       ],
       "path": "crates/bijux-dev-atlas/docs/benchmarks.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/docs",
+        "crates/bijux-dev-atlas/docs/benchmarks",
+        "crates/bijux-dev-atlas/docs/benchmarks/architecture.md"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/benchmarks/architecture.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/docs",
+        "crates/bijux-dev-atlas/docs/benchmarks",
+        "crates/bijux-dev-atlas/docs/benchmarks/coverage-targets.md"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/benchmarks/coverage-targets.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/docs",
+        "crates/bijux-dev-atlas/docs/benchmarks",
+        "crates/bijux-dev-atlas/docs/benchmarks/index.md"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/benchmarks/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/docs",
+        "crates/bijux-dev-atlas/docs/benchmarks",
+        "crates/bijux-dev-atlas/docs/benchmarks/troubleshooting.md"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/benchmarks/troubleshooting.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/docs",
+        "crates/bijux-dev-atlas/docs/benchmarks",
+        "crates/bijux-dev-atlas/docs/benchmarks/usage.md"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/benchmarks/usage.md"
     },
     {
       "breadcrumbs": [
