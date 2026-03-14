@@ -1,0 +1,28 @@
+[package]
+name = "bijux-atlas-python"
+version.workspace = true
+publish = false
+description = "Python SDK package and native bridge for Bijux Atlas."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bijux", "atlas", "python", "sdk", "genomics"]
+categories = ["api-bindings", "science", "development-tools"]
+
+[lib]
+name = "bijux_atlas_python"
+crate-type = ["rlib", "cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.24.1", optional = true, default-features = false, features = ["abi3-py310", "extension-module", "macros"] }
+serde_json.workspace = true
+
+[lints]
+workspace = true
+
+[features]
+default = []
+python-extension = ["dep:pyo3"]

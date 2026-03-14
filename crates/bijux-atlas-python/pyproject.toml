@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling>=1.26.0"]
-build-backend = "hatchling.build"
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
 
 [project]
 name = "bijux-atlas"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Python SDK for Bijux Atlas"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -31,32 +31,26 @@ dev = [
   "ruff>=0.6.0,<1.0.0",
   "mypy>=1.11.0,<2.0.0"
 ]
+build = [
+  "build>=1.2.1,<2.0.0",
+  "maturin>=1.7,<2.0",
+  "twine>=6.1.0,<7.0.0"
+]
 
 [project.urls]
 Homepage = "https://github.com/bijux/bijux-atlas"
 Documentation = "https://bijux.github.io/bijux-atlas/"
 Repository = "https://github.com/bijux/bijux-atlas"
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/bijux_atlas"]
-include = [
-  "src/bijux_atlas/compatibility.json",
-  "src/bijux_atlas/py.typed"
-]
-
-[tool.hatch.build.targets.sdist]
-include = [
-  "src/bijux_atlas",
-  "src/bijux_atlas/py.typed",
-  "compatibility.json",
-  "README.md",
-  "LICENSE",
-  "CHANGELOG.md",
-  "VERSIONING.md"
-]
+[tool.maturin]
+python-source = "python"
+module-name = "bijux_atlas._native"
+manifest-path = "Cargo.toml"
+features = ["python-extension"]
+include = [{ path = "README.md", format = "sdist" }]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests/python"]
 python_files = ["test_*.py"]
 markers = [
   "unit: fast unit tests",

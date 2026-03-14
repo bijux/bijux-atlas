@@ -10,7 +10,7 @@ Repository-style folder with Python SDK usage snippets.
 Install the package in editable mode:
 
 ```bash
-python -m pip install -e packages/bijux-atlas-python
+python -m pip install -e crates/bijux-atlas-python
 ```
 
 Set runtime endpoint for examples:
@@ -22,5 +22,5 @@ export BIJUX_ATLAS_URL=http://127.0.0.1:8080
 Run an example:
 
 ```bash
-python packages/bijux-atlas-python/examples/usage/basic/simple_query.py
+python crates/bijux-atlas-python/examples/usage/basic/simple_query.py
 ```

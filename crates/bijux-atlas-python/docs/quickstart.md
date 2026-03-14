@@ -3,7 +3,7 @@
 ## Install
 
 ```bash
-python -m pip install -e packages/bijux-atlas-python
+python -m pip install -e crates/bijux-atlas-python
 ```
 
 ## Query
