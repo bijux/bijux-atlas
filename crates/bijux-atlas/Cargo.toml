@@ -19,28 +19,47 @@ serde = []
 backend-local = []
 backend-s3 = ["backend-local"]
 bench-ingest-throughput = []
+jemalloc = ["dep:tikv-jemallocator"]
 
 [dependencies]
+async-trait = "0.1"
+axum = "0.7"
 base64 = "0.22"
+brotli = "6"
+hex = "0.4"
 hmac = "0.12"
+opentelemetry = "0.27"
+opentelemetry-otlp = { version = "0.27", features = ["http-proto", "reqwest-client"] }
+opentelemetry_sdk = { version = "0.27", features = ["rt-tokio"] }
+redis = { version = "0.27", features = ["tokio-comp"] }
 serde.workspace = true
 clap = { version = "4", features = ["derive"] }
 clap_complete = "4"
 flate2 = "1"
-reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2"] }
-rusqlite = { version = "0.31", features = ["bundled", "vtab"] }
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2", "charset", "json"] }
+rusqlite = { version = "0.31", features = ["bundled", "vtab", "hooks"] }
 serde_json.workspace = true
 serde_yaml = "0.9"
 sha2 = "0.10"
 tar = "0.4"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util", "signal"] }
+toml = "0.8"
+tracing = "0.1"
+tracing-opentelemetry = "0.28"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "json"] }
 unicode-normalization = "0.1"
 zstd = "0.13"
+
+[dependencies.tikv-jemallocator]
+version = "0.6"
+optional = true
 
 [dev-dependencies]
 assert_cmd = "2"
 criterion = "0.5"
 predicates = "3"
 proptest = "1"
+regex = "1.11"
 tempfile = "=3.13.0"
 tiny_http = "0.12"
 walkdir = "2"
@@ -56,6 +75,10 @@ path = "src/bin/atlas-openapi.rs"
 [[bin]]
 name = "bijux-atlas-client"
 path = "src/bin/bijux-atlas-client.rs"
+
+[[bin]]
+name = "atlas-server"
+path = "src/bin/atlas-server.rs"
 
 [[bench]]
 name = "core_canonical_hash"
@@ -244,6 +267,36 @@ name = "client_sdk"
 path = "benches/client/client_sdk.rs"
 harness = false
 
+[[bench]]
+name = "server_cache_manager"
+path = "benches/server/cache_manager.rs"
+harness = false
+
+[[bench]]
+name = "server_sequence_fetch"
+path = "benches/server/sequence_fetch.rs"
+harness = false
+
+[[bench]]
+name = "server_diff_merge"
+path = "benches/server/diff_merge.rs"
+harness = false
+
+[[bench]]
+name = "server_bulkhead_tuning"
+path = "benches/server/bulkhead_tuning.rs"
+harness = false
+
+[[bench]]
+name = "server_gene_lookup_p99"
+path = "benches/server/gene_lookup_p99.rs"
+harness = false
+
+[[bench]]
+name = "server_query_validate"
+path = "benches/server/query_validate.rs"
+harness = false
+
 [[example]]
 name = "api_openapi_contract"
 path = "examples/api/openapi_contract.rs"
@@ -271,3 +324,7 @@ path = "examples/client/simple-query.rs"
 [[example]]
 name = "client_streaming_results"
 path = "examples/client/streaming-results.rs"
+
+[[example]]
+name = "server_contract"
+path = "examples/server/server_contract.rs"

@@ -3,25 +3,53 @@
 #![forbid(unsafe_code)]
 #![recursion_limit = "512"]
 
+extern crate self as bijux_atlas;
+
+mod adapters;
 pub mod artifact_validation;
 pub mod api;
+mod cache;
 pub mod client;
 pub mod command_output_adapters;
 pub mod commands;
+mod config;
 pub mod core;
+mod dataset_shards;
 pub mod domain;
+mod effect_adapters;
 pub mod effects;
 pub mod errors;
 mod generated;
+mod http;
 pub mod ingest;
+mod middleware;
 pub mod model;
 pub mod policies;
 pub mod ports;
 pub mod query;
+mod routing_hash;
+mod services;
+mod server_store;
 pub mod store;
+mod store_resilience;
+mod telemetry;
 pub mod types;
 
-use crate::domain::{canonical, resolve_bijux_cache_dir, resolve_bijux_config_path, sha256_hex};
+include!("runtime/state/mod.rs");
+include!("runtime/effects/mod.rs");
+include!("runtime/orchestrator/mod.rs");
+
+pub use crate::telemetry::generated::metrics_contract::CONTRACT_METRIC_NAMES;
+pub use crate::telemetry::generated::trace_spans_contract::CONTRACT_TRACE_SPAN_NAMES;
+pub use crate::telemetry::logging::{redact_if_needed, LoggingConfig};
+pub use crate::telemetry::tracing::{init_tracing, TraceConfig, TraceExporterKind};
+
+#[cfg(test)]
+mod cache_manager_tests;
+#[cfg(test)]
+mod registry_tests;
+
+use crate::domain::{canonical, resolve_bijux_cache_dir, resolve_bijux_config_path};
 use crate::errors::{ConfigPathScope, ExitCode, MachineError};
 
 pub const CRATE_NAME: &str = "bijux-atlas";
@@ -37,21 +65,16 @@ pub const fn no_randomness_policy() -> &'static str {
 use crate::ingest::{diff_normalized_ids, replay_normalized_counts};
 use crate::ingest::{ingest_dataset, IngestOptions, TimestampPolicy};
 use crate::model::{
-    BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, GeneIdentifierPolicy, GeneNamePolicy,
+    BiotypePolicy, DuplicateGeneIdPolicy, GeneIdentifierPolicy, GeneNamePolicy,
     SeqidNormalizationPolicy, ShardingPlan, StrictnessMode, TranscriptTypePolicy,
 };
-use crate::query::{
-    classify_query, explain_query_plan, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits,
-    RegionFilter,
-};
+use crate::query::explain_query_plan;
 use clap::{error::ErrorKind, ArgAction, CommandFactory, Parser, Subcommand, ValueEnum};
 use clap_complete::{generate, Generator, Shell};
 use commands::{CatalogCommand, DatasetCommand, DiffCommand, GcCommand};
-use rusqlite::Connection;
 use serde_json::{json, Value};
-use std::collections::HashMap;
 use std::fs;
-use std::path::PathBuf;
+use std::path::PathBuf as CliPathBuf;
 use std::process::ExitCode as ProcessExitCode;
 
 const BIJUX_HELP_TEMPLATE: &str = "\
@@ -99,7 +122,7 @@ enum AtlasCommand {
     #[command(hide = true)]
     Validate {
         #[arg(long)]
-        root: PathBuf,
+        root: CliPathBuf,
         #[arg(long)]
         release: String,
         #[arg(long)]
@@ -141,17 +164,17 @@ enum AtlasCommand {
     },
     Ingest {
         #[arg(long)]
-        gff3: PathBuf,
+        gff3: CliPathBuf,
         #[arg(long)]
-        fasta: PathBuf,
+        fasta: CliPathBuf,
         #[arg(long)]
-        fai: PathBuf,
+        fai: CliPathBuf,
         #[arg(long, default_value_t = false)]
         allow_network_inputs: bool,
         #[arg(long, default_value_t = false)]
         resume: bool,
         #[arg(long)]
-        output_root: PathBuf,
+        output_root: CliPathBuf,
         #[arg(long)]
         release: String,
         #[arg(long)]
@@ -200,13 +223,13 @@ enum AtlasCommand {
     #[command(hide = true)]
     IngestVerifyInputs {
         #[arg(long)]
-        gff3: PathBuf,
+        gff3: CliPathBuf,
         #[arg(long)]
-        fasta: PathBuf,
+        fasta: CliPathBuf,
         #[arg(long)]
-        fai: PathBuf,
+        fai: CliPathBuf,
         #[arg(long)]
-        output_root: PathBuf,
+        output_root: CliPathBuf,
         #[arg(long, default_value_t = false)]
         allow_network_inputs: bool,
         #[arg(long, default_value_t = false)]
@@ -215,33 +238,33 @@ enum AtlasCommand {
     #[command(hide = true)]
     IngestReplay {
         #[arg(long)]
-        normalized: PathBuf,
+        normalized: CliPathBuf,
     },
     #[command(hide = true)]
     IngestNormalizedDiff {
         #[arg(long)]
-        base: PathBuf,
+        base: CliPathBuf,
         #[arg(long)]
-        target: PathBuf,
+        target: CliPathBuf,
     },
     #[command(hide = true)]
     IngestValidate {
         #[arg(long)]
-        qc_report: PathBuf,
+        qc_report: CliPathBuf,
         #[arg(long, default_value = "configs/ops/dataset-qc-thresholds.v1.json")]
-        thresholds: PathBuf,
+        thresholds: CliPathBuf,
     },
     #[command(hide = true)]
     InspectDb {
         #[arg(long)]
-        db: PathBuf,
+        db: CliPathBuf,
         #[arg(long, default_value_t = 5)]
         sample_rows: usize,
     },
     #[command(hide = true)]
     ExplainQuery {
         #[arg(long)]
-        db: PathBuf,
+        db: CliPathBuf,
         #[arg(long)]
         gene_id: Option<String>,
         #[arg(long)]
@@ -260,7 +283,7 @@ enum AtlasCommand {
     #[command(hide = true)]
     Explain {
         #[arg(long)]
-        db: PathBuf,
+        db: CliPathBuf,
         #[arg(value_name = "QUERY")]
         query: String,
         #[arg(long, default_value_t = 50)]
@@ -271,21 +294,21 @@ enum AtlasCommand {
     #[command(hide = true)]
     Smoke {
         #[arg(long)]
-        root: PathBuf,
+        root: CliPathBuf,
         #[arg(long)]
         dataset: String,
         #[arg(
             long,
             default_value = "ops/datasets/fixtures/medium/api-list-queries.v1.json"
         )]
-        golden_queries: PathBuf,
+        golden_queries: CliPathBuf,
         #[arg(long, default_value_t = false)]
         write_snapshot: bool,
         #[arg(
             long,
             default_value = "ops/datasets/fixtures/medium/api-list-responses.v1.json"
         )]
-        snapshot_out: PathBuf,
+        snapshot_out: CliPathBuf,
     },
     Openapi {
         #[command(subcommand)]
@@ -297,7 +320,7 @@ enum AtlasCommand {
 enum OpenapiCommand {
     Generate {
         #[arg(long, default_value = "configs/openapi/v1/openapi.generated.json")]
-        out: PathBuf,
+        out: CliPathBuf,
     },
 }
 
@@ -345,10 +368,10 @@ enum PolicyModeCli {
 }
 
 struct IngestCliArgs {
-    gff3: PathBuf,
-    fasta: PathBuf,
-    fai: PathBuf,
-    output_root: PathBuf,
+    gff3: CliPathBuf,
+    fasta: CliPathBuf,
+    fai: CliPathBuf,
+    output_root: CliPathBuf,
     release: String,
     species: String,
     assembly: String,
