@@ -28,7 +28,6 @@ Commands:
   ci          
   check       
   checks      
-  contract    
   registry    
   suites      
   tests       

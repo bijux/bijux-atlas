@@ -1,7 +1,0 @@
-contract-run: mode=static jobs=auto fail-fast=false
-preflight: required-tools=none missing-tools=none
-planning: contracts=1 cases=2
-FAIL [  0.023s] (1/2) root::ROOT-001 root.surface.manifest_complete (manifest drift)
-contract-summary: total=2 passed=1 failed=1 skipped=0
-failed-tests:
-root::ROOT-001 root.surface.manifest_complete

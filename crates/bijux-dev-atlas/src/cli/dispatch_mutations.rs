@@ -2,12 +2,12 @@
 
 use crate::cli::{
     ApiCommand, ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand,
-    Command, ConfigsCommand, ContractCommand, ContractsCommand, DatasetsCommand, DocsCommand,
-    DriftCommand, FormatArg, IngestCommand, InvariantsCommand, LoadCommand, MakeCommand,
-    MigrationsCommand, ObserveCommand, OpsCommand, PackagesCommand, PerfCommand, PoliciesCommand,
-    RegistryCommand, ReleaseApiSurfaceCommand, ReleaseChecksumsCommand, ReleaseCommand,
-    ReleaseCratesCommand, ReleaseImagesCommand, ReleaseMsrvCommand, ReleaseOpsCommand,
-    ReleaseSemverCommand, ReportsCommand, ReproduceCommand, SecurityCommand, TestsCommand,
+    Command, ConfigsCommand, DatasetsCommand, DocsCommand, DriftCommand, FormatArg,
+    IngestCommand, InvariantsCommand, LoadCommand, MakeCommand, MigrationsCommand, ObserveCommand,
+    OpsCommand, PackagesCommand, PerfCommand, PoliciesCommand, RegistryCommand,
+    ReleaseApiSurfaceCommand, ReleaseChecksumsCommand, ReleaseCommand, ReleaseCratesCommand,
+    ReleaseImagesCommand, ReleaseMsrvCommand, ReleaseOpsCommand, ReleaseSemverCommand,
+    ReportsCommand, ReproduceCommand, SecurityCommand, TestsCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -234,18 +234,6 @@ fn force_json_artifacts(command: &mut ArtifactsCommand) {
             crate::cli::ArtifactsReportCommand::Read(args) => args.common.format = FormatArg::Json,
             crate::cli::ArtifactsReportCommand::Diff(args) => args.common.format = FormatArg::Json,
         },
-    }
-}
-
-fn force_json_contract(command: &mut ContractCommand) {
-    match command {
-        ContractCommand::List(args) => args.format = FormatArg::Json,
-        ContractCommand::Explain(args) | ContractCommand::Describe(args) => {
-            args.format = FormatArg::Json
-        }
-        ContractCommand::Run(args) => args.format = FormatArg::Json,
-        ContractCommand::Report(args) => args.format = FormatArg::Json,
-        ContractCommand::AutomationBoundaries(args) => args.format = FormatArg::Json,
     }
 }
 
@@ -653,25 +641,6 @@ fn force_json_governance(command: &mut crate::cli::GovernanceCommand) {
         crate::cli::GovernanceCommand::Adr { command } => match command {
             crate::cli::GovernanceAdrCommand::Index { format, .. } => *format = FormatArg::Json,
         },
-    }
-}
-
-fn force_json_contracts(command: &mut ContractsCommand) {
-    match command {
-        ContractsCommand::All(args) => args.json = true,
-        ContractsCommand::Pr(args) => args.json = true,
-        ContractsCommand::Doctor(args) => args.json = true,
-        ContractsCommand::Root(args) => args.json = true,
-        ContractsCommand::Repo(args) => args.json = true,
-        ContractsCommand::Crates(args) => args.json = true,
-        ContractsCommand::Runtime(args) => args.json = true,
-        ContractsCommand::ControlPlane(args) => args.json = true,
-        ContractsCommand::Configs(args) => args.json = true,
-        ContractsCommand::Docs(args) => args.json = true,
-        ContractsCommand::Make(args) => args.common.json = true,
-        ContractsCommand::Ops(args) => args.common.json = true,
-        ContractsCommand::SelfCheck(args) => args.json = true,
-        ContractsCommand::Snapshot(_) => {}
     }
 }
 

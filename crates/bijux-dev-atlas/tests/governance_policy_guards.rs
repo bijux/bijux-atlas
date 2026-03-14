@@ -63,7 +63,6 @@ fn command_and_ops_surface_snapshot_gates_exist() {
     for required in [
         "cli_help_snapshot.rs",
         "ops_surface_golden.rs",
-        "cli_contracts.rs",
     ] {
         assert!(
             tests_root.join(required).exists(),

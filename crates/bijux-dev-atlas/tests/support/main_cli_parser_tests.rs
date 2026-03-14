@@ -254,53 +254,6 @@ mod tests {
     }
 
     #[test]
-    fn contract_subcommands_parse() {
-        let commands = [
-            vec!["bijux-dev-atlas", "contract", "list"],
-            vec![
-                "bijux-dev-atlas",
-                "contract",
-                "list",
-                "--mode",
-                "all",
-                "--format",
-                "json",
-            ],
-            vec!["bijux-dev-atlas", "contract", "describe", "ROOT-001"],
-            vec!["bijux-dev-atlas", "contract", "run", "--mode", "static"],
-            vec!["bijux-dev-atlas", "contract", "automation-boundaries"],
-            vec![
-                "bijux-dev-atlas",
-                "contract",
-                "run",
-                "ROOT-001",
-                "--mode",
-                "effect",
-                "--effects-policy",
-                "allow",
-                "--domain",
-                "root",
-                "--tag",
-                "contracts",
-                "--include",
-                "ROOT-001",
-                "--exclude",
-                "ROOT-999",
-                "--jobs",
-                "4",
-                "--no-ansi",
-            ],
-        ];
-        for argv in commands {
-            let cli = crate::Cli::try_parse_from(argv).expect("parse");
-            match cli.command {
-                Some(crate::cli::Command::Contract { .. }) => {}
-                _ => panic!("expected contract command"),
-            }
-        }
-    }
-
-    #[test]
     fn checks_subcommands_parse() {
         let commands = [
             vec!["bijux-dev-atlas", "checks", "list"],
@@ -338,32 +291,6 @@ mod tests {
             Some(crate::cli::Command::Release { .. }) => {}
             _ => panic!("expected release command"),
         }
-    }
-
-    #[test]
-    fn contract_command_prefers_canonical_surface() {
-        let cli =
-            crate::Cli::try_parse_from(vec!["bijux-dev-atlas", "contract", "run", "--mode", "all"])
-                .expect("parse");
-        match cli.command {
-            Some(crate::cli::Command::Contract { .. }) => {}
-            _ => panic!("expected canonical contract command"),
-        }
-    }
-
-    #[test]
-    fn contracts_command_remains_parseable_as_deprecated_alias() {
-        let cli =
-            crate::Cli::try_parse_from(vec!["bijux-dev-atlas", "contracts", "all"]).expect("parse");
-        match cli.command {
-            Some(crate::cli::Command::Contracts { .. }) => {}
-            _ => panic!("expected deprecated contracts alias"),
-        }
-        assert!(
-            "bijux-dev-atlas: `contracts` is deprecated; use `contract` instead"
-                .contains("deprecated"),
-            "expected a deprecation warning message"
-        );
     }
 
     #[test]
