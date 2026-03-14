@@ -1079,7 +1079,7 @@ struct ContractDomainSource {
     load: fn(&Path) -> Result<Vec<contracts::Contract>, String>,
 }
 
-fn contract_domain_sources() -> [ContractDomainSource; 10] {
+fn contract_domain_sources() -> [ContractDomainSource; 9] {
     [
         ContractDomainSource {
             name: "root",
@@ -1104,10 +1104,6 @@ fn contract_domain_sources() -> [ContractDomainSource; 10] {
         ContractDomainSource {
             name: "configs",
             load: contracts::configs::contracts,
-        },
-        ContractDomainSource {
-            name: "docs",
-            load: contracts::docs::contracts,
         },
         ContractDomainSource {
             name: "docker",

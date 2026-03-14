@@ -13,10 +13,6 @@ fn repo_root() -> PathBuf {
         .to_path_buf()
 }
 
-fn normalize_newlines(text: &str) -> String {
-    text.replace("\r\n", "\n")
-}
-
 #[test]
 fn contracts_ops_list_includes_tests_by_default() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
@@ -129,7 +125,6 @@ fn contracts_all_lists_all_domains() {
         .collect::<std::collections::BTreeSet<_>>();
     assert!(domains.contains("configs"));
     assert!(domains.contains("control-plane"));
-    assert!(domains.contains("docs"));
     assert!(domains.contains("docker"));
     assert!(domains.contains("make"));
     assert!(domains.contains("ops"));
@@ -280,38 +275,6 @@ fn contracts_run_id_override_reaches_report_metadata() {
 }
 
 #[test]
-fn contracts_docs_list_json_matches_golden_snapshot() {
-    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
-        .current_dir(repo_root())
-        .args(["contracts", "docs", "--list", "--format", "json"])
-        .output()
-        .expect("contracts docs list json");
-    assert!(output.status.success());
-    let actual = String::from_utf8(output.stdout).expect("utf8 stdout");
-    let golden = fs::read_to_string(
-        repo_root().join("crates/bijux-dev-atlas/tests/goldens/contracts_docs_list.json"),
-    )
-    .expect("read contracts docs list golden");
-    assert_eq!(normalize_newlines(&actual), normalize_newlines(&golden));
-}
-
-#[test]
-fn contracts_docs_list_table_matches_golden_snapshot() {
-    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
-        .current_dir(repo_root())
-        .args(["contracts", "docs", "--list", "--format", "table"])
-        .output()
-        .expect("contracts docs list table");
-    assert!(output.status.success());
-    let actual = String::from_utf8(output.stdout).expect("utf8 stdout");
-    let golden = fs::read_to_string(
-        repo_root().join("crates/bijux-dev-atlas/tests/goldens/contracts_docs_list_table.txt"),
-    )
-    .expect("read contracts docs table golden");
-    assert_eq!(normalize_newlines(&actual), normalize_newlines(&golden));
-}
-
-#[test]
 fn contracts_changed_only_uses_merge_base_diff_selection() {
     let source = fs::read_to_string(
         repo_root().join("crates/bijux-dev-atlas/src/commands/control_plane_contracts.rs"),
@@ -346,48 +309,6 @@ fn contracts_changed_only_reports_fallback_reason_when_merge_base_unavailable() 
 }
 
 #[test]
-fn contracts_invalid_contract_filter_pattern_is_usage_error() {
-    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
-        .current_dir(repo_root())
-        .args(["contracts", "docs", "--filter-contract", "DOC-[001"])
-        .output()
-        .expect("contracts invalid contract filter");
-    assert_eq!(output.status.code(), Some(2));
-    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
-    assert!(stderr.contains("invalid wildcard pattern `DOC-[001`"));
-    assert!(stderr.contains("use `*` and `?` only"));
-}
-
-#[test]
-fn contracts_invalid_test_filter_pattern_is_usage_error() {
-    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
-        .current_dir(repo_root())
-        .args(["contracts", "docs", "--filter-test", "docs.{broken}"])
-        .output()
-        .expect("contracts invalid test filter");
-    assert_eq!(output.status.code(), Some(2));
-    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
-    assert!(stderr.contains("invalid wildcard pattern `docs.{broken}`"));
-}
-
-#[test]
-#[ignore = "legacy docs contracts topology"]
-fn slow_contracts_ci_human_output_disables_ansi_color() {
-    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
-        .current_dir(repo_root())
-        .env("NO_COLOR", "1")
-        .env_remove("FORCE_COLOR")
-        .env_remove("CLICOLOR_FORCE")
-        .env_remove("CARGO_TERM_COLOR")
-        .args(["contracts", "docs", "--only", "DOC-001", "--ci"])
-        .output()
-        .expect("contracts docs ci");
-    assert!(output.status.success());
-    let stdout = String::from_utf8(output.stdout).expect("utf8 stdout");
-    assert!(!stdout.contains("\u{1b}["));
-}
-
-#[test]
 fn contracts_configs_runs_and_reports_summary() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
@@ -400,97 +321,6 @@ fn contracts_configs_runs_and_reports_summary() {
     assert_eq!(payload["domain"].as_str(), Some("configs"));
     assert_eq!(payload["group"].as_str(), Some("configs"));
     assert_eq!(payload["summary"]["fail"].as_u64(), Some(0));
-}
-
-#[test]
-#[ignore = "legacy docs contracts topology"]
-fn slow_contracts_docs_runs_and_reports_summary() {
-    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
-        .current_dir(repo_root())
-        .args([
-            "contracts",
-            "docs",
-            "--format",
-            "json",
-            "--only",
-            "DOC-001",
-        ])
-        .output()
-        .expect("contracts docs");
-    assert!(output.status.success());
-    let payload: serde_json::Value =
-        serde_json::from_slice(&output.stdout).expect("valid json output");
-    assert_eq!(payload["domain"].as_str(), Some("docs"));
-    assert_eq!(payload["summary"]["fail"].as_u64(), Some(0));
-}
-
-#[test]
-#[ignore = "legacy docs contracts topology"]
-fn slow_contracts_docs_writes_report_artifacts() {
-    let artifacts_root = repo_root().join("artifacts/tests/contracts-docs-report");
-    fs::create_dir_all(&artifacts_root).expect("mkdir artifacts");
-    let report_paths = [
-        "broken-links.json",
-        "orphans.json",
-        "metadata-coverage.json",
-        "duplication-report.json",
-        "coverage-report.json",
-    ]
-    .iter()
-    .map(|name| artifacts_root.join(name))
-    .collect::<Vec<_>>();
-    for report_path in &report_paths {
-        if report_path.exists() {
-            fs::remove_file(report_path).expect("remove prior report");
-        }
-    }
-    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
-        .current_dir(repo_root())
-        .args([
-            "contracts",
-            "docs",
-            "--format",
-            "json",
-            "--only",
-            "DOC-032",
-            "--only",
-            "DOC-033",
-            "--only",
-            "DOC-034",
-            "--only",
-            "DOC-035",
-            "--only",
-            "DOC-036",
-            "--artifacts-root",
-            artifacts_root.to_str().expect("artifacts root"),
-        ])
-        .output()
-        .expect("contracts docs report");
-    assert!(output.status.success());
-    let kinds = [
-        ("broken-links.json", "docs_broken_links"),
-        ("orphans.json", "docs_orphans"),
-        ("metadata-coverage.json", "docs_metadata_coverage"),
-        ("duplication-report.json", "docs_duplication"),
-        ("coverage-report.json", "docs_contract_coverage"),
-    ];
-    for (file_name, expected_kind) in kinds {
-        let path = artifacts_root.join(file_name);
-        let payload: serde_json::Value =
-            serde_json::from_str(&fs::read_to_string(path).expect("read report"))
-                .expect("report json");
-        assert_eq!(payload["kind"].as_str(), Some(expected_kind));
-        if file_name == "duplication-report.json" {
-            assert!(
-                payload["analyzed_pairs"].as_array().is_some_and(|rows| !rows.is_empty()),
-                "duplication report must include analyzed similarity pairs"
-            );
-            assert!(
-                matches!(payload["status"].as_str(), Some("pass" | "warn")),
-                "duplication report must emit a stable status"
-            );
-        }
-    }
 }
 
 include!("contracts_surface_effects.rs");

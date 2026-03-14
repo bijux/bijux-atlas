@@ -4,7 +4,7 @@ struct ContractDocDomain {
     file: &'static str,
 }
 
-const CONTRACT_DOC_DOMAINS: [ContractDocDomain; 6] = [
+const CONTRACT_DOC_DOMAINS: [ContractDocDomain; 5] = [
     ContractDocDomain {
         name: "root",
         title: "Root",
@@ -14,11 +14,6 @@ const CONTRACT_DOC_DOMAINS: [ContractDocDomain; 6] = [
         name: "configs",
         title: "Configs",
         file: "configs/CONTRACT.md",
-    },
-    ContractDocDomain {
-        name: "docs",
-        title: "Docs",
-        file: "docs/contract.md",
     },
     ContractDocDomain {
         name: "docker",
@@ -44,7 +39,6 @@ fn contracts_for_domain(repo_root: &std::path::Path, name: &str) -> Result<Vec<C
         "runtime" => super::runtime::contracts(repo_root),
         "control-plane" => super::control_plane::contracts(repo_root),
         "configs" => super::configs::contracts(repo_root),
-        "docs" => super::docs::contracts(repo_root),
         "docker" => super::docker::contracts(repo_root),
         "make" => super::make::contracts(repo_root),
         "ops" => super::ops::contracts(repo_root),

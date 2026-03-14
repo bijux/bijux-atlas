@@ -18,7 +18,7 @@ fn golden_path(name: &str) -> PathBuf {
 
 fn sample_report() -> RunReport {
     RunReport {
-        domain: "docs".to_string(),
+        domain: "root".to_string(),
         lane: ContractLane::Local,
         mode: bijux_dev_atlas::model::engine::Mode::Static,
         metadata: RunMetadata {
@@ -29,8 +29,8 @@ fn sample_report() -> RunReport {
             color_enabled: false,
         },
         contracts: vec![ContractSummary {
-            id: "DOC-001".to_string(),
-            title: "Docs root".to_string(),
+            id: "ROOT-001".to_string(),
+            title: "Root surface".to_string(),
             required: false,
             lanes: vec![],
             mode: ContractMode::Static,
@@ -40,12 +40,12 @@ fn sample_report() -> RunReport {
         }],
         cases: vec![
             CaseReport {
-                contract_id: "DOC-001".to_string(),
-                contract_title: "Docs root".to_string(),
+                contract_id: "ROOT-001".to_string(),
+                contract_title: "Root surface".to_string(),
                 required: false,
                 lanes: vec![],
-                test_id: "docs.root.surface".to_string(),
-                test_title: "docs root".to_string(),
+                test_id: "root.surface.allowed_entries".to_string(),
+                test_title: "root surface".to_string(),
                 kind: TestKind::Pure,
                 status: CaseStatus::Pass,
                 duration_ms: 16,
@@ -53,17 +53,17 @@ fn sample_report() -> RunReport {
                 note: None,
             },
             CaseReport {
-                contract_id: "DOC-001".to_string(),
-                contract_title: "Docs root".to_string(),
+                contract_id: "ROOT-001".to_string(),
+                contract_title: "Root surface".to_string(),
                 required: false,
                 lanes: vec![],
-                test_id: "docs.root.links".to_string(),
-                test_title: "docs links".to_string(),
+                test_id: "root.surface.manifest_complete".to_string(),
+                test_title: "root manifest".to_string(),
                 kind: TestKind::Pure,
                 status: CaseStatus::Fail,
                 duration_ms: 23,
                 violations: vec![],
-                note: Some("broken links".to_string()),
+                note: Some("manifest drift".to_string()),
             },
         ],
         panics: vec![],
@@ -293,8 +293,8 @@ fn renders_nextest_style_contract_lines() {
     );
     assert!(rendered.contains("preflight: required-tools=sh missing-tools=none"));
     assert!(rendered.contains("planning: contracts=1 cases=2"));
-    assert!(rendered.contains("FAIL [  0.023s] (1/2) docs::DOC-001 docs.root.links (broken links)"));
-    assert!(rendered.contains("PASS [  0.016s] (2/2) docs::DOC-001 docs.root.surface"));
+    assert!(rendered.contains("FAIL [  0.023s] (1/2) root::ROOT-001 root.surface.manifest_complete (manifest drift)"));
+    assert!(rendered.contains("PASS [  0.016s] (2/2) root::ROOT-001 root.surface.allowed_entries"));
     assert!(rendered.contains("contract-summary: total=2 passed=1 failed=1 skipped=0"));
     assert!(rendered.contains("failed-tests:"));
     assert!(!rendered.contains("\u{1b}["));
@@ -308,12 +308,12 @@ fn shared_line_style_renders_canonical_contract_line() {
         16,
         2,
         12,
-        "docs::DOC-001",
-        "docs.root.surface",
+        "root::ROOT-001",
+        "root.surface.allowed_entries",
     );
     assert_eq!(
         line,
-        "PASS [  0.016s] ( 2/12) docs::DOC-001 docs.root.surface"
+        "PASS [  0.016s] ( 2/12) root::ROOT-001 root.surface.allowed_entries"
     );
 }
 

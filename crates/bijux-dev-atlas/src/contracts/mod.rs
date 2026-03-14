@@ -11,7 +11,6 @@ pub mod configs;
 pub mod control_plane;
 pub mod crates;
 pub mod docker;
-pub mod docs;
 pub mod drift;
 pub mod governance_enforcement;
 pub mod logging_registry;

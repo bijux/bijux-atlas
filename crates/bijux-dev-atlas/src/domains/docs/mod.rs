@@ -18,7 +18,8 @@ pub fn plugin() -> DocsDomain {
 }
 
 pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
-    crate::contracts::docs::contracts(repo_root)
+    let _ = repo_root;
+    Ok(Vec::new())
 }
 
 pub fn routes() -> Vec<CommandRoute> {

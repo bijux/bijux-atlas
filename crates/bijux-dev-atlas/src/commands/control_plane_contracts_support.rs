@@ -294,12 +294,6 @@ pub(super) fn domain_descriptor(name: &str) -> Option<DomainDescriptor> {
             explain_fn: contracts::configs::contract_explain,
             gate_fn: contracts::configs::contract_gate_command,
         }),
-        "docs" => Some(DomainDescriptor {
-            name: "docs",
-            contracts_fn: contracts::docs::contracts,
-            explain_fn: contracts::docs::contract_explain,
-            gate_fn: contracts::docs::contract_gate_command,
-        }),
         _ => None,
     }
 }
@@ -318,7 +312,6 @@ pub(super) fn all_domains(
         "make",
         "ops",
         "configs",
-        "docs",
     ] {
         let descriptor = domain_descriptor(name)
             .ok_or_else(|| format!("internal contracts domain registry is missing `{name}`"))?;

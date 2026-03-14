@@ -16,7 +16,7 @@ fn contract_run_summary_roundtrips() {
                 "jobs": "auto",
                 "fail_fast": false,
             }),
-            vec!["contracts/docs.json".to_string()],
+            vec!["contracts/root.json".to_string()],
         ),
         mode: "static".to_string(),
         jobs: "auto".to_string(),
@@ -33,18 +33,18 @@ fn contract_run_summary_roundtrips() {
             not_run: 0,
         },
         reports: vec![ReportRef {
-            report_id: "contracts-docs".to_string(),
-            path: "contracts/docs.json".to_string(),
+            report_id: "contracts-root".to_string(),
+            path: "contracts/root.json".to_string(),
         }],
         cases: vec![ContractCaseResult {
-            contract_id: "DOC-001".to_string(),
-            contract_name: "docs::DOC-001".to_string(),
-            case_name: "docs.surface.allowed_root_dirs".to_string(),
+            contract_id: "ROOT-001".to_string(),
+            contract_name: "root::ROOT-001".to_string(),
+            case_name: "root.surface.allowed_entries".to_string(),
             status: ContractCaseStatus::Pass,
             duration_ms: 16,
             message: None,
             artifact_paths: vec![
-                "artifacts/contracts/DOC-001/cases/docs.surface.allowed_root_dirs.json".to_string(),
+                "artifacts/contracts/ROOT-001/cases/root.surface.allowed_entries.json".to_string(),
             ],
         }],
     };

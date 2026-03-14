@@ -21,7 +21,6 @@ fn contract_rows_for_domain(domain: &str) -> Vec<bijux_dev_atlas::contracts::Reg
         "configs" => {
             bijux_dev_atlas::contracts::configs::contracts(&root).expect("configs contracts")
         }
-        "docs" => bijux_dev_atlas::contracts::docs::contracts(&root).expect("docs contracts"),
         "docker" => bijux_dev_atlas::contracts::docker::contracts(&root).expect("docker contracts"),
         "make" => bijux_dev_atlas::contracts::make::contracts(&root).expect("make contracts"),
         "ops" => bijux_dev_atlas::contracts::ops::contracts(&root).expect("ops contracts"),
@@ -110,7 +109,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
 #[test]
 #[ignore = "slow"]
 fn slow_registry_list_matches_registry_snapshot_and_explain_output() {
-    for domain in ["configs", "docs", "docker", "make", "ops", "root"] {
+    for domain in ["configs", "docker", "make", "ops", "root"] {
         let rows = contract_rows_for_domain(domain);
         let listed = contracts_list_json(domain);
         let list_rows = listed["contracts"].as_array().expect("list rows");

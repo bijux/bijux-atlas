@@ -1,8 +1,8 @@
 contract-run: mode=static jobs=auto fail-fast=false
 preflight: required-tools=sh missing-tools=none
 planning: contracts=1 cases=2
-FAIL [  0.023s] (1/2) docs::DOC-001 docs.root.links (broken links)
-PASS [  0.016s] (2/2) docs::DOC-001 docs.root.surface
+FAIL [  0.023s] (1/2) root::ROOT-001 root.surface.manifest_complete (manifest drift)
+PASS [  0.016s] (2/2) root::ROOT-001 root.surface.allowed_entries
 contract-summary: total=2 passed=1 failed=1 skipped=0
 failed-tests:
-docs::DOC-001 docs.root.links
+root::ROOT-001 root.surface.manifest_complete
