@@ -2,7 +2,7 @@
   "schema_version": 1,
   "topics": {
     "ARCHITECTURE": [
-      "crates/bijux-atlas-server/src/cache/ARCHITECTURE.md"
+      "crates/bijux-atlas/src/cache/ARCHITECTURE.md"
     ],
     "BUDGET_POLICY": [
       "ops/schema/BUDGET_POLICY.md"
@@ -11,21 +11,11 @@
       "CHANGELOG.md"
     ],
     "CONTRACT": [
-      "CONTRACT.md",
       "configs/CONTRACT.md",
-      "crates/bijux-atlas-api/CONTRACT.md",
       "crates/bijux-atlas-bench/CONTRACT.md",
-      "docs/bijux-atlas-crate/CONTRACT.md",
-      "crates/bijux-atlas-client/CONTRACT.md",
-      "crates/bijux-atlas-core/CONTRACT.md",
-      "crates/bijux-atlas-ingest/CONTRACT.md",
-      "crates/bijux-atlas-model/CONTRACT.md",
-      "crates/bijux-atlas-policies/CONTRACT.md",
-      "crates/bijux-atlas-query/CONTRACT.md",
-      "crates/bijux-atlas-server/CONTRACT.md",
-      "crates/bijux-atlas-store/CONTRACT.md",
       "crates/bijux-dev-atlas/CONTRACT.md",
       "docker/CONTRACT.md",
+      "docs/bijux-atlas-crate/CONTRACT.md",
       "make/CONTRACT.md",
       "ops/CONTRACT.md",
       "ops/datasets/CONTRACT.md",
@@ -120,30 +110,19 @@
       "configs/slo/README.md",
       "configs/system/README.md",
       "configs/tutorials/README.md",
-      "crates/bijux-atlas-api/README.md",
-      "crates/bijux-atlas-api/tests/README.md",
       "crates/bijux-atlas-bench/README.md",
       "crates/bijux-atlas/README.md",
       "crates/bijux-atlas/tests/README.md",
-      "crates/bijux-atlas-client/README.md",
-      "crates/bijux-atlas-core/README.md",
-      "crates/bijux-atlas-core/tests/README.md",
-      "crates/bijux-atlas-ingest/README.md",
-      "crates/bijux-atlas-ingest/tests/README.md",
-      "crates/bijux-atlas-ingest/tests/fixtures/edgecases/README.md",
-      "crates/bijux-atlas-ingest/tests/fixtures/minimal/README.md",
-      "crates/bijux-atlas-ingest/tests/fixtures/policies/README.md",
-      "crates/bijux-atlas-ingest/tests/fixtures/realistic/README.md",
-      "crates/bijux-atlas-model/README.md",
-      "crates/bijux-atlas-model/tests/README.md",
-      "crates/bijux-atlas-policies/README.md",
-      "crates/bijux-atlas-policies/tests/README.md",
-      "crates/bijux-atlas-query/README.md",
-      "crates/bijux-atlas-query/tests/README.md",
-      "crates/bijux-atlas-server/README.md",
-      "crates/bijux-atlas-server/tests/README.md",
-      "crates/bijux-atlas-store/README.md",
-      "crates/bijux-atlas-store/tests/README.md",
+      "crates/bijux-atlas/tests/api/README.md",
+      "crates/bijux-atlas/tests/core/README.md",
+      "crates/bijux-atlas/tests/fixtures/edgecases/README.md",
+      "crates/bijux-atlas/tests/fixtures/minimal/README.md",
+      "crates/bijux-atlas/tests/fixtures/policies/README.md",
+      "crates/bijux-atlas/tests/fixtures/realistic/README.md",
+      "crates/bijux-atlas/tests/ingest/README.md",
+      "crates/bijux-atlas/tests/model/README.md",
+      "crates/bijux-atlas/tests/server/README.md",
+      "crates/bijux-atlas/tests/store/README.md",
       "crates/bijux-dev-atlas/README.md",
       "crates/bijux-dev-atlas/src/domains/_template/README.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/README.md",
@@ -253,7 +232,7 @@
       "docs/control-plane/adding-external-tooling.md"
     ],
     "adding-filters": [
-      "crates/bijux-atlas-query/docs/internal/adding-filters.md"
+      "docs/bijux-atlas-crate/query/internal/adding-filters.md"
     ],
     "administrative-access-model": [
       "docs/operations/security/administrative-access-model.md"
@@ -340,7 +319,7 @@
       "docs/api/api-completion-report.md"
     ],
     "api-contract": [
-      "crates/bijux-atlas-api/docs/api-contract.md"
+      "docs/bijux-atlas-crate/api/api-contract.md"
     ],
     "api-contract-documentation": [
       "docs/api/api-contract-documentation.md",
@@ -390,7 +369,7 @@
       "docs/api/api-security-considerations.md"
     ],
     "api-stability": [
-      "crates/bijux-atlas-api/docs/api-stability.md"
+      "docs/bijux-atlas-crate/api/api-stability.md"
     ],
     "api-stability-guarantees": [
       "docs/api/api-stability-guarantees.md"
@@ -406,17 +385,17 @@
       "docs/api/api-versioning-strategy.md"
     ],
     "architecture": [
-      "crates/bijux-atlas-api/docs/architecture.md",
+      "crates/bijux-dev-atlas/docs/architecture.md",
+      "docs/bijux-atlas-crate/api/architecture.md",
       "docs/bijux-atlas-crate/architecture.md",
-      "crates/bijux-atlas-client/docs/architecture.md",
-      "crates/bijux-atlas-core/docs/architecture.md",
-      "crates/bijux-atlas-ingest/docs/architecture.md",
-      "crates/bijux-atlas-model/docs/architecture.md",
-      "crates/bijux-atlas-policies/docs/architecture.md",
-      "crates/bijux-atlas-query/docs/architecture.md",
-      "crates/bijux-atlas-server/docs/architecture.md",
-      "crates/bijux-atlas-store/docs/architecture.md",
-      "crates/bijux-dev-atlas/docs/architecture.md"
+      "docs/bijux-atlas-crate/client/architecture.md",
+      "docs/bijux-atlas-crate/core/architecture.md",
+      "docs/bijux-atlas-crate/ingest/architecture.md",
+      "docs/bijux-atlas-crate/model/architecture.md",
+      "docs/bijux-atlas-crate/policies/architecture.md",
+      "docs/bijux-atlas-crate/query/architecture.md",
+      "docs/bijux-atlas-crate/server/architecture.md",
+      "docs/bijux-atlas-crate/store/architecture.md"
     ],
     "architecture-diagram": [
       "docs/operations/load/architecture-diagram.md"
@@ -431,7 +410,7 @@
       "docs/operations/security/artifact-checksum-verification.md"
     ],
     "artifact-contract": [
-      "crates/bijux-atlas-store/docs/artifact-contract.md"
+      "docs/bijux-atlas-crate/store/artifact-contract.md"
     ],
     "artifact-identifiers": [
       "docs/reference/datasets/artifact-identifiers.md"
@@ -464,7 +443,7 @@
       "docs/architecture/artifact-model.md"
     ],
     "artifact-output-contract": [
-      "crates/bijux-atlas-ingest/docs/artifact-output-contract.md"
+      "docs/bijux-atlas-crate/ingest/artifact-output-contract.md"
     ],
     "artifact-promotion-example": [
       "docs/reference/examples/artifact-promotion-example.md"
@@ -494,7 +473,7 @@
       "docs/architecture/security/attack-surface-analysis.md"
     ],
     "attack-surface-budget": [
-      "crates/bijux-atlas-store/docs/internal/attack-surface-budget.md"
+      "docs/bijux-atlas-crate/store/internal/attack-surface-budget.md"
     ],
     "attack-surface-inventory": [
       "docs/operations/security/attack-surface-inventory.md"
@@ -609,10 +588,10 @@
       "docs/governance/automation-migration-completion.md"
     ],
     "backend-feature-matrix": [
-      "crates/bijux-atlas-store/docs/internal/backend-feature-matrix.md"
+      "docs/bijux-atlas-crate/store/internal/backend-feature-matrix.md"
     ],
     "backends-and-guarantees": [
-      "crates/bijux-atlas-store/docs/backends-and-guarantees.md"
+      "docs/bijux-atlas-crate/store/backends-and-guarantees.md"
     ],
     "backup-and-restore": [
       "docs/operations/release/backup-and-restore.md"
@@ -636,16 +615,16 @@
       "crates/bijux-atlas-bench/docs/benchmark-usage.md"
     ],
     "benchmarks": [
-      "crates/bijux-atlas-api/docs/benchmarks.md",
+      "crates/bijux-dev-atlas/docs/benchmarks.md",
+      "docs/bijux-atlas-crate/api/benchmarks.md",
       "docs/bijux-atlas-crate/benchmarks.md",
-      "crates/bijux-atlas-core/docs/benchmarks.md",
-      "crates/bijux-atlas-ingest/docs/benchmarks.md",
-      "crates/bijux-atlas-model/docs/benchmarks.md",
-      "crates/bijux-atlas-policies/docs/benchmarks.md",
-      "crates/bijux-atlas-query/docs/benchmarks.md",
-      "crates/bijux-atlas-server/docs/benchmarks.md",
-      "crates/bijux-atlas-store/docs/benchmarks.md",
-      "crates/bijux-dev-atlas/docs/benchmarks.md"
+      "docs/bijux-atlas-crate/core/benchmarks.md",
+      "docs/bijux-atlas-crate/ingest/benchmarks.md",
+      "docs/bijux-atlas-crate/model/benchmarks.md",
+      "docs/bijux-atlas-crate/policies/benchmarks.md",
+      "docs/bijux-atlas-crate/query/benchmarks.md",
+      "docs/bijux-atlas-crate/server/benchmarks.md",
+      "docs/bijux-atlas-crate/store/benchmarks.md"
     ],
     "bijux-dev-atlas": [
       "docs/development/tooling/bijux-dev-atlas.md"
@@ -675,12 +654,12 @@
       "docs/reference/build-info.md"
     ],
     "caching": [
-      "crates/bijux-atlas-server/docs/caching.md",
-      "crates/bijux-atlas-store/docs/caching.md",
-      "docs/api/caching.md"
+      "docs/api/caching.md",
+      "docs/bijux-atlas-crate/server/caching.md",
+      "docs/bijux-atlas-crate/store/caching.md"
     ],
     "canonicalization": [
-      "crates/bijux-atlas-core/docs/canonicalization.md"
+      "docs/bijux-atlas-crate/core/canonicalization.md"
     ],
     "capabilities-model": [
       "docs/control-plane/capabilities-model.md"
@@ -705,7 +684,7 @@
       "docs/operations/observability/cardinality-policy.md"
     ],
     "cargo-deny-notes": [
-      "crates/bijux-atlas-core/docs/internal/cargo-deny-notes.md"
+      "docs/bijux-atlas-crate/core/internal/cargo-deny-notes.md"
     ],
     "catalog-example": [
       "docs/reference/examples/catalog-example.md"
@@ -720,7 +699,7 @@
       "docs/operations/security/certificate-validation-checks.md"
     ],
     "change-checklist": [
-      "crates/bijux-atlas-policies/docs/internal/change-checklist.md"
+      "docs/bijux-atlas-crate/policies/internal/change-checklist.md"
     ],
     "chart-contracts": [
       "docs/operations/k8s/chart-contracts.md"
@@ -762,10 +741,10 @@
       "docs/architecture/cli-boundaries.md"
     ],
     "cli-command-list": [
-      "docs/bijux-atlas-crate/cli-command-list.md",
       "crates/bijux-dev-atlas/docs/cli-command-list.md",
       "crates/bijux-dev-atlas/docs/internal/cli-command-list.md",
       "docs/_internal/cli-command-list.md",
+      "docs/bijux-atlas-crate/cli-command-list.md",
       "docs/cli-command-list.md"
     ],
     "cli-command-migrations": [
@@ -828,6 +807,9 @@
     "client-verification": [
       "docs/api/client-python/client-verification.md"
     ],
+    "clients": [
+      "docs/clients.md"
+    ],
     "clients-doctrine": [
       "docs/architecture/clients-doctrine.md"
     ],
@@ -886,8 +868,8 @@
       "docs/cli/command-reference.md"
     ],
     "command-surface": [
-      "docs/bijux-atlas-crate/command-surface.md",
-      "crates/bijux-dev-atlas/docs/command-surface.md"
+      "crates/bijux-dev-atlas/docs/command-surface.md",
+      "docs/bijux-atlas-crate/command-surface.md"
     ],
     "commands": [
       "crates/bijux-dev-atlas/docs/commands.md",
@@ -905,7 +887,7 @@
       "docs/operations/load/comparison-tools.md"
     ],
     "compat-bijux-dna": [
-      "crates/bijux-atlas-model/docs/internal/compat-bijux-dna.md"
+      "docs/bijux-atlas-crate/model/internal/compat-bijux-dna.md"
     ],
     "compatibility": [
       "docs/api/compatibility.md",
@@ -974,7 +956,7 @@
       "docs/reference/config-keys-reference.md"
     ],
     "config-schema": [
-      "crates/bijux-atlas-policies/docs/config-schema.md"
+      "docs/bijux-atlas-crate/policies/config-schema.md"
     ],
     "config-schema-versioning": [
       "docs/reference/registry/config-schema-versioning.md"
@@ -1018,6 +1000,10 @@
     ],
     "contract": [
       "crates/bijux-dev-atlas/docs/contract.md",
+      "docs/bijux-atlas-crate/core/contract.md",
+      "docs/bijux-atlas-crate/ingest/contract.md",
+      "docs/bijux-atlas-crate/model/contract.md",
+      "docs/bijux-atlas-crate/store/contract.md",
       "docs/contract.md"
     ],
     "contract-breaking-change-examples": [
@@ -1030,7 +1016,7 @@
       "docs/control-plane/contract-changes-and-versioning.md"
     ],
     "contract-compatibility": [
-      "crates/bijux-atlas-model/docs/contract-compatibility.md"
+      "docs/bijux-atlas-crate/model/contract-compatibility.md"
     ],
     "contract-coverage-dashboard": [
       "docs/control-plane/contract-coverage-dashboard.md"
@@ -1051,10 +1037,10 @@
       "docs/_internal/governance/contract-ssot-workflow.md"
     ],
     "contracts": [
-      "crates/bijux-atlas-api/docs/contracts.md",
-      "crates/bijux-atlas-policies/docs/contracts.md",
-      "crates/bijux-atlas-server/docs/internal/contracts.md",
-      "crates/bijux-atlas-store/docs/contracts.md",
+      "docs/bijux-atlas-crate/api/contracts.md",
+      "docs/bijux-atlas-crate/policies/contracts.md",
+      "docs/bijux-atlas-crate/server/internal/contracts.md",
+      "docs/bijux-atlas-crate/store/contracts.md",
       "docs/control-plane/contracts.md"
     ],
     "contracts-model": [
@@ -1092,7 +1078,7 @@
       "ops/_generated.example/control-plane.snapshot.md"
     ],
     "cost-estimator": [
-      "crates/bijux-atlas-query/docs/cost-estimator.md"
+      "docs/bijux-atlas-crate/query/cost-estimator.md"
     ],
     "coverage-summary": [
       "ops/observe/tracing/coverage-summary.md"
@@ -1180,7 +1166,7 @@
       "docs/reference/examples/data-lineage-example.md"
     ],
     "data-model": [
-      "crates/bijux-atlas-model/docs/data-model.md"
+      "docs/bijux-atlas-crate/model/data-model.md"
     ],
     "data-protection-best-practices": [
       "docs/operations/security/data-protection-best-practices.md"
@@ -1416,7 +1402,7 @@
       "docs/architecture/design-principles.md"
     ],
     "determinism": [
-      "crates/bijux-atlas-ingest/docs/determinism.md"
+      "docs/bijux-atlas-crate/ingest/determinism.md"
     ],
     "deterministic-merge": [
       "docs/reference/registry/deterministic-merge.md"
@@ -1659,27 +1645,27 @@
       "docs/api/client-python/ecosystem-integrations.md"
     ],
     "effect-boundary-map": [
-      "crates/bijux-atlas-api/docs/effect-boundary-map.md",
+      "docs/bijux-atlas-crate/api/effect-boundary-map.md",
+      "docs/bijux-atlas-crate/core/effect-boundary-map.md",
+      "docs/bijux-atlas-crate/ingest/internal/effect-boundary-map.md",
       "docs/bijux-atlas-crate/internal/effect-boundary-map.md",
-      "crates/bijux-atlas-core/docs/effect-boundary-map.md",
-      "crates/bijux-atlas-ingest/docs/internal/effect-boundary-map.md",
-      "crates/bijux-atlas-model/docs/effect-boundary-map.md",
-      "crates/bijux-atlas-policies/docs/effect-boundary-map.md",
-      "crates/bijux-atlas-query/docs/effect-boundary-map.md",
-      "crates/bijux-atlas-server/docs/effect-boundary-map.md",
-      "crates/bijux-atlas-store/docs/effect-boundary-map.md"
+      "docs/bijux-atlas-crate/model/effect-boundary-map.md",
+      "docs/bijux-atlas-crate/policies/effect-boundary-map.md",
+      "docs/bijux-atlas-crate/query/effect-boundary-map.md",
+      "docs/bijux-atlas-crate/server/effect-boundary-map.md",
+      "docs/bijux-atlas-crate/store/effect-boundary-map.md"
     ],
     "effects": [
-      "crates/bijux-atlas-api/docs/effects.md",
+      "docs/architecture/effects.md",
+      "docs/bijux-atlas-crate/api/effects.md",
+      "docs/bijux-atlas-crate/core/effects.md",
       "docs/bijux-atlas-crate/effects.md",
-      "crates/bijux-atlas-core/docs/effects.md",
-      "crates/bijux-atlas-ingest/docs/effects.md",
-      "crates/bijux-atlas-model/docs/effects.md",
-      "crates/bijux-atlas-policies/docs/effects.md",
-      "crates/bijux-atlas-query/docs/effects.md",
-      "crates/bijux-atlas-server/docs/effects.md",
-      "crates/bijux-atlas-store/docs/effects.md",
-      "docs/architecture/effects.md"
+      "docs/bijux-atlas-crate/ingest/effects.md",
+      "docs/bijux-atlas-crate/model/effects.md",
+      "docs/bijux-atlas-crate/policies/effects.md",
+      "docs/bijux-atlas-crate/query/effects.md",
+      "docs/bijux-atlas-crate/server/effects.md",
+      "docs/bijux-atlas-crate/store/effects.md"
     ],
     "enable-audit-logging": [
       "docs/operations/security/enable-audit-logging.md"
@@ -1733,7 +1719,7 @@
       "docs/architecture/engineering-philosophy.md"
     ],
     "ensembl-layout": [
-      "crates/bijux-atlas-ingest/docs/ensembl-layout.md"
+      "docs/bijux-atlas-crate/ingest/ensembl-layout.md"
     ],
     "entrypoints": [
       "docs/operations/entrypoints.md"
@@ -1763,17 +1749,17 @@
       "docs/operations/resilience/error-taxonomy.md"
     ],
     "errors": [
-      "crates/bijux-atlas-api/docs/errors.md",
-      "docs/bijux-atlas-crate/errors.md",
-      "crates/bijux-atlas-core/docs/errors.md",
-      "crates/bijux-atlas-ingest/docs/errors.md",
-      "crates/bijux-atlas-model/docs/errors.md",
-      "crates/bijux-atlas-policies/docs/errors.md",
-      "crates/bijux-atlas-query/docs/errors.md",
-      "crates/bijux-atlas-server/docs/errors.md",
-      "crates/bijux-atlas-store/docs/errors.md",
       "crates/bijux-dev-atlas/docs/errors.md",
       "docs/api/errors.md",
+      "docs/bijux-atlas-crate/api/errors.md",
+      "docs/bijux-atlas-crate/core/errors.md",
+      "docs/bijux-atlas-crate/errors.md",
+      "docs/bijux-atlas-crate/ingest/errors.md",
+      "docs/bijux-atlas-crate/model/errors.md",
+      "docs/bijux-atlas-crate/policies/errors.md",
+      "docs/bijux-atlas-crate/query/errors.md",
+      "docs/bijux-atlas-crate/server/errors.md",
+      "docs/bijux-atlas-crate/store/errors.md",
       "docs/reference/contracts/errors.md",
       "docs/reference/errors.md"
     ],
@@ -1804,8 +1790,8 @@
       "docs/control-plane/evidence-writing-style.md"
     ],
     "evolution": [
-      "crates/bijux-atlas-policies/docs/internal/evolution.md",
-      "docs/architecture/evolution.md"
+      "docs/architecture/evolution.md",
+      "docs/bijux-atlas-crate/policies/internal/evolution.md"
     ],
     "example-configs": [
       "docs/operations/load/example-configs.md"
@@ -1815,24 +1801,24 @@
       "docs/tutorials/example-datasets.md"
     ],
     "examples": [
-      "crates/bijux-atlas-api/docs/examples.md",
-      "docs/bijux-atlas-crate/examples.md",
-      "crates/bijux-atlas-core/docs/examples.md",
-      "crates/bijux-atlas-ingest/docs/examples.md",
-      "crates/bijux-atlas-model/docs/examples.md",
-      "crates/bijux-atlas-policies/docs/examples.md",
-      "crates/bijux-atlas-query/docs/examples.md",
-      "crates/bijux-atlas-server/docs/examples.md",
-      "crates/bijux-atlas-store/docs/examples.md",
       "crates/bijux-dev-atlas/docs/examples.md",
-      "docs/_generated/examples.md"
+      "docs/_generated/examples.md",
+      "docs/bijux-atlas-crate/api/examples.md",
+      "docs/bijux-atlas-crate/core/examples.md",
+      "docs/bijux-atlas-crate/examples.md",
+      "docs/bijux-atlas-crate/ingest/examples.md",
+      "docs/bijux-atlas-crate/model/examples.md",
+      "docs/bijux-atlas-crate/policies/examples.md",
+      "docs/bijux-atlas-crate/query/examples.md",
+      "docs/bijux-atlas-crate/server/examples.md",
+      "docs/bijux-atlas-crate/store/examples.md"
     ],
     "exception-inventory": [
       "docs/_internal/governance/exception-inventory.md"
     ],
     "exit-codes": [
-      "docs/bijux-atlas-crate/exit-codes.md",
-      "crates/bijux-dev-atlas/docs/exit-codes.md"
+      "crates/bijux-dev-atlas/docs/exit-codes.md",
+      "docs/bijux-atlas-crate/exit-codes.md"
     ],
     "export-audit-logs-to-siem": [
       "docs/operations/security/export-audit-logs-to-siem.md"
@@ -1847,7 +1833,7 @@
       "docs/control-plane/extensibility-and-stability-levels.md"
     ],
     "extension-guide": [
-      "crates/bijux-atlas-policies/docs/extension-guide.md"
+      "docs/bijux-atlas-crate/policies/extension-guide.md"
     ],
     "failover-process": [
       "docs/operations/replication/failover-process.md"
@@ -1868,14 +1854,14 @@
       "docs/operations/resilience/failure-injection-guide.md"
     ],
     "failure-modes": [
-      "crates/bijux-atlas-ingest/docs/failure-modes.md",
-      "crates/bijux-atlas-server/docs/failure-modes.md",
-      "crates/bijux-atlas-store/docs/failure-modes.md",
-      "crates/bijux-dev-atlas/docs/failure-modes.md"
+      "crates/bijux-dev-atlas/docs/failure-modes.md",
+      "docs/bijux-atlas-crate/ingest/failure-modes.md",
+      "docs/bijux-atlas-crate/server/failure-modes.md",
+      "docs/bijux-atlas-crate/store/failure-modes.md"
     ],
     "failure-modes-reference": [
-      "crates/bijux-atlas-server/docs/internal/failure-modes-reference.md",
-      "crates/bijux-atlas-store/docs/internal/failure-modes-reference.md"
+      "docs/bijux-atlas-crate/server/internal/failure-modes-reference.md",
+      "docs/bijux-atlas-crate/store/internal/failure-modes-reference.md"
     ],
     "failure-patterns-remediation": [
       "docs/operations/resilience/failure-patterns-remediation.md"
@@ -1893,7 +1879,7 @@
       "docs/tutorials/faq.md"
     ],
     "features": [
-      "crates/bijux-atlas-core/docs/features.md"
+      "docs/bijux-atlas-crate/core/features.md"
     ],
     "federation-semantics": [
       "docs/reference/registry/federation-semantics.md"
@@ -1923,7 +1909,7 @@
       "docs/architecture/forbidden-repo-patterns.md"
     ],
     "formatting": [
-      "crates/bijux-atlas-core/docs/formatting.md"
+      "docs/bijux-atlas-crate/core/formatting.md"
     ],
     "gates": [
       "docs/operations/reference/gates.md"
@@ -2048,7 +2034,7 @@
       "docs/operations/resilience/high-severity-runbooks.md"
     ],
     "hot-path-checklist": [
-      "crates/bijux-atlas-server/docs/internal/hot-path-checklist.md"
+      "docs/bijux-atlas-crate/server/internal/hot-path-checklist.md"
     ],
     "hot-paths": [
       "docs/architecture/hot-paths.md"
@@ -2127,16 +2113,7 @@
       "docs/operations/runbooks/incident-triage-workflow.md"
     ],
     "index": [
-      "crates/bijux-atlas-api/docs/index.md",
       "crates/bijux-atlas-bench/docs/index.md",
-      "docs/bijux-atlas-crate/index.md",
-      "crates/bijux-atlas-core/docs/index.md",
-      "crates/bijux-atlas-ingest/docs/index.md",
-      "crates/bijux-atlas-model/docs/index.md",
-      "crates/bijux-atlas-policies/docs/index.md",
-      "crates/bijux-atlas-query/docs/index.md",
-      "crates/bijux-atlas-server/docs/index.md",
-      "crates/bijux-atlas-store/docs/index.md",
       "crates/bijux-dev-atlas/docs/index.md",
       "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/index.md",
       "docs/_assets/index.md",
@@ -2156,6 +2133,15 @@
       "docs/architecture/diagrams/index.md",
       "docs/architecture/index.md",
       "docs/architecture/security/index.md",
+      "docs/bijux-atlas-crate/api/index.md",
+      "docs/bijux-atlas-crate/core/index.md",
+      "docs/bijux-atlas-crate/index.md",
+      "docs/bijux-atlas-crate/ingest/index.md",
+      "docs/bijux-atlas-crate/model/index.md",
+      "docs/bijux-atlas-crate/policies/index.md",
+      "docs/bijux-atlas-crate/query/index.md",
+      "docs/bijux-atlas-crate/server/index.md",
+      "docs/bijux-atlas-crate/store/index.md",
       "docs/cli/index.md",
       "docs/control-plane/index.md",
       "docs/development/index.md",
@@ -2203,31 +2189,31 @@
       "docs/tutorials/real-data/index.md"
     ],
     "ingest-benchmark-ci": [
-      "crates/bijux-atlas-ingest/docs/ingest-benchmark-ci.md"
+      "docs/bijux-atlas-crate/ingest/ingest-benchmark-ci.md"
     ],
     "ingest-benchmark-dashboard": [
-      "crates/bijux-atlas-ingest/docs/ingest-benchmark-dashboard.md"
+      "docs/bijux-atlas-crate/ingest/ingest-benchmark-dashboard.md"
     ],
     "ingest-benchmark-examples": [
-      "crates/bijux-atlas-ingest/docs/ingest-benchmark-examples.md"
+      "docs/bijux-atlas-crate/ingest/ingest-benchmark-examples.md"
     ],
     "ingest-benchmark-golden-results": [
-      "crates/bijux-atlas-ingest/docs/ingest-benchmark-golden-results.md"
+      "docs/bijux-atlas-crate/ingest/ingest-benchmark-golden-results.md"
     ],
     "ingest-benchmark-regression": [
-      "crates/bijux-atlas-ingest/docs/ingest-benchmark-regression.md"
+      "docs/bijux-atlas-crate/ingest/ingest-benchmark-regression.md"
     ],
     "ingest-benchmark-scenarios": [
-      "crates/bijux-atlas-ingest/docs/ingest-benchmark-scenarios.md"
+      "docs/bijux-atlas-crate/ingest/ingest-benchmark-scenarios.md"
     ],
     "ingest-benchmark-summary": [
-      "crates/bijux-atlas-ingest/docs/ingest-benchmark-summary.md"
+      "docs/bijux-atlas-crate/ingest/ingest-benchmark-summary.md"
     ],
     "ingest-command-example": [
       "docs/reference/examples/ingest-command-example.md"
     ],
     "ingest-contract": [
-      "crates/bijux-atlas-ingest/docs/ingest-contract.md"
+      "docs/bijux-atlas-crate/ingest/ingest-contract.md"
     ],
     "ingest-dataset": [
       "docs/tutorials/ingest-dataset.md"
@@ -2239,19 +2225,19 @@
       "docs/development/ingest-format-contracts.md"
     ],
     "ingest-performance-architecture": [
-      "crates/bijux-atlas-ingest/docs/ingest-performance-architecture.md"
+      "docs/bijux-atlas-crate/ingest/ingest-performance-architecture.md"
     ],
     "ingest-performance-baseline": [
-      "crates/bijux-atlas-ingest/docs/ingest-performance-baseline.md"
+      "docs/bijux-atlas-crate/ingest/ingest-performance-baseline.md"
     ],
     "ingest-performance-metrics": [
-      "crates/bijux-atlas-ingest/docs/ingest-performance-metrics.md"
+      "docs/bijux-atlas-crate/ingest/ingest-performance-metrics.md"
     ],
     "ingest-performance-troubleshooting": [
-      "crates/bijux-atlas-ingest/docs/ingest-performance-troubleshooting.md"
+      "docs/bijux-atlas-crate/ingest/ingest-performance-troubleshooting.md"
     ],
     "ingest-performance-tuning": [
-      "crates/bijux-atlas-ingest/docs/ingest-performance-tuning.md"
+      "docs/bijux-atlas-crate/ingest/ingest-performance-tuning.md"
     ],
     "ingest-pipeline": [
       "docs/architecture/diagrams/ingest-pipeline.md"
@@ -2338,7 +2324,7 @@
       "docs/control-plane/known-limitations.md"
     ],
     "kubernetes": [
-      "crates/bijux-atlas-server/docs/kubernetes.md"
+      "docs/bijux-atlas-crate/server/kubernetes.md"
     ],
     "lane-guarantees": [
       "docs/operations/release/lane-guarantees.md"
@@ -2603,7 +2589,7 @@
       "docs/product/not-done-yet.md"
     ],
     "not-in-model": [
-      "crates/bijux-atlas-model/docs/not-in-model.md"
+      "docs/bijux-atlas-crate/model/not-in-model.md"
     ],
     "observability": [
       "docs/reference/contracts/observability.md"
@@ -2639,7 +2625,7 @@
       "docs/operations/observability/observability-troubleshooting-guide.md"
     ],
     "openapi": [
-      "crates/bijux-atlas-api/docs/openapi.md"
+      "docs/bijux-atlas-crate/api/openapi.md"
     ],
     "openapi-generation": [
       "docs/api/openapi-generation.md"
@@ -2660,7 +2646,7 @@
       "docs/operations/observability/operational-troubleshooting-guide.md"
     ],
     "operations-runbook": [
-      "crates/bijux-atlas-server/docs/operations-runbook.md"
+      "docs/bijux-atlas-crate/server/operations-runbook.md"
     ],
     "operator-faq": [
       "docs/operations/operator-faq.md"
@@ -2790,13 +2776,13 @@
       "docs/operations/ops-upgrade-guide.md"
     ],
     "optional-fields": [
-      "crates/bijux-atlas-model/docs/internal/optional-fields.md"
+      "docs/bijux-atlas-crate/model/internal/optional-fields.md"
     ],
     "ordering": [
-      "crates/bijux-atlas-query/docs/ordering.md"
+      "docs/bijux-atlas-crate/query/ordering.md"
     ],
     "ordering-rules": [
-      "crates/bijux-atlas-model/docs/internal/ordering-rules.md"
+      "docs/bijux-atlas-crate/model/internal/ordering-rules.md"
     ],
     "output-format-standards": [
       "docs/cli/output-format-standards.md"
@@ -2806,6 +2792,10 @@
     ],
     "overview": [
       "docs/architecture/overview.md",
+      "docs/bijux-atlas-crate/core/overview.md",
+      "docs/bijux-atlas-crate/ingest/overview.md",
+      "docs/bijux-atlas-crate/model/overview.md",
+      "docs/bijux-atlas-crate/store/overview.md",
       "docs/operations/overview.md",
       "docs/tutorials/real-data/overview.md"
     ],
@@ -2813,22 +2803,22 @@
       "docs/api/client-python/package-location-and-policy.md"
     ],
     "pagination": [
-      "crates/bijux-atlas-query/docs/pagination.md",
       "docs/api/pagination.md",
+      "docs/bijux-atlas-crate/query/pagination.md",
       "docs/reference/querying/pagination.md"
     ],
     "patterns": [
-      "crates/bijux-atlas-api/docs/patterns.md",
-      "crates/bijux-atlas-core/docs/patterns.md"
+      "docs/bijux-atlas-crate/api/patterns.md",
+      "docs/bijux-atlas-crate/core/patterns.md"
     ],
     "perf": [
-      "crates/bijux-atlas-query/docs/perf.md"
+      "docs/bijux-atlas-crate/query/perf.md"
     ],
     "perf-baseline": [
-      "crates/bijux-atlas-server/docs/internal/perf-baseline.md"
+      "docs/bijux-atlas-crate/server/internal/perf-baseline.md"
     ],
     "perf-profiling": [
-      "crates/bijux-atlas-server/docs/internal/perf-profiling.md"
+      "docs/bijux-atlas-crate/server/internal/perf-profiling.md"
     ],
     "perf-regression": [
       ".github/ISSUE_TEMPLATE/perf-regression.md"
@@ -2933,7 +2923,7 @@
       "ops/_templates/policy.md"
     ],
     "policy-authoring-guide": [
-      "crates/bijux-atlas-policies/docs/policy-authoring-guide.md"
+      "docs/bijux-atlas-crate/policies/policy-authoring-guide.md"
     ],
     "policy-enforcement-mapping": [
       "docs/_internal/governance/policy-enforcement-mapping.md"
@@ -3011,18 +3001,18 @@
       "docs/operations/promotion-record.md"
     ],
     "public-api": [
-      "crates/bijux-atlas-api/docs/public-api.md",
+      "docs/bijux-atlas-crate/api/public-api.md",
+      "docs/bijux-atlas-crate/core/public-api.md",
+      "docs/bijux-atlas-crate/ingest/public-api.md",
+      "docs/bijux-atlas-crate/model/public-api.md",
+      "docs/bijux-atlas-crate/policies/public-api.md",
       "docs/bijux-atlas-crate/public-api.md",
-      "crates/bijux-atlas-core/docs/public-api.md",
-      "crates/bijux-atlas-ingest/docs/public-api.md",
-      "crates/bijux-atlas-model/docs/public-api.md",
-      "crates/bijux-atlas-policies/docs/public-api.md",
-      "crates/bijux-atlas-query/docs/public-api.md",
-      "crates/bijux-atlas-server/docs/public-api.md",
-      "crates/bijux-atlas-store/docs/public-api.md"
+      "docs/bijux-atlas-crate/query/public-api.md",
+      "docs/bijux-atlas-crate/server/public-api.md",
+      "docs/bijux-atlas-crate/store/public-api.md"
     ],
     "public-api-checklist": [
-      "crates/bijux-atlas-api/docs/internal/public-api-checklist.md"
+      "docs/bijux-atlas-crate/api/internal/public-api-checklist.md"
     ],
     "public-api-contract": [
       "docs/api/public-api-contract.md"
@@ -3040,11 +3030,11 @@
       ".github/pull_request_template.md"
     ],
     "purity": [
-      "crates/bijux-atlas-core/docs/purity.md",
-      "crates/bijux-atlas-model/docs/purity.md"
+      "docs/bijux-atlas-crate/core/purity.md",
+      "docs/bijux-atlas-crate/model/purity.md"
     ],
     "qc": [
-      "crates/bijux-atlas-ingest/docs/qc.md",
+      "docs/bijux-atlas-crate/ingest/qc.md",
       "docs/reference/contracts/qc.md"
     ],
     "quality-system": [
@@ -3076,7 +3066,7 @@
       "docs/architecture/diagrams/query-execution.md"
     ],
     "query-language-spec": [
-      "crates/bijux-atlas-query/docs/query-language-spec.md"
+      "docs/bijux-atlas-crate/query/query-language-spec.md"
     ],
     "query-model": [
       "docs/architecture/query-model.md"
@@ -3085,20 +3075,20 @@
       "docs/reference/querying/query-parameters.md"
     ],
     "query-performance": [
-      "crates/bijux-atlas-query/docs/query-performance.md"
+      "docs/bijux-atlas-crate/query/query-performance.md"
     ],
     "query-performance-architecture": [
-      "crates/bijux-atlas-query/docs/query-performance-architecture.md",
-      "docs/architecture/query-performance-architecture.md"
+      "docs/architecture/query-performance-architecture.md",
+      "docs/bijux-atlas-crate/query/query-performance-architecture.md"
     ],
     "query-performance-benchmarks": [
       "docs/operations/query-performance-benchmarks.md"
     ],
     "query-profiling-guide": [
-      "crates/bijux-atlas-query/docs/query-profiling-guide.md"
+      "docs/bijux-atlas-crate/query/query-profiling-guide.md"
     ],
     "query-tuning-guide": [
-      "crates/bijux-atlas-query/docs/query-tuning-guide.md"
+      "docs/bijux-atlas-crate/query/query-tuning-guide.md"
     ],
     "query-via-python-client": [
       "docs/tutorials/query-via-python-client.md"
@@ -3376,6 +3366,12 @@
     "reports-schema": [
       "docs/control-plane/reports-schema.md"
     ],
+    "repository-architecture": [
+      "docs/repository-architecture.md"
+    ],
+    "repository-contract": [
+      "docs/repository-contract.md"
+    ],
     "repository-structure": [
       "docs/architecture/diagrams/repository-structure.md"
     ],
@@ -3480,7 +3476,7 @@
       "docs/operations/security/role-configuration-examples.md"
     ],
     "rollback": [
-      "crates/bijux-atlas-store/docs/internal/rollback.md"
+      "docs/bijux-atlas-crate/store/internal/rollback.md"
     ],
     "rollback-limitations": [
       "docs/operations/rollback-limitations.md"
@@ -3511,7 +3507,7 @@
       "ops/_templates/runbook.md"
     ],
     "runbook-snippet": [
-      "crates/bijux-atlas-store/docs/internal/runbook-snippet.md"
+      "docs/bijux-atlas-crate/store/internal/runbook-snippet.md"
     ],
     "runbook-template": [
       "docs/operations/runbook-template.md"
@@ -3526,7 +3522,7 @@
       "docs/tutorials/running-load-tests.md"
     ],
     "runtime": [
-      "crates/bijux-atlas-server/docs/runtime.md"
+      "docs/bijux-atlas-crate/server/runtime.md"
     ],
     "runtime-data-model": [
       "docs/architecture/runtime-data-model.md"
@@ -3544,13 +3540,13 @@
       "docs/operations/observability/runtime-introspection.md"
     ],
     "runtime-model": [
-      "crates/bijux-atlas-server/docs/internal/runtime-model.md"
+      "docs/bijux-atlas-crate/server/internal/runtime-model.md"
     ],
     "runtime-security-monitoring": [
       "docs/operations/security/runtime-security-monitoring.md"
     ],
     "runtime-startup-config": [
-      "crates/bijux-atlas-server/docs/generated/runtime-startup-config.md"
+      "docs/bijux-atlas-crate/server/generated/runtime-startup-config.md"
     ],
     "runtime-system": [
       "docs/architecture/diagrams/runtime-system.md"
@@ -3595,17 +3591,17 @@
       "docs/operations/e2e/scenarios-evidence.md"
     ],
     "schema": [
-      "crates/bijux-atlas-policies/docs/schema.md"
+      "docs/bijux-atlas-crate/policies/schema.md"
     ],
     "schema-evolution": [
-      "crates/bijux-atlas-policies/docs/internal/schema-evolution.md",
+      "docs/bijux-atlas-crate/policies/internal/schema-evolution.md",
       "docs/reference/datasets/schema-evolution.md"
     ],
     "schema-evolution-example": [
       "docs/reference/examples/schema-evolution-example.md"
     ],
     "schema-evolution-notes": [
-      "crates/bijux-atlas-model/docs/internal/schema-evolution-notes.md"
+      "docs/bijux-atlas-crate/model/internal/schema-evolution-notes.md"
     ],
     "schema-index": [
       "docs/operations/reference/schema-index.md",
@@ -3621,7 +3617,7 @@
       "docs/_generated/schema-snippets.md"
     ],
     "schema-stability": [
-      "crates/bijux-atlas-model/docs/schema-stability.md"
+      "docs/bijux-atlas-crate/model/schema-stability.md"
     ],
     "schema-validation": [
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/schema-validation.md"
@@ -3752,7 +3748,7 @@
       "docs/product/sequence-v1.md"
     ],
     "serde-policy": [
-      "crates/bijux-atlas-core/docs/internal/serde-policy.md"
+      "docs/bijux-atlas-crate/core/internal/serde-policy.md"
     ],
     "server-local-run": [
       "docs/reference/examples/server-local-run.md"
@@ -4005,7 +4001,7 @@
       "docs/_internal/governance/metadata/taxonomy-map.md"
     ],
     "telemetry": [
-      "crates/bijux-atlas-server/docs/internal/telemetry.md",
+      "docs/bijux-atlas-crate/server/internal/telemetry.md",
       "docs/reference/contracts/telemetry.md"
     ],
     "telemetry-examples": [
@@ -4015,16 +4011,16 @@
       "docs/architecture/telemetry-model.md"
     ],
     "testing": [
-      "crates/bijux-atlas-api/docs/testing.md",
-      "docs/bijux-atlas-crate/testing.md",
-      "crates/bijux-atlas-core/docs/testing.md",
-      "crates/bijux-atlas-ingest/docs/testing.md",
-      "crates/bijux-atlas-model/docs/testing.md",
-      "crates/bijux-atlas-policies/docs/testing.md",
-      "crates/bijux-atlas-query/docs/testing.md",
-      "crates/bijux-atlas-server/docs/testing.md",
-      "crates/bijux-atlas-store/docs/testing.md",
-      "crates/bijux-dev-atlas/docs/testing.md"
+      "crates/bijux-dev-atlas/docs/testing.md",
+      "docs/bijux-atlas-crate/api/testing.md",
+      "docs/bijux-atlas-crate/core/testing.md",
+      "docs/bijux-atlas-crate/ingest/testing.md",
+      "docs/bijux-atlas-crate/model/testing.md",
+      "docs/bijux-atlas-crate/policies/testing.md",
+      "docs/bijux-atlas-crate/query/testing.md",
+      "docs/bijux-atlas-crate/server/testing.md",
+      "docs/bijux-atlas-crate/store/testing.md",
+      "docs/bijux-atlas-crate/testing.md"
     ],
     "threat-classification-taxonomy": [
       "docs/operations/security/threat-classification-taxonomy.md"
@@ -4163,7 +4159,7 @@
       "docs/operations/runbooks/traffic-spike.md"
     ],
     "transcript-ordering": [
-      "crates/bijux-atlas-query/docs/internal/transcript-ordering.md"
+      "docs/bijux-atlas-crate/query/internal/transcript-ordering.md"
     ],
     "transcripts-v1": [
       "docs/product/transcripts-v1.md"
@@ -4280,17 +4276,17 @@
       "docs/api/client-python/version-compatibility-matrix.md"
     ],
     "versioning": [
-      "crates/bijux-atlas-api/docs/versioning.md",
-      "docs/bijux-atlas-crate/versioning.md",
-      "crates/bijux-atlas-core/docs/versioning.md",
-      "crates/bijux-atlas-ingest/docs/versioning.md",
-      "crates/bijux-atlas-model/docs/versioning.md",
-      "crates/bijux-atlas-policies/docs/versioning.md",
-      "crates/bijux-atlas-query/docs/versioning.md",
-      "crates/bijux-atlas-server/docs/versioning.md",
-      "crates/bijux-atlas-store/docs/versioning.md",
       "crates/bijux-dev-atlas/docs/versioning.md",
-      "docs/api/versioning.md"
+      "docs/api/versioning.md",
+      "docs/bijux-atlas-crate/api/versioning.md",
+      "docs/bijux-atlas-crate/core/versioning.md",
+      "docs/bijux-atlas-crate/ingest/versioning.md",
+      "docs/bijux-atlas-crate/model/versioning.md",
+      "docs/bijux-atlas-crate/policies/versioning.md",
+      "docs/bijux-atlas-crate/query/versioning.md",
+      "docs/bijux-atlas-crate/server/versioning.md",
+      "docs/bijux-atlas-crate/store/versioning.md",
+      "docs/bijux-atlas-crate/versioning.md"
     ],
     "versioning-model": [
       "docs/reference/versioning-model.md"
@@ -4354,7 +4350,7 @@
       "docs/product/why-trust-this.md"
     ],
     "wire-compatibility": [
-      "crates/bijux-atlas-api/docs/internal/wire-compatibility.md"
+      "docs/bijux-atlas-crate/api/internal/wire-compatibility.md"
     ],
     "workflows": [
       "docs/operations/workflows.md"

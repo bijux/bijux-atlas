@@ -104,16 +104,6 @@
     },
     {
       "keywords": [
-        "contract"
-      ],
-      "path": "CONTRACT.md",
-      "tags": [
-        "contract"
-      ],
-      "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
         "contributing"
       ],
       "path": "CONTRIBUTING.md",
@@ -668,252 +658,6 @@
     },
     {
       "keywords": [
-        "bijux-atlas-api",
-        "contract"
-      ],
-      "path": "crates/bijux-atlas-api/CONTRACT.md",
-      "tags": [
-        "bijux-atlas-api",
-        "contract"
-      ],
-      "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-api",
-        "readme"
-      ],
-      "path": "crates/bijux-atlas-api/README.md",
-      "tags": [
-        "bijux-atlas-api",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "api-contract",
-        "bijux-atlas-api"
-      ],
-      "path": "crates/bijux-atlas-api/docs/api-contract.md",
-      "tags": [
-        "api-contract",
-        "bijux-atlas-api"
-      ],
-      "topic": "api-contract"
-    },
-    {
-      "keywords": [
-        "api-stability",
-        "bijux-atlas-api"
-      ],
-      "path": "crates/bijux-atlas-api/docs/api-stability.md",
-      "tags": [
-        "api-stability",
-        "bijux-atlas-api"
-      ],
-      "topic": "api-stability"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "bijux-atlas-api"
-      ],
-      "path": "crates/bijux-atlas-api/docs/architecture.md",
-      "tags": [
-        "architecture",
-        "bijux-atlas-api"
-      ],
-      "topic": "architecture"
-    },
-    {
-      "keywords": [
-        "benchmarks",
-        "bijux-atlas-api"
-      ],
-      "path": "crates/bijux-atlas-api/docs/benchmarks.md",
-      "tags": [
-        "benchmarks",
-        "bijux-atlas-api"
-      ],
-      "topic": "benchmarks"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-api",
-        "contracts"
-      ],
-      "path": "crates/bijux-atlas-api/docs/contracts.md",
-      "tags": [
-        "bijux-atlas-api",
-        "contracts"
-      ],
-      "topic": "contracts"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-api",
-        "effect-boundary-map"
-      ],
-      "path": "crates/bijux-atlas-api/docs/effect-boundary-map.md",
-      "tags": [
-        "bijux-atlas-api",
-        "effect-boundary-map"
-      ],
-      "topic": "effect-boundary-map"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-api",
-        "effects"
-      ],
-      "path": "crates/bijux-atlas-api/docs/effects.md",
-      "tags": [
-        "bijux-atlas-api",
-        "effects"
-      ],
-      "topic": "effects"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-api",
-        "errors"
-      ],
-      "path": "crates/bijux-atlas-api/docs/errors.md",
-      "tags": [
-        "bijux-atlas-api",
-        "errors"
-      ],
-      "topic": "errors"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-api",
-        "examples"
-      ],
-      "path": "crates/bijux-atlas-api/docs/examples.md",
-      "tags": [
-        "bijux-atlas-api",
-        "examples"
-      ],
-      "topic": "examples"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-api",
-        "index"
-      ],
-      "path": "crates/bijux-atlas-api/docs/index.md",
-      "tags": [
-        "bijux-atlas-api",
-        "index"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-api",
-        "internal",
-        "public-api-checklist"
-      ],
-      "path": "crates/bijux-atlas-api/docs/internal/public-api-checklist.md",
-      "tags": [
-        "bijux-atlas-api",
-        "internal",
-        "public-api-checklist"
-      ],
-      "topic": "public-api-checklist"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-api",
-        "internal",
-        "wire-compatibility"
-      ],
-      "path": "crates/bijux-atlas-api/docs/internal/wire-compatibility.md",
-      "tags": [
-        "bijux-atlas-api",
-        "internal",
-        "wire-compatibility"
-      ],
-      "topic": "wire-compatibility"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-api",
-        "openapi"
-      ],
-      "path": "crates/bijux-atlas-api/docs/openapi.md",
-      "tags": [
-        "bijux-atlas-api",
-        "openapi"
-      ],
-      "topic": "openapi"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-api",
-        "patterns"
-      ],
-      "path": "crates/bijux-atlas-api/docs/patterns.md",
-      "tags": [
-        "bijux-atlas-api",
-        "patterns"
-      ],
-      "topic": "patterns"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-api",
-        "public-api"
-      ],
-      "path": "crates/bijux-atlas-api/docs/public-api.md",
-      "tags": [
-        "bijux-atlas-api",
-        "public-api"
-      ],
-      "topic": "public-api"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-api",
-        "testing"
-      ],
-      "path": "crates/bijux-atlas-api/docs/testing.md",
-      "tags": [
-        "bijux-atlas-api",
-        "testing"
-      ],
-      "topic": "testing"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-api",
-        "versioning"
-      ],
-      "path": "crates/bijux-atlas-api/docs/versioning.md",
-      "tags": [
-        "bijux-atlas-api",
-        "versioning"
-      ],
-      "topic": "versioning"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-api",
-        "readme",
-        "tests"
-      ],
-      "path": "crates/bijux-atlas-api/tests/README.md",
-      "tags": [
-        "bijux-atlas-api",
-        "readme",
-        "tests"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
         "bijux-atlas-bench",
         "contract"
       ],
@@ -999,18 +743,6 @@
     {
       "keywords": [
         "bijux-atlas",
-        "contract"
-      ],
-      "path": "docs/bijux-atlas-crate/CONTRACT.md",
-      "tags": [
-        "bijux-atlas",
-        "contract"
-      ],
-      "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "bijux-atlas",
         "readme"
       ],
       "path": "crates/bijux-atlas/README.md",
@@ -1023,196 +755,18 @@
     {
       "keywords": [
         "architecture",
-        "bijux-atlas"
+        "bijux-atlas",
+        "cache",
+        "src"
       ],
-      "path": "docs/bijux-atlas-crate/architecture.md",
+      "path": "crates/bijux-atlas/src/cache/ARCHITECTURE.md",
       "tags": [
         "architecture",
-        "bijux-atlas"
-      ],
-      "topic": "architecture"
-    },
-    {
-      "keywords": [
-        "benchmarks",
-        "bijux-atlas"
-      ],
-      "path": "docs/bijux-atlas-crate/benchmarks.md",
-      "tags": [
-        "benchmarks",
-        "bijux-atlas"
-      ],
-      "topic": "benchmarks"
-    },
-    {
-      "keywords": [
         "bijux-atlas",
-        "cli-command-list"
+        "cache",
+        "src"
       ],
-      "path": "docs/bijux-atlas-crate/cli-command-list.md",
-      "tags": [
-        "bijux-atlas",
-        "cli-command-list"
-      ],
-      "topic": "cli-command-list"
-    },
-    {
-      "keywords": [
-        "bijux-atlas",
-        "cli-ux-contract"
-      ],
-      "path": "docs/bijux-atlas-crate/cli-ux-contract.md",
-      "tags": [
-        "bijux-atlas",
-        "cli-ux-contract"
-      ],
-      "topic": "cli-ux-contract"
-    },
-    {
-      "keywords": [
-        "bijux-atlas",
-        "command-surface"
-      ],
-      "path": "docs/bijux-atlas-crate/command-surface.md",
-      "tags": [
-        "bijux-atlas",
-        "command-surface"
-      ],
-      "topic": "command-surface"
-    },
-    {
-      "keywords": [
-        "bijux-atlas",
-        "config-discovery"
-      ],
-      "path": "docs/bijux-atlas-crate/config-discovery.md",
-      "tags": [
-        "bijux-atlas",
-        "config-discovery"
-      ],
-      "topic": "config-discovery"
-    },
-    {
-      "keywords": [
-        "bijux-atlas",
-        "effects"
-      ],
-      "path": "docs/bijux-atlas-crate/effects.md",
-      "tags": [
-        "bijux-atlas",
-        "effects"
-      ],
-      "topic": "effects"
-    },
-    {
-      "keywords": [
-        "bijux-atlas",
-        "errors"
-      ],
-      "path": "docs/bijux-atlas-crate/errors.md",
-      "tags": [
-        "bijux-atlas",
-        "errors"
-      ],
-      "topic": "errors"
-    },
-    {
-      "keywords": [
-        "bijux-atlas",
-        "examples"
-      ],
-      "path": "docs/bijux-atlas-crate/examples.md",
-      "tags": [
-        "bijux-atlas",
-        "examples"
-      ],
-      "topic": "examples"
-    },
-    {
-      "keywords": [
-        "bijux-atlas",
-        "exit-codes"
-      ],
-      "path": "docs/bijux-atlas-crate/exit-codes.md",
-      "tags": [
-        "bijux-atlas",
-        "exit-codes"
-      ],
-      "topic": "exit-codes"
-    },
-    {
-      "keywords": [
-        "bijux-atlas",
-        "index"
-      ],
-      "path": "docs/bijux-atlas-crate/index.md",
-      "tags": [
-        "bijux-atlas",
-        "index"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
-        "bijux-atlas",
-        "effect-boundary-map",
-        "internal"
-      ],
-      "path": "docs/bijux-atlas-crate/internal/effect-boundary-map.md",
-      "tags": [
-        "bijux-atlas",
-        "effect-boundary-map",
-        "internal"
-      ],
-      "topic": "effect-boundary-map"
-    },
-    {
-      "keywords": [
-        "bijux-atlas",
-        "plugin-contract"
-      ],
-      "path": "docs/bijux-atlas-crate/plugin-contract.md",
-      "tags": [
-        "bijux-atlas",
-        "plugin-contract"
-      ],
-      "topic": "plugin-contract"
-    },
-    {
-      "keywords": [
-        "bijux-atlas",
-        "public-api"
-      ],
-      "path": "docs/bijux-atlas-crate/public-api.md",
-      "tags": [
-        "bijux-atlas",
-        "public-api"
-      ],
-      "topic": "public-api"
-    },
-    {
-      "keywords": [
-        "bijux-atlas",
-        "testing"
-      ],
-      "path": "docs/bijux-atlas-crate/testing.md",
-      "tags": [
-        "bijux-atlas",
-        "testing"
-      ],
-      "topic": "testing"
-    },
-    {
-      "keywords": [
-        "bijux-atlas",
-        "versioning"
-      ],
-      "path": "docs/bijux-atlas-crate/versioning.md",
-      "tags": [
-        "bijux-atlas",
-        "versioning"
-      ],
-      "topic": "versioning"
+      "topic": "ARCHITECTURE"
     },
     {
       "keywords": [
@@ -1230,281 +784,15 @@
     },
     {
       "keywords": [
-        "bijux-atlas-client",
-        "contract"
-      ],
-      "path": "crates/bijux-atlas-client/CONTRACT.md",
-      "tags": [
-        "bijux-atlas-client",
-        "contract"
-      ],
-      "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-client",
-        "readme"
-      ],
-      "path": "crates/bijux-atlas-client/README.md",
-      "tags": [
-        "bijux-atlas-client",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "bijux-atlas-client"
-      ],
-      "path": "crates/bijux-atlas-client/docs/architecture.md",
-      "tags": [
-        "architecture",
-        "bijux-atlas-client"
-      ],
-      "topic": "architecture"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "contract"
-      ],
-      "path": "crates/bijux-atlas-core/CONTRACT.md",
-      "tags": [
-        "bijux-atlas-core",
-        "contract"
-      ],
-      "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "readme"
-      ],
-      "path": "crates/bijux-atlas-core/README.md",
-      "tags": [
-        "bijux-atlas-core",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "bijux-atlas-core"
-      ],
-      "path": "crates/bijux-atlas-core/docs/architecture.md",
-      "tags": [
-        "architecture",
-        "bijux-atlas-core"
-      ],
-      "topic": "architecture"
-    },
-    {
-      "keywords": [
-        "benchmarks",
-        "bijux-atlas-core"
-      ],
-      "path": "crates/bijux-atlas-core/docs/benchmarks.md",
-      "tags": [
-        "benchmarks",
-        "bijux-atlas-core"
-      ],
-      "topic": "benchmarks"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "canonicalization"
-      ],
-      "path": "crates/bijux-atlas-core/docs/canonicalization.md",
-      "tags": [
-        "bijux-atlas-core",
-        "canonicalization"
-      ],
-      "topic": "canonicalization"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "effect-boundary-map"
-      ],
-      "path": "crates/bijux-atlas-core/docs/effect-boundary-map.md",
-      "tags": [
-        "bijux-atlas-core",
-        "effect-boundary-map"
-      ],
-      "topic": "effect-boundary-map"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "effects"
-      ],
-      "path": "crates/bijux-atlas-core/docs/effects.md",
-      "tags": [
-        "bijux-atlas-core",
-        "effects"
-      ],
-      "topic": "effects"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "errors"
-      ],
-      "path": "crates/bijux-atlas-core/docs/errors.md",
-      "tags": [
-        "bijux-atlas-core",
-        "errors"
-      ],
-      "topic": "errors"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "examples"
-      ],
-      "path": "crates/bijux-atlas-core/docs/examples.md",
-      "tags": [
-        "bijux-atlas-core",
-        "examples"
-      ],
-      "topic": "examples"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "features"
-      ],
-      "path": "crates/bijux-atlas-core/docs/features.md",
-      "tags": [
-        "bijux-atlas-core",
-        "features"
-      ],
-      "topic": "features"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "formatting"
-      ],
-      "path": "crates/bijux-atlas-core/docs/formatting.md",
-      "tags": [
-        "bijux-atlas-core",
-        "formatting"
-      ],
-      "topic": "formatting"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "index"
-      ],
-      "path": "crates/bijux-atlas-core/docs/index.md",
-      "tags": [
-        "bijux-atlas-core",
-        "index"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "cargo-deny-notes",
-        "internal"
-      ],
-      "path": "crates/bijux-atlas-core/docs/internal/cargo-deny-notes.md",
-      "tags": [
-        "bijux-atlas-core",
-        "cargo-deny-notes",
-        "internal"
-      ],
-      "topic": "cargo-deny-notes"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "internal",
-        "serde-policy"
-      ],
-      "path": "crates/bijux-atlas-core/docs/internal/serde-policy.md",
-      "tags": [
-        "bijux-atlas-core",
-        "internal",
-        "serde-policy"
-      ],
-      "topic": "serde-policy"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "patterns"
-      ],
-      "path": "crates/bijux-atlas-core/docs/patterns.md",
-      "tags": [
-        "bijux-atlas-core",
-        "patterns"
-      ],
-      "topic": "patterns"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "public-api"
-      ],
-      "path": "crates/bijux-atlas-core/docs/public-api.md",
-      "tags": [
-        "bijux-atlas-core",
-        "public-api"
-      ],
-      "topic": "public-api"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "purity"
-      ],
-      "path": "crates/bijux-atlas-core/docs/purity.md",
-      "tags": [
-        "bijux-atlas-core",
-        "purity"
-      ],
-      "topic": "purity"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "testing"
-      ],
-      "path": "crates/bijux-atlas-core/docs/testing.md",
-      "tags": [
-        "bijux-atlas-core",
-        "testing"
-      ],
-      "topic": "testing"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
-        "versioning"
-      ],
-      "path": "crates/bijux-atlas-core/docs/versioning.md",
-      "tags": [
-        "bijux-atlas-core",
-        "versioning"
-      ],
-      "topic": "versioning"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-core",
+        "api",
+        "bijux-atlas",
         "readme",
         "tests"
       ],
-      "path": "crates/bijux-atlas-core/tests/README.md",
+      "path": "crates/bijux-atlas/tests/api/README.md",
       "tags": [
-        "bijux-atlas-core",
+        "api",
+        "bijux-atlas",
         "readme",
         "tests"
       ],
@@ -1512,373 +800,15 @@
     },
     {
       "keywords": [
-        "bijux-atlas-ingest",
-        "contract"
-      ],
-      "path": "crates/bijux-atlas-ingest/CONTRACT.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "contract"
-      ],
-      "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "readme"
-      ],
-      "path": "crates/bijux-atlas-ingest/README.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "bijux-atlas-ingest"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/architecture.md",
-      "tags": [
-        "architecture",
-        "bijux-atlas-ingest"
-      ],
-      "topic": "architecture"
-    },
-    {
-      "keywords": [
-        "artifact-output-contract",
-        "bijux-atlas-ingest"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/artifact-output-contract.md",
-      "tags": [
-        "artifact-output-contract",
-        "bijux-atlas-ingest"
-      ],
-      "topic": "artifact-output-contract"
-    },
-    {
-      "keywords": [
-        "benchmarks",
-        "bijux-atlas-ingest"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/benchmarks.md",
-      "tags": [
-        "benchmarks",
-        "bijux-atlas-ingest"
-      ],
-      "topic": "benchmarks"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "determinism"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/determinism.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "determinism"
-      ],
-      "topic": "determinism"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "effects"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/effects.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "effects"
-      ],
-      "topic": "effects"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "ensembl-layout"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/ensembl-layout.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "ensembl-layout"
-      ],
-      "topic": "ensembl-layout"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "errors"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/errors.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "errors"
-      ],
-      "topic": "errors"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "examples"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/examples.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "examples"
-      ],
-      "topic": "examples"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "failure-modes"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/failure-modes.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "failure-modes"
-      ],
-      "topic": "failure-modes"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "index"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/index.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "index"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "ingest-benchmark-ci"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-ci.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "ingest-benchmark-ci"
-      ],
-      "topic": "ingest-benchmark-ci"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "ingest-benchmark-dashboard"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-dashboard.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "ingest-benchmark-dashboard"
-      ],
-      "topic": "ingest-benchmark-dashboard"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "ingest-benchmark-examples"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-examples.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "ingest-benchmark-examples"
-      ],
-      "topic": "ingest-benchmark-examples"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "ingest-benchmark-golden-results"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-golden-results.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "ingest-benchmark-golden-results"
-      ],
-      "topic": "ingest-benchmark-golden-results"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "ingest-benchmark-regression"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-regression.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "ingest-benchmark-regression"
-      ],
-      "topic": "ingest-benchmark-regression"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "ingest-benchmark-scenarios"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-scenarios.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "ingest-benchmark-scenarios"
-      ],
-      "topic": "ingest-benchmark-scenarios"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "ingest-benchmark-summary"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-summary.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "ingest-benchmark-summary"
-      ],
-      "topic": "ingest-benchmark-summary"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "ingest-contract"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/ingest-contract.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "ingest-contract"
-      ],
-      "topic": "ingest-contract"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "ingest-performance-architecture"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/ingest-performance-architecture.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "ingest-performance-architecture"
-      ],
-      "topic": "ingest-performance-architecture"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "ingest-performance-baseline"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/ingest-performance-baseline.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "ingest-performance-baseline"
-      ],
-      "topic": "ingest-performance-baseline"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "ingest-performance-metrics"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/ingest-performance-metrics.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "ingest-performance-metrics"
-      ],
-      "topic": "ingest-performance-metrics"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "ingest-performance-troubleshooting"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/ingest-performance-troubleshooting.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "ingest-performance-troubleshooting"
-      ],
-      "topic": "ingest-performance-troubleshooting"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "ingest-performance-tuning"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/ingest-performance-tuning.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "ingest-performance-tuning"
-      ],
-      "topic": "ingest-performance-tuning"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "effect-boundary-map",
-        "internal"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/internal/effect-boundary-map.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "effect-boundary-map",
-        "internal"
-      ],
-      "topic": "effect-boundary-map"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "public-api"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/public-api.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "public-api"
-      ],
-      "topic": "public-api"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/qc.md",
-      "tags": [
-        "bijux-atlas-ingest"
-      ],
-      "topic": "qc"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "testing"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/testing.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "testing"
-      ],
-      "topic": "testing"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
-        "versioning"
-      ],
-      "path": "crates/bijux-atlas-ingest/docs/versioning.md",
-      "tags": [
-        "bijux-atlas-ingest",
-        "versioning"
-      ],
-      "topic": "versioning"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-ingest",
+        "bijux-atlas",
+        "core",
         "readme",
         "tests"
       ],
-      "path": "crates/bijux-atlas-ingest/tests/README.md",
+      "path": "crates/bijux-atlas/tests/core/README.md",
       "tags": [
-        "bijux-atlas-ingest",
+        "bijux-atlas",
+        "core",
         "readme",
         "tests"
       ],
@@ -1886,15 +816,15 @@
     },
     {
       "keywords": [
-        "bijux-atlas-ingest",
+        "bijux-atlas",
         "edgecases",
         "fixtures",
         "readme",
         "tests"
       ],
-      "path": "crates/bijux-atlas-ingest/tests/fixtures/edgecases/README.md",
+      "path": "crates/bijux-atlas/tests/fixtures/edgecases/README.md",
       "tags": [
-        "bijux-atlas-ingest",
+        "bijux-atlas",
         "edgecases",
         "fixtures",
         "readme",
@@ -1904,15 +834,15 @@
     },
     {
       "keywords": [
-        "bijux-atlas-ingest",
+        "bijux-atlas",
         "fixtures",
         "minimal",
         "readme",
         "tests"
       ],
-      "path": "crates/bijux-atlas-ingest/tests/fixtures/minimal/README.md",
+      "path": "crates/bijux-atlas/tests/fixtures/minimal/README.md",
       "tags": [
-        "bijux-atlas-ingest",
+        "bijux-atlas",
         "fixtures",
         "minimal",
         "readme",
@@ -1922,15 +852,15 @@
     },
     {
       "keywords": [
-        "bijux-atlas-ingest",
+        "bijux-atlas",
         "fixtures",
         "policies",
         "readme",
         "tests"
       ],
-      "path": "crates/bijux-atlas-ingest/tests/fixtures/policies/README.md",
+      "path": "crates/bijux-atlas/tests/fixtures/policies/README.md",
       "tags": [
-        "bijux-atlas-ingest",
+        "bijux-atlas",
         "fixtures",
         "policies",
         "readme",
@@ -1940,15 +870,15 @@
     },
     {
       "keywords": [
-        "bijux-atlas-ingest",
+        "bijux-atlas",
         "fixtures",
         "readme",
         "realistic",
         "tests"
       ],
-      "path": "crates/bijux-atlas-ingest/tests/fixtures/realistic/README.md",
+      "path": "crates/bijux-atlas/tests/fixtures/realistic/README.md",
       "tags": [
-        "bijux-atlas-ingest",
+        "bijux-atlas",
         "fixtures",
         "readme",
         "realistic",
@@ -1958,273 +888,15 @@
     },
     {
       "keywords": [
-        "bijux-atlas-model",
-        "contract"
-      ],
-      "path": "crates/bijux-atlas-model/CONTRACT.md",
-      "tags": [
-        "bijux-atlas-model",
-        "contract"
-      ],
-      "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "readme"
-      ],
-      "path": "crates/bijux-atlas-model/README.md",
-      "tags": [
-        "bijux-atlas-model",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "bijux-atlas-model"
-      ],
-      "path": "crates/bijux-atlas-model/docs/architecture.md",
-      "tags": [
-        "architecture",
-        "bijux-atlas-model"
-      ],
-      "topic": "architecture"
-    },
-    {
-      "keywords": [
-        "benchmarks",
-        "bijux-atlas-model"
-      ],
-      "path": "crates/bijux-atlas-model/docs/benchmarks.md",
-      "tags": [
-        "benchmarks",
-        "bijux-atlas-model"
-      ],
-      "topic": "benchmarks"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "contract-compatibility"
-      ],
-      "path": "crates/bijux-atlas-model/docs/contract-compatibility.md",
-      "tags": [
-        "bijux-atlas-model",
-        "contract-compatibility"
-      ],
-      "topic": "contract-compatibility"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "data-model"
-      ],
-      "path": "crates/bijux-atlas-model/docs/data-model.md",
-      "tags": [
-        "bijux-atlas-model",
-        "data-model"
-      ],
-      "topic": "data-model"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "effect-boundary-map"
-      ],
-      "path": "crates/bijux-atlas-model/docs/effect-boundary-map.md",
-      "tags": [
-        "bijux-atlas-model",
-        "effect-boundary-map"
-      ],
-      "topic": "effect-boundary-map"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "effects"
-      ],
-      "path": "crates/bijux-atlas-model/docs/effects.md",
-      "tags": [
-        "bijux-atlas-model",
-        "effects"
-      ],
-      "topic": "effects"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "errors"
-      ],
-      "path": "crates/bijux-atlas-model/docs/errors.md",
-      "tags": [
-        "bijux-atlas-model",
-        "errors"
-      ],
-      "topic": "errors"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "examples"
-      ],
-      "path": "crates/bijux-atlas-model/docs/examples.md",
-      "tags": [
-        "bijux-atlas-model",
-        "examples"
-      ],
-      "topic": "examples"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "index"
-      ],
-      "path": "crates/bijux-atlas-model/docs/index.md",
-      "tags": [
-        "bijux-atlas-model",
-        "index"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "compat-bijux-dna",
-        "internal"
-      ],
-      "path": "crates/bijux-atlas-model/docs/internal/compat-bijux-dna.md",
-      "tags": [
-        "bijux-atlas-model",
-        "compat-bijux-dna",
-        "internal"
-      ],
-      "topic": "compat-bijux-dna"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "internal",
-        "optional-fields"
-      ],
-      "path": "crates/bijux-atlas-model/docs/internal/optional-fields.md",
-      "tags": [
-        "bijux-atlas-model",
-        "internal",
-        "optional-fields"
-      ],
-      "topic": "optional-fields"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "internal",
-        "ordering-rules"
-      ],
-      "path": "crates/bijux-atlas-model/docs/internal/ordering-rules.md",
-      "tags": [
-        "bijux-atlas-model",
-        "internal",
-        "ordering-rules"
-      ],
-      "topic": "ordering-rules"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "internal",
-        "schema-evolution-notes"
-      ],
-      "path": "crates/bijux-atlas-model/docs/internal/schema-evolution-notes.md",
-      "tags": [
-        "bijux-atlas-model",
-        "internal",
-        "schema-evolution-notes"
-      ],
-      "topic": "schema-evolution-notes"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "not-in-model"
-      ],
-      "path": "crates/bijux-atlas-model/docs/not-in-model.md",
-      "tags": [
-        "bijux-atlas-model",
-        "not-in-model"
-      ],
-      "topic": "not-in-model"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "public-api"
-      ],
-      "path": "crates/bijux-atlas-model/docs/public-api.md",
-      "tags": [
-        "bijux-atlas-model",
-        "public-api"
-      ],
-      "topic": "public-api"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "purity"
-      ],
-      "path": "crates/bijux-atlas-model/docs/purity.md",
-      "tags": [
-        "bijux-atlas-model",
-        "purity"
-      ],
-      "topic": "purity"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "schema-stability"
-      ],
-      "path": "crates/bijux-atlas-model/docs/schema-stability.md",
-      "tags": [
-        "bijux-atlas-model",
-        "schema-stability"
-      ],
-      "topic": "schema-stability"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "testing"
-      ],
-      "path": "crates/bijux-atlas-model/docs/testing.md",
-      "tags": [
-        "bijux-atlas-model",
-        "testing"
-      ],
-      "topic": "testing"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
-        "versioning"
-      ],
-      "path": "crates/bijux-atlas-model/docs/versioning.md",
-      "tags": [
-        "bijux-atlas-model",
-        "versioning"
-      ],
-      "topic": "versioning"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-model",
+        "bijux-atlas",
+        "ingest",
         "readme",
         "tests"
       ],
-      "path": "crates/bijux-atlas-model/tests/README.md",
+      "path": "crates/bijux-atlas/tests/ingest/README.md",
       "tags": [
-        "bijux-atlas-model",
+        "bijux-atlas",
+        "ingest",
         "readme",
         "tests"
       ],
@@ -2232,259 +904,15 @@
     },
     {
       "keywords": [
-        "bijux-atlas-policies",
-        "contract"
-      ],
-      "path": "crates/bijux-atlas-policies/CONTRACT.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "contract"
-      ],
-      "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "readme"
-      ],
-      "path": "crates/bijux-atlas-policies/README.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "bijux-atlas-policies"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/architecture.md",
-      "tags": [
-        "architecture",
-        "bijux-atlas-policies"
-      ],
-      "topic": "architecture"
-    },
-    {
-      "keywords": [
-        "benchmarks",
-        "bijux-atlas-policies"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/benchmarks.md",
-      "tags": [
-        "benchmarks",
-        "bijux-atlas-policies"
-      ],
-      "topic": "benchmarks"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "config-schema"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/config-schema.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "config-schema"
-      ],
-      "topic": "config-schema"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "contracts"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/contracts.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "contracts"
-      ],
-      "topic": "contracts"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "effect-boundary-map"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/effect-boundary-map.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "effect-boundary-map"
-      ],
-      "topic": "effect-boundary-map"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "effects"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/effects.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "effects"
-      ],
-      "topic": "effects"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "errors"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/errors.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "errors"
-      ],
-      "topic": "errors"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "examples"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/examples.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "examples"
-      ],
-      "topic": "examples"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "extension-guide"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/extension-guide.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "extension-guide"
-      ],
-      "topic": "extension-guide"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "index"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/index.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "index"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "change-checklist",
-        "internal"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/internal/change-checklist.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "change-checklist",
-        "internal"
-      ],
-      "topic": "change-checklist"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "evolution",
-        "internal"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/internal/evolution.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "evolution",
-        "internal"
-      ],
-      "topic": "evolution"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "internal",
-        "schema-evolution"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/internal/schema-evolution.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "internal",
-        "schema-evolution"
-      ],
-      "topic": "schema-evolution"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "policy-authoring-guide"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/policy-authoring-guide.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "policy-authoring-guide"
-      ],
-      "topic": "policy-authoring-guide"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "public-api"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/public-api.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "public-api"
-      ],
-      "topic": "public-api"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "schema"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/schema.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "schema"
-      ],
-      "topic": "schema"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "testing"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/testing.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "testing"
-      ],
-      "topic": "testing"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
-        "versioning"
-      ],
-      "path": "crates/bijux-atlas-policies/docs/versioning.md",
-      "tags": [
-        "bijux-atlas-policies",
-        "versioning"
-      ],
-      "topic": "versioning"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-policies",
+        "bijux-atlas",
+        "model",
         "readme",
         "tests"
       ],
-      "path": "crates/bijux-atlas-policies/tests/README.md",
+      "path": "crates/bijux-atlas/tests/model/README.md",
       "tags": [
-        "bijux-atlas-policies",
+        "bijux-atlas",
+        "model",
         "readme",
         "tests"
       ],
@@ -2492,928 +920,32 @@
     },
     {
       "keywords": [
-        "bijux-atlas-query",
-        "contract"
-      ],
-      "path": "crates/bijux-atlas-query/CONTRACT.md",
-      "tags": [
-        "bijux-atlas-query",
-        "contract"
-      ],
-      "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "readme"
-      ],
-      "path": "crates/bijux-atlas-query/README.md",
-      "tags": [
-        "bijux-atlas-query",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "bijux-atlas-query"
-      ],
-      "path": "crates/bijux-atlas-query/docs/architecture.md",
-      "tags": [
-        "architecture",
-        "bijux-atlas-query"
-      ],
-      "topic": "architecture"
-    },
-    {
-      "keywords": [
-        "benchmarks",
-        "bijux-atlas-query"
-      ],
-      "path": "crates/bijux-atlas-query/docs/benchmarks.md",
-      "tags": [
-        "benchmarks",
-        "bijux-atlas-query"
-      ],
-      "topic": "benchmarks"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "cost-estimator"
-      ],
-      "path": "crates/bijux-atlas-query/docs/cost-estimator.md",
-      "tags": [
-        "bijux-atlas-query",
-        "cost-estimator"
-      ],
-      "topic": "cost-estimator"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "effect-boundary-map"
-      ],
-      "path": "crates/bijux-atlas-query/docs/effect-boundary-map.md",
-      "tags": [
-        "bijux-atlas-query",
-        "effect-boundary-map"
-      ],
-      "topic": "effect-boundary-map"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "effects"
-      ],
-      "path": "crates/bijux-atlas-query/docs/effects.md",
-      "tags": [
-        "bijux-atlas-query",
-        "effects"
-      ],
-      "topic": "effects"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "errors"
-      ],
-      "path": "crates/bijux-atlas-query/docs/errors.md",
-      "tags": [
-        "bijux-atlas-query",
-        "errors"
-      ],
-      "topic": "errors"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "examples"
-      ],
-      "path": "crates/bijux-atlas-query/docs/examples.md",
-      "tags": [
-        "bijux-atlas-query",
-        "examples"
-      ],
-      "topic": "examples"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "index"
-      ],
-      "path": "crates/bijux-atlas-query/docs/index.md",
-      "tags": [
-        "bijux-atlas-query",
-        "index"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
-        "adding-filters",
-        "bijux-atlas-query",
-        "internal"
-      ],
-      "path": "crates/bijux-atlas-query/docs/internal/adding-filters.md",
-      "tags": [
-        "adding-filters",
-        "bijux-atlas-query",
-        "internal"
-      ],
-      "topic": "adding-filters"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "internal",
-        "transcript-ordering"
-      ],
-      "path": "crates/bijux-atlas-query/docs/internal/transcript-ordering.md",
-      "tags": [
-        "bijux-atlas-query",
-        "internal",
-        "transcript-ordering"
-      ],
-      "topic": "transcript-ordering"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "ordering"
-      ],
-      "path": "crates/bijux-atlas-query/docs/ordering.md",
-      "tags": [
-        "bijux-atlas-query",
-        "ordering"
-      ],
-      "topic": "ordering"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "pagination"
-      ],
-      "path": "crates/bijux-atlas-query/docs/pagination.md",
-      "tags": [
-        "bijux-atlas-query",
-        "pagination"
-      ],
-      "topic": "pagination"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "perf"
-      ],
-      "path": "crates/bijux-atlas-query/docs/perf.md",
-      "tags": [
-        "bijux-atlas-query",
-        "perf"
-      ],
-      "topic": "perf"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "public-api"
-      ],
-      "path": "crates/bijux-atlas-query/docs/public-api.md",
-      "tags": [
-        "bijux-atlas-query",
-        "public-api"
-      ],
-      "topic": "public-api"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "query-language-spec"
-      ],
-      "path": "crates/bijux-atlas-query/docs/query-language-spec.md",
-      "tags": [
-        "bijux-atlas-query",
-        "query-language-spec"
-      ],
-      "topic": "query-language-spec"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "query-performance-architecture"
-      ],
-      "path": "crates/bijux-atlas-query/docs/query-performance-architecture.md",
-      "tags": [
-        "bijux-atlas-query",
-        "query-performance-architecture"
-      ],
-      "topic": "query-performance-architecture"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "query-performance"
-      ],
-      "path": "crates/bijux-atlas-query/docs/query-performance.md",
-      "tags": [
-        "bijux-atlas-query",
-        "query-performance"
-      ],
-      "topic": "query-performance"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "query-profiling-guide"
-      ],
-      "path": "crates/bijux-atlas-query/docs/query-profiling-guide.md",
-      "tags": [
-        "bijux-atlas-query",
-        "query-profiling-guide"
-      ],
-      "topic": "query-profiling-guide"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "query-tuning-guide"
-      ],
-      "path": "crates/bijux-atlas-query/docs/query-tuning-guide.md",
-      "tags": [
-        "bijux-atlas-query",
-        "query-tuning-guide"
-      ],
-      "topic": "query-tuning-guide"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "testing"
-      ],
-      "path": "crates/bijux-atlas-query/docs/testing.md",
-      "tags": [
-        "bijux-atlas-query",
-        "testing"
-      ],
-      "topic": "testing"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
-        "versioning"
-      ],
-      "path": "crates/bijux-atlas-query/docs/versioning.md",
-      "tags": [
-        "bijux-atlas-query",
-        "versioning"
-      ],
-      "topic": "versioning"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-query",
+        "bijux-atlas",
         "readme",
+        "server",
         "tests"
       ],
-      "path": "crates/bijux-atlas-query/tests/README.md",
+      "path": "crates/bijux-atlas/tests/server/README.md",
       "tags": [
-        "bijux-atlas-query",
+        "bijux-atlas",
         "readme",
+        "server",
         "tests"
       ],
       "topic": "README"
     },
     {
       "keywords": [
-        "bijux-atlas-server",
-        "contract"
-      ],
-      "path": "crates/bijux-atlas-server/CONTRACT.md",
-      "tags": [
-        "bijux-atlas-server",
-        "contract"
-      ],
-      "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "readme"
-      ],
-      "path": "crates/bijux-atlas-server/README.md",
-      "tags": [
-        "bijux-atlas-server",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "bijux-atlas-server"
-      ],
-      "path": "crates/bijux-atlas-server/docs/architecture.md",
-      "tags": [
-        "architecture",
-        "bijux-atlas-server"
-      ],
-      "topic": "architecture"
-    },
-    {
-      "keywords": [
-        "benchmarks",
-        "bijux-atlas-server"
-      ],
-      "path": "crates/bijux-atlas-server/docs/benchmarks.md",
-      "tags": [
-        "benchmarks",
-        "bijux-atlas-server"
-      ],
-      "topic": "benchmarks"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "caching"
-      ],
-      "path": "crates/bijux-atlas-server/docs/caching.md",
-      "tags": [
-        "bijux-atlas-server",
-        "caching"
-      ],
-      "topic": "caching"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "effect-boundary-map"
-      ],
-      "path": "crates/bijux-atlas-server/docs/effect-boundary-map.md",
-      "tags": [
-        "bijux-atlas-server",
-        "effect-boundary-map"
-      ],
-      "topic": "effect-boundary-map"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "effects"
-      ],
-      "path": "crates/bijux-atlas-server/docs/effects.md",
-      "tags": [
-        "bijux-atlas-server",
-        "effects"
-      ],
-      "topic": "effects"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "errors"
-      ],
-      "path": "crates/bijux-atlas-server/docs/errors.md",
-      "tags": [
-        "bijux-atlas-server",
-        "errors"
-      ],
-      "topic": "errors"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "examples"
-      ],
-      "path": "crates/bijux-atlas-server/docs/examples.md",
-      "tags": [
-        "bijux-atlas-server",
-        "examples"
-      ],
-      "topic": "examples"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "failure-modes"
-      ],
-      "path": "crates/bijux-atlas-server/docs/failure-modes.md",
-      "tags": [
-        "bijux-atlas-server",
-        "failure-modes"
-      ],
-      "topic": "failure-modes"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "generated",
-        "runtime-startup-config"
-      ],
-      "path": "crates/bijux-atlas-server/docs/generated/runtime-startup-config.md",
-      "tags": [
-        "bijux-atlas-server",
-        "generated",
-        "runtime-startup-config"
-      ],
-      "topic": "runtime-startup-config"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "index"
-      ],
-      "path": "crates/bijux-atlas-server/docs/index.md",
-      "tags": [
-        "bijux-atlas-server",
-        "index"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "contracts",
-        "internal"
-      ],
-      "path": "crates/bijux-atlas-server/docs/internal/contracts.md",
-      "tags": [
-        "bijux-atlas-server",
-        "contracts",
-        "internal"
-      ],
-      "topic": "contracts"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "failure-modes-reference",
-        "internal"
-      ],
-      "path": "crates/bijux-atlas-server/docs/internal/failure-modes-reference.md",
-      "tags": [
-        "bijux-atlas-server",
-        "failure-modes-reference",
-        "internal"
-      ],
-      "topic": "failure-modes-reference"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "hot-path-checklist",
-        "internal"
-      ],
-      "path": "crates/bijux-atlas-server/docs/internal/hot-path-checklist.md",
-      "tags": [
-        "bijux-atlas-server",
-        "hot-path-checklist",
-        "internal"
-      ],
-      "topic": "hot-path-checklist"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "internal",
-        "perf-baseline"
-      ],
-      "path": "crates/bijux-atlas-server/docs/internal/perf-baseline.md",
-      "tags": [
-        "bijux-atlas-server",
-        "internal",
-        "perf-baseline"
-      ],
-      "topic": "perf-baseline"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "internal",
-        "perf-profiling"
-      ],
-      "path": "crates/bijux-atlas-server/docs/internal/perf-profiling.md",
-      "tags": [
-        "bijux-atlas-server",
-        "internal",
-        "perf-profiling"
-      ],
-      "topic": "perf-profiling"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "internal",
-        "runtime-model"
-      ],
-      "path": "crates/bijux-atlas-server/docs/internal/runtime-model.md",
-      "tags": [
-        "bijux-atlas-server",
-        "internal",
-        "runtime-model"
-      ],
-      "topic": "runtime-model"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "internal",
-        "telemetry"
-      ],
-      "path": "crates/bijux-atlas-server/docs/internal/telemetry.md",
-      "tags": [
-        "bijux-atlas-server",
-        "internal",
-        "telemetry"
-      ],
-      "topic": "telemetry"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "kubernetes"
-      ],
-      "path": "crates/bijux-atlas-server/docs/kubernetes.md",
-      "tags": [
-        "bijux-atlas-server",
-        "kubernetes"
-      ],
-      "topic": "kubernetes"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "operations-runbook"
-      ],
-      "path": "crates/bijux-atlas-server/docs/operations-runbook.md",
-      "tags": [
-        "bijux-atlas-server",
-        "operations-runbook"
-      ],
-      "topic": "operations-runbook"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "public-api"
-      ],
-      "path": "crates/bijux-atlas-server/docs/public-api.md",
-      "tags": [
-        "bijux-atlas-server",
-        "public-api"
-      ],
-      "topic": "public-api"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "runtime"
-      ],
-      "path": "crates/bijux-atlas-server/docs/runtime.md",
-      "tags": [
-        "bijux-atlas-server",
-        "runtime"
-      ],
-      "topic": "runtime"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "testing"
-      ],
-      "path": "crates/bijux-atlas-server/docs/testing.md",
-      "tags": [
-        "bijux-atlas-server",
-        "testing"
-      ],
-      "topic": "testing"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
-        "versioning"
-      ],
-      "path": "crates/bijux-atlas-server/docs/versioning.md",
-      "tags": [
-        "bijux-atlas-server",
-        "versioning"
-      ],
-      "topic": "versioning"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "bijux-atlas-server",
-        "cache",
-        "src"
-      ],
-      "path": "crates/bijux-atlas-server/src/cache/ARCHITECTURE.md",
-      "tags": [
-        "architecture",
-        "bijux-atlas-server",
-        "cache",
-        "src"
-      ],
-      "topic": "ARCHITECTURE"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-server",
+        "bijux-atlas",
         "readme",
+        "store",
         "tests"
       ],
-      "path": "crates/bijux-atlas-server/tests/README.md",
+      "path": "crates/bijux-atlas/tests/store/README.md",
       "tags": [
-        "bijux-atlas-server",
+        "bijux-atlas",
         "readme",
-        "tests"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "contract"
-      ],
-      "path": "crates/bijux-atlas-store/CONTRACT.md",
-      "tags": [
-        "bijux-atlas-store",
-        "contract"
-      ],
-      "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "readme"
-      ],
-      "path": "crates/bijux-atlas-store/README.md",
-      "tags": [
-        "bijux-atlas-store",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "bijux-atlas-store"
-      ],
-      "path": "crates/bijux-atlas-store/docs/architecture.md",
-      "tags": [
-        "architecture",
-        "bijux-atlas-store"
-      ],
-      "topic": "architecture"
-    },
-    {
-      "keywords": [
-        "artifact-contract",
-        "bijux-atlas-store"
-      ],
-      "path": "crates/bijux-atlas-store/docs/artifact-contract.md",
-      "tags": [
-        "artifact-contract",
-        "bijux-atlas-store"
-      ],
-      "topic": "artifact-contract"
-    },
-    {
-      "keywords": [
-        "backends-and-guarantees",
-        "bijux-atlas-store"
-      ],
-      "path": "crates/bijux-atlas-store/docs/backends-and-guarantees.md",
-      "tags": [
-        "backends-and-guarantees",
-        "bijux-atlas-store"
-      ],
-      "topic": "backends-and-guarantees"
-    },
-    {
-      "keywords": [
-        "benchmarks",
-        "bijux-atlas-store"
-      ],
-      "path": "crates/bijux-atlas-store/docs/benchmarks.md",
-      "tags": [
-        "benchmarks",
-        "bijux-atlas-store"
-      ],
-      "topic": "benchmarks"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "caching"
-      ],
-      "path": "crates/bijux-atlas-store/docs/caching.md",
-      "tags": [
-        "bijux-atlas-store",
-        "caching"
-      ],
-      "topic": "caching"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "contracts"
-      ],
-      "path": "crates/bijux-atlas-store/docs/contracts.md",
-      "tags": [
-        "bijux-atlas-store",
-        "contracts"
-      ],
-      "topic": "contracts"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "effect-boundary-map"
-      ],
-      "path": "crates/bijux-atlas-store/docs/effect-boundary-map.md",
-      "tags": [
-        "bijux-atlas-store",
-        "effect-boundary-map"
-      ],
-      "topic": "effect-boundary-map"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "effects"
-      ],
-      "path": "crates/bijux-atlas-store/docs/effects.md",
-      "tags": [
-        "bijux-atlas-store",
-        "effects"
-      ],
-      "topic": "effects"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "errors"
-      ],
-      "path": "crates/bijux-atlas-store/docs/errors.md",
-      "tags": [
-        "bijux-atlas-store",
-        "errors"
-      ],
-      "topic": "errors"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "examples"
-      ],
-      "path": "crates/bijux-atlas-store/docs/examples.md",
-      "tags": [
-        "bijux-atlas-store",
-        "examples"
-      ],
-      "topic": "examples"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "failure-modes"
-      ],
-      "path": "crates/bijux-atlas-store/docs/failure-modes.md",
-      "tags": [
-        "bijux-atlas-store",
-        "failure-modes"
-      ],
-      "topic": "failure-modes"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "index"
-      ],
-      "path": "crates/bijux-atlas-store/docs/index.md",
-      "tags": [
-        "bijux-atlas-store",
-        "index"
-      ],
-      "topic": "index"
-    },
-    {
-      "keywords": [
-        "attack-surface-budget",
-        "bijux-atlas-store",
-        "internal"
-      ],
-      "path": "crates/bijux-atlas-store/docs/internal/attack-surface-budget.md",
-      "tags": [
-        "attack-surface-budget",
-        "bijux-atlas-store",
-        "internal"
-      ],
-      "topic": "attack-surface-budget"
-    },
-    {
-      "keywords": [
-        "backend-feature-matrix",
-        "bijux-atlas-store",
-        "internal"
-      ],
-      "path": "crates/bijux-atlas-store/docs/internal/backend-feature-matrix.md",
-      "tags": [
-        "backend-feature-matrix",
-        "bijux-atlas-store",
-        "internal"
-      ],
-      "topic": "backend-feature-matrix"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "failure-modes-reference",
-        "internal"
-      ],
-      "path": "crates/bijux-atlas-store/docs/internal/failure-modes-reference.md",
-      "tags": [
-        "bijux-atlas-store",
-        "failure-modes-reference",
-        "internal"
-      ],
-      "topic": "failure-modes-reference"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "internal",
-        "rollback"
-      ],
-      "path": "crates/bijux-atlas-store/docs/internal/rollback.md",
-      "tags": [
-        "bijux-atlas-store",
-        "internal",
-        "rollback"
-      ],
-      "topic": "rollback"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "internal",
-        "runbook-snippet"
-      ],
-      "path": "crates/bijux-atlas-store/docs/internal/runbook-snippet.md",
-      "tags": [
-        "bijux-atlas-store",
-        "internal",
-        "runbook-snippet"
-      ],
-      "topic": "runbook-snippet"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "public-api"
-      ],
-      "path": "crates/bijux-atlas-store/docs/public-api.md",
-      "tags": [
-        "bijux-atlas-store",
-        "public-api"
-      ],
-      "topic": "public-api"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "testing"
-      ],
-      "path": "crates/bijux-atlas-store/docs/testing.md",
-      "tags": [
-        "bijux-atlas-store",
-        "testing"
-      ],
-      "topic": "testing"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "versioning"
-      ],
-      "path": "crates/bijux-atlas-store/docs/versioning.md",
-      "tags": [
-        "bijux-atlas-store",
-        "versioning"
-      ],
-      "topic": "versioning"
-    },
-    {
-      "keywords": [
-        "bijux-atlas-store",
-        "readme",
-        "tests"
-      ],
-      "path": "crates/bijux-atlas-store/tests/README.md",
-      "tags": [
-        "bijux-atlas-store",
-        "readme",
+        "store",
         "tests"
       ],
       "topic": "README"
@@ -8598,6 +6130,2672 @@
     },
     {
       "keywords": [
+        "bijux-atlas-crate",
+        "contract"
+      ],
+      "path": "docs/bijux-atlas-crate/CONTRACT.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "keywords": [
+        "api",
+        "api-contract",
+        "bijux-atlas-crate"
+      ],
+      "path": "docs/bijux-atlas-crate/api/api-contract.md",
+      "tags": [
+        "api",
+        "api-contract",
+        "bijux-atlas-crate"
+      ],
+      "topic": "api-contract"
+    },
+    {
+      "keywords": [
+        "api",
+        "api-stability",
+        "bijux-atlas-crate"
+      ],
+      "path": "docs/bijux-atlas-crate/api/api-stability.md",
+      "tags": [
+        "api",
+        "api-stability",
+        "bijux-atlas-crate"
+      ],
+      "topic": "api-stability"
+    },
+    {
+      "keywords": [
+        "api",
+        "architecture",
+        "bijux-atlas-crate"
+      ],
+      "path": "docs/bijux-atlas-crate/api/architecture.md",
+      "tags": [
+        "api",
+        "architecture",
+        "bijux-atlas-crate"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "keywords": [
+        "api",
+        "benchmarks",
+        "bijux-atlas-crate"
+      ],
+      "path": "docs/bijux-atlas-crate/api/benchmarks.md",
+      "tags": [
+        "api",
+        "benchmarks",
+        "bijux-atlas-crate"
+      ],
+      "topic": "benchmarks"
+    },
+    {
+      "keywords": [
+        "api",
+        "bijux-atlas-crate",
+        "contracts"
+      ],
+      "path": "docs/bijux-atlas-crate/api/contracts.md",
+      "tags": [
+        "api",
+        "bijux-atlas-crate",
+        "contracts"
+      ],
+      "topic": "contracts"
+    },
+    {
+      "keywords": [
+        "api",
+        "bijux-atlas-crate",
+        "effect-boundary-map"
+      ],
+      "path": "docs/bijux-atlas-crate/api/effect-boundary-map.md",
+      "tags": [
+        "api",
+        "bijux-atlas-crate",
+        "effect-boundary-map"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "keywords": [
+        "api",
+        "bijux-atlas-crate",
+        "effects"
+      ],
+      "path": "docs/bijux-atlas-crate/api/effects.md",
+      "tags": [
+        "api",
+        "bijux-atlas-crate",
+        "effects"
+      ],
+      "topic": "effects"
+    },
+    {
+      "keywords": [
+        "api",
+        "bijux-atlas-crate",
+        "errors"
+      ],
+      "path": "docs/bijux-atlas-crate/api/errors.md",
+      "tags": [
+        "api",
+        "bijux-atlas-crate",
+        "errors"
+      ],
+      "topic": "errors"
+    },
+    {
+      "keywords": [
+        "api",
+        "bijux-atlas-crate",
+        "examples"
+      ],
+      "path": "docs/bijux-atlas-crate/api/examples.md",
+      "tags": [
+        "api",
+        "bijux-atlas-crate",
+        "examples"
+      ],
+      "topic": "examples"
+    },
+    {
+      "keywords": [
+        "api",
+        "bijux-atlas-crate",
+        "index"
+      ],
+      "path": "docs/bijux-atlas-crate/api/index.md",
+      "tags": [
+        "api",
+        "bijux-atlas-crate",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "api",
+        "bijux-atlas-crate",
+        "internal",
+        "public-api-checklist"
+      ],
+      "path": "docs/bijux-atlas-crate/api/internal/public-api-checklist.md",
+      "tags": [
+        "api",
+        "bijux-atlas-crate",
+        "internal",
+        "public-api-checklist"
+      ],
+      "topic": "public-api-checklist"
+    },
+    {
+      "keywords": [
+        "api",
+        "bijux-atlas-crate",
+        "internal",
+        "wire-compatibility"
+      ],
+      "path": "docs/bijux-atlas-crate/api/internal/wire-compatibility.md",
+      "tags": [
+        "api",
+        "bijux-atlas-crate",
+        "internal",
+        "wire-compatibility"
+      ],
+      "topic": "wire-compatibility"
+    },
+    {
+      "keywords": [
+        "api",
+        "bijux-atlas-crate",
+        "openapi"
+      ],
+      "path": "docs/bijux-atlas-crate/api/openapi.md",
+      "tags": [
+        "api",
+        "bijux-atlas-crate",
+        "openapi"
+      ],
+      "topic": "openapi"
+    },
+    {
+      "keywords": [
+        "api",
+        "bijux-atlas-crate",
+        "patterns"
+      ],
+      "path": "docs/bijux-atlas-crate/api/patterns.md",
+      "tags": [
+        "api",
+        "bijux-atlas-crate",
+        "patterns"
+      ],
+      "topic": "patterns"
+    },
+    {
+      "keywords": [
+        "api",
+        "bijux-atlas-crate",
+        "public-api"
+      ],
+      "path": "docs/bijux-atlas-crate/api/public-api.md",
+      "tags": [
+        "api",
+        "bijux-atlas-crate",
+        "public-api"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "keywords": [
+        "api",
+        "bijux-atlas-crate",
+        "testing"
+      ],
+      "path": "docs/bijux-atlas-crate/api/testing.md",
+      "tags": [
+        "api",
+        "bijux-atlas-crate",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "keywords": [
+        "api",
+        "bijux-atlas-crate",
+        "versioning"
+      ],
+      "path": "docs/bijux-atlas-crate/api/versioning.md",
+      "tags": [
+        "api",
+        "bijux-atlas-crate",
+        "versioning"
+      ],
+      "topic": "versioning"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "bijux-atlas-crate"
+      ],
+      "path": "docs/bijux-atlas-crate/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-crate"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "keywords": [
+        "benchmarks",
+        "bijux-atlas-crate"
+      ],
+      "path": "docs/bijux-atlas-crate/benchmarks.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-crate"
+      ],
+      "topic": "benchmarks"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "cli-command-list"
+      ],
+      "path": "docs/bijux-atlas-crate/cli-command-list.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "cli-command-list"
+      ],
+      "topic": "cli-command-list"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "cli-ux-contract"
+      ],
+      "path": "docs/bijux-atlas-crate/cli-ux-contract.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "cli-ux-contract"
+      ],
+      "topic": "cli-ux-contract"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "bijux-atlas-crate",
+        "client"
+      ],
+      "path": "docs/bijux-atlas-crate/client/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-crate",
+        "client"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "command-surface"
+      ],
+      "path": "docs/bijux-atlas-crate/command-surface.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "command-surface"
+      ],
+      "topic": "command-surface"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "config-discovery"
+      ],
+      "path": "docs/bijux-atlas-crate/config-discovery.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "config-discovery"
+      ],
+      "topic": "config-discovery"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "bijux-atlas-crate",
+        "core"
+      ],
+      "path": "docs/bijux-atlas-crate/core/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-crate",
+        "core"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "keywords": [
+        "benchmarks",
+        "bijux-atlas-crate",
+        "core"
+      ],
+      "path": "docs/bijux-atlas-crate/core/benchmarks.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-crate",
+        "core"
+      ],
+      "topic": "benchmarks"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "canonicalization",
+        "core"
+      ],
+      "path": "docs/bijux-atlas-crate/core/canonicalization.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "canonicalization",
+        "core"
+      ],
+      "topic": "canonicalization"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "contract",
+        "core"
+      ],
+      "path": "docs/bijux-atlas-crate/core/contract.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "contract",
+        "core"
+      ],
+      "topic": "contract"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "core",
+        "effect-boundary-map"
+      ],
+      "path": "docs/bijux-atlas-crate/core/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "core",
+        "effect-boundary-map"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "core",
+        "effects"
+      ],
+      "path": "docs/bijux-atlas-crate/core/effects.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "core",
+        "effects"
+      ],
+      "topic": "effects"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "core",
+        "errors"
+      ],
+      "path": "docs/bijux-atlas-crate/core/errors.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "core",
+        "errors"
+      ],
+      "topic": "errors"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "core",
+        "examples"
+      ],
+      "path": "docs/bijux-atlas-crate/core/examples.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "core",
+        "examples"
+      ],
+      "topic": "examples"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "core",
+        "features"
+      ],
+      "path": "docs/bijux-atlas-crate/core/features.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "core",
+        "features"
+      ],
+      "topic": "features"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "core",
+        "formatting"
+      ],
+      "path": "docs/bijux-atlas-crate/core/formatting.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "core",
+        "formatting"
+      ],
+      "topic": "formatting"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "core",
+        "index"
+      ],
+      "path": "docs/bijux-atlas-crate/core/index.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "core",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "cargo-deny-notes",
+        "core",
+        "internal"
+      ],
+      "path": "docs/bijux-atlas-crate/core/internal/cargo-deny-notes.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "cargo-deny-notes",
+        "core",
+        "internal"
+      ],
+      "topic": "cargo-deny-notes"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "core",
+        "internal",
+        "serde-policy"
+      ],
+      "path": "docs/bijux-atlas-crate/core/internal/serde-policy.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "core",
+        "internal",
+        "serde-policy"
+      ],
+      "topic": "serde-policy"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "core",
+        "overview"
+      ],
+      "path": "docs/bijux-atlas-crate/core/overview.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "core",
+        "overview"
+      ],
+      "topic": "overview"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "core",
+        "patterns"
+      ],
+      "path": "docs/bijux-atlas-crate/core/patterns.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "core",
+        "patterns"
+      ],
+      "topic": "patterns"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "core",
+        "public-api"
+      ],
+      "path": "docs/bijux-atlas-crate/core/public-api.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "core",
+        "public-api"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "core",
+        "purity"
+      ],
+      "path": "docs/bijux-atlas-crate/core/purity.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "core",
+        "purity"
+      ],
+      "topic": "purity"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "core",
+        "testing"
+      ],
+      "path": "docs/bijux-atlas-crate/core/testing.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "core",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "core",
+        "versioning"
+      ],
+      "path": "docs/bijux-atlas-crate/core/versioning.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "core",
+        "versioning"
+      ],
+      "topic": "versioning"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "effects"
+      ],
+      "path": "docs/bijux-atlas-crate/effects.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "effects"
+      ],
+      "topic": "effects"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "errors"
+      ],
+      "path": "docs/bijux-atlas-crate/errors.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "errors"
+      ],
+      "topic": "errors"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "examples"
+      ],
+      "path": "docs/bijux-atlas-crate/examples.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "examples"
+      ],
+      "topic": "examples"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "exit-codes"
+      ],
+      "path": "docs/bijux-atlas-crate/exit-codes.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "exit-codes"
+      ],
+      "topic": "exit-codes"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "index"
+      ],
+      "path": "docs/bijux-atlas-crate/index.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "bijux-atlas-crate",
+        "ingest"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-crate",
+        "ingest"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "keywords": [
+        "artifact-output-contract",
+        "bijux-atlas-crate",
+        "ingest"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/artifact-output-contract.md",
+      "tags": [
+        "artifact-output-contract",
+        "bijux-atlas-crate",
+        "ingest"
+      ],
+      "topic": "artifact-output-contract"
+    },
+    {
+      "keywords": [
+        "benchmarks",
+        "bijux-atlas-crate",
+        "ingest"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/benchmarks.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-crate",
+        "ingest"
+      ],
+      "topic": "benchmarks"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "contract",
+        "ingest"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/contract.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "contract",
+        "ingest"
+      ],
+      "topic": "contract"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "determinism",
+        "ingest"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/determinism.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "determinism",
+        "ingest"
+      ],
+      "topic": "determinism"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "effects",
+        "ingest"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/effects.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "effects",
+        "ingest"
+      ],
+      "topic": "effects"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ensembl-layout",
+        "ingest"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/ensembl-layout.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ensembl-layout",
+        "ingest"
+      ],
+      "topic": "ensembl-layout"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "errors",
+        "ingest"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/errors.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "errors",
+        "ingest"
+      ],
+      "topic": "errors"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "examples",
+        "ingest"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/examples.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "examples",
+        "ingest"
+      ],
+      "topic": "examples"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "failure-modes",
+        "ingest"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/failure-modes.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "failure-modes",
+        "ingest"
+      ],
+      "topic": "failure-modes"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "index",
+        "ingest"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/index.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "index",
+        "ingest"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-benchmark-ci"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/ingest-benchmark-ci.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-benchmark-ci"
+      ],
+      "topic": "ingest-benchmark-ci"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-benchmark-dashboard"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/ingest-benchmark-dashboard.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-benchmark-dashboard"
+      ],
+      "topic": "ingest-benchmark-dashboard"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-benchmark-examples"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/ingest-benchmark-examples.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-benchmark-examples"
+      ],
+      "topic": "ingest-benchmark-examples"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-benchmark-golden-results"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/ingest-benchmark-golden-results.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-benchmark-golden-results"
+      ],
+      "topic": "ingest-benchmark-golden-results"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-benchmark-regression"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/ingest-benchmark-regression.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-benchmark-regression"
+      ],
+      "topic": "ingest-benchmark-regression"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-benchmark-scenarios"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/ingest-benchmark-scenarios.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-benchmark-scenarios"
+      ],
+      "topic": "ingest-benchmark-scenarios"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-benchmark-summary"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/ingest-benchmark-summary.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-benchmark-summary"
+      ],
+      "topic": "ingest-benchmark-summary"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-contract"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/ingest-contract.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-contract"
+      ],
+      "topic": "ingest-contract"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-performance-architecture"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/ingest-performance-architecture.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-performance-architecture"
+      ],
+      "topic": "ingest-performance-architecture"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-performance-baseline"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/ingest-performance-baseline.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-performance-baseline"
+      ],
+      "topic": "ingest-performance-baseline"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-performance-metrics"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/ingest-performance-metrics.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-performance-metrics"
+      ],
+      "topic": "ingest-performance-metrics"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-performance-troubleshooting"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/ingest-performance-troubleshooting.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-performance-troubleshooting"
+      ],
+      "topic": "ingest-performance-troubleshooting"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-performance-tuning"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/ingest-performance-tuning.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "ingest-performance-tuning"
+      ],
+      "topic": "ingest-performance-tuning"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "effect-boundary-map",
+        "ingest",
+        "internal"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/internal/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "effect-boundary-map",
+        "ingest",
+        "internal"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "overview"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/overview.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "overview"
+      ],
+      "topic": "overview"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "public-api"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/public-api.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "public-api"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/qc.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest"
+      ],
+      "topic": "qc"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "testing"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/testing.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ingest",
+        "versioning"
+      ],
+      "path": "docs/bijux-atlas-crate/ingest/versioning.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ingest",
+        "versioning"
+      ],
+      "topic": "versioning"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "effect-boundary-map",
+        "internal"
+      ],
+      "path": "docs/bijux-atlas-crate/internal/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "effect-boundary-map",
+        "internal"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "bijux-atlas-crate",
+        "model"
+      ],
+      "path": "docs/bijux-atlas-crate/model/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-crate",
+        "model"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "keywords": [
+        "benchmarks",
+        "bijux-atlas-crate",
+        "model"
+      ],
+      "path": "docs/bijux-atlas-crate/model/benchmarks.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-crate",
+        "model"
+      ],
+      "topic": "benchmarks"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "contract-compatibility",
+        "model"
+      ],
+      "path": "docs/bijux-atlas-crate/model/contract-compatibility.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "contract-compatibility",
+        "model"
+      ],
+      "topic": "contract-compatibility"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "contract",
+        "model"
+      ],
+      "path": "docs/bijux-atlas-crate/model/contract.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "contract",
+        "model"
+      ],
+      "topic": "contract"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "data-model",
+        "model"
+      ],
+      "path": "docs/bijux-atlas-crate/model/data-model.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "data-model",
+        "model"
+      ],
+      "topic": "data-model"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "effect-boundary-map",
+        "model"
+      ],
+      "path": "docs/bijux-atlas-crate/model/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "effect-boundary-map",
+        "model"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "effects",
+        "model"
+      ],
+      "path": "docs/bijux-atlas-crate/model/effects.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "effects",
+        "model"
+      ],
+      "topic": "effects"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "errors",
+        "model"
+      ],
+      "path": "docs/bijux-atlas-crate/model/errors.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "errors",
+        "model"
+      ],
+      "topic": "errors"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "examples",
+        "model"
+      ],
+      "path": "docs/bijux-atlas-crate/model/examples.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "examples",
+        "model"
+      ],
+      "topic": "examples"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "index",
+        "model"
+      ],
+      "path": "docs/bijux-atlas-crate/model/index.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "index",
+        "model"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "compat-bijux-dna",
+        "internal",
+        "model"
+      ],
+      "path": "docs/bijux-atlas-crate/model/internal/compat-bijux-dna.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "compat-bijux-dna",
+        "internal",
+        "model"
+      ],
+      "topic": "compat-bijux-dna"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "internal",
+        "model",
+        "optional-fields"
+      ],
+      "path": "docs/bijux-atlas-crate/model/internal/optional-fields.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "internal",
+        "model",
+        "optional-fields"
+      ],
+      "topic": "optional-fields"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "internal",
+        "model",
+        "ordering-rules"
+      ],
+      "path": "docs/bijux-atlas-crate/model/internal/ordering-rules.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "internal",
+        "model",
+        "ordering-rules"
+      ],
+      "topic": "ordering-rules"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "internal",
+        "model",
+        "schema-evolution-notes"
+      ],
+      "path": "docs/bijux-atlas-crate/model/internal/schema-evolution-notes.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "internal",
+        "model",
+        "schema-evolution-notes"
+      ],
+      "topic": "schema-evolution-notes"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "model",
+        "not-in-model"
+      ],
+      "path": "docs/bijux-atlas-crate/model/not-in-model.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "model",
+        "not-in-model"
+      ],
+      "topic": "not-in-model"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "model",
+        "overview"
+      ],
+      "path": "docs/bijux-atlas-crate/model/overview.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "model",
+        "overview"
+      ],
+      "topic": "overview"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "model",
+        "public-api"
+      ],
+      "path": "docs/bijux-atlas-crate/model/public-api.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "model",
+        "public-api"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "model",
+        "purity"
+      ],
+      "path": "docs/bijux-atlas-crate/model/purity.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "model",
+        "purity"
+      ],
+      "topic": "purity"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "model",
+        "schema-stability"
+      ],
+      "path": "docs/bijux-atlas-crate/model/schema-stability.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "model",
+        "schema-stability"
+      ],
+      "topic": "schema-stability"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "model",
+        "testing"
+      ],
+      "path": "docs/bijux-atlas-crate/model/testing.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "model",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "model",
+        "versioning"
+      ],
+      "path": "docs/bijux-atlas-crate/model/versioning.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "model",
+        "versioning"
+      ],
+      "topic": "versioning"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "plugin-contract"
+      ],
+      "path": "docs/bijux-atlas-crate/plugin-contract.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "plugin-contract"
+      ],
+      "topic": "plugin-contract"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "bijux-atlas-crate",
+        "policies"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-crate",
+        "policies"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "keywords": [
+        "benchmarks",
+        "bijux-atlas-crate",
+        "policies"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/benchmarks.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-crate",
+        "policies"
+      ],
+      "topic": "benchmarks"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "config-schema",
+        "policies"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/config-schema.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "config-schema",
+        "policies"
+      ],
+      "topic": "config-schema"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "contracts",
+        "policies"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/contracts.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "contracts",
+        "policies"
+      ],
+      "topic": "contracts"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "effect-boundary-map",
+        "policies"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "effect-boundary-map",
+        "policies"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "effects",
+        "policies"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/effects.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "effects",
+        "policies"
+      ],
+      "topic": "effects"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "errors",
+        "policies"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/errors.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "errors",
+        "policies"
+      ],
+      "topic": "errors"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "examples",
+        "policies"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/examples.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "examples",
+        "policies"
+      ],
+      "topic": "examples"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "extension-guide",
+        "policies"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/extension-guide.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "extension-guide",
+        "policies"
+      ],
+      "topic": "extension-guide"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "index",
+        "policies"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/index.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "index",
+        "policies"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "change-checklist",
+        "internal",
+        "policies"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/internal/change-checklist.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "change-checklist",
+        "internal",
+        "policies"
+      ],
+      "topic": "change-checklist"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "evolution",
+        "internal",
+        "policies"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/internal/evolution.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "evolution",
+        "internal",
+        "policies"
+      ],
+      "topic": "evolution"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "internal",
+        "policies",
+        "schema-evolution"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/internal/schema-evolution.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "internal",
+        "policies",
+        "schema-evolution"
+      ],
+      "topic": "schema-evolution"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "policies",
+        "policy-authoring-guide"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/policy-authoring-guide.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "policies",
+        "policy-authoring-guide"
+      ],
+      "topic": "policy-authoring-guide"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "policies",
+        "public-api"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/public-api.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "policies",
+        "public-api"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "policies",
+        "schema"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/schema.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "policies",
+        "schema"
+      ],
+      "topic": "schema"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "policies",
+        "testing"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/testing.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "policies",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "policies",
+        "versioning"
+      ],
+      "path": "docs/bijux-atlas-crate/policies/versioning.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "policies",
+        "versioning"
+      ],
+      "topic": "versioning"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "public-api"
+      ],
+      "path": "docs/bijux-atlas-crate/public-api.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "public-api"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "bijux-atlas-crate",
+        "query"
+      ],
+      "path": "docs/bijux-atlas-crate/query/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-crate",
+        "query"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "keywords": [
+        "benchmarks",
+        "bijux-atlas-crate",
+        "query"
+      ],
+      "path": "docs/bijux-atlas-crate/query/benchmarks.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-crate",
+        "query"
+      ],
+      "topic": "benchmarks"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "cost-estimator",
+        "query"
+      ],
+      "path": "docs/bijux-atlas-crate/query/cost-estimator.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "cost-estimator",
+        "query"
+      ],
+      "topic": "cost-estimator"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "effect-boundary-map",
+        "query"
+      ],
+      "path": "docs/bijux-atlas-crate/query/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "effect-boundary-map",
+        "query"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "effects",
+        "query"
+      ],
+      "path": "docs/bijux-atlas-crate/query/effects.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "effects",
+        "query"
+      ],
+      "topic": "effects"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "errors",
+        "query"
+      ],
+      "path": "docs/bijux-atlas-crate/query/errors.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "errors",
+        "query"
+      ],
+      "topic": "errors"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "examples",
+        "query"
+      ],
+      "path": "docs/bijux-atlas-crate/query/examples.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "examples",
+        "query"
+      ],
+      "topic": "examples"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "index",
+        "query"
+      ],
+      "path": "docs/bijux-atlas-crate/query/index.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "index",
+        "query"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "adding-filters",
+        "bijux-atlas-crate",
+        "internal",
+        "query"
+      ],
+      "path": "docs/bijux-atlas-crate/query/internal/adding-filters.md",
+      "tags": [
+        "adding-filters",
+        "bijux-atlas-crate",
+        "internal",
+        "query"
+      ],
+      "topic": "adding-filters"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "internal",
+        "query",
+        "transcript-ordering"
+      ],
+      "path": "docs/bijux-atlas-crate/query/internal/transcript-ordering.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "internal",
+        "query",
+        "transcript-ordering"
+      ],
+      "topic": "transcript-ordering"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "ordering",
+        "query"
+      ],
+      "path": "docs/bijux-atlas-crate/query/ordering.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "ordering",
+        "query"
+      ],
+      "topic": "ordering"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "pagination",
+        "query"
+      ],
+      "path": "docs/bijux-atlas-crate/query/pagination.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "pagination",
+        "query"
+      ],
+      "topic": "pagination"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "perf",
+        "query"
+      ],
+      "path": "docs/bijux-atlas-crate/query/perf.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "perf",
+        "query"
+      ],
+      "topic": "perf"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "public-api",
+        "query"
+      ],
+      "path": "docs/bijux-atlas-crate/query/public-api.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "public-api",
+        "query"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "query",
+        "query-language-spec"
+      ],
+      "path": "docs/bijux-atlas-crate/query/query-language-spec.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "query",
+        "query-language-spec"
+      ],
+      "topic": "query-language-spec"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "query",
+        "query-performance-architecture"
+      ],
+      "path": "docs/bijux-atlas-crate/query/query-performance-architecture.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "query",
+        "query-performance-architecture"
+      ],
+      "topic": "query-performance-architecture"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "query",
+        "query-performance"
+      ],
+      "path": "docs/bijux-atlas-crate/query/query-performance.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "query",
+        "query-performance"
+      ],
+      "topic": "query-performance"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "query",
+        "query-profiling-guide"
+      ],
+      "path": "docs/bijux-atlas-crate/query/query-profiling-guide.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "query",
+        "query-profiling-guide"
+      ],
+      "topic": "query-profiling-guide"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "query",
+        "query-tuning-guide"
+      ],
+      "path": "docs/bijux-atlas-crate/query/query-tuning-guide.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "query",
+        "query-tuning-guide"
+      ],
+      "topic": "query-tuning-guide"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "query",
+        "testing"
+      ],
+      "path": "docs/bijux-atlas-crate/query/testing.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "query",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "query",
+        "versioning"
+      ],
+      "path": "docs/bijux-atlas-crate/query/versioning.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "query",
+        "versioning"
+      ],
+      "topic": "versioning"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "bijux-atlas-crate",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-crate",
+        "server"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "keywords": [
+        "benchmarks",
+        "bijux-atlas-crate",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/benchmarks.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-crate",
+        "server"
+      ],
+      "topic": "benchmarks"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "caching",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/caching.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "caching",
+        "server"
+      ],
+      "topic": "caching"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "effect-boundary-map",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "effect-boundary-map",
+        "server"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "effects",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/effects.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "effects",
+        "server"
+      ],
+      "topic": "effects"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "errors",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/errors.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "errors",
+        "server"
+      ],
+      "topic": "errors"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "examples",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/examples.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "examples",
+        "server"
+      ],
+      "topic": "examples"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "failure-modes",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/failure-modes.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "failure-modes",
+        "server"
+      ],
+      "topic": "failure-modes"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "generated",
+        "runtime-startup-config",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/generated/runtime-startup-config.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "generated",
+        "runtime-startup-config",
+        "server"
+      ],
+      "topic": "runtime-startup-config"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "index",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/index.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "index",
+        "server"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "contracts",
+        "internal",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/internal/contracts.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "contracts",
+        "internal",
+        "server"
+      ],
+      "topic": "contracts"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "failure-modes-reference",
+        "internal",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/internal/failure-modes-reference.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "failure-modes-reference",
+        "internal",
+        "server"
+      ],
+      "topic": "failure-modes-reference"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "hot-path-checklist",
+        "internal",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/internal/hot-path-checklist.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "hot-path-checklist",
+        "internal",
+        "server"
+      ],
+      "topic": "hot-path-checklist"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "internal",
+        "perf-baseline",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/internal/perf-baseline.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "internal",
+        "perf-baseline",
+        "server"
+      ],
+      "topic": "perf-baseline"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "internal",
+        "perf-profiling",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/internal/perf-profiling.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "internal",
+        "perf-profiling",
+        "server"
+      ],
+      "topic": "perf-profiling"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "internal",
+        "runtime-model",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/internal/runtime-model.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "internal",
+        "runtime-model",
+        "server"
+      ],
+      "topic": "runtime-model"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "internal",
+        "server",
+        "telemetry"
+      ],
+      "path": "docs/bijux-atlas-crate/server/internal/telemetry.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "internal",
+        "server",
+        "telemetry"
+      ],
+      "topic": "telemetry"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "kubernetes",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/kubernetes.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "kubernetes",
+        "server"
+      ],
+      "topic": "kubernetes"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "operations-runbook",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/operations-runbook.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "operations-runbook",
+        "server"
+      ],
+      "topic": "operations-runbook"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "public-api",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/public-api.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "public-api",
+        "server"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "runtime",
+        "server"
+      ],
+      "path": "docs/bijux-atlas-crate/server/runtime.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "runtime",
+        "server"
+      ],
+      "topic": "runtime"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "server",
+        "testing"
+      ],
+      "path": "docs/bijux-atlas-crate/server/testing.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "server",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "server",
+        "versioning"
+      ],
+      "path": "docs/bijux-atlas-crate/server/versioning.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "server",
+        "versioning"
+      ],
+      "topic": "versioning"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "bijux-atlas-crate",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-crate",
+        "store"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "keywords": [
+        "artifact-contract",
+        "bijux-atlas-crate",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/artifact-contract.md",
+      "tags": [
+        "artifact-contract",
+        "bijux-atlas-crate",
+        "store"
+      ],
+      "topic": "artifact-contract"
+    },
+    {
+      "keywords": [
+        "backends-and-guarantees",
+        "bijux-atlas-crate",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/backends-and-guarantees.md",
+      "tags": [
+        "backends-and-guarantees",
+        "bijux-atlas-crate",
+        "store"
+      ],
+      "topic": "backends-and-guarantees"
+    },
+    {
+      "keywords": [
+        "benchmarks",
+        "bijux-atlas-crate",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/benchmarks.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-crate",
+        "store"
+      ],
+      "topic": "benchmarks"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "caching",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/caching.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "caching",
+        "store"
+      ],
+      "topic": "caching"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "contract",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/contract.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "contract",
+        "store"
+      ],
+      "topic": "contract"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "contracts",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/contracts.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "contracts",
+        "store"
+      ],
+      "topic": "contracts"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "effect-boundary-map",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "effect-boundary-map",
+        "store"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "effects",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/effects.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "effects",
+        "store"
+      ],
+      "topic": "effects"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "errors",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/errors.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "errors",
+        "store"
+      ],
+      "topic": "errors"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "examples",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/examples.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "examples",
+        "store"
+      ],
+      "topic": "examples"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "failure-modes",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/failure-modes.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "failure-modes",
+        "store"
+      ],
+      "topic": "failure-modes"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "index",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/index.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "index",
+        "store"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "attack-surface-budget",
+        "bijux-atlas-crate",
+        "internal",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/internal/attack-surface-budget.md",
+      "tags": [
+        "attack-surface-budget",
+        "bijux-atlas-crate",
+        "internal",
+        "store"
+      ],
+      "topic": "attack-surface-budget"
+    },
+    {
+      "keywords": [
+        "backend-feature-matrix",
+        "bijux-atlas-crate",
+        "internal",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/internal/backend-feature-matrix.md",
+      "tags": [
+        "backend-feature-matrix",
+        "bijux-atlas-crate",
+        "internal",
+        "store"
+      ],
+      "topic": "backend-feature-matrix"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "failure-modes-reference",
+        "internal",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/internal/failure-modes-reference.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "failure-modes-reference",
+        "internal",
+        "store"
+      ],
+      "topic": "failure-modes-reference"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "internal",
+        "rollback",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/internal/rollback.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "internal",
+        "rollback",
+        "store"
+      ],
+      "topic": "rollback"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "internal",
+        "runbook-snippet",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/internal/runbook-snippet.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "internal",
+        "runbook-snippet",
+        "store"
+      ],
+      "topic": "runbook-snippet"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "overview",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/overview.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "overview",
+        "store"
+      ],
+      "topic": "overview"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "public-api",
+        "store"
+      ],
+      "path": "docs/bijux-atlas-crate/store/public-api.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "public-api",
+        "store"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "store",
+        "testing"
+      ],
+      "path": "docs/bijux-atlas-crate/store/testing.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "store",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "store",
+        "versioning"
+      ],
+      "path": "docs/bijux-atlas-crate/store/versioning.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "store",
+        "versioning"
+      ],
+      "topic": "versioning"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "testing"
+      ],
+      "path": "docs/bijux-atlas-crate/testing.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-crate",
+        "versioning"
+      ],
+      "path": "docs/bijux-atlas-crate/versioning.md",
+      "tags": [
+        "bijux-atlas-crate",
+        "versioning"
+      ],
+      "topic": "versioning"
+    },
+    {
+      "keywords": [
         "cli-command-list"
       ],
       "path": "docs/cli-command-list.md",
@@ -8845,6 +9043,16 @@
         "ux-philosophy"
       ],
       "topic": "ux-philosophy"
+    },
+    {
+      "keywords": [
+        "clients"
+      ],
+      "path": "docs/clients.md",
+      "tags": [
+        "clients"
+      ],
+      "topic": "clients"
     },
     {
       "keywords": [
@@ -20811,6 +21019,26 @@
         "workspace-versioning-policy"
       ],
       "topic": "workspace-versioning-policy"
+    },
+    {
+      "keywords": [
+        "repository-architecture"
+      ],
+      "path": "docs/repository-architecture.md",
+      "tags": [
+        "repository-architecture"
+      ],
+      "topic": "repository-architecture"
+    },
+    {
+      "keywords": [
+        "repository-contract"
+      ],
+      "path": "docs/repository-contract.md",
+      "tags": [
+        "repository-contract"
+      ],
+      "topic": "repository-contract"
     },
     {
       "keywords": [

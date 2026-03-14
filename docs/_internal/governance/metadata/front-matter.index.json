@@ -66,14 +66,6 @@
       "title": "Changelog"
     },
     {
-      "area": "CONTRACT.md",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "CONTRACT.md",
-      "stability": "stable",
-      "title": "Root Contract"
-    },
-    {
       "area": "CONTRIBUTING.md",
       "audience": "contributors",
       "owner": "docs-governance",
@@ -404,166 +396,6 @@
     {
       "area": "crates",
       "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/CONTRACT.md",
-      "stability": "stable",
-      "title": "CONTRACT (bijux-atlas-api)"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-api/README.md",
-      "stability": "stable",
-      "title": "bijux-atlas-api"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/api-contract.md",
-      "stability": "stable",
-      "title": "API Contract (v1)"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/api-stability.md",
-      "stability": "stable",
-      "title": "API Stability and Versioning"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/architecture.md",
-      "stability": "stable",
-      "title": "ARCHITECTURE (bijux-atlas-api)"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/benchmarks.md",
-      "stability": "stable",
-      "title": "BENCHMARKS (bijux-atlas-api)"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/contracts.md",
-      "stability": "stable",
-      "title": "Contracts"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/effect-boundary-map.md",
-      "stability": "stable",
-      "title": "Effect Boundary Map"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/effects.md",
-      "stability": "stable",
-      "title": "Effects"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/errors.md",
-      "stability": "stable",
-      "title": "ERROR_TAXONOMY (bijux-atlas-api)"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/examples.md",
-      "stability": "stable",
-      "title": "EXAMPLES (bijux-atlas-api)"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/index.md",
-      "stability": "stable",
-      "title": "Docs Index"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/internal/public-api-checklist.md",
-      "stability": "stable",
-      "title": "Public Surface Checklist"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/internal/wire-compatibility.md",
-      "stability": "stable",
-      "title": "Human vs Machine Contracts"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/openapi.md",
-      "stability": "stable",
-      "title": "OpenAPI"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/patterns.md",
-      "stability": "stable",
-      "title": "Patterns"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/public-api.md",
-      "stability": "stable",
-      "title": "PUBLIC API: bijux-atlas-api"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/testing.md",
-      "stability": "stable",
-      "title": "TESTING (bijux-atlas-api)"
-    },
-    {
-      "area": "bijux-atlas-api",
-      "audience": "contributors",
-      "owner": "bijux-atlas-api",
-      "path": "crates/bijux-atlas-api/docs/versioning.md",
-      "stability": "stable",
-      "title": "VERSIONING (bijux-atlas-api)"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-api/tests/README.md",
-      "stability": "stable",
-      "title": "Tests for bijux-atlas-api"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
       "owner": "bijux-atlas-performance",
       "path": "crates/bijux-atlas-bench/CONTRACT.md",
       "stability": "stable",
@@ -620,146 +452,18 @@
     {
       "area": "crates",
       "audience": "contributors",
-      "owner": "bijux-atlas",
-      "path": "docs/bijux-atlas-crate/CONTRACT.md",
-      "stability": "stable",
-      "title": "CONTRACT (bijux-atlas)"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
       "owner": "docs-governance",
       "path": "crates/bijux-atlas/README.md",
       "stability": "stable",
       "title": "bijux-atlas"
     },
     {
-      "area": "bijux-atlas",
-      "audience": "contributors",
-      "owner": "bijux-atlas",
-      "path": "docs/bijux-atlas-crate/architecture.md",
-      "stability": "stable",
-      "title": "ARCHITECTURE (bijux-atlas)"
-    },
-    {
-      "area": "bijux-atlas",
-      "audience": "contributors",
-      "owner": "bijux-atlas",
-      "path": "docs/bijux-atlas-crate/benchmarks.md",
-      "stability": "stable",
-      "title": "BENCHMARKS (bijux-atlas)"
-    },
-    {
-      "area": "bijux-atlas",
+      "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/bijux-atlas-crate/cli-command-list.md",
+      "path": "crates/bijux-atlas/src/cache/ARCHITECTURE.md",
       "stability": "stable",
-      "title": "cli command list"
-    },
-    {
-      "area": "bijux-atlas",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "docs/bijux-atlas-crate/cli-ux-contract.md",
-      "stability": "stable",
-      "title": "CLI UX Contract"
-    },
-    {
-      "area": "bijux-atlas",
-      "audience": "contributors",
-      "owner": "bijux-atlas",
-      "path": "docs/bijux-atlas-crate/command-surface.md",
-      "stability": "stable",
-      "title": "COMMAND_SURFACE (bijux-atlas)"
-    },
-    {
-      "area": "bijux-atlas",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "docs/bijux-atlas-crate/config-discovery.md",
-      "stability": "stable",
-      "title": "Config Discovery"
-    },
-    {
-      "area": "bijux-atlas",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "docs/bijux-atlas-crate/effects.md",
-      "stability": "stable",
-      "title": "Effects"
-    },
-    {
-      "area": "bijux-atlas",
-      "audience": "contributors",
-      "owner": "bijux-atlas",
-      "path": "docs/bijux-atlas-crate/errors.md",
-      "stability": "stable",
-      "title": "ERROR_TAXONOMY (bijux-atlas)"
-    },
-    {
-      "area": "bijux-atlas",
-      "audience": "contributors",
-      "owner": "bijux-atlas",
-      "path": "docs/bijux-atlas-crate/examples.md",
-      "stability": "stable",
-      "title": "EXAMPLES (bijux-atlas)"
-    },
-    {
-      "area": "bijux-atlas",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "docs/bijux-atlas-crate/exit-codes.md",
-      "stability": "stable",
-      "title": "Exit Codes"
-    },
-    {
-      "area": "bijux-atlas",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "docs/bijux-atlas-crate/index.md",
-      "stability": "stable",
-      "title": "Docs Index"
-    },
-    {
-      "area": "bijux-atlas",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "docs/bijux-atlas-crate/internal/effect-boundary-map.md",
-      "stability": "stable",
-      "title": "Effect Boundary Map"
-    },
-    {
-      "area": "bijux-atlas",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "docs/bijux-atlas-crate/plugin-contract.md",
-      "stability": "stable",
-      "title": "Plugin Contract"
-    },
-    {
-      "area": "bijux-atlas",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "docs/bijux-atlas-crate/public-api.md",
-      "stability": "stable",
-      "title": "PUBLIC API: bijux-atlas"
-    },
-    {
-      "area": "bijux-atlas",
-      "audience": "contributors",
-      "owner": "bijux-atlas",
-      "path": "docs/bijux-atlas-crate/testing.md",
-      "stability": "stable",
-      "title": "TESTING (bijux-atlas)"
-    },
-    {
-      "area": "bijux-atlas",
-      "audience": "contributors",
-      "owner": "bijux-atlas",
-      "path": "docs/bijux-atlas-crate/versioning.md",
-      "stability": "stable",
-      "title": "VERSIONING (bijux-atlas)"
+      "title": "Server Cache Subsystem Architecture"
     },
     {
       "area": "crates",
@@ -773,439 +477,23 @@
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-client/CONTRACT.md",
+      "path": "crates/bijux-atlas/tests/api/README.md",
       "stability": "stable",
-      "title": "bijux-atlas-client Contract"
+      "title": "Tests for `bijux_atlas::api`"
     },
     {
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-client/README.md",
+      "path": "crates/bijux-atlas/tests/core/README.md",
       "stability": "stable",
-      "title": "bijux-atlas-client"
-    },
-    {
-      "area": "bijux-atlas-client",
-      "audience": "user",
-      "owner": "api-contracts",
-      "path": "crates/bijux-atlas-client/docs/architecture.md",
-      "stability": "stable",
-      "title": "Rust Client Architecture"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "bijux-atlas-core",
-      "path": "crates/bijux-atlas-core/CONTRACT.md",
-      "stability": "stable",
-      "title": "CONTRACT (bijux-atlas-core)"
+      "title": "Tests for bijux-atlas::core"
     },
     {
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-core/README.md",
-      "stability": "stable",
-      "title": "bijux-atlas-core"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "bijux-atlas-core",
-      "path": "crates/bijux-atlas-core/docs/architecture.md",
-      "stability": "stable",
-      "title": "ARCHITECTURE (bijux-atlas-core)"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "bijux-atlas-core",
-      "path": "crates/bijux-atlas-core/docs/benchmarks.md",
-      "stability": "stable",
-      "title": "BENCHMARKS (bijux-atlas-core)"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-core/docs/canonicalization.md",
-      "stability": "stable",
-      "title": "Canonicalization Rules"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-core/docs/effect-boundary-map.md",
-      "stability": "stable",
-      "title": "Effect Boundary Map"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-core/docs/effects.md",
-      "stability": "stable",
-      "title": "Effects Policy"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "bijux-atlas-core",
-      "path": "crates/bijux-atlas-core/docs/errors.md",
-      "stability": "stable",
-      "title": "ERROR_TAXONOMY (bijux-atlas-core)"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "bijux-atlas-core",
-      "path": "crates/bijux-atlas-core/docs/examples.md",
-      "stability": "stable",
-      "title": "EXAMPLES (bijux-atlas-core)"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-core/docs/features.md",
-      "stability": "stable",
-      "title": "Feature Flags Policy"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-core/docs/formatting.md",
-      "stability": "stable",
-      "title": "Debug and Display Policy"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-core/docs/index.md",
-      "stability": "stable",
-      "title": "Core Docs Index"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-core/docs/internal/cargo-deny-notes.md",
-      "stability": "stable",
-      "title": "Cargo Deny Notes (Core)"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-core/docs/internal/serde-policy.md",
-      "stability": "stable",
-      "title": "Serialization Policy"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-core/docs/patterns.md",
-      "stability": "stable",
-      "title": "Design Patterns Used"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-core/docs/public-api.md",
-      "stability": "stable",
-      "title": "PUBLIC API: bijux-atlas-core"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-core/docs/purity.md",
-      "stability": "stable",
-      "title": "Purity Contract"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "bijux-atlas-core",
-      "path": "crates/bijux-atlas-core/docs/testing.md",
-      "stability": "stable",
-      "title": "TESTING (bijux-atlas-core)"
-    },
-    {
-      "area": "bijux-atlas-core",
-      "audience": "contributors",
-      "owner": "bijux-atlas-core",
-      "path": "crates/bijux-atlas-core/docs/versioning.md",
-      "stability": "stable",
-      "title": "VERSIONING (bijux-atlas-core)"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-core/tests/README.md",
-      "stability": "stable",
-      "title": "Tests for bijux-atlas-core"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "bijux-atlas-ingest",
-      "path": "crates/bijux-atlas-ingest/CONTRACT.md",
-      "stability": "stable",
-      "title": "CONTRACT (bijux-atlas-ingest)"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/README.md",
-      "stability": "stable",
-      "title": "bijux-atlas-ingest"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "bijux-atlas-ingest",
-      "path": "crates/bijux-atlas-ingest/docs/architecture.md",
-      "stability": "stable",
-      "title": "ARCHITECTURE (bijux-atlas-ingest)"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/artifact-output-contract.md",
-      "stability": "stable",
-      "title": "Artifact Output Contract"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "bijux-atlas-ingest",
-      "path": "crates/bijux-atlas-ingest/docs/benchmarks.md",
-      "stability": "stable",
-      "title": "BENCHMARKS (bijux-atlas-ingest)"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/determinism.md",
-      "stability": "stable",
-      "title": "Determinism Policy"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/effects.md",
-      "stability": "stable",
-      "title": "Effects Policy"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/ensembl-layout.md",
-      "stability": "stable",
-      "title": "Ensembl Layout Ingest Workflow"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "bijux-atlas-ingest",
-      "path": "crates/bijux-atlas-ingest/docs/errors.md",
-      "stability": "stable",
-      "title": "ERROR_TAXONOMY (bijux-atlas-ingest)"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "bijux-atlas-ingest",
-      "path": "crates/bijux-atlas-ingest/docs/examples.md",
-      "stability": "stable",
-      "title": "EXAMPLES (bijux-atlas-ingest)"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "bijux-atlas-ingest",
-      "path": "crates/bijux-atlas-ingest/docs/failure-modes.md",
-      "stability": "stable",
-      "title": "Failure Modes"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/index.md",
-      "stability": "stable",
-      "title": "Ingest Docs Index"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-ci.md",
-      "stability": "stable",
-      "title": "Ingest Benchmark CI"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-dashboard.md",
-      "stability": "stable",
-      "title": "Ingest Benchmark Dashboard"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-examples.md",
-      "stability": "stable",
-      "title": "Ingest Benchmark Examples"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-golden-results.md",
-      "stability": "stable",
-      "title": "Ingest Benchmark Golden Results"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-regression.md",
-      "stability": "stable",
-      "title": "Ingest Benchmark Regression Guard"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-scenarios.md",
-      "stability": "stable",
-      "title": "Ingest Benchmark Scenarios"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/ingest-benchmark-summary.md",
-      "stability": "stable",
-      "title": "Ingest Benchmark Summary"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/ingest-contract.md",
-      "stability": "stable",
-      "title": "Ingest Contract"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/ingest-performance-architecture.md",
-      "stability": "stable",
-      "title": "Ingest Performance Architecture"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/ingest-performance-baseline.md",
-      "stability": "stable",
-      "title": "Ingest Performance Baseline"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/ingest-performance-metrics.md",
-      "stability": "stable",
-      "title": "Ingest Performance Metrics"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/ingest-performance-troubleshooting.md",
-      "stability": "stable",
-      "title": "Ingest Performance Troubleshooting"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/ingest-performance-tuning.md",
-      "stability": "stable",
-      "title": "Ingest Performance Tuning Guide"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/internal/effect-boundary-map.md",
-      "stability": "stable",
-      "title": "Effect Boundary Map"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "bijux-atlas-ingest",
-      "path": "crates/bijux-atlas-ingest/docs/public-api.md",
-      "stability": "stable",
-      "title": "Public API"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/qc.md",
-      "stability": "stable",
-      "title": "QC Policy"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "bijux-atlas-ingest",
-      "path": "crates/bijux-atlas-ingest/docs/testing.md",
-      "stability": "stable",
-      "title": "TESTING (bijux-atlas-ingest)"
-    },
-    {
-      "area": "bijux-atlas-ingest",
-      "audience": "contributors",
-      "owner": "bijux-atlas-ingest",
-      "path": "crates/bijux-atlas-ingest/docs/versioning.md",
-      "stability": "stable",
-      "title": "VERSIONING (bijux-atlas-ingest)"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/tests/README.md",
-      "stability": "stable",
-      "title": "Tests for bijux-atlas-ingest"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/tests/fixtures/edgecases/README.md",
+      "path": "crates/bijux-atlas/tests/fixtures/edgecases/README.md",
       "stability": "stable",
       "title": "Edgecase GFF3 Snippets"
     },
@@ -1213,7 +501,7 @@
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/tests/fixtures/minimal/README.md",
+      "path": "crates/bijux-atlas/tests/fixtures/minimal/README.md",
       "stability": "stable",
       "title": "Minimal Fixtures"
     },
@@ -1221,7 +509,7 @@
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/tests/fixtures/policies/README.md",
+      "path": "crates/bijux-atlas/tests/fixtures/policies/README.md",
       "stability": "stable",
       "title": "Policy Fixtures"
     },
@@ -1229,945 +517,41 @@
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/tests/fixtures/realistic/README.md",
+      "path": "crates/bijux-atlas/tests/fixtures/realistic/README.md",
       "stability": "stable",
       "title": "Realistic Fixture (Non-CI)"
     },
     {
       "area": "crates",
       "audience": "contributors",
-      "owner": "bijux-atlas-model",
-      "path": "crates/bijux-atlas-model/CONTRACT.md",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas/tests/ingest/README.md",
       "stability": "stable",
-      "title": "CONTRACT (bijux-atlas-model)"
+      "title": "Tests for bijux-atlas::ingest"
     },
     {
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/README.md",
+      "path": "crates/bijux-atlas/tests/model/README.md",
       "stability": "stable",
-      "title": "bijux-atlas-model"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "bijux-atlas-model",
-      "path": "crates/bijux-atlas-model/docs/architecture.md",
-      "stability": "stable",
-      "title": "ARCHITECTURE (bijux-atlas-model)"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "bijux-atlas-model",
-      "path": "crates/bijux-atlas-model/docs/benchmarks.md",
-      "stability": "stable",
-      "title": "BENCHMARKS (bijux-atlas-model)"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/docs/contract-compatibility.md",
-      "stability": "stable",
-      "title": "Contract Compatibility"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "bijux-atlas-model",
-      "path": "crates/bijux-atlas-model/docs/data-model.md",
-      "stability": "stable",
-      "title": "DATA_MODEL (bijux-atlas-model)"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/docs/effect-boundary-map.md",
-      "stability": "stable",
-      "title": "Effect Boundary Map"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/docs/effects.md",
-      "stability": "stable",
-      "title": "Effects Policy"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "bijux-atlas-model",
-      "path": "crates/bijux-atlas-model/docs/errors.md",
-      "stability": "stable",
-      "title": "ERROR_TAXONOMY (bijux-atlas-model)"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "bijux-atlas-model",
-      "path": "crates/bijux-atlas-model/docs/examples.md",
-      "stability": "stable",
-      "title": "EXAMPLES (bijux-atlas-model)"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/docs/index.md",
-      "stability": "stable",
-      "title": "Model Docs Index"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/docs/internal/compat-bijux-dna.md",
-      "stability": "stable",
-      "title": "Compatibility With bijux-dna"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/docs/internal/optional-fields.md",
-      "stability": "stable",
-      "title": "Optional Fields Rules"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/docs/internal/ordering-rules.md",
-      "stability": "stable",
-      "title": "Strict Ordering Rules"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/docs/internal/schema-evolution-notes.md",
-      "stability": "stable",
-      "title": "Schema Evolution Notes"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/docs/not-in-model.md",
-      "stability": "stable",
-      "title": "What Is Not In Model"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/docs/public-api.md",
-      "stability": "stable",
-      "title": "PUBLIC API: bijux-atlas-model"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/docs/purity.md",
-      "stability": "stable",
-      "title": "Purity Policy"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/docs/schema-stability.md",
-      "stability": "stable",
-      "title": "Schema Stability (v1)"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "bijux-atlas-model",
-      "path": "crates/bijux-atlas-model/docs/testing.md",
-      "stability": "stable",
-      "title": "TESTING (bijux-atlas-model)"
-    },
-    {
-      "area": "bijux-atlas-model",
-      "audience": "contributors",
-      "owner": "bijux-atlas-model",
-      "path": "crates/bijux-atlas-model/docs/versioning.md",
-      "stability": "stable",
-      "title": "VERSIONING (bijux-atlas-model)"
+      "title": "Tests for bijux-atlas::model"
     },
     {
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/tests/README.md",
+      "path": "crates/bijux-atlas/tests/server/README.md",
       "stability": "stable",
-      "title": "Tests for bijux-atlas-model"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "bijux-atlas-policies",
-      "path": "crates/bijux-atlas-policies/CONTRACT.md",
-      "stability": "stable",
-      "title": "CONTRACT (bijux-atlas-policies)"
+      "title": "Tests for the merged atlas runtime"
     },
     {
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-policies/README.md",
+      "path": "crates/bijux-atlas/tests/store/README.md",
       "stability": "stable",
-      "title": "bijux-atlas-policies"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "bijux-atlas-policies",
-      "path": "crates/bijux-atlas-policies/docs/architecture.md",
-      "stability": "stable",
-      "title": "ARCHITECTURE (bijux-atlas-policies)"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "bijux-atlas-policies",
-      "path": "crates/bijux-atlas-policies/docs/benchmarks.md",
-      "stability": "stable",
-      "title": "BENCHMARKS (bijux-atlas-policies)"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-policies/docs/config-schema.md",
-      "stability": "stable",
-      "title": "Config Schema Contract"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "bijux-atlas-policies",
-      "path": "crates/bijux-atlas-policies/docs/contracts.md",
-      "stability": "stable",
-      "title": "Contracts"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-policies/docs/effect-boundary-map.md",
-      "stability": "stable",
-      "title": "Effect Boundary Map"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-policies/docs/effects.md",
-      "stability": "stable",
-      "title": "Effects Policy"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "bijux-atlas-policies",
-      "path": "crates/bijux-atlas-policies/docs/errors.md",
-      "stability": "stable",
-      "title": "ERROR_TAXONOMY (bijux-atlas-policies)"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "bijux-atlas-policies",
-      "path": "crates/bijux-atlas-policies/docs/examples.md",
-      "stability": "stable",
-      "title": "EXAMPLES (bijux-atlas-policies)"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "bijux-atlas-policies",
-      "path": "crates/bijux-atlas-policies/docs/extension-guide.md",
-      "stability": "stable",
-      "title": "EXTENSION_GUIDE (bijux-atlas-policies)"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-policies/docs/index.md",
-      "stability": "stable",
-      "title": "Policies Docs Index"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-policies/docs/internal/change-checklist.md",
-      "stability": "stable",
-      "title": "Policy Change Checklist"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-policies/docs/internal/evolution.md",
-      "stability": "stable",
-      "title": "Policy Evolution"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-policies/docs/internal/schema-evolution.md",
-      "stability": "stable",
-      "title": "Evolving Policy Schema Safely"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-policies/docs/policy-authoring-guide.md",
-      "stability": "stable",
-      "title": "Policy Authoring Guide"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-policies/docs/public-api.md",
-      "stability": "stable",
-      "title": "PUBLIC API: bijux-atlas-policies"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-policies/docs/schema.md",
-      "stability": "stable",
-      "title": "Policy Schema"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "bijux-atlas-policies",
-      "path": "crates/bijux-atlas-policies/docs/testing.md",
-      "stability": "stable",
-      "title": "TESTING (bijux-atlas-policies)"
-    },
-    {
-      "area": "bijux-atlas-policies",
-      "audience": "contributors",
-      "owner": "bijux-atlas-policies",
-      "path": "crates/bijux-atlas-policies/docs/versioning.md",
-      "stability": "stable",
-      "title": "VERSIONING (bijux-atlas-policies)"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-policies/tests/README.md",
-      "stability": "stable",
-      "title": "Tests for bijux-atlas-policies"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "bijux-atlas-query",
-      "path": "crates/bijux-atlas-query/CONTRACT.md",
-      "stability": "stable",
-      "title": "CONTRACT (bijux-atlas-query)"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/README.md",
-      "stability": "stable",
-      "title": "bijux-atlas-query"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/docs/architecture.md",
-      "stability": "stable",
-      "title": "bijux-atlas-query Architecture"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "bijux-atlas-query",
-      "path": "crates/bijux-atlas-query/docs/benchmarks.md",
-      "stability": "stable",
-      "title": "BENCHMARKS (bijux-atlas-query)"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/docs/cost-estimator.md",
-      "stability": "stable",
-      "title": "Cost Estimator Calibration"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/docs/effect-boundary-map.md",
-      "stability": "stable",
-      "title": "Effect Boundary Map"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/docs/effects.md",
-      "stability": "stable",
-      "title": "Effects Policy"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "bijux-atlas-query",
-      "path": "crates/bijux-atlas-query/docs/errors.md",
-      "stability": "stable",
-      "title": "ERROR_TAXONOMY (bijux-atlas-query)"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "bijux-atlas-query",
-      "path": "crates/bijux-atlas-query/docs/examples.md",
-      "stability": "stable",
-      "title": "EXAMPLES (bijux-atlas-query)"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/docs/index.md",
-      "stability": "stable",
-      "title": "Query Docs Index"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/docs/internal/adding-filters.md",
-      "stability": "stable",
-      "title": "Adding New Filters Safely"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/docs/internal/transcript-ordering.md",
-      "stability": "stable",
-      "title": "Transcript Ordering Rules"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/docs/ordering.md",
-      "stability": "stable",
-      "title": "Ordering Rules"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/docs/pagination.md",
-      "stability": "stable",
-      "title": "Pagination Contract"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/docs/perf.md",
-      "stability": "stable",
-      "title": "Performance Contract"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/docs/public-api.md",
-      "stability": "stable",
-      "title": "PUBLIC API: bijux-atlas-query"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/docs/query-language-spec.md",
-      "stability": "stable",
-      "title": "Query Language Spec"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "bijux-atlas-query",
-      "path": "crates/bijux-atlas-query/docs/query-performance-architecture.md",
-      "stability": "stable",
-      "title": "Query Performance Architecture"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "bijux-atlas-query",
-      "path": "crates/bijux-atlas-query/docs/query-performance.md",
-      "stability": "stable",
-      "title": "Query Performance"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "bijux-atlas-query",
-      "path": "crates/bijux-atlas-query/docs/query-profiling-guide.md",
-      "stability": "stable",
-      "title": "Query Profiling Guide"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "bijux-atlas-query",
-      "path": "crates/bijux-atlas-query/docs/query-tuning-guide.md",
-      "stability": "stable",
-      "title": "Query Tuning Guide"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "bijux-atlas-query",
-      "path": "crates/bijux-atlas-query/docs/testing.md",
-      "stability": "stable",
-      "title": "TESTING (bijux-atlas-query)"
-    },
-    {
-      "area": "bijux-atlas-query",
-      "audience": "contributors",
-      "owner": "bijux-atlas-query",
-      "path": "crates/bijux-atlas-query/docs/versioning.md",
-      "stability": "stable",
-      "title": "VERSIONING (bijux-atlas-query)"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/tests/README.md",
-      "stability": "stable",
-      "title": "Tests for bijux-atlas-query"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "bijux-atlas-server",
-      "path": "crates/bijux-atlas-server/CONTRACT.md",
-      "stability": "stable",
-      "title": "CONTRACT (bijux-atlas-server)"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/README.md",
-      "stability": "stable",
-      "title": "bijux-atlas-server"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/architecture.md",
-      "stability": "stable",
-      "title": "bijux-atlas-server Architecture"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "bijux-atlas-server",
-      "path": "crates/bijux-atlas-server/docs/benchmarks.md",
-      "stability": "stable",
-      "title": "BENCHMARKS (bijux-atlas-server)"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/caching.md",
-      "stability": "stable",
-      "title": "Caching"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/effect-boundary-map.md",
-      "stability": "stable",
-      "title": "Effect Boundary Map"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/effects.md",
-      "stability": "stable",
-      "title": "Effects"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "bijux-atlas-server",
-      "path": "crates/bijux-atlas-server/docs/errors.md",
-      "stability": "stable",
-      "title": "ERROR_TAXONOMY (bijux-atlas-server)"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "bijux-atlas-server",
-      "path": "crates/bijux-atlas-server/docs/examples.md",
-      "stability": "stable",
-      "title": "EXAMPLES (bijux-atlas-server)"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "bijux-atlas-server",
-      "path": "crates/bijux-atlas-server/docs/failure-modes.md",
-      "stability": "stable",
-      "title": "Failure Modes"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/generated/runtime-startup-config.md",
-      "stability": "stable",
-      "title": "Runtime Startup Config"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/index.md",
-      "stability": "stable",
-      "title": "Docs Index"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "bijux-atlas-server",
-      "path": "crates/bijux-atlas-server/docs/internal/contracts.md",
-      "stability": "stable",
-      "title": "Contracts"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/internal/failure-modes-reference.md",
-      "stability": "stable",
-      "title": "Failure Modes"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/internal/hot-path-checklist.md",
-      "stability": "stable",
-      "title": "Hot Path Checklist"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/internal/perf-baseline.md",
-      "stability": "stable",
-      "title": "Perf Baseline"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/internal/perf-profiling.md",
-      "stability": "stable",
-      "title": "Perf Profiling"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/internal/runtime-model.md",
-      "stability": "stable",
-      "title": "Runtime Model"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/internal/telemetry.md",
-      "stability": "stable",
-      "title": "Telemetry"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/kubernetes.md",
-      "stability": "stable",
-      "title": "Kubernetes Ops"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/operations-runbook.md",
-      "stability": "stable",
-      "title": "Operations Runbook"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/public-api.md",
-      "stability": "stable",
-      "title": "PUBLIC API: bijux-atlas-server"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/runtime.md",
-      "stability": "stable",
-      "title": "Runtime"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "bijux-atlas-server",
-      "path": "crates/bijux-atlas-server/docs/testing.md",
-      "stability": "stable",
-      "title": "TESTING (bijux-atlas-server)"
-    },
-    {
-      "area": "bijux-atlas-server",
-      "audience": "contributors",
-      "owner": "bijux-atlas-server",
-      "path": "crates/bijux-atlas-server/docs/versioning.md",
-      "stability": "stable",
-      "title": "VERSIONING (bijux-atlas-server)"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/src/cache/ARCHITECTURE.md",
-      "stability": "stable",
-      "title": "Server Cache Subsystem Architecture"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/tests/README.md",
-      "stability": "stable",
-      "title": "Tests for bijux-atlas-server"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "bijux-atlas-store",
-      "path": "crates/bijux-atlas-store/CONTRACT.md",
-      "stability": "stable",
-      "title": "CONTRACT (bijux-atlas-store)"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/README.md",
-      "stability": "stable",
-      "title": "bijux-atlas-store"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/docs/architecture.md",
-      "stability": "stable",
-      "title": "bijux-atlas-store Architecture"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/docs/artifact-contract.md",
-      "stability": "stable",
-      "title": "Artifact Contract at Store Boundary"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/docs/backends-and-guarantees.md",
-      "stability": "stable",
-      "title": "Backends And Guarantees"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "bijux-atlas-store",
-      "path": "crates/bijux-atlas-store/docs/benchmarks.md",
-      "stability": "stable",
-      "title": "BENCHMARKS (bijux-atlas-store)"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/docs/caching.md",
-      "stability": "stable",
-      "title": "Caching Semantics"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "bijux-atlas-store",
-      "path": "crates/bijux-atlas-store/docs/contracts.md",
-      "stability": "stable",
-      "title": "Contracts"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/docs/effect-boundary-map.md",
-      "stability": "stable",
-      "title": "Effect Boundary Map"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/docs/effects.md",
-      "stability": "stable",
-      "title": "Effects Policy"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "bijux-atlas-store",
-      "path": "crates/bijux-atlas-store/docs/errors.md",
-      "stability": "stable",
-      "title": "ERROR_TAXONOMY (bijux-atlas-store)"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "bijux-atlas-store",
-      "path": "crates/bijux-atlas-store/docs/examples.md",
-      "stability": "stable",
-      "title": "EXAMPLES (bijux-atlas-store)"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "bijux-atlas-store",
-      "path": "crates/bijux-atlas-store/docs/failure-modes.md",
-      "stability": "stable",
-      "title": "Failure Modes"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/docs/index.md",
-      "stability": "stable",
-      "title": "Store Docs Index"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/docs/internal/attack-surface-budget.md",
-      "stability": "stable",
-      "title": "Attack Surface Budget"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/docs/internal/backend-feature-matrix.md",
-      "stability": "stable",
-      "title": "Backend Feature Matrix"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/docs/internal/failure-modes-reference.md",
-      "stability": "stable",
-      "title": "Failure Modes"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/docs/internal/rollback.md",
-      "stability": "stable",
-      "title": "Rollback Workflow"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/docs/internal/runbook-snippet.md",
-      "stability": "stable",
-      "title": "Store Outage Behavior (Snippet)"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/docs/public-api.md",
-      "stability": "stable",
-      "title": "PUBLIC API: bijux-atlas-store"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "bijux-atlas-store",
-      "path": "crates/bijux-atlas-store/docs/testing.md",
-      "stability": "stable",
-      "title": "TESTING (bijux-atlas-store)"
-    },
-    {
-      "area": "bijux-atlas-store",
-      "audience": "contributors",
-      "owner": "bijux-atlas-store",
-      "path": "crates/bijux-atlas-store/docs/versioning.md",
-      "stability": "stable",
-      "title": "VERSIONING (bijux-atlas-store)"
-    },
-    {
-      "area": "crates",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/tests/README.md",
-      "stability": "stable",
-      "title": "Tests for bijux-atlas-store"
+      "title": "Tests for bijux-atlas::store"
     },
     {
       "area": "crates",
@@ -5178,6 +3562,1518 @@
       "title": "Workspace boundaries rules"
     },
     {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas",
+      "path": "docs/bijux-atlas-crate/CONTRACT.md",
+      "stability": "stable",
+      "title": "CONTRACT (bijux-atlas)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/api-contract.md",
+      "stability": "stable",
+      "title": "API Contract (v1)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/api-stability.md",
+      "stability": "stable",
+      "title": "API Stability and Versioning"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/architecture.md",
+      "stability": "stable",
+      "title": "ARCHITECTURE (bijux-atlas::api)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/benchmarks.md",
+      "stability": "stable",
+      "title": "BENCHMARKS (bijux-atlas::api)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/contracts.md",
+      "stability": "stable",
+      "title": "Contracts"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/effect-boundary-map.md",
+      "stability": "stable",
+      "title": "Effect Boundary Map"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/effects.md",
+      "stability": "stable",
+      "title": "Effects"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/errors.md",
+      "stability": "stable",
+      "title": "ERROR_TAXONOMY (bijux-atlas::api)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/examples.md",
+      "stability": "stable",
+      "title": "EXAMPLES (bijux-atlas::api)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/index.md",
+      "stability": "stable",
+      "title": "Docs Index"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/internal/public-api-checklist.md",
+      "stability": "stable",
+      "title": "Public Surface Checklist"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/internal/wire-compatibility.md",
+      "stability": "stable",
+      "title": "Human vs Machine Contracts"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/openapi.md",
+      "stability": "stable",
+      "title": "OpenAPI"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/patterns.md",
+      "stability": "stable",
+      "title": "Patterns"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/public-api.md",
+      "stability": "stable",
+      "title": "PUBLIC API: bijux-atlas::api"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/testing.md",
+      "stability": "stable",
+      "title": "TESTING (bijux-atlas::api)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::api",
+      "path": "docs/bijux-atlas-crate/api/versioning.md",
+      "stability": "stable",
+      "title": "VERSIONING (bijux-atlas::api)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas",
+      "path": "docs/bijux-atlas-crate/architecture.md",
+      "stability": "stable",
+      "title": "ARCHITECTURE (bijux-atlas)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas",
+      "path": "docs/bijux-atlas-crate/benchmarks.md",
+      "stability": "stable",
+      "title": "BENCHMARKS (bijux-atlas)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/cli-command-list.md",
+      "stability": "stable",
+      "title": "cli command list"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/cli-ux-contract.md",
+      "stability": "stable",
+      "title": "CLI UX Contract"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "user",
+      "owner": "api-contracts",
+      "path": "docs/bijux-atlas-crate/client/architecture.md",
+      "stability": "stable",
+      "title": "Rust Client Architecture"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas",
+      "path": "docs/bijux-atlas-crate/command-surface.md",
+      "stability": "stable",
+      "title": "COMMAND_SURFACE (bijux-atlas)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/config-discovery.md",
+      "stability": "stable",
+      "title": "Config Discovery"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::core",
+      "path": "docs/bijux-atlas-crate/core/architecture.md",
+      "stability": "stable",
+      "title": "ARCHITECTURE (bijux-atlas::core)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::core",
+      "path": "docs/bijux-atlas-crate/core/benchmarks.md",
+      "stability": "stable",
+      "title": "BENCHMARKS (bijux-atlas::core)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/core/canonicalization.md",
+      "stability": "stable",
+      "title": "Canonicalization Rules"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::core",
+      "path": "docs/bijux-atlas-crate/core/contract.md",
+      "stability": "stable",
+      "title": "CONTRACT (bijux-atlas::core)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/core/effect-boundary-map.md",
+      "stability": "stable",
+      "title": "Effect Boundary Map"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/core/effects.md",
+      "stability": "stable",
+      "title": "Effects Policy"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::core",
+      "path": "docs/bijux-atlas-crate/core/errors.md",
+      "stability": "stable",
+      "title": "ERROR_TAXONOMY (bijux-atlas::core)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::core",
+      "path": "docs/bijux-atlas-crate/core/examples.md",
+      "stability": "stable",
+      "title": "EXAMPLES (bijux-atlas::core)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/core/features.md",
+      "stability": "stable",
+      "title": "Feature Flags Policy"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/core/formatting.md",
+      "stability": "stable",
+      "title": "Debug and Display Policy"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/core/index.md",
+      "stability": "stable",
+      "title": "Core Docs Index"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/core/internal/cargo-deny-notes.md",
+      "stability": "stable",
+      "title": "Cargo Deny Notes (Core)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/core/internal/serde-policy.md",
+      "stability": "stable",
+      "title": "Serialization Policy"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/core/overview.md",
+      "stability": "stable",
+      "title": "bijux-atlas::core"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/core/patterns.md",
+      "stability": "stable",
+      "title": "Design Patterns Used"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/core/public-api.md",
+      "stability": "stable",
+      "title": "PUBLIC API: bijux-atlas::core"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/core/purity.md",
+      "stability": "stable",
+      "title": "Purity Contract"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::core",
+      "path": "docs/bijux-atlas-crate/core/testing.md",
+      "stability": "stable",
+      "title": "TESTING (bijux-atlas::core)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::core",
+      "path": "docs/bijux-atlas-crate/core/versioning.md",
+      "stability": "stable",
+      "title": "VERSIONING (bijux-atlas::core)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/effects.md",
+      "stability": "stable",
+      "title": "Effects"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas",
+      "path": "docs/bijux-atlas-crate/errors.md",
+      "stability": "stable",
+      "title": "ERROR_TAXONOMY (bijux-atlas)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas",
+      "path": "docs/bijux-atlas-crate/examples.md",
+      "stability": "stable",
+      "title": "EXAMPLES (bijux-atlas)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/exit-codes.md",
+      "stability": "stable",
+      "title": "Exit Codes"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/index.md",
+      "stability": "stable",
+      "title": "Docs Index"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::ingest",
+      "path": "docs/bijux-atlas-crate/ingest/architecture.md",
+      "stability": "stable",
+      "title": "ARCHITECTURE (bijux-atlas::ingest)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/artifact-output-contract.md",
+      "stability": "stable",
+      "title": "Artifact Output Contract"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::ingest",
+      "path": "docs/bijux-atlas-crate/ingest/benchmarks.md",
+      "stability": "stable",
+      "title": "BENCHMARKS (bijux-atlas::ingest)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::ingest",
+      "path": "docs/bijux-atlas-crate/ingest/contract.md",
+      "stability": "stable",
+      "title": "CONTRACT (bijux-atlas::ingest)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/determinism.md",
+      "stability": "stable",
+      "title": "Determinism Policy"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/effects.md",
+      "stability": "stable",
+      "title": "Effects Policy"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/ensembl-layout.md",
+      "stability": "stable",
+      "title": "Ensembl Layout Ingest Workflow"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::ingest",
+      "path": "docs/bijux-atlas-crate/ingest/errors.md",
+      "stability": "stable",
+      "title": "ERROR_TAXONOMY (bijux-atlas::ingest)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::ingest",
+      "path": "docs/bijux-atlas-crate/ingest/examples.md",
+      "stability": "stable",
+      "title": "EXAMPLES (bijux-atlas::ingest)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::ingest",
+      "path": "docs/bijux-atlas-crate/ingest/failure-modes.md",
+      "stability": "stable",
+      "title": "Failure Modes"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/index.md",
+      "stability": "stable",
+      "title": "Ingest Docs Index"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/ingest-benchmark-ci.md",
+      "stability": "stable",
+      "title": "Ingest Benchmark CI"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/ingest-benchmark-dashboard.md",
+      "stability": "stable",
+      "title": "Ingest Benchmark Dashboard"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/ingest-benchmark-examples.md",
+      "stability": "stable",
+      "title": "Ingest Benchmark Examples"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/ingest-benchmark-golden-results.md",
+      "stability": "stable",
+      "title": "Ingest Benchmark Golden Results"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/ingest-benchmark-regression.md",
+      "stability": "stable",
+      "title": "Ingest Benchmark Regression Guard"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/ingest-benchmark-scenarios.md",
+      "stability": "stable",
+      "title": "Ingest Benchmark Scenarios"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/ingest-benchmark-summary.md",
+      "stability": "stable",
+      "title": "Ingest Benchmark Summary"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/ingest-contract.md",
+      "stability": "stable",
+      "title": "Ingest Contract"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/ingest-performance-architecture.md",
+      "stability": "stable",
+      "title": "Ingest Performance Architecture"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/ingest-performance-baseline.md",
+      "stability": "stable",
+      "title": "Ingest Performance Baseline"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/ingest-performance-metrics.md",
+      "stability": "stable",
+      "title": "Ingest Performance Metrics"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/ingest-performance-troubleshooting.md",
+      "stability": "stable",
+      "title": "Ingest Performance Troubleshooting"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/ingest-performance-tuning.md",
+      "stability": "stable",
+      "title": "Ingest Performance Tuning Guide"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/internal/effect-boundary-map.md",
+      "stability": "stable",
+      "title": "Effect Boundary Map"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/overview.md",
+      "stability": "stable",
+      "title": "bijux-atlas::ingest"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::ingest",
+      "path": "docs/bijux-atlas-crate/ingest/public-api.md",
+      "stability": "stable",
+      "title": "Public API"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/ingest/qc.md",
+      "stability": "stable",
+      "title": "QC Policy"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::ingest",
+      "path": "docs/bijux-atlas-crate/ingest/testing.md",
+      "stability": "stable",
+      "title": "TESTING (bijux-atlas::ingest)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::ingest",
+      "path": "docs/bijux-atlas-crate/ingest/versioning.md",
+      "stability": "stable",
+      "title": "VERSIONING (bijux-atlas::ingest)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/internal/effect-boundary-map.md",
+      "stability": "stable",
+      "title": "Effect Boundary Map"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::model",
+      "path": "docs/bijux-atlas-crate/model/architecture.md",
+      "stability": "stable",
+      "title": "ARCHITECTURE (bijux-atlas::model)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::model",
+      "path": "docs/bijux-atlas-crate/model/benchmarks.md",
+      "stability": "stable",
+      "title": "BENCHMARKS (bijux-atlas::model)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/model/contract-compatibility.md",
+      "stability": "stable",
+      "title": "Contract Compatibility"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::model",
+      "path": "docs/bijux-atlas-crate/model/contract.md",
+      "stability": "stable",
+      "title": "CONTRACT (bijux-atlas::model)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::model",
+      "path": "docs/bijux-atlas-crate/model/data-model.md",
+      "stability": "stable",
+      "title": "DATA_MODEL (bijux-atlas::model)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/model/effect-boundary-map.md",
+      "stability": "stable",
+      "title": "Effect Boundary Map"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/model/effects.md",
+      "stability": "stable",
+      "title": "Effects Policy"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::model",
+      "path": "docs/bijux-atlas-crate/model/errors.md",
+      "stability": "stable",
+      "title": "ERROR_TAXONOMY (bijux-atlas::model)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::model",
+      "path": "docs/bijux-atlas-crate/model/examples.md",
+      "stability": "stable",
+      "title": "EXAMPLES (bijux-atlas::model)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/model/index.md",
+      "stability": "stable",
+      "title": "Model Docs Index"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/model/internal/compat-bijux-dna.md",
+      "stability": "stable",
+      "title": "Compatibility With bijux-dna"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/model/internal/optional-fields.md",
+      "stability": "stable",
+      "title": "Optional Fields Rules"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/model/internal/ordering-rules.md",
+      "stability": "stable",
+      "title": "Strict Ordering Rules"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/model/internal/schema-evolution-notes.md",
+      "stability": "stable",
+      "title": "Schema Evolution Notes"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/model/not-in-model.md",
+      "stability": "stable",
+      "title": "What Is Not In Model"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/model/overview.md",
+      "stability": "stable",
+      "title": "bijux-atlas::model"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/model/public-api.md",
+      "stability": "stable",
+      "title": "PUBLIC API: bijux-atlas::model"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/model/purity.md",
+      "stability": "stable",
+      "title": "Purity Policy"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/model/schema-stability.md",
+      "stability": "stable",
+      "title": "Schema Stability (v1)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::model",
+      "path": "docs/bijux-atlas-crate/model/testing.md",
+      "stability": "stable",
+      "title": "TESTING (bijux-atlas::model)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::model",
+      "path": "docs/bijux-atlas-crate/model/versioning.md",
+      "stability": "stable",
+      "title": "VERSIONING (bijux-atlas::model)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/plugin-contract.md",
+      "stability": "stable",
+      "title": "Plugin Contract"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-policies",
+      "path": "docs/bijux-atlas-crate/policies/architecture.md",
+      "stability": "stable",
+      "title": "ARCHITECTURE (bijux-atlas-policies)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-policies",
+      "path": "docs/bijux-atlas-crate/policies/benchmarks.md",
+      "stability": "stable",
+      "title": "BENCHMARKS (bijux-atlas-policies)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/policies/config-schema.md",
+      "stability": "stable",
+      "title": "Config Schema Contract"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-policies",
+      "path": "docs/bijux-atlas-crate/policies/contracts.md",
+      "stability": "stable",
+      "title": "Contracts"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/policies/effect-boundary-map.md",
+      "stability": "stable",
+      "title": "Effect Boundary Map"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/policies/effects.md",
+      "stability": "stable",
+      "title": "Effects Policy"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-policies",
+      "path": "docs/bijux-atlas-crate/policies/errors.md",
+      "stability": "stable",
+      "title": "ERROR_TAXONOMY (bijux-atlas-policies)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-policies",
+      "path": "docs/bijux-atlas-crate/policies/examples.md",
+      "stability": "stable",
+      "title": "EXAMPLES (bijux-atlas-policies)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-policies",
+      "path": "docs/bijux-atlas-crate/policies/extension-guide.md",
+      "stability": "stable",
+      "title": "EXTENSION_GUIDE (bijux-atlas-policies)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/policies/index.md",
+      "stability": "stable",
+      "title": "Policies Docs Index"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/policies/internal/change-checklist.md",
+      "stability": "stable",
+      "title": "Policy Change Checklist"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/policies/internal/evolution.md",
+      "stability": "stable",
+      "title": "Policy Evolution"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/policies/internal/schema-evolution.md",
+      "stability": "stable",
+      "title": "Evolving Policy Schema Safely"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/policies/policy-authoring-guide.md",
+      "stability": "stable",
+      "title": "Policy Authoring Guide"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/policies/public-api.md",
+      "stability": "stable",
+      "title": "PUBLIC API: bijux-atlas-policies"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/policies/schema.md",
+      "stability": "stable",
+      "title": "Policy Schema"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-policies",
+      "path": "docs/bijux-atlas-crate/policies/testing.md",
+      "stability": "stable",
+      "title": "TESTING (bijux-atlas-policies)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-policies",
+      "path": "docs/bijux-atlas-crate/policies/versioning.md",
+      "stability": "stable",
+      "title": "VERSIONING (bijux-atlas-policies)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/public-api.md",
+      "stability": "stable",
+      "title": "PUBLIC API: bijux-atlas"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/query/architecture.md",
+      "stability": "stable",
+      "title": "bijux-atlas-query Architecture"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-query",
+      "path": "docs/bijux-atlas-crate/query/benchmarks.md",
+      "stability": "stable",
+      "title": "BENCHMARKS (bijux-atlas-query)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/query/cost-estimator.md",
+      "stability": "stable",
+      "title": "Cost Estimator Calibration"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/query/effect-boundary-map.md",
+      "stability": "stable",
+      "title": "Effect Boundary Map"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/query/effects.md",
+      "stability": "stable",
+      "title": "Effects Policy"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-query",
+      "path": "docs/bijux-atlas-crate/query/errors.md",
+      "stability": "stable",
+      "title": "ERROR_TAXONOMY (bijux-atlas-query)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-query",
+      "path": "docs/bijux-atlas-crate/query/examples.md",
+      "stability": "stable",
+      "title": "EXAMPLES (bijux-atlas-query)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/query/index.md",
+      "stability": "stable",
+      "title": "Query Docs Index"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/query/internal/adding-filters.md",
+      "stability": "stable",
+      "title": "Adding New Filters Safely"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/query/internal/transcript-ordering.md",
+      "stability": "stable",
+      "title": "Transcript Ordering Rules"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/query/ordering.md",
+      "stability": "stable",
+      "title": "Ordering Rules"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/query/pagination.md",
+      "stability": "stable",
+      "title": "Pagination Contract"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/query/perf.md",
+      "stability": "stable",
+      "title": "Performance Contract"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/query/public-api.md",
+      "stability": "stable",
+      "title": "PUBLIC API: bijux-atlas-query"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/query/query-language-spec.md",
+      "stability": "stable",
+      "title": "Query Language Spec"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-query",
+      "path": "docs/bijux-atlas-crate/query/query-performance-architecture.md",
+      "stability": "stable",
+      "title": "Query Performance Architecture"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-query",
+      "path": "docs/bijux-atlas-crate/query/query-performance.md",
+      "stability": "stable",
+      "title": "Query Performance"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-query",
+      "path": "docs/bijux-atlas-crate/query/query-profiling-guide.md",
+      "stability": "stable",
+      "title": "Query Profiling Guide"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-query",
+      "path": "docs/bijux-atlas-crate/query/query-tuning-guide.md",
+      "stability": "stable",
+      "title": "Query Tuning Guide"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-query",
+      "path": "docs/bijux-atlas-crate/query/testing.md",
+      "stability": "stable",
+      "title": "TESTING (bijux-atlas-query)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas-query",
+      "path": "docs/bijux-atlas-crate/query/versioning.md",
+      "stability": "stable",
+      "title": "VERSIONING (bijux-atlas-query)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/architecture.md",
+      "stability": "stable",
+      "title": "atlas-server Architecture"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas",
+      "path": "docs/bijux-atlas-crate/server/benchmarks.md",
+      "stability": "stable",
+      "title": "BENCHMARKS (bijux-atlas server runtime)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/caching.md",
+      "stability": "stable",
+      "title": "Caching"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/effect-boundary-map.md",
+      "stability": "stable",
+      "title": "Effect Boundary Map"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/effects.md",
+      "stability": "stable",
+      "title": "Effects"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas",
+      "path": "docs/bijux-atlas-crate/server/errors.md",
+      "stability": "stable",
+      "title": "ERROR_TAXONOMY (bijux-atlas server runtime)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas",
+      "path": "docs/bijux-atlas-crate/server/examples.md",
+      "stability": "stable",
+      "title": "EXAMPLES (bijux-atlas server runtime)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas",
+      "path": "docs/bijux-atlas-crate/server/failure-modes.md",
+      "stability": "stable",
+      "title": "Failure Modes"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/generated/runtime-startup-config.md",
+      "stability": "stable",
+      "title": "Runtime Startup Config"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/index.md",
+      "stability": "stable",
+      "title": "Docs Index"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas",
+      "path": "docs/bijux-atlas-crate/server/internal/contracts.md",
+      "stability": "stable",
+      "title": "Contracts"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/internal/failure-modes-reference.md",
+      "stability": "stable",
+      "title": "Failure Modes"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/internal/hot-path-checklist.md",
+      "stability": "stable",
+      "title": "Hot Path Checklist"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/internal/perf-baseline.md",
+      "stability": "stable",
+      "title": "Perf Baseline"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/internal/perf-profiling.md",
+      "stability": "stable",
+      "title": "Perf Profiling"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/internal/runtime-model.md",
+      "stability": "stable",
+      "title": "Runtime Model"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/internal/telemetry.md",
+      "stability": "stable",
+      "title": "Telemetry"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/kubernetes.md",
+      "stability": "stable",
+      "title": "Kubernetes Ops"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/operations-runbook.md",
+      "stability": "stable",
+      "title": "Operations Runbook"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/public-api.md",
+      "stability": "stable",
+      "title": "PUBLIC API: atlas-server runtime"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/server/runtime.md",
+      "stability": "stable",
+      "title": "Runtime"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas",
+      "path": "docs/bijux-atlas-crate/server/testing.md",
+      "stability": "stable",
+      "title": "TESTING (bijux-atlas server runtime)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas",
+      "path": "docs/bijux-atlas-crate/server/versioning.md",
+      "stability": "stable",
+      "title": "VERSIONING (bijux-atlas server runtime)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/store/architecture.md",
+      "stability": "stable",
+      "title": "bijux-atlas::store Architecture"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/store/artifact-contract.md",
+      "stability": "stable",
+      "title": "Artifact Contract at Store Boundary"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/store/backends-and-guarantees.md",
+      "stability": "stable",
+      "title": "Backends And Guarantees"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::store",
+      "path": "docs/bijux-atlas-crate/store/benchmarks.md",
+      "stability": "stable",
+      "title": "BENCHMARKS (bijux-atlas::store)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/store/caching.md",
+      "stability": "stable",
+      "title": "Caching Semantics"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::store",
+      "path": "docs/bijux-atlas-crate/store/contract.md",
+      "stability": "stable",
+      "title": "CONTRACT (bijux-atlas::store)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::store",
+      "path": "docs/bijux-atlas-crate/store/contracts.md",
+      "stability": "stable",
+      "title": "Contracts"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/store/effect-boundary-map.md",
+      "stability": "stable",
+      "title": "Effect Boundary Map"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/store/effects.md",
+      "stability": "stable",
+      "title": "Effects Policy"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::store",
+      "path": "docs/bijux-atlas-crate/store/errors.md",
+      "stability": "stable",
+      "title": "ERROR_TAXONOMY (bijux-atlas::store)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::store",
+      "path": "docs/bijux-atlas-crate/store/examples.md",
+      "stability": "stable",
+      "title": "EXAMPLES (bijux-atlas::store)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::store",
+      "path": "docs/bijux-atlas-crate/store/failure-modes.md",
+      "stability": "stable",
+      "title": "Failure Modes"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/store/index.md",
+      "stability": "stable",
+      "title": "Store Docs Index"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/store/internal/attack-surface-budget.md",
+      "stability": "stable",
+      "title": "Attack Surface Budget"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/store/internal/backend-feature-matrix.md",
+      "stability": "stable",
+      "title": "Backend Feature Matrix"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/store/internal/failure-modes-reference.md",
+      "stability": "stable",
+      "title": "Failure Modes"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/store/internal/rollback.md",
+      "stability": "stable",
+      "title": "Rollback Workflow"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/store/internal/runbook-snippet.md",
+      "stability": "stable",
+      "title": "Store Outage Behavior (Snippet)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/store/overview.md",
+      "stability": "stable",
+      "title": "bijux-atlas::store"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/bijux-atlas-crate/store/public-api.md",
+      "stability": "stable",
+      "title": "PUBLIC API: bijux-atlas::store"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::store",
+      "path": "docs/bijux-atlas-crate/store/testing.md",
+      "stability": "stable",
+      "title": "TESTING (bijux-atlas::store)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas::store",
+      "path": "docs/bijux-atlas-crate/store/versioning.md",
+      "stability": "stable",
+      "title": "VERSIONING (bijux-atlas::store)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas",
+      "path": "docs/bijux-atlas-crate/testing.md",
+      "stability": "stable",
+      "title": "TESTING (bijux-atlas)"
+    },
+    {
+      "area": "bijux-atlas-crate",
+      "audience": "contributors",
+      "owner": "bijux-atlas",
+      "path": "docs/bijux-atlas-crate/versioning.md",
+      "stability": "stable",
+      "title": "VERSIONING (bijux-atlas)"
+    },
+    {
       "area": "cli-command-list.md",
       "audience": "contributors",
       "owner": "docs-governance",
@@ -5344,6 +5240,14 @@
       "path": "docs/cli/ux-philosophy.md",
       "stability": "stable",
       "title": "CLI UX Philosophy"
+    },
+    {
+      "area": "clients.md",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/clients.md",
+      "stability": "stable",
+      "title": "Clients"
     },
     {
       "area": "contract.md",
@@ -12576,6 +12480,22 @@
       "path": "docs/reference/workspace-versioning-policy.md",
       "stability": "stable",
       "title": "Workspace versioning policy"
+    },
+    {
+      "area": "repository-architecture.md",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/repository-architecture.md",
+      "stability": "stable",
+      "title": "Repository Architecture"
+    },
+    {
+      "area": "repository-contract.md",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/repository-contract.md",
+      "stability": "stable",
+      "title": "Root Contract"
     },
     {
       "area": "site-map.md",
