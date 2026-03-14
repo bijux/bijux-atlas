@@ -13,7 +13,7 @@ tags:
 
 # Package Release Workflow
 
-Release the Python SDK from `packages/bijux-atlas-python`.
+Release the Python SDK from `crates/bijux-atlas-python`.
 
 1. Verify package boundaries and metadata:
    - `bijux-dev-atlas packages verify --format json`
@@ -22,7 +22,7 @@ Release the Python SDK from `packages/bijux-atlas-python`.
 3. Verify Python test suite via dev-atlas:
    - `bijux-dev-atlas clients python test --client atlas-client --format json`
 4. Build release artifacts:
-   - `python -m build packages/bijux-atlas-python`
+   - `python -m build crates/bijux-atlas-python`
 5. Publish to PyPI from CI using signed artifacts.
 
 Release readiness requires a passing governance report section for:

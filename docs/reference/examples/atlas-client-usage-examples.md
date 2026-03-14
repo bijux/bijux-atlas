@@ -14,10 +14,10 @@ tags:
 
 Canonical usage examples for the Python SDK live in:
 
-- `packages/bijux-atlas-python/examples/`
-- `packages/bijux-atlas-python/examples/usage/`
-- `packages/bijux-atlas-python/examples/INDEX.md`
-- `packages/bijux-atlas-python/examples/MATURITY.md`
+- `crates/bijux-atlas-python/examples/`
+- `crates/bijux-atlas-python/examples/usage/`
+- `crates/bijux-atlas-python/examples/INDEX.md`
+- `crates/bijux-atlas-python/examples/MATURITY.md`
 
 Verification entrypoint:
 

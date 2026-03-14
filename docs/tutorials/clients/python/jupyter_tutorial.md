@@ -3,9 +3,9 @@
 ## Setup
 
 ```bash
-python -m pip install -e packages/bijux-atlas-python
+python -m pip install -e crates/bijux-atlas-python
 python -m pip install jupyter
-jupyter notebook packages/bijux-atlas-python/notebooks/simple_query.ipynb
+jupyter notebook crates/bijux-atlas-python/notebooks/simple_query.ipynb
 ```
 
 ## Walkthrough

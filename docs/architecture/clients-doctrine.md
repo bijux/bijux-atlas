@@ -24,10 +24,10 @@ Client SDK code is product code. Repository automation for clients is owned by `
 
 ## Directory purpose
 
-- `packages/bijux-atlas-python/python/atlas_client`: Python SDK implementation.
-- `packages/bijux-atlas-python/tests`: SDK tests.
-- `packages/bijux-atlas-python/examples`: SDK usage examples.
-- `packages/bijux-atlas-python/docs`: generated and maintained client docs.
+- `crates/bijux-atlas-python/python/bijux_atlas`: Python SDK implementation.
+- `crates/bijux-atlas-python/tests/python`: SDK tests.
+- `crates/bijux-atlas-python/examples`: SDK usage examples.
+- `crates/bijux-atlas-python/docs`: generated and maintained client docs.
 - Root `clients/` is forbidden.
 
 ## Required replacement command surface
@@ -49,4 +49,4 @@ Client docs generation source-of-truth:
 
 Usage examples location decision:
 
-- Canonical usage examples live under `packages/bijux-atlas-python/examples/usage/`.
+- Canonical usage examples live under `crates/bijux-atlas-python/examples/usage/`.

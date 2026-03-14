@@ -13,7 +13,7 @@ tags:
 
 # Python Client Architecture
 
-Source of truth: `packages/bijux-atlas-python/docs/architecture.md`.
+Source of truth: `crates/bijux-atlas-python/docs/architecture.md`.
 
 The Python SDK uses a minimal transport core with explicit configuration validation,
 retry behavior, and optional logging/tracing hooks.

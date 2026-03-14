@@ -12,17 +12,17 @@ related:
 
 # Clients
 
-Client SDK products live under `packages/`.
+Client SDK products live under `crates/`.
 
 ## Canonical client locations
 
-- `packages/bijux-atlas-python/`
+- `crates/bijux-atlas-python/`
 
 ## Python client layout
 
-- `python/`: package source (`atlas_client`)
+- `python/`: package source (`bijux_atlas`)
 - `examples/`: runnable usage examples
-- `tests/`: product tests
+- `tests/python/`: product tests
 - `docs/`: client documentation
 - `notebooks/`: notebook assets
 

@@ -6,9 +6,9 @@
     "ops/e2e/fixtures",
     "ops/load/k6",
     "ops/load/k6/suites",
-    "packages/bijux-atlas-python",
-    "packages/bijux-atlas-python/examples",
-    "packages/bijux-atlas-python/src"
+    "crates/bijux-atlas-python",
+    "crates/bijux-atlas-python/examples",
+    "crates/bijux-atlas-python/python"
   ],
   "extensions": [
     ".js",

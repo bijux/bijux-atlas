@@ -13,17 +13,17 @@ tags:
 
 # Python Package Location And Policy
 
-`bijux-atlas` Python SDK content lives under `packages/bijux-atlas-python`.
+`bijux-atlas` Python SDK content lives under `crates/bijux-atlas-python`.
 
 Repository policy boundaries:
 
 - Python source is allowed only under:
-  - `packages/bijux-atlas-python/src/**/*.py`
-  - `packages/bijux-atlas-python/tests/**/*.py`
-  - `packages/bijux-atlas-python/examples/**/*.py`
+  - `crates/bijux-atlas-python/python/**/*.py`
+  - `crates/bijux-atlas-python/tests/python/**/*.py`
+  - `crates/bijux-atlas-python/examples/**/*.py`
 - Notebooks are allowed only under:
-  - `packages/bijux-atlas-python/notebooks/**/*.ipynb`
-- `packages/bijux-atlas-python/control-plane/` is forbidden.
+  - `crates/bijux-atlas-python/notebooks/**/*.ipynb`
+- `crates/bijux-atlas-python/tools/` is forbidden.
 - `__pycache__` and `*.pyc` are forbidden.
 - Root `clients/` is forbidden.
 

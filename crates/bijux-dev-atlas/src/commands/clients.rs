@@ -15,7 +15,7 @@ const OPENAPI_SNAPSHOT: &str = "configs/openapi/v1/openapi.snapshot.json";
 
 fn client_root(repo_root: &Path, client: &str) -> std::path::PathBuf {
     match client {
-        "atlas-client" => repo_root.join("packages/bijux-atlas-python"),
+        "atlas-client" => repo_root.join("crates/bijux-atlas-python"),
         _ => repo_root.join("crates").join(client),
     }
 }
@@ -191,9 +191,9 @@ fn run_clients_docs_generate(args: &ClientsCommandArgs) -> Result<(String, i32),
         "action": "docs-generate",
         "client": args.client,
         "generated": [
-            format!("packages/bijux-atlas-python/docs/index.md"),
-            format!("packages/bijux-atlas-python/docs/api-reference.md"),
-            format!("packages/bijux-atlas-python/docs/version-compatibility-matrix.md")
+            format!("crates/bijux-atlas-python/docs/index.md"),
+            format!("crates/bijux-atlas-python/docs/api-reference.md"),
+            format!("crates/bijux-atlas-python/docs/version-compatibility-matrix.md")
         ],
         "openapi_paths": openapi_paths.len(),
     });
@@ -665,7 +665,7 @@ fn run_allowlisted_python_output(
     skip_network: bool,
 ) -> Result<std::process::Output, String> {
     let python = resolve_python_interpreter(cwd)?;
-    if !cwd.ends_with(Path::new("packages/bijux-atlas-python")) {
+    if !cwd.ends_with(Path::new("crates/bijux-atlas-python")) {
         return Err(format!(
             "python execution outside allowed client crate is forbidden: {}",
             cwd.display()

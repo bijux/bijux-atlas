@@ -9,7 +9,7 @@ last_reviewed: 2026-03-05
 
 # Python Client Troubleshooting
 
-Reference source: `packages/bijux-atlas-python/docs/troubleshooting.md`.
+Reference source: `crates/bijux-atlas-python/docs/troubleshooting.md`.
 
 Common issues:
 - connectivity and endpoint mismatch

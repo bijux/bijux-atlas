@@ -406,25 +406,25 @@ fn allowed_nonrust_policy_must_define_python_and_shell_boundaries() {
     assert!(
         python_allowed
             .iter()
-            .any(|item| item.as_str() == Some("packages/bijux-atlas-python/src/**/*.py")),
+            .any(|item| item.as_str() == Some("crates/bijux-atlas-python/python/**/*.py")),
         "allowed-nonrust policy must explicitly allow python in client SDK package zones"
     );
     assert!(
         python_allowed
             .iter()
-            .any(|item| item.as_str() == Some("packages/bijux-atlas-python/tests/**/*.py")),
+            .any(|item| item.as_str() == Some("crates/bijux-atlas-python/tests/python/**/*.py")),
         "allowed-nonrust policy must explicitly allow python in client SDK test zones"
     );
     assert!(
         python_allowed
             .iter()
-            .any(|item| item.as_str() == Some("packages/bijux-atlas-python/examples/**/*.py")),
+            .any(|item| item.as_str() == Some("crates/bijux-atlas-python/examples/**/*.py")),
         "allowed-nonrust policy must explicitly allow python in client SDK examples zones"
     );
     assert!(
         python_allowed
             .iter()
-            .any(|item| item.as_str() == Some("packages/bijux-atlas-python/notebooks/**/*.ipynb")),
+            .any(|item| item.as_str() == Some("crates/bijux-atlas-python/notebooks/**/*.ipynb")),
         "allowed-nonrust policy must explicitly allow client notebooks when needed"
     );
     assert!(
@@ -449,9 +449,9 @@ fn repository_python_files_must_stay_in_allowed_crate_zones() {
         {
             continue;
         }
-        let allowed = path.starts_with("packages/bijux-atlas-python/src/")
-            || path.starts_with("packages/bijux-atlas-python/tests/")
-            || path.starts_with("packages/bijux-atlas-python/examples/");
+        let allowed = path.starts_with("crates/bijux-atlas-python/python/")
+            || path.starts_with("crates/bijux-atlas-python/tests/python/")
+            || path.starts_with("crates/bijux-atlas-python/examples/");
         if !allowed {
             violations.push(path.to_string());
         }
@@ -580,7 +580,7 @@ fn repository_notebooks_must_stay_in_allowed_crate_zones() {
         {
             continue;
         }
-        if !path.starts_with("packages/bijux-atlas-python/notebooks/") {
+        if !path.starts_with("crates/bijux-atlas-python/notebooks/") {
             violations.push(path.to_string());
         }
     }

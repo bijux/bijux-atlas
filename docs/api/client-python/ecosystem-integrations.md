@@ -10,5 +10,5 @@ last_reviewed: 2026-03-05
 # Python Client Ecosystem Integrations
 
 Examples:
-- `packages/bijux-atlas-python/examples/integrations/pandas_pipeline.py`
-- `packages/bijux-atlas-python/examples/integrations/airflow_operator.py`
+- `crates/bijux-atlas-python/examples/integrations/pandas_pipeline.py`
+- `crates/bijux-atlas-python/examples/integrations/airflow_operator.py`

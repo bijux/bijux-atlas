@@ -19,7 +19,7 @@ Symptom: `missing deterministic lockfile ... requirements.lock`.
 
 Resolution:
 
-1. Create or refresh `packages/bijux-atlas-python/requirements.lock`.
+1. Create or refresh `crates/bijux-atlas-python/requirements.lock`.
 2. Re-run: `bijux-dev-atlas clients python test --client atlas-client --install-deps`.
 
 ## Integration tests skipped

@@ -79,6 +79,6 @@ You can pass a logger and/or trace hook into `AtlasClient`.
 
 - SDK source: `python/bijux_atlas/`
 - Examples: `examples/`
-- Tests: `tests/`
+- Tests: `tests/python/`
 - Docs: `docs/`
 - Notebooks: `notebooks/`

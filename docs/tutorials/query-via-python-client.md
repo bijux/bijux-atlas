@@ -18,11 +18,11 @@ related:
 
 ## Goal
 
-Execute dataset queries through `atlas-client` package.
+Execute dataset queries through the `bijux-atlas` Python SDK package.
 
 ## Steps
 
-1. Install local package from `packages/bijux-atlas-python`.
+1. Install local package from `crates/bijux-atlas-python`.
 2. Run example scripts for simple, filtered, and streaming queries.
 3. Validate response fields and pagination token behavior.
 

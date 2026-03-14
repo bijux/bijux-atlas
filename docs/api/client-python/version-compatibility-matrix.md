@@ -9,4 +9,4 @@ last_reviewed: 2026-03-05
 
 # Python Client Version Compatibility Matrix
 
-Source: `packages/bijux-atlas-python/docs/version-compatibility-matrix.md`.
+Source: `crates/bijux-atlas-python/docs/version-compatibility-matrix.md`.

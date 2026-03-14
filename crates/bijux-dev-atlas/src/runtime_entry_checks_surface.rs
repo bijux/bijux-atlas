@@ -409,18 +409,20 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
         }
         let ext = rel.extension().and_then(|v| v.to_str()).unwrap_or_default();
         if ext == "py"
-            && !is_path_within(rel, "packages/bijux-atlas-python/")
+            && !is_path_within(rel, "crates/bijux-atlas-python/python/")
+            && !is_path_within(rel, "crates/bijux-atlas-python/tests/python/")
+            && !is_path_within(rel, "crates/bijux-atlas-python/examples/")
             && !is_path_within(rel, "crates/bijux-dev-atlas/tests/fixtures/")
         {
             packages_boundary_violations.push(rel_text.clone());
         }
         if ext == "ipynb"
-            && !is_path_within(rel, "packages/bijux-atlas-python/notebooks/")
+            && !is_path_within(rel, "crates/bijux-atlas-python/notebooks/")
             && !is_path_within(rel, "crates/bijux-dev-atlas/tests/fixtures/")
         {
             packages_boundary_violations.push(rel_text.clone());
         }
-        if is_path_within(rel, "packages/bijux-atlas-python/tools/") {
+        if is_path_within(rel, "crates/bijux-atlas-python/tools/") {
             packages_boundary_violations.push(rel_text.clone());
         }
         if is_path_within(rel, "ops/") {
@@ -459,7 +461,7 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
             || base == "poetry.lock"
             || base == "pyproject.toml")
             && !is_path_within(rel, "docs/")
-            && !is_path_within(rel, "packages/bijux-atlas-python/")
+            && !is_path_within(rel, "crates/bijux-atlas-python/")
             && !is_path_within(rel, "crates/bijux-dev-atlas/tests/fixtures/")
         {
             python_tooling_violations.push(rel.display().to_string());

@@ -29,7 +29,7 @@ fn packages_list_reports_python_package_inventory() {
     assert_eq!(payload["action"], "list");
     assert_eq!(
         payload["packages"][0]["path"],
-        "packages/bijux-atlas-python"
+        "crates/bijux-atlas-python"
     );
 }
 
