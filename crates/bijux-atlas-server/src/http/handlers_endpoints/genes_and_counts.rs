@@ -112,7 +112,7 @@ include!("../transcript_endpoints.rs");
 
 fn query_gene_count_with_filters(
     conn: &rusqlite::Connection,
-    req: &bijux_atlas_query::GeneQueryRequest,
+    req: &bijux_atlas::query::GeneQueryRequest,
 ) -> Result<i64, rusqlite::Error> {
     let mut sql = "SELECT COUNT(*) FROM gene_summary g".to_string();
     let mut where_parts: Vec<String> = Vec::new();
@@ -134,14 +134,14 @@ fn query_gene_count_with_filters(
     if let Some(name) = &req.filter.name {
         where_parts.push("g.name_normalized = ?".to_string());
         params.push(rusqlite::types::Value::Text(
-            bijux_atlas_query::normalize_name_lookup(name),
+            bijux_atlas::query::normalize_name_lookup(name),
         ));
     }
     if let Some(prefix) = &req.filter.name_prefix {
         where_parts.push("g.name_normalized LIKE ? ESCAPE '!'".to_string());
         params.push(rusqlite::types::Value::Text(format!(
             "{}%",
-            bijux_atlas_query::escape_like_prefix(&bijux_atlas_query::normalize_name_lookup(prefix))
+            bijux_atlas::query::escape_like_prefix(&bijux_atlas::query::normalize_name_lookup(prefix))
         )));
     }
     if let Some(biotype) = &req.filter.biotype {

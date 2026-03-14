@@ -272,9 +272,9 @@ dependencies = [
 name = "bijux-atlas-api"
 version = "0.1.1"
 dependencies = [
+ "bijux-atlas",
  "bijux-atlas-core",
  "bijux-atlas-model",
- "bijux-atlas-query",
  "criterion",
  "serde",
  "serde_json",
@@ -340,45 +340,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "bijux-atlas-policies"
-version = "0.1.1"
-dependencies = [
- "criterion",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "bijux-atlas-query"
-version = "0.1.1"
-dependencies = [
- "base64",
- "bijux-atlas-core",
- "bijux-atlas-model",
- "bijux-atlas-policies",
- "bijux-atlas-store",
- "criterion",
- "hmac",
- "proptest",
- "rusqlite",
- "serde",
- "serde_json",
- "sha2",
- "tempfile",
- "unicode-normalization",
-]
-
-[[package]]
 name = "bijux-atlas-server"
 version = "0.1.1"
 dependencies = [
  "async-trait",
  "axum",
  "base64",
+ "bijux-atlas",
  "bijux-atlas-api",
  "bijux-atlas-core",
  "bijux-atlas-model",
- "bijux-atlas-query",
  "bijux-atlas-store",
  "brotli",
  "clap",

@@ -465,7 +465,7 @@ async fn overload_health_endpoint_reports_state() {
     let app = build_router(AppState::with_config(
         cache,
         api,
-        bijux_atlas_query::QueryLimits::default(),
+        bijux_atlas::query::QueryLimits::default(),
     ));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await

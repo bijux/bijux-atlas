@@ -150,7 +150,7 @@ pub(crate) async fn gene_transcripts_handler(
             return with_request_id(resp, &request_id);
         }
     };
-    match bijux_atlas_query::query_transcripts(&conn.conn, &req) {
+    match bijux_atlas::query::query_transcripts(&conn.conn, &req) {
         Ok(resp) => {
             let provenance = dataset_provenance(&state, &dataset).await;
             let body = Json(json_envelope(
@@ -308,7 +308,7 @@ pub(crate) async fn transcript_summary_handler(
             return with_request_id(resp, &request_id);
         }
     };
-    match bijux_atlas_query::query_transcript_by_id(&conn.conn, &tx_id) {
+    match bijux_atlas::query::query_transcript_by_id(&conn.conn, &tx_id) {
         Ok(Some(row)) => {
             let provenance = dataset_provenance(&state, &dataset).await;
             let body = Json(json_envelope(

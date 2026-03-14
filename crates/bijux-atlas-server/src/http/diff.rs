@@ -460,7 +460,7 @@ async fn diff_common(
                     cursor_version: "v1".to_string(),
                     dataset_id: None,
                     sort_key: Some("gene_id".to_string()),
-                    last_seen: Some(bijux_atlas_query::CursorLastSeen {
+                    last_seen: Some(bijux_atlas::query::CursorLastSeen {
                         gene_id: x.gene_id.as_str().to_string(),
                         seqid: None,
                         start: None,

@@ -3,7 +3,7 @@
 use crate::dto::{DatasetKeyDto, GeneRowsDto, LinkCursorDto, ListGenesResponseDto, PageCursorDto};
 use crate::errors::ApiError;
 use crate::params::IncludeField;
-use bijux_atlas_query::{GeneQueryResponse, GeneRow};
+use bijux_atlas::query::{GeneQueryResponse, GeneRow};
 use serde_json::{json, Map, Value};
 use std::collections::BTreeSet;
 

@@ -11,7 +11,7 @@ use axum::{Json, Router};
 use bijux_atlas_api::{ApiError, ApiErrorCode};
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
-use bijux_atlas_query::{
+use bijux_atlas::query::{
     classify_query, decode_cursor, encode_cursor, estimate_query_cost, query_genes, CursorPayload,
     GeneFields, GeneFilter, GeneQueryRequest, OrderMode, QueryClass, QueryLimits, RegionFilter,
     TranscriptFilter, TranscriptQueryRequest,

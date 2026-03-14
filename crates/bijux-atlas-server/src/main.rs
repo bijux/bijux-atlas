@@ -573,7 +573,7 @@ async fn main() -> Result<(), String> {
     )
     .await;
 
-    let query_limits = bijux_atlas_query::QueryLimits::default();
+    let query_limits = bijux_atlas::query::QueryLimits::default();
     let policy_mode = runtime.policy_mode.clone();
     let runtime_policy_payload = serde_json::json!({
         "policy_mode": policy_mode,

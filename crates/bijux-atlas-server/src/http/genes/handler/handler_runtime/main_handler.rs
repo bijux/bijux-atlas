@@ -469,8 +469,8 @@ pub(crate) async fn genes_handler(
                     {
                         let value: serde_json::Value = serde_json::from_slice(&bytes)
                             .map_err(|e| CacheError(e.to_string()))?;
-                        return Ok(bijux_atlas_query::GeneQueryResponse {
-                            rows: vec![bijux_atlas_query::GeneRow {
+                        return Ok(bijux_atlas::query::GeneQueryResponse {
+                            rows: vec![bijux_atlas::query::GeneRow {
                                 gene_id: value
                                     .get("gene_id")
                                     .and_then(serde_json::Value::as_str)
@@ -493,7 +493,7 @@ pub(crate) async fn genes_handler(
                 }
                 let row = query_gene_by_id_fast(&c.conn, gene_id, &req.fields)
                     .map_err(|e| CacheError(e.to_string()))?;
-                return Ok(bijux_atlas_query::GeneQueryResponse {
+                return Ok(bijux_atlas::query::GeneQueryResponse {
                     rows: row.into_iter().collect(),
                     next_cursor: None,
                 });

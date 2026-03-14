@@ -15,7 +15,7 @@ keywords = ["atlas", "api", "openapi", "contracts", "serde"]
 [dependencies]
 bijux-atlas-core.workspace = true
 bijux-atlas-model.workspace = true
-bijux-atlas-query.workspace = true
+bijux-atlas.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 

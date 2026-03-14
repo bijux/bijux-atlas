@@ -8,7 +8,7 @@ pub(super) fn build_success_payload(
     dataset: &DatasetId,
     req: &GeneQueryRequest,
     class: QueryClass,
-    resp: bijux_atlas_query::GeneQueryResponse,
+    resp: bijux_atlas::query::GeneQueryResponse,
     explain_mode: bool,
     provenance: serde_json::Value,
 ) -> serde_json::Value {

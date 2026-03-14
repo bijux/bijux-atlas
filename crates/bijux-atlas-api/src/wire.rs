@@ -4,7 +4,7 @@ use crate::convert::list_genes_response_dto;
 use crate::dto::DatasetKeyDto;
 use crate::errors::ApiError;
 use crate::params::ListGenesParams;
-use bijux_atlas_query::GeneQueryResponse;
+use bijux_atlas::query::GeneQueryResponse;
 use serde_json::Value;
 use std::collections::BTreeSet;
 
