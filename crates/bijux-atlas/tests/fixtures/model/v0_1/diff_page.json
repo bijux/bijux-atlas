@@ -1,0 +1,11 @@
+{
+  "from_release": "110",
+  "to_release": "111",
+  "species": "homo_sapiens",
+  "assembly": "GRCh38",
+  "scope": "genes",
+  "rows": [
+    {"gene_id": "ENSG000001", "status": "changed", "seqid": "chr1", "start": 10, "end": 20}
+  ],
+  "next_cursor": null
+}
