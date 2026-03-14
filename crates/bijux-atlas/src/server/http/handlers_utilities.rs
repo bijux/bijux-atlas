@@ -63,8 +63,8 @@ impl Drop for RequestQueueGuard {
     }
 }
 
-pub(crate) use crate::http::response_contract::api_error_response;
 pub(crate) use crate::http::response_contract::api_error as error_json;
+pub(crate) use crate::http::response_contract::api_error_response;
 
 pub(crate) fn json_envelope(
     dataset: Option<Value>,
@@ -496,7 +496,12 @@ pub(crate) async fn health_handler(State(state): State<AppState>) -> impl IntoRe
     let resp = (StatusCode::OK, "ok").into_response();
     state
         .metrics
-        .observe_request_with_trace("/health", StatusCode::OK, started.elapsed(), Some(&request_id))
+        .observe_request_with_trace(
+            "/health",
+            StatusCode::OK,
+            started.elapsed(),
+            Some(&request_id),
+        )
         .await;
     with_request_id(resp, &request_id)
 }
@@ -541,7 +546,7 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
         "plugin": {
             "name": "bijux-atlas",
             "version": env!("CARGO_PKG_VERSION"),
-            "compatible_umbrella": ">=0.1.0,<0.2.0",
+            "compatible_umbrella": ">=0.3.0,<0.4.0",
             "build_hash": option_env!("BIJUX_BUILD_HASH").unwrap_or("dev"),
         },
         "server": {
@@ -570,14 +575,10 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
 pub(crate) async fn cluster_status_handler(State(state): State<AppState>) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
-    let cluster_path =
-        std::env::var("ATLAS_CLUSTER_CONFIG_PATH").unwrap_or_else(|_| {
-            "configs/ops/runtime/cluster-config.example.json".to_string()
-        });
-    let node_path =
-        std::env::var("ATLAS_NODE_CONFIG_PATH").unwrap_or_else(|_| {
-            "configs/ops/runtime/node-config.example.json".to_string()
-        });
+    let cluster_path = std::env::var("ATLAS_CLUSTER_CONFIG_PATH")
+        .unwrap_or_else(|_| "configs/ops/runtime/cluster-config.example.json".to_string());
+    let node_path = std::env::var("ATLAS_NODE_CONFIG_PATH")
+        .unwrap_or_else(|_| "configs/ops/runtime/node-config.example.json".to_string());
 
     let mut response_status = StatusCode::OK;
     let payload = match (
@@ -843,7 +844,9 @@ pub(crate) async fn cluster_mode_handler(
     with_request_id(response, &request_id)
 }
 
-pub(crate) async fn cluster_replica_list_handler(State(state): State<AppState>) -> impl IntoResponse {
+pub(crate) async fn cluster_replica_list_handler(
+    State(state): State<AppState>,
+) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
     let registry = state.replica_registry.lock().await;
@@ -984,7 +987,9 @@ pub(crate) async fn cluster_replica_diagnostics_handler(
 }
 
 #[tracing::instrument(skip(state))]
-pub(crate) async fn cluster_recovery_run_handler(State(state): State<AppState>) -> impl IntoResponse {
+pub(crate) async fn cluster_recovery_run_handler(
+    State(state): State<AppState>,
+) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
     let now_unix_ms = chrono_like_unix_millis() as u64;
@@ -1033,21 +1038,27 @@ pub(crate) async fn cluster_recovery_run_handler(State(state): State<AppState>) 
         let replica_keys = replica_registry
             .list()
             .into_iter()
-            .map(|record| (record.metadata.dataset_id.clone(), record.metadata.shard_id.clone()))
+            .map(|record| {
+                (
+                    record.metadata.dataset_id.clone(),
+                    record.metadata.shard_id.clone(),
+                )
+            })
             .collect::<Vec<_>>();
         for (dataset_id, shard_id) in replica_keys {
-            let failover_target = replica_registry
-                .get(&dataset_id, &shard_id)
-                .and_then(|replica| {
-                    if timed_out_nodes
-                        .iter()
-                        .any(|node| node == &replica.metadata.primary_node_id)
-                    {
-                        replica.metadata.replica_node_ids.first().cloned()
-                    } else {
-                        None
-                    }
-                });
+            let failover_target =
+                replica_registry
+                    .get(&dataset_id, &shard_id)
+                    .and_then(|replica| {
+                        if timed_out_nodes
+                            .iter()
+                            .any(|node| node == &replica.metadata.primary_node_id)
+                        {
+                            replica.metadata.replica_node_ids.first().cloned()
+                        } else {
+                            None
+                        }
+                    });
             if let Some(target) = failover_target {
                 if replica_registry.failover(&dataset_id, &shard_id, &target) {
                     replica_failovers = replica_failovers.saturating_add(1);
@@ -1094,7 +1105,9 @@ pub(crate) async fn cluster_recovery_run_handler(State(state): State<AppState>) 
 }
 
 #[tracing::instrument(skip(state))]
-pub(crate) async fn recovery_diagnostics_handler(State(state): State<AppState>) -> impl IntoResponse {
+pub(crate) async fn recovery_diagnostics_handler(
+    State(state): State<AppState>,
+) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
     let diagnostics = state.resilience_registry.lock().await.diagnostics();
@@ -1133,7 +1146,8 @@ pub(crate) async fn failure_injection_handler(
         ),
         "shard_corruption" => (
             bijux_atlas_core::FailureCategory::ShardCorruption,
-            req.shard_id.unwrap_or_else(|| "atlas-default-s001".to_string()),
+            req.shard_id
+                .unwrap_or_else(|| "atlas-default-s001".to_string()),
             "simulated shard corruption",
         ),
         "network_partition" => (
@@ -1234,7 +1248,10 @@ pub(crate) async fn openapi_handler(State(state): State<AppState>) -> impl IntoR
     let request_id = make_request_id(&state);
     let started = Instant::now();
     let mut spec = crate::api::openapi_v1_spec();
-    if let Some(info) = spec.get_mut("info").and_then(serde_json::Value::as_object_mut) {
+    if let Some(info) = spec
+        .get_mut("info")
+        .and_then(serde_json::Value::as_object_mut)
+    {
         info.insert(
             "x-build-id".to_string(),
             serde_json::Value::String(option_env!("BIJUX_BUILD_HASH").unwrap_or("dev").to_string()),

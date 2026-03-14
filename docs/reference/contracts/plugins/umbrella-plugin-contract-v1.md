@@ -13,6 +13,7 @@ If a conflict exists, this file is authoritative for umbrella/plugin runtime beh
 - Plugin binaries must be named `bijux-<subsystem>`.
 - Umbrella discovers plugins from `$PATH`.
 - Atlas plugin binary is `bijux-atlas`.
+- Atlas control-plane binary is `bijux-dev-atlas`, and `bijux-cli` install metadata reserves it as the `dev-atlas` product target.
 
 ## Dispatch
 
@@ -54,7 +55,8 @@ Plugins support shared top-level flags:
 
 - Completion output must be deterministic.
 - Command-surface drift is gated by CI using `docs/cli-command-list.md`.
-- Umbrella dispatch parity is gated by integration tests that compare direct plugin execution with `bijux atlas ...` and `bijux dev atlas ...` forwarding.
+- Runtime dispatch parity is gated by integration tests that compare direct plugin execution with `bijux atlas ...` forwarding.
+- Control-plane host alignment is gated by integration tests that verify `bijux-cli` still resolves atlas to `bijux-dev-atlas` for install and registry metadata.
 
 ## What
 

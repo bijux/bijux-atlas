@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::*;
-use super::operations;
 use super::ingest_inputs::resolve_verify_and_lock_inputs;
+use super::operations;
+use super::*;
 
 use std::path::PathBuf;
 
@@ -41,7 +41,6 @@ pub(super) fn explain_query_from_query_text(
         output_mode,
     )
 }
-
 
 pub(super) fn print_completion<G: Generator>(generator: G) {
     let mut command = Cli::command();
@@ -112,7 +111,7 @@ fn plugin_metadata_payload() -> Value {
         "version": env!("CARGO_PKG_VERSION"),
         "compatible_umbrella_min": UMBRELLA_MIN_VERSION,
         "compatible_umbrella_max_exclusive": UMBRELLA_MAX_EXCLUSIVE_VERSION,
-        "compatible_umbrella": ">=0.1.0,<0.2.0",
+        "compatible_umbrella": ">=0.3.0,<0.4.0",
         "build_hash": option_env!("BIJUX_BUILD_HASH").unwrap_or("dev"),
     })
 }
@@ -138,7 +137,7 @@ fn version_in_supported_range(version: &str) -> bool {
     if parts.len() < 2 {
         return false;
     }
-    matches!((parts[0], parts[1]), ("0", "1"))
+    matches!((parts[0], parts[1]), ("0", "3"))
 }
 
 pub(super) fn print_config(canonical_out: bool, output_mode: OutputMode) -> Result<(), String> {

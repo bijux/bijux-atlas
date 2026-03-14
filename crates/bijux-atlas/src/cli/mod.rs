@@ -47,8 +47,8 @@ Options:
 Commands:
 {subcommands}
 {after-help}";
-const UMBRELLA_MIN_VERSION: &str = "0.1.0";
-const UMBRELLA_MAX_EXCLUSIVE_VERSION: &str = "0.2.0";
+const UMBRELLA_MIN_VERSION: &str = "0.3.0";
+const UMBRELLA_MAX_EXCLUSIVE_VERSION: &str = "0.4.0";
 
 struct IngestCliArgs {
     gff3: PathBuf,
