@@ -243,6 +243,32 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 
 [[package]]
+name = "bijux-atlas"
+version = "0.1.1"
+dependencies = [
+ "assert_cmd",
+ "base64",
+ "bijux-atlas-ingest",
+ "bijux-atlas-model",
+ "bijux-atlas-policies",
+ "bijux-atlas-query",
+ "bijux-atlas-store",
+ "clap",
+ "clap_complete",
+ "flate2",
+ "predicates",
+ "reqwest",
+ "rusqlite",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "sha2",
+ "tar",
+ "tempfile",
+ "zstd",
+]
+
+[[package]]
 name = "bijux-atlas-api"
 version = "0.1.1"
 dependencies = [
@@ -260,30 +286,6 @@ version = "0.1.1"
 dependencies = [
  "serde",
  "serde_json",
-]
-
-[[package]]
-name = "bijux-atlas-cli"
-version = "0.1.1"
-dependencies = [
- "assert_cmd",
- "bijux-atlas-core",
- "bijux-atlas-ingest",
- "bijux-atlas-model",
- "bijux-atlas-policies",
- "bijux-atlas-query",
- "bijux-atlas-store",
- "clap",
- "clap_complete",
- "flate2",
- "predicates",
- "reqwest",
- "rusqlite",
- "serde",
- "serde_json",
- "tar",
- "tempfile",
- "zstd",
 ]
 
 [[package]]

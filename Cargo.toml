@@ -8,7 +8,7 @@ members = [
   "crates/bijux-atlas-store",
   "crates/bijux-atlas-query",
   "crates/bijux-atlas-api",
-  "crates/bijux-atlas-cli",
+  "crates/bijux-atlas",
   "crates/bijux-atlas-server",
   "crates/bijux-atlas-policies",
   "crates/bijux-atlas-bench",
@@ -48,7 +48,7 @@ bijux-atlas-ingest = { version = "=0.1.1", path = "crates/bijux-atlas-ingest" }
 bijux-atlas-store = { version = "=0.1.1", path = "crates/bijux-atlas-store" }
 bijux-atlas-query = { version = "=0.1.1", path = "crates/bijux-atlas-query" }
 bijux-atlas-api = { version = "=0.1.1", path = "crates/bijux-atlas-api" }
-bijux-atlas-cli = { version = "=0.1.1", path = "crates/bijux-atlas-cli" }
+bijux-atlas = { version = "=0.1.1", path = "crates/bijux-atlas" }
 bijux-atlas-server = { version = "=0.1.1", path = "crates/bijux-atlas-server" }
 bijux-atlas-policies = { version = "=0.1.1", path = "crates/bijux-atlas-policies" }
 bijux-atlas-bench = { version = "=0.1.1", path = "crates/bijux-atlas-bench" }

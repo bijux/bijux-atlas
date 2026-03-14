@@ -21,7 +21,7 @@ dev-ci: ## Alias for dev-check-ci
 
 install-local: ## Build and install bijux-atlas + bijux-dev-atlas into artifacts/bin
 	@mkdir -p artifacts/bin
-	@cargo build -p bijux-atlas-cli -p bijux-dev-atlas
+	@cargo build -p bijux-atlas -p bijux-dev-atlas
 	@cp artifacts/target/debug/bijux-atlas artifacts/bin/bijux-atlas
 	@cp artifacts/target/debug/bijux-dev-atlas artifacts/bin/bijux-dev-atlas
 	@chmod +x artifacts/bin/bijux-atlas artifacts/bin/bijux-dev-atlas

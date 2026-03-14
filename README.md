@@ -185,7 +185,7 @@ Published by workflow: [`.github/workflows/docs-deploy.yml`](.github/workflows/d
 
 - `bijux-atlas-api`: workspace-managed version, API model surface
 - `bijux-atlas-bench`: workspace-managed version, benchmark harness and perf scenarios
-- `bijux-atlas-cli`: workspace-managed version, user CLI
+- `bijux-atlas`: workspace-managed version, user CLI
 - `bijux-atlas-client`: workspace-managed version, Rust client SDK
 - `bijux-atlas-core`: workspace-managed version, domain core
 - `bijux-atlas-ingest`: workspace-managed version, ingest pipeline
