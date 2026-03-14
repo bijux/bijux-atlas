@@ -6,6 +6,7 @@ use super::actions::{
     print_version, run_ingest, smoke_dataset, ExplainQueryArgs,
 };
 use super::ingest_inputs::verify_ingest_inputs;
+use super::operations;
 
 pub(super) fn run_atlas_command(
     command: AtlasCommand,
@@ -19,7 +20,7 @@ pub(super) fn run_atlas_command(
             species,
             assembly,
             deep,
-        } => artifact_validation::validate_dataset(
+        } => operations::validate_dataset(
             root,
             &release,
             &species,
@@ -40,19 +41,19 @@ pub(super) fn run_atlas_command(
         }
         AtlasCommand::Catalog { command } => match command {
             CatalogCommand::Validate { path } => {
-                artifact_validation::validate_catalog(path, output_mode).map_err(CliError::internal)
+                operations::validate_catalog(path, output_mode).map_err(CliError::internal)
             }
             CatalogCommand::Publish {
                 store_root,
                 catalog,
-            } => artifact_validation::publish_catalog(store_root, catalog, output_mode)
+            } => operations::publish_catalog(store_root, catalog, output_mode)
                 .map_err(CliError::internal),
             CatalogCommand::Rollback {
                 store_root,
                 release,
                 species,
                 assembly,
-            } => artifact_validation::rollback_catalog(
+            } => operations::rollback_catalog(
                 store_root,
                 &release,
                 &species,
@@ -65,7 +66,7 @@ pub(super) fn run_atlas_command(
                 release,
                 species,
                 assembly,
-            } => artifact_validation::promote_catalog(
+            } => operations::promote_catalog(
                 store_root,
                 &release,
                 &species,
@@ -78,7 +79,7 @@ pub(super) fn run_atlas_command(
                 release,
                 species,
                 assembly,
-            } => artifact_validation::update_latest_alias(
+            } => operations::update_latest_alias(
                 store_root,
                 &release,
                 &species,
@@ -94,7 +95,7 @@ pub(super) fn run_atlas_command(
                 species,
                 assembly,
                 deep,
-            } => artifact_validation::validate_dataset(
+            } => operations::validate_dataset(
                 root,
                 &release,
                 &species,
@@ -108,7 +109,7 @@ pub(super) fn run_atlas_command(
                 release,
                 species,
                 assembly,
-            } => artifact_validation::validate_dataset(
+            } => operations::validate_dataset(
                 root,
                 &release,
                 &species,
@@ -123,7 +124,7 @@ pub(super) fn run_atlas_command(
                 release,
                 species,
                 assembly,
-            } => artifact_validation::publish_dataset(
+            } => operations::publish_dataset(
                 source_root,
                 store_root,
                 &release,
@@ -138,7 +139,7 @@ pub(super) fn run_atlas_command(
                 species,
                 assembly,
                 out,
-            } => artifact_validation::pack_dataset(
+            } => operations::pack_dataset(
                 root,
                 &release,
                 &species,
@@ -148,7 +149,7 @@ pub(super) fn run_atlas_command(
             )
             .map_err(CliError::internal),
             DatasetCommand::VerifyPack { pack } => {
-                artifact_validation::verify_pack(pack, output_mode).map_err(CliError::internal)
+                operations::verify_pack(pack, output_mode).map_err(CliError::internal)
             }
         },
         AtlasCommand::Diff { command } => match command {
@@ -160,8 +161,8 @@ pub(super) fn run_atlas_command(
                 assembly,
                 out_dir,
                 max_inline_items,
-            } => artifact_validation::build_release_diff(
-                artifact_validation::BuildReleaseDiffArgs {
+            } => operations::build_release_diff(
+                operations::BuildReleaseDiffArgs {
                     root,
                     from_release,
                     to_release,
@@ -179,21 +180,21 @@ pub(super) fn run_atlas_command(
                 store_root,
                 catalog,
                 pins,
-            } => artifact_validation::gc_plan(store_root, catalog, pins, output_mode)
+            } => operations::gc_plan(store_root, catalog, pins, output_mode)
                 .map_err(CliError::internal),
             GcCommand::Apply {
                 store_root,
                 catalog,
                 pins,
                 confirm,
-            } => artifact_validation::gc_apply(store_root, catalog, pins, confirm, output_mode)
+            } => operations::gc_apply(store_root, catalog, pins, confirm, output_mode)
                 .map_err(CliError::internal),
         },
         AtlasCommand::Policy { command } => match command {
             PolicyCommand::Validate => {
-                artifact_validation::validate_policy(output_mode).map_err(CliError::internal)
+                operations::validate_policy(output_mode).map_err(CliError::internal)
             }
-            PolicyCommand::Explain { mode } => artifact_validation::explain_policy(
+            PolicyCommand::Explain { mode } => operations::explain_policy(
                 mode.map(|m| match m {
                     PolicyModeCli::Strict => crate::policies::PolicyMode::Strict,
                     PolicyModeCli::Compat => crate::policies::PolicyMode::Compat,
@@ -322,7 +323,7 @@ pub(super) fn run_atlas_command(
         AtlasCommand::IngestValidate {
             qc_report,
             thresholds,
-        } => artifact_validation::validate_ingest_qc(qc_report, thresholds, output_mode)
+        } => operations::validate_ingest_qc(qc_report, thresholds, output_mode)
             .map_err(CliError::internal),
         AtlasCommand::InspectDb { db, sample_rows } => {
             inspect_db(db, sample_rows, output_mode).map_err(CliError::internal)

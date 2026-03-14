@@ -7,7 +7,6 @@ extern crate self as bijux_atlas;
 
 #[path = "core/adapters/mod.rs"]
 mod adapters;
-mod artifact_validation;
 pub mod api;
 #[path = "server/cache/mod.rs"]
 mod cache;

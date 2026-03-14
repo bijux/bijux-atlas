@@ -5,9 +5,9 @@ mod args;
 mod commands;
 mod dispatch;
 mod ingest_inputs;
+mod operations;
 pub(crate) mod output;
 
-use crate::artifact_validation;
 use crate::domain::{canonical, resolve_bijux_cache_dir, resolve_bijux_config_path};
 use crate::errors::{ConfigPathScope, ExitCode, MachineError};
 use crate::ingest::{

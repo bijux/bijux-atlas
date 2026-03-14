@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
+use super::operations;
 use super::ingest_inputs::resolve_verify_and_lock_inputs;
 
 use std::path::PathBuf;
@@ -237,7 +238,7 @@ pub(super) fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result
         gene_name_policy: GeneNamePolicy::default(),
         biotype_policy: BiotypePolicy::default(),
         transcript_type_policy: TranscriptTypePolicy::default(),
-        seqid_policy: SeqidNormalizationPolicy::from_aliases(artifact_validation::parse_alias_map(
+        seqid_policy: SeqidNormalizationPolicy::from_aliases(operations::parse_alias_map(
             &args.seqid_aliases,
         )),
         max_threads: args.max_threads,

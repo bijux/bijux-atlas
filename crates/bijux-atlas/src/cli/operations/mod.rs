@@ -26,11 +26,11 @@ mod gc;
 pub(crate) use diff::{build_release_diff, BuildReleaseDiffArgs};
 pub(crate) use gc::{gc_apply, gc_plan};
 
-mod dataset_validation;
+mod dataset;
 
 #[cfg(test)]
-use dataset_validation::validate_qc_thresholds;
-pub(crate) use dataset_validation::{publish_dataset, validate_dataset, validate_ingest_qc};
+use dataset::validate_qc_thresholds;
+pub(crate) use dataset::{publish_dataset, validate_dataset, validate_ingest_qc};
 #[cfg(test)]
 use gc::compute_gc_plan;
 
