@@ -27,7 +27,7 @@ Blocked from crates.io by policy:
 Current publishable crates:
 
 - `bijux-atlas-api`
-- `bijux-atlas-cli`
+- `bijux-atlas`
 - `bijux-atlas-client`
 - `bijux-atlas-core`
 - `bijux-atlas-ingest`

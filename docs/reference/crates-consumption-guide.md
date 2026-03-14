@@ -23,7 +23,7 @@ Use crates listed under `publish.allow` in `release/crates-v0.1.toml`.
 - `bijux-atlas-store`: storage contracts and backend adapters.
 - `bijux-atlas-query`: query parser/planner/execution interfaces.
 - `bijux-atlas-api`: API DTO and OpenAPI generation helpers.
-- `bijux-atlas-cli`: user-facing CLI integration surface.
+- `bijux-atlas`: user-facing CLI integration surface.
 - `bijux-atlas-ingest`: deterministic ingest workflow interfaces.
 - `bijux-atlas-server`: runtime service crate and server integration points.
 

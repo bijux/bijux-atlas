@@ -26,7 +26,7 @@ The following crates are public for `v0.1` and are expected to keep a stable API
 - `bijux-atlas-store`
 - `bijux-atlas-query`
 - `bijux-atlas-api`
-- `bijux-atlas-cli`
+- `bijux-atlas`
 - `bijux-atlas-server`
 - `bijux-atlas-policies`
 

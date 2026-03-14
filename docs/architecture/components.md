@@ -14,7 +14,7 @@
 - `bijux-atlas-query`: provides deterministic query planning and execution.
 - `bijux-atlas-api`: exposes transport-level contracts for query behavior.
 - `bijux-atlas-server`: hosts API runtime, caching, and readiness behavior.
-- `bijux-atlas-cli`: provides runtime-facing command workflows for operators and users.
+- `bijux-atlas`: provides runtime-facing command workflows for operators and users.
 - `bijux-atlas-client`: provides Rust client SDK integration surface for runtime consumers.
 
 ## Control-Plane Components

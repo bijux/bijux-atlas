@@ -388,97 +388,97 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/CONTRACT.md"
+      "from": "crates/bijux-atlas/CONTRACT.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/README.md"
+      "from": "crates/bijux-atlas/README.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/architecture.md"
+      "from": "crates/bijux-atlas/docs/architecture.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/benchmarks.md"
+      "from": "crates/bijux-atlas/docs/benchmarks.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/cli-command-list.md"
+      "from": "crates/bijux-atlas/docs/cli-command-list.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/cli-ux-contract.md"
+      "from": "crates/bijux-atlas/docs/cli-ux-contract.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/command-surface.md"
+      "from": "crates/bijux-atlas/docs/command-surface.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/config-discovery.md"
+      "from": "crates/bijux-atlas/docs/config-discovery.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/effects.md"
+      "from": "crates/bijux-atlas/docs/effects.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/errors.md"
+      "from": "crates/bijux-atlas/docs/errors.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/examples.md"
+      "from": "crates/bijux-atlas/docs/examples.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/exit-codes.md"
+      "from": "crates/bijux-atlas/docs/exit-codes.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/index.md"
+      "from": "crates/bijux-atlas/docs/index.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/internal/effect-boundary-map.md"
+      "from": "crates/bijux-atlas/docs/internal/effect-boundary-map.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/plugin-contract.md"
+      "from": "crates/bijux-atlas/docs/plugin-contract.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/public-api.md"
+      "from": "crates/bijux-atlas/docs/public-api.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/testing.md"
+      "from": "crates/bijux-atlas/docs/testing.md"
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/versioning.md"
+      "from": "crates/bijux-atlas/docs/versioning.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/tests/README.md"
+      "from": "crates/bijux-atlas/tests/README.md"
     },
     {
       "crate": null,

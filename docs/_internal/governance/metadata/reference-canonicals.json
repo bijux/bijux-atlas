@@ -21,7 +21,7 @@
   "commands": [
     {
       "id": "atlas-runtime-cli",
-      "path": "crates/bijux-atlas-cli/COMMAND_SURFACE.md"
+      "path": "crates/bijux-atlas/COMMAND_SURFACE.md"
     },
     {
       "id": "atlas-control-plane-cli",

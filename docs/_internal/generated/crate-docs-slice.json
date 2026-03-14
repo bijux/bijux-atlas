@@ -514,279 +514,279 @@
         "topic": "index"
       }
     ],
-    "bijux-atlas-cli": [
+    "bijux-atlas": [
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
           "architecture",
-          "bijux-atlas-cli"
+          "bijux-atlas"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "bijux-atlas-cli",
-        "path": "crates/bijux-atlas-cli/docs/architecture.md",
+        "owner": "bijux-atlas",
+        "path": "crates/bijux-atlas/docs/architecture.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
           "architecture",
-          "bijux-atlas-cli"
+          "bijux-atlas"
         ],
-        "title": "ARCHITECTURE (bijux-atlas-cli)",
+        "title": "ARCHITECTURE (bijux-atlas)",
         "topic": "architecture"
       },
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
           "benchmarks",
-          "bijux-atlas-cli"
+          "bijux-atlas"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "bijux-atlas-cli",
-        "path": "crates/bijux-atlas-cli/docs/benchmarks.md",
+        "owner": "bijux-atlas",
+        "path": "crates/bijux-atlas/docs/benchmarks.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
           "benchmarks",
-          "bijux-atlas-cli"
+          "bijux-atlas"
         ],
-        "title": "BENCHMARKS (bijux-atlas-cli)",
+        "title": "BENCHMARKS (bijux-atlas)",
         "topic": "benchmarks"
       },
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "cli-command-list"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/cli-command-list.md",
+        "path": "crates/bijux-atlas/docs/cli-command-list.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "cli-command-list"
         ],
         "title": "cli command list",
         "topic": "cli-command-list"
       },
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "cli-ux-contract"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/cli-ux-contract.md",
+        "path": "crates/bijux-atlas/docs/cli-ux-contract.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "cli-ux-contract"
         ],
         "title": "CLI UX Contract",
         "topic": "cli-ux-contract"
       },
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "command-surface"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "bijux-atlas-cli",
-        "path": "crates/bijux-atlas-cli/docs/command-surface.md",
+        "owner": "bijux-atlas",
+        "path": "crates/bijux-atlas/docs/command-surface.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "command-surface"
         ],
-        "title": "COMMAND_SURFACE (bijux-atlas-cli)",
+        "title": "COMMAND_SURFACE (bijux-atlas)",
         "topic": "command-surface"
       },
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "config-discovery"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/config-discovery.md",
+        "path": "crates/bijux-atlas/docs/config-discovery.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "config-discovery"
         ],
         "title": "Config Discovery",
         "topic": "config-discovery"
       },
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "effects"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/effects.md",
+        "path": "crates/bijux-atlas/docs/effects.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "effects"
         ],
         "title": "Effects",
         "topic": "effects"
       },
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "errors"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "bijux-atlas-cli",
-        "path": "crates/bijux-atlas-cli/docs/errors.md",
+        "owner": "bijux-atlas",
+        "path": "crates/bijux-atlas/docs/errors.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "errors"
         ],
-        "title": "ERROR_TAXONOMY (bijux-atlas-cli)",
+        "title": "ERROR_TAXONOMY (bijux-atlas)",
         "topic": "errors"
       },
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "examples"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "bijux-atlas-cli",
-        "path": "crates/bijux-atlas-cli/docs/examples.md",
+        "owner": "bijux-atlas",
+        "path": "crates/bijux-atlas/docs/examples.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "examples"
         ],
-        "title": "EXAMPLES (bijux-atlas-cli)",
+        "title": "EXAMPLES (bijux-atlas)",
         "topic": "examples"
       },
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "exit-codes"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/exit-codes.md",
+        "path": "crates/bijux-atlas/docs/exit-codes.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "exit-codes"
         ],
         "title": "Exit Codes",
         "topic": "exit-codes"
       },
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "index"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/index.md",
+        "path": "crates/bijux-atlas/docs/index.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "index"
         ],
         "title": "Docs Index",
         "topic": "index"
       },
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "effect-boundary-map",
           "internal"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/internal/effect-boundary-map.md",
+        "path": "crates/bijux-atlas/docs/internal/effect-boundary-map.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "effect-boundary-map",
           "internal"
         ],
@@ -794,95 +794,95 @@
         "topic": "effect-boundary-map"
       },
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "plugin-contract"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/plugin-contract.md",
+        "path": "crates/bijux-atlas/docs/plugin-contract.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "plugin-contract"
         ],
         "title": "Plugin Contract",
         "topic": "plugin-contract"
       },
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "public-api"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/public-api.md",
+        "path": "crates/bijux-atlas/docs/public-api.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "public-api"
         ],
-        "title": "PUBLIC API: bijux-atlas-cli",
+        "title": "PUBLIC API: bijux-atlas",
         "topic": "public-api"
       },
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "testing"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "bijux-atlas-cli",
-        "path": "crates/bijux-atlas-cli/docs/testing.md",
+        "owner": "bijux-atlas",
+        "path": "crates/bijux-atlas/docs/testing.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "testing"
         ],
-        "title": "TESTING (bijux-atlas-cli)",
+        "title": "TESTING (bijux-atlas)",
         "topic": "testing"
       },
       {
-        "area": "bijux-atlas-cli",
+        "area": "bijux-atlas",
         "audience": "contributors",
-        "crate": "bijux-atlas-cli",
+        "crate": "bijux-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "versioning"
         ],
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
-        "owner": "bijux-atlas-cli",
-        "path": "crates/bijux-atlas-cli/docs/versioning.md",
+        "owner": "bijux-atlas",
+        "path": "crates/bijux-atlas/docs/versioning.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
-          "bijux-atlas-cli",
+          "bijux-atlas",
           "versioning"
         ],
-        "title": "VERSIONING (bijux-atlas-cli)",
+        "title": "VERSIONING (bijux-atlas)",
         "topic": "versioning"
       }
     ],

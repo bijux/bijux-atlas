@@ -2,7 +2,7 @@
 
 Concept IDs: concept.plugin-contract
 
-- Owner: `bijux-atlas-cli`
+- Owner: `bijux-atlas`
 
 This document defines the v1 contract between the Bijux umbrella runner and subsystem plugins.
 Umbrella/runtime SSOT: `docs/ecosystem/umbrella-plugin-contract-v1.md`.

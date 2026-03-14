@@ -22,7 +22,7 @@ graph TD
   store[bijux-atlas-store]
   query[bijux-atlas-query]
   api[bijux-atlas-api]
-  cli[bijux-atlas-cli]
+  cli[bijux-atlas]
   server[bijux-atlas-server]
   policies[bijux-atlas-policies]
 

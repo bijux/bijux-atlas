@@ -107,7 +107,7 @@ flowchart TD
   subgraph Delivery
     A[bijux-atlas-api]
     SRV[bijux-atlas-server]
-    CLI[bijux-atlas-cli]
+    CLI[bijux-atlas]
     CLT[bijux-atlas-client]
   end
   subgraph GovernanceAndPerf
@@ -136,7 +136,7 @@ flowchart TD
 
 Separate crate does not always mean public crate. Some crates are separation units for lifecycle containment and verification, even when publication intent differs.
 
-`bijux-dev-atlas` is intentionally separate from `bijux-atlas-cli`: one is repository control-plane authority, the other is user/runtime operator surface.
+`bijux-dev-atlas` is intentionally separate from `bijux-atlas`: one is repository control-plane authority, the other is user/runtime operator surface.
 
 Core, model, and policies form the anti-drift base. Their separation keeps semantic and policy drift visible early.
 
@@ -151,7 +151,7 @@ Core, model, and policies form the anti-drift base. Their separation keeps seman
 | `bijux-atlas-api` | API contracts and wire types | Contract governance needs independent checks | Contract drift hidden in server internals | Server, client, CLI |
 | `bijux-atlas-server` | Runtime service process | Runtime ops concerns are distinct from libraries | Library crates inherit server-only constraints | Deployments, operators |
 | `bijux-atlas-client` | Rust SDK for API | Consumer compatibility cadence differs | Client users get runtime coupling | Integrators and app teams |
-| `bijux-atlas-cli` | User-facing command surface | UX and command lifecycle differ | User UX changes destabilize internals | Operators, contributors |
+| `bijux-atlas` | User-facing command surface | UX and command lifecycle differ | User UX changes destabilize internals | Operators, contributors |
 | `bijux-dev-atlas` | Repo control plane for checks/contracts/docs/ops/release | Governance tooling must not be runtime dependency | Runtime and governance concerns become inseparable | CI, maintainers, contributors |
 | `bijux-atlas-bench` | Perf harness and reproducible benchmarks | Benchmark dependencies and cadence are high-churn | Runtime dependency bloat and unstable perf lane | Performance engineering |
 
@@ -262,7 +262,7 @@ This system is strict but not frozen. Shape must keep earning itself.
 
 ## Decision Examples
 
-- Kept `bijux-dev-atlas` separate from `bijux-atlas-cli` to preserve control-plane authority isolation.
+- Kept `bijux-dev-atlas` separate from `bijux-atlas` to preserve control-plane authority isolation.
 - Kept `configs/` as machine-readable SSOT to enable deterministic checks/contracts.
 - Kept `ops/` deep to maintain explicit install/validate/observe ownership boundaries.
 - Did not create a separate crate for every docs concern; docs remain directory-scoped, not crate-scoped.

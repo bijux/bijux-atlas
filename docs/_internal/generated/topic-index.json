@@ -15,7 +15,7 @@
       "configs/CONTRACT.md",
       "crates/bijux-atlas-api/CONTRACT.md",
       "crates/bijux-atlas-bench/CONTRACT.md",
-      "crates/bijux-atlas-cli/CONTRACT.md",
+      "crates/bijux-atlas/CONTRACT.md",
       "crates/bijux-atlas-client/CONTRACT.md",
       "crates/bijux-atlas-core/CONTRACT.md",
       "crates/bijux-atlas-ingest/CONTRACT.md",
@@ -123,8 +123,8 @@
       "crates/bijux-atlas-api/README.md",
       "crates/bijux-atlas-api/tests/README.md",
       "crates/bijux-atlas-bench/README.md",
-      "crates/bijux-atlas-cli/README.md",
-      "crates/bijux-atlas-cli/tests/README.md",
+      "crates/bijux-atlas/README.md",
+      "crates/bijux-atlas/tests/README.md",
       "crates/bijux-atlas-client/README.md",
       "crates/bijux-atlas-core/README.md",
       "crates/bijux-atlas-core/tests/README.md",
@@ -407,7 +407,7 @@
     ],
     "architecture": [
       "crates/bijux-atlas-api/docs/architecture.md",
-      "crates/bijux-atlas-cli/docs/architecture.md",
+      "crates/bijux-atlas/docs/architecture.md",
       "crates/bijux-atlas-client/docs/architecture.md",
       "crates/bijux-atlas-core/docs/architecture.md",
       "crates/bijux-atlas-ingest/docs/architecture.md",
@@ -637,7 +637,7 @@
     ],
     "benchmarks": [
       "crates/bijux-atlas-api/docs/benchmarks.md",
-      "crates/bijux-atlas-cli/docs/benchmarks.md",
+      "crates/bijux-atlas/docs/benchmarks.md",
       "crates/bijux-atlas-core/docs/benchmarks.md",
       "crates/bijux-atlas-ingest/docs/benchmarks.md",
       "crates/bijux-atlas-model/docs/benchmarks.md",
@@ -762,7 +762,7 @@
       "docs/architecture/cli-boundaries.md"
     ],
     "cli-command-list": [
-      "crates/bijux-atlas-cli/docs/cli-command-list.md",
+      "crates/bijux-atlas/docs/cli-command-list.md",
       "crates/bijux-dev-atlas/docs/cli-command-list.md",
       "crates/bijux-dev-atlas/docs/internal/cli-command-list.md",
       "docs/_internal/cli-command-list.md",
@@ -793,7 +793,7 @@
       "docs/perf/cli-ux-baseline-update.md"
     ],
     "cli-ux-contract": [
-      "crates/bijux-atlas-cli/docs/cli-ux-contract.md"
+      "crates/bijux-atlas/docs/cli-ux-contract.md"
     ],
     "cli-ux-how-it-works": [
       "docs/perf/cli-ux-how-it-works.md"
@@ -886,7 +886,7 @@
       "docs/cli/command-reference.md"
     ],
     "command-surface": [
-      "crates/bijux-atlas-cli/docs/command-surface.md",
+      "crates/bijux-atlas/docs/command-surface.md",
       "crates/bijux-dev-atlas/docs/command-surface.md"
     ],
     "commands": [
@@ -965,7 +965,7 @@
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/config-diff.md"
     ],
     "config-discovery": [
-      "crates/bijux-atlas-cli/docs/config-discovery.md"
+      "crates/bijux-atlas/docs/config-discovery.md"
     ],
     "config-keys": [
       "docs/reference/contracts/config-keys.md"
@@ -1660,7 +1660,7 @@
     ],
     "effect-boundary-map": [
       "crates/bijux-atlas-api/docs/effect-boundary-map.md",
-      "crates/bijux-atlas-cli/docs/internal/effect-boundary-map.md",
+      "crates/bijux-atlas/docs/internal/effect-boundary-map.md",
       "crates/bijux-atlas-core/docs/effect-boundary-map.md",
       "crates/bijux-atlas-ingest/docs/internal/effect-boundary-map.md",
       "crates/bijux-atlas-model/docs/effect-boundary-map.md",
@@ -1671,7 +1671,7 @@
     ],
     "effects": [
       "crates/bijux-atlas-api/docs/effects.md",
-      "crates/bijux-atlas-cli/docs/effects.md",
+      "crates/bijux-atlas/docs/effects.md",
       "crates/bijux-atlas-core/docs/effects.md",
       "crates/bijux-atlas-ingest/docs/effects.md",
       "crates/bijux-atlas-model/docs/effects.md",
@@ -1764,7 +1764,7 @@
     ],
     "errors": [
       "crates/bijux-atlas-api/docs/errors.md",
-      "crates/bijux-atlas-cli/docs/errors.md",
+      "crates/bijux-atlas/docs/errors.md",
       "crates/bijux-atlas-core/docs/errors.md",
       "crates/bijux-atlas-ingest/docs/errors.md",
       "crates/bijux-atlas-model/docs/errors.md",
@@ -1816,7 +1816,7 @@
     ],
     "examples": [
       "crates/bijux-atlas-api/docs/examples.md",
-      "crates/bijux-atlas-cli/docs/examples.md",
+      "crates/bijux-atlas/docs/examples.md",
       "crates/bijux-atlas-core/docs/examples.md",
       "crates/bijux-atlas-ingest/docs/examples.md",
       "crates/bijux-atlas-model/docs/examples.md",
@@ -1831,7 +1831,7 @@
       "docs/_internal/governance/exception-inventory.md"
     ],
     "exit-codes": [
-      "crates/bijux-atlas-cli/docs/exit-codes.md",
+      "crates/bijux-atlas/docs/exit-codes.md",
       "crates/bijux-dev-atlas/docs/exit-codes.md"
     ],
     "export-audit-logs-to-siem": [
@@ -2129,7 +2129,7 @@
     "index": [
       "crates/bijux-atlas-api/docs/index.md",
       "crates/bijux-atlas-bench/docs/index.md",
-      "crates/bijux-atlas-cli/docs/index.md",
+      "crates/bijux-atlas/docs/index.md",
       "crates/bijux-atlas-core/docs/index.md",
       "crates/bijux-atlas-ingest/docs/index.md",
       "crates/bijux-atlas-model/docs/index.md",
@@ -2920,7 +2920,7 @@
       "docs/_internal/governance/style/placement.md"
     ],
     "plugin-contract": [
-      "crates/bijux-atlas-cli/docs/plugin-contract.md"
+      "crates/bijux-atlas/docs/plugin-contract.md"
     ],
     "plugin-versioning-and-release-independence": [
       "docs/reference/registry/plugin-versioning-and-release-independence.md"
@@ -3012,7 +3012,7 @@
     ],
     "public-api": [
       "crates/bijux-atlas-api/docs/public-api.md",
-      "crates/bijux-atlas-cli/docs/public-api.md",
+      "crates/bijux-atlas/docs/public-api.md",
       "crates/bijux-atlas-core/docs/public-api.md",
       "crates/bijux-atlas-ingest/docs/public-api.md",
       "crates/bijux-atlas-model/docs/public-api.md",
@@ -4016,7 +4016,7 @@
     ],
     "testing": [
       "crates/bijux-atlas-api/docs/testing.md",
-      "crates/bijux-atlas-cli/docs/testing.md",
+      "crates/bijux-atlas/docs/testing.md",
       "crates/bijux-atlas-core/docs/testing.md",
       "crates/bijux-atlas-ingest/docs/testing.md",
       "crates/bijux-atlas-model/docs/testing.md",
@@ -4281,7 +4281,7 @@
     ],
     "versioning": [
       "crates/bijux-atlas-api/docs/versioning.md",
-      "crates/bijux-atlas-cli/docs/versioning.md",
+      "crates/bijux-atlas/docs/versioning.md",
       "crates/bijux-atlas-core/docs/versioning.md",
       "crates/bijux-atlas-ingest/docs/versioning.md",
       "crates/bijux-atlas-model/docs/versioning.md",

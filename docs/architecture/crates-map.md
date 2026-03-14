@@ -23,7 +23,7 @@ flowchart LR
   api --> server[bijux-atlas-server]
   api --> client[bijux-atlas-client]
   query --> client
-  ingest --> cli[bijux-atlas-cli]
+  ingest --> cli[bijux-atlas]
   query --> cli
   store --> cli
   server --> bench[bijux-atlas-bench]
@@ -47,7 +47,7 @@ flowchart LR
 
 - `bijux-atlas-api`: HTTP/API behavior contracts and response semantics.
 - `bijux-atlas-server`: production server process, readiness, and serving controls.
-- `bijux-atlas-cli`: runtime-facing CLI workflows and local operations.
+- `bijux-atlas`: runtime-facing CLI workflows and local operations.
 - `bijux-atlas-client`: Rust client SDK for consuming runtime APIs and query results.
 
 ## Control-plane layer
@@ -68,7 +68,7 @@ flowchart LR
 | `bijux-atlas-query` | deterministic query execution | serving-store state, query params | query responses | stable | architecture |
 | `bijux-atlas-api` | API contract surface | query responses, request params | HTTP responses | stable | architecture |
 | `bijux-atlas-server` | runtime process hosting | API handlers, runtime config | running service endpoints | stable | architecture |
-| `bijux-atlas-cli` | operator/runtime CLI | command args, runtime services | operational command effects | stable | architecture |
+| `bijux-atlas` | operator/runtime CLI | command args, runtime services | operational command effects | stable | architecture |
 | `bijux-atlas-client` | Rust client SDK | API contracts, runtime endpoints | typed client requests/responses | stable | architecture |
 | `bijux-atlas-bench` | benchmark and perf harness | runtime/query/store surfaces | benchmark measurements and regression evidence | stable | architecture |
 | `bijux-dev-atlas` | control-plane checks and reporting | repo state, contract definitions | reports, gates, generated artifacts | stable | platform |

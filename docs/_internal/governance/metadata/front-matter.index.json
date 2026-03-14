@@ -620,154 +620,154 @@
     {
       "area": "crates",
       "audience": "contributors",
-      "owner": "bijux-atlas-cli",
-      "path": "crates/bijux-atlas-cli/CONTRACT.md",
+      "owner": "bijux-atlas",
+      "path": "crates/bijux-atlas/CONTRACT.md",
       "stability": "stable",
-      "title": "CONTRACT (bijux-atlas-cli)"
+      "title": "CONTRACT (bijux-atlas)"
     },
     {
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-cli/README.md",
+      "path": "crates/bijux-atlas/README.md",
       "stability": "stable",
-      "title": "bijux-atlas-cli"
+      "title": "bijux-atlas"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
-      "owner": "bijux-atlas-cli",
-      "path": "crates/bijux-atlas-cli/docs/architecture.md",
+      "owner": "bijux-atlas",
+      "path": "crates/bijux-atlas/docs/architecture.md",
       "stability": "stable",
-      "title": "ARCHITECTURE (bijux-atlas-cli)"
+      "title": "ARCHITECTURE (bijux-atlas)"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
-      "owner": "bijux-atlas-cli",
-      "path": "crates/bijux-atlas-cli/docs/benchmarks.md",
+      "owner": "bijux-atlas",
+      "path": "crates/bijux-atlas/docs/benchmarks.md",
       "stability": "stable",
-      "title": "BENCHMARKS (bijux-atlas-cli)"
+      "title": "BENCHMARKS (bijux-atlas)"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-cli/docs/cli-command-list.md",
+      "path": "crates/bijux-atlas/docs/cli-command-list.md",
       "stability": "stable",
       "title": "cli command list"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-cli/docs/cli-ux-contract.md",
+      "path": "crates/bijux-atlas/docs/cli-ux-contract.md",
       "stability": "stable",
       "title": "CLI UX Contract"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
-      "owner": "bijux-atlas-cli",
-      "path": "crates/bijux-atlas-cli/docs/command-surface.md",
+      "owner": "bijux-atlas",
+      "path": "crates/bijux-atlas/docs/command-surface.md",
       "stability": "stable",
-      "title": "COMMAND_SURFACE (bijux-atlas-cli)"
+      "title": "COMMAND_SURFACE (bijux-atlas)"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-cli/docs/config-discovery.md",
+      "path": "crates/bijux-atlas/docs/config-discovery.md",
       "stability": "stable",
       "title": "Config Discovery"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-cli/docs/effects.md",
+      "path": "crates/bijux-atlas/docs/effects.md",
       "stability": "stable",
       "title": "Effects"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
-      "owner": "bijux-atlas-cli",
-      "path": "crates/bijux-atlas-cli/docs/errors.md",
+      "owner": "bijux-atlas",
+      "path": "crates/bijux-atlas/docs/errors.md",
       "stability": "stable",
-      "title": "ERROR_TAXONOMY (bijux-atlas-cli)"
+      "title": "ERROR_TAXONOMY (bijux-atlas)"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
-      "owner": "bijux-atlas-cli",
-      "path": "crates/bijux-atlas-cli/docs/examples.md",
+      "owner": "bijux-atlas",
+      "path": "crates/bijux-atlas/docs/examples.md",
       "stability": "stable",
-      "title": "EXAMPLES (bijux-atlas-cli)"
+      "title": "EXAMPLES (bijux-atlas)"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-cli/docs/exit-codes.md",
+      "path": "crates/bijux-atlas/docs/exit-codes.md",
       "stability": "stable",
       "title": "Exit Codes"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-cli/docs/index.md",
+      "path": "crates/bijux-atlas/docs/index.md",
       "stability": "stable",
       "title": "Docs Index"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-cli/docs/internal/effect-boundary-map.md",
+      "path": "crates/bijux-atlas/docs/internal/effect-boundary-map.md",
       "stability": "stable",
       "title": "Effect Boundary Map"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-cli/docs/plugin-contract.md",
+      "path": "crates/bijux-atlas/docs/plugin-contract.md",
       "stability": "stable",
       "title": "Plugin Contract"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-cli/docs/public-api.md",
+      "path": "crates/bijux-atlas/docs/public-api.md",
       "stability": "stable",
-      "title": "PUBLIC API: bijux-atlas-cli"
+      "title": "PUBLIC API: bijux-atlas"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
-      "owner": "bijux-atlas-cli",
-      "path": "crates/bijux-atlas-cli/docs/testing.md",
+      "owner": "bijux-atlas",
+      "path": "crates/bijux-atlas/docs/testing.md",
       "stability": "stable",
-      "title": "TESTING (bijux-atlas-cli)"
+      "title": "TESTING (bijux-atlas)"
     },
     {
-      "area": "bijux-atlas-cli",
+      "area": "bijux-atlas",
       "audience": "contributors",
-      "owner": "bijux-atlas-cli",
-      "path": "crates/bijux-atlas-cli/docs/versioning.md",
+      "owner": "bijux-atlas",
+      "path": "crates/bijux-atlas/docs/versioning.md",
       "stability": "stable",
-      "title": "VERSIONING (bijux-atlas-cli)"
+      "title": "VERSIONING (bijux-atlas)"
     },
     {
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-cli/tests/README.md",
+      "path": "crates/bijux-atlas/tests/README.md",
       "stability": "stable",
-      "title": "Tests for bijux-atlas-cli"
+      "title": "Tests for bijux-atlas"
     },
     {
       "area": "crates",
@@ -11452,7 +11452,7 @@
     {
       "area": "reference",
       "audience": "mixed",
-      "owner": "bijux-atlas-cli",
+      "owner": "bijux-atlas",
       "path": "docs/reference/contracts/plugins/mode.md",
       "stability": "stable",
       "title": "Bijux-Atlas Plugin Mode"
@@ -11460,7 +11460,7 @@
     {
       "area": "reference",
       "audience": "mixed",
-      "owner": "bijux-atlas-cli",
+      "owner": "bijux-atlas",
       "path": "docs/reference/contracts/plugins/spec.md",
       "stability": "stable",
       "title": "Bijux Plugin Specification v1"

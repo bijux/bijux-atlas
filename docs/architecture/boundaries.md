@@ -20,7 +20,7 @@ Atlas keeps runtime behavior predictable by separating data ingestion, storage, 
 - `bijux-atlas-store` -> `bijux-atlas-core`, `bijux-atlas-model`.
 - `bijux-atlas-query` -> `bijux-atlas-core`, `bijux-atlas-model`, `bijux-atlas-policies`, `bijux-atlas-store`.
 - `bijux-atlas-api` -> `bijux-atlas-core`, `bijux-atlas-model`, `bijux-atlas-query`.
-- `bijux-atlas-cli` -> `bijux-atlas-core`, `bijux-atlas-ingest`, `bijux-atlas-model`, `bijux-atlas-policies`, `bijux-atlas-query`, `bijux-atlas-store`.
+- `bijux-atlas` -> `bijux-atlas-core`, `bijux-atlas-ingest`, `bijux-atlas-model`, `bijux-atlas-policies`, `bijux-atlas-query`, `bijux-atlas-store`.
 - `bijux-atlas-server` -> `bijux-atlas-api`, `bijux-atlas-core`, `bijux-atlas-model`, `bijux-atlas-query`, `bijux-atlas-store`.
 
 ## Effects Model

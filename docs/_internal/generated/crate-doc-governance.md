@@ -7,7 +7,7 @@
 |---|---:|---:|---:|
 | `bijux-atlas-api` | 2 | 17 | 3 |
 | `bijux-atlas-bench` | 2 | 5 | 0 |
-| `bijux-atlas-cli` | 2 | 16 | 3 |
+| `bijux-atlas` | 2 | 16 | 3 |
 | `bijux-atlas-client` | 2 | 1 | 0 |
 | `bijux-atlas-core` | 2 | 17 | 3 |
 | `bijux-atlas-ingest` | 2 | 28 | 3 |

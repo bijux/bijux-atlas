@@ -22,7 +22,7 @@ Repository automation, governance, release validation, docs operations, and deve
 
 ## Command ownership migration
 
-`self-check` and `print-config-schema` were previously implemented in `crates/bijux-atlas-cli/src/lib.rs` and dispatched in `crates/bijux-atlas-cli/src/atlas_command_dispatch.rs`.
+`self-check` and `print-config-schema` were previously implemented in `crates/bijux-atlas/src/lib.rs` and dispatched in `crates/bijux-atlas/src/atlas_command_dispatch.rs`.
 
 They now belong to developer tooling as:
 

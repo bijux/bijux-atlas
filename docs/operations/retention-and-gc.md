@@ -28,7 +28,7 @@ Authoritative pins: `ops/inventory/pins.yaml`.
 1. Generate plan:
 
 ```bash
-cargo run -p bijux-atlas-cli -- atlas gc plan \
+cargo run -p bijux-atlas -- atlas gc plan \
   --store-root artifacts/e2e-datasets \
   --catalog artifacts/e2e-datasets/catalog.json \
   --pins ops/inventory/pins.yaml
@@ -38,7 +38,7 @@ cargo run -p bijux-atlas-cli -- atlas gc plan \
 3. Apply cleanup only after approval:
 
 ```bash
-cargo run -p bijux-atlas-cli -- atlas gc apply \
+cargo run -p bijux-atlas -- atlas gc apply \
   --store-root artifacts/e2e-datasets \
   --catalog artifacts/e2e-datasets/catalog.json \
   --pins ops/inventory/pins.yaml \

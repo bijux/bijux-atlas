@@ -20,7 +20,7 @@
     "bijux-atlas-store",
     "bijux-atlas-query",
     "bijux-atlas-api",
-    "bijux-atlas-cli",
+    "bijux-atlas",
     "bijux-atlas-server",
     "bijux-atlas-policies"
   ]

@@ -998,24 +998,24 @@
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "contract"
       ],
-      "path": "crates/bijux-atlas-cli/CONTRACT.md",
+      "path": "crates/bijux-atlas/CONTRACT.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "contract"
       ],
       "topic": "CONTRACT"
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "readme"
       ],
-      "path": "crates/bijux-atlas-cli/README.md",
+      "path": "crates/bijux-atlas/README.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "readme"
       ],
       "topic": "README"
@@ -1023,144 +1023,144 @@
     {
       "keywords": [
         "architecture",
-        "bijux-atlas-cli"
+        "bijux-atlas"
       ],
-      "path": "crates/bijux-atlas-cli/docs/architecture.md",
+      "path": "crates/bijux-atlas/docs/architecture.md",
       "tags": [
         "architecture",
-        "bijux-atlas-cli"
+        "bijux-atlas"
       ],
       "topic": "architecture"
     },
     {
       "keywords": [
         "benchmarks",
-        "bijux-atlas-cli"
+        "bijux-atlas"
       ],
-      "path": "crates/bijux-atlas-cli/docs/benchmarks.md",
+      "path": "crates/bijux-atlas/docs/benchmarks.md",
       "tags": [
         "benchmarks",
-        "bijux-atlas-cli"
+        "bijux-atlas"
       ],
       "topic": "benchmarks"
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "cli-command-list"
       ],
-      "path": "crates/bijux-atlas-cli/docs/cli-command-list.md",
+      "path": "crates/bijux-atlas/docs/cli-command-list.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "cli-command-list"
       ],
       "topic": "cli-command-list"
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "cli-ux-contract"
       ],
-      "path": "crates/bijux-atlas-cli/docs/cli-ux-contract.md",
+      "path": "crates/bijux-atlas/docs/cli-ux-contract.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "cli-ux-contract"
       ],
       "topic": "cli-ux-contract"
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "command-surface"
       ],
-      "path": "crates/bijux-atlas-cli/docs/command-surface.md",
+      "path": "crates/bijux-atlas/docs/command-surface.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "command-surface"
       ],
       "topic": "command-surface"
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "config-discovery"
       ],
-      "path": "crates/bijux-atlas-cli/docs/config-discovery.md",
+      "path": "crates/bijux-atlas/docs/config-discovery.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "config-discovery"
       ],
       "topic": "config-discovery"
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "effects"
       ],
-      "path": "crates/bijux-atlas-cli/docs/effects.md",
+      "path": "crates/bijux-atlas/docs/effects.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "effects"
       ],
       "topic": "effects"
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "errors"
       ],
-      "path": "crates/bijux-atlas-cli/docs/errors.md",
+      "path": "crates/bijux-atlas/docs/errors.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "errors"
       ],
       "topic": "errors"
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "examples"
       ],
-      "path": "crates/bijux-atlas-cli/docs/examples.md",
+      "path": "crates/bijux-atlas/docs/examples.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "examples"
       ],
       "topic": "examples"
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "exit-codes"
       ],
-      "path": "crates/bijux-atlas-cli/docs/exit-codes.md",
+      "path": "crates/bijux-atlas/docs/exit-codes.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "exit-codes"
       ],
       "topic": "exit-codes"
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "index"
       ],
-      "path": "crates/bijux-atlas-cli/docs/index.md",
+      "path": "crates/bijux-atlas/docs/index.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "index"
       ],
       "topic": "index"
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "effect-boundary-map",
         "internal"
       ],
-      "path": "crates/bijux-atlas-cli/docs/internal/effect-boundary-map.md",
+      "path": "crates/bijux-atlas/docs/internal/effect-boundary-map.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "effect-boundary-map",
         "internal"
       ],
@@ -1168,61 +1168,61 @@
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "plugin-contract"
       ],
-      "path": "crates/bijux-atlas-cli/docs/plugin-contract.md",
+      "path": "crates/bijux-atlas/docs/plugin-contract.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "plugin-contract"
       ],
       "topic": "plugin-contract"
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "public-api"
       ],
-      "path": "crates/bijux-atlas-cli/docs/public-api.md",
+      "path": "crates/bijux-atlas/docs/public-api.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "public-api"
       ],
       "topic": "public-api"
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "testing"
       ],
-      "path": "crates/bijux-atlas-cli/docs/testing.md",
+      "path": "crates/bijux-atlas/docs/testing.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "testing"
       ],
       "topic": "testing"
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "versioning"
       ],
-      "path": "crates/bijux-atlas-cli/docs/versioning.md",
+      "path": "crates/bijux-atlas/docs/versioning.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "versioning"
       ],
       "topic": "versioning"
     },
     {
       "keywords": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "readme",
         "tests"
       ],
-      "path": "crates/bijux-atlas-cli/tests/README.md",
+      "path": "crates/bijux-atlas/tests/README.md",
       "tags": [
-        "bijux-atlas-cli",
+        "bijux-atlas",
         "readme",
         "tests"
       ],
