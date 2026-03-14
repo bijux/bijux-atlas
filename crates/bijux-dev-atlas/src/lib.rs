@@ -17,6 +17,7 @@ pub mod domains;
 pub mod engine;
 pub mod model;
 pub mod ops;
+pub mod performance;
 pub mod policies;
 pub(crate) mod ports;
 pub mod prelude;
