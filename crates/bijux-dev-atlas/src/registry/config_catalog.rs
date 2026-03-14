@@ -67,8 +67,6 @@ struct ConfigsSchemas {
 #[derive(Clone)]
 struct RegistryIndex {
     registry: ConfigsRegistry,
-    files: Vec<String>,
-    excluded_files: BTreeSet<String>,
     root_files: BTreeSet<String>,
     group_files: BTreeMap<String, GroupFiles>,
 }
@@ -370,6 +368,9 @@ fn registry_index(repo_root: &Path) -> Result<RegistryIndex, String> {
     let text = read_text(&repo_root.join(REGISTRY_PATH))?;
     let registry = serde_json::from_str::<ConfigsRegistry>(&text)
         .map_err(|err| format!("parse {REGISTRY_PATH} failed: {err}"))?;
+    if registry.schema_version != 1 {
+        return Err(format!("{REGISTRY_PATH} must declare schema_version=1"));
+    }
     let files = all_config_files(repo_root)?;
     let excluded_files = files
         .iter()
@@ -398,8 +399,6 @@ fn registry_index(repo_root: &Path) -> Result<RegistryIndex, String> {
     }
     Ok(RegistryIndex {
         registry,
-        files,
-        excluded_files,
         root_files,
         group_files,
     })
