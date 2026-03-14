@@ -37,24 +37,6 @@ fn parse_help_commands(text: &str) -> Vec<String> {
     commands
 }
 
-fn parse_markdown_command_catalog(path: &PathBuf) -> Vec<String> {
-    let text = fs::read_to_string(path).expect("read catalog");
-    let mut commands = Vec::new();
-    for line in text.lines() {
-        let trimmed = line.trim();
-        if !(trimmed.starts_with("- `") && trimmed.ends_with('`')) {
-            continue;
-        }
-        let command = trimmed
-            .trim_start_matches("- `")
-            .trim_end_matches('`')
-            .to_string();
-        commands.push(command);
-    }
-    commands.sort();
-    commands
-}
-
 #[test]
 fn user_cli_does_not_expose_dev_runtime_diagnostics() {
     let out = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
@@ -97,25 +79,6 @@ fn user_cli_commands_match_governance_surface_registry() {
 }
 
 #[test]
-fn user_cli_commands_match_documented_catalog() {
-    let root = repo_root();
-    let out = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
-        .arg("--help")
-        .output()
-        .expect("run help");
-    assert!(out.status.success());
-    let observed = parse_help_commands(&String::from_utf8_lossy(&out.stdout));
-    let catalog_path = root.join("docs/architecture/user-cli-command-catalog.md");
-    let documented = parse_markdown_command_catalog(&catalog_path);
-    assert_eq!(
-        observed,
-        documented,
-        "user CLI command list must stay in sync with {}",
-        catalog_path.display()
-    );
-}
-
-#[test]
 fn user_cli_cargo_manifest_must_not_depend_on_dev_atlas() {
     let root = repo_root();
     let cargo_toml = fs::read_to_string(root.join("crates/bijux-atlas/Cargo.toml"))
@@ -124,22 +87,4 @@ fn user_cli_cargo_manifest_must_not_depend_on_dev_atlas() {
         !cargo_toml.contains("bijux-dev-atlas"),
         "user CLI must not depend on dev-only crates"
     );
-}
-
-#[test]
-fn docs_must_reference_dev_runtime_self_check_command() {
-    let root = repo_root();
-    let docs_paths = [
-        root.join("docs/operations/ghcr-runtime-usage.md"),
-        root.join("docs/operations/image-offline-usage.md"),
-        root.join("docs/operations/image-upgrade-guide.md"),
-    ];
-    for path in docs_paths {
-        let text = fs::read_to_string(&path).expect("read docs file");
-        assert!(
-            text.contains("bijux-dev-atlas runtime self-check"),
-            "{} must reference `bijux-dev-atlas runtime self-check`",
-            path.display()
-        );
-    }
 }

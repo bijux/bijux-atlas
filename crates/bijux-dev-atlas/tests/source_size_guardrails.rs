@@ -85,7 +85,6 @@ fn critical_files_warn_at_4500_and_fail_at_5000_lines() {
         "crates/bijux-dev-atlas/src/contracts/crates/mod.rs",
         "crates/bijux-dev-atlas/src/contracts/docs/docs_static_artifact_checks.inc.rs",
         "crates/bijux-dev-atlas/src/contracts/make/surface_contracts.rs",
-        "crates/bijux-dev-atlas/tests/docs_registry_contracts.rs",
         "crates/bijux-dev-atlas/tests/cli_contracts/contracts_surface.rs",
         "crates/bijux-dev-atlas/src/commands/docs/runtime/docs_command_router.rs",
         "crates/bijux-dev-atlas/src/core/checks/ops/governance_repo_checks.rs",

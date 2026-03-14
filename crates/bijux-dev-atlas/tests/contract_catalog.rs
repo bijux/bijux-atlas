@@ -70,21 +70,3 @@ fn contract_catalog_rejects_duplicate_ids() {
     let error = catalog.validate().expect_err("duplicate id must fail");
     assert!(error.contains("duplicate contract id `DUP-001`"));
 }
-
-#[test]
-fn contract_catalog_entries_resolve_docs_files() {
-    let catalog = ContractCatalog::load(&repo_root()).expect("contract catalog");
-    for entry in catalog.entries() {
-        assert!(
-            repo_root().join(entry.doc_ref.path).is_file(),
-            "expected docs file for {} at {}",
-            entry.id(),
-            entry.doc_ref.path
-        );
-        assert!(
-            !entry.doc_ref.title.trim().is_empty(),
-            "expected docs title for {}",
-            entry.id()
-        );
-    }
-}

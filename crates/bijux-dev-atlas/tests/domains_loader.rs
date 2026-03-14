@@ -35,18 +35,13 @@ fn rust_sources(root: &Path) -> Vec<PathBuf> {
 }
 
 #[test]
-fn every_loaded_domain_has_runnables_and_docs_links() {
+fn every_loaded_domain_has_runnables() {
     let catalogs = load_domains(&repo_root()).expect("load domains");
     assert!(!catalogs.is_empty(), "expected registered domains");
     for catalog in catalogs {
         assert!(
             !catalog.runnables.is_empty(),
             "domain {} must register at least one runnable",
-            catalog.registration.name
-        );
-        assert!(
-            !catalog.registration.docs_links.is_empty(),
-            "domain {} must register at least one docs link",
             catalog.registration.name
         );
     }

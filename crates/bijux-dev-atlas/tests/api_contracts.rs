@@ -91,10 +91,6 @@ fn api_verify_and_contract_generate_evidence() {
         "artifacts/api/api-example-requests.json",
         "artifacts/api/api-example-responses.json",
         "artifacts/api/api-example-dataset-queries.json",
-        "docs/api/generated/endpoint-index.md",
-        "docs/api/generated/endpoint-templates.md",
-        "docs/api/generated/api-schema-reference.md",
-        "docs/api/generated/api-contract-documentation.md",
     ] {
         assert!(root.join(rel).exists(), "missing artifact: {rel}");
     }

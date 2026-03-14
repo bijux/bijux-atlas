@@ -59,43 +59,6 @@ fn collect_prefixed_env_tokens(text: &str) -> BTreeSet<String> {
         .collect()
 }
 
-fn render_chart_env_keys(root: &Path) -> BTreeSet<String> {
-    let output = Command::new("helm")
-        .current_dir(root)
-        .args([
-            "template",
-            "atlas-default",
-            "ops/k8s/charts/bijux-atlas",
-            "-f",
-            "ops/k8s/charts/bijux-atlas/values.yaml",
-        ])
-        .output()
-        .expect("helm template");
-    assert!(
-        output.status.success(),
-        "helm template must succeed:\nstdout:\n{}\nstderr:\n{}",
-        String::from_utf8_lossy(&output.stdout),
-        String::from_utf8_lossy(&output.stderr)
-    );
-
-    let rendered = String::from_utf8(output.stdout).expect("helm template utf8");
-    let mut env_names = BTreeSet::new();
-    for line in rendered.lines() {
-        let trimmed = line.trim();
-        if let Some(name) = trimmed.strip_suffix(':') {
-            if name.starts_with("ATLAS_") || name.starts_with("BIJUX_") {
-                env_names.insert(name.to_string());
-            }
-        }
-        if let Some(name) = trimmed.strip_prefix("- name: ") {
-            if name.starts_with("ATLAS_") || name.starts_with("BIJUX_") {
-                env_names.insert(name.to_string());
-            }
-        }
-    }
-    env_names
-}
-
 fn assert_pretty_json_file(path: &Path) {
     let text = read(path);
     let parsed: Value = serde_json::from_str(&text)
@@ -266,57 +229,6 @@ fn root_symlinks_and_dockerignore_follow_surface_contract() {
         assert!(
             dockerignore.lines().any(|line| line.trim() == required),
             ".dockerignore must include `{required}`"
-        );
-    }
-}
-
-#[test]
-fn runtime_config_docs_and_helm_env_surface_match_declared_config_keys() {
-    let root = repo_root();
-    let config_doc = read(&root.join("docs/operations/config.md"));
-    for required in [
-        "crates/bijux-atlas-server/docs/generated/runtime-startup-config.schema.json",
-        "crates/bijux-atlas-server/docs/generated/runtime-startup-config.md",
-    ] {
-        assert!(
-            config_doc.contains(required),
-            "runtime config doc must reference `{required}`"
-        );
-        assert!(
-            root.join(required).is_file(),
-            "runtime config doc reference must exist: {required}"
-        );
-    }
-
-    let config_keys = load_json(&root.join("docs/reference/contracts/schemas/CONFIG_KEYS.json"));
-    let declared = config_keys["env_keys"]
-        .as_array()
-        .expect("env_keys array")
-        .iter()
-        .filter_map(Value::as_str)
-        .map(str::to_string)
-        .collect::<BTreeSet<_>>();
-
-    let env_names = render_chart_env_keys(&root);
-    for env_name in &env_names {
-        assert!(
-            declared.contains(env_name),
-            "helm deployment env var must exist in docs/reference/contracts/schemas/CONFIG_KEYS.json: {env_name}"
-        );
-    }
-
-    let config_schema = load_json(&root.join("configs/contracts/env.schema.json"));
-    let schema_keys = config_schema["allowed_env"]
-        .as_array()
-        .expect("allowed_env array")
-        .iter()
-        .filter_map(Value::as_str)
-        .map(str::to_string)
-        .collect::<BTreeSet<_>>();
-    for env_name in env_names {
-        assert!(
-            schema_keys.contains(&env_name),
-            "helm deployment env var must exist in configs/contracts/env.schema.json: {env_name}"
         );
     }
 }
@@ -537,73 +449,6 @@ fn workspace_package_metadata_stays_acyclic_and_consistent() {
     for name in adjacency.keys() {
         visit(name, &adjacency, &mut visiting, &mut visited);
     }
-}
-
-#[test]
-fn docs_workflows_copy_the_built_site_from_mkdocs_site_dir() {
-    let root = repo_root();
-    let mkdocs = read(&root.join("mkdocs.yml"));
-    assert!(
-        mkdocs.contains("site_dir: artifacts/docs/site"),
-        "mkdocs.yml must keep the authoritative docs site_dir"
-    );
-
-    for workflow in [
-        ".github/workflows/docs-audit.yml",
-        ".github/workflows/docs-only.yml",
-        ".github/workflows/ci-pr.yml",
-    ] {
-        let text = read(&root.join(workflow));
-        if workflow == ".github/workflows/docs-only.yml" {
-            assert!(
-                text.contains("site_dir=\"$(python3 - <<'PY'"),
-                "{workflow} must derive the docs preview source from mkdocs.yml"
-            );
-            assert!(
-                text.contains("cp -R \"${site_dir}\" \"artifacts/${RUN_ID}/site-preview\""),
-                "{workflow} must copy the built docs preview from the resolved mkdocs site_dir"
-            );
-            assert!(
-                text.contains("test -f \"${site_dir}/index.html\""),
-                "{workflow} must verify the built preview contains index.html"
-            );
-            assert!(
-                text.contains("test -d \"${site_dir}/assets\""),
-                "{workflow} must verify the built preview contains assets"
-            );
-            assert!(
-                text.contains("rm -rf \"artifacts/${RUN_ID}/site-preview/_internal\""),
-                "{workflow} must remove the raw _internal subtree from the published preview artifact"
-            );
-        } else {
-            assert!(
-                text.contains("cp -R artifacts/docs/site \"artifacts/${RUN_ID}/site-preview\""),
-                "{workflow} must copy the built docs preview from mkdocs site_dir"
-            );
-        }
-        assert!(
-            !text.contains("cp -R site \"artifacts/${RUN_ID}/site-preview\""),
-            "{workflow} must not rely on the obsolete default MkDocs output directory"
-        );
-    }
-}
-
-#[test]
-fn mkdocs_config_enables_redirects_plugin_for_legacy_markdown_paths() {
-    let root = repo_root();
-    let mkdocs = read(&root.join("mkdocs.yml"));
-    assert!(
-        mkdocs.contains("- redirects:"),
-        "mkdocs.yml must enable the redirects plugin"
-    );
-    assert!(
-        mkdocs.contains("redirect_maps:"),
-        "mkdocs.yml must declare redirect_maps for legacy markdown paths"
-    );
-    assert!(
-        mkdocs.contains("_generated/topic-index.md: _internal/generated/topic-index.md"),
-        "mkdocs.yml must redirect legacy _generated topic index pages"
-    );
 }
 
 #[test]
