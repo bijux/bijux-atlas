@@ -20,17 +20,11 @@ related:
 
 The following crates are public for `v0.1` and are expected to keep a stable API boundary within semver rules:
 
-- `bijux-atlas-core`
-- `bijux-atlas-model`
-- `bijux-atlas-ingest`
-- `bijux-atlas-store`
-- `bijux-atlas-api`
 - `bijux-atlas`
-- `bijux-atlas-server`
 
 ## Private boundary
 
-- `bijux-dev-atlas` and `bijux-atlas-bench` are private crates (`publish = false`).
+- `bijux-dev-atlas` is a private crate (`publish = false`).
 - Their public symbols are not a consumer-facing compatibility contract.
 
 ## Internal modules

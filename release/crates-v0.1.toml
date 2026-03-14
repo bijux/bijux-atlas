@@ -8,13 +8,11 @@ allow = [
 ]
 deny = [
   "bijux-dev-atlas",
-  "bijux-atlas-bench",
 ]
 
 [roles]
 "bijux-dev-atlas" = "developer-tool-private"
 "bijux-atlas" = "atlas-platform"
-"bijux-atlas-bench" = "benchmark-private"
 
 [metadata_requirements]
 required_package_fields = [

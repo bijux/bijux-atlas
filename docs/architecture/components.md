@@ -9,24 +9,15 @@
 
 ## Runtime Components
 
-- `bijux-atlas-ingest`: validates source inputs and writes deterministic artifacts.
-- `bijux-atlas-store`: manages serving-store persistence and artifact access.
-- `bijux-atlas-api`: exposes transport-level contracts for query behavior.
-- `bijux-atlas-server`: hosts API runtime, caching, and readiness behavior.
-- `bijux-atlas`: provides runtime-facing command workflows for operators and users, and owns the runtime query and policy modules.
-- `bijux-atlas-client`: provides Rust client SDK integration surface for runtime consumers.
+- `bijux-atlas`: provides runtime-facing command workflows for operators and users.
+- Embedded runtime modules inside `bijux-atlas` own ingest, store, API, server, client, query, model, and policy behavior.
 
 ## Control-Plane Components
 
-- `bijux-dev-atlas`: runs checks, docs validation, policies, and ops lanes.
+- `bijux-dev-atlas`: runs checks, docs validation, policies, ops lanes, and performance evidence workflows.
+- `bijux_dev_atlas::performance`: provides reusable benchmark models, dataset registries, and reproducibility helpers for perf commands.
 - `ops/*` inventory: defines operator entrypoints and surface contracts.
 - governance docs/contracts: enforce non-runtime policy and review controls.
-- `bijux-atlas-bench`: runs governed benchmark scenarios and performance evidence generation.
-
-## Shared Foundation Components
-
-- `bijux-atlas-core`: cross-cutting primitives and invariants.
-- `bijux-atlas-model`: shared domain structures and schema-level contracts.
 
 ## What Never Happens
 

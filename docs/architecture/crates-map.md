@@ -11,59 +11,47 @@
 
 ```mermaid
 flowchart LR
-  core[bijux-atlas-core] --> ingest[bijux-atlas-ingest]
-  model[bijux-atlas-model] --> ingest
-  core --> store[bijux-atlas-store]
-  model --> store
-  cli[bijux-atlas] --> core[bijux-atlas-core]
-  cli --> model[bijux-atlas-model]
-  cli --> store[bijux-atlas-store]
-  cli --> ingest[bijux-atlas-ingest]
-  api[bijux-atlas-api] --> cli
-  api --> server[bijux-atlas-server]
-  api --> client[bijux-atlas-client]
+  dev[bijux-dev-atlas] --> cli[bijux-atlas]
+  subgraph runtime[bijux-atlas embedded surfaces]
+    api[api]
+    ingest[ingest]
+    store[store]
+    server[server]
+    client[client]
+    query[query]
+    policies[policies]
+  end
+  cli --> api
+  cli --> ingest
+  cli --> store
+  cli --> server
   cli --> client
-  server --> bench[bijux-atlas-bench]
-  cli --> bench
-  dev[bijux-dev-atlas] --> cli
+  cli --> query
+  cli --> policies
+  subgraph control[bijux-dev-atlas embedded surfaces]
+    perf[performance]
+    docs[docs/configs/ops/release]
+  end
+  dev --> perf
+  dev --> docs
 ```
 
-## Foundation layer
+## Runtime layer
 
-- `bijux-atlas-core`: core invariants, canonicalization helpers, and shared primitives.
-- `bijux-atlas-model`: domain model types shared across runtime and tooling.
-## Runtime data layer
-
-- `bijux-atlas-ingest`: source ingestion, validation, and artifact build path.
-- `bijux-atlas-store`: artifact and serving-store access layer.
-
-## Runtime interface layer
-
-- `bijux-atlas`: runtime-facing CLI workflows, query execution, and policy evaluation.
-- `bijux-atlas-api`: HTTP/API behavior contracts and response semantics.
-- `bijux-atlas-server`: production server process, readiness, and serving controls.
-- `bijux-atlas-client`: Rust client SDK for consuming runtime APIs and query results.
+- `bijux-atlas`: runtime-facing CLI workflows, query execution, policy evaluation, and all embedded runtime modules.
+- Embedded `api`, `ingest`, `store`, `server`, `client`, `query`, `model`, and `policies` modules remain part of the single runtime crate.
 
 ## Control-plane layer
 
-- `bijux-dev-atlas`: contributor and CI control-plane entrypoint.
+- `bijux-dev-atlas`: contributor and CI control-plane entrypoint with benchmark and perf evidence support.
 - `ops/` surfaces: operational orchestration, validation, and reporting lanes.
-- `bijux-atlas-bench`: benchmark execution surface for runtime/query performance evidence.
 
 ## Crate contract table
 
 | Crate | Role | Inputs | Outputs | Stability | Owner |
 | --- | --- | --- | --- | --- | --- |
-| `bijux-atlas-core` | shared invariants and primitives | runtime requests, config values | canonical helpers, shared contracts | stable | architecture |
-| `bijux-atlas-model` | domain types | ingest payloads, query parameters | normalized model objects | stable | architecture |
-| `bijux-atlas-ingest` | ingest and validation | source datasets, ingest config | validated artifacts | stable | architecture |
-| `bijux-atlas-store` | artifact and serving-store access | artifacts, release metadata | serving-store state, store reads | stable | architecture |
-| `bijux-atlas` | operator/runtime CLI with embedded query and policy modules | command args, runtime services | operational command effects and query responses | stable | architecture |
-| `bijux-atlas-api` | API contract surface | query responses, request params | HTTP responses | stable | architecture |
-| `bijux-atlas-server` | runtime process hosting | API handlers, runtime config | running service endpoints | stable | architecture |
-| `bijux-atlas-client` | Rust client SDK | API contracts, runtime endpoints | typed client requests/responses | stable | architecture |
-| `bijux-atlas-bench` | benchmark and perf harness | runtime/query/store surfaces | benchmark measurements and regression evidence | stable | architecture |
-| `bijux-dev-atlas` | control-plane checks and reporting | repo state, contract definitions | reports, gates, generated artifacts | stable | platform |
+| `bijux-atlas` | runtime package with embedded runtime modules | command args, runtime services, dataset artifacts | runtime effects, query responses, API/server/client binaries | stable | architecture |
+| `bijux-dev-atlas` | control-plane checks, reporting, and perf evidence | repo state, contract definitions, perf configs | reports, gates, generated artifacts, benchmark metadata | stable | platform |
 
 ## What to Read Next
 

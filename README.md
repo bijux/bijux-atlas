@@ -6,7 +6,7 @@ Deterministic genomics data infrastructure with executable governance.
 
 | Surface | Location | Purpose |
 | --- | --- | --- |
-| Crates | `crates/` | Runtime, API, client SDK, ingest, query, benchmark, and control-plane binaries/libraries |
+| Crates | `crates/` | Runtime and control-plane binaries/libraries |
 | Ops | `ops/` | Deploy, profile, schema, and evidence inputs |
 | Docs | `docs/` | Canonical user/operator/contributor documentation |
 | Docker | `docker/` | Container build and runtime image definitions |
@@ -141,8 +141,7 @@ CLI UX perf benchmarks are executed through `bijux-dev-atlas perf cli-ux bench` 
 ## Repository Surfaces
 
 - `crates/bijux-dev-atlas`: governance control-plane command surface
-- `crates/bijux-atlas-server`: runtime service implementation
-- `crates/bijux-atlas-client`: Rust client SDK crate for runtime consumers
+- `crates/bijux-atlas`: runtime package with embedded API, ingest, store, client, server, and policy surfaces
 - `configs/`: policy/schema/configuration SSOTs
 - `ops/`: deploy/release/validation operational surfaces
 - `docs/`: canonical documentation plus internal generated evidence references
@@ -183,24 +182,14 @@ Published by workflow: [`.github/workflows/docs-deploy.yml`](.github/workflows/d
 
 ## Crate Versions
 
-- `bijux-atlas-api`: workspace-managed version, API model surface
-- `bijux-atlas-bench`: workspace-managed version, benchmark harness and perf scenarios
-- `bijux-atlas`: workspace-managed version, user CLI
-- `bijux-atlas-client`: workspace-managed version, Rust client SDK
-- `bijux-atlas-core`: workspace-managed version, domain core
-- `bijux-atlas-ingest`: workspace-managed version, ingest pipeline
-- `bijux-atlas-model`: workspace-managed version, model semantics
-- `bijux-atlas-policies`: workspace-managed version, policy engine
-- `bijux-atlas-query`: workspace-managed version, query primitives
-- `bijux-atlas-server`: workspace-managed version, runtime server
-- `bijux-atlas-store`: workspace-managed version, storage abstractions
+- `bijux-atlas`: workspace-managed version, runtime package with embedded runtime modules and end-user binaries
 - `bijux-dev-atlas`: workspace-managed version, control-plane tooling
 
 Crate details: [`docs/reference/crates.md`](docs/reference/crates.md)
 
 ## Crate Publishing Strategy
 
-Current release plan keeps a multi-crate workspace with shared governance gates. We keep separate crates to preserve clear runtime boundaries and avoid collapsing public API, ops tooling, and control-plane concerns into a single package.
+Current release plan keeps a two-crate workspace with shared governance gates. `bijux-atlas` carries the runtime surface, and `bijux-dev-atlas` remains a private control-plane package for governance, docs, release, and perf automation.
 
 ## Governance And Operations References
 

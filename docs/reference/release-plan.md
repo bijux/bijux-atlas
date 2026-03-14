@@ -22,18 +22,10 @@ Publishable crates are defined in `configs/release/publish-policy.json`.
 Blocked from crates.io by policy:
 
 - `bijux-dev-atlas`
-- `bijux-atlas-bench`
 
 Current publishable crates:
 
-- `bijux-atlas-api`
 - `bijux-atlas`
-- `bijux-atlas-client`
-- `bijux-atlas-core`
-- `bijux-atlas-ingest`
-- `bijux-atlas-model`
-- `bijux-atlas-server`
-- `bijux-atlas-store`
 
 ## Versioning model
 

@@ -94,37 +94,29 @@ Some concerns are crates because they need compilation and release boundaries. S
 
 ```mermaid
 flowchart TD
-  subgraph Foundation
-    C[bijux-atlas-core]
-    M[bijux-atlas-model]
-  end
-  subgraph DataPath
-    I[bijux-atlas-ingest]
-    S[bijux-atlas-store]
-  end
-  subgraph Delivery
-    A[bijux-atlas-api]
-    SRV[bijux-atlas-server]
+  subgraph RuntimePackage
     CLI[bijux-atlas]
-    CLT[bijux-atlas-client]
+    API[api]
+    INGEST[ingest]
+    STORE[store]
+    SERVER[server]
+    CLIENT[client]
+    QUERY[query]
+    POLICY[policies]
   end
   subgraph GovernanceAndPerf
     DEV[bijux-dev-atlas]
-    B[bijux-atlas-bench]
+    PERF[performance]
   end
-  C --> I
-  C --> S
-  M --> I
-  M --> S
-  CLI --> I
-  CLI --> S
-  A --> SRV
-  A --> CLT
-  CLI --> A
-  DEV --> Foundation
-  DEV --> DataPath
-  DEV --> Delivery
-  B --> DataPath
+  CLI --> API
+  CLI --> INGEST
+  CLI --> STORE
+  CLI --> SERVER
+  CLI --> CLIENT
+  CLI --> QUERY
+  CLI --> POLICY
+  DEV --> CLI
+  DEV --> PERF
 ```
 
 ## Crate Boundaries And Failure Economics
@@ -133,20 +125,12 @@ Separate crate does not always mean public crate. Some crates are separation uni
 
 `bijux-dev-atlas` is intentionally separate from `bijux-atlas`: one is repository control-plane authority, the other is user/runtime operator surface.
 
-Core and model form the anti-drift base. Query execution and policy evaluation now live inside `bijux-atlas` so the user-facing runtime package carries the full public runtime surface.
+The runtime package now carries embedded `api`, `ingest`, `store`, `server`, `client`, `query`, `model`, and `policies` modules. Benchmark models likewise live inside `bijux-dev-atlas::performance` so performance evidence stays inside the control plane instead of creating a third crate boundary.
 
 | Crate | Responsibility | Why Separate | What Breaks If Merged | Primary Consumers |
 | --- | --- | --- | --- | --- |
-| `bijux-atlas-core` | Deterministic primitives and invariants | Foundation semantics must stay runtime-agnostic | Semantic drift across ingest/query/store | All runtime and control-plane crates |
-| `bijux-atlas-model` | Canonical data model and schema types | Shared type authority must be centralized | Schema drift between ingest/query/api | Ingest, store, query, api, client |
-| `bijux-atlas-store` | Persistence and integrity boundaries | IO/backend evolution differs from query/API | Storage concerns leak into query and transport | Query, ingest, server |
-| `bijux-atlas-ingest` | Deterministic ingestion and normalization | Ingestion dependencies and risks are distinct | Serving path polluted by ingestion complexity | CLI, server jobs, tutorials |
-| `bijux-atlas-api` | API contracts and wire types | Contract governance needs independent checks | Contract drift hidden in server internals | Server, client, CLI |
-| `bijux-atlas-server` | Runtime service process | Runtime ops concerns are distinct from libraries | Library crates inherit server-only constraints | Deployments, operators |
-| `bijux-atlas-client` | Rust SDK for API | Consumer compatibility cadence differs | Client users get runtime coupling | Integrators and app teams |
-| `bijux-atlas` | User-facing command surface plus embedded runtime query and policy modules | One installable runtime package should expose the full public runtime surface | Users must stitch together multiple runtime crates to access core workflows | Operators, contributors, runtime integrators |
-| `bijux-dev-atlas` | Repo control plane for checks/contracts/docs/ops/release | Governance tooling must not be runtime dependency | Runtime and governance concerns become inseparable | CI, maintainers, contributors |
-| `bijux-atlas-bench` | Perf harness and reproducible benchmarks | Benchmark dependencies and cadence are high-churn | Runtime dependency bloat and unstable perf lane | Performance engineering |
+| `bijux-atlas` | User-facing runtime package plus embedded runtime modules | One installable runtime package should expose the full public runtime surface | Users must stitch together internal modules manually and lose a single runtime contract boundary | Operators, contributors, runtime integrators |
+| `bijux-dev-atlas` | Repo control plane for checks/contracts/docs/ops/release/perf | Governance tooling and benchmark evidence must not become runtime dependencies | Runtime and governance concerns become inseparable, and perf evidence drifts into the wrong package | CI, maintainers, contributors |
 
 ## Root Directory Boundaries
 
@@ -207,18 +191,12 @@ Ops depth is the cost of reproducible and inspectable deployment operations. Fla
 
 | Aggressive Merge | Primary Failure Mode |
 | --- | --- |
-| `core` into runtime crates | Semantic rules become implementation-coupled; determinism drifts silently |
-| `model` into ingest/query/server | Data-shape authority fragments across surfaces |
-| `policies` into runtime/governance | Policy iteration becomes risky runtime change |
-| `query` into API/server | Query semantics become transport-coupled |
-| `ingest` into serving path | Dependency contamination in runtime delivery |
-| `api` into `server` only | Contract drift becomes harder to detect for clients |
 | `cli` and `dev-atlas` collapse | User surface and control-plane authority become ambiguous |
+| perf evidence moved back out of `dev-atlas` | Control-plane benchmark contracts drift into an unnecessary third package |
 | `ops/` collapsed into ad hoc files | Operational SSOT and install/validation clarity are lost |
 | `configs/` moved into code/docs | Machine-verifiable authority and audit trails weaken |
 | `release/` removed | Version-to-artifact traceability degrades |
 | `security/` removed | Security ownership and review coverage blur |
-| `packages/` moved into `crates/` | Language/distribution boundaries become confusing |
 | tutorials mixed into narrative/scripts | Reality-proof reproducibility path degrades |
 
 Merging can reduce directory count while increasing hidden coupling. The right question is not "can this merge?" but "which independent failure mode becomes invisible if we merge?" Good separation makes failures cheaper to localize.
@@ -256,6 +234,7 @@ This system is strict but not frozen. Shape must keep earning itself.
 ## Decision Examples
 
 - Kept `bijux-dev-atlas` separate from `bijux-atlas` to preserve control-plane authority isolation.
+- Merged benchmark models into `bijux-dev-atlas::performance` so perf evidence stays with the control plane.
 - Kept `configs/` as machine-readable SSOT to enable deterministic checks/contracts.
 - Kept `ops/` deep to maintain explicit install/validate/observe ownership boundaries.
 - Did not create a separate crate for every docs concern; docs remain directory-scoped, not crate-scoped.
