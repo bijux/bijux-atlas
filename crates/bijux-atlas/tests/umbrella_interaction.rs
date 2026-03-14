@@ -5,7 +5,7 @@ use predicates::prelude::*;
 use std::fs;
 use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
-use std::process::Command;
+use std::process::{Command, Output};
 use tempfile::TempDir;
 
 fn write_executable(path: &Path, content: &str) {
@@ -13,6 +13,19 @@ fn write_executable(path: &Path, content: &str) {
     let mut perms = fs::metadata(path).expect("metadata").permissions();
     perms.set_mode(0o755);
     fs::set_permissions(path, perms).expect("chmod");
+}
+
+fn run_output(program: &Path, args: &[&str]) -> Output {
+    Command::new(program)
+        .args(args)
+        .output()
+        .expect("run command")
+}
+
+fn assert_same_output(left: &Output, right: &Output) {
+    assert_eq!(left.status.code(), right.status.code(), "exit status mismatch");
+    assert_eq!(left.stdout, right.stdout, "stdout mismatch");
+    assert_eq!(left.stderr, right.stderr, "stderr mismatch");
 }
 
 #[test]
@@ -44,11 +57,18 @@ exec "$(dirname "$0")/bijux-$subsystem" "$@"
         .success()
         .stdout(predicate::str::contains("\"name\": \"bijux-atlas\""));
 
-    Command::new(&umbrella)
-        .args(["atlas", "atlas", "--help"])
-        .assert()
-        .success()
-        .stdout(predicate::str::contains("ingest"));
+    for args in [
+        vec!["--help"],
+        vec!["version"],
+        vec!["print-config", "--canonical"],
+        vec!["--json", "--bijux-plugin-metadata"],
+    ] {
+        let direct = run_output(&plugin_path, &args);
+        let mut umbrella_args = vec!["atlas"];
+        umbrella_args.extend(args.iter().copied());
+        let dispatched = run_output(&umbrella, &umbrella_args);
+        assert_same_output(&direct, &dispatched);
+    }
 
     Command::new(&umbrella)
         .args(["atlas", "atlas", "--help"])

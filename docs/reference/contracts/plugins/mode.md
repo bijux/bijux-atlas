@@ -11,6 +11,7 @@ Canonical page: [`docs/reference/contracts/plugins/spec.md`](spec.md)
 ## Invocation Model
 
 - Canonical plugin binary: `bijux-atlas`.
+- Operational umbrella binary: `bijux` from the `bijux-cli` distribution.
 - Umbrella dispatch path: `bijux atlas <atlas-command...>` -> `bijux-atlas <atlas-command...>`.
 - Atlas namespace path: `bijux-atlas atlas <atlas-command...>`.
 - Dev control-plane dispatch path: `bijux dev atlas <dev-command...>` -> `bijux-dev-atlas <dev-command...>`.

@@ -9,6 +9,7 @@ If a conflict exists, this file is authoritative for umbrella/plugin runtime beh
 
 ## Discovery
 
+- Operational umbrella implementation is the `bijux` executable shipped by `bijux-cli`.
 - Plugin binaries must be named `bijux-<subsystem>`.
 - Umbrella discovers plugins from `$PATH`.
 - Atlas plugin binary is `bijux-atlas`.
@@ -53,6 +54,7 @@ Plugins support shared top-level flags:
 
 - Completion output must be deterministic.
 - Command-surface drift is gated by CI using `docs/cli-command-list.md`.
+- Umbrella dispatch parity is gated by integration tests that compare direct plugin execution with `bijux atlas ...` and `bijux dev atlas ...` forwarding.
 
 ## What
 
