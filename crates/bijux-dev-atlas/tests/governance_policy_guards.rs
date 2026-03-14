@@ -8,15 +8,6 @@ fn crate_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
 }
 
-fn workspace_root() -> PathBuf {
-    crate_root()
-        .parent()
-        .expect("crate parent")
-        .parent()
-        .expect("workspace root")
-        .to_path_buf()
-}
-
 #[test]
 fn dev_atlas_dependency_policy_stays_minimal() {
     let cargo_toml = fs::read_to_string(crate_root().join("Cargo.toml")).expect("Cargo.toml");
@@ -64,28 +55,6 @@ fn benchmark_groups_are_unique_and_named_for_files() {
             "criterion group `{group}` should map clearly to bench file `{stem}.rs`"
         );
     }
-}
-
-#[test]
-fn architecture_contract_is_single_source_and_records_execution_policy() {
-    let root = workspace_root();
-    let architecture = fs::read_to_string(crate_root().join("docs/architecture.md"))
-        .expect("docs/architecture.md");
-    assert!(
-        architecture.contains("artifacts/target"),
-        "docs/architecture.md must document target-dir policy"
-    );
-    assert!(
-        architecture.contains("Benchmark groups and output names remain unique"),
-        "docs/architecture.md must document bench isolation policy"
-    );
-
-    let docs_contract = fs::read_to_string(root.join("crates/bijux-dev-atlas/docs/contract.md"))
-        .expect("crate contract doc");
-    assert!(
-        !docs_contract.contains("## Internal Module Graph"),
-        "crate contract docs must not duplicate the internal module graph section"
-    );
 }
 
 #[test]

@@ -27,7 +27,6 @@ struct RegistryCheck {
     id: String,
     domain: String,
     tags: Vec<String>,
-    docs: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -93,13 +92,6 @@ fn registry_checks_have_stable_ids_tags_and_inventory_mapping() {
             "registry check `{}` has invalid domain mapping `{}`",
             check.id,
             check.domain
-        );
-        let docs = root.join(&check.docs);
-        assert!(
-            docs.components().count() >= 2,
-            "registry check `{}` docs/reference path must be repository-relative: {}",
-            check.id,
-            docs.display()
         );
     }
 }

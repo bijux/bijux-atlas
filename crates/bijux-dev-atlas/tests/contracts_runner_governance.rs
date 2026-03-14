@@ -45,25 +45,6 @@ fn strip_cfg_test_modules(text: &str) -> String {
 }
 
 #[test]
-#[ignore = "docs runtime contract pending topology rewrite"]
-fn contracts_runtime_docs_define_stable_exit_codes() {
-    let text = fs::read_to_string(repo_root().join("docs/control-plane/contracts.md"))
-        .expect("read contracts control plane doc");
-    for expected in [
-        "- `0`: all selected contracts passed.",
-        "- `1`: one or more non-required contracts failed.",
-        "- `2`: usage error, including invalid wildcard filters or missing required flags.",
-        "- `3`: internal runner error.",
-        "- `4`: one or more required contracts failed.",
-    ] {
-        assert!(
-            text.contains(expected),
-            "contracts control-plane doc missing exit code line `{expected}`"
-        );
-    }
-}
-
-#[test]
 fn contracts_production_sources_avoid_unwrap_and_expect() {
     let root = repo_root().join("crates/bijux-dev-atlas/src/contracts");
     let mut stack = vec![root];

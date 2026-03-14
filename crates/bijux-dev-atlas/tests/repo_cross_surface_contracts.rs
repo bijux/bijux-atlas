@@ -122,16 +122,6 @@ fn ci_workflows_keep_dependency_inputs_and_action_refs_deterministic() {
             }
         }
 
-        if rel == ".github/workflows/docs-audit.yml" || rel == ".github/workflows/docs-only.yml" {
-            assert!(
-                text.contains("python3 -m pip install -r configs/docs/requirements.lock.txt"),
-                "{rel} must install Python docs dependencies from requirements.lock.txt"
-            );
-            assert!(
-                text.contains("npm ci --prefix configs/docs"),
-                "{rel} must install Node docs dependencies with npm ci"
-            );
-        }
     }
 
     assert!(

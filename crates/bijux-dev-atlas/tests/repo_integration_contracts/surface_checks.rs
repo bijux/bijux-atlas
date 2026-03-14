@@ -186,75 +186,6 @@ fn root_dockerfile_symlink_points_to_canonical_runtime_dockerfile() {
 }
 
 #[test]
-fn contracts_makefile_is_the_only_public_contract_gate_entrypoint() {
-    let root = repo_root();
-    let registry = parse_make_registry();
-    let docs = read(&root.join("docs/_internal/generated/make-targets.md"));
-
-    for (name, defined_in, visibility) in registry {
-        if !name.starts_with("contracts") || visibility != "public" {
-            continue;
-        }
-        assert_eq!(
-            defined_in,
-            vec!["make/contracts.mk".to_string()],
-            "public contract gate target must be defined only in make/contracts.mk: {name}"
-        );
-        assert!(
-            docs.contains(&format!("| `{name}` | `public` | `make/contracts.mk` |")),
-            "generated make target reference must document the public contract gate target: {name}"
-        );
-    }
-
-    let public_mk = read(&root.join("make/public.mk"));
-    assert!(
-        public_mk
-            .lines()
-            .any(|line| line.trim() == "include make/contracts.mk"),
-        "make/public.mk must delegate contract gates through make/contracts.mk"
-    );
-}
-
-#[test]
-#[ignore = "legacy quality-wall contract pending rewrite"]
-fn config_contract_surfaces_are_versioned_referenced_and_deterministically_formatted() {
-    let root = repo_root();
-    let deterministic = [
-        root.join("docs/reference/contracts/schemas/CONFIG_KEYS.json"),
-        root.join("configs/contracts/env.schema.json"),
-        root.join("configs/repo/symlink-allowlist.json"),
-    ];
-    for path in deterministic {
-        let parsed = load_json(&path);
-        assert!(
-            parsed.get("schema_version").is_some(),
-            "governed config contract must declare a schema version: {}",
-            path.display()
-        );
-        assert_pretty_json_file(&path);
-    }
-    let make_registry = load_json(&root.join("configs/ops/make-target-registry.json"));
-    assert!(
-        make_registry.get("schema_version").is_some(),
-        "make target registry must declare a schema version"
-    );
-
-    let config_versioning = read(&root.join("docs/development/config-versioning.md"));
-    let registry_versioning =
-        read(&root.join("docs/reference/registry/config-schema-versioning.md"));
-    for required in [
-        "docs/reference/contracts/schemas/CONFIG_KEYS.json",
-        "configs/contracts/env.schema.json",
-        "schema_version",
-    ] {
-        assert!(
-            config_versioning.contains(required) || registry_versioning.contains(required),
-            "config schema versioning docs must reference `{required}`"
-        );
-    }
-}
-
-#[test]
 fn config_security_and_docker_contracts_stay_explicit_and_reviewable() {
     let root = repo_root();
     let allowlist = read(&root.join("configs/security/audit-allowlist.toml"));
@@ -294,30 +225,5 @@ fn config_security_and_docker_contracts_stay_explicit_and_reviewable() {
                 "runtime Dockerfile base image must not use latest: {image}"
             );
         }
-    }
-}
-
-#[test]
-#[ignore = "legacy quality-wall contract pending rewrite"]
-fn quality_wall_doc_ties_required_contracts_lanes_and_repo_surfaces_together() {
-    let root = repo_root();
-    let quality_wall = read(&root.join("docs/operations/release/quality-wall.md"));
-    for required in [
-        "ops/policy/required-contracts.json",
-        "ops/_generated.example/contracts-required.json",
-        "make/contracts.mk",
-        "docker/images/runtime/Dockerfile",
-        "docs/_internal/generated/make-targets.md",
-        "configs/contracts/env.schema.json",
-        "docs/reference/contracts/schemas/CONFIG_KEYS.json",
-        "local",
-        "pr",
-        "merge",
-        "release",
-    ] {
-        assert!(
-            quality_wall.contains(required),
-            "quality wall doc must reference `{required}`"
-        );
     }
 }

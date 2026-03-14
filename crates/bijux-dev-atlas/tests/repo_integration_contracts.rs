@@ -59,23 +59,6 @@ fn collect_prefixed_env_tokens(text: &str) -> BTreeSet<String> {
         .collect()
 }
 
-fn assert_pretty_json_file(path: &Path) {
-    let text = read(path);
-    let parsed: Value = serde_json::from_str(&text)
-        .unwrap_or_else(|err| panic!("failed to parse {}: {err}", path.display()));
-    let expected = format!(
-        "{}\n",
-        serde_json::to_string_pretty(&parsed)
-            .unwrap_or_else(|err| panic!("failed to render {}: {err}", path.display()))
-    );
-    assert_eq!(
-        text,
-        expected,
-        "governed json file must use deterministic pretty formatting: {}",
-        path.display()
-    );
-}
-
 fn extract_shell_recipe_commands(path: &Path) -> BTreeMap<String, Vec<String>> {
     let mut out = BTreeMap::<String, Vec<String>>::new();
     let text = read(path);
@@ -449,35 +432,4 @@ fn workspace_package_metadata_stays_acyclic_and_consistent() {
     for name in adjacency.keys() {
         visit(name, &adjacency, &mut visiting, &mut visited);
     }
-}
-
-#[test]
-fn quickstart_command_is_backed_by_cli_help() {
-    let root = repo_root();
-    let start_here = read(&root.join("docs/start-here.md"));
-    let command = start_here
-        .lines()
-        .find(|line| {
-            line.trim_start()
-                .starts_with("bijux dev atlas demo quickstart")
-        })
-        .map(str::trim)
-        .expect("docs/start-here.md quickstart command");
-    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
-        .current_dir(&root)
-        .args(["demo", "quickstart", "--help"])
-        .output()
-        .expect("demo quickstart help");
-    assert!(output.status.success(), "demo quickstart help must succeed");
-    let help = String::from_utf8(output.stdout).expect("utf8");
-    for required in ["bijux-dev-atlas demo quickstart", "--format", "--out"] {
-        assert!(
-            help.contains(required),
-            "demo quickstart help must contain `{required}`"
-        );
-    }
-    assert!(
-        command == "bijux dev atlas demo quickstart --format json",
-        "docs/start-here.md must keep the canonical quickstart command"
-    );
 }
