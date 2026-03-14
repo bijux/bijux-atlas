@@ -49,6 +49,10 @@ walkdir = "2"
 name = "bijux-atlas"
 path = "src/bin/bijux-atlas.rs"
 
+[[bin]]
+name = "atlas-openapi"
+path = "src/bin/atlas-openapi.rs"
+
 [[bench]]
 name = "core_canonical_hash"
 path = "benches/core/canonical_hash.rs"
@@ -225,3 +229,12 @@ harness = false
 name = "store_hot_read"
 path = "benches/store/store_hot_read.rs"
 harness = false
+
+[[bench]]
+name = "api_openapi_generation"
+path = "benches/api/openapi_generation.rs"
+harness = false
+
+[[example]]
+name = "api_openapi_contract"
+path = "examples/api/openapi_contract.rs"

@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #![forbid(unsafe_code)]
+#![recursion_limit = "512"]
 
 pub mod artifact_validation;
+pub mod api;
 pub mod command_output_adapters;
 pub mod commands;
 pub mod core;
