@@ -59,10 +59,10 @@ budget_ms = 2000
 visibility = "internal"
 
 [[checks]]
-id = "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch"
+id = "checks_crates_bijux_atlas_help_excludes_dev_commands"
 domain = "crates"
-title = "bijux atlas cli exclusively owns umbrella dispatch metadata"
-docs = "docs/reference/contracts/plugins/spec.md"
+title = "bijux atlas help does not expose dev command surfaces"
+docs = "docs/reference/contracts/plugins/mode.md"
 tags = ["fast"]
 suites = ["ci", "ci_fast", "local", "deep"]
 effects_required = ["fs_read"]
@@ -70,10 +70,10 @@ budget_ms = 1200
 visibility = "public"
 
 [[checks]]
-id = "checks_crates_bijux_atlas_help_excludes_dev_commands"
+id = "checks_crates_bijux_atlas_owns_umbrella_dispatch"
 domain = "crates"
-title = "bijux atlas help does not expose dev command surfaces"
-docs = "docs/reference/contracts/plugins/mode.md"
+title = "bijux atlas cli exclusively owns umbrella dispatch metadata"
+docs = "docs/reference/contracts/plugins/spec.md"
 tags = ["fast"]
 suites = ["ci", "ci_fast", "local", "deep"]
 effects_required = ["fs_read"]

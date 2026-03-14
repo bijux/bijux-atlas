@@ -1,7 +1,7 @@
 # Tracked bin entrypoints outside crates/bijux-dev-atlas.
 crates/bijux-atlas-api/src/bin/openapi.rs
 crates/bijux-atlas-client/src/bin/bijux-atlas-client.rs
-crates/bijux-atlas-cli/src/bin/bijux-atlas.rs
+crates/bijux-atlas/src/bin/bijux-atlas.rs
 crates/bijux-atlas-core/src/bin/bijux-atlas-core.rs
 crates/bijux-atlas-ingest/src/bin/bijux-atlas-ingest.rs
 crates/bijux-atlas-model/src/bin/bijux-atlas-model.rs

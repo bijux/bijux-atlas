@@ -8,7 +8,7 @@ use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestRe
 
 const RUNTIME_CRATES: [&str; 9] = [
     "bijux-atlas-api",
-    "bijux-atlas-cli",
+    "bijux-atlas",
     "bijux-atlas-core",
     "bijux-atlas-ingest",
     "bijux-atlas-model",
@@ -32,7 +32,7 @@ fn allowed_runtime_deps() -> BTreeMap<&'static str, BTreeSet<&'static str>> {
             BTreeSet::from(["bijux-atlas-core", "bijux-atlas-model", "bijux-atlas-query"]),
         ),
         (
-            "bijux-atlas-cli",
+            "bijux-atlas",
             BTreeSet::from([
                 "bijux-atlas-core",
                 "bijux-atlas-ingest",

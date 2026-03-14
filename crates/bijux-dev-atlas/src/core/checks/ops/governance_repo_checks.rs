@@ -289,7 +289,7 @@ pub(super) fn check_workflows_rust_toolchain_matches_repo_pin(
     }
 }
 
-pub(super) fn check_crates_bijux_atlas_cli_owns_umbrella_dispatch(
+pub(super) fn check_crates_bijux_atlas_owns_umbrella_dispatch(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let crates_root = ctx.repo_root.join("crates");
@@ -323,13 +323,13 @@ pub(super) fn check_crates_bijux_atlas_cli_owns_umbrella_dispatch(
             }
         }
     }
-    if owners == BTreeSet::from(["bijux-atlas-cli".to_string()]) {
+    if owners == BTreeSet::from(["bijux-atlas".to_string()]) {
         Ok(Vec::new())
     } else {
         Ok(vec![violation(
             "CRATES_UMBRELLA_DISPATCH_OWNER_INVALID",
-            format!("umbrella dispatch ownership must be bijux-atlas-cli only; found {owners:?}"),
-            "keep bijux-atlas-cli as the only owner of umbrella dispatch metadata flags",
+            format!("umbrella dispatch ownership must be bijux-atlas only; found {owners:?}"),
+            "keep bijux-atlas as the only owner of umbrella dispatch metadata flags",
             Some(Path::new("crates")),
         )])
     }
@@ -338,14 +338,14 @@ pub(super) fn check_crates_bijux_atlas_cli_owns_umbrella_dispatch(
 pub(super) fn check_crates_bijux_atlas_help_excludes_dev_commands(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let src = ctx.repo_root.join("crates/bijux-atlas-cli/src/lib.rs");
+    let src = ctx.repo_root.join("crates/bijux-atlas/src/lib.rs");
     let text = fs::read_to_string(&src).map_err(|err| CheckError::Failed(err.to_string()))?;
     if text.contains("Subcommand::Dev") {
         Ok(vec![violation(
             "CRATES_ATLAS_HELP_EXPOSES_DEV_COMMANDS",
             "bijux atlas help surface must not include dev commands".to_string(),
             "move dev command routing under bijux-dev-atlas only",
-            Some(Path::new("crates/bijux-atlas-cli/src/lib.rs")),
+            Some(Path::new("crates/bijux-atlas/src/lib.rs")),
         )])
     } else {
         Ok(Vec::new())
@@ -355,7 +355,7 @@ pub(super) fn check_crates_bijux_atlas_help_excludes_dev_commands(
 pub(super) fn check_crates_bijux_dev_atlas_help_dispatch_present(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let src = ctx.repo_root.join("crates/bijux-atlas-cli/src/lib.rs");
+    let src = ctx.repo_root.join("crates/bijux-atlas/src/lib.rs");
     let text = fs::read_to_string(&src).map_err(|err| CheckError::Failed(err.to_string()))?;
     if text.contains("bijux dev atlas <command>") {
         Ok(Vec::new())
@@ -363,8 +363,8 @@ pub(super) fn check_crates_bijux_dev_atlas_help_dispatch_present(
         Ok(vec![violation(
             "CRATES_DEV_ATLAS_DISPATCH_HINT_MISSING",
             "bijux atlas command routing must advertise `bijux dev atlas --help`".to_string(),
-            "restore dev atlas dispatch hint in bijux-atlas-cli help routing",
-            Some(Path::new("crates/bijux-atlas-cli/src/lib.rs")),
+            "restore dev atlas dispatch hint in bijux-atlas help routing",
+            Some(Path::new("crates/bijux-atlas/src/lib.rs")),
         )])
     }
 }

@@ -3,7 +3,7 @@
   "allowlist": [
     "bijux-atlas-api",
     "bijux-atlas-bench",
-    "bijux-atlas-cli",
+    "bijux-atlas",
     "bijux-atlas-core",
     "bijux-atlas-ingest",
     "bijux-atlas-model",

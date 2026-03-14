@@ -90,8 +90,8 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_workflows_rust_toolchain_matches_repo_pin" => {
             Some(check_workflows_rust_toolchain_matches_repo_pin)
         }
-        "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch" => {
-            Some(check_crates_bijux_atlas_cli_owns_umbrella_dispatch)
+        "checks_crates_bijux_atlas_owns_umbrella_dispatch" => {
+            Some(check_crates_bijux_atlas_owns_umbrella_dispatch)
         }
         "checks_crates_bijux_atlas_help_excludes_dev_commands" => {
             Some(check_crates_bijux_atlas_help_excludes_dev_commands)
@@ -282,7 +282,7 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_ops_no_direct_tool_invocations",
         "checks_ops_quarantine_shim_expiration_contract",
         "checks_root_no_scripts_areas_presence_or_references",
-        "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch",
+        "checks_crates_bijux_atlas_owns_umbrella_dispatch",
         "checks_crates_bijux_atlas_help_excludes_dev_commands",
         "checks_crates_bijux_dev_atlas_help_dispatch_present",
         "checks_ops_no_bash_lib_execution",

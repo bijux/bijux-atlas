@@ -2,7 +2,7 @@
   "schema_version": 1,
   "crate_policy": {
     "bijux-atlas-api": {"enforce_deny_missing_docs": false, "exception": "public modules documented; full rustdoc lint staged incrementally"},
-    "bijux-atlas-cli": {"enforce_deny_missing_docs": false, "exception": "binary-focused crate with broad command surface"},
+    "bijux-atlas": {"enforce_deny_missing_docs": false, "exception": "binary-focused crate with broad command surface"},
     "bijux-atlas-core": {"enforce_deny_missing_docs": false, "exception": "large re-export surface under progressive documentation rollout"},
     "bijux-atlas-ingest": {"enforce_deny_missing_docs": false, "exception": "ingest internals and options surface under active stabilization"},
     "bijux-atlas-model": {"enforce_deny_missing_docs": false, "exception": "model types documented at module level while per-item docs are rolling in"},

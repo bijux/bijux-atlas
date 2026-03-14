@@ -24,7 +24,7 @@
       "id": "ATLAS-EXC-0002",
       "policy": "test_module_layout_allow",
       "scope": "crate",
-      "file": "crates/bijux-atlas-cli/src/atlas_command_actions/ingest_inputs.rs",
+      "file": "crates/bijux-atlas/src/atlas_command_actions/ingest_inputs.rs",
       "justification": "One clippy layout allowance keeps test module placement stable during staged file decomposition.",
       "expiry": "2026-12-31",
       "owner": "cli",

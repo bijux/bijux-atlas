@@ -320,7 +320,7 @@ fn run_build_doctor(
 
 fn build_binary_specs() -> [(&'static str, &'static str); 2] {
     [
-        ("bijux-atlas-cli", "bijux-atlas"),
+        ("bijux-atlas", "bijux-atlas"),
         ("bijux-dev-atlas", "bijux-dev-atlas"),
     ]
 }

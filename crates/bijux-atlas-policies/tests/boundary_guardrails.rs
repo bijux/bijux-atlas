@@ -8,7 +8,7 @@ fn policies_crate_must_not_import_ops_or_runtime_crates() {
     let forbidden = [
         "bijux_atlas_ops",
         "bijux_atlas_server",
-        "bijux_atlas_cli",
+        "bijux_atlas",
         "tokio",
         "axum",
         "reqwest",

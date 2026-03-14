@@ -14,7 +14,7 @@
       "diagram_count": 0
     },
     {
-      "crate": "bijux-atlas-cli",
+      "crate": "bijux-atlas",
       "root_doc_count": 2,
       "docs_dir_count": 16,
       "diagram_count": 3

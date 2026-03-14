@@ -200,7 +200,7 @@ fn override_and_escape_hatches_are_forbidden() {
         root.join("crates/bijux-atlas-store/src"),
         root.join("crates/bijux-atlas-query/src"),
         root.join("crates/bijux-atlas-api/src"),
-        root.join("crates/bijux-atlas-cli/src"),
+        root.join("crates/bijux-atlas/src"),
         root.join("crates/bijux-atlas-server/src"),
     ];
     let forbidden = [
@@ -317,7 +317,7 @@ fn atlas_repo_must_not_define_umbrella_bijux_binary() {
     let root = workspace_root();
     let cargo_tomls = [
         root.join("Cargo.toml"),
-        root.join("crates/bijux-atlas-cli/Cargo.toml"),
+        root.join("crates/bijux-atlas/Cargo.toml"),
         root.join("crates/bijux-atlas-server/Cargo.toml"),
         root.join("crates/bijux-atlas-api/Cargo.toml"),
     ];

@@ -14,7 +14,7 @@
     "bijux-atlas-ingest": [],
     "bijux-atlas-server": [],
     "bijux-atlas-api": [],
-    "bijux-atlas-cli": [],
+    "bijux-atlas": [],
     "bijux-atlas-model": [],
     "bijux-atlas-policies": [],
     "bijux-atlas-query": []

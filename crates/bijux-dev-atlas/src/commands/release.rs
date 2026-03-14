@@ -1198,7 +1198,7 @@ fn run_release_images_changelog_extract(
             &format!("{from_ref}..{to_ref}"),
             "--",
             "docker",
-            "crates/bijux-atlas-cli",
+            "crates/bijux-atlas",
             "crates/bijux-atlas-server",
         ])
         .current_dir(&root)
@@ -2580,7 +2580,9 @@ fn run_release_ops_publish_plan(args: ReleaseOpsPackageArgs) -> Result<(String, 
     Ok((rendered, 0))
 }
 
-fn run_release_ops_compatibility_matrix(args: ReleaseOpsPackageArgs) -> Result<(String, i32), String> {
+fn run_release_ops_compatibility_matrix(
+    args: ReleaseOpsPackageArgs,
+) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let workspace_ver = workspace_version(&root).unwrap_or_else(|_| "0.1.0".to_string());
     let ops_manifest_path = root.join("release/ops-release-manifest.json");
@@ -5914,7 +5916,9 @@ pub(crate) fn run_release_command(
         ReleaseCommand::Ops { command } => match command {
             ReleaseOpsCommand::Package(args) => run_release_ops_package(args),
             ReleaseOpsCommand::ValidatePackage(args) => run_release_ops_validate_package(args),
-            ReleaseOpsCommand::CompatibilityMatrix(args) => run_release_ops_compatibility_matrix(args),
+            ReleaseOpsCommand::CompatibilityMatrix(args) => {
+                run_release_ops_compatibility_matrix(args)
+            }
             ReleaseOpsCommand::Push(args) => run_release_ops_push(args),
             ReleaseOpsCommand::DigestVerify(args) => run_release_ops_digest_verify(args),
             ReleaseOpsCommand::PullTest(args) => run_release_ops_pull_test(args),

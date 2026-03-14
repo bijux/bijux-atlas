@@ -500,7 +500,7 @@ pub(super) fn check_docs_command_surface_docs_exist(
     let mut violations = Vec::new();
     for rel in [
         "docs/reference/contracts/plugins/mode.md",
-        "crates/bijux-atlas-cli/docs/cli-command-list.md",
+        "crates/bijux-atlas/docs/cli-command-list.md",
         "crates/bijux-dev-atlas/docs/cli-command-list.md",
     ] {
         let p = Path::new(rel);

@@ -46,12 +46,12 @@ pub(super) fn check_crates_plugin_conformance_binaries(
             ],
         ),
         (
-            "bijux-atlas-cli",
+            "bijux-atlas",
             vec![
                 "run".to_string(),
                 "-q".to_string(),
                 "-p".to_string(),
-                "bijux-atlas-cli".to_string(),
+                "bijux-atlas".to_string(),
                 "--".to_string(),
                 "--bijux-plugin-metadata".to_string(),
             ],
