@@ -1,6 +1,6 @@
 # Feature Flags Policy
 
-`bijux-atlas-core` should keep feature usage near zero.
+`bijux-atlas::core` should keep feature usage near zero.
 
 Rules:
 - No optional behavior that changes deterministic output.

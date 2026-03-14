@@ -1,6 +1,6 @@
 # Compatibility With bijux-dna
 
-`bijux-atlas-model` has no dependency on `bijux-dna` crates.
+`bijux-atlas::model` has no dependency on `bijux-dna` crates.
 
 Compatibility boundary is artifact contract only:
 - dataset identifiers

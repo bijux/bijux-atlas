@@ -1,6 +1,6 @@
 # Core Docs Index
 
-`bijux-atlas-core` provides deterministic, dependency-light primitives used across atlas crates.
+`bijux-atlas::core` provides deterministic, dependency-light primitives used across atlas crates.
 
 What core is:
 - Canonicalization helpers for stable bytes/hashes/cursors.

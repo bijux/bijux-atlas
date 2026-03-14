@@ -1,6 +1,6 @@
 # Contracts
 
-- Owner: `bijux-atlas-store`
+- Owner: `bijux-atlas::store`
 
 ## Purpose
 

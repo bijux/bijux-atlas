@@ -1,6 +1,6 @@
-# CONTRACT (bijux-atlas-store)
+# CONTRACT (bijux-atlas::store)
 
-- Owner: bijux-atlas-store
+- Owner: bijux-atlas::store
 - Stability: stable
 
 ## Inputs

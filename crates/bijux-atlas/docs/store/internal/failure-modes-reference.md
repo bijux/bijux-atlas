@@ -2,7 +2,7 @@
 
 ## Scope
 
-This document defines expected failure behavior for `bijux-atlas-store` operations.
+This document defines expected failure behavior for `bijux-atlas::store` operations.
 
 ## Modes
 

@@ -1,4 +1,4 @@
-# bijux-atlas-store Architecture
+# bijux-atlas::store Architecture
 
 ## Responsibility
 

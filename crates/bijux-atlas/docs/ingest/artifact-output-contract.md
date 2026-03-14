@@ -20,7 +20,7 @@ Optional artifacts:
 
 ## Schema References
 
-- Manifest and catalog schemas: `bijux-atlas-model`
+- Manifest and catalog schemas: `bijux-atlas::model`
 - SQLite schema SSOT: `sql/schema_v4.sql`
 
 ## Determinism Guarantees

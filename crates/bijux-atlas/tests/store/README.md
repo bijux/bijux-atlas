@@ -1,4 +1,4 @@
-# Tests for bijux-atlas-store
+# Tests for bijux-atlas::store
 
 What belongs here:
 - Artifact contract validation at store boundary.

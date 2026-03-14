@@ -1,6 +1,6 @@
-# CONTRACT (bijux-atlas-core)
+# CONTRACT (bijux-atlas::core)
 
-- Owner: bijux-atlas-core
+- Owner: bijux-atlas::core
 - Stability: stable
 
 ## Inputs

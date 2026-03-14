@@ -1,6 +1,6 @@
 # Failure Modes
 
-- Owner: `bijux-atlas-store`
+- Owner: `bijux-atlas::store`
 
 ## Purpose
 
@@ -23,7 +23,7 @@ Describes failure classes and expected mitigation behavior.
 ## How to test
 
 ```bash
-$ cargo nextest run -p bijux-atlas-store failure
+$ cargo nextest run -p bijux-atlas --test store failure
 ```
 
 Expected output: failure-path tests pass.

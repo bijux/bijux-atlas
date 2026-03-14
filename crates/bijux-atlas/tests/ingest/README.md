@@ -1,4 +1,4 @@
-# Tests for bijux-atlas-ingest
+# Tests for bijux-atlas::ingest
 
 What belongs here:
 - Contract tests for deterministic ingest outputs.

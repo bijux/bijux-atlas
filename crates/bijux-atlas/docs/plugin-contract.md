@@ -20,7 +20,7 @@ Metadata JSON required fields:
 - `compatible_umbrella_max_exclusive`
 - `build_hash`
 
-Exit code policy follows shared Bijux exit code registry in `bijux-atlas-core`.
+Exit code policy follows the shared Bijux exit code registry in `bijux_atlas::core`.
 
 Snapshot artifacts:
 

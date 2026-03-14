@@ -1,11 +1,11 @@
 # Public API
 
-- Owner: `bijux-atlas-ingest`
+- Owner: `bijux-atlas::ingest`
 - Stability reference: [Stability Levels](../../../docs/control-plane/extensibility-and-stability-levels.md)
 
 ## Purpose
 
-Defines the current public surface exported by `bijux-atlas-ingest`.
+Defines the current public surface exported by `bijux-atlas::ingest`.
 
 ## Invariants
 
@@ -37,13 +37,13 @@ Defines the current public surface exported by `bijux-atlas-ingest`.
 ## How to test
 
 ```bash
-$ cargo nextest run -p bijux-atlas-ingest
+$ cargo nextest run -p bijux-atlas --test ingest
 ```
 
 Expected output: ingest unit and integration tests pass.
 
 ```bash
-$ cargo test -p bijux-atlas-ingest --doc
+$ cargo test -p bijux-atlas --doc
 ```
 
 Expected output: doc tests pass.

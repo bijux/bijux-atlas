@@ -1,6 +1,6 @@
 # Failure Modes
 
-- Owner: `bijux-atlas-ingest`
+- Owner: `bijux-atlas::ingest`
 
 ## Purpose
 
@@ -23,7 +23,7 @@ Describes failure classes and expected mitigation behavior.
 ## How to test
 
 ```bash
-$ cargo nextest run -p bijux-atlas-ingest failure
+$ cargo nextest run -p bijux-atlas --test ingest failure
 ```
 
 Expected output: failure-path tests pass.

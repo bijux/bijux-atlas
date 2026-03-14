@@ -1,6 +1,6 @@
 # Purity Contract
 
-`bijux-atlas-core` is a deterministic utility crate.
+`bijux-atlas::core` is a deterministic utility crate.
 
 Hard bans:
 - No network I/O

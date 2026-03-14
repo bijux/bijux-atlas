@@ -1,9 +1,9 @@
-# ARCHITECTURE (bijux-atlas-model)
+# ARCHITECTURE (bijux-atlas::model)
 
-- Owner: bijux-atlas-model
+- Owner: bijux-atlas::model
 - Stability: stable
 
 This crate-level governance page points to canonical crate docs and root docs.
 
-- Crate docs index: crates/bijux-atlas-model/docs/index.md
+- Crate docs index: crates/bijux-atlas/docs/model/index.md
 - Central docs index: docs/index.md

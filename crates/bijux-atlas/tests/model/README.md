@@ -1,4 +1,4 @@
-# Tests for bijux-atlas-model
+# Tests for bijux-atlas::model
 
 What belongs here:
 - Type invariants and parsing/validation rules.

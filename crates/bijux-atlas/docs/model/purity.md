@@ -1,6 +1,6 @@
 # Purity Policy
 
-`bijux-atlas-model` is a pure domain crate.
+`bijux-atlas::model` is a pure domain crate.
 
 Rules:
 - No filesystem I/O.

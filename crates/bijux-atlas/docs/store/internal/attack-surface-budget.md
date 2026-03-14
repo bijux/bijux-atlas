@@ -1,6 +1,6 @@
 # Attack Surface Budget
 
-`bijux-atlas-store` constrains remote dependency exposure by default.
+`bijux-atlas::store` constrains remote dependency exposure by default.
 
 ## Budget Rules
 

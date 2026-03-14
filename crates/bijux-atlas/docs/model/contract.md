@@ -1,6 +1,6 @@
-# CONTRACT (bijux-atlas-model)
+# CONTRACT (bijux-atlas::model)
 
-- Owner: bijux-atlas-model
+- Owner: bijux-atlas::model
 - Stability: stable
 
 ## Inputs

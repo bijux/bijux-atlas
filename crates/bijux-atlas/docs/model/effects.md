@@ -1,6 +1,6 @@
 # Effects Policy
 
-`bijux-atlas-model` must remain pure domain modeling code.
+`bijux-atlas::model` must remain pure domain modeling code.
 
 Allowed:
 - Parsing/validation and deterministic formatting.

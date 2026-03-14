@@ -1,6 +1,6 @@
-# CONTRACT (bijux-atlas-ingest)
+# CONTRACT (bijux-atlas::ingest)
 
-- Owner: bijux-atlas-ingest
+- Owner: bijux-atlas::ingest
 - Stability: stable
 
 ## Inputs

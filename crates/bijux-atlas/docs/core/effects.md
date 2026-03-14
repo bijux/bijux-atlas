@@ -1,6 +1,6 @@
 # Effects Policy
 
-Allowed effects in `bijux-atlas-core`:
+Allowed effects in `bijux-atlas::core`:
 - Pure compute and memory allocation.
 - Environment-variable reads only for config-path helpers.
 

@@ -7,7 +7,7 @@
 - [Effect boundary map](internal/effect-boundary-map.md)
 - [CLI UX Contract](cli-ux-contract.md)
 - [Exit Codes](exit-codes.md)
-- Ingest contract reference: [`../../bijux-atlas-ingest/docs/ingest-contract.md`](../../bijux-atlas-ingest/docs/ingest-contract.md)
+- Ingest contract reference: [`ingest/ingest-contract.md`](ingest/ingest-contract.md)
 - [Public API](public-api.md)
 - [Tests](../tests/)
 

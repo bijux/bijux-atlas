@@ -1,6 +1,6 @@
 # Model Docs Index
 
-`bijux-atlas-model` is the SSOT for atlas domain types.
+`bijux-atlas::model` is the SSOT for atlas domain types.
 
 Primary domain objects:
 - `DatasetId` and selector/normalization types (`Release`, `Species`, `Assembly`).
@@ -10,7 +10,7 @@ Primary domain objects:
 Docs:
 - [Architecture](architecture.md)
 - [Public API](public-api.md)
-- Ingest contract reference: [`../../bijux-atlas-ingest/docs/ingest-contract.md`](../../bijux-atlas-ingest/docs/ingest-contract.md)
+- Ingest contract reference: [`../ingest/ingest-contract.md`](../ingest/ingest-contract.md)
 - [Schema stability rules](schema-stability.md)
 - [Contract compatibility](contract-compatibility.md)
 - [Schema evolution notes](internal/schema-evolution-notes.md)

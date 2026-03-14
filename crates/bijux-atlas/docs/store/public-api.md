@@ -1,4 +1,4 @@
-# PUBLIC API: bijux-atlas-store
+# PUBLIC API: bijux-atlas::store
 
 Stability reference: [Stability Levels](../../../docs/control-plane/extensibility-and-stability-levels.md)
 

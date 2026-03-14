@@ -1,4 +1,4 @@
-# Tests for bijux-atlas-core
+# Tests for bijux-atlas::core
 
 What belongs here:
 
