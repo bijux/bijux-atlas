@@ -1,0 +1,7 @@
+##gff-version 3
+chrA	source	gene	2	20	.	+	.	ID=gA1;Name=GENEA1;biotype=protein_coding
+chrA	source	mRNA	2	20	.	+	.	ID=tA1;Parent=gA1
+chrA	source	gene	25	40	.	+	.	ID=gA2;gene_name=GENEA2;gene_biotype=lncRNA
+chrA	source	transcript	25	40	.	+	.	ID=tA2;Parent=gA2
+chrB	source	gene	1	30	.	-	.	ID=gB1;Name=GENEB1;biotype=protein_coding
+chrB	source	mRNA	1	30	.	-	.	ID=tB1;Parent=gB1

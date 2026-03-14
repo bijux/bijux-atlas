@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "profile": "ingest-benchmark-baseline",
+  "scenarios": {
+    "ingest_small_dataset": {
+      "throughput_rows_per_sec": 1000,
+      "latency_ms_p95": 50,
+      "max_rss_mb": 256
+    },
+    "ingest_medium_dataset": {
+      "throughput_rows_per_sec": 500,
+      "latency_ms_p95": 200,
+      "max_rss_mb": 512
+    },
+    "ingest_large_dataset": {
+      "throughput_rows_per_sec": 250,
+      "latency_ms_p95": 800,
+      "max_rss_mb": 1024
+    }
+  }
+}

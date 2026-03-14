@@ -1,0 +1,4 @@
+##gff-version 3
+chr1	s	gene	4	14	.	+	.	ID=e4a;Name=E4A
+chr1	s	gene	15	25	.	+	.	ID=e4b;Name=E4B
+chr1	s	mRNA	4	25	.	+	.	ID=t4;Parent=e4a,e4b

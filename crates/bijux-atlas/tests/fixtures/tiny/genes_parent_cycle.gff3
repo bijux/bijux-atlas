@@ -1,0 +1,3 @@
+##gff-version 3
+chr1	src	gene	1	20	.	+	.	ID=geneA;Name=GeneA;Parent=txA
+chr1	src	mRNA	1	20	.	+	.	ID=txA;Parent=geneA

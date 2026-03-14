@@ -1,0 +1,3 @@
+##gff-version 3
+chr1	s	gene	6	16	.	+	.	ID=e6;Name=E6
+chr1	s	mRNA	6	16	.	+	.	ID=t6

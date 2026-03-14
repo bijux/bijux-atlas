@@ -1,0 +1,6 @@
+##gff-version 3
+chr1	source	gene	1	20	.	+	.	ID=gene1;Name=BRCA1;biotype=protein_coding
+chr1	source	mRNA	1	20	.	+	.	ID=tx1;Parent=gene1
+chr1	source	transcript	2	18	.	+	.	ID=tx2;Parent=gene1
+chr2	source	gene	3	30	.	-	.	ID=gene2;gene_name=TP53;gene_biotype=lncRNA
+chr2	source	mRNA	3	30	.	-	.	ID=tx3;Parent=gene2

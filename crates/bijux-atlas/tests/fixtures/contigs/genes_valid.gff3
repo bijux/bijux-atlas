@@ -1,0 +1,4 @@
+##gff-version 3
+chr1	s	gene	1	10	.	+	.	ID=g1;Name=A
+1	s	gene	1	8	.	+	.	ID=g2;Name=B
+chrM	s	gene	1	4	.	+	.	ID=g3;Name=C

@@ -1,0 +1,3 @@
+##gff-version 3
+chr1	s	gene	7	17	.	+	.	ID=dup;Name=DUP
+chr1	s	mRNA	7	17	.	+	.	ID=dup;Parent=dup
