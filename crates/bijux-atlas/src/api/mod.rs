@@ -152,7 +152,8 @@ mod tests {
 
     #[test]
     fn error_contract_matches_frozen_registry() {
-        let freeze = include_str!("../../docs/api/ssot/ERROR_CODES.json");
+        let freeze =
+            include_str!("../../../../docs/bijux-atlas-crate/api/ssot/ERROR_CODES.json");
         let val: serde_json::Value = serde_json::from_str(freeze).expect("freeze json");
         let codes = val["codes"]
             .as_array()
@@ -267,7 +268,9 @@ mod tests {
             .collect::<std::collections::BTreeSet<_>>();
 
         let contract: serde_json::Value =
-            serde_json::from_str(include_str!("../../docs/api/ssot/API_SURFACE.json"))
+            serde_json::from_str(include_str!(
+                "../../../../docs/bijux-atlas-crate/api/ssot/API_SURFACE.json"
+            ))
                 .expect("parse api surface");
         let expected = contract
             .get("endpoints")

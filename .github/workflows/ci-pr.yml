@@ -234,7 +234,7 @@ jobs:
               "kind": "semantic_drift_reports",
               "base": base,
               "head": head,
-              "configs": {"changed": subset(["configs/", "crates/bijux-atlas/docs/server/generated/effective-config.snapshot.json", "docs/reference/contracts/schemas/CONFIG_KEYS.json"])},
+              "configs": {"changed": subset(["configs/", "docs/bijux-atlas-crate/server/generated/effective-config.snapshot.json", "docs/reference/contracts/schemas/CONFIG_KEYS.json"])},
               "docs": {"changed": subset(["docs/"])},
               "make": {"changed": subset(["make/", "configs/ops/make-target-registry.json", "make/target-list.json"])},
               "docker": {"changed": subset(["docker/", "docker/images.manifest.json", "docker/policy.json"])},
@@ -281,7 +281,7 @@ jobs:
           config_registry_changed=0
           config_runtime_changed=0
           if changed_file "docs/reference/contracts/schemas/CONFIG_KEYS.json"; then config_registry_changed=1; fi
-          if changed_file "crates/bijux-atlas/docs/server/generated/effective-config.snapshot.json" || changed_file "crates/bijux-atlas/docs/server/generated/runtime-startup-config.md" || changed_file "crates/bijux-atlas/docs/server/generated/runtime-startup-config.schema.json"; then config_runtime_changed=1; fi
+          if changed_file "docs/bijux-atlas-crate/server/generated/effective-config.snapshot.json" || changed_file "docs/bijux-atlas-crate/server/generated/runtime-startup-config.md" || changed_file "docs/bijux-atlas-crate/server/generated/runtime-startup-config.schema.json"; then config_runtime_changed=1; fi
           if [ "${config_registry_changed}" -ne "${config_runtime_changed}" ]; then
             echo "CONFIG_KEYS registry diff must match runtime effective config artifact diff" >&2
             exit 1

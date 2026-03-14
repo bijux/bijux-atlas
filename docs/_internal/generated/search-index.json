@@ -1001,7 +1001,7 @@
         "bijux-atlas",
         "contract"
       ],
-      "path": "crates/bijux-atlas/CONTRACT.md",
+      "path": "docs/bijux-atlas-crate/CONTRACT.md",
       "tags": [
         "bijux-atlas",
         "contract"
@@ -1025,7 +1025,7 @@
         "architecture",
         "bijux-atlas"
       ],
-      "path": "crates/bijux-atlas/docs/architecture.md",
+      "path": "docs/bijux-atlas-crate/architecture.md",
       "tags": [
         "architecture",
         "bijux-atlas"
@@ -1037,7 +1037,7 @@
         "benchmarks",
         "bijux-atlas"
       ],
-      "path": "crates/bijux-atlas/docs/benchmarks.md",
+      "path": "docs/bijux-atlas-crate/benchmarks.md",
       "tags": [
         "benchmarks",
         "bijux-atlas"
@@ -1049,7 +1049,7 @@
         "bijux-atlas",
         "cli-command-list"
       ],
-      "path": "crates/bijux-atlas/docs/cli-command-list.md",
+      "path": "docs/bijux-atlas-crate/cli-command-list.md",
       "tags": [
         "bijux-atlas",
         "cli-command-list"
@@ -1061,7 +1061,7 @@
         "bijux-atlas",
         "cli-ux-contract"
       ],
-      "path": "crates/bijux-atlas/docs/cli-ux-contract.md",
+      "path": "docs/bijux-atlas-crate/cli-ux-contract.md",
       "tags": [
         "bijux-atlas",
         "cli-ux-contract"
@@ -1073,7 +1073,7 @@
         "bijux-atlas",
         "command-surface"
       ],
-      "path": "crates/bijux-atlas/docs/command-surface.md",
+      "path": "docs/bijux-atlas-crate/command-surface.md",
       "tags": [
         "bijux-atlas",
         "command-surface"
@@ -1085,7 +1085,7 @@
         "bijux-atlas",
         "config-discovery"
       ],
-      "path": "crates/bijux-atlas/docs/config-discovery.md",
+      "path": "docs/bijux-atlas-crate/config-discovery.md",
       "tags": [
         "bijux-atlas",
         "config-discovery"
@@ -1097,7 +1097,7 @@
         "bijux-atlas",
         "effects"
       ],
-      "path": "crates/bijux-atlas/docs/effects.md",
+      "path": "docs/bijux-atlas-crate/effects.md",
       "tags": [
         "bijux-atlas",
         "effects"
@@ -1109,7 +1109,7 @@
         "bijux-atlas",
         "errors"
       ],
-      "path": "crates/bijux-atlas/docs/errors.md",
+      "path": "docs/bijux-atlas-crate/errors.md",
       "tags": [
         "bijux-atlas",
         "errors"
@@ -1121,7 +1121,7 @@
         "bijux-atlas",
         "examples"
       ],
-      "path": "crates/bijux-atlas/docs/examples.md",
+      "path": "docs/bijux-atlas-crate/examples.md",
       "tags": [
         "bijux-atlas",
         "examples"
@@ -1133,7 +1133,7 @@
         "bijux-atlas",
         "exit-codes"
       ],
-      "path": "crates/bijux-atlas/docs/exit-codes.md",
+      "path": "docs/bijux-atlas-crate/exit-codes.md",
       "tags": [
         "bijux-atlas",
         "exit-codes"
@@ -1145,7 +1145,7 @@
         "bijux-atlas",
         "index"
       ],
-      "path": "crates/bijux-atlas/docs/index.md",
+      "path": "docs/bijux-atlas-crate/index.md",
       "tags": [
         "bijux-atlas",
         "index"
@@ -1158,7 +1158,7 @@
         "effect-boundary-map",
         "internal"
       ],
-      "path": "crates/bijux-atlas/docs/internal/effect-boundary-map.md",
+      "path": "docs/bijux-atlas-crate/internal/effect-boundary-map.md",
       "tags": [
         "bijux-atlas",
         "effect-boundary-map",
@@ -1171,7 +1171,7 @@
         "bijux-atlas",
         "plugin-contract"
       ],
-      "path": "crates/bijux-atlas/docs/plugin-contract.md",
+      "path": "docs/bijux-atlas-crate/plugin-contract.md",
       "tags": [
         "bijux-atlas",
         "plugin-contract"
@@ -1183,7 +1183,7 @@
         "bijux-atlas",
         "public-api"
       ],
-      "path": "crates/bijux-atlas/docs/public-api.md",
+      "path": "docs/bijux-atlas-crate/public-api.md",
       "tags": [
         "bijux-atlas",
         "public-api"
@@ -1195,7 +1195,7 @@
         "bijux-atlas",
         "testing"
       ],
-      "path": "crates/bijux-atlas/docs/testing.md",
+      "path": "docs/bijux-atlas-crate/testing.md",
       "tags": [
         "bijux-atlas",
         "testing"
@@ -1207,7 +1207,7 @@
         "bijux-atlas",
         "versioning"
       ],
-      "path": "crates/bijux-atlas/docs/versioning.md",
+      "path": "docs/bijux-atlas-crate/versioning.md",
       "tags": [
         "bijux-atlas",
         "versioning"

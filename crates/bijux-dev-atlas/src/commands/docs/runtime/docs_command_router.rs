@@ -1074,7 +1074,7 @@ fn docs_generate_command_lists(repo_root: &std::path::Path) -> Result<Vec<String
 
 fn build_generated_schema_snippets_body(repo_root: &std::path::Path) -> Result<String, String> {
     let schema_path =
-        repo_root.join("crates/bijux-atlas/docs/server/generated/runtime-startup-config.schema.json");
+        repo_root.join("docs/bijux-atlas-crate/server/generated/runtime-startup-config.schema.json");
     let schema = fs::read_to_string(&schema_path)
         .map_err(|e| format!("read {} failed: {e}", schema_path.display()))?;
     let value: serde_json::Value =
@@ -1088,7 +1088,7 @@ fn build_generated_schema_snippets_body(repo_root: &std::path::Path) -> Result<S
         .filter_map(|v| v.as_str().map(ToString::to_string))
         .collect::<Vec<_>>();
     Ok(format!(
-        "# Generated Schema Snippets\n\nRuntime startup schema source: `crates/bijux-atlas/docs/server/generated/runtime-startup-config.schema.json`\n\nRequired fields:\n\n{}\n",
+        "# Generated Schema Snippets\n\nRuntime startup schema source: `docs/bijux-atlas-crate/server/generated/runtime-startup-config.schema.json`\n\nRequired fields:\n\n{}\n",
         required
             .iter()
             .map(|item| format!("- `{item}`"))

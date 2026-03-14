@@ -616,7 +616,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                     Err(err) => vec![err],
                 };
             let effective_config_snapshot = repo_root
-                .join("crates/bijux-atlas/docs/server/generated/effective-config.snapshot.json");
+                .join("docs/bijux-atlas-crate/server/generated/effective-config.snapshot.json");
             let effective_config_hash = std::fs::read(&effective_config_snapshot)
                 .ok()
                 .map(|bytes| sha256_hex(&String::from_utf8_lossy(&bytes)));

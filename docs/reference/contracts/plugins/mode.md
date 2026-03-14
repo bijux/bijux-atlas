@@ -17,7 +17,7 @@ Canonical page: [`docs/reference/contracts/plugins/spec.md`](spec.md)
 
 ## Canonical Command Surface Lists
 
-- Runtime plugin command list: `crates/bijux-atlas/docs/cli-command-list.md`
+- Runtime plugin command list: `docs/bijux-atlas-crate/cli-command-list.md`
 - Dev control-plane command list: `crates/bijux-dev-atlas/docs/cli-command-list.md`
 - Dev ops command list snapshot: `crates/bijux-dev-atlas/docs/ops-command-list.md`
 - Dev configs command list snapshot: `crates/bijux-dev-atlas/docs/configs-command-list.md`

@@ -7,7 +7,7 @@
 |---|---|
 | `bijux-atlas-api` | `crates/bijux-atlas-api/docs/public-api.md` |
 | `bijux-atlas-bench` | `missing` |
-| `bijux-atlas` | `crates/bijux-atlas/docs/public-api.md` |
+| `bijux-atlas` | `docs/bijux-atlas-crate/public-api.md` |
 | `bijux-atlas-client` | `missing` |
 | `bijux-atlas-core` | `crates/bijux-atlas-core/docs/public-api.md` |
 | `bijux-atlas-ingest` | `crates/bijux-atlas-ingest/docs/public-api.md` |

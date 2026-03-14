@@ -12,9 +12,9 @@ End-user Atlas CLI for dataset/catalog/ingest/query contract workflows.
   - `bijux-atlas openapi generate --out configs/openapi/v1/openapi.generated.json`
 
 ## Command Surface
-- Stable command map: [docs/cli-command-list.md](docs/cli-command-list.md)
-- UX and output contract: [docs/cli-ux-contract.md](docs/cli-ux-contract.md)
-- Exit codes: [docs/exit-codes.md](docs/exit-codes.md)
+- Stable command map: [../../docs/bijux-atlas-crate/cli-command-list.md](../../docs/bijux-atlas-crate/cli-command-list.md)
+- UX and output contract: [../../docs/bijux-atlas-crate/cli-ux-contract.md](../../docs/bijux-atlas-crate/cli-ux-contract.md)
+- Exit codes: [../../docs/bijux-atlas-crate/exit-codes.md](../../docs/bijux-atlas-crate/exit-codes.md)
 
 ## Stability Guarantees
 - Global flags and noun-first product commands are stable.
@@ -22,15 +22,15 @@ End-user Atlas CLI for dataset/catalog/ingest/query contract workflows.
 - Error payloads and exit code classes are stable contracts.
 
 ## Docs
-- [docs/index.md](docs/index.md)
+- [../../docs/bijux-atlas-crate/index.md](../../docs/bijux-atlas-crate/index.md)
 
 ## Purpose
 - Describe the crate responsibility and stable boundaries.
 
 ## How to use
-- Read `docs/index.md` for workflows and examples.
+- Read `../../docs/bijux-atlas-crate/index.md` for workflows and examples.
 - Use the crate through its documented public API only.
 
 ## Where docs live
-- Crate docs index: `docs/index.md`
-- Contract: `CONTRACT.md`
+- Crate docs index: `docs/bijux-atlas-crate/index.md`
+- Contract: `docs/bijux-atlas-crate/CONTRACT.md`

@@ -453,7 +453,7 @@ pub(super) fn check_make_governance_wrappers_no_direct_cargo(
 pub(super) fn check_docs_command_list_matches_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("crates/bijux-atlas/docs/cli-command-list.md");
+    let rel = Path::new("docs/bijux-atlas-crate/cli-command-list.md");
     let current = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     if current.lines().next() == Some("atlas") {
@@ -525,7 +525,7 @@ pub(super) fn check_crates_bijux_dev_atlas_not_umbrella_binary(
 pub(super) fn check_crates_command_namespace_ownership_unique(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let runtime_rel = Path::new("crates/bijux-atlas/docs/cli-command-list.md");
+    let runtime_rel = Path::new("docs/bijux-atlas-crate/cli-command-list.md");
     let dev_rel = Path::new("crates/bijux-dev-atlas/docs/cli-command-list.md");
     let runtime = fs::read_to_string(ctx.repo_root.join(runtime_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
