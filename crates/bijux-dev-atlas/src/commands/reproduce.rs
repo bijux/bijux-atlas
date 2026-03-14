@@ -2,7 +2,7 @@
 
 use crate::cli::{ReproduceCommand, ReproduceCommonArgs, ReproduceExplainArgs};
 use crate::{emit_payload, resolve_repo_root};
-use bijux_dev_atlas::contracts::reproducibility::{scenario_catalog, ReproFailureClass};
+use bijux_dev_atlas::reference::reproducibility::{scenario_catalog, ReproFailureClass};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use std::fs;

@@ -6,7 +6,7 @@ use crate::cli::{
     RegistryMissingArg,
 };
 use crate::{emit_payload, resolve_repo_root};
-use bijux_dev_atlas::contracts::governance_enforcement;
+use bijux_dev_atlas::reference::governance_enforcement;
 use bijux_dev_atlas::core::load_registry;
 use bijux_dev_atlas::docs::site_output::validate_named_report;
 use bijux_dev_atlas::governance_objects::{

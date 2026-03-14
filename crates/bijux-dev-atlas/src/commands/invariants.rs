@@ -2,7 +2,7 @@
 
 use crate::cli::{InvariantsCommand, InvariantsCommonArgs};
 use crate::{emit_payload, resolve_repo_root};
-use bijux_dev_atlas::contracts::system_invariants::{
+use bijux_dev_atlas::reference::system_invariants::{
     registry, InvariantGroup, InvariantSeverity, SystemInvariant,
 };
 use sha2::{Digest, Sha256};

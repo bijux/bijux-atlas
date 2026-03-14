@@ -2,8 +2,8 @@
 
 use crate::cli::{DriftCommand, DriftCompareArgs, DriftDetectArgs, InvariantsCommonArgs};
 use crate::{emit_payload, resolve_repo_root};
-use bijux_dev_atlas::contracts::drift::{explain_drift_type, DriftClass, DriftSeverity, DriftType};
-use bijux_dev_atlas::contracts::system_invariants;
+use bijux_dev_atlas::reference::drift::{explain_drift_type, DriftClass, DriftSeverity, DriftType};
+use bijux_dev_atlas::reference::system_invariants;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;

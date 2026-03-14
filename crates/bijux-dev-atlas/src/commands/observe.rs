@@ -6,7 +6,7 @@ use crate::cli::{
     ObserveTracesCommonArgs,
 };
 use crate::{emit_payload, resolve_repo_root};
-use bijux_dev_atlas::contracts::{logging_registry, metrics_registry, tracing_registry};
+use bijux_dev_atlas::reference::{logging_registry, metrics_registry, tracing_registry};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;

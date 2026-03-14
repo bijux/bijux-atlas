@@ -21,6 +21,7 @@ pub mod performance;
 pub mod policies;
 pub(crate) mod ports;
 pub mod prelude;
+pub mod reference;
 pub mod registry;
 pub mod runtime;
 pub(crate) mod schema_support;
