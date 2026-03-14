@@ -829,7 +829,7 @@ fn run_perf_benches_list(args: PerfValidateArgs) -> Result<(String, i32), String
     let root = resolve_repo_root(args.repo_root)?;
     ensure_json(&root.join("configs/contracts/perf/benches.schema.json"))?;
     let registry = read_json(&root.join("configs/perf/benches.json"))?;
-    let benches_root = root.join("crates/bijux-atlas-server/benches");
+    let benches_root = root.join("crates/bijux-atlas/benches/server");
     let mut disk_entries = BTreeSet::new();
     for entry in fs::read_dir(&benches_root)
         .map_err(|err| format!("failed to read {}: {err}", benches_root.display()))?

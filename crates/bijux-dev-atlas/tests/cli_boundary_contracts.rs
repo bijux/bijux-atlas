@@ -109,7 +109,7 @@ fn dev_cli_must_not_expose_user_runtime_flows() {
 #[test]
 fn runtime_code_must_not_depend_on_dev_atlas_crate() {
     let root = repo_root();
-    let cargo_toml = fs::read_to_string(root.join("crates/bijux-atlas-server/Cargo.toml"))
+    let cargo_toml = fs::read_to_string(root.join("crates/bijux-atlas/Cargo.toml"))
         .expect("read runtime Cargo.toml");
     assert!(
         !cargo_toml.contains("bijux-dev-atlas"),

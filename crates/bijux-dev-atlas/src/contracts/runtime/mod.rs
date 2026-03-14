@@ -6,15 +6,7 @@ use std::path::{Path, PathBuf};
 
 use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestResult, Violation};
 
-const RUNTIME_CRATES: [&str; 7] = [
-    "bijux-atlas-api",
-    "bijux-atlas",
-    "bijux-atlas-core",
-    "bijux-atlas-ingest",
-    "bijux-atlas-model",
-    "bijux-atlas-server",
-    "bijux-atlas-store",
-];
+const RUNTIME_CRATES: [&str; 1] = ["bijux-atlas"];
 
 fn runtime_manifest_paths(repo_root: &Path) -> Vec<PathBuf> {
     RUNTIME_CRATES
@@ -24,41 +16,7 @@ fn runtime_manifest_paths(repo_root: &Path) -> Vec<PathBuf> {
 }
 
 fn allowed_runtime_deps() -> BTreeMap<&'static str, BTreeSet<&'static str>> {
-    BTreeMap::from([
-        (
-            "bijux-atlas-api",
-            BTreeSet::from(["bijux-atlas", "bijux-atlas-core", "bijux-atlas-model"]),
-        ),
-        (
-            "bijux-atlas",
-            BTreeSet::from([
-                "bijux-atlas-core",
-                "bijux-atlas-ingest",
-                "bijux-atlas-model",
-                "bijux-atlas-store",
-            ]),
-        ),
-        ("bijux-atlas-core", BTreeSet::new()),
-        (
-            "bijux-atlas-ingest",
-            BTreeSet::from(["bijux-atlas-core", "bijux-atlas-model"]),
-        ),
-        ("bijux-atlas-model", BTreeSet::new()),
-        (
-            "bijux-atlas-server",
-            BTreeSet::from([
-                "bijux-atlas-api",
-                "bijux-atlas",
-                "bijux-atlas-core",
-                "bijux-atlas-model",
-                "bijux-atlas-store",
-            ]),
-        ),
-        (
-            "bijux-atlas-store",
-            BTreeSet::from(["bijux-atlas-core", "bijux-atlas-model"]),
-        ),
-    ])
+    BTreeMap::from([("bijux-atlas", BTreeSet::new())])
 }
 
 fn parse_runtime_deps(manifest_path: &Path) -> Result<(String, BTreeSet<String>), String> {
@@ -145,7 +103,7 @@ fn relative_to_repo(repo_root: &Path, path: &Path) -> String {
 }
 
 fn api_surface_lines(repo_root: &Path) -> Result<Vec<String>, String> {
-    let lib = repo_root.join("crates/bijux-atlas-api/src/lib.rs");
+    let lib = repo_root.join("crates/bijux-atlas/src/api/mod.rs");
     let text =
         fs::read_to_string(&lib).map_err(|err| format!("read {} failed: {err}", lib.display()))?;
     Ok(text
@@ -202,30 +160,6 @@ fn test_runtime_001_dependency_allowlist(ctx: &RunContext) -> TestResult {
     }
 }
 
-fn test_runtime_002_server_no_ingest_dep(ctx: &RunContext) -> TestResult {
-    let manifest = ctx.repo_root.join("crates/bijux-atlas-server/Cargo.toml");
-    match parse_runtime_deps(&manifest) {
-        Ok((package, deps)) => {
-            if deps.contains("bijux-atlas-ingest") {
-                TestResult::Fail(vec![push_violation(
-                    "RUNTIME-002",
-                    "runtime.server.no_ingest_dep",
-                    Some(relative_to_repo(&ctx.repo_root, &manifest)),
-                    format!("runtime crate `{package}` must not depend on bijux-atlas-ingest"),
-                )])
-            } else {
-                TestResult::Pass
-            }
-        }
-        Err(err) => TestResult::Fail(vec![push_violation(
-            "RUNTIME-002",
-            "runtime.server.no_ingest_dep",
-            Some(relative_to_repo(&ctx.repo_root, &manifest)),
-            err,
-        )]),
-    }
-}
-
 fn test_runtime_003_no_control_plane_dep(ctx: &RunContext) -> TestResult {
     let mut violations = Vec::new();
     for manifest in runtime_manifest_paths(&ctx.repo_root) {
@@ -255,82 +189,6 @@ fn test_runtime_003_no_control_plane_dep(ctx: &RunContext) -> TestResult {
     }
 }
 
-fn test_runtime_004_pure_crates_no_host_io(ctx: &RunContext) -> TestResult {
-    let crates = ["bijux-atlas-core", "bijux-atlas-model", "bijux-atlas-api"];
-    let forbidden = [
-        "std::fs",
-        "tokio::fs",
-        "reqwest",
-        "std::process::Command",
-        "ProcessCommand::new",
-        "TcpStream::connect",
-        "UdpSocket::bind",
-        "std::net::",
-        "tokio::net::",
-        "hyper::",
-        "axum::",
-    ];
-    let mut violations = Vec::new();
-    for crate_name in crates {
-        let src_root = ctx.repo_root.join("crates").join(crate_name).join("src");
-        let files = match collect_rs_files(&src_root) {
-            Ok(value) => value,
-            Err(err) => {
-                violations.push(push_violation(
-                    "RUNTIME-004",
-                    "runtime.pure_crates.no_host_io",
-                    Some(relative_to_repo(&ctx.repo_root, &src_root)),
-                    err,
-                ));
-                continue;
-            }
-        };
-        for file in files {
-            let relative = relative_to_repo(&ctx.repo_root, &file);
-            if relative.contains("/src/bin/") || relative.ends_with("/adapters.rs") {
-                continue;
-            }
-            if crate_name == "bijux-atlas-core"
-                && matches!(
-                    relative.as_str(),
-                    "crates/bijux-atlas-core/src/domain/distributed_config.rs"
-                        | "crates/bijux-atlas-core/src/domain/security_data_protection.rs"
-                        | "crates/bijux-atlas-core/src/domain/security_runtime.rs"
-                )
-            {
-                continue;
-            }
-            let hits = match file_contains_any(&file, &forbidden) {
-                Ok(value) => value,
-                Err(err) => {
-                    violations.push(push_violation(
-                        "RUNTIME-004",
-                        "runtime.pure_crates.no_host_io",
-                        Some(relative.clone()),
-                        err,
-                    ));
-                    continue;
-                }
-            };
-            for hit in hits {
-                violations.push(push_violation(
-                    "RUNTIME-004",
-                    "runtime.pure_crates.no_host_io",
-                    Some(relative.clone()),
-                    format!(
-                        "pure runtime crate `{crate_name}` must not use host I/O marker `{hit}`"
-                    ),
-                ));
-            }
-        }
-    }
-    if violations.is_empty() {
-        TestResult::Pass
-    } else {
-        TestResult::Fail(violations)
-    }
-}
-
 fn test_runtime_005_api_surface_snapshot(ctx: &RunContext) -> TestResult {
     let snapshot = ctx
         .repo_root
@@ -341,7 +199,7 @@ fn test_runtime_005_api_surface_snapshot(ctx: &RunContext) -> TestResult {
             return TestResult::Fail(vec![push_violation(
                 "RUNTIME-005",
                 "runtime.api.surface_snapshot",
-                Some("crates/bijux-atlas-api/src/lib.rs".to_string()),
+                Some("crates/bijux-atlas/src/api/mod.rs".to_string()),
                 err,
             )]);
         }
@@ -370,7 +228,7 @@ fn test_runtime_005_api_surface_snapshot(ctx: &RunContext) -> TestResult {
 }
 
 fn test_runtime_006_redis_lock_acquisition_is_atomic(ctx: &RunContext) -> TestResult {
-    let runtime_root = ctx.repo_root.join("crates/bijux-atlas-server/src");
+    let runtime_root = ctx.repo_root.join("crates/bijux-atlas/src");
     let files = match collect_rs_files(&runtime_root) {
         Ok(files) => files,
         Err(err) => {
@@ -416,31 +274,18 @@ fn test_runtime_006_redis_lock_acquisition_is_atomic(ctx: &RunContext) -> TestRe
 }
 
 pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
-    if !repo_root
-        .join("crates/bijux-atlas-core/Cargo.toml")
-        .exists()
-    {
-        return Err("runtime contracts require the workspace crates surface".to_string());
+    if !repo_root.join("crates/bijux-atlas/Cargo.toml").exists() {
+        return Err("runtime contracts require the merged atlas crate".to_string());
     }
     Ok(vec![
         Contract {
             id: ContractId("RUNTIME-001".to_string()),
-            title: "runtime dependency layering stays on the approved graph",
+            title: "merged atlas runtime stays free of retired split-crate dependencies",
             tests: vec![TestCase {
                 id: TestId("runtime.deps.allowlist".to_string()),
-                title: "runtime crate dependencies stay on the declared allowlist graph",
+                title: "bijux-atlas does not depend on retired split crates",
                 kind: TestKind::Pure,
                 run: test_runtime_001_dependency_allowlist,
-            }],
-        },
-        Contract {
-            id: ContractId("RUNTIME-002".to_string()),
-            title: "server stays out of the ingest layer",
-            tests: vec![TestCase {
-                id: TestId("runtime.server.no_ingest_dependency".to_string()),
-                title: "bijux-atlas-server does not depend on bijux-atlas-ingest",
-                kind: TestKind::Pure,
-                run: test_runtime_002_server_no_ingest_dep,
             }],
         },
         Contract {
@@ -454,21 +299,11 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
-            id: ContractId("RUNTIME-004".to_string()),
-            title: "pure runtime crates avoid host I/O",
-            tests: vec![TestCase {
-                id: TestId("runtime.pure_crates.no_host_io".to_string()),
-                title: "core model policies and api sources avoid direct host I/O markers",
-                kind: TestKind::Pure,
-                run: test_runtime_004_pure_crates_no_host_io,
-            }],
-        },
-        Contract {
             id: ContractId("RUNTIME-005".to_string()),
-            title: "runtime api surface stays stable",
+            title: "merged api surface stays stable",
             tests: vec![TestCase {
                 id: TestId("runtime.api.surface_snapshot".to_string()),
-                title: "bijux-atlas-api public surface matches the committed snapshot",
+                title: "bijux-atlas api module public surface matches the committed snapshot",
                 kind: TestKind::Pure,
                 run: test_runtime_005_api_surface_snapshot,
             }],
@@ -489,21 +324,14 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
 pub fn contract_explain(contract_id: &str) -> String {
     match contract_id {
         "RUNTIME-001" => {
-            "Runtime crate dependencies must stay on the approved layering graph.".to_string()
-        }
-        "RUNTIME-002" => {
-            "The server runtime must not depend directly on the ingest layer.".to_string()
+            "The merged atlas crate must not depend on retired split runtime crates.".to_string()
         }
         "RUNTIME-003" => {
-            "Runtime crates may not import the bijux-dev-atlas control-plane crate.".to_string()
-        }
-        "RUNTIME-004" => {
-            "Pure runtime crates must avoid direct filesystem, network, and subprocess usage."
+            "The merged runtime crate may not import the bijux-dev-atlas control-plane crate."
                 .to_string()
         }
         "RUNTIME-005" => {
-            "The public bijux-atlas-api surface is snapshot-governed and must move intentionally."
-                .to_string()
+            "The public bijux-atlas api module surface is snapshot-governed and must move intentionally.".to_string()
         }
         "RUNTIME-006" => {
             "Runtime Redis lock acquisition must use atomic SET NX EX semantics instead of split setnx and expire calls.".to_string()

@@ -8,7 +8,7 @@ use std::fs;
 use std::path::PathBuf;
 
 fn runtime_config_schema_path(root: &std::path::Path) -> PathBuf {
-    root.join("crates/bijux-atlas-server/docs/generated/runtime-startup-config.schema.json")
+    root.join("crates/bijux-atlas/docs/server/generated/runtime-startup-config.schema.json")
 }
 
 fn read_runtime_config_schema(root: &std::path::Path) -> Result<Value, String> {

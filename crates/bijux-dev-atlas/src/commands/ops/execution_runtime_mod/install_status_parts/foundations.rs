@@ -256,7 +256,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
             (
                 "warmup lock runtime source",
-                repo_root.join("crates/bijux-atlas-server/src/main.rs"),
+                repo_root.join("crates/bijux-atlas/src/bin/atlas-server.rs"),
             ),
         ],
         "redis-outage" => vec![
@@ -281,7 +281,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
         "catalog-unreachable" => vec![
             (
                 "readiness handler",
-                repo_root.join("crates/bijux-atlas-server/src/http/handlers_utilities.rs"),
+                repo_root.join("crates/bijux-atlas/src/http/handlers_utilities.rs"),
             ),
             (
                 "health endpoints contract",
@@ -324,7 +324,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
             (
                 "server config tests",
-                repo_root.join("crates/bijux-atlas-server/src/config/tests.rs"),
+                repo_root.join("crates/bijux-atlas/src/config/tests.rs"),
             ),
             (
                 "log schema",

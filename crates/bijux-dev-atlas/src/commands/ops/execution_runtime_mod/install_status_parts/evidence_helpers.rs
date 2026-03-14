@@ -601,14 +601,15 @@ pub(super) fn observability_contract_checks(
     .all(|needle| metrics_body.contains(needle));
 
     let response_contract = std::fs::read_to_string(
-        repo_root.join("crates/bijux-atlas-server/src/http/response_contract.rs"),
+        repo_root.join("crates/bijux-atlas/src/http/response_contract.rs"),
     )
     .map_err(|err| format!("failed to read response contract source: {err}"))?;
     let error_registry = std::fs::read_to_string(
         repo_root.join("configs/contracts/observability/error-codes.json"),
     )
     .map_err(|err| format!("failed to read error registry: {err}"))?;
-    let openapi = std::fs::read_to_string(repo_root.join("crates/bijux-atlas-api/openapi.v1.json"))
+    let openapi =
+        std::fs::read_to_string(repo_root.join("configs/openapi/v1/openapi.snapshot.json"))
         .map_err(|err| format!("failed to read openapi: {err}"))?;
     let error_registry_aligned = error_registry.contains("NotReady")
         && error_registry.contains("RateLimited")
@@ -616,7 +617,8 @@ pub(super) fn observability_contract_checks(
         && response_contract.contains("ApiErrorCode::RateLimited")
         && openapi.contains("\"ApiErrorCode\"");
 
-    let main_rs = std::fs::read_to_string(repo_root.join("crates/bijux-atlas-server/src/main.rs"))
+    let main_rs =
+        std::fs::read_to_string(repo_root.join("crates/bijux-atlas/src/bin/atlas-server.rs"))
         .map_err(|err| format!("failed to read main.rs: {err}"))?;
     let startup_log_fields_present = main_rs.contains("event_id = \"startup\"")
         && main_rs.contains("release_id = %release_id")

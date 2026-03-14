@@ -230,8 +230,8 @@ fn server_runtime_prefixed_env_reads_stay_inside_the_env_contract() {
 
     let mut runtime_keys = BTreeSet::new();
     for relative_path in [
-        "crates/bijux-atlas-server/src/main.rs",
-        "crates/bijux-atlas-server/src/config/mod.rs",
+        "crates/bijux-atlas/src/bin/atlas-server.rs",
+        "crates/bijux-atlas/src/config/mod.rs",
     ] {
         let text = read(&root.join(relative_path));
         runtime_keys.extend(collect_prefixed_env_tokens(&text));
@@ -394,12 +394,12 @@ fn workspace_package_metadata_stays_acyclic_and_consistent() {
             local_dependencies.push(dep_name);
         }
 
-        if name == "bijux-atlas-server" {
+        if name == "bijux-atlas" {
             assert!(
                 !local_dependencies
                     .iter()
                     .any(|dep_name| dep_name == "bijux-dev-atlas"),
-                "bijux-atlas-server must not depend on dev-only crate bijux-dev-atlas"
+                "bijux-atlas must not depend on dev-only crate bijux-dev-atlas"
             );
         }
         adjacency.insert(name.clone(), local_dependencies);

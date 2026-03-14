@@ -993,7 +993,7 @@ fn run_release_images_runtime_command_verify(
     let dev_cli_dispatch = root.join("crates/bijux-dev-atlas/src/cli/dispatch.rs");
     let dev_cli_mod = root.join("crates/bijux-dev-atlas/src/cli/mod.rs");
     let schema_path =
-        root.join("crates/bijux-atlas-server/docs/generated/runtime-startup-config.schema.json");
+        root.join("crates/bijux-atlas/docs/server/generated/runtime-startup-config.schema.json");
     let dispatch_text = fs::read_to_string(&dev_cli_dispatch)
         .map_err(|err| format!("failed to read {}: {err}", dev_cli_dispatch.display()))?;
     let cli_text = fs::read_to_string(&dev_cli_mod)
@@ -1199,7 +1199,7 @@ fn run_release_images_changelog_extract(
             "--",
             "docker",
             "crates/bijux-atlas",
-            "crates/bijux-atlas-server",
+            "crates/bijux-atlas",
         ])
         .current_dir(&root)
         .output()

@@ -13,9 +13,6 @@
     "bijux-atlas-data": {
       "github_handles": ["@bijan"]
     },
-    "bijux-atlas-api": {
-      "github_handles": ["@bijan"]
-    },
     "bijux-atlas": {
       "github_handles": ["@bijan"]
     },
@@ -23,9 +20,6 @@
       "github_handles": ["@bijan"]
     },
     "bijux-atlas-governance": {
-      "github_handles": ["@bijan"]
-    },
-    "bijux-atlas-ingest": {
       "github_handles": ["@bijan"]
     },
     "bijux-atlas-observability": {
@@ -47,12 +41,6 @@
       "github_handles": ["@bijan"]
     },
     "bijux-atlas-security": {
-      "github_handles": ["@bijan"]
-    },
-    "bijux-atlas-server": {
-      "github_handles": ["@bijan"]
-    },
-    "bijux-atlas-store": {
       "github_handles": ["@bijan"]
     },
     "data-governance": {

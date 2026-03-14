@@ -76,11 +76,8 @@ fn policies_crate_dependency_minimalism() {
         "tokio",
         "axum",
         "hyper",
-        "bijux-atlas-ingest",
-        "bijux-atlas-store",
+        "bijux-atlas",
         "bijux-atlas-query",
-        "bijux-atlas-server",
-        "bijux-atlas-api",
     ] {
         assert!(
             !cargo.contains(forbidden),
