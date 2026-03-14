@@ -163,13 +163,18 @@ fn store_errors_have_stable_codes() {
 }
 
 #[test]
-fn store_crate_has_no_server_or_axum_dependency() {
+fn store_sources_do_not_reference_retired_split_crates() {
     let manifest_dir = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let cargo_toml = fs::read_to_string(manifest_dir.join("Cargo.toml")).expect("read Cargo.toml");
-    for forbidden in ["bijux-atlas-server", "axum", "tokio"] {
+    for forbidden in [
+        "bijux-atlas-api",
+        "bijux-atlas-client",
+        "bijux-atlas-ingest",
+        "bijux-atlas-server",
+    ] {
         assert!(
             !cargo_toml.contains(forbidden),
-            "forbidden dependency in store crate: {forbidden}"
+            "retired split crate dependency found in merged atlas crate: {forbidden}"
         );
     }
 }

@@ -375,7 +375,6 @@ fn test_root_037_no_editor_backup_noise(ctx: &RunContext) -> TestResult {
                     || name == ".idea"
                     || name == "artifacts"
                     || name == "target"
-                    || name == ".Trashes"
                     || name == ".Spotlight-V100"
                 {
                     continue;

@@ -372,15 +372,20 @@ fn cursor_error_maps_to_stable_code() {
 }
 
 #[test]
-fn query_crate_has_no_axum_or_server_dependency() {
+fn query_sources_do_not_reference_retired_split_crates() {
     let cargo = std::fs::read_to_string(
         std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"),
     )
     .expect("read Cargo.toml");
-    for forbidden in ["axum", "bijux-atlas-server"] {
+    for forbidden in [
+        "bijux-atlas-api",
+        "bijux-atlas-client",
+        "bijux-atlas-ingest",
+        "bijux-atlas-server",
+    ] {
         assert!(
             !cargo.contains(forbidden),
-            "forbidden dependency in query crate: {forbidden}"
+            "retired split crate dependency found in merged atlas crate: {forbidden}"
         );
     }
 }
