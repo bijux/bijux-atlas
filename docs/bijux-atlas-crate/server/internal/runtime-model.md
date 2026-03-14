@@ -16,12 +16,12 @@ The server runtime is async-first and executes request paths on Tokio.
 
 ## Config Operations
 
-- `atlas-server --validate-config` validates startup and runtime contracts without starting the server.
-- `atlas-server --print-effective-config` prints the fully resolved configuration with secrets redacted.
+- `bijux-atlas-server --validate-config` validates startup and runtime contracts without starting the server.
+- `bijux-atlas-server --print-effective-config` prints the fully resolved configuration with secrets redacted.
 - Resolution order remains `CLI > ENV > config file > defaults`.
 
 ## Blocking Policy
 
-- `reqwest` blocking mode is forbidden in the `atlas-server` runtime path.
+- `reqwest` blocking mode is forbidden in the `bijux-atlas-server` runtime path.
 - `reqwest::blocking` imports are forbidden in server sources.
 - If blocking network I/O is required, it belongs in non-server tools (CLI/store utilities), never in request handlers.

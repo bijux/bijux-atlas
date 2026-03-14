@@ -20,5 +20,5 @@ Atlas guarantees artifact integrity before use through deterministic checks.
 
 ## Implementation references
 
-- `crates/bijux-atlas-core/src/domain/security_data_protection.rs`
-- `crates/bijux-atlas-server/src/runtime/dataset_cache_manager_storage_runtime/storage_methods.rs`
+- `crates/bijux-atlas/src/core/domain/security_data_protection.rs`
+- `crates/bijux-atlas/src/server/runtime/dataset_cache_manager_storage_runtime/storage_methods.rs`

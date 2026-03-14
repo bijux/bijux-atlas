@@ -19,7 +19,7 @@ Atlas tracing is span-based and request-centric:
 
 ## Trace initialization
 
-Tracing initialization is centralized in `crates/bijux-atlas-server/src/telemetry/tracing.rs` and configured through runtime config.
+Tracing initialization is centralized in `crates/bijux-atlas/src/telemetry/tracing.rs` and configured through runtime config.
 
 ## Runtime configuration
 

@@ -15,4 +15,4 @@ Data protection trace span contract includes:
 
 Source contract:
 
-- `crates/bijux-atlas-server/src/telemetry/generated/trace_spans_contract.rs`
+- `crates/bijux-atlas/src/telemetry/generated/trace_spans_contract.rs`

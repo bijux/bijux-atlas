@@ -2,7 +2,7 @@
 
 ## Architecture
 
-`atlas-server` runtime is intentionally split into three layers:
+`bijux-atlas-server` runtime is intentionally split into three layers:
 
 - `http/`: request/response mapping only.
 - `runtime/`: orchestration and state transitions.

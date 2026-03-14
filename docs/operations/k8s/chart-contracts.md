@@ -17,7 +17,7 @@
 
 ## Runtime mapping invariants
 
-- The chart emits only canonical runtime env keys consumed by `atlas-server`.
+- The chart emits only canonical runtime env keys consumed by `bijux-atlas-server`.
 - The chart does not emit `ATLAS_DEV_ALLOW_UNKNOWN_ENV`.
 - Store endpoints are populated only from `store.endpoint` and `store.s3PresignedBaseUrl`.
 

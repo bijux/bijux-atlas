@@ -1,6 +1,6 @@
 # Runtime Startup Config
 
-Source of truth for startup config resolution used by `atlas-server`.
+Source of truth for startup config resolution used by `bijux-atlas-server`.
 
 Resolution precedence: `CLI > ENV > config file > defaults`.
 

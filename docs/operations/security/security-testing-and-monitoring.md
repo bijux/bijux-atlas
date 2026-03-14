@@ -8,7 +8,7 @@
 
 ## Security test lanes
 
-- `cargo test -p bijux-atlas-server security_input_resilience`
+- `cargo test -p bijux-atlas --test server security_input_resilience`
 - `cargo test -p bijux-atlas-query parser_fuzz`
 - `cargo test -p bijux-atlas-ingest fuzzish_attribute_order_spacing_is_stable`
 - `k6 run ops/load/k6/suites/security-penetration-simulation.js`

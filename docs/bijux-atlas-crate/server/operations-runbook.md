@@ -3,7 +3,7 @@
 ## Startup
 
 1. Validate environment and config contracts.
-2. Start server with `cargo run -p bijux-atlas --bin atlas-server`.
+2. Start server with `cargo run -p bijux-atlas --bin bijux-atlas-server`.
 3. Confirm readiness with `GET /readyz` and liveness with `GET /healthz`.
 
 ## Required Config Surface

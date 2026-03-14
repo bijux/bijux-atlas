@@ -5,11 +5,11 @@
 - Audience: `user`
 - Stability: `stable`
 - Last updated for release: `v1`
-- Reason to exist: define the canonical runtime environment surface consumed by `atlas-server`.
+- Reason to exist: define the canonical runtime environment surface consumed by `bijux-atlas-server`.
 
 ## Canonical sources
 
-- Runtime loader: `crates/bijux-atlas-server/src/config/mod.rs`
+- Runtime loader: `crates/bijux-atlas/src/config/mod.rs`
 - Env allowlist contract: `configs/contracts/env.schema.json`
 - Contract reference: [Config Keys](../contracts/config-keys.md)
 
@@ -36,8 +36,8 @@
 
 ## Reproduce locally
 
-- `cargo test -p bijux-atlas-server --test runtime_env_contract_startup`
-- `cargo test -p bijux-atlas-server config::tests::runtime_config_contract_snapshot_points_to_the_allowlist_source --lib -- --exact`
+- `cargo test -p bijux-atlas --test server runtime_env_contract_startup`
+- `cargo test -p bijux-atlas config::tests::runtime_config_contract_snapshot_points_to_the_allowlist_source --lib -- --exact`
 
 ## See also
 

@@ -48,7 +48,7 @@ Route-level request metrics may also include:
 
 ## Runtime implementation
 
-- Metrics module: `crates/bijux-atlas-server/src/telemetry/metrics.rs`
+- Metrics module: `crates/bijux-atlas/src/telemetry/metrics.rs`
 - Metrics endpoint: `GET /metrics`
 - Initialization path: `AppState::init_request_metrics()`
 - Endpoint toggle: `ATLAS_ENABLE_METRICS_ENDPOINT`

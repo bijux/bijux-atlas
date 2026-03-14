@@ -1,4 +1,4 @@
-# atlas-server Architecture
+# bijux-atlas-server Architecture
 
 ## Responsibility
 

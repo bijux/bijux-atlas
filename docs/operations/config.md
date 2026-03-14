@@ -6,8 +6,8 @@ Reason to exist: provide one canonical entrypoint for runtime configuration and 
 
 ## Runtime startup configuration
 
-- `crates/bijux-atlas-server/docs/generated/runtime-startup-config.schema.json`
-- `crates/bijux-atlas-server/docs/generated/runtime-startup-config.md`
+- `docs/bijux-atlas-crate/server/generated/runtime-startup-config.schema.json`
+- `docs/bijux-atlas-crate/server/generated/runtime-startup-config.md`
 
 ## Environment key contracts
 

@@ -13,5 +13,5 @@ Request identity context contains normalized caller identity and mode-specific t
 
 References:
 
-- `crates/bijux-atlas-server/src/runtime/request_utils.rs`
+- `crates/bijux-atlas/src/server/runtime/request_utils.rs`
 - `configs/security/auth-model.yaml`

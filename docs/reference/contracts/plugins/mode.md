@@ -40,7 +40,7 @@ Global plugin flags are supported:
 - `--verbose`
 - `--trace`
 
-For server mode, canonical startup is `bijux-atlas atlas serve`, which forwards logging intent to `atlas-server` via `BIJUX_LOG_LEVEL` / `RUST_LOG`.
+For server mode, canonical startup is `bijux-atlas atlas serve`, which forwards logging intent to `bijux-atlas-server` via `BIJUX_LOG_LEVEL` / `RUST_LOG`.
 
 ## Container and Chart Alignment
 

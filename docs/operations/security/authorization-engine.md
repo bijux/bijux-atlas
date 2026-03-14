@@ -13,4 +13,4 @@ Atlas authorization evaluates roles, permissions, and resource policy under deny
 
 Engine implementation:
 
-- `crates/bijux-atlas-core/src/domain/security_authorization.rs`
+- `crates/bijux-atlas/src/core/domain/security_authorization.rs`

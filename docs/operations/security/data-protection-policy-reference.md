@@ -17,5 +17,5 @@ Policy files:
 
 Runtime linkage:
 
-- enforcement and contracts in `crates/bijux-atlas-core/src/domain/security_data_protection.rs`
-- operational telemetry in `crates/bijux-atlas-server/src/telemetry/metrics_endpoint/metrics_runtime/main_handler.rs`
+- enforcement and contracts in `crates/bijux-atlas/src/core/domain/security_data_protection.rs`
+- operational telemetry in `crates/bijux-atlas/src/telemetry/metrics_endpoint/metrics_runtime/main_handler.rs`

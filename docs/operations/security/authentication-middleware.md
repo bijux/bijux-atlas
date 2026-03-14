@@ -13,4 +13,4 @@ Authentication middleware runs in request path processing and enforces mode-spec
 
 Implementation reference:
 
-- `crates/bijux-atlas-server/src/runtime/request_utils.rs`
+- `crates/bijux-atlas/src/server/runtime/request_utils.rs`

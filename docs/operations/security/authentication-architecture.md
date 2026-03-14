@@ -20,8 +20,8 @@ Atlas authentication is configured in `configs/security/auth-model.yaml` and run
 
 ## Runtime enforcement
 
-- middleware enforcement and identity extraction are implemented in `crates/bijux-atlas-server/src/runtime/request_utils.rs`
-- startup and environment validation are implemented in `crates/bijux-atlas-server/src/config/mod.rs`
+- middleware enforcement and identity extraction are implemented in `crates/bijux-atlas/src/server/runtime/request_utils.rs`
+- startup and environment validation are implemented in `crates/bijux-atlas/src/config/mod.rs`
 
 ## Validation commands
 

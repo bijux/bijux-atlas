@@ -12,5 +12,5 @@ Baseline capture:
 
 Allocator policy:
 - Default allocator: system.
-- Optional allocator: `jemalloc` feature (`cargo run -p bijux-atlas --bin atlas-server --features jemalloc`).
+- Optional allocator: `jemalloc` feature (`cargo run -p bijux-atlas --bin bijux-atlas-server --features jemalloc`).
 - Compare both with identical load profile before production changes.
