@@ -5,8 +5,7 @@
     "configs",
     "ops",
     "docs",
-    "makefiles",
-    "packages"
+    "makefiles"
   ],
   "allowed_root_dirs": [
     ".git",

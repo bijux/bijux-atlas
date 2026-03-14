@@ -70,9 +70,6 @@
     "ops": {
       "kind": "dir"
     },
-    "packages": {
-      "kind": "dir"
-    },
     "release": {
       "kind": "dir"
     },
