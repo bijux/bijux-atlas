@@ -287,10 +287,10 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
         compute_contig_fractions: false,
         compute_transcript_spliced_length: false,
         compute_transcript_cds_length: false,
-        duplicate_transcript_id_policy: bijux_atlas_model::DuplicateTranscriptIdPolicy::Reject,
-        transcript_id_policy: bijux_atlas_model::TranscriptIdPolicy::default(),
-        unknown_feature_policy: bijux_atlas_model::UnknownFeaturePolicy::IgnoreWithWarning,
-        feature_id_uniqueness_policy: bijux_atlas_model::FeatureIdUniquenessPolicy::Reject,
+        duplicate_transcript_id_policy: crate::model::DuplicateTranscriptIdPolicy::Reject,
+        transcript_id_policy: crate::model::TranscriptIdPolicy::default(),
+        unknown_feature_policy: crate::model::UnknownFeaturePolicy::IgnoreWithWarning,
+        feature_id_uniqueness_policy: crate::model::FeatureIdUniquenessPolicy::Reject,
         reject_normalized_seqid_collisions: true,
         timestamp_policy: TimestampPolicy::DeterministicZero,
     })
@@ -460,7 +460,7 @@ fn smoke_dataset(
 ) -> Result<(), String> {
     let (release, species, assembly) = command_output_adapters::parse_dataset_id(dataset)?;
     let id = DatasetId::new(&release, &species, &assembly).map_err(|e| e.to_string())?;
-    let paths = bijux_atlas_model::artifact_paths(&root, &id);
+    let paths = crate::model::artifact_paths(&root, &id);
     let conn = Connection::open(&paths.sqlite).map_err(|e| e.to_string())?;
 
     let count: i64 = conn

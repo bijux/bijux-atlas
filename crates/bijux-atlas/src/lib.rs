@@ -10,9 +10,12 @@ pub mod domain;
 pub mod effects;
 pub mod errors;
 mod generated;
+pub mod ingest;
+pub mod model;
 pub mod policies;
 pub mod ports;
 pub mod query;
+pub mod store;
 pub mod types;
 
 use crate::domain::{canonical, resolve_bijux_cache_dir, resolve_bijux_config_path, sha256_hex};
@@ -28,15 +31,15 @@ pub const fn no_randomness_policy() -> &'static str {
     NO_RANDOMNESS_POLICY
 }
 
+use crate::ingest::{diff_normalized_ids, replay_normalized_counts};
+use crate::ingest::{ingest_dataset, IngestOptions, TimestampPolicy};
+use crate::model::{
+    BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, GeneIdentifierPolicy, GeneNamePolicy,
+    SeqidNormalizationPolicy, ShardingPlan, StrictnessMode, TranscriptTypePolicy,
+};
 use crate::query::{
     classify_query, explain_query_plan, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits,
     RegionFilter,
-};
-use bijux_atlas_ingest::{diff_normalized_ids, replay_normalized_counts};
-use bijux_atlas_ingest::{ingest_dataset, IngestOptions, TimestampPolicy};
-use bijux_atlas_model::{
-    BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, GeneIdentifierPolicy, GeneNamePolicy,
-    SeqidNormalizationPolicy, ShardingPlan, StrictnessMode, TranscriptTypePolicy,
 };
 use clap::{error::ErrorKind, ArgAction, CommandFactory, Parser, Subcommand, ValueEnum};
 use clap_complete::{generate, Generator, Shell};

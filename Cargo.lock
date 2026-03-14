@@ -248,9 +248,6 @@ version = "0.1.1"
 dependencies = [
  "assert_cmd",
  "base64",
- "bijux-atlas-ingest",
- "bijux-atlas-model",
- "bijux-atlas-store",
  "clap",
  "clap_complete",
  "flate2",

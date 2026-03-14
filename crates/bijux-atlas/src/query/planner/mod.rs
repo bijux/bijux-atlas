@@ -5,7 +5,7 @@ use super::filters::GeneQueryRequest;
 use super::limits::QueryLimits;
 use super::normalize::normalized_ast_format;
 use super::parser::{GeneQueryAst, Predicate, SortKey};
-use bijux_atlas_model::ShardCatalog;
+use crate::model::ShardCatalog;
 use std::collections::BTreeSet;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]

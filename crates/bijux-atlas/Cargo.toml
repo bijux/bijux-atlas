@@ -14,21 +14,21 @@ exclude = ["tests/fixtures/**"]
 keywords = ["atlas", "cli", "datasets", "query", "contracts"]
 
 [features]
-default = ["serde"]
+default = ["serde", "backend-local"]
 serde = []
+backend-local = []
+backend-s3 = ["backend-local"]
+bench-ingest-throughput = []
 
 [dependencies]
-bijux-atlas-model.workspace = true
-bijux-atlas-ingest.workspace = true
-bijux-atlas-store.workspace = true
 base64 = "0.22"
 hmac = "0.12"
 serde.workspace = true
 clap = { version = "4", features = ["derive"] }
 clap_complete = "4"
 flate2 = "1"
-reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
-rusqlite = { version = "0.31", features = ["bundled"] }
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2"] }
+rusqlite = { version = "0.31", features = ["bundled", "vtab"] }
 serde_json.workspace = true
 serde_yaml = "0.9"
 sha2 = "0.10"

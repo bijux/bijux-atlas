@@ -5,9 +5,7 @@ use super::{
     validate_qc_thresholds, validate_shard_catalog_and_indexes, BuildReleaseDiffArgs, OutputMode,
 };
 use crate::domain::sha256_hex;
-use bijux_atlas_model::{
-    Catalog, CatalogEntry, DatasetId, SeqId, ShardCatalog, ShardEntry, ShardId,
-};
+use crate::model::{Catalog, CatalogEntry, DatasetId, SeqId, ShardCatalog, ShardEntry, ShardId};
 use serde_json::json;
 use std::fs;
 use std::path::PathBuf;
@@ -157,20 +155,20 @@ fn gc_plan_respects_catalog_and_dataset_pins() {
     let pinned = DatasetId::new("111", "homo_sapiens", "GRCh38").expect("dataset");
     let candidate = DatasetId::new("112", "homo_sapiens", "GRCh38").expect("dataset");
     for d in [&reachable, &pinned, &candidate] {
-        let p = bijux_atlas_model::artifact_paths(&root, d);
+        let p = crate::model::artifact_paths(&root, d);
         fs::create_dir_all(p.sqlite.parent().expect("parent")).expect("mkdir derived");
         fs::write(&p.sqlite, b"sqlite").expect("write sqlite");
     }
 
     let catalog = Catalog::new(vec![CatalogEntry::new(
         reachable.clone(),
-        bijux_atlas_model::artifact_paths(&root, &reachable)
+        crate::model::artifact_paths(&root, &reachable)
             .manifest
             .strip_prefix(&root)
             .expect("strip")
             .display()
             .to_string(),
-        bijux_atlas_model::artifact_paths(&root, &reachable)
+        crate::model::artifact_paths(&root, &reachable)
             .sqlite
             .strip_prefix(&root)
             .expect("strip")
@@ -180,7 +178,7 @@ fn gc_plan_respects_catalog_and_dataset_pins() {
     let catalog_path = root.join("catalog.json");
     fs::write(
         &catalog_path,
-        bijux_atlas_store::canonical_catalog_json(&catalog).expect("catalog json"),
+        crate::store::canonical_catalog_json(&catalog).expect("catalog json"),
     )
     .expect("write catalog");
     let pins_path = tmp.path().join("pins.json");
@@ -199,7 +197,7 @@ fn gc_plan_respects_catalog_and_dataset_pins() {
 
     let report = compute_gc_plan(&root, &[catalog_path], &pins_path).expect("gc plan");
     assert_eq!(report.candidates.dataset_roots.len(), 1);
-    let expected_paths = bijux_atlas_model::artifact_paths(&root, &candidate);
+    let expected_paths = crate::model::artifact_paths(&root, &candidate);
     let expected_root = expected_paths
         .manifest
         .parent()
@@ -221,7 +219,7 @@ fn gc_plan_multiple_catalog_paths_are_deterministic() {
     let d1 = DatasetId::new("200", "homo_sapiens", "GRCh38").expect("dataset");
     let d2 = DatasetId::new("201", "homo_sapiens", "GRCh38").expect("dataset");
     for d in [&d1, &d2] {
-        let p = bijux_atlas_model::artifact_paths(&root, d);
+        let p = crate::model::artifact_paths(&root, d);
         fs::create_dir_all(p.sqlite.parent().expect("parent")).expect("mkdir derived");
         fs::write(&p.sqlite, b"sqlite").expect("write sqlite");
     }
@@ -229,13 +227,13 @@ fn gc_plan_multiple_catalog_paths_are_deterministic() {
     let write_catalog = |name: &str, dataset: &DatasetId| -> PathBuf {
         let c = Catalog::new(vec![CatalogEntry::new(
             dataset.clone(),
-            bijux_atlas_model::artifact_paths(&root, dataset)
+            crate::model::artifact_paths(&root, dataset)
                 .manifest
                 .strip_prefix(&root)
                 .expect("strip")
                 .display()
                 .to_string(),
-            bijux_atlas_model::artifact_paths(&root, dataset)
+            crate::model::artifact_paths(&root, dataset)
                 .sqlite
                 .strip_prefix(&root)
                 .expect("strip")
@@ -245,7 +243,7 @@ fn gc_plan_multiple_catalog_paths_are_deterministic() {
         let path = root.join(name);
         fs::write(
             &path,
-            bijux_atlas_store::canonical_catalog_json(&c).expect("catalog json"),
+            crate::store::canonical_catalog_json(&c).expect("catalog json"),
         )
         .expect("write catalog");
         path
@@ -271,21 +269,21 @@ fn gc_apply_deletes_unreachable_and_keeps_pinned_dataset() {
     let stale = DatasetId::new("111", "homo_sapiens", "GRCh38").expect("dataset");
 
     for d in [&pinned, &stale] {
-        let p = bijux_atlas_model::artifact_paths(&root, d);
+        let p = crate::model::artifact_paths(&root, d);
         fs::create_dir_all(p.sqlite.parent().expect("parent")).expect("mkdir");
         let sqlite = b"sqlite".to_vec();
         fs::write(&p.sqlite, &sqlite).expect("sqlite");
-        let manifest = bijux_atlas_model::ArtifactManifest::new(
+        let manifest = crate::model::ArtifactManifest::new(
             "1".to_string(),
             "1".to_string(),
             (*d).clone(),
-            bijux_atlas_model::ArtifactChecksums::new(
+            crate::model::ArtifactChecksums::new(
                 "a".repeat(64),
                 "b".repeat(64),
                 "c".repeat(64),
                 sha256_hex(&sqlite),
             ),
-            bijux_atlas_model::ManifestStats::new(1, 1, 1),
+            crate::model::ManifestStats::new(1, 1, 1),
         );
         fs::write(
             &p.manifest,
@@ -325,13 +323,13 @@ fn gc_apply_deletes_unreachable_and_keeps_pinned_dataset() {
     .expect("gc apply");
 
     assert!(
-        bijux_atlas_model::artifact_paths(&root, &pinned)
+        crate::model::artifact_paths(&root, &pinned)
             .dataset_root
             .exists(),
         "pinned dataset must survive gc apply"
     );
     assert!(
-        !bijux_atlas_model::artifact_paths(&root, &stale)
+        !crate::model::artifact_paths(&root, &stale)
             .dataset_root
             .exists(),
         "unreachable dataset must be removed by gc apply"
@@ -422,7 +420,7 @@ fn promote_failure_does_not_mutate_existing_catalog_and_latest_alias_is_promotio
         "release=109/species=homo_sapiens/assembly=GRCh38/derived/manifest.json".to_string(),
         "release=109/species=homo_sapiens/assembly=GRCh38/derived/gene_summary.sqlite".to_string(),
     )]);
-    let initial_bytes = bijux_atlas_store::canonical_catalog_json(&existing_catalog)
+    let initial_bytes = crate::store::canonical_catalog_json(&existing_catalog)
         .expect("catalog json")
         .into_bytes();
     fs::write(root.join("catalog.json"), &initial_bytes).expect("catalog");

@@ -410,20 +410,20 @@ fn benchmark_threshold_sanity_non_regression() {
 #[test]
 fn shard_selection_targets_region_seqid_and_defaults_global() {
     let dataset =
-        bijux_atlas_model::DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
-    let catalog = bijux_atlas_model::ShardCatalog::new(
+        crate::model::DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+    let catalog = crate::model::ShardCatalog::new(
         dataset,
         "per-seqid".to_string(),
         vec![
-            bijux_atlas_model::ShardEntry::new(
-                bijux_atlas_model::ShardId::parse("chr1").expect("shard id"),
-                vec![bijux_atlas_model::SeqId::parse("chr1").expect("seqid")],
+            crate::model::ShardEntry::new(
+                crate::model::ShardId::parse("chr1").expect("shard id"),
+                vec![crate::model::SeqId::parse("chr1").expect("seqid")],
                 "gene_summary.chr1.sqlite".to_string(),
                 "abc".to_string(),
             ),
-            bijux_atlas_model::ShardEntry::new(
-                bijux_atlas_model::ShardId::parse("chr2").expect("shard id"),
-                vec![bijux_atlas_model::SeqId::parse("chr2").expect("seqid")],
+            crate::model::ShardEntry::new(
+                crate::model::ShardId::parse("chr2").expect("shard id"),
+                vec![crate::model::SeqId::parse("chr2").expect("seqid")],
                 "gene_summary.chr2.sqlite".to_string(),
                 "def".to_string(),
             ),

@@ -157,8 +157,8 @@ fn json_error_contract_is_stable() {
 fn atlas_validate_deep_requires_manifest_lock() {
     let root = tempdir().expect("tempdir");
     let dataset =
-        bijux_atlas_model::DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
-    let paths = bijux_atlas_model::artifact_paths(root.path(), &dataset);
+        bijux_atlas::model::DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+    let paths = bijux_atlas::model::artifact_paths(root.path(), &dataset);
     fs::create_dir_all(&paths.inputs_dir).expect("inputs dir");
     fs::create_dir_all(&paths.derived_dir).expect("derived dir");
 
@@ -168,26 +168,26 @@ fn atlas_validate_deep_requires_manifest_lock() {
     create_minimal_valid_sqlite(&paths.sqlite);
     fs::write(
         &paths.anomaly_report,
-        serde_json::to_vec(&bijux_atlas_model::IngestAnomalyReport::default())
+        serde_json::to_vec(&bijux_atlas::model::IngestAnomalyReport::default())
             .expect("anomaly json"),
     )
     .expect("write anomaly");
 
     let sqlite_bytes = fs::read(&paths.sqlite).expect("read sqlite");
-    let mut manifest = bijux_atlas_model::ArtifactManifest::new(
+    let mut manifest = bijux_atlas::model::ArtifactManifest::new(
         "1".to_string(),
         "1".to_string(),
         dataset,
-        bijux_atlas_model::ArtifactChecksums::new(
+        bijux_atlas::model::ArtifactChecksums::new(
             bijux_atlas::core::sha256_hex(b"##gff-version 3\n"),
             bijux_atlas::core::sha256_hex(b">chr1\nACGT\n"),
             bijux_atlas::core::sha256_hex(b"chr1\t4\t6\t4\t5\n"),
             bijux_atlas::core::sha256_hex(&sqlite_bytes),
         ),
-        bijux_atlas_model::ManifestStats::new(1, 1, 1),
+        bijux_atlas::model::ManifestStats::new(1, 1, 1),
     );
     let sqlite_sha = bijux_atlas::core::sha256_hex(&sqlite_bytes);
-    manifest.input_hashes = bijux_atlas_model::ManifestInputHashes::new(
+    manifest.input_hashes = bijux_atlas::model::ManifestInputHashes::new(
         bijux_atlas::core::sha256_hex(b"##gff-version 3\n"),
         bijux_atlas::core::sha256_hex(b">chr1\nACGT\n"),
         bijux_atlas::core::sha256_hex(b"chr1\t4\t6\t4\t5\n"),
