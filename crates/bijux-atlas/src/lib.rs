@@ -5,6 +5,7 @@
 
 pub mod artifact_validation;
 pub mod api;
+pub mod client;
 pub mod command_output_adapters;
 pub mod commands;
 pub mod core;

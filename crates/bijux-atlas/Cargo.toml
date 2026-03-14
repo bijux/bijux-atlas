@@ -53,6 +53,10 @@ path = "src/bin/bijux-atlas.rs"
 name = "atlas-openapi"
 path = "src/bin/atlas-openapi.rs"
 
+[[bin]]
+name = "bijux-atlas-client"
+path = "src/bin/bijux-atlas-client.rs"
+
 [[bench]]
 name = "core_canonical_hash"
 path = "benches/core/canonical_hash.rs"
@@ -235,6 +239,35 @@ name = "api_openapi_generation"
 path = "benches/api/openapi_generation.rs"
 harness = false
 
+[[bench]]
+name = "client_sdk"
+path = "benches/client/client_sdk.rs"
+harness = false
+
 [[example]]
 name = "api_openapi_contract"
 path = "examples/api/openapi_contract.rs"
+
+[[example]]
+name = "client_cli"
+path = "examples/client/client-cli.rs"
+
+[[example]]
+name = "client_dataset_scan"
+path = "examples/client/dataset-scan.rs"
+
+[[example]]
+name = "client_filtered_query"
+path = "examples/client/filtered-query.rs"
+
+[[example]]
+name = "client_pagination"
+path = "examples/client/pagination.rs"
+
+[[example]]
+name = "client_simple_query"
+path = "examples/client/simple-query.rs"
+
+[[example]]
+name = "client_streaming_results"
+path = "examples/client/streaming-results.rs"
