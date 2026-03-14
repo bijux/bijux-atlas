@@ -250,9 +250,11 @@ dependencies = [
  "base64",
  "clap",
  "clap_complete",
+ "criterion",
  "flate2",
  "hmac",
  "predicates",
+ "proptest",
  "reqwest",
  "rusqlite",
  "serde",
@@ -261,7 +263,9 @@ dependencies = [
  "sha2",
  "tar",
  "tempfile",
+ "tiny_http",
  "unicode-normalization",
+ "walkdir",
  "zstd",
 ]
 
@@ -289,47 +293,6 @@ version = "0.1.1"
 dependencies = [
  "criterion",
  "reqwest",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "bijux-atlas-core"
-version = "0.1.1"
-dependencies = [
- "base64",
- "criterion",
- "proptest",
- "serde",
- "serde_json",
- "serde_yaml",
- "sha2",
- "tempfile",
- "walkdir",
-]
-
-[[package]]
-name = "bijux-atlas-ingest"
-version = "0.1.1"
-dependencies = [
- "bijux-atlas-core",
- "bijux-atlas-model",
- "criterion",
- "proptest",
- "rusqlite",
- "serde",
- "serde_json",
- "tempfile",
- "unicode-normalization",
- "zstd",
-]
-
-[[package]]
-name = "bijux-atlas-model"
-version = "0.1.1"
-dependencies = [
- "criterion",
- "proptest",
  "serde",
  "serde_json",
 ]
@@ -367,20 +330,6 @@ dependencies = [
  "tracing",
  "tracing-opentelemetry",
  "tracing-subscriber",
-]
-
-[[package]]
-name = "bijux-atlas-store"
-version = "0.1.1"
-dependencies = [
- "bijux-atlas-core",
- "bijux-atlas-model",
- "criterion",
- "reqwest",
- "serde",
- "serde_json",
- "tempfile",
- "tiny_http",
 ]
 
 [[package]]

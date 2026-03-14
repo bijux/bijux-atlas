@@ -38,9 +38,190 @@ zstd = "0.13"
 
 [dev-dependencies]
 assert_cmd = "2"
+criterion = "0.5"
 predicates = "3"
+proptest = "1"
 tempfile = "=3.13.0"
+tiny_http = "0.12"
+walkdir = "2"
 
 [[bin]]
 name = "bijux-atlas"
 path = "src/bin/bijux-atlas.rs"
+
+[[bench]]
+name = "core_canonical_hash"
+path = "benches/core/canonical_hash.rs"
+harness = false
+
+[[bench]]
+name = "core_stable_selector"
+path = "benches/core/stable_selector.rs"
+harness = false
+
+[[bench]]
+name = "core_security_data_protection"
+path = "benches/core/security_data_protection.rs"
+harness = false
+
+[[bench]]
+name = "model_dataset_parse"
+path = "benches/model/dataset_parse.rs"
+harness = false
+
+[[bench]]
+name = "model_parse_validation"
+path = "benches/model/parse_validation.rs"
+harness = false
+
+[[bench]]
+name = "model_codec"
+path = "benches/model/model_codec.rs"
+harness = false
+
+[[bench]]
+name = "ingest_db_size_growth"
+path = "benches/ingest/db_size_growth.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_fai_validation_overhead"
+path = "benches/ingest/fai_validation_overhead.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_fasta_loading_throughput"
+path = "benches/ingest/fasta_loading_throughput.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_gff3_parsing_throughput"
+path = "benches/ingest/gff3_parsing_throughput.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_anomaly_overhead"
+path = "benches/ingest/ingest_anomaly_overhead.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_artifact_compression"
+path = "benches/ingest/ingest_artifact_compression.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_artifact_size"
+path = "benches/ingest/ingest_artifact_size.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_catalog_generation"
+path = "benches/ingest/ingest_catalog_generation.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_hashing_overhead"
+path = "benches/ingest/ingest_hashing_overhead.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_large_scenario"
+path = "benches/ingest/ingest_large_scenario.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_parallelism_scaling"
+path = "benches/ingest/ingest_parallelism_scaling.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_resource_tracking"
+path = "benches/ingest/ingest_resource_tracking.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_scenarios"
+path = "benches/ingest/ingest_scenarios.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_shard_distribution"
+path = "benches/ingest/ingest_shard_distribution.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_shard_generation_overhead"
+path = "benches/ingest/ingest_shard_generation_overhead.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_thread_pool_scaling"
+path = "benches/ingest/ingest_thread_pool_scaling.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_throughput"
+path = "benches/ingest/ingest_throughput.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_validation_overhead"
+path = "benches/ingest/ingest_validation_overhead.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_manifest_generation_latency"
+path = "benches/ingest/manifest_generation_latency.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_sqlite_query_latency"
+path = "benches/ingest/sqlite_query_latency.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_sqlite_write_performance"
+path = "benches/ingest/sqlite_write_performance.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_transcript_extraction"
+path = "benches/ingest/transcript_extraction.rs"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "store_catalog_merge"
+path = "benches/store/catalog_merge.rs"
+harness = false
+
+[[bench]]
+name = "store_checksum_pipeline"
+path = "benches/store/checksum_pipeline.rs"
+harness = false
+
+[[bench]]
+name = "store_hot_read"
+path = "benches/store/store_hot_read.rs"
+harness = false
