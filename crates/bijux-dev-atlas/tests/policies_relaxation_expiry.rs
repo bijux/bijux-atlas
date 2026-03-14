@@ -7,7 +7,7 @@ fn relaxation_expiry_is_enforced() {
     let expired = serde_json::json!({
       "relaxations": [
         {
-          "policy_id":"repo.max_loc_hard",
+          "policy_id":"ops.registry_relpath",
           "reason":"temporary exception",
           "expires_on":"2020-01-01"
         }
@@ -19,7 +19,7 @@ fn relaxation_expiry_is_enforced() {
     let valid = serde_json::json!({
       "relaxations": [
         {
-          "policy_id":"repo.max_loc_hard",
+          "policy_id":"ops.registry_relpath",
           "reason":"temporary exception",
           "expires_on":"2027-01-01"
         }
@@ -33,7 +33,7 @@ fn relaxation_expiry_rejects_invalid_date_format() {
     let invalid = serde_json::json!({
       "relaxations": [
         {
-          "policy_id":"repo.max_loc_hard",
+          "policy_id":"ops.registry_relpath",
           "reason":"temporary exception",
           "expires_on":"2026/02/24"
         }

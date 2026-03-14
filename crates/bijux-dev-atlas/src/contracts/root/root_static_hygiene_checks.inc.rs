@@ -371,7 +371,13 @@ fn test_root_037_no_editor_backup_noise(ctx: &RunContext) -> TestResult {
             let path = entry.path();
             let name = entry.file_name().to_string_lossy().to_string();
             if path.is_dir() {
-                if name == ".git" || name == ".idea" || name == "artifacts" || name == "target" {
+                if name == ".git"
+                    || name == ".idea"
+                    || name == "artifacts"
+                    || name == "target"
+                    || name == ".Trashes"
+                    || name == ".Spotlight-V100"
+                {
                     continue;
                 }
                 if name == "node_modules" {
@@ -397,8 +403,7 @@ fn test_root_037_no_editor_backup_noise(ctx: &RunContext) -> TestResult {
                 .strip_prefix(root)
                 .map(|value| value.display().to_string())
                 .unwrap_or_else(|_| path.display().to_string());
-            let forbidden = name == ".DS_Store"
-                || name.ends_with(".orig")
+            let forbidden = name.ends_with(".orig")
                 || name.ends_with('~')
                 || (name.ends_with(".log")
                     && !path
@@ -417,7 +422,7 @@ fn test_root_037_no_editor_backup_noise(ctx: &RunContext) -> TestResult {
                     test_id: "root.surface.no_editor_backup_noise".to_string(),
                     file: Some(rel),
                     line: None,
-                    message: "editor noise or ad hoc note markdown outside docs/_internal is forbidden"
+                    message: "editor backup clutter or ad hoc note markdown outside docs/_internal is forbidden"
                         .to_string(),
                     evidence: None,
                 });

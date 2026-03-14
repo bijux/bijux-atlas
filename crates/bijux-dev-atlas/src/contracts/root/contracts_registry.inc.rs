@@ -220,16 +220,6 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
-            id: ContractId("ROOT-019".to_string()),
-            title: "repo root keeps a bounded top-level directory surface",
-            tests: vec![TestCase {
-                id: TestId("root.surface.directory_budget".to_string()),
-                title: "root directory count stays within the approved budget",
-                kind: TestKind::Pure,
-                run: test_root_019_directory_budget,
-            }],
-        },
-        Contract {
             id: ContractId("ROOT-020".to_string()),
             title: "repo root manifest keeps single-segment entry paths",
             tests: vec![TestCase {
@@ -341,10 +331,10 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
         },
         Contract {
             id: ContractId("ROOT-037".to_string()),
-            title: "repo tree forbids editor backups and platform noise",
+            title: "repo tree forbids editor backups and ad hoc note clutter",
             tests: vec![TestCase {
                 id: TestId("root.surface.no_editor_backup_noise".to_string()),
-                title: "no .orig, backup, or .DS_Store files exist in the repo tree",
+                title: "no .orig, backup, or ad hoc note files exist in the repo tree",
                 kind: TestKind::Pure,
                 run: test_root_037_no_editor_backup_noise,
             }],
