@@ -11,7 +11,7 @@ flowchart LR
 
 ## Components
 
-- Configuration and isolation model: `src/config.rs`
-- Dataset registry and tiers: `src/dataset.rs`
-- Result and diff model: `src/harness.rs`
+- Configuration and isolation model: `crates/bijux-dev-atlas/src/performance/config.rs`
+- Dataset registry and tiers: `crates/bijux-dev-atlas/src/performance/dataset.rs`
+- Result and diff model: `crates/bijux-dev-atlas/src/performance/harness.rs`
 - Runtime command surface: `crates/bijux-dev-atlas/src/commands/perf.rs`

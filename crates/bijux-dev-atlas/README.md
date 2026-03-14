@@ -36,6 +36,7 @@ Control-plane binary for repository governance under `bijux dev atlas ...`.
 ## Crate Governance Docs
 
 - `crates/bijux-dev-atlas/docs/architecture.md`
+- `crates/bijux-dev-atlas/docs/benchmarks/index.md`
 - `crates/bijux-dev-atlas/CONTRACT.md`
 - `crates/bijux-dev-atlas/docs/errors.md`
 - `crates/bijux-dev-atlas/docs/testing.md`
@@ -50,4 +51,5 @@ Control-plane binary for repository governance under `bijux dev atlas ...`.
 
 ## Where docs live
 - Crate docs index: `docs/index.md`
+- Benchmark docs index: `docs/benchmarks/index.md`
 - Contract: `CONTRACT.md`

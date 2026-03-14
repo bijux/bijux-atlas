@@ -7,7 +7,7 @@
 
 ## Reproducibility drifts
 
-- Ensure fixed seed from `configs/perf/benchmark-config.json` is unchanged.
+- Ensure fixed seed from benchmark configuration inputs is unchanged.
 - Ensure CPU and memory isolation config are unchanged.
 - Compare `artifacts/benchmarks/*-history.json` between runs.
 
