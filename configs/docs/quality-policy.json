@@ -7,10 +7,6 @@
   "default_area_budget": 20,
   "area_budgets": {
     "docs-root": 800,
-    "bijux-atlas-core": 20,
-    "bijux-atlas-model": 20,
-    "bijux-atlas-store": 20,
-    "bijux-atlas-ingest": 20,
     "bijux-atlas-api": 20,
     "bijux-atlas-server": 20,
     "bijux-atlas": 20,

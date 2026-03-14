@@ -4,11 +4,7 @@
     "bijux-atlas-api",
     "bijux-atlas-bench",
     "bijux-atlas",
-    "bijux-atlas-core",
-    "bijux-atlas-ingest",
-    "bijux-atlas-model",
     "bijux-atlas-server",
-    "bijux-atlas-store",
     "bijux-dev-atlas"
   ]
 }

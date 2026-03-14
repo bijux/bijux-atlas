@@ -2,10 +2,6 @@
 members = [
   "crates/bijux-dev-atlas",
   "crates/bijux-atlas-client",
-  "crates/bijux-atlas-core",
-  "crates/bijux-atlas-model",
-  "crates/bijux-atlas-ingest",
-  "crates/bijux-atlas-store",
   "crates/bijux-atlas-api",
   "crates/bijux-atlas",
   "crates/bijux-atlas-server",
@@ -40,10 +36,6 @@ todo = "deny"
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-bijux-atlas-core = { version = "=0.1.1", path = "crates/bijux-atlas-core" }
-bijux-atlas-model = { version = "=0.1.1", path = "crates/bijux-atlas-model" }
-bijux-atlas-ingest = { version = "=0.1.1", path = "crates/bijux-atlas-ingest" }
-bijux-atlas-store = { version = "=0.1.1", path = "crates/bijux-atlas-store" }
 bijux-atlas-api = { version = "=0.1.1", path = "crates/bijux-atlas-api" }
 bijux-atlas = { version = "=0.1.1", path = "crates/bijux-atlas" }
 bijux-atlas-server = { version = "=0.1.1", path = "crates/bijux-atlas-server" }

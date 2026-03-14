@@ -7,11 +7,7 @@ allow = [
   "bijux-atlas-api",
   "bijux-atlas",
   "bijux-atlas-client",
-  "bijux-atlas-core",
-  "bijux-atlas-ingest",
-  "bijux-atlas-model",
   "bijux-atlas-server",
-  "bijux-atlas-store",
 ]
 deny = [
   "bijux-dev-atlas",
@@ -21,13 +17,9 @@ deny = [
 [roles]
 "bijux-atlas-server" = "runtime-server"
 "bijux-atlas-client" = "client-sdk"
-"bijux-atlas-core" = "core-library"
 "bijux-dev-atlas" = "developer-tool-private"
 "bijux-atlas-api" = "api-library"
 "bijux-atlas" = "operator-cli"
-"bijux-atlas-ingest" = "ingest-library"
-"bijux-atlas-model" = "model-library"
-"bijux-atlas-store" = "storage-library"
 "bijux-atlas-bench" = "benchmark-private"
 
 [metadata_requirements]

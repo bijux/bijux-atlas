@@ -5,16 +5,11 @@
     "bench-ingest-throughput"
   ],
   "allowed_default_features": {
-    "bijux-atlas-core": [
-      "serde"
-    ],
-    "bijux-atlas-store": [
-      "backend-local"
-    ],
-    "bijux-atlas-ingest": [],
     "bijux-atlas-server": [],
     "bijux-atlas-api": [],
-    "bijux-atlas": [],
-    "bijux-atlas-model": []
+    "bijux-atlas": [
+      "serde",
+      "backend-local"
+    ]
   }
 }

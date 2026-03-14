@@ -5,11 +5,7 @@
     "bijux-atlas-api",
     "bijux-atlas",
     "bijux-atlas-client",
-    "bijux-atlas-core",
-    "bijux-atlas-ingest",
-    "bijux-atlas-model",
-    "bijux-atlas-server",
-    "bijux-atlas-store"
+    "bijux-atlas-server"
   ],
   "blocked_crates": [
     "bijux-dev-atlas",
