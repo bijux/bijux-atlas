@@ -9,8 +9,6 @@
     "docs-root": 800,
     "bijux-atlas-core": 20,
     "bijux-atlas-model": 20,
-    "bijux-atlas-policies": 20,
-    "bijux-atlas-query": 20,
     "bijux-atlas-store": 20,
     "bijux-atlas-ingest": 20,
     "bijux-atlas-api": 20,

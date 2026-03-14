@@ -11,10 +11,9 @@
 
 - Domain invariants and shared primitives: `bijux-atlas-core`
 - Shared domain types: `bijux-atlas-model`
-- Policy parsing and evaluation: `bijux-atlas-policies`
 - Ingest validation and artifact construction: `bijux-atlas-ingest`
 - Serving-store access and persistence: `bijux-atlas-store`
-- Query semantics and pagination behavior: `bijux-atlas-query`
+- Policy parsing, evaluation, query semantics, and pagination behavior: `bijux-atlas`
 - API surface behavior and transport: `bijux-atlas-api`
 - Runtime process hosting: `bijux-atlas-server`
 - Contributor checks and reports: `bijux-dev-atlas`

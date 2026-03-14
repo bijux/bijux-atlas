@@ -32,8 +32,6 @@ Publishable crates:
 - `bijux-atlas-core`
 - `bijux-atlas-ingest`
 - `bijux-atlas-model`
-- `bijux-atlas-policies`
-- `bijux-atlas-query`
 - `bijux-atlas-server`
 - `bijux-atlas-store`
 

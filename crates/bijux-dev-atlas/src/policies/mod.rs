@@ -24,7 +24,7 @@ pub const CRATE_NAME: &str = "bijux-dev-atlas";
 
 /// Development control-plane policy APIs and source-of-truth paths.
 ///
-/// Keep runtime policies in `bijux-atlas-policies`; this namespace is only for dev-atlas
+/// Keep dev-atlas governance policies here; runtime policy code now lives under `bijux-atlas::policies`.
 /// governance policy loading/validation against `ops/inventory/policies/dev-atlas-policy*.json`.
 pub mod dev {
     pub use super::{

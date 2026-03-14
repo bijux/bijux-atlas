@@ -28,15 +28,15 @@ pub const fn no_randomness_policy() -> &'static str {
     NO_RANDOMNESS_POLICY
 }
 
+use crate::query::{
+    classify_query, explain_query_plan, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits,
+    RegionFilter,
+};
 use bijux_atlas_ingest::{diff_normalized_ids, replay_normalized_counts};
 use bijux_atlas_ingest::{ingest_dataset, IngestOptions, TimestampPolicy};
 use bijux_atlas_model::{
     BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, GeneIdentifierPolicy, GeneNamePolicy,
     SeqidNormalizationPolicy, ShardingPlan, StrictnessMode, TranscriptTypePolicy,
-};
-use crate::query::{
-    classify_query, explain_query_plan, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits,
-    RegionFilter,
 };
 use clap::{error::ErrorKind, ArgAction, CommandFactory, Parser, Subcommand, ValueEnum};
 use clap_complete::{generate, Generator, Shell};

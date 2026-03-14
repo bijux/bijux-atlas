@@ -24,11 +24,9 @@ The following crates are public for `v0.1` and are expected to keep a stable API
 - `bijux-atlas-model`
 - `bijux-atlas-ingest`
 - `bijux-atlas-store`
-- `bijux-atlas-query`
 - `bijux-atlas-api`
 - `bijux-atlas`
 - `bijux-atlas-server`
-- `bijux-atlas-policies`
 
 ## Private boundary
 

@@ -20,34 +20,25 @@ graph TD
   model[bijux-atlas-model]
   ingest[bijux-atlas-ingest]
   store[bijux-atlas-store]
-  query[bijux-atlas-query]
   api[bijux-atlas-api]
   cli[bijux-atlas]
   server[bijux-atlas-server]
-  policies[bijux-atlas-policies]
 
-  model --> core
   ingest --> core
   ingest --> model
   store --> core
   store --> model
-  query --> core
-  query --> model
-  query --> store
-  query --> policies
+  api --> cli
   api --> core
   api --> model
-  api --> query
   cli --> core
   cli --> model
   cli --> ingest
   cli --> store
-  cli --> query
-  cli --> policies
   server --> api
+  server --> cli
   server --> core
   server --> model
-  server --> query
   server --> store
 ```
 

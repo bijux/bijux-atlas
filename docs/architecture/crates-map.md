@@ -15,19 +15,16 @@ flowchart LR
   model[bijux-atlas-model] --> ingest
   core --> store[bijux-atlas-store]
   model --> store
-  core --> query[bijux-atlas-query]
-  model --> query
-  store --> query
-  policies[bijux-atlas-policies] --> query
-  query --> api[bijux-atlas-api]
+  cli[bijux-atlas] --> core[bijux-atlas-core]
+  cli --> model[bijux-atlas-model]
+  cli --> store[bijux-atlas-store]
+  cli --> ingest[bijux-atlas-ingest]
+  api[bijux-atlas-api] --> cli
   api --> server[bijux-atlas-server]
   api --> client[bijux-atlas-client]
-  query --> client
-  ingest --> cli[bijux-atlas]
-  query --> cli
-  store --> cli
+  cli --> client
   server --> bench[bijux-atlas-bench]
-  query --> bench
+  cli --> bench
   dev[bijux-dev-atlas] --> cli
 ```
 
@@ -35,19 +32,16 @@ flowchart LR
 
 - `bijux-atlas-core`: core invariants, canonicalization helpers, and shared primitives.
 - `bijux-atlas-model`: domain model types shared across runtime and tooling.
-- `bijux-atlas-policies`: policy evaluation and policy schema surfaces.
-
 ## Runtime data layer
 
 - `bijux-atlas-ingest`: source ingestion, validation, and artifact build path.
 - `bijux-atlas-store`: artifact and serving-store access layer.
-- `bijux-atlas-query`: deterministic query execution over serving data.
 
 ## Runtime interface layer
 
+- `bijux-atlas`: runtime-facing CLI workflows, query execution, and policy evaluation.
 - `bijux-atlas-api`: HTTP/API behavior contracts and response semantics.
 - `bijux-atlas-server`: production server process, readiness, and serving controls.
-- `bijux-atlas`: runtime-facing CLI workflows and local operations.
 - `bijux-atlas-client`: Rust client SDK for consuming runtime APIs and query results.
 
 ## Control-plane layer
@@ -62,13 +56,11 @@ flowchart LR
 | --- | --- | --- | --- | --- | --- |
 | `bijux-atlas-core` | shared invariants and primitives | runtime requests, config values | canonical helpers, shared contracts | stable | architecture |
 | `bijux-atlas-model` | domain types | ingest payloads, query parameters | normalized model objects | stable | architecture |
-| `bijux-atlas-policies` | policy evaluation | policy documents, runtime context | policy decisions | stable | architecture |
 | `bijux-atlas-ingest` | ingest and validation | source datasets, ingest config | validated artifacts | stable | architecture |
 | `bijux-atlas-store` | artifact and serving-store access | artifacts, release metadata | serving-store state, store reads | stable | architecture |
-| `bijux-atlas-query` | deterministic query execution | serving-store state, query params | query responses | stable | architecture |
+| `bijux-atlas` | operator/runtime CLI with embedded query and policy modules | command args, runtime services | operational command effects and query responses | stable | architecture |
 | `bijux-atlas-api` | API contract surface | query responses, request params | HTTP responses | stable | architecture |
 | `bijux-atlas-server` | runtime process hosting | API handlers, runtime config | running service endpoints | stable | architecture |
-| `bijux-atlas` | operator/runtime CLI | command args, runtime services | operational command effects | stable | architecture |
 | `bijux-atlas-client` | Rust client SDK | API contracts, runtime endpoints | typed client requests/responses | stable | architecture |
 | `bijux-atlas-bench` | benchmark and perf harness | runtime/query/store surfaces | benchmark measurements and regression evidence | stable | architecture |
 | `bijux-dev-atlas` | control-plane checks and reporting | repo state, contract definitions | reports, gates, generated artifacts | stable | platform |

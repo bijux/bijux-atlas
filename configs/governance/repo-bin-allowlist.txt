@@ -5,6 +5,4 @@ crates/bijux-atlas/src/bin/bijux-atlas.rs
 crates/bijux-atlas-core/src/bin/bijux-atlas-core.rs
 crates/bijux-atlas-ingest/src/bin/bijux-atlas-ingest.rs
 crates/bijux-atlas-model/src/bin/bijux-atlas-model.rs
-crates/bijux-atlas-policies/src/bin/bijux-atlas-policies.rs
-crates/bijux-atlas-query/src/bin/bijux-atlas-query.rs
 crates/bijux-atlas-store/src/bin/bijux-atlas-store.rs

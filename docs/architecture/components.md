@@ -11,10 +11,9 @@
 
 - `bijux-atlas-ingest`: validates source inputs and writes deterministic artifacts.
 - `bijux-atlas-store`: manages serving-store persistence and artifact access.
-- `bijux-atlas-query`: provides deterministic query planning and execution.
 - `bijux-atlas-api`: exposes transport-level contracts for query behavior.
 - `bijux-atlas-server`: hosts API runtime, caching, and readiness behavior.
-- `bijux-atlas`: provides runtime-facing command workflows for operators and users.
+- `bijux-atlas`: provides runtime-facing command workflows for operators and users, and owns the runtime query and policy modules.
 - `bijux-atlas-client`: provides Rust client SDK integration surface for runtime consumers.
 
 ## Control-Plane Components
@@ -28,7 +27,6 @@
 
 - `bijux-atlas-core`: cross-cutting primitives and invariants.
 - `bijux-atlas-model`: shared domain structures and schema-level contracts.
-- `bijux-atlas-policies`: policy tables and evaluation rules.
 
 ## What Never Happens
 

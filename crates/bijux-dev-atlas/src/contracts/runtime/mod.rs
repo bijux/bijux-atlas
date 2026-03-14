@@ -6,14 +6,12 @@ use std::path::{Path, PathBuf};
 
 use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestResult, Violation};
 
-const RUNTIME_CRATES: [&str; 9] = [
+const RUNTIME_CRATES: [&str; 7] = [
     "bijux-atlas-api",
     "bijux-atlas",
     "bijux-atlas-core",
     "bijux-atlas-ingest",
     "bijux-atlas-model",
-    "bijux-atlas-policies",
-    "bijux-atlas-query",
     "bijux-atlas-server",
     "bijux-atlas-store",
 ];
@@ -29,7 +27,7 @@ fn allowed_runtime_deps() -> BTreeMap<&'static str, BTreeSet<&'static str>> {
     BTreeMap::from([
         (
             "bijux-atlas-api",
-            BTreeSet::from(["bijux-atlas-core", "bijux-atlas-model", "bijux-atlas-query"]),
+            BTreeSet::from(["bijux-atlas", "bijux-atlas-core", "bijux-atlas-model"]),
         ),
         (
             "bijux-atlas",
@@ -37,8 +35,6 @@ fn allowed_runtime_deps() -> BTreeMap<&'static str, BTreeSet<&'static str>> {
                 "bijux-atlas-core",
                 "bijux-atlas-ingest",
                 "bijux-atlas-model",
-                "bijux-atlas-policies",
-                "bijux-atlas-query",
                 "bijux-atlas-store",
             ]),
         ),
@@ -48,23 +44,13 @@ fn allowed_runtime_deps() -> BTreeMap<&'static str, BTreeSet<&'static str>> {
             BTreeSet::from(["bijux-atlas-core", "bijux-atlas-model"]),
         ),
         ("bijux-atlas-model", BTreeSet::new()),
-        ("bijux-atlas-policies", BTreeSet::new()),
-        (
-            "bijux-atlas-query",
-            BTreeSet::from([
-                "bijux-atlas-core",
-                "bijux-atlas-model",
-                "bijux-atlas-policies",
-                "bijux-atlas-store",
-            ]),
-        ),
         (
             "bijux-atlas-server",
             BTreeSet::from([
                 "bijux-atlas-api",
+                "bijux-atlas",
                 "bijux-atlas-core",
                 "bijux-atlas-model",
-                "bijux-atlas-query",
                 "bijux-atlas-store",
             ]),
         ),
@@ -270,12 +256,7 @@ fn test_runtime_003_no_control_plane_dep(ctx: &RunContext) -> TestResult {
 }
 
 fn test_runtime_004_pure_crates_no_host_io(ctx: &RunContext) -> TestResult {
-    let crates = [
-        "bijux-atlas-core",
-        "bijux-atlas-model",
-        "bijux-atlas-policies",
-        "bijux-atlas-api",
-    ];
+    let crates = ["bijux-atlas-core", "bijux-atlas-model", "bijux-atlas-api"];
     let forbidden = [
         "std::fs",
         "tokio::fs",

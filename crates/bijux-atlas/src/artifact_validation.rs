@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::domain::canonical;
+use crate::policies::{
+    canonical_config_json, load_policy_from_workspace, resolve_mode_profile, PolicyMode,
+};
 use crate::{sha256_hex, OutputMode};
 use bijux_atlas_model::{
     parse_dataset_key, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ReleaseGeneIndex,
     ShardCatalog,
-};
-use crate::policies::{
-    canonical_config_json, load_policy_from_workspace, resolve_mode_profile, PolicyMode,
 };
 use bijux_atlas_store::{
     canonical_catalog_json, sorted_catalog_entries, verify_expected_sha256, ArtifactStore,

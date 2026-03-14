@@ -97,12 +97,10 @@ flowchart TD
   subgraph Foundation
     C[bijux-atlas-core]
     M[bijux-atlas-model]
-    P[bijux-atlas-policies]
   end
   subgraph DataPath
     I[bijux-atlas-ingest]
     S[bijux-atlas-store]
-    Q[bijux-atlas-query]
   end
   subgraph Delivery
     A[bijux-atlas-api]
@@ -116,16 +114,13 @@ flowchart TD
   end
   C --> I
   C --> S
-  C --> Q
   M --> I
   M --> S
-  M --> Q
-  P --> I
-  P --> Q
-  Q --> A
+  CLI --> I
+  CLI --> S
   A --> SRV
   A --> CLT
-  SRV --> CLI
+  CLI --> A
   DEV --> Foundation
   DEV --> DataPath
   DEV --> Delivery
@@ -138,20 +133,18 @@ Separate crate does not always mean public crate. Some crates are separation uni
 
 `bijux-dev-atlas` is intentionally separate from `bijux-atlas`: one is repository control-plane authority, the other is user/runtime operator surface.
 
-Core, model, and policies form the anti-drift base. Their separation keeps semantic and policy drift visible early.
+Core and model form the anti-drift base. Query execution and policy evaluation now live inside `bijux-atlas` so the user-facing runtime package carries the full public runtime surface.
 
 | Crate | Responsibility | Why Separate | What Breaks If Merged | Primary Consumers |
 | --- | --- | --- | --- | --- |
 | `bijux-atlas-core` | Deterministic primitives and invariants | Foundation semantics must stay runtime-agnostic | Semantic drift across ingest/query/store | All runtime and control-plane crates |
 | `bijux-atlas-model` | Canonical data model and schema types | Shared type authority must be centralized | Schema drift between ingest/query/api | Ingest, store, query, api, client |
-| `bijux-atlas-policies` | Validation and policy evaluation | Policy lifecycle differs from runtime delivery | Policy-runtime coupling and unsafe policy changes | Ingest, query, dev-atlas |
 | `bijux-atlas-store` | Persistence and integrity boundaries | IO/backend evolution differs from query/API | Storage concerns leak into query and transport | Query, ingest, server |
-| `bijux-atlas-query` | Query planning and execution | Query semantics should not depend on transport | API/server changes alter query behavior | Server, cli, client |
 | `bijux-atlas-ingest` | Deterministic ingestion and normalization | Ingestion dependencies and risks are distinct | Serving path polluted by ingestion complexity | CLI, server jobs, tutorials |
 | `bijux-atlas-api` | API contracts and wire types | Contract governance needs independent checks | Contract drift hidden in server internals | Server, client, CLI |
 | `bijux-atlas-server` | Runtime service process | Runtime ops concerns are distinct from libraries | Library crates inherit server-only constraints | Deployments, operators |
 | `bijux-atlas-client` | Rust SDK for API | Consumer compatibility cadence differs | Client users get runtime coupling | Integrators and app teams |
-| `bijux-atlas` | User-facing command surface | UX and command lifecycle differ | User UX changes destabilize internals | Operators, contributors |
+| `bijux-atlas` | User-facing command surface plus embedded runtime query and policy modules | One installable runtime package should expose the full public runtime surface | Users must stitch together multiple runtime crates to access core workflows | Operators, contributors, runtime integrators |
 | `bijux-dev-atlas` | Repo control plane for checks/contracts/docs/ops/release | Governance tooling must not be runtime dependency | Runtime and governance concerns become inseparable | CI, maintainers, contributors |
 | `bijux-atlas-bench` | Perf harness and reproducible benchmarks | Benchmark dependencies and cadence are high-churn | Runtime dependency bloat and unstable perf lane | Performance engineering |
 
