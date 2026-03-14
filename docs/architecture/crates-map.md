@@ -12,6 +12,7 @@
 ```mermaid
 flowchart LR
   dev[bijux-dev-atlas] --> cli[bijux-atlas]
+  py[bijux-atlas-python]
   subgraph runtime[bijux-atlas embedded surfaces]
     api[api]
     ingest[ingest]
@@ -41,6 +42,10 @@ flowchart LR
 - `bijux-atlas`: runtime-facing CLI workflows, query execution, policy evaluation, and all embedded runtime modules.
 - Embedded `api`, `ingest`, `store`, `server`, `client`, `query`, `model`, and `policies` modules remain part of the single runtime crate.
 
+## Distribution layer
+
+- `bijux-atlas-python`: Python SDK distribution crate with package metadata, compatibility artifacts, and optional `pyo3` bindings.
+
 ## Control-plane layer
 
 - `bijux-dev-atlas`: contributor and CI control-plane entrypoint with benchmark and perf evidence support.
@@ -51,6 +56,7 @@ flowchart LR
 | Crate | Role | Inputs | Outputs | Stability | Owner |
 | --- | --- | --- | --- | --- | --- |
 | `bijux-atlas` | runtime package with embedded runtime modules | command args, runtime services, dataset artifacts | runtime effects, query responses, API/server/client binaries | stable | architecture |
+| `bijux-atlas-python` | Python SDK distribution and optional native bridge | Python package metadata, compatibility policy, SDK source tree | PyPI artifacts, optional native bindings, compatibility payloads | stable | platform |
 | `bijux-dev-atlas` | control-plane checks, reporting, and perf evidence | repo state, contract definitions, perf configs | reports, gates, generated artifacts, benchmark metadata | stable | platform |
 
 ## What to Read Next

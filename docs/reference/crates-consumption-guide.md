@@ -10,19 +10,14 @@ tags:
   - crates
 related:
   - docs/reference/crates.md
-  - release/crates-v0.1.toml
+  - ops/release/crates-v0.1.toml
 ---
 
 # Crates you can depend on
 
-Use crates listed under `publish.allow` in `release/crates-v0.1.toml`.
+Use crates listed under `publish.allow` in `ops/release/crates-v0.1.toml`.
 
-- `bijux-atlas-core`: core identifiers, hashing, error and contract primitives.
-- `bijux-atlas-model`: dataset/model structures and serialization contracts.
-- `bijux-atlas-store`: storage contracts and backend adapters.
-- `bijux-atlas-api`: API DTO and OpenAPI generation helpers.
-- `bijux-atlas`: user-facing CLI integration surface plus the runtime query and policy APIs.
-- `bijux-atlas-ingest`: deterministic ingest workflow interfaces.
-- `bijux-atlas-server`: runtime service crate and server integration points.
+- `bijux-atlas`: public Rust crate for the runtime CLI plus embedded API, ingest, store, client, server, query, model, and policy surfaces.
 
 Do not depend on private crates listed in `publish.deny`.
+Python consumers should install the `bijux-atlas` SDK package built from `crates/bijux-atlas-python` instead of depending on private Rust crates.

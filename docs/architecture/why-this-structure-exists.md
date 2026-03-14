@@ -124,12 +124,14 @@ flowchart TD
 Separate crate does not always mean public crate. Some crates are separation units for lifecycle containment and verification, even when publication intent differs.
 
 `bijux-dev-atlas` is intentionally separate from `bijux-atlas`: one is repository control-plane authority, the other is user/runtime operator surface.
+`bijux-atlas-python` is intentionally separate from both so Python packaging metadata and optional native bindings can evolve without turning the runtime or the control plane into Python distribution crates.
 
-The runtime package now carries embedded `api`, `ingest`, `store`, `server`, `client`, `query`, `model`, and `policies` modules. Benchmark models likewise live inside `bijux-dev-atlas::performance` so performance evidence stays inside the control plane instead of creating a third crate boundary.
+The runtime package now carries embedded `api`, `ingest`, `store`, `server`, `client`, `query`, `model`, and `policies` modules. The Python SDK lives in `bijux-atlas-python`, and benchmark models live inside `bijux-dev-atlas::performance`, so both language distribution and performance evidence stay outside the runtime crate.
 
 | Crate | Responsibility | Why Separate | What Breaks If Merged | Primary Consumers |
 | --- | --- | --- | --- | --- |
 | `bijux-atlas` | User-facing runtime package plus embedded runtime modules | One installable runtime package should expose the full public runtime surface | Users must stitch together internal modules manually and lose a single runtime contract boundary | Operators, contributors, runtime integrators |
+| `bijux-atlas-python` | Python SDK distribution and optional native bridge | Python packaging metadata and optional bindings should not leak into runtime or control-plane crate boundaries | Python release workflows become entangled with Rust runtime/control-plane lifecycles | Python SDK consumers, release operators |
 | `bijux-dev-atlas` | Repo control plane for checks/contracts/docs/ops/release/perf | Governance tooling and benchmark evidence must not become runtime dependencies | Runtime and governance concerns become inseparable, and perf evidence drifts into the wrong package | CI, maintainers, contributors |
 
 ## Root Directory Boundaries
@@ -147,13 +149,12 @@ Root directories are organizational and authority boundaries, not always runtime
 | `governance` | Policy/process ownership materials | Governance decisions need explicit surface | Ownership and exception rationale become implicit |
 | `make` | Stable wrapper entrypoints to control-plane | Command UX needs stable operator interface | Developer flow fragmentation |
 | `ops` | Operations-as-product assets | Operational contracts differ from docs/code | Install/validate/runbook integrity loss |
-| `packages` | Non-crate packaging surfaces | Distribution beyond Cargo needs separate surface | Language boundary confusion |
 | `release` | Release manifests and traceability | Release evidence needs explicit location | Version-to-artifact trace breaks |
 | `security` | Security controls and threat surfaces | Security review lifecycle is distinct | Security ownership and auditability weaken |
 | `tutorials` | Reality-proof workflows and datasets | Tutorial lifecycle differs from API/runtime internals | Reproducible proof path degrades |
 | `.idea` | Local IDE metadata only | Editor-local state should not be architecture surface | Not a product failure mode; keep out of design boundaries |
 
-`packages/` exists because not all distributables are Rust crates. `artifacts/` stays generated-only for determinism. `configs/` stays machine-readable for verification. `docs/` stays reader-facing, and `ops/` stays operational instead of becoming a narrative junk drawer. `make/` remains wrapper-only over the control plane.
+`crates/` now hosts the Python SDK distribution crate alongside the runtime and control plane so packaging stays under the same workspace governance. `artifacts/` stays generated-only for determinism. `configs/` stays machine-readable for verification. `docs/` stays reader-facing, and `ops/` stays operational instead of becoming a narrative junk drawer. `make/` remains wrapper-only over the control plane.
 
 ## Why `ops/` Is Deep
 
@@ -195,7 +196,7 @@ Ops depth is the cost of reproducible and inspectable deployment operations. Fla
 | perf evidence moved back out of `dev-atlas` | Control-plane benchmark contracts drift into an unnecessary third package |
 | `ops/` collapsed into ad hoc files | Operational SSOT and install/validation clarity are lost |
 | `configs/` moved into code/docs | Machine-verifiable authority and audit trails weaken |
-| `release/` removed | Version-to-artifact traceability degrades |
+| `ops/release/` removed | Version-to-artifact traceability degrades |
 | `security/` removed | Security ownership and review coverage blur |
 | tutorials mixed into narrative/scripts | Reality-proof reproducibility path degrades |
 

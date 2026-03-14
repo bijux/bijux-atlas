@@ -9,7 +9,7 @@ Deterministic genomics data infrastructure with executable governance.
 | Crates | `crates/` | Runtime and control-plane binaries/libraries |
 | Ops | `ops/` | Deploy, profile, schema, and evidence inputs |
 | Docs | `docs/` | Canonical user/operator/contributor documentation |
-| Docker | `docker/` | Container build and runtime image definitions |
+| Docker | `ops/docker/` | Container build and runtime image definitions |
 
 ## What's Real
 
@@ -84,11 +84,11 @@ Planned publication surfaces:
 
 Release artifact references:
 
-- Crates: `release/crates-v0.1.toml`
-- Images: `release/images-v0.1.toml`
-- Ops Helm OCI chart: `release/ops-v0.1.toml` (`oci://ghcr.io/bijux/charts/bijux-atlas`)
-- Ops release manifest: `release/ops-release-manifest.json`
-- Ops chart/workspace linkage manifest: `release/ops-release-bundle-manifest.json`
+- Crates: `ops/release/crates-v0.1.toml`
+- Images: `ops/release/images-v0.1.toml`
+- Ops Helm OCI chart: `ops/release/ops-v0.1.toml` (`oci://ghcr.io/bijux/charts/bijux-atlas`)
+- Ops release manifest: `ops/release/ops-release-manifest.json`
+- Ops chart/workspace linkage manifest: `ops/release/ops-release-bundle-manifest.json`
 
 ## Docs Deploy
 
@@ -141,9 +141,10 @@ CLI UX perf benchmarks are executed through `bijux-dev-atlas perf cli-ux bench` 
 ## Repository Surfaces
 
 - `crates/bijux-dev-atlas`: governance control-plane command surface
+- `crates/bijux-atlas-python`: Python SDK distribution crate and optional native bridge
 - `crates/bijux-atlas`: runtime package with embedded API, ingest, store, client, server, and policy surfaces
 - `configs/`: policy/schema/configuration SSOTs
-- `ops/`: deploy/release/validation operational surfaces
+- `ops/`: deploy/ops/release/validation operational surfaces
 - `docs/`: canonical documentation plus internal generated evidence references
 
 ## Control-plane Is SSOT
@@ -183,13 +184,14 @@ Published by workflow: [`.github/workflows/docs-deploy.yml`](.github/workflows/d
 ## Crate Versions
 
 - `bijux-atlas`: workspace-managed version, runtime package with embedded runtime modules and end-user binaries
+- `bijux-atlas-python`: workspace-managed version, private Python SDK bridge crate for package metadata and optional native bindings
 - `bijux-dev-atlas`: workspace-managed version, control-plane tooling
 
 Crate details: [`docs/reference/crates.md`](docs/reference/crates.md)
 
 ## Crate Publishing Strategy
 
-Current release plan keeps a two-crate workspace with shared governance gates. `bijux-atlas` carries the runtime surface, and `bijux-dev-atlas` remains a private control-plane package for governance, docs, release, and perf automation.
+Current release plan keeps a three-crate workspace with shared governance gates. `bijux-atlas` carries the public Rust runtime surface, `bijux-atlas-python` carries the Python SDK distribution bridge, and `bijux-dev-atlas` remains a private control-plane package for governance, docs, release, and perf automation.
 
 ## Governance And Operations References
 

@@ -9,13 +9,8 @@
 
 ## Placement guide
 
-- Domain invariants and shared primitives: `bijux-atlas-core`
-- Shared domain types: `bijux-atlas-model`
-- Ingest validation and artifact construction: `bijux-atlas-ingest`
-- Serving-store access and persistence: `bijux-atlas-store`
-- Policy parsing, evaluation, query semantics, and pagination behavior: `bijux-atlas`
-- API surface behavior and transport: `bijux-atlas-api`
-- Runtime process hosting: `bijux-atlas-server`
+- Runtime domain code, ingest, storage, API transport, query handling, policy evaluation, and process hosting: `bijux-atlas`
+- Python SDK packaging metadata and optional native bridge code: `bijux-atlas-python`
 - Contributor checks and reports: `bijux-dev-atlas`
 
 ## Anti-patterns

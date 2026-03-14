@@ -12,6 +12,10 @@
 - `bijux-atlas`: provides runtime-facing command workflows for operators and users.
 - Embedded runtime modules inside `bijux-atlas` own ingest, store, API, server, client, query, model, and policy behavior.
 
+## Distribution Components
+
+- `bijux-atlas-python`: packages the Python SDK, ships compatibility metadata, and optionally exposes native bridge helpers.
+
 ## Control-Plane Components
 
 - `bijux-dev-atlas`: runs checks, docs validation, policies, ops lanes, and performance evidence workflows.
@@ -22,6 +26,7 @@
 ## What Never Happens
 
 - Runtime crates do not bypass control-plane contracts for release-critical actions.
+- Distribution crates do not become alternative runtime authority surfaces.
 - API and query layers do not mutate immutable release artifacts.
 - Control-plane lanes do not hide effectful steps behind undocumented scripts.
 

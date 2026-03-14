@@ -11,7 +11,7 @@ tags:
   - api
 related:
   - docs/reference/crate-release-policy.md
-  - release/crates-v0.1.toml
+  - ops/release/crates-v0.1.toml
 ---
 
 # Crate API stability boundaries
@@ -24,8 +24,9 @@ The following crates are public for `v0.1` and are expected to keep a stable API
 
 ## Private boundary
 
+- `bijux-atlas-python` is a private crate (`publish = false`) used for Python package distribution and optional native bindings.
 - `bijux-dev-atlas` is a private crate (`publish = false`).
-- Their public symbols are not a consumer-facing compatibility contract.
+- Their Rust public symbols are not a consumer-facing compatibility contract.
 
 ## Internal modules
 

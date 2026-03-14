@@ -9,17 +9,13 @@
 
 ## Plain-language summary
 
-Atlas keeps runtime behavior predictable by separating data ingestion, storage, querying, and serving responsibilities. Each layer has clear allowed dependencies and explicit effects ownership.
+Atlas keeps runtime behavior predictable by separating the governed runtime crate, the Python SDK distribution crate, and the control plane. Each layer has clear allowed dependencies and explicit effects ownership.
 
 ## Allowed Crate Dependencies
 
-- `bijux-atlas-core` -> (none).
-- `bijux-atlas-model` -> (none).
-- `bijux-atlas-ingest` -> `bijux-atlas-core`, `bijux-atlas-model`.
-- `bijux-atlas-store` -> `bijux-atlas-core`, `bijux-atlas-model`.
-- `bijux-atlas-api` -> `bijux-atlas`, `bijux-atlas-core`, `bijux-atlas-model`.
-- `bijux-atlas` -> `bijux-atlas-core`, `bijux-atlas-ingest`, `bijux-atlas-model`, `bijux-atlas-store`.
-- `bijux-atlas-server` -> `bijux-atlas-api`, `bijux-atlas`, `bijux-atlas-core`, `bijux-atlas-model`, `bijux-atlas-store`.
+- `bijux-atlas` -> workspace-external crates only.
+- `bijux-atlas-python` -> workspace-external crates only.
+- `bijux-dev-atlas` -> `bijux-atlas`.
 
 ## Effects Model
 
@@ -35,10 +31,9 @@ Atlas keeps runtime behavior predictable by separating data ingestion, storage, 
 
 ## Layering rules (merged)
 
-- Foundation crates do not depend on runtime interface crates.
-- Runtime data crates can depend on foundation crates and approved adjacent data crates.
-- Runtime interface crates expose behavior but do not mutate ingest artifacts directly.
-- Control-plane surfaces orchestrate checks and operations and do not become runtime business logic.
+- The runtime crate owns user-facing execution and embedded runtime modules.
+- The Python SDK crate owns Python distribution concerns and does not become an alternative runtime authority surface.
+- The control-plane crate orchestrates checks and operations and does not become runtime business logic.
 
 ## Contract-to-runtime mapping (merged)
 

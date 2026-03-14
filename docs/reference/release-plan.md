@@ -21,11 +21,16 @@ Publishable crates are defined in `configs/release/publish-policy.json`.
 
 Blocked from crates.io by policy:
 
+- `bijux-atlas-python`
 - `bijux-dev-atlas`
 
 Current publishable crates:
 
 - `bijux-atlas`
+
+Additional distribution crate:
+
+- `bijux-atlas-python` ships the Python SDK through Python packaging workflows rather than crates.io.
 
 ## Versioning model
 

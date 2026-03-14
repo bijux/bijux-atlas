@@ -16,30 +16,11 @@ related:
 
 ```mermaid
 graph TD
-  core[bijux-atlas-core]
-  model[bijux-atlas-model]
-  ingest[bijux-atlas-ingest]
-  store[bijux-atlas-store]
-  api[bijux-atlas-api]
-  cli[bijux-atlas]
-  server[bijux-atlas-server]
+  atlas[bijux-atlas]
+  python[bijux-atlas-python]
+  dev[bijux-dev-atlas]
 
-  ingest --> core
-  ingest --> model
-  store --> core
-  store --> model
-  api --> cli
-  api --> core
-  api --> model
-  cli --> core
-  cli --> model
-  cli --> ingest
-  cli --> store
-  server --> api
-  server --> cli
-  server --> core
-  server --> model
-  server --> store
+  dev --> atlas
 ```
 
 This graph reflects workspace crate-level dependencies, not third-party crates.
