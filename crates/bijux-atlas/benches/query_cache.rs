@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas_query::{
+use bijux_atlas::query::{
     normalized_query_hash_ssot, query_genes, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits,
 };
 use criterion::{black_box, criterion_group, criterion_main, Criterion};

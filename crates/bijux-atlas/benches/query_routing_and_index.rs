@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas_model::ShardCatalog;
-use bijux_atlas_query::{
+use bijux_atlas::query::{
     explain_query_plan, query_gene_id_name_json_minimal_fast, query_genes, query_genes_fanout,
     select_shards_for_request, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits, RegionFilter,
 };
+use bijux_atlas_model::ShardCatalog;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use rusqlite::{Connection, OpenFlags};
 use std::sync::Arc;
