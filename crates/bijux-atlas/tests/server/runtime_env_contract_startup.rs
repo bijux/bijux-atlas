@@ -15,7 +15,7 @@ fn repo_root() -> std::path::PathBuf {
 }
 
 fn sanitized_server_command() -> Command {
-    let mut command = Command::new(env!("CARGO_BIN_EXE_atlas-server"));
+    let mut command = Command::new(env!("CARGO_BIN_EXE_bijux-atlas-server"));
     command.current_dir(repo_root());
     for (name, _) in std::env::vars() {
         if name.starts_with("ATLAS_") || name.starts_with("BIJUX_") {
@@ -35,7 +35,7 @@ fn startup_rejects_unknown_prefixed_env_before_binding_a_port() {
         .env("ATLAS_CACHE_ROOT", cache_root.path())
         .env("ATLAS_UNKNOWN_CONTRACT_BREAKER", "1")
         .output()
-        .expect("run atlas-server");
+        .expect("run bijux-atlas-server");
 
     assert!(!output.status.success(), "unknown env must fail startup");
     let stderr = String::from_utf8(output.stderr).expect("stderr utf8");
@@ -46,7 +46,7 @@ fn startup_rejects_unknown_prefixed_env_before_binding_a_port() {
         "stderr must contain the explicit contract failure:\n{stderr}"
     );
     assert!(
-        !stderr.contains("atlas-server listening on"),
+        !stderr.contains("bijux-atlas-server listening"),
         "unknown env validation must fail before binding a port:\n{stderr}"
     );
     assert!(
@@ -67,7 +67,7 @@ fn startup_accepts_an_allowlisted_env_surface() {
         .env("ATLAS_LOG_JSON", "false")
         .env("ATLAS_REQUEST_TIMEOUT_MS", "5000")
         .output()
-        .expect("run atlas-server");
+        .expect("run bijux-atlas-server");
 
     assert!(
         output.status.success(),
@@ -119,7 +119,7 @@ fn startup_accepts_the_runtime_env_surface_emitted_by_the_helm_chart() {
         .env("ATLAS_CATALOG_BREAKER_FAILURE_THRESHOLD", "5")
         .env("ATLAS_CATALOG_BREAKER_OPEN_MS", "10000")
         .output()
-        .expect("run atlas-server");
+        .expect("run bijux-atlas-server");
 
     assert!(
         output.status.success(),
@@ -140,7 +140,7 @@ fn startup_only_allows_unknown_prefixed_env_when_the_dev_override_is_explicitly_
         .env("ATLAS_DEV_ALLOW_UNKNOWN_ENV", "1")
         .env("ATLAS_UNKNOWN_CONTRACT_BREAKER", "1")
         .output()
-        .expect("run atlas-server");
+        .expect("run bijux-atlas-server");
 
     assert!(
         output.status.success(),
@@ -160,7 +160,7 @@ fn startup_rejects_invalid_config_values_instead_of_silently_using_defaults() {
         .env("ATLAS_CACHE_ROOT", cache_root.path())
         .env("ATLAS_ENABLE_AUDIT_LOG", "definitely")
         .output()
-        .expect("run atlas-server");
+        .expect("run bijux-atlas-server");
 
     assert!(!output.status.success(), "invalid config must fail startup");
     let stderr = String::from_utf8(output.stderr).expect("stderr utf8");
@@ -175,7 +175,7 @@ fn startup_rejects_missing_required_store_s3_configuration() {
     let output = sanitized_server_command()
         .env("ATLAS_STORE_S3_ENABLED", "1")
         .output()
-        .expect("run atlas-server");
+        .expect("run bijux-atlas-server");
 
     assert!(
         !output.status.success(),
@@ -187,7 +187,7 @@ fn startup_rejects_missing_required_store_s3_configuration() {
         "missing required env must be reported explicitly:\n{stderr}"
     );
     assert!(
-        !stderr.contains("atlas-server listening on"),
+        !stderr.contains("bijux-atlas-server listening"),
         "missing required env must fail before binding a port:\n{stderr}"
     );
 }
@@ -203,7 +203,7 @@ fn startup_rejects_loopback_bind_addresses_when_atlas_env_is_prod() {
         .env("ATLAS_STORE_ROOT", store_root.path())
         .env("ATLAS_CACHE_ROOT", cache_root.path())
         .output()
-        .expect("run atlas-server");
+        .expect("run bijux-atlas-server");
 
     assert!(
         !output.status.success(),
@@ -215,7 +215,7 @@ fn startup_rejects_loopback_bind_addresses_when_atlas_env_is_prod() {
         "prod bind guard must fail explicitly:\n{stderr}"
     );
     assert!(
-        !stderr.contains("atlas-server listening on"),
+        !stderr.contains("bijux-atlas-server listening"),
         "prod bind guard must fail before binding a port:\n{stderr}"
     );
 }
@@ -233,7 +233,7 @@ fn startup_logs_the_redacted_effective_config_during_validation() {
         .env("ATLAS_HMAC_SECRET", "secret-material")
         .env("ATLAS_ALLOWED_API_KEYS", "alpha,beta")
         .output()
-        .expect("run atlas-server");
+        .expect("run bijux-atlas-server");
 
     assert!(
         output.status.success(),

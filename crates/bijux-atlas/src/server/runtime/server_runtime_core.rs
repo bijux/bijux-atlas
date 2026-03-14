@@ -31,7 +31,7 @@ use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock, Semaphore};
 use tokio::time::timeout;
 use tracing::{error, info, warn, Instrument};
 
-pub const SERVER_CRATE_NAME: &str = "atlas-server";
+pub const SERVER_CRATE_NAME: &str = "bijux-atlas-server";
 
 #[derive(Debug)]
 pub struct CacheError(pub String);

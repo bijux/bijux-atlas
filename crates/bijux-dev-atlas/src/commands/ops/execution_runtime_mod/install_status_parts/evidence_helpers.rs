@@ -618,7 +618,7 @@ pub(super) fn observability_contract_checks(
         && openapi.contains("\"ApiErrorCode\"");
 
     let main_rs =
-        std::fs::read_to_string(repo_root.join("crates/bijux-atlas/src/bin/atlas-server.rs"))
+        std::fs::read_to_string(repo_root.join("crates/bijux-atlas/src/bin/bijux-atlas-server.rs"))
         .map_err(|err| format!("failed to read main.rs: {err}"))?;
     let startup_log_fields_present = main_rs.contains("event_id = \"startup\"")
         && main_rs.contains("release_id = %release_id")

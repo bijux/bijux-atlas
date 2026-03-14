@@ -40,7 +40,7 @@ pub fn runtime_startup_config_schema_json() -> serde_json::Value {
 pub fn runtime_startup_config_docs_markdown() -> String {
     format!(
         "# Runtime Startup Config\n\n\
-Source of truth for startup config resolution used by `atlas-server`.\n\n\
+Source of truth for startup config resolution used by `bijux-atlas-server`.\n\n\
 Resolution precedence: `CLI > ENV > config file > defaults`.\n\n\
 | Field | CLI Flag | ENV | Config Key | Default |\n\
 |---|---|---|---|---|\n\

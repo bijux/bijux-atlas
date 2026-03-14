@@ -1523,7 +1523,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         }
     }
     let sec_auth_002 = !policy_rows.is_empty() && auth_policy_unknowns.is_empty();
-    let main_source = fs::read_to_string(root.join("crates/bijux-atlas/src/bin/atlas-server.rs"))
+    let main_source = fs::read_to_string(root.join("crates/bijux-atlas/src/bin/bijux-atlas-server.rs"))
         .map_err(|err| format!("failed to read runtime main source: {err}"))?;
     let runbook_text = fs::read_to_string(root.join(auth_docs_runbook))
         .map_err(|err| format!("failed to read {}: {err}", auth_docs_runbook))?;

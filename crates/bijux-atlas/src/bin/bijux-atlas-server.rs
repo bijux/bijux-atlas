@@ -23,7 +23,11 @@ use tracing::{error, info, warn};
 static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
 
 #[derive(Parser, Debug)]
-#[command(name = "atlas-server", version, about = "Bijux Atlas runtime server")]
+#[command(
+    name = "bijux-atlas-server",
+    version,
+    about = "Bijux Atlas runtime server"
+)]
 struct ServerCliArgs {
     #[arg(long)]
     config: Option<PathBuf>,
@@ -677,7 +681,7 @@ async fn main() -> Result<(), String> {
         release_id = %release_id,
         governance_version = %governance_version,
         bind_addr = %bind_addr,
-        "atlas-server listening"
+        "bijux-atlas-server listening"
     );
     if runtime.api.audit.enabled {
         info!(

@@ -230,7 +230,7 @@ fn server_runtime_prefixed_env_reads_stay_inside_the_env_contract() {
 
     let mut runtime_keys = BTreeSet::new();
     for relative_path in [
-        "crates/bijux-atlas/src/bin/atlas-server.rs",
+        "crates/bijux-atlas/src/bin/bijux-atlas-server.rs",
         "crates/bijux-atlas/src/config/mod.rs",
     ] {
         let text = read(&root.join(relative_path));

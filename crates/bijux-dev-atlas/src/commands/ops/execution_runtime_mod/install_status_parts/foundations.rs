@@ -256,7 +256,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
             (
                 "warmup lock runtime source",
-                repo_root.join("crates/bijux-atlas/src/bin/atlas-server.rs"),
+                repo_root.join("crates/bijux-atlas/src/bin/bijux-atlas-server.rs"),
             ),
         ],
         "redis-outage" => vec![

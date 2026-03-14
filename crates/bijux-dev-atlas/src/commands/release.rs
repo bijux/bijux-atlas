@@ -829,7 +829,7 @@ fn run_release_images_size_report(
         .get("runtime_image_max_bytes")
         .and_then(serde_json::Value::as_u64)
         .unwrap_or(450_000_000);
-    let binary = root.join("artifacts/target/ops/release/atlas-server");
+    let binary = root.join("artifacts/target/ops/release/bijux-atlas-server");
     let binary_bytes = if binary.exists() {
         Some(
             fs::metadata(&binary)

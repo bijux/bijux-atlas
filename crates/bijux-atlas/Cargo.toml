@@ -69,16 +69,16 @@ name = "bijux-atlas"
 path = "src/bin/bijux-atlas.rs"
 
 [[bin]]
-name = "atlas-openapi"
-path = "src/bin/atlas-openapi.rs"
+name = "bijux-atlas-openapi"
+path = "src/bin/bijux-atlas-openapi.rs"
 
 [[bin]]
 name = "bijux-atlas-client"
 path = "src/bin/bijux-atlas-client.rs"
 
 [[bin]]
-name = "atlas-server"
-path = "src/bin/atlas-server.rs"
+name = "bijux-atlas-server"
+path = "src/bin/bijux-atlas-server.rs"
 
 [[bin]]
 name = "bijux-atlas-ingest"
