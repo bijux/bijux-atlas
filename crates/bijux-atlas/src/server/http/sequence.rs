@@ -175,7 +175,6 @@ async fn acquire_class_permit_for_sequence(
         QueryClass::Cheap => state.class_cheap.clone(),
         QueryClass::Medium => state.class_medium.clone(),
         QueryClass::Heavy => state.class_heavy.clone(),
-        _ => state.class_heavy.clone(),
     };
     sem.try_acquire_owned().map_err(|_| {
         error_json(

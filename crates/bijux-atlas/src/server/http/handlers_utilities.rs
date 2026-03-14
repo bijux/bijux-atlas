@@ -378,7 +378,6 @@ pub(crate) fn with_query_class(mut response: Response, class: QueryClass) -> Res
         QueryClass::Cheap => "cheap",
         QueryClass::Medium => "medium",
         QueryClass::Heavy => "heavy",
-        _ => "heavy",
     };
     response
         .headers_mut()

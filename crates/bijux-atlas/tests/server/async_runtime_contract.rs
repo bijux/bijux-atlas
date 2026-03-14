@@ -19,7 +19,7 @@ fn collect_rs_files(root: &Path, out: &mut Vec<PathBuf>) {
 #[test]
 fn server_source_forbids_reqwest_blocking_usage() {
     let mut files = Vec::new();
-    collect_rs_files(Path::new("src"), &mut files);
+    collect_rs_files(Path::new("src/server"), &mut files);
     for path in files {
         let text = fs::read_to_string(&path).expect("read server source file");
         assert!(

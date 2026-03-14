@@ -438,7 +438,6 @@ pub fn write_sharded_sqlite_catalog(
                 "region_grid sharding plan is reserved for future implementation".to_string(),
             ))
         }
-        _ => return Err(IngestError("unsupported sharding plan variant".to_string())),
     }
 
     if buckets.len() > max_shards {

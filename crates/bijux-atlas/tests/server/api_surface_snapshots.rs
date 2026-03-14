@@ -368,7 +368,7 @@ async fn api_surface_response_shapes_match_golden_snapshot() {
     });
     let current = stable_json_bytes(&snapshots).expect("snapshot bytes");
     let golden_path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("tests/snapshots/api-surface.responses.v1.json");
+        .join("tests/server/snapshots/api-surface.responses.v1.json");
 
     if std::env::var_os("UPDATE_GOLDEN").is_some() {
         if let Some(parent) = golden_path.parent() {

@@ -141,7 +141,6 @@ async fn diff_common(
     let route = match scope {
         DiffScope::Genes => "/v1/diff/genes",
         DiffScope::Region => "/v1/diff/region",
-        _ => "/v1/diff/genes",
     };
     info!(request_id = %request_id, route = route, "request start");
     let queue_depth = state
@@ -331,7 +330,6 @@ async fn diff_common(
                 return with_request_id(resp, &request_id);
             }
         },
-        _ => None,
     };
 
     let from_index_path = match state
