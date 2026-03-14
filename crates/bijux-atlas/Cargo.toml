@@ -80,6 +80,22 @@ path = "src/bin/bijux-atlas-client.rs"
 name = "atlas-server"
 path = "src/bin/atlas-server.rs"
 
+[[bin]]
+name = "bijux-atlas-ingest"
+path = "src/bin/bijux-atlas-ingest.rs"
+
+[[bin]]
+name = "bijux-atlas-query"
+path = "src/bin/bijux-atlas-query.rs"
+
+[[bin]]
+name = "bijux-atlas-policies"
+path = "src/bin/bijux-atlas-policies.rs"
+
+[[bin]]
+name = "bijux-atlas-store"
+path = "src/bin/bijux-atlas-store.rs"
+
 [[bench]]
 name = "core_canonical_hash"
 path = "benches/core/canonical_hash.rs"
