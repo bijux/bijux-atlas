@@ -3,5 +3,5 @@
 #![forbid(unsafe_code)]
 
 fn main() -> std::process::ExitCode {
-    bijux_atlas::main_entry()
+    bijux_atlas::cli::main_entry()
 }

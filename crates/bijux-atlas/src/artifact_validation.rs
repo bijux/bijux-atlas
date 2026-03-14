@@ -12,7 +12,8 @@ use crate::store::{
     canonical_catalog_json, sorted_catalog_entries, verify_expected_sha256, ArtifactStore,
     LocalFsStore, ManifestLock, StoreErrorCode,
 };
-use crate::{sha256_hex, OutputMode};
+use crate::cli::OutputMode;
+use crate::domain::sha256_hex;
 use serde_json::json;
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs;

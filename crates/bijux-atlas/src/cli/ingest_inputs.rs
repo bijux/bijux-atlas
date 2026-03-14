@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
+use crate::domain::sha256_hex;
 
 pub(super) fn verify_ingest_inputs(
     gff3: PathBuf,
@@ -19,7 +20,7 @@ pub(super) fn verify_ingest_inputs(
         allow_network_inputs,
         resume,
     )?;
-    command_output_adapters::emit_ok(
+    output::emit_ok(
         output_mode,
         json!({
             "command": "atlas ingest verify-inputs",

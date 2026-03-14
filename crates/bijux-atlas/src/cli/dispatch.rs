@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
-fn run_atlas_command(
+use super::*;
+use super::actions::{
+    explain_query, explain_query_from_query_text, inspect_db, print_completion, print_config,
+    print_version, run_ingest, smoke_dataset, ExplainQueryArgs,
+};
+use super::ingest_inputs::verify_ingest_inputs;
+
+pub(super) fn run_atlas_command(
     command: AtlasCommand,
     log_flags: LogFlags,
     output_mode: OutputMode,
@@ -279,7 +286,7 @@ fn run_atlas_command(
         AtlasCommand::IngestReplay { normalized } => {
             let counts = replay_normalized_counts(&normalized)
                 .map_err(|e| CliError::internal(e.to_string()))?;
-            command_output_adapters::emit_ok(
+            output::emit_ok(
                 output_mode,
                 json!({
                     "command":"atlas ingest-replay",
@@ -297,7 +304,7 @@ fn run_atlas_command(
         AtlasCommand::IngestNormalizedDiff { base, target } => {
             let (removed, added) = diff_normalized_ids(&base, &target)
                 .map_err(|e| CliError::internal(e.to_string()))?;
-            command_output_adapters::emit_ok(
+            output::emit_ok(
                 output_mode,
                 json!({
                     "command":"atlas ingest-normalized-diff",
@@ -367,7 +374,7 @@ fn run_atlas_command(
         .map_err(CliError::internal),
         AtlasCommand::Openapi { command } => match command {
             OpenapiCommand::Generate { out } => {
-                command_output_adapters::run_openapi_generate(out, output_mode)
+                output::run_openapi_generate(out, output_mode)
             }
         }
         .map_err(CliError::internal),

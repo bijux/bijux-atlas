@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[path = "atlas_command_actions/ingest_inputs.rs"]
-mod ingest_inputs;
+use super::*;
+use super::ingest_inputs::resolve_verify_and_lock_inputs;
 
-use ingest_inputs::{resolve_verify_and_lock_inputs, verify_ingest_inputs};
+use std::path::PathBuf;
 
-fn parse_query_text(query_text: &str) -> HashMap<String, String> {
+pub(super) fn parse_query_text(query_text: &str) -> HashMap<String, String> {
     query_text
         .split('&')
         .filter_map(|pair| {
@@ -18,7 +18,7 @@ fn parse_query_text(query_text: &str) -> HashMap<String, String> {
         .collect()
 }
 
-fn explain_query_from_query_text(
+pub(super) fn explain_query_from_query_text(
     db: PathBuf,
     query_text: &str,
     limit: usize,
@@ -42,13 +42,13 @@ fn explain_query_from_query_text(
 }
 
 
-fn print_completion<G: Generator>(generator: G) {
+pub(super) fn print_completion<G: Generator>(generator: G) {
     let mut command = Cli::command();
     let name = command.get_name().to_string();
     generate(generator, &mut command, name, &mut std::io::stdout());
 }
 
-fn emit_config_paths(machine_json: bool) -> Result<(), String> {
+pub(super) fn emit_config_paths(machine_json: bool) -> Result<(), String> {
     let payload = json!({
         "workspace_config": resolve_bijux_config_path(ConfigPathScope::Workspace),
         "user_config": resolve_bijux_config_path(ConfigPathScope::User),
@@ -67,7 +67,7 @@ fn emit_config_paths(machine_json: bool) -> Result<(), String> {
     Ok(())
 }
 
-fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
+pub(super) fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
     let payload = plugin_metadata_payload();
 
     if machine_json {
@@ -83,7 +83,7 @@ fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
     Ok(())
 }
 
-fn print_version(verbose: bool, output_mode: OutputMode) -> Result<(), String> {
+pub(super) fn print_version(verbose: bool, output_mode: OutputMode) -> Result<(), String> {
     let payload = if verbose {
         json!({
             "plugin": {
@@ -100,7 +100,7 @@ fn print_version(verbose: bool, output_mode: OutputMode) -> Result<(), String> {
     } else {
         json!({"name":"bijux-atlas","version": env!("CARGO_PKG_VERSION")})
     };
-    command_output_adapters::emit_ok(output_mode, payload)?;
+    output::emit_ok(output_mode, payload)?;
     Ok(())
 }
 
@@ -116,7 +116,7 @@ fn plugin_metadata_payload() -> Value {
     })
 }
 
-fn enforce_umbrella_compatibility(version: &str) -> Result<(), CliError> {
+pub(super) fn enforce_umbrella_compatibility(version: &str) -> Result<(), CliError> {
     if !version_in_supported_range(version) {
         return Err(CliError {
             exit_code: crate::errors::ExitCode::Usage,
@@ -140,7 +140,7 @@ fn version_in_supported_range(version: &str) -> bool {
     matches!((parts[0], parts[1]), ("0", "1"))
 }
 
-fn print_config(canonical_out: bool, output_mode: OutputMode) -> Result<(), String> {
+pub(super) fn print_config(canonical_out: bool, output_mode: OutputMode) -> Result<(), String> {
     let payload = json!({
         "workspace_config": resolve_bijux_config_path(ConfigPathScope::Workspace),
         "user_config": resolve_bijux_config_path(ConfigPathScope::User),
@@ -172,36 +172,7 @@ fn print_config(canonical_out: bool, output_mode: OutputMode) -> Result<(), Stri
     Ok(())
 }
 
-#[derive(Debug)]
-struct CliError {
-    exit_code: crate::errors::ExitCode,
-    machine: MachineError,
-}
-
-impl CliError {
-    fn internal(message: String) -> Self {
-        Self {
-            exit_code: crate::errors::ExitCode::Internal,
-            machine: MachineError::new("internal_error", &message),
-        }
-    }
-
-}
-
-fn emit_error(error: &CliError, machine_json: bool) {
-    if machine_json {
-        match serde_json::to_string(&error.machine) {
-            Ok(payload) => eprintln!("{payload}"),
-            Err(_) => eprintln!(
-                "{{\"code\":\"internal_error\",\"message\":\"failed to encode structured error\",\"details\":{{}}}}"
-            ),
-        }
-    } else {
-        eprintln!("{}", error.machine.message);
-    }
-}
-
-fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String> {
+pub(super) fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String> {
     if args.no_fai_check {
         return Err(
             "policy gate: --no-fai-check is forbidden in production; use --dev-auto-generate-fai for local development"
@@ -296,7 +267,7 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
     })
     .map_err(|e| e.to_string())?;
 
-    command_output_adapters::emit_ok(
+    output::emit_ok(
         output_mode,
         json!({
             "command":"atlas ingest",
@@ -341,7 +312,11 @@ fn read_sharding_policy_defaults() -> (ShardingPlanCli, usize) {
     (plan, max_shards)
 }
 
-fn inspect_db(db: PathBuf, sample_rows: usize, output_mode: OutputMode) -> Result<(), String> {
+pub(super) fn inspect_db(
+    db: PathBuf,
+    sample_rows: usize,
+    output_mode: OutputMode,
+) -> Result<(), String> {
     let conn = Connection::open(db).map_err(|e| e.to_string())?;
     let schema_version: i64 = conn
         .query_row("PRAGMA user_version", [], |row| row.get(0))
@@ -378,7 +353,7 @@ fn inspect_db(db: PathBuf, sample_rows: usize, output_mode: OutputMode) -> Resul
         .map_err(|e| e.to_string())?
         .collect::<Result<Vec<_>, _>>()
         .map_err(|e| e.to_string())?;
-    command_output_adapters::emit_ok(
+    output::emit_ok(
         output_mode,
         json!({
             "command":"atlas inspect-db",
@@ -391,18 +366,18 @@ fn inspect_db(db: PathBuf, sample_rows: usize, output_mode: OutputMode) -> Resul
     Ok(())
 }
 
-struct ExplainQueryArgs {
-    db: PathBuf,
-    gene_id: Option<String>,
-    name: Option<String>,
-    name_prefix: Option<String>,
-    biotype: Option<String>,
-    region: Option<String>,
-    limit: usize,
-    allow_full_scan: bool,
+pub(super) struct ExplainQueryArgs {
+    pub(super) db: PathBuf,
+    pub(super) gene_id: Option<String>,
+    pub(super) name: Option<String>,
+    pub(super) name_prefix: Option<String>,
+    pub(super) biotype: Option<String>,
+    pub(super) region: Option<String>,
+    pub(super) limit: usize,
+    pub(super) allow_full_scan: bool,
 }
 
-fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> Result<(), String> {
+pub(super) fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> Result<(), String> {
     let conn = Connection::open(args.db).map_err(|e| e.to_string())?;
     let region_filter = if let Some(raw) = args.region {
         let (seqid, span) = raw
@@ -438,7 +413,7 @@ fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> Result<(), 
     let cost_units = crate::query::estimate_work_units(&req);
     let lines = explain_query_plan(&conn, &req, &QueryLimits::default(), b"atlas-cli")
         .map_err(|e| e.to_string())?;
-    command_output_adapters::emit_ok(
+    output::emit_ok(
         output_mode,
         json!({
             "command":"atlas explain",
@@ -450,7 +425,7 @@ fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> Result<(), 
     Ok(())
 }
 
-fn smoke_dataset(
+pub(super) fn smoke_dataset(
     root: PathBuf,
     dataset: &str,
     golden_queries: PathBuf,
@@ -458,7 +433,7 @@ fn smoke_dataset(
     snapshot_out: PathBuf,
     output_mode: OutputMode,
 ) -> Result<(), String> {
-    let (release, species, assembly) = command_output_adapters::parse_dataset_id(dataset)?;
+    let (release, species, assembly) = output::parse_dataset_id(dataset)?;
     let id = DatasetId::new(&release, &species, &assembly).map_err(|e| e.to_string())?;
     let paths = crate::model::artifact_paths(&root, &id);
     let conn = Connection::open(&paths.sqlite).map_err(|e| e.to_string())?;
@@ -482,7 +457,7 @@ fn smoke_dataset(
         let body = q
             .get("query")
             .ok_or_else(|| "golden query missing query object".to_string())?;
-        let req = command_output_adapters::query_request_from_json(body)?;
+        let req = output::query_request_from_json(body)?;
         let resp = crate::query::query_genes(&conn, &req, &QueryLimits::default(), b"smoke")
             .map_err(|e| e.to_string())?;
         if resp.rows.is_empty() && name == "by_gene_id" {
@@ -504,7 +479,7 @@ fn smoke_dataset(
         .map_err(|e| e.to_string())?;
     }
 
-    command_output_adapters::emit_ok(
+    output::emit_ok(
         output_mode,
         json!({
             "command":"atlas smoke",

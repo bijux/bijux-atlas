@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use super::OutputMode;
 use crate::domain::canonical;
 use crate::query::{GeneFields, GeneFilter, GeneQueryRequest, RegionFilter};
-use crate::OutputMode;
 use serde_json::{json, Value};
 use std::path::PathBuf;
 
