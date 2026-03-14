@@ -323,7 +323,6 @@ mod tests {
             vec!["bijux-dev-atlas", "docs", "spine", "report"],
             vec!["bijux-dev-atlas", "docs", "merge", "validate"],
             vec!["bijux-dev-atlas", "docs", "check", "--allow-subprocess"],
-            vec!["bijux-dev-atlas", "docs", "verify-contracts"],
             vec!["bijux-dev-atlas", "docs", "validate"],
             vec!["bijux-dev-atlas", "docs", "clean", "--allow-write"],
             vec!["bijux-dev-atlas", "docs", "lint"],

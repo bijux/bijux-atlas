@@ -51,7 +51,7 @@ fn assert_no_pattern(root: &Path, pattern: &str, reason: &str) {
 #[test]
 fn domain_sources_do_not_import_cli_layer() {
     let root = crate_root().join("src");
-    for rel_root in ["contracts", "core/checks", "docs", "ops"] {
+    for rel_root in ["core/checks", "docs", "ops"] {
         assert_no_pattern(
             &root.join(rel_root),
             "crate::cli",

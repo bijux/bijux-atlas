@@ -66,7 +66,7 @@ fn command_and_ops_surface_snapshot_gates_exist() {
     ] {
         assert!(
             tests_root.join(required).exists(),
-            "missing surface contract gate test {}",
+            "missing required surface snapshot test {}",
             required
         );
     }

@@ -9,10 +9,10 @@ use std::collections::BTreeMap;
 fn sample_report() -> RunReport {
     let violation = Violation {
         schema_version: schema_version(),
-        code: ViolationId::parse("ops_contract_missing").expect("id"),
-        message: "missing contract".to_string(),
+        code: ViolationId::parse("ops_registry_missing").expect("id"),
+        message: "missing registry entry".to_string(),
         hint: Some("restore file".to_string()),
-        path: Some(ArtifactPath::parse("ops/CONTRACT.md").expect("path")),
+        path: Some(ArtifactPath::parse("ops/inventory/root-surface.json").expect("path")),
         line: Some(1),
         severity: Severity::Error,
     };
