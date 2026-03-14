@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schemas/governance/checks-output.schema.json",
+  "$id": "https://bijux.dev/schemas/ops/governance/repository/checks-output.schema.json",
   "title": "Checks Run Output",
   "type": "object",
   "required": ["schema_version", "summary", "results"],

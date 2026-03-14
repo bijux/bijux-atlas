@@ -164,7 +164,7 @@ fn test_control_plane_003_fs_mutation_boundary(ctx: &RunContext) -> TestResult {
         "crates/bijux-dev-atlas/src/runtime/",
         "crates/bijux-dev-atlas/src/runtime_entry_checks_surface.rs",
         "crates/bijux-dev-atlas/src/schema_support.rs",
-        "crates/bijux-dev-atlas/src/domains/tutorials/runtime/workspace.rs",
+        "crates/bijux-dev-atlas/src/domains/ops/tutorials/runtime/workspace.rs",
     ];
     let needles = [
         "fs::write(",

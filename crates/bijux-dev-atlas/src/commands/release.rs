@@ -104,7 +104,7 @@ fn collect_tarball_members(
     root: &Path,
     manifest: &serde_json::Value,
 ) -> Result<Vec<String>, String> {
-    let evidence_root = root.join("release/evidence");
+    let evidence_root = root.join("ops/release/evidence");
     let mut files = Vec::new();
     let mut stack = vec![evidence_root.clone()];
     while let Some(path) = stack.pop() {
@@ -378,7 +378,7 @@ fn read_publish_policy(root: &Path) -> Result<serde_json::Value, String> {
 }
 
 fn read_crates_release_spec(root: &Path) -> Result<toml::Value, String> {
-    let path = root.join("release/crates-v0.1.toml");
+    let path = root.join("ops/release/crates-v0.1.toml");
     toml::from_str(
         &fs::read_to_string(&path)
             .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
@@ -387,7 +387,7 @@ fn read_crates_release_spec(root: &Path) -> Result<toml::Value, String> {
 }
 
 fn read_images_release_spec(root: &Path) -> Result<toml::Value, String> {
-    let path = root.join("release/images-v0.1.toml");
+    let path = root.join("ops/release/images-v0.1.toml");
     toml::from_str(
         &fs::read_to_string(&path)
             .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
@@ -436,7 +436,7 @@ fn run_release_images_validate_labels(
     args: ReleaseImagesValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let policy = read_json(&root.join("docker/policy.json"))?;
+    let policy = read_json(&root.join("ops/docker/policy.json"))?;
     let required = policy
         .get("required_oci_labels")
         .and_then(serde_json::Value::as_array)
@@ -445,7 +445,7 @@ fn run_release_images_validate_labels(
         .into_iter()
         .filter_map(|row| row.as_str().map(|v| v.to_ascii_lowercase()))
         .collect::<Vec<_>>();
-    let dockerfile = root.join("docker/images/runtime/Dockerfile");
+    let dockerfile = root.join("ops/docker/images/runtime/Dockerfile");
     let labels = dockerfile_label_map(&dockerfile)?;
     let mut errors = Vec::<String>::new();
     for key in &required {
@@ -578,7 +578,7 @@ fn run_release_images_validate_base_digests(
     let lockfile = pinning
         .get("lockfile")
         .and_then(toml::Value::as_str)
-        .unwrap_or("docker/bases.lock");
+        .unwrap_or("ops/docker/bases.lock");
     let lock = read_json(&root.join(lockfile))?;
     let lock_rows = lock
         .get("images")
@@ -593,7 +593,7 @@ fn run_release_images_validate_base_digests(
             Some((image.to_string(), digest.to_string()))
         })
         .collect::<BTreeMap<_, _>>();
-    let dockerfile = root.join("docker/images/runtime/Dockerfile");
+    let dockerfile = root.join("ops/docker/images/runtime/Dockerfile");
     let mut rows = Vec::<serde_json::Value>::new();
     let mut errors = Vec::<String>::new();
     for from in dockerfile_from_rows(&dockerfile)? {
@@ -712,14 +712,14 @@ fn run_release_images_provenance_verify(
         .and_then(serde_json::Value::as_array)
         .cloned()
         .unwrap_or_default();
-    let push_policy = read_json(&root.join("docker/push-policy.json"))?;
+    let push_policy = read_json(&root.join("ops/docker/push-policy.json"))?;
     let require_provenance_bundle = push_policy
         .get("require_provenance_bundle")
         .and_then(serde_json::Value::as_bool)
         .unwrap_or(false);
     let mut errors = Vec::<String>::new();
     if required && !require_provenance_bundle {
-        errors.push("docker/push-policy.json must require provenance bundle".to_string());
+        errors.push("ops/docker/push-policy.json must require provenance bundle".to_string());
     }
     if schema_reference.is_empty() || !root.join(schema_reference).exists() {
         errors.push("provenance schema reference is missing or does not exist".to_string());
@@ -829,7 +829,7 @@ fn run_release_images_size_report(
         .get("runtime_image_max_bytes")
         .and_then(serde_json::Value::as_u64)
         .unwrap_or(450_000_000);
-    let binary = root.join("artifacts/target/release/atlas-server");
+    let binary = root.join("artifacts/target/ops/release/atlas-server");
     let binary_bytes = if binary.exists() {
         Some(
             fs::metadata(&binary)
@@ -900,7 +900,7 @@ fn run_release_images_runtime_hardening_verify(
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let policy = read_json(&root.join("configs/release/image-runtime-hardening-policy.json"))?;
-    let dockerfile = root.join("docker/images/runtime/Dockerfile");
+    let dockerfile = root.join("ops/docker/images/runtime/Dockerfile");
     let text = fs::read_to_string(&dockerfile)
         .map_err(|err| format!("failed to read {}: {err}", dockerfile.display()))?;
     let mut errors = Vec::<String>::new();
@@ -1047,9 +1047,9 @@ fn run_release_images_manifest_generate(
     }
     let digests_path = root.join("artifacts/docker-publish/image-digests.json");
     let digests = read_json(&digests_path)?;
-    let docker_manifest_path = root.join("docker/images.manifest.json");
+    let docker_manifest_path = root.join("ops/docker/images.manifest.json");
     let docker_manifest = read_json(&docker_manifest_path)?;
-    let out_path = root.join("release/images/image-artifact-manifest.v0.1.json");
+    let out_path = root.join("ops/release/images/image-artifact-manifest.v0.1.json");
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "release_image_artifact_manifest",
@@ -1077,7 +1077,7 @@ fn run_release_images_manifest_verify(
     args: ReleaseImagesManifestArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let manifest_path = root.join("release/images/image-artifact-manifest.v0.1.json");
+    let manifest_path = root.join("ops/release/images/image-artifact-manifest.v0.1.json");
     let manifest = read_json(&manifest_path)?;
     let mut errors = Vec::<String>::new();
     let image_digests = manifest
@@ -1107,11 +1107,11 @@ fn run_release_images_manifest_verify(
         let image_name = tag.split(':').next().unwrap_or_default();
         if !declared_set.contains(image_name) {
             errors.push(format!(
-                "image tag `{tag}` is not declared in docker/images.manifest.json"
+                "image tag `{tag}` is not declared in ops/docker/images.manifest.json"
             ));
         }
     }
-    let registry_path = root.join("release/image-digest-registry.json");
+    let registry_path = root.join("ops/release/image-digest-registry.json");
     if registry_path.exists() {
         let registry = read_json(&registry_path)?;
         let immutables = registry
@@ -1156,8 +1156,8 @@ fn run_release_images_release_notes_check(
     let version = args
         .version
         .unwrap_or_else(|| workspace_version(&root).unwrap_or_else(|_| "0.1.0".to_string()));
-    let template_path = root.join("release/notes/image-release-notes-template.md");
-    let notes_path = root.join(format!("release/notes/images/{version}.md"));
+    let template_path = root.join("ops/release/notes/image-release-notes-template.md");
+    let notes_path = root.join(format!("ops/release/notes/images/{version}.md"));
     let mut errors = Vec::<String>::new();
     if !template_path.exists() {
         errors.push("image release notes template is missing".to_string());
@@ -1216,7 +1216,7 @@ fn run_release_images_changelog_extract(
         .filter(|line| !line.is_empty())
         .map(ToOwned::to_owned)
         .collect::<Vec<_>>();
-    let out_path = root.join(format!("release/notes/images/changelog-{version}.md"));
+    let out_path = root.join(format!("ops/release/notes/images/changelog-{version}.md"));
     if args.allow_write {
         if let Some(parent) = out_path.parent() {
             fs::create_dir_all(parent)
@@ -1247,7 +1247,7 @@ fn run_release_images_changelog_extract(
 }
 
 fn read_ops_release_spec(root: &Path) -> Result<toml::Value, String> {
-    let path = root.join("release/ops-v0.1.toml");
+    let path = root.join("ops/release/ops-v0.1.toml");
     toml::from_str(
         &fs::read_to_string(&path)
             .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
@@ -1290,7 +1290,7 @@ fn run_release_images_integration_verify(
     } else {
         format!("{image_name}:v0.1.0")
     };
-    let evidence_path = root.join("release/evidence/image-ops-integration.json");
+    let evidence_path = root.join("ops/release/evidence/image-ops-integration.json");
     if args.allow_write {
         let payload = serde_json::json!({
             "schema_version": 1,
@@ -1327,7 +1327,7 @@ fn run_release_images_build_reproducibility_check(
     args: ReleaseImagesValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let dockerfile = root.join("docker/images/runtime/Dockerfile");
+    let dockerfile = root.join("ops/docker/images/runtime/Dockerfile");
     let text = fs::read_to_string(&dockerfile)
         .map_err(|err| format!("failed to read {}: {err}", dockerfile.display()))?;
     let mut errors = Vec::<String>::new();
@@ -1362,7 +1362,7 @@ fn run_release_images_locked_dependencies_verify(
     args: ReleaseImagesValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let dockerfile = root.join("docker/images/runtime/Dockerfile");
+    let dockerfile = root.join("ops/docker/images/runtime/Dockerfile");
     let text = fs::read_to_string(&dockerfile)
         .map_err(|err| format!("failed to read {}: {err}", dockerfile.display()))?;
     let mut errors = Vec::<String>::new();
@@ -1615,9 +1615,9 @@ fn run_release_ops_validate_package(args: ReleaseOpsPackageArgs) -> Result<(Stri
     if !chart_path.join("Chart.yaml").exists() {
         errors.push("chart Chart.yaml is missing".to_string());
     }
-    let evidence_marker = root.join("release/evidence/ops-install-evidence-bundle.json");
+    let evidence_marker = root.join("ops/release/evidence/ops-install-evidence-bundle.json");
     if !evidence_marker.exists() {
-        errors.push("ops install evidence bundle is missing: release/evidence/ops-install-evidence-bundle.json".to_string());
+        errors.push("ops install evidence bundle is missing: ops/release/evidence/ops-install-evidence-bundle.json".to_string());
     }
     let status = if errors.is_empty() { "ok" } else { "failed" };
     let payload = serde_json::json!({
@@ -1720,9 +1720,9 @@ fn run_release_ops_push(args: ReleaseOpsPushArgs) -> Result<(String, i32), Strin
         .and_then(|name| name.strip_suffix(".tgz"))
         .unwrap_or(workspace_ver.as_str())
         .to_string();
-    let digest_report_path = root.join("release/ops-chart-digest.json");
-    let release_manifest_path = root.join("release/ops-release-manifest.json");
-    let release_bundle_manifest_path = root.join("release/ops-release-bundle-manifest.json");
+    let digest_report_path = root.join("ops/release/ops-chart-digest.json");
+    let release_manifest_path = root.join("ops/release/ops-release-manifest.json");
+    let release_bundle_manifest_path = root.join("ops/release/ops-release-bundle-manifest.json");
     if args.common.allow_write {
         write_json(
             &digest_report_path,
@@ -1768,7 +1768,7 @@ fn run_release_ops_push(args: ReleaseOpsPushArgs) -> Result<(String, i32), Strin
                     "ops_control_plane": "bijux-dev-atlas"
                 },
                 "source_files": {
-                    "ops_release_spec": "release/ops-v0.1.toml",
+                    "ops_release_spec": "ops/release/ops-v0.1.toml",
                     "workspace_manifest": "Cargo.toml"
                 }
             }),
@@ -1803,7 +1803,7 @@ fn run_release_ops_digest_verify(args: ReleaseOpsPackageArgs) -> Result<(String,
         .unwrap_or("artifacts/release/ops/package");
     let out_dir = root.join(out_rel);
     let chart_pkg = find_ops_chart_tgz(&out_dir)?;
-    let digest_report_path = root.join("release/ops-chart-digest.json");
+    let digest_report_path = root.join("ops/release/ops-chart-digest.json");
     let mut errors = Vec::<String>::new();
     let mut actual_sha = None;
     if let Some(path) = chart_pkg.as_ref() {
@@ -1817,7 +1817,7 @@ fn run_release_ops_digest_verify(args: ReleaseOpsPackageArgs) -> Result<(String,
             .and_then(serde_json::Value::as_str)
             .map(ToOwned::to_owned)
     } else {
-        errors.push("missing release/ops-chart-digest.json".to_string());
+        errors.push("missing ops/release/ops-chart-digest.json".to_string());
         None
     };
     if actual_sha.is_some() && recorded_sha.is_some() && actual_sha != recorded_sha {
@@ -2209,7 +2209,7 @@ fn run_release_ops_profiles_verify(args: ReleaseOpsPackageArgs) -> Result<(Strin
 
 fn run_release_ops_lineage_generate(args: ReleaseOpsPackageArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let chart_digest_path = root.join("release/ops-chart-digest.json");
+    let chart_digest_path = root.join("ops/release/ops-chart-digest.json");
     let chart_digest_payload = read_json(&chart_digest_path)?;
     let chart_digest = chart_digest_payload
         .get("sha256")
@@ -2229,7 +2229,7 @@ fn run_release_ops_lineage_generate(args: ReleaseOpsPackageArgs) -> Result<(Stri
             .to_string()
     } else {
         let fallback =
-            root.join("release/evidence/ops-distribution/install-chart-from-oci/evidence.json");
+            root.join("ops/release/evidence/ops-distribution/install-chart-from-oci/evidence.json");
         if fallback.exists() {
             image_digest_source = repo_rel(&root, &fallback);
             read_json(&fallback)?
@@ -2283,24 +2283,24 @@ fn run_release_ops_lineage_generate(args: ReleaseOpsPackageArgs) -> Result<(Stri
 fn run_release_ops_provenance_verify(args: ReleaseOpsPackageArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let doc_path = root.join("docs/operations/ops-provenance.md");
-    let manifest_path = root.join("release/ops-release-manifest.json");
-    let digest_path = root.join("release/ops-chart-digest.json");
+    let manifest_path = root.join("ops/release/ops-release-manifest.json");
+    let digest_path = root.join("ops/release/ops-chart-digest.json");
     let mut errors = Vec::<String>::new();
     if !doc_path.exists() {
         errors.push("missing docs/operations/ops-provenance.md".to_string());
     }
     if !manifest_path.exists() {
-        errors.push("missing release/ops-release-manifest.json".to_string());
+        errors.push("missing ops/release/ops-release-manifest.json".to_string());
     }
     if !digest_path.exists() {
-        errors.push("missing release/ops-chart-digest.json".to_string());
+        errors.push("missing ops/release/ops-chart-digest.json".to_string());
     }
     if errors.is_empty() {
         let doc = fs::read_to_string(&doc_path)
             .map_err(|err| format!("failed to read {}: {err}", doc_path.display()))?;
         for required_ref in [
-            "release/ops-release-manifest.json",
-            "release/ops-chart-digest.json",
+            "ops/release/ops-release-manifest.json",
+            "ops/release/ops-chart-digest.json",
         ] {
             if !doc.contains(required_ref) {
                 errors.push(format!(
@@ -2344,7 +2344,7 @@ fn run_release_ops_scenario_evidence_verify(
     let mut rows = Vec::<serde_json::Value>::new();
     for scenario in scenarios {
         let evidence_path = root
-            .join("release/evidence/ops-distribution")
+            .join("ops/release/evidence/ops-distribution")
             .join(scenario)
             .join("evidence.json");
         if !evidence_path.exists() {
@@ -2585,8 +2585,8 @@ fn run_release_ops_compatibility_matrix(
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let workspace_ver = workspace_version(&root).unwrap_or_else(|_| "0.1.0".to_string());
-    let ops_manifest_path = root.join("release/ops-release-manifest.json");
-    let bundle_manifest_path = root.join("release/ops-release-bundle-manifest.json");
+    let ops_manifest_path = root.join("ops/release/ops-release-manifest.json");
+    let bundle_manifest_path = root.join("ops/release/ops-release-bundle-manifest.json");
     let chart_ref_default = "oci://ghcr.io/bijux/charts/bijux-atlas".to_string();
 
     let ops_manifest: serde_json::Value = fs::read_to_string(&ops_manifest_path)
@@ -2655,7 +2655,7 @@ fn run_release_ops_compatibility_matrix(
 fn run_release_checksums_generate(args: ReleaseCheckArgs) -> Result<(String, i32), String> {
     let result = run_release_sign(ReleaseSignArgs {
         repo_root: args.repo_root,
-        evidence: std::path::PathBuf::from("release/evidence"),
+        evidence: std::path::PathBuf::from("ops/release/evidence"),
         format: FormatArg::Json,
         out: None,
     })?;
@@ -2665,7 +2665,7 @@ fn run_release_checksums_generate(args: ReleaseCheckArgs) -> Result<(String, i32
     let checksums = payload
         .get("checksums_path")
         .cloned()
-        .unwrap_or(serde_json::json!("release/signing/checksums.json"));
+        .unwrap_or(serde_json::json!("ops/release/signing/checksums.json"));
     let status = payload
         .get("status")
         .and_then(serde_json::Value::as_str)
@@ -2682,7 +2682,7 @@ fn run_release_checksums_generate(args: ReleaseCheckArgs) -> Result<(String, i32
 
 fn run_release_checksums_verify(args: ReleaseCheckArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let checksums_path = root.join("release/signing/checksums.json");
+    let checksums_path = root.join("ops/release/signing/checksums.json");
     let checksums = read_json(&checksums_path)?;
     let rows = checksums
         .get("checksums")
@@ -2990,7 +2990,7 @@ fn run_release_api_surface_snapshot(
     for crate_name in selected {
         let entries = collect_api_surface_entries(&root, &crate_name)?;
         let current_path = root
-            .join("release/api-surface/current")
+            .join("ops/release/api-surface/current")
             .join(format!("{crate_name}.json"));
         if let Some(parent) = current_path.parent() {
             fs::create_dir_all(parent)
@@ -3010,7 +3010,7 @@ fn run_release_api_surface_snapshot(
         });
         if args.write_golden {
             let golden_path = root
-                .join("release/api-surface/golden")
+                .join("ops/release/api-surface/golden")
                 .join(format!("{crate_name}.json"));
             if let Some(parent) = golden_path.parent() {
                 fs::create_dir_all(parent)
@@ -3063,7 +3063,7 @@ fn run_release_semver_check(args: ReleaseSemverCheckArgs) -> Result<(String, i32
     for crate_name in publishable {
         let current = collect_api_surface_entries(&root, &crate_name)?;
         let golden_path = root
-            .join("release/api-surface/golden")
+            .join("ops/release/api-surface/golden")
             .join(format!("{crate_name}.json"));
         if !golden_path.exists() {
             errors.push(format!(
@@ -3909,10 +3909,10 @@ fn run_release_sign(args: ReleaseSignArgs) -> Result<(String, i32), String> {
     } else {
         root.join(args.evidence)
     };
-    let policy_path = root.join("release/signing/policy.yaml");
-    let checksums_path = root.join("release/signing/checksums.json");
-    let sign_report_path = root.join("release/signing/release-sign.json");
-    let provenance_path = root.join("release/provenance.json");
+    let policy_path = root.join("ops/release/signing/policy.yaml");
+    let checksums_path = root.join("ops/release/signing/checksums.json");
+    let sign_report_path = root.join("ops/release/signing/release-sign.json");
+    let provenance_path = root.join("ops/release/provenance.json");
     let manifest_path = evidence_dir.join("manifest.json");
     let identity_path = evidence_dir.join("identity.json");
 
@@ -3958,7 +3958,7 @@ fn run_release_sign(args: ReleaseSignArgs) -> Result<(String, i32), String> {
     let checksums_rel = repo_rel(&root, &checksums_path);
     let provenance_rel = repo_rel(&root, &provenance_path);
     let sign_report_rel = repo_rel(&root, &sign_report_path);
-    let verify_report_path = root.join("release/signing/release-verify.json");
+    let verify_report_path = root.join("ops/release/signing/release-verify.json");
     let provisional_sign_report = serde_json::json!({
         "schema_version": 1,
         "status": "ok",
@@ -3998,7 +3998,7 @@ fn run_release_sign(args: ReleaseSignArgs) -> Result<(String, i32), String> {
     signature_artifacts.dedup();
     manifest["signature_artifacts"] = serde_json::json!(signature_artifacts);
     write_json(&manifest_path, &manifest)?;
-    let tarball_path = root.join("release/evidence/bundle.tar");
+    let tarball_path = root.join("ops/release/evidence/bundle.tar");
     let tar_members = collect_tarball_members(&root, &manifest)?;
     build_normalized_tarball(&root, &tarball_path, &tar_members)?;
     manifest["evidence_tarball"] = serde_json::json!({
@@ -4104,18 +4104,18 @@ fn run_release_verify(args: ReleaseVerifyArgs) -> Result<(String, i32), String> 
     } else {
         root.join(args.evidence)
     };
-    let checksums_path = root.join("release/signing/checksums.json");
-    let sign_report_path = root.join("release/signing/release-sign.json");
-    let verify_report_path = root.join("release/signing/release-verify.json");
-    let provenance_path = root.join("release/provenance.json");
-    let policy_path = root.join("release/signing/policy.yaml");
+    let checksums_path = root.join("ops/release/signing/checksums.json");
+    let sign_report_path = root.join("ops/release/signing/release-sign.json");
+    let verify_report_path = root.join("ops/release/signing/release-verify.json");
+    let provenance_path = root.join("ops/release/provenance.json");
+    let policy_path = root.join("ops/release/signing/policy.yaml");
 
     let checksums = read_json(&checksums_path)?;
     let sign_report = read_json(&sign_report_path)?;
     let provenance = read_json(&provenance_path)?;
     let policy = read_yaml(&policy_path)?;
-    let manifest = read_json(&root.join("release/evidence/manifest.json"))?;
-    let manifest_schema = read_json(&root.join("release/evidence/manifest.schema.json"))?;
+    let manifest = read_json(&root.join("ops/release/evidence/manifest.json"))?;
+    let manifest_schema = read_json(&root.join("ops/release/evidence/manifest.schema.json"))?;
 
     let checksum_items = checksums
         .get("items")
@@ -4167,9 +4167,9 @@ fn run_release_verify(args: ReleaseVerifyArgs) -> Result<(String, i32), String> 
         .cloned()
         .unwrap_or_default();
     let expected_signature_artifacts = [
-        "release/signing/checksums.json",
-        "release/signing/release-sign.json",
-        "release/provenance.json",
+        "ops/release/signing/checksums.json",
+        "ops/release/signing/release-sign.json",
+        "ops/release/provenance.json",
     ]
     .into_iter()
     .collect::<BTreeSet<_>>();
@@ -4219,10 +4219,10 @@ fn run_release_verify(args: ReleaseVerifyArgs) -> Result<(String, i32), String> 
         .filter(|path| original_members.get(path) != rebuilt_members.get(path))
         .collect::<Vec<_>>();
     let allowed_repro_differences = [
-        "release/evidence/manifest.json",
-        "release/signing/checksums.json",
-        "release/signing/release-sign.json",
-        "release/signing/release-verify.json",
+        "ops/release/evidence/manifest.json",
+        "ops/release/signing/checksums.json",
+        "ops/release/signing/release-sign.json",
+        "ops/release/signing/release-verify.json",
     ]
     .into_iter()
     .collect::<BTreeSet<_>>();
@@ -4358,13 +4358,13 @@ fn run_release_verify(args: ReleaseVerifyArgs) -> Result<(String, i32), String> 
 }
 
 fn classify_release_diff(path: &str) -> &'static str {
-    if path.starts_with("release/signing/") || path == "release/provenance.json" {
+    if path.starts_with("ops/release/signing/") || path == "ops/release/provenance.json" {
         "signing"
-    } else if path.starts_with("release/evidence/sboms/") {
+    } else if path.starts_with("ops/release/evidence/sboms/") {
         "sbom"
-    } else if path.starts_with("release/evidence/packages/") {
+    } else if path.starts_with("ops/release/evidence/packages/") {
         "artifact"
-    } else if path.starts_with("release/evidence/") {
+    } else if path.starts_with("ops/release/evidence/") {
         "evidence"
     } else {
         "supporting"
@@ -4446,17 +4446,17 @@ fn run_release_packet(args: ReleasePacketArgs) -> Result<(String, i32), String> 
     };
     let manifest_path = evidence_dir.join("manifest.json");
     let manifest = read_json(&manifest_path)?;
-    let packet_dir = root.join("release/packet");
+    let packet_dir = root.join("ops/release/packet");
     let packet_path = packet_dir.join("packet.json");
 
     let required = [
-        "release/evidence/manifest.json",
-        "release/evidence/identity.json",
-        "release/evidence/bundle.tar",
-        "release/signing/checksums.json",
-        "release/signing/release-sign.json",
-        "release/signing/release-verify.json",
-        "release/provenance.json",
+        "ops/release/evidence/manifest.json",
+        "ops/release/evidence/identity.json",
+        "ops/release/evidence/bundle.tar",
+        "ops/release/signing/checksums.json",
+        "ops/release/signing/release-sign.json",
+        "ops/release/signing/release-verify.json",
+        "ops/release/provenance.json",
     ];
 
     let mut selected = BTreeSet::new();
@@ -4512,7 +4512,7 @@ fn run_release_packet(args: ReleasePacketArgs) -> Result<(String, i32), String> 
         && packet_items.iter().any(|item| {
             item["path"]
                 .as_str()
-                .is_some_and(|path| path.starts_with("release/evidence/sboms/"))
+                .is_some_and(|path| path.starts_with("ops/release/evidence/sboms/"))
         });
 
     let packet = serde_json::json!({
@@ -4595,7 +4595,7 @@ fn release_bundle_hash(members: &[serde_json::Value]) -> String {
 }
 
 fn collect_manifest_source(root: &Path) -> Result<serde_json::Value, String> {
-    read_json(&root.join("release/evidence/manifest.json"))
+    read_json(&root.join("ops/release/evidence/manifest.json"))
 }
 
 fn collect_toolchain_versions(root: &Path) -> serde_json::Value {
@@ -4941,7 +4941,7 @@ fn run_release_bundle_build(args: ReleaseBundleBuildArgs) -> Result<(String, i32
     write_json(&ops_profile_path, &ops_profiles)?;
     copied.push(serde_json::json!({"path":"provenance/ops-profile-evidence.json","sha256":sha256_file(&ops_profile_path)?,"size_bytes":fs::metadata(&ops_profile_path).map_err(|e| e.to_string())?.len()}));
 
-    let provenance_src = root.join("release/provenance.json");
+    let provenance_src = root.join("ops/release/provenance.json");
     if provenance_src.exists() {
         let dst = provenance_dir.join("provenance.json");
         fs::copy(&provenance_src, &dst)
@@ -5493,9 +5493,9 @@ fn generate_release_readiness_report(
     let required = [
         release_dir.join("manifest.json"),
         release_dir.join("bundle.sha256"),
-        root.join("release/evidence/bundle.tar"),
-        root.join("release/signing/checksums.json"),
-        root.join("release/provenance.json"),
+        root.join("ops/release/evidence/bundle.tar"),
+        root.join("ops/release/signing/checksums.json"),
+        root.join("ops/release/provenance.json"),
     ];
     let mut missing_required = Vec::<String>::new();
     for path in required {
@@ -5504,8 +5504,8 @@ fn generate_release_readiness_report(
         }
     }
     let optional = [
-        root.join("release/ops-release-manifest.json"),
-        root.join("release/ops-chart-digest.json"),
+        root.join("ops/release/ops-release-manifest.json"),
+        root.join("ops/release/ops-chart-digest.json"),
         root.join("ops/report/generated/ops-release-readiness-summary.json"),
     ];
     let mut optional_rows = optional

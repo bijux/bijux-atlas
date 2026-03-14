@@ -9,9 +9,9 @@
 
 ## Required files
 
-- `release/evidence/manifest.json`
-- `release/evidence/identity.json`
-- `release/evidence/bundle.tar`
+- `ops/release/evidence/manifest.json`
+- `ops/release/evidence/identity.json`
+- `ops/release/evidence/bundle.tar`
 - `configs/datasets/manifest.yaml`
 - `artifacts/ops/<run_id>/reports/ops-simulation-summary.json`
 - `artifacts/ops/<run_id>/reports/ops-lifecycle-summary.json`

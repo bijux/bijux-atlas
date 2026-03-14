@@ -15,7 +15,7 @@ related:
 
 # Image security update policy
 
-- Base image digests are pinned and reviewed through `docker/bases.lock`.
+- Base image digests are pinned and reviewed through `ops/docker/bases.lock`.
 - HIGH and CRITICAL vulnerabilities require explicit allowlist justification under governed Docker policy checks.
 - Release publication requires SBOM and vulnerability scan artifacts.
 - Security updates must preserve reproducible build metadata and provenance artifacts.

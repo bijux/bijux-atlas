@@ -9,7 +9,7 @@ last_reviewed: 2026-03-05
 
 # Reviewer Quick Path
 
-1. Open [Real Data Runs](/tutorials/real-data/).
+1. Open [Real Data Runs](/ops/tutorials/real-data/).
 2. Confirm the generated table under [/_generated/real-data-runs-table/](/_generated/real-data-runs-table/).
 3. Review evidence summary at [/_internal/generated/real-data-runs-overview/](/_internal/generated/real-data-runs-overview/).
 4. Spot-check two run pages in `tiny` and `large-sample` tiers.

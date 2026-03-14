@@ -1024,7 +1024,7 @@ fn parse_string_list(value: &serde_yaml::Value, field: &str) -> Vec<String> {
 
 fn run_security_threats_list(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let threats = read_yaml(&root.join("security/threat-model/threats.yaml"))?;
+    let threats = read_yaml(&root.join("ops/security/threat-model/threats.yaml"))?;
     let rows = parse_threat_rows(&threats);
 
     let payload = serde_json::json!({
@@ -1048,9 +1048,9 @@ fn run_security_threats_list(args: SecurityValidateArgs) -> Result<(String, i32)
 
 fn run_security_threats_explain(args: SecurityThreatExplainArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let threats = read_yaml(&root.join("security/threat-model/threats.yaml"))?;
-    let taxonomy = read_yaml(&root.join("security/threat-model/classification-taxonomy.yaml"))?;
-    let registry = read_yaml(&root.join("security/threat-model/threat-registry.yaml"))?;
+    let threats = read_yaml(&root.join("ops/security/threat-model/threats.yaml"))?;
+    let taxonomy = read_yaml(&root.join("ops/security/threat-model/classification-taxonomy.yaml"))?;
+    let registry = read_yaml(&root.join("ops/security/threat-model/threat-registry.yaml"))?;
     let rows = parse_threat_rows(&threats);
 
     let selected = if let Some(id) = args.threat_id {
@@ -1086,11 +1086,11 @@ fn run_security_threats_explain(args: SecurityThreatExplainArgs) -> Result<(Stri
 
 fn run_security_threats_verify(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let threats = read_yaml(&root.join("security/threat-model/threats.yaml"))?;
-    let mitigations = read_yaml(&root.join("security/threat-model/mitigations.yaml"))?;
-    let assets = read_yaml(&root.join("security/threat-model/assets.yaml"))?;
-    let taxonomy = read_yaml(&root.join("security/threat-model/classification-taxonomy.yaml"))?;
-    let registry = read_yaml(&root.join("security/threat-model/threat-registry.yaml"))?;
+    let threats = read_yaml(&root.join("ops/security/threat-model/threats.yaml"))?;
+    let mitigations = read_yaml(&root.join("ops/security/threat-model/mitigations.yaml"))?;
+    let assets = read_yaml(&root.join("ops/security/threat-model/assets.yaml"))?;
+    let taxonomy = read_yaml(&root.join("ops/security/threat-model/classification-taxonomy.yaml"))?;
+    let registry = read_yaml(&root.join("ops/security/threat-model/threat-registry.yaml"))?;
 
     let rows = parse_threat_rows(&threats);
     let severity_levels = parse_string_list(&taxonomy, "severity_levels");
@@ -1291,10 +1291,10 @@ fn scan_file_matches(
 
 fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let assets_path = root.join("security/threat-model/assets.yaml");
-    let threats_path = root.join("security/threat-model/threats.yaml");
-    let mitigations_path = root.join("security/threat-model/mitigations.yaml");
-    let controls_path = root.join("security/compliance/controls.yaml");
+    let assets_path = root.join("ops/security/threat-model/assets.yaml");
+    let threats_path = root.join("ops/security/threat-model/threats.yaml");
+    let mitigations_path = root.join("ops/security/threat-model/mitigations.yaml");
+    let controls_path = root.join("ops/security/compliance/controls.yaml");
     let auth_model_path = root.join("configs/security/auth-model.yaml");
     let principals_path = root.join("configs/security/principals.yaml");
     let actions_path = root.join("configs/security/actions.yaml");
@@ -1334,7 +1334,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let redaction_path = root.join("configs/security/redaction.json");
     let forbidden_patterns_path = root.join("configs/security/forbidden-patterns.json");
     let dependency_policy_path = root.join("configs/security/dependency-source-policy.json");
-    let signing_policy_path = root.join("release/signing/policy.yaml");
+    let signing_policy_path = root.join("ops/release/signing/policy.yaml");
 
     ensure_json(&asset_schema_path)?;
     ensure_json(&threats_schema_path)?;
@@ -1373,7 +1373,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let forbidden_patterns = read_json(&forbidden_patterns_path)?;
     let dependency_policy = read_json(&dependency_policy_path)?;
     let signing_policy = read_yaml(&signing_policy_path)?;
-    let release_evidence_policy = read_json(&root.join("release/evidence/policy.json"))?;
+    let release_evidence_policy = read_json(&root.join("ops/release/evidence/policy.json"))?;
     let retention = read_yaml(&retention_path)?;
 
     let asset_rows = assets
@@ -1761,7 +1761,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         )
     })?;
     let obs_log_inv_001 = unclassified_log_fields.is_empty();
-    let release_manifest_path = root.join("release/evidence/manifest.json");
+    let release_manifest_path = root.join("ops/release/evidence/manifest.json");
     let release_manifest = if release_manifest_path.exists() {
         Some(read_json(&release_manifest_path)?)
     } else {
@@ -1996,7 +1996,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         .filter(|key| !redaction_keys.contains(**key))
         .map(|key| (*key).to_string())
         .collect::<Vec<_>>();
-    let default_scan_dir = root.join("release/evidence");
+    let default_scan_dir = root.join("ops/release/evidence");
     let forbidden_literals = forbidden_patterns
         .get("patterns")
         .and_then(serde_json::Value::as_array)
@@ -2372,11 +2372,11 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let bases_lock_path = image_policy
         .get("bases_lock")
         .and_then(serde_json::Value::as_str)
-        .unwrap_or("docker/bases.lock");
+        .unwrap_or("ops/docker/bases.lock");
     let evidence_manifest_path = image_policy
         .get("evidence_manifest")
         .and_then(serde_json::Value::as_str)
-        .unwrap_or("release/evidence/manifest.json");
+        .unwrap_or("ops/release/evidence/manifest.json");
     let image_inventory = read_json(&root.join(image_inventory_path))?;
     let bases_lock = read_json(&root.join(bases_lock_path))?;
     let evidence_manifest = read_json(&root.join(evidence_manifest_path))?;
@@ -2993,8 +2993,8 @@ fn run_security_compliance_validate(args: SecurityValidateArgs) -> Result<(Strin
     let matrix_schema_path = root.join("configs/contracts/security/compliance-matrix.schema.json");
     ensure_json(&controls_schema_path)?;
     ensure_json(&matrix_schema_path)?;
-    let controls = read_yaml(&root.join("security/compliance/controls.yaml"))?;
-    let matrix = read_yaml(&root.join("security/compliance/matrix.yaml"))?;
+    let controls = read_yaml(&root.join("ops/security/compliance/controls.yaml"))?;
+    let matrix = read_yaml(&root.join("ops/security/compliance/matrix.yaml"))?;
     let control_rows = controls
         .get("controls")
         .and_then(serde_yaml::Value::as_sequence)
@@ -3370,7 +3370,7 @@ threat_ids: [SEC-THREAT-RUNTIME-SPOOF]
         write_minimal_threat_model_files(temp.path());
         fs::write(
             temp.path()
-                .join("security/threat-model/threat-registry.yaml"),
+                .join("ops/security/threat-model/threat-registry.yaml"),
             r#"schema_version: 1
 registry_name: atlas_security_threats
 threat_ids: []

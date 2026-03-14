@@ -13,9 +13,9 @@ Related ops contracts: `OPS-ROOT-023`, `REL-PROV-001`.
 ## Trust Root
 
 - `configs/rust/toolchain.json` is the canonical toolchain inventory for governed release generation.
-- `release/signing/policy.yaml` is the canonical statement of which artifacts must be covered.
-- `release/signing/checksums.json` is the integrity ledger consumers compare against the published files.
-- `release/provenance.json` binds the release bundle to one git SHA and one governance version.
+- `ops/release/signing/policy.yaml` is the canonical statement of which artifacts must be covered.
+- `ops/release/signing/checksums.json` is the integrity ledger consumers compare against the published files.
+- `ops/release/provenance.json` binds the release bundle to one git SHA and one governance version.
 
 ## Deterministic Metadata
 

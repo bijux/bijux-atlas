@@ -1,0 +1,19 @@
+{
+  "chart": {
+    "name": "bijux-atlas",
+    "reference": "oci://ghcr.io/bijux/charts/bijux-atlas",
+    "sha256": "9f4d29feaae55f9b6cef4a65043e429bd110d8725637f20c57088e838bbac09e",
+    "version": "0.1.0"
+  },
+  "crates": {
+    "ops_control_plane": "bijux-dev-atlas",
+    "workspace": "0.1.0"
+  },
+  "kind": "ops_release_bundle_manifest",
+  "schema_version": 1,
+  "source_files": {
+    "ops_release_spec": "ops/release/ops-v0.1.toml",
+    "workspace_manifest": "Cargo.toml"
+  },
+  "workspace_version": "0.1.0"
+}

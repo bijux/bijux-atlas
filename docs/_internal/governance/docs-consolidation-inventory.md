@@ -6,7 +6,7 @@ Inventory classification vocabulary:
 - `supporting`: valid companion page that does not duplicate canonical narrative.
 - `redundant`: duplicate page retained only for compatibility redirect behavior.
 - `obsolete`: replaced page that should only exist as a redirect source.
-- `internal-only`: governance/internal page not intended as public reader flow.
+- `internal-only`: ops/governance/repository/internal page not intended as public reader flow.
 
 Source of truth: `docs/_internal/governance/docs-consolidation-inventory.json`
 

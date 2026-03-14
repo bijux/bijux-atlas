@@ -17,7 +17,7 @@ related:
 
 Use these evidence entrypoints first:
 
-- [Checks and contracts](../_internal/governance/checks-and-contracts.md)
+- [Checks and contracts](../_internal/ops/governance/repository/checks-and-contracts.md)
 - [Why this structure exists](../architecture/why-this-structure-exists.md)
 - [How this repo enforces itself](how-this-repo-enforces-itself.md)
 - [Production-ready boundaries](production-ready-boundaries.md)

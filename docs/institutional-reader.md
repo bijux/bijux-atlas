@@ -16,7 +16,7 @@
 - Generated documentation diagnostics: [Docs health dashboard](_internal/generated/docs-health-dashboard.md)
 - Supply-chain and release controls: [Operations supply-chain policies](operations/supply-chain-policies.md)
 - Exception posture and inventory: [Governance exceptions](operations/governance-exceptions.md)
-- Compatibility posture: [_internal governance compatibility process](_internal/governance/compatibility-and-deprecation-process.md)
+- Compatibility posture: [_internal governance compatibility process](_internal/ops/governance/repository/compatibility-and-deprecation-process.md)
 
 ## What This Page Is For
 

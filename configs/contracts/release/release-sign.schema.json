@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/release/release-sign.schema.json",
+  "$id": "https://bijux.dev/schema/ops/release/release-sign.schema.json",
   "title": "Release Sign Report",
   "type": "object",
   "additionalProperties": false,

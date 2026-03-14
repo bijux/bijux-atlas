@@ -544,7 +544,7 @@ fn test_images_have_smoke_manifest(ctx: &RunContext) -> TestResult {
             violations.push(violation(
                 "DOCKER-033",
                 "docker.images.smoke_manifest",
-                Some("docker/images.manifest.json".to_string()),
+                Some("ops/docker/images.manifest.json".to_string()),
                 Some(1),
                 "each image manifest entry must include name, dockerfile, and non-empty smoke command",
                 Some(name),
@@ -562,7 +562,7 @@ fn test_images_have_smoke_manifest(ctx: &RunContext) -> TestResult {
             violations.push(violation(
                 "DOCKER-033",
                 "docker.images.smoke_manifest",
-                Some("docker/images.manifest.json".to_string()),
+                Some("ops/docker/images.manifest.json".to_string()),
                 Some(1),
                 "each Dockerfile must have a smoke manifest entry",
                 Some(rel),
@@ -577,27 +577,27 @@ fn test_images_have_smoke_manifest(ctx: &RunContext) -> TestResult {
 }
 
 fn test_images_manifest_schema_valid(ctx: &RunContext) -> TestResult {
-    let path = ctx.repo_root.join("docker/images.manifest.json");
+    let path = ctx.repo_root.join("ops/docker/images.manifest.json");
     let manifest = match load_images_manifest(&ctx.repo_root) {
         Ok(v) => v,
-        Err(e) => return TestResult::Fail(vec![violation("DOCKER-034", "docker.images.manifest_schema_valid", Some("docker/images.manifest.json".to_string()), Some(1), &e, None)]),
+        Err(e) => return TestResult::Fail(vec![violation("DOCKER-034", "docker.images.manifest_schema_valid", Some("ops/docker/images.manifest.json".to_string()), Some(1), &e, None)]),
     };
     let mut violations = Vec::new();
     if manifest.get("schema_version").and_then(|v| v.as_u64()) != Some(1) {
-        violations.push(violation("DOCKER-034", "docker.images.manifest_schema_valid", Some("docker/images.manifest.json".to_string()), Some(1), "images manifest must set schema_version=1", None));
+        violations.push(violation("DOCKER-034", "docker.images.manifest_schema_valid", Some("ops/docker/images.manifest.json".to_string()), Some(1), "images manifest must set schema_version=1", None));
     }
     let images = manifest.get("images").and_then(|v| v.as_array()).cloned().unwrap_or_default();
     if images.is_empty() {
-        violations.push(violation("DOCKER-034", "docker.images.manifest_schema_valid", Some("docker/images.manifest.json".to_string()), Some(1), "images manifest must declare at least one image", None));
+        violations.push(violation("DOCKER-034", "docker.images.manifest_schema_valid", Some("ops/docker/images.manifest.json".to_string()), Some(1), "images manifest must declare at least one image", None));
     }
     for image in images {
         for field in ["name", "dockerfile", "context"] {
             if image.get(field).and_then(|v| v.as_str()).is_none() {
-                violations.push(violation("DOCKER-034", "docker.images.manifest_schema_valid", Some(path.display().to_string().replace('\\', "/").split("/docker/").last().map(|v| format!("docker/{v}")).unwrap_or_else(|| "docker/images.manifest.json".to_string())), Some(1), "manifest image entry is missing a required field", Some(field.to_string())));
+                violations.push(violation("DOCKER-034", "docker.images.manifest_schema_valid", Some(path.display().to_string().replace('\\', "/").split("/ops/docker/").last().map(|v| format!("ops/docker/{v}")).unwrap_or_else(|| "ops/docker/images.manifest.json".to_string())), Some(1), "manifest image entry is missing a required field", Some(field.to_string())));
             }
         }
         if image.get("smoke").and_then(|v| v.as_array()).is_none() {
-            violations.push(violation("DOCKER-034", "docker.images.manifest_schema_valid", Some("docker/images.manifest.json".to_string()), Some(1), "manifest image entry must declare smoke as an array", None));
+            violations.push(violation("DOCKER-034", "docker.images.manifest_schema_valid", Some("ops/docker/images.manifest.json".to_string()), Some(1), "manifest image entry must declare smoke as an array", None));
         }
     }
     if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
@@ -622,22 +622,22 @@ fn test_images_manifest_matches_dockerfiles(ctx: &RunContext) -> TestResult {
     let mut violations = Vec::new();
     for rel in &listed {
         if !ctx.repo_root.join(rel).exists() {
-            violations.push(violation("DOCKER-035", "docker.images.manifest_matches_dockerfiles", Some("docker/images.manifest.json".to_string()), Some(1), "manifest references a missing Dockerfile", Some(rel.clone())));
+            violations.push(violation("DOCKER-035", "docker.images.manifest_matches_dockerfiles", Some("ops/docker/images.manifest.json".to_string()), Some(1), "manifest references a missing Dockerfile", Some(rel.clone())));
         }
     }
     for rel in &discovered {
         if !listed.contains(rel) {
-            violations.push(violation("DOCKER-035", "docker.images.manifest_matches_dockerfiles", Some("docker/images.manifest.json".to_string()), Some(1), "manifest is missing a Dockerfile entry", Some(rel.clone())));
+            violations.push(violation("DOCKER-035", "docker.images.manifest_matches_dockerfiles", Some("ops/docker/images.manifest.json".to_string()), Some(1), "manifest is missing a Dockerfile entry", Some(rel.clone())));
         }
     }
     if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
 }
 
 fn test_build_matrix_defined(ctx: &RunContext) -> TestResult {
-    let path = ctx.repo_root.join("docker/build-matrix.json");
+    let path = ctx.repo_root.join("ops/docker/build-matrix.json");
     let payload = match load_json(&path) {
         Ok(v) => v,
-        Err(e) => return TestResult::Fail(vec![violation("DOCKER-036", "docker.build_matrix.defined", Some("docker/build-matrix.json".to_string()), Some(1), &e, None)]),
+        Err(e) => return TestResult::Fail(vec![violation("DOCKER-036", "docker.build_matrix.defined", Some("ops/docker/build-matrix.json".to_string()), Some(1), &e, None)]),
     };
     let manifest = match load_images_manifest(&ctx.repo_root) {
         Ok(v) => v,
@@ -648,23 +648,23 @@ fn test_build_matrix_defined(ctx: &RunContext) -> TestResult {
     let mut matrix_names = BTreeSet::new();
     let mut violations = Vec::new();
     if payload.get("schema_version").and_then(|v| v.as_u64()) != Some(1) {
-        violations.push(violation("DOCKER-036", "docker.build_matrix.defined", Some("docker/build-matrix.json".to_string()), Some(1), "build matrix must set schema_version=1", None));
+        violations.push(violation("DOCKER-036", "docker.build_matrix.defined", Some("ops/docker/build-matrix.json".to_string()), Some(1), "build matrix must set schema_version=1", None));
     }
     for row in rows {
         let Some(name) = row.get("name").and_then(|v| v.as_str()) else {
-            violations.push(violation("DOCKER-036", "docker.build_matrix.defined", Some("docker/build-matrix.json".to_string()), Some(1), "build matrix entry missing name", None));
+            violations.push(violation("DOCKER-036", "docker.build_matrix.defined", Some("ops/docker/build-matrix.json".to_string()), Some(1), "build matrix entry missing name", None));
             continue;
         };
         matrix_names.insert(name.to_string());
         for field in ["platforms", "tags", "outputs"] {
             if row.get(field).and_then(|v| v.as_array()).is_none() {
-                violations.push(violation("DOCKER-036", "docker.build_matrix.defined", Some("docker/build-matrix.json".to_string()), Some(1), "build matrix entry missing required array field", Some(format!("{name}:{field}"))));
+                violations.push(violation("DOCKER-036", "docker.build_matrix.defined", Some("ops/docker/build-matrix.json".to_string()), Some(1), "build matrix entry missing required array field", Some(format!("{name}:{field}"))));
             }
         }
     }
     for name in manifest_names {
         if !matrix_names.contains(&name) {
-            violations.push(violation("DOCKER-036", "docker.build_matrix.defined", Some("docker/build-matrix.json".to_string()), Some(1), "build matrix must cover every manifest image", Some(name)));
+            violations.push(violation("DOCKER-036", "docker.build_matrix.defined", Some("ops/docker/build-matrix.json".to_string()), Some(1), "build matrix must cover every manifest image", Some(name)));
         }
     }
     if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }

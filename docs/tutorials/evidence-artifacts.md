@@ -14,6 +14,6 @@ tags:
 
 Artifacts:
 
-- `tutorials/evidence/tutorial-evidence-summary.json`
-- `tutorials/evidence/tutorial-usage-metrics-example.json`
-- `tutorials/evidence/dataset-packages/*.tar.gz`
+- `ops/tutorials/evidence/tutorial-evidence-summary.json`
+- `ops/tutorials/evidence/tutorial-usage-metrics-example.json`
+- `ops/tutorials/evidence/dataset-packages/*.tar.gz`

@@ -1,0 +1,11 @@
+{
+  "checksum_list_path": "ops/release/signing/checksums.json",
+  "evidence_manifest_path": "ops/release/evidence/manifest.json",
+  "generated_by": "bijux-dev-atlas release sign",
+  "git_sha": "d51b02367dda8f5a399591dcc092e77e1b9f7712",
+  "governance_version": "main@d51b02367dda8f5a399591dcc092e77e1b9f7712",
+  "release_id": "ops_run-d51b02367dda",
+  "schema_version": 1,
+  "signing_policy_path": "ops/release/signing/policy.yaml",
+  "toolchain_inventory": "configs/rust/toolchain.json"
+}

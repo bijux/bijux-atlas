@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "policy_id": "docker-airgap-build",
+  "owner": "bijux-atlas-platform",
+  "description": "Define the allowed network, artifact, and base-image expectations for airgap-capable Docker builds.",
+  "allowed_base_sources": [
+    "ops/docker/bases.lock"
+  ],
+  "required_artifacts": [
+    "ops/docker/bases.lock",
+    "ops/docker/images.manifest.json",
+    "ops/docker/build-matrix.json"
+  ],
+  "forbid_network_fetch_tools": [
+    "curl",
+    "wget",
+    "git"
+  ],
+  "allowed_build_network_tokens": [
+    "apt-get update",
+    "apt-get install",
+    "cargo build --locked",
+    "--mount=type=cache"
+  ],
+  "require_digest_pins": true,
+  "require_vendored_or_locked_inputs": true
+}

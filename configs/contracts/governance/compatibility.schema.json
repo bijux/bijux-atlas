@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/governance/compatibility.schema.json",
+  "$id": "https://bijux.dev/schema/ops/governance/repository/compatibility.schema.json",
   "title": "Governance Compatibility Policy",
   "type": "object",
   "additionalProperties": false,

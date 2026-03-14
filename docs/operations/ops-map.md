@@ -29,7 +29,7 @@ This keeps `Release-indexed` operational flows anchored to one entry page per pi
 | `k8s` | `ops/k8s` | `k8s/index.md` |
 | `load` | `ops/load` | `load/index.md` |
 | `observe` | `ops/observe` | `observability/index.md` |
-| `report` | `ops/report` | `release/index.md` |
+| `report` | `ops/report` | `ops/release/index.md` |
 
 ## How To Verify
 

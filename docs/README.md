@@ -33,5 +33,5 @@ Where to start:
 Generated content model:
 
 - `docs/_generated` is generator-owned snippet content used by tutorials.
-- `docs/_internal/generated` is governance/report output and internal evidence.
+- `docs/_internal/generated` is ops/governance/repository/report output and internal evidence.
 - Manual edits to generated markdown are forbidden.

@@ -125,7 +125,7 @@ fn parse_make_registry() -> Vec<(String, Vec<String>, String)> {
 #[test]
 fn dockerfile_copy_sources_exist_and_stay_within_root_authority() {
     let root = repo_root();
-    let text = read(&root.join("docker/images/runtime/Dockerfile"));
+    let text = read(&root.join("ops/docker/images/runtime/Dockerfile"));
     let mut copy_sources = Vec::new();
     for line in text.lines() {
         let trimmed = line.trim();

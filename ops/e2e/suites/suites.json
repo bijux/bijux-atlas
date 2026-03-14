@@ -151,8 +151,8 @@
             "expected_time_seconds": 420,
             "expected_qps": 3,
             "expected_artifacts": [
-              "artifacts/ops/e2e/realdata/single-release/report.json",
-              "artifacts/ops/e2e/realdata/single-release/report.md",
+              "artifacts/ops/e2e/realdata/single-ops/release/report.json",
+              "artifacts/ops/e2e/realdata/single-ops/release/report.md",
               "artifacts/ops/e2e/realdata"
             ]
           }

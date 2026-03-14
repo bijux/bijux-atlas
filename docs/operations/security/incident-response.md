@@ -18,7 +18,7 @@
 - Freeze promotions and stop publishing new release artifacts
 - Identify whether the incident is a dependency compromise, a leaked secret, or both
 - Run `bijux-dev-atlas security validate --format json`
-- Run `bijux-dev-atlas security scan-artifacts --dir release/evidence --format json`
+- Run `bijux-dev-atlas security scan-artifacts --dir ops/release/evidence --format json`
 
 ## Verify
 

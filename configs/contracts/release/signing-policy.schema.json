@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/release/signing-policy.schema.json",
+  "$id": "https://bijux.dev/schema/ops/release/signing-policy.schema.json",
   "title": "Release Signing Policy",
   "type": "object",
   "additionalProperties": false,

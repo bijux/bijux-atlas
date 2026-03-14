@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/governance/contract-groups.schema.json",
+  "$id": "https://bijux.dev/schema/ops/governance/repository/contract-groups.schema.json",
   "title": "Contract Groups",
   "type": "object",
   "additionalProperties": false,

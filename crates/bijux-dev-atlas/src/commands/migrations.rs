@@ -70,8 +70,8 @@ fn is_legacy_path(rel: &Path) -> bool {
     text == "clients"
         || text == "tools"
         || text == "scripts"
-        || text == "tutorials/scripts"
-        || text == "tutorials/tests"
+        || text == "ops/tutorials/scripts"
+        || text == "ops/tutorials/tests"
         || text == "clients/atlas-client/tools"
 }
 
@@ -81,7 +81,7 @@ fn is_legacy_file(rel: &Path) -> bool {
     if text.starts_with("ops/") && ext == "py" {
         return true;
     }
-    if text.starts_with("tutorials/") && (ext == "py" || ext == "sh") {
+    if text.starts_with("ops/tutorials/") && (ext == "py" || ext == "sh") {
         return true;
     }
     if text.contains("/__pycache__/") || text.ends_with(".pyc") {

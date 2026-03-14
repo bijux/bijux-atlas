@@ -1,11 +1,11 @@
 
     fn mk_repo(base: &Path, dockerfile: &str) {
-        std::fs::create_dir_all(base.join("docker/images/runtime")).expect("mkdir docker runtime");
+        std::fs::create_dir_all(base.join("ops/docker/images/runtime")).expect("mkdir docker runtime");
         std::fs::create_dir_all(base.join("ops/policy")).expect("mkdir ops policy");
-        std::fs::write(base.join("docker/images/runtime/Dockerfile"), dockerfile).expect("write dockerfile");
-        std::fs::write(base.join("docker/README.md"), "# docker\n").expect("write readme");
+        std::fs::write(base.join("ops/docker/images/runtime/Dockerfile"), dockerfile).expect("write dockerfile");
+        std::fs::write(base.join("ops/docker/README.md"), "# docker\n").expect("write readme");
         std::fs::write(
-            base.join("docker/bases.lock"),
+            base.join("ops/docker/bases.lock"),
             serde_json::json!({
                 "schema_version": 1,
                 "images": [
@@ -25,13 +25,13 @@
         )
         .expect("write bases lock");
         std::fs::write(
-            base.join("docker/images.manifest.json"),
+            base.join("ops/docker/images.manifest.json"),
             serde_json::json!({
                 "schema_version": 1,
                 "images": [
                     {
                         "name": "runtime",
-                        "dockerfile": "docker/images/runtime/Dockerfile",
+                        "dockerfile": "ops/docker/images/runtime/Dockerfile",
                         "context": ".",
                         "smoke": ["/app/bijux-atlas", "version"]
                     }
@@ -41,7 +41,7 @@
         )
         .expect("write images manifest");
         std::fs::write(
-            base.join("docker/build-matrix.json"),
+            base.join("ops/docker/build-matrix.json"),
             serde_json::json!({
                 "schema_version": 1,
                 "images": [
@@ -57,7 +57,7 @@
         )
         .expect("write build matrix");
         std::fs::write(
-            base.join("docker/exceptions.json"),
+            base.join("ops/docker/exceptions.json"),
             serde_json::json!({
                 "schema_version": 1,
                 "exceptions": []
@@ -67,7 +67,7 @@
         .expect("write exceptions");
         std::fs::write(base.join(".dockerignore"), ".git\nartifacts\ntarget\n").expect("write dockerignore");
         std::fs::write(
-            base.join("docker/policy.json"),
+            base.join("ops/docker/policy.json"),
             serde_json::json!({
                 "schema_version": 1,
                 "allow_tagged_images_exceptions": [],
@@ -81,8 +81,8 @@
                     "ci": {"allow_scan_skip": false}
                 },
                 "runtime_engine": "docker",
-                "airgap_policy_path": "docker/airgap-policy.json",
-                "push_policy_path": "docker/push-policy.json",
+                "airgap_policy_path": "ops/docker/airgap-policy.json",
+                "push_policy_path": "ops/docker/push-policy.json",
                 "downloaded_assets": {"require_digest_pins": true},
                 "vendored_binaries": {"allow": []},
                 "release_provenance": {
@@ -106,19 +106,19 @@
             .to_string(),
         )
         .expect("write policy");
-        std::fs::create_dir_all(base.join("docker/schema")).expect("mkdir docker schema");
+        std::fs::create_dir_all(base.join("ops/docker/schema")).expect("mkdir docker schema");
         std::fs::write(
-            base.join("docker/airgap-policy.json"),
+            base.join("ops/docker/airgap-policy.json"),
             serde_json::json!({
                 "schema_version": 1,
                 "policy_id": "docker-airgap-build",
                 "owner": "bijux-atlas-platform",
                 "description": "fixture airgap policy",
-                "allowed_base_sources": ["docker/bases.lock"],
+                "allowed_base_sources": ["ops/docker/bases.lock"],
                 "required_artifacts": [
-                    "docker/bases.lock",
-                    "docker/images.manifest.json",
-                    "docker/build-matrix.json"
+                    "ops/docker/bases.lock",
+                    "ops/docker/images.manifest.json",
+                    "ops/docker/build-matrix.json"
                 ],
                 "forbid_network_fetch_tools": ["curl", "wget", "git"],
                 "allowed_build_network_tokens": ["apt-get update", "cargo build --locked"],
@@ -129,7 +129,7 @@
         )
         .expect("write airgap policy");
         std::fs::write(
-            base.join("docker/push-policy.json"),
+            base.join("ops/docker/push-policy.json"),
             serde_json::json!({
                 "schema_version": 1,
                 "policy_id": "docker-registry-promotion",
@@ -201,7 +201,7 @@
             tmp.path(),
             "FROM rust:latest\nARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1\nLABEL org.opencontainers.image.source=\"x\"\nLABEL org.opencontainers.image.version=\"x\"\nLABEL org.opencontainers.image.revision=\"x\"\nLABEL org.opencontainers.image.created=\"x\"\nLABEL org.opencontainers.image.ref.name=\"x\"\n",
         );
-        std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile")).expect("symlink");
+        std::os::unix::fs::symlink("ops/docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile")).expect("symlink");
         sync_contract_markdown(tmp.path()).expect("sync contract doc");
         sync_contract_registry_json(tmp.path()).expect("sync contract registry");
         sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");
@@ -227,7 +227,7 @@
             "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1970-01-01T00:00:00Z\nARG SOURCE_DATE_EPOCH=0\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa AS builder\nWORKDIR /workspace\nCOPY Cargo.toml /workspace/Cargo.toml\nRUN cargo build --locked\nFROM gcr.io/distroless/cc-debian12:nonroot@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb AS runtime\nWORKDIR /app\nCOPY --from=builder /workspace/Cargo.toml /app/Cargo.toml\nUSER nonroot:nonroot\nLABEL org.opencontainers.image.source=\"x\"\nLABEL org.opencontainers.image.version=\"x\"\nLABEL org.opencontainers.image.revision=\"x\"\nLABEL org.opencontainers.image.created=\"1970-01-01T00:00:00Z\"\nLABEL org.opencontainers.image.ref.name=\"x\"\nLABEL org.opencontainers.image.licenses=\"Apache-2.0\"\nENTRYPOINT [\"/app/bijux-atlas\", \"version\"]\n",
         );
         std::fs::write(tmp.path().join("Cargo.toml"), "[workspace]\n").expect("write cargo toml");
-        std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile")).expect("symlink");
+        std::os::unix::fs::symlink("ops/docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile")).expect("symlink");
         sync_contract_markdown(tmp.path()).expect("sync contract doc");
         sync_contract_registry_json(tmp.path()).expect("sync contract registry");
         sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");
@@ -249,7 +249,7 @@
             "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1970-01-01T00:00:00Z\nARG SOURCE_DATE_EPOCH=0\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa AS builder\nWORKDIR /workspace\nCOPY Cargo.toml /workspace/Cargo.toml\nRUN cargo build --locked\nFROM gcr.io/distroless/cc-debian12:nonroot@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb AS runtime\nWORKDIR /app\nCOPY --from=builder /workspace/Cargo.toml /app/Cargo.toml\nUSER nonroot:nonroot\nLABEL org.opencontainers.image.source=\"x\"\nLABEL org.opencontainers.image.version=\"x\"\nLABEL org.opencontainers.image.revision=\"x\"\nLABEL org.opencontainers.image.created=\"1970-01-01T00:00:00Z\"\nLABEL org.opencontainers.image.ref.name=\"x\"\nLABEL org.opencontainers.image.licenses=\"Apache-2.0\"\nENTRYPOINT [\"/app/bijux-atlas\", \"version\"]\n",
         );
         std::fs::write(tmp.path().join("Cargo.toml"), "[workspace]\n").expect("write cargo toml");
-        std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile"))
+        std::os::unix::fs::symlink("ops/docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile"))
             .expect("symlink");
         sync_contract_markdown(tmp.path()).expect("sync contract doc");
         sync_contract_registry_json(tmp.path()).expect("sync contract registry");
@@ -272,7 +272,7 @@
             "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1970-01-01T00:00:00Z\nARG SOURCE_DATE_EPOCH=0\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa AS builder\nWORKDIR /workspace\nCOPY Cargo.toml /workspace/Cargo.toml\nRUN cargo build --locked\nFROM gcr.io/distroless/cc-debian12:nonroot@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb AS runtime\nWORKDIR /app\nCOPY --from=builder /workspace/Cargo.toml /app/Cargo.toml\nUSER nonroot:nonroot\nLABEL org.opencontainers.image.source=\"x\"\nLABEL org.opencontainers.image.version=\"x\"\nLABEL org.opencontainers.image.revision=\"x\"\nLABEL org.opencontainers.image.created=\"1970-01-01T00:00:00Z\"\nLABEL org.opencontainers.image.ref.name=\"x\"\nLABEL org.opencontainers.image.licenses=\"Apache-2.0\"\nENTRYPOINT [\"/app/bijux-atlas\", \"version\"]\n",
         );
         std::fs::write(tmp.path().join("Cargo.toml"), "[workspace]\n").expect("write cargo toml");
-        std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile"))
+        std::os::unix::fs::symlink("ops/docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile"))
             .expect("symlink");
         sync_contract_markdown(tmp.path()).expect("sync contract doc");
         sync_contract_registry_json(tmp.path()).expect("sync contract registry");
@@ -361,7 +361,7 @@
             tmp.path(),
             "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1970-01-01T00:00:00Z\nARG SOURCE_DATE_EPOCH=0\nFROM rust:nightly AS builder\nWORKDIR /workspace\nRUN cargo build --locked\nFROM gcr.io/distroless/cc-debian12:nonroot@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb AS runtime\nWORKDIR /app\nUSER nonroot:nonroot\nLABEL org.opencontainers.image.source=\"x\"\nLABEL org.opencontainers.image.version=\"x\"\nLABEL org.opencontainers.image.revision=\"x\"\nLABEL org.opencontainers.image.created=\"1970-01-01T00:00:00Z\"\nLABEL org.opencontainers.image.ref.name=\"x\"\nLABEL org.opencontainers.image.licenses=\"Apache-2.0\"\nENTRYPOINT [\"/app/bijux-atlas\", \"version\"]\n",
         );
-        std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile")).expect("symlink");
+        std::os::unix::fs::symlink("ops/docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile")).expect("symlink");
         sync_contract_markdown(tmp.path()).expect("sync contract doc");
         sync_contract_registry_json(tmp.path()).expect("sync contract registry");
         sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");
@@ -384,7 +384,7 @@
         );
         std::fs::write(tmp.path().join("rustfmt.toml"), "max_width = 100\n")
             .expect("write legacy rustfmt");
-        std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile"))
+        std::os::unix::fs::symlink("ops/docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile"))
             .expect("symlink");
         sync_contract_markdown(tmp.path()).expect("sync contract doc");
         sync_contract_registry_json(tmp.path()).expect("sync contract registry");
@@ -410,11 +410,11 @@
             "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1970-01-01T00:00:00Z\nARG SOURCE_DATE_EPOCH=0\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa AS builder\nWORKDIR /workspace\nRUN cargo build --locked\nFROM gcr.io/distroless/cc-debian12:nonroot@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb AS runtime\nWORKDIR /app\nUSER nonroot:nonroot\nLABEL org.opencontainers.image.source=\"x\"\nLABEL org.opencontainers.image.version=\"x\"\nLABEL org.opencontainers.image.revision=\"x\"\nLABEL org.opencontainers.image.created=\"1970-01-01T00:00:00Z\"\nLABEL org.opencontainers.image.ref.name=\"x\"\nLABEL org.opencontainers.image.licenses=\"Apache-2.0\"\nENTRYPOINT [\"/app/bijux-atlas\", \"version\"]\n",
         );
         std::fs::write(
-            tmp.path().join("docker/images.manifest.json"),
+            tmp.path().join("ops/docker/images.manifest.json"),
             serde_json::json!({"schema_version": 1, "images": []}).to_string(),
         )
         .expect("overwrite manifest");
-        std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile")).expect("symlink");
+        std::os::unix::fs::symlink("ops/docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile")).expect("symlink");
         sync_contract_markdown(tmp.path()).expect("sync contract doc");
         sync_contract_registry_json(tmp.path()).expect("sync contract registry");
         sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");
@@ -435,7 +435,7 @@
             tmp.path(),
             "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1970-01-01T00:00:00Z\nARG SOURCE_DATE_EPOCH=0\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa AS builder\nWORKDIR /workspace\nRUN cargo build --locked\nFROM gcr.io/distroless/cc-debian12:nonroot@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb AS runtime\nWORKDIR /app\nUSER nonroot:nonroot\nLABEL ORG.OPENCONTAINERS.IMAGE.SOURCE=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.VERSION=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.REVISION=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.CREATED=\"1970-01-01T00:00:00Z\"\nLABEL ORG.OPENCONTAINERS.IMAGE.REF.NAME=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.LICENSES=\"Apache-2.0\"\nENTRYPOINT [\"/app/bijux-atlas\", \"version\"]\n",
         );
-        std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile"))
+        std::os::unix::fs::symlink("ops/docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile"))
             .expect("symlink");
         sync_contract_markdown(tmp.path()).expect("sync contract doc");
 
@@ -452,16 +452,16 @@
     #[test]
     fn required_image_contract_fails_when_runtime_missing() {
         let tmp = tempfile::tempdir().expect("tempdir");
-        std::fs::create_dir_all(tmp.path().join("docker/images/dev")).expect("mkdir image");
+        std::fs::create_dir_all(tmp.path().join("ops/docker/images/dev")).expect("mkdir image");
         std::fs::create_dir_all(tmp.path().join("ops/policy")).expect("mkdir ops policy");
         std::fs::write(
-            tmp.path().join("docker/images/dev/Dockerfile"),
+            tmp.path().join("ops/docker/images/dev/Dockerfile"),
             "FROM scratch\n",
         )
         .expect("write dockerfile");
-        std::fs::write(tmp.path().join("docker/README.md"), "# docker\n").expect("write readme");
+        std::fs::write(tmp.path().join("ops/docker/README.md"), "# docker\n").expect("write readme");
         std::fs::write(
-            tmp.path().join("docker/policy.json"),
+            tmp.path().join("ops/docker/policy.json"),
             serde_json::json!({
                 "schema_version": 1,
                 "required_image_directories": ["runtime"],
@@ -515,14 +515,14 @@
             tmp.path(),
             "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nLABEL org.opencontainers.image.source=\"x\"\nLABEL org.opencontainers.image.version=\"x\"\nLABEL org.opencontainers.image.revision=\"x\"\nLABEL org.opencontainers.image.created=\"x\"\nLABEL org.opencontainers.image.ref.name=\"x\"\n",
         );
-        std::fs::create_dir_all(tmp.path().join("docker/images/extra")).expect("mkdir extra image");
+        std::fs::create_dir_all(tmp.path().join("ops/docker/images/extra")).expect("mkdir extra image");
         std::fs::write(
-            tmp.path().join("docker/images/extra/Dockerfile"),
+            tmp.path().join("ops/docker/images/extra/Dockerfile"),
             "FROM scratch\n",
         )
         .expect("write extra dockerfile");
         std::fs::write(
-            tmp.path().join("docker/policy.json"),
+            tmp.path().join("ops/docker/policy.json"),
             serde_json::json!({
                 "schema_version": 1,
                 "required_image_directories": ["runtime"],

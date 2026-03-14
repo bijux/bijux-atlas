@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/governance/deprecations.schema.json",
+  "$id": "https://bijux.dev/schema/ops/governance/repository/deprecations.schema.json",
   "title": "Governance Deprecations Registry",
   "type": "object",
   "additionalProperties": false,

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/governance/tags.schema.json",
+  "$id": "https://bijux.dev/schema/ops/governance/repository/tags.schema.json",
   "title": "Governance Tags",
   "type": "object",
   "additionalProperties": false,

@@ -240,7 +240,7 @@ fn checks_ops_runtime_output_roots_under_ops_absent(
                             "runtime source `{}` writes under ops tree in line `{trimmed}`",
                             rel.display()
                         ),
-                        "write runtime outputs under artifacts/ and restrict ops/ writes to explicit governance/manifests outside runtime execution modules",
+                        "write runtime outputs under artifacts/ and restrict ops/ writes to explicit ops/governance/repository/manifests outside runtime execution modules",
                         Some(rel),
                     ));
                     break;

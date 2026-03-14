@@ -12,7 +12,7 @@
 
 - Keep governed dataset manifests and ingest reports for every release candidate.
 - Keep fixture-derived ingest outputs long enough to reproduce the matching evidence bundle.
-- Do not treat transient local scratch files as retained evidence; only recorded artifacts under `artifacts/` and `release/` count.
+- Do not treat transient local scratch files as retained evidence; only recorded artifacts under `artifacts/` and `ops/release/` count.
 
 ## Verify
 

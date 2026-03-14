@@ -167,7 +167,7 @@ fn root_dockerfile_symlink_points_to_canonical_runtime_dockerfile() {
     let target = fs::read_link(&dockerfile).expect("Dockerfile symlink target");
     assert_eq!(
         target,
-        PathBuf::from("docker/images/runtime/Dockerfile"),
+        PathBuf::from("ops/docker/images/runtime/Dockerfile"),
         "root Dockerfile must point to the canonical runtime Dockerfile"
     );
     assert!(
@@ -180,7 +180,7 @@ fn root_dockerfile_symlink_points_to_canonical_runtime_dockerfile() {
         .as_str()
         .expect("root Dockerfile symlink allowlist entry");
     assert_eq!(
-        declared, "docker/images/runtime/Dockerfile",
+        declared, "ops/docker/images/runtime/Dockerfile",
         "symlink allowlist must match the canonical runtime Dockerfile target"
     );
 }
@@ -199,7 +199,7 @@ fn config_security_and_docker_contracts_stay_explicit_and_reviewable() {
         "security audit allowlist must stay empty unless a reviewed exception is added"
     );
 
-    let dockerfile = read(&root.join("docker/images/runtime/Dockerfile"));
+    let dockerfile = read(&root.join("ops/docker/images/runtime/Dockerfile"));
     assert!(
         !dockerfile
             .lines()

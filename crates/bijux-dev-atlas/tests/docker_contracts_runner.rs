@@ -34,7 +34,7 @@ fn fixture_repo(name: &str) -> tempfile::TempDir {
     fs::create_dir_all(tmp.path().join("ops/policy")).expect("mkdir ops policy");
     #[cfg(unix)]
     std::os::unix::fs::symlink(
-        "docker/images/runtime/Dockerfile",
+        "ops/docker/images/runtime/Dockerfile",
         tmp.path().join("Dockerfile"),
     )
     .expect("symlink");
@@ -50,7 +50,7 @@ fn fixture_repo(name: &str) -> tempfile::TempDir {
     )
     .expect("dockerignore");
     fs::write(
-        tmp.path().join("docker/bases.lock"),
+        tmp.path().join("ops/docker/bases.lock"),
         serde_json::json!({
             "schema_version": 1,
             "images": [
@@ -60,21 +60,21 @@ fn fixture_repo(name: &str) -> tempfile::TempDir {
         }).to_string(),
     ).expect("bases lock");
     fs::write(
-        tmp.path().join("docker/images.manifest.json"),
+        tmp.path().join("ops/docker/images.manifest.json"),
         serde_json::json!({
             "schema_version": 1,
-            "images": [{"name": "runtime", "dockerfile": "docker/images/runtime/Dockerfile", "context": ".", "smoke": ["/app/bijux-atlas", "version"]}]
+            "images": [{"name": "runtime", "dockerfile": "ops/docker/images/runtime/Dockerfile", "context": ".", "smoke": ["/app/bijux-atlas", "version"]}]
         }).to_string(),
     ).expect("manifest");
     fs::write(
-        tmp.path().join("docker/build-matrix.json"),
+        tmp.path().join("ops/docker/build-matrix.json"),
         serde_json::json!({
             "schema_version": 1,
             "images": [{"name": "runtime", "platforms": ["linux/amd64"], "tags": ["bijux-atlas:dev"], "outputs": ["docker"]}]
         }).to_string(),
     ).expect("build matrix");
     fs::write(
-        tmp.path().join("docker/exceptions.json"),
+        tmp.path().join("ops/docker/exceptions.json"),
         serde_json::json!({
             "schema_version": 1,
             "exceptions": []
@@ -83,18 +83,18 @@ fn fixture_repo(name: &str) -> tempfile::TempDir {
     )
     .expect("exceptions");
     fs::copy(
-        workspace_root().join("docker/policy.json"),
-        tmp.path().join("docker/policy.json"),
+        workspace_root().join("ops/docker/policy.json"),
+        tmp.path().join("ops/docker/policy.json"),
     )
     .expect("policy");
     fs::copy(
-        workspace_root().join("docker/airgap-policy.json"),
-        tmp.path().join("docker/airgap-policy.json"),
+        workspace_root().join("ops/docker/airgap-policy.json"),
+        tmp.path().join("ops/docker/airgap-policy.json"),
     )
     .expect("airgap policy");
     fs::copy(
-        workspace_root().join("docker/push-policy.json"),
-        tmp.path().join("docker/push-policy.json"),
+        workspace_root().join("ops/docker/push-policy.json"),
+        tmp.path().join("ops/docker/push-policy.json"),
     )
     .expect("push policy");
     fs::write(

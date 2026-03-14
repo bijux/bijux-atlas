@@ -18,6 +18,6 @@
 ## Acceptance rules
 
 - Production profiles cannot keep deprecated keys unless an active exception covers `OPS-COMP-001`.
-- Breaking changes require `release/notes/breaking.md` entries.
+- Breaking changes require `ops/release/notes/breaking.md` entries.
 - Chart-breaking changes require a chart major version that satisfies the governed policy.
 - Evidence bundles must carry the governance doctor report and institutional delta.

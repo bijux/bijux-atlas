@@ -26,7 +26,7 @@ internal: true
 
 ## Internal surfaces
 
-- [Governance](governance/index.md)
+- [Governance](ops/governance/repository/index.md)
 - [Generated artifacts](generated-artifacts.md)
 - [Docs metadata and operating model](meta/index.md)
 - [Internal navigation freeze notes](nav/index.md)

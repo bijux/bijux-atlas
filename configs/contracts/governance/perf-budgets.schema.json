@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/governance/perf-budgets.schema.json",
+  "$id": "https://bijux.dev/schema/ops/governance/repository/perf-budgets.schema.json",
   "title": "Suite Performance Budgets",
   "type": "object",
   "additionalProperties": false,

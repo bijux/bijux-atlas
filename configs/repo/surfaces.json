@@ -12,7 +12,6 @@
     ".github",
     ".cargo",
     "artifacts",
-    "docker",
     "bin",
     "target",
     ".idea",

@@ -21,7 +21,7 @@
 - `ops/`: operational contracts and environment manifests
 - `docs/`: canonical documentation source
 - `make/`: stable make wrappers
-- `docker/`: container build and runtime contracts
+- `ops/docker/`: container build and runtime contracts
 - Repository map (generated): `docs/reference/repo-map.md`
 
 ## Build Entry Surface

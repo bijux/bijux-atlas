@@ -17,7 +17,7 @@
 - Security: [Security Contracts](security.md)
 - Runtime configuration: [Config Keys](config-keys.md), [Chart Values](chart-values.md)
 - Ops governance: [Helm Env Allowlist Subset](ops/helm-env-subset.md), [Profile Matrix](ops/profile-matrix.md), [NetworkPolicy Contracts](ops/networkpolicy.md)
-- Release evidence: [Release Evidence Contracts](release/evidence.md)
+- Release evidence: [Release Evidence Contracts](ops/release/evidence.md)
 - Release signing: [Release Signing Contracts](release-signing.md)
 - Docs pipeline: [Site Output](docs/site-output.md)
 - Data and quality: [Artifact contracts](artifacts/index.md), [QC](qc.md)

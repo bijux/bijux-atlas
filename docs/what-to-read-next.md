@@ -34,8 +34,8 @@ Choose one guided track based on your goal.
 
 ## Reviewer track
 
-1. [Real data runs](tutorials/real-data/index.md)
-2. [Reviewer quick path](tutorials/real-data/reviewer-quick-path.md)
+1. [Real data runs](ops/tutorials/real-data/index.md)
+2. [Reviewer quick path](ops/tutorials/real-data/reviewer-quick-path.md)
 3. [Real data runs report](reference/reports/real-data-runs.md)
 4. [Governance and contract policy](reference/governance.md)
 

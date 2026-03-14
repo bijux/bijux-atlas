@@ -22,7 +22,7 @@ No transcript-level semantic diffing in v1.
 
 - Changed means one of: coords, name, biotype, transcript_count.
 - Diffs are computed from deterministic signature indexes.
-- Explicit release/species/assembly required.
+- Explicit ops/release/species/assembly required.
 
 ## Budgets
 

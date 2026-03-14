@@ -13,9 +13,9 @@ Related ops contracts: `OPS-ROOT-023`, `REL-PACK-001`.
 
 ## Review Order
 
-1. Read `release/evidence/identity.json` for release identity and governance version.
-2. Read `release/evidence/manifest.json` for the required artifact inventory.
-3. Read `release/signing/release-verify.json` to confirm the release integrity checks passed.
+1. Read `ops/release/evidence/identity.json` for release identity and governance version.
+2. Read `ops/release/evidence/manifest.json` for the required artifact inventory.
+3. Read `ops/release/signing/release-verify.json` to confirm the release integrity checks passed.
 4. Inspect the institutional packet inventory to locate the minimum evidence subset.
 5. Use the SBOMs and provenance file to trace toolchain and image inputs.
 

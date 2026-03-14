@@ -55,5 +55,5 @@ If incorrect deletion is detected, restore from backup and republish catalog poi
 
 ## Next
 
-- [Backup and restore](release/backup-and-restore.md)
+- [Backup and restore](ops/release/backup-and-restore.md)
 - [Dataset Workflow](dataset-workflow.md)

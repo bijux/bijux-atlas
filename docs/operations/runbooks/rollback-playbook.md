@@ -64,5 +64,5 @@ Serving returns to the last known good behavior, alert pressure drops, and post-
 
 ## Next
 
-- [Release rollback procedure](../release/rollback-procedure.md)
+- [Release rollback procedure](../ops/release/rollback-procedure.md)
 - [Incident response](../incident-response.md)

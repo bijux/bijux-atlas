@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/governance/default-jobs.schema.json",
+  "$id": "https://bijux.dev/schema/ops/governance/repository/default-jobs.schema.json",
   "title": "Suite Default Jobs Policy",
   "type": "object",
   "additionalProperties": false,

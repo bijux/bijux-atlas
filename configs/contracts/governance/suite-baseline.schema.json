@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/governance/suite-baseline.schema.json",
+  "$id": "https://bijux.dev/schema/ops/governance/repository/suite-baseline.schema.json",
   "title": "Suite Baseline Policy",
   "type": "object",
   "additionalProperties": false,

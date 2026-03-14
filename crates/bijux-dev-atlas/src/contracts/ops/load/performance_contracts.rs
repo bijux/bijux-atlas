@@ -68,7 +68,7 @@ fn test_ops_datasets_010_dataset_store_layout_contract_enforced(ctx: &RunContext
             let id = row.get("id").and_then(|v| v.as_str()).unwrap_or("");
             let parts: Vec<&str> = id.split('/').collect();
             if parts.len() != 3 || parts.iter().any(|p| p.is_empty()) {
-                violations.push(violation(contract_id, test_id, "dataset id must follow release/species/assembly layout", Some(rel.to_string())));
+                violations.push(violation(contract_id, test_id, "dataset id must follow ops/release/species/assembly layout", Some(rel.to_string())));
             }
             if let Some(paths) = row.get("paths").and_then(|v| v.as_object()) {
                 for value in paths.values().filter_map(|v| v.as_str()) {

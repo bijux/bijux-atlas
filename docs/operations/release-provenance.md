@@ -19,10 +19,10 @@ last_reviewed: 2026-03-03
 
 ## Provenance Claims
 
-- `release/evidence/identity.json` binds the bundle to one release ID, one git SHA, and one governance version.
-- `release/evidence/manifest.json` declares the exact evidence members and their checksums.
-- `release/evidence/bundle.tar` proves stable packaging order and normalized timestamps for the files included in the bundle.
-- `release/evidence/sboms/*.spdx.json` document the digest-pinned image inputs used by governed profiles.
+- `ops/release/evidence/identity.json` binds the bundle to one release ID, one git SHA, and one governance version.
+- `ops/release/evidence/manifest.json` declares the exact evidence members and their checksums.
+- `ops/release/evidence/bundle.tar` proves stable packaging order and normalized timestamps for the files included in the bundle.
+- `ops/release/evidence/sboms/*.spdx.json` document the digest-pinned image inputs used by governed profiles.
 
 ## Limits
 

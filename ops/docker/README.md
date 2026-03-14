@@ -1,0 +1,36 @@
+# Docker
+
+Container build, validation, and release behavior is defined by executable gates.
+
+## Intent
+
+- Keep docker policy minimal, machine-readable, and enforceable.
+- Keep docker docs limited to this file and `ops/docker/CONTRACT.md`.
+- Route all operational behavior through `bijux dev atlas contracts docker ...` and make wrappers.
+
+## Canonical Files
+
+- `ops/docker/README.md`
+- `ops/docker/CONTRACT.md`
+- `ops/docker/policy.json`
+- `ops/docker/images/runtime/Dockerfile`
+
+Root `Dockerfile` is a shim symlink to the canonical runtime Dockerfile.
+
+## Canonical Commands
+
+```bash
+make docker-contracts
+make docker-contracts-effect
+make docker-gate
+```
+
+## Artifacts
+
+Docker gate artifacts are written under:
+
+`artifacts/<run_id>/...`
+
+## Enforcement
+
+Policy meaning lives in gates, not prose. See `ops/docker/CONTRACT.md` for the contract-to-gate mapping.

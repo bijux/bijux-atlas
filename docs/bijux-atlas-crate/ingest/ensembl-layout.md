@@ -6,7 +6,7 @@ Typical mapping:
 - Ensembl FASTA index (`.fai`) -> `--fai`
 
 Flow:
-1. Validate dataset dimensions (`release/species/assembly`).
+1. Validate dataset dimensions (`ops/release/species/assembly`).
 2. Run ingest with explicit strictness and identifier policy.
 3. Publish produced artifacts into store backend only after checksum verification.
 

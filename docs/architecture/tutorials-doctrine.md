@@ -20,12 +20,12 @@ Tutorial assets are evidence-bearing artifacts. Tutorial automation is owned by 
 - Tutorial workflows must run through `bijux-dev-atlas tutorials ...` commands.
 - Tutorial outputs must be deterministic and reproducible for the same inputs.
 - Tutorial generated outputs must be committed as generated artifacts, not hand-edited.
-- `tutorials/` is for artifacts and tutorial-facing assets; repository automation scripts are not allowed there after migration closure.
-- Legacy tutorial automation (`tutorials/automation/*` and `tutorials/tests/*.py`) is retired; validation and workflow execution live under `crates/bijux-dev-atlas`.
+- `ops/tutorials/` is for artifacts and tutorial-facing assets; repository automation scripts are not allowed there after migration closure.
+- Legacy tutorial automation (`ops/tutorials/automation/*` and `ops/tutorials/tests/*.py`) is retired; validation and workflow execution live under `crates/bijux-dev-atlas`.
 
 ## Directory purpose
 
-- `tutorials/`: dataset contracts, evidence, dashboards, and tutorial-facing static assets.
+- `ops/tutorials/`: dataset contracts, evidence, dashboards, and tutorial-facing static assets.
 - `docs/tutorials/`: tutorial narrative and generated references.
 
 ## Required replacement command surface

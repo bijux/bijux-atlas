@@ -110,7 +110,7 @@ fn detect_config_drift(root: &Path, out: &mut Vec<DriftFinding>) {
 }
 
 fn detect_artifact_drift(root: &Path, out: &mut Vec<DriftFinding>) {
-    let manifest = root.join("release/evidence/manifest.json");
+    let manifest = root.join("ops/release/evidence/manifest.json");
     match read_json(&manifest) {
         Ok(value) => {
             let rows = value

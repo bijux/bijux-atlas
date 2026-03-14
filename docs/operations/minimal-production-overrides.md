@@ -32,7 +32,7 @@ Expected outputs:
 
 ## Rollback
 
-Use [Rollback procedure](release/rollback-procedure.md) if the applied overrides regress readiness or telemetry.
+Use [Rollback procedure](ops/release/rollback-procedure.md) if the applied overrides regress readiness or telemetry.
 
 ## Next steps
 

@@ -13,4 +13,4 @@ A minimal install proof requires:
 - successful `ops validate --evidence`
 - generated artifacts under `artifacts/ops/evidence/<run_id>/`
 
-Attach these with `release/evidence/manifest.json` for review.
+Attach these with `ops/release/evidence/manifest.json` for review.

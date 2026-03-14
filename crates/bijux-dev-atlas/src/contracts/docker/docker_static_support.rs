@@ -16,13 +16,13 @@ fn test_dir_allowed_markdown(ctx: &RunContext) -> TestResult {
             .unwrap_or(&file)
             .display()
             .to_string();
-        if rel.ends_with(".md") && rel != "docker/README.md" && rel != "docker/CONTRACT.md" {
+        if rel.ends_with(".md") && rel != "ops/docker/README.md" && rel != "ops/docker/CONTRACT.md" {
             violations.push(violation(
                 "DOCKER-000",
                 "docker.dir.allowed_markdown",
                 Some(rel),
                 Some(1),
-                "only docker/README.md and docker/CONTRACT.md are allowed",
+                "only ops/docker/README.md and ops/docker/CONTRACT.md are allowed",
                 None,
             ));
         }
@@ -35,14 +35,14 @@ fn test_dir_allowed_markdown(ctx: &RunContext) -> TestResult {
 }
 
 fn test_dir_no_contracts_subdir(ctx: &RunContext) -> TestResult {
-    let forbidden = ctx.repo_root.join("docker/contracts");
+    let forbidden = ctx.repo_root.join("ops/docker/contracts");
     if forbidden.exists() {
         TestResult::Fail(vec![violation(
             "DOCKER-000",
             "docker.dir.no_contracts_subdir",
-            Some("docker/contracts".to_string()),
+            Some("ops/docker/contracts".to_string()),
             Some(1),
-            "docker/contracts directory is forbidden",
+            "ops/docker/contracts directory is forbidden",
             None,
         )])
     } else {
@@ -62,13 +62,13 @@ fn test_dir_dockerfiles_location(ctx: &RunContext) -> TestResult {
             .unwrap_or(&df)
             .display()
             .to_string();
-        if !rel.starts_with("docker/images/") {
+        if !rel.starts_with("ops/docker/images/") {
             violations.push(violation(
                 "DOCKER-000",
                 "docker.dir.dockerfiles_location",
                 Some(rel),
                 Some(1),
-                "Dockerfiles must live under docker/images/**",
+                "Dockerfiles must live under ops/docker/images/**",
                 None,
             ));
         }
@@ -112,7 +112,7 @@ fn test_root_dockerfile_target_runtime(ctx: &RunContext) -> TestResult {
         Ok(v) => v,
         Err(e) => return TestResult::Error(format!("readlink {} failed: {e}", path.display())),
     };
-    let expected = Path::new("docker/images/runtime/Dockerfile");
+    let expected = Path::new("ops/docker/images/runtime/Dockerfile");
     if target == expected {
         TestResult::Pass
     } else {
@@ -121,7 +121,7 @@ fn test_root_dockerfile_target_runtime(ctx: &RunContext) -> TestResult {
             "docker.root_dockerfile.target_runtime",
             Some("Dockerfile".to_string()),
             Some(1),
-            "root Dockerfile symlink must target docker/images/runtime/Dockerfile",
+            "root Dockerfile symlink must target ops/docker/images/runtime/Dockerfile",
             Some(target.display().to_string()),
         )])
     }
@@ -166,7 +166,7 @@ fn test_contract_doc_generated_match(ctx: &RunContext) -> TestResult {
         Ok(v) => v,
         Err(e) => return TestResult::Error(e),
     };
-    let path = ctx.repo_root.join("docker/CONTRACT.md");
+    let path = ctx.repo_root.join("ops/docker/CONTRACT.md");
     let actual = match std::fs::read_to_string(&path) {
         Ok(v) => v,
         Err(e) => return TestResult::Error(format!("read {} failed: {e}", path.display())),
@@ -177,9 +177,9 @@ fn test_contract_doc_generated_match(ctx: &RunContext) -> TestResult {
         TestResult::Fail(vec![violation(
             "DOCKER-000",
             "docker.contract_doc.generated_match",
-            Some("docker/CONTRACT.md".to_string()),
+            Some("ops/docker/CONTRACT.md".to_string()),
             Some(1),
-            "docker/CONTRACT.md drifted from generated contract registry",
+            "ops/docker/CONTRACT.md drifted from generated contract registry",
             None,
         )])
     }
@@ -218,7 +218,7 @@ fn load_json(path: &Path) -> Result<Value, String> {
 }
 
 fn load_bases_lock(repo_root: &Path) -> Result<BTreeMap<String, String>, String> {
-    let path = repo_root.join("docker/bases.lock");
+    let path = repo_root.join("ops/docker/bases.lock");
     let payload = load_json(&path)?;
     let mut rows = BTreeMap::new();
     for entry in payload["images"].as_array().cloned().unwrap_or_default() {
@@ -239,7 +239,7 @@ fn load_bases_lock(repo_root: &Path) -> Result<BTreeMap<String, String>, String>
 }
 
 fn load_images_manifest(repo_root: &Path) -> Result<Value, String> {
-    load_json(&repo_root.join("docker/images.manifest.json"))
+    load_json(&repo_root.join("ops/docker/images.manifest.json"))
 }
 
 fn split_from_image(from_ref: &str) -> (String, Option<String>, Option<String>) {

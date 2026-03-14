@@ -10,7 +10,7 @@ tags:
   - release
 related:
   - docs/reference/workspace-versioning-policy.md
-  - release/crates-v0.1.toml
+  - ops/release/crates-v0.1.toml
 ---
 
 # Versioning model

@@ -64,8 +64,8 @@ bijux dev atlas demo quickstart --format json
 
 ## Next steps
 
-- [Real data runs](tutorials/real-data/index.md)
-- [Reviewer quick path](tutorials/real-data/reviewer-quick-path.md)
+- [Real data runs](ops/tutorials/real-data/index.md)
+- [Reviewer quick path](ops/tutorials/real-data/reviewer-quick-path.md)
 - [Product Index](product/index.md)
 - [Architecture Index](architecture/index.md)
 - [Operations Index](operations/index.md)

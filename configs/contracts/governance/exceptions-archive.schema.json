@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/governance/exceptions-archive.schema.json",
+  "$id": "https://bijux.dev/schema/ops/governance/repository/exceptions-archive.schema.json",
   "title": "Governance Exceptions Archive",
   "type": "object",
   "additionalProperties": false,

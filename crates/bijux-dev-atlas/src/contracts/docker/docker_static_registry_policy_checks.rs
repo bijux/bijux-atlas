@@ -55,7 +55,7 @@ fn test_contract_registry_export_matches(ctx: &RunContext) -> TestResult {
         Ok(v) => v,
         Err(e) => return TestResult::Error(e),
     };
-    let path = ctx.repo_root.join("docker/docker.contracts.json");
+    let path = ctx.repo_root.join("ops/docker/docker.contracts.json");
     let actual = match std::fs::read_to_string(&path) {
         Ok(v) => v.trim().to_string(),
         Err(e) => return TestResult::Error(format!("read {} failed: {e}", path.display())),
@@ -63,7 +63,7 @@ fn test_contract_registry_export_matches(ctx: &RunContext) -> TestResult {
     if actual == expected {
         TestResult::Pass
     } else {
-        TestResult::Fail(vec![violation("DOCKER-049", "docker.registry.export_matches_generated", Some("docker/docker.contracts.json".to_string()), Some(1), "docker contract registry export drifted from generated output", None)])
+        TestResult::Fail(vec![violation("DOCKER-049", "docker.registry.export_matches_generated", Some("ops/docker/docker.contracts.json".to_string()), Some(1), "docker contract registry export drifted from generated output", None)])
     }
 }
 
@@ -85,23 +85,23 @@ fn test_contract_gate_map_matches(ctx: &RunContext) -> TestResult {
 }
 
 fn test_exceptions_registry_schema(ctx: &RunContext) -> TestResult {
-    let path = ctx.repo_root.join("docker/exceptions.json");
+    let path = ctx.repo_root.join("ops/docker/exceptions.json");
     let payload = match load_json(&path) {
         Ok(v) => v,
-        Err(e) => return TestResult::Fail(vec![violation("DOCKER-051", "docker.exceptions.schema_valid", Some("docker/exceptions.json".to_string()), Some(1), &e, None)]),
+        Err(e) => return TestResult::Fail(vec![violation("DOCKER-051", "docker.exceptions.schema_valid", Some("ops/docker/exceptions.json".to_string()), Some(1), &e, None)]),
     };
     let mut violations = Vec::new();
     if payload.get("schema_version").and_then(|v| v.as_u64()) != Some(1) {
-        violations.push(violation("DOCKER-051", "docker.exceptions.schema_valid", Some("docker/exceptions.json".to_string()), Some(1), "exceptions registry must set schema_version=1", None));
+        violations.push(violation("DOCKER-051", "docker.exceptions.schema_valid", Some("ops/docker/exceptions.json".to_string()), Some(1), "exceptions registry must set schema_version=1", None));
     }
     if payload.get("exceptions").and_then(|v| v.as_array()).is_none() {
-        violations.push(violation("DOCKER-051", "docker.exceptions.schema_valid", Some("docker/exceptions.json".to_string()), Some(1), "exceptions registry must define an exceptions array", None));
+        violations.push(violation("DOCKER-051", "docker.exceptions.schema_valid", Some("ops/docker/exceptions.json".to_string()), Some(1), "exceptions registry must define an exceptions array", None));
     }
     if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
 }
 
 fn test_exceptions_minimal(ctx: &RunContext) -> TestResult {
-    let path = ctx.repo_root.join("docker/exceptions.json");
+    let path = ctx.repo_root.join("ops/docker/exceptions.json");
     let payload = match load_json(&path) {
         Ok(v) => v,
         Err(e) => return TestResult::Error(e),
@@ -116,7 +116,7 @@ fn test_exceptions_minimal(ctx: &RunContext) -> TestResult {
         let expires_on = entry.get("expires_on").and_then(|v| v.as_str()).unwrap_or("");
         let justification = entry.get("justification").and_then(|v| v.as_str()).unwrap_or("");
         if !known.contains(contract_id) {
-            violations.push(violation("DOCKER-052", "docker.exceptions.minimal_entries", Some("docker/exceptions.json".to_string()), Some(1), "exception must cite a valid contract id", Some(contract_id.to_string())));
+            violations.push(violation("DOCKER-052", "docker.exceptions.minimal_entries", Some("ops/docker/exceptions.json".to_string()), Some(1), "exception must cite a valid contract id", Some(contract_id.to_string())));
         }
         let valid_date = expires_on.len() == 10
             && expires_on.chars().enumerate().all(|(idx, ch)| match idx {
@@ -124,10 +124,10 @@ fn test_exceptions_minimal(ctx: &RunContext) -> TestResult {
                 _ => ch.is_ascii_digit(),
             });
         if !valid_date {
-            violations.push(violation("DOCKER-052", "docker.exceptions.minimal_entries", Some("docker/exceptions.json".to_string()), Some(1), "exception must set expires_on in YYYY-MM-DD format", Some(expires_on.to_string())));
+            violations.push(violation("DOCKER-052", "docker.exceptions.minimal_entries", Some("ops/docker/exceptions.json".to_string()), Some(1), "exception must set expires_on in YYYY-MM-DD format", Some(expires_on.to_string())));
         }
         if justification.trim().is_empty() {
-            violations.push(violation("DOCKER-052", "docker.exceptions.minimal_entries", Some("docker/exceptions.json".to_string()), Some(1), "exception must include a justification", Some(contract_id.to_string())));
+            violations.push(violation("DOCKER-052", "docker.exceptions.minimal_entries", Some("ops/docker/exceptions.json".to_string()), Some(1), "exception must include a justification", Some(contract_id.to_string())));
         }
     }
     if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
@@ -152,10 +152,10 @@ fn test_scan_profile_policy(ctx: &RunContext) -> TestResult {
         .and_then(|v| v.get("allow_scan_skip"))
         .and_then(|v| v.as_bool());
     if local != Some(true) {
-        violations.push(violation("DOCKER-053", "docker.scan.profile_policy", Some("docker/policy.json".to_string()), Some(1), "docker policy must allow scan skips for the local profile", None));
+        violations.push(violation("DOCKER-053", "docker.scan.profile_policy", Some("ops/docker/policy.json".to_string()), Some(1), "docker policy must allow scan skips for the local profile", None));
     }
     if ci != Some(false) {
-        violations.push(violation("DOCKER-053", "docker.scan.profile_policy", Some("docker/policy.json".to_string()), Some(1), "docker policy must forbid scan skips for the ci profile", None));
+        violations.push(violation("DOCKER-053", "docker.scan.profile_policy", Some("ops/docker/policy.json".to_string()), Some(1), "docker policy must forbid scan skips for the ci profile", None));
     }
     if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
 }
@@ -173,7 +173,7 @@ fn test_runtime_engine_policy(ctx: &RunContext) -> TestResult {
     if engine == "docker" {
         TestResult::Pass
     } else {
-        TestResult::Fail(vec![violation("DOCKER-054", "docker.runtime.engine_policy", Some("docker/policy.json".to_string()), Some(1), "docker policy must explicitly set runtime_engine to `docker` until podman support is implemented", Some(engine.to_string()))])
+        TestResult::Fail(vec![violation("DOCKER-054", "docker.runtime.engine_policy", Some("ops/docker/policy.json".to_string()), Some(1), "docker policy must explicitly set runtime_engine to `docker` until podman support is implemented", Some(engine.to_string()))])
     }
 }
 
@@ -194,7 +194,7 @@ fn test_airgap_build_policy(ctx: &RunContext) -> TestResult {
             return TestResult::Fail(vec![violation(
                 "DOCKER-055",
                 "docker.build.airgap_policy_defined",
-                Some("docker/policy.json".to_string()),
+                Some("ops/docker/policy.json".to_string()),
                 Some(1),
                 &e,
                 None,
@@ -202,28 +202,28 @@ fn test_airgap_build_policy(ctx: &RunContext) -> TestResult {
         }
     };
     let mut violations = Vec::new();
-    if policy_path != "docker/airgap-policy.json" {
-        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/policy.json".to_string()), Some(1), "docker policy must reference docker/airgap-policy.json", Some(policy_path.to_string())));
+    if policy_path != "ops/docker/airgap-policy.json" {
+        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("ops/docker/policy.json".to_string()), Some(1), "docker policy must reference ops/docker/airgap-policy.json", Some(policy_path.to_string())));
     }
     if payload.get("schema_version").and_then(|v| v.as_u64()) != Some(1) {
-        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/airgap-policy.json".to_string()), Some(1), "airgap policy must set schema_version=1", None));
+        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("ops/docker/airgap-policy.json".to_string()), Some(1), "airgap policy must set schema_version=1", None));
     }
     if payload.get("policy_id").and_then(|v| v.as_str()) != Some("docker-airgap-build") {
-        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/airgap-policy.json".to_string()), Some(1), "airgap policy must declare policy_id=docker-airgap-build", None));
+        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("ops/docker/airgap-policy.json".to_string()), Some(1), "airgap policy must declare policy_id=docker-airgap-build", None));
     }
     if !payload
         .get("require_digest_pins")
         .and_then(|v| v.as_bool())
         .unwrap_or(false)
     {
-        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/airgap-policy.json".to_string()), Some(1), "airgap policy must require digest pins", None));
+        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("ops/docker/airgap-policy.json".to_string()), Some(1), "airgap policy must require digest pins", None));
     }
     if !payload
         .get("require_vendored_or_locked_inputs")
         .and_then(|v| v.as_bool())
         .unwrap_or(false)
     {
-        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/airgap-policy.json".to_string()), Some(1), "airgap policy must require vendored or locked inputs", None));
+        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("ops/docker/airgap-policy.json".to_string()), Some(1), "airgap policy must require vendored or locked inputs", None));
     }
     let required_sources = payload
         .get("allowed_base_sources")
@@ -233,8 +233,8 @@ fn test_airgap_build_policy(ctx: &RunContext) -> TestResult {
         .into_iter()
         .filter_map(|v| v.as_str().map(ToString::to_string))
         .collect::<BTreeSet<_>>();
-    if !required_sources.contains("docker/bases.lock") {
-        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/airgap-policy.json".to_string()), Some(1), "airgap policy must allow docker/bases.lock as the canonical base source", None));
+    if !required_sources.contains("ops/docker/bases.lock") {
+        violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("ops/docker/airgap-policy.json".to_string()), Some(1), "airgap policy must allow ops/docker/bases.lock as the canonical base source", None));
     }
     let required_artifacts = payload
         .get("required_artifacts")
@@ -244,9 +244,9 @@ fn test_airgap_build_policy(ctx: &RunContext) -> TestResult {
         .into_iter()
         .filter_map(|v| v.as_str().map(ToString::to_string))
         .collect::<BTreeSet<_>>();
-    for required in ["docker/bases.lock", "docker/images.manifest.json", "docker/build-matrix.json"] {
+    for required in ["ops/docker/bases.lock", "ops/docker/images.manifest.json", "ops/docker/build-matrix.json"] {
         if !required_artifacts.contains(required) {
-            violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/airgap-policy.json".to_string()), Some(1), "airgap policy must declare required artifact coverage", Some(required.to_string())));
+            violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("ops/docker/airgap-policy.json".to_string()), Some(1), "airgap policy must declare required artifact coverage", Some(required.to_string())));
         }
     }
     let forbidden_tools = payload
@@ -259,7 +259,7 @@ fn test_airgap_build_policy(ctx: &RunContext) -> TestResult {
         .collect::<BTreeSet<_>>();
     for required in ["curl", "wget", "git"] {
         if !forbidden_tools.contains(required) {
-            violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("docker/airgap-policy.json".to_string()), Some(1), "airgap policy must forbid ad-hoc network fetch tools", Some(required.to_string())));
+            violations.push(violation("DOCKER-055", "docker.build.airgap_policy_defined", Some("ops/docker/airgap-policy.json".to_string()), Some(1), "airgap policy must forbid ad-hoc network fetch tools", Some(required.to_string())));
         }
     }
     if violations.is_empty() {
@@ -286,7 +286,7 @@ fn test_multi_registry_push_policy(ctx: &RunContext) -> TestResult {
             return TestResult::Fail(vec![violation(
                 "DOCKER-056",
                 "docker.push.multi_registry_policy_defined",
-                Some("docker/policy.json".to_string()),
+                Some("ops/docker/policy.json".to_string()),
                 Some(1),
                 &e,
                 None,
@@ -294,14 +294,14 @@ fn test_multi_registry_push_policy(ctx: &RunContext) -> TestResult {
         }
     };
     let mut violations = Vec::new();
-    if policy_path != "docker/push-policy.json" {
-        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/policy.json".to_string()), Some(1), "docker policy must reference docker/push-policy.json", Some(policy_path.to_string())));
+    if policy_path != "ops/docker/push-policy.json" {
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("ops/docker/policy.json".to_string()), Some(1), "docker policy must reference ops/docker/push-policy.json", Some(policy_path.to_string())));
     }
     if payload.get("schema_version").and_then(|v| v.as_u64()) != Some(1) {
-        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/push-policy.json".to_string()), Some(1), "push policy must set schema_version=1", None));
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("ops/docker/push-policy.json".to_string()), Some(1), "push policy must set schema_version=1", None));
     }
     if payload.get("policy_id").and_then(|v| v.as_str()) != Some("docker-registry-promotion") {
-        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/push-policy.json".to_string()), Some(1), "push policy must declare policy_id=docker-registry-promotion", None));
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("ops/docker/push-policy.json".to_string()), Some(1), "push policy must declare policy_id=docker-registry-promotion", None));
     }
     let allowed_registries = payload
         .get("allowed_registries")
@@ -312,7 +312,7 @@ fn test_multi_registry_push_policy(ctx: &RunContext) -> TestResult {
         .filter_map(|v| v.as_str().map(ToString::to_string))
         .collect::<Vec<_>>();
     if allowed_registries.is_empty() {
-        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/push-policy.json".to_string()), Some(1), "push policy must declare at least one allowed registry", None));
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("ops/docker/push-policy.json".to_string()), Some(1), "push policy must declare at least one allowed registry", None));
     }
     let promotion_order = payload
         .get("promotion_order")
@@ -323,27 +323,27 @@ fn test_multi_registry_push_policy(ctx: &RunContext) -> TestResult {
         .filter_map(|v| v.as_str().map(ToString::to_string))
         .collect::<Vec<_>>();
     if promotion_order != vec!["registry.bijux.local".to_string(), "ghcr.io/bijux".to_string()] {
-        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/push-policy.json".to_string()), Some(1), "push policy must promote through registry.bijux.local then ghcr.io/bijux", None));
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("ops/docker/push-policy.json".to_string()), Some(1), "push policy must promote through registry.bijux.local then ghcr.io/bijux", None));
     }
     let signing = payload.get("required_signing").cloned().unwrap_or(Value::Null);
     if !signing.get("cosign").and_then(|v| v.as_bool()).unwrap_or(false)
         || !signing.get("keyless").and_then(|v| v.as_bool()).unwrap_or(false)
     {
-        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/push-policy.json".to_string()), Some(1), "push policy must require keyless cosign signing", None));
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("ops/docker/push-policy.json".to_string()), Some(1), "push policy must require keyless cosign signing", None));
     }
     if !payload
         .get("require_digest_only_promotions")
         .and_then(|v| v.as_bool())
         .unwrap_or(false)
     {
-        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/push-policy.json".to_string()), Some(1), "push policy must require digest-only promotions", None));
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("ops/docker/push-policy.json".to_string()), Some(1), "push policy must require digest-only promotions", None));
     }
     if !payload
         .get("require_provenance_bundle")
         .and_then(|v| v.as_bool())
         .unwrap_or(false)
     {
-        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/push-policy.json".to_string()), Some(1), "push policy must require a provenance bundle before release publication", None));
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("ops/docker/push-policy.json".to_string()), Some(1), "push policy must require a provenance bundle before release publication", None));
     }
     let provenance = dctx.policy.get("release_provenance").cloned().unwrap_or(Value::Null);
     if !provenance
@@ -351,7 +351,7 @@ fn test_multi_registry_push_policy(ctx: &RunContext) -> TestResult {
         .and_then(|v| v.as_bool())
         .unwrap_or(false)
     {
-        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/policy.json".to_string()), Some(1), "docker policy must require release provenance before publication", None));
+        violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("ops/docker/policy.json".to_string()), Some(1), "docker policy must require release provenance before publication", None));
     }
     let bundle_paths = provenance
         .get("required_bundle_paths")
@@ -363,7 +363,7 @@ fn test_multi_registry_push_policy(ctx: &RunContext) -> TestResult {
         .collect::<BTreeSet<_>>();
     for required in ["sbom.spdx.json", "sbom.cyclonedx.json", "scan.trivy.json", "image-digests.json"] {
         if !bundle_paths.contains(required) {
-            violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("docker/policy.json".to_string()), Some(1), "docker policy must enumerate required provenance bundle artifacts", Some(required.to_string())));
+            violations.push(violation("DOCKER-056", "docker.push.multi_registry_policy_defined", Some("ops/docker/policy.json".to_string()), Some(1), "docker policy must enumerate required provenance bundle artifacts", Some(required.to_string())));
         }
     }
     if violations.is_empty() {
@@ -380,7 +380,7 @@ fn test_downloaded_assets_are_verified(ctx: &RunContext) -> TestResult {
         Err(e) => return TestResult::Error(e),
     };
     if !require_digest_pins {
-        return TestResult::Fail(vec![violation("DOCKER-057", "docker.run.downloaded_assets_are_verified", Some("docker/policy.json".to_string()), Some(1), "docker policy must require digest pinning for downloaded assets", None)]);
+        return TestResult::Fail(vec![violation("DOCKER-057", "docker.run.downloaded_assets_are_verified", Some("ops/docker/policy.json".to_string()), Some(1), "docker policy must require digest pinning for downloaded assets", None)]);
     }
     let mut violations = Vec::new();
     for (rel, instructions) in rows {

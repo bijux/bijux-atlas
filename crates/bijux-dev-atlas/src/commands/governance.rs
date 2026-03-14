@@ -2480,11 +2480,11 @@ fn semver_major(version: &str) -> Option<u64> {
 }
 
 fn release_breaking_notes_meta_path(root: &Path) -> PathBuf {
-    root.join("release/notes/breaking.md")
+    root.join("ops/release/notes/breaking.md")
 }
 
 fn release_breaking_notes_schema_path(root: &Path) -> PathBuf {
-    root.join("release/notes/breaking.schema.json")
+    root.join("ops/release/notes/breaking.schema.json")
 }
 
 fn parse_front_matter(text: &str) -> Result<serde_yaml::Value, String> {
@@ -3586,7 +3586,7 @@ pub(crate) fn run_governance_command(
                 });
                 validate_named_report(&root, "exceptions-churn.schema.json", &churn_report)?;
                 write_pretty_json(&churn_path, &churn_report)?;
-                let release_manifest_path = root.join("release/evidence/manifest.json");
+                let release_manifest_path = root.join("ops/release/evidence/manifest.json");
                 let rel_exc_001 = if release_manifest_path.exists() {
                     let manifest: serde_json::Value =
                         serde_json::from_str(&fs::read_to_string(&release_manifest_path).map_err(
@@ -4116,7 +4116,7 @@ pub(crate) fn run_governance_command(
                 let notes_cover_breaks = rows.is_empty() || !notes_entries.is_empty();
                 if !notes_cover_breaks {
                     errors.push(
-                        "breaking changes exist but release/notes/breaking.md has no entries"
+                        "breaking changes exist but ops/release/notes/breaking.md has no entries"
                             .to_string(),
                     );
                 }
@@ -4138,7 +4138,7 @@ pub(crate) fn run_governance_command(
                             "artifacts/governance/compat-warnings.json",
                             "docs/redirects.json",
                             "ops/k8s/charts/bijux-atlas/Chart.yaml",
-                            "release/notes/breaking.md"
+                            "ops/release/notes/breaking.md"
                         ]
                     },
                     "status": if errors.is_empty() { "ok" } else { "failed" },
@@ -4216,7 +4216,7 @@ pub(crate) fn run_governance_command(
             } else {
                 serde_json::json!({"rows":[]})
             };
-            let release_manifest_path = root.join("release/evidence/manifest.json");
+            let release_manifest_path = root.join("ops/release/evidence/manifest.json");
             let today = current_utc_day()?;
 
             let active_exceptions = exceptions

@@ -63,5 +63,5 @@ Integrity errors stop recurring, the previous good dataset serves successfully, 
 
 ## Next
 
-- [Backup and restore](../release/backup-and-restore.md)
+- [Backup and restore](../ops/release/backup-and-restore.md)
 - [Rollback playbook](rollback-playbook.md)

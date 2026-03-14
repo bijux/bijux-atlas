@@ -3,10 +3,10 @@
   "kind": "security_threat_model_evidence",
   "generated_at": "2026-03-05T00:00:00Z",
   "sources": {
-    "taxonomy": "security/threat-model/classification-taxonomy.yaml",
-    "registry": "security/threat-model/threat-registry.yaml",
-    "threats": "security/threat-model/threats.yaml",
-    "mitigations": "security/threat-model/mitigations.yaml"
+    "taxonomy": "ops/security/threat-model/classification-taxonomy.yaml",
+    "registry": "ops/security/threat-model/threat-registry.yaml",
+    "threats": "ops/security/threat-model/threats.yaml",
+    "mitigations": "ops/security/threat-model/mitigations.yaml"
   },
   "verification": {
     "command": "bijux-dev-atlas security threats verify --format json",

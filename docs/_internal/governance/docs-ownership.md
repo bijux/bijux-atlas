@@ -16,7 +16,7 @@
 - `operations/`: `bijux-atlas-operations`
 - `development/`: `bijux-atlas-developer-experience`
 - `reference/`: `bijux-atlas-docs`
-- `governance/`: `bijux-atlas-docs`
+- `ops/governance/repository/`: `bijux-atlas-docs`
 
 ## Review Requirements
 

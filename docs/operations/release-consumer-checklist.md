@@ -14,12 +14,12 @@
 
 ## Install
 
-- Verify the delivered bundle path matches `release/evidence/bundle.tar`.
+- Verify the delivered bundle path matches `ops/release/evidence/bundle.tar`.
 - Verify the checksum list, provenance file, and sign/verify reports are present.
 
 ## Verify
 
-- Run `release verify --evidence release/evidence/bundle.tar --format json`.
+- Run `release verify --evidence ops/release/evidence/bundle.tar --format json`.
 - Confirm `REL-SIGN-*`, `REL-PROV-001`, `REL-TAR-001`, and `REL-MAN-001` all pass.
 - Confirm the chart package and SBOM set are present and match the expected release ID.
 

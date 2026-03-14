@@ -13,4 +13,4 @@ cargo run -q -p bijux-dev-atlas -- release bundle verify --format json
 cargo run -q -p bijux-dev-atlas -- release checksums verify --format json
 ```
 
-Use `release/signing/checksums.json` as the canonical integrity ledger.
+Use `ops/release/signing/checksums.json` as the canonical integrity ledger.

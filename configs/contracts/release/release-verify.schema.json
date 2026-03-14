@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/release/release-verify.schema.json",
+  "$id": "https://bijux.dev/schema/ops/release/release-verify.schema.json",
   "title": "Release Verify Report",
   "type": "object",
   "additionalProperties": false,

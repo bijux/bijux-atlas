@@ -13,9 +13,9 @@ Ops distribution ships a consumable surface, not only repository source.
 
 - OCI chart: `oci://ghcr.io/bijux/charts/bijux-atlas`
 - Offline bundle: `artifacts/release/ops/bundle/vX.Y.Z/ops-bundle-vX.Y.Z.tar.gz`
-- Chart digest manifest: `release/ops-chart-digest.json`
-- Ops release manifest: `release/ops-release-manifest.json`
-- Evidence bundles: `release/evidence/ops-distribution/*/evidence.json`
+- Chart digest manifest: `ops/release/ops-chart-digest.json`
+- Ops release manifest: `ops/release/ops-release-manifest.json`
+- Evidence bundles: `ops/release/evidence/ops-distribution/*/evidence.json`
 
 ## Why this surface exists
 

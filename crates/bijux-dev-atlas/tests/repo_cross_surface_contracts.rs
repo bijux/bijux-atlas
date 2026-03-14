@@ -192,7 +192,7 @@ fn helm_values_do_not_expose_dead_runtime_tuning_branches() {
 #[test]
 fn root_contract_documents_the_cross_surface_invariants() {
     let root = repo_root();
-    let contract = read(&root.join("governance/README.md"));
+    let contract = read(&root.join("ops/governance/repository/README.md"));
 
     for invariant in [
         "Invariant: Helm env emitted by the chart must stay a subset of the runtime allowlist declared in `configs/contracts/env.schema.json`.",
@@ -207,7 +207,7 @@ fn root_contract_documents_the_cross_surface_invariants() {
     ] {
         assert!(
             contract.contains(invariant),
-            "governance/README.md must document cross-surface invariant `{invariant}`"
+            "ops/governance/repository/README.md must document cross-surface invariant `{invariant}`"
         );
     }
 }

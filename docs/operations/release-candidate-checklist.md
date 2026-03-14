@@ -20,15 +20,15 @@ last_reviewed: 2026-03-03
 ## Checklist
 
 1. Run `ops evidence collect` and confirm it exits successfully.
-2. Run `ops evidence verify release/evidence/bundle.tar` and confirm it exits successfully.
-3. Confirm `release/evidence/manifest.json` lists the expected chart package, SBOMs, and report paths.
+2. Run `ops evidence verify ops/release/evidence/bundle.tar` and confirm it exits successfully.
+3. Confirm `ops/release/evidence/manifest.json` lists the expected chart package, SBOMs, and report paths.
 4. Confirm the release candidate has the expected lifecycle and simulation summaries attached when those workflows were executed.
 5. Confirm no redacted log file still contains a common secret marker.
 
 ## Verify Command
 
 ```bash
-cargo run -q -p bijux-dev-atlas -- ops evidence verify release/evidence/bundle.tar --allow-write --format json
+cargo run -q -p bijux-dev-atlas -- ops evidence verify ops/release/evidence/bundle.tar --allow-write --format json
 ```
 
 ## Review Focus

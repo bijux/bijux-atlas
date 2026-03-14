@@ -1187,7 +1187,7 @@ fn build_real_data_runs_table_body(catalog: &DocsRealDataCatalog) -> String {
     );
     for run in &catalog.runs {
         out.push_str(&format!(
-            "| {} | `{}` | `{}` | `{}` | `{}` | [Details](../tutorials/real-data/runs/{}.md) |\n",
+            "| {} | `{}` | `{}` | `{}` | `{}` | [Details](../ops/tutorials/real-data/runs/{}.md) |\n",
             run.run_label, run.id, run.dataset, run.dataset_size_tier, run.ingest_mode, run.id
         ));
     }
@@ -1196,7 +1196,7 @@ fn build_real_data_runs_table_body(catalog: &DocsRealDataCatalog) -> String {
 
 fn build_real_data_overview_body(catalog: &DocsRealDataCatalog) -> String {
     let mut out = String::from(
-        "# Real Data Runs Overview\n\nYou are here: `docs/_internal/generated/real-data-runs-overview.md`\n\nReturn to: [Real Data Runs index](../../tutorials/real-data/index.md)\n\nThis page is generated from `configs/tutorials/real-data-runs.json`.\n\n",
+        "# Real Data Runs Overview\n\nYou are here: `docs/_internal/generated/real-data-runs-overview.md`\n\nReturn to: [Real Data Runs index](../../ops/tutorials/real-data/index.md)\n\nThis page is generated from `configs/tutorials/real-data-runs.json`.\n\n",
     );
     out.push_str("## Coverage Summary\n\n");
     out.push_str(&format!("- Total runs: `{}`\n", catalog.runs.len()));
@@ -1221,14 +1221,14 @@ fn build_real_data_overview_body(catalog: &DocsRealDataCatalog) -> String {
     out.push_str("## Run Links\n\n");
     for run in &catalog.runs {
         out.push_str(&format!(
-            "- `{}`: [tutorials/real-data/runs/{}.md](../../tutorials/real-data/runs/{}.md)\n",
+            "- `{}`: [ops/tutorials/real-data/runs/{}.md](../../ops/tutorials/real-data/runs/{}.md)\n",
             run.run_label, run.id, run.id
         ));
     }
     out.push_str("\n## Related pages\n\n");
     out.push_str("- [Real Data Runs table](../../_generated/real-data-runs-table.md)\n");
     out.push_str("- [Real Data Runs report](../../reference/reports/real-data-runs.md)\n");
-    out.push_str("\n---\nParent index: [Tutorials](../../tutorials/index.md)\n");
+    out.push_str("\n---\nParent index: [Tutorials](../../ops/tutorials/index.md)\n");
     out
 }
 
@@ -1273,7 +1273,7 @@ fn build_artifact_link_inventory_body(rows: &[(String, String)]) -> String {
         }
     }
     let mut out = String::from(
-        "# Docs Artifact Link Inventory\n\nYou are here: `docs/_internal/generated/docs-artifact-link-inventory.md`\n\nReturn to: [Docs governance index](../governance/index.md)\n\n",
+        "# Docs Artifact Link Inventory\n\nYou are here: `docs/_internal/generated/docs-artifact-link-inventory.md`\n\nReturn to: [Docs governance index](../ops/governance/repository/index.md)\n\n",
     );
     out.push_str("## Links Containing `artifacts/`\n\n");
     if artifacts.is_empty() {
@@ -1387,7 +1387,7 @@ fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Valu
         .and_then(|text| text.lines().find(|line| line.trim_start().starts_with("version = ")).map(str::to_string))
         .and_then(|line| line.split('"').nth(1).map(str::to_string))
         .unwrap_or_else(|| "0.1.0".to_string());
-    let ops_manifest_path = repo_root.join("release/ops-release-manifest.json");
+    let ops_manifest_path = repo_root.join("ops/release/ops-release-manifest.json");
     let ops_manifest: serde_json::Value = fs::read_to_string(&ops_manifest_path)
         .ok()
         .and_then(|text| serde_json::from_str(&text).ok())
@@ -2232,7 +2232,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 };
                 let samples = [
                     "index.html",
-                    "tutorials/real-data/index.html",
+                    "ops/tutorials/real-data/index.html",
                     "_generated/real-data-runs-table/index.html",
                     "_internal/generated/real-data-runs-overview/index.html",
                 ];

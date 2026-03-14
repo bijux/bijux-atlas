@@ -18,4 +18,4 @@
 ## Next
 
 - [Dataset Operations](../dataset-operations.md)
-- [Operations Release](../../operations/release/index.md)
+- [Operations Release](../../operations/ops/release/index.md)

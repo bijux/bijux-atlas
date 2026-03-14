@@ -19,7 +19,7 @@ fn fixture_root(name: &str) -> PathBuf {
 #[test]
 fn tutorial_contract_file_exists_and_validates() {
     let root = repo_root();
-    let contract_path = root.join("tutorials/contracts/tutorial-dataset-contract.json");
+    let contract_path = root.join("ops/tutorials/contracts/tutorial-dataset-contract.json");
     assert!(contract_path.exists(), "contract file must exist");
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&root)

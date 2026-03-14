@@ -15,7 +15,7 @@ Reason to exist: provide factual command and artifact references for dataset ing
 
 - artifact root
 - catalog file
-- dataset identity (`release/species/assembly`)
+- dataset identity (`ops/release/species/assembly`)
 
 ## Canonical dataset manifest
 

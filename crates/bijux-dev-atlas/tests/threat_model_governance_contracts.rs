@@ -9,11 +9,11 @@ fn threat_model_registry_files_exist_and_are_well_formed() {
         .and_then(|p| p.parent())
         .expect("workspace root");
 
-    let assets = root.join("security/threat-model/assets.yaml");
-    let threats = root.join("security/threat-model/threats.yaml");
-    let mitigations = root.join("security/threat-model/mitigations.yaml");
-    let taxonomy = root.join("security/threat-model/classification-taxonomy.yaml");
-    let registry = root.join("security/threat-model/threat-registry.yaml");
+    let assets = root.join("ops/security/threat-model/assets.yaml");
+    let threats = root.join("ops/security/threat-model/threats.yaml");
+    let mitigations = root.join("ops/security/threat-model/mitigations.yaml");
+    let taxonomy = root.join("ops/security/threat-model/classification-taxonomy.yaml");
+    let registry = root.join("ops/security/threat-model/threat-registry.yaml");
 
     for path in [&assets, &threats, &mitigations, &taxonomy, &registry] {
         assert!(
@@ -39,12 +39,12 @@ fn threat_registry_ids_cover_threat_entries() {
         .expect("workspace root");
 
     let threats: serde_yaml::Value = serde_yaml::from_str(
-        &std::fs::read_to_string(root.join("security/threat-model/threats.yaml"))
+        &std::fs::read_to_string(root.join("ops/security/threat-model/threats.yaml"))
             .expect("read threats"),
     )
     .expect("parse threats");
     let registry: serde_yaml::Value = serde_yaml::from_str(
-        &std::fs::read_to_string(root.join("security/threat-model/threat-registry.yaml"))
+        &std::fs::read_to_string(root.join("ops/security/threat-model/threat-registry.yaml"))
             .expect("read registry"),
     )
     .expect("parse registry");

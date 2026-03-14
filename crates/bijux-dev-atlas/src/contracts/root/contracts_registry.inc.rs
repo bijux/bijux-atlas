@@ -1,7 +1,6 @@
-const ROOT_ALLOWED_VISIBLE: [&str; 19] = [
+const ROOT_ALLOWED_VISIBLE: [&str; 16] = [
     ".cargo",
     ".dockerignore",
-    ".editorconfig",
     ".gitattributes",
     ".github",
     ".gitignore",
@@ -16,19 +15,14 @@ const ROOT_ALLOWED_VISIBLE: [&str; 19] = [
     "SECURITY.md",
     "configs",
     "crates",
-    "docker",
-    "governance",
 ];
 
-const ROOT_ALLOWED_VISIBLE_TAIL: [&str; 8] = [
+const ROOT_ALLOWED_VISIBLE_TAIL: [&str; 5] = [
     "docs",
     "make",
     "mkdocs.yml",
     "ops",
-    "release",
     "rust-toolchain.toml",
-    "security",
-    "tutorials",
 ];
 
 const ROOT_IGNORED_LOCAL: [&str; 4] = [".git", ".idea", "artifacts", "target"];
@@ -374,16 +368,6 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
-            id: ContractId("ROOT-021".to_string()),
-            title: "editorconfig exists for shared formatting contracts",
-            tests: vec![TestCase {
-                id: TestId("root.editorconfig.exists".to_string()),
-                title: ".editorconfig stays present at the repo root",
-                kind: TestKind::Pure,
-                run: test_root_021_editorconfig_exists,
-            }],
-        },
-        Contract {
             id: ContractId("ROOT-022".to_string()),
             title: "repo root keeps a single unambiguous license authority",
             tests: vec![TestCase {
@@ -438,7 +422,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             title: "top-level contract documents follow the canonical executable template",
             tests: vec![TestCase {
                 id: TestId("root.contract_docs.canonical_template".to_string()),
-                title: "root/docs/docker/make/ops/configs CONTRACT.md files stay canonical and registry-complete",
+                title: "root/docs/ops/docker/make/ops/configs CONTRACT.md files stay canonical and registry-complete",
                 kind: TestKind::Pure,
                 run: test_root_041_contract_docs_canonical_template,
             }],

@@ -3,7 +3,7 @@ name: security-threat-model-validation
 on:
   pull_request:
     paths:
-      - "security/threat-model/**"
+      - "ops/security/threat-model/**"
       - "crates/bijux-dev-atlas/src/commands/security.rs"
       - "crates/bijux-dev-atlas/src/cli/mod.rs"
       - "crates/bijux-dev-atlas/tests/threat_model_governance_contracts.rs"

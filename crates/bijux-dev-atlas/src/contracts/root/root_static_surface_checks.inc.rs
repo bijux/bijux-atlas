@@ -228,7 +228,7 @@ fn test_root_005_dockerfile_policy(ctx: &RunContext) -> TestResult {
     } else {
         match std::fs::read_link(&path) {
             Ok(target) => {
-                let expected = PathBuf::from("docker/images/runtime/Dockerfile");
+                let expected = PathBuf::from("ops/docker/images/runtime/Dockerfile");
                 if target != expected {
                     push_root_violation(
                         &mut violations,

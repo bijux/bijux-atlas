@@ -28,13 +28,13 @@ Atlas documentation is organized by system understanding first, then execution d
 | Crates | `crates/` | runtime, ingest, query, API, and tooling |
 | Ops | `ops/` | deploy profiles, schemas, and release evidence |
 | Docs | `docs/` | canonical reader and operator guides |
-| Docker | `docker/` | image build and runtime definitions |
+| Docker | `ops/docker/` | image build and runtime definitions |
 
 ## Proven Coverage
 
-- Ten real-data runs: [Real Data Runs](tutorials/real-data/index.md)
+- Ten real-data runs: [Real Data Runs](ops/tutorials/real-data/index.md)
 - Combined run report: [Real data runs report](reference/reports/real-data-runs.md)
-- E2E runbook with commands/results: [Real data E2E tutorial](tutorials/real-data-e2e.md)
+- E2E runbook with commands/results: [Real data E2E tutorial](ops/tutorials/real-data-e2e.md)
 - Contract and governance guide: [Reference governance](reference/governance.md)
 
 ## Evidence-first Evaluation Path
@@ -66,7 +66,7 @@ Atlas documentation is organized by system understanding first, then execution d
 - Dev: [Development Index](development/index.md)
 - Control-plane: [Control-plane Index](control-plane/index.md)
 - Reference: [Reference Index](reference/index.md)
-- Governance: [Governance Index](governance/index.md)
+- Governance: [Governance Index](ops/governance/repository/index.md)
 ## Next steps
 
 - Platform summary: [What We Built](what-we-built.md)

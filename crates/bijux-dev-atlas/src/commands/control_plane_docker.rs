@@ -266,7 +266,7 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     &[
                         "build",
                         "--file",
-                        "docker/images/runtime/Dockerfile",
+                        "ops/docker/images/runtime/Dockerfile",
                         "--tag",
                         &tag,
                         ".",
@@ -561,25 +561,25 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
             DockerCommand::ReleasePlan(common) => {
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
                 let policy: serde_json::Value = serde_json::from_str(
-                    &fs::read_to_string(repo_root.join("docker/policy.json"))
-                        .map_err(|e| format!("cannot read docker/policy.json: {e}"))?,
+                    &fs::read_to_string(repo_root.join("ops/docker/policy.json"))
+                        .map_err(|e| format!("cannot read ops/docker/policy.json: {e}"))?,
                 )
-                .map_err(|e| format!("cannot parse docker/policy.json: {e}"))?;
+                .map_err(|e| format!("cannot parse ops/docker/policy.json: {e}"))?;
                 let push_policy: serde_json::Value = serde_json::from_str(
-                    &fs::read_to_string(repo_root.join("docker/push-policy.json"))
-                        .map_err(|e| format!("cannot read docker/push-policy.json: {e}"))?,
+                    &fs::read_to_string(repo_root.join("ops/docker/push-policy.json"))
+                        .map_err(|e| format!("cannot read ops/docker/push-policy.json: {e}"))?,
                 )
-                .map_err(|e| format!("cannot parse docker/push-policy.json: {e}"))?;
+                .map_err(|e| format!("cannot parse ops/docker/push-policy.json: {e}"))?;
                 let manifest: serde_json::Value = serde_json::from_str(
-                    &fs::read_to_string(repo_root.join("docker/images.manifest.json"))
-                        .map_err(|e| format!("cannot read docker/images.manifest.json: {e}"))?,
+                    &fs::read_to_string(repo_root.join("ops/docker/images.manifest.json"))
+                        .map_err(|e| format!("cannot read ops/docker/images.manifest.json: {e}"))?,
                 )
-                .map_err(|e| format!("cannot parse docker/images.manifest.json: {e}"))?;
+                .map_err(|e| format!("cannot parse ops/docker/images.manifest.json: {e}"))?;
                 let matrix: serde_json::Value = serde_json::from_str(
-                    &fs::read_to_string(repo_root.join("docker/build-matrix.json"))
-                        .map_err(|e| format!("cannot read docker/build-matrix.json: {e}"))?,
+                    &fs::read_to_string(repo_root.join("ops/docker/build-matrix.json"))
+                        .map_err(|e| format!("cannot read ops/docker/build-matrix.json: {e}"))?,
                 )
-                .map_err(|e| format!("cannot parse docker/build-matrix.json: {e}"))?;
+                .map_err(|e| format!("cannot parse ops/docker/build-matrix.json: {e}"))?;
                 let images = manifest
                     .get("images")
                     .and_then(serde_json::Value::as_array)

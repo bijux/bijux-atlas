@@ -48,7 +48,7 @@ fn owner_is_valid(owner_ids: &BTreeSet<String>, owner: &str) -> bool {
 }
 
 fn load_domain_registry_map(repo_root: &Path) -> BTreeMap<String, Vec<String>> {
-    let path = repo_root.join("governance/domain-registry-map.json");
+    let path = repo_root.join("ops/governance/repository/domain-registry-map.json");
     let Ok(value) = read_json(&path) else {
         return BTreeMap::new();
     };
@@ -111,7 +111,7 @@ fn detect_ssot_drift(map: &BTreeMap<String, Vec<String>>) -> Vec<String> {
 }
 
 fn load_allowed_registry_json_paths(repo_root: &Path) -> BTreeSet<String> {
-    let path = repo_root.join("governance/domain-registry-map.json");
+    let path = repo_root.join("ops/governance/repository/domain-registry-map.json");
     let mut allowed = BTreeSet::new();
     if let Ok(value) = read_json(&path) {
         for rel in value["approved_registry_json_paths"]

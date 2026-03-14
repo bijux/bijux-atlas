@@ -9,8 +9,8 @@
       "crates/bijux-atlas-python/notebooks/**/*.ipynb"
     ],
     "forbidden_after_migration_complete": [
-      "tutorials/**/*.py",
-      "tutorials/scripts/**"
+      "ops/tutorials/**/*.py",
+      "ops/tutorials/scripts/**"
     ],
     "notes": "Python is allowed only for client SDK product code and artifacts."
   },

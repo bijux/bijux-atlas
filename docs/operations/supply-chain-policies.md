@@ -8,9 +8,9 @@
 
 ## Policy Sources
 
-- `docker/airgap-policy.json`
-- `docker/push-policy.json`
-- `docker/policy.json`
+- `ops/docker/airgap-policy.json`
+- `ops/docker/push-policy.json`
+- `ops/docker/policy.json`
 
 ## Airgap Build Policy
 

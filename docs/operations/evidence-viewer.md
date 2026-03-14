@@ -19,15 +19,15 @@ last_reviewed: 2026-03-03
 
 ## Fast Path
 
-1. Open `release/evidence/index.html` for the high-level summary.
-2. Read `release/evidence/manifest.json` for the canonical file list and checksums.
-3. Read `release/evidence/identity.json` for release identity and governance linkage.
+1. Open `ops/release/evidence/index.html` for the high-level summary.
+2. Read `ops/release/evidence/manifest.json` for the canonical file list and checksums.
+3. Read `ops/release/evidence/identity.json` for release identity and governance linkage.
 4. Use `ops evidence diff` when comparing two bundles.
 
 ## Quick Commands
 
 ```bash
-open release/evidence/index.html
-cat release/evidence/manifest.json
-cargo run -q -p bijux-dev-atlas -- ops evidence diff release/evidence/bundle.tar other-bundle.tar --allow-write --format json
+open ops/release/evidence/index.html
+cat ops/release/evidence/manifest.json
+cargo run -q -p bijux-dev-atlas -- ops evidence diff ops/release/evidence/bundle.tar other-bundle.tar --allow-write --format json
 ```

@@ -30,4 +30,4 @@ cargo nextest run
 ## Related
 
 - [Commands](../commands.md)
-- [Tutorials](../../tutorials/index.md)
+- [Tutorials](../../ops/tutorials/index.md)

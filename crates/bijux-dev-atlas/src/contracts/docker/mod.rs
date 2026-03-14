@@ -210,7 +210,7 @@ fn violation(
 
 fn effect_artifact_dir(ctx: &RunContext) -> Option<PathBuf> {
     let root = ctx.artifacts_root.as_ref()?;
-    let dir = root.join("contracts/docker/effect");
+    let dir = root.join("contracts/ops/docker/effect");
     std::fs::create_dir_all(&dir).ok()?;
     Some(dir)
 }
@@ -445,13 +445,13 @@ pub fn render_contract_markdown(repo_root: &Path) -> Result<String, String> {
 
 pub fn sync_contract_markdown(repo_root: &Path) -> Result<(), String> {
     let rendered = render_contract_markdown(repo_root)?;
-    let path = repo_root.join("docker/CONTRACT.md");
+    let path = repo_root.join("ops/docker/CONTRACT.md");
     std::fs::write(&path, rendered).map_err(|e| format!("write {} failed: {e}", path.display()))
 }
 
 pub fn sync_contract_registry_json(repo_root: &Path) -> Result<(), String> {
     let rendered = render_contract_registry_json(repo_root)?;
-    let path = repo_root.join("docker/docker.contracts.json");
+    let path = repo_root.join("ops/docker/docker.contracts.json");
     std::fs::write(&path, format!("{rendered}\n"))
         .map_err(|e| format!("write {} failed: {e}", path.display()))
 }
@@ -472,7 +472,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOCKER-007" => [
             "Use digest-pinned base images in every FROM instruction.",
             "Format: registry/repo:tag@sha256:<digest>.",
-            "If a temporary exception is required, add an exact image reference to docker/policy.json allow_tagged_images_exceptions.",
+            "If a temporary exception is required, add an exact image reference to ops/docker/policy.json allow_tagged_images_exceptions.",
         ]
         .join("\n"),
         "DOCKER-006" => [

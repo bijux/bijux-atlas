@@ -13,7 +13,7 @@ Security architecture spans API boundaries, runtime controls, artifact integrity
 
 Reference assets:
 
-- `security/threat-model/assets.yaml`
-- `security/threat-model/trust-boundaries.md`
-- `security/threat-model/threats.yaml`
-- `security/threat-model/mitigations.yaml`
+- `ops/security/threat-model/assets.yaml`
+- `ops/security/threat-model/trust-boundaries.md`
+- `ops/security/threat-model/threats.yaml`
+- `ops/security/threat-model/mitigations.yaml`

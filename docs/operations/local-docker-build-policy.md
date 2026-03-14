@@ -21,7 +21,7 @@ related:
 ## Local build command
 
 ```bash
-docker build --pull=false -f docker/images/runtime/Dockerfile -t bijux-atlas:local .
+docker build --pull=false -f ops/docker/images/runtime/Dockerfile -t bijux-atlas:local .
 ```
 
 

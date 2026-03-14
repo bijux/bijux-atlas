@@ -91,9 +91,9 @@ fn dataset_manifest_integrity_contract() {
     checksums.insert("sqlite".to_string(), "abc123".to_string());
     checksums.insert("fasta".to_string(), "fff111".to_string());
 
-    let manifest_checksum = calculate_manifest_checksum("release/species/assembly", &checksums);
+    let manifest_checksum = calculate_manifest_checksum("ops/release/species/assembly", &checksums);
     let manifest = DatasetManifestIntegrity {
-        dataset_id: "release/species/assembly".to_string(),
+        dataset_id: "ops/release/species/assembly".to_string(),
         artifact_checksums: checksums,
         manifest_checksum_sha256: manifest_checksum,
         dataset_signature_sha256: "sig".to_string(),

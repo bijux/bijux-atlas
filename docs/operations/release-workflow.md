@@ -48,5 +48,5 @@ Expected result: release update completes and all readiness and observability ch
 
 ## Next
 
-- [Release Operations](release/index.md)
-- [Upgrade Procedure](release/upgrade-procedure.md)
+- [Release Operations](ops/release/index.md)
+- [Upgrade Procedure](ops/release/upgrade-procedure.md)

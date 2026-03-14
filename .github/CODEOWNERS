@@ -15,7 +15,7 @@
 /.github/workflows/ @bijan
 /crates/ @bijan
 /docs/ @bijan
-/docker/ @bijan
+/ops/docker/ @bijan
 /make/ @bijan
 /crates/*/docs/ @bijan
 /configs/ @bijan

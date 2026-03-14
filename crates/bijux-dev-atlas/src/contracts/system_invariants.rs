@@ -67,7 +67,7 @@ pub fn registry() -> Vec<SystemInvariant> {
         SystemInvariant {
             id: "INV-SHARD-DIR-REGISTRY-001",
             title: "Shard directories map to registry entries",
-            summary: "Shard-like artifact directories must be represented in release/evidence manifest entries.",
+            summary: "Shard-like artifact directories must be represented in ops/release/evidence manifest entries.",
             severity: InvariantSeverity::High,
             group: InvariantGroup::Registry,
         },

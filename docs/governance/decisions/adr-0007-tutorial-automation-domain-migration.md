@@ -19,7 +19,7 @@ tags:
 
 ## Context
 
-Tutorial execution and validation relied on `tutorials/scripts` and Python test helpers, which fragmented governance and made automation ownership ambiguous.
+Tutorial execution and validation relied on `ops/tutorials/scripts` and Python test helpers, which fragmented governance and made automation ownership ambiguous.
 
 ## Decision
 
@@ -28,5 +28,5 @@ Tutorial automation is migrated into the `tutorials` domain in `bijux-dev-atlas`
 ## Consequences
 
 1. Tutorial workflows, verification, and reports are invoked from `bijux-dev-atlas tutorials ...`.
-2. Tutorial artifacts remain in `tutorials/`, while automation logic lives in Rust under `crates/bijux-dev-atlas`.
+2. Tutorial artifacts remain in `ops/tutorials/`, while automation logic lives in Rust under `crates/bijux-dev-atlas`.
 

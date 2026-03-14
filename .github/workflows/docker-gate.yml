@@ -3,7 +3,7 @@ name: docker-gate
 on:
   pull_request:
     paths:
-      - "docker/**"
+      - "ops/docker/**"
       - "make/docker.mk"
       - "make/root.mk"
       - "crates/bijux-dev-atlas/src/commands/control_plane.rs"

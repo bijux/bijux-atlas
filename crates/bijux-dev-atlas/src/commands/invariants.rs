@@ -174,7 +174,7 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
         | "INV-REGISTRY-CHECKSUM-001"
         | "INV-SHARD-DIR-REGISTRY-001"
         | "INV-SHARD-ORPHAN-001" => {
-            let manifest_path = root.join("release/evidence/manifest.json");
+            let manifest_path = root.join("ops/release/evidence/manifest.json");
             match read_json(&manifest_path) {
                 Ok(value) => {
                     let rows = value

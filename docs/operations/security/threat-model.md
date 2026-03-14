@@ -13,9 +13,9 @@ Atlas threat model is source-controlled and evidence-backed.
 
 Primary sources:
 
-- `security/threat-model/assets.yaml`
-- `security/threat-model/trust-boundaries.md`
-- `security/threat-model/threats.yaml`
-- `security/threat-model/mitigations.yaml`
-- `security/threat-model/classification-taxonomy.yaml`
-- `security/threat-model/threat-registry.yaml`
+- `ops/security/threat-model/assets.yaml`
+- `ops/security/threat-model/trust-boundaries.md`
+- `ops/security/threat-model/threats.yaml`
+- `ops/security/threat-model/mitigations.yaml`
+- `ops/security/threat-model/classification-taxonomy.yaml`
+- `ops/security/threat-model/threat-registry.yaml`

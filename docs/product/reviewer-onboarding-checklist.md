@@ -19,7 +19,7 @@ related:
 Review these ten artifacts first:
 
 1. [Repository constitution](../contract.md)
-2. [Checks and contracts index](../_internal/governance/checks-and-contracts.md)
+2. [Checks and contracts index](../_internal/ops/governance/repository/checks-and-contracts.md)
 3. [What we built](what-we-built.md)
 4. [Why trust this](why-trust-this.md)
 5. [Reliability boundaries](reliability-boundaries.md)

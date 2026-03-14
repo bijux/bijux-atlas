@@ -15,9 +15,9 @@
 
 ## Install
 
-- Update `release/signing/policy.yaml` to describe the new verification command or custody model.
+- Update `ops/release/signing/policy.yaml` to describe the new verification command or custody model.
 - Regenerate the evidence bundle and signing artifacts.
-- Run `release verify --evidence release/evidence/bundle.tar --format json`.
+- Run `release verify --evidence ops/release/evidence/bundle.tar --format json`.
 
 ## Verify
 
@@ -26,5 +26,5 @@
 
 ## Rollback
 
-- Restore the last known good `release/signing/policy.yaml`.
+- Restore the last known good `ops/release/signing/policy.yaml`.
 - Regenerate the signing artifacts and verify again before promotion resumes.

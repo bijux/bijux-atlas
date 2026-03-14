@@ -68,5 +68,5 @@ Readiness returns, store-facing alerts stop paging, and core read traffic succee
 - [Rollback playbook](rollback-playbook.md)
 
 ## Evidence
-- Required evidence bundle: release/evidence/bundle.tar
+- Required evidence bundle: ops/release/evidence/bundle.tar
 - Contract reports: artifacts/ops/ops_run/observe/*.json

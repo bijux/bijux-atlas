@@ -14,5 +14,5 @@ last_reviewed: 2026-03-05
 Minimum retained files per release:
 - `artifacts/release/<version>/manifest.json`
 - `artifacts/release/<version>/bundle.tar`
-- `release/signing/checksums.json`
-- `release/provenance.json`
+- `ops/release/signing/checksums.json`
+- `ops/release/provenance.json`

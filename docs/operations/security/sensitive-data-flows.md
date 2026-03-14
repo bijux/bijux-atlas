@@ -9,7 +9,7 @@ last_reviewed: 2026-03-05
 
 # Sensitive Data Flows
 
-Sensitive data flow references are documented in `security/threat-model/dataflows.md`.
+Sensitive data flow references are documented in `ops/security/threat-model/dataflows.md`.
 
 Primary concerns:
 

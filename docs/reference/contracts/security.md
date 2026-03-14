@@ -43,9 +43,9 @@
 
 ## Source files
 
-- Threat model: `security/threat-model/*.md`, `security/threat-model/*.yaml`
-- Compliance: `security/compliance/*.yaml`
+- Threat model: `ops/security/threat-model/*.md`, `ops/security/threat-model/*.yaml`
+- Compliance: `ops/security/compliance/*.yaml`
 - Secret policy: `configs/security/*.json`
 - Auth policy: `configs/security/*.yaml`
-- Signing policy: `release/signing/policy.yaml`
+- Signing policy: `ops/release/signing/policy.yaml`
 - Schemas: `configs/contracts/security/*.json`

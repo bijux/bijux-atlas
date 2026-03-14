@@ -1,0 +1,90 @@
+schema_version: 1
+mechanism:
+  type: internal-checksum-ledger
+  mode: keyless-local
+  rationale: >
+    The current release surface uses deterministic checksums and provenance files as the
+    consumer-verifiable integrity contract until detached signature material is introduced.
+key_custody_model:
+  owner: bijux-atlas-release
+  storage: repository-governed evidence workspace
+  rotation_expectation: rotate signing metadata on release process changes and before any trust-root change
+verification:
+  command: bijux-dev-atlas ops evidence verify ops/release/evidence/bundle.tar --format json
+  airgap_supported: true
+  notes:
+    - verification reads only local evidence files
+    - consumers should compare checksums before promoting artifacts
+signed_items:
+  - path: configs/governance/exceptions.yaml
+    kind: exceptions-registry
+    required: true
+  - path: configs/governance/exceptions-archive.yaml
+    kind: exceptions-archive
+    required: true
+  - path: artifacts/governance/exceptions-summary.json
+    kind: exceptions-summary
+    required: true
+  - path: artifacts/governance/exceptions-expiry-warning.json
+    kind: exceptions-expiry-warning
+    required: true
+  - path: artifacts/governance/exceptions-churn.json
+    kind: exceptions-churn
+    required: true
+  - path: artifacts/governance/deprecations-summary.json
+    kind: deprecations-summary
+    required: true
+  - path: artifacts/governance/compat-warnings.json
+    kind: compat-warnings
+    required: true
+  - path: artifacts/governance/breaking-changes.json
+    kind: breaking-changes
+    required: true
+  - path: artifacts/governance/governance-doctor.json
+    kind: governance-doctor
+    required: true
+  - path: artifacts/governance/institutional-delta.md
+    kind: institutional-delta
+    required: true
+  - path: artifacts/governance/institutional-delta-inputs.json
+    kind: institutional-delta-inputs
+    required: true
+  - path: configs/security/auth-model.yaml
+    kind: auth-model-snapshot
+    required: true
+  - path: configs/security/policy.yaml
+    kind: auth-policy-snapshot
+    required: true
+  - path: configs/observability/audit-log.schema.json
+    kind: audit-schema
+    required: true
+  - path: configs/observability/retention.yaml
+    kind: retention-policy
+    required: true
+  - path: artifacts/security/audit-verify.json
+    kind: audit-verification-report
+    required: true
+  - path: artifacts/security/log-field-inventory.json
+    kind: audit-log-field-inventory
+    required: true
+  - path: ops/release/evidence/packages/bijux-atlas-0.1.0.tgz
+    kind: chart-package
+    required: true
+  - path: ops/release/evidence/bundle.tar
+    kind: evidence-tarball
+    required: true
+  - path: ops/release/evidence/manifest.json
+    kind: evidence-manifest
+    required: true
+  - path: ops/release/evidence/sboms/perf.spdx.json
+    kind: sbom
+    required: true
+  - path: ops/release/evidence/sboms/prod-airgap.spdx.json
+    kind: sbom
+    required: true
+  - path: ops/release/evidence/sboms/prod-ha.spdx.json
+    kind: sbom
+    required: true
+  - path: ops/release/evidence/sboms/prod-minimal.spdx.json
+    kind: sbom
+    required: true

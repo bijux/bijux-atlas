@@ -9,4 +9,4 @@ last_reviewed: 2026-03-05
 
 # Threat Classification Taxonomy
 
-See `security/threat-model/classification-taxonomy.yaml` for machine-readable taxonomy.
+See `ops/security/threat-model/classification-taxonomy.yaml` for machine-readable taxonomy.

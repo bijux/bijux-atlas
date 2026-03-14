@@ -29,7 +29,7 @@ related:
 
 ## Runtime config example
 
-`docker/images/runtime/runtime-config.example.yaml` is the canonical minimal config sample shipped with the image source.
+`ops/docker/images/runtime/runtime-config.example.yaml` is the canonical minimal config sample shipped with the image source.
 
 ## Healthcheck stance
 

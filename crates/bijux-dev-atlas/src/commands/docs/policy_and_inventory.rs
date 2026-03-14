@@ -380,7 +380,7 @@ fn is_allowed_doc_location(path: &str) -> bool {
         || path.starts_with("crates/")
         || path.starts_with("ops/")
         || path.starts_with("configs/")
-        || path.starts_with("docker/")
+        || path.starts_with("ops/docker/")
         || path == "make/README.md"
         || path == "make/CONTRACT.md"
         || path.starts_with("make/")

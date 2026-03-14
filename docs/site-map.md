@@ -32,12 +32,12 @@ This documentation set is organized around three audience paths and a shared rea
 - [API](api/index.md)
 - [Operations](operations/index.md)
 - [Development](development/index.md)
-- [Governance](governance/index.md)
+- [Governance](ops/governance/repository/index.md)
 - [Reference](reference/index.md)
 - [Control-plane](control-plane/index.md)
 - [CLI](cli/index.md)
 - [Performance](perf/index.md)
-- [Tutorials](tutorials/index.md)
+- [Tutorials](ops/tutorials/index.md)
 - [Glossary](glossary.md)
 
 ## Navigation policy

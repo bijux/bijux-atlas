@@ -12,4 +12,4 @@ tags:
 
 # Tutorial Dashboard Examples
 
-Dashboard example files are stored under `tutorials/dashboards/`.
+Dashboard example files are stored under `ops/tutorials/dashboards/`.

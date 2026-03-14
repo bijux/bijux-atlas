@@ -24,4 +24,4 @@ cargo test -q -p bijux-dev-atlas --test docs_registry_contracts -- --nocapture
 ## Next steps
 
 - [Docs change process](../_internal/meta/docs-change-process.md)
-- [Docs governance](../_internal/governance/index.md)
+- [Docs governance](../_internal/ops/governance/repository/index.md)

@@ -38,7 +38,7 @@ pub fn explain_drift_type(input: &str) -> Option<serde_json::Value> {
         "artifact" => Some(serde_json::json!({
             "drift_type": "artifact",
             "description": "Detects drift between registry manifest references and artifact files on disk.",
-            "detectors": ["release/evidence/manifest.json file presence checks"]
+            "detectors": ["ops/release/evidence/manifest.json file presence checks"]
         })),
         "registry" => Some(serde_json::json!({
             "drift_type": "registry",

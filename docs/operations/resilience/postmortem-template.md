@@ -23,7 +23,7 @@ tags: [resilience, incident]
 ## Evidence
 - Diagnose bundle path:
 - Scenario evidence directory:
-- Related release/artifact versions:
+- Related ops/release/artifact versions:
 
 ## Timeline
 - Detection:

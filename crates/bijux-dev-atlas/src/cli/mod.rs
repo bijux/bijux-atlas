@@ -1752,7 +1752,7 @@ pub struct ReleaseBundleHashArgs {
 pub struct ReleaseSignArgs {
     #[arg(long)]
     pub repo_root: Option<PathBuf>,
-    #[arg(long, default_value = "release/evidence")]
+    #[arg(long, default_value = "ops/release/evidence")]
     pub evidence: PathBuf,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
@@ -1790,7 +1790,7 @@ pub struct ReleaseDiffArgs {
 pub struct ReleasePacketArgs {
     #[arg(long)]
     pub repo_root: Option<PathBuf>,
-    #[arg(long, default_value = "release/evidence")]
+    #[arg(long, default_value = "ops/release/evidence")]
     pub evidence: PathBuf,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,

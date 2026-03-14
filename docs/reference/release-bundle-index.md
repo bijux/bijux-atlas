@@ -35,6 +35,6 @@ related:
 
 ## Release evidence
 
-- Release manifest: `release/release-manifest.json`
-- Evidence manifest: `release/evidence/manifest.json`
-- Signing and provenance: `release/signing/*.json`, `release/provenance.json`
+- Release manifest: `ops/release/release-manifest.json`
+- Evidence manifest: `ops/release/evidence/manifest.json`
+- Signing and provenance: `ops/release/signing/*.json`, `ops/release/provenance.json`

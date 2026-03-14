@@ -1,0 +1,24 @@
+{
+  "accepted_sbom_formats": [
+    "spdx-json",
+    "cyclonedx-json"
+  ],
+  "accepted_scan_report_formats": [
+    "json",
+    "sarif"
+  ],
+  "cve_budget": {
+    "max_critical": 0,
+    "max_high": 0
+  },
+  "cve_overrides": [],
+  "require_prod_image_artifacts": true,
+  "required_paths": [
+    "ops/release/evidence/identity.json",
+    "ops/release/evidence/manifest.json",
+    "ops/release/evidence/packages",
+    "ops/release/evidence/sboms",
+    "ops/release/evidence/index.html"
+  ],
+  "schema_version": 1
+}

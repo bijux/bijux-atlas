@@ -67,5 +67,5 @@ Error-rate burn returns to baseline and the alert clears without rolling into a 
 - [Traffic spike](traffic-spike.md)
 
 ## Evidence
-- Required evidence bundle: release/evidence/bundle.tar
+- Required evidence bundle: ops/release/evidence/bundle.tar
 - Contract reports: artifacts/ops/ops_run/observe/*.json

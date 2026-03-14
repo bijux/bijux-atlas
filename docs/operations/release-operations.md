@@ -44,6 +44,6 @@ make ops-release-rollback
 
 ## Next
 
-- [Upgrade procedure](release/upgrade-procedure.md)
-- [Rollback procedure](release/rollback-procedure.md)
-- [Backup and restore validation](release/backup-and-restore-validation.md)
+- [Upgrade procedure](ops/release/upgrade-procedure.md)
+- [Rollback procedure](ops/release/rollback-procedure.md)
+- [Backup and restore validation](ops/release/backup-and-restore-validation.md)

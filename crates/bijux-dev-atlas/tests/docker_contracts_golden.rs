@@ -12,14 +12,14 @@ fn workspace_root() -> PathBuf {
 }
 
 fn write_repo_with_dockerfile(base: &Path, dockerfile_text: &str) {
-    fs::create_dir_all(base.join("docker/images/runtime")).expect("mkdir docker runtime");
+    fs::create_dir_all(base.join("ops/docker/images/runtime")).expect("mkdir docker runtime");
     fs::create_dir_all(base.join("ops/policy")).expect("mkdir ops policy");
     fs::write(
-        base.join("docker/images/runtime/Dockerfile"),
+        base.join("ops/docker/images/runtime/Dockerfile"),
         dockerfile_text,
     )
     .expect("write dockerfile");
-    fs::write(base.join("docker/README.md"), "# docker\n").expect("write docker readme");
+    fs::write(base.join("ops/docker/README.md"), "# docker\n").expect("write docker readme");
     fs::write(base.join("Cargo.toml"), "[workspace]\n").expect("write cargo");
     fs::write(
         base.join("ops/policy/required-contracts.json"),
@@ -39,7 +39,7 @@ fn write_repo_with_dockerfile(base: &Path, dockerfile_text: &str) {
     )
     .expect("write required contracts policy");
     fs::write(
-        base.join("docker/policy.json"),
+        base.join("ops/docker/policy.json"),
         serde_json::json!({
             "schema_version": 1,
             "allow_tagged_images_exceptions": [],
@@ -71,7 +71,7 @@ fn write_repo_with_dockerfile(base: &Path, dockerfile_text: &str) {
     .expect("write policy");
     fs::write(base.join(".dockerignore"), ".git\nartifacts\ntarget\n").expect("dockerignore");
     fs::write(
-        base.join("docker/bases.lock"),
+        base.join("ops/docker/bases.lock"),
         serde_json::json!({
             "schema_version": 1,
             "images": [
@@ -83,16 +83,16 @@ fn write_repo_with_dockerfile(base: &Path, dockerfile_text: &str) {
     )
     .expect("bases");
     fs::write(
-        base.join("docker/images.manifest.json"),
+        base.join("ops/docker/images.manifest.json"),
         serde_json::json!({
             "schema_version": 1,
-            "images": [{"name": "runtime", "dockerfile": "docker/images/runtime/Dockerfile", "context": ".", "smoke": ["/app/bijux-atlas", "version"]}]
+            "images": [{"name": "runtime", "dockerfile": "ops/docker/images/runtime/Dockerfile", "context": ".", "smoke": ["/app/bijux-atlas", "version"]}]
         })
         .to_string(),
     )
     .expect("manifest");
     #[cfg(unix)]
-    std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", base.join("Dockerfile"))
+    std::os::unix::fs::symlink("ops/docker/images/runtime/Dockerfile", base.join("Dockerfile"))
         .expect("symlink root dockerfile");
     bijux_dev_atlas::contracts::docker::sync_contract_markdown(base)
         .expect("sync contract markdown");

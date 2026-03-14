@@ -29,6 +29,6 @@ Stack lifecycle is controlled only through `bijux dev atlas ops stack ...`.
 - `ops/stack/generated/artifact-metadata.json`
 
 ## Failure modes
-- Cluster bootstrap fails due to docker/kind toolchain drift.
+- Cluster bootstrap fails due to ops/docker/kind toolchain drift.
 - Dependency readiness timeout (store/otel/prom/grafana/redis).
 - Context mismatch prevented by guardrails.

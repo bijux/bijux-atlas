@@ -106,7 +106,7 @@ fn core_artifact_hashes(root: &Path) -> BTreeMap<String, String> {
         "ops/reproducibility/spec.json",
         "ops/reproducibility/report.schema.json",
         "ops/reproducibility/scenarios.json",
-        "release/manifest.json",
+        "ops/release/manifest.json",
     ];
     let mut out = BTreeMap::new();
     for rel in candidates {
@@ -125,7 +125,7 @@ fn run_payload(root: &Path) -> Result<serde_json::Value, String> {
     let mut scenarios = scenario_catalog();
     scenarios.sort_by(|a, b| a.id.cmp(&b.id));
     let source_hash = collect_source_snapshot_hash(root)?;
-    let manifest_path = root.join("release/manifest.json");
+    let manifest_path = root.join("ops/release/manifest.json");
     let manifest = read_json(&manifest_path).unwrap_or_else(|_| serde_json::json!({}));
     let artifacts_count = manifest
         .get("artifacts")

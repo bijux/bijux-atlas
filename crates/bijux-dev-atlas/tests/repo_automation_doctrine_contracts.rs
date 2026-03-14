@@ -134,7 +134,7 @@ fn workflows_must_not_execute_repo_bash_scripts() {
         for line in text.lines() {
             let trimmed = line.trim();
             if trimmed.contains("bash ./")
-                || trimmed.contains("bash tutorials/")
+                || trimmed.contains("bash ops/tutorials/")
                 || trimmed.contains("bash ops/")
             {
                 violations.push(format!("{rel}: {trimmed}"));
@@ -668,13 +668,13 @@ fn tutorials_python_and_script_paths_must_be_marked_forbidden_after_migration() 
     assert!(
         forbidden
             .iter()
-            .any(|item| item.as_str() == Some("tutorials/**/*.py")),
+            .any(|item| item.as_str() == Some("ops/tutorials/**/*.py")),
         "tutorial python files must be marked forbidden after migration completion"
     );
     assert!(
         forbidden
             .iter()
-            .any(|item| item.as_str() == Some("tutorials/scripts/**")),
+            .any(|item| item.as_str() == Some("ops/tutorials/scripts/**")),
         "tutorial script directories must be marked forbidden after migration completion"
     );
 }
@@ -683,12 +683,12 @@ fn tutorials_python_and_script_paths_must_be_marked_forbidden_after_migration() 
 fn tutorials_legacy_script_and_test_directories_must_not_exist() {
     let root = repo_root();
     assert!(
-        !root.join("tutorials/scripts").exists(),
-        "tutorials/scripts must be removed after dev-atlas parity"
+        !root.join("ops/tutorials/scripts").exists(),
+        "ops/tutorials/scripts must be removed after dev-atlas parity"
     );
     assert!(
-        !root.join("tutorials/tests").exists(),
-        "tutorials/tests must be removed after Rust contract parity"
+        !root.join("ops/tutorials/tests").exists(),
+        "ops/tutorials/tests must be removed after Rust contract parity"
     );
 }
 

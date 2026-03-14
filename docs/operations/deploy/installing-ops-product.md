@@ -29,12 +29,12 @@ Ops publication uses OCI Helm charts in GHCR.
 
 ## Version and provenance policy
 
-- Chart tags are release versions from `release/ops-v0.1.toml`.
+- Chart tags are release versions from `ops/release/ops-v0.1.toml`.
 - Consumers must pin by digest when moving to production.
 - Provenance binding is recorded in:
-  - `release/ops-chart-digest.json`
-  - `release/ops-release-manifest.json`
-  - `release/ops-release-bundle-manifest.json`
+  - `ops/release/ops-chart-digest.json`
+  - `ops/release/ops-release-manifest.json`
+  - `ops/release/ops-release-bundle-manifest.json`
 
 ## Install flow
 
@@ -48,6 +48,6 @@ For offline bundle installation, see [Installing Ops Bundle](installing-ops-bund
 ## Verify
 
 1. Run `bijux-dev-atlas release ops provenance verify --format json`
-2. Confirm digest match between pulled chart and `release/ops-chart-digest.json`
-3. Confirm version linkage in `release/ops-release-bundle-manifest.json`
+2. Confirm digest match between pulled chart and `ops/release/ops-chart-digest.json`
+3. Confirm version linkage in `ops/release/ops-release-bundle-manifest.json`
 4. Confirm compatibility row with `bijux-dev-atlas release ops compatibility-matrix --format json`

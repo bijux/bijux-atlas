@@ -17,9 +17,9 @@ related:
 
 ## Core governance entrypoints
 
-- [Governance section](../governance/index.md)
-- [Internal governance index](../_internal/governance/index.md)
-- [Checks and contracts registry](../_internal/governance/checks-and-contracts.md)
+- [Governance section](../ops/governance/repository/index.md)
+- [Internal governance index](../_internal/ops/governance/repository/index.md)
+- [Checks and contracts registry](../_internal/ops/governance/repository/checks-and-contracts.md)
 - [Repository constitution](../contract.md)
 
 ## Governance evidence surfaces

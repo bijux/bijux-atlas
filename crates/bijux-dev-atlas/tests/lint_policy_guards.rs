@@ -59,7 +59,7 @@ fn no_unwrap_or_expect_in_non_test_dev_atlas_sources() {
         "crates/bijux-dev-atlas/src/schema_support.rs",
         "crates/bijux-dev-atlas/src/contracts/mod.rs",
         "crates/bijux-dev-atlas/src/contracts/engine_tests.rs",
-        "crates/bijux-dev-atlas/src/contracts/docker/contracts_tests.rs",
+        "crates/bijux-dev-atlas/src/contracts/ops/docker/contracts_tests.rs",
     ]
     .into_iter()
     .collect();

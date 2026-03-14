@@ -29,7 +29,7 @@ fn sha256(path: &Path) -> String {
 #[test]
 fn tutorial_dataset_contract_required_fields_match_metadata() {
     let root = repo_root();
-    let contract_path = root.join("tutorials/contracts/tutorial-dataset-contract.json");
+    let contract_path = root.join("ops/tutorials/contracts/tutorial-dataset-contract.json");
     let contract: serde_json::Value =
         serde_json::from_str(&fs::read_to_string(contract_path).expect("read contract"))
             .expect("parse contract");

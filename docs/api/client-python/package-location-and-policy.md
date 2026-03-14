@@ -23,7 +23,7 @@ Repository policy boundaries:
   - `crates/bijux-atlas-python/examples/**/*.py`
 - Notebooks are allowed only under:
   - `crates/bijux-atlas-python/notebooks/**/*.ipynb`
-- `crates/bijux-atlas-python/tools/` is forbidden.
+- Repository automation files are forbidden inside the Python SDK crate.
 - `__pycache__` and `*.pyc` are forbidden.
 - Root `clients/` is forbidden.
 

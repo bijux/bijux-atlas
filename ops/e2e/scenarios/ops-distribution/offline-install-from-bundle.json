@@ -10,5 +10,5 @@
     "helm install atlas ./ops/k8s/charts/bijux-atlas -f ops/k8s/values/offline.yaml",
     "kubectl wait --for=condition=Available deployment/atlas-bijux-atlas-server --timeout=180s"
   ],
-  "evidence_path": "release/evidence/ops-distribution/offline-install-from-bundle/evidence.json"
+  "evidence_path": "ops/release/evidence/ops-distribution/offline-install-from-bundle/evidence.json"
 }

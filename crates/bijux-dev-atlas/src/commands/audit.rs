@@ -320,7 +320,7 @@ fn run_audit_checks(root: &Path) -> serde_json::Value {
     }));
 
     // artifact integrity
-    let artifact_manifest = root.join("release/evidence/manifest.json");
+    let artifact_manifest = root.join("ops/release/evidence/manifest.json");
     let artifact_status = match read_json(&artifact_manifest) {
         Ok(v) if v.get("schema_version").is_some() => "ok",
         _ => "failed",
@@ -331,7 +331,7 @@ fn run_audit_checks(root: &Path) -> serde_json::Value {
         "classification": "artifact",
         "severity": "high",
         "status": artifact_status,
-        "path": "release/evidence/manifest.json"
+        "path": "ops/release/evidence/manifest.json"
     }));
 
     // registry consistency

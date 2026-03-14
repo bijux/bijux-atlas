@@ -14,7 +14,7 @@ fn test_forbidden_extra_images(ctx: &RunContext) -> TestResult {
             violations.push(violation(
                 "DOCKER-013",
                 "docker.images.forbidden_extra",
-                Some(format!("docker/images/{image}/Dockerfile")),
+                Some(format!("ops/docker/images/{image}/Dockerfile")),
                 Some(1),
                 "docker image directory is not allowlisted",
                 Some(image),
@@ -30,7 +30,7 @@ fn test_forbidden_extra_images(ctx: &RunContext) -> TestResult {
 
 fn test_effect_build_runtime_image(ctx: &RunContext) -> TestResult {
     let image = image_tag();
-    let dockerfile = "docker/images/runtime/Dockerfile";
+    let dockerfile = "ops/docker/images/runtime/Dockerfile";
     let output = match run_command_with_artifacts(
         ctx,
         "docker",
@@ -83,7 +83,7 @@ fn test_effect_smoke_version(ctx: &RunContext) -> TestResult {
         TestResult::Fail(vec![violation(
             "DOCKER-101",
             "docker.smoke.version",
-            Some("docker/images/runtime/Dockerfile".to_string()),
+            Some("ops/docker/images/runtime/Dockerfile".to_string()),
             Some(1),
             "docker smoke version command failed",
             Some(truncate_for_evidence(&output.stderr)),
@@ -119,7 +119,7 @@ fn test_effect_smoke_help(ctx: &RunContext) -> TestResult {
         TestResult::Fail(vec![violation(
             "DOCKER-101",
             "docker.smoke.help",
-            Some("docker/images/runtime/Dockerfile".to_string()),
+            Some("ops/docker/images/runtime/Dockerfile".to_string()),
             Some(1),
             "docker smoke help command failed",
             Some(truncate_for_evidence(&output.stderr)),
@@ -146,7 +146,7 @@ fn test_effect_sbom_generated(ctx: &RunContext) -> TestResult {
         return TestResult::Fail(vec![violation(
             "DOCKER-102",
             "docker.sbom.generated",
-            Some("docker/images/runtime/Dockerfile".to_string()),
+            Some("ops/docker/images/runtime/Dockerfile".to_string()),
             Some(1),
             "syft SBOM generation failed",
             Some(truncate_for_evidence(&output.stderr)),
@@ -157,7 +157,7 @@ fn test_effect_sbom_generated(ctx: &RunContext) -> TestResult {
         Err(err) => TestResult::Fail(vec![violation(
             "DOCKER-102",
             "docker.sbom.generated",
-            Some("docker/images/runtime/Dockerfile".to_string()),
+            Some("ops/docker/images/runtime/Dockerfile".to_string()),
             Some(1),
             "syft output is not valid JSON",
             Some(err.to_string()),
@@ -196,7 +196,7 @@ fn test_effect_scan_passes_policy(ctx: &RunContext) -> TestResult {
         TestResult::Fail(vec![violation(
             "DOCKER-103",
             "docker.scan.severity_threshold",
-            Some("docker/images/runtime/Dockerfile".to_string()),
+            Some("ops/docker/images/runtime/Dockerfile".to_string()),
             Some(1),
             "trivy scan failed severity threshold",
             Some(truncate_for_evidence(&output.stderr)),
@@ -211,11 +211,11 @@ fn manifest_image_entries(repo_root: &Path) -> Result<Vec<(String, String, Vec<S
         let name = image
             .get("name")
             .and_then(|v| v.as_str())
-            .ok_or_else(|| "docker/images.manifest.json entry missing name".to_string())?;
+            .ok_or_else(|| "ops/docker/images.manifest.json entry missing name".to_string())?;
         let dockerfile = image
             .get("dockerfile")
             .and_then(|v| v.as_str())
-            .ok_or_else(|| "docker/images.manifest.json entry missing dockerfile".to_string())?;
+            .ok_or_else(|| "ops/docker/images.manifest.json entry missing dockerfile".to_string())?;
         let smoke = image
             .get("smoke")
             .and_then(|v| v.as_array())
@@ -299,7 +299,7 @@ fn test_effect_smoke_each_manifest_image(ctx: &RunContext) -> TestResult {
 }
 
 fn test_effect_ci_build_uses_pull_false(ctx: &RunContext) -> TestResult {
-    let dockerfile = "docker/images/runtime/Dockerfile";
+    let dockerfile = "ops/docker/images/runtime/Dockerfile";
     let tag = image_tag();
     let args = if std::env::var_os("CI").is_some() {
         vec!["build", "--pull=false", "-f", dockerfile, "-t", tag.as_str(), "."]
@@ -337,11 +337,11 @@ fn test_effect_build_metadata_written(ctx: &RunContext) -> TestResult {
         Err(e) => return TestResult::Error(e),
     };
     if !output.status.success() {
-        return TestResult::Fail(vec![violation("DOCKER-040", "docker.effect.build_metadata_written", Some("docker/images.manifest.json".to_string()), Some(1), "docker image inspect failed", Some(truncate_for_evidence(&output.stderr)))]);
+        return TestResult::Fail(vec![violation("DOCKER-040", "docker.effect.build_metadata_written", Some("ops/docker/images.manifest.json".to_string()), Some(1), "docker image inspect failed", Some(truncate_for_evidence(&output.stderr)))]);
     }
     match serde_json::from_slice::<Value>(&output.stdout) {
         Ok(_) => TestResult::Pass,
-        Err(e) => TestResult::Fail(vec![violation("DOCKER-040", "docker.effect.build_metadata_written", Some("docker/images.manifest.json".to_string()), Some(1), "docker image inspect output is not valid JSON", Some(e.to_string()))]),
+        Err(e) => TestResult::Fail(vec![violation("DOCKER-040", "docker.effect.build_metadata_written", Some("ops/docker/images.manifest.json".to_string()), Some(1), "docker image inspect output is not valid JSON", Some(e.to_string()))]),
     }
 }
 
@@ -385,7 +385,7 @@ fn test_effect_scan_output_and_threshold(ctx: &RunContext) -> TestResult {
     if output.status.success() {
         TestResult::Pass
     } else {
-        TestResult::Fail(vec![violation("DOCKER-042", "docker.effect.scan_output_and_threshold", Some("docker/images.manifest.json".to_string()), Some(1), "trivy scan did not satisfy the configured severity threshold", Some(truncate_for_evidence(&output.stderr)))])
+        TestResult::Fail(vec![violation("DOCKER-042", "docker.effect.scan_output_and_threshold", Some("ops/docker/images.manifest.json".to_string()), Some(1), "trivy scan did not satisfy the configured severity threshold", Some(truncate_for_evidence(&output.stderr)))])
     }
 }
 
@@ -421,6 +421,6 @@ fn test_effect_no_high_critical_without_allowlist(ctx: &RunContext) -> TestResul
     if vuln_count == 0 {
         TestResult::Pass
     } else {
-        TestResult::Fail(vec![violation("DOCKER-043", "docker.effect.no_high_critical_without_allowlist", Some("docker/exceptions.json".to_string()), Some(1), "HIGH or CRITICAL vulnerabilities require an explicit allowlist justification", Some(vuln_count.to_string()))])
+        TestResult::Fail(vec![violation("DOCKER-043", "docker.effect.no_high_critical_without_allowlist", Some("ops/docker/exceptions.json".to_string()), Some(1), "HIGH or CRITICAL vulnerabilities require an explicit allowlist justification", Some(vuln_count.to_string()))])
     }
 }

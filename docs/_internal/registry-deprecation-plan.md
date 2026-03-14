@@ -14,12 +14,12 @@ Keep one governance object model while retiring legacy registries safely.
 
 ## Adapter Policy
 
-- Adapter mapping is declared in `governance/domain-registry-map.json`.
+- Adapter mapping is declared in `ops/governance/repository/domain-registry-map.json`.
 - Deprecated source paths remain listed in that map until deletion is complete.
 - Governance validation fails if a mapped registry path disappears before replacement coverage exists.
 
 ## Exit Criteria
 
 - Every stable domain object has authority source, owner, reviewed date, and evidence.
-- Governance coverage stays at or above baseline in `governance/coverage-baseline.json`.
+- Governance coverage stays at or above baseline in `ops/governance/repository/coverage-baseline.json`.
 - No forbidden `registry.json` files exist outside approved paths.

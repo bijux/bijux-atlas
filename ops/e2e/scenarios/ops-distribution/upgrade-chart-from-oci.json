@@ -11,5 +11,5 @@
     "helm upgrade atlas oci://ghcr.io/bijux/charts/bijux-atlas --version v0.1.0 -f ops/k8s/values/kind.yaml",
     "kubectl rollout status deployment/atlas-bijux-atlas-server --timeout=180s"
   ],
-  "evidence_path": "release/evidence/ops-distribution/upgrade-chart-from-oci/evidence.json"
+  "evidence_path": "ops/release/evidence/ops-distribution/upgrade-chart-from-oci/evidence.json"
 }

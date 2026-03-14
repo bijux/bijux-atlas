@@ -91,7 +91,7 @@
       "severity": "high",
       "rule_type": "release_artifact_registry_complete",
       "paths": [
-        "release/evidence/manifest.json"
+        "ops/release/evidence/manifest.json"
       ],
       "classification": "registry"
     },

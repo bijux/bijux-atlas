@@ -167,7 +167,7 @@ pub(super) fn governance_index_payload(
         "kind": "governance_index",
         "governance_version": version,
         "inputs": {
-            "domain_registry_map": "governance/domain-registry-map.json",
+            "domain_registry_map": "ops/governance/repository/domain-registry-map.json",
             "required_contracts": "ops/policy/required-contracts.json",
             "lane_surface": "configs/ci/lane-surface.json",
             "check_report_map": "configs/reports/check-report-map.json"

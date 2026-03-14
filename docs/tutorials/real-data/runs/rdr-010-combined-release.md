@@ -29,7 +29,7 @@ Run command: 'bijux-dev-atlas tutorials real-data query-pack --run-id rdr-010-co
 
 ## Evidence links
 
-- Run artifacts directory: artifacts/tutorials/runs/rdr-010-combined-release/
+- Run artifacts directory: artifacts/tutorials/runs/rdr-010-combined-ops/release/
 - Expected artifacts:
 - ingest-report.json
 - dataset-summary.json
@@ -47,12 +47,12 @@ Run command: 'bijux-dev-atlas tutorials real-data query-pack --run-id rdr-010-co
 
 ## Known limitations
 
-- Dataset source currently uses a fixed fetch specification in tutorials/datasets/combined-release/fetch-spec.json.
+- Dataset source currently uses a fixed fetch specification in ops/tutorials/datasets/combined-ops/release/fetch-spec.json.
 - Results depend on the selected runtime profile and local machine capacity.
 
 ## Performance notes
 
-- Record timing from artifacts/tutorials/runs/rdr-010-combined-release/query-results-summary.json after each run.
+- Record timing from artifacts/tutorials/runs/rdr-010-combined-ops/release/query-results-summary.json after each run.
 - Compare latency for warm and cold runs when available.
 
 ## Operational profile
@@ -70,7 +70,7 @@ Run command: 'bijux-dev-atlas tutorials real-data query-pack --run-id rdr-010-co
 
 - If fetch fails, run 'bijux-dev-atlas tutorials real-data doctor --format json' and verify tool health.
 - If ingest fails on profile constraints, retry with '--profile minimal' and inspect ingest report.
-- If query pack fails, inspect artifacts/tutorials/runs/rdr-010-combined-release/query-results-summary.json for query-level errors.
+- If query pack fails, inspect artifacts/tutorials/runs/rdr-010-combined-ops/release/query-results-summary.json for query-level errors.
 
 ## Change impact
 

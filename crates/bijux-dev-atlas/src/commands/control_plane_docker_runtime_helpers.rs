@@ -100,7 +100,7 @@ fn extract_copy_sources(line: &str) -> Option<Vec<String>> {
 
 fn all_dockerfiles(repo_root: &Path) -> Result<Vec<PathBuf>, String> {
     let mut files = Vec::new();
-    let images_root = repo_root.join("docker/images");
+    let images_root = repo_root.join("ops/docker/images");
     if images_root.exists() {
         for path in walk_files(&images_root) {
             if path
@@ -117,7 +117,7 @@ fn all_dockerfiles(repo_root: &Path) -> Result<Vec<PathBuf>, String> {
 }
 
 fn validate_dockerfiles(repo_root: &Path) -> Result<Vec<serde_json::Value>, String> {
-    let policy_path = repo_root.join("docker/policy.json");
+    let policy_path = repo_root.join("ops/docker/policy.json");
     let policy_text = fs::read_to_string(&policy_path)
         .map_err(|e| format!("failed to read {}: {e}", policy_path.display()))?;
     let policy: serde_json::Value = serde_json::from_str(&policy_text)
@@ -158,19 +158,19 @@ fn validate_dockerfiles(repo_root: &Path) -> Result<Vec<serde_json::Value>, Stri
             .unwrap_or(&file)
             .display()
             .to_string();
-        let allowed = rel == "docker/README.md"
-            || rel == "docker/CONTRACT.md"
-            || rel == "docker/policy.json"
-            || rel == "docker/airgap-policy.json"
-            || rel == "docker/bases.lock"
-            || rel == "docker/images.manifest.json"
-            || rel == "docker/build-matrix.json"
-            || rel == "docker/docker.contracts.json"
-            || rel == "docker/exceptions.json"
-            || rel == "docker/push-policy.json"
-            || rel.starts_with("docker/images/")
-            || rel.starts_with("docker/schema/")
-            || rel.starts_with("docker/fixtures/");
+        let allowed = rel == "ops/docker/README.md"
+            || rel == "ops/docker/CONTRACT.md"
+            || rel == "ops/docker/policy.json"
+            || rel == "ops/docker/airgap-policy.json"
+            || rel == "ops/docker/bases.lock"
+            || rel == "ops/docker/images.manifest.json"
+            || rel == "ops/docker/build-matrix.json"
+            || rel == "ops/docker/docker.contracts.json"
+            || rel == "ops/docker/exceptions.json"
+            || rel == "ops/docker/push-policy.json"
+            || rel.starts_with("ops/docker/images/")
+            || rel.starts_with("ops/docker/schema/")
+            || rel.starts_with("ops/docker/fixtures/");
         if !allowed {
             rows.push(serde_json::json!({
                 "contract_id":"DOCKER-004",
@@ -180,7 +180,7 @@ fn validate_dockerfiles(repo_root: &Path) -> Result<Vec<serde_json::Value>, Stri
                 "line": 1
             }));
         }
-        if rel.ends_with(".md") && rel != "docker/README.md" && rel != "docker/CONTRACT.md" {
+        if rel.ends_with(".md") && rel != "ops/docker/README.md" && rel != "ops/docker/CONTRACT.md" {
             rows.push(serde_json::json!({
                 "contract_id":"DOCKER-004",
                 "gate_id":"docker.contract.path_scope",
@@ -189,7 +189,7 @@ fn validate_dockerfiles(repo_root: &Path) -> Result<Vec<serde_json::Value>, Stri
                 "line": 1
             }));
         }
-        if rel.ends_with("/README.md") && rel != "docker/README.md" {
+        if rel.ends_with("/README.md") && rel != "ops/docker/README.md" {
             rows.push(serde_json::json!({
                 "contract_id":"DOCKER-004",
                 "gate_id":"docker.contract.path_scope",
@@ -198,7 +198,7 @@ fn validate_dockerfiles(repo_root: &Path) -> Result<Vec<serde_json::Value>, Stri
                 "line": 1
             }));
         }
-        if rel.ends_with("/CONTRACT.md") && rel != "docker/CONTRACT.md" {
+        if rel.ends_with("/CONTRACT.md") && rel != "ops/docker/CONTRACT.md" {
             rows.push(serde_json::json!({
                 "contract_id":"DOCKER-004",
                 "gate_id":"docker.contract.path_scope",
@@ -224,14 +224,14 @@ fn validate_dockerfiles(repo_root: &Path) -> Result<Vec<serde_json::Value>, Stri
                 continue;
             };
             for (idx, line) in text.lines().enumerate() {
-                if line.contains("docker/contracts/") {
+                if line.contains("ops/docker/contracts/") {
                     rows.push(serde_json::json!({
                         "contract_id":"DOCKER-004",
                         "gate_id":"docker.contract.path_scope",
                         "kind":"docs_docker_link_sanity_violation",
                         "file": rel,
                         "line": idx + 1,
-                        "evidence": "docker/contracts/"
+                        "evidence": "ops/docker/contracts/"
                     }));
                 }
             }
@@ -268,7 +268,7 @@ fn validate_dockerfiles(repo_root: &Path) -> Result<Vec<serde_json::Value>, Stri
             .unwrap_or(&dockerfile)
             .display()
             .to_string();
-        if !rel.starts_with("docker/images/") {
+        if !rel.starts_with("ops/docker/images/") {
             rows.push(serde_json::json!({
                 "contract_id":"DOCKER-004",
                 "gate_id":"docker.contract.path_scope",
@@ -411,7 +411,7 @@ fn validate_dockerfiles(repo_root: &Path) -> Result<Vec<serde_json::Value>, Stri
 }
 
 fn runtime_image_budget_bytes(repo_root: &Path) -> Result<u64, String> {
-    let policy_path = repo_root.join("docker/policy.json");
+    let policy_path = repo_root.join("ops/docker/policy.json");
     let policy_text = fs::read_to_string(&policy_path)
         .map_err(|e| format!("failed to read {}: {e}", policy_path.display()))?;
     let policy: serde_json::Value = serde_json::from_str(&policy_text)

@@ -5,7 +5,7 @@ This document maps legacy tutorial script responsibilities to governed `bijux-de
 ## Current State
 
 - legacy tutorial script directory: not present.
-- `tutorials/tests/*.py`: not present.
+- `ops/tutorials/tests/*.py`: not present.
 
 ## Command Mapping
 
@@ -18,4 +18,4 @@ This document maps legacy tutorial script responsibilities to governed `bijux-de
 
 ## Policy
 
-No new `.sh` or `.py` automation source is allowed under `tutorials/` unless explicitly declared in `configs/tutorials/legacy-script-exceptions.json` with non-expired metadata.
+No new `.sh` or `.py` automation source is allowed under `ops/tutorials/` unless explicitly declared in `configs/tutorials/legacy-script-exceptions.json` with non-expired metadata.

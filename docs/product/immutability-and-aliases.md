@@ -9,7 +9,7 @@ Concept IDs: concept.dataset-immutability, concept.latest-release-alias
 Published datasets are immutable.
 
 - Catalog publication is append-only for dataset artifacts.
-- A published dataset identifier (`release/species/assembly`) must never be overwritten.
+- A published dataset identifier (`ops/release/species/assembly`) must never be overwritten.
 - Corrections require publishing a new dataset identity and deprecating the old entry.
 
 ## Latest Alias Policy

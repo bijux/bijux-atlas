@@ -227,7 +227,7 @@ impl DatasetId {
         })?;
         if parts.next().is_some() {
             return Err(ValidationError(
-                "dataset canonical form must be release/species/assembly".to_string(),
+                "dataset canonical form must be ops/release/species/assembly".to_string(),
             ));
         }
         Self::new(release, species, assembly)

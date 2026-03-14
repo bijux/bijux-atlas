@@ -12,7 +12,7 @@
 - `ops/policy/required-contracts.json`
 - `ops/_generated.example/contracts-required.json`
 - `make/contracts.mk`
-- `docker/images/runtime/Dockerfile`
+- `ops/docker/images/runtime/Dockerfile`
 - `docs/_internal/generated/make-targets.md`
 - `configs/contracts/env.schema.json`
 - `docs/reference/contracts/schemas/CONFIG_KEYS.json`

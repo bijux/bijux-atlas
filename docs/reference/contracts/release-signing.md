@@ -18,19 +18,19 @@
 - `REL-SIGN-006`: the signing policy points only at existing artifacts.
 - `REL-TAR-001`: a freshly rebuilt normalized bundle matches the current bundle except for allowed self-referential generated files.
 - `REL-MAN-001`: the generated evidence manifest uses the same schema version declared by the governed manifest schema.
-- `REL-PROV-001`: `release/provenance.json` exists and matches the governed provenance schema.
+- `REL-PROV-001`: `ops/release/provenance.json` exists and matches the governed provenance schema.
 
 ## Validation Surface
 
-- `release sign --evidence release/evidence` generates the checksum ledger, provenance statement, and sign report.
-- `release verify --evidence release/evidence/bundle.tar` validates the signing surface and delegates to `ops evidence verify`.
-- `release/signing/policy.yaml` is the source of truth for what must be covered.
+- `release sign --evidence ops/release/evidence` generates the checksum ledger, provenance statement, and sign report.
+- `release verify --evidence ops/release/evidence/bundle.tar` validates the signing surface and delegates to `ops evidence verify`.
+- `ops/release/signing/policy.yaml` is the source of truth for what must be covered.
 
 ## Governed Files
 
-- `release/signing/policy.yaml`
-- `release/signing/checksums.json`
-- `release/signing/release-sign.json`
-- `release/signing/release-verify.json`
-- `release/provenance.json`
+- `ops/release/signing/policy.yaml`
+- `ops/release/signing/checksums.json`
+- `ops/release/signing/release-sign.json`
+- `ops/release/signing/release-verify.json`
+- `ops/release/provenance.json`
 - `configs/contracts/release/*.schema.json`

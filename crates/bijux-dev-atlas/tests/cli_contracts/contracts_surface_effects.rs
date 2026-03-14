@@ -144,7 +144,7 @@ fn contracts_snapshot_writes_ops_registry_file() {
 
 #[test]
 fn contracts_snapshot_defaults_to_artifacts_root() {
-    let out = repo_root().join("artifacts/contracts/docker/registry-snapshot.json");
+    let out = repo_root().join("artifacts/contracts/ops/docker/registry-snapshot.json");
     if out.exists() {
         fs::remove_file(&out).expect("remove prior snapshot");
     }
@@ -346,7 +346,7 @@ fn slow_contracts_profile_changes_default_artifacts_root_segment() {
         .into_iter()
         .find(|path| {
             let rel = path.to_string_lossy();
-            rel.contains("/docker/")
+            rel.contains("/ops/docker/")
                 && rel.contains("/ci/")
                 && rel.ends_with("/docker.json")
         })

@@ -17,9 +17,9 @@ related:
 
 ## Image surfaces
 
-- `docker/atlas-runtime.Dockerfile`: runtime image for service execution.
-- `docker/atlas-dev.Dockerfile`: development and validation image surface.
-- `docker/images/runtime/runtime-config.example.yaml`: minimal runtime config example.
+- `ops/docker/atlas-runtime.Dockerfile`: runtime image for service execution.
+- `ops/docker/atlas-dev.Dockerfile`: development and validation image surface.
+- `ops/docker/images/runtime/runtime-config.example.yaml`: minimal runtime config example.
 
 ## Tagging conventions
 

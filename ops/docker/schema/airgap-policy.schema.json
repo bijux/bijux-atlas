@@ -1,0 +1,73 @@
+{
+  "$id": "ops/docker/schema/airgap-policy.schema.json",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "policy_id",
+    "owner",
+    "description",
+    "allowed_base_sources",
+    "required_artifacts",
+    "forbid_network_fetch_tools",
+    "allowed_build_network_tokens",
+    "require_digest_pins",
+    "require_vendored_or_locked_inputs"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "policy_id": {
+      "type": "string",
+      "const": "docker-airgap-build"
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "allowed_base_sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^ops/docker/.+"
+      }
+    },
+    "required_artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^ops/docker/.+"
+      }
+    },
+    "forbid_network_fetch_tools": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "allowed_build_network_tokens": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "require_digest_pins": {
+      "type": "boolean"
+    },
+    "require_vendored_or_locked_inputs": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

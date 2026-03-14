@@ -22,7 +22,7 @@ Atlas architecture is organized around deterministic data movement and explicit 
 1. Source ingest and validation.
 2. Versioned artifact and manifest production.
 3. Query/runtime serving from approved artifacts.
-4. Ops/release/audit evidence generation.
+4. Ops/ops/release/audit evidence generation.
 5. Control-plane contract and policy enforcement.
 
 ## Entry points

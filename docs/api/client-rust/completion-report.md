@@ -10,7 +10,7 @@
 - SDK crate architecture and configuration schema.
 - Query wrappers, pagination, filtering, projection, retry, tracing, logging, and metrics hooks.
 - Integration and mock server tests, retry/config/compatibility tests.
-- SDK examples, CLI example tool, benchmark, and release/publish documentation.
+- SDK examples, CLI example tool, benchmark, and ops/release/publish documentation.
 
 ## Evidence
 

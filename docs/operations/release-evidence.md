@@ -33,20 +33,20 @@ Generate the evidence bundle from the current working tree:
 cargo run -q -p bijux-dev-atlas -- ops evidence collect --allow-subprocess --allow-write --run-id release_candidate --format json
 ```
 
-This writes `release/evidence/manifest.json`, `release/evidence/identity.json`, `release/evidence/bundle.tar`, digest-pinned SPDX JSON SBOMs under `release/evidence/sboms/`, and an HTML summary at `release/evidence/index.html`.
+This writes `ops/release/evidence/manifest.json`, `ops/release/evidence/identity.json`, `ops/release/evidence/bundle.tar`, digest-pinned SPDX JSON SBOMs under `ops/release/evidence/sboms/`, and an HTML summary at `ops/release/evidence/index.html`.
 
 ## Verify
 
 Validate the generated bundle:
 
 ```bash
-cargo run -q -p bijux-dev-atlas -- ops evidence verify release/evidence/bundle.tar --allow-write --format json
+cargo run -q -p bijux-dev-atlas -- ops evidence verify ops/release/evidence/bundle.tar --allow-write --format json
 ```
 
 Compare two bundles when you need a structured delta:
 
 ```bash
-cargo run -q -p bijux-dev-atlas -- ops evidence diff release/evidence/bundle-a.tar release/evidence/bundle-b.tar --allow-write --format json
+cargo run -q -p bijux-dev-atlas -- ops evidence diff ops/release/evidence/bundle-a.tar ops/release/evidence/bundle-b.tar --allow-write --format json
 ```
 
 Accepted SBOM formats are `spdx-json` and `cyclonedx-json`. Vulnerability scan reports are optional, but when included they must be attached as reports only and use the governed `json` or `sarif` formats.
@@ -55,16 +55,16 @@ Accepted SBOM formats are `spdx-json` and `cyclonedx-json`. Vulnerability scan r
 
 If evidence generation fails, discard the incomplete release candidate and regenerate after fixing the failing input:
 
-1. Remove or repair the invalid generated evidence files under `release/evidence/`.
+1. Remove or repair the invalid generated evidence files under `ops/release/evidence/`.
 2. Re-run `ops evidence collect`.
 3. Re-run `ops evidence verify`.
 
 ## What Institutions Expect
 
-- Traceability: `release/evidence/identity.json` ties the bundle to a git SHA and governance version.
-- Reproducibility: `release/evidence/bundle.tar` is created with normalized metadata and stable ordering.
+- Traceability: `ops/release/evidence/identity.json` ties the bundle to a git SHA and governance version.
+- Reproducibility: `ops/release/evidence/bundle.tar` is created with normalized metadata and stable ordering.
 - Rollback evidence: lifecycle summaries and readiness history are included when present.
-- Supply-chain visibility: digest-pinned images, `docker/bases.lock`, toolchain inventory, and SBOMs are captured together.
+- Supply-chain visibility: digest-pinned images, `ops/docker/bases.lock`, toolchain inventory, and SBOMs are captured together.
 
 ## Related Pages
 

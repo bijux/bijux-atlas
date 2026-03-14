@@ -632,4 +632,4 @@ impl OptionalFieldPolicy {
 pub const LATEST_ALIAS_POLICY: &str =
     "latest alias is allowed only as an explicit endpoint and must resolve deterministically";
 pub const NO_IMPLICIT_DEFAULT_DATASET_POLICY: &str =
-    "API must not use implicit default dataset; release/species/assembly are required";
+    "API must not use implicit default dataset; ops/release/species/assembly are required";

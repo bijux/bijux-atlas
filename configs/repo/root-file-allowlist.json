@@ -12,13 +12,8 @@
     "artifacts",
     "configs",
     "crates",
-    "docker",
     "docs",
-    "governance",
     "make",
-    "ops",
-    "release",
-    "security",
-    "tutorials"
+    "ops"
   ]
 }

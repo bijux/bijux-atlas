@@ -172,7 +172,7 @@ Security workflows are successful when posture checks pass and incident handling
 
 ## Next
 
-- [Release Operations](../release/index.md)
+- [Release Operations](../ops/release/index.md)
 
 - [Security Philosophy](security-philosophy.md)
 - [Threat Modeling Methodology](threat-modeling-methodology.md)

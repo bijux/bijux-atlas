@@ -50,7 +50,7 @@ pub(crate) fn emit_ok(output_mode: OutputMode, payload: Value) -> Result<(), Str
 pub(crate) fn parse_dataset_id(dataset: &str) -> Result<(String, String, String), String> {
     let parts: Vec<&str> = dataset.split('/').collect();
     if parts.len() != 3 {
-        return Err("dataset must be release/species/assembly".to_string());
+        return Err("dataset must be ops/release/species/assembly".to_string());
     }
     Ok((
         parts[0].to_string(),

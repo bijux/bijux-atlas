@@ -37,15 +37,15 @@ pub(super) fn check_root_dockerfile_pointer_only(
     let looks_like_pointer = non_comment_lines.len() <= 3
         && non_comment_lines
             .iter()
-            .any(|line| line.contains("docker/") || line.contains("see "));
+            .any(|line| line.contains("ops/docker/") || line.contains("see "));
     if looks_like_pointer {
         Ok(Vec::new())
     } else {
         Ok(vec![violation(
             "ROOT_DOCKERFILE_FORBIDDEN",
-            "root Dockerfile must be absent or a tiny pointer to canonical docker/ definitions"
+            "root Dockerfile must be absent or a tiny pointer to canonical ops/docker/ definitions"
                 .to_string(),
-            "move real container build logic under docker/ and leave only a pointer doc if needed",
+            "move real container build logic under ops/docker/ and leave only a pointer doc if needed",
             Some(rel),
         )])
     }
@@ -66,14 +66,14 @@ pub(super) fn check_dockerfiles_under_canonical_directory_only(
         if rel == Path::new("Dockerfile") {
             continue;
         }
-        if !rel.starts_with("docker/") {
+        if !rel.starts_with("ops/docker/") {
             violations.push(violation(
                 "DOCKERFILE_LOCATION_INVALID",
                 format!(
-                    "Dockerfile outside canonical docker/ directory: {}",
+                    "Dockerfile outside canonical ops/docker/ directory: {}",
                     rel.display()
                 ),
-                "move Dockerfiles under docker/ or replace with pointer docs",
+                "move Dockerfiles under ops/docker/ or replace with pointer docs",
                 Some(rel),
             ));
         }

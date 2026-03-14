@@ -10,8 +10,8 @@
 
 ## Retention Rules
 
-- Keep `release/evidence/` and `release/signing/` together for each promoted release.
-- Keep `release/provenance.json` alongside the signed bundle for the full supported release lifetime.
+- Keep `ops/release/evidence/` and `ops/release/signing/` together for each promoted release.
+- Keep `ops/release/provenance.json` alongside the signed bundle for the full supported release lifetime.
 - Retain the chart package, bundle tarball, checksum list, and sign/verify reports for every promoted release.
 
 ## Alignment

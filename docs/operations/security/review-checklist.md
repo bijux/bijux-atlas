@@ -17,7 +17,7 @@
 - Identify whether the change touches auth, secrets, network policy, workflows, release evidence, or image pins
 - Run `bijux-dev-atlas security validate --format json`
 - Run `bijux-dev-atlas security compliance validate --format json`
-- For artifact-bearing changes, run `bijux-dev-atlas security scan-artifacts --dir release/evidence --format json`
+- For artifact-bearing changes, run `bijux-dev-atlas security scan-artifacts --dir ops/release/evidence --format json`
 
 ## Verify
 

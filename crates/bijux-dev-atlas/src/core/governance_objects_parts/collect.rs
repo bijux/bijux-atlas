@@ -12,7 +12,7 @@ fn push_object(objects: &mut Vec<GovernanceObject>, object: GovernanceObject) {
 }
 
 fn read_domain_review_dates(repo_root: &Path) -> BTreeMap<String, String> {
-    let path = repo_root.join("governance/domain-review-dates.json");
+    let path = repo_root.join("ops/governance/repository/domain-review-dates.json");
     let Ok(value) = read_json(&path) else {
         return BTreeMap::new();
     };
@@ -217,7 +217,7 @@ pub(super) fn collect_governance_objects(
         );
     }
 
-    let docker_manifest = read_json(&repo_root.join("docker/images.manifest.json"))?;
+    let docker_manifest = read_json(&repo_root.join("ops/docker/images.manifest.json"))?;
     for row in docker_manifest["images"]
         .as_array()
         .cloned()
@@ -235,13 +235,13 @@ pub(super) fn collect_governance_objects(
                 owner: "platform".to_string(),
                 consumers: vec!["bijux dev atlas contract run --domain docker".to_string()],
                 lifecycle: "stable".to_string(),
-                evidence: vec!["artifacts/governance/docker/images.json".to_string()],
+                evidence: vec!["artifacts/governance/ops/docker/images.json".to_string()],
                 links: vec![
                     dockerfile,
-                    "docker/images.manifest.json".to_string(),
-                    "docker/policy.json".to_string(),
+                    "ops/docker/images.manifest.json".to_string(),
+                    "ops/docker/policy.json".to_string(),
                 ],
-                authority_source: "docker/images.manifest.json".to_string(),
+                authority_source: "ops/docker/images.manifest.json".to_string(),
                 reviewed_on: row["last_reviewed"]
                     .as_str()
                     .map(str::to_string)

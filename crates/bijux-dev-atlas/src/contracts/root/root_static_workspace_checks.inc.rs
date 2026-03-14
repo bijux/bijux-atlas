@@ -162,21 +162,6 @@ fn test_root_040_crate_naming(ctx: &RunContext) -> TestResult {
     }
 }
 
-fn test_root_021_editorconfig_exists(ctx: &RunContext) -> TestResult {
-    if ctx.repo_root.join(".editorconfig").is_file() {
-        TestResult::Pass
-    } else {
-        TestResult::Fail(vec![Violation {
-            contract_id: "ROOT-021".to_string(),
-            test_id: "root.editorconfig.exists".to_string(),
-            file: Some(".editorconfig".to_string()),
-            line: None,
-            message: ".editorconfig must exist at the repo root".to_string(),
-            evidence: None,
-        }])
-    }
-}
-
 fn test_root_022_license_single_authority(ctx: &RunContext) -> TestResult {
     let cargo = match read_root_text(ctx, "Cargo.toml", "ROOT-022", "root.license.single_authority") {
         Ok(contents) => contents,

@@ -20,4 +20,4 @@ Internal architecture documents how contributors reason about private system bou
 ## Related internal references
 
 - [Internal Docs Index](../_internal/index.md)
-- [Internal Governance Index](../_internal/governance/index.md)
+- [Internal Governance Index](../_internal/ops/governance/repository/index.md)

@@ -11,7 +11,7 @@ tags:
   - semver
 related:
   - configs/release/semver-api-policy.json
-  - release/api-surface/golden
+  - ops/release/api-surface/golden
 ---
 
 # Semver API rules

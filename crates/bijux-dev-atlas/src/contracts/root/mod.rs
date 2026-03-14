@@ -32,7 +32,6 @@ pub fn contract_explain(contract_id: &str) -> String {
         "ROOT-017" => "The repo root may not contain binary-like artifact files such as archives, executables, or compiled blobs.".to_string(),
         "ROOT-018" => "Committed root-level `.env` files are forbidden; environment state must stay out of the repo root.".to_string(),
         "ROOT-020" => "The ops/inventory/root-surface.json manifest must describe only single-segment repo root entries, never nested paths.".to_string(),
-        "ROOT-021" => "The repo root must keep `.editorconfig` so shared formatting contracts have a single source.".to_string(),
         "ROOT-022" => "Root license metadata must stay unambiguous and avoid conflicting license families.".to_string(),
         "ROOT-023" => "README.md must keep the canonical root entrypoint sections so the root surface remains navigable and stable.".to_string(),
         "ROOT-024" => "Root documentation files may not reference deleted legacy control-plane surfaces such as `scripts/` or `xtask`.".to_string(),

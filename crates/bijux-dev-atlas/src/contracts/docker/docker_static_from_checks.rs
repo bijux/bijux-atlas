@@ -140,7 +140,7 @@ fn test_from_images_allowlisted(ctx: &RunContext) -> TestResult {
                     "docker.from.allowlisted_base_images",
                     Some(rel.clone()),
                     Some(ins.line),
-                    "FROM image must be declared in docker/bases.lock",
+                    "FROM image must be declared in ops/docker/bases.lock",
                     Some(lookup),
                 ));
             }
@@ -186,7 +186,7 @@ fn test_from_digest_matches_bases_lock(ctx: &RunContext) -> TestResult {
                     "docker.from.digest_matches_lock",
                     Some(rel.clone()),
                     Some(ins.line),
-                    "FROM digest must match docker/bases.lock",
+                    "FROM digest must match ops/docker/bases.lock",
                     Some(format!("expected={expected} actual={actual}")),
                 ));
             }

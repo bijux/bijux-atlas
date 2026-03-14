@@ -30,7 +30,7 @@ fn fixture_repo_with_profile_cycle() -> TempDir {
         r#"{"schema_version":1}"#,
     );
     write(
-        &root.join("release/evidence/manifest.json"),
+        &root.join("ops/release/evidence/manifest.json"),
         r#"{"artifact_list":[]}"#,
     );
     write(

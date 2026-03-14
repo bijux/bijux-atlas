@@ -194,10 +194,10 @@ pub(crate) fn run_ops_evidence_collect(
     run_governance_exceptions_validate_for_evidence(&process, &repo_root)?;
     run_governance_doctor_for_evidence(&process, &repo_root)?;
     let chart_package = package_chart_for_evidence(&process, &repo_root)?;
-    let policy_path = repo_root.join("release/evidence/policy.json");
+    let policy_path = repo_root.join("ops/release/evidence/policy.json");
     let identity_path = evidence_root.join("identity.json");
     let manifest_path = evidence_root.join("manifest.json");
-    let provenance_path = repo_root.join("release/provenance.json");
+    let provenance_path = repo_root.join("ops/release/provenance.json");
     let identity = serde_json::json!({
         "schema_version": 1,
         "release_id": release_id,
@@ -209,7 +209,7 @@ pub(crate) fn run_ops_evidence_collect(
         serde_json::to_string_pretty(&identity).map_err(|err| err.to_string())?,
     )
     .map_err(|err| format!("failed to write {}: {err}", identity_path.display()))?;
-    let docker_bases = repo_root.join("docker/bases.lock");
+    let docker_bases = repo_root.join("ops/docker/bases.lock");
     let toolchain_inventory = repo_root.join("configs/rust/toolchain.json");
     let auth_model = repo_root.join("configs/security/auth-model.yaml");
     let access_policy = repo_root.join("configs/security/policy.yaml");
@@ -219,7 +219,7 @@ pub(crate) fn run_ops_evidence_collect(
     let audit_verify_report = repo_root.join("artifacts/security/audit-verify.json");
     let log_field_inventory = repo_root.join("artifacts/security/log-field-inventory.json");
     let runtime_env_allowlist = repo_root.join("configs/contracts/env.schema.json");
-    let signing_policy = repo_root.join("release/signing/policy.yaml");
+    let signing_policy = repo_root.join("ops/release/signing/policy.yaml");
     let action_pins_report = repo_root.join("artifacts/security/security-github-actions.json");
     let exceptions_registry = repo_root.join("configs/governance/exceptions.yaml");
     let exceptions_archive = repo_root.join("configs/governance/exceptions-archive.yaml");
@@ -544,7 +544,7 @@ pub(crate) fn run_ops_evidence_summarize(
                 repo_root.join(path)
             }
         })
-        .unwrap_or_else(|| repo_root.join("release/evidence/manifest.json"));
+        .unwrap_or_else(|| repo_root.join("ops/release/evidence/manifest.json"));
     let raw = std::fs::read_to_string(&manifest_path)
         .map_err(|err| format!("failed to read {}: {err}", manifest_path.display()))?;
     let manifest: serde_json::Value = serde_json::from_str(&raw)
@@ -901,10 +901,10 @@ pub(crate) fn run_ops_evidence_verify(
         errors.push("manifest chart_package.path must exist".to_string());
     }
     let policy: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(repo_root.join("release/evidence/policy.json"))
-            .map_err(|err| format!("failed to read release/evidence/policy.json: {err}"))?,
+        &std::fs::read_to_string(repo_root.join("ops/release/evidence/policy.json"))
+            .map_err(|err| format!("failed to read ops/release/evidence/policy.json: {err}"))?,
     )
-    .map_err(|err| format!("failed to parse release/evidence/policy.json: {err}"))?;
+    .map_err(|err| format!("failed to parse ops/release/evidence/policy.json: {err}"))?;
     for required in policy
         .get("required_paths")
         .and_then(|v| v.as_array())

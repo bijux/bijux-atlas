@@ -102,7 +102,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
         },
         Contract {
             id: ContractId("CRATES-011".to_string()),
-            title: "crate docs avoid forbidden paths and governance/procedure leakage",
+            title: "crate docs avoid forbidden paths and ops/governance/repository/procedure leakage",
             tests: vec![TestCase {
                 id: TestId("crates.docs.forbidden_paths".to_string()),
                 title: "crate docs avoid forbidden path references and non-crate procedure content",

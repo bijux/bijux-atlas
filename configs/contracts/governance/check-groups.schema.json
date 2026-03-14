@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/governance/check-groups.schema.json",
+  "$id": "https://bijux.dev/schema/ops/governance/repository/check-groups.schema.json",
   "title": "Check Groups",
   "type": "object",
   "additionalProperties": false,

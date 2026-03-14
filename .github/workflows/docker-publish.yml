@@ -21,8 +21,8 @@ jobs:
     timeout-minutes: 60
     env:
       IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/bijux-atlas-runtime
-      DOCKERFILE_PATH: docker/images/runtime/Dockerfile
-      RUNTIME_CONFIG_EXAMPLE: docker/images/runtime/runtime-config.example.yaml
+      DOCKERFILE_PATH: ops/docker/images/runtime/Dockerfile
+      RUNTIME_CONFIG_EXAMPLE: ops/docker/images/runtime/runtime-config.example.yaml
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
@@ -79,7 +79,7 @@ jobs:
             .
           docker run --rm --entrypoint /app/bijux-atlas "${IMAGE_NAME}:local-smoke" version > artifacts/docker-publish/startup-smoke.txt
           size_bytes="$(docker image inspect "${IMAGE_NAME}:local-smoke" --format '{{.Size}}')"
-          budget_bytes="$(jq -r '.runtime_image_max_bytes' docker/policy.json)"
+          budget_bytes="$(jq -r '.runtime_image_max_bytes' ops/docker/policy.json)"
           jq -n \
             --arg image "${IMAGE_NAME}:local-smoke" \
             --argjson size "${size_bytes}" \

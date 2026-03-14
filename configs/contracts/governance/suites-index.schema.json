@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/governance/suites-index.schema.json",
+  "$id": "https://bijux.dev/schema/ops/governance/repository/suites-index.schema.json",
   "title": "Governance Suites Index",
   "type": "object",
   "additionalProperties": false,

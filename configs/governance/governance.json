@@ -28,7 +28,7 @@
     },
     {
       "id": "release-bundle-integrity",
-      "authority": "docs/reference/contracts/release/evidence.md",
+      "authority": "docs/reference/contracts/ops/release/evidence.md",
       "enforcement": [
         "release manifest validate",
         "release bundle verify",

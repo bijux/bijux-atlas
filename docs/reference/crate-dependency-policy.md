@@ -11,7 +11,7 @@ tags:
   - dependencies
 related:
   - docs/reference/crates.md
-  - release/crates-v0.1.toml
+  - ops/release/crates-v0.1.toml
 ---
 
 # Crate dependency policy

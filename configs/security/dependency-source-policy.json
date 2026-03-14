@@ -50,12 +50,12 @@
   },
   "images": {
     "toolchain_inventory": "ops/inventory/toolchain.json",
-    "bases_lock": "docker/bases.lock",
-    "evidence_manifest": "release/evidence/manifest.json",
+    "bases_lock": "ops/docker/bases.lock",
+    "evidence_manifest": "ops/release/evidence/manifest.json",
     "require_digest_pins": true
   },
   "sbom": {
-    "evidence_manifest": "release/evidence/manifest.json",
+    "evidence_manifest": "ops/release/evidence/manifest.json",
     "required_formats": [
       "spdx-json",
       "cyclonedx-json"

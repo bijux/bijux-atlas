@@ -10,7 +10,7 @@
 ## Prereqs
 
 - Access to the CI secret store that backs publishing
-- Access to `release/signing/policy.yaml`
+- Access to `ops/release/signing/policy.yaml`
 - A clean working tree for publishing metadata updates
 
 ## Install
@@ -22,8 +22,8 @@
 
 ## Verify
 
-- Confirm `release/signing/policy.yaml` still references the current verification command
-- Confirm no raw token material appears in `release/evidence/`
+- Confirm `ops/release/signing/policy.yaml` still references the current verification command
+- Confirm no raw token material appears in `ops/release/evidence/`
 - Confirm downstream verification still succeeds using the rotated trust material
 
 ## Rollback

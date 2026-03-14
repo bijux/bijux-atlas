@@ -10,8 +10,8 @@ last_reviewed: 2026-03-05
 ```text
 ops render/install/validate
   -> artifacts/ops/evidence/<run_id>/*.json
-  -> release/evidence/manifest.json
-  -> release/evidence/bundle.tar
+  -> ops/release/evidence/manifest.json
+  -> ops/release/evidence/bundle.tar
   -> ops evidence verify / ops evidence diff
 ```
 

@@ -45,7 +45,7 @@ fn extract_copy_sources(line: &str) -> Option<Vec<String>> {
 #[test]
 fn runtime_dockerfile_copy_paths_exist() {
     let root = workspace_root();
-    let dockerfile = root.join("docker/images/runtime/Dockerfile");
+    let dockerfile = root.join("ops/docker/images/runtime/Dockerfile");
     let content = fs::read_to_string(&dockerfile).expect("read dockerfile");
 
     let mut missing = Vec::new();
@@ -74,8 +74,8 @@ fn runtime_dockerfile_copy_paths_exist() {
 #[test]
 fn runtime_dockerfile_base_images_follow_digest_policy() {
     let root = workspace_root();
-    let dockerfile = root.join("docker/images/runtime/Dockerfile");
-    let policy_path = root.join("docker/policy.json");
+    let dockerfile = root.join("ops/docker/images/runtime/Dockerfile");
+    let policy_path = root.join("ops/docker/policy.json");
     let docker_text = fs::read_to_string(&dockerfile).expect("read dockerfile");
     let policy_text = fs::read_to_string(&policy_path).expect("read digest policy");
     let policy: serde_json::Value = serde_json::from_str(&policy_text).expect("policy json");
@@ -127,9 +127,9 @@ fn runtime_dockerfile_base_images_follow_digest_policy() {
 #[test]
 fn runtime_dockerfile_has_no_unapproved_network_build_steps() {
     let root = workspace_root();
-    let dockerfile = root.join("docker/images/runtime/Dockerfile");
+    let dockerfile = root.join("ops/docker/images/runtime/Dockerfile");
     let text = fs::read_to_string(&dockerfile).expect("read dockerfile");
-    let policy_path = root.join("docker/policy.json");
+    let policy_path = root.join("ops/docker/policy.json");
     let policy_text = fs::read_to_string(&policy_path).expect("read docker policy");
     let policy: serde_json::Value = serde_json::from_str(&policy_text).expect("policy json");
     let disallowed = policy["build_network_policy"]["forbidden_tokens"]

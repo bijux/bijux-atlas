@@ -111,10 +111,10 @@ fn run_tutorials_list(args: &TutorialsCommandArgs) -> Result<(String, i32), Stri
             "dashboard_items": assets.dashboard_items.len()
         },
         "paths": {
-            "dataset_contract": "tutorials/contracts/tutorial-dataset-contract.json",
-            "contracts_directory": "tutorials/contracts",
-            "evidence_directory": "tutorials/evidence",
-            "dashboards_directory": "tutorials/dashboards"
+            "dataset_contract": "ops/tutorials/contracts/tutorial-dataset-contract.json",
+            "contracts_directory": "ops/tutorials/contracts",
+            "evidence_directory": "ops/tutorials/evidence",
+            "dashboards_directory": "ops/tutorials/dashboards"
         },
         "files": {
             "contracts": assets.contract_files,
@@ -141,10 +141,10 @@ fn run_tutorials_explain(args: &TutorialsCommandArgs) -> Result<(String, i32), S
         "repo_root": repo_root.display().to_string(),
         "doctrine": {
             "automation_owner": "bijux-dev-atlas",
-            "artifacts_only_directory": "tutorials/"
+            "artifacts_only_directory": "ops/tutorials/"
         },
         "source_assets": {
-            "dataset_contract": "tutorials/contracts/tutorial-dataset-contract.json",
+            "dataset_contract": "ops/tutorials/contracts/tutorial-dataset-contract.json",
             "evidence_items": assets.evidence_items.len(),
             "dashboard_items": assets.dashboard_items.len()
         },
@@ -572,7 +572,7 @@ fn run_tutorials_dataset_package(
     args: &TutorialsDatasetPackageArgs,
 ) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
-    let sha_file_path = repo_root.join("tutorials/contracts/atlas-example-minimal.sha256");
+    let sha_file_path = repo_root.join("ops/tutorials/contracts/atlas-example-minimal.sha256");
     let files = load_files_from_sha256_manifest(&sha_file_path)?;
     let package_dir = repo_root.join("artifacts/tutorials/datasets");
     fs::create_dir_all(&package_dir)
@@ -651,7 +651,7 @@ fn run_tutorials_dataset_integrity_check(
     args: &TutorialsCommandArgs,
 ) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.repo_root.clone())?;
-    let sha_file_path = repo_root.join("tutorials/contracts/atlas-example-minimal.sha256");
+    let sha_file_path = repo_root.join("ops/tutorials/contracts/atlas-example-minimal.sha256");
     let pairs = load_sha256_pairs(&sha_file_path)?;
     let mut missing = Vec::new();
     let mut mismatched = Vec::new();
@@ -686,7 +686,7 @@ fn run_tutorials_reproducibility_check(
 ) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.repo_root.clone())?;
     let files = load_files_from_sha256_manifest(
-        &repo_root.join("tutorials/contracts/atlas-example-minimal.sha256"),
+        &repo_root.join("ops/tutorials/contracts/atlas-example-minimal.sha256"),
     )?;
     let run_dir = repo_root.join("artifacts/tutorials/reproducibility");
     fs::create_dir_all(&run_dir)
@@ -822,7 +822,7 @@ fn run_tutorials_contracts_explain(args: &TutorialsCommandArgs) -> Result<(Strin
         "schema_version": 1,
         "domain": "tutorials",
         "action": "contracts-explain",
-        "contract_path": "tutorials/contracts/tutorial-dataset-contract.json",
+        "contract_path": "ops/tutorials/contracts/tutorial-dataset-contract.json",
         "required_keys": required_keys,
         "properties": assets.dataset_contract.get("properties").cloned().unwrap_or(serde_json::json!({}))
     });
@@ -863,15 +863,15 @@ fn run_tutorials_generate(args: &TutorialsCommandArgs) -> Result<(String, i32), 
 
 fn load_tutorial_assets(repo_root: &Path) -> Result<TutorialAssets, String> {
     let dataset_contract_path =
-        repo_root.join("tutorials/contracts/tutorial-dataset-contract.json");
+        repo_root.join("ops/tutorials/contracts/tutorial-dataset-contract.json");
     let dataset_contract_text = fs::read_to_string(&dataset_contract_path)
         .map_err(|err| format!("failed to read {}: {err}", dataset_contract_path.display()))?;
     let dataset_contract: serde_json::Value = serde_json::from_str(&dataset_contract_text)
         .map_err(|err| format!("failed to parse {}: {err}", dataset_contract_path.display()))?;
 
-    let evidence_items = load_json_directory(repo_root.join("tutorials/evidence"))?;
-    let dashboard_items = load_json_directory(repo_root.join("tutorials/dashboards"))?;
-    let contract_files = scan_contracts_directory(repo_root.join("tutorials/contracts"))?;
+    let evidence_items = load_json_directory(repo_root.join("ops/tutorials/evidence"))?;
+    let dashboard_items = load_json_directory(repo_root.join("ops/tutorials/dashboards"))?;
+    let contract_files = scan_contracts_directory(repo_root.join("ops/tutorials/contracts"))?;
 
     Ok(TutorialAssets {
         dataset_contract,
@@ -2289,7 +2289,7 @@ fn load_dataset_query_pack(
     dataset: &str,
 ) -> Result<Vec<DatasetNamedQuery>, String> {
     let path = repo_root
-        .join("tutorials/datasets")
+        .join("ops/tutorials/datasets")
         .join(dataset)
         .join("query-pack.json");
     let text = fs::read_to_string(&path)
@@ -2301,7 +2301,7 @@ fn load_dataset_query_pack(
 
 fn load_dataset_fetch_spec(repo_root: &Path, dataset: &str) -> Result<DatasetFetchSpec, String> {
     let path = repo_root
-        .join("tutorials/datasets")
+        .join("ops/tutorials/datasets")
         .join(dataset)
         .join("fetch-spec.json");
     let text = fs::read_to_string(&path)
@@ -2311,7 +2311,7 @@ fn load_dataset_fetch_spec(repo_root: &Path, dataset: &str) -> Result<DatasetFet
 
 fn load_dataset_metadata(repo_root: &Path, dataset: &str) -> Result<DatasetMetadata, String> {
     let path = repo_root
-        .join("tutorials/datasets")
+        .join("ops/tutorials/datasets")
         .join(dataset)
         .join("metadata.json");
     let text = fs::read_to_string(&path)
@@ -2505,7 +2505,7 @@ fn validate_real_data_runs_catalog(
                 run.id
             ));
         }
-        let dataset_dir = repo_root.join("tutorials/datasets").join(&run.dataset);
+        let dataset_dir = repo_root.join("ops/tutorials/datasets").join(&run.dataset);
         let required_files = [
             "README.md",
             "fetch-spec.json",
@@ -2537,7 +2537,7 @@ fn validate_real_data_runs_catalog(
         }
         if fetch_spec.url != run.input_provenance.url {
             return Err(format!(
-                "run `{}` input_provenance.url must match tutorials/datasets/{}/fetch-spec.json",
+                "run `{}` input_provenance.url must match ops/tutorials/datasets/{}/fetch-spec.json",
                 run.id, run.dataset
             ));
         }

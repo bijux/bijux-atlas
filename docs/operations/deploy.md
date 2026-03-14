@@ -62,7 +62,7 @@ Expected outputs:
 make ops-release-rollback
 ```
 
-Use [Rollback procedure](release/rollback-procedure.md) for production rollbacks.
+Use [Rollback procedure](ops/release/rollback-procedure.md) for production rollbacks.
 
 ## Reset and cleanup
 

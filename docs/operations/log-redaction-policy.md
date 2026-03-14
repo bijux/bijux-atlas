@@ -25,5 +25,5 @@ last_reviewed: 2026-03-03
 
 ## Scope
 
-- This policy applies only to logs copied into `release/evidence/redacted-logs/`.
+- This policy applies only to logs copied into `ops/release/evidence/redacted-logs/`.
 - Runtime source logs remain governed by operational access controls and retention rules outside the evidence bundle.

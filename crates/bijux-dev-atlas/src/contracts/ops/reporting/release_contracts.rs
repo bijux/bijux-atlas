@@ -347,7 +347,7 @@ fn test_ops_rpt_007_historical_comparison_schema_valid(ctx: &RunContext) -> Test
 fn test_ops_rpt_011_ops_bundle_reproducibility_policy(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-REPORT-011";
     let test_id = "ops.report.ops_bundle_reproducibility_policy";
-    let rel = "release/ops-v0.1.toml";
+    let rel = "ops/release/ops-v0.1.toml";
     let path = ctx.repo_root.join(rel);
     let raw = match std::fs::read_to_string(&path) {
         Ok(value) => value,

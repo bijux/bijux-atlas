@@ -12,7 +12,7 @@ Related ops contracts: `OPS-ROOT-023`, `REL-SIGN-001`.
 
 ## Prereqs
 
-- A freshly generated evidence bundle under `release/evidence/`
+- A freshly generated evidence bundle under `ops/release/evidence/`
 - `cargo`, `python3`, and the `bijux-dev-atlas` binary available locally
 - A clean working tree for the release artifact files you intend to publish
 
@@ -27,23 +27,23 @@ cargo run -q -p bijux-dev-atlas -- ops evidence collect --allow-subprocess --all
 Generate the signing artifacts from the governed signing policy:
 
 ```bash
-cargo run -q -p bijux-dev-atlas -- release sign --evidence release/evidence --format json
+cargo run -q -p bijux-dev-atlas -- release sign --evidence ops/release/evidence --format json
 ```
 
 This writes:
 
-- `release/signing/checksums.json`
-- `release/signing/release-sign.json`
-- `release/provenance.json`
+- `ops/release/signing/checksums.json`
+- `ops/release/signing/release-sign.json`
+- `ops/release/provenance.json`
 
-The signing mechanism is currently the governed checksum ledger described in `release/signing/policy.yaml`. Consumers verify artifacts by matching the recorded SHA-256 values against the published files.
+The signing mechanism is currently the governed checksum ledger described in `ops/release/signing/policy.yaml`. Consumers verify artifacts by matching the recorded SHA-256 values against the published files.
 
 ## Verify
 
 Run offline verification of the signed release surface:
 
 ```bash
-cargo run -q -p bijux-dev-atlas -- release verify --evidence release/evidence/bundle.tar --format json
+cargo run -q -p bijux-dev-atlas -- release verify --evidence ops/release/evidence/bundle.tar --format json
 ```
 
 This checks:

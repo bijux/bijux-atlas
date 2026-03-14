@@ -10,8 +10,8 @@
 ## In scope
 
 - Runtime secrets declared in `configs/security/secrets.json`
-- Release evidence under `release/evidence/`
-- Threat model sources under `security/threat-model/`
+- Release evidence under `ops/release/evidence/`
+- Threat model sources under `ops/security/threat-model/`
 - Workflow action pins and dependency sources used by repository-owned automation
 - Digest-pinned base images and release SBOM coverage
 
@@ -24,7 +24,7 @@
 
 ## Threat model entrypoint
 
-- Threat model source of truth: `security/threat-model/README.md`
+- Threat model source of truth: `ops/security/threat-model/README.md`
 - [Security Compliance](compliance.md)
 
 ## Verify

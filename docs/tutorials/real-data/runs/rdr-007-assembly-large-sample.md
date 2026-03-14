@@ -46,7 +46,7 @@ Run command: 'bijux-dev-atlas tutorials real-data query-pack --run-id rdr-007-as
 
 ## Known limitations
 
-- Dataset source currently uses a fixed fetch specification in tutorials/datasets/assembly-large-sample/fetch-spec.json.
+- Dataset source currently uses a fixed fetch specification in ops/tutorials/datasets/assembly-large-sample/fetch-spec.json.
 - Results depend on the selected runtime profile and local machine capacity.
 
 ## Performance notes

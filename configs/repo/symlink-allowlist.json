@@ -3,7 +3,7 @@
     "ops/e2e/stack": "ops/stack"
   },
   "root": {
-    "Dockerfile": "docker/images/runtime/Dockerfile"
+    "Dockerfile": "ops/docker/images/runtime/Dockerfile"
   },
   "schema_version": 1
 }

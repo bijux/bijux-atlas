@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/governance/contracts-registry.schema.json",
+  "$id": "https://bijux.dev/schema/ops/governance/repository/contracts-registry.schema.json",
   "title": "Contracts Registry",
   "type": "object",
   "additionalProperties": false,

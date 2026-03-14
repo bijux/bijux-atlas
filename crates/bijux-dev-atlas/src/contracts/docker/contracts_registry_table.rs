@@ -12,13 +12,13 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 },
                 TestCase {
                     id: TestId("docker.dir.no_contracts_subdir".to_string()),
-                    title: "docker/contracts subdirectory is forbidden",
+                    title: "ops/docker/contracts subdirectory is forbidden",
                     kind: TestKind::Pure,
                     run: test_dir_no_contracts_subdir,
                 },
                 TestCase {
                     id: TestId("docker.dir.dockerfiles_location".to_string()),
-                    title: "Dockerfiles must be under docker/images/**",
+                    title: "Dockerfiles must be under ops/docker/images/**",
                     kind: TestKind::Pure,
                     run: test_dir_dockerfiles_location,
                 },
@@ -48,7 +48,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             tests: vec![
                 TestCase {
                     id: TestId("docker.dockerfiles.under_images_only".to_string()),
-                    title: "Dockerfiles are only under docker/images/**",
+                    title: "Dockerfiles are only under ops/docker/images/**",
                     kind: TestKind::Pure,
                     run: test_dockerfiles_under_images_only,
                 },
@@ -209,7 +209,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             title: "base image allowlist",
             tests: vec![TestCase {
                 id: TestId("docker.from.allowlisted_base_images".to_string()),
-                title: "FROM images are declared in docker/bases.lock",
+                title: "FROM images are declared in ops/docker/bases.lock",
                 kind: TestKind::Pure,
                 run: test_from_images_allowlisted,
             }],
@@ -219,7 +219,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             title: "base image lock digest",
             tests: vec![TestCase {
                 id: TestId("docker.from.digest_matches_lock".to_string()),
-                title: "FROM image digests match docker/bases.lock",
+                title: "FROM image digests match ops/docker/bases.lock",
                 kind: TestKind::Pure,
                 run: test_from_digest_matches_bases_lock,
             }],
@@ -389,7 +389,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             title: "image smoke manifest",
             tests: vec![TestCase {
                 id: TestId("docker.images.smoke_manifest".to_string()),
-                title: "each Docker image is listed with a smoke command in docker/images.manifest.json",
+                title: "each Docker image is listed with a smoke command in ops/docker/images.manifest.json",
                 kind: TestKind::Pure,
                 run: test_images_have_smoke_manifest,
             }],
@@ -399,7 +399,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             title: "image manifest schema",
             tests: vec![TestCase {
                 id: TestId("docker.images.manifest_schema_valid".to_string()),
-                title: "docker/images.manifest.json is schema-valid and non-empty",
+                title: "ops/docker/images.manifest.json is schema-valid and non-empty",
                 kind: TestKind::Pure,
                 run: test_images_manifest_schema_valid,
             }],
@@ -419,7 +419,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             title: "image build matrix",
             tests: vec![TestCase {
                 id: TestId("docker.build_matrix.defined".to_string()),
-                title: "docker/build-matrix.json covers every manifest image",
+                title: "ops/docker/build-matrix.json covers every manifest image",
                 kind: TestKind::Pure,
                 run: test_build_matrix_defined,
             }],
@@ -597,7 +597,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             title: "contract registry export",
             tests: vec![TestCase {
                 id: TestId("docker.registry.export_matches_generated".to_string()),
-                title: "docker/docker.contracts.json matches generated registry output",
+                title: "ops/docker/docker.contracts.json matches generated registry output",
                 kind: TestKind::Pure,
                 run: test_contract_registry_export_matches,
             }],
@@ -617,7 +617,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             title: "exceptions registry schema",
             tests: vec![TestCase {
                 id: TestId("docker.exceptions.schema_valid".to_string()),
-                title: "docker/exceptions.json uses the expected strict schema",
+                title: "ops/docker/exceptions.json uses the expected strict schema",
                 kind: TestKind::Pure,
                 run: test_exceptions_registry_schema,
             }],

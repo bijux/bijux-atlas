@@ -34,7 +34,7 @@ Expected outputs:
 
 ## Rollback
 
-If telemetry wiring breaks deploy safety, revert the rollout with [Rollback procedure](release/rollback-procedure.md).
+If telemetry wiring breaks deploy safety, revert the rollout with [Rollback procedure](ops/release/rollback-procedure.md).
 
 ## Next steps
 

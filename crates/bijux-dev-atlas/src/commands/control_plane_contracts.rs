@@ -91,7 +91,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                         "docker",
                         domain_registry(&domains, "docker")?,
                     )?,
-                    PathBuf::from("artifacts/contracts/docker/registry-snapshot.json"),
+                    PathBuf::from("artifacts/contracts/ops/docker/registry-snapshot.json"),
                 ),
                 ContractsSnapshotDomainArg::Make => (
                     "make",

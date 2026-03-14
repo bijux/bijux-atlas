@@ -68,5 +68,5 @@ Latency and timeout alerts return to target range and the service stays ready un
 - [Store backend error spike](slo-store-backend-error-spike.md)
 
 ## Evidence
-- Required evidence bundle: release/evidence/bundle.tar
+- Required evidence bundle: ops/release/evidence/bundle.tar
 - Contract reports: artifacts/ops/ops_run/observe/*.json

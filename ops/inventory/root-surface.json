@@ -7,9 +7,6 @@
     ".dockerignore": {
       "kind": "file"
     },
-    ".editorconfig": {
-      "kind": "file"
-    },
     ".gitattributes": {
       "kind": "file"
     },
@@ -52,12 +49,6 @@
     "crates": {
       "kind": "dir"
     },
-    "docker": {
-      "kind": "dir"
-    },
-    "governance": {
-      "kind": "dir"
-    },
     "docs": {
       "kind": "dir"
     },
@@ -70,17 +61,8 @@
     "ops": {
       "kind": "dir"
     },
-    "release": {
-      "kind": "dir"
-    },
     "rust-toolchain.toml": {
       "kind": "file"
-    },
-    "security": {
-      "kind": "dir"
-    },
-    "tutorials": {
-      "kind": "dir"
     }
   },
   "ssot_roots": [

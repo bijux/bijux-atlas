@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/governance/checks-registry.schema.json",
+  "$id": "https://bijux.dev/schema/ops/governance/repository/checks-registry.schema.json",
   "title": "Checks Registry",
   "type": "object",
   "additionalProperties": false,

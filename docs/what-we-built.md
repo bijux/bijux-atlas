@@ -23,7 +23,7 @@ Atlas now operates as a full lifecycle platform:
 - operational profiles and deployment bundles
 - checks/contracts governance controls
 - observability and capacity engineering assets
-- developer ecosystem surfaces (SDK/tutorials/CLI)
+- developer ecosystem surfaces (SDK/ops/tutorials/CLI)
 
 The documentation structure mirrors that lifecycle:
 

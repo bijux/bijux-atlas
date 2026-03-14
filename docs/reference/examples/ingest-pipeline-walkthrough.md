@@ -15,5 +15,5 @@
 
 ## Related
 
-- [Tutorial: Ingest Dataset](../../tutorials/ingest-dataset.md)
+- [Tutorial: Ingest Dataset](../../ops/tutorials/ingest-dataset.md)
 - [Operational Workflows](../../operations/workflows.md)

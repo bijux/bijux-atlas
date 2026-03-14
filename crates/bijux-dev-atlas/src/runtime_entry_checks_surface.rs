@@ -395,7 +395,7 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
 
         let base = rel.file_name().and_then(|v| v.to_str()).unwrap_or_default();
         let rel_text = rel.display().to_string();
-        if is_path_within(rel, "tutorials/") {
+        if is_path_within(rel, "ops/tutorials/") {
             let ext = rel.extension().and_then(|v| v.to_str()).unwrap_or_default();
             if ext == "py" || ext == "sh" || rel_text.contains("/scripts/") {
                 tutorials_forbidden_pattern_violations.push(rel_text.clone());

@@ -6,5 +6,5 @@
 4. Revalidate service health and write throughput.
 
 ## Evidence
-- Required evidence bundle: release/evidence/bundle.tar
+- Required evidence bundle: ops/release/evidence/bundle.tar
 - Contract reports: artifacts/ops/ops_run/observe/*.json

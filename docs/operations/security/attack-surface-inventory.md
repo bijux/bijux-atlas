@@ -16,4 +16,4 @@ Core attack surfaces:
 - release artifact production and storage
 - configuration and policy inputs
 
-Source file: `security/threat-model/attack-surface.md`.
+Source file: `ops/security/threat-model/attack-surface.md`.

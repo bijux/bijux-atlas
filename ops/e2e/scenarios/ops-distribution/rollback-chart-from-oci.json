@@ -12,5 +12,5 @@
     "helm rollback atlas 1",
     "kubectl rollout status deployment/atlas-bijux-atlas-server --timeout=180s"
   ],
-  "evidence_path": "release/evidence/ops-distribution/rollback-chart-from-oci/evidence.json"
+  "evidence_path": "ops/release/evidence/ops-distribution/rollback-chart-from-oci/evidence.json"
 }

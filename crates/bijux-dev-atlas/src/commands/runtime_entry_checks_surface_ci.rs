@@ -575,7 +575,7 @@ fn domain_path_prefixes(domain: &str) -> &'static [&'static str] {
         "docs" => &["docs/", "mkdocs.yml", "configs/docs/"],
         "ops" => &["ops/", "configs/ops/", ".github/workflows/ops-"],
         "ci" => &[".github/workflows/", "configs/ci/", "crates/bijux-dev-atlas/"],
-        "release" => &["release/", "docs/", "configs/release/", ".github/workflows/release-"],
+        "release" => &["ops/release/", "docs/", "configs/release/", ".github/workflows/release-"],
         "dependency" => &["Cargo.lock", ".github/workflows/dependency-"],
         _ => &[".github/workflows/"],
     }
@@ -975,7 +975,7 @@ fn run_ci_verify_gate(
                     "docs/**",
                     "configs/docs/**",
                     "ops/report/docs/**",
-                    "docker/**",
+                    "ops/docker/**",
                     "make/**",
                 ])
                 .output()

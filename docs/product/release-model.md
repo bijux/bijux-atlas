@@ -7,7 +7,7 @@ Reason to exist: define immutable release behavior and supported alias semantics
 ## Model
 
 - Releases are immutable once published.
-- Dataset identity is explicit: `release/species/assembly`.
+- Dataset identity is explicit: `ops/release/species/assembly`.
 - Read aliases may point to a release, but do not change release contents.
 
 ## Compatibility

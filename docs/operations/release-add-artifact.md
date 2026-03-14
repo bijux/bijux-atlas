@@ -18,9 +18,9 @@ Related ops contracts: `OPS-ROOT-023`, `REL-EVID-005`.
 ## Install
 
 1. Add the artifact generator or committed source.
-2. Update `release/evidence/manifest.schema.json` if the manifest shape changes.
+2. Update `ops/release/evidence/manifest.schema.json` if the manifest shape changes.
 3. Bump the manifest schema version when the schema shape changes.
-4. Update `release/signing/policy.yaml` if the artifact must be signed.
+4. Update `ops/release/signing/policy.yaml` if the artifact must be signed.
 5. Regenerate evidence with `ops evidence collect`.
 6. Regenerate signing artifacts with `release sign`.
 

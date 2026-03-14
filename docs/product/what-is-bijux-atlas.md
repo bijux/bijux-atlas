@@ -41,7 +41,7 @@ Institutes need deterministic, versioned query behavior over immutable datasets 
 
 ## Contracts
 
-- Dataset identity is explicit: `release/species/assembly`.
+- Dataset identity is explicit: `ops/release/species/assembly`.
 - Artifacts are immutable after publish.
 - All public surfaces are contract-driven from `docs/reference/contracts/`.
 

@@ -9,8 +9,8 @@ tags:
   - tutorial
   - reference
 related:
-  - tutorials/contracts/tutorial-dataset-contract.json
-  - tutorials/evidence/tutorial-usage-metrics-example.json
+  - ops/tutorials/contracts/tutorial-dataset-contract.json
+  - ops/tutorials/evidence/tutorial-usage-metrics-example.json
 ---
 
 # Tutorial Reference
@@ -27,5 +27,5 @@ related:
 
 ## Contracts and Evidence
 
-- `tutorials/contracts/tutorial-dataset-contract.json`
-- `tutorials/evidence/tutorial-usage-metrics-example.json`
+- `ops/tutorials/contracts/tutorial-dataset-contract.json`
+- `ops/tutorials/evidence/tutorial-usage-metrics-example.json`

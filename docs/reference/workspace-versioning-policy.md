@@ -10,7 +10,7 @@ tags:
   - release
 related:
   - docs/reference/crate-release-policy.md
-  - release/crates-v0.1.toml
+  - ops/release/crates-v0.1.toml
 ---
 
 # Workspace versioning policy
@@ -18,12 +18,12 @@ related:
 ## Policy
 
 - Atlas uses a unified workspace version for the `v0.1` release line.
-- Every publishable crate in `release/crates-v0.1.toml` ships with the same semantic version.
+- Every publishable crate in `ops/release/crates-v0.1.toml` ships with the same semantic version.
 - Release tag format is `v<workspace-version>`.
 
 ## Scope
 
-- Applies to crates listed under `publish.allow` in `release/crates-v0.1.toml`.
+- Applies to crates listed under `publish.allow` in `ops/release/crates-v0.1.toml`.
 - Does not apply to private crates listed under `publish.deny`.
 
 ## Enforcement

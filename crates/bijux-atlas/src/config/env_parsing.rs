@@ -101,7 +101,7 @@ pub(super) fn env_dataset_list(
                 name,
                 value.clone(),
                 format!(
-                    "invalid dataset list entry for {name}: {item} (expected release/species/assembly)"
+                    "invalid dataset list entry for {name}: {item} (expected ops/release/species/assembly)"
                 ),
             ));
         }

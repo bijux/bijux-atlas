@@ -17,7 +17,7 @@
 
 - Check whether the failure is in `REL-SIGN-*`, `REL-PROV-001`, `REL-TAR-001`, or `REL-MAN-001`.
 - If the failure is checksum-related, rerun `ops evidence collect` and `release sign` in that order.
-- If the failure is schema-related, inspect `release/evidence/manifest.schema.json` and the generated manifest.
+- If the failure is schema-related, inspect `ops/release/evidence/manifest.schema.json` and the generated manifest.
 
 ## Verify
 

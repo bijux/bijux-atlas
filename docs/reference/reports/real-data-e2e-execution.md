@@ -6,7 +6,7 @@ This report explains how to reproduce and inspect real-data end-to-end runs exec
 
 - Workflow contract: `configs/tutorials/real-data-runs-workflow.json`
 - Run catalog: `configs/tutorials/real-data-runs.json`
-- Dataset fetch specs: `tutorials/datasets/*/fetch-spec.json`
+- Dataset fetch specs: `ops/tutorials/datasets/*/fetch-spec.json`
 
 ## Generated Evidence
 
@@ -37,5 +37,5 @@ cargo run -p bijux-dev-atlas -- tutorials real-data run-all --profile local --fo
 
 ## Related Pages
 
-- [Real Data E2E Tutorial](../../tutorials/real-data-e2e.md)
+- [Real Data E2E Tutorial](../../ops/tutorials/real-data-e2e.md)
 - [Real Data Runs Report](real-data-runs.md)

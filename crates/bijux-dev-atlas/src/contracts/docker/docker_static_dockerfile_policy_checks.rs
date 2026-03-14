@@ -464,7 +464,7 @@ fn test_copy_uses_canonical_config_paths(ctx: &RunContext) -> TestResult {
 }
 
 fn image_directories_with_dockerfile(repo_root: &Path) -> Result<BTreeSet<String>, String> {
-    let images_root = repo_root.join("docker/images");
+    let images_root = repo_root.join("ops/docker/images");
     let mut out = BTreeSet::new();
     if !images_root.exists() {
         return Ok(out);
@@ -472,7 +472,7 @@ fn image_directories_with_dockerfile(repo_root: &Path) -> Result<BTreeSet<String
     let entries = std::fs::read_dir(&images_root)
         .map_err(|e| format!("read_dir {} failed: {e}", images_root.display()))?;
     for entry in entries {
-        let entry = entry.map_err(|e| format!("read docker/images entry failed: {e}"))?;
+        let entry = entry.map_err(|e| format!("read ops/docker/images entry failed: {e}"))?;
         let path = entry.path();
         if !path.is_dir() {
             continue;
@@ -526,7 +526,7 @@ fn test_required_images_exist(ctx: &RunContext) -> TestResult {
             violations.push(violation(
                 "DOCKER-012",
                 "docker.images.required_exist",
-                Some("docker/images".to_string()),
+                Some("ops/docker/images".to_string()),
                 Some(1),
                 "required docker image directory is missing a Dockerfile",
                 Some(image),

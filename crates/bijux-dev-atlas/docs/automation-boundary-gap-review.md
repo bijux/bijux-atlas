@@ -28,7 +28,7 @@ This review keeps those controls and adds a single automation boundary scan/repo
 
 The active boundary report surfaces now include explicit checks for:
 
-1. `automation.tutorials.forbidden-patterns` (forbidden `tutorials/**/*.py`, `tutorials/**/*.sh`, and legacy script paths).
+1. `automation.tutorials.forbidden-patterns` (forbidden `ops/tutorials/**/*.py`, `ops/tutorials/**/*.sh`, and legacy script paths).
 2. `automation.clients.forbidden-patterns` (forbidden client-local tooling paths such as `clients/**/tools/**`, `__pycache__`, and `*.pyc`).
 
 Exception policy state:

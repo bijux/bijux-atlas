@@ -184,7 +184,7 @@ async fn diff_common(
     if from_release_raw.is_empty() || to_release_raw.is_empty() {
         let resp = api_error_response(
             StatusCode::BAD_REQUEST,
-            ApiError::invalid_param("from_release/to_release", "missing"),
+            ApiError::invalid_param("from_ops/release/to_release", "missing"),
         );
         return with_request_id(resp, &request_id);
     }

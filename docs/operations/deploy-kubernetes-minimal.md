@@ -80,6 +80,6 @@ Use rollback workflow for failed production changes.
 ## Next steps
 
 - Release controls: [Release workflow](release-workflow.md)
-- Rollback controls: [Rollback procedure](release/rollback-procedure.md)
+- Rollback controls: [Rollback procedure](ops/release/rollback-procedure.md)
 - architecture context: [Architecture](../architecture/index.md)
 - contributor workflows: [Development](../development/index.md)

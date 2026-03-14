@@ -22,4 +22,4 @@ Docs checks pass and reader navigation remains coherent.
 
 - [Doc Conventions](doc-conventions.md)
 - [Docs change process](../_internal/meta/docs-change-process.md)
-- [Governance Readers Guide](../_internal/governance/readers-guide.md)
+- [Governance Readers Guide](../_internal/ops/governance/repository/readers-guide.md)

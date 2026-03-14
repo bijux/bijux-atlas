@@ -14,7 +14,7 @@ related:
 
 # Docker build network policy
 
-Docker build network behavior is governed by `docker/policy.json` `build_network_policy`.
+Docker build network behavior is governed by `ops/docker/policy.json` `build_network_policy`.
 
 ## Allowed
 

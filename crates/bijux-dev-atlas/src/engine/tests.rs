@@ -62,7 +62,7 @@ mod tests {
             TestResult::Fail(vec![Violation {
                 contract_id: "DOCKER-999".to_string(),
                 test_id: "docker.sample.fail".to_string(),
-                file: Some("docker/images/runtime/Dockerfile".to_string()),
+                file: Some("ops/docker/images/runtime/Dockerfile".to_string()),
                 line: Some(1),
                 message: "sample failure".to_string(),
                 evidence: Some("latest".to_string()),

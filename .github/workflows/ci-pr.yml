@@ -193,7 +193,7 @@ jobs:
           fi
           cargo run --locked -q -p bijux-dev-atlas -- governance validate --format json > "${report_root}/governance-validate.json" 2> "${logs_root}/governance-validate.stderr.log"
           coverage_current="$(jq -r '.coverage_percent' artifacts/governance/governance-coverage.json)"
-          coverage_baseline="$(jq -r '.coverage_percent_min' governance/coverage-baseline.json)"
+          coverage_baseline="$(jq -r '.coverage_percent_min' ops/governance/repository/coverage-baseline.json)"
           delta="$(awk -v c="${coverage_current}" -v b="${coverage_baseline}" 'BEGIN { printf \"%.2f\", c-b }')"
           status="ok"
           if awk -v c="${coverage_current}" -v b="${coverage_baseline}" 'BEGIN { exit !(c < b) }'; then
@@ -237,7 +237,7 @@ jobs:
               "configs": {"changed": subset(["configs/", "docs/bijux-atlas-crate/server/generated/effective-config.snapshot.json", "docs/reference/contracts/schemas/CONFIG_KEYS.json"])},
               "docs": {"changed": subset(["docs/"])},
               "make": {"changed": subset(["make/", "configs/ops/make-target-registry.json", "make/target-list.json"])},
-              "docker": {"changed": subset(["docker/", "docker/images.manifest.json", "docker/policy.json"])},
+              "docker": {"changed": subset(["ops/docker/", "ops/docker/images.manifest.json", "ops/docker/policy.json"])},
               "ops_readiness": {"changed": subset(["ops/observe/readiness.json", "ops/report/evidence-levels.json", "ops/report/generated/readiness-score.json", "ops/report/generated/release-evidence-bundle.json"])},
           }
           for domain in ["configs", "docs", "make", "docker", "ops_readiness"]:
@@ -1646,9 +1646,9 @@ jobs:
     needs: route-changes
     env:
       ISO_ROOT: artifacts/isolates/ci-pr-docker
-      TMPDIR: artifacts/isolates/ci-pr-docker/tmp
-      TMP: artifacts/isolates/ci-pr-docker/tmp
-      TEMP: artifacts/isolates/ci-pr-docker/tmp
+      TMPDIR: artifacts/isolates/ci-pr-ops/docker/tmp
+      TMP: artifacts/isolates/ci-pr-ops/docker/tmp
+      TEMP: artifacts/isolates/ci-pr-ops/docker/tmp
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7

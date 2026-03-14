@@ -10,8 +10,8 @@
 
 ## Contract Set
 
-- `REL-EVID-001`: `release/evidence/manifest.json` exists and satisfies `release/evidence/manifest.schema.json`.
-- `REL-EVID-002`: `release/evidence/identity.json` exists and satisfies `release/evidence/identity.schema.json`.
+- `REL-EVID-001`: `ops/release/evidence/manifest.json` exists and satisfies `ops/release/evidence/manifest.schema.json`.
+- `REL-EVID-002`: `ops/release/evidence/identity.json` exists and satisfies `ops/release/evidence/identity.schema.json`.
 - `REL-EVID-003`: the packaged chart checksum is present in the manifest.
 - `REL-EVID-004`: prod profiles record non-empty image artifact coverage.
 - `REL-EVID-005`: required reports and simulation summaries are listed when present.

@@ -11,11 +11,11 @@ last_reviewed: 2026-03-05
 
 Canonical files:
 
-- `security/threat-model/assets.yaml`
-- `security/threat-model/threats.yaml`
-- `security/threat-model/mitigations.yaml`
-- `security/threat-model/classification-taxonomy.yaml`
-- `security/threat-model/threat-registry.yaml`
+- `ops/security/threat-model/assets.yaml`
+- `ops/security/threat-model/threats.yaml`
+- `ops/security/threat-model/mitigations.yaml`
+- `ops/security/threat-model/classification-taxonomy.yaml`
+- `ops/security/threat-model/threat-registry.yaml`
 
 CLI surfaces:
 

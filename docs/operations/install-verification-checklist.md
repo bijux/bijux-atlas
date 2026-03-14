@@ -31,7 +31,7 @@ Expected outputs:
 
 ## Rollback
 
-Use [Rollback procedure](release/rollback-procedure.md) when install verification fails after a change rollout.
+Use [Rollback procedure](ops/release/rollback-procedure.md) when install verification fails after a change rollout.
 
 ## Next steps
 

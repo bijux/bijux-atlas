@@ -26,7 +26,7 @@ bijux dev atlas checks failures --last-run artifacts/evidence/checks/repo.json -
 
 Policy sources commonly used during triage:
 
-- `configs/policy/check-governance/metadata/owners.json`
+- `configs/policy/check-ops/governance/repository/metadata/owners.json`
 - `configs/policy/check-intents.json`
 - `configs/policy/check-remediation-map.json`
 

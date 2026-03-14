@@ -23,7 +23,7 @@ bijux dev atlas docs generate --strict
 
 - Source path: `docs/_internal/generated/`
 - Published path: not in reader nav, not indexed for search
-- Access path: [Docs Dashboard](../governance/docs-dashboard.md)
+- Access path: [Docs Dashboard](../ops/governance/repository/docs-dashboard.md)
 
 ## Usage rules
 

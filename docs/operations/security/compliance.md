@@ -9,8 +9,8 @@
 
 ## Prereqs
 
-- Control catalog: `security/compliance/controls.yaml`
-- Compliance matrix: `security/compliance/matrix.yaml`
+- Control catalog: `ops/security/compliance/controls.yaml`
+- Compliance matrix: `ops/security/compliance/matrix.yaml`
 - Declared secrets: `configs/security/secrets.json`
 - Redaction policy: `configs/security/redaction.json`
 
@@ -18,7 +18,7 @@
 
 - Validate the threat model: `cargo run -q -p bijux-dev-atlas -- security validate --format json`
 - Validate the compliance matrix: `cargo run -q -p bijux-dev-atlas -- security compliance validate --format json`
-- Scan a candidate bundle: `cargo run -q -p bijux-dev-atlas -- security scan-artifacts --dir release/evidence --format json`
+- Scan a candidate bundle: `cargo run -q -p bijux-dev-atlas -- security scan-artifacts --dir ops/release/evidence --format json`
 
 ## Verify
 
