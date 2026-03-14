@@ -3,23 +3,16 @@
 
 pub mod checks;
 pub mod commands;
-pub mod contracts;
 pub mod runtime;
 
-use crate::contracts::Contract;
 use crate::domains::Domain;
 use crate::model::{CommandRoute, RunnableEntry, RunnableId, RunnableKind, RunnableMode, SuiteId};
 use crate::registry::RunnableRegistry;
-use std::path::Path;
 
 pub struct TutorialsDomain;
 
 pub fn plugin() -> TutorialsDomain {
     TutorialsDomain
-}
-
-pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
-    contracts::contracts(repo_root)
 }
 
 pub fn routes() -> Vec<CommandRoute> {
@@ -57,15 +50,15 @@ impl Domain for TutorialsDomain {
             .cloned()
             .collect::<Vec<_>>();
         if runnables.is_empty() {
-            let id = RunnableId::parse("tutorials.verify.contract");
+            let id = RunnableId::parse("tutorials.verify");
             let suite = SuiteId::parse("tutorials");
             if let (Ok(id), Ok(suite)) = (id, suite) {
                 runnables.push(RunnableEntry {
                     id,
                     suite,
-                    kind: RunnableKind::Contract,
+                    kind: RunnableKind::Check,
                     mode: RunnableMode::Pure,
-                    summary: "Validate tutorials contracts and generated artifacts".to_string(),
+                    summary: "Validate tutorials assets and generated artifacts".to_string(),
                     owner: "docs-governance".to_string(),
                     group: "tutorials".to_string(),
                     tags: Vec::new(),

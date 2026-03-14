@@ -2,15 +2,14 @@
 
 use crate::cli::{
     TutorialsBuildCommand, TutorialsBuildDocsArgs, TutorialsCommand, TutorialsCommandArgs,
-    TutorialsContractsCommand, TutorialsDashboardsCommand, TutorialsDatasetCommand,
-    TutorialsDatasetE2eArgs, TutorialsDatasetPackageArgs, TutorialsEvidenceCommand,
-    TutorialsRealDataCommand, TutorialsRealDataPlanArgs, TutorialsRealDataRunAllArgs,
-    TutorialsRealDataRunArgs, TutorialsRunCommand, TutorialsWorkflowArgs,
-    TutorialsWorkspaceCleanupArgs, TutorialsWorkspaceCommand,
+    TutorialsDashboardsCommand, TutorialsDatasetCommand, TutorialsDatasetE2eArgs,
+    TutorialsDatasetPackageArgs, TutorialsEvidenceCommand, TutorialsRealDataCommand,
+    TutorialsRealDataPlanArgs, TutorialsRealDataRunAllArgs, TutorialsRealDataRunArgs,
+    TutorialsRunCommand, TutorialsWorkflowArgs, TutorialsWorkspaceCleanupArgs,
+    TutorialsWorkspaceCommand,
 };
 use crate::{emit_payload, resolve_repo_root};
 use bijux_dev_atlas::domains::tutorials::checks;
-use bijux_dev_atlas::domains::tutorials::contracts;
 use bijux_dev_atlas::domains::tutorials::runtime::workspace::TutorialWorkspaceManager;
 use bijux_dev_atlas::ui::terminal::report::{render_status_line, LineStyle};
 use std::fs;
@@ -48,10 +47,6 @@ pub(crate) fn run_tutorials_command(quiet: bool, command: TutorialsCommand) -> i
         },
         TutorialsCommand::Evidence { command } => match command {
             TutorialsEvidenceCommand::Validate(args) => run_tutorials_evidence_validate(&args),
-        },
-        TutorialsCommand::Contracts { command } => match command {
-            TutorialsContractsCommand::Validate(args) => run_tutorials_contracts_validate(&args),
-            TutorialsContractsCommand::Explain(args) => run_tutorials_contracts_explain(&args),
         },
         TutorialsCommand::RealData { command } => match command {
             TutorialsRealDataCommand::List(args) => run_tutorials_real_data_list(&args),
@@ -162,8 +157,6 @@ fn run_tutorials_explain(args: &TutorialsCommandArgs) -> Result<(String, i32), S
             "tutorials workspace cleanup",
             "tutorials dashboards validate",
             "tutorials evidence validate",
-            "tutorials contracts validate",
-            "tutorials contracts explain",
             "tutorials generate"
         ]
     });
@@ -174,7 +167,6 @@ fn run_tutorials_explain(args: &TutorialsCommandArgs) -> Result<(String, i32), S
 fn run_tutorials_verify(args: &TutorialsCommandArgs) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.repo_root.clone())?;
     let assets = load_tutorial_assets(&repo_root)?;
-    let tutorial_contracts = contracts::contracts(&repo_root)?;
     let tutorial_checks = checks::checks(&repo_root)?;
     let (dashboards_ok, dashboards_detail) = validate_dashboards(&assets.dashboard_items);
     let (evidence_ok, evidence_detail) = validate_evidence(&assets.evidence_items);
@@ -196,7 +188,6 @@ fn run_tutorials_verify(args: &TutorialsCommandArgs) -> Result<(String, i32), St
             "run_artifacts": run_artifacts_detail
         },
         "catalog": {
-            "domain_contract_entries": tutorial_contracts.len(),
             "domain_check_entries": tutorial_checks.len()
         }
     });
@@ -789,45 +780,6 @@ fn run_tutorials_evidence_validate(args: &TutorialsCommandArgs) -> Result<(Strin
     });
     let rendered = emit_tutorial_output(args, &payload, None)?;
     Ok((rendered, if success { 0 } else { 1 }))
-}
-
-fn run_tutorials_contracts_validate(args: &TutorialsCommandArgs) -> Result<(String, i32), String> {
-    let repo_root = resolve_repo_root(args.repo_root.clone())?;
-    let assets = load_tutorial_assets(&repo_root)?;
-    let (success, detail) = validate_dataset_contract_semantics(&assets.dataset_contract);
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "domain": "tutorials",
-        "action": "contracts-validate",
-        "success": success,
-        "detail": detail
-    });
-    let rendered = emit_tutorial_output(args, &payload, None)?;
-    Ok((rendered, if success { 0 } else { 1 }))
-}
-
-fn run_tutorials_contracts_explain(args: &TutorialsCommandArgs) -> Result<(String, i32), String> {
-    let repo_root = resolve_repo_root(args.repo_root.clone())?;
-    let assets = load_tutorial_assets(&repo_root)?;
-    let required_keys = assets
-        .dataset_contract
-        .get("required")
-        .and_then(|v| v.as_array())
-        .cloned()
-        .unwrap_or_default()
-        .into_iter()
-        .filter_map(|v| v.as_str().map(ToOwned::to_owned))
-        .collect::<Vec<_>>();
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "domain": "tutorials",
-        "action": "contracts-explain",
-        "contract_path": "ops/tutorials/contracts/tutorial-dataset-contract.json",
-        "required_keys": required_keys,
-        "properties": assets.dataset_contract.get("properties").cloned().unwrap_or(serde_json::json!({}))
-    });
-    let rendered = emit_tutorial_output(args, &payload, None)?;
-    Ok((rendered, 0))
 }
 
 fn run_tutorials_generate(args: &TutorialsCommandArgs) -> Result<(String, i32), String> {

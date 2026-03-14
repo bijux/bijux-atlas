@@ -1,23 +1,16 @@
 // SPDX-License-Identifier: Apache-2.0
-//! Configs domain contracts and registry-facing plugin surface.
+//! Configs domain registry-facing plugin surface.
 
 pub mod commands;
-pub mod contracts;
 
-use crate::contracts::Contract;
 use crate::domains::Domain;
 use crate::model::{CommandRoute, RunnableEntry};
 use crate::registry::RunnableRegistry;
-use std::path::Path;
 
 pub struct ConfigsDomain;
 
 pub fn plugin() -> ConfigsDomain {
     ConfigsDomain
-}
-
-pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
-    crate::contracts::configs::contracts(repo_root)
 }
 
 pub fn routes() -> Vec<CommandRoute> {

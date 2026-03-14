@@ -10,7 +10,6 @@ use regex as _;
 
 pub mod adapters;
 pub(crate) mod commands;
-pub mod contracts;
 pub mod core;
 pub mod docs;
 pub mod domains;

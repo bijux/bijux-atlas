@@ -1275,10 +1275,6 @@ pub enum TutorialsCommand {
         #[command(subcommand)]
         command: TutorialsEvidenceCommand,
     },
-    Contracts {
-        #[command(subcommand)]
-        command: TutorialsContractsCommand,
-    },
     RealData {
         #[command(subcommand)]
         command: TutorialsRealDataCommand,
@@ -1383,12 +1379,6 @@ pub enum TutorialsDashboardsCommand {
 #[derive(Subcommand, Debug)]
 pub enum TutorialsEvidenceCommand {
     Validate(TutorialsCommandArgs),
-}
-
-#[derive(Subcommand, Debug)]
-pub enum TutorialsContractsCommand {
-    Validate(TutorialsCommandArgs),
-    Explain(TutorialsCommandArgs),
 }
 
 #[derive(Subcommand, Debug)]

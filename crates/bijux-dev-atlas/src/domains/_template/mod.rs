@@ -3,10 +3,7 @@
 
 pub mod checks;
 pub mod commands;
-pub mod contracts;
 pub mod runtime;
-
-pub fn contracts() {}
 
 pub fn checks() {}
 

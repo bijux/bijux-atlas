@@ -1,25 +1,17 @@
 // SPDX-License-Identifier: Apache-2.0
-//! Docs domain contracts and runtime adapters.
+//! Docs domain runtime adapters.
 
 pub mod commands;
-pub mod contracts;
 pub mod runtime;
 
-use crate::contracts::Contract;
 use crate::domains::Domain;
 use crate::model::{CommandRoute, RunnableEntry};
 use crate::registry::RunnableRegistry;
-use std::path::Path;
 
 pub struct DocsDomain;
 
 pub fn plugin() -> DocsDomain {
     DocsDomain
-}
-
-pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
-    let _ = repo_root;
-    Ok(Vec::new())
 }
 
 pub fn routes() -> Vec<CommandRoute> {

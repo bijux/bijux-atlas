@@ -11,12 +11,12 @@ pub fn command_routes() -> Vec<CommandRoute> {
     routes.extend(domains::ops::routes());
     routes.extend(domains::docs::routes());
     routes.extend(domains::configs::routes());
+    routes.extend(domains::docker::routes());
     routes.extend(domains::governance::routes());
     routes.extend(domains::security::routes());
     routes.extend(domains::tutorials::routes());
     routes.extend(domains::release::routes());
     routes.extend(domains::perf::routes());
-    routes.extend(domains::docker::routes());
     routes.extend(engine_routes());
     routes.sort_by(|a, b| a.name.cmp(b.name).then_with(|| a.id.cmp(b.id)));
     routes
@@ -51,14 +51,8 @@ pub fn validate_command_routes(routes: &[CommandRoute]) -> Result<(), String> {
     Ok(())
 }
 
-fn engine_routes() -> [CommandRoute; 7] {
+fn engine_routes() -> [CommandRoute; 6] {
     [
-        CommandRoute::new(
-            "contract",
-            "contract",
-            "engine",
-            "Run governed contract lanes and introspection surfaces",
-        ),
         CommandRoute::new(
             "checks",
             "checks",

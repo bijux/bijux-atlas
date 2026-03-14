@@ -2,12 +2,11 @@
 //! Registry loading, validation, and indexing entrypoints.
 //!
 //! This module consolidates registry-oriented logic that had been scattered between engine and
-//! configs contracts, while preserving existing callers through re-exports.
+//! configs indexing helpers, while preserving existing callers through re-exports.
 
 pub mod checks;
+pub mod config_catalog;
 pub mod configs;
-pub mod contract_modes;
-pub mod contracts;
 pub mod reports;
 pub mod routes;
 mod runnable;
@@ -17,11 +16,6 @@ pub use crate::core::{
     validate_registry, Registry, RegistryDoctorReport, SuiteSpec, DEFAULT_REGISTRY_PATH,
 };
 pub use checks::{CheckCatalog, CheckCatalogEntry};
-pub use contract_modes::{
-    ContractMode, ContractModesFile, ContractModesValidation, CONTRACT_MODES_PATH,
-    CONTRACT_MODES_SCHEMA_PATH,
-};
-pub use contracts::{ContractCatalog, ContractCatalogEntry};
 pub use reports::{
     ReportArtifactValidation, ReportCatalogValidation, ReportProgress, ReportProgressRow,
     ReportRegistry, ReportRegistryEntry, REPORTS_REGISTRY_PATH, REPORTS_REGISTRY_SCHEMA_PATH,
