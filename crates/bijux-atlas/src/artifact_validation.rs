@@ -6,7 +6,7 @@ use bijux_atlas_model::{
     parse_dataset_key, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ReleaseGeneIndex,
     ShardCatalog,
 };
-use bijux_atlas_policies::{
+use crate::policies::{
     canonical_config_json, load_policy_from_workspace, resolve_mode_profile, PolicyMode,
 };
 use bijux_atlas_store::{

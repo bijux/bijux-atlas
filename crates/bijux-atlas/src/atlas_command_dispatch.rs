@@ -188,9 +188,9 @@ fn run_atlas_command(
             }
             PolicyCommand::Explain { mode } => artifact_validation::explain_policy(
                 mode.map(|m| match m {
-                    PolicyModeCli::Strict => bijux_atlas_policies::PolicyMode::Strict,
-                    PolicyModeCli::Compat => bijux_atlas_policies::PolicyMode::Compat,
-                    PolicyModeCli::Dev => bijux_atlas_policies::PolicyMode::Dev,
+                    PolicyModeCli::Strict => crate::policies::PolicyMode::Strict,
+                    PolicyModeCli::Compat => crate::policies::PolicyMode::Compat,
+                    PolicyModeCli::Dev => crate::policies::PolicyMode::Dev,
                 }),
                 output_mode,
             )

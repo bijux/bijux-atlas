@@ -21,9 +21,8 @@ serde = []
 bijux-atlas-model.workspace = true
 bijux-atlas-ingest.workspace = true
 bijux-atlas-store.workspace = true
-bijux-atlas-query.workspace = true
-bijux-atlas-policies.workspace = true
 base64 = "0.22"
+hmac = "0.12"
 serde.workspace = true
 clap = { version = "4", features = ["derive"] }
 clap_complete = "4"
@@ -34,6 +33,7 @@ serde_json.workspace = true
 serde_yaml = "0.9"
 sha2 = "0.10"
 tar = "0.4"
+unicode-normalization = "0.1"
 zstd = "0.13"
 
 [dev-dependencies]

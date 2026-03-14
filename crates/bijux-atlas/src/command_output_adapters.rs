@@ -2,7 +2,7 @@
 
 use crate::domain::canonical;
 use crate::OutputMode;
-use bijux_atlas_query::{GeneFields, GeneFilter, GeneQueryRequest, RegionFilter};
+use crate::query::{GeneFields, GeneFilter, GeneQueryRequest, RegionFilter};
 use serde_json::{json, Value};
 use std::path::PathBuf;
 

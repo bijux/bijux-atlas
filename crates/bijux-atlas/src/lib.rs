@@ -10,7 +10,9 @@ pub mod domain;
 pub mod effects;
 pub mod errors;
 mod generated;
+pub mod policies;
 pub mod ports;
+pub mod query;
 pub mod types;
 
 use crate::domain::{canonical, resolve_bijux_cache_dir, resolve_bijux_config_path, sha256_hex};
@@ -32,7 +34,7 @@ use bijux_atlas_model::{
     BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, GeneIdentifierPolicy, GeneNamePolicy,
     SeqidNormalizationPolicy, ShardingPlan, StrictnessMode, TranscriptTypePolicy,
 };
-use bijux_atlas_query::{
+use crate::query::{
     classify_query, explain_query_plan, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits,
     RegionFilter,
 };

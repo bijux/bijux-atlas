@@ -250,12 +250,11 @@ dependencies = [
  "base64",
  "bijux-atlas-ingest",
  "bijux-atlas-model",
- "bijux-atlas-policies",
- "bijux-atlas-query",
  "bijux-atlas-store",
  "clap",
  "clap_complete",
  "flate2",
+ "hmac",
  "predicates",
  "reqwest",
  "rusqlite",
@@ -265,6 +264,7 @@ dependencies = [
  "sha2",
  "tar",
  "tempfile",
+ "unicode-normalization",
  "zstd",
 ]
 
