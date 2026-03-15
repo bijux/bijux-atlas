@@ -62,7 +62,7 @@ pub mod model;
 mod platform_adapters;
 pub mod ports;
 pub mod server;
-#[path = "server/registry/mod.rs"]
+#[path = "adapters/store/registry/mod.rs"]
 mod server_store;
 #[path = "core/services/mod.rs"]
 mod services;

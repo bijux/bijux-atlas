@@ -10,6 +10,7 @@ mod catalog;
 mod contracts;
 mod manifest;
 mod paths;
+pub mod registry;
 mod retry;
 
 #[cfg(feature = "backend-s3")]
