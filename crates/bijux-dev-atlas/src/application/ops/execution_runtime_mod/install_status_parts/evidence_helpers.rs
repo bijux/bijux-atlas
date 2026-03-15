@@ -601,7 +601,7 @@ pub(super) fn observability_contract_checks(
     .all(|needle| metrics_body.contains(needle));
 
     let response_contract = std::fs::read_to_string(
-        repo_root.join("crates/bijux-atlas/src/http/response_contract.rs"),
+        crate::reference::workspace_layout::atlas_http_response_contract_source(repo_root),
     )
     .map_err(|err| format!("failed to read response contract source: {err}"))?;
     let error_registry = std::fs::read_to_string(
@@ -1083,4 +1083,24 @@ print(json.dumps(rows, sort_keys=True))
     }
     serde_json::from_slice(&output.stdout)
         .map_err(|err| format!("failed to parse {} member checksums: {err}", tarball.display()))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::observability_contract_checks;
+    use std::path::PathBuf;
+
+    fn repo_root() -> PathBuf {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .and_then(|path| path.parent())
+            .expect("workspace root")
+            .to_path_buf()
+    }
+
+    #[test]
+    fn observability_contract_checks_use_current_workspace_sources() {
+        let value = observability_contract_checks(&repo_root(), "").expect("observability checks");
+        assert!(value.get("error_registry_aligned").is_some());
+    }
 }

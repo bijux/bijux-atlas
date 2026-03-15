@@ -281,7 +281,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
         "catalog-unreachable" => vec![
             (
                 "readiness handler",
-                repo_root.join("crates/bijux-atlas/src/http/handlers_utilities.rs"),
+                crate::reference::workspace_layout::atlas_http_handlers_utilities_source(repo_root),
             ),
             (
                 "health endpoints contract",
@@ -324,7 +324,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
             (
                 "server config tests",
-                repo_root.join("crates/bijux-atlas/src/config/tests.rs"),
+                crate::reference::workspace_layout::atlas_runtime_config_tests_source(repo_root),
             ),
             (
                 "log schema",
@@ -332,6 +332,30 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
         ],
         _ => Vec::new(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::drill_check_paths;
+    use std::path::PathBuf;
+
+    fn repo_root() -> PathBuf {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .and_then(|path| path.parent())
+            .expect("workspace root")
+            .to_path_buf()
+    }
+
+    #[test]
+    fn drill_source_paths_exist_for_current_workspace_layout() {
+        let root = repo_root();
+        for drill in ["catalog-unreachable", "invalid-config-rejected"] {
+            for (_, path) in drill_check_paths(&root, drill) {
+                assert!(path.exists(), "missing drill source path: {}", path.display());
+            }
+        }
     }
 }
 
