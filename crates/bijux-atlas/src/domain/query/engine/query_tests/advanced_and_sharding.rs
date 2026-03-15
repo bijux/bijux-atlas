@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::query_tests_setup_and_core::{limits, setup_db};
+use super::setup_and_core::{limits, setup_db};
 use crate::query::*;
 use std::time::Duration;
 
