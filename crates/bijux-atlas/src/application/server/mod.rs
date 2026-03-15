@@ -7,7 +7,8 @@ mod dataset_cache_manager_tests;
 
 pub use self::state::{
     build_router, chrono_like_unix_millis, record_shed_reason, route_sli_class, AppState,
-    CacheError, CatalogFetch, DatasetCacheConfig, DatasetCacheManager, DatasetStoreBackend,
-    FederatedBackend, LocalFsBackend, RegistrySource, RegistrySourceHealth, RetryPolicy,
-    S3LikeBackend,
+    DatasetCacheConfig, DatasetCacheManager, FederatedBackend, LocalFsBackend, RegistrySource,
+    RetryPolicy, S3LikeBackend,
 };
+pub use crate::app::cache::{CacheError, RegistrySourceHealth};
+pub use crate::app::ports::{CatalogFetch, DatasetStoreBackend};

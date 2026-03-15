@@ -1,4 +1,3 @@
 // SPDX-License-Identifier: Apache-2.0
 
-pub mod cli;
-pub mod server;
+pub use crate::runtime::wiring::{cli, server};

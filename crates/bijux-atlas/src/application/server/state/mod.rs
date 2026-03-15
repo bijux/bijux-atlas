@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::app::cache::{CacheError, RegistrySourceHealth};
+use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
 use crate::application::server::cache;
 use crate::application::config::ApiConfig;
 use crate::contracts::api::{ApiError, ApiErrorCode};
@@ -8,7 +10,6 @@ use crate::domain::{
     FailureRecoveryRegistry, MembershipRegistry, ReplicaRegistry, ShardRegistry, sha256_hex,
 };
 use crate::http;
-use async_trait::async_trait;
 use axum::body::Body;
 use axum::extract::{DefaultBodyLimit, State};
 use axum::http::{HeaderMap, HeaderValue, Request, StatusCode, Uri};
@@ -34,26 +35,6 @@ mod request_utils;
 mod router;
 
 use self::request_utils::*;
-
-#[derive(Debug)]
-pub struct CacheError(pub String);
-
-impl std::fmt::Display for CacheError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-impl std::error::Error for CacheError {}
-
-#[derive(Debug, Clone, serde::Serialize)]
-pub struct RegistrySourceHealth {
-    pub name: String,
-    pub priority: u32,
-    pub healthy: bool,
-    pub last_error: Option<String>,
-    pub shadowed_datasets: u64,
-    pub ttl_seconds: u64,
-}
 
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct DatasetCacheConfig {
@@ -449,40 +430,6 @@ pub use crate::store::registry::backends::{LocalFsBackend, RetryPolicy, S3LikeBa
 pub use crate::store::registry::federated::{FederatedBackend, RegistrySource};
 pub use self::request_utils::{chrono_like_unix_millis, record_shed_reason, route_sli_class};
 pub use self::router::build_router;
-
-#[async_trait]
-pub trait DatasetStoreBackend: Send + Sync + 'static {
-    fn backend_tag(&self) -> &'static str {
-        "custom"
-    }
-
-    async fn fetch_catalog(&self, if_none_match: Option<&str>) -> Result<CatalogFetch, CacheError>;
-    async fn fetch_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, CacheError>;
-    async fn fetch_sqlite_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError>;
-    async fn fetch_fasta_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError>;
-    async fn fetch_fai_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError>;
-    async fn fetch_release_gene_index_bytes(
-        &self,
-        dataset: &DatasetId,
-    ) -> Result<Vec<u8>, CacheError>;
-
-    async fn registry_health(&self) -> Vec<RegistrySourceHealth> {
-        vec![RegistrySourceHealth {
-            name: "primary".to_string(),
-            priority: 0,
-            healthy: true,
-            last_error: None,
-            shadowed_datasets: 0,
-            ttl_seconds: 0,
-        }]
-    }
-}
-
-#[non_exhaustive]
-pub enum CatalogFetch {
-    NotModified,
-    Updated { etag: String, catalog: Catalog },
-}
 
 pub(crate) struct DatasetEntry {
     pub(crate) sqlite_path: PathBuf,
