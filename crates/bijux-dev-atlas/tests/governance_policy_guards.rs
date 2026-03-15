@@ -141,3 +141,29 @@ fn atlas_domain_surface_does_not_reexport_runtime_config_helpers() {
         "domain surface must not depend on runtime config helpers"
     );
 }
+
+#[test]
+fn atlas_http_handlers_utilities_stays_a_compatibility_surface() {
+    let root = repo_root();
+    let text = fs::read_to_string(root.join(
+        "crates/bijux-atlas/src/interfaces/http/handlers_utilities.rs",
+    ))
+    .expect("handlers utilities surface");
+
+    for expected in [
+        "pub(crate) use crate::interfaces::http::cache_headers::*;",
+        "pub(crate) use crate::interfaces::http::dto::*;",
+        "pub(crate) use crate::interfaces::http::presenters::*;",
+        "pub(crate) use crate::interfaces::http::request_identity::*;",
+        "pub(crate) use crate::interfaces::http::response_encoding::*;",
+    ] {
+        assert!(
+            text.contains(expected),
+            "handlers utilities must delegate reusable concerns to named HTTP modules"
+        );
+    }
+    assert!(
+        text.lines().count() <= 1100,
+        "handlers utilities must stay below the compatibility-surface budget"
+    );
+}
