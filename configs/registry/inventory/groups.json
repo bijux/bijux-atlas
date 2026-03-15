@@ -2,11 +2,10 @@
   "allowed_groups": [
     "examples",
     "generated",
-    "internal",
     "registry",
     "schemas",
     "sources"
   ],
-  "max_top_level_dirs": 8,
+  "max_top_level_dirs": 6,
   "schema_version": 1
 }

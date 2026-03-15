@@ -184,10 +184,10 @@
     },
     {
       "counts": {
-        "covered": 15,
+        "covered": 14,
         "generated": 0,
         "internal": 0,
-        "public": 15,
+        "public": 14,
         "schemas": 2
       },
       "files": [
@@ -199,7 +199,6 @@
         "configs/examples/datasets/atlas-example-medium/metadata.json",
         "configs/examples/datasets/atlas-example-minimal/genes.jsonl",
         "configs/examples/datasets/atlas-example-minimal/metadata.json",
-        "configs/examples/datasets/python-client-tutorial/genes.jsonl",
         "configs/examples/datasets/schemas/dataset-metadata.schema.json",
         "configs/examples/datasets/schemas/gene-record.schema.json",
         "configs/examples/datasets/specification.md",

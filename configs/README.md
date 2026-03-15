@@ -8,7 +8,6 @@ Role layout:
 - `configs/sources/` contains authored configuration inputs grouped by domain.
 - `configs/examples/` contains non-authoritative example inputs.
 - `configs/generated/` contains machine-written config artifacts that should be regenerated, not hand-edited.
-- `configs/internal/` contains internal support material that is part of the repo contract but not a public config surface.
 
 Machine-readable authorities:
 - `configs/registry/inventory/configs.json` declares governed config groups and the file patterns they own.
