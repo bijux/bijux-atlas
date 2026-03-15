@@ -38,3 +38,7 @@ Use the tree itself as the first signal:
 - if the file is illustrative only, start in `configs/examples/`
 
 Narrative product and maintainer documentation belongs under `docs/`, not under `configs/`.
+
+Markdown policy:
+- `configs/` keeps exactly four markdown files at the root: `README.md`, `CONTRACT.md`, `NAMING.md`, and `OWNERS.md`.
+- Any deeper explanation belongs in `docs/`, not in nested `configs/**.md` files.

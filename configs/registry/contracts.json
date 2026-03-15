@@ -12,9 +12,11 @@
       "severity": "blocker",
       "title": "configs docs surface is minimal",
       "touched_paths": [
-        "configs/README.md",
         "configs/CONTRACT.md",
-        "configs/**.md"
+        "configs/NAMING.md",
+        "configs/OWNERS.md",
+        "configs/README.md",
+        "configs/*.md"
       ]
     },
     {
@@ -658,23 +660,6 @@
       "title": "config surfaces forbid mutable latest-tag references",
       "touched_paths": [
         "configs/**"
-      ]
-    },
-    {
-      "contract_type": "filelayout",
-      "enforced_by": {
-        "command": "bijux dev atlas configs validate",
-        "test_id": "configs.docs.domain_landing_files"
-      },
-      "evidence_artifact": null,
-      "id": "CFG-042",
-      "rationale": "each top-level configs domain needs one stable landing doc so owner, purpose, consumers, and update workflow are discoverable.",
-      "severity": "must",
-      "title": "configs domains keep one landing doc",
-      "touched_paths": [
-        "configs/*/README.md",
-        "configs/*/INDEX.md",
-        "configs/*/index.md"
       ]
     },
     {

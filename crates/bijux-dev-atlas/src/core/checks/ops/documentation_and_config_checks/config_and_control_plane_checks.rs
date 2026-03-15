@@ -3,8 +3,9 @@ pub(super) fn check_configs_required_surface_paths(
 ) -> Result<Vec<Violation>, CheckError> {
     let required = [
         "configs/README.md",
-        "configs/INDEX.md",
         "configs/CONTRACT.md",
+        "configs/NAMING.md",
+        "configs/OWNERS.md",
     ];
     let mut violations = Vec::new();
     for path in required {

@@ -117,7 +117,13 @@ pub(crate) fn configs_inventory_payload(
         seen.insert(rel.clone());
     }
     rows.sort_by(|a, b| a["path"].as_str().cmp(&b["path"].as_str()));
-    for required in ["configs/INDEX.md", "configs/README.md", "configs/schemas/contracts"] {
+    for required in [
+        "configs/CONTRACT.md",
+        "configs/NAMING.md",
+        "configs/OWNERS.md",
+        "configs/README.md",
+        "configs/schemas/contracts",
+    ] {
         if !ctx.repo_root.join(required).exists() {
             orphans.push(format!("missing required config surface `{required}`"));
         }
@@ -170,18 +176,15 @@ pub(crate) fn configs_validate_payload(
     let mut warnings = Vec::<String>::new();
     for required in [
         "configs/sources/repository/ci",
-        "configs/sources/repository/ci/INDEX.md",
-        "configs/sources/repository/ci/README.md",
         "configs/sources/repository/ci/env-contract.json",
         "configs/sources/repository/ci/lanes.json",
-        "configs/INDEX.md",
+        "configs/CONTRACT.md",
         "configs/README.md",
-        "configs/sources/repository/rust-tooling/LINT_POLICY.md",
+        "configs/NAMING.md",
+        "configs/OWNERS.md",
         "configs/sources/repository/rust-tooling/toolchain.json",
         "configs/schemas/contracts",
         "configs/schemas/registry",
-        "configs/NAMING.md",
-        "configs/OWNERS.md",
         "configs/registry/inventory/groups.json",
         "configs/registry/inventory/consumers.json",
     ] {

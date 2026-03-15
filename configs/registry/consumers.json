@@ -84,10 +84,6 @@
       "bijux-dev-atlas",
       "runtime"
     ],
-    "configs/examples/**/*.md": [
-      "bijux-dev-atlas",
-      "docs-build"
-    ],
     "configs/examples/**/*.toml": [
       "bijux-dev-atlas",
       "runtime"

@@ -146,8 +146,7 @@
       "public_files": [
         "configs/examples/**/*.json",
         "configs/examples/**/*.jsonl",
-        "configs/examples/**/*.toml",
-        "configs/examples/**/*.md"
+        "configs/examples/**/*.toml"
       ],
       "schema_owner": "platform",
       "schemas": [
@@ -667,7 +666,6 @@
   "max_groups": 30,
   "root_files": [
     "configs/CONTRACT.md",
-    "configs/INDEX.md",
     "configs/NAMING.md",
     "configs/OWNERS.md",
     "configs/README.md",

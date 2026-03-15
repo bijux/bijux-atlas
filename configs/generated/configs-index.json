@@ -184,15 +184,13 @@
     },
     {
       "counts": {
-        "covered": 14,
+        "covered": 10,
         "generated": 0,
         "internal": 0,
-        "public": 14,
+        "public": 10,
         "schemas": 2
       },
       "files": [
-        "configs/examples/README.md",
-        "configs/examples/datasets/README.md",
         "configs/examples/datasets/atlas-example-large-synthetic/genes.jsonl",
         "configs/examples/datasets/atlas-example-large-synthetic/metadata.json",
         "configs/examples/datasets/atlas-example-medium/genes.jsonl",
@@ -201,8 +199,6 @@
         "configs/examples/datasets/atlas-example-minimal/metadata.json",
         "configs/examples/datasets/schemas/dataset-metadata.schema.json",
         "configs/examples/datasets/schemas/gene-record.schema.json",
-        "configs/examples/datasets/specification.md",
-        "configs/examples/runtime/README.md",
         "configs/examples/runtime/server-minimal.toml",
         "configs/examples/runtime/server-observability.toml"
       ],
@@ -221,10 +217,10 @@
     },
     {
       "counts": {
-        "covered": 31,
+        "covered": 30,
         "generated": 0,
         "internal": 2,
-        "public": 29,
+        "public": 28,
         "schemas": 1
       },
       "files": [
@@ -257,8 +253,7 @@
         "configs/sources/governance/governance/suites/default-jobs.json",
         "configs/sources/governance/governance/suites/suites.index.json",
         "configs/sources/governance/governance/suites/tests.suite.json",
-        "configs/sources/governance/governance/tags.json",
-        "configs/sources/governance/governance/workflow-python-allowlist.txt"
+        "configs/sources/governance/governance/tags.json"
       ],
       "name": "governance",
       "owner": "atlas-governance",
@@ -307,15 +302,14 @@
     },
     {
       "counts": {
-        "covered": 6,
+        "covered": 5,
         "generated": 0,
         "internal": 0,
-        "public": 6,
+        "public": 5,
         "schemas": 2
       },
       "files": [
         "configs/sources/repository/gates/lanes.json",
-        "configs/sources/repository/layout/README.md",
         "configs/sources/repository/layout/generated-files.json",
         "configs/sources/repository/layout/inventory-budgets.json",
         "configs/sources/repository/layout/ops-markdown-naming-policy.json",
@@ -365,14 +359,13 @@
     },
     {
       "counts": {
-        "covered": 2,
+        "covered": 1,
         "generated": 0,
         "internal": 0,
-        "public": 2,
+        "public": 1,
         "schemas": 0
       },
       "files": [
-        "configs/sources/repository/coverage/README.md",
         "configs/sources/repository/coverage/thresholds.toml"
       ],
       "name": "coverage",
@@ -387,14 +380,13 @@
     },
     {
       "counts": {
-        "covered": 2,
+        "covered": 1,
         "generated": 0,
         "internal": 0,
-        "public": 2,
+        "public": 1,
         "schemas": 0
       },
       "files": [
-        "configs/sources/repository/shell/README.md",
         "configs/sources/repository/shell/shellcheckrc"
       ],
       "name": "shell",
@@ -409,14 +401,13 @@
     },
     {
       "counts": {
-        "covered": 3,
+        "covered": 2,
         "generated": 0,
         "internal": 1,
-        "public": 2,
+        "public": 1,
         "schemas": 1
       },
       "files": [
-        "configs/sources/runtime/product/README.md",
         "configs/sources/runtime/product/external-tools-manifest.json",
         "configs/sources/runtime/product/schemas/artifact-manifest.schema.json"
       ],
@@ -806,9 +797,9 @@
     },
     {
       "counts": {
-        "covered": 139,
+        "covered": 138,
         "generated": 1,
-        "internal": 119,
+        "internal": 118,
         "public": 20,
         "schemas": 13
       },
@@ -918,7 +909,6 @@
         "configs/schemas/contracts/security/secrets.schema.json",
         "configs/schemas/contracts/security/threats.schema.json",
         "configs/schemas/contracts/tutorial-evidence.schema.json",
-        "configs/schemas/registry/README.md",
         "configs/schemas/registry/ci/lane-surface.schema.json",
         "configs/schemas/registry/ci/policy-exceptions.schema.json",
         "configs/schemas/registry/ci/policy-outside-control-plane.schema.json",
@@ -1110,7 +1100,6 @@
   "registry_path": "configs/registry/inventory/configs.json",
   "root_files": [
     "configs/CONTRACT.md",
-    "configs/INDEX.md",
     "configs/NAMING.md",
     "configs/OWNERS.md",
     "configs/README.md",

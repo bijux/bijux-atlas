@@ -16,7 +16,6 @@
     "configs/sources/runtime/datasets/pinned-policy.yaml": "data-governance",
     "configs/examples/**/*.json": "platform",
     "configs/examples/**/*.jsonl": "platform",
-    "configs/examples/**/*.md": "platform",
     "configs/examples/**/*.toml": "platform",
     "configs/sources/governance/governance/*.txt": "atlas-governance",
     "configs/sources/governance/governance/enforcement/*.json": "atlas-governance",
