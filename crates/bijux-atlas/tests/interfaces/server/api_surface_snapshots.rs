@@ -7,8 +7,9 @@ use std::collections::BTreeMap;
 use std::sync::Arc;
 
 use bijux_atlas::{
-    build_router, ApiConfig, AppState, DatasetCacheConfig, DatasetCacheManager, FakeStore,
+    build_router, ApiConfig, AppState, DatasetCacheConfig, DatasetCacheManager,
 };
+use bijux_atlas::bootstrap::server::FakeStore;
 use bijux_atlas_core::{canonical::stable_json_bytes, sha256_hex};
 use bijux_atlas_model::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use rusqlite::Connection;

@@ -6,7 +6,8 @@ use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use bijux_atlas::{build_router, AppState, DatasetCacheConfig, DatasetCacheManager, FakeStore};
+use bijux_atlas::{build_router, AppState, DatasetCacheConfig, DatasetCacheManager};
+use bijux_atlas::bootstrap::server::FakeStore;
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use rusqlite::Connection;

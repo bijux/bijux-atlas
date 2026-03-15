@@ -3,8 +3,9 @@
 use std::sync::Arc;
 
 use bijux_atlas::{
-    build_router, ApiConfig, AppState, DatasetCacheConfig, DatasetCacheManager, FakeStore,
+    build_router, ApiConfig, AppState, DatasetCacheConfig, DatasetCacheManager,
 };
+use bijux_atlas::bootstrap::server::FakeStore;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 use tempfile::tempdir;

@@ -57,7 +57,6 @@ pub use crate::application::server::{
     FederatedBackend, LocalFsBackend, RegistrySource, RegistrySourceHealth, RetryPolicy,
     S3LikeBackend,
 };
-pub use crate::bootstrap::server::FakeStore;
 pub use crate::domain::ingest;
 pub use crate::domain::policy as policies;
 pub use crate::domain::query;
