@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::domain::dataset::ShardCatalog;
-use crate::http::genes::{genes_admission, genes_response};
+use crate::http::genes::{admission as genes_admission, response as genes_response};
 use crate::http::{genes_support, handlers};
 use crate::*;
 use bijux_atlas::query::{
