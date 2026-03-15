@@ -10,11 +10,11 @@ pub fn command_registry() -> Vec<DocsRuntimeRoute> {
     vec![
         DocsRuntimeRoute {
             command_name: "docs.registry",
-            entrypoint: "crate::commands/docs/runtime/docs_command_router.rs",
+            entrypoint: "crate::application/docs/runtime/docs_command_router.rs",
         },
         DocsRuntimeRoute {
             command_name: "docs.reference",
-            entrypoint: "crate::commands/docs/runtime/reference_page_generators.rs",
+            entrypoint: "crate::application/docs/runtime/reference_page_generators.rs",
         },
     ]
 }

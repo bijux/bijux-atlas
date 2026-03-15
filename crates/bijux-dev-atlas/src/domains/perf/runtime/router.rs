@@ -9,6 +9,6 @@ pub struct PerfRuntimeRoute {
 pub fn command_registry() -> Vec<PerfRuntimeRoute> {
     vec![PerfRuntimeRoute {
         command_name: "perf.run",
-        entrypoint: "crate::commands/perf.rs",
+        entrypoint: "crate::application/perf.rs",
     }]
 }

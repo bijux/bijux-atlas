@@ -5,62 +5,62 @@
 #![cfg_attr(not(test), deny(clippy::unwrap_used, clippy::expect_used))]
 #![deny(clippy::todo)]
 
-#[path = "commands/api.rs"]
+#[path = "application/api.rs"]
 mod api_commands;
 mod app;
-#[path = "commands/artifacts.rs"]
+#[path = "application/artifacts.rs"]
 mod artifacts_commands;
-#[path = "commands/audit.rs"]
+#[path = "application/audit.rs"]
 mod audit_commands;
-#[path = "commands/build.rs"]
+#[path = "application/build.rs"]
 mod build_commands;
 mod interfaces;
-#[path = "commands/data.rs"]
+#[path = "application/data.rs"]
 mod commands_data;
-#[path = "commands/configs.rs"]
+#[path = "application/configs.rs"]
 mod configs_commands;
-#[path = "commands/control_plane.rs"]
+#[path = "application/control_plane.rs"]
 mod control_plane_commands;
-#[path = "commands/docs.rs"]
+#[path = "application/docs.rs"]
 mod docs_commands;
-#[path = "commands/drift.rs"]
+#[path = "application/drift.rs"]
 mod drift_commands;
-#[path = "commands/governance.rs"]
+#[path = "application/governance.rs"]
 mod governance_commands;
-#[path = "commands/invariants.rs"]
+#[path = "application/invariants.rs"]
 mod invariants_commands;
-#[path = "commands/load.rs"]
+#[path = "application/load.rs"]
 mod load_commands;
 #[cfg(test)]
 #[path = "../tests/support/main_cli_parser_tests.rs"]
 mod main_tests;
-#[path = "commands/make.rs"]
+#[path = "application/make.rs"]
 mod make_commands;
-#[path = "commands/migrations.rs"]
+#[path = "application/migrations.rs"]
 mod migrations_commands;
-#[path = "commands/observe.rs"]
+#[path = "application/observe.rs"]
 mod observe_commands;
-#[path = "commands/ops.rs"]
+#[path = "application/ops.rs"]
 mod ops_commands;
-#[path = "commands/ops/execution_runtime.rs"]
+#[path = "application/ops/execution_runtime.rs"]
 mod ops_execution_runtime;
-#[path = "commands/ops/support.rs"]
+#[path = "application/ops/support.rs"]
 mod ops_support;
-#[path = "commands/perf.rs"]
+#[path = "application/perf.rs"]
 mod perf_commands;
-#[path = "commands/release.rs"]
+#[path = "application/release.rs"]
 mod release_commands;
-#[path = "commands/reproduce.rs"]
+#[path = "application/reproduce.rs"]
 mod reproduce_commands;
-#[path = "commands/runtime.rs"]
+#[path = "application/runtime.rs"]
 mod runtime_commands;
-#[path = "commands/security.rs"]
+#[path = "application/security.rs"]
 mod security_commands;
-#[path = "commands/suites.rs"]
+#[path = "application/suites.rs"]
 mod suites_commands;
-#[path = "commands/system.rs"]
+#[path = "application/system.rs"]
 mod system_commands;
-#[path = "commands/tutorials.rs"]
+#[path = "application/tutorials.rs"]
 mod tutorials_commands;
 
 include!("runtime_entry.rs");

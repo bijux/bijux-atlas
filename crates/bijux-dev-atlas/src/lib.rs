@@ -9,7 +9,7 @@ use clap as _;
 use regex as _;
 
 pub mod adapters;
-pub(crate) mod commands;
+pub(crate) mod application;
 pub mod core;
 pub mod docs;
 pub mod domains;

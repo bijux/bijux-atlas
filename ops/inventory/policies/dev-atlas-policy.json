@@ -10,8 +10,8 @@
     "loc_allowlist": [
       "crates/bijux-atlas/src/lib.rs",
       "crates/bijux-dev-atlas/src/main.rs",
-      "crates/bijux-dev-atlas/src/commands/ops/runtime.rs",
-      "crates/bijux-dev-atlas/src/commands/ops/execution_runtime.rs"
+      "crates/bijux-dev-atlas/src/application/ops/runtime.rs",
+      "crates/bijux-dev-atlas/src/application/ops/execution_runtime.rs"
     ],
     "rs_files_per_dir_allowlist": [
       "crates/bijux-atlas/tests"

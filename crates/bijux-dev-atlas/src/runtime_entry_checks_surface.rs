@@ -103,6 +103,7 @@ fn render_list_output(checks: &[CheckSpec], format: FormatArg) -> Result<String,
     }
 }
 
+#[allow(dead_code)]
 fn render_explain_output(explain_text: String, format: FormatArg) -> Result<String, String> {
     match format {
         FormatArg::Text => Ok(explain_text),
@@ -123,6 +124,7 @@ fn render_explain_output(explain_text: String, format: FormatArg) -> Result<Stri
     }
 }
 
+#[allow(dead_code)]
 fn render_catalog_list_output(
     checks: &[CheckCatalogEntry],
     format: FormatArg,
@@ -173,6 +175,7 @@ fn render_catalog_list_output(
     }
 }
 
+#[allow(dead_code)]
 fn render_catalog_explain_output(
     check: &CheckCatalogEntry,
     format: FormatArg,
@@ -206,6 +209,7 @@ pub(crate) struct CheckListOptions {
     out: Option<PathBuf>,
 }
 
+#[allow(dead_code)]
 pub(crate) struct ChecksCatalogListOptions {
     repo_root: Option<PathBuf>,
     domain: Option<String>,
@@ -408,21 +412,10 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
             clients_forbidden_pattern_violations.push(rel_text.clone());
         }
         let ext = rel.extension().and_then(|v| v.to_str()).unwrap_or_default();
-        if ext == "py"
-            && !is_path_within(rel, "crates/bijux-atlas-python/python/")
-            && !is_path_within(rel, "crates/bijux-atlas-python/tests/python/")
-            && !is_path_within(rel, "crates/bijux-atlas-python/examples/")
-            && !is_path_within(rel, "crates/bijux-dev-atlas/tests/fixtures/")
-        {
+        if ext == "py" && !is_path_within(rel, "crates/bijux-dev-atlas/tests/fixtures/") {
             packages_boundary_violations.push(rel_text.clone());
         }
-        if ext == "ipynb"
-            && !is_path_within(rel, "crates/bijux-atlas-python/notebooks/")
-            && !is_path_within(rel, "crates/bijux-dev-atlas/tests/fixtures/")
-        {
-            packages_boundary_violations.push(rel_text.clone());
-        }
-        if is_path_within(rel, "crates/bijux-atlas-python/tools/") {
+        if ext == "ipynb" && !is_path_within(rel, "crates/bijux-dev-atlas/tests/fixtures/") {
             packages_boundary_violations.push(rel_text.clone());
         }
         if is_path_within(rel, "ops/") {
@@ -461,7 +454,6 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
             || base == "poetry.lock"
             || base == "pyproject.toml")
             && !is_path_within(rel, "docs/")
-            && !is_path_within(rel, "crates/bijux-atlas-python/")
             && !is_path_within(rel, "crates/bijux-dev-atlas/tests/fixtures/")
         {
             python_tooling_violations.push(rel.display().to_string());
@@ -668,6 +660,7 @@ pub(crate) fn run_contract_automation_boundaries(
     run_automation_boundaries_report(options, "contract-automation-boundaries")
 }
 
+#[allow(dead_code)]
 pub(crate) fn run_checks_catalog_list(
     options: ChecksCatalogListOptions,
 ) -> Result<(String, i32), String> {
@@ -716,6 +709,7 @@ pub(crate) fn run_check_list(options: CheckListOptions) -> Result<(String, i32),
     Ok((rendered, 0))
 }
 
+#[allow(dead_code)]
 pub(crate) fn run_check_explain(
     check_id: String,
     repo_root: Option<PathBuf>,
@@ -730,6 +724,7 @@ pub(crate) fn run_check_explain(
     Ok((rendered, 0))
 }
 
+#[allow(dead_code)]
 pub(crate) fn run_checks_catalog_explain(
     check_id: String,
     repo_root: Option<PathBuf>,
@@ -1038,5 +1033,5 @@ pub(crate) fn run_check_doctor(
     Ok((rendered, exit))
 }
 
-#[path = "commands/runtime_entry_checks_surface_ci.rs"]
+#[path = "application/runtime_entry_checks_surface_ci.rs"]
 mod ci;

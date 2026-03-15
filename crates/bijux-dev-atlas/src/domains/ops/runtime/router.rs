@@ -10,15 +10,15 @@ pub fn command_registry() -> Vec<OpsRuntimeRoute> {
     vec![
         OpsRuntimeRoute {
             command_name: "ops.runtime",
-            entrypoint: "crate::commands/ops/runtime.rs",
+            entrypoint: "crate::application/ops/runtime.rs",
         },
         OpsRuntimeRoute {
             command_name: "ops.execution",
-            entrypoint: "crate::commands/ops/execution_runtime.rs",
+            entrypoint: "crate::application/ops/execution_runtime.rs",
         },
         OpsRuntimeRoute {
             command_name: "ops.support",
-            entrypoint: "crate::commands/ops/support.rs",
+            entrypoint: "crate::application/ops/support.rs",
         },
     ]
 }

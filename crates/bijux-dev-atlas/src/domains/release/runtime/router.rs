@@ -9,6 +9,6 @@ pub struct ReleaseRuntimeRoute {
 pub fn command_registry() -> Vec<ReleaseRuntimeRoute> {
     vec![ReleaseRuntimeRoute {
         command_name: "release.verify",
-        entrypoint: "crate::commands/release.rs",
+        entrypoint: "crate::application/release.rs",
     }]
 }

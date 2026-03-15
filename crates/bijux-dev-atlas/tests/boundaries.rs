@@ -17,8 +17,8 @@ fn internal_module_skeleton_exists() {
         "registry/mod.rs",
         "prelude.rs",
         "core/mod.rs",
-        "commands/mod.rs",
-        "cli/mod.rs",
+        "application/mod.rs",
+        "interfaces/cli/mod.rs",
     ] {
         assert!(
             root.join(rel).exists(),

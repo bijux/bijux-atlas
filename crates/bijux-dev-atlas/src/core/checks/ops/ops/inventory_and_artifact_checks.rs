@@ -148,7 +148,7 @@ fn checks_ops_retired_artifact_path_references_absent(
     let scan_roots = [
         Path::new("ops"),
         Path::new("crates/bijux-dev-atlas/src"),
-        Path::new("crates/bijux-dev-atlas/docs"),
+        Path::new("docs/bijux-dev-atlas-docs"),
     ];
     for scan_root in scan_roots {
         let full_root = ctx.repo_root.join(scan_root);
@@ -207,8 +207,8 @@ fn checks_ops_runtime_output_roots_under_ops_absent(
         ));
     }
     let runtime_source_roots = [
-        Path::new("crates/bijux-dev-atlas/src/commands/ops/execution_runtime_mod"),
-        Path::new("crates/bijux-dev-atlas/src/commands/ops/runtime_mod"),
+        Path::new("crates/bijux-dev-atlas/src/application/ops/execution_runtime_mod"),
+        Path::new("crates/bijux-dev-atlas/src/application/ops/runtime_mod"),
     ];
     for root_rel in runtime_source_roots {
         let root = ctx.repo_root.join(root_rel);

@@ -9,6 +9,6 @@ pub struct SecurityRuntimeRoute {
 pub fn command_registry() -> Vec<SecurityRuntimeRoute> {
     vec![SecurityRuntimeRoute {
         command_name: "security.validate",
-        entrypoint: "crate::commands/security.rs",
+        entrypoint: "crate::application/security.rs",
     }]
 }
