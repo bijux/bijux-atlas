@@ -1,108 +1,275 @@
 # Bijux Atlas
 
-Bijux Atlas is a contract-governed data platform for validating source datasets, producing immutable release artifacts, and serving stable query surfaces over HTTP and CLI workflows.
+<a id="top"></a>
 
-This repository is both the product codebase and the repository control plane that governs it. The runtime, docs, configs, ops inputs, and review evidence live together on purpose, but they do not all have the same stability level.
+**Bijux Atlas is a Rust-owned atlas runtime and release control plane for immutable dataset artifacts, governed APIs, and reproducible operations evidence.**
 
-## Start Here
+This repository currently ships four connected surfaces:
 
-- Overview: [`docs/index.md`](docs/index.md)
-- New user path: [`docs/02-getting-started/index.md`](docs/02-getting-started/index.md)
-- Operator path: [`docs/04-operations/index.md`](docs/04-operations/index.md)
-- Contributor path: [`docs/06-development/index.md`](docs/06-development/index.md)
-- Runtime reference: [`docs/07-reference/index.md`](docs/07-reference/index.md)
-- Compatibility and contracts: [`docs/08-contracts/index.md`](docs/08-contracts/index.md)
+* `bijux-atlas`: the end-user CLI for dataset and query workflows,
+* `bijux-atlas-server`: the HTTP runtime server,
+* `bijux-atlas-openapi`: the OpenAPI export surface,
+* `bijux-dev-atlas`: the workspace-only maintainer control plane.
 
-## What Is In This Repo
+The public promise today is a deterministic runtime, explicit repository governance, stable documented contracts, and release inputs that can be validated instead of hand-waved.
 
-| Path | Purpose |
-| --- | --- |
-| `crates/bijux-atlas/` | Runtime crate and user-facing binaries |
-| `crates/bijux-dev-atlas/` | Maintainer control-plane binary for checks, docs, governance, configs, ops, and reports |
-| `configs/` | Source-of-truth policy, schema, registry, and repository inputs |
-| `ops/` | Deployment, observability, release, and operations data |
-| `makes/` | Thin GNU Make wrapper surface over governed commands |
-| `docs/` | Canonical reader-facing documentation in the numbered docs spine |
-| `artifacts/` | Generated outputs and local evidence; not a source-of-truth tree |
+[![crates.io](https://img.shields.io/crates/v/bijux-atlas.svg)](https://crates.io/crates/bijux-atlas)
+[![Rust Docs](https://img.shields.io/badge/docs-Rust%20Docs-blue)](https://docs.rs/bijux-atlas/latest/bijux_atlas/)
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-brightgreen)](https://bijux.github.io/bijux-atlas/)
+[![CI Status](https://github.com/bijux/bijux-atlas/actions/workflows/ci.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-## Supported Command Surfaces
+Rust crate: [crates.io](https://crates.io/crates/bijux-atlas)
+Rust API docs: [docs.rs](https://docs.rs/bijux-atlas/latest/bijux_atlas/)
+Project docs: [GitHub Pages](https://bijux.github.io/bijux-atlas/)
+Source docs spine: [`docs/index.md`](docs/index.md)
 
-Runtime surfaces:
+> **At a glance**
+> Immutable datasets · Runtime CLI and server · OpenAPI export · Repository control plane · Governed configs, ops, and release inputs
+> **Quality**
+> Quality status is checked from live maintainer commands and checked-in contracts.
+> `artifacts/` is disposable local output and is not part of the repository contract.
+> The workspace is prepared for `0.2.0`; public registries and tags remain the release source of truth until `v0.2.0` is published.
 
-- `bijux-atlas`
-- `bijux-atlas-server`
-- `bijux-atlas-openapi`
+---
 
-Maintainer surfaces:
+## Table of Contents
 
-- `bijux-dev-atlas`
-- `make`, only as a thin wrapper layer rooted at [`makes/root.mk`](makes/root.mk)
+* [Why Bijux Atlas?](#why-bijux-atlas)
+* [What Ships Today](#what-ships-today)
+* [Key Features](#key-features)
+* [Installation](#installation)
+* [Runtime in 60 Seconds](#runtime-in-60-seconds)
+* [Maintainer Control Plane](#maintainer-control-plane)
+* [Packages, Configs, and Ops](#packages-configs-and-ops)
+* [What Does Not Ship Yet](#what-does-not-ship-yet)
+* [Project Tree](#project-tree)
+* [Release Line & Stability](#release-line--stability)
+* [Roadmap](#roadmap)
+* [Docs & Resources](#docs--resources)
+* [Contributing](#contributing)
+* [License](#license)
 
-Useful discovery commands:
+---
+
+## Why Bijux Atlas?
+
+Bijux Atlas is for repository-managed dataset systems where:
+
+* datasets must become immutable release artifacts,
+* runtime APIs need explicit contracts and provenance,
+* configs and ops inputs must be validated before they become policy,
+* release claims should come from checked evidence instead of folklore,
+* and maintainers need one honest control plane instead of scattered shell logic.
+
+---
+
+## What Ships Today
+
+The repository is strongest when it stays concrete about what is already real:
+
+* a runtime CLI named `bijux-atlas`,
+* a server binary named `bijux-atlas-server`,
+* an OpenAPI export binary named `bijux-atlas-openapi`,
+* the maintainer binary `bijux-dev-atlas`,
+* governed `configs/`, `ops/`, `docs/`, and `makes/` trees that are validated together,
+* and release inputs for crates, images, docs, and operations evidence.
+
+This README intentionally describes the shipped release surfaces and their contracts, not every internal experiment or implementation detail in the workspace.
+
+---
+
+## Key Features
+
+### Immutable Dataset Delivery
+
+Atlas treats dataset builds as release artifacts with explicit manifests, provenance, and reproducible packaging inputs.
+
+### Runtime Surfaces With Clear Boundaries
+
+`bijux-atlas`, `bijux-atlas-server`, and `bijux-atlas-openapi` are the user-facing runtime surfaces.
+`bijux-dev-atlas` is the maintainer control plane and is not part of the runtime CLI contract.
+
+### Governed Repository Inputs
+
+`configs/`, `ops/`, `docs/`, and `makes/` are checked together so release, policy, and operating guidance can stay aligned with the code that uses them.
+
+### Thin Makes Wrapper Layer
+
+GNU Make exists as a boring convenience layer rooted at [`makes/root.mk`](makes/root.mk).
+Orchestration logic belongs in Rust commands, not in shell-heavy wrapper files.
+
+### Honest Release Evidence
+
+The release story includes checked manifests, compatibility tables, docs deployment, crates.io publication, and GitHub release automation instead of one-off manual steps.
+
+---
+
+## Installation
+
+Use a published install channel for stable released builds:
 
 ```bash
-cargo run -q -p bijux-atlas --bin bijux-atlas -- --help
-cargo run -q -p bijux-atlas --bin bijux-atlas-server -- --help
+cargo install --locked bijux-atlas
+```
+
+Quick verification:
+
+```bash
+bijux-atlas version
+bijux-atlas --help
+bijux-atlas-server --help
+bijux-atlas-openapi --help
+```
+
+From a workspace checkout, run the current source tree directly with:
+
+```bash
+cargo run -q -p bijux-atlas --bin bijux-atlas -- version
+```
+
+Atlas does not publish a Python package yet. The planned Python bridge is a future release item, not a hidden install path today.
+
+---
+
+## Runtime in 60 Seconds
+
+```bash
+# Inspect the runtime surface
+bijux-atlas --help
+bijux-atlas version
+
+# Export the OpenAPI document
+bijux-atlas-openapi --help
+
+# Inspect the server surface
+bijux-atlas-server --help
+```
+
+For the canonical runtime references, start with:
+
+* [`docs/02-getting-started/index.md`](docs/02-getting-started/index.md)
+* [`docs/04-operations/index.md`](docs/04-operations/index.md)
+* [`docs/07-reference/command-surface.md`](docs/07-reference/command-surface.md)
+
+---
+
+## Maintainer Control Plane
+
+Atlas keeps repository automation explicit:
+
+```bash
 cargo run -q -p bijux-dev-atlas -- --help
 make help
 ```
 
-The canonical maintainer command reference is [`docs/07-reference/automation-command-surface.md`](docs/07-reference/automation-command-surface.md). The runtime command reference is [`docs/07-reference/command-surface.md`](docs/07-reference/command-surface.md).
+Use `bijux-dev-atlas` as the canonical automation surface.
+Use `make` only through the curated wrappers exposed from [`makes/root.mk`](makes/root.mk).
 
-## What Is Stable
-
-Treat these as the public or strongly-governed surfaces:
-
-- runtime behavior described in [`docs/07-reference/index.md`](docs/07-reference/index.md)
-- compatibility promises described in [`docs/08-contracts/index.md`](docs/08-contracts/index.md)
-- checked-in configs and ops inputs that are validated by the control plane
-- curated `make` targets listed in [`makes/root.mk`](makes/root.mk)
-
-Do not treat the rest of the repository as an accidental public API. Internal implementation details, generated artifacts, and undocumented file layouts can change unless a contract or reference page says otherwise.
-
-## Current Shape, Honestly
-
-Atlas is maintainers-first engineering software. It has a clear runtime and a heavily governed repository, but it is not pretending every checked-in file is a polished public product surface.
-
-The important boundaries are:
-
-- `bijux-atlas` is the runtime-facing product surface
-- `bijux-dev-atlas` is the canonical automation and governance surface
-- `make` exists for convenience and CI ergonomics, not as the primary place for orchestration logic
-- `docs/07-reference` and `docs/08-contracts` matter more than historical README text, ad hoc scripts, or debug output
-
-## Fast Evaluation Path
-
-Run these from the workspace root if you want a quick signal that the repository is healthy:
+Helpful maintainer entrypoints:
 
 ```bash
 cargo run -q -p bijux-dev-atlas -- check doctor --format json
 cargo run -q -p bijux-dev-atlas -- governance validate --format json
-cargo check --workspace
+cargo run -q -p bijux-dev-atlas -- release validate --format json
 make ci-fast
 ```
 
-If those commands disagree with a claim in root docs, trust the command output and the numbered docs spine first.
+---
 
-## Repository Reading Order
+## Packages, Configs, and Ops
 
-If you are new here, this sequence usually gives the fastest honest understanding:
+Atlas carries more release-facing material in-repo than a typical single-crate project.
+That is intentional, but the boundaries stay explicit:
 
-1. [`docs/01-introduction/what-atlas-is.md`](docs/01-introduction/what-atlas-is.md)
-2. [`docs/02-getting-started/run-atlas-locally.md`](docs/02-getting-started/run-atlas-locally.md)
-3. [`docs/05-architecture/system-overview.md`](docs/05-architecture/system-overview.md)
-4. [`docs/06-development/automation-control-plane.md`](docs/06-development/automation-control-plane.md)
-5. [`docs/05-architecture/source-layout-and-ownership.md`](docs/05-architecture/source-layout-and-ownership.md)
+* `crates/` owns runtime and maintainer binaries,
+* `configs/` owns policy, schema, registry, and repository inputs,
+* `ops/` owns deployment, observability, release, and scenario data,
+* `docs/` owns the numbered documentation spine and contract references,
+* `makes/` owns the thin wrapper surface over governed commands.
 
-## Release Line
+The goal is not “everything is public API.”
+The goal is one honest source of truth for each governed concern.
 
-The current workspace version is `0.1.1`. The active release line is `0.1.x`.
+---
 
-Release and deprecation expectations are documented in [`docs/06-development/release-and-versioning.md`](docs/06-development/release-and-versioning.md).
+## What Does Not Ship Yet
 
-## Security And Contribution
+Atlas is deliberately explicit about non-shipped scope:
 
-- Contribution guide: [`CONTRIBUTING.md`](CONTRIBUTING.md)
-- Security policy: [`SECURITY.md`](SECURITY.md)
-- Code ownership: [`.github/CODEOWNERS`](.github/CODEOWNERS)
-- Makes surface overview: [`makes/README.md`](makes/README.md)
+* there is no published `bijux-atlas-python` package yet,
+* there is no mutable lab workflow engine inside the runtime,
+* and `artifacts/` is not a source-of-truth tree.
+
+If a surface is planned, internal, or future-facing, it should be described as such instead of being implied by README language.
+
+---
+
+## Project Tree
+
+| Path | Purpose |
+| --- | --- |
+| `crates/bijux-atlas/` | Runtime crate and user-facing binaries |
+| `crates/bijux-dev-atlas/` | Maintainer control plane for docs, checks, governance, release, configs, and ops |
+| `configs/` | Repository-owned policy, schemas, registries, and examples |
+| `ops/` | Release specs, scenarios, deployment inputs, observability, and contracts |
+| `makes/` | Thin GNU Make wrapper surface |
+| `docs/` | Canonical reader-facing documentation |
+| `artifacts/` | Generated local outputs and evidence |
+
+---
+
+## Release Line & Stability
+
+The workspace is prepared for version `0.2.0`.
+The active release line for this codebase is `0.2.x`.
+
+Published crates, GitHub releases, and the docs deployment remain the public release source of truth.
+Between tags, the repository can be ahead of the latest published artifact while still documenting the intended next release line clearly.
+
+Release expectations live in [`docs/06-development/release-and-versioning.md`](docs/06-development/release-and-versioning.md).
+Compatibility and operational promises live under [`docs/08-contracts/index.md`](docs/08-contracts/index.md).
+
+---
+
+## Roadmap
+
+Planned follow-on work stays separate from the shipped release story:
+
+* `v0.3.0`: publish `bijux-atlas-python` as an installable Python bridge similar in shape to `bijux-cli`, without changing Rust runtime ownership
+* `v0.4.0`: add lab experiment provenance and metadata ingestion from ELN/LIMS exports so immutable dataset releases can carry explicit sample and experiment context
+
+Those items are roadmap commitments, not current release claims.
+
+---
+
+## Docs & Resources
+
+Start with the numbered docs spine:
+
+* overview: [`docs/01-introduction/index.md`](docs/01-introduction/index.md)
+* getting started: [`docs/02-getting-started/index.md`](docs/02-getting-started/index.md)
+* operations: [`docs/04-operations/index.md`](docs/04-operations/index.md)
+* architecture: [`docs/05-architecture/index.md`](docs/05-architecture/index.md)
+* development: [`docs/06-development/index.md`](docs/06-development/index.md)
+* reference: [`docs/07-reference/index.md`](docs/07-reference/index.md)
+* contracts: [`docs/08-contracts/index.md`](docs/08-contracts/index.md)
+
+Root policies:
+
+* contribution guide: [`CONTRIBUTING.md`](CONTRIBUTING.md)
+* security policy: [`SECURITY.md`](SECURITY.md)
+* code ownership: [`.github/CODEOWNERS`](.github/CODEOWNERS)
+
+---
+
+## Contributing
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+Use small, coherent Conventional Commit / Commitizen-style commits such as `fix(configs): ...` or `refactor(makes): ...`.
+
+---
+
+## License
+
+Apache-2.0. See [`LICENSE`](LICENSE).
