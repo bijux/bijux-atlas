@@ -1,14 +1,45 @@
 {
   "schema_version": 1,
   "areas": {
-    "stack": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py", "runtime": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/runtime.py"},
-    "deploy": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py"},
-    "k8s": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py"},
-    "observe": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py", "runtime": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/observability/runtime.py"},
-    "load": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py"},
-    "e2e": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py"},
-    "datasets": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py"},
-    "pins": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py"},
-    "reports": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py"}
+    "stack": {
+      "entrypoint": "crates/bijux-dev-atlas/src/domains/ops/commands.rs",
+      "runtime": "crates/bijux-dev-atlas/src/application/ops/runtime.rs",
+      "execution": "crates/bijux-dev-atlas/src/application/ops/execution_runtime.rs"
+    },
+    "deploy": {
+      "entrypoint": "crates/bijux-dev-atlas/src/domains/ops/commands.rs",
+      "runtime": "crates/bijux-dev-atlas/src/application/ops/runtime_mod/core_handler.rs",
+      "support": "crates/bijux-dev-atlas/src/application/ops/support/manifests.rs"
+    },
+    "k8s": {
+      "entrypoint": "crates/bijux-dev-atlas/src/domains/ops/commands.rs",
+      "runtime": "crates/bijux-dev-atlas/src/application/ops/execution_runtime_mod/k8s.rs",
+      "status": "crates/bijux-dev-atlas/src/application/ops/execution_runtime_mod/install_status.rs"
+    },
+    "observe": {
+      "entrypoint": "crates/bijux-dev-atlas/src/domains/ops/commands.rs",
+      "runtime": "crates/bijux-dev-atlas/src/application/ops/runtime_mod/core_handler.rs",
+      "reports": "crates/bijux-dev-atlas/src/application/ops/support/reports.rs"
+    },
+    "load": {
+      "entrypoint": "crates/bijux-dev-atlas/src/domains/ops/commands.rs",
+      "runtime": "crates/bijux-dev-atlas/src/application/ops/execution_runtime_mod/load.rs"
+    },
+    "e2e": {
+      "entrypoint": "crates/bijux-dev-atlas/src/domains/ops/commands.rs",
+      "runtime": "crates/bijux-dev-atlas/src/application/ops/runtime_mod/profile_handler.rs"
+    },
+    "datasets": {
+      "entrypoint": "crates/bijux-dev-atlas/src/domains/ops/commands.rs",
+      "support": "crates/bijux-dev-atlas/src/application/ops/support/manifests.rs"
+    },
+    "pins": {
+      "entrypoint": "crates/bijux-dev-atlas/src/domains/ops/commands.rs",
+      "support": "crates/bijux-dev-atlas/src/application/ops/support/tools.rs"
+    },
+    "reports": {
+      "entrypoint": "crates/bijux-dev-atlas/src/domains/ops/commands.rs",
+      "support": "crates/bijux-dev-atlas/src/application/ops/support/reports.rs"
+    }
   }
 }

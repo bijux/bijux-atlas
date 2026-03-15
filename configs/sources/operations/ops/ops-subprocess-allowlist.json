@@ -1,17 +1,11 @@
 {
   "schema_version": 1,
-  "policy": "temporary ops subprocess exceptions; prefer bijux dev atlas.core.process",
+  "policy": "Allowed ops subprocess call sites that orchestrate external cluster and packaging tools.",
   "paths": [
-    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/e2e/",
-    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/stack/",
-    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/k8s/tests/",
-    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/k8s/ci/",
-    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/k8s/clean_uninstall.py",
-    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/obs/",
-    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/observability/",
-    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/datasets/",
-    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/load/",
-    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/lint/repo/",
-    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/orchestrate/"
+    "crates/bijux-dev-atlas/src/application/ops/support/domain_support.rs",
+    "crates/bijux-dev-atlas/src/application/ops/runtime_mod/core_handler.rs",
+    "crates/bijux-dev-atlas/src/application/ops/execution_runtime_mod/k8s.rs",
+    "crates/bijux-dev-atlas/src/application/ops/execution_runtime_mod/render.rs",
+    "crates/bijux-dev-atlas/src/application/ops/execution_runtime_mod/install_status_parts/simulation_cluster.rs"
   ]
 }
