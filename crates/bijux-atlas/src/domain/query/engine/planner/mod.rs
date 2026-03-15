@@ -184,7 +184,7 @@ pub fn plan_query(ast: &GeneQueryAst, limits: &QueryLimits) -> Result<QueryPlan,
         node,
         class,
         cost,
-        normalized: normalized_ast_format(ast)?,
+        normalized: normalized_ast_format(ast).map_err(PlanError::Validation)?,
         budget_hooks,
         sort_key: ast.sort_key,
     })
