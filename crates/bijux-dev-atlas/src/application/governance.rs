@@ -1271,6 +1271,7 @@ fn known_commands(root: &Path) -> Result<BTreeSet<String>, String> {
 
     for rel in [
         "makes/cargo.mk",
+        "makes/entrypoints.mk",
         "makes/root.mk",
         "makes/contracts.mk",
         "makes/configs.mk",

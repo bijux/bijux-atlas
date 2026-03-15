@@ -1,2 +1,1 @@
-include makes/public.mk
-include makes/help.mk
+include makes/root.mk

@@ -202,7 +202,7 @@ pub(super) fn check_makefiles_no_direct_fetch_commands(
 pub(super) fn check_makefiles_no_multiline_recipes(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let makefiles_root = ctx.repo_root.join("make");
+    let makefiles_root = ctx.repo_root.join("makes");
     if !makefiles_root.exists() {
         return Ok(Vec::new());
     }

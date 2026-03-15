@@ -319,11 +319,11 @@ fn run_verify_module(args: MakesVerifyArgs, started: Instant) -> Result<(String,
 }
 
 fn resolve_make_module(repo_root: &Path, module: &str) -> Result<PathBuf, String> {
-    let primary = repo_root.join("make").join(format!("{module}.mk"));
+    let primary = repo_root.join("makes").join(format!("{module}.mk"));
     if primary.is_file() {
         return Ok(primary);
     }
-    let underscored = repo_root.join("make").join(format!("_{module}.mk"));
+    let underscored = repo_root.join("makes").join(format!("_{module}.mk"));
     if underscored.is_file() {
         return Ok(underscored);
     }
@@ -404,29 +404,35 @@ fn load_target_metadata(
 }
 
 fn load_target_recipe_lines(repo_root: &Path, target: &str) -> Result<Vec<String>, String> {
-    let root_mk = repo_root.join("makes/root.mk");
-    let text = fs::read_to_string(&root_mk)
-        .map_err(|err| format!("read {} failed: {err}", root_mk.display()))?;
+    let defined_in = load_target_metadata(repo_root, target)?
+        .get("defined_in")
+        .cloned()
+        .unwrap_or_else(|| vec!["makes/entrypoints.mk".to_string()]);
     let mut recipes: BTreeMap<String, Vec<String>> = BTreeMap::new();
-    let mut current: Option<String> = None;
-    for line in text.lines() {
-        let trimmed = line.trim_end();
-        if trimmed.starts_with('\t') {
-            if let Some(name) = current.as_ref() {
-                recipes
-                    .entry(name.clone())
-                    .or_default()
-                    .push(trimmed.trim_start().to_string());
+    for rel in defined_in {
+        let path = repo_root.join(&rel);
+        let text = fs::read_to_string(&path)
+            .map_err(|err| format!("read {} failed: {err}", path.display()))?;
+        let mut current: Option<String> = None;
+        for line in text.lines() {
+            let trimmed = line.trim_end();
+            if trimmed.starts_with('\t') {
+                if let Some(name) = current.as_ref() {
+                    recipes
+                        .entry(name.clone())
+                        .or_default()
+                        .push(trimmed.trim_start().to_string());
+                }
+                continue;
             }
-            continue;
-        }
-        if trimmed.trim().is_empty() || trimmed.trim_start().starts_with('#') {
-            continue;
-        }
-        let token = trimmed.trim_start();
-        if let Some((head, tail)) = token.split_once(':') {
-            if !head.trim().is_empty() && !tail.starts_with('=') {
-                current = Some(head.trim().to_string());
+            if trimmed.trim().is_empty() || trimmed.trim_start().starts_with('#') {
+                continue;
+            }
+            let token = trimmed.trim_start();
+            if let Some((head, tail)) = token.split_once(':') {
+                if !head.trim().is_empty() && !tail.starts_with('=') {
+                    current = Some(head.trim().to_string());
+                }
             }
         }
     }
@@ -614,8 +620,8 @@ mod tests {
     use std::time::Instant;
 
     fn write_minimal_root_mk(root: &std::path::Path) {
-        if let Err(err) = fs::create_dir_all(root.join("make")) {
-            panic!("create make dir failed: {err}");
+        if let Err(err) = fs::create_dir_all(root.join("makes")) {
+            panic!("create makes dir failed: {err}");
         }
         if let Err(err) = fs::write(
             root.join("makes/root.mk"),
@@ -692,8 +698,8 @@ mod tests {
             Ok(value) => value,
             Err(err) => panic!("tempdir failed: {err}"),
         };
-        if let Err(err) = fs::create_dir_all(temp.path().join("make")) {
-            panic!("create make dir failed: {err}");
+        if let Err(err) = fs::create_dir_all(temp.path().join("makes")) {
+            panic!("create makes dir failed: {err}");
         }
         if let Err(err) = fs::write(
             temp.path().join("makes/root.mk"),

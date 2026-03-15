@@ -62,25 +62,24 @@ pub(super) fn check_root_makefile_single_include_entrypoint(
         .filter(|line| !line.is_empty())
         .filter(|line| !line.starts_with('#'))
         .collect::<Vec<_>>();
-    if lines.len() == 2
-        && lines[0] == "include makes/public.mk"
-        && lines[1] == "include makes/help.mk"
+    if lines.len() == 1
+        && lines[0] == "include makes/root.mk"
     {
         return Ok(Vec::new());
     }
-    if !lines.contains(&"include makes/public.mk") || !lines.contains(&"include makes/help.mk") {
+    if !lines.contains(&"include makes/root.mk") {
         return Ok(vec![violation(
             "ROOT_MAKEFILE_MISSING_ROOT_INCLUDE",
-            "root Makefile must include makes/public.mk and makes/help.mk".to_string(),
+            "root Makefile must include makes/root.mk".to_string(),
             "use root Makefile as a thin include entrypoint",
             Some(rel),
         )]);
     }
-    lines.retain(|line| *line != "include makes/public.mk" && *line != "include makes/help.mk");
+    lines.retain(|line| *line != "include makes/root.mk");
     Ok(vec![violation(
         "ROOT_MAKEFILE_NOT_SINGLE_INCLUDE_ENTRYPOINT",
         "root Makefile contains logic beyond the include-only entrypoint".to_string(),
-        "keep root Makefile to two includes only: `include makes/public.mk` and `include makes/help.mk`",
+        "keep root Makefile to one include only: `include makes/root.mk`",
         Some(rel),
     )])
 }
@@ -97,15 +96,34 @@ pub(super) fn check_makefiles_root_includes_sorted(
         .filter(|line| line.starts_with("include "))
         .map(|line| line.trim_start_matches("include ").to_string())
         .collect::<Vec<_>>();
-    let mut sorted = includes.clone();
-    sorted.sort();
-    if includes == sorted {
+    let expected = vec![
+        "makes/vars.mk".to_string(),
+        "makes/paths.mk".to_string(),
+        "makes/macros.mk".to_string(),
+        "makes/build.mk".to_string(),
+        "makes/cargo.mk".to_string(),
+        "makes/checks.mk".to_string(),
+        "makes/ci.mk".to_string(),
+        "makes/configs.mk".to_string(),
+        "makes/contracts.mk".to_string(),
+        "makes/dev.mk".to_string(),
+        "makes/docker.mk".to_string(),
+        "makes/docs.mk".to_string(),
+        "makes/entrypoints.mk".to_string(),
+        "makes/k8s.mk".to_string(),
+        "makes/ops.mk".to_string(),
+        "makes/policies.mk".to_string(),
+        "makes/runenv.mk".to_string(),
+        "makes/verification.mk".to_string(),
+    ];
+    if includes == expected {
         Ok(Vec::new())
     } else {
         Ok(vec![violation(
             "MAKEFILES_ROOT_INCLUDES_NOT_SORTED",
-            "makes/root.mk include statements must be sorted".to_string(),
-            "sort include lines lexicographically for deterministic diffs",
+            "makes/root.mk include statements must match the canonical boring import order"
+                .to_string(),
+            "keep makes/root.mk as the single import hub with the canonical include order",
             Some(rel),
         )])
     }
@@ -118,10 +136,8 @@ pub(super) fn check_root_top_level_directories_contract(
         "artifacts",
         "configs",
         "crates",
-        "docker",
         "docs",
-        "governance",
-        "make",
+        "makes",
         "ops",
     ];
     let mut actual = fs::read_dir(ctx.repo_root)

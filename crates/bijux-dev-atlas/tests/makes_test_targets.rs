@@ -59,16 +59,16 @@ fn ci_lane_targets_use_check_run_surface() {
 
 #[test]
 fn checks_variant_targets_use_human_check_run_surface() {
-    let root_mk =
-        fs::read_to_string(workspace_root().join("makes/root.mk")).expect("read makes/root.mk");
+    let entrypoints_mk = fs::read_to_string(workspace_root().join("makes/entrypoints.mk"))
+        .expect("read makes/entrypoints.mk");
     for marker in [
         "checks-group: ## Run one checks suite group (GROUP=<name>)",
         "checks-tag: ## Run checks suite entries with a shared tag (TAG=<name>)",
         "checks-pure: ## Run only pure checks suite entries",
         "checks-effect: ## Run only effectful checks suite entries",
     ] {
-        let start = root_mk.find(marker).expect("target block");
-        let tail = &root_mk[start..];
+        let start = entrypoints_mk.find(marker).expect("target block");
+        let tail = &entrypoints_mk[start..];
         let end = tail.find("\n\n").unwrap_or(tail.len());
         let target_block = &tail[..end];
         assert!(target_block.contains("$(DEV_ATLAS) checks run"));
@@ -86,12 +86,12 @@ fn checks_variant_targets_use_human_check_run_surface() {
 
 #[test]
 fn make_target_list_wrapper_uses_target_list_surface() {
-    let public_mk =
-        fs::read_to_string(workspace_root().join("makes/public.mk")).expect("read makes/public.mk");
-    let start = public_mk
+    let entrypoints_mk = fs::read_to_string(workspace_root().join("makes/entrypoints.mk"))
+        .expect("read makes/entrypoints.mk");
+    let start = entrypoints_mk
         .find("makes-target-list: ## Regenerate the makes public target list artifact")
         .expect("makes-target-list target");
-    let tail = &public_mk[start..];
+    let tail = &entrypoints_mk[start..];
     let end = tail.find("\n\n").unwrap_or(tail.len());
     let target_block = &tail[..end];
 
