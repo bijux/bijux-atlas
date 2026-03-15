@@ -22,7 +22,7 @@ mappings:
       - configs/security/redaction.json
   - control_id: CTRL-LOG-001
     evidence:
-      - configs/contracts/observability/log.schema.json
+      - configs/schemas/contracts/observability/log.schema.json
       - docs/reference/contracts/observability.md
   - control_id: CTRL-EVID-001
     evidence:

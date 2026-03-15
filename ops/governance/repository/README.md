@@ -16,7 +16,7 @@ Canonical governance object schema and generated object graph artifacts.
 
 ## Cross-surface invariants
 
-- Invariant: Helm env emitted by the chart must stay a subset of the runtime allowlist declared in `configs/contracts/env.schema.json`.
+- Invariant: Helm env emitted by the chart must stay a subset of the runtime allowlist declared in `configs/schemas/contracts/env.schema.json`.
 - Invariant: Every rollout profile under `ops/k8s/values/` must render successfully.
 - Invariant: Every crate directory under `crates/` must be declared as a workspace member in the root `Cargo.toml`.
 - Invariant: `mkdocs build --strict` must publish into the configured `site_dir`.

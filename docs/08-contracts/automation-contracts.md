@@ -25,7 +25,7 @@ flowchart LR
 
 - repository automation remains discoverable through `bijux-dev-atlas` and documented wrapper entrypoints
 - effectful commands fail closed when required capabilities are not explicitly allowed
-- governed reports use versioned JSON schemas under `configs/contracts/reports/`
+- governed reports use versioned JSON schemas under `configs/schemas/contracts/reports/`
 - suite and check execution expose explicit selection inputs instead of hidden lane behavior
 - structured consumers can rely on documented report fields more than terminal formatting
 

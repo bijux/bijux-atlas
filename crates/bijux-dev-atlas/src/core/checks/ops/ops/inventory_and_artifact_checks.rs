@@ -254,7 +254,7 @@ fn checks_ops_runtime_output_roots_under_ops_absent(
 fn checks_reports_schema_registry_ssot(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let registry_rel = Path::new("configs/reports/schema-registry.json");
+    let registry_rel = Path::new("configs/registry/reports/schema-registry.json");
     let registry_path = ctx.repo_root.join(registry_rel);
     let text = fs::read_to_string(&registry_path)
         .map_err(|err| CheckError::Failed(format!("read {}: {err}", registry_path.display())))?;
@@ -279,7 +279,7 @@ fn checks_reports_schema_registry_ssot(
             )
         })
         .collect::<Vec<_>>();
-    let mut actual = walk_files(&ctx.repo_root.join("configs/contracts/reports"))
+    let mut actual = walk_files(&ctx.repo_root.join("configs/schemas/contracts/reports"))
         .into_iter()
         .filter_map(|path| {
             let rel = path.strip_prefix(ctx.repo_root).ok()?.to_path_buf();
@@ -316,7 +316,7 @@ fn checks_reports_schema_registry_ssot(
         format!(
             "report schema registry drift detected: expected={expected_sorted:?} actual={actual:?}"
         ),
-        "update configs/reports/schema-registry.json to match configs/contracts/reports/*.schema.json",
+        "update configs/registry/reports/schema-registry.json to match configs/schemas/contracts/reports/*.schema.json",
         Some(registry_rel),
     )])
 }
@@ -324,7 +324,7 @@ fn checks_reports_schema_registry_ssot(
 fn checks_reports_ownership_registry_valid(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let registry_rel = Path::new("configs/reports/ownership.json");
+    let registry_rel = Path::new("configs/registry/reports/ownership.json");
     let registry_path = ctx.repo_root.join(registry_rel);
     let text = fs::read_to_string(&registry_path)
         .map_err(|err| CheckError::Failed(format!("read {}: {err}", registry_path.display())))?;
@@ -364,7 +364,7 @@ fn checks_reports_ownership_registry_valid(
                 violations.push(violation(
                     "REPORT_OWNERSHIP_PATH_MISSING",
                     format!("report ownership path does not exist: `{}`", rel.display()),
-                    "fix schema_path/docs_path in configs/reports/ownership.json",
+                    "fix schema_path/docs_path in configs/registry/reports/ownership.json",
                     Some(registry_rel),
                 ));
             }
@@ -374,8 +374,8 @@ fn checks_reports_ownership_registry_valid(
 }
 
 fn checks_reports_check_map_valid(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
-    let map_rel = Path::new("configs/reports/check-report-map.json");
-    let ownership_rel = Path::new("configs/reports/ownership.json");
+    let map_rel = Path::new("configs/registry/reports/check-report-map.json");
+    let ownership_rel = Path::new("configs/registry/reports/ownership.json");
     let levels_rel = Path::new("ops/report/evidence-levels.json");
     let map_json: serde_json::Value = serde_json::from_str(
         &fs::read_to_string(ctx.repo_root.join(map_rel))
@@ -427,7 +427,7 @@ fn checks_reports_check_map_valid(ctx: &CheckContext<'_>) -> Result<Vec<Violatio
             violations.push(violation(
                 "REPORT_CHECK_MAP_UNKNOWN_REPORT_ID",
                 format!("check-report mapping references unknown report_id `{report_id}`"),
-                "add the report to configs/reports/ownership.json or fix the mapping",
+                "add the report to configs/registry/reports/ownership.json or fix the mapping",
                 Some(map_rel),
             ));
         }

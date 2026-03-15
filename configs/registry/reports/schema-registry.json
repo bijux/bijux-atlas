@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "reports": [
+    {
+      "report_id": "breaking-changes",
+      "schema_path": "configs/schemas/contracts/reports/breaking-changes.schema.json"
+    },
+    {
+      "report_id": "check-clippy",
+      "schema_path": "configs/schemas/contracts/report-checks/check-clippy.schema.json"
+    },
+    {
+      "report_id": "check-config-format",
+      "schema_path": "configs/schemas/contracts/report-checks/check-config-format.schema.json"
+    },
+    {
+      "report_id": "check-deps",
+      "schema_path": "configs/schemas/contracts/report-checks/check-deps.schema.json"
+    },
+    {
+      "report_id": "check-docs-links",
+      "schema_path": "configs/schemas/contracts/report-checks/check-docs-links.schema.json"
+    },
+    {
+      "report_id": "check-helm-lint",
+      "schema_path": "configs/schemas/contracts/report-checks/check-helm-lint.schema.json"
+    },
+    {
+      "report_id": "check-kubeconform",
+      "schema_path": "configs/schemas/contracts/report-checks/check-kubeconform.schema.json"
+    },
+    {
+      "report_id": "check-rustfmt",
+      "schema_path": "configs/schemas/contracts/report-checks/check-rustfmt.schema.json"
+    },
+    {
+      "report_id": "check-suite-summary",
+      "schema_path": "configs/schemas/contracts/report-checks/check-suite-summary.schema.json"
+    },
+    {
+      "report_id": "closure-index",
+      "schema_path": "configs/schemas/contracts/reports/closure-index.schema.json"
+    },
+    {
+      "report_id": "docs-build-closure-summary",
+      "schema_path": "configs/schemas/contracts/reports/closure-summary.schema.json"
+    },
+    {
+      "report_id": "compat-warnings",
+      "schema_path": "configs/schemas/contracts/reports/compat-warnings.schema.json"
+    },
+    {
+      "report_id": "deprecations-summary",
+      "schema_path": "configs/schemas/contracts/reports/deprecations-summary.schema.json"
+    },
+    {
+      "report_id": "docs-site-output",
+      "schema_path": "configs/schemas/contracts/reports/docs-site-output.schema.json"
+    },
+    {
+      "report_id": "exceptions-churn",
+      "schema_path": "configs/schemas/contracts/reports/exceptions-churn.schema.json"
+    },
+    {
+      "report_id": "exceptions-expiry-warning",
+      "schema_path": "configs/schemas/contracts/reports/exceptions-expiry-warning.schema.json"
+    },
+    {
+      "report_id": "exceptions-summary",
+      "schema_path": "configs/schemas/contracts/reports/exceptions-summary.schema.json"
+    },
+    {
+      "report_id": "governance-doctor",
+      "schema_path": "configs/schemas/contracts/reports/governance-doctor.schema.json"
+    },
+    {
+      "report_id": "governance-index",
+      "schema_path": "configs/schemas/contracts/reports/governance-index.schema.json"
+    },
+    {
+      "report_id": "helm-env",
+      "schema_path": "configs/schemas/contracts/reports/helm-env.schema.json"
+    },
+    {
+      "report_id": "ops-profiles",
+      "schema_path": "configs/schemas/contracts/reports/ops-profiles.schema.json"
+    },
+    {
+      "report_id": "registry-missing-fields",
+      "schema_path": "configs/schemas/contracts/reports/registry-missing-fields.schema.json"
+    },
+    {
+      "report_id": "registry-status",
+      "schema_path": "configs/schemas/contracts/reports/registry-status.schema.json"
+    },
+    {
+      "report_id": "suite-diff",
+      "schema_path": "configs/schemas/contracts/reports/suite-diff.schema.json"
+    },
+    {
+      "report_id": "suite-history-entry",
+      "schema_path": "configs/schemas/contracts/reports/suite-history-entry.schema.json"
+    },
+    {
+      "report_id": "suite-preflight",
+      "schema_path": "configs/schemas/contracts/reports/suite-preflight.schema.json"
+    },
+    {
+      "report_id": "suite-result",
+      "schema_path": "configs/schemas/contracts/reports/suite-result.schema.json"
+    },
+    {
+      "report_id": "suite-summary",
+      "schema_path": "configs/schemas/contracts/reports/suite-summary.schema.json"
+    }
+  ]
+}

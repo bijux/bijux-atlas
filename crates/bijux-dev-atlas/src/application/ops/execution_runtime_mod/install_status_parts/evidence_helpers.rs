@@ -427,10 +427,10 @@ pub(super) fn render_evidence_index_html(
 pub(super) fn collect_observability_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
     let mut paths = Vec::new();
     for rel in [
-        "configs/contracts/observability/log.schema.json",
-        "configs/contracts/observability/metrics.schema.json",
-        "configs/contracts/observability/error-codes.json",
-        "configs/contracts/observability/label-policy.json",
+        "configs/schemas/contracts/observability/log.schema.json",
+        "configs/schemas/contracts/observability/metrics.schema.json",
+        "configs/schemas/contracts/observability/error-codes.json",
+        "configs/schemas/contracts/observability/label-policy.json",
         "ops/observe/dashboards/atlas-observability-dashboard.json",
         "ops/observe/alerts/atlas-alert-rules.yaml",
         "ops/observe/slo-definitions.json",
@@ -455,12 +455,12 @@ pub(super) fn collect_perf_assets(repo_root: &std::path::Path) -> Result<Vec<Str
         "configs/perf/budgets.yaml",
         "configs/perf/benches.json",
         "configs/perf/exceptions.json",
-        "configs/contracts/perf/slo.schema.json",
-        "configs/contracts/perf/budgets.schema.json",
-        "configs/contracts/perf/benches.schema.json",
-        "configs/contracts/perf/load-report.schema.json",
-        "configs/contracts/perf/exceptions.schema.json",
-        "configs/contracts/perf/cold-start-report.schema.json",
+        "configs/schemas/contracts/perf/slo.schema.json",
+        "configs/schemas/contracts/perf/budgets.schema.json",
+        "configs/schemas/contracts/perf/benches.schema.json",
+        "configs/schemas/contracts/perf/load-report.schema.json",
+        "configs/schemas/contracts/perf/exceptions.schema.json",
+        "configs/schemas/contracts/perf/cold-start-report.schema.json",
         "ops/report/gene-lookup-baseline.json",
         "ops/schema/k8s/perf-on-kind.schema.json",
     ] {
@@ -490,11 +490,11 @@ pub(super) fn collect_dataset_assets(repo_root: &std::path::Path) -> Result<Vec<
     for rel in [
         "configs/datasets/manifest.yaml",
         "configs/datasets/pinned-policy.yaml",
-        "configs/contracts/datasets/manifest.schema.json",
-        "configs/contracts/datasets/pinned-policy.schema.json",
-        "configs/contracts/datasets/ingest-plan.schema.json",
-        "configs/contracts/datasets/ingest-run.schema.json",
-        "configs/contracts/datasets/endtoend.schema.json",
+        "configs/schemas/contracts/datasets/manifest.schema.json",
+        "configs/schemas/contracts/datasets/pinned-policy.schema.json",
+        "configs/schemas/contracts/datasets/ingest-plan.schema.json",
+        "configs/schemas/contracts/datasets/ingest-run.schema.json",
+        "configs/schemas/contracts/datasets/endtoend.schema.json",
     ] {
         let path = repo_root.join(rel);
         if path.exists() {
@@ -518,7 +518,7 @@ pub(super) fn collect_dataset_assets(repo_root: &std::path::Path) -> Result<Vec<
 }
 
 pub(super) fn load_required_metric_names(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
-    let contract_path = repo_root.join("configs/contracts/observability/metrics.schema.json");
+    let contract_path = repo_root.join("configs/schemas/contracts/observability/metrics.schema.json");
     let contract: serde_json::Value = serde_json::from_str(
         &std::fs::read_to_string(&contract_path)
             .map_err(|err| format!("failed to read {}: {err}", contract_path.display()))?,
@@ -543,18 +543,18 @@ pub(super) fn collect_governance_assets(repo_root: &std::path::Path) -> Result<V
         "configs/governance/exceptions-archive.yaml",
         "configs/governance/compatibility.yaml",
         "configs/governance/deprecations.yaml",
-        "configs/contracts/governance/exceptions.schema.json",
-        "configs/contracts/governance/exceptions-archive.schema.json",
-        "configs/contracts/governance/compatibility.schema.json",
-        "configs/contracts/governance/deprecations.schema.json",
-        "configs/contracts/reports/exceptions-summary.schema.json",
-        "configs/contracts/reports/exceptions-expiry-warning.schema.json",
-        "configs/contracts/reports/exceptions-churn.schema.json",
-        "configs/contracts/reports/deprecations-summary.schema.json",
-        "configs/contracts/reports/compat-warnings.schema.json",
-        "configs/contracts/reports/breaking-changes.schema.json",
-        "configs/contracts/reports/governance-doctor.schema.json",
-        "configs/contracts/reports/institutional-delta-inputs.schema.json",
+        "configs/schemas/contracts/governance/exceptions.schema.json",
+        "configs/schemas/contracts/governance/exceptions-archive.schema.json",
+        "configs/schemas/contracts/governance/compatibility.schema.json",
+        "configs/schemas/contracts/governance/deprecations.schema.json",
+        "configs/schemas/contracts/reports/exceptions-summary.schema.json",
+        "configs/schemas/contracts/reports/exceptions-expiry-warning.schema.json",
+        "configs/schemas/contracts/reports/exceptions-churn.schema.json",
+        "configs/schemas/contracts/reports/deprecations-summary.schema.json",
+        "configs/schemas/contracts/reports/compat-warnings.schema.json",
+        "configs/schemas/contracts/reports/breaking-changes.schema.json",
+        "configs/schemas/contracts/reports/governance-doctor.schema.json",
+        "configs/schemas/contracts/reports/institutional-delta-inputs.schema.json",
         "artifacts/governance/exceptions-summary.json",
         "artifacts/governance/exceptions-expiry-warning.json",
         "artifacts/governance/exceptions-churn.json",
@@ -605,7 +605,7 @@ pub(super) fn observability_contract_checks(
     )
     .map_err(|err| format!("failed to read response contract source: {err}"))?;
     let error_registry = std::fs::read_to_string(
-        repo_root.join("configs/contracts/observability/error-codes.json"),
+        repo_root.join("configs/schemas/contracts/observability/error-codes.json"),
     )
     .map_err(|err| format!("failed to read error registry: {err}"))?;
     let openapi =
@@ -711,7 +711,7 @@ pub(super) fn observability_contract_checks(
     let mut label_policy_passed = true;
     let mut alert_rules_reference_known_metrics = true;
     let label_policy: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../../../../../configs/contracts/observability/label-policy.json"
+        "../../../../../../../configs/schemas/contracts/observability/label-policy.json"
     ))
     .map_err(|err| format!("failed to parse label policy: {err}"))?;
     let alert_required_labels = label_policy["alerts_required_labels"]

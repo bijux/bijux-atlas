@@ -24,7 +24,7 @@ cargo run -q -p bijux-dev-atlas -- reports validate --dir artifacts
 
 ## Shared Report Header
 
-Governed report schemas under `configs/contracts/reports/` consistently require these fields:
+Governed report schemas under `configs/schemas/contracts/reports/` consistently require these fields:
 
 - `report_id`: stable report family identifier
 - `version`: schema version for the report family
@@ -44,7 +44,7 @@ The current `reports list --format json` catalog exposes at least these report i
 - `helm-env`
 - `ops-profiles`
 
-Each catalog entry points to both a schema in `configs/contracts/reports/` and an example artifact path.
+Each catalog entry points to both a schema in `configs/schemas/contracts/reports/` and an example artifact path.
 
 ## Artifact Path Pattern
 

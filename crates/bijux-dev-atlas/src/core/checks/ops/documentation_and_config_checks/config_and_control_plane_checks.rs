@@ -24,7 +24,7 @@ pub(super) fn check_configs_required_surface_paths(
 pub(super) fn check_configs_schema_paths_present(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let required = ["configs/schema", "configs/contracts"];
+    let required = ["configs/schemas/registry", "configs/schemas/contracts"];
     let mut violations = Vec::new();
     for path in required {
         let rel = Path::new(path);
@@ -152,7 +152,7 @@ pub(super) fn check_ops_control_plane_doc_contract(
 pub(super) fn check_control_plane_naming_contract_docs(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("crates/bijux-dev-atlas/docs/contract.md");
+    let rel = Path::new("docs/bijux-dev-atlas-docs/contract.md");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
@@ -165,7 +165,7 @@ pub(super) fn check_control_plane_naming_contract_docs(
             violations.push(violation(
                 "CONTROL_PLANE_NAMING_CONTRACT_MISSING",
                 format!("dev control-plane contract is missing `{required}`"),
-                "document the frozen runtime vs control-plane naming contract in crates/bijux-dev-atlas/docs/contract.md",
+                "document the frozen runtime vs control-plane naming contract in bijux-dev-atlas-docs/contract.md",
                 Some(rel),
             ));
         }
@@ -222,7 +222,7 @@ pub(super) fn check_scripting_contract_rust_control_plane_lock(
 pub(super) fn check_docs_ops_command_list_matches_snapshot(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("crates/bijux-dev-atlas/docs/internal/ops-command-list.md");
+    let rel = Path::new("docs/bijux-dev-atlas-docs/internal/ops-command-list.md");
     let current = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let expected = [
@@ -251,7 +251,7 @@ pub(super) fn check_docs_ops_command_list_matches_snapshot(
         Ok(vec![violation(
             "DOCS_OPS_COMMAND_LIST_MISMATCH",
             "ops command list doc does not match canonical ops help snapshot".to_string(),
-            "update crates/bijux-dev-atlas/docs/internal/ops-command-list.md to match ops --help command list",
+            "update bijux-dev-atlas-docs/internal/ops-command-list.md to match ops --help command list",
             Some(rel),
         )])
     }
@@ -260,7 +260,7 @@ pub(super) fn check_docs_ops_command_list_matches_snapshot(
 pub(super) fn check_docs_configs_command_list_matches_snapshot(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("crates/bijux-dev-atlas/docs/internal/configs-command-list.md");
+    let rel = Path::new("docs/bijux-dev-atlas-docs/internal/configs-command-list.md");
     let current = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let expected = [
@@ -279,7 +279,7 @@ pub(super) fn check_docs_configs_command_list_matches_snapshot(
         Ok(vec![violation(
             "DOCS_CONFIGS_COMMAND_LIST_MISMATCH",
             "configs command list doc does not match canonical configs help snapshot".to_string(),
-            "update crates/bijux-dev-atlas/docs/internal/configs-command-list.md to match configs --help command list",
+            "update bijux-dev-atlas-docs/internal/configs-command-list.md to match configs --help command list",
             Some(rel),
         )])
     }

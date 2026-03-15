@@ -6,7 +6,7 @@ use std::collections::BTreeMap;
 fn is_filename_case_exception(rel: &str) -> bool {
     matches!(
         rel,
-        "configs/CONSUMERS.json" | "configs/OWNERS.json" | "configs/SCHEMAS.json"
+        "configs/registry/consumers.json" | "configs/registry/owners.json" | "configs/registry/schemas.json"
     )
 }
 
@@ -90,7 +90,7 @@ fn is_secret_like_key_exception(rel: &str, key_path: &str) -> bool {
             (rel, key_path),
             ("configs/security/secrets.json", "secrets")
                 | (
-                    "configs/contracts/security/secrets.schema.json",
+                    "configs/schemas/contracts/security/secrets.schema.json",
                     "properties.secrets"
                 )
         )
@@ -117,7 +117,7 @@ pub(crate) fn configs_inventory_payload(
         seen.insert(rel.clone());
     }
     rows.sort_by(|a, b| a["path"].as_str().cmp(&b["path"].as_str()));
-    for required in ["configs/INDEX.md", "configs/README.md", "configs/contracts"] {
+    for required in ["configs/INDEX.md", "configs/README.md", "configs/schemas/contracts"] {
         if !ctx.repo_root.join(required).exists() {
             orphans.push(format!("missing required config surface `{required}`"));
         }
@@ -178,12 +178,12 @@ pub(crate) fn configs_validate_payload(
         "configs/README.md",
         "configs/rust/LINT_POLICY.md",
         "configs/rust/toolchain.json",
-        "configs/contracts",
-        "configs/schema",
+        "configs/schemas/contracts",
+        "configs/schemas/registry",
         "configs/NAMING.md",
         "configs/OWNERS.md",
-        "configs/inventory/groups.json",
-        "configs/inventory/consumers.json",
+        "configs/registry/inventory/groups.json",
+        "configs/registry/inventory/consumers.json",
     ] {
         if !ctx.repo_root.join(required).exists() {
             errors.push(format!(
@@ -294,12 +294,12 @@ pub(crate) fn configs_validate_payload(
             }
         }
     }
-    let inventory_manifest_path = ctx.repo_root.join("configs/inventory.json");
-    let groups_path = ctx.repo_root.join("configs/inventory/groups.json");
-    let consumers_path = ctx.repo_root.join("configs/inventory/consumers.json");
+    let inventory_manifest_path = ctx.repo_root.join("configs/registry/inventory/index.json");
+    let groups_path = ctx.repo_root.join("configs/registry/inventory/groups.json");
+    let consumers_path = ctx.repo_root.join("configs/registry/inventory/consumers.json");
     if !inventory_manifest_path.exists() {
         errors.push(
-            "CONFIGS_LAYOUT_ERROR: missing canonical inventory manifest `configs/inventory.json`"
+            "CONFIGS_LAYOUT_ERROR: missing canonical inventory manifest `configs/registry/inventory/index.json`"
                 .to_string(),
         );
     } else {
@@ -310,13 +310,13 @@ pub(crate) fn configs_validate_payload(
         for key in ["groups_path", "consumers_path", "owners_path"] {
             let Some(path) = inventory_json[key].as_str() else {
                 errors.push(format!(
-                    "CONFIGS_SCHEMA_ERROR: configs/inventory.json missing string key `{key}`"
+                    "CONFIGS_SCHEMA_ERROR: configs/registry/inventory/index.json missing string key `{key}`"
                 ));
                 continue;
             };
             if !ctx.repo_root.join(path).exists() {
                 errors.push(format!(
-                    "CONFIGS_LAYOUT_ERROR: configs/inventory.json references missing path `{path}`"
+                    "CONFIGS_LAYOUT_ERROR: configs/registry/inventory/index.json references missing path `{path}`"
                 ));
             }
         }
@@ -411,12 +411,12 @@ pub(crate) fn configs_validate_payload(
     for group in &discovered_groups {
         if !allowed_groups.is_empty() && !allowed_groups.contains(group) {
             errors.push(format!(
-                "CONFIGS_LAYOUT_ERROR: top-level group `{group}` is not allowlisted in configs/inventory/groups.json"
+                "CONFIGS_LAYOUT_ERROR: top-level group `{group}` is not allowlisted in configs/registry/inventory/groups.json"
             ));
         }
         if !consumer_groups.is_empty() && !consumer_groups.contains(group) {
             errors.push(format!(
-                "CONFIGS_LAYOUT_ERROR: top-level group `{group}` has no consumer mapping in configs/inventory/consumers.json"
+                "CONFIGS_LAYOUT_ERROR: top-level group `{group}` has no consumer mapping in configs/registry/inventory/consumers.json"
             ));
         }
     }

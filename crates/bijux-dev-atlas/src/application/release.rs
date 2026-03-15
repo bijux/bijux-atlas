@@ -3899,10 +3899,10 @@ fn repo_rel<'a>(root: &'a Path, path: &'a Path) -> String {
 fn run_release_sign(args: ReleaseSignArgs) -> Result<(String, i32), String> {
     let repo_root_arg = args.repo_root.clone();
     let root = resolve_repo_root(repo_root_arg.clone())?;
-    ensure_json(&root.join("configs/contracts/release/signing-policy.schema.json"))?;
-    ensure_json(&root.join("configs/contracts/release/checksum-list.schema.json"))?;
-    ensure_json(&root.join("configs/contracts/release/release-sign.schema.json"))?;
-    ensure_json(&root.join("configs/contracts/release/provenance.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/release/signing-policy.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/release/checksum-list.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/release/release-sign.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/release/provenance.schema.json"))?;
 
     let evidence_dir = if args.evidence.is_absolute() {
         args.evidence
@@ -4094,10 +4094,10 @@ fn run_release_sign(args: ReleaseSignArgs) -> Result<(String, i32), String> {
 fn run_release_verify(args: ReleaseVerifyArgs) -> Result<(String, i32), String> {
     let repo_root_arg = args.repo_root.clone();
     let root = resolve_repo_root(repo_root_arg.clone())?;
-    ensure_json(&root.join("configs/contracts/release/checksum-list.schema.json"))?;
-    ensure_json(&root.join("configs/contracts/release/release-sign.schema.json"))?;
-    ensure_json(&root.join("configs/contracts/release/release-verify.schema.json"))?;
-    ensure_json(&root.join("configs/contracts/release/provenance.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/release/checksum-list.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/release/release-sign.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/release/release-verify.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/release/provenance.schema.json"))?;
 
     let tarball = if args.evidence.is_absolute() {
         args.evidence
@@ -4437,7 +4437,7 @@ fn run_release_diff(args: ReleaseDiffArgs) -> Result<(String, i32), String> {
 
 fn run_release_packet(args: ReleasePacketArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    ensure_json(&root.join("configs/contracts/release/packet-list.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/release/packet-list.schema.json"))?;
 
     let evidence_dir = if args.evidence.is_absolute() {
         args.evidence
@@ -4753,7 +4753,7 @@ fn run_release_manifest_generate(
 }
 
 fn validate_release_manifest(root: &Path, version: &str) -> Result<serde_json::Value, String> {
-    ensure_json(&root.join("configs/contracts/release/release-manifest.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/release/release-manifest.schema.json"))?;
     let manifest_path = release_manifest_path(root, version);
     let manifest = read_json(&manifest_path)?;
     let mut errors = Vec::<String>::new();

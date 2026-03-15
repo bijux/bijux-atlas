@@ -610,7 +610,7 @@ fn supports_color(color: SuiteColorArg) -> bool {
 
 fn load_perf_budget(root: &Path, suite_id: &str) -> Result<PerfBudgetEntry, String> {
     let schema_value: serde_json::Value =
-        read_json_file(&root.join("configs/contracts/governance/perf-budgets.schema.json"))?;
+        read_json_file(&root.join("configs/schemas/contracts/governance/perf-budgets.schema.json"))?;
     let required_fields = schema_value["required"]
         .as_array()
         .into_iter()
@@ -1245,7 +1245,7 @@ fn task_report_paths(task: &SuiteTask, task_root: &Path) -> Vec<String> {
 
 fn check_report_schema_path(repo_root: &Path, report_id: &str) -> PathBuf {
     repo_root
-        .join("configs/contracts/reports/checks")
+        .join("configs/schemas/contracts/reports/checks")
         .join(format!("{report_id}.schema.json"))
 }
 
@@ -3031,19 +3031,19 @@ mod tests {
         );
         write_json(
             &dir.path()
-                .join("configs/contracts/reports/checks/schema-index.json"),
+                .join("configs/schemas/contracts/report-checks/schema-index.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "index_id": "checks-schema-index",
                 "schemas": [{
                     "report_id":"check-suite-summary",
-                    "schema_path":"configs/contracts/reports/checks/check-suite-summary.schema.json"
+                    "schema_path":"configs/schemas/contracts/report-checks/check-suite-summary.schema.json"
                 }]
             }),
         );
         write_json(
             &dir.path()
-                .join("configs/contracts/reports/checks/check-suite-summary.schema.json"),
+                .join("configs/schemas/contracts/report-checks/check-suite-summary.schema.json"),
             &serde_json::json!({
                 "required":["report_id","version","inputs"],
                 "properties":{
@@ -3055,7 +3055,7 @@ mod tests {
         );
         write_json(
             &dir.path()
-                .join("configs/contracts/reports/suite-result.schema.json"),
+                .join("configs/schemas/contracts/reports/suite-result.schema.json"),
             &serde_json::json!({
                 "required":["report_id","version","inputs","id","status","duration_ms","mode","group","summary","report_paths","artifacts"],
                 "properties":{
@@ -3078,7 +3078,7 @@ mod tests {
         );
         write_json(
             &dir.path()
-                .join("configs/contracts/reports/suite-summary.schema.json"),
+                .join("configs/schemas/contracts/reports/suite-summary.schema.json"),
             &serde_json::json!({
                 "required":["report_id","version","inputs","suite","run_id","run_timestamp","artifacts_root","elapsed_ms","status","summary","failures","warnings","scheduling_plan","tasks"],
                 "properties":{
@@ -3101,7 +3101,7 @@ mod tests {
         );
         write_json(
             &dir.path()
-                .join("configs/contracts/reports/suite-preflight.schema.json"),
+                .join("configs/schemas/contracts/reports/suite-preflight.schema.json"),
             &serde_json::json!({
                 "required":["report_id","version","inputs","suite","run_id","status","summary","rows"],
                 "properties":{
@@ -3118,7 +3118,7 @@ mod tests {
         );
         write_json(
             &dir.path()
-                .join("configs/contracts/reports/suite-diff.schema.json"),
+                .join("configs/schemas/contracts/reports/suite-diff.schema.json"),
             &serde_json::json!({
                 "required":["report_id","version","inputs","suite","baseline_run_id","current_run_id","thresholds","summary","new_failures","fixed_failures","duration_regressions","new_tasks"],
                 "properties":{
@@ -3139,7 +3139,7 @@ mod tests {
         );
         write_json(
             &dir.path()
-                .join("configs/contracts/reports/suite-history-entry.schema.json"),
+                .join("configs/schemas/contracts/reports/suite-history-entry.schema.json"),
             &serde_json::json!({
                 "required":["report_id","version","inputs","suite","run_id","task_id","group","mode","status","duration_ms","timestamp","result_path"],
                 "properties":{
@@ -3178,7 +3178,7 @@ mod tests {
         );
         write_json(
             &dir.path()
-                .join("configs/contracts/governance/perf-budgets.schema.json"),
+                .join("configs/schemas/contracts/governance/perf-budgets.schema.json"),
             &serde_json::json!({
                 "required":["schema_version","budgets"],
                 "properties":{

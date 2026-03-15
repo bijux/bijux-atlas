@@ -6,5 +6,5 @@
     "artifacts/docker-publish/sbom.spdx.json",
     "artifacts/docker-publish/sbom.cyclonedx.json"
   ],
-  "schema_reference": "configs/contracts/security/dependency-source-policy.schema.json"
+  "schema_reference": "configs/schemas/contracts/security/dependency-source-policy.schema.json"
 }

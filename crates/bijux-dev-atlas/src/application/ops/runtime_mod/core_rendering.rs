@@ -140,7 +140,7 @@ pub(super) fn render_helm_configmap_env_report(
         helm_report,
     );
     let payload = serde_json::to_value(&report).map_err(|err| err.to_string())?;
-    let schema_path = repo_root.join("configs/contracts/reports/helm-env.schema.json");
+    let schema_path = repo_root.join("configs/schemas/contracts/reports/helm-env.schema.json");
     bijux_dev_atlas::ops::helm_env::validate_report_value(&payload, &schema_path)?;
     let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
     Ok((rendered, exit_code))
@@ -171,7 +171,7 @@ pub(super) fn validate_helm_profile_matrix(
         },
     )?;
     let payload = serde_json::to_value(&report).map_err(|err| err.to_string())?;
-    let schema_path = repo_root.join("configs/contracts/reports/ops-profiles.schema.json");
+    let schema_path = repo_root.join("configs/schemas/contracts/reports/ops-profiles.schema.json");
     bijux_dev_atlas::ops::profiles_matrix::validate_report_value(&payload, &schema_path)?;
     let exe =
         std::env::current_exe().map_err(|err| format!("ops profiles validate failed: {err}"))?;

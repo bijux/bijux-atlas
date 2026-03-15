@@ -71,7 +71,7 @@ fn report_registry_validates_report_artifacts() {
       "inputs": {
         "chart_dir": "ops/helm/chart",
         "values_root": "ops/helm/values",
-        "schema_path": "configs/contracts/reports/ops-profiles.schema.json",
+        "schema_path": "configs/schemas/contracts/reports/ops-profiles.schema.json",
         "dataset_manifest_path": "ops/datasets/manifest.json",
         "profile_selector": "all"
       },

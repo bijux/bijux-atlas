@@ -47,7 +47,7 @@ jobs:
           mkdir -p "${ISO_ROOT}" "${CARGO_TARGET_DIR}" "${CARGO_HOME}" "${TMPDIR}"
       - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
         with:
-          toolchain: 1.84.1
+          toolchain: 1.85.0
       - name: Prepare run artifact directory
         shell: bash
         run: |
@@ -59,7 +59,7 @@ jobs:
         uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
         with:
           path: artifacts/isolates/ops-validate/cargo-target
-          key: cargo-target-pr-ops-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+          key: cargo-target-pr-ops-${{ runner.os }}-1.85.0-${{ hashFiles('Cargo.lock') }}
       - name: Run ops validate lane
         shell: bash
         run: |
@@ -100,7 +100,7 @@ jobs:
         uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
         with:
           path: artifacts/isolates/ops-validate/cargo-target
-          key: cargo-target-pr-ops-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+          key: cargo-target-pr-ops-${{ runner.os }}-1.85.0-${{ hashFiles('Cargo.lock') }}
       - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         if: always()
         with:

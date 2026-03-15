@@ -83,7 +83,7 @@ pub(super) fn collect_governance_objects(
         );
     }
 
-    let configs_inventory = read_json(&repo_root.join("configs/inventory/configs.json"))?;
+    let configs_inventory = read_json(&repo_root.join("configs/registry/inventory/configs.json"))?;
     for row in configs_inventory["groups"]
         .as_array()
         .cloned()
@@ -128,7 +128,7 @@ pub(super) fn collect_governance_objects(
                 lifecycle: lifecycle.to_string(),
                 evidence: vec!["artifacts/governance/configs/groups.json".to_string()],
                 links,
-                authority_source: "configs/inventory/configs.json".to_string(),
+                authority_source: "configs/registry/inventory/configs.json".to_string(),
                 reviewed_on: row["last_reviewed"]
                     .as_str()
                     .map(str::to_string)

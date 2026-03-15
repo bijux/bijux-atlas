@@ -1304,29 +1304,29 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let audit_schema_path = root.join("configs/observability/audit-log.schema.json");
     let log_safe_fields_path = root.join("configs/observability/log-safe-fields.yaml");
     let retention_path = root.join("configs/observability/retention.yaml");
-    let asset_schema_path = root.join("configs/contracts/security/assets.schema.json");
-    let threats_schema_path = root.join("configs/contracts/security/threats.schema.json");
-    let mitigations_schema_path = root.join("configs/contracts/security/mitigations.schema.json");
-    let controls_schema_path = root.join("configs/contracts/security/controls.schema.json");
-    let auth_model_schema_path = root.join("configs/contracts/security/auth-model.schema.json");
-    let principals_schema_path = root.join("configs/contracts/security/principals.schema.json");
-    let actions_schema_path = root.join("configs/contracts/security/actions.schema.json");
-    let resources_schema_path = root.join("configs/contracts/security/resources.schema.json");
-    let policy_schema_path = root.join("configs/contracts/security/policy.schema.json");
+    let asset_schema_path = root.join("configs/schemas/contracts/security/assets.schema.json");
+    let threats_schema_path = root.join("configs/schemas/contracts/security/threats.schema.json");
+    let mitigations_schema_path = root.join("configs/schemas/contracts/security/mitigations.schema.json");
+    let controls_schema_path = root.join("configs/schemas/contracts/security/controls.schema.json");
+    let auth_model_schema_path = root.join("configs/schemas/contracts/security/auth-model.schema.json");
+    let principals_schema_path = root.join("configs/schemas/contracts/security/principals.schema.json");
+    let actions_schema_path = root.join("configs/schemas/contracts/security/actions.schema.json");
+    let resources_schema_path = root.join("configs/schemas/contracts/security/resources.schema.json");
+    let policy_schema_path = root.join("configs/schemas/contracts/security/policy.schema.json");
     let data_classification_schema_path =
-        root.join("configs/contracts/security/data-classification.schema.json");
+        root.join("configs/schemas/contracts/security/data-classification.schema.json");
     let log_safe_fields_schema_path =
         root.join("configs/observability/log-safe-fields.schema.json");
-    let secrets_schema_path = root.join("configs/contracts/security/secrets.schema.json");
-    let redaction_schema_path = root.join("configs/contracts/security/redaction.schema.json");
+    let secrets_schema_path = root.join("configs/schemas/contracts/security/secrets.schema.json");
+    let redaction_schema_path = root.join("configs/schemas/contracts/security/redaction.schema.json");
     let forbidden_patterns_schema_path =
-        root.join("configs/contracts/security/forbidden-patterns.schema.json");
+        root.join("configs/schemas/contracts/security/forbidden-patterns.schema.json");
     let dependency_policy_schema_path =
-        root.join("configs/contracts/security/dependency-source-policy.schema.json");
+        root.join("configs/schemas/contracts/security/dependency-source-policy.schema.json");
     let github_actions_exceptions_schema_path =
-        root.join("configs/contracts/security/github-actions-exceptions.schema.json");
+        root.join("configs/schemas/contracts/security/github-actions-exceptions.schema.json");
     let signing_policy_schema_path =
-        root.join("configs/contracts/release/signing-policy.schema.json");
+        root.join("configs/schemas/contracts/release/signing-policy.schema.json");
     let log_field_inventory_schema_path =
         root.join("configs/observability/log-field-inventory.schema.json");
     let retention_schema_path = root.join("configs/observability/retention.schema.json");
@@ -2991,8 +2991,8 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
 
 fn run_security_compliance_validate(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let controls_schema_path = root.join("configs/contracts/security/controls.schema.json");
-    let matrix_schema_path = root.join("configs/contracts/security/compliance-matrix.schema.json");
+    let controls_schema_path = root.join("configs/schemas/contracts/security/controls.schema.json");
+    let matrix_schema_path = root.join("configs/schemas/contracts/security/compliance-matrix.schema.json");
     ensure_json(&controls_schema_path)?;
     ensure_json(&matrix_schema_path)?;
     let controls = read_yaml(&root.join("ops/security/compliance/controls.yaml"))?;
@@ -3081,7 +3081,7 @@ fn run_security_compliance_validate(args: SecurityValidateArgs) -> Result<(Strin
 
 fn run_security_scan_artifacts(args: SecurityScanArtifactsArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let schema_path = root.join("configs/contracts/security/forbidden-patterns.schema.json");
+    let schema_path = root.join("configs/schemas/contracts/security/forbidden-patterns.schema.json");
     let policy_path = root.join("configs/security/forbidden-patterns.json");
     ensure_json(&schema_path)?;
     let policy: serde_json::Value = serde_json::from_str(

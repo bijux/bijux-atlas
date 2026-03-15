@@ -218,7 +218,7 @@ pub(crate) fn run_ops_evidence_collect(
     let audit_sample_log = repo_root.join("artifacts/security/audit-smoke.jsonl");
     let audit_verify_report = repo_root.join("artifacts/security/audit-verify.json");
     let log_field_inventory = repo_root.join("artifacts/security/log-field-inventory.json");
-    let runtime_env_allowlist = repo_root.join("configs/contracts/env.schema.json");
+    let runtime_env_allowlist = repo_root.join("configs/schemas/contracts/env.schema.json");
     let signing_policy = repo_root.join("ops/release/signing/policy.yaml");
     let action_pins_report = repo_root.join("artifacts/security/security-github-actions.json");
     let exceptions_registry = repo_root.join("configs/governance/exceptions.yaml");
@@ -1361,7 +1361,7 @@ pub(super) fn record_kubeconform_result(
 }
 
 pub(super) fn runtime_allowlist_status(repo_root: &std::path::Path) -> serde_json::Value {
-    let path = repo_root.join("configs/contracts/env.schema.json");
+    let path = repo_root.join("configs/schemas/contracts/env.schema.json");
     serde_json::json!({
         "status": if path.exists() { "ok" } else { "failed" },
         "path": path.display().to_string()

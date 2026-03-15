@@ -33,7 +33,7 @@ pub fn explain_drift_type(input: &str) -> Option<serde_json::Value> {
         "configuration" | "config" => Some(serde_json::json!({
             "drift_type": "configuration",
             "description": "Detects drift in baseline configuration rules such as schema versions and required config files.",
-            "detectors": ["configs/inventory.json schema guard"]
+            "detectors": ["configs/registry/inventory/index.json schema guard"]
         })),
         "artifact" => Some(serde_json::json!({
             "drift_type": "artifact",

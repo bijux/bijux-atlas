@@ -736,7 +736,7 @@ mod tests {
             .expect("workspace")
             .parent()
             .expect("repo")
-            .join("configs/contracts/reports/helm-env.schema.json");
+            .join("configs/schemas/contracts/reports/helm-env.schema.json");
         validate_report_value(&report_value, &schema_path).expect("schema validation");
     }
 }

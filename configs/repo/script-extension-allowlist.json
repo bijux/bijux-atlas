@@ -5,10 +5,7 @@
     "docs/_assets/javascripts/mermaid-init.js",
     "ops/e2e/fixtures",
     "ops/load/k6",
-    "ops/load/k6/suites",
-    "crates/bijux-atlas-python",
-    "crates/bijux-atlas-python/examples",
-    "crates/bijux-atlas-python/python"
+    "ops/load/k6/suites"
   ],
   "extensions": [
     ".js",

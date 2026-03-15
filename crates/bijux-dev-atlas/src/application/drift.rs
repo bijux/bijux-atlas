@@ -80,7 +80,7 @@ fn finding(
 }
 
 fn detect_config_drift(root: &Path, out: &mut Vec<DriftFinding>) {
-    let inv = root.join("configs/inventory.json");
+    let inv = root.join("configs/registry/inventory/index.json");
     match read_json(&inv) {
         Ok(value) => {
             let schema_version = value

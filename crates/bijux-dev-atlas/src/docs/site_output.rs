@@ -39,11 +39,11 @@ fn site_output_contract_path(repo_root: &Path) -> PathBuf {
 }
 
 fn site_output_contract_schema_path(repo_root: &Path) -> PathBuf {
-    repo_root.join("configs/contracts/docs-site-output.schema.json")
+    repo_root.join("configs/schemas/contracts/docs-site-output.schema.json")
 }
 
 fn report_schema_path(repo_root: &Path, file_name: &str) -> PathBuf {
-    repo_root.join("configs/contracts/reports").join(file_name)
+    repo_root.join("configs/schemas/contracts/reports").join(file_name)
 }
 
 pub fn render_stable_report_json(payload: &serde_json::Value) -> Result<String, String> {
@@ -408,7 +408,7 @@ mod tests {
 
     fn write_contract(root: &Path) {
         let config_dir = root.join("configs/docs");
-        let contracts_dir = root.join("configs/contracts");
+        let contracts_dir = root.join("configs/schemas/contracts");
         fs::create_dir_all(&config_dir).expect("create config dir");
         fs::create_dir_all(&contracts_dir).expect("create contracts dir");
         fs::write(
@@ -476,7 +476,7 @@ mod tests {
     #[test]
     fn validates_sample_report_against_report_schema_shape() {
         let root = temp_root("report-schema");
-        let reports_dir = root.join("configs/contracts/reports");
+        let reports_dir = root.join("configs/schemas/contracts/reports");
         fs::create_dir_all(&reports_dir).expect("create reports dir");
         fs::write(
             reports_dir.join("docs-site-output.schema.json"),
@@ -504,7 +504,7 @@ mod tests {
     #[test]
     fn rejects_invalid_report_with_useful_error() {
         let root = temp_root("invalid-report");
-        let reports_dir = root.join("configs/contracts/reports");
+        let reports_dir = root.join("configs/schemas/contracts/reports");
         fs::create_dir_all(&reports_dir).expect("create reports dir");
         fs::write(
             reports_dir.join("closure-summary.schema.json"),

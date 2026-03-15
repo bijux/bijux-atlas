@@ -1,18 +1,18 @@
 # Docker
 
-Container build, validation, and release behavior is defined by executable gates.
+Container build, validation, and release behavior is defined by executable release and policy surfaces.
 
 ## Intent
 
 - Keep docker policy minimal, machine-readable, and enforceable.
-- Keep docker docs limited to this file and `ops/docker/CONTRACT.md`.
-- Route all operational behavior through `bijux dev atlas contracts docker ...` and make wrappers.
+- Keep docker docs limited to this file plus the machine-readable policy and manifest artifacts.
+- Route operational behavior through `bijux dev atlas release images ...` and the runtime Dockerfile itself.
 
 ## Canonical Files
 
 - `ops/docker/README.md`
-- `ops/docker/CONTRACT.md`
 - `ops/docker/policy.json`
+- `ops/docker/images.manifest.json`
 - `ops/docker/images/runtime/Dockerfile`
 
 Root `Dockerfile` is a shim symlink to the canonical runtime Dockerfile.
@@ -20,9 +20,9 @@ Root `Dockerfile` is a shim symlink to the canonical runtime Dockerfile.
 ## Canonical Commands
 
 ```bash
-make docker-contracts
-make docker-contracts-effect
-make docker-gate
+bijux dev atlas release images manifest-verify
+bijux dev atlas release images validate-base-digests
+bijux dev atlas release images smoke-verify
 ```
 
 ## Artifacts
@@ -33,4 +33,4 @@ Docker gate artifacts are written under:
 
 ## Enforcement
 
-Policy meaning lives in gates, not prose. See `ops/docker/CONTRACT.md` for the contract-to-gate mapping.
+Policy meaning lives in executable release surfaces, not prose.

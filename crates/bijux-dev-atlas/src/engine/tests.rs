@@ -46,10 +46,10 @@ mod tests {
             TestResult::Pass
         }
         Ok(vec![Contract {
-            id: ContractId("DOCKER-001".to_string()),
+            id: ContractId("CONFIGS-001".to_string()),
             title: "sample",
             tests: vec![TestCase {
-                id: TestId("docker.sample.pass".to_string()),
+                id: TestId("configs.sample.pass".to_string()),
                 title: "sample pass",
                 kind: TestKind::Pure,
                 run: pass_case,
@@ -60,19 +60,19 @@ mod tests {
     fn sample_contracts_failing(_repo_root: &Path) -> Result<Vec<Contract>, String> {
         fn fail_case(_: &RunContext) -> TestResult {
             TestResult::Fail(vec![Violation {
-                contract_id: "DOCKER-999".to_string(),
-                test_id: "docker.sample.fail".to_string(),
-                file: Some("ops/docker/images/runtime/Dockerfile".to_string()),
+                contract_id: "CONFIGS-999".to_string(),
+                test_id: "configs.sample.fail".to_string(),
+                file: Some("configs/app.json".to_string()),
                 line: Some(1),
                 message: "sample failure".to_string(),
                 evidence: Some("latest".to_string()),
             }])
         }
         Ok(vec![Contract {
-            id: ContractId("DOCKER-999".to_string()),
+            id: ContractId("CONFIGS-999".to_string()),
             title: "sample fail",
             tests: vec![TestCase {
-                id: TestId("docker.sample.fail".to_string()),
+                id: TestId("configs.sample.fail".to_string()),
                 title: "sample fail",
                 kind: TestKind::Pure,
                 run: fail_case,
@@ -84,11 +84,11 @@ mod tests {
     fn pretty_output_is_stable() {
         let options = sample_options();
         let root = repo_root();
-        let report = run("docker", sample_contracts, &root, &options).expect("run");
+        let report = run("configs", sample_contracts, &root, &options).expect("run");
         let pretty = to_pretty(&report);
-        assert!(pretty.contains("Contracts: docker (lane=local, mode=static, duration="));
-        assert!(pretty.contains("DOCKER-001 sample"));
-        assert!(pretty.contains("docker.sample.pass"));
+        assert!(pretty.contains("Contracts: configs (lane=local, mode=static, duration="));
+        assert!(pretty.contains("CONFIGS-001 sample"));
+        assert!(pretty.contains("configs.sample.pass"));
         assert!(pretty.contains("PASS"));
         assert!(pretty.contains("Summary: 1 contracts, 1 tests: 1 pass, 0 fail, 0 skip, 0 error"));
     }
@@ -97,7 +97,7 @@ mod tests {
     fn json_serialization_contains_summary_and_tests() {
         let options = sample_options();
         let root = repo_root();
-        let report = run("docker", sample_contracts_failing, &root, &options).expect("run");
+        let report = run("configs", sample_contracts_failing, &root, &options).expect("run");
         let payload = to_json(&report);
         assert_eq!(payload["schema_version"], 1);
         assert_eq!(payload["summary"]["contracts"], 1);
@@ -119,10 +119,10 @@ mod tests {
         }
         fn registry(_: &Path) -> Result<Vec<Contract>, String> {
             Ok(vec![Contract {
-                id: ContractId("DOCKER-998".to_string()),
+                id: ContractId("CONFIGS-998".to_string()),
                 title: "panic case",
                 tests: vec![TestCase {
-                    id: TestId("docker.sample.panic".to_string()),
+                    id: TestId("configs.sample.panic".to_string()),
                     title: "panic case",
                     kind: TestKind::Pure,
                     run: panic_case,
@@ -131,7 +131,7 @@ mod tests {
         }
         let options = sample_options();
         let root = repo_root();
-        let report = run("docker", registry, &root, &options).expect("run");
+        let report = run("configs", registry, &root, &options).expect("run");
         assert_eq!(report.error_count(), 1);
         assert_eq!(report.exit_code(), 1);
         assert_eq!(report.panics.len(), 1);
@@ -149,10 +149,10 @@ mod tests {
         }
         fn registry(_: &Path) -> Result<Vec<Contract>, String> {
             Ok(vec![Contract {
-                id: ContractId("DOCKER-997".to_string()),
+                id: ContractId("CONFIGS-997".to_string()),
                 title: "panic artifact case",
                 tests: vec![TestCase {
-                    id: TestId("docker.sample.panic_artifact".to_string()),
+                    id: TestId("configs.sample.panic_artifact".to_string()),
                     title: "panic artifact case",
                     kind: TestKind::Pure,
                     run: panic_case,
@@ -168,7 +168,7 @@ mod tests {
         let mut options = sample_options();
         options.artifacts_root = Some(artifacts_root.clone());
         let root = repo_root();
-        let report = run("docker", registry, &root, &options).expect("run");
+        let report = run("configs", registry, &root, &options).expect("run");
         assert_eq!(report.panics.len(), 1);
         let panic_artifact: serde_json::Value = serde_json::from_str(
             &fs::read_to_string(artifacts_root.join("panics.json")).expect("read panics artifact"),
@@ -183,7 +183,7 @@ mod tests {
         )
         .expect("parse meta artifact");
         assert_eq!(meta_artifact["gate"].as_str(), Some("contracts"));
-        assert_eq!(meta_artifact["domain"].as_str(), Some("docker"));
+        assert_eq!(meta_artifact["domain"].as_str(), Some("configs"));
         let summary_artifact: serde_json::Value = serde_json::from_str(
             &fs::read_to_string(artifacts_root.join("summary.json"))
                 .expect("read summary artifact"),
@@ -198,13 +198,13 @@ mod tests {
     fn json_serialization_includes_group_and_nested_checks() {
         let options = sample_options();
         let root = repo_root();
-        let report = run("docker", sample_contracts, &root, &options).expect("run");
+        let report = run("configs", sample_contracts, &root, &options).expect("run");
         let payload = to_json(&report);
-        assert_eq!(payload["group"].as_str(), Some("docker"));
+        assert_eq!(payload["group"].as_str(), Some("configs"));
         assert!(payload["contracts"][0]["checks"].is_array());
         assert_eq!(
             payload["contracts"][0]["contract_id"].as_str(),
-            Some("DOCKER-001")
+            Some("CONFIGS-001")
         );
     }
 
@@ -216,20 +216,20 @@ mod tests {
             }
             Ok(vec![
                 Contract {
-                    id: ContractId("DOCKER-001".to_string()),
+                    id: ContractId("CONFIGS-001".to_string()),
                     title: "first",
                     tests: vec![TestCase {
-                        id: TestId("docker.first.pass".to_string()),
+                        id: TestId("configs.first.pass".to_string()),
                         title: "first pass",
                         kind: TestKind::Pure,
                         run: pass_case,
                     }],
                 },
                 Contract {
-                    id: ContractId("DOCKER-001".to_string()),
+                    id: ContractId("CONFIGS-001".to_string()),
                     title: "second",
                     tests: vec![TestCase {
-                        id: TestId("docker.second.pass".to_string()),
+                        id: TestId("configs.second.pass".to_string()),
                         title: "second pass",
                         kind: TestKind::Pure,
                         run: pass_case,
@@ -238,7 +238,7 @@ mod tests {
             ])
         }
         let contracts = registry(Path::new(".")).expect("registry");
-        let err = validate_registry(&[("docker", contracts.as_slice())]).expect_err("lints");
+        let err = validate_registry(&[("configs", contracts.as_slice())]).expect_err("lints");
         assert!(err.iter().any(|lint| lint.code == "duplicate-contract-id"));
     }
 }

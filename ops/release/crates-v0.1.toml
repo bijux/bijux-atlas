@@ -7,12 +7,10 @@ allow = [
   "bijux-atlas",
 ]
 deny = [
-  "bijux-atlas-python",
   "bijux-dev-atlas",
 ]
 
 [roles]
-"bijux-atlas-python" = "python-sdk-private-bridge"
 "bijux-dev-atlas" = "developer-tool-private"
 "bijux-atlas" = "atlas-platform"
 

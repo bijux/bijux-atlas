@@ -11,8 +11,8 @@
     "architecture": "x86_64",
     "cargo_profile": "release",
     "toolchain_versions": {
-      "rustc": "1.84.1",
-      "cargo": "1.84.1",
+      "rustc": "1.85.0",
+      "cargo": "1.85.0",
       "helm": "3.14.4"
     }
   }

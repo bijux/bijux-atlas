@@ -148,7 +148,7 @@ fn evaluate_one(root: &Path, inv: SystemInvariant) -> InvariantResult {
     let mut violations = Vec::<InvariantViolation>::new();
     match inv.id {
         "INV-CONFIG-SCHEMA-VERSION-001" => {
-            let cfg = root.join("configs/inventory.json");
+            let cfg = root.join("configs/registry/inventory/index.json");
             match read_json(&cfg) {
                 Ok(value) => {
                     let got = value

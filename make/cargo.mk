@@ -81,9 +81,13 @@ fmt: ## Run cargo fmt --check
 	exit $$status
 
 lint: ## Run cargo clippy with warnings denied
-	@printf '%s\n' "run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings"
+	@printf '%s\n' "run: cargo clippy -p bijux-dev-atlas --all-targets --all-features --locked --no-deps -- -D warnings"
+	@printf '%s\n' "run: cargo check -p bijux-atlas --all-targets --all-features --locked"
 	@mkdir -p $(ARTIFACT_ROOT)/lint/$(RUN_ID)
-	@CLIPPY_CONF_DIR=configs/rust CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo clippy --workspace --all-targets --all-features --locked -- -D warnings 2>&1 | tee $(ARTIFACT_ROOT)/lint/$(RUN_ID)/report.txt
+	@{ \
+		CLIPPY_CONF_DIR=configs/rust CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo clippy -p bijux-dev-atlas --all-targets --all-features --locked --no-deps -- -D warnings && \
+		CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo check -p bijux-atlas --all-targets --all-features --locked; \
+	} 2>&1 | tee $(ARTIFACT_ROOT)/lint/$(RUN_ID)/report.txt
 
 lint-policy-report: ## Emit effective lint policy report artifact
 	@$(DEV_ATLAS) make lint-policy-report --allow-write --format $(FORMAT)

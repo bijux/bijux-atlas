@@ -1,0 +1,577 @@
+{
+  "exclusions": [
+    {
+      "approved_by": "docs-governance",
+      "expires_on": "2027-12-31",
+      "pattern": "configs/docs/.vale/styles/**",
+      "reason": "vale style bundles stay explicitly excluded until docs config flattening lands"
+    },
+    {
+      "approved_by": "perf-governance",
+      "expires_on": "2027-12-31",
+      "pattern": "configs/ops/perf/baselines/**",
+      "reason": "legacy deep perf baselines stay explicit until perf config flattening"
+    }
+  ],
+  "groups": [
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "audit",
+      "owner": "atlas-governance",
+      "public_files": [
+        "configs/audit/*.json"
+      ],
+      "schema_owner": "atlas-governance",
+      "schemas": [
+        "configs/audit/audit-bundle.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas audit bundle generate",
+        "bijux dev atlas audit bundle validate"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "ci",
+      "owner": "platform",
+      "public_files": [
+        "configs/ci/*.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schemas/contracts/ci-run-output.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas configs validate",
+        "bijux dev atlas configs list"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "cli",
+      "owner": "platform",
+      "public_files": [
+        "configs/cli/*.json",
+        "configs/cli/*.toml"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schemas/contracts/inventory-configs.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas help",
+        "bijux dev atlas doctor"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "clients",
+      "owner": "platform",
+      "public_files": [
+        "configs/clients/*.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/clients/*.schema.json",
+        "configs/schemas/contracts/inventory-configs.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas docs client-index",
+        "bijux dev atlas release verify"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "datasets",
+      "owner": "data-governance",
+      "public_files": [
+        "configs/datasets/*.yaml"
+      ],
+      "schema_owner": "data-governance",
+      "schemas": [
+        "configs/schemas/contracts/datasets/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas datasets validate",
+        "bijux dev atlas ingest dry-run"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "docs",
+      "owner": "docs-governance",
+      "public_files": [
+        "configs/docs/.markdownlint-cli2.jsonc",
+        "configs/docs/.vale.ini",
+        "configs/docs/*.json",
+        "configs/docs/*.jsonc",
+        "configs/docs/*.txt"
+      ],
+      "schema_owner": "docs-governance",
+      "schemas": [
+        "configs/schemas/registry/configs-consumer-map.schema.json",
+        "configs/schemas/registry/configs-owner-map.schema.json",
+        "configs/schemas/contracts/inventory-configs.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas docs build",
+        "bijux dev atlas docs lint"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "examples",
+      "owner": "platform",
+      "public_files": [
+        "configs/examples/**/*.json",
+        "configs/examples/**/*.jsonl",
+        "configs/examples/**/*.toml",
+        "configs/examples/**/*.md"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schemas/contracts/inventory-configs.schema.json",
+        "configs/examples/datasets/schemas/*.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas tutorials verify",
+        "bijux dev atlas docs build"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "governance",
+      "owner": "atlas-governance",
+      "public_files": [
+        "configs/governance/*.json",
+        "configs/governance/*.txt",
+        "configs/governance/*.yaml",
+        "configs/governance/enforcement/*.json",
+        "configs/governance/suites/*.json"
+      ],
+      "schema_owner": "atlas-governance",
+      "schemas": [
+        "configs/schemas/contracts/governance/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas governance validate",
+        "bijux dev atlas registry doctor"
+      ]
+    },
+    {
+      "generated_files": [
+        "configs/_generated/configs-index.json"
+      ],
+      "internal_files": [],
+      "name": "inventory",
+      "owner": "platform",
+      "public_files": [
+        "configs/registry/inventory/configs.json",
+        "configs/registry/inventory/*.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schemas/contracts/inventory-configs.schema.json",
+        "configs/schemas/contracts/inventory-owners.schema.json",
+        "configs/schemas/registry/configs-index.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas configs list",
+        "bijux dev atlas configs inventory"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "layout",
+      "owner": "platform",
+      "public_files": [
+        "configs/layout/*",
+        "configs/repo/*.json",
+        "configs/gates/*.json",
+        "configs/coverage/*",
+        "configs/shellcheck/*",
+        "configs/product/*",
+        "configs/release/*.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schemas/contracts/inventory-budgets.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas check tree-budgets",
+        "bijux dev atlas configs validate"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "make",
+      "owner": "platform",
+      "public_files": [
+        "configs/make/*.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schemas/contracts/inventory-make.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas contracts make",
+        "make contracts"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "meta",
+      "owner": "platform",
+      "public_files": [
+        "configs/meta/*.json",
+        "configs/registry/owners/*.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schemas/registry/meta-ownership.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas configs verify"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "nextest",
+      "owner": "platform",
+      "public_files": [
+        "configs/nextest/*.toml"
+      ],
+      "schema_owner": "platform",
+      "schemas": [],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "cargo nextest run"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "observability",
+      "owner": "bijux-atlas-operations",
+      "public_files": [
+        "configs/observability/*.json",
+        "configs/observability/*.yaml"
+      ],
+      "schema_owner": "bijux-atlas-operations",
+      "schemas": [
+        "configs/schemas/contracts/observability/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas security validate",
+        "bijux dev atlas release verify"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "openapi",
+      "owner": "api-contracts",
+      "public_files": [
+        "configs/openapi/**/*.json"
+      ],
+      "schema_owner": "api-contracts",
+      "schemas": [
+        "configs/schemas/registry/public-surface.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas check registry doctor"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "ops",
+      "owner": "bijux-atlas-operations",
+      "public_files": [
+        "configs/ops/*.json",
+        "configs/ops/*.txt",
+        "configs/ops/*.schema.json",
+        "configs/ops/*/*.json",
+        "configs/ops/*/*.txt"
+      ],
+      "schema_owner": "bijux-atlas-operations",
+      "schemas": [
+        "configs/schemas/contracts/inventory-ops.schema.json",
+        "configs/ops/env.schema.json",
+        "configs/ops/scenarios.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas contracts ops",
+        "bijux dev atlas ops list"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "perf",
+      "owner": "bijux-atlas-performance",
+      "public_files": [
+        "configs/perf/*.json",
+        "configs/perf/*.yaml"
+      ],
+      "schema_owner": "bijux-atlas-performance",
+      "schemas": [
+        "configs/schemas/contracts/inventory-configs.schema.json",
+        "configs/schemas/contracts/perf/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas ops load plan",
+        "bijux dev atlas ops load report"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "policy",
+      "owner": "platform",
+      "public_files": [
+        "configs/policy/*.json",
+        "configs/policy/*.yml",
+        "configs/policy/*.txt"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/policy/policy.schema.json",
+        "configs/schemas/registry/policy-relaxations.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas policies validate",
+        "bijux dev atlas configs lint"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "reports",
+      "owner": "platform",
+      "public_files": [
+        "configs/registry/reports/*.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schemas/registry/reports/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas artifacts report inventory",
+        "bijux dev atlas artifacts report validate"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "rust",
+      "owner": "rust-foundation",
+      "public_files": [
+        "configs/rust/*.toml",
+        "configs/rust/*.json"
+      ],
+      "schema_owner": "rust-foundation",
+      "schemas": [
+        "configs/schemas/contracts/inventory-configs.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "cargo fmt",
+        "cargo clippy"
+      ]
+    },
+    {
+      "generated_files": [
+        "configs/schemas/registry/generated/*.json"
+      ],
+      "internal_files": [
+        "configs/schemas/registry/README.md",
+        "configs/schemas/registry/config-compiler-report.schema.json",
+        "configs/schemas/registry/configs-ownership.schema.json",
+        "configs/schemas/registry/contracts/contract-run-summary.schema.json",
+        "configs/schemas/registry/docs-registry.schema.json",
+        "configs/schemas/registry/docs-sections.schema.json",
+        "configs/schemas/registry/forbidden-adjectives-approvals.schema.json",
+        "configs/schemas/registry/hpa-safety-caps.schema.json",
+        "configs/schemas/registry/layer-live-diff-allowlist.schema.json",
+        "configs/schemas/registry/layer-relaxations.schema.json",
+        "configs/schemas/registry/ops-lint-relaxations.schema.json",
+        "configs/schemas/registry/policy-relaxations.schema.json",
+        "configs/schemas/registry/release-reproducibility-policy.schema.json",
+        "configs/schemas/registry/target-renames.schema.json",
+        "configs/schemas/registry/tool-versions.schema.json",
+        "configs/schemas/registry/versioning-policy.schema.json",
+        "configs/schemas/contracts/*.json",
+        "configs/schemas/contracts/datasets/*.json",
+        "configs/schemas/contracts/governance/*.json",
+        "configs/schemas/contracts/observability/*.json",
+        "configs/schemas/contracts/perf/*.json",
+        "configs/schemas/contracts/release/*.json",
+        "configs/schemas/contracts/report-checks/*.json",
+        "configs/schemas/contracts/reports/*.json",
+        "configs/schemas/contracts/security/*.json",
+        "configs/schemas/contracts/cluster/*.json"
+      ],
+      "name": "schema",
+      "owner": "platform",
+      "public_files": [
+        "configs/schemas/registry/ci/*.json",
+        "configs/schemas/registry/configs-consumer-map.schema.json",
+        "configs/schemas/registry/configs-contracts.schema.json",
+        "configs/schemas/registry/configs-index.schema.json",
+        "configs/schemas/registry/configs-owner-map.schema.json",
+        "configs/schemas/registry/configs-schema-index.schema.json",
+        "configs/schemas/registry/configs-schema-map.schema.json",
+        "configs/schemas/registry/meta-ownership.schema.json",
+        "configs/schemas/registry/public-surface.schema.json",
+        "configs/schemas/registry/release-version-policy.schema.json",
+        "configs/schemas/registry/reports/*.json",
+        "configs/schemas/registry/versioning-policy.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schemas/registry/*.json",
+        "configs/schemas/registry/ci/*.json",
+        "configs/schemas/registry/reports/*.json",
+        "configs/schemas/contracts/*.json",
+        "configs/schemas/contracts/datasets/*.json",
+        "configs/schemas/contracts/governance/*.json",
+        "configs/schemas/contracts/observability/*.json",
+        "configs/schemas/contracts/perf/*.json",
+        "configs/schemas/contracts/report-checks/*.json",
+        "configs/schemas/contracts/reports/*.json",
+        "configs/schemas/contracts/release/*.json",
+        "configs/schemas/contracts/security/*.json",
+        "configs/schemas/contracts/cluster/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas configs validate",
+        "bijux dev atlas contracts configs"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "security",
+      "owner": "security",
+      "public_files": [
+        "configs/security/*.json",
+        "configs/security/*.toml",
+        "configs/security/*.yaml"
+      ],
+      "schema_owner": "security",
+      "schemas": [
+        "configs/schemas/contracts/security/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "cargo deny",
+        "cargo audit"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "slo",
+      "owner": "bijux-atlas-operations",
+      "public_files": [
+        "configs/slo/*.json"
+      ],
+      "schema_owner": "bijux-atlas-operations",
+      "schemas": [
+        "configs/schemas/contracts/inventory-configs.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas ops report readiness"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "system",
+      "owner": "bijux-atlas-operations",
+      "public_files": [
+        "configs/system/*.json"
+      ],
+      "schema_owner": "bijux-atlas-operations",
+      "schemas": [
+        "configs/system/system-simulation-report.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas system simulate suite",
+        "bijux dev atlas system simulate install"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "tutorials",
+      "owner": "platform",
+      "public_files": [
+        "configs/tutorials/*.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schemas/contracts/inventory-configs.schema.json",
+        "configs/schemas/contracts/real-data-runs.schema.json",
+        "configs/schemas/contracts/tutorial-evidence.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas tutorials list",
+        "bijux dev atlas tutorials real-data list",
+        "bijux dev atlas tutorials real-data run-all"
+      ]
+    }
+  ],
+  "max_depth": 4,
+  "max_group_depth": 2,
+  "max_groups": 25,
+  "root_files": [
+    "configs/registry/consumers.json",
+    "configs/CONTRACT.md",
+    "configs/INDEX.md",
+    "configs/registry/owners.json",
+    "configs/README.md",
+    "configs/registry/schemas.json",
+    "configs/registry/contracts.json",
+    "configs/registry/consumers.json",
+    "configs/registry/inventory/index.json",
+    "configs/registry/owners.json",
+    "configs/registry/schemas.json"
+  ],
+  "schema_version": 1
+}

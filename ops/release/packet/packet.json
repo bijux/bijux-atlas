@@ -22,23 +22,23 @@
       "sha256": "f1318eeaeaa450d224b4ecc07e6fd0e92d5e1f9ef4af6515d7a255d8061ef26f"
     },
     {
-      "path": "configs/contracts/datasets/endtoend.schema.json",
+      "path": "configs/schemas/contracts/datasets/endtoend.schema.json",
       "sha256": "def02bdef08317eb3568ed1ac634b55c5b2c2559867106983e2c6d341f65108c"
     },
     {
-      "path": "configs/contracts/datasets/ingest-plan.schema.json",
+      "path": "configs/schemas/contracts/datasets/ingest-plan.schema.json",
       "sha256": "5328c432ec90911e84aa2175f4f0bff6a93a9d1cbcca645bb8feb7167d39ef0d"
     },
     {
-      "path": "configs/contracts/datasets/ingest-run.schema.json",
+      "path": "configs/schemas/contracts/datasets/ingest-run.schema.json",
       "sha256": "3b39aa46844dac0e0690cf02387bad786893405a11a9fd273a0d7620a4118d56"
     },
     {
-      "path": "configs/contracts/datasets/manifest.schema.json",
+      "path": "configs/schemas/contracts/datasets/manifest.schema.json",
       "sha256": "b3cb658503ff5a1ab2842f5483cdb14558714f7bdfbabed4edb36b63266583a3"
     },
     {
-      "path": "configs/contracts/datasets/pinned-policy.schema.json",
+      "path": "configs/schemas/contracts/datasets/pinned-policy.schema.json",
       "sha256": "7c8b24abb4fe57c1e6dab0a7dd29d866c9ed3ab6b7b801ef7ac0f2d7e574f4ed"
     },
     {

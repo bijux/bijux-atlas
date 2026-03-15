@@ -215,9 +215,9 @@ fn start_fixture_server(expected_path: String, response_body: String) -> Result<
 
 fn run_perf_validate(args: PerfValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    ensure_json(&root.join("configs/contracts/perf/slo.schema.json"))?;
-    ensure_json(&root.join("configs/contracts/perf/budgets.schema.json"))?;
-    ensure_json(&root.join("configs/contracts/perf/exceptions.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/perf/slo.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/perf/budgets.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/perf/exceptions.schema.json"))?;
     let slo_path = root.join("configs/perf/slo.yaml");
     let budgets_path = root.join("configs/perf/budgets.yaml");
     let exceptions_path = root.join("configs/perf/exceptions.json");
@@ -311,9 +311,9 @@ fn run_perf_validate(args: PerfValidateArgs) -> Result<(String, i32), String> {
 
 fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    ensure_json(&root.join("configs/contracts/perf/slo.schema.json"))?;
-    ensure_json(&root.join("configs/contracts/perf/load-report.schema.json"))?;
-    ensure_json(&root.join("configs/contracts/perf/budgets.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/perf/slo.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/perf/load-report.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/perf/budgets.schema.json"))?;
 
     let scenario = load_perf_scenario(&args.scenario)?;
     let slo = read_yaml(&root.join("configs/perf/slo.yaml"))?;
@@ -509,7 +509,7 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
         }
     });
 
-    ensure_json(&root.join("configs/contracts/perf/benchmark-result.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/perf/benchmark-result.schema.json"))?;
     let benchmark_result_valid = validate_benchmark_result_shape(&report);
 
     let report_path = root.join(format!("artifacts/perf/{}-load.json", args.scenario));
@@ -629,7 +629,7 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
 
 fn run_perf_cold_start(args: PerfValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    ensure_json(&root.join("configs/contracts/perf/cold-start-report.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/perf/cold-start-report.schema.json"))?;
     let slo = read_yaml(&root.join("configs/perf/slo.yaml"))?;
     let started = Instant::now();
     let _base = start_fixture_server("/readyz".to_string(), "{\"ready\":true}".to_string())?;
@@ -761,7 +761,7 @@ fn run_perf_kind(args: PerfKindArgs) -> Result<(String, i32), String> {
 
 fn run_perf_diff(args: PerfDiffArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    ensure_json(&root.join("configs/contracts/perf/load-report.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/perf/load-report.schema.json"))?;
     let left_path = if args.report_a.is_absolute() {
         args.report_a
     } else {
@@ -827,7 +827,7 @@ fn run_perf_diff(args: PerfDiffArgs) -> Result<(String, i32), String> {
 
 fn run_perf_benches_list(args: PerfValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    ensure_json(&root.join("configs/contracts/perf/benches.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/perf/benches.schema.json"))?;
     let registry = read_json(&root.join("configs/perf/benches.json"))?;
     let benches_root = root.join("crates/bijux-atlas/benches/server");
     let mut disk_entries = BTreeSet::new();
@@ -1050,7 +1050,7 @@ fn run_perf_cli_ux_bench(args: PerfCliUxBenchArgs) -> Result<(String, i32), Stri
         "env_snapshot": env_snapshot,
         "status": if success { "ok" } else { "failed" }
     });
-    ensure_json(&root.join("configs/contracts/perf/cli-ux-benchmark-result.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/perf/cli-ux-benchmark-result.schema.json"))?;
     let schema_ok = validate_cli_ux_benchmark_result_shape(&report);
     let artifacts_root = root.join("artifacts/perf/cli-ux");
     fs::create_dir_all(&artifacts_root)
@@ -1135,7 +1135,7 @@ fn run_perf_cli_ux_diff(args: PerfCliUxDiffArgs) -> Result<(String, i32), String
         },
         "status": if regressed { "failed" } else { "ok" }
     });
-    ensure_json(&root.join("configs/contracts/perf/cli-ux-benchmark-diff.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/perf/cli-ux-benchmark-diff.schema.json"))?;
     let artifacts_root = root.join("artifacts/perf/cli-ux");
     fs::create_dir_all(&artifacts_root)
         .map_err(|err| format!("failed to create {}: {err}", artifacts_root.display()))?;

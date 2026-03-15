@@ -1,0 +1,419 @@
+{
+  "files": {
+    "configs/registry/consumers.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/registry/owners.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/registry/schemas.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/_generated/configs-index.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/audit/*.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/ci/*.json": [
+      "ci"
+    ],
+    "configs/cli/*.toml": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/cli/hidden-command-allowlist.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/clients/*.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/registry/contracts.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/registry/consumers.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/coverage/*": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/datasets/manifest.yaml": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/datasets/pinned-policy.yaml": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/docs/*.json": [
+      "docs-build",
+      "ci"
+    ],
+    "configs/docs/*.jsonc": [
+      "docs-build",
+      "ci"
+    ],
+    "configs/docs/*.txt": [
+      "docs-build",
+      "ci"
+    ],
+    "configs/docs/.markdownlint-cli2.jsonc": [
+      "docs-build",
+      "ci"
+    ],
+    "configs/docs/.vale.ini": [
+      "docs-build",
+      "ci"
+    ],
+    "configs/examples/**/*.json": [
+      "bijux-dev-atlas",
+      "docs-build",
+      "runtime"
+    ],
+    "configs/examples/**/*.jsonl": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/examples/**/*.md": [
+      "bijux-dev-atlas",
+      "docs-build"
+    ],
+    "configs/examples/**/*.toml": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/gates/*.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/governance/*.json": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/governance/*.txt": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/governance/*.yaml": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/governance/enforcement/*.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/governance/suites/*.json": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/registry/inventory/index.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/registry/inventory/*.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/registry/inventory/configs.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/layout/*": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/make/*.json": [
+      "make",
+      "bijux-dev-atlas"
+    ],
+    "configs/meta/*.json": [
+      "bijux-dev-atlas"
+    ],
+    "configs/nextest/*.toml": [
+      "ci"
+    ],
+    "configs/observability/*.yaml": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/openapi/**/*.json": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/ops/*.json": [
+      "bijux-dev-atlas",
+      "runtime",
+      "ci"
+    ],
+    "configs/ops/*.schema.json": [
+      "bijux-dev-atlas",
+      "runtime",
+      "ci"
+    ],
+    "configs/ops/*.txt": [
+      "bijux-dev-atlas",
+      "runtime",
+      "ci"
+    ],
+    "configs/ops/*/*.json": [
+      "bijux-dev-atlas",
+      "runtime",
+      "ci"
+    ],
+    "configs/registry/owners.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/registry/owners/*.json": [
+      "bijux-dev-atlas",
+      "docs-build",
+      "runtime"
+    ],
+    "configs/perf/*.json": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/perf/budgets.yaml": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/perf/slo.yaml": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/policy/*.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/policy/*.txt": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/policy/*.yml": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/product/*": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/release/*.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/release/reproducibility-policy.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/release/version-policy.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/repo/*.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/registry/reports/check-report-map.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/registry/reports/ownership.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/registry/reports/report-budget.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/registry/reports/reports.registry.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/registry/reports/schema-registry.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/rust/*.json": [
+      "ci",
+      "bijux-dev-atlas"
+    ],
+    "configs/rust/*.toml": [
+      "ci",
+      "bijux-dev-atlas"
+    ],
+    "configs/registry/schemas.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/schemas/registry/*.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/schemas/registry/generated/*.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/schemas/registry/versioning-policy.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/security/*.toml": [
+      "ci"
+    ],
+    "configs/security/*.yaml": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/security/dependency-source-policy.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/security/forbidden-patterns.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/security/github-actions-exceptions.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/security/redaction.json": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/security/secrets.json": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/shellcheck/*": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "configs/slo/*.json": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "configs/system/*.json": [
+      "bijux-dev-atlas",
+      "runtime",
+      "ci"
+    ],
+    "configs/tutorials/*.json": [
+      "bijux-dev-atlas",
+      "docs-build",
+      "runtime"
+    ]
+  },
+  "groups": {
+    "audit": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "ci": [
+      "ci"
+    ],
+    "cli": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "clients": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "datasets": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "docs": [
+      "docs-build",
+      "ci"
+    ],
+    "examples": [
+      "bijux-dev-atlas",
+      "docs-build",
+      "runtime"
+    ],
+    "governance": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "inventory": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "layout": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "make": [
+      "make",
+      "bijux-dev-atlas"
+    ],
+    "meta": [
+      "bijux-dev-atlas"
+    ],
+    "nextest": [
+      "ci"
+    ],
+    "observability": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "openapi": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "ops": [
+      "bijux-dev-atlas",
+      "runtime",
+      "ci"
+    ],
+    "perf": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "policy": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "reports": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "rust": [
+      "ci",
+      "bijux-dev-atlas"
+    ],
+    "schema": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "security": [
+      "ci"
+    ],
+    "slo": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "system": [
+      "bijux-dev-atlas",
+      "runtime",
+      "ci"
+    ],
+    "tutorials": [
+      "bijux-dev-atlas",
+      "docs-build",
+      "runtime"
+    ]
+  },
+  "schema_version": 1
+}

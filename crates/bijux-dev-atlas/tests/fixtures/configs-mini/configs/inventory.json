@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "groups_path": "configs/inventory/groups.json",
-  "consumers_path": "configs/inventory/consumers.json",
-  "owners_path": "configs/inventory/owners.json"
+  "groups_path": "configs/registry/inventory/groups.json",
+  "consumers_path": "configs/registry/inventory/consumers.json",
+  "owners_path": "configs/registry/inventory/owners.json"
 }

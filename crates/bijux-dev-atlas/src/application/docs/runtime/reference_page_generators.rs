@@ -167,7 +167,7 @@ fn render_docs_reference_schemas(repo_root: &std::path::Path) -> Result<String, 
 
 fn render_docs_reference_configs(repo_root: &std::path::Path) -> Result<String, String> {
     let value: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(repo_root.join("configs/inventory/consumers.json"))
+        &std::fs::read_to_string(repo_root.join("configs/registry/inventory/consumers.json"))
             .map_err(|e| format!("read configs inventory failed: {e}"))?,
     )
     .map_err(|e| format!("parse configs inventory failed: {e}"))?;
@@ -194,7 +194,7 @@ fn render_docs_reference_configs(repo_root: &std::path::Path) -> Result<String, 
     out.push_str("- Owner: `bijux-atlas-operations`\n");
     out.push_str("- Tier: `generated`\n");
     out.push_str("- Audience: `operators`\n");
-    out.push_str("- Source-of-truth: `configs/inventory/consumers.json`\n\n");
+    out.push_str("- Source-of-truth: `configs/registry/inventory/consumers.json`\n\n");
     out.push_str("## Config Groups\n\n| Group | Consumers |\n| --- | --- |\n");
     for (group, consumers) in rows {
         out.push_str(&format!("| `{group}` | `{consumers}` |\n"));

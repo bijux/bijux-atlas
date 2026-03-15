@@ -68,8 +68,8 @@ fn load_dataset_ids(manifest: &serde_yaml::Value) -> BTreeSet<String> {
 
 fn run_datasets_validate(args: DatasetsValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    ensure_json(&root.join("configs/contracts/datasets/manifest.schema.json"))?;
-    ensure_json(&root.join("configs/contracts/datasets/pinned-policy.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/datasets/manifest.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/datasets/pinned-policy.schema.json"))?;
     let manifest = read_yaml(&root.join("configs/datasets/manifest.yaml"))?;
     let pinned_policy = read_yaml(&root.join("configs/datasets/pinned-policy.yaml"))?;
     let offline = read_yaml(&root.join("ops/k8s/values/offline.yaml"))?;
@@ -161,7 +161,7 @@ fn run_datasets_validate(args: DatasetsValidateArgs) -> Result<(String, i32), St
 
 fn run_ingest_dry_run(args: IngestDryRunArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    ensure_json(&root.join("configs/contracts/datasets/ingest-plan.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/datasets/ingest-plan.schema.json"))?;
     let manifest = read_yaml(&root.join("configs/datasets/manifest.yaml"))?;
     let datasets = manifest
         .get("datasets")
@@ -290,8 +290,8 @@ fn dataset_source_and_hashes(
 
 fn run_ingest(args: IngestDryRunArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    ensure_json(&root.join("configs/contracts/datasets/ingest-run.schema.json"))?;
-    ensure_json(&root.join("configs/contracts/datasets/endtoend.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/datasets/ingest-run.schema.json"))?;
+    ensure_json(&root.join("configs/schemas/contracts/datasets/endtoend.schema.json"))?;
     let (source_dir, genome_sha, fai_sha, gff3_sha) =
         dataset_source_and_hashes(&root, &args.dataset)?;
     let started = std::time::Instant::now();

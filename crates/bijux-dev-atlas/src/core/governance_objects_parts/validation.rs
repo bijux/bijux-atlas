@@ -2,7 +2,7 @@ use super::*;
 
 fn load_owner_ids(repo_root: &Path) -> BTreeSet<String> {
     let mut ids = BTreeSet::new();
-    if let Ok(value) = read_json(&repo_root.join("configs/owners/identities.json")) {
+    if let Ok(value) = read_json(&repo_root.join("configs/registry/owners/identities.json")) {
         for key in value["identities"]
             .as_object()
             .cloned()

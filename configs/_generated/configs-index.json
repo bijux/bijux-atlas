@@ -60,7 +60,7 @@
       "owner": "platform",
       "schema_owner": "platform",
       "schemas": [
-        "configs/contracts/ci-run-output.schema.json"
+        "configs/schemas/contracts/ci-run-output.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -85,7 +85,7 @@
       "owner": "platform",
       "schema_owner": "platform",
       "schemas": [
-        "configs/contracts/inventory-configs.schema.json"
+        "configs/schemas/contracts/inventory-configs.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -95,22 +95,21 @@
     },
     {
       "counts": {
-        "covered": 2,
+        "covered": 1,
         "generated": 0,
         "internal": 0,
-        "public": 2,
+        "public": 1,
         "schemas": 2
       },
       "files": [
-        "configs/clients/atlas-client-docs.json",
-        "configs/clients/atlas-client-docs.schema.json"
+        "configs/clients/atlas-rust-client-config.schema.json"
       ],
       "name": "clients",
       "owner": "platform",
       "schema_owner": "platform",
       "schemas": [
         "configs/clients/*.schema.json",
-        "configs/contracts/inventory-configs.schema.json"
+        "configs/schemas/contracts/inventory-configs.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -134,7 +133,7 @@
       "owner": "data-governance",
       "schema_owner": "data-governance",
       "schemas": [
-        "configs/contracts/datasets/*.json"
+        "configs/schemas/contracts/datasets/*.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -173,9 +172,9 @@
       "owner": "docs-governance",
       "schema_owner": "docs-governance",
       "schemas": [
-        "configs/schema/configs-consumer-map.schema.json",
-        "configs/schema/configs-owner-map.schema.json",
-        "configs/contracts/inventory-configs.schema.json"
+        "configs/schemas/registry/configs-consumer-map.schema.json",
+        "configs/schemas/registry/configs-owner-map.schema.json",
+        "configs/schemas/contracts/inventory-configs.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -210,7 +209,7 @@
       "owner": "platform",
       "schema_owner": "platform",
       "schemas": [
-        "configs/contracts/inventory-configs.schema.json",
+        "configs/schemas/contracts/inventory-configs.schema.json",
         "configs/examples/datasets/schemas/*.schema.json"
       ],
       "stability": "stable",
@@ -267,7 +266,7 @@
       "owner": "atlas-governance",
       "schema_owner": "atlas-governance",
       "schemas": [
-        "configs/contracts/governance/*.json"
+        "configs/schemas/contracts/governance/*.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -277,29 +276,30 @@
     },
     {
       "counts": {
-        "covered": 8,
+        "covered": 9,
         "generated": 1,
         "internal": 0,
-        "public": 7,
+        "public": 8,
         "schemas": 3
       },
       "files": [
         "configs/_generated/configs-index.json",
-        "configs/inventory/configs.json",
-        "configs/inventory/consumers.json",
-        "configs/inventory/docs-owners.json",
-        "configs/inventory/groups.json",
-        "configs/inventory/no-schema-justifications.json",
-        "configs/inventory/ops-owners.json",
-        "configs/inventory/owners.json"
+        "configs/registry/inventory/configs.json",
+        "configs/registry/inventory/consumers.json",
+        "configs/registry/inventory/docs-owners.json",
+        "configs/registry/inventory/groups.json",
+        "configs/registry/inventory/index.json",
+        "configs/registry/inventory/no-schema-justifications.json",
+        "configs/registry/inventory/ops-owners.json",
+        "configs/registry/inventory/owners.json"
       ],
       "name": "inventory",
       "owner": "platform",
       "schema_owner": "platform",
       "schemas": [
-        "configs/contracts/inventory-configs.schema.json",
-        "configs/contracts/inventory-owners.schema.json",
-        "configs/schema/configs-index.schema.json"
+        "configs/schemas/contracts/inventory-configs.schema.json",
+        "configs/schemas/contracts/inventory-owners.schema.json",
+        "configs/schemas/registry/configs-index.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -356,7 +356,7 @@
       "owner": "platform",
       "schema_owner": "platform",
       "schemas": [
-        "configs/contracts/inventory-budgets.schema.json"
+        "configs/schemas/contracts/inventory-budgets.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -381,7 +381,7 @@
       "owner": "platform",
       "schema_owner": "platform",
       "schemas": [
-        "configs/contracts/inventory-make.schema.json"
+        "configs/schemas/contracts/inventory-make.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -399,13 +399,13 @@
       },
       "files": [
         "configs/meta/owners.json",
-        "configs/owners/identities.json"
+        "configs/registry/owners/identities.json"
       ],
       "name": "meta",
       "owner": "platform",
       "schema_owner": "platform",
       "schemas": [
-        "configs/schema/meta-ownership.schema.json"
+        "configs/schemas/registry/meta-ownership.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -452,7 +452,7 @@
       "owner": "bijux-atlas-operations",
       "schema_owner": "bijux-atlas-operations",
       "schemas": [
-        "configs/contracts/observability/*.json"
+        "configs/schemas/contracts/observability/*.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -476,7 +476,7 @@
       "owner": "api-contracts",
       "schema_owner": "api-contracts",
       "schemas": [
-        "configs/schema/public-surface.schema.json"
+        "configs/schemas/registry/public-surface.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -548,7 +548,7 @@
       "owner": "bijux-atlas-operations",
       "schema_owner": "bijux-atlas-operations",
       "schemas": [
-        "configs/contracts/inventory-ops.schema.json",
+        "configs/schemas/contracts/inventory-ops.schema.json",
         "configs/ops/env.schema.json",
         "configs/ops/scenarios.schema.json"
       ],
@@ -584,8 +584,8 @@
       "owner": "bijux-atlas-performance",
       "schema_owner": "bijux-atlas-performance",
       "schemas": [
-        "configs/contracts/inventory-configs.schema.json",
-        "configs/contracts/perf/*.json"
+        "configs/schemas/contracts/inventory-configs.schema.json",
+        "configs/schemas/contracts/perf/*.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -640,7 +640,7 @@
       "schema_owner": "platform",
       "schemas": [
         "configs/policy/policy.schema.json",
-        "configs/schema/policy-relaxations.schema.json"
+        "configs/schemas/registry/policy-relaxations.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -657,17 +657,17 @@
         "schemas": 1
       },
       "files": [
-        "configs/reports/check-report-map.json",
-        "configs/reports/ownership.json",
-        "configs/reports/report-budget.json",
-        "configs/reports/reports.registry.json",
-        "configs/reports/schema-registry.json"
+        "configs/registry/reports/check-report-map.json",
+        "configs/registry/reports/ownership.json",
+        "configs/registry/reports/report-budget.json",
+        "configs/registry/reports/reports.registry.json",
+        "configs/registry/reports/schema-registry.json"
       ],
       "name": "reports",
       "owner": "platform",
       "schema_owner": "platform",
       "schemas": [
-        "configs/schema/reports/*.json"
+        "configs/schemas/registry/reports/*.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -692,7 +692,7 @@
       "owner": "rust-foundation",
       "schema_owner": "rust-foundation",
       "schemas": [
-        "configs/contracts/inventory-configs.schema.json"
+        "configs/schemas/contracts/inventory-configs.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -709,183 +709,183 @@
         "schemas": 13
       },
       "files": [
-        "configs/contracts/ci-run-output.schema.json",
-        "configs/contracts/cluster/cluster-config.schema.json",
-        "configs/contracts/cluster/node-config.schema.json",
-        "configs/contracts/cluster/shard-metadata.schema.json",
-        "configs/contracts/command-inventory-output.schema.json",
-        "configs/contracts/configs-contracts-check-output.schema.json",
-        "configs/contracts/contracts-coverage-output.schema.json",
-        "configs/contracts/contracts-output.schema.json",
-        "configs/contracts/crate-docs-index-allowlist.json",
-        "configs/contracts/crate-docs-publish-allowlist.json",
-        "configs/contracts/crate-docs-readme-allowlist.json",
-        "configs/contracts/datasets/endtoend.schema.json",
-        "configs/contracts/datasets/ingest-plan.schema.json",
-        "configs/contracts/datasets/ingest-run.schema.json",
-        "configs/contracts/datasets/manifest.schema.json",
-        "configs/contracts/datasets/pinned-policy.schema.json",
-        "configs/contracts/dev-atlas-output.schema.json",
-        "configs/contracts/docs-metadata.schema.json",
-        "configs/contracts/docs-site-output.schema.json",
-        "configs/contracts/env.schema.json",
-        "configs/contracts/governance/check-groups.schema.json",
-        "configs/contracts/governance/checks-registry.schema.json",
-        "configs/contracts/governance/compatibility.schema.json",
-        "configs/contracts/governance/contract-groups.schema.json",
-        "configs/contracts/governance/contract-modes.schema.json",
-        "configs/contracts/governance/contracts-registry.schema.json",
-        "configs/contracts/governance/default-jobs.schema.json",
-        "configs/contracts/governance/deprecations.schema.json",
-        "configs/contracts/governance/exceptions-archive.schema.json",
-        "configs/contracts/governance/exceptions.schema.json",
-        "configs/contracts/governance/perf-budgets.schema.json",
-        "configs/contracts/governance/registry-completeness-policy.schema.json",
-        "configs/contracts/governance/suite-baseline.schema.json",
-        "configs/contracts/governance/suite.schema.json",
-        "configs/contracts/governance/suites-index.schema.json",
-        "configs/contracts/governance/tags.schema.json",
-        "configs/contracts/inventory-budgets.schema.json",
-        "configs/contracts/inventory-commands.schema.json",
-        "configs/contracts/inventory-configs.schema.json",
-        "configs/contracts/inventory-contracts.schema.json",
-        "configs/contracts/inventory-make.schema.json",
-        "configs/contracts/inventory-ops.schema.json",
-        "configs/contracts/inventory-owners.schema.json",
-        "configs/contracts/inventory-schemas.schema.json",
-        "configs/contracts/inventory-touched-paths.schema.json",
-        "configs/contracts/make-contracts-check-output.schema.json",
-        "configs/contracts/observability/error-codes.json",
-        "configs/contracts/observability/label-policy.json",
-        "configs/contracts/observability/log.schema.json",
-        "configs/contracts/observability/metrics.schema.json",
-        "configs/contracts/ops-lint-output.schema.json",
-        "configs/contracts/perf/benches.schema.json",
-        "configs/contracts/perf/benchmark-config.schema.json",
-        "configs/contracts/perf/benchmark-datasets.schema.json",
-        "configs/contracts/perf/benchmark-result.schema.json",
-        "configs/contracts/perf/budgets.schema.json",
-        "configs/contracts/perf/cli-ux-benchmark-diff.schema.json",
-        "configs/contracts/perf/cli-ux-benchmark-result.schema.json",
-        "configs/contracts/perf/cold-start-report.schema.json",
-        "configs/contracts/perf/exceptions.schema.json",
-        "configs/contracts/perf/load-report.schema.json",
-        "configs/contracts/perf/performance-metadata.schema.json",
-        "configs/contracts/perf/slo.schema.json",
-        "configs/contracts/real-data-runs.schema.json",
-        "configs/contracts/release/checksum-list.schema.json",
-        "configs/contracts/release/packet-list.schema.json",
-        "configs/contracts/release/provenance.schema.json",
-        "configs/contracts/release/release-manifest.schema.json",
-        "configs/contracts/release/release-sign.schema.json",
-        "configs/contracts/release/release-verify.schema.json",
-        "configs/contracts/release/signing-policy.schema.json",
-        "configs/contracts/reporting-ci-summary-output.schema.json",
-        "configs/contracts/reports/breaking-changes.schema.json",
-        "configs/contracts/reports/checks/check-clippy.schema.json",
-        "configs/contracts/reports/checks/check-config-format.schema.json",
-        "configs/contracts/reports/checks/check-deps.schema.json",
-        "configs/contracts/reports/checks/check-docs-links.schema.json",
-        "configs/contracts/reports/checks/check-helm-lint.schema.json",
-        "configs/contracts/reports/checks/check-kubeconform.schema.json",
-        "configs/contracts/reports/checks/check-rustfmt.schema.json",
-        "configs/contracts/reports/checks/check-suite-summary.schema.json",
-        "configs/contracts/reports/checks/schema-index.json",
-        "configs/contracts/reports/closure-index.schema.json",
-        "configs/contracts/reports/closure-summary.schema.json",
-        "configs/contracts/reports/compat-warnings.schema.json",
-        "configs/contracts/reports/deprecations-summary.schema.json",
-        "configs/contracts/reports/docs-site-output.schema.json",
-        "configs/contracts/reports/exceptions-churn.schema.json",
-        "configs/contracts/reports/exceptions-expiry-warning.schema.json",
-        "configs/contracts/reports/exceptions-summary.schema.json",
-        "configs/contracts/reports/governance-doctor.schema.json",
-        "configs/contracts/reports/governance-index.schema.json",
-        "configs/contracts/reports/helm-env.schema.json",
-        "configs/contracts/reports/institutional-delta-inputs.schema.json",
-        "configs/contracts/reports/ops-profiles.schema.json",
-        "configs/contracts/reports/registry-missing-fields.schema.json",
-        "configs/contracts/reports/registry-status.schema.json",
-        "configs/contracts/reports/suite-diff.schema.json",
-        "configs/contracts/reports/suite-history-entry.schema.json",
-        "configs/contracts/reports/suite-preflight.schema.json",
-        "configs/contracts/reports/suite-result.schema.json",
-        "configs/contracts/reports/suite-summary.schema.json",
-        "configs/contracts/security/actions.schema.json",
-        "configs/contracts/security/assets.schema.json",
-        "configs/contracts/security/auth-model.schema.json",
-        "configs/contracts/security/compliance-matrix.schema.json",
-        "configs/contracts/security/controls.schema.json",
-        "configs/contracts/security/data-classification.schema.json",
-        "configs/contracts/security/dependency-source-policy.schema.json",
-        "configs/contracts/security/forbidden-patterns.schema.json",
-        "configs/contracts/security/github-actions-exceptions.schema.json",
-        "configs/contracts/security/mitigations.schema.json",
-        "configs/contracts/security/policy.schema.json",
-        "configs/contracts/security/principals.schema.json",
-        "configs/contracts/security/redaction.schema.json",
-        "configs/contracts/security/resources.schema.json",
-        "configs/contracts/security/secrets.schema.json",
-        "configs/contracts/security/threats.schema.json",
-        "configs/contracts/tooling-doctor-output.schema.json",
-        "configs/contracts/tooling-surface-output.schema.json",
-        "configs/contracts/tooling-tool-output.schema.json",
-        "configs/contracts/tutorial-evidence.schema.json",
-        "configs/schema/README.md",
-        "configs/schema/ci/lane-surface.schema.json",
-        "configs/schema/ci/policy-exceptions.schema.json",
-        "configs/schema/ci/policy-outside-control-plane.schema.json",
-        "configs/schema/ci/workflow-allowlist.schema.json",
-        "configs/schema/ci/workflow-step-patterns.schema.json",
-        "configs/schema/config-compiler-report.schema.json",
-        "configs/schema/configs-consumer-map.schema.json",
-        "configs/schema/configs-contracts.schema.json",
-        "configs/schema/configs-index.schema.json",
-        "configs/schema/configs-owner-map.schema.json",
-        "configs/schema/configs-ownership.schema.json",
-        "configs/schema/configs-schema-index.schema.json",
-        "configs/schema/configs-schema-map.schema.json",
-        "configs/schema/contracts/contract-run-summary.schema.json",
-        "configs/schema/docs-registry.schema.json",
-        "configs/schema/docs-sections.schema.json",
-        "configs/schema/forbidden-adjectives-approvals.schema.json",
-        "configs/schema/generated/schema-index.json",
-        "configs/schema/hpa-safety-caps.schema.json",
-        "configs/schema/layer-live-diff-allowlist.schema.json",
-        "configs/schema/layer-relaxations.schema.json",
-        "configs/schema/meta-ownership.schema.json",
-        "configs/schema/ops-lint-relaxations.schema.json",
-        "configs/schema/policy-relaxations.schema.json",
-        "configs/schema/public-surface.schema.json",
-        "configs/schema/release-reproducibility-policy.schema.json",
-        "configs/schema/release-version-policy.schema.json",
-        "configs/schema/reports/check-report-map.schema.json",
-        "configs/schema/reports/ownership.schema.json",
-        "configs/schema/reports/report-budget.schema.json",
-        "configs/schema/reports/reports.registry.schema.json",
-        "configs/schema/reports/schema-registry.schema.json",
-        "configs/schema/target-renames.schema.json",
-        "configs/schema/tool-versions.schema.json",
-        "configs/schema/versioning-policy.json",
-        "configs/schema/versioning-policy.schema.json"
+        "configs/schemas/contracts/ci-run-output.schema.json",
+        "configs/schemas/contracts/cluster/cluster-config.schema.json",
+        "configs/schemas/contracts/cluster/node-config.schema.json",
+        "configs/schemas/contracts/cluster/shard-metadata.schema.json",
+        "configs/schemas/contracts/command-inventory-output.schema.json",
+        "configs/schemas/contracts/configs-contracts-check-output.schema.json",
+        "configs/schemas/contracts/contracts-coverage-output.schema.json",
+        "configs/schemas/contracts/contracts-output.schema.json",
+        "configs/schemas/contracts/crate-docs-index-allowlist.json",
+        "configs/schemas/contracts/crate-docs-publish-allowlist.json",
+        "configs/schemas/contracts/crate-docs-readme-allowlist.json",
+        "configs/schemas/contracts/datasets/endtoend.schema.json",
+        "configs/schemas/contracts/datasets/ingest-plan.schema.json",
+        "configs/schemas/contracts/datasets/ingest-run.schema.json",
+        "configs/schemas/contracts/datasets/manifest.schema.json",
+        "configs/schemas/contracts/datasets/pinned-policy.schema.json",
+        "configs/schemas/contracts/dev-atlas-output.schema.json",
+        "configs/schemas/contracts/docs-metadata.schema.json",
+        "configs/schemas/contracts/docs-site-output.schema.json",
+        "configs/schemas/contracts/env.schema.json",
+        "configs/schemas/contracts/governance/check-groups.schema.json",
+        "configs/schemas/contracts/governance/checks-registry.schema.json",
+        "configs/schemas/contracts/governance/compatibility.schema.json",
+        "configs/schemas/contracts/governance/contract-groups.schema.json",
+        "configs/schemas/contracts/governance/contract-modes.schema.json",
+        "configs/schemas/contracts/governance/contracts-registry.schema.json",
+        "configs/schemas/contracts/governance/default-jobs.schema.json",
+        "configs/schemas/contracts/governance/deprecations.schema.json",
+        "configs/schemas/contracts/governance/exceptions-archive.schema.json",
+        "configs/schemas/contracts/governance/exceptions.schema.json",
+        "configs/schemas/contracts/governance/perf-budgets.schema.json",
+        "configs/schemas/contracts/governance/registry-completeness-policy.schema.json",
+        "configs/schemas/contracts/governance/suite-baseline.schema.json",
+        "configs/schemas/contracts/governance/suite.schema.json",
+        "configs/schemas/contracts/governance/suites-index.schema.json",
+        "configs/schemas/contracts/governance/tags.schema.json",
+        "configs/schemas/contracts/inventory-budgets.schema.json",
+        "configs/schemas/contracts/inventory-commands.schema.json",
+        "configs/schemas/contracts/inventory-configs.schema.json",
+        "configs/schemas/contracts/inventory-contracts.schema.json",
+        "configs/schemas/contracts/inventory-make.schema.json",
+        "configs/schemas/contracts/inventory-ops.schema.json",
+        "configs/schemas/contracts/inventory-owners.schema.json",
+        "configs/schemas/contracts/inventory-schemas.schema.json",
+        "configs/schemas/contracts/inventory-touched-paths.schema.json",
+        "configs/schemas/contracts/make-contracts-check-output.schema.json",
+        "configs/schemas/contracts/observability/error-codes.json",
+        "configs/schemas/contracts/observability/label-policy.json",
+        "configs/schemas/contracts/observability/log.schema.json",
+        "configs/schemas/contracts/observability/metrics.schema.json",
+        "configs/schemas/contracts/ops-lint-output.schema.json",
+        "configs/schemas/contracts/perf/benches.schema.json",
+        "configs/schemas/contracts/perf/benchmark-config.schema.json",
+        "configs/schemas/contracts/perf/benchmark-datasets.schema.json",
+        "configs/schemas/contracts/perf/benchmark-result.schema.json",
+        "configs/schemas/contracts/perf/budgets.schema.json",
+        "configs/schemas/contracts/perf/cli-ux-benchmark-diff.schema.json",
+        "configs/schemas/contracts/perf/cli-ux-benchmark-result.schema.json",
+        "configs/schemas/contracts/perf/cold-start-report.schema.json",
+        "configs/schemas/contracts/perf/exceptions.schema.json",
+        "configs/schemas/contracts/perf/load-report.schema.json",
+        "configs/schemas/contracts/perf/performance-metadata.schema.json",
+        "configs/schemas/contracts/perf/slo.schema.json",
+        "configs/schemas/contracts/real-data-runs.schema.json",
+        "configs/schemas/contracts/release/checksum-list.schema.json",
+        "configs/schemas/contracts/release/packet-list.schema.json",
+        "configs/schemas/contracts/release/provenance.schema.json",
+        "configs/schemas/contracts/release/release-manifest.schema.json",
+        "configs/schemas/contracts/release/release-sign.schema.json",
+        "configs/schemas/contracts/release/release-verify.schema.json",
+        "configs/schemas/contracts/release/signing-policy.schema.json",
+        "configs/schemas/contracts/report-checks/check-clippy.schema.json",
+        "configs/schemas/contracts/report-checks/check-config-format.schema.json",
+        "configs/schemas/contracts/report-checks/check-deps.schema.json",
+        "configs/schemas/contracts/report-checks/check-docs-links.schema.json",
+        "configs/schemas/contracts/report-checks/check-helm-lint.schema.json",
+        "configs/schemas/contracts/report-checks/check-kubeconform.schema.json",
+        "configs/schemas/contracts/report-checks/check-rustfmt.schema.json",
+        "configs/schemas/contracts/report-checks/check-suite-summary.schema.json",
+        "configs/schemas/contracts/report-checks/schema-index.json",
+        "configs/schemas/contracts/reporting-ci-summary-output.schema.json",
+        "configs/schemas/contracts/reports/breaking-changes.schema.json",
+        "configs/schemas/contracts/reports/closure-index.schema.json",
+        "configs/schemas/contracts/reports/closure-summary.schema.json",
+        "configs/schemas/contracts/reports/compat-warnings.schema.json",
+        "configs/schemas/contracts/reports/deprecations-summary.schema.json",
+        "configs/schemas/contracts/reports/docs-site-output.schema.json",
+        "configs/schemas/contracts/reports/exceptions-churn.schema.json",
+        "configs/schemas/contracts/reports/exceptions-expiry-warning.schema.json",
+        "configs/schemas/contracts/reports/exceptions-summary.schema.json",
+        "configs/schemas/contracts/reports/governance-doctor.schema.json",
+        "configs/schemas/contracts/reports/governance-index.schema.json",
+        "configs/schemas/contracts/reports/helm-env.schema.json",
+        "configs/schemas/contracts/reports/institutional-delta-inputs.schema.json",
+        "configs/schemas/contracts/reports/ops-profiles.schema.json",
+        "configs/schemas/contracts/reports/registry-missing-fields.schema.json",
+        "configs/schemas/contracts/reports/registry-status.schema.json",
+        "configs/schemas/contracts/reports/suite-diff.schema.json",
+        "configs/schemas/contracts/reports/suite-history-entry.schema.json",
+        "configs/schemas/contracts/reports/suite-preflight.schema.json",
+        "configs/schemas/contracts/reports/suite-result.schema.json",
+        "configs/schemas/contracts/reports/suite-summary.schema.json",
+        "configs/schemas/contracts/security/actions.schema.json",
+        "configs/schemas/contracts/security/assets.schema.json",
+        "configs/schemas/contracts/security/auth-model.schema.json",
+        "configs/schemas/contracts/security/compliance-matrix.schema.json",
+        "configs/schemas/contracts/security/controls.schema.json",
+        "configs/schemas/contracts/security/data-classification.schema.json",
+        "configs/schemas/contracts/security/dependency-source-policy.schema.json",
+        "configs/schemas/contracts/security/forbidden-patterns.schema.json",
+        "configs/schemas/contracts/security/github-actions-exceptions.schema.json",
+        "configs/schemas/contracts/security/mitigations.schema.json",
+        "configs/schemas/contracts/security/policy.schema.json",
+        "configs/schemas/contracts/security/principals.schema.json",
+        "configs/schemas/contracts/security/redaction.schema.json",
+        "configs/schemas/contracts/security/resources.schema.json",
+        "configs/schemas/contracts/security/secrets.schema.json",
+        "configs/schemas/contracts/security/threats.schema.json",
+        "configs/schemas/contracts/tooling-doctor-output.schema.json",
+        "configs/schemas/contracts/tooling-surface-output.schema.json",
+        "configs/schemas/contracts/tooling-tool-output.schema.json",
+        "configs/schemas/contracts/tutorial-evidence.schema.json",
+        "configs/schemas/registry/README.md",
+        "configs/schemas/registry/ci/lane-surface.schema.json",
+        "configs/schemas/registry/ci/policy-exceptions.schema.json",
+        "configs/schemas/registry/ci/policy-outside-control-plane.schema.json",
+        "configs/schemas/registry/ci/workflow-allowlist.schema.json",
+        "configs/schemas/registry/ci/workflow-step-patterns.schema.json",
+        "configs/schemas/registry/config-compiler-report.schema.json",
+        "configs/schemas/registry/configs-consumer-map.schema.json",
+        "configs/schemas/registry/configs-contracts.schema.json",
+        "configs/schemas/registry/configs-index.schema.json",
+        "configs/schemas/registry/configs-owner-map.schema.json",
+        "configs/schemas/registry/configs-ownership.schema.json",
+        "configs/schemas/registry/configs-schema-index.schema.json",
+        "configs/schemas/registry/configs-schema-map.schema.json",
+        "configs/schemas/registry/contracts/contract-run-summary.schema.json",
+        "configs/schemas/registry/docs-registry.schema.json",
+        "configs/schemas/registry/docs-sections.schema.json",
+        "configs/schemas/registry/forbidden-adjectives-approvals.schema.json",
+        "configs/schemas/registry/generated/schema-index.json",
+        "configs/schemas/registry/hpa-safety-caps.schema.json",
+        "configs/schemas/registry/layer-live-diff-allowlist.schema.json",
+        "configs/schemas/registry/layer-relaxations.schema.json",
+        "configs/schemas/registry/meta-ownership.schema.json",
+        "configs/schemas/registry/ops-lint-relaxations.schema.json",
+        "configs/schemas/registry/policy-relaxations.schema.json",
+        "configs/schemas/registry/public-surface.schema.json",
+        "configs/schemas/registry/release-reproducibility-policy.schema.json",
+        "configs/schemas/registry/release-version-policy.schema.json",
+        "configs/schemas/registry/reports/check-report-map.schema.json",
+        "configs/schemas/registry/reports/ownership.schema.json",
+        "configs/schemas/registry/reports/report-budget.schema.json",
+        "configs/schemas/registry/reports/reports.registry.schema.json",
+        "configs/schemas/registry/reports/schema-registry.schema.json",
+        "configs/schemas/registry/target-renames.schema.json",
+        "configs/schemas/registry/tool-versions.schema.json",
+        "configs/schemas/registry/versioning-policy.json",
+        "configs/schemas/registry/versioning-policy.schema.json"
       ],
       "name": "schema",
       "owner": "platform",
       "schema_owner": "platform",
       "schemas": [
-        "configs/schema/*.json",
-        "configs/schema/ci/*.json",
-        "configs/schema/reports/*.json",
-        "configs/contracts/*.json",
-        "configs/contracts/datasets/*.json",
-        "configs/contracts/governance/*.json",
-        "configs/contracts/observability/*.json",
-        "configs/contracts/perf/*.json",
-        "configs/contracts/reports/checks/*.json",
-        "configs/contracts/reports/*.json",
-        "configs/contracts/release/*.json",
-        "configs/contracts/security/*.json",
-        "configs/contracts/cluster/*.json"
+        "configs/schemas/registry/*.json",
+        "configs/schemas/registry/ci/*.json",
+        "configs/schemas/registry/reports/*.json",
+        "configs/schemas/contracts/*.json",
+        "configs/schemas/contracts/datasets/*.json",
+        "configs/schemas/contracts/governance/*.json",
+        "configs/schemas/contracts/observability/*.json",
+        "configs/schemas/contracts/perf/*.json",
+        "configs/schemas/contracts/report-checks/*.json",
+        "configs/schemas/contracts/reports/*.json",
+        "configs/schemas/contracts/release/*.json",
+        "configs/schemas/contracts/security/*.json",
+        "configs/schemas/contracts/cluster/*.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -926,7 +926,7 @@
       "owner": "security",
       "schema_owner": "security",
       "schemas": [
-        "configs/contracts/security/*.json"
+        "configs/schemas/contracts/security/*.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -949,7 +949,7 @@
       "owner": "bijux-atlas-operations",
       "schema_owner": "bijux-atlas-operations",
       "schemas": [
-        "configs/contracts/inventory-configs.schema.json"
+        "configs/schemas/contracts/inventory-configs.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -1007,9 +1007,9 @@
       "owner": "platform",
       "schema_owner": "platform",
       "schemas": [
-        "configs/contracts/inventory-configs.schema.json",
-        "configs/contracts/real-data-runs.schema.json",
-        "configs/contracts/tutorial-evidence.schema.json"
+        "configs/schemas/contracts/inventory-configs.schema.json",
+        "configs/schemas/contracts/real-data-runs.schema.json",
+        "configs/schemas/contracts/tutorial-evidence.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -1023,19 +1023,19 @@
   "max_depth": 4,
   "max_group_depth": 2,
   "max_groups": 25,
-  "registry_path": "configs/inventory/configs.json",
+  "registry_path": "configs/registry/inventory/configs.json",
   "root_files": [
-    "configs/CONSUMERS.json",
+    "configs/registry/consumers.json",
     "configs/CONTRACT.md",
     "configs/INDEX.md",
-    "configs/OWNERS.json",
+    "configs/registry/owners.json",
     "configs/README.md",
-    "configs/SCHEMAS.json",
-    "configs/configs.contracts.json",
-    "configs/consumers-registry.json",
-    "configs/inventory.json",
-    "configs/owners-registry.json",
-    "configs/schema-map.json"
+    "configs/registry/schemas.json",
+    "configs/registry/contracts.json",
+    "configs/registry/consumers.json",
+    "configs/registry/inventory/index.json",
+    "configs/registry/owners.json",
+    "configs/registry/schemas.json"
   ],
   "schema_version": 1
 }

@@ -1,6 +1,6 @@
 # Config Owners
 
-- `configs/contracts`: `platform`
+- `configs/schemas/contracts`: `platform`
 - `configs/coverage`: `platform`
 - `configs/docs`: `docs-governance`
 - `configs/gates`: `platform`
@@ -16,7 +16,7 @@
 - `configs/product`: `product`
 - `configs/repo`: `platform`
 - `configs/rust`: `rust-foundation`
-- `configs/schema`: `platform`
+- `configs/schemas/registry`: `platform`
 - `configs/security`: `security`
 - `configs/shellcheck`: `platform`
 - `configs/slo`: `bijux-atlas-operations`

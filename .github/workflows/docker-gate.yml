@@ -33,14 +33,14 @@ jobs:
           path: |
             .cache/cargo/home/docker-gate/registry
             .cache/cargo/home/docker-gate/git
-          key: cargo-registry-docker-gate-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+          key: cargo-registry-docker-gate-${{ runner.os }}-1.85.0-${{ hashFiles('Cargo.lock') }}
       - name: Restore cargo target cache
         id: cache-target
         uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
         with:
           path: .cache/cargo/target/docker-gate
-          key: cargo-target-docker-gate-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
-      - name: Run docker static contracts
+          key: cargo-target-docker-gate-${{ runner.os }}-1.85.0-${{ hashFiles('Cargo.lock') }}
+      - name: Run docker gate checks
         shell: bash
         run: |
           set -euo pipefail
@@ -48,7 +48,7 @@ jobs:
           mkdir -p "artifacts/${RUN_ID}"
           mkdir -p "${ISO_ROOT}" "${TMPDIR}"
           cargo run --locked -q -p bijux-dev-atlas -- contracts self-check --format json > "artifacts/${RUN_ID}/contracts-self-check.json" 2> "artifacts/${RUN_ID}/contracts-self-check.stderr.log"
-          cargo run --locked -q -p bijux-dev-atlas -- contracts docker --mode static --format human > "artifacts/${RUN_ID}/docker-contracts.stdout.log" 2> "artifacts/${RUN_ID}/docker-contracts.stderr.log"
+          make docker > "artifacts/${RUN_ID}/docker.stdout.log" 2> "artifacts/${RUN_ID}/docker.stderr.log"
       - name: Save cargo registry cache
         if: success()
         uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
@@ -56,13 +56,13 @@ jobs:
           path: |
             .cache/cargo/home/docker-gate/registry
             .cache/cargo/home/docker-gate/git
-          key: cargo-registry-docker-gate-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+          key: cargo-registry-docker-gate-${{ runner.os }}-1.85.0-${{ hashFiles('Cargo.lock') }}
       - name: Save cargo target cache
         if: success()
         uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
         with:
           path: .cache/cargo/target/docker-gate
-          key: cargo-target-docker-gate-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+          key: cargo-target-docker-gate-${{ runner.os }}-1.85.0-${{ hashFiles('Cargo.lock') }}
       - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         if: always()
         with:

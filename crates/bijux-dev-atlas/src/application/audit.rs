@@ -305,7 +305,7 @@ fn run_audit_checks(root: &Path) -> serde_json::Value {
     let mut checks = Vec::new();
 
     // configuration integrity
-    let config_path = root.join("configs/inventory.json");
+    let config_path = root.join("configs/registry/inventory/index.json");
     let config_status = match read_json(&config_path) {
         Ok(v) if v.get("schema_version").and_then(serde_json::Value::as_i64) == Some(1) => "ok",
         _ => "failed",
@@ -316,7 +316,7 @@ fn run_audit_checks(root: &Path) -> serde_json::Value {
         "classification": "configuration",
         "severity": "high",
         "status": config_status,
-        "path": "configs/inventory.json"
+        "path": "configs/registry/inventory/index.json"
     }));
 
     // artifact integrity

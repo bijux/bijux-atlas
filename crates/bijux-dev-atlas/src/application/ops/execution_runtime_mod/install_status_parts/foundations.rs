@@ -252,7 +252,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ("warmup lock doc", repo_root.join("docs/operations/warmup-lock.md")),
             (
                 "warmup lock metric contract",
-                repo_root.join("configs/contracts/observability/metrics.schema.json"),
+                repo_root.join("configs/schemas/contracts/observability/metrics.schema.json"),
             ),
             (
                 "warmup lock runtime source",
@@ -263,7 +263,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ("network policy guide", repo_root.join("docs/operations/networkpolicy.md")),
             (
                 "error registry",
-                repo_root.join("configs/contracts/observability/error-codes.json"),
+                repo_root.join("configs/schemas/contracts/observability/error-codes.json"),
             ),
             (
                 "drills guide",
@@ -289,7 +289,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
             (
                 "error registry",
-                repo_root.join("configs/contracts/observability/error-codes.json"),
+                repo_root.join("configs/schemas/contracts/observability/error-codes.json"),
             ),
         ],
         "store-unreachable" => vec![
@@ -303,7 +303,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
             (
                 "error registry",
-                repo_root.join("configs/contracts/observability/error-codes.json"),
+                repo_root.join("configs/schemas/contracts/observability/error-codes.json"),
             ),
         ],
         "rollout-failure-recovery" => vec![
@@ -320,7 +320,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
         "invalid-config-rejected" => vec![
             (
                 "environment allowlist",
-                repo_root.join("configs/contracts/env.schema.json"),
+                repo_root.join("configs/schemas/contracts/env.schema.json"),
             ),
             (
                 "server config tests",
@@ -328,7 +328,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
             (
                 "log schema",
-                repo_root.join("configs/contracts/observability/log.schema.json"),
+                repo_root.join("configs/schemas/contracts/observability/log.schema.json"),
             ),
         ],
         _ => Vec::new(),

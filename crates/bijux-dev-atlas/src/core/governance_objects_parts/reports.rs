@@ -15,7 +15,7 @@ fn read_lane_surface(repo_root: &Path) -> Vec<serde_json::Value> {
 }
 
 fn read_check_report_map(repo_root: &Path) -> Vec<serde_json::Value> {
-    read_json(&repo_root.join("configs/reports/check-report-map.json"))
+    read_json(&repo_root.join("configs/registry/reports/check-report-map.json"))
         .ok()
         .and_then(|value| value.get("mappings").and_then(|v| v.as_array()).cloned())
         .unwrap_or_default()
@@ -170,7 +170,7 @@ pub(super) fn governance_index_payload(
             "domain_registry_map": "ops/governance/repository/domain-registry-map.json",
             "required_contracts": "ops/policy/required-contracts.json",
             "lane_surface": "configs/ci/lane-surface.json",
-            "check_report_map": "configs/reports/check-report-map.json"
+            "check_report_map": "configs/registry/reports/check-report-map.json"
         },
         "domains": governance_summary(objects),
         "contracts": rows,

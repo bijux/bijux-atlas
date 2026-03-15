@@ -23,7 +23,6 @@
 | `MAKE-DIR-001` | make root docs boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-DIR-002` | make nested docs removal | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-DIR-003` | make root file boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
-| `MAKE-DOCKER-001` | make docker contract boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-DOCS-001` | make docs line budgets | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-DOCS-002` | make help recipe budget | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-DOCS-003` | make target deprecation policy | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
@@ -76,7 +75,6 @@
 | `MAKE-DIR-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-DIR-002` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-DIR-003` | `bijux dev atlas contracts make --mode static` |
-| `MAKE-DOCKER-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-DOCS-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-DOCS-002` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-DOCS-003` | `bijux dev atlas contracts make --mode static` |

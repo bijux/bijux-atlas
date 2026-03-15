@@ -5,7 +5,6 @@
     "bijux-atlas"
   ],
   "blocked_crates": [
-    "bijux-atlas-python",
     "bijux-dev-atlas"
   ],
   "crates_io_release": {

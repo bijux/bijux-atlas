@@ -159,7 +159,7 @@ pub fn effective_runtime_config_payload(
 
 pub fn runtime_config_contract_snapshot() -> Result<serde_json::Value, String> {
     let repo_root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
-    let env_schema_path = repo_root.join("configs/contracts/env.schema.json");
+    let env_schema_path = repo_root.join("configs/schemas/contracts/env.schema.json");
     let env_schema_text = std::fs::read_to_string(&env_schema_path)
         .map_err(|err| format!("read {}: {err}", env_schema_path.display()))?;
     let env_schema_json: serde_json::Value = serde_json::from_str(&env_schema_text)
@@ -186,7 +186,7 @@ pub fn runtime_config_contract_snapshot() -> Result<serde_json::Value, String> {
     Ok(serde_json::json!({
         "schema_version": 1,
         "kind": "atlas_runtime_config_contract_snapshot_v1",
-        "env_schema_path": "configs/contracts/env.schema.json",
+        "env_schema_path": "configs/schemas/contracts/env.schema.json",
         "docs_path": "docs/reference/runtime/config.md",
         "allowlisted_env": allowlisted_env
     }))

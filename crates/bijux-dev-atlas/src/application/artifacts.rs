@@ -15,11 +15,11 @@ use std::time::UNIX_EPOCH;
 const DEFAULT_RUN_KEEP_LAST: usize = 5;
 const RUNS_DIR_NAME: &str = "run";
 const RUN_PIN_FILE: &str = ".pin";
-const REPORT_SCHEMAS_DIR: &str = "configs/contracts/reports";
-const REPORT_BUDGET_PATH: &str = "configs/reports/report-budget.json";
-const REPORT_SCHEMA_REGISTRY_PATH: &str = "configs/reports/schema-registry.json";
-const REPORT_OWNERSHIP_PATH: &str = "configs/reports/ownership.json";
-const REPORT_CHECK_MAP_PATH: &str = "configs/reports/check-report-map.json";
+const REPORT_SCHEMAS_DIR: &str = "configs/schemas/contracts/reports";
+const REPORT_BUDGET_PATH: &str = "configs/registry/reports/report-budget.json";
+const REPORT_SCHEMA_REGISTRY_PATH: &str = "configs/registry/reports/schema-registry.json";
+const REPORT_OWNERSHIP_PATH: &str = "configs/registry/reports/ownership.json";
+const REPORT_CHECK_MAP_PATH: &str = "configs/registry/reports/check-report-map.json";
 
 pub(crate) fn run_artifacts_command(quiet: bool, command: ArtifactsCommand) -> i32 {
     let result: Result<(String, i32), String> = match command {

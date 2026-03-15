@@ -26,6 +26,7 @@
     {
       "id": "ci-nightly",
       "description": "Nightly extended validation lane",
+      "workflow": ".github/workflows/ci-nightly.yml",
       "mode": "verify",
       "aliases": [],
       "required_env": [
@@ -43,6 +44,7 @@
     {
       "id": "ci-pr-fast",
       "description": "Fast pull request validation",
+      "workflow": ".github/workflows/ci-pr.yml",
       "mode": "verify",
       "aliases": [
         "ci-fast"
@@ -62,6 +64,7 @@
     {
       "id": "ci-pr-full",
       "description": "Full pull request policy and workflow checks",
+      "workflow": ".github/workflows/ci-pr.yml",
       "mode": "verify",
       "aliases": [
         "ci-pr",
@@ -83,6 +86,7 @@
     {
       "id": "dependency-lock",
       "description": "Dependency lock discipline lane",
+      "workflow": ".github/workflows/dependency-lock.yml",
       "mode": "verify",
       "aliases": [],
       "required_env": [
@@ -99,6 +103,7 @@
     {
       "id": "docs-audit",
       "description": "Documentation audit and policy enforcement lane",
+      "workflow": ".github/workflows/docs-audit.yml",
       "mode": "verify",
       "aliases": [],
       "required_env": [
@@ -117,6 +122,7 @@
     {
       "id": "docs-only",
       "description": "Documentation-only verification lane",
+      "workflow": ".github/workflows/docs-only.yml",
       "mode": "verify",
       "aliases": [
         "docs"
@@ -137,6 +143,7 @@
     {
       "id": "ops-kind-integration",
       "description": "Kind integration and smoke lane",
+      "workflow": ".github/workflows/ops-integration-kind.yml",
       "mode": "effect",
       "aliases": [
         "ops-kind"
@@ -157,6 +164,7 @@
     {
       "id": "ops-validate",
       "description": "Operations manifest validation lane",
+      "workflow": ".github/workflows/ops-validate.yml",
       "mode": "verify",
       "aliases": [],
       "required_env": [
@@ -175,6 +183,7 @@
     {
       "id": "release-candidate",
       "description": "Release candidate contract lane",
+      "workflow": ".github/workflows/release-candidate.yml",
       "mode": "verify",
       "aliases": [],
       "required_env": [

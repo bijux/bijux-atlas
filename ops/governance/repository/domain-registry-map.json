@@ -6,8 +6,8 @@
   "domains": {
     "configs": {
       "registries": [
-        "configs/inventory/configs.json",
-        "configs/owners/identities.json"
+        "configs/registry/inventory/configs.json",
+        "configs/registry/owners/identities.json"
       ]
     },
     "docker": {

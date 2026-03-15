@@ -31,7 +31,7 @@ fn performance_regression_assets_are_present_and_parseable() {
         "ops/report/generated/performance-baseline-verification.json",
         "ops/report/generated/performance-audit-report.json",
         "ops/report/generated/performance-completion-report.json",
-        "configs/contracts/perf/performance-metadata.schema.json",
+        "configs/schemas/contracts/perf/performance-metadata.schema.json",
     ];
     for rel in required {
         let path = root.join(rel);

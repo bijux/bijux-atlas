@@ -367,11 +367,11 @@ fn tests_suite_path(root: &Path) -> PathBuf {
 }
 
 fn checks_schema_index_path(root: &Path) -> PathBuf {
-    root.join("configs/contracts/reports/checks/schema-index.json")
+    root.join("configs/schemas/contracts/report-checks/schema-index.json")
 }
 
 fn suite_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/contracts/governance/suite.schema.json")
+    root.join("configs/schemas/contracts/governance/suite.schema.json")
 }
 
 fn governance_registry_path(root: &Path) -> PathBuf {
@@ -395,7 +395,7 @@ fn checks_registry_path(root: &Path) -> PathBuf {
 }
 
 fn checks_registry_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/contracts/governance/checks-registry.schema.json")
+    root.join("configs/schemas/contracts/governance/checks-registry.schema.json")
 }
 
 fn contracts_registry_path(root: &Path) -> PathBuf {
@@ -403,7 +403,7 @@ fn contracts_registry_path(root: &Path) -> PathBuf {
 }
 
 fn contracts_registry_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/contracts/governance/contracts-registry.schema.json")
+    root.join("configs/schemas/contracts/governance/contracts-registry.schema.json")
 }
 
 fn checks_inventory_path(root: &Path) -> PathBuf {
@@ -431,7 +431,7 @@ fn suites_index_path(root: &Path) -> PathBuf {
 }
 
 fn suites_index_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/contracts/governance/suites-index.schema.json")
+    root.join("configs/schemas/contracts/governance/suites-index.schema.json")
 }
 
 fn tags_taxonomy_path(root: &Path) -> PathBuf {
@@ -439,7 +439,7 @@ fn tags_taxonomy_path(root: &Path) -> PathBuf {
 }
 
 fn tags_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/contracts/governance/tags.schema.json")
+    root.join("configs/schemas/contracts/governance/tags.schema.json")
 }
 
 fn check_groups_path(root: &Path) -> PathBuf {
@@ -447,7 +447,7 @@ fn check_groups_path(root: &Path) -> PathBuf {
 }
 
 fn check_groups_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/contracts/governance/check-groups.schema.json")
+    root.join("configs/schemas/contracts/governance/check-groups.schema.json")
 }
 
 fn contract_groups_path(root: &Path) -> PathBuf {
@@ -455,7 +455,7 @@ fn contract_groups_path(root: &Path) -> PathBuf {
 }
 
 fn contract_groups_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/contracts/governance/contract-groups.schema.json")
+    root.join("configs/schemas/contracts/governance/contract-groups.schema.json")
 }
 
 fn registry_completeness_policy_path(root: &Path) -> PathBuf {
@@ -463,7 +463,7 @@ fn registry_completeness_policy_path(root: &Path) -> PathBuf {
 }
 
 fn registry_completeness_policy_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/contracts/governance/registry-completeness-policy.schema.json")
+    root.join("configs/schemas/contracts/governance/registry-completeness-policy.schema.json")
 }
 
 fn default_jobs_policy_path(root: &Path) -> PathBuf {
@@ -471,7 +471,7 @@ fn default_jobs_policy_path(root: &Path) -> PathBuf {
 }
 
 fn default_jobs_policy_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/contracts/governance/default-jobs.schema.json")
+    root.join("configs/schemas/contracts/governance/default-jobs.schema.json")
 }
 
 fn suite_baseline_policy_path(root: &Path) -> PathBuf {
@@ -479,7 +479,7 @@ fn suite_baseline_policy_path(root: &Path) -> PathBuf {
 }
 
 fn suite_baseline_policy_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/contracts/governance/suite-baseline.schema.json")
+    root.join("configs/schemas/contracts/governance/suite-baseline.schema.json")
 }
 
 fn compatibility_policy_path(root: &Path) -> PathBuf {
@@ -487,7 +487,7 @@ fn compatibility_policy_path(root: &Path) -> PathBuf {
 }
 
 fn compatibility_policy_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/contracts/governance/compatibility.schema.json")
+    root.join("configs/schemas/contracts/governance/compatibility.schema.json")
 }
 
 fn deprecations_registry_path(root: &Path) -> PathBuf {
@@ -495,11 +495,11 @@ fn deprecations_registry_path(root: &Path) -> PathBuf {
 }
 
 fn deprecations_registry_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/contracts/governance/deprecations.schema.json")
+    root.join("configs/schemas/contracts/governance/deprecations.schema.json")
 }
 
 fn exceptions_registry_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/contracts/governance/exceptions.schema.json")
+    root.join("configs/schemas/contracts/governance/exceptions.schema.json")
 }
 
 fn exceptions_archive_path(root: &Path) -> PathBuf {
@@ -507,7 +507,7 @@ fn exceptions_archive_path(root: &Path) -> PathBuf {
 }
 
 fn exceptions_archive_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/contracts/governance/exceptions-archive.schema.json")
+    root.join("configs/schemas/contracts/governance/exceptions-archive.schema.json")
 }
 
 fn exceptions_summary_path(root: &Path) -> PathBuf {
@@ -3686,7 +3686,7 @@ pub(crate) fn run_governance_command(
                 let deprecations = load_deprecations_registry(&root)?;
                 let values_schema =
                     read_json_value(&root.join("ops/k8s/charts/bijux-atlas/values.schema.json"))?;
-                let env_schema = read_json_value(&root.join("configs/contracts/env.schema.json"))?;
+                let env_schema = read_json_value(&root.join("configs/schemas/contracts/env.schema.json"))?;
                 let redirects = read_json_value(&root.join("docs/redirects.json"))?;
                 let redirects_map = redirects
                     .as_object()
@@ -3884,7 +3884,7 @@ pub(crate) fn run_governance_command(
                         "sources": [
                             "configs/governance/compatibility.yaml",
                             "configs/governance/deprecations.yaml",
-                            "configs/contracts/env.schema.json",
+                            "configs/schemas/contracts/env.schema.json",
                             "ops/k8s/charts/bijux-atlas/values.schema.json",
                             "docs/redirects.json"
                         ]
@@ -4291,7 +4291,7 @@ pub(crate) fn run_governance_command(
             });
             let delta_inputs_path = institutional_delta_inputs_path(&root);
             let delta_inputs_schema = read_json_value(
-                &root.join("configs/contracts/reports/institutional-delta-inputs.schema.json"),
+                &root.join("configs/schemas/contracts/reports/institutional-delta-inputs.schema.json"),
             )?;
             if delta_inputs_schema
                 .get("properties")

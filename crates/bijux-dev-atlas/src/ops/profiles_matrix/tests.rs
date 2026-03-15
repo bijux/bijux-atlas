@@ -112,7 +112,7 @@ fn validates_report_against_schema_shape() {
         .expect("workspace")
         .parent()
         .expect("repo")
-        .join("configs/contracts/reports/ops-profiles.schema.json");
+        .join("configs/schemas/contracts/reports/ops-profiles.schema.json");
     validate_report_value(&report_value, &schema_path).expect("report schema");
 }
 

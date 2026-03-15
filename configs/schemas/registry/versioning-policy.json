@@ -1,0 +1,101 @@
+{
+  "kind": "configs-schema-versioning-policy",
+  "policies": [
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/ci/lane-surface.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/ci/policy-exceptions.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/ci/policy-outside-control-plane.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/ci/workflow-allowlist.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/ci/workflow-step-patterns.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/configs-consumer-map.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/configs-contracts.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/configs-index.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/configs-owner-map.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/configs-schema-index.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/configs-schema-map.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/meta-ownership.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/public-surface.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/release-version-policy.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/reports/check-report-map.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/reports/ownership.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/reports/report-budget.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/reports/reports.registry.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schemas/registry/reports/schema-registry.schema.json",
+      "versioning": "locked"
+    }
+  ],
+  "schema_version": 1
+}

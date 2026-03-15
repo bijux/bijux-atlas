@@ -65,7 +65,7 @@ mod tests {
     #[test]
     fn error_registry_matches_openapi_and_status_mapping() {
         let registry: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../../../../configs/contracts/observability/error-codes.json"
+            "../../../../../../configs/schemas/contracts/observability/error-codes.json"
         ))
         .unwrap_or_else(|err| panic!("error registry: {err}"));
         let spec = crate::contracts::api::openapi_v1_spec().to_string();

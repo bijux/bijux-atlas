@@ -12,6 +12,7 @@ pub(crate) fn read_json(path: &Path) -> Result<Value, String> {
     serde_json::from_str(&text).map_err(|err| format!("parse {} failed: {err}", path.display()))
 }
 
+#[allow(dead_code)]
 pub(crate) fn require_object_keys(value: &Value, required: &[&str]) -> Result<(), Vec<String>> {
     let Some(object) = value.as_object() else {
         return Err(vec!["document root must be an object".to_string()]);

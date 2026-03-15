@@ -7,9 +7,9 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
-pub const REPORTS_REGISTRY_PATH: &str = "configs/reports/reports.registry.json";
+pub const REPORTS_REGISTRY_PATH: &str = "configs/registry/reports/reports.registry.json";
 pub const REPORTS_REGISTRY_SCHEMA_PATH: &str =
-    "configs/schema/reports/reports.registry.schema.json";
+    "configs/schemas/registry/reports/reports.registry.schema.json";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ReportRegistryEntry {

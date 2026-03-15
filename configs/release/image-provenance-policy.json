@@ -5,5 +5,5 @@
     "artifacts/docker-publish/provenance-bundle.json",
     "artifacts/docker-publish/image-digests.json"
   ],
-  "schema_reference": "configs/contracts/release/provenance.schema.json"
+  "schema_reference": "configs/schemas/contracts/release/provenance.schema.json"
 }

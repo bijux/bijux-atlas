@@ -44,7 +44,7 @@ jobs:
           jq . ops/report/generated/performance-baseline-verification.json > /dev/null
           jq . ops/report/generated/performance-audit-report.json > /dev/null
           jq . ops/report/generated/performance-completion-report.json > /dev/null
-          jq . configs/contracts/perf/performance-metadata.schema.json > /dev/null
+          jq . configs/schemas/contracts/perf/performance-metadata.schema.json > /dev/null
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7

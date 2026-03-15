@@ -7,10 +7,10 @@ use std::path::{Path, PathBuf};
 
 use serde::Deserialize;
 
-const REGISTRY_PATH: &str = "configs/inventory/configs.json";
-const OWNERS_PATH: &str = "configs/owners-registry.json";
-const CONSUMERS_PATH: &str = "configs/consumers-registry.json";
-const SCHEMAS_PATH: &str = "configs/schema-map.json";
+const REGISTRY_PATH: &str = "configs/registry/inventory/configs.json";
+const OWNERS_PATH: &str = "configs/registry/owners.json";
+const CONSUMERS_PATH: &str = "configs/registry/consumers.json";
+const SCHEMAS_PATH: &str = "configs/registry/schemas.json";
 
 #[derive(Clone, Deserialize)]
 struct ConfigsRegistry {
@@ -181,7 +181,11 @@ pub fn graph_payload(repo_root: &Path) -> Result<serde_json::Value, String> {
             all_covered.insert(file.clone());
             let file_consumers = matching_file_consumers(&consumers, &file);
             let effective_consumers = if file_consumers.is_empty() {
-                consumers.groups.get(&group.name).cloned().unwrap_or_default()
+                consumers
+                    .groups
+                    .get(&group.name)
+                    .cloned()
+                    .unwrap_or_default()
             } else {
                 file_consumers
             };
@@ -306,7 +310,11 @@ pub fn explain_payload(repo_root: &Path, file: &str) -> Result<serde_json::Value
         if let Some(visibility) = visibility {
             let file_consumers = matching_file_consumers(&consumers, &normalized);
             let effective_consumers = if file_consumers.is_empty() {
-                consumers.groups.get(&group.name).cloned().unwrap_or_default()
+                consumers
+                    .groups
+                    .get(&group.name)
+                    .cloned()
+                    .unwrap_or_default()
             } else {
                 file_consumers
             };
@@ -348,7 +356,7 @@ pub fn ensure_generated_index(repo_root: &Path) -> Result<String, String> {
 }
 
 pub fn ensure_generated_schema_index(repo_root: &Path) -> Result<String, String> {
-    let path = repo_root.join("configs/schema/generated/schema-index.json");
+    let path = repo_root.join("configs/schemas/registry/generated/schema-index.json");
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)
             .map_err(|err| format!("create {} failed: {err}", parent.display()))?;
@@ -455,7 +463,7 @@ fn generated_index_json(repo_root: &Path) -> Result<serde_json::Value, String> {
 
 fn schema_index_json(repo_root: &Path) -> Result<serde_json::Value, String> {
     let schemas = read_schemas(repo_root)?;
-    let input_schemas = walk_files_under(&repo_root.join("configs/schema"))
+    let input_schemas = walk_files_under(&repo_root.join("configs/schemas/registry"))
         .into_iter()
         .filter(|path| path.extension().and_then(|value| value.to_str()) == Some("json"))
         .filter_map(|path| {
@@ -465,14 +473,14 @@ fn schema_index_json(repo_root: &Path) -> Result<serde_json::Value, String> {
                 .display()
                 .to_string()
                 .replace('\\', "/");
-            if rel.starts_with("configs/schema/generated/") || !schema_like(&rel) {
+            if rel.starts_with("configs/schemas/registry/generated/") || !schema_like(&rel) {
                 None
             } else {
                 Some(rel)
             }
         })
         .collect::<BTreeSet<_>>();
-    let output_schemas = walk_files_under(&repo_root.join("configs/contracts"))
+    let output_schemas = walk_files_under(&repo_root.join("configs/schemas/contracts"))
         .into_iter()
         .filter(|path| path.extension().and_then(|value| value.to_str()) == Some("json"))
         .filter_map(|path| {
@@ -526,7 +534,10 @@ fn all_config_files(root: &Path) -> Result<Vec<String>, String> {
     fn walk(dir: &Path, repo_root: &Path, out: &mut Vec<String>) -> Result<(), String> {
         let entries =
             fs::read_dir(dir).map_err(|err| format!("read {} failed: {err}", dir.display()))?;
-        let mut paths = entries.flatten().map(|entry| entry.path()).collect::<Vec<_>>();
+        let mut paths = entries
+            .flatten()
+            .map(|entry| entry.path())
+            .collect::<Vec<_>>();
         paths.sort();
         for path in paths {
             if path.is_dir() {
@@ -672,7 +683,10 @@ fn canonicalize_json_value(value: &serde_json::Value) -> serde_json::Value {
             serde_json::Value::Object(normalized)
         }
         serde_json::Value::Array(items) => serde_json::Value::Array(
-            items.iter().map(canonicalize_json_value).collect::<Vec<_>>(),
+            items
+                .iter()
+                .map(canonicalize_json_value)
+                .collect::<Vec<_>>(),
         ),
         _ => value.clone(),
     }

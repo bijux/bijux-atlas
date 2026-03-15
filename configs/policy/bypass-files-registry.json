@@ -65,21 +65,21 @@
       "kind": "json",
       "path": "configs/policy/layer-live-diff-allowlist.json",
       "requires_metadata": false,
-      "schema": "configs/schema/layer-live-diff-allowlist.schema.json",
+      "schema": "configs/schemas/registry/layer-live-diff-allowlist.schema.json",
       "type": "allowlist"
     },
     {
       "kind": "json",
       "path": "configs/policy/layer-relaxations.json",
       "requires_metadata": true,
-      "schema": "configs/schema/layer-relaxations.schema.json",
+      "schema": "configs/schemas/registry/layer-relaxations.schema.json",
       "type": "layer"
     },
     {
       "kind": "json",
       "path": "configs/policy/ops-lint-relaxations.json",
       "requires_metadata": true,
-      "schema": "configs/schema/ops-lint-relaxations.schema.json",
+      "schema": "configs/schemas/registry/ops-lint-relaxations.schema.json",
       "type": "ops"
     },
     {
@@ -100,7 +100,7 @@
       "kind": "json",
       "path": "configs/policy/policy-relaxations.json",
       "requires_metadata": true,
-      "schema": "configs/schema/policy-relaxations.schema.json",
+      "schema": "configs/schemas/registry/policy-relaxations.schema.json",
       "type": "policy"
     },
     {

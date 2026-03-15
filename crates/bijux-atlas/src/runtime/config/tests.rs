@@ -584,7 +584,7 @@ fn runtime_config_contract_snapshot_points_to_the_allowlist_source() {
     let snapshot = runtime_config_contract_snapshot().expect("contract snapshot");
     assert_eq!(
         snapshot["env_schema_path"],
-        serde_json::json!("configs/contracts/env.schema.json")
+        serde_json::json!("configs/schemas/contracts/env.schema.json")
     );
     assert_eq!(
         snapshot["docs_path"],

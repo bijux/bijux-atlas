@@ -42,7 +42,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
         with:
-          toolchain: 1.84.1
+          toolchain: 1.85.0
       - uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc
         with:
           cluster_name: normal
@@ -57,7 +57,7 @@ jobs:
         uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
         with:
           path: .cache/cargo/target/ops-kind
-          key: cargo-target-nightly-ops-kind-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+          key: cargo-target-nightly-ops-kind-${{ runner.os }}-1.85.0-${{ hashFiles('Cargo.lock') }}
       - name: Run cluster integration lane
         shell: bash
         run: |
@@ -81,7 +81,7 @@ jobs:
         uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
         with:
           path: .cache/cargo/target/ops-kind
-          key: cargo-target-nightly-ops-kind-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+          key: cargo-target-nightly-ops-kind-${{ runner.os }}-1.85.0-${{ hashFiles('Cargo.lock') }}
       - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         if: always()
         with:
