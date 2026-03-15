@@ -2,11 +2,13 @@
 
 #[cfg(feature = "backend-s3")]
 use super::super::backend::{
-    ArtifactStore, ETAG, IF_NONE_MATCH, ManifestLock, NoopInstrumentation, Response, StoreError,
-    StoreErrorCode, StoreInstrumentation,
+    ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
+    StoreInstrumentation,
 };
 #[cfg(feature = "backend-s3")]
 use super::super::catalog::validate_catalog_strict;
+#[cfg(feature = "backend-s3")]
+use super::super::manifest::ManifestLock;
 #[cfg(feature = "backend-s3")]
 use super::super::paths::{
     dataset_key_prefix, dataset_manifest_key, dataset_manifest_lock_key, dataset_sqlite_key,
@@ -14,7 +16,9 @@ use super::super::paths::{
 #[cfg(feature = "backend-s3")]
 use crate::domain::dataset::{ArtifactManifest, Catalog, DatasetId};
 #[cfg(feature = "backend-s3")]
-use reqwest::blocking::Client;
+use reqwest::blocking::{Client, Response};
+#[cfg(feature = "backend-s3")]
+use reqwest::header::{ETAG, IF_NONE_MATCH};
 #[cfg(feature = "backend-s3")]
 use std::collections::HashMap;
 #[cfg(feature = "backend-s3")]

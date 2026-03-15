@@ -1,45 +1,20 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[cfg(feature = "backend-s3")]
-use super::catalog::validate_catalog_strict;
 use super::manifest::verify_expected_sha256;
-#[cfg(feature = "backend-s3")]
-use super::manifest::ManifestLock;
-#[cfg(feature = "backend-s3")]
-use super::paths::{
-    dataset_key_prefix, dataset_manifest_key, dataset_manifest_lock_key, dataset_sqlite_key,
-    CATALOG_FILE,
-};
-#[cfg(feature = "backend-s3")]
-use super::retry::{BackoffPolicy, RetryPolicy};
 use crate::domain::dataset::{ArtifactManifest, DatasetId};
-#[cfg(feature = "backend-s3")]
-use crate::domain::dataset::Catalog;
 use crate::errors::ErrorCode;
-#[cfg(feature = "backend-s3")]
-use reqwest::blocking::{Client, Response};
-#[cfg(feature = "backend-s3")]
-use reqwest::header::{ETAG, IF_NONE_MATCH};
 use std::collections::BTreeMap;
-#[cfg(feature = "backend-s3")]
-use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 use std::fs;
-#[cfg(feature = "backend-s3")]
-use std::net::IpAddr;
 use std::path::PathBuf;
 use std::sync::Mutex;
-#[cfg(feature = "backend-s3")]
-use std::sync::Arc;
-#[cfg(feature = "backend-s3")]
-use std::thread;
 use std::time::Duration;
-#[cfg(feature = "backend-s3")]
-use std::time::Instant;
 
 pub use super::backends::local::LocalFsStore;
 #[cfg(feature = "backend-s3")]
 pub use super::backends::http::HttpReadonlyStore;
+#[cfg(feature = "backend-s3")]
+pub use super::backends::s3::S3LikeStore;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[non_exhaustive]
@@ -226,6 +201,3 @@ impl Drop for PublishLockGuard {
         let _ = fs::remove_file(&self.lock_path);
     }
 }
-
-#[cfg(feature = "backend-s3")]
-include!("backend_s3.rs");
