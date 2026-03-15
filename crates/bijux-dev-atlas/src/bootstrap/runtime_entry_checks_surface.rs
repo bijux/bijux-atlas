@@ -14,7 +14,7 @@ fn normalize_suite_name(raw: &str) -> Result<&str, String> {
     }
 }
 
-fn write_output_if_requested(out: Option<PathBuf>, rendered: &str) -> Result<(), String> {
+pub(crate) fn write_output_if_requested(out: Option<PathBuf>, rendered: &str) -> Result<(), String> {
     if let Some(path) = out {
         std::fs::write(&path, format!("{rendered}\n"))
             .map_err(|err| format!("cannot write {}: {err}", path.display()))?;
@@ -195,27 +195,27 @@ fn render_catalog_explain_output(
 }
 
 pub(crate) struct CheckListOptions {
-    repo_root: Option<PathBuf>,
-    suite: Option<String>,
-    domain: Option<DomainArg>,
-    severity: Option<CheckSeverityArg>,
-    mode: Option<CheckModeArg>,
-    tag: Option<String>,
-    name: Option<String>,
-    id: Option<String>,
-    include_internal: bool,
-    include_slow: bool,
-    format: FormatArg,
-    out: Option<PathBuf>,
+    pub(crate) repo_root: Option<PathBuf>,
+    pub(crate) suite: Option<String>,
+    pub(crate) domain: Option<DomainArg>,
+    pub(crate) severity: Option<CheckSeverityArg>,
+    pub(crate) mode: Option<CheckModeArg>,
+    pub(crate) tag: Option<String>,
+    pub(crate) name: Option<String>,
+    pub(crate) id: Option<String>,
+    pub(crate) include_internal: bool,
+    pub(crate) include_slow: bool,
+    pub(crate) format: FormatArg,
+    pub(crate) out: Option<PathBuf>,
 }
 
 #[allow(dead_code)]
 pub(crate) struct ChecksCatalogListOptions {
-    repo_root: Option<PathBuf>,
-    domain: Option<String>,
-    tag: Option<String>,
-    format: FormatArg,
-    out: Option<PathBuf>,
+    pub(crate) repo_root: Option<PathBuf>,
+    pub(crate) domain: Option<String>,
+    pub(crate) tag: Option<String>,
+    pub(crate) format: FormatArg,
+    pub(crate) out: Option<PathBuf>,
 }
 
 pub(crate) struct AutomationBoundariesOptions {
@@ -744,58 +744,58 @@ pub(crate) fn run_checks_catalog_explain(
 }
 
 pub(crate) struct CheckRunOptions {
-    repo_root: Option<PathBuf>,
-    artifacts_root: Option<PathBuf>,
-    run_id: Option<String>,
-    suite: Option<String>,
-    domain: Option<DomainArg>,
-    severity: Option<CheckSeverityArg>,
-    mode: Option<CheckModeArg>,
-    tag: Option<String>,
-    name: Option<String>,
-    id: Option<String>,
-    include_internal: bool,
-    include_slow: bool,
-    allow_subprocess: bool,
-    allow_git: bool,
-    allow_write: bool,
-    allow_network: bool,
-    fail_fast: bool,
-    max_failures: Option<usize>,
-    format: FormatArg,
-    out: Option<PathBuf>,
-    durations: usize,
+    pub(crate) repo_root: Option<PathBuf>,
+    pub(crate) artifacts_root: Option<PathBuf>,
+    pub(crate) run_id: Option<String>,
+    pub(crate) suite: Option<String>,
+    pub(crate) domain: Option<DomainArg>,
+    pub(crate) severity: Option<CheckSeverityArg>,
+    pub(crate) mode: Option<CheckModeArg>,
+    pub(crate) tag: Option<String>,
+    pub(crate) name: Option<String>,
+    pub(crate) id: Option<String>,
+    pub(crate) include_internal: bool,
+    pub(crate) include_slow: bool,
+    pub(crate) allow_subprocess: bool,
+    pub(crate) allow_git: bool,
+    pub(crate) allow_write: bool,
+    pub(crate) allow_network: bool,
+    pub(crate) fail_fast: bool,
+    pub(crate) max_failures: Option<usize>,
+    pub(crate) format: FormatArg,
+    pub(crate) out: Option<PathBuf>,
+    pub(crate) durations: usize,
 }
 
 #[derive(Debug, Serialize)]
-struct DocsPageRow {
-    path: String,
-    in_nav: bool,
-    owner: Option<String>,
-    stability: Option<String>,
-    last_reviewed: Option<String>,
+pub(crate) struct DocsPageRow {
+    pub(crate) path: String,
+    pub(crate) in_nav: bool,
+    pub(crate) owner: Option<String>,
+    pub(crate) stability: Option<String>,
+    pub(crate) last_reviewed: Option<String>,
 }
 
 #[derive(Debug)]
-struct DocsContext {
-    repo_root: PathBuf,
-    docs_root: PathBuf,
-    artifacts_root: PathBuf,
-    run_id: RunId,
+pub(crate) struct DocsContext {
+    pub(crate) repo_root: PathBuf,
+    pub(crate) docs_root: PathBuf,
+    pub(crate) artifacts_root: PathBuf,
+    pub(crate) run_id: RunId,
 }
 
 #[derive(Default)]
-struct DocsIssues {
-    errors: Vec<String>,
-    warnings: Vec<String>,
+pub(crate) struct DocsIssues {
+    pub(crate) errors: Vec<String>,
+    pub(crate) warnings: Vec<String>,
 }
 
 #[derive(Debug)]
-struct ConfigsContext {
-    repo_root: PathBuf,
-    configs_root: PathBuf,
-    artifacts_root: PathBuf,
-    run_id: RunId,
+pub(crate) struct ConfigsContext {
+    pub(crate) repo_root: PathBuf,
+    pub(crate) configs_root: PathBuf,
+    pub(crate) artifacts_root: PathBuf,
+    pub(crate) run_id: RunId,
 }
 
 
@@ -1033,5 +1033,5 @@ pub(crate) fn run_check_doctor(
     Ok((rendered, exit))
 }
 
-#[path = "application/runtime_entry_checks_surface_ci.rs"]
+#[path = "../application/runtime_entry_checks_surface_ci.rs"]
 mod ci;

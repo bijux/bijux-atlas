@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 pub(crate) fn run_check_tree_budgets(
     repo_root: Option<PathBuf>,
     format: FormatArg,
@@ -360,6 +361,7 @@ pub(crate) fn run_check_tree_budgets(
     Ok((rendered, if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) { 1 } else { 0 }))
 }
 
+#[allow(dead_code)]
 pub(crate) fn run_check_repo_doctor(
     repo_root: Option<PathBuf>,
     format: FormatArg,
@@ -546,6 +548,7 @@ pub(crate) fn run_check_repo_doctor(
     Ok((rendered, code))
 }
 
+#[allow(dead_code)]
 pub(crate) fn run_check_root_surface_explain(
     repo_root: Option<PathBuf>,
     format: FormatArg,
@@ -598,6 +601,7 @@ pub(crate) fn run_check_root_surface_explain(
     Ok((rendered, 0))
 }
 
+#[allow(dead_code)]
 pub(crate) fn run_check_registry_doctor(
     repo_root: Option<PathBuf>,
     format: FormatArg,

@@ -7,11 +7,11 @@
 
 #[path = "application/api.rs"]
 mod api_commands;
-mod app;
 #[path = "application/artifacts.rs"]
 mod artifacts_commands;
 #[path = "application/audit.rs"]
 mod audit_commands;
+mod bootstrap;
 #[path = "application/build.rs"]
 mod build_commands;
 mod interfaces;
@@ -63,8 +63,7 @@ mod system_commands;
 #[path = "application/tutorials.rs"]
 mod tutorials_commands;
 
-include!("runtime_entry.rs");
-
+pub(crate) use self::bootstrap::*;
 pub(crate) use self::interfaces::cli;
 
 #[allow(dead_code)]
@@ -73,5 +72,5 @@ fn workspace_root_resolver_anchor(arg: Option<std::path::PathBuf>) {
 }
 
 fn main() {
-    std::process::exit(app::run());
+    std::process::exit(run());
 }

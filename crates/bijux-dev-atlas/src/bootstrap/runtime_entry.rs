@@ -1,75 +1,77 @@
-use std::fs;
-use std::io::{self, IsTerminal, Write};
-use std::path::{Path, PathBuf};
-use std::process::Command as ProcessCommand;
+pub(crate) use std::fs;
+pub(crate) use std::io::{self, IsTerminal, Write};
+pub(crate) use std::path::{Path, PathBuf};
+pub(crate) use std::process::Command as ProcessCommand;
 
 #[cfg(test)]
 pub(crate) use crate::cli::Cli;
-use crate::cli::{
+pub(crate) use crate::cli::{
     CheckModeArg, CheckSeverityArg, ConfigsCommand, ConfigsCommonArgs, DemoCommand, DocsCommand,
     DocsCommonArgs, DomainArg, FormatArg, GatesCommand, OpsCommand, OpsCommonArgs, OpsRenderTarget,
     OpsStatusTarget, WorkflowsCommand,
 };
-pub(crate) use api_commands::run_api_command;
-pub(crate) use artifacts_commands::run_artifacts_command;
-pub(crate) use audit_commands::run_audit_command;
-use bijux_dev_atlas::core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
-use bijux_dev_atlas::core::{
+pub(crate) use crate::api_commands::run_api_command;
+pub(crate) use crate::artifacts_commands::run_artifacts_command;
+pub(crate) use crate::audit_commands::run_audit_command;
+pub(crate) use bijux_dev_atlas::core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
+pub(crate) use bijux_dev_atlas::core::{
     exit_code_for_report, explain_output, load_registry, registry_doctor, render_json,
     render_jsonl, render_text_with_durations, run_checks, select_checks, RunOptions, RunRequest,
     Selectors,
 };
-use bijux_dev_atlas::model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
-use bijux_dev_atlas::model::{CheckMode, CheckSeverity};
-use bijux_dev_atlas::registry::{CheckCatalog, CheckCatalogEntry};
-use bijux_dev_atlas::runtime::{Capabilities, RealFs, RealProcessRunner, WorkspaceRoot};
-use bijux_dev_atlas::ui::terminal::report::render_check_run_report;
-pub(crate) use build_commands::run_build_command;
-pub(crate) use commands_data::run_data_command;
+pub(crate) use bijux_dev_atlas::model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
+pub(crate) use bijux_dev_atlas::model::{CheckMode, CheckSeverity};
+pub(crate) use bijux_dev_atlas::registry::{CheckCatalog, CheckCatalogEntry};
+pub(crate) use bijux_dev_atlas::runtime::{Capabilities, RealFs, RealProcessRunner, WorkspaceRoot};
+pub(crate) use bijux_dev_atlas::ui::terminal::report::render_check_run_report;
+pub(crate) use crate::build_commands::run_build_command;
+pub(crate) use crate::commands_data::run_data_command;
 #[cfg(test)]
-pub(crate) use configs_commands::parse_config_file;
-pub(crate) use configs_commands::{
+pub(crate) use crate::configs_commands::parse_config_file;
+pub(crate) use crate::configs_commands::{
     configs_context, configs_diff_payload, configs_lint_payload, configs_validate_payload,
     run_configs_command,
 };
-pub(crate) use control_plane_commands::{
+pub(crate) use crate::control_plane_commands::{
     run_capabilities_command, run_docker_command, run_help_inventory_command,
     run_policies_command, run_print_boundaries_command, run_print_policies,
     run_version_command,
 };
 #[cfg(test)]
-pub(crate) use docs_commands::mkdocs_nav_refs;
-pub(crate) use docs_commands::{
+pub(crate) use crate::docs_commands::mkdocs_nav_refs;
+pub(crate) use crate::docs_commands::{
     docs_context, docs_links_payload, docs_validate_payload, walk_files_local,
 };
-pub(crate) use docs_commands::{docs_lint_payload, run_docs_command};
-pub(crate) use drift_commands::run_drift_command;
-pub(crate) use governance_commands::run_governance_command;
-pub(crate) use governance_commands::run_registry_command;
-pub(crate) use invariants_commands::run_invariants_command;
-pub(crate) use load_commands::run_load_command;
-pub(crate) use make_commands::run_make_command;
-pub(crate) use migrations_commands::run_migrations_command;
-pub(crate) use observe_commands::run_observe_command;
-pub(crate) use ops_commands::{emit_payload, normalize_tool_version_with_regex, run_ops_command};
-pub(crate) use ops_support::{
+pub(crate) use crate::docs_commands::{docs_lint_payload, run_docs_command};
+pub(crate) use crate::drift_commands::run_drift_command;
+pub(crate) use crate::governance_commands::run_governance_command;
+pub(crate) use crate::governance_commands::run_registry_command;
+pub(crate) use crate::invariants_commands::run_invariants_command;
+pub(crate) use crate::load_commands::run_load_command;
+pub(crate) use crate::make_commands::run_make_command;
+pub(crate) use crate::migrations_commands::run_migrations_command;
+pub(crate) use crate::observe_commands::run_observe_command;
+pub(crate) use crate::ops_commands::{
+    emit_payload, normalize_tool_version_with_regex, run_ops_command,
+};
+pub(crate) use crate::ops_support::{
     OpsCommandError, OpsFs, OpsProcess, StackProfile, StackProfiles, SurfacesInventory,
     ToolDefinition, ToolchainInventory,
 };
-pub(crate) use perf_commands::run_perf_command;
-use regex::Regex;
-pub(crate) use release_commands::run_release_command;
-pub(crate) use reproduce_commands::run_reproduce_command;
-pub(crate) use runtime_commands::run_runtime_command;
-pub(crate) use security_commands::run_security_command;
-use serde::{Deserialize, Serialize};
-use serde_yaml::Value as YamlValue;
-use sha2::{Digest, Sha256};
-pub(crate) use suites_commands::{
+pub(crate) use crate::perf_commands::run_perf_command;
+pub(crate) use regex::Regex;
+pub(crate) use crate::release_commands::run_release_command;
+pub(crate) use crate::reproduce_commands::run_reproduce_command;
+pub(crate) use crate::runtime_commands::run_runtime_command;
+pub(crate) use crate::security_commands::run_security_command;
+pub(crate) use serde::{Deserialize, Serialize};
+pub(crate) use serde_yaml::Value as YamlValue;
+pub(crate) use sha2::{Digest, Sha256};
+pub(crate) use crate::suites_commands::{
     run_registry_check_by_id, run_registry_contract_by_id, run_suites_command,
 };
-pub(crate) use system_commands::run_system_command;
-pub(crate) use tutorials_commands::run_tutorials_command;
+pub(crate) use crate::system_commands::run_system_command;
+pub(crate) use crate::tutorials_commands::run_tutorials_command;
 
 const UMBRELLA_MIN_VERSION: &str = "0.3.0";
 const UMBRELLA_MAX_EXCLUSIVE_VERSION: &str = "0.4.0";
@@ -90,7 +92,7 @@ impl From<DomainArg> for DomainId {
     }
 }
 
-fn resolve_repo_root(arg: Option<PathBuf>) -> Result<PathBuf, String> {
+pub(crate) fn resolve_repo_root(arg: Option<PathBuf>) -> Result<PathBuf, String> {
     WorkspaceRoot::from_cli_or_cwd(arg)
         .map(WorkspaceRoot::into_inner)
         .map_err(|err| err.to_string())
@@ -110,7 +112,7 @@ pub(crate) fn plugin_metadata_json() -> String {
 }
 
 #[allow(clippy::too_many_arguments)]
-fn parse_selectors(
+pub(crate) fn parse_selectors(
     suite: Option<String>,
     domain: Option<DomainArg>,
     severity: Option<CheckSeverityArg>,
@@ -211,5 +213,5 @@ include!("runtime_entry_checks_surface.rs");
 include!("runtime_entry_checks_governance.rs");
 
 pub(crate) fn run() -> i32 {
-    cli::run()
+    crate::cli::run()
 }
