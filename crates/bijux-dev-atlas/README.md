@@ -113,22 +113,22 @@ The following are not stable promises:
 
 Repository docs in this worktree:
 
-- crate docs index: [../../docs/--archive/bijux-dev-atlas-docs/index.md](../../docs/--archive/bijux-dev-atlas-docs/index.md)
-- command surface: [../../docs/--archive/bijux-dev-atlas-docs/cli-command-list.md](../../docs/--archive/bijux-dev-atlas-docs/cli-command-list.md)
-- commands and usage: [../../docs/--archive/bijux-dev-atlas-docs/commands.md](../../docs/--archive/bijux-dev-atlas-docs/commands.md)
+- docs index: [../../docs/index.md](../../docs/index.md)
+- command surface: [../../docs/07-reference/automation-command-surface.md](../../docs/07-reference/automation-command-surface.md)
+- commands and usage: [../../docs/06-development/automation-control-plane.md](../../docs/06-development/automation-control-plane.md)
 
 Governance and contracts:
 
-- control-plane contract: [../../docs/--archive/bijux-dev-atlas-docs/contract.md](../../docs/--archive/bijux-dev-atlas-docs/contract.md)
-- control-plane contracts: [../../docs/--archive/bijux-dev-atlas-docs/control-plane-contracts.md](../../docs/--archive/bijux-dev-atlas-docs/control-plane-contracts.md)
-- registry contract: [../../docs/--archive/bijux-dev-atlas-docs/registry-contract.md](../../docs/--archive/bijux-dev-atlas-docs/registry-contract.md)
-- errors and exit codes: [../../docs/--archive/bijux-dev-atlas-docs/errors-and-exit-codes.md](../../docs/--archive/bijux-dev-atlas-docs/errors-and-exit-codes.md)
+- automation contracts: [../../docs/08-contracts/automation-contracts.md](../../docs/08-contracts/automation-contracts.md)
+- report reference: [../../docs/07-reference/automation-reports-reference.md](../../docs/07-reference/automation-reports-reference.md)
+- decision records and ownership: [../../docs/06-development/decision-records-and-ownership.md](../../docs/06-development/decision-records-and-ownership.md)
+- errors and exit codes: [../../docs/07-reference/error-codes-and-exit-codes.md](../../docs/07-reference/error-codes-and-exit-codes.md)
 
 Contributor references:
 
-- architecture: [../../docs/--archive/bijux-dev-atlas-docs/architecture.md](../../docs/--archive/bijux-dev-atlas-docs/architecture.md)
-- testing: [../../docs/--archive/bijux-dev-atlas-docs/testing.md](../../docs/--archive/bijux-dev-atlas-docs/testing.md)
-- benchmark docs: [../../docs/--archive/bijux-dev-atlas-docs/benchmarks/index.md](../../docs/--archive/bijux-dev-atlas-docs/benchmarks/index.md)
+- architecture: [../../docs/05-architecture/automation-architecture.md](../../docs/05-architecture/automation-architecture.md)
+- testing and evidence: [../../docs/06-development/testing-and-evidence.md](../../docs/06-development/testing-and-evidence.md)
+- contributor workflow: [../../docs/06-development/contributor-workflow.md](../../docs/06-development/contributor-workflow.md)
 
 ## Working on This Crate
 

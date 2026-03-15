@@ -31,7 +31,7 @@ The most reliable ownership signals in this repository are:
 - page-level `owner` metadata in canonical docs
 - registry or schema ownership fields in `configs/`
 - suite, report, and runnable ownership metadata emitted by `bijux-dev-atlas`
-- repository review boundaries in [`.github/CODEOWNERS`](/Users/bijan/bijux/bijux-atlas/.github/CODEOWNERS)
+- repository review boundaries in `.github/CODEOWNERS`
 
 If those signals disagree, resolve the ownership drift before merging the change.
 

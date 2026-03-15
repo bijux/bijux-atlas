@@ -14,7 +14,6 @@ validation:
   omitted_files: ignore
 
 exclude_docs: |
-  --archive/**
   automation/**
   README.md
 
@@ -80,7 +79,6 @@ not_in_nav: |
   assets/**
   automation/**
   overrides/**
-  --archive/**
 
 extra_css:
   - assets/styles/extra.css

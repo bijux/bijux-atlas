@@ -118,16 +118,16 @@ If a change affects transport or persistence details, it should usually land in 
 
 Repository docs in this worktree:
 
-- crate documentation index: [../../docs/--archive/bijux-atlas-crate/index.md](../../docs/--archive/bijux-atlas-crate/index.md)
-- CLI command reference: [../../docs/--archive/bijux-atlas-crate/cli-command-list.md](../../docs/--archive/bijux-atlas-crate/cli-command-list.md)
-- CLI UX and output contract: [../../docs/--archive/bijux-atlas-crate/cli-ux-contract.md](../../docs/--archive/bijux-atlas-crate/cli-ux-contract.md)
-- exit codes: [../../docs/--archive/bijux-atlas-crate/exit-codes.md](../../docs/--archive/bijux-atlas-crate/exit-codes.md)
+- docs index: [../../docs/index.md](../../docs/index.md)
+- CLI command reference: [../../docs/07-reference/command-surface.md](../../docs/07-reference/command-surface.md)
+- structured output contract: [../../docs/08-contracts/structured-output-contracts.md](../../docs/08-contracts/structured-output-contracts.md)
+- exit codes: [../../docs/07-reference/error-codes-and-exit-codes.md](../../docs/07-reference/error-codes-and-exit-codes.md)
 
 API and integration surfaces:
 
-- API docs index: [../../docs/--archive/api/index.md](../../docs/--archive/api/index.md)
-- plugin contract: [../../docs/--archive/bijux-atlas-crate/plugin-contract.md](../../docs/--archive/bijux-atlas-crate/plugin-contract.md)
-- crate API stability reference: [../../docs/--archive/reference/crate-api-stability.md](../../docs/--archive/reference/crate-api-stability.md)
+- API endpoint index: [../../docs/07-reference/api-endpoint-index.md](../../docs/07-reference/api-endpoint-index.md)
+- plugin contract: [../../docs/08-contracts/plugin-contracts.md](../../docs/08-contracts/plugin-contracts.md)
+- API compatibility: [../../docs/08-contracts/api-compatibility.md](../../docs/08-contracts/api-compatibility.md)
 
 ## Using the Library
 
