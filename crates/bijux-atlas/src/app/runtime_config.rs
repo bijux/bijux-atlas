@@ -189,7 +189,7 @@ impl std::fmt::Display for RuntimeConfigError {
 impl std::error::Error for RuntimeConfigError {}
 
 pub fn validate_runtime_env_contract() -> Result<(), RuntimeConfigError> {
-    let raw = include_str!("../../../../configs/contracts/env.schema.json");
+    let raw = include_str!("../../../configs/contracts/env.schema.json");
     let parsed: serde_json::Value =
         serde_json::from_str(raw).map_err(|e| RuntimeConfigError::InvalidValue {
             message: format!("invalid env contract json: {e}"),
