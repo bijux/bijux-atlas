@@ -53,6 +53,47 @@ pub(crate) struct FailureInjectionRequest {
     pub shard_id: Option<String>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct FailureInjectionPlan {
+    category: bijux_atlas_core::FailureCategory,
+    target_id: String,
+    detail: &'static str,
+}
+
+fn required_debug_target(value: Option<&str>, field: &'static str) -> Result<String, &'static str> {
+    let Some(value) = value.map(str::trim).filter(|value| !value.is_empty()) else {
+        return Err(field);
+    };
+    Ok(value.to_string())
+}
+
+fn resolve_failure_injection_plan(
+    req: &FailureInjectionRequest,
+) -> Result<FailureInjectionPlan, &'static str> {
+    match req.kind.as_str() {
+        "node_crash" => Ok(FailureInjectionPlan {
+            category: bijux_atlas_core::FailureCategory::NodeUnreachable,
+            target_id: required_debug_target(req.node_id.as_deref(), "node_id")?,
+            detail: "simulated node crash",
+        }),
+        "shard_corruption" => Ok(FailureInjectionPlan {
+            category: bijux_atlas_core::FailureCategory::ShardCorruption,
+            target_id: required_debug_target(req.shard_id.as_deref(), "shard_id")?,
+            detail: "simulated shard corruption",
+        }),
+        "network_partition" => Ok(FailureInjectionPlan {
+            category: bijux_atlas_core::FailureCategory::NetworkPartition,
+            target_id: required_debug_target(req.node_id.as_deref(), "node_id")?,
+            detail: "simulated network partition",
+        }),
+        _ => Err("kind"),
+    }
+}
+
+fn resolve_chaos_target_node(req: &FailureInjectionRequest) -> Result<String, &'static str> {
+    required_debug_target(req.node_id.as_deref(), "node_id")
+}
+
 pub(crate) struct RequestQueueGuard {
     pub(crate) counter: Arc<AtomicU64>,
 }
@@ -1136,37 +1177,46 @@ pub(crate) async fn failure_injection_handler(
 ) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
+    let plan = match resolve_failure_injection_plan(&req) {
+        Ok(plan) => plan,
+        Err(field) => {
+            let response = api_error_response(
+                StatusCode::BAD_REQUEST,
+                error_json(
+                    ApiErrorCode::InvalidQueryParameter,
+                    "debug failure injection requires an explicit supported target",
+                    json!({
+                        "field": field,
+                        "kind": req.kind,
+                        "supported_kinds": ["node_crash", "shard_corruption", "network_partition"],
+                    }),
+                ),
+            );
+            state
+                .metrics
+                .observe_request_with_trace(
+                    "/debug/failure-injection",
+                    StatusCode::BAD_REQUEST,
+                    started.elapsed(),
+                    Some(&request_id),
+                )
+                .await;
+            return with_request_id(response, &request_id);
+        }
+    };
     let now_unix_ms = chrono_like_unix_millis() as u64;
     let mut resilience = state.resilience_registry.lock().await;
-    let (category, target_id, detail) = match req.kind.as_str() {
-        "node_crash" => (
-            bijux_atlas_core::FailureCategory::NodeUnreachable,
-            req.node_id.unwrap_or_else(|| "node-a".to_string()),
-            "simulated node crash",
-        ),
-        "shard_corruption" => (
-            bijux_atlas_core::FailureCategory::ShardCorruption,
-            req.shard_id
-                .unwrap_or_else(|| "atlas-default-s001".to_string()),
-            "simulated shard corruption",
-        ),
-        "network_partition" => (
-            bijux_atlas_core::FailureCategory::NetworkPartition,
-            req.node_id.unwrap_or_else(|| "node-b".to_string()),
-            "simulated network partition",
-        ),
-        _ => (
-            bijux_atlas_core::FailureCategory::Unknown,
-            "cluster".to_string(),
-            "simulated unknown fault",
-        ),
-    };
-    let event_id = resilience.record_failure(category, target_id.clone(), now_unix_ms, detail);
+    let event_id = resilience.record_failure(
+        plan.category,
+        plan.target_id.clone(),
+        now_unix_ms,
+        plan.detail,
+    );
     tracing::warn!(
         event_id = "failure_injection",
         route = "/debug/failure-injection",
         simulation_id = %event_id,
-        target = %target_id,
+        target = %plan.target_id,
         fault_kind = %req.kind,
         "failure injection recorded"
     );
@@ -1174,7 +1224,7 @@ pub(crate) async fn failure_injection_handler(
         "schema_version": 1,
         "kind": "failure_injection_result",
         "event_id": event_id,
-        "target_id": target_id,
+        "target_id": plan.target_id,
         "fault_kind": req.kind
     });
     let response = Json(payload).into_response();
@@ -1197,17 +1247,43 @@ pub(crate) async fn chaos_run_handler(
 ) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
+    let target_node_id = match resolve_chaos_target_node(&req) {
+        Ok(node_id) => node_id,
+        Err(field) => {
+            let response = api_error_response(
+                StatusCode::BAD_REQUEST,
+                error_json(
+                    ApiErrorCode::InvalidQueryParameter,
+                    "debug chaos run requires an explicit node_id",
+                    json!({
+                        "field": field,
+                        "kind": req.kind,
+                    }),
+                ),
+            );
+            state
+                .metrics
+                .observe_request_with_trace(
+                    "/debug/chaos/run",
+                    StatusCode::BAD_REQUEST,
+                    started.elapsed(),
+                    Some(&request_id),
+                )
+                .await;
+            return with_request_id(response, &request_id);
+        }
+    };
     let now_unix_ms = chrono_like_unix_millis() as u64;
     let mut resilience = state.resilience_registry.lock().await;
     let id1 = resilience.record_failure(
         bijux_atlas_core::FailureCategory::NodeUnreachable,
-        req.node_id.clone().unwrap_or_else(|| "node-a".to_string()),
+        target_node_id.clone(),
         now_unix_ms,
         "chaos scenario injected node crash",
     );
     let id2 = resilience.record_failure(
         bijux_atlas_core::FailureCategory::NetworkPartition,
-        req.node_id.unwrap_or_else(|| "node-b".to_string()),
+        target_node_id.clone(),
         now_unix_ms.saturating_add(1),
         "chaos scenario injected network partition",
     );
@@ -1364,5 +1440,80 @@ pub(crate) fn readyz_catalog_ready(
         catalog_present
     } else {
         true
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{
+        resolve_chaos_target_node, resolve_failure_injection_plan, FailureInjectionRequest,
+    };
+    use bijux_atlas::core as bijux_atlas_core;
+
+    #[test]
+    fn failure_injection_requires_explicit_targets() {
+        let node_crash = resolve_failure_injection_plan(&FailureInjectionRequest {
+            kind: "node_crash".to_string(),
+            node_id: None,
+            shard_id: None,
+        });
+        let shard_corruption = resolve_failure_injection_plan(&FailureInjectionRequest {
+            kind: "shard_corruption".to_string(),
+            node_id: None,
+            shard_id: Some(String::new()),
+        });
+        let unknown = resolve_failure_injection_plan(&FailureInjectionRequest {
+            kind: "unknown".to_string(),
+            node_id: Some("node-1".to_string()),
+            shard_id: None,
+        });
+
+        assert_eq!(node_crash, Err("node_id"));
+        assert_eq!(shard_corruption, Err("shard_id"));
+        assert_eq!(unknown, Err("kind"));
+    }
+
+    #[test]
+    fn failure_injection_uses_explicit_supported_targets() {
+        let node_crash = resolve_failure_injection_plan(&FailureInjectionRequest {
+            kind: "node_crash".to_string(),
+            node_id: Some("node-prod-1".to_string()),
+            shard_id: None,
+        })
+        .expect("node crash plan");
+        let shard_corruption = resolve_failure_injection_plan(&FailureInjectionRequest {
+            kind: "shard_corruption".to_string(),
+            node_id: None,
+            shard_id: Some("shard-prod-9".to_string()),
+        })
+        .expect("shard corruption plan");
+
+        assert_eq!(node_crash.target_id, "node-prod-1");
+        assert_eq!(
+            node_crash.category,
+            bijux_atlas_core::FailureCategory::NodeUnreachable
+        );
+        assert_eq!(shard_corruption.target_id, "shard-prod-9");
+        assert_eq!(
+            shard_corruption.category,
+            bijux_atlas_core::FailureCategory::ShardCorruption
+        );
+    }
+
+    #[test]
+    fn chaos_run_requires_explicit_node_id() {
+        let missing = resolve_chaos_target_node(&FailureInjectionRequest {
+            kind: "chaos".to_string(),
+            node_id: None,
+            shard_id: None,
+        });
+        let present = resolve_chaos_target_node(&FailureInjectionRequest {
+            kind: "chaos".to_string(),
+            node_id: Some("node-prod-1".to_string()),
+            shard_id: None,
+        });
+
+        assert_eq!(missing, Err("node_id"));
+        assert_eq!(present.as_deref(), Ok("node-prod-1"));
     }
 }
