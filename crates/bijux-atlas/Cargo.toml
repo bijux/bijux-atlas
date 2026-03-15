@@ -411,61 +411,9 @@ path = "benches/server/query_validate.rs"
 harness = false
 
 [[example]]
-name = "api_openapi_spec"
-path = "examples/api/openapi_spec.rs"
+name = "client_dataset_query"
+path = "examples/client/dataset_query.rs"
 
 [[example]]
-name = "client_cli"
-path = "examples/client/client_cli.rs"
-
-[[example]]
-name = "client_dataset_scan"
-path = "examples/client/dataset_scan.rs"
-
-[[example]]
-name = "client_filtered_query"
-path = "examples/client/filtered_query.rs"
-
-[[example]]
-name = "client_pagination"
-path = "examples/client/pagination.rs"
-
-[[example]]
-name = "client_simple_query"
-path = "examples/client/simple_query.rs"
-
-[[example]]
-name = "client_streaming_results"
-path = "examples/client/streaming_results.rs"
-
-[[example]]
-name = "server_metrics_names"
-path = "examples/server/metrics_names.rs"
-
-[[example]]
-name = "cli_main_entry"
-path = "examples/cli/main_entry.rs"
-
-[[example]]
-name = "dataset_dataset_id"
-path = "examples/dataset/dataset_id.rs"
-
-[[example]]
-name = "ingest_default_options"
-path = "examples/ingest/default_options.rs"
-
-[[example]]
-name = "library_crate_basics"
-path = "examples/library/crate_basics.rs"
-
-[[example]]
-name = "policy_strictness_mode"
-path = "examples/policy/strictness_mode.rs"
-
-[[example]]
-name = "query_region_parse"
-path = "examples/query/region_parse.rs"
-
-[[example]]
-name = "store_manifest_file"
-path = "examples/store/manifest_file.rs"
+name = "library_getting_started"
+path = "examples/library/getting_started.rs"
