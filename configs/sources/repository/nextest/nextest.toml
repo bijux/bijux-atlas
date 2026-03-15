@@ -1,7 +1,7 @@
 # schema_version = 1
-# owner = bijux-atlas-infra
-# purpose = Contract config for configs/sources/repository/nextest/nextest.toml
-# authority = bijux-atlas-infra
+# owner = platform
+# purpose = Nextest execution policy for repository test lanes.
+# authority = platform
 # stability = stable
 # last_updated = 2026-02-16
 
