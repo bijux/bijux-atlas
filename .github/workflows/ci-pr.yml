@@ -1065,7 +1065,7 @@ jobs:
           configs_root = root / "configs"
           today = datetime.date.fromisoformat("2026-03-01")
           groups = json.loads((root / "configs/registry/inventory/groups.json").read_text())
-          index_payload = json.loads((root / "configs/_generated/configs-index.json").read_text())
+          index_payload = json.loads((root / "configs/generated/configs-index.json").read_text())
           owners_registry = json.loads((root / "configs/registry/owners.json").read_text())
           consumers_registry = json.loads((root / "configs/registry/consumers.json").read_text())
           schema_map = json.loads((root / "configs/registry/schemas.json").read_text())
@@ -1194,7 +1194,7 @@ jobs:
           missing_consumer = []
           missing_schema_or_justification = []
           for rel in sorted(tracked_files):
-              if rel.startswith("configs/_generated/"):
+              if rel.startswith("configs/generated/"):
                   continue
               group_name = pathlib.Path(rel).parts[1] if len(pathlib.Path(rel).parts) > 1 else None
               has_owner = any(fnmatch.fnmatch(rel, pat) for pat in owner_patterns) or (group_name in (owners_registry.get("groups") or {}))
@@ -1304,7 +1304,7 @@ jobs:
               r"(?i)(password|secret|token)\\s*[:=]\\s*[\"'][^\"']+[\"']",
           ]
           for rel in sorted(structured_files):
-              if rel.startswith("configs/_generated/"):
+              if rel.startswith("configs/generated/"):
                   continue
               txt = (root / rel).read_text()
               for pat in secret_patterns:

@@ -144,7 +144,7 @@
       "severity": "must",
       "title": "generated config surfaces stay separate from authored inputs",
       "touched_paths": [
-        "configs/_generated/**",
+        "configs/generated/**",
         "configs/schemas/registry/generated/**",
         "configs/registry/inventory/configs.json"
       ]
@@ -225,7 +225,7 @@
       "title": "all config contract outputs conform to schemas",
       "touched_paths": [
         "configs/schemas/contracts/*.json",
-        "configs/_generated/configs-index.json"
+        "configs/generated/configs-index.json"
       ]
     },
     {
@@ -288,7 +288,7 @@
       "severity": "must",
       "title": "all configs are deterministic",
       "touched_paths": [
-        "configs/_generated/configs-index.json",
+        "configs/generated/configs-index.json",
         "configs/registry/inventory/configs.json"
       ]
     },
@@ -381,7 +381,7 @@
       "severity": "must",
       "title": "generated and authored config surfaces do not overlap",
       "touched_paths": [
-        "configs/_generated/**",
+        "configs/generated/**",
         "configs/registry/inventory/configs.json"
       ]
     },
@@ -508,7 +508,7 @@
       "touched_paths": [
         "configs/registry/contracts.json",
         "configs/CONTRACT.md",
-        "configs/_generated/configs-index.json"
+        "configs/generated/configs-index.json"
       ]
     },
     {
@@ -576,7 +576,7 @@
         "configs/registry/schemas.json",
         "configs/registry/contracts.json",
         "configs/registry/inventory/index.json",
-        "configs/_generated/configs-index.json"
+        "configs/generated/configs-index.json"
       ]
     },
     {
@@ -769,7 +769,7 @@
       "title": "root authority config files declare owners",
       "touched_paths": [
         "configs/registry/owners.json",
-        "configs/_generated/configs-index.json",
+        "configs/generated/configs-index.json",
         "configs/registry/contracts.json",
         "configs/registry/consumers.json",
         "configs/registry/inventory/index.json",
@@ -788,7 +788,7 @@
       "severity": "must",
       "title": "root authority config files declare consumers",
       "touched_paths": [
-        "configs/_generated/configs-index.json",
+        "configs/generated/configs-index.json",
         "configs/registry/contracts.json",
         "configs/registry/consumers.json",
         "configs/registry/inventory/index.json",

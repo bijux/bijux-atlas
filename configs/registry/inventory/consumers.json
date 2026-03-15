@@ -1,123 +1,25 @@
 {
   "schema_version": 1,
   "groups": {
-    "_generated": [
-      "bijux-dev-atlas generated config indexes"
-    ],
-    "_internal": [
-      "bijux-dev-atlas internal config checks"
-    ],
-    "audit": [
-      "audit bundle generation and validation"
-    ],
-    "ci": [
-      "workflow routing and lane contracts"
-    ],
-    "cli": [
-      "bijux dev atlas help",
-      "bijux dev atlas doctor"
-    ],
-    "clients": [
-      "client contract generation",
-      "release verification"
-    ],
-    "coverage": [
-      "coverage policy checks"
-    ],
-    "datasets": [
-      "dataset validation",
-      "ingest planning"
-    ],
-    "docs": [
-      "docs-only workflow",
-      "docs-audit workflow"
-    ],
     "examples": [
-      "tutorial verification",
-      "docs examples"
+      "non-authoritative examples used by docs, tutorials, and validation fixtures"
     ],
-    "gates": [
-      "ci lane routing"
+    "generated": [
+      "bijux-dev-atlas generated config indexes and machine-written snapshots"
     ],
-    "governance": [
-      "governance validation",
-      "registry doctor"
-    ],
-    "inventory": [
-      "bijux-dev-atlas configs inventory",
-      "repo governance checks"
-    ],
-    "layout": [
-      "repository layout checks"
-    ],
-    "make": [
-      "make governance checks"
-    ],
-    "meta": [
-      "ownership validation"
-    ],
-    "nextest": [
-      "cargo nextest test lanes"
-    ],
-    "observability": [
-      "release verification",
-      "runtime observability validation"
-    ],
-    "openapi": [
-      "openapi snapshot checks"
-    ],
-    "ops": [
-      "ops validation and conformance"
-    ],
-    "perf": [
-      "performance threshold checks"
-    ],
-    "policy": [
-      "policy lint checks"
-    ],
-    "product": [
-      "artifact manifest checks"
+    "internal": [
+      "bijux-dev-atlas internal config support material"
     ],
     "registry": [
       "config ownership and consumer registries",
       "configs graph and explain commands"
     ],
-    "release": [
-      "release packaging policy checks"
-    ],
-    "repo": [
-      "repo doctor and surface checks"
-    ],
-    "reports": [
-      "bijux dev atlas artifacts report inventory",
-      "bijux dev atlas artifacts report validate"
-    ],
-    "rust": [
-      "cargo fmt and clippy"
-    ],
     "schemas": [
       "configs schema validation",
       "contract output validation"
     ],
-    "security": [
-      "cargo deny and audit"
-    ],
-    "shellcheck": [
-      "shell lint policy checks"
-    ],
-    "slo": [
-      "slo contract checks"
-    ],
     "sources": [
       "authored config inputs grouped by domain"
-    ],
-    "system": [
-      "system simulation validation"
-    ],
-    "tutorials": [
-      "tutorial real-data workflow",
-      "tutorial data contracts",
-      "bijux-dev-atlas tutorials commands"
     ]
   }
 }

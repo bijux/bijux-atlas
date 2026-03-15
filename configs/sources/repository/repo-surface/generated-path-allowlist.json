@@ -2,7 +2,7 @@
   "schema_version": 1,
   "allowed_prefixes": [
     "artifacts/",
-    "configs/_generated/",
+    "configs/generated/",
     "configs/schemas/registry/generated/",
     "crates/",
     "docs/_internal/generated/",

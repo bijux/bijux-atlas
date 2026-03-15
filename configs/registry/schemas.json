@@ -3,7 +3,7 @@
     "configs/registry/consumers.json": "configs/schemas/registry/configs-consumer-map.schema.json",
     "configs/registry/owners.json": "configs/schemas/registry/configs-owner-map.schema.json",
     "configs/registry/schemas.json": "configs/schemas/registry/configs-schema-map.schema.json",
-    "configs/_generated/configs-index.json": "configs/schemas/registry/configs-index.schema.json",
+    "configs/generated/configs-index.json": "configs/schemas/registry/configs-index.schema.json",
     "configs/sources/governance/audit/audit-artifact-checklist.json": "configs/schemas/contracts/inventory-configs.schema.json",
     "configs/sources/governance/audit/compliance-matrix-template.json": "configs/schemas/contracts/inventory-configs.schema.json",
     "configs/sources/repository/ci/env-contract.json": "configs/schemas/contracts/env.schema.json",

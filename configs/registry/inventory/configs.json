@@ -176,7 +176,7 @@
     },
     {
       "generated_files": [
-        "configs/_generated/configs-index.json"
+        "configs/generated/configs-index.json"
       ],
       "internal_files": [],
       "name": "inventory",

@@ -340,7 +340,7 @@ pub fn explain_payload(repo_root: &Path, file: &str) -> Result<serde_json::Value
 }
 
 pub fn ensure_generated_index(repo_root: &Path) -> Result<String, String> {
-    let path = repo_root.join("configs/_generated/configs-index.json");
+    let path = repo_root.join("configs/generated/configs-index.json");
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)
             .map_err(|err| format!("create {} failed: {err}", parent.display()))?;

@@ -7,6 +7,8 @@ Role layout:
 - `configs/schemas/` contains validation schemas and contract definitions.
 - `configs/sources/` contains authored configuration inputs grouped by domain.
 - `configs/examples/` contains non-authoritative example inputs.
+- `configs/generated/` contains machine-written config artifacts that should be regenerated, not hand-edited.
+- `configs/internal/` contains internal support material that is part of the repo contract but not a public config surface.
 
 The authoritative machine registries are `configs/registry/inventory/configs.json` and `configs/registry/contracts.json`.
 Ownership and consumer mapping SSOT files:

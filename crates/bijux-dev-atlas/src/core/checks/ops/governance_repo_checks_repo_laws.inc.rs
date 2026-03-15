@@ -197,7 +197,7 @@ pub(super) fn check_repo_generated_content_stays_in_allowed_paths(
     for rel in String::from_utf8_lossy(&output.stdout).lines() {
         let is_generated = rel.contains("/generated/")
             || rel.starts_with("ops/_generated")
-            || rel.starts_with("configs/_generated");
+            || rel.starts_with("configs/generated");
         if !is_generated {
             continue;
         }

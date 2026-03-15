@@ -37,8 +37,8 @@
   ],
   "kind": "configs-schema-index",
   "mapped_file_patterns": [
-    "configs/_generated/configs-index.json",
     "configs/examples/**/*.json",
+    "configs/generated/configs-index.json",
     "configs/registry/consumers.json",
     "configs/registry/contracts.json",
     "configs/registry/inventory/configs.json",

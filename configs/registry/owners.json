@@ -3,7 +3,7 @@
     "configs/registry/consumers.json": "platform",
     "configs/registry/owners.json": "platform",
     "configs/registry/schemas.json": "platform",
-    "configs/_generated/configs-index.json": "platform",
+    "configs/generated/configs-index.json": "platform",
     "configs/sources/governance/audit/audit-artifact-checklist.json": "atlas-governance",
     "configs/sources/governance/audit/audit-bundle.schema.json": "atlas-governance",
     "configs/sources/governance/audit/compliance-matrix-template.json": "atlas-governance",

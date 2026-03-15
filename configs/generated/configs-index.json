@@ -283,7 +283,7 @@
         "schemas": 3
       },
       "files": [
-        "configs/_generated/configs-index.json",
+        "configs/generated/configs-index.json",
         "configs/registry/inventory/configs.json",
         "configs/registry/inventory/consumers.json",
         "configs/registry/inventory/docs-owners.json",
