@@ -1,3 +1,3 @@
 # Datasets Owner
 
-- Owner: `bijux-atlas-operations`
+- Owner: `bijux-atlas-data`

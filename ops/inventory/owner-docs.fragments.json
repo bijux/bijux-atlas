@@ -4,7 +4,7 @@
     {
       "path": "ops/datasets",
       "owner_doc": "ops/datasets/OWNER.md",
-      "declared_owner": "bijux-atlas-operations"
+      "declared_owner": "bijux-atlas-data"
     },
     {
       "path": "ops/e2e",

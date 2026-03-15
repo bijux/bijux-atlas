@@ -1,13 +1,15 @@
 # Ops Datasets
 
 ## Purpose
-Own dataset manifest lock, pins, fetch/verify, QC, and promotion simulation.
+Own dataset manifests, lifecycle policy, fixture governance, and generated inventory for operator-facing dataset workflows.
 
 ## Entry points
-- `make ops-datasets-verify`
-- `make ops-dataset-qc`
-- `make ops-dataset-promotion-sim`
-- `make ops-publish-medium`
+- `bijux-dev-atlas ops datasets fetch`
+- `bijux-dev-atlas ops datasets validate`
+- `bijux-dev-atlas ops datasets verify`
+- `bijux-dev-atlas ops datasets qc diff`
+- `bijux-dev-atlas ops datasets qc summary`
+- `bijux-dev-atlas ops datasets lock`
 
 ## Contracts
 - `ops/datasets/CONTRACT.md`
@@ -22,6 +24,7 @@ Own dataset manifest lock, pins, fetch/verify, QC, and promotion simulation.
 ## Generated
 - `ops/datasets/generated/dataset-index.json`
 - `ops/datasets/generated/dataset-lineage.json`
+- `ops/datasets/generated/fixture-inventory.json`
 
 ## Artifacts
 - `artifacts/atlas-dev/ops/<run_id>/datasets/`
@@ -30,7 +33,8 @@ Own dataset manifest lock, pins, fetch/verify, QC, and promotion simulation.
 - Dataset lock/schema mismatch.
 - QC threshold failure.
 - Promotion simulation contract regression.
+- Fixture drift without manifest-lock evidence.
 
+## Ownership
 - Owner: `bijux-atlas-data`
-- Purpose: `dataset lifecycle contracts and generated inventory surfaces`
-- Consumers: `bijux dev atlas ops datasets commands, checks_ops_domain_contract_structure`
+- Consumers: `bijux-dev-atlas ops datasets ...`, `checks_ops_domain_contract_structure`, `checks_ops_fixture_governance`
