@@ -502,12 +502,12 @@ mod tests {
         let objects = vec![GovernanceObject {
             id: "docs:page:index".to_string(),
             domain: "docs".to_string(),
-            owner: "docs-governance".to_string(),
+            owner: "docs".to_string(),
             consumers: vec!["docs/index.md".to_string()],
             lifecycle: "stable".to_string(),
             evidence: vec!["artifacts/governance/docs/pages.json".to_string()],
             links: vec!["docs/index.md".to_string()],
-            authority_source: "docs/_internal/registry/registry.json".to_string(),
+            authority_source: "docs/".to_string(),
             reviewed_on: "2026-03-03".to_string(),
         }];
         let lanes = vec![serde_json::json!({"lane": "ci-pr-fast"})];

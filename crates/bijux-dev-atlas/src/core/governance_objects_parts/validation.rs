@@ -276,13 +276,9 @@ pub(super) fn validate_governance_objects(
                 errors.push(format!("object {} has missing link: {}", object.id, link));
             }
         }
-        if object.domain == "docs"
-            && !object
-                .authority_source
-                .starts_with("docs/_internal/registry/")
-        {
+        if object.domain == "docs" && !object.authority_source.starts_with("docs/") {
             errors.push(format!(
-                "docs authority source must be docs registry for {}",
+                "docs authority source must stay under docs/ for {}",
                 object.id
             ));
         }
@@ -294,7 +290,7 @@ pub(super) fn validate_governance_objects(
         }
     }
 
-    let required_domains = ["docs", "configs", "ops", "make", "docker"];
+    let required_domains = ["docs", "configs", "ops", "make"];
     for domain in required_domains {
         if !objects.iter().any(|obj| obj.domain == domain) {
             errors.push(format!(

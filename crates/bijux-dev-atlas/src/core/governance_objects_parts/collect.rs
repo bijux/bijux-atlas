@@ -11,6 +11,22 @@ fn push_object(objects: &mut Vec<GovernanceObject>, object: GovernanceObject) {
     objects.push(object);
 }
 
+fn walk_docs_files(root: &Path) -> Vec<PathBuf> {
+    let mut files = Vec::new();
+    let Ok(entries) = fs::read_dir(root) else {
+        return files;
+    };
+    for entry in entries.filter_map(Result::ok) {
+        let path = entry.path();
+        if path.is_dir() {
+            files.extend(walk_docs_files(&path));
+        } else {
+            files.push(path);
+        }
+    }
+    files
+}
+
 fn read_domain_review_dates(repo_root: &Path) -> BTreeMap<String, String> {
     let path = repo_root.join("ops/governance/repository/domain-review-dates.json");
     let Ok(value) = read_json(&path) else {
@@ -36,41 +52,33 @@ pub(super) fn collect_governance_objects(
     let mut objects = Vec::<GovernanceObject>::new();
     let domain_reviews = read_domain_review_dates(repo_root);
 
-    let docs_registry = read_json(&repo_root.join("docs/_internal/registry/registry.json"))?;
-    for row in docs_registry["documents"]
-        .as_array()
-        .cloned()
-        .unwrap_or_default()
-    {
-        let path = row["path"].as_str().unwrap_or_default();
-        if !path.starts_with("docs/") || path.starts_with("docs/_internal/") {
+    for path in walk_docs_files(&repo_root.join("docs")) {
+        if path.extension().and_then(|value| value.to_str()) != Some("md") {
             continue;
         }
-        let lifecycle = row["lifecycle"]
-            .as_str()
-            .or_else(|| row["stability"].as_str())
-            .unwrap_or("stable");
-        if lifecycle != "stable" {
+        let Ok(rel) = path.strip_prefix(repo_root) else {
+            continue;
+        };
+        let rel = rel.display().to_string();
+        if rel.starts_with("docs/_internal/")
+            || rel.starts_with("docs/_drafts/")
+            || rel.starts_with("docs/_assets/")
+        {
             continue;
         }
+        let reviewed_on = domain_reviews.get("docs").cloned().unwrap_or_default();
         push_object(
             &mut objects,
             GovernanceObject {
-                id: format!("docs:page:{}", slug_from_path(path)),
+                id: format!("docs:page:{}", slug_from_path(&rel)),
                 domain: "docs".to_string(),
-                owner: row["owner"]
-                    .as_str()
-                    .unwrap_or("docs-governance")
-                    .to_string(),
+                owner: "docs".to_string(),
                 consumers: vec!["docs/index.md".to_string()],
-                lifecycle: lifecycle.to_string(),
+                lifecycle: "stable".to_string(),
                 evidence: vec!["artifacts/governance/docs/pages.json".to_string()],
-                links: vec![path.to_string()],
-                authority_source: "docs/_internal/registry/registry.json".to_string(),
-                reviewed_on: row["last_reviewed"]
-                    .as_str()
-                    .unwrap_or_default()
-                    .to_string(),
+                links: vec![rel],
+                authority_source: "docs/".to_string(),
+                reviewed_on,
             },
         );
     }
@@ -233,7 +241,7 @@ pub(super) fn collect_governance_objects(
                 id: format!("docker:image:{}", name.to_ascii_lowercase()),
                 domain: "docker".to_string(),
                 owner: "platform".to_string(),
-                consumers: vec!["bijux dev atlas contract run --domain docker".to_string()],
+                consumers: vec!["bijux dev atlas release images manifest-verify".to_string()],
                 lifecycle: "stable".to_string(),
                 evidence: vec!["artifacts/governance/ops/docker/images.json".to_string()],
                 links: vec![

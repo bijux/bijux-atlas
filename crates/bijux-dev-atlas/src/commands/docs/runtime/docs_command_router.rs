@@ -805,7 +805,7 @@ fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_j
     let mut lines = vec![
         "# Docs Health Dashboard".to_string(),
         String::new(),
-        "- Owner: `docs-governance`".to_string(),
+        "- Owner: `docs`".to_string(),
         "- Review cadence: `quarterly`".to_string(),
         "- Type: `generated`".to_string(),
         "- Audience: `contributor`".to_string(),

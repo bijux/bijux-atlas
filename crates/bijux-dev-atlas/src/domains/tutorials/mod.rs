@@ -59,7 +59,7 @@ impl Domain for TutorialsDomain {
                     kind: RunnableKind::Check,
                     mode: RunnableMode::Pure,
                     summary: "Validate tutorials assets and generated artifacts".to_string(),
-                    owner: "docs-governance".to_string(),
+                    owner: "docs".to_string(),
                     group: "tutorials".to_string(),
                     tags: Vec::new(),
                     commands: vec!["bijux-dev-atlas tutorials verify --format json".to_string()],
