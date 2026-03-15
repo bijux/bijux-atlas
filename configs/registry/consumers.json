@@ -350,7 +350,27 @@
       "bijux-dev-atlas",
       "ci"
     ],
-    "layout": [
+    "repo-layout": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "repo-surface": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "coverage": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "shell": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "product": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "release": [
       "bijux-dev-atlas",
       "ci"
     ],

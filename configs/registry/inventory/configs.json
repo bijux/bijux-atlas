@@ -200,24 +200,108 @@
     {
       "generated_files": [],
       "internal_files": [],
-      "name": "layout",
+      "name": "repo-layout",
       "owner": "platform",
       "public_files": [
         "configs/sources/repository/layout/*",
-        "configs/sources/repository/repo-surface/*.json",
-        "configs/sources/repository/gates/*.json",
-        "configs/sources/repository/coverage/*",
-        "configs/sources/repository/shell/*",
-        "configs/sources/runtime/product/*",
-        "configs/sources/release/*.json"
+        "configs/sources/repository/gates/*.json"
       ],
       "schema_owner": "platform",
       "schemas": [
-        "configs/schemas/contracts/inventory-budgets.schema.json"
+        "configs/schemas/contracts/inventory-budgets.schema.json",
+        "configs/schemas/contracts/inventory-commands.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
         "bijux dev atlas check tree-budgets",
+        "bijux dev atlas configs validate"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "repo-surface",
+      "owner": "platform",
+      "public_files": [
+        "configs/sources/repository/repo-surface/*.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schemas/registry/public-surface.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas configs validate",
+        "bijux dev atlas docs build"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "coverage",
+      "owner": "platform",
+      "public_files": [
+        "configs/sources/repository/coverage/*"
+      ],
+      "schema_owner": "platform",
+      "schemas": [],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "make coverage",
+        "cargo llvm-cov nextest"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "shell",
+      "owner": "platform",
+      "public_files": [
+        "configs/sources/repository/shell/*"
+      ],
+      "schema_owner": "platform",
+      "schemas": [],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "shellcheck",
+        "bijux dev atlas configs validate"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "product",
+      "owner": "product",
+      "public_files": [
+        "configs/sources/runtime/product/*"
+      ],
+      "schema_owner": "product",
+      "schemas": [
+        "configs/sources/runtime/product/artifact-manifest.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas release verify",
+        "bijux dev atlas configs validate"
+      ]
+    },
+    {
+      "generated_files": [],
+      "internal_files": [],
+      "name": "release",
+      "owner": "platform",
+      "public_files": [
+        "configs/sources/release/*.json"
+      ],
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schemas/contracts/inventory-configs.schema.json",
+        "configs/schemas/registry/release-reproducibility-policy.schema.json",
+        "configs/schemas/registry/release-version-policy.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas release verify",
         "bijux dev atlas configs validate"
       ]
     },
@@ -356,13 +440,13 @@
       "generated_files": [],
       "internal_files": [],
       "name": "policy",
-      "owner": "platform",
+      "owner": "atlas-governance",
       "public_files": [
         "configs/sources/governance/policy/*.json",
         "configs/sources/governance/policy/*.yml",
         "configs/sources/governance/policy/*.txt"
       ],
-      "schema_owner": "platform",
+      "schema_owner": "atlas-governance",
       "schemas": [
         "configs/sources/governance/policy/policy.schema.json",
         "configs/schemas/registry/policy-relaxations.schema.json"
@@ -559,17 +643,15 @@
   ],
   "max_depth": 6,
   "max_group_depth": 2,
-  "max_groups": 25,
+  "max_groups": 30,
   "root_files": [
-    "configs/registry/consumers.json",
     "configs/CONTRACT.md",
     "configs/INDEX.md",
-    "configs/registry/owners.json",
+    "configs/NAMING.md",
+    "configs/OWNERS.md",
     "configs/README.md",
-    "configs/registry/schemas.json",
-    "configs/registry/contracts.json",
     "configs/registry/consumers.json",
-    "configs/registry/inventory/index.json",
+    "configs/registry/contracts.json",
     "configs/registry/owners.json",
     "configs/registry/schemas.json"
   ],

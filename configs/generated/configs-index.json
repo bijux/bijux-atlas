@@ -310,11 +310,138 @@
     },
     {
       "counts": {
-        "covered": 34,
+        "covered": 6,
         "generated": 0,
         "internal": 0,
-        "public": 34,
+        "public": 6,
+        "schemas": 2
+      },
+      "files": [
+        "configs/sources/repository/gates/lanes.json",
+        "configs/sources/repository/layout/README.md",
+        "configs/sources/repository/layout/generated-files.json",
+        "configs/sources/repository/layout/inventory-budgets.json",
+        "configs/sources/repository/layout/ops-markdown-naming-policy.json",
+        "configs/sources/repository/layout/root-markdown-allowlist.json"
+      ],
+      "name": "repo-layout",
+      "owner": "platform",
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schemas/contracts/inventory-budgets.schema.json",
+        "configs/schemas/contracts/inventory-commands.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas check tree-budgets",
+        "bijux dev atlas configs validate"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 7,
+        "generated": 0,
+        "internal": 0,
+        "public": 7,
         "schemas": 1
+      },
+      "files": [
+        "configs/sources/repository/repo-surface/generated-path-allowlist.json",
+        "configs/sources/repository/repo-surface/root-file-allowlist.json",
+        "configs/sources/repository/repo-surface/script-extension-allowlist.json",
+        "configs/sources/repository/repo-surface/surface-snapshot.json",
+        "configs/sources/repository/repo-surface/surfaces.json",
+        "configs/sources/repository/repo-surface/symlink-allowlist.json",
+        "configs/sources/repository/repo-surface/tree-budget-exceptions.json"
+      ],
+      "name": "repo-surface",
+      "owner": "platform",
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schemas/registry/public-surface.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas configs validate",
+        "bijux dev atlas docs build"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 2,
+        "generated": 0,
+        "internal": 0,
+        "public": 2,
+        "schemas": 0
+      },
+      "files": [
+        "configs/sources/repository/coverage/README.md",
+        "configs/sources/repository/coverage/thresholds.toml"
+      ],
+      "name": "coverage",
+      "owner": "platform",
+      "schema_owner": "platform",
+      "schemas": [],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "make coverage",
+        "cargo llvm-cov nextest"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 2,
+        "generated": 0,
+        "internal": 0,
+        "public": 2,
+        "schemas": 0
+      },
+      "files": [
+        "configs/sources/repository/shell/README.md",
+        "configs/sources/repository/shell/shellcheckrc"
+      ],
+      "name": "shell",
+      "owner": "platform",
+      "schema_owner": "platform",
+      "schemas": [],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "shellcheck",
+        "bijux dev atlas configs validate"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 3,
+        "generated": 0,
+        "internal": 0,
+        "public": 3,
+        "schemas": 1
+      },
+      "files": [
+        "configs/sources/runtime/product/README.md",
+        "configs/sources/runtime/product/artifact-manifest.schema.json",
+        "configs/sources/runtime/product/external-tools-manifest.json"
+      ],
+      "name": "product",
+      "owner": "product",
+      "schema_owner": "product",
+      "schemas": [
+        "configs/sources/runtime/product/artifact-manifest.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas release verify",
+        "bijux dev atlas configs validate"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 14,
+        "generated": 0,
+        "internal": 0,
+        "public": 14,
+        "schemas": 3
       },
       "files": [
         "configs/sources/release/crate-package-policy.json",
@@ -330,37 +457,19 @@
         "configs/sources/release/publish-policy.json",
         "configs/sources/release/reproducibility-policy.json",
         "configs/sources/release/semver-api-policy.json",
-        "configs/sources/release/version-policy.json",
-        "configs/sources/repository/coverage/README.md",
-        "configs/sources/repository/coverage/thresholds.toml",
-        "configs/sources/repository/gates/lanes.json",
-        "configs/sources/repository/layout/README.md",
-        "configs/sources/repository/layout/generated-files.json",
-        "configs/sources/repository/layout/inventory-budgets.json",
-        "configs/sources/repository/layout/ops-markdown-naming-policy.json",
-        "configs/sources/repository/layout/root-markdown-allowlist.json",
-        "configs/sources/repository/repo-surface/generated-path-allowlist.json",
-        "configs/sources/repository/repo-surface/root-file-allowlist.json",
-        "configs/sources/repository/repo-surface/script-extension-allowlist.json",
-        "configs/sources/repository/repo-surface/surface-snapshot.json",
-        "configs/sources/repository/repo-surface/surfaces.json",
-        "configs/sources/repository/repo-surface/symlink-allowlist.json",
-        "configs/sources/repository/repo-surface/tree-budget-exceptions.json",
-        "configs/sources/repository/shell/README.md",
-        "configs/sources/repository/shell/shellcheckrc",
-        "configs/sources/runtime/product/README.md",
-        "configs/sources/runtime/product/artifact-manifest.schema.json",
-        "configs/sources/runtime/product/external-tools-manifest.json"
+        "configs/sources/release/version-policy.json"
       ],
-      "name": "layout",
+      "name": "release",
       "owner": "platform",
       "schema_owner": "platform",
       "schemas": [
-        "configs/schemas/contracts/inventory-budgets.schema.json"
+        "configs/schemas/contracts/inventory-configs.schema.json",
+        "configs/schemas/registry/release-reproducibility-policy.schema.json",
+        "configs/schemas/registry/release-version-policy.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
-        "bijux dev atlas check tree-budgets",
+        "bijux dev atlas release verify",
         "bijux dev atlas configs validate"
       ]
     },
@@ -631,8 +740,8 @@
         "configs/sources/governance/policy/slow-checks-ratchet.json"
       ],
       "name": "policy",
-      "owner": "platform",
-      "schema_owner": "platform",
+      "owner": "atlas-governance",
+      "schema_owner": "atlas-governance",
       "schemas": [
         "configs/sources/governance/policy/policy.schema.json",
         "configs/schemas/registry/policy-relaxations.schema.json"
@@ -1017,18 +1126,16 @@
   "kind": "configs-index",
   "max_depth": 6,
   "max_group_depth": 2,
-  "max_groups": 25,
+  "max_groups": 30,
   "registry_path": "configs/registry/inventory/configs.json",
   "root_files": [
-    "configs/registry/consumers.json",
     "configs/CONTRACT.md",
     "configs/INDEX.md",
-    "configs/registry/owners.json",
+    "configs/NAMING.md",
+    "configs/OWNERS.md",
     "configs/README.md",
-    "configs/registry/schemas.json",
-    "configs/registry/contracts.json",
     "configs/registry/consumers.json",
-    "configs/registry/inventory/index.json",
+    "configs/registry/contracts.json",
     "configs/registry/owners.json",
     "configs/registry/schemas.json"
   ],
