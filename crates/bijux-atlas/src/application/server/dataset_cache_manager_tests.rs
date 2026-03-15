@@ -207,8 +207,7 @@ async fn read_only_sqlite_pragma_profile_is_applied() {
 }
 
 #[tokio::test]
-#[ignore]
-async fn chaos_mode_slow_store_10x_latency_graceful_errors() {
+async fn slow_store_timeout_returns_a_real_outcome() {
     let (ds, manifest, sqlite) = mk_dataset();
     let store = Arc::new(FakeStore {
         slow_read: true,
@@ -243,8 +242,7 @@ async fn chaos_mode_slow_store_10x_latency_graceful_errors() {
 }
 
 #[tokio::test]
-#[ignore]
-async fn chaos_mode_delete_dataset_mid_request_redownloads_cleanly() {
+async fn missing_cached_sqlite_is_redownloaded_on_next_open() {
     let (ds, manifest, sqlite) = mk_dataset();
     let store = Arc::new(FakeStore::default());
     store.manifest.lock().await.insert(ds.clone(), manifest);
@@ -364,8 +362,7 @@ async fn corruption_is_detected_by_reverification() {
 }
 
 #[tokio::test]
-#[ignore]
-async fn chaos_mode_random_byte_corruption_never_serves_results() {
+async fn byte_corrupted_cached_dataset_is_not_served_in_cached_only_mode() {
     let (ds, manifest, sqlite) = mk_dataset();
     let store = Arc::new(FakeStore::default());
     store.manifest.lock().await.insert(ds.clone(), manifest);
