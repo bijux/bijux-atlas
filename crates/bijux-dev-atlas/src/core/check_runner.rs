@@ -331,7 +331,7 @@ pub(crate) fn evidence_path_has_timestamp(path: &str) -> bool {
 }
 
 fn check_repo_import_boundary(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
-    let target = Path::new("crates/bijux-atlas/src/atlas_command_dispatch.rs");
+    let target = Path::new("crates/bijux-atlas/src/interfaces/cli/dispatch.rs");
     if ctx.adapters.fs.exists(ctx.repo_root, target) {
         Ok(Vec::new())
     } else {
