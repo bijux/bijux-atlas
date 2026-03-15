@@ -1,0 +1,426 @@
+{
+  "schema_version": 1,
+  "commands": [
+    {
+      "id": "api",
+      "kind": "command-family",
+      "purpose": "API command family",
+      "subcommands": [
+        "list",
+        "explain",
+        "diff",
+        "verify",
+        "validate",
+        "contract"
+      ]
+    },
+    {
+      "id": "audit",
+      "kind": "command-family",
+      "purpose": "Audit command family",
+      "subcommands": [
+        "run",
+        "report",
+        "explain",
+        "bundle",
+        "compliance",
+        "readiness"
+      ]
+    },
+    {
+      "id": "check",
+      "kind": "command-family",
+      "purpose": "Governed check execution command family",
+      "subcommands": [
+        "list",
+        "explain",
+        "run",
+        "doctor"
+      ]
+    },
+    {
+      "id": "checks",
+      "kind": "command-family",
+      "purpose": "Checks compatibility command family",
+      "subcommands": [
+        "list",
+        "explain",
+        "run",
+        "doctor"
+      ]
+    },
+    {
+      "id": "ci",
+      "kind": "command-family",
+      "purpose": "Continuous integration command family",
+      "subcommands": [
+        "lanes",
+        "simulate",
+        "env-contract",
+        "validate",
+        "doctor",
+        "surface",
+        "explain",
+        "report",
+        "verify"
+      ]
+    },
+    {
+      "id": "configs",
+      "kind": "command-family",
+      "purpose": "Configuration command family",
+      "subcommands": [
+        "print",
+        "list",
+        "graph",
+        "explain",
+        "verify",
+        "doctor",
+        "validate",
+        "lint",
+        "fmt",
+        "inventory",
+        "compile",
+        "diff"
+      ]
+    },
+    {
+      "id": "datasets",
+      "kind": "command-family",
+      "purpose": "Dataset command family",
+      "subcommands": [
+        "validate"
+      ]
+    },
+    {
+      "id": "describe",
+      "kind": "command-family",
+      "purpose": "Registry-backed explain entrypoint",
+      "subcommands": []
+    },
+    {
+      "id": "docs",
+      "kind": "command-family",
+      "purpose": "Documentation command family",
+      "subcommands": [
+        "check",
+        "verify-contracts",
+        "doctor",
+        "deploy-plan",
+        "pages-smoke",
+        "ux-smoke",
+        "where",
+        "site-dir",
+        "validate",
+        "build",
+        "serve",
+        "clean",
+        "lint",
+        "includes-check",
+        "links",
+        "nav-integrity",
+        "external-links",
+        "inventory",
+        "graph",
+        "top",
+        "dead",
+        "duplicates",
+        "prune-plan",
+        "dedupe-report",
+        "shrink-report",
+        "grep",
+        "health-dashboard",
+        "lifecycle-summary-table",
+        "drill-summary-table",
+        "reference",
+        "generate",
+        "redirects",
+        "merge",
+        "spine",
+        "toc",
+        "verify-generated"
+      ]
+    },
+    {
+      "id": "governance",
+      "kind": "command-family",
+      "purpose": "Governance command family",
+      "subcommands": [
+        "version",
+        "list",
+        "explain",
+        "validate",
+        "check",
+        "rules",
+        "report",
+        "doctrine-report",
+        "exceptions",
+        "deprecations",
+        "breaking",
+        "doctor",
+        "adr"
+      ]
+    },
+    {
+      "id": "ingest",
+      "kind": "command-family",
+      "purpose": "Ingest command family",
+      "subcommands": [
+        "dry-run",
+        "run"
+      ]
+    },
+    {
+      "id": "invariants",
+      "kind": "command-family",
+      "purpose": "Invariant validation command family",
+      "subcommands": [
+        "run",
+        "list",
+        "explain",
+        "coverage",
+        "docs"
+      ]
+    },
+    {
+      "id": "list",
+      "kind": "command-family",
+      "purpose": "Registry-backed discovery entrypoint",
+      "subcommands": []
+    },
+    {
+      "id": "load",
+      "kind": "command-family",
+      "purpose": "Load command family",
+      "subcommands": [
+        "run",
+        "compare",
+        "baseline",
+        "explain"
+      ]
+    },
+    {
+      "id": "migrations",
+      "kind": "command-family",
+      "purpose": "Migration command family",
+      "subcommands": [
+        "status"
+      ]
+    },
+    {
+      "id": "observe",
+      "kind": "command-family",
+      "purpose": "Observability command family",
+      "subcommands": [
+        "metrics",
+        "dashboards",
+        "logs",
+        "traces"
+      ]
+    },
+    {
+      "id": "ops",
+      "kind": "command-family",
+      "purpose": "Operations command family",
+      "subcommands": [
+        "logs",
+        "describe",
+        "events",
+        "resources",
+        "kind",
+        "helm",
+        "list",
+        "explain",
+        "stack",
+        "k8s",
+        "profiles",
+        "profile",
+        "load",
+        "datasets",
+        "e2e",
+        "scenario",
+        "obs",
+        "schema",
+        "inventory-domain",
+        "report-domain",
+        "evidence",
+        "diagnose",
+        "drills",
+        "tools",
+        "suite",
+        "doctor",
+        "validate",
+        "graph",
+        "inventory",
+        "docs",
+        "docs-verify",
+        "conformance",
+        "report",
+        "helm-env",
+        "readiness",
+        "render",
+        "install",
+        "smoke",
+        "status",
+        "list-profiles",
+        "explain-profile",
+        "list-tools",
+        "verify-tools",
+        "list-actions",
+        "plan",
+        "package",
+        "release-plan",
+        "install-plan",
+        "up",
+        "down",
+        "clean",
+        "cleanup",
+        "reset",
+        "pins",
+        "generate"
+      ]
+    },
+    {
+      "id": "perf",
+      "kind": "command-family",
+      "purpose": "Performance command family",
+      "subcommands": [
+        "validate",
+        "run",
+        "diff",
+        "cold-start",
+        "kind",
+        "benches",
+        "cli-ux"
+      ]
+    },
+    {
+      "id": "policies",
+      "kind": "command-family",
+      "purpose": "Policy command family",
+      "subcommands": [
+        "list",
+        "explain",
+        "report",
+        "print",
+        "validate"
+      ]
+    },
+    {
+      "id": "registry",
+      "kind": "command-family",
+      "purpose": "Registry command family",
+      "subcommands": [
+        "status",
+        "doctor"
+      ]
+    },
+    {
+      "id": "reports",
+      "kind": "command-family",
+      "purpose": "Report and evidence command family",
+      "subcommands": [
+        "list",
+        "index",
+        "progress",
+        "validate"
+      ]
+    },
+    {
+      "id": "run",
+      "kind": "command-family",
+      "purpose": "Registry-backed execution entrypoint",
+      "subcommands": []
+    },
+    {
+      "id": "runtime",
+      "kind": "command-family",
+      "purpose": "Runtime command family",
+      "subcommands": [
+        "self-check",
+        "print-config-schema",
+        "explain-config-schema"
+      ]
+    },
+    {
+      "id": "security",
+      "kind": "command-family",
+      "purpose": "Security command family",
+      "subcommands": [
+        "validate",
+        "config-validate",
+        "diagnostics",
+        "policy-inspect",
+        "audit",
+        "vulnerability-report",
+        "dependency-audit",
+        "incident-report",
+        "authentication",
+        "authorization",
+        "compliance",
+        "threats",
+        "scan-artifacts"
+      ]
+    },
+    {
+      "id": "suites",
+      "kind": "command-family",
+      "purpose": "Suite command family",
+      "subcommands": [
+        "run",
+        "list",
+        "describe",
+        "last",
+        "report",
+        "history",
+        "diff",
+        "lint"
+      ]
+    },
+    {
+      "id": "system",
+      "kind": "command-family",
+      "purpose": "System inspection command family",
+      "subcommands": [
+        "simulate",
+        "debug",
+        "cluster"
+      ]
+    },
+    {
+      "id": "tests",
+      "kind": "command-family",
+      "purpose": "Test command family",
+      "subcommands": [
+        "list",
+        "run",
+        "doctor"
+      ]
+    },
+    {
+      "id": "tutorials",
+      "kind": "command-family",
+      "purpose": "Tutorial command family",
+      "subcommands": [
+        "list",
+        "explain",
+        "verify",
+        "run",
+        "build",
+        "dataset",
+        "reproducibility-check",
+        "workspace",
+        "dashboards",
+        "evidence",
+        "real-data",
+        "generate"
+      ]
+    },
+    {
+      "id": "validate",
+      "kind": "command-family",
+      "purpose": "Registry-backed validation entrypoint",
+      "subcommands": []
+    }
+  ]
+}
