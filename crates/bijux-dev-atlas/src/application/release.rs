@@ -3412,8 +3412,8 @@ fn normalize_transition_versions(
     to_version: Option<String>,
 ) -> (String, String) {
     (
-        from_version.unwrap_or_else(|| "0.1.0".to_string()),
-        to_version.unwrap_or_else(|| "0.1.1".to_string()),
+        from_version.unwrap_or_else(|| "0.1.1".to_string()),
+        to_version.unwrap_or_else(|| "0.2.0".to_string()),
     )
 }
 

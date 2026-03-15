@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "id": "upgrade-existing-datasets",
-  "from_version": "0.1.0",
-  "to_version": "0.1.1",
-  "kind": "patch",
+  "from_version": "0.1.1",
+  "to_version": "0.2.0",
+  "kind": "minor",
   "steps": ["versioned-install", "dataset-snapshot", "upgrade", "verify-datasets"]
 }
