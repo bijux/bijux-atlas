@@ -1568,7 +1568,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             .all(|id| data_class_ids.contains(id.as_str()));
 
     let request_utils_source = fs::read_to_string(
-        crate::reference::workspace_layout::atlas_request_utils_source(&root),
+        crate::reference::workspace_layout::atlas_http_request_policies_source(&root),
     )
     .map_err(|err| format!("failed to read request utils source: {err}"))?;
     let data_command_source =

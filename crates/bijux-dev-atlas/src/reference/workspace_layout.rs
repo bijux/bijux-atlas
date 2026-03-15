@@ -12,12 +12,12 @@ fn dev_atlas_src_root(repo_root: &Path) -> PathBuf {
 
 #[must_use]
 pub fn atlas_server_router_source(repo_root: &Path) -> PathBuf {
-    atlas_src_root(repo_root).join("application/server/state/router.rs")
+    atlas_src_root(repo_root).join("interfaces/http/router.rs")
 }
 
 #[must_use]
-pub fn atlas_request_utils_source(repo_root: &Path) -> PathBuf {
-    atlas_src_root(repo_root).join("application/server/state/request_utils.rs")
+pub fn atlas_http_request_policies_source(repo_root: &Path) -> PathBuf {
+    atlas_src_root(repo_root).join("interfaces/http/request_policies.rs")
 }
 
 #[must_use]
@@ -62,7 +62,7 @@ mod tests {
         let root = repo_root();
         for path in [
             atlas_server_router_source(&root),
-            atlas_request_utils_source(&root),
+            atlas_http_request_policies_source(&root),
             atlas_http_handlers_utilities_source(&root),
             atlas_http_response_contract_source(&root),
             atlas_runtime_config_tests_source(&root),

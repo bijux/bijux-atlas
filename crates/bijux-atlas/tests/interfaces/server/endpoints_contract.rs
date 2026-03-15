@@ -37,7 +37,7 @@ fn server_routes_match_endpoints_contract_and_telemetry_annotations() {
             .expect("parse endpoints contract");
 
     let server_src = std::fs::read_to_string(
-        root.join("crates/bijux-atlas/src/application/server/state/router.rs"),
+        root.join("crates/bijux-atlas/src/interfaces/http/router.rs"),
     )
     .expect("read server routing source");
 
