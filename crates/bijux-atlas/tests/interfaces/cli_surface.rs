@@ -50,7 +50,7 @@ fn version_output_contains_crate_version() {
         .expect("run version");
     assert!(output.status.success());
     let text = String::from_utf8(output.stdout).expect("utf8 version output");
-    assert!(text.contains(env!("CARGO_PKG_VERSION")));
+    assert!(text.contains(bijux_atlas::version::runtime_version()));
 }
 
 #[test]

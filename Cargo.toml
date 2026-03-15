@@ -1,5 +1,6 @@
 [workspace]
 members = [
+  "crates/bijux-versioning",
   "crates/bijux-dev-atlas",
   "crates/bijux-atlas",
 ]
@@ -32,6 +33,7 @@ todo = "deny"
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+bijux-versioning = { path = "crates/bijux-versioning" }
 bijux-atlas = { version = "=0.2.0", path = "crates/bijux-atlas" }
 bijux-dev-atlas = { version = "=0.2.0", path = "crates/bijux-dev-atlas" }
 bijux-cli = "0.3.2"

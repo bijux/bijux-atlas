@@ -88,7 +88,9 @@ pub(super) fn print_version(verbose: bool, output_mode: OutputMode) -> Result<()
         json!({
                 "plugin": {
                     "name": "bijux-atlas",
-                    "version": env!("CARGO_PKG_VERSION"),
+                    "version": crate::version::runtime_version(),
+                    "semver": crate::version::runtime_semver(),
+                    "source": crate::version::runtime_version_source(),
                     "build_hash": crate::runtime::config::runtime_build_hash(),
                     "rustc": option_env!("RUSTC_VERSION").unwrap_or("unknown")
                 },
@@ -98,7 +100,7 @@ pub(super) fn print_version(verbose: bool, output_mode: OutputMode) -> Result<()
             }
         })
     } else {
-        json!({"name":"bijux-atlas","version": env!("CARGO_PKG_VERSION")})
+        json!({"name":"bijux-atlas","version": crate::version::runtime_version()})
     };
     output::emit_ok(output_mode, payload)?;
     Ok(())
@@ -108,7 +110,8 @@ fn plugin_metadata_payload() -> Value {
     json!({
         "schema_version": "v1",
         "name": "bijux-atlas",
-        "version": env!("CARGO_PKG_VERSION"),
+        "version": crate::version::runtime_semver(),
+        "version_display": crate::version::runtime_version(),
         "compatible_umbrella_min": UMBRELLA_MIN_VERSION,
         "compatible_umbrella_max_exclusive": UMBRELLA_MAX_EXCLUSIVE_VERSION,
         "compatible_umbrella": ">=0.3.0,<0.4.0",

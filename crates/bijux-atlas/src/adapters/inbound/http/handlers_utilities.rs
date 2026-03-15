@@ -52,7 +52,7 @@ pub(crate) async fn landing_handler(
 <li><a href=\"/v1/diff/genes?from_release=109&to_release=110&species=homo_sapiens&assembly=GRCh38&limit=10\">/v1/diff/genes?...&limit=10</a></li>\
 </ul>\
 </body></html>",
-        env!("CARGO_PKG_VERSION"),
+        crate::version::runtime_version(),
         list
     );
     let mut resp = Response::new(Body::from(html));
@@ -139,7 +139,7 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
         "contract_version": "v1",
         "plugin": {
             "name": "bijux-atlas",
-            "version": env!("CARGO_PKG_VERSION"),
+            "version": crate::version::runtime_version(),
             "compatible_umbrella": ">=0.3.0,<0.4.0",
             "build_hash": crate::runtime::config::runtime_build_hash(),
         },

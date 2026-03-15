@@ -338,7 +338,7 @@ pub(crate) async fn diagnostics_handler(State(state): State<AppState>) -> impl I
         },
         "version": {
             "crate": env!("CARGO_PKG_NAME"),
-            "version": env!("CARGO_PKG_VERSION"),
+            "version": crate::version::runtime_version(),
             "build_hash": crate::runtime_build_hash()
         },
         "runtime_stats": runtime_stats,
@@ -399,7 +399,7 @@ pub(crate) async fn system_info_handler(State(state): State<AppState>) -> impl I
     }
     let response = Json(json!({
         "crate": env!("CARGO_PKG_NAME"),
-        "version": env!("CARGO_PKG_VERSION"),
+        "version": crate::version::runtime_version(),
         "os": std::env::consts::OS,
         "arch": std::env::consts::ARCH,
         "hostname": crate::runtime::config::default_runtime_pod_id()
