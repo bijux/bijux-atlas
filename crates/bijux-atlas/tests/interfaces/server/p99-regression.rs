@@ -3,10 +3,11 @@
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use bijux_atlas::{build_router, AppState, DatasetCacheConfig, DatasetCacheManager};
+use bijux_atlas::adapters::inbound::http::router::build_router;
+use bijux_atlas::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
 use bijux_atlas::runtime::wiring::server::FakeStore;
-use bijux_atlas::core::sha256_hex;
-use bijux_atlas::model::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+use bijux_atlas::domain::sha256_hex;
+use bijux_atlas::domain::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use rusqlite::Connection;
 use tempfile::tempdir;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};

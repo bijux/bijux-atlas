@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::model::{
+use bijux_atlas::domain::dataset::{
     normalize_assembly, normalize_release, normalize_species, parse_species_normalized,
-    BiotypePolicy, DatasetId, DatasetSelector, GeneId, GeneNamePolicy, Region, SeqId, Strand,
-    TranscriptId, TranscriptTypePolicy, ID_MAX_LEN, SEQID_MAX_LEN,
+    DatasetId, DatasetSelector,
+};
+use bijux_atlas::domain::query::{
+    BiotypePolicy, GeneId, GeneNamePolicy, Region, SeqId, Strand, TranscriptId,
+    TranscriptTypePolicy, ID_MAX_LEN, SEQID_MAX_LEN,
 };
 use std::collections::{BTreeMap, BTreeSet};
 

@@ -1,12 +1,21 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::{
-    build_router, effective_runtime_config_payload, init_tracing, load_runtime_config, AppState,
-    DatasetCacheManager, FederatedBackend, LocalFsBackend, LoggingConfig, RegistrySource,
-    S3LikeBackend, TraceConfig, TraceExporterKind,
+use bijux_atlas::adapters::inbound::http::router::build_router;
+use bijux_atlas::adapters::outbound::telemetry::logging::LoggingConfig;
+use bijux_atlas::adapters::outbound::telemetry::tracing::{
+    TraceConfig, TraceExporterKind, init_tracing,
 };
-use bijux_atlas::core::sha256_hex;
-use bijux_atlas::model::DatasetId;
+use bijux_atlas::app::ports::DatasetStoreBackend;
+use bijux_atlas::app::server::{
+    AppState, DatasetCacheConfig, DatasetCacheManager, FederatedBackend, LocalFsBackend,
+    RegistrySource, RetryPolicy, S3LikeBackend,
+};
+use bijux_atlas::domain::sha256_hex;
+use bijux_atlas::domain::dataset::DatasetId;
+use bijux_atlas::runtime::config::{
+    StoreMode, effective_runtime_config_payload, load_runtime_config,
+    runtime_governance_version, runtime_release_id,
+};
 use clap::Parser;
 use std::path::PathBuf;
 use std::sync::atomic::AtomicU64;
@@ -375,11 +384,11 @@ async fn wait_for_shutdown_signal() -> Result<(), String> {
 }
 
 fn observability_release_id() -> String {
-    bijux_atlas::runtime_release_id()
+    runtime_release_id()
 }
 
 fn observability_governance_version() -> String {
-    bijux_atlas::runtime_governance_version()
+    runtime_governance_version()
 }
 
 #[tokio::main]
@@ -478,15 +487,15 @@ async fn main() -> Result<(), String> {
         &runtime.pod_id,
     )
     .await;
-    let cache_cfg = bijux_atlas::DatasetCacheConfig {
+    let cache_cfg = DatasetCacheConfig {
         startup_warmup: startup_warmup_plan.datasets.clone(),
         ..runtime.cache.clone()
     };
-    let retry = bijux_atlas::RetryPolicy {
+    let retry = RetryPolicy {
         max_attempts: runtime.store.retry.max_attempts,
         base_backoff_ms: runtime.store.retry.base_backoff_ms,
     };
-    let backend: Arc<dyn bijux_atlas::DatasetStoreBackend> =
+    let backend: Arc<dyn DatasetStoreBackend> =
         if !runtime.store.registry_sources.is_empty() {
             let ttl = cache_cfg.registry_ttl;
             let registries: Result<Vec<RegistrySource>, String> = runtime
@@ -494,7 +503,7 @@ async fn main() -> Result<(), String> {
                 .registry_sources
                 .iter()
                 .map(|row| {
-                    let backend: Arc<dyn bijux_atlas::DatasetStoreBackend> =
+                    let backend: Arc<dyn DatasetStoreBackend> =
                         match row.scheme.as_str() {
                             "local" => Arc::new(LocalFsBackend::new(std::path::PathBuf::from(
                                 &row.endpoint,
@@ -530,7 +539,7 @@ async fn main() -> Result<(), String> {
             } else {
                 unreachable!()
             }
-        } else if matches!(runtime.store.mode, bijux_atlas::StoreMode::S3) {
+        } else if matches!(runtime.store.mode, StoreMode::S3) {
             let base_url =
                 runtime.store.s3_base_url.clone().ok_or_else(|| {
                     "ATLAS_STORE_S3_BASE_URL is required when S3 enabled".to_string()
@@ -585,7 +594,7 @@ async fn main() -> Result<(), String> {
         "limits": &query_limits
     });
     let runtime_policy_hash =
-        match bijux_atlas::core::canonical::stable_json_bytes(&runtime_policy_payload) {
+        match bijux_atlas::domain::canonical::stable_json_bytes(&runtime_policy_payload) {
             Ok(bytes) => sha256_hex(&bytes),
             Err(_) => sha256_hex(b"runtime-policy-hash-fallback"),
         };

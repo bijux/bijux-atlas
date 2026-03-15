@@ -16,5 +16,5 @@ pub(crate) mod request_identity;
 pub(crate) mod request_tracing;
 pub(crate) mod response_contract;
 pub(crate) mod response_encoding;
-pub(crate) mod router;
+pub mod router;
 pub(crate) mod sequence;

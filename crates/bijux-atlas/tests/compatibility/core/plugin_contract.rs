@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::core::{
-    resolve_bijux_cache_dir, resolve_bijux_config_path, ConfigPathScope, MachineError,
-};
+use bijux_atlas::contracts::errors::{ConfigPathScope, MachineError};
+use bijux_atlas::runtime::config::{resolve_bijux_cache_dir, resolve_bijux_config_path};
 
 #[test]
 fn cache_dir_resolution_never_returns_empty_path() {

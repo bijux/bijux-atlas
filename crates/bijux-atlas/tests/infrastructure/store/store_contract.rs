@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::core::sha256_hex;
+use bijux_atlas::domain::sha256_hex;
 use bijux_atlas::domain::dataset::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
 };
@@ -188,7 +188,7 @@ fn store_sources_do_not_reference_retired_split_crates() {
 
 #[test]
 fn store_error_code_maps_to_core_error_code() {
-    use bijux_atlas::core::ErrorCode;
+    use bijux_atlas::contracts::errors::ErrorCode;
     assert_eq!(
         StoreErrorCode::CachedOnly.as_error_code(),
         ErrorCode::NotReady

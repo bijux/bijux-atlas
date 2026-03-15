@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::model::DatasetId;
+use bijux_atlas::domain::dataset::DatasetId;
 use proptest::prelude::*;
 use proptest::test_runner::Config;
 

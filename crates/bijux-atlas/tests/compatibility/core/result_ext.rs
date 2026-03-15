@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::core::ResultExt;
+use bijux_atlas::contracts::errors::ResultExt;
 
 #[test]
 fn result_ext_attaches_static_context_without_allocation() {

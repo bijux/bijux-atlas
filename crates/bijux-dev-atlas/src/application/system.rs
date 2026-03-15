@@ -6,7 +6,10 @@ use crate::cli::{
     SystemCommand, SystemDebugCommand, SystemSimulateCommand,
 };
 use crate::{emit_payload, resolve_repo_root};
-use bijux_atlas::core as bijux_atlas_core;
+use bijux_atlas::domain::cluster::config::{
+    ClusterConfigFile, NodeConfigFile, load_cluster_config_from_path, load_node_config_from_path,
+};
+use bijux_atlas::domain::cluster::sharding::ShardRegistry;
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
 use std::collections::BTreeSet;
@@ -196,16 +199,16 @@ fn load_cluster_inputs(
     args: &SystemClusterArgs,
 ) -> Result<
     (
-        bijux_atlas_core::ClusterConfigFile,
-        bijux_atlas_core::NodeConfigFile,
+        ClusterConfigFile,
+        NodeConfigFile,
     ),
     String,
 > {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let cluster_path = root.join(&args.cluster_config);
     let node_path = root.join(&args.node_config);
-    let cluster = bijux_atlas_core::load_cluster_config_from_path(&cluster_path)?;
-    let node = bijux_atlas_core::load_node_config_from_path(&node_path)?;
+    let cluster = load_cluster_config_from_path(&cluster_path)?;
+    let node = load_node_config_from_path(&node_path)?;
     Ok((cluster, node))
 }
 
@@ -331,7 +334,7 @@ fn run_cluster_command(command: SystemClusterCommand) -> Result<(String, i32), S
             let shard_meta_path = root.join("configs/ops/runtime/shard-metadata.example.json");
             let shard_meta: serde_json::Value = read_json_file(&shard_meta_path)?;
             let key = "chr1:100-200";
-            let mut registry = bijux_atlas_core::ShardRegistry::new();
+            let mut registry = ShardRegistry::new();
             let owners = vec!["node-a".to_string(), "node-b".to_string()];
             registry.assign_round_robin("atlas-default", 4, &owners);
             let selected = registry
@@ -350,7 +353,7 @@ fn run_cluster_command(command: SystemClusterCommand) -> Result<(String, i32), S
         }
         SystemClusterCommand::ShardList(args) => {
             let (_cluster, _node) = load_cluster_inputs(&args)?;
-            let mut registry = bijux_atlas_core::ShardRegistry::new();
+            let mut registry = ShardRegistry::new();
             let owners = vec!["node-a".to_string(), "node-b".to_string()];
             registry.assign_round_robin("atlas-default", 4, &owners);
             let shards = registry
@@ -375,7 +378,7 @@ fn run_cluster_command(command: SystemClusterCommand) -> Result<(String, i32), S
         }
         SystemClusterCommand::ShardDistribution(args) => {
             let (_cluster, _node) = load_cluster_inputs(&args)?;
-            let mut registry = bijux_atlas_core::ShardRegistry::new();
+            let mut registry = ShardRegistry::new();
             let owners = vec![
                 "node-a".to_string(),
                 "node-b".to_string(),
@@ -401,7 +404,7 @@ fn run_cluster_command(command: SystemClusterCommand) -> Result<(String, i32), S
         }
         SystemClusterCommand::ShardDiagnostics(args) => {
             let (_cluster, _node) = load_cluster_inputs(&args)?;
-            let mut registry = bijux_atlas_core::ShardRegistry::new();
+            let mut registry = ShardRegistry::new();
             let owners = vec!["node-a".to_string()];
             let assigned = registry.assign_round_robin("atlas-default", 2, &owners);
             for shard_id in assigned {
@@ -587,7 +590,7 @@ fn run_shard_action(
     action: &str,
 ) -> Result<(String, i32), String> {
     let (_cluster, _node) = load_cluster_inputs(&args.common)?;
-    let mut registry = bijux_atlas_core::ShardRegistry::new();
+    let mut registry = ShardRegistry::new();
     let owners = vec![
         "node-a".to_string(),
         "node-b".to_string(),

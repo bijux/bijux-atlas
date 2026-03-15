@@ -29,40 +29,16 @@ pub(crate) use tracing::Instrument;
 pub mod adapters;
 pub mod app;
 pub mod contracts;
-pub mod core;
 pub mod domain;
-pub mod foundation;
-pub mod model;
 pub mod runtime;
 
-pub use crate::contracts::api;
-pub use crate::runtime::config::{
-    effective_config_payload, effective_runtime_config_payload, load_runtime_config,
-    load_runtime_startup_config, runtime_build_hash, runtime_config_contract_snapshot,
-    runtime_governance_version, runtime_release_id,
-    runtime_startup_config_docs_markdown, runtime_startup_config_schema_json,
-    validate_runtime_env_contract, validate_startup_config_contract, ApiConfig, CatalogMode,
-    RateLimitConfig, RuntimeConfig, RuntimeConfigError, RuntimeStartupConfig, StoreConfig,
-    StoreMode,
-};
-pub use crate::adapters::inbound::http::request_policies::{
+pub(crate) use crate::adapters::inbound::http::request_policies::{
     chrono_like_unix_millis, record_shed_reason, route_sli_class,
 };
-pub use crate::adapters::inbound::http::router::build_router;
-pub use crate::app::server::{
-    AppState, DatasetCacheConfig, DatasetCacheManager, FederatedBackend, LocalFsBackend,
-    RegistrySource, RetryPolicy, S3LikeBackend,
-};
-pub use crate::app::cache::{CacheError, RegistrySourceHealth};
-pub use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
-pub use crate::domain::routing::consistent_route_dataset;
-pub use crate::adapters::outbound::telemetry::generated::metrics_contract::CONTRACT_METRIC_NAMES;
-pub use crate::adapters::outbound::telemetry::generated::trace_spans_contract::CONTRACT_TRACE_SPAN_NAMES;
-pub use crate::adapters::outbound::telemetry::logging::{redact_if_needed, LoggingConfig};
-pub use crate::adapters::outbound::telemetry::tracing::{init_tracing, TraceConfig, TraceExporterKind};
-
-#[cfg(test)]
-mod registry_tests;
+pub(crate) use crate::app::cache::{CacheError, RegistrySourceHealth};
+pub(crate) use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
+pub(crate) use crate::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
+pub(crate) use crate::runtime::config::{RateLimitConfig, runtime_build_hash};
 
 pub const CRATE_NAME: &str = "bijux-atlas";
 pub const ENV_BIJUX_LOG_LEVEL: &str = "BIJUX_LOG_LEVEL";

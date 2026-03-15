@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
-use bijux_atlas::model::{Catalog, CatalogEntry};
+use bijux_atlas::domain::dataset::{Catalog, CatalogEntry};
 
 #[tokio::test]
 async fn diff_endpoints_return_added_removed_changed_and_support_latest_alias() {
@@ -233,7 +233,7 @@ async fn rate_limit_bypass_prevention_uses_normalized_forwarded_ip() {
         store,
     );
     let api = ApiConfig {
-        rate_limit_per_ip: bijux_atlas::RateLimitConfig {
+        rate_limit_per_ip: bijux_atlas::runtime::config::RateLimitConfig {
             capacity: 1.0,
             refill_per_sec: 0.0,
         },

@@ -2,7 +2,7 @@
 
 use std::path::PathBuf;
 
-use bijux_atlas::core::sha256_hex;
+use bijux_atlas::domain::sha256_hex;
 use bijux_atlas::domain::dataset::{ArtifactManifest, DatasetId};
 use bijux_atlas::domain::policy::StrictnessMode;
 use bijux_atlas::domain::ingest::{ingest_dataset_with_events, IngestOptions, TimestampPolicy};

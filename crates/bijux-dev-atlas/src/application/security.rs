@@ -8,7 +8,11 @@ use crate::cli::{
 };
 use crate::{emit_payload, resolve_repo_root};
 use base64::Engine as _;
-use bijux_atlas::core as bijux_atlas_core;
+use bijux_atlas::domain::security::authorization::{PermissionCatalog, RoleCatalog};
+use bijux_atlas::domain::security::runtime::{
+    SecurityPolicy, SecurityPolicyRegistry, load_security_config_from_path,
+    validate_security_config,
+};
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -454,7 +458,7 @@ fn run_security_auth_token_inspect(
 
 fn run_security_auth_diagnostics(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let config = bijux_atlas_core::load_security_config_from_path(
+    let config = load_security_config_from_path(
         &root.join("configs/security/runtime-security.yaml"),
     )?;
     let payload = serde_json::json!({
@@ -631,12 +635,12 @@ fn run_security_authorization_validate(
     args: SecurityValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let roles: bijux_atlas_core::RoleCatalog = serde_yaml::from_str(
+    let roles: RoleCatalog = serde_yaml::from_str(
         &fs::read_to_string(root.join("configs/security/roles.yaml"))
             .map_err(|err| format!("failed to read role catalog: {err}"))?,
     )
     .map_err(|err| format!("parse role catalog failed: {err}"))?;
-    let permissions: bijux_atlas_core::PermissionCatalog = serde_yaml::from_str(
+    let permissions: PermissionCatalog = serde_yaml::from_str(
         &fs::read_to_string(root.join("configs/security/permissions.yaml"))
             .map_err(|err| format!("failed to read permission catalog: {err}"))?,
     )
@@ -684,8 +688,8 @@ fn run_security_authorization_validate(
 fn run_security_config_validate(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     let path = root.join("configs/security/runtime-security.yaml");
-    let config = bijux_atlas_core::load_security_config_from_path(&path)?;
-    let errors = bijux_atlas_core::validate_security_config(&config);
+    let config = load_security_config_from_path(&path)?;
+    let errors = validate_security_config(&config);
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "security_config_validation_report",
@@ -700,8 +704,8 @@ fn run_security_config_validate(args: SecurityValidateArgs) -> Result<(String, i
 fn run_security_diagnostics(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     let config_path = root.join("configs/security/runtime-security.yaml");
-    let config = bijux_atlas_core::load_security_config_from_path(&config_path)?;
-    let mut registry = bijux_atlas_core::SecurityPolicyRegistry::new();
+    let config = load_security_config_from_path(&config_path)?;
+    let mut registry = SecurityPolicyRegistry::new();
     let policy_rows = read_yaml(&root.join("configs/security/policy.yaml"))?
         .get("rules")
         .and_then(serde_yaml::Value::as_sequence)
@@ -709,7 +713,7 @@ fn run_security_diagnostics(args: SecurityValidateArgs) -> Result<(String, i32),
         .unwrap_or_default();
     for row in policy_rows {
         if let Some(policy_id) = row.get("id").and_then(serde_yaml::Value::as_str) {
-            registry.register(bijux_atlas_core::SecurityPolicy {
+            registry.register(SecurityPolicy {
                 policy_id: policy_id.to_string(),
                 description: row
                     .get("description")

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::core::{canonical, sha256_hex};
+use bijux_atlas::domain::{canonical, sha256_hex};
 use serde_json::json;
 
 #[test]

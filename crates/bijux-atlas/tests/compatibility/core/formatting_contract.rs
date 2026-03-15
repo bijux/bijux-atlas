@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::core::{sha256, ErrorCode, ExitCode, MachineError};
+use bijux_atlas::contracts::errors::{ErrorCode, ExitCode, MachineError};
+use bijux_atlas::domain::sha256;
 
 #[test]
 fn display_and_debug_contracts_are_stable() {

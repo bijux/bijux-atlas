@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::model::{parse_dataset_key, DatasetId};
+use bijux_atlas::domain::dataset::{parse_dataset_key, DatasetId};
 
 #[test]
 fn dataset_key_roundtrip_is_canonical() {

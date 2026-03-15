@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::api::compat::{
+use bijux_atlas::contracts::api::compat::{
     compatibility_channel, legacy_dataset_path_redirect, ApiCompatibilityChannel,
 };
-use bijux_atlas::api::error_mapping::{map_error, API_ERROR_SCHEMA_REF};
-use bijux_atlas::api::{ApiError, ApiErrorCode, DatasetKeyDto};
+use bijux_atlas::contracts::api::error_mapping::{map_error, API_ERROR_SCHEMA_REF};
+use bijux_atlas::contracts::api::{ApiError, ApiErrorCode, DatasetKeyDto};
 use serde_json::json;
 
 #[test]

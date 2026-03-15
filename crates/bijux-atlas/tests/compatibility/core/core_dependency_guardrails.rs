@@ -6,15 +6,19 @@ use std::path::PathBuf;
 fn core_sources() -> Vec<PathBuf> {
     let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let roots = [
-        manifest_dir.join("src/domain"),
-        manifest_dir.join("src/effects"),
-        manifest_dir.join("src/errors"),
-        manifest_dir.join("src/ports"),
-        manifest_dir.join("src/types"),
+        manifest_dir.join("src/contracts/errors"),
+        manifest_dir.join("src/domain/canonical.rs"),
+        manifest_dir.join("src/domain/dataset/keys.rs"),
+        manifest_dir.join("src/domain/dataset/version.rs"),
+        manifest_dir.join("src/domain/security/data_protection.rs"),
     ];
 
     let mut files = Vec::new();
     for root in roots {
+        if root.is_file() {
+            files.push(root);
+            continue;
+        }
         if !root.exists() {
             continue;
         }
@@ -60,10 +64,9 @@ fn core_module_isolated_from_runtime_modules() {
     for path in core_sources() {
         let text = fs::read_to_string(&path).expect("read source");
         for forbidden in [
-            "crate::ingest",
-            "crate::model",
-            "crate::query",
-            "crate::store",
+            "crate::adapters::",
+            "crate::app::server",
+            "crate::runtime::wiring",
         ] {
             assert!(
                 !text.contains(forbidden),

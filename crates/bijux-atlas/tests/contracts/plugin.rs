@@ -139,18 +139,18 @@ fn atlas_validate_deep_requires_manifest_lock() {
         "1".to_string(),
         dataset,
         bijux_atlas::domain::dataset::ArtifactChecksums::new(
-            bijux_atlas::core::sha256_hex(b"##gff-version 3\n"),
-            bijux_atlas::core::sha256_hex(b">chr1\nACGT\n"),
-            bijux_atlas::core::sha256_hex(b"chr1\t4\t6\t4\t5\n"),
-            bijux_atlas::core::sha256_hex(&sqlite_bytes),
+            bijux_atlas::domain::sha256_hex(b"##gff-version 3\n"),
+            bijux_atlas::domain::sha256_hex(b">chr1\nACGT\n"),
+            bijux_atlas::domain::sha256_hex(b"chr1\t4\t6\t4\t5\n"),
+            bijux_atlas::domain::sha256_hex(&sqlite_bytes),
         ),
         bijux_atlas::domain::dataset::ManifestStats::new(1, 1, 1),
     );
-    let sqlite_sha = bijux_atlas::core::sha256_hex(&sqlite_bytes);
+    let sqlite_sha = bijux_atlas::domain::sha256_hex(&sqlite_bytes);
     manifest.input_hashes = bijux_atlas::domain::dataset::ManifestInputHashes::new(
-        bijux_atlas::core::sha256_hex(b"##gff-version 3\n"),
-        bijux_atlas::core::sha256_hex(b">chr1\nACGT\n"),
-        bijux_atlas::core::sha256_hex(b"chr1\t4\t6\t4\t5\n"),
+        bijux_atlas::domain::sha256_hex(b"##gff-version 3\n"),
+        bijux_atlas::domain::sha256_hex(b">chr1\nACGT\n"),
+        bijux_atlas::domain::sha256_hex(b"chr1\t4\t6\t4\t5\n"),
         "policy-hash".to_string(),
     );
     manifest.toolchain_hash = "toolchain-hash".to_string();

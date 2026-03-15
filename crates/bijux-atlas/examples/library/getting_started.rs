@@ -1,5 +1,5 @@
 fn main() -> Result<(), String> {
-    let dataset = bijux_atlas::model::DatasetId::new("110", "homo_sapiens", "GRCh38")
+    let dataset = bijux_atlas::domain::dataset::DatasetId::new("110", "homo_sapiens", "GRCh38")
         .map_err(|err| err.to_string())?;
     let region =
         bijux_atlas::domain::query::Region::parse("chr1:1000-1250").map_err(|err| err.to_string())?;

@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
-
-use crate::{
-    CacheError, CatalogFetch, DatasetCacheConfig, DatasetCacheManager, DatasetStoreBackend,
-    FederatedBackend, RegistrySource,
-};
 use async_trait::async_trait;
-use bijux_atlas_core::sha256_hex;
-use bijux_atlas_model::{
+use bijux_atlas::app::ports::{CatalogFetch, DatasetStoreBackend};
+use bijux_atlas::app::server::{
+    DatasetCacheConfig, DatasetCacheManager, FederatedBackend, RegistrySource,
+};
+use bijux_atlas::app::cache::CacheError;
+use bijux_atlas::domain::sha256_hex;
+use bijux_atlas::domain::dataset::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
 };
 use std::sync::Arc;
@@ -175,6 +173,7 @@ async fn federated_catalog_merge_is_deterministic_and_tracks_shadowing() {
     let merged = match backend.fetch_catalog(None).await.expect("fetch catalog") {
         CatalogFetch::Updated { catalog, .. } => catalog,
         CatalogFetch::NotModified => panic!("expected updated"),
+        _ => panic!("expected updated"),
     };
     let ids = merged
         .datasets
@@ -261,6 +260,7 @@ async fn federated_signature_validation_drops_mismatched_registry() {
     let merged = match backend.fetch_catalog(None).await.expect("fetch catalog") {
         CatalogFetch::Updated { catalog, .. } => catalog,
         CatalogFetch::NotModified => panic!("expected updated"),
+        _ => panic!("expected updated"),
     };
     assert_eq!(merged.datasets, trusted_catalog.datasets);
 

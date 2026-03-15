@@ -2,12 +2,12 @@
 
 use std::sync::Arc;
 
-use bijux_atlas::{
-    build_router, ApiConfig, AppState, DatasetCacheConfig, DatasetCacheManager,
-};
+use bijux_atlas::adapters::inbound::http::router::build_router;
+use bijux_atlas::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
 use bijux_atlas::runtime::wiring::server::FakeStore;
-use bijux_atlas::core::sha256_hex;
-use bijux_atlas::model::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+use bijux_atlas::domain::sha256_hex;
+use bijux_atlas::domain::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+use bijux_atlas::runtime::config::ApiConfig;
 use hmac::{Hmac, Mac};
 use serde_json::Value;
 use sha2::Sha256;

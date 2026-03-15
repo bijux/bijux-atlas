@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::model::{
+use bijux_atlas::domain::dataset::{
     parse_assembly, parse_release, parse_species, ArtifactChecksums, ArtifactManifest, DatasetId,
-    DiffPage, DiffRecord, DiffScope, DiffStatus, GeneId, ManifestStats, SeqId,
+    ManifestStats,
+};
+use bijux_atlas::domain::query::{
+    DiffPage, DiffRecord, DiffScope, DiffStatus, GeneId, SeqId,
 };
 
 #[test]

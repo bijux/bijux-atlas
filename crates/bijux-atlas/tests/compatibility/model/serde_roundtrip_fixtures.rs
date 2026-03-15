@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::model::{
+use bijux_atlas::domain::dataset::{
     parse_assembly, parse_release, parse_species, ArtifactChecksums, ArtifactManifest, Catalog,
-    CatalogEntry, DiffPage, DiffRecord, DiffScope, DiffStatus, GeneId, GeneSummary,
-    IngestAnomalyReport, ManifestStats, ModelVersion, ReleaseGeneIndex, ReleaseGeneIndexEntry,
-    SeqId, ShardCatalog, ShardEntry, ShardId,
+    CatalogEntry, IngestAnomalyReport, ManifestStats, ModelVersion, ShardCatalog, ShardEntry,
+    ShardId,
+};
+use bijux_atlas::domain::query::{
+    DiffPage, DiffRecord, DiffScope, DiffStatus, GeneId, GeneSummary, ReleaseGeneIndex,
+    ReleaseGeneIndexEntry, SeqId,
 };
 use std::path::PathBuf;
 
@@ -15,8 +18,12 @@ fn fixture(path: &str) -> String {
 
 #[test]
 fn top_level_models_roundtrip_and_validate() {
-    let dataset =
-        bijux_atlas::model::DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+    let dataset = bijux_atlas::domain::dataset::DatasetId::new(
+        "110",
+        "homo_sapiens",
+        "GRCh38",
+    )
+    .expect("dataset");
 
     let mut manifest = ArtifactManifest::new(
         "1".to_string(),
