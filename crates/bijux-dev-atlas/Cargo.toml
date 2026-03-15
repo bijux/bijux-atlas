@@ -56,39 +56,7 @@ name = "core_engine"
 harness = false
 
 [[bench]]
-name = "file_walk"
-harness = false
-
-[[bench]]
-name = "invariants"
-harness = false
-
-[[bench]]
-name = "drift"
-harness = false
-
-[[bench]]
-name = "reproducibility"
-harness = false
-
-[[bench]]
 name = "governance"
-harness = false
-
-[[bench]]
-name = "audit"
-harness = false
-
-[[bench]]
-name = "metrics"
-harness = false
-
-[[bench]]
-name = "tracing"
-harness = false
-
-[[bench]]
-name = "logging"
 harness = false
 
 [[bench]]
@@ -101,8 +69,4 @@ harness = false
 
 [[bench]]
 name = "authorization"
-harness = false
-
-[[bench]]
-name = "security_supply_chain"
 harness = false
