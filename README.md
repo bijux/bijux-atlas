@@ -1,249 +1,108 @@
 # Bijux Atlas
 
-Deterministic genomics data infrastructure with executable governance.
+Bijux Atlas is a contract-governed data platform for validating source datasets, producing immutable release artifacts, and serving stable query surfaces over HTTP and CLI workflows.
 
-## Product Narrative
+This repository is both the product codebase and the repository control plane that governs it. The runtime, docs, configs, ops inputs, and review evidence live together on purpose, but they do not all have the same stability level.
 
-| Surface | Location | Purpose |
-| --- | --- | --- |
-| Crates | `crates/` | Runtime and control-plane binaries/libraries |
-| Ops | `ops/` | Deploy, profile, schema, and evidence inputs |
-| Docs | `docs/` | Canonical user/operator/contributor documentation |
-| Docker | `ops/docker/` | Container build and runtime image definitions |
+## Start Here
 
-## What's Real
+- Overview: [`docs/index.md`](docs/index.md)
+- New user path: [`docs/02-getting-started/index.md`](docs/02-getting-started/index.md)
+- Operator path: [`docs/04-operations/index.md`](docs/04-operations/index.md)
+- Contributor path: [`docs/06-development/index.md`](docs/06-development/index.md)
+- Runtime reference: [`docs/07-reference/index.md`](docs/07-reference/index.md)
+- Compatibility and contracts: [`docs/08-contracts/index.md`](docs/08-contracts/index.md)
 
-Ten deterministic end-to-end runs are the core proof surface.
+## What Is In This Repo
 
-- Landing page: [`docs/tutorials/real-data/index.md`](docs/tutorials/real-data/index.md)
-- Run catalog and intent: [`configs/tutorials/real-data-runs.json`](configs/tutorials/real-data-runs.json)
-- Combined report: [`docs/reference/reports/real-data-runs.md`](docs/reference/reports/real-data-runs.md)
-- Evidence dashboard: [`docs/tutorials/real-data/evidence-summary-dashboard.md`](docs/tutorials/real-data/evidence-summary-dashboard.md)
-- E2E tutorial (commands + results): [`docs/tutorials/real-data-e2e.md`](docs/tutorials/real-data-e2e.md)
-- E2E report page: [`docs/reference/reports/real-data-e2e-execution.md`](docs/reference/reports/real-data-e2e-execution.md)
-- Reproducible workflow definition: [`configs/tutorials/real-data-runs-workflow.json`](configs/tutorials/real-data-runs-workflow.json)
+| Path | Purpose |
+| --- | --- |
+| `crates/bijux-atlas/` | Runtime crate and user-facing binaries |
+| `crates/bijux-dev-atlas/` | Maintainer control-plane binary for checks, docs, governance, configs, ops, and reports |
+| `configs/` | Source-of-truth policy, schema, registry, and repository inputs |
+| `ops/` | Deployment, observability, release, and operations data |
+| `makes/` | Thin GNU Make wrapper surface over governed commands |
+| `docs/` | Canonical reader-facing documentation in the numbered docs spine |
+| `artifacts/` | Generated outputs and local evidence; not a source-of-truth tree |
 
-## How To Evaluate
+## Supported Command Surfaces
 
-Run these checks as the fastest evaluator path:
+Runtime surfaces:
 
-1. `cargo run -p bijux-dev-atlas -- tutorials real-data list --format json`
-2. `cargo run -p bijux-dev-atlas -- tutorials real-data plan --run-id rdr-001-genes-baseline --format json`
-3. `cargo run -p bijux-dev-atlas -- tutorials run dataset-e2e --dataset-id genes-baseline --profile local --format json`
-4. `cargo run -p bijux-dev-atlas -- tutorials run dataset-e2e --dataset-id genes-baseline --profile local --no-fetch --format json`
-5. `cargo run -p bijux-dev-atlas -- tutorials real-data run-all --profile local --format json`
+- `bijux-atlas`
+- `bijux-atlas-server`
+- `bijux-atlas-openapi`
 
-## Evidence First
+Maintainer surfaces:
 
-Evidence is treated as a product contract, not an optional report.
+- `bijux-dev-atlas`
+- `make`, only as a thin wrapper layer rooted at [`makes/root.mk`](makes/root.mk)
 
-- Human-readable summaries: `docs/_internal/generated/`
-- Run-level artifacts: `artifacts/tutorials/runs/<run_id>/`
-- Command execution log: `artifacts/tutorials/real-data-examples/command-log.json`
-- Heavy-run verification report: `artifacts/tutorials/real-data-examples/check-results-heavy-partial.json`
-- Contract and checks index: [`docs/_internal/governance/checks-and-contracts.md`](docs/_internal/governance/checks-and-contracts.md)
-
-## Architecture Map
-
-## Why This Is Different
-
-- Determinism is enforced, not claimed.
-- Governance is executable through checks/contracts.
-- `bijux dev atlas` acts as SSOT control-plane for docs/configs/ops/release behavior.
-
-## Evidence
-
-- Contracts registry: [`docs/contract.md`](docs/contract.md)
-- Checks and contracts index: [`docs/_internal/governance/checks-and-contracts.md`](docs/_internal/governance/checks-and-contracts.md)
-- Generated docs contract coverage: [`docs/_internal/generated/docs-contract-coverage.json`](docs/_internal/generated/docs-contract-coverage.json)
-- Generated docs quality dashboard: [`docs/_internal/generated/docs-quality-dashboard.json`](docs/_internal/generated/docs-quality-dashboard.json)
-
-## Operational Maturity
-
-Current supported maturity surfaces:
-
-- Deterministic local and cluster deployment workflows
-- Contract-validated documentation, configs, and policy surfaces
-- Security and observability operational guidance with governed references
-- Release evidence generation and validation pathways
-
-## Not Yet Implemented
-
-- Full artifact publishing automation for all distribution surfaces
-- Final consolidation of long-tail duplicate narrative pages
-- Complete public release orchestration for every crate/image/chart output
-
-## Publishing Plan
-
-Planned publication surfaces:
-
-- `crates.io` for selected Rust crates
-- `GHCR` for runtime and supporting container images
-- `GitHub Pages` for docs site
-- Versioned ops release artifacts for cluster operators
-
-Release artifact references:
-
-- Crates: `ops/release/crates-v0.1.toml`
-- Images: `ops/release/images-v0.1.toml`
-- Ops Helm OCI chart: `ops/release/ops-v0.1.toml` (`oci://ghcr.io/bijux/charts/bijux-atlas`)
-- Ops release manifest: `ops/release/ops-release-manifest.json`
-- Ops chart/workspace linkage manifest: `ops/release/ops-release-bundle-manifest.json`
-
-## Docs Deploy
-
-- Workflow: [`.github/workflows/docs-deploy.yml`](.github/workflows/docs-deploy.yml)
-- Build output: `artifacts/docs/site`
-- Operator guide: [`docs/operations/docs-site-deploy.md`](docs/operations/docs-site-deploy.md)
-
-## Runtime Image (GHCR)
-
-- Image: `ghcr.io/<org>/bijux-atlas-runtime:<version>`
-- Container policy: runtime image executes as `nonroot` user.
-- Exposed port: `8080` (stable runtime HTTP port).
-
-Run and verify health:
+Useful discovery commands:
 
 ```bash
-docker run --rm -p 8080:8080 ghcr.io/<org>/bijux-atlas-runtime:<version> atlas serve
-curl -fsS http://127.0.0.1:8080/healthz
-curl -fsS http://127.0.0.1:8080/readyz
+cargo run -q -p bijux-atlas --bin bijux-atlas -- --help
+cargo run -q -p bijux-atlas --bin bijux-atlas-server -- --help
+cargo run -q -p bijux-dev-atlas -- --help
+make help
 ```
 
-## Tutorial Automation Migration
+The canonical maintainer command reference is [`docs/07-reference/automation-command-surface.md`](docs/07-reference/automation-command-surface.md). The runtime command reference is [`docs/07-reference/command-surface.md`](docs/07-reference/command-surface.md).
 
-Tutorial automation is executed through `bijux-dev-atlas` commands. Legacy tutorial script entrypoints are removed. See [`docs/tutorials/run-with-dev-atlas.md`](docs/tutorials/run-with-dev-atlas.md).
+## What Is Stable
 
-## Perf Benchmark Runtime
+Treat these as the public or strongly-governed surfaces:
 
-CLI UX perf benchmarks are executed through `bijux-dev-atlas perf cli-ux bench` and `bijux-dev-atlas perf cli-ux diff`. The repository no longer keeps Python benchmark runners under `ops/`.
+- runtime behavior described in [`docs/07-reference/index.md`](docs/07-reference/index.md)
+- compatibility promises described in [`docs/08-contracts/index.md`](docs/08-contracts/index.md)
+- checked-in configs and ops inputs that are validated by the control plane
+- curated `make` targets listed in [`makes/root.mk`](makes/root.mk)
 
-## Quick Start
+Do not treat the rest of the repository as an accidental public API. Internal implementation details, generated artifacts, and undocumented file layouts can change unless a contract or reference page says otherwise.
 
-### User
+## Current Shape, Honestly
 
-1. Start with [`docs/start-here.md`](docs/start-here.md).
-2. Review API lifecycle in [`docs/api/lifecycle.md`](docs/api/lifecycle.md).
-3. Use examples from [`docs/reference/examples/api-usage-examples.md`](docs/reference/examples/api-usage-examples.md).
+Atlas is maintainers-first engineering software. It has a clear runtime and a heavily governed repository, but it is not pretending every checked-in file is a polished public product surface.
 
-### Operator
+The important boundaries are:
 
-1. Read [`docs/operations/prerequisites.md`](docs/operations/prerequisites.md).
-2. Follow [`docs/operations/deploy.md`](docs/operations/deploy.md).
-3. Validate with operations readiness and observability guides.
+- `bijux-atlas` is the runtime-facing product surface
+- `bijux-dev-atlas` is the canonical automation and governance surface
+- `make` exists for convenience and CI ergonomics, not as the primary place for orchestration logic
+- `docs/07-reference` and `docs/08-contracts` matter more than historical README text, ad hoc scripts, or debug output
 
-### Contributor
+## Fast Evaluation Path
 
-1. Read [`docs/development/index.md`](docs/development/index.md).
-2. Read [`docs/control-plane/index.md`](docs/control-plane/index.md).
-3. Extend safely using [`docs/control-plane/extend-control-plane.md`](docs/control-plane/extend-control-plane.md).
+Run these from the workspace root if you want a quick signal that the repository is healthy:
 
-## Repository Surfaces
-
-- `crates/bijux-dev-atlas`: governance control-plane command surface
-- `crates/bijux-atlas-python`: Python SDK distribution crate and optional native bridge
-- `crates/bijux-atlas`: runtime package with embedded API, ingest, store, client, server, and policy surfaces
-- `configs/`: policy/schema/configuration SSOTs
-- `ops/`: deploy/ops/release/validation operational surfaces
-- `docs/`: canonical documentation plus internal generated evidence references
-
-## Control-plane Is SSOT
-
-```text
-policies + schemas + docs contracts
-          |
-          v
-   bijux dev atlas
-          |
-          v
-generated artifacts + checks/contracts + publishable evidence
+```bash
+cargo run -q -p bijux-dev-atlas -- check doctor --format json
+cargo run -q -p bijux-dev-atlas -- governance validate --format json
+cargo check --workspace
+make ci-fast
 ```
 
-## Constitution
+If those commands disagree with a claim in root docs, trust the command output and the numbered docs spine first.
 
-Repository constitution: [`docs/repository-contract.md`](docs/repository-contract.md)
+## Repository Reading Order
 
-## Architecture
+If you are new here, this sequence usually gives the fastest honest understanding:
 
-Repository architecture entrypoint: [`docs/repository-architecture.md`](docs/repository-architecture.md)
-Canonical structure rationale: [`docs/architecture/why-this-structure-exists.md`](docs/architecture/why-this-structure-exists.md)
+1. [`docs/01-introduction/what-atlas-is.md`](docs/01-introduction/what-atlas-is.md)
+2. [`docs/02-getting-started/run-atlas-locally.md`](docs/02-getting-started/run-atlas-locally.md)
+3. [`docs/05-architecture/system-overview.md`](docs/05-architecture/system-overview.md)
+4. [`docs/06-development/automation-control-plane.md`](docs/06-development/automation-control-plane.md)
+5. [`docs/05-architecture/source-layout-and-ownership.md`](docs/05-architecture/source-layout-and-ownership.md)
 
-## Version And Compatibility
+## Release Line
 
-![Version](https://img.shields.io/badge/version-workspace--managed-blue)
-![Compatibility](https://img.shields.io/badge/compatibility-contract--governed-brightgreen)
+The current workspace version is `0.1.1`. The active release line is `0.1.x`.
 
-Compatibility promise: [`docs/product/compatibility-promise.md`](docs/product/compatibility-promise.md)
+Release and deprecation expectations are documented in [`docs/06-development/release-and-versioning.md`](docs/06-development/release-and-versioning.md).
 
-## Documentation Entrypoints
+## Security And Contribution
 
-![Docs](https://img.shields.io/badge/docs-github%20pages-blue)
-
-Published by workflow: [`.github/workflows/docs-deploy.yml`](.github/workflows/docs-deploy.yml)
-
-## Crate Versions
-
-- `bijux-atlas`: workspace-managed version, runtime package with embedded runtime modules and end-user binaries
-- `bijux-atlas-python`: workspace-managed version, private Python SDK bridge crate for package metadata and optional native bindings
-- `bijux-dev-atlas`: workspace-managed version, control-plane tooling
-
-Crate details: [`docs/reference/crates.md`](docs/reference/crates.md)
-
-## Crate Publishing Strategy
-
-Current release plan keeps a three-crate workspace with shared governance gates. `bijux-atlas` carries the public Rust runtime surface, `bijux-atlas-python` carries the Python SDK distribution bridge, and `bijux-dev-atlas` remains a private control-plane package for governance, docs, release, and perf automation.
-
-## Governance And Operations References
-
-- Ops artifacts reference: [`docs/reference/ops.md`](docs/reference/ops.md)
-- Docker reference: [`docs/reference/docker.md`](docs/reference/docker.md)
-- Governance reference: [`docs/reference/governance.md`](docs/reference/governance.md)
-- Release planning reference: [`docs/reference/release-plan.md`](docs/reference/release-plan.md)
-- Crate release policy: [`docs/reference/crate-release-policy.md`](docs/reference/crate-release-policy.md)
-- Contributor safety guide: [`docs/development/contributor-onboarding-rubric.md`](docs/development/contributor-onboarding-rubric.md)
-- How to add checks and contracts: [`docs/control-plane/extend-control-plane.md`](docs/control-plane/extend-control-plane.md)
-
-## Support Policy
-
-Support is provided for governed, documented surfaces on `main` and release tags. Experimental surfaces may change with notice in docs and release notes.
-
-## Security Posture
-
-Security controls and operating rules are documented in [`docs/control-plane/security-posture.md`](docs/control-plane/security-posture.md) and linked operational guidance under [`docs/operations/security`](docs/operations/security).
-
-## Ops Reproducibility Posture
-
-Release and ops reproducibility policy is governed by:
-
-- [`configs/release/reproducibility-policy.json`](configs/release/reproducibility-policy.json)
-- [`docs/operations/upgrade-compatibility-guide.md`](docs/operations/upgrade-compatibility-guide.md)
-- `bijux dev atlas release reproducibility report`
-
-## Institutional Readiness
-
-Institutional release evidence and readiness inputs are documented in:
-
-- [`docs/operations/institutional-packet.md`](docs/operations/institutional-packet.md)
-- [`docs/operations/institutional-readiness-checklist.md`](docs/operations/institutional-readiness-checklist.md)
-
-## Changelog Discipline
-
-`CHANGELOG.md` structure and release note sections are contract-validated through `configs/release/version-policy.json` and `bijux dev atlas release validate`.
-
-## Contact And Governance Owners
-
-Primary ownership surfaces:
-
-- Product and docs governance: `docs-governance`
-- Runtime and release operations: `platform` and `bijux-atlas-operations`
-- Control-plane governance tooling: `bijux-dev-atlas`
-
-See ownership metadata in [`docs/_internal/governance/metadata/front-matter.index.json`](docs/_internal/governance/metadata/front-matter.index.json).
-
-## Next Reading
-
-- Product narrative: [`docs/product/what-is-bijux-atlas.md`](docs/product/what-is-bijux-atlas.md)
-- What we built: [`docs/product/what-we-built.md`](docs/product/what-we-built.md)
-- Why trust this: [`docs/product/how-this-repo-enforces-itself.md`](docs/product/how-this-repo-enforces-itself.md)
-- Reliability boundaries: [`docs/product/reliability-boundaries.md`](docs/product/reliability-boundaries.md)
-- Reviewer onboarding: [`docs/product/reviewer-onboarding-checklist.md`](docs/product/reviewer-onboarding-checklist.md)
+- Contribution guide: [`CONTRIBUTING.md`](CONTRIBUTING.md)
+- Security policy: [`SECURITY.md`](SECURITY.md)
+- Code ownership: [`.github/CODEOWNERS`](.github/CODEOWNERS)
+- Makes surface overview: [`makes/README.md`](makes/README.md)
