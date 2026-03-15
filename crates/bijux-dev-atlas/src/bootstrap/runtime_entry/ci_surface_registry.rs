@@ -266,7 +266,7 @@ pub(super) fn workflow_step_rows(repo_root: &Path) -> Result<Vec<WorkflowLintRow
                 } else if let Some(run) = step.get("run").and_then(serde_yaml::Value::as_str) {
                     ("run".to_string(), normalized_run_body(run))
                 } else {
-                    ("unknown".to_string(), String::new())
+                    ("invalid-step".to_string(), String::new())
                 };
                 let matched_pattern = patterns
                     .patterns
@@ -286,7 +286,7 @@ pub(super) fn workflow_step_rows(repo_root: &Path) -> Result<Vec<WorkflowLintRow
                     .as_ref()
                     .map(|pattern| pattern.classification.clone())
                     .or_else(|| registry_entry.map(|entry| entry.classification.clone()))
-                    .unwrap_or_else(|| "unknown".to_string());
+                    .unwrap_or_else(|| "unclassified".to_string());
                 let allowed = matched_pattern.as_ref().is_some_and(|pattern| pattern.allowed)
                     || allowlist_entry.is_some();
                 rows.push(WorkflowLintRow {

@@ -1162,12 +1162,9 @@ pub struct SystemClusterArgs {
     pub format: FormatArg,
     #[arg(long)]
     pub out: Option<PathBuf>,
-    #[arg(
-        long,
-        default_value = "configs/ops/runtime/cluster-config.example.json"
-    )]
+    #[arg(long)]
     pub cluster_config: PathBuf,
-    #[arg(long, default_value = "configs/ops/runtime/node-config.example.json")]
+    #[arg(long)]
     pub node_config: PathBuf,
 }
 

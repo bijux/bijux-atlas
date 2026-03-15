@@ -99,12 +99,17 @@ pub fn to_pretty(report: &RunReport) -> String {
                 )
             ));
             for violation in &case.violations {
-                let location = match (&violation.file, violation.line) {
-                    (Some(file), Some(line)) => format!("{file}:{line}"),
-                    (Some(file), None) => file.clone(),
-                    _ => "unknown-location".to_string(),
-                };
-                out.push_str(&format!("    - {}: {}\n", location, violation.message));
+                match (&violation.file, violation.line) {
+                    (Some(file), Some(line)) => {
+                        out.push_str(&format!("    - {file}:{line}: {}\n", violation.message));
+                    }
+                    (Some(file), None) => {
+                        out.push_str(&format!("    - {file}: {}\n", violation.message));
+                    }
+                    (None, _) => {
+                        out.push_str(&format!("    - {}\n", violation.message));
+                    }
+                }
                 if let Some(evidence) = &violation.evidence {
                     out.push_str(&format!("      evidence: {}\n", evidence.trim()));
                 }
@@ -465,12 +470,11 @@ pub fn to_junit(report: &RunReport) -> Result<String, String> {
                     .violations
                     .iter()
                     .map(|v| {
-                        let location = match (&v.file, v.line) {
-                            (Some(file), Some(line)) => format!("{file}:{line}"),
-                            (Some(file), None) => file.clone(),
-                            _ => "unknown-location".to_string(),
-                        };
-                        format!("{}: {}", location, v.message)
+                        match (&v.file, v.line) {
+                            (Some(file), Some(line)) => format!("{file}:{line}: {}", v.message),
+                            (Some(file), None) => format!("{file}: {}", v.message),
+                            (None, _) => v.message.clone(),
+                        }
                     })
                     .collect::<Vec<_>>()
                     .join("; ");

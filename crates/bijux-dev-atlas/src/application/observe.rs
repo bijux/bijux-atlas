@@ -84,10 +84,7 @@ fn snapshot_payload() -> serde_json::Value {
     let rows = metrics_registry::registry();
     let mut category_counts: BTreeMap<String, usize> = BTreeMap::new();
     for row in &rows {
-        let key = serde_json::to_value(row.category)
-            .ok()
-            .and_then(|v| v.as_str().map(str::to_string))
-            .unwrap_or_else(|| "unknown".to_string());
+        let key = format!("{:?}", row.category).to_ascii_lowercase();
         *category_counts.entry(key).or_insert(0) += 1;
     }
     serde_json::json!({
@@ -276,10 +273,9 @@ fn write_trace_coverage_summary(
         "|---|---|".to_string(),
     ];
     for row in rows {
-        let span = row
-            .get("span_name")
-            .and_then(serde_json::Value::as_str)
-            .unwrap_or("unknown");
+        let Some(span) = row.get("span_name").and_then(serde_json::Value::as_str) else {
+            continue;
+        };
         let covered = row
             .get("covered")
             .and_then(serde_json::Value::as_bool)

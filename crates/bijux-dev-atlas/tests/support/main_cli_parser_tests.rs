@@ -484,6 +484,36 @@ mod tests {
     }
 
     #[test]
+    fn system_cluster_commands_require_explicit_runtime_configs() {
+        let missing_configs = crate::Cli::try_parse_from(vec![
+            "bijux-dev-atlas",
+            "system",
+            "cluster",
+            "topology",
+        ]);
+        assert!(
+            missing_configs.is_err(),
+            "system cluster topology should require explicit runtime config paths"
+        );
+
+        let cli = crate::Cli::try_parse_from(vec![
+            "bijux-dev-atlas",
+            "system",
+            "cluster",
+            "topology",
+            "--cluster-config",
+            "configs/ops/runtime/cluster-config.example.json",
+            "--node-config",
+            "configs/ops/runtime/node-config.example.json",
+        ])
+        .expect("parse");
+        match cli.command {
+            Some(crate::cli::Command::System { .. }) => {}
+            _ => panic!("expected system command"),
+        }
+    }
+
+    #[test]
     fn build_subcommands_parse() {
         let commands = [
             vec!["bijux-dev-atlas", "build", "bin"],

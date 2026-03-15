@@ -1146,14 +1146,14 @@ fn run_list_command(
                 ));
             }
             lines.push(String::new());
-            lines.push(command_inventory_markdown());
+            lines.push(command_inventory_markdown()?);
             lines.join("\n")
         }
         GlobalFormatArg::Json => serde_json::to_string_pretty(&payload)
             .map_err(|err| format!("encode runnable inventory failed: {err}"))?,
         GlobalFormatArg::Both => format!(
             "{}\n{}",
-            command_inventory_markdown(),
+            command_inventory_markdown()?,
             serde_json::to_string_pretty(&payload)
                 .map_err(|err| format!("encode runnable inventory failed: {err}"))?
         ),
@@ -1270,7 +1270,7 @@ fn run_runnable_command(
             "id": id,
             "route": route_name(entry.suite.as_str()),
             "status_code": result.1,
-            "command_registry": command_inventory_payload(),
+            "command_registry": command_inventory_payload()?,
         });
         let rendered = format!(
             "{}\n{}",
