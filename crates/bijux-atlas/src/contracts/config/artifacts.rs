@@ -82,8 +82,14 @@ pub fn effective_config_payload(
     }
     let startup_json =
         serde_json::to_value(startup).map_err(|err| format!("serialize startup config: {err}"))?;
-    let cache_json =
+    let mut cache_json =
         serde_json::to_value(cache).map_err(|err| format!("serialize cache config: {err}"))?;
+    if let Some(obj) = cache_json.as_object_mut() {
+        obj.insert(
+            "disk_root".to_string(),
+            serde_json::Value::String(startup.cache_root.display().to_string()),
+        );
+    }
     Ok(serde_json::json!({
         "schema_version": 1,
         "kind": "atlas_server_effective_config_v1",
