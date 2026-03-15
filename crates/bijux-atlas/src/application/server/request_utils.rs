@@ -342,6 +342,39 @@ fn route_resource_kind(route: &str) -> &'static str {
     }
 }
 
+fn parse_embedded_auth_policy(raw: &str) -> Result<serde_yaml::Value, String> {
+    serde_yaml::from_str(raw).map_err(|err| format!("embedded auth policy: {err}"))
+}
+
+fn build_embedded_authorization_engine(
+    permissions_raw: &str,
+    roles_raw: &str,
+    policy_raw: &str,
+) -> Result<bijux_atlas_core::AuthorizationEngine, String> {
+    let permissions: bijux_atlas_core::PermissionCatalog = serde_yaml::from_str(permissions_raw)
+        .map_err(|err| format!("embedded permission catalog: {err}"))?;
+    let roles: bijux_atlas_core::RoleCatalog =
+        serde_yaml::from_str(roles_raw).map_err(|err| format!("embedded role catalog: {err}"))?;
+    let policy: bijux_atlas_core::AuthorizationPolicy = serde_yaml::from_str(policy_raw)
+        .map_err(|err| format!("embedded authorization policy: {err}"))?;
+    let evaluator = bijux_atlas_core::PermissionEvaluator::new(permissions);
+    let mut registry = bijux_atlas_core::RoleRegistry::new();
+    for role in roles.roles {
+        registry.upsert_role(role);
+    }
+    for (principal_id, role_id) in [
+        ("user", "role.user.readonly"),
+        ("service-account", "role.service.readonly"),
+        ("operator", "role.operator.admin"),
+        ("ci", "role.automation.release"),
+    ] {
+        registry.assign_role(principal_id, role_id);
+    }
+    Ok(bijux_atlas_core::AuthorizationEngine::new(
+        registry, evaluator, policy,
+    ))
+}
+
 fn embedded_policy_allows(
     principal: &str,
     action: &str,
@@ -350,11 +383,19 @@ fn embedded_policy_allows(
 ) -> bool {
     const EMBEDDED_AUTH_POLICY: &str =
         include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/security/policy.yaml"));
-    static POLICY: std::sync::OnceLock<serde_yaml::Value> = std::sync::OnceLock::new();
-    let policy = POLICY.get_or_init(|| {
-        serde_yaml::from_str(EMBEDDED_AUTH_POLICY)
-            .unwrap_or_else(|err| panic!("embedded auth policy: {err}"))
-    });
+    static POLICY: std::sync::OnceLock<Result<serde_yaml::Value, String>> =
+        std::sync::OnceLock::new();
+    let policy = match POLICY.get_or_init(|| parse_embedded_auth_policy(EMBEDDED_AUTH_POLICY)) {
+        Ok(policy) => policy,
+        Err(err) => {
+            error!(
+                event_id = "embedded_auth_policy_invalid",
+                error = %err,
+                "embedded auth policy is invalid; denying request"
+            );
+            return false;
+        }
+    };
     let default_allow = policy
         .get("default_decision")
         .and_then(serde_yaml::Value::as_str)
@@ -436,33 +477,25 @@ fn embedded_authorization_allows(
         include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/security/roles.yaml"));
     const EMBEDDED_AUTHZ_POLICY: &str =
         include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/security/policy.yaml"));
-    static ENGINE: std::sync::OnceLock<bijux_atlas_core::AuthorizationEngine> =
+    static ENGINE: std::sync::OnceLock<Result<bijux_atlas_core::AuthorizationEngine, String>> =
         std::sync::OnceLock::new();
-    let engine = ENGINE.get_or_init(|| {
-        let permissions: bijux_atlas_core::PermissionCatalog =
-            serde_yaml::from_str(EMBEDDED_PERMISSIONS)
-                .unwrap_or_else(|err| panic!("embedded permission catalog: {err}"));
-        let roles: bijux_atlas_core::RoleCatalog =
-            serde_yaml::from_str(EMBEDDED_ROLES)
-                .unwrap_or_else(|err| panic!("embedded role catalog: {err}"));
-        let policy: bijux_atlas_core::AuthorizationPolicy =
-            serde_yaml::from_str(EMBEDDED_AUTHZ_POLICY)
-                .unwrap_or_else(|err| panic!("embedded authorization policy: {err}"));
-        let evaluator = bijux_atlas_core::PermissionEvaluator::new(permissions);
-        let mut registry = bijux_atlas_core::RoleRegistry::new();
-        for role in roles.roles {
-            registry.upsert_role(role);
+    let engine = match ENGINE.get_or_init(|| {
+        build_embedded_authorization_engine(
+            EMBEDDED_PERMISSIONS,
+            EMBEDDED_ROLES,
+            EMBEDDED_AUTHZ_POLICY,
+        )
+    }) {
+        Ok(engine) => engine,
+        Err(err) => {
+            error!(
+                event_id = "embedded_authorization_invalid",
+                error = %err,
+                "embedded authorization contracts are invalid; denying request"
+            );
+            return false;
         }
-        for (principal_id, role_id) in [
-            ("user", "role.user.readonly"),
-            ("service-account", "role.service.readonly"),
-            ("operator", "role.operator.admin"),
-            ("ci", "role.automation.release"),
-        ] {
-            registry.assign_role(principal_id, role_id);
-        }
-        bijux_atlas_core::AuthorizationEngine::new(registry, evaluator, policy)
-    });
+    };
     matches!(
         engine.evaluate(principal, action, resource_kind, route),
         bijux_atlas_core::AuthorizationDecision::Allow
@@ -1411,6 +1444,42 @@ mod tests {
     fn https_enforcement_requires_https_proto_header() {
         assert!(bijux_atlas_core::https_enforced(Some("https"), true));
         assert!(!bijux_atlas_core::https_enforced(Some("http"), true));
+    }
+
+    #[test]
+    fn invalid_embedded_auth_policy_is_rejected_without_panicking() {
+        let err = parse_embedded_auth_policy("default_decision: [").expect_err("invalid yaml");
+        assert!(err.contains("embedded auth policy"));
+    }
+
+    #[test]
+    fn invalid_embedded_authorization_contracts_fail_closed_without_panicking() {
+        let valid_permissions = include_str!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../configs/security/permissions.yaml"
+        ));
+        let valid_roles = include_str!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../configs/security/roles.yaml"
+        ));
+        let valid_policy = include_str!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../configs/security/policy.yaml"
+        ));
+
+        let permissions_err =
+            build_embedded_authorization_engine("permissions: [", valid_roles, valid_policy)
+                .expect_err("bad permissions");
+        let roles_err =
+            build_embedded_authorization_engine(valid_permissions, "roles: [", valid_policy)
+                .expect_err("bad roles");
+        let policy_err =
+            build_embedded_authorization_engine(valid_permissions, valid_roles, "rules: [")
+                .expect_err("bad policy");
+
+        assert!(permissions_err.contains("embedded permission catalog"));
+        assert!(roles_err.contains("embedded role catalog"));
+        assert!(policy_err.contains("embedded authorization policy"));
     }
 
     fn signed_token(payload: serde_json::Value, secret: &str) -> String {
