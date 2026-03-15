@@ -125,7 +125,7 @@
       "id": "ops.gate.control-plane-drift",
       "action_id": "ops.root.validate",
       "category": "docs",
-      "description": "ops/CONTROL_PLANE.md must match control-plane snapshot contract or avoid hardcoded crate lists"
+      "description": "ops/README.md must match control-plane snapshot contract or avoid hardcoded crate lists"
     },
     {
       "id": "ops.gate.no-stale-locked-claims",

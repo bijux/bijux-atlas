@@ -7,58 +7,34 @@
   ],
   "authoritative_files": [
     {
-      "path": "ops/ARTIFACTS.md",
+      "path": "ops/CONTRACT.md",
       "role": "authoritative",
       "owner": "bijux-atlas-operations",
-      "consumer": "checks_ops_retired_artifact_path_references_absent"
+      "consumer": "checks_ops_tree_contract"
     },
     {
-      "path": "ops/DEPRECATION_WORKFLOW.md",
+      "path": "ops/ERRORS.md",
       "role": "authoritative",
       "owner": "bijux-atlas-operations",
-      "consumer": "checks_ops_human_workflow_maturity"
+      "consumer": "checks_ops_tree_contract"
     },
     {
-      "path": "ops/EMERGENCY_OVERRIDE_WORKFLOW.md",
+      "path": "ops/INDEX.md",
       "role": "authoritative",
       "owner": "bijux-atlas-operations",
-      "consumer": "checks_ops_human_workflow_maturity"
+      "consumer": "checks_ops_surface_inventory"
     },
     {
-      "path": "ops/ESCALATION_MAPPING.md",
+      "path": "ops/README.md",
       "role": "authoritative",
       "owner": "bijux-atlas-operations",
-      "consumer": "checks_ops_human_workflow_maturity"
+      "consumer": "checks_ops_tree_contract"
     },
     {
-      "path": "ops/INCIDENT_PLAYBOOK_GENERATION.md",
+      "path": "ops/SSOT.md",
       "role": "authoritative",
       "owner": "bijux-atlas-operations",
-      "consumer": "checks_ops_human_workflow_maturity"
-    },
-    {
-      "path": "ops/OPS_FREEZE_WORKFLOW.md",
-      "role": "authoritative",
-      "owner": "bijux-atlas-operations",
-      "consumer": "checks_ops_human_workflow_maturity"
-    },
-    {
-      "path": "ops/OWNERSHIP_ROTATION_POLICY.md",
-      "role": "authoritative",
-      "owner": "bijux-atlas-operations",
-      "consumer": "checks_ops_human_workflow_maturity"
-    },
-    {
-      "path": "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
-      "role": "authoritative",
-      "owner": "bijux-atlas-operations",
-      "consumer": "checks_ops_human_workflow_maturity"
-    },
-    {
-      "path": "ops/inventory/REQUIRED_FILES.md",
-      "role": "presence_contract",
-      "owner": "bijux-atlas-operations",
-      "consumer": "checks_ops_required_files_contracts"
+      "consumer": "checks_ops_tree_contract"
     },
     {
       "path": "ops/inventory/authoritative-file-list.json",
@@ -87,100 +63,54 @@
       "derived_from": "ops/inventory/contracts-map.json"
     },
     {
-      "path": "ops/inventory/owners.json",
+      "path": "ops/inventory/gates.json",
       "role": "authoritative",
       "owner": "bijux-atlas-operations",
-      "consumer": "checks_ops_inventory_contract_integrity"
+      "consumer": "checks_ops_manifest_integrity"
     },
     {
-      "path": "ops/inventory/policies/dev-atlas-policy.json",
+      "path": "ops/inventory/generated-committed-mirror.json",
       "role": "authoritative",
       "owner": "bijux-atlas-operations",
-      "consumer": "checks_ops_inventory_contract_integrity"
+      "consumer": "checks_ops_generated_readonly_markers"
     },
     {
       "path": "ops/inventory/surfaces.json",
       "role": "authoritative",
       "owner": "bijux-atlas-operations",
+      "consumer": "checks_ops_surface_manifest"
+    },
+    {
+      "path": "ops/inventory/toolchain.json",
+      "role": "authoritative",
+      "owner": "bijux-atlas-operations",
       "consumer": "checks_ops_inventory_contract_integrity"
     }
-  ],
-  "ignored_paths": [
-    "ops/AUTHORITY_TIERS.md",
-    "ops/BREAKING_CHANGE_TEMPLATE.md",
-    "ops/CONTRACT.md",
-    "ops/CONTROL_PLANE.md",
-    "ops/DELETE_HALF_OPS_SIMULATION_REPORT.md",
-    "ops/DETERMINISM_PROOF.md",
-    "ops/DIRECTORY_BUDGET_POLICY.md",
-    "ops/DIRECTORY_NECESSITY.md",
-    "ops/DOC_NECESSITY_CHECKLIST.md",
-    "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
-    "ops/DRIFT.md",
-    "ops/ERRORS.md",
-    "ops/EVIDENCE_SIGNOFF_WORKFLOW.md",
-    "ops/GENERATED_LIFECYCLE.md",
-    "ops/GOLDEN_REFRESH_POLICY.md",
-    "ops/INDEX.md",
-    "ops/MATURITY_SCORECARD.md",
-    "ops/MINIMAL_RELEASE_SURFACE.md",
-    "ops/NAMING.md",
-    "ops/OPS_ADR_TEMPLATE.md",
-    "ops/OPS_CHANGE_REVIEW_CHECKLIST.md",
-    "ops/OPS_INVARIANTS.md",
-    "ops/PORTABILITY_MATRIX.md",
-    "ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md",
-    "ops/README.md",
-    "ops/inventory/README.md",
-    "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
-    "ops/SCHEMA_EVOLUTION_WORKFLOW.md",
-    "ops/SSOT.md",
-    "ops/SUPPLY_CHAIN_MODEL.md",
-    "ops/THREAT_MODEL.md",
-    "ops/WHAT_FAILS_WHEN.md",
-    "ops/inventory/CONTRACT.md",
-    "ops/inventory/OWNER.md",
-    "ops/inventory/placeholder-dirs.json"
   ],
   "ignored_prefixes": [
     "ops/_generated/",
     "ops/_generated.example/",
-    "ops/schema/",
+    "ops/api/",
+    "ops/audit/",
+    "ops/cli/",
     "ops/datasets/",
+    "ops/docker/",
+    "ops/drift/",
     "ops/e2e/",
     "ops/env/",
+    "ops/evidence/",
+    "ops/governance/",
+    "ops/invariants/",
     "ops/k8s/",
     "ops/load/",
     "ops/observe/",
+    "ops/policy/",
+    "ops/release/",
     "ops/report/",
+    "ops/reproducibility/",
+    "ops/schema/",
+    "ops/security/",
     "ops/stack/",
-    "ops/inventory/contracts/",
-    "ops/inventory/policies/",
-    "ops/inventory/meta/"
-  ],
-  "authoritative_paths": [
-    "ops/inventory/contract-gate-map.json",
-    "ops/inventory/deleted-markdown-denylist.json",
-    "ops/inventory/markdown-allowlist.json"
-  ],
-  "items": [
-    {
-      "path": "ops/inventory/contract-gate-map.json",
-      "schema": "ops/schema/inventory/contract-gate-map.schema.json",
-      "generator": "manual",
-      "consumer": "checks_ops_inventory_contract_integrity"
-    },
-    {
-      "path": "ops/inventory/deleted-markdown-denylist.json",
-      "schema": "ops/schema/inventory/deleted-markdown-denylist.schema.json",
-      "generator": "manual",
-      "consumer": "checks_ops_inventory_contract_integrity"
-    },
-    {
-      "path": "ops/inventory/markdown-allowlist.json",
-      "schema": "ops/schema/inventory/markdown-allowlist.schema.json",
-      "generator": "manual",
-      "consumer": "checks_ops_inventory_contract_integrity"
-    }
+    "ops/tutorials/"
   ]
 }

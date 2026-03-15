@@ -9,4 +9,4 @@ Use `bijux-dev-atlas ops validate --format json` to validate the current ops sur
 | `REPO-LAW-003` | Generated or artifact output committed outside approved sinks. | Move outputs under `artifacts/` or approved generated directories, then untrack drift. |
 | `REPO-LAW-004` | Inventory metadata or schema coverage drifted from the live tree. | Update the affected `ops/inventory/*.json` or `ops/schema/generated/schema-index.json` entry in the same change. |
 
-Canonical index: `docs/reference/errors-and-exit-codes.md`
+Canonical index: `docs/07-reference/error-codes-and-exit-codes.md`

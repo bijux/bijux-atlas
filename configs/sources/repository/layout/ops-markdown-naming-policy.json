@@ -6,13 +6,9 @@
     "README.md",
     "INDEX.md",
     "CONTRACT.md",
-    "OWNER.md",
-    "REQUIRED_FILES.md"
+    "ERRORS.md",
+    "SSOT.md"
   ],
-  "exceptions": [
-    "ops/_generated.example/control-plane.snapshot.md",
-    "ops/schema/generated/schema-index.md",
-    "ops/observe/drills/templates/incident-template.md"
-  ],
-  "rule": "Authored ops markdown files must use SNAKE_UPPER names unless in canonical_filenames or explicit exceptions."
+  "exceptions": [],
+  "rule": "Ops markdown is limited to five root documents with canonical uppercase filenames."
 }

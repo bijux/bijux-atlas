@@ -2,28 +2,14 @@
   "schema_version": 1,
   "allow_runtime_compat": [
     "ops/_generated.example/ALLOWLIST.json",
-    "ops/_generated.example/OWNER.md",
-    "ops/_generated.example/README.md",
-    "ops/_generated.example/REQUIRED_FILES.md",
     "ops/_generated.example/configs-drift-report.json",
-    "ops/_generated.example/contract-audit-report.json",
-    "ops/_generated.example/contract-coverage-report.json",
-    "ops/_generated.example/contract-dependency-graph.json",
     "ops/_generated.example/contracts-registry-snapshot.json",
     "ops/_generated.example/control-graph-coverage-map.json",
     "ops/_generated.example/control-graph-diff-report.json",
     "ops/_generated.example/control-plane-drift-report.json",
     "ops/_generated.example/control-plane-surface-list.json",
-    "ops/_generated.example/control-plane.snapshot.md",
-    "ops/_generated.example/docs-drift-report.json",
-    "ops/_generated.example/docs-links-report.json",
-    "ops/_generated.example/docs-semantic-duplication-report.json",
-    "ops/_generated.example/docs-shrink-report.json",
-    "ops/_generated.example/domain-document-template-contract.hash.json",
-    "ops/_generated.example/evidence-gap-report.json",
     "ops/_generated.example/file-usage-report.json",
     "ops/_generated.example/fixture-drift-report.json",
-    "ops/_generated.example/generation-audit-log.json",
     "ops/_generated.example/generator-coverage-report.json",
     "ops/_generated.example/incident-playbook-generation-report.json",
     "ops/_generated.example/inventory-completeness-score.json",
@@ -31,14 +17,12 @@
     "ops/_generated.example/ops-contract-index.json",
     "ops/_generated.example/ops-evidence-bundle.json",
     "ops/_generated.example/ops-index.json",
-    "ops/_generated.example/ops-ledger.json",
     "ops/_generated.example/ops.coverage.json",
     "ops/_generated.example/ops.dependency-graph.json",
     "ops/_generated.example/ops.inventory.json",
     "ops/_generated.example/ops.json",
     "ops/_generated.example/ops.maturity.json",
     "ops/_generated.example/ops.touched-paths.json",
-    "ops/_generated.example/orphan-files-report.json",
     "ops/_generated.example/panics.json",
     "ops/_generated.example/pins.index.example.json",
     "ops/_generated.example/placeholder-dirs-report.json",
@@ -141,43 +125,7 @@
       "regenerate": "make ops-generated-example-refresh"
     },
     {
-      "committed": "ops/_generated.example/OWNER.md",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-generated-example-refresh"
-    },
-    {
-      "committed": "ops/_generated.example/README.md",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-generated-example-refresh"
-    },
-    {
-      "committed": "ops/_generated.example/REQUIRED_FILES.md",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-generated-example-refresh"
-    },
-    {
       "committed": "ops/_generated.example/configs-drift-report.json",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-generated-example-refresh"
-    },
-    {
-      "committed": "ops/_generated.example/contract-audit-report.json",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-generated-example-refresh"
-    },
-    {
-      "committed": "ops/_generated.example/contract-coverage-report.json",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-generated-example-refresh"
-    },
-    {
-      "committed": "ops/_generated.example/contract-dependency-graph.json",
       "lifecycle": "curated_evidence",
       "producer": "manual+curated-example",
       "regenerate": "make ops-generated-example-refresh"
@@ -213,48 +161,6 @@
       "regenerate": "make ops-generated-example-refresh"
     },
     {
-      "committed": "ops/_generated.example/control-plane.snapshot.md",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-generated-example-refresh"
-    },
-    {
-      "committed": "ops/_generated.example/docs-drift-report.json",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-generated-example-refresh"
-    },
-    {
-      "committed": "ops/_generated.example/docs-links-report.json",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-generated-example-refresh"
-    },
-    {
-      "committed": "ops/_generated.example/docs-semantic-duplication-report.json",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-generated-example-refresh"
-    },
-    {
-      "committed": "ops/_generated.example/docs-shrink-report.json",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-generated-example-refresh"
-    },
-    {
-      "committed": "ops/_generated.example/domain-document-template-contract.hash.json",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-generated-example-refresh"
-    },
-    {
-      "committed": "ops/_generated.example/evidence-gap-report.json",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-readiness-scorecard"
-    },
-    {
       "committed": "ops/_generated.example/file-usage-report.json",
       "lifecycle": "curated_evidence",
       "producer": "manual+curated-example",
@@ -262,12 +168,6 @@
     },
     {
       "committed": "ops/_generated.example/fixture-drift-report.json",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-generated-example-refresh"
-    },
-    {
-      "committed": "ops/_generated.example/generation-audit-log.json",
       "lifecycle": "curated_evidence",
       "producer": "manual+curated-example",
       "regenerate": "make ops-generated-example-refresh"
@@ -315,12 +215,6 @@
       "regenerate": "make ops-generated-example-refresh"
     },
     {
-      "committed": "ops/_generated.example/ops-ledger.json",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-generated-example-refresh"
-    },
-    {
       "committed": "ops/_generated.example/ops.coverage.json",
       "lifecycle": "curated_evidence",
       "producer": "manual+curated-example",
@@ -352,12 +246,6 @@
     },
     {
       "committed": "ops/_generated.example/ops.touched-paths.json",
-      "lifecycle": "curated_evidence",
-      "producer": "manual+curated-example",
-      "regenerate": "make ops-generated-example-refresh"
-    },
-    {
-      "committed": "ops/_generated.example/orphan-files-report.json",
       "lifecycle": "curated_evidence",
       "producer": "manual+curated-example",
       "regenerate": "make ops-generated-example-refresh"
