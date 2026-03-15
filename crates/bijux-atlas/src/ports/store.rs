@@ -133,6 +133,11 @@ impl StoreInstrumentation for StoreMetricsCollector {
     }
 }
 
+/// Repository-oriented artifact store contract for publish, verify, and layout operations.
+///
+/// This port owns the durable artifact layout semantics used by ingest and publication
+/// workflows. Runtime dataset hydration uses [`crate::app::ports::DatasetStoreBackend`]
+/// instead, which keeps the online serving path decoupled from publish-time behaviors.
 pub trait ArtifactStore {
     fn list_datasets(&self) -> Result<Vec<DatasetId>, StoreError>;
     fn get_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, StoreError>;

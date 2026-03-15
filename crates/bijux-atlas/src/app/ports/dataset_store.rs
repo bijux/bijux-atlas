@@ -4,12 +4,21 @@ use crate::app::cache::{CacheError, RegistrySourceHealth};
 use crate::domain::dataset::{ArtifactManifest, Catalog, DatasetId};
 use async_trait::async_trait;
 
+/// Runtime read port used by the server cache and query-serving path.
+///
+/// This port is intentionally narrower than the repository-wide artifact publishing
+/// interfaces under [`crate::ports::store`]: it models only the read operations
+/// required by a running Atlas node to discover catalogs and hydrate cached datasets.
 #[non_exhaustive]
 pub enum CatalogFetch {
     NotModified,
     Updated { etag: String, catalog: Catalog },
 }
 
+/// Runtime-facing dataset source abstraction owned by the application layer.
+///
+/// Implementations may be backed by local files, S3-like object storage, or federated
+/// registries, but application services depend only on this read-oriented contract.
 #[async_trait]
 pub trait DatasetStoreBackend: Send + Sync + 'static {
     fn backend_tag(&self) -> &'static str {
