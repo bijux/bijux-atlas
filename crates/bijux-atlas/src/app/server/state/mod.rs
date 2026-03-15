@@ -2,7 +2,7 @@
 
 use crate::app::cache::{CacheError, RegistrySourceHealth};
 use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
-use crate::application::server::cache;
+use crate::app::server::cache;
 use crate::runtime::config::ApiConfig;
 use crate::domain::dataset::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
 use crate::domain::{

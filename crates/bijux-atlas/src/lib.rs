@@ -28,7 +28,6 @@ pub(crate) use tracing::Instrument;
 
 pub mod adapters;
 pub mod app;
-pub(crate) mod application;
 pub mod runtime;
 pub mod bootstrap;
 pub mod contracts;

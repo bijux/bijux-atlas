@@ -437,7 +437,7 @@ impl DatasetCacheManager {
             .map_err(|e| CacheError(e.to_string()))?
             .len();
         let (shard_sqlite_paths, shard_by_seqid) =
-            crate::application::server::cache::shards::load_shard_catalog(&paths.derived_dir)?;
+            crate::app::server::cache::shards::load_shard_catalog(&paths.derived_dir)?;
         let download_latency_ns = started.elapsed().as_nanos() as u64;
 
         {
@@ -514,7 +514,7 @@ impl DatasetCacheManager {
                 .verify_marker_fast_path_hits
                 .fetch_add(1, Ordering::Relaxed);
             let (shard_sqlite_paths, shard_by_seqid) =
-                crate::application::server::cache::shards::load_shard_catalog(&paths.derived_dir)?;
+                crate::app::server::cache::shards::load_shard_catalog(&paths.derived_dir)?;
             let mut entries = self.entries.lock().await;
             entries
                 .entry(dataset.clone())
@@ -543,7 +543,7 @@ impl DatasetCacheManager {
             std::fs::write(marker_path, marker_expected.as_bytes())
                 .map_err(|e| CacheError(e.to_string()))?;
             let (shard_sqlite_paths, shard_by_seqid) =
-                crate::application::server::cache::shards::load_shard_catalog(&paths.derived_dir)?;
+                crate::app::server::cache::shards::load_shard_catalog(&paths.derived_dir)?;
             let mut entries = self.entries.lock().await;
             let sqlite_path = paths.sqlite.clone();
             entries.insert(

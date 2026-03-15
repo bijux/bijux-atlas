@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
-use crate::application::server::state::cache_runtime::cache_storage_runtime::{
+use crate::app::server::state::cache_runtime::cache_storage_runtime::{
     dataset_index_path, local_cache_paths,
 };
 use crate::domain::dataset::{ArtifactChecksums, ManifestStats};

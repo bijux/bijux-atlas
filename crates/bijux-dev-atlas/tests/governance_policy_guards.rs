@@ -109,11 +109,11 @@ fn atlas_application_server_shims_stay_thin() {
     let root = repo_root();
     for (path, expected) in [
         (
-            "crates/bijux-atlas/src/application/server/state/router.rs",
+            "crates/bijux-atlas/src/app/server/state/router.rs",
             "pub use crate::interfaces::http::router::*;",
         ),
         (
-            "crates/bijux-atlas/src/application/server/state/request_utils.rs",
+            "crates/bijux-atlas/src/app/server/state/request_utils.rs",
             "pub use crate::interfaces::http::request_policies::*;",
         ),
     ] {
@@ -137,7 +137,7 @@ fn atlas_domain_surface_does_not_reexport_runtime_config_helpers() {
     assert!(
         !text.contains("resolve_bijux_cache_dir")
             && !text.contains("resolve_bijux_config_path")
-            && !text.contains("crate::application::config")
+            && !text.contains("crate::runtime::config")
             && !text.contains("pub use distributed_config::{\n    default_metadata_store, load_cluster_config_from_path, load_node_config_from_path,")
             && !text.contains("pub use security_runtime::{\n    load_security_config_from_path, validate_security_config,"),
         "domain surface must not depend on runtime config or runtime loader helpers"
@@ -179,7 +179,6 @@ fn atlas_lib_hides_legacy_ownership_roots() {
     for expected in [
         "pub mod adapters;",
         "pub mod app;",
-        "pub(crate) mod application;",
         "pub(crate) mod infrastructure;",
         "pub(crate) mod interfaces;",
         "pub use crate::app::server::{",
@@ -201,7 +200,6 @@ fn atlas_lib_hides_legacy_ownership_roots() {
         "pub mod application;",
         "pub mod infrastructure;",
         "pub mod interfaces;",
-        "pub use crate::application::server::{",
         "pub use crate::interfaces::cli;",
         "pub use crate::interfaces::client;",
         "pub use crate::infrastructure::store;",
@@ -221,7 +219,6 @@ fn atlas_lib_hides_legacy_ownership_roots() {
 fn atlas_legacy_root_modules_stay_compatibility_only() {
     let root = repo_root();
     for path in [
-        "crates/bijux-atlas/src/application/mod.rs",
         "crates/bijux-atlas/src/interfaces/mod.rs",
         "crates/bijux-atlas/src/infrastructure/mod.rs",
         "crates/bijux-atlas/src/bootstrap/mod.rs",
