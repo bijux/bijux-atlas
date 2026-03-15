@@ -1,9 +1,13 @@
+use super::*;
+use crate::http::genes;
+use serde_json::json;
+
 pub(crate) async fn genes_handler(
     State(state): State<AppState>,
     headers: HeaderMap,
     axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>,
 ) -> Response {
-    super::genes::genes_handler(State(state), headers, axum::extract::Query(params)).await
+    genes::genes_handler(State(state), headers, axum::extract::Query(params)).await
 }
 
 pub(crate) async fn genes_count_handler(

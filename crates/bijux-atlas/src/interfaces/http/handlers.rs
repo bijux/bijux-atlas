@@ -2,8 +2,8 @@
 
 #![deny(clippy::redundant_clone)]
 
-include!("handlers_utilities.rs");
-include!("handlers_endpoints.rs");
+pub(crate) use crate::interfaces::http::handlers_endpoints::*;
+pub(crate) use crate::interfaces::http::handlers_utilities::*;
 
 #[cfg(test)]
 mod tests {

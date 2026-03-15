@@ -1,7 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use tracing::info;
+use crate::*;
 
-include!("handlers_endpoints/catalog_and_identity.rs");
-include!("handlers_endpoints/debug_and_validate.rs");
-include!("handlers_endpoints/genes_and_counts.rs");
+pub(crate) use crate::http::handlers_utilities::*;
+
+mod catalog_and_identity;
+mod debug_and_validate;
+mod genes_and_counts;
+
+pub(crate) use self::catalog_and_identity::*;
+pub(crate) use self::debug_and_validate::*;
+pub(crate) use self::genes_and_counts::*;

@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use super::*;
+use serde_json::json;
+use serde_json::Value;
+use tracing::info;
+
 pub(crate) async fn metrics_handler(State(state): State<AppState>) -> impl IntoResponse {
     crate::telemetry::metrics_endpoint::metrics_handler(State(state)).await
 }

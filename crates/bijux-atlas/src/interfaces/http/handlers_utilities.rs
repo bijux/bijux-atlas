@@ -53,8 +53,8 @@ pub(crate) struct FailureInjectionRequest {
     pub shard_id: Option<String>,
 }
 
-struct RequestQueueGuard {
-    counter: Arc<AtomicU64>,
+pub(crate) struct RequestQueueGuard {
+    pub(crate) counter: Arc<AtomicU64>,
 }
 
 impl Drop for RequestQueueGuard {
@@ -401,7 +401,7 @@ pub(crate) async fn dataset_provenance(state: &AppState, dataset: &DatasetId) ->
     out
 }
 
-fn is_draining(state: &AppState) -> bool {
+pub(crate) fn is_draining(state: &AppState) -> bool {
     !state.accepting_requests.load(Ordering::Relaxed)
 }
 
@@ -411,7 +411,7 @@ pub(crate) fn bool_query_flag(params: &HashMap<String, String>, name: &str) -> b
         .is_some_and(|v| v == "1" || v.eq_ignore_ascii_case("true"))
 }
 
-fn parse_region_opt(raw: Option<String>) -> Option<RegionFilter> {
+pub(crate) fn parse_region_opt(raw: Option<String>) -> Option<RegionFilter> {
     let value = raw?;
     let (seqid, span) = value.split_once(':')?;
     let (start, end) = span.split_once('-')?;
