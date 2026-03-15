@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::model::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+use bijux_atlas::domain::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 fn large_manifest() -> ArtifactManifest {

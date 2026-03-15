@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::{ApiConfig, AppState, DatasetCacheConfig, DatasetCacheManager, FakeStore};
+use bijux_atlas::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
+use bijux_atlas::runtime::config::ApiConfig;
+use bijux_atlas::runtime::wiring::server::FakeStore;
 use criterion::{criterion_group, criterion_main, Criterion};
 use std::sync::Arc;
 

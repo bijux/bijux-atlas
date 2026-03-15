@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::ingest::ingest_dataset;
-use bijux_atlas::ingest::IngestOptions;
-use bijux_atlas::model::{
-    BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy,
-    FeatureIdUniquenessPolicy, GeneIdentifierPolicy, GeneNamePolicy, SeqidNormalizationPolicy,
-    ShardingPlan, StrictnessMode, TranscriptIdPolicy, TranscriptTypePolicy, UnknownFeaturePolicy,
+use bijux_atlas::domain::ingest::ingest_dataset;
+use bijux_atlas::domain::ingest::IngestOptions;
+use bijux_atlas::domain::dataset::{DatasetId, ShardingPlan};
+use bijux_atlas::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
+use bijux_atlas::domain::query::{
+    BiotypePolicy, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy,
+    FeatureIdUniquenessPolicy, GeneNamePolicy, SeqidNormalizationPolicy, TranscriptIdPolicy,
+    TranscriptTypePolicy, UnknownFeaturePolicy,
 };
 use criterion::{criterion_group, criterion_main, Criterion};
 use tempfile::tempdir;
@@ -48,7 +50,7 @@ fn make_options(root: &std::path::Path) -> IngestOptions {
         emit_normalized_debug: false,
         normalized_replay_mode: false,
         prod_mode: false,
-        timestamp_policy: bijux_atlas::ingest::TimestampPolicy::DeterministicZero,
+        timestamp_policy: bijux_atlas::domain::ingest::TimestampPolicy::DeterministicZero,
     }
 }
 

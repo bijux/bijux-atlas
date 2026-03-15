@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::policies::{
+use bijux_atlas::domain::policy::{
     evaluate_policy_set, evaluate_repository_metrics, load_policy_set_from_workspace,
     RepositoryMetrics,
 };

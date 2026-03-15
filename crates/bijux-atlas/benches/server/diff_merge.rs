@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
-
-use bijux_atlas_model::{GeneId, ReleaseGeneIndexEntry, SeqId};
+use bijux_atlas::domain::query::{GeneId, ReleaseGeneIndexEntry, SeqId};
 use criterion::{criterion_group, criterion_main, Criterion};
 
 fn build_entries(prefix: &str, n: usize, changed_every: usize) -> Vec<ReleaseGeneIndexEntry> {

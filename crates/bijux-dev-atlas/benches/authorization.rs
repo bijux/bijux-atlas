@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::core::{
+use bijux_atlas::domain::security::authorization::{
     AuthorizationDecision, AuthorizationEngine, AuthorizationPolicy, PermissionCatalog,
     PermissionEvaluator, RoleCatalog, RoleRegistry,
 };

@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::core::sha256_hex;
-use bijux_atlas::model::{
+use bijux_atlas::domain::sha256_hex;
+use bijux_atlas::domain::dataset::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
 };
-use bijux_atlas::store::{canonical_catalog_json, ArtifactStore, LocalFsStore};
+use bijux_atlas::adapters::outbound::store::{ArtifactStore, LocalFsStore, canonical_catalog_json};
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use tempfile::tempdir;
 

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::core::{
+use bijux_atlas::domain::security::data_protection::{
     detect_tampering, verify_artifact_checksum, verify_artifact_signature, EncryptionAtRest,
     XorEncryption,
 };
@@ -8,9 +8,9 @@ use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 fn security_data_protection_benchmarks(c: &mut Criterion) {
     let payload = vec![42_u8; 64 * 1024];
-    let checksum = bijux_atlas::core::sha256_hex(&payload);
+    let checksum = bijux_atlas::domain::sha256_hex(&payload);
     let signing_key = "atlas-signing-key";
-    let signature = bijux_atlas::core::sha256_hex(format!("{checksum}:{signing_key}").as_bytes());
+    let signature = bijux_atlas::domain::sha256_hex(format!("{checksum}:{signing_key}").as_bytes());
     let encryption = XorEncryption::new(b"benchmark-key");
 
     c.bench_function("security_encrypt_decrypt_roundtrip_64kb", |b| {

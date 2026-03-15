@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::core as bijux_atlas_core;
+use bijux_atlas::domain::security::runtime::load_security_config_from_path;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use std::fs;
 use std::path::PathBuf;
@@ -34,10 +34,8 @@ fn authentication_benchmarks(c: &mut Criterion) {
 
     c.bench_function("security_runtime_auth_config_parse", |b| {
         b.iter(|| {
-            let config = bijux_atlas_core::load_security_config_from_path(black_box(
-                runtime_security_path.as_path(),
-            ))
-            .expect("load runtime security config");
+            let config = load_security_config_from_path(black_box(runtime_security_path.as_path()))
+                .expect("load runtime security config");
             black_box(config.auth.mode);
         })
     });

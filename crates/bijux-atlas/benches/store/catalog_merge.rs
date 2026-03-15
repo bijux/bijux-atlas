@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::model::{Catalog, CatalogEntry, DatasetId};
-use bijux_atlas::store::merge_catalogs;
+use bijux_atlas::domain::dataset::{Catalog, CatalogEntry, DatasetId};
+use bijux_atlas::adapters::outbound::store::merge_catalogs;
 use criterion::{criterion_group, criterion_main, Criterion};
 
 fn benchmark_catalog_merge(c: &mut Criterion) {

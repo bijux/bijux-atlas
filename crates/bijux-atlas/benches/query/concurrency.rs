@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::query::{query_genes, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits};
+use bijux_atlas::domain::query::{
+    query_genes, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits, RegionFilter,
+};
 use criterion::{criterion_group, criterion_main, Criterion};
 use rusqlite::{Connection, OpenFlags};
 use std::sync::Arc;
@@ -168,7 +170,7 @@ fn bench_query_concurrency(c: &mut Criterion) {
                     let req = GeneQueryRequest {
                         fields: GeneFields::default(),
                         filter: GeneFilter {
-                            region: Some(bijux_atlas::query::RegionFilter {
+                            region: Some(RegionFilter {
                                 seqid: "chr1".to_string(),
                                 start: 1,
                                 end: 150_000,

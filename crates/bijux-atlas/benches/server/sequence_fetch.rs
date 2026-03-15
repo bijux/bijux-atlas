@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
-
 use std::sync::Arc;
 
-use bijux_atlas::{
-    build_router, ApiConfig, AppState, DatasetCacheConfig, DatasetCacheManager, FakeStore,
+use bijux_atlas::adapters::inbound::http::router::build_router;
+use bijux_atlas::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
+use bijux_atlas::domain::dataset::{
+    ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats,
 };
-use bijux_atlas_core::sha256_hex;
-use bijux_atlas_model::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+use bijux_atlas::domain::sha256_hex;
+use bijux_atlas::runtime::config::ApiConfig;
+use bijux_atlas::runtime::wiring::server::FakeStore;
 use criterion::{criterion_group, criterion_main, Criterion};
 use rusqlite::Connection;
 use tempfile::tempdir;

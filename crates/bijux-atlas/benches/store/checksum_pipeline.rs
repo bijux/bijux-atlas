@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::core::sha256_hex;
-use bijux_atlas::store::{verify_expected_sha256, ManifestLock};
+use bijux_atlas::domain::sha256_hex;
+use bijux_atlas::adapters::outbound::store::{ManifestLock, verify_expected_sha256};
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 fn bench_checksum_pipeline(c: &mut Criterion) {

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::core::canonical;
+use bijux_atlas::domain::canonical;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 fn bench_stable_sort_by_key(c: &mut Criterion) {
