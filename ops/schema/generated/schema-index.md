@@ -2,7 +2,6 @@
 
 | Path |
 |---|
-| `ops/schema/configs/public-surface.schema.json` |
 | `ops/schema/datasets/consumer-list.schema.json` |
 | `ops/schema/datasets/corruption-drill-report.schema.json` |
 | `ops/schema/datasets/dataset-index.schema.json` |
@@ -55,6 +54,7 @@
 | `ops/schema/inventory/pin-freeze.schema.json` |
 | `ops/schema/inventory/pins.schema.json` |
 | `ops/schema/inventory/placeholder-dirs.schema.json` |
+| `ops/schema/inventory/public-surface.schema.json` |
 | `ops/schema/inventory/registry.schema.json` |
 | `ops/schema/inventory/scenario-slo-map.schema.json` |
 | `ops/schema/inventory/surfaces.schema.json` |
@@ -92,6 +92,7 @@
 | `ops/schema/load/thresholds.schema.json` |
 | `ops/schema/meta/artifact-allowlist.schema.json` |
 | `ops/schema/meta/budgets.schema.json` |
+| `ops/schema/meta/compatibility-lock.schema.json` |
 | `ops/schema/meta/inventory-index.schema.json` |
 | `ops/schema/meta/layer-contract.schema.json` |
 | `ops/schema/meta/namespaces.schema.json` |
@@ -101,6 +102,7 @@
 | `ops/schema/meta/pins.schema.json` |
 | `ops/schema/meta/ports.schema.json` |
 | `ops/schema/meta/required-files-contract.schema.json` |
+| `ops/schema/meta/schema-index.schema.json` |
 | `ops/schema/meta/scorecard.schema.json` |
 | `ops/schema/observe/alert-catalog.schema.json` |
 | `ops/schema/observe/budgets.schema.json` |

@@ -1,6 +1,6 @@
 # Schema Reference Allowlist
 
-- `ops/schema/configs/public-surface.schema.json`: governed schema reference
+- `ops/schema/inventory/public-surface.schema.json`: governed schema reference
 - `ops/schema/datasets/consumer-list.schema.json`: governed schema reference
 - `ops/schema/datasets/corruption-drill-report.schema.json`: governed schema reference
 - `ops/schema/datasets/dataset-index.schema.json`: governed schema reference
@@ -91,6 +91,7 @@
 - `ops/schema/meta/artifact-allowlist.schema.json`: governed schema reference
 - `ops/schema/meta/budgets.schema.json`: governed schema reference
 - `ops/schema/meta/inventory-index.schema.json`: governed schema reference
+- `ops/schema/meta/compatibility-lock.schema.json`: governed schema reference
 - `ops/schema/meta/layer-contract.schema.json`: governed schema reference
 - `ops/schema/meta/namespaces.schema.json`: governed schema reference
 - `ops/schema/meta/ops-index.schema.json`: governed schema reference
@@ -99,6 +100,7 @@
 - `ops/schema/meta/pins.schema.json`: governed schema reference
 - `ops/schema/meta/ports.schema.json`: governed schema reference
 - `ops/schema/meta/required-files-contract.schema.json`: governed schema reference
+- `ops/schema/meta/schema-index.schema.json`: governed schema reference
 - `ops/schema/meta/scorecard.schema.json`: governed schema reference
 - `ops/schema/observe/alert-catalog.schema.json`: governed schema reference
 - `ops/schema/observe/budgets.schema.json`: governed schema reference

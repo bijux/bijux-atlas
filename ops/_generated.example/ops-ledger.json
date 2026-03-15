@@ -164,7 +164,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -178,7 +178,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -193,7 +193,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -207,7 +207,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -223,7 +223,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -239,7 +239,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -255,7 +255,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -271,7 +271,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -287,7 +287,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -303,7 +303,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -319,7 +319,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -335,7 +335,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -351,7 +351,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -367,7 +367,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -383,7 +383,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -399,7 +399,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -415,7 +415,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -431,7 +431,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -447,7 +447,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -463,7 +463,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -477,7 +477,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -489,7 +489,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -503,7 +503,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -519,7 +519,7 @@
       ],
       "owner": "_generated.example",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -995,7 +995,7 @@
       ],
       "owner": "datasets",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -1008,7 +1008,7 @@
       ],
       "owner": "datasets",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -1021,7 +1021,7 @@
       ],
       "owner": "datasets",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -1035,7 +1035,7 @@
       ],
       "owner": "datasets",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -1305,7 +1305,7 @@
       ],
       "owner": "e2e",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -1318,7 +1318,7 @@
       ],
       "owner": "e2e",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -1331,7 +1331,7 @@
       ],
       "owner": "e2e",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -2481,7 +2481,7 @@
       ],
       "owner": "k8s",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -2494,7 +2494,7 @@
       ],
       "owner": "k8s",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -2507,7 +2507,7 @@
       ],
       "owner": "k8s",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -2520,7 +2520,7 @@
       ],
       "owner": "k8s",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -2995,7 +2995,7 @@
       ],
       "owner": "load",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -3008,7 +3008,7 @@
       ],
       "owner": "load",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -3021,7 +3021,7 @@
       ],
       "owner": "load",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -3034,7 +3034,7 @@
       ],
       "owner": "load",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -4246,7 +4246,7 @@
       ],
       "owner": "observe",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -4260,7 +4260,7 @@
       ],
       "owner": "observe",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -4712,7 +4712,7 @@
       ],
       "owner": "report",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -4725,7 +4725,7 @@
       ],
       "owner": "report",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -4738,7 +4738,7 @@
       ],
       "owner": "report",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -4751,7 +4751,7 @@
       ],
       "owner": "report",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -4764,7 +4764,7 @@
       ],
       "owner": "report",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -4948,14 +4948,14 @@
       "deletion_allowed": false
     },
     {
-      "path": "ops/schema/configs/public-surface.schema.json",
+      "path": "ops/schema/inventory/public-surface.schema.json",
       "type": "authored",
       "reasons": [
         "schema",
         "referenced_by_docs"
       ],
       "owner": "schema",
-      "schema_ref": "ops/schema/configs/public-surface.schema.json",
+      "schema_ref": "ops/schema/inventory/public-surface.schema.json",
       "generator_ref": null,
       "required_by": [],
       "deletion_allowed": false
@@ -5272,7 +5272,7 @@
       ],
       "owner": "schema",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -5285,7 +5285,7 @@
       ],
       "owner": "schema",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -5300,7 +5300,7 @@
       ],
       "owner": "schema",
       "schema_ref": "ops/schema/generated/compatibility-lock.json",
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -5317,7 +5317,7 @@
       ],
       "owner": "schema",
       "schema_ref": "ops/schema/generated/schema-index.json",
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -5334,7 +5334,7 @@
       ],
       "owner": "schema",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -6307,7 +6307,7 @@
       ],
       "owner": "stack",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [],
       "deletion_allowed": false
     },
@@ -6321,7 +6321,7 @@
       ],
       "owner": "stack",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -6337,7 +6337,7 @@
       ],
       "owner": "stack",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -6353,7 +6353,7 @@
       ],
       "owner": "stack",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -6369,7 +6369,7 @@
       ],
       "owner": "stack",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],
@@ -6385,7 +6385,7 @@
       ],
       "owner": "stack",
       "schema_ref": null,
-      "generator_ref": "bijux dev atlas ops generate",
+      "generator_ref": "bijux-dev-atlas ops generate",
       "required_by": [
         "REQUIRED_FILES.md"
       ],

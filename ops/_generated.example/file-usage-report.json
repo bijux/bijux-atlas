@@ -1494,7 +1494,7 @@
       ]
     },
     {
-      "path": "ops/schema/configs/public-surface.schema.json",
+      "path": "ops/schema/inventory/public-surface.schema.json",
       "categories": [
         "referenced_by_docs",
         "schema"

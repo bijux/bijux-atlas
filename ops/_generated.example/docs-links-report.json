@@ -237,7 +237,7 @@
     {
       "doc": "docs/development/makefiles/surface.md",
       "ops_paths": [
-        "ops/schema/configs/public-surface.schema.json"
+        "ops/schema/inventory/public-surface.schema.json"
       ]
     },
     {
@@ -261,7 +261,7 @@
       "doc": "docs/development/reorg-plan.md",
       "ops_paths": [
         "ops/_generated",
-        "ops/schema/configs/public-surface.schema.json",
+        "ops/schema/inventory/public-surface.schema.json",
         "ops/schema/report/unified.schema.json"
       ]
     },
@@ -1637,7 +1637,7 @@
     {
       "doc": "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
       "ops_paths": [
-        "ops/schema/configs/public-surface.schema.json",
+        "ops/schema/inventory/public-surface.schema.json",
         "ops/schema/datasets/corruption-drill-report.schema.json",
         "ops/schema/datasets/fixture-policy.schema.json",
         "ops/schema/datasets/promotion-report.schema.json",
@@ -1698,7 +1698,7 @@
     {
       "doc": "ops/schema/generated/schema-index.md",
       "ops_paths": [
-        "ops/schema/configs/public-surface.schema.json",
+        "ops/schema/inventory/public-surface.schema.json",
         "ops/schema/datasets/corruption-drill-report.schema.json",
         "ops/schema/datasets/dataset-index.schema.json",
         "ops/schema/datasets/dataset-lineage.schema.json",
