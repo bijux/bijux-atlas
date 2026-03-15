@@ -20,6 +20,13 @@ flowchart LR
     Owners --> Docs[Docs]
 ```
 
+A stable surface should have one obvious owner in practice, not just in theory. In this repository that usually means some combination of:
+
+- canonical docs with explicit `owner` metadata
+- contract or schema files under the owning tree
+- tests or checks that enforce the same boundary
+- review ownership such as `.github/CODEOWNERS` when human approval matters
+
 ## Versioning Logic
 
 ```mermaid
@@ -30,7 +37,31 @@ flowchart TD
     Breaking --> Versioning
 ```
 
+## Change Classes
+
+- internal-only change: no documented contract or compatibility surface changes
+- compatible surface change: documented surface expands without breaking current consumers
+- breaking change: route, schema, config, output, or URL behavior changes in ways existing consumers would notice
+
+Breaking changes should be rare, explicit, and accompanied by migration guidance.
+
+## Deprecation Discipline
+
+Atlas should not remove or rename stable surfaces casually. The current compatibility policy in `configs/governance/compatibility.yaml` defines deprecation windows of:
+
+- 180 days for env keys, chart values, profile keys, and report schemas
+- 365 days for docs URLs
+
+That policy matters because versioning is not only about semver labels. It is also about whether real users, operators, and maintainers have enough time and documentation to move safely.
+
 ## Main Promise
 
 Atlas should not hide stable truth behind multiple competing roots. If a contract is real, it should have one obvious owner and an intentional versioning story.
 
+## Practical Rule
+
+If you cannot answer all three questions clearly, the surface is not ready to be treated as stable:
+
+1. Who owns it?
+2. Where is it documented?
+3. What is the versioning or deprecation path if it changes?

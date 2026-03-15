@@ -23,6 +23,27 @@ flowchart LR
     Runtime --> Clients[Users and integrations]
 ```
 
+This is the product path. It explains how data becomes serveable. It does not mean Atlas is only a server.
+
+## The Two Systems Atlas Actually Has
+
+```mermaid
+flowchart LR
+    Inputs[Source inputs] --> Product[Product workflow]
+    Product --> Store[Published store and catalog]
+    Store --> Runtime[Runtime server]
+    Maintainers[Maintainers] --> ControlPlane[bijux-dev-atlas]
+    ControlPlane --> Evidence[Checks reports and governance evidence]
+    Evidence --> Release[Release or remediation decisions]
+```
+
+Atlas is really two related systems:
+
+- the product system that validates, publishes, and serves dataset state
+- the maintainer control plane that validates repository rules, docs, contracts, and release evidence
+
+Those systems should meet at contracts and artifacts, not leak into each other as hidden shared behavior.
+
 ## Main Architectural Zones
 
 ```mermaid
@@ -44,6 +65,12 @@ The architecture tries to keep these responsibilities separate:
 - runtime composes the real process
 - contracts define the stable external shapes
 
+The repository also keeps a separate maintainer path:
+
+- `bijux-atlas` and `bijux-atlas-server` are the user and operator-facing runtime surface
+- `bijux-dev-atlas` is the maintainer-facing control plane
+- the maintainer control plane may depend on runtime contracts, but the runtime should not depend on repo-governance behavior
+
 ## Why This Matters
 
 Atlas becomes hard to maintain when:
@@ -51,6 +78,13 @@ Atlas becomes hard to maintain when:
 - runtime wiring leaks into domain logic
 - adapter concerns are treated as application truth
 - contracts are duplicated across multiple roots
+- repository diagnostics start distorting the user-facing runtime
 
 The architecture is designed to make those mistakes more visible and less normal.
 
+## Honest Simplification
+
+This page is intentionally high-level. It tells you which boundaries matter most. For crate layout and control-plane structure, keep reading:
+
+- [Source Layout and Ownership](source-layout-and-ownership.md)
+- [Automation Architecture](automation-architecture.md)
