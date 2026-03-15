@@ -7,7 +7,7 @@ Security reports for Bijux Atlas should stay private until maintainers have repr
 Atlas currently supports:
 
 - `main`
-- the latest `0.1.x` release line
+- the latest `0.2.x` release line
 
 Older versions are unsupported unless the repository explicitly documents an extension in release material or contracts.
 
