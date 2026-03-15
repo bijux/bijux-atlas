@@ -50,7 +50,6 @@ pub(super) fn force_json_output(command: &mut Command) {
             ReportsCommand::Progress(args) => args.format = FormatArg::Json,
             ReportsCommand::Validate(args) => args.format = FormatArg::Json,
         },
-        Command::Demo { command } => force_json_demo(command),
         Command::Configs { command } => force_json_configs(command),
         Command::Governance { command } => force_json_governance(command),
         Command::Security { command } => force_json_security(command),
@@ -235,12 +234,6 @@ fn force_json_artifacts(command: &mut ArtifactsCommand) {
             crate::cli::ArtifactsReportCommand::Read(args) => args.common.format = FormatArg::Json,
             crate::cli::ArtifactsReportCommand::Diff(args) => args.common.format = FormatArg::Json,
         },
-    }
-}
-
-fn force_json_demo(command: &mut crate::cli::DemoCommand) {
-    match command {
-        crate::cli::DemoCommand::Quickstart(args) => args.format = FormatArg::Json,
     }
 }
 
@@ -1826,9 +1819,6 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | crate::cli::CheckCommand::Doctor { repo_root, .. } => {
                 *repo_root = Some(root.clone())
             }
-        },
-        Command::Demo { command } => match command {
-            crate::cli::DemoCommand::Quickstart(args) => args.repo_root = Some(root.clone()),
         },
         Command::Ci { command } | Command::Workflows { command } => match command {
             crate::cli::WorkflowsCommand::Lanes { command } => match command {

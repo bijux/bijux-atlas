@@ -6,7 +6,6 @@ Commands:
   ops         
   docs        
   reports     
-  demo        
   configs     
   governance  
   system      

@@ -109,10 +109,6 @@ pub enum Command {
         #[command(subcommand)]
         command: MakeCommand,
     },
-    Demo {
-        #[command(subcommand)]
-        command: DemoCommand,
-    },
     Configs {
         #[command(subcommand)]
         command: ConfigsCommand,

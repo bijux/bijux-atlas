@@ -278,17 +278,6 @@ pub(crate) fn help_inventory_payload() -> serde_json::Value {
             "hidden": false
         }),
         serde_json::json!({
-            "id": "demo",
-            "kind": "group",
-            "purpose": "execute curated local demonstration flows",
-            "effects": ["fs_read"],
-            "inputs": ["repo_root"],
-            "outputs": ["demo guidance output"],
-            "report_ids": [],
-            "hidden": false,
-            "subcommands": ["quickstart"]
-        }),
-        serde_json::json!({
             "id": "docker",
             "kind": "group",
             "purpose": "run docker validation and release-oriented commands",

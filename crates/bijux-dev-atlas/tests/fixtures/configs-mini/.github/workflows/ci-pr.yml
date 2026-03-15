@@ -109,16 +109,16 @@ jobs:
           ARTIFACT_ROOT="${report_root}" RUN_ID="${RUN_ID}" make docker-contracts > "${logs_root}/docker-contracts-static.stdout.log" 2> "${logs_root}/docker-contracts-static.stderr.log"
           make ops-fast > "${report_root}/ci-fast.json" 2> "${logs_root}/ci-fast.stderr.log"
           cargo run -q -p bijux-dev-atlas -- check list --suite ci_fast --include-internal --include-slow --format json > "${report_root}/suite-membership-ci_fast.json"
-          cargo run -q -p bijux-dev-atlas -- demo quickstart --format json > "${report_root}/demo-quickstart.json"
+          cargo run -q -p bijux-dev-atlas -- help --format json > "${report_root}/command-inventory.json"
           python - <<'PY'
           import json, os, pathlib
           run_id=os.environ["RUN_ID"]
-          p=pathlib.Path(f"artifacts/{run_id}/reports/demo-quickstart.json")
+          p=pathlib.Path(f"artifacts/{run_id}/reports/command-inventory.json")
           payload=json.loads(p.read_text())
           assert payload["schema_version"]==1
-          assert payload["steps_budget"] <= 5
-          assert payload["duration_budget_minutes"] <= 3
-          assert len(payload["steps"]) <= payload["steps_budget"]
+          assert payload["kind"]=="command_inventory"
+          assert payload["count"] == len(payload["commands"])
+          assert "demo" not in {entry["id"] for entry in payload["commands"]}
           PY
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-fast.json"
           printf "- lane: ci-fast\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \

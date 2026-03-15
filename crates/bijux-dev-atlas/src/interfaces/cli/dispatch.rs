@@ -8,7 +8,7 @@ use crate::run_print_policies;
 use crate::{
     plugin_metadata_json, run_api_command, run_artifacts_command, run_audit_command,
     run_build_command, run_capabilities_command, run_configs_command, run_data_command,
-    run_demo_command, run_docker_command, run_docs_command, run_drift_command, run_gates_command,
+    run_docker_command, run_docs_command, run_drift_command, run_gates_command,
     run_governance_command, run_help_inventory_command, run_invariants_command, run_load_command,
     run_make_command, run_migrations_command, run_observe_command, run_ops_command,
     run_perf_command, run_policies_command, run_print_boundaries_command, run_registry_check_by_id,
@@ -260,7 +260,6 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         Command::Docs { command } => run_docs_command(cli.quiet, command),
         Command::Artifacts { command } => run_artifacts_command(cli.quiet, command),
         Command::Make { command } => run_make_command(cli.quiet, command),
-        Command::Demo { command } => run_demo_command(cli.quiet, command),
         Command::Configs { command } => run_configs_command(cli.quiet, command),
         Command::Governance { command } => match run_governance_command(cli.quiet, command) {
             Ok((rendered, code)) => {

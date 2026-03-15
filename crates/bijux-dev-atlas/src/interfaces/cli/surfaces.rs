@@ -105,21 +105,6 @@ pub struct ArtifactsReportReadArgs {
 }
 
 #[derive(Subcommand, Debug)]
-pub enum DemoCommand {
-    Quickstart(DemoQuickstartArgs),
-}
-
-#[derive(Args, Debug, Clone)]
-pub struct DemoQuickstartArgs {
-    #[arg(long)]
-    pub repo_root: Option<PathBuf>,
-    #[arg(long, value_enum, default_value_t = FormatArg::Json)]
-    pub format: FormatArg,
-    #[arg(long)]
-    pub out: Option<PathBuf>,
-}
-
-#[derive(Subcommand, Debug)]
 pub enum DocsCommand {
     Check(DocsCommonArgs),
     VerifyContracts(DocsCommonArgs),
