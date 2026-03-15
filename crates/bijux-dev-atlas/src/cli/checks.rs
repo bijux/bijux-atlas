@@ -4,237 +4,6 @@ use std::path::PathBuf;
 
 use clap::{Subcommand, ValueEnum};
 
-#[derive(Subcommand, Debug)]
-pub enum CheckCommand {
-    Registry {
-        #[command(subcommand)]
-        command: CheckRegistryCommand,
-    },
-    List {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, value_name = "required|ci-fast|ci|local|deep|<suite_id>")]
-        suite: Option<String>,
-        #[arg(long, value_enum)]
-        domain: Option<DomainArg>,
-        #[arg(long, value_enum)]
-        severity: Option<CheckSeverityArg>,
-        #[arg(long, value_enum)]
-        mode: Option<CheckModeArg>,
-        #[arg(long)]
-        tag: Option<String>,
-        #[arg(long, value_name = "TEXT")]
-        name: Option<String>,
-        #[arg(long, value_name = "GLOB")]
-        id: Option<String>,
-        #[arg(long, default_value_t = false)]
-        include_internal: bool,
-        #[arg(long, default_value_t = false)]
-        include_slow: bool,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long, default_value_t = false)]
-        json: bool,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-    Explain {
-        check_id: String,
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-    Doctor {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, default_value_t = false)]
-        include_internal: bool,
-        #[arg(long, default_value_t = false)]
-        include_slow: bool,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-    Run {
-        check_id: Option<String>,
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long)]
-        artifacts_root: Option<PathBuf>,
-        #[arg(long)]
-        run_id: Option<String>,
-        #[arg(long, value_name = "required|ci-fast|ci|local|deep|<suite_id>")]
-        suite: Option<String>,
-        #[arg(long, value_enum)]
-        domain: Option<DomainArg>,
-        #[arg(long, value_enum)]
-        severity: Option<CheckSeverityArg>,
-        #[arg(long, value_enum)]
-        mode: Option<CheckModeArg>,
-        #[arg(long)]
-        tag: Option<String>,
-        #[arg(long, value_name = "TEXT")]
-        name: Option<String>,
-        #[arg(long, value_name = "GLOB")]
-        id: Option<String>,
-        #[arg(long, default_value_t = false)]
-        include_internal: bool,
-        #[arg(long, default_value_t = false)]
-        include_slow: bool,
-        #[arg(long, default_value_t = false)]
-        allow_subprocess: bool,
-        #[arg(long, default_value_t = false)]
-        allow_git: bool,
-        #[arg(long = "allow-write", default_value_t = false)]
-        allow_write: bool,
-        #[arg(long, default_value_t = false)]
-        allow_network: bool,
-        #[arg(long, default_value_t = false)]
-        fail_fast: bool,
-        #[arg(long)]
-        max_failures: Option<usize>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-        #[arg(long, default_value_t = 0)]
-        durations: usize,
-    },
-    TreeBudgets {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-    RepoDoctor {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long, default_value_t = false)]
-        json: bool,
-        #[arg(long, default_value_t = false)]
-        explain: bool,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-    RootSurfaceExplain {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-}
-
-#[derive(Subcommand, Debug)]
-pub enum ChecksCommand {
-    List {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long)]
-        domain: Option<String>,
-        #[arg(long)]
-        tag: Option<String>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-    Explain {
-        check_id: String,
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-    Doctor {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, default_value_t = false)]
-        include_internal: bool,
-        #[arg(long, default_value_t = false)]
-        include_slow: bool,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-    Run {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long)]
-        artifacts_root: Option<PathBuf>,
-        #[arg(long)]
-        run_id: Option<String>,
-        #[arg(long, value_name = "required|ci-fast|ci|local|deep|<suite_id>")]
-        suite: Option<String>,
-        #[arg(long, value_enum)]
-        domain: Option<DomainArg>,
-        #[arg(long, value_enum)]
-        severity: Option<CheckSeverityArg>,
-        #[arg(long, value_enum)]
-        mode: Option<CheckModeArg>,
-        #[arg(long)]
-        tag: Option<String>,
-        #[arg(long, value_name = "TEXT")]
-        name: Option<String>,
-        #[arg(long, value_name = "GLOB")]
-        id: Option<String>,
-        #[arg(long, default_value_t = false)]
-        include_internal: bool,
-        #[arg(long, default_value_t = false)]
-        include_slow: bool,
-        #[arg(long, default_value_t = false)]
-        allow_subprocess: bool,
-        #[arg(long, default_value_t = false)]
-        allow_git: bool,
-        #[arg(long = "allow-write", default_value_t = false)]
-        allow_write: bool,
-        #[arg(long, default_value_t = false)]
-        allow_network: bool,
-        #[arg(long, default_value_t = false)]
-        fail_fast: bool,
-        #[arg(long)]
-        max_failures: Option<usize>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-        #[arg(long, default_value_t = 0)]
-        durations: usize,
-    },
-    AutomationBoundaries {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-}
-
-#[derive(Subcommand, Debug)]
-pub enum CheckRegistryCommand {
-    Doctor {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-}
-
 #[derive(ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
 pub enum CheckSeverityArg {
     Blocker,
@@ -248,6 +17,101 @@ pub enum CheckSeverityArg {
 pub enum CheckModeArg {
     Static,
     Effect,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum CheckCommand {
+    List {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long)]
+        suite: Option<String>,
+        #[arg(long, value_enum)]
+        domain: Option<DomainArg>,
+        #[arg(long, value_enum)]
+        severity: Option<CheckSeverityArg>,
+        #[arg(long, value_enum)]
+        mode: Option<CheckModeArg>,
+        #[arg(long)]
+        tag: Option<String>,
+        #[arg(long)]
+        name: Option<String>,
+        #[arg(long)]
+        id: Option<String>,
+        #[arg(long, default_value_t = false)]
+        include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        include_slow: bool,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Explain {
+        check_id: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Run {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long)]
+        artifacts_root: Option<PathBuf>,
+        #[arg(long)]
+        run_id: Option<String>,
+        #[arg(long)]
+        suite: Option<String>,
+        #[arg(long, value_enum)]
+        domain: Option<DomainArg>,
+        #[arg(long, value_enum)]
+        severity: Option<CheckSeverityArg>,
+        #[arg(long, value_enum)]
+        mode: Option<CheckModeArg>,
+        #[arg(long)]
+        tag: Option<String>,
+        #[arg(long)]
+        name: Option<String>,
+        #[arg(long)]
+        id: Option<String>,
+        #[arg(long, default_value_t = false)]
+        include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        include_slow: bool,
+        #[arg(long, default_value_t = false)]
+        allow_subprocess: bool,
+        #[arg(long, default_value_t = false)]
+        allow_git: bool,
+        #[arg(long, default_value_t = false)]
+        allow_write: bool,
+        #[arg(long, default_value_t = false)]
+        allow_network: bool,
+        #[arg(long, default_value_t = false)]
+        fail_fast: bool,
+        #[arg(long)]
+        max_failures: Option<usize>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+        #[arg(long, default_value_t = 0)]
+        durations: usize,
+    },
+    Doctor {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+        #[arg(long, default_value_t = false)]
+        include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        include_slow: bool,
+    },
 }
 
 #[derive(Subcommand, Debug)]

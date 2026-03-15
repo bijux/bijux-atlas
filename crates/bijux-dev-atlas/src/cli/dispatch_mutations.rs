@@ -34,6 +34,12 @@ pub(super) fn force_json_output(command: &mut Command) {
                 *format = FormatArg::Json
             }
         },
+        Command::Check { command } | Command::Checks { command } => match command {
+            crate::cli::CheckCommand::List { format, .. }
+            | crate::cli::CheckCommand::Explain { format, .. }
+            | crate::cli::CheckCommand::Run { format, .. }
+            | crate::cli::CheckCommand::Doctor { format, .. } => *format = FormatArg::Json,
+        },
         Command::Ops { command } => force_json_ops(command),
         Command::Docs { command } => force_json_docs(command),
         Command::Make { command } => force_json_make(command),
@@ -1812,6 +1818,14 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         Command::Registry { command } => match command {
             RegistryCommand::Status { repo_root, .. }
             | RegistryCommand::Doctor { repo_root, .. } => *repo_root = Some(root.clone()),
+        },
+        Command::Check { command } | Command::Checks { command } => match command {
+            crate::cli::CheckCommand::List { repo_root, .. }
+            | crate::cli::CheckCommand::Explain { repo_root, .. }
+            | crate::cli::CheckCommand::Run { repo_root, .. }
+            | crate::cli::CheckCommand::Doctor { repo_root, .. } => {
+                *repo_root = Some(root.clone())
+            }
         },
         Command::Demo { command } => match command {
             crate::cli::DemoCommand::Quickstart(args) => args.repo_root = Some(root.clone()),

@@ -159,6 +159,14 @@ pub enum Command {
         #[command(subcommand)]
         command: SecurityCommand,
     },
+    Check {
+        #[command(subcommand)]
+        command: CheckCommand,
+    },
+    Checks {
+        #[command(subcommand)]
+        command: CheckCommand,
+    },
     Runtime {
         #[command(subcommand)]
         command: RuntimeCommand,
@@ -166,14 +174,6 @@ pub enum Command {
     Tutorials {
         #[command(subcommand)]
         command: TutorialsCommand,
-    },
-    Packages {
-        #[command(subcommand)]
-        command: PackagesCommand,
-    },
-    Clients {
-        #[command(subcommand)]
-        command: ClientsCommand,
     },
     Migrations {
         #[command(subcommand)]
@@ -225,14 +225,6 @@ pub enum Command {
         format: FormatArg,
         #[arg(long)]
         out: Option<PathBuf>,
-    },
-    Check {
-        #[command(subcommand)]
-        command: CheckCommand,
-    },
-    Checks {
-        #[command(subcommand)]
-        command: ChecksCommand,
     },
     Registry {
         #[command(subcommand)]
@@ -1428,75 +1420,6 @@ pub struct TutorialsRealDataRunAllArgs {
     pub dry_run: bool,
     #[arg(long, default_value_t = false)]
     pub no_fetch: bool,
-}
-
-#[derive(Subcommand, Debug)]
-pub enum ClientsCommand {
-    List(ClientsCommandArgs),
-    Verify(ClientsCommandArgs),
-    DocsGenerate(ClientsCommandArgs),
-    DocsVerify(ClientsCommandArgs),
-    ExamplesVerify(ClientsCommandArgs),
-    ExamplesRun(ClientsCommandArgs),
-    SchemaVerify(ClientsCommandArgs),
-    CompatMatrix {
-        #[command(subcommand)]
-        command: ClientsCompatMatrixCommand,
-    },
-    Python {
-        #[command(subcommand)]
-        command: ClientsPythonCommand,
-    },
-}
-
-#[derive(Subcommand, Debug)]
-pub enum ClientsCompatMatrixCommand {
-    Verify(ClientsCommandArgs),
-}
-
-#[derive(Subcommand, Debug)]
-pub enum ClientsPythonCommand {
-    Test(ClientsPythonTestArgs),
-}
-
-#[derive(Subcommand, Debug)]
-pub enum PackagesCommand {
-    List(PackagesCommandArgs),
-    Verify(PackagesCommandArgs),
-}
-
-#[derive(Args, Debug, Clone)]
-pub struct PackagesCommandArgs {
-    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-    pub format: FormatArg,
-    #[arg(long)]
-    pub out: Option<PathBuf>,
-    #[arg(long)]
-    pub repo_root: Option<PathBuf>,
-}
-
-#[derive(Args, Debug, Clone)]
-pub struct ClientsCommandArgs {
-    #[arg(long, default_value = "atlas-client")]
-    pub client: String,
-    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-    pub format: FormatArg,
-    #[arg(long)]
-    pub out: Option<PathBuf>,
-    #[arg(long, default_value_t = false)]
-    pub markdown: bool,
-    #[arg(long)]
-    pub repo_root: Option<PathBuf>,
-}
-
-#[derive(Args, Debug, Clone)]
-pub struct ClientsPythonTestArgs {
-    #[command(flatten)]
-    pub common: ClientsCommandArgs,
-    #[arg(long, default_value_t = false)]
-    pub skip_network: bool,
-    #[arg(long, default_value_t = false)]
-    pub install_deps: bool,
 }
 
 #[derive(Args, Debug, Clone)]

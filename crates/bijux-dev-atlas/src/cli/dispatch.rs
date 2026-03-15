@@ -1,26 +1,21 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    CheckCommand, CheckRegistryCommand, ChecksCommand, Cli, Command, FormatArg, GlobalFormatArg,
-    ReportsCommand, TestsCommand, TestsModeArg,
+    CheckCommand, Cli, Command, FormatArg, GlobalFormatArg, ReportsCommand, TestsCommand,
+    TestsModeArg,
 };
+use crate::run_print_policies;
 use crate::{
     plugin_metadata_json, run_api_command, run_artifacts_command, run_audit_command,
-    run_build_command, run_capabilities_command, run_check_doctor, run_check_explain,
-    run_check_list, run_check_registry_doctor, run_check_repo_doctor,
-    run_check_root_surface_explain, run_check_run, run_check_tree_budgets,
-    run_checks_automation_boundaries, run_checks_catalog_explain, run_checks_catalog_list,
-    run_clients_command, run_configs_command, run_data_command, run_demo_command,
-    run_docker_command, run_docs_command, run_drift_command,
-    run_gates_command, run_governance_command, run_help_inventory_command,
-    run_invariants_command, run_load_command, run_make_command, run_migrations_command,
-    run_observe_command, run_ops_command, run_packages_command, run_perf_command,
-    run_policies_command, run_print_boundaries_command, run_registry_check_by_id,
+    run_build_command, run_capabilities_command, run_configs_command, run_data_command,
+    run_demo_command, run_docker_command, run_docs_command, run_drift_command, run_gates_command,
+    run_governance_command, run_help_inventory_command, run_invariants_command, run_load_command,
+    run_make_command, run_migrations_command, run_observe_command, run_ops_command,
+    run_perf_command, run_policies_command, run_print_boundaries_command, run_registry_check_by_id,
     run_registry_command, run_registry_contract_by_id, run_release_command, run_reproduce_command,
     run_runtime_command, run_security_command, run_suites_command, run_system_command,
     run_tutorials_command, run_version_command, run_workflows_command,
 };
-use crate::{run_print_policies, CheckListOptions, CheckRunOptions, ChecksCatalogListOptions};
 use bijux_dev_atlas::domains;
 use bijux_dev_atlas::model::exit_codes::{EXIT_FAILURE, EXIT_NOT_FOUND, EXIT_SUCCESS};
 use bijux_dev_atlas::model::{RunnableId, RunnableKind, RunnableMode};
@@ -35,6 +30,150 @@ use std::process::Command as ProcessCommand;
 
 use crate::cli::dispatch_mutations::{apply_fail_fast, force_json_output, propagate_repo_root};
 use crate::resolve_repo_root;
+
+fn run_check_surface_command(quiet: bool, command: CheckCommand) -> i32 {
+    match command {
+        CheckCommand::List {
+            repo_root,
+            suite,
+            domain,
+            severity,
+            mode,
+            tag,
+            name,
+            id,
+            include_internal,
+            include_slow,
+            format,
+            out,
+        } => match crate::run_check_list(crate::CheckListOptions {
+            repo_root,
+            suite,
+            domain,
+            severity,
+            mode,
+            tag,
+            name,
+            id,
+            include_internal,
+            include_slow,
+            format,
+            out,
+        }) {
+            Ok((rendered, code)) => {
+                if !quiet && !rendered.is_empty() {
+                    let _ = writeln!(io::stdout(), "{rendered}");
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas check list failed: {err}");
+                1
+            }
+        },
+        CheckCommand::Explain {
+            check_id,
+            repo_root,
+            format,
+            out,
+        } => match crate::run_check_explain(check_id, repo_root, format, out) {
+            Ok((rendered, code)) => {
+                if !quiet && !rendered.is_empty() {
+                    let _ = writeln!(io::stdout(), "{rendered}");
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas check explain failed: {err}");
+                1
+            }
+        },
+        CheckCommand::Run {
+            repo_root,
+            artifacts_root,
+            run_id,
+            suite,
+            domain,
+            severity,
+            mode,
+            tag,
+            name,
+            id,
+            include_internal,
+            include_slow,
+            allow_subprocess,
+            allow_git,
+            allow_write,
+            allow_network,
+            fail_fast,
+            max_failures,
+            format,
+            out,
+            durations,
+        } => match crate::run_check_run(crate::CheckRunOptions {
+            repo_root,
+            artifacts_root,
+            run_id,
+            suite,
+            domain,
+            severity,
+            mode,
+            tag,
+            name,
+            id,
+            include_internal,
+            include_slow,
+            allow_subprocess,
+            allow_git,
+            allow_write,
+            allow_network,
+            fail_fast,
+            max_failures,
+            format,
+            out,
+            durations,
+        }) {
+            Ok((rendered, code)) => {
+                if !quiet && !rendered.is_empty() {
+                    if code == 0 {
+                        let _ = writeln!(io::stdout(), "{rendered}");
+                    } else {
+                        let _ = writeln!(io::stderr(), "{rendered}");
+                    }
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas check run failed: {err}");
+                1
+            }
+        },
+        CheckCommand::Doctor {
+            repo_root,
+            format,
+            out,
+            include_internal,
+            include_slow,
+        } => match crate::run_check_doctor(repo_root, include_internal, include_slow, format, out)
+        {
+            Ok((rendered, code)) => {
+                if !quiet && !rendered.is_empty() {
+                    if code == 0 {
+                        let _ = writeln!(io::stdout(), "{rendered}");
+                    } else {
+                        let _ = writeln!(io::stderr(), "{rendered}");
+                    }
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas check doctor failed: {err}");
+                1
+            }
+        },
+    }
+}
+
 pub(crate) fn run_cli(cli: Cli) -> i32 {
     let mut cli = cli;
     if let Some(command) = cli.command.as_mut() {
@@ -155,6 +294,9 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                 1
             }
         },
+        Command::Check { command } | Command::Checks { command } => {
+            run_check_surface_command(cli.quiet, command)
+        }
         Command::Runtime { command } => match run_runtime_command(cli.quiet, command) {
             Ok((rendered, code)) => {
                 if !cli.quiet && !rendered.is_empty() {
@@ -172,8 +314,6 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
             }
         },
         Command::Tutorials { command } => run_tutorials_command(cli.quiet, command),
-        Command::Packages { command } => run_packages_command(cli.quiet, command),
-        Command::Clients { command } => run_clients_command(cli.quiet, command),
         Command::Migrations { command } => run_migrations_command(cli.quiet, command),
         Command::System { command } => match run_system_command(cli.quiet, command) {
             Ok((rendered, code)) => {
@@ -492,248 +632,6 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                 1
             }
         },
-        Command::Check { command } => {
-            let result = match command {
-                CheckCommand::Registry { command } => match command {
-                    CheckRegistryCommand::Doctor {
-                        repo_root,
-                        format,
-                        out,
-                    } => run_check_registry_doctor(repo_root, format, out),
-                },
-                CheckCommand::List {
-                    repo_root,
-                    suite,
-                    domain,
-                    severity,
-                    mode,
-                    tag,
-                    name,
-                    id,
-                    include_internal,
-                    include_slow,
-                    format,
-                    json,
-                    out,
-                } => run_check_list(CheckListOptions {
-                    repo_root,
-                    suite,
-                    domain,
-                    severity,
-                    mode,
-                    tag,
-                    name,
-                    id,
-                    include_internal,
-                    include_slow,
-                    format: if json { FormatArg::Json } else { format },
-                    out,
-                }),
-                CheckCommand::Explain {
-                    check_id,
-                    repo_root,
-                    format,
-                    out,
-                } => run_check_explain(check_id, repo_root, format, out),
-                CheckCommand::Doctor {
-                    repo_root,
-                    include_internal,
-                    include_slow,
-                    format,
-                    out,
-                } => run_check_doctor(repo_root, include_internal, include_slow, format, out),
-                CheckCommand::Run {
-                    check_id,
-                    repo_root,
-                    artifacts_root,
-                    run_id,
-                    suite,
-                    domain,
-                    severity,
-                    mode,
-                    tag,
-                    name,
-                    id,
-                    include_internal,
-                    include_slow,
-                    allow_subprocess,
-                    allow_git,
-                    allow_write,
-                    allow_network,
-                    fail_fast,
-                    max_failures,
-                    format,
-                    out,
-                    durations,
-                } => {
-                    if let Some(check_id) = check_id {
-                        run_registry_check_by_id(
-                            repo_root,
-                            artifacts_root,
-                            run_id,
-                            check_id,
-                            fail_fast,
-                            format,
-                            out,
-                        )
-                    } else {
-                        run_check_run(CheckRunOptions {
-                            repo_root,
-                            artifacts_root,
-                            run_id,
-                            suite,
-                            domain,
-                            severity,
-                            mode,
-                            tag,
-                            name,
-                            id,
-                            include_internal,
-                            include_slow,
-                            allow_subprocess,
-                            allow_git,
-                            allow_write,
-                            allow_network,
-                            fail_fast,
-                            max_failures,
-                            format,
-                            out,
-                            durations,
-                        })
-                    }
-                }
-                CheckCommand::TreeBudgets {
-                    repo_root,
-                    format,
-                    out,
-                } => run_check_tree_budgets(repo_root, format, out),
-                CheckCommand::RepoDoctor {
-                    repo_root,
-                    format,
-                    json,
-                    explain,
-                    out,
-                } => run_check_repo_doctor(
-                    repo_root,
-                    if json { FormatArg::Json } else { format },
-                    explain,
-                    out,
-                ),
-                CheckCommand::RootSurfaceExplain {
-                    repo_root,
-                    format,
-                    out,
-                } => run_check_root_surface_explain(repo_root, format, out),
-            };
-            match result {
-                Ok((rendered, code)) => {
-                    if !cli.quiet && !rendered.is_empty() {
-                        let _ = writeln!(io::stdout(), "{rendered}");
-                    }
-                    code
-                }
-                Err(err) => {
-                    let _ = writeln!(io::stderr(), "bijux-dev-atlas check failed: {err}");
-                    1
-                }
-            }
-        }
-        Command::Checks { command } => {
-            let result = match command {
-                ChecksCommand::List {
-                    repo_root,
-                    domain,
-                    tag,
-                    format,
-                    out,
-                } => run_checks_catalog_list(ChecksCatalogListOptions {
-                    repo_root,
-                    domain,
-                    tag,
-                    format,
-                    out,
-                }),
-                ChecksCommand::Explain {
-                    check_id,
-                    repo_root,
-                    format,
-                    out,
-                } => run_checks_catalog_explain(check_id, repo_root, format, out),
-                ChecksCommand::Doctor {
-                    repo_root,
-                    include_internal,
-                    include_slow,
-                    format,
-                    out,
-                } => run_check_doctor(repo_root, include_internal, include_slow, format, out),
-                ChecksCommand::Run {
-                    repo_root,
-                    artifacts_root,
-                    run_id,
-                    suite,
-                    domain,
-                    severity,
-                    mode,
-                    tag,
-                    name,
-                    id,
-                    include_internal,
-                    include_slow,
-                    allow_subprocess,
-                    allow_git,
-                    allow_write,
-                    allow_network,
-                    fail_fast,
-                    max_failures,
-                    format,
-                    out,
-                    durations,
-                } => run_check_run(CheckRunOptions {
-                    repo_root,
-                    artifacts_root,
-                    run_id,
-                    suite,
-                    domain,
-                    severity,
-                    mode,
-                    tag,
-                    name,
-                    id,
-                    include_internal,
-                    include_slow,
-                    allow_subprocess,
-                    allow_git,
-                    allow_write,
-                    allow_network,
-                    fail_fast,
-                    max_failures,
-                    format,
-                    out,
-                    durations,
-                }),
-                ChecksCommand::AutomationBoundaries {
-                    repo_root,
-                    format,
-                    out,
-                } => run_checks_automation_boundaries(crate::AutomationBoundariesOptions {
-                    repo_root,
-                    format,
-                    out,
-                }),
-            };
-            match result {
-                Ok((rendered, code)) => {
-                    if !cli.quiet && !rendered.is_empty() {
-                        let _ = writeln!(io::stdout(), "{rendered}");
-                    }
-                    code
-                }
-                Err(err) => {
-                    let _ = writeln!(io::stderr(), "bijux-dev-atlas checks failed: {err}");
-                    1
-                }
-            }
-        }
         Command::Registry { command } => run_registry_command(cli.quiet, command),
         Command::Suites { command } => run_suites_command(cli.quiet, command),
         Command::Tests { command } => {
@@ -749,7 +647,6 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                     run_id,
                     mode,
                     fail_fast,
-                    include_client_python,
                     format,
                     out,
                 } => run_tests_run(TestsRunArgs {
@@ -758,7 +655,6 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                     run_id,
                     mode,
                     fail_fast,
-                    include_client_python,
                     format,
                     out,
                 }),
@@ -908,7 +804,6 @@ fn run_tests_doctor(
         run_id,
         mode: TestsModeArg::Fast,
         fail_fast: true,
-        include_client_python: false,
         format,
         out,
     })
@@ -920,7 +815,6 @@ struct TestsRunArgs {
     run_id: Option<String>,
     mode: TestsModeArg,
     fail_fast: bool,
-    include_client_python: bool,
     format: FormatArg,
     out: Option<PathBuf>,
 }
@@ -932,7 +826,6 @@ fn run_tests_run(args: TestsRunArgs) -> Result<(String, i32), String> {
         run_id,
         mode,
         fail_fast,
-        include_client_python,
         format,
         out,
     } = args;
@@ -955,36 +848,10 @@ fn run_tests_run(args: TestsRunArgs) -> Result<(String, i32), String> {
         .current_dir(&repo_root)
         .status()
         .map_err(|err| format!("run make {target} failed: {err}"))?;
-    let mut client_python_status_code = None;
-    if include_client_python {
-        let exe = std::env::current_exe()
-            .map_err(|err| format!("resolve current executable failed: {err}"))?;
-        let python_status = ProcessCommand::new(exe)
-            .arg("clients")
-            .arg("python")
-            .arg("test")
-            .arg("--client")
-            .arg("atlas-client")
-            .arg("--format")
-            .arg("json")
-            .current_dir(&repo_root)
-            .status()
-            .map_err(|err| format!("run clients python test failed: {err}"))?;
-        client_python_status_code = python_status.code();
-    }
     let duration_ms = started.elapsed().as_millis() as u64;
     let make_exit_code = status.code().unwrap_or(1);
     let make_success = status.success();
-    let client_success = client_python_status_code
-        .map(|code| code == 0)
-        .unwrap_or(true);
-    let exit_code = if make_success && client_success {
-        0
-    } else if !make_success {
-        make_exit_code
-    } else {
-        client_python_status_code.unwrap_or(1)
-    };
+    let exit_code = if make_success { 0 } else { make_exit_code };
     let payload = serde_json::json!({
         "schema_version": 1,
         "suite": "tests",
@@ -992,8 +859,6 @@ fn run_tests_run(args: TestsRunArgs) -> Result<(String, i32), String> {
         "target": target,
         "mode": match mode { TestsModeArg::Fast => "fast", TestsModeArg::All => "all" },
         "status": if exit_code == 0 { "PASS" } else { "FAIL" },
-        "include_client_python": include_client_python,
-        "client_python_status_code": client_python_status_code,
         "exit_code": exit_code,
         "duration_ms": duration_ms,
         "artifacts_root": artifacts_root.display().to_string()

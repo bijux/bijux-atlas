@@ -132,6 +132,20 @@ suites-all: ## Run the governed validation suites sequentially
 	@$(DEV_ATLAS) suites run --suite deep --mode all $(SUITE_FAIL_FAST_FLAG) --format $(FORMAT)
 	@$(DEV_ATLAS) suites run --suite contracts --mode all $(SUITE_FAIL_FAST_FLAG) --format $(FORMAT)
 
+checks-group: ## Run one checks suite group (GROUP=<name>)
+	@[ -n "$${GROUP:-}" ] || { echo "usage: make checks-group GROUP=<name>" >&2; exit 2; }
+	@$(DEV_ATLAS) checks run --group "$${GROUP}" --format $(FORMAT)
+
+checks-tag: ## Run checks suite entries with a shared tag (TAG=<name>)
+	@[ -n "$${TAG:-}" ] || { echo "usage: make checks-tag TAG=<name>" >&2; exit 2; }
+	@$(DEV_ATLAS) checks run --tag "$${TAG}" --format $(FORMAT)
+
+checks-pure: ## Run only pure checks suite entries
+	@$(DEV_ATLAS) checks run --mode static --format $(FORMAT)
+
+checks-effect: ## Run only effectful checks suite entries
+	@$(DEV_ATLAS) checks run --mode effect --format $(FORMAT)
+
 registry-doctor: ## Validate governed suite registries and mappings
 	@$(DEV_ATLAS) registry doctor --format $(FORMAT)
 
@@ -168,4 +182,4 @@ release-verify: ## Run release verification lane through bijux-dev-atlas only
 	> $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/summary.json
 	@echo "release-verify summary: $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/summary.json"
 
-.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean clean doctor kind-down kind-reset kind-status kind-up openapi-generate registry-doctor release-plan release-verify root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly suites-all suites-list tests-all
+.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean checks-effect checks-group checks-pure checks-tag clean doctor kind-down kind-reset kind-status kind-up openapi-generate registry-doctor release-plan release-verify root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly suites-all suites-list tests-all

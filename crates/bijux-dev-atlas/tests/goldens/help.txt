@@ -16,18 +16,16 @@ Commands:
   load        
   invariants  
   security    
+  check       
+  checks      
   runtime     
   tutorials   
-  packages    
-  clients     
   migrations  
   datasets    
   ingest      
   perf        
   policies    
   ci          
-  check       
-  checks      
   registry    
   suites      
   tests       
