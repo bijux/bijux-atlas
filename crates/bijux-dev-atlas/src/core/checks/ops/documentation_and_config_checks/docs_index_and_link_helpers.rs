@@ -1,5 +1,3 @@
-use std::collections::BTreeMap;
-
 pub(super) fn parse_mkdocs_yaml(ctx: &CheckContext<'_>) -> Result<YamlValue, CheckError> {
     let rel = Path::new("mkdocs.yml");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
@@ -74,4 +72,3 @@ fn markdown_link_targets(content: &str) -> Vec<String> {
     }
     out
 }
-
