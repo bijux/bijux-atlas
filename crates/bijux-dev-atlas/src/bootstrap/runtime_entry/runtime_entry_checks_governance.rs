@@ -17,7 +17,7 @@ pub(crate) fn run_check_tree_budgets(
         ("ops", 5usize, usize::MAX),
     ];
 
-    let exceptions_path = repo_root.join("configs/repo/tree-budget-exceptions.json");
+    let exceptions_path = repo_root.join("configs/sources/repository/repo-surface/tree-budget-exceptions.json");
     let exception_prefixes = if exceptions_path.exists() {
         let text = fs::read_to_string(&exceptions_path)
             .map_err(|e| format!("failed to read {}: {e}", exceptions_path.display()))?;
@@ -353,7 +353,7 @@ pub(crate) fn run_check_tree_budgets(
             .map(|(path, depth)| serde_json::json!({"path": path, "depth": depth}))
             .collect::<Vec<_>>(),
         "exceptions_file": if exceptions_path.exists() {
-            serde_json::Value::String("configs/repo/tree-budget-exceptions.json".to_string())
+            serde_json::Value::String("configs/sources/repository/repo-surface/tree-budget-exceptions.json".to_string())
         } else {
             serde_json::Value::Null
         }
@@ -481,7 +481,7 @@ pub(crate) fn run_check_repo_doctor(
         "docs_indexes": docs_indexes,
         "config_groups": config_groups
     });
-    let snapshot_rel = Path::new("configs/repo/surface-snapshot.json");
+    let snapshot_rel = Path::new("configs/sources/repository/repo-surface/surface-snapshot.json");
     let mut snapshot_drift_error = serde_json::Value::Null;
     let snapshot_path = root.join(snapshot_rel);
     if snapshot_path.exists() {
@@ -558,7 +558,7 @@ pub(crate) fn run_check_root_surface_explain(
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(repo_root)?;
     let manifest_rel = Path::new("ops/inventory/root-surface.json");
-    let allowlist_rel = Path::new("configs/repo/root-file-allowlist.json");
+    let allowlist_rel = Path::new("configs/sources/repository/repo-surface/root-file-allowlist.json");
     let rationale_rel = Path::new("docs/_internal/root-surface.md");
 
     let manifest: serde_json::Value = serde_json::from_str(

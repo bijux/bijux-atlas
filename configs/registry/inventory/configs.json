@@ -3,7 +3,7 @@
     {
       "approved_by": "docs-governance",
       "expires_on": "2027-12-31",
-      "pattern": "configs/docs/.vale/styles/**",
+      "pattern": "configs/sources/repository/docs/.vale/styles/**",
       "reason": "vale style bundles stay explicitly excluded until docs config flattening lands"
     },
     {
@@ -38,7 +38,7 @@
       "name": "ci",
       "owner": "platform",
       "public_files": [
-        "configs/ci/*.json"
+        "configs/sources/repository/ci/*.json"
       ],
       "schema_owner": "platform",
       "schemas": [
@@ -112,11 +112,11 @@
       "name": "docs",
       "owner": "docs-governance",
       "public_files": [
-        "configs/docs/.markdownlint-cli2.jsonc",
-        "configs/docs/.vale.ini",
-        "configs/docs/*.json",
-        "configs/docs/*.jsonc",
-        "configs/docs/*.txt"
+        "configs/sources/repository/docs/.markdownlint-cli2.jsonc",
+        "configs/sources/repository/docs/.vale.ini",
+        "configs/sources/repository/docs/*.json",
+        "configs/sources/repository/docs/*.jsonc",
+        "configs/sources/repository/docs/*.txt"
       ],
       "schema_owner": "docs-governance",
       "schemas": [
@@ -203,11 +203,11 @@
       "name": "layout",
       "owner": "platform",
       "public_files": [
-        "configs/layout/*",
-        "configs/repo/*.json",
-        "configs/gates/*.json",
-        "configs/coverage/*",
-        "configs/shellcheck/*",
+        "configs/sources/repository/layout/*",
+        "configs/sources/repository/repo-surface/*.json",
+        "configs/sources/repository/gates/*.json",
+        "configs/sources/repository/coverage/*",
+        "configs/sources/repository/shell/*",
         "configs/sources/runtime/product/*",
         "configs/release/*.json"
       ],
@@ -227,7 +227,7 @@
       "name": "make",
       "owner": "platform",
       "public_files": [
-        "configs/make/*.json"
+        "configs/sources/repository/make/*.json"
       ],
       "schema_owner": "platform",
       "schemas": [
@@ -245,7 +245,7 @@
       "name": "meta",
       "owner": "platform",
       "public_files": [
-        "configs/meta/*.json",
+        "configs/sources/repository/meta/*.json",
         "configs/registry/owners/*.json"
       ],
       "schema_owner": "platform",
@@ -263,7 +263,7 @@
       "name": "nextest",
       "owner": "platform",
       "public_files": [
-        "configs/nextest/*.toml"
+        "configs/sources/repository/nextest/*.toml"
       ],
       "schema_owner": "platform",
       "schemas": [],
@@ -397,8 +397,8 @@
       "name": "rust",
       "owner": "rust-foundation",
       "public_files": [
-        "configs/rust/*.toml",
-        "configs/rust/*.json"
+        "configs/sources/repository/rust-tooling/*.toml",
+        "configs/sources/repository/rust-tooling/*.json"
       ],
       "schema_owner": "rust-foundation",
       "schemas": [

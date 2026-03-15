@@ -193,13 +193,13 @@ pub(super) fn check_root_rust_toolchain_toml_contract(
 pub(super) fn check_root_rustfmt_toml_present(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("configs/rust/rustfmt.toml");
+    let rel = Path::new("configs/sources/repository/rust-tooling/rustfmt.toml");
     if ctx.adapters.fs.exists(ctx.repo_root, rel) {
         Ok(Vec::new())
     } else {
         Ok(vec![violation(
             "ROOT_RUSTFMT_TOML_MISSING",
-            "configs/rust/rustfmt.toml must exist".to_string(),
+            "configs/sources/repository/rust-tooling/rustfmt.toml must exist".to_string(),
             "define rustfmt policy under configs/rust and use explicit cargo fmt --config-path",
             Some(rel),
         )])
@@ -209,13 +209,13 @@ pub(super) fn check_root_rustfmt_toml_present(
 pub(super) fn check_root_clippy_toml_present(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("configs/rust/clippy.toml");
+    let rel = Path::new("configs/sources/repository/rust-tooling/clippy.toml");
     if ctx.adapters.fs.exists(ctx.repo_root, rel) {
         Ok(Vec::new())
     } else {
         Ok(vec![violation(
             "ROOT_CLIPPY_TOML_MISSING",
-            "configs/rust/clippy.toml must exist".to_string(),
+            "configs/sources/repository/rust-tooling/clippy.toml must exist".to_string(),
             "define clippy policy under configs/rust and use explicit CLIPPY_CONF_DIR",
             Some(rel),
         )])
@@ -225,13 +225,13 @@ pub(super) fn check_root_clippy_toml_present(
 pub(super) fn check_configs_nextest_toml_present(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("configs/nextest/nextest.toml");
+    let rel = Path::new("configs/sources/repository/nextest/nextest.toml");
     if ctx.adapters.fs.exists(ctx.repo_root, rel) {
         Ok(Vec::new())
     } else {
         Ok(vec![violation(
             "CONFIGS_NEXTEST_TOML_MISSING",
-            "configs/nextest/nextest.toml must exist".to_string(),
+            "configs/sources/repository/nextest/nextest.toml must exist".to_string(),
             "define nextest execution profiles and isolated store path under configs/nextest",
             Some(rel),
         )])

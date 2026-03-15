@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "source": {
-    "ownership": "configs/make/ownership.json",
-    "ssot": "configs/make/public-targets.json"
+    "ownership": "configs/sources/repository/make/ownership.json",
+    "ssot": "configs/sources/repository/make/public-targets.json"
   },
   "targets": [
     {

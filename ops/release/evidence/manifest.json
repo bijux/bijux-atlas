@@ -250,11 +250,11 @@
         "sha256": "51f44773015775870e8bff185cc08b2077a8dc02479787d3fb3495b2be758262"
       },
       {
-        "path": "configs/docs/package-lock.json",
+        "path": "configs/sources/repository/docs/package-lock.json",
         "sha256": "abe9ded461894e1955ab5d4c777340613a1769f86c077997c550def7dc00589b"
       },
       {
-        "path": "configs/docs/requirements.lock.txt",
+        "path": "configs/sources/repository/docs/requirements.lock.txt",
         "sha256": "3c91e19de28d2d6f761e851a01be0349a304ce94692b3f16cf36b29d77a90f22"
       },
       {
@@ -264,7 +264,7 @@
     ]
   },
   "toolchain_inventory": {
-    "path": "configs/rust/toolchain.json",
+    "path": "configs/sources/repository/rust-tooling/toolchain.json",
     "sha256": "c3c66958ac518576718c5f38c71faa105f394e9559b9ef9567f3059b08cb82a0"
   }
 }

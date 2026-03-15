@@ -148,7 +148,7 @@ pub(crate) fn docs_validate_payload(
             ));
         }
     }
-    let requirements_lock = ctx.repo_root.join("configs/docs/requirements.lock.txt");
+    let requirements_lock = ctx.repo_root.join("configs/sources/repository/docs/requirements.lock.txt");
     if requirements_lock.exists() {
         let requirements_text = fs::read_to_string(&requirements_lock)
             .map_err(|e| format!("failed to read {}: {e}", requirements_lock.display()))?;
@@ -167,7 +167,7 @@ pub(crate) fn docs_validate_payload(
                 }
                 if trimmed.starts_with(package) && !trimmed.starts_with(&format!("{package}==")) {
                     issues.errors.push(format!(
-                        "DOCS_TOOLCHAIN_PIN_ERROR: `{package}` must be pinned with `==` in configs/docs/requirements.lock.txt"
+                        "DOCS_TOOLCHAIN_PIN_ERROR: `{package}` must be pinned with `==` in configs/sources/repository/docs/requirements.lock.txt"
                     ));
                     matched = true;
                     break;
@@ -175,7 +175,7 @@ pub(crate) fn docs_validate_payload(
             }
             if !matched {
                 issues.errors.push(format!(
-                    "DOCS_TOOLCHAIN_PIN_ERROR: `{package}` missing from configs/docs/requirements.lock.txt"
+                    "DOCS_TOOLCHAIN_PIN_ERROR: `{package}` missing from configs/sources/repository/docs/requirements.lock.txt"
                 ));
             }
         }
@@ -470,7 +470,7 @@ pub(crate) fn docs_links_payload(
             "docs/_internal/generated/real-data-runs-overview.md".to_string(),
         ),
     ]);
-    let artifact_allowlist_path = ctx.repo_root.join("configs/docs/artifact-link-allowlist.json");
+    let artifact_allowlist_path = ctx.repo_root.join("configs/sources/repository/docs/artifact-link-allowlist.json");
     let artifact_allowlist: std::collections::BTreeSet<String> = if artifact_allowlist_path.exists() {
         let text = fs::read_to_string(&artifact_allowlist_path)
             .map_err(|e| format!("failed to read {}: {e}", artifact_allowlist_path.display()))?;

@@ -8,7 +8,7 @@ fn read_required_contracts(repo_root: &Path) -> Vec<serde_json::Value> {
 }
 
 fn read_lane_surface(repo_root: &Path) -> Vec<serde_json::Value> {
-    read_json(&repo_root.join("configs/ci/lane-surface.json"))
+    read_json(&repo_root.join("configs/sources/repository/ci/lane-surface.json"))
         .ok()
         .and_then(|value| value.get("lanes").and_then(|v| v.as_array()).cloned())
         .unwrap_or_default()
@@ -22,7 +22,7 @@ fn read_check_report_map(repo_root: &Path) -> Vec<serde_json::Value> {
 }
 
 fn read_policy_step_registry(repo_root: &Path) -> Vec<serde_json::Value> {
-    read_json(&repo_root.join("configs/ci/policy-outside-control-plane.json"))
+    read_json(&repo_root.join("configs/sources/repository/ci/policy-outside-control-plane.json"))
         .ok()
         .and_then(|value| value.get("entries").and_then(|v| v.as_array()).cloned())
         .unwrap_or_default()
@@ -169,7 +169,7 @@ pub(super) fn governance_index_payload(
         "inputs": {
             "domain_registry_map": "ops/governance/repository/domain-registry-map.json",
             "required_contracts": "ops/policy/required-contracts.json",
-            "lane_surface": "configs/ci/lane-surface.json",
+            "lane_surface": "configs/sources/repository/ci/lane-surface.json",
             "check_report_map": "configs/registry/reports/check-report-map.json"
         },
         "domains": governance_summary(objects),
@@ -217,7 +217,7 @@ pub(super) fn governance_contract_coverage_payload(repo_root: &Path) -> serde_js
             "covered": rows.iter().filter(|row| row.get("covered").and_then(|v| v.as_bool()) == Some(true)).count()
         },
         "evidence": {
-            "lane_source": "configs/ci/lane-surface.json"
+            "lane_source": "configs/sources/repository/ci/lane-surface.json"
         }
     })
 }
@@ -263,14 +263,14 @@ pub(super) fn governance_lane_coverage_payload(repo_root: &Path) -> serde_json::
         "kind": "lane_coverage_map",
         "rows": rows,
         "inputs": {
-            "lane_surface": "configs/ci/lane-surface.json",
+            "lane_surface": "configs/sources/repository/ci/lane-surface.json",
             "required_contracts": "ops/policy/required-contracts.json"
         },
         "summary": {
             "total": rows.len()
         },
         "evidence": {
-            "workflow_registry": "configs/ci/lane-surface.json"
+            "workflow_registry": "configs/sources/repository/ci/lane-surface.json"
         }
     })
 }
@@ -315,7 +315,7 @@ pub(super) fn governance_orphan_checks_payload(repo_root: &Path) -> serde_json::
         "kind": "orphan_checks",
         "rows": rows,
         "inputs": {
-            "lane_surface": "configs/ci/lane-surface.json",
+            "lane_surface": "configs/sources/repository/ci/lane-surface.json",
             "required_contracts": "ops/policy/required-contracts.json"
         },
         "summary": {
@@ -337,7 +337,7 @@ pub(super) fn governance_policy_surface_payload(repo_root: &Path) -> serde_json:
                 "classification": entry.get("classification").cloned().unwrap_or(serde_json::Value::Null),
                 "owner": entry.get("owner").cloned().unwrap_or(serde_json::Value::Null),
                 "replacement": entry.get("control_plane_command").cloned().unwrap_or(serde_json::Value::Null),
-                "source": "configs/ci/policy-outside-control-plane.json",
+                "source": "configs/sources/repository/ci/policy-outside-control-plane.json",
             })
         })
         .collect::<Vec<_>>();
@@ -358,13 +358,13 @@ pub(super) fn governance_policy_surface_payload(repo_root: &Path) -> serde_json:
         "kind": "policy_surface_map",
         "rows": rows,
         "inputs": {
-            "policy_registry": "configs/ci/policy-outside-control-plane.json"
+            "policy_registry": "configs/sources/repository/ci/policy-outside-control-plane.json"
         },
         "summary": {
             "total": rows.len()
         },
         "evidence": {
-            "replacement_source": "configs/ci/policy-outside-control-plane.json"
+            "replacement_source": "configs/sources/repository/ci/policy-outside-control-plane.json"
         }
     })
 }

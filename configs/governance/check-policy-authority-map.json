@@ -4,7 +4,7 @@
   "mappings": [
     {
       "topic": "root_markdown_surface",
-      "policy": "configs/layout/root-markdown-allowlist.json",
+      "policy": "configs/sources/repository/layout/root-markdown-allowlist.json",
       "applies_to": ["CHECK-DOCS-ROOT-*", "CHECK-OPS-ROOT-*"]
     },
     {
@@ -19,7 +19,7 @@
     },
     {
       "topic": "generated_file_minification",
-      "policy": "configs/layout/generated-files.json",
+      "policy": "configs/sources/repository/layout/generated-files.json",
       "applies_to": ["CHECK-DOCS-GENERATED-*", "CHECK-CONFIGS-GENERATED-*"]
     },
     {

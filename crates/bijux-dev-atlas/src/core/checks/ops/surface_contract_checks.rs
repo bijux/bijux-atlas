@@ -136,7 +136,7 @@ pub(super) fn check_workflows_ops_entrypoints_bijux_only(
 pub(super) fn check_workflows_policy_registry_has_no_unplanned_entries(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("configs/ci/policy-outside-control-plane.json");
+    let rel = Path::new("configs/sources/repository/ci/policy-outside-control-plane.json");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let value: serde_json::Value =
@@ -182,7 +182,7 @@ pub(super) fn check_workflows_policy_registry_has_no_unplanned_entries(
 pub(super) fn check_workflows_policy_registry_unique_and_documented(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("configs/ci/policy-outside-control-plane.json");
+    let rel = Path::new("configs/sources/repository/ci/policy-outside-control-plane.json");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let value: serde_json::Value =
@@ -241,7 +241,7 @@ pub(super) fn check_workflows_policy_registry_unique_and_documented(
 pub(super) fn check_workflows_policy_exceptions_expiry(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("configs/ci/policy-exceptions.json");
+    let rel = Path::new("configs/sources/repository/ci/policy-exceptions.json");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let value: serde_json::Value =
@@ -291,8 +291,8 @@ pub(super) fn check_workflows_policy_exceptions_expiry(
 pub(super) fn check_workflows_step_patterns_cover_surface(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("configs/ci/workflow-step-patterns.json");
-    let allowlist_rel = Path::new("configs/ci/workflow-allowlist.json");
+    let rel = Path::new("configs/sources/repository/ci/workflow-step-patterns.json");
+    let allowlist_rel = Path::new("configs/sources/repository/ci/workflow-allowlist.json");
     let root = ctx.repo_root;
     let patterns_value: serde_json::Value = serde_json::from_str(
         &fs::read_to_string(root.join(rel)).map_err(|err| CheckError::Failed(err.to_string()))?,
@@ -382,7 +382,7 @@ pub(super) fn check_workflows_step_patterns_cover_surface(
                     violations.push(violation(
                         "WORKFLOW_STEP_PATTERN_MISSING",
                         format!(
-                            "workflow step `{step_name}` in `{workflow_rel}` job `{job}` is not covered by configs/ci/workflow-step-patterns.json or workflow-allowlist.json"
+                            "workflow step `{step_name}` in `{workflow_rel}` job `{job}` is not covered by configs/sources/repository/ci/workflow-step-patterns.json or workflow-allowlist.json"
                         ),
                         "register the step pattern or add an expiry-bound allowlist entry with justification",
                         Some(rel),
@@ -397,7 +397,7 @@ pub(super) fn check_workflows_step_patterns_cover_surface(
 pub(super) fn check_workflows_allowlist_expiry_bound(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("configs/ci/workflow-allowlist.json");
+    let rel = Path::new("configs/sources/repository/ci/workflow-allowlist.json");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let value: serde_json::Value =

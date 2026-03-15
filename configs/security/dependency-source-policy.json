@@ -5,7 +5,7 @@
       "https://registry.npmjs.org/"
     ],
     "lockfile_paths": [
-      "configs/docs/package-lock.json"
+      "configs/sources/repository/docs/package-lock.json"
     ]
   },
   "python": {
@@ -14,8 +14,8 @@
       "https://pypi.org/simple/"
     ],
     "requirements_paths": [
-      "configs/docs/requirements.txt",
-      "configs/docs/requirements.lock.txt"
+      "configs/sources/repository/docs/requirements.txt",
+      "configs/sources/repository/docs/requirements.lock.txt"
     ]
   },
   "dependency_lock_posture": {
@@ -26,13 +26,13 @@
     "npm": {
       "required": true,
       "lockfile_paths": [
-        "configs/docs/package-lock.json"
+        "configs/sources/repository/docs/package-lock.json"
       ]
     },
     "python": {
       "required": true,
       "lockfile_paths": [
-        "configs/docs/requirements.lock.txt"
+        "configs/sources/repository/docs/requirements.lock.txt"
       ]
     },
     "helm": {

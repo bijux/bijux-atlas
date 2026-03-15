@@ -7,5 +7,5 @@
   "release_id": "ops_run-d51b02367dda",
   "schema_version": 1,
   "signing_policy_path": "ops/release/signing/policy.yaml",
-  "toolchain_inventory": "configs/rust/toolchain.json"
+  "toolchain_inventory": "configs/sources/repository/rust-tooling/toolchain.json"
 }

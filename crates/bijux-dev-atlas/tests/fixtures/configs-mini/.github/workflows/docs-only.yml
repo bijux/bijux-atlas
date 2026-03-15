@@ -54,7 +54,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m pip install --upgrade pip
-          python3 -m pip install -r configs/docs/requirements.lock.txt
+          python3 -m pip install -r configs/sources/repository/docs/requirements.lock.txt
           npm ci --prefix configs/docs
       - name: Run docs markdown lint
         shell: bash
@@ -94,7 +94,7 @@ jobs:
           set -euo pipefail
           report_root="artifacts/${RUN_ID}/reports"
           git fetch --depth=1 origin "${{ github.base_ref }}"
-          changed_docs="$(git diff --name-only "origin/${{ github.base_ref }}"...HEAD -- 'docs/**' 'configs/docs/**' 'ops/report/docs/**' 'docker/**' 'make/makefiles/**' || true)"
+          changed_docs="$(git diff --name-only "origin/${{ github.base_ref }}"...HEAD -- 'docs/**' 'configs/sources/repository/docs/**' 'ops/report/docs/**' 'docker/**' 'make/makefiles/**' || true)"
           changed_count="$(printf '%s\n' "${changed_docs}" | sed '/^$/d' | wc -l | tr -d ' ')"
           printf '%s\n' "${changed_docs}" | sed '/^$/d' > "${report_root}/docs-diff.txt"
           jq -n \

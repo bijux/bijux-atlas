@@ -169,15 +169,15 @@ pub(crate) fn configs_validate_payload(
     let mut errors = Vec::<String>::new();
     let mut warnings = Vec::<String>::new();
     for required in [
-        "configs/ci",
-        "configs/ci/INDEX.md",
-        "configs/ci/README.md",
-        "configs/ci/env-contract.json",
-        "configs/ci/lanes.json",
+        "configs/sources/repository/ci",
+        "configs/sources/repository/ci/INDEX.md",
+        "configs/sources/repository/ci/README.md",
+        "configs/sources/repository/ci/env-contract.json",
+        "configs/sources/repository/ci/lanes.json",
         "configs/INDEX.md",
         "configs/README.md",
-        "configs/rust/LINT_POLICY.md",
-        "configs/rust/toolchain.json",
+        "configs/sources/repository/rust-tooling/LINT_POLICY.md",
+        "configs/sources/repository/rust-tooling/toolchain.json",
         "configs/schemas/contracts",
         "configs/schemas/registry",
         "configs/NAMING.md",
@@ -191,8 +191,8 @@ pub(crate) fn configs_validate_payload(
             ));
         }
     }
-    let ci_env_contract_path = ctx.repo_root.join("configs/ci/env-contract.json");
-    let ci_lanes_path = ctx.repo_root.join("configs/ci/lanes.json");
+    let ci_env_contract_path = ctx.repo_root.join("configs/sources/repository/ci/env-contract.json");
+    let ci_lanes_path = ctx.repo_root.join("configs/sources/repository/ci/lanes.json");
     let mut ci_required_env = Vec::<String>::new();
     if ci_env_contract_path.exists() {
         let env_text = fs::read_to_string(&ci_env_contract_path)
@@ -275,20 +275,20 @@ pub(crate) fn configs_validate_payload(
                 }
             }
             if line.contains("cargo fmt")
-                && !line.contains("configs/rust/rustfmt.toml")
+                && !line.contains("configs/sources/repository/rust-tooling/rustfmt.toml")
                 && !line.contains("cargo run -q -p bijux-dev-atlas")
             {
                 errors.push(format!(
-                    "CONFIGS_LAYOUT_ERROR: {workflow_rel}:{} cargo fmt must use configs/rust/rustfmt.toml",
+                    "CONFIGS_LAYOUT_ERROR: {workflow_rel}:{} cargo fmt must use configs/sources/repository/rust-tooling/rustfmt.toml",
                     line_idx + 1
                 ));
             }
             if line.contains("cargo clippy")
-                && !line.contains("CLIPPY_CONF_DIR=configs/rust")
+                && !line.contains("CLIPPY_CONF_DIR=configs/sources/repository/rust-tooling")
                 && !line.contains("cargo run -q -p bijux-dev-atlas")
             {
                 errors.push(format!(
-                    "CONFIGS_LAYOUT_ERROR: {workflow_rel}:{} cargo clippy must set CLIPPY_CONF_DIR=configs/rust",
+                    "CONFIGS_LAYOUT_ERROR: {workflow_rel}:{} cargo clippy must set CLIPPY_CONF_DIR=configs/sources/repository/rust-tooling",
                     line_idx + 1
                 ));
             }
@@ -377,7 +377,7 @@ pub(crate) fn configs_validate_payload(
             }
         }
     }
-    let toolchain_contract_path = ctx.repo_root.join("configs/rust/toolchain.json");
+    let toolchain_contract_path = ctx.repo_root.join("configs/sources/repository/rust-tooling/toolchain.json");
     if toolchain_contract_path.exists() {
         let toolchain_text = fs::read_to_string(&toolchain_contract_path)
             .map_err(|e| format!("failed to read {}: {e}", toolchain_contract_path.display()))?;

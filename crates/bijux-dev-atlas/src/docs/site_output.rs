@@ -35,7 +35,7 @@ fn mkdocs_yaml_path(repo_root: &Path) -> PathBuf {
 }
 
 fn site_output_contract_path(repo_root: &Path) -> PathBuf {
-    repo_root.join("configs/docs/site-output-contract.json")
+    repo_root.join("configs/sources/repository/docs/site-output-contract.json")
 }
 
 fn site_output_contract_schema_path(repo_root: &Path) -> PathBuf {
@@ -335,7 +335,7 @@ pub fn site_output_report(repo_root: &Path) -> Result<serde_json::Value, String>
         "run_id": "docs-site-output",
         "inputs": {
             "mkdocs": "mkdocs.yml",
-            "contract": "configs/docs/site-output-contract.json"
+            "contract": "configs/sources/repository/docs/site-output-contract.json"
         },
         "docs_dir": status.docs_dir.display().to_string(),
         "site_dir": status.site_dir.display().to_string(),

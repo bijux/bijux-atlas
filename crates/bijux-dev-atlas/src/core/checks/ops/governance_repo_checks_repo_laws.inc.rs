@@ -1,7 +1,7 @@
 pub(super) fn check_repo_no_executable_script_sources(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let policy_rel = Path::new("configs/repo/script-extension-allowlist.json");
+    let policy_rel = Path::new("configs/sources/repository/repo-surface/script-extension-allowlist.json");
     let policy = read_json_value(&ctx.repo_root.join(policy_rel))?;
     let allowed_paths = policy["allowed_paths"]
         .as_array()
@@ -56,7 +56,7 @@ pub(super) fn check_repo_no_executable_script_sources(
 pub(super) fn check_repo_root_markdown_allowlist_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let allowlist_rel = Path::new("configs/layout/root_markdown_allowlist.json");
+    let allowlist_rel = Path::new("configs/sources/repository/layout/root_markdown_allowlist.json");
     let allowlist = read_json_value(&ctx.repo_root.join(allowlist_rel))?;
     let allowed = allowlist["files"]
         .as_array()
@@ -80,7 +80,7 @@ pub(super) fn check_repo_root_markdown_allowlist_contract(
             violations.push(violation(
                 "REPO_ROOT_MARKDOWN_NOT_ALLOWLISTED",
                 format!("unexpected root markdown file: `{name}`"),
-                "add file to configs/layout/root_markdown_allowlist.json only after governance approval",
+                "add file to configs/sources/repository/layout/root_markdown_allowlist.json only after governance approval",
                 Some(Path::new(name)),
             ));
         }
@@ -91,7 +91,7 @@ pub(super) fn check_repo_root_markdown_allowlist_contract(
 pub(super) fn check_repo_root_directory_allowlist_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let allowlist_rel = Path::new("configs/repo/root-file-allowlist.json");
+    let allowlist_rel = Path::new("configs/sources/repository/repo-surface/root-file-allowlist.json");
     let allowlist = read_json_value(&ctx.repo_root.join(allowlist_rel))?;
     let allowed = allowlist["allowed_root_directories"]
         .as_array()
@@ -169,7 +169,7 @@ pub(super) fn check_repo_artifacts_not_tracked(
 pub(super) fn check_repo_generated_content_stays_in_allowed_paths(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let allowlist_rel = Path::new("configs/repo/generated-path-allowlist.json");
+    let allowlist_rel = Path::new("configs/sources/repository/repo-surface/generated-path-allowlist.json");
     let allowlist = read_json_value(&ctx.repo_root.join(allowlist_rel))?;
     let allowed_prefixes = allowlist["allowed_prefixes"]
         .as_array()

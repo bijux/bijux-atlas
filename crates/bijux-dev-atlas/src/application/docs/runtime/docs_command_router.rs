@@ -677,7 +677,7 @@ fn docs_nav_integrity_payload(ctx: &DocsContext) -> Result<serde_json::Value, St
 fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
     let docs_root = repo_root.join("docs");
     let output_path = docs_root.join("_internal/generated/docs-health-dashboard.md");
-    let allowlist_path = repo_root.join("configs/docs/external-link-allowlist.json");
+    let allowlist_path = repo_root.join("configs/sources/repository/docs/external-link-allowlist.json");
     let allowlist: serde_json::Value = serde_json::from_str(
         &fs::read_to_string(&allowlist_path)
             .map_err(|e| format!("read {} failed: {e}", allowlist_path.display()))?,
@@ -1440,7 +1440,7 @@ fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Valu
             stale.push((*rel).to_string());
         }
     }
-    let registry_path = repo_root.join("configs/docs/generated-files-registry.json");
+    let registry_path = repo_root.join("configs/sources/repository/docs/generated-files-registry.json");
     let registry_json: serde_json::Value = serde_json::from_str(
         &fs::read_to_string(&registry_path)
             .map_err(|e| format!("read {} failed: {e}", registry_path.display()))?,
@@ -1478,7 +1478,7 @@ fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Valu
         }
     }
 
-    let freshness_path = repo_root.join("configs/docs/generated-files-freshness-policy.json");
+    let freshness_path = repo_root.join("configs/sources/repository/docs/generated-files-freshness-policy.json");
     let freshness_json: serde_json::Value = serde_json::from_str(
         &fs::read_to_string(&freshness_path)
             .map_err(|e| format!("read {} failed: {e}", freshness_path.display()))?,

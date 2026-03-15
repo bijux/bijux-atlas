@@ -908,8 +908,8 @@ pub(super) fn collect_supply_chain_inventory(
 ) -> Result<Vec<serde_json::Value>, String> {
     let paths = [
         ".github/dependabot.yml",
-        "configs/docs/package-lock.json",
-        "configs/docs/requirements.lock.txt",
+        "configs/sources/repository/docs/package-lock.json",
+        "configs/sources/repository/docs/requirements.lock.txt",
         "configs/security/dependency-source-policy.json",
     ];
     let mut rows = Vec::new();
@@ -980,8 +980,8 @@ pub(super) fn build_release_evidence_tarball(
     files.push("configs/observability/audit-log.schema.json".to_string());
     files.push("configs/observability/retention.yaml".to_string());
     files.push(".github/dependabot.yml".to_string());
-    files.push("configs/docs/package-lock.json".to_string());
-    files.push("configs/docs/requirements.lock.txt".to_string());
+    files.push("configs/sources/repository/docs/package-lock.json".to_string());
+    files.push("configs/sources/repository/docs/requirements.lock.txt".to_string());
     files.push("configs/security/dependency-source-policy.json".to_string());
     files.sort();
     files.dedup();

@@ -31,7 +31,7 @@ jobs:
               - 'docs/**'
               - 'mkdocs.yml'
               - '.github/**'
-              - 'configs/docs/**'
+              - 'configs/sources/repository/docs/**'
               - 'configs/sources/runtime/openapi/**'
               - 'make/docs.mk'
 
@@ -109,9 +109,9 @@ jobs:
             ARTIFACT_ROOT="${report_root}" RUN_ID="${RUN_ID}" make contracts-pr > "${contracts_root}/all.json" 2> "${logs_root}/contracts-pr.stderr.log"
           fi
           cargo run --locked -q -p bijux-dev-atlas -- check run --domain root --tag lint --format json > "${logs_root}/lint-policy-report.stdout.log" 2> "${logs_root}/lint-policy-report.stderr.log"
-          printf 'workspace_lints_file=Cargo.toml\nclippy_conf_dir=configs/rust\n' > "${report_root}/effective-clippy-policy.txt"
+          printf 'workspace_lints_file=Cargo.toml\nclippy_conf_dir=configs/sources/repository/rust-tooling\n' > "${report_root}/effective-clippy-policy.txt"
           cargo run --locked -q -p bijux-dev-atlas -- check run --domain root --tag lint --format json > "${logs_root}/lint-policy-enforce.stdout.log" 2> "${logs_root}/lint-policy-enforce.stderr.log"
-          CLIPPY_CONF_DIR=configs/rust cargo clippy --locked --workspace --all-targets --all-features --message-format=json -- -D warnings > "${report_root}/clippy.json" 2> "${logs_root}/lint-clippy-json.stderr.log"
+          CLIPPY_CONF_DIR=configs/sources/repository/rust-tooling cargo clippy --locked --workspace --all-targets --all-features --message-format=json -- -D warnings > "${report_root}/clippy.json" 2> "${logs_root}/lint-clippy-json.stderr.log"
           cargo tree --locked -p bijux-atlas --edges normal --no-default-features --features backend-local > "${report_root}/store-deps-backend-local.txt"
           cargo tree --locked -p bijux-atlas --edges normal --no-default-features --features backend-s3 > "${report_root}/store-deps-backend-s3.txt"
           local_dep_count="$(wc -l < "${report_root}/store-deps-backend-local.txt")"
@@ -123,7 +123,7 @@ jobs:
           cargo check --locked -q -p bijux-atlas --no-default-features --features backend-s3 > "${logs_root}/store-backend-s3-check.stdout.log" 2> "${logs_root}/store-backend-s3-check.stderr.log"
           cargo test --locked -q -p bijux-atlas --test store --no-default-features --features backend-local local_backend_roundtrip_is_hermetic -- --exact > "${logs_root}/store-backend-local-test.stdout.log" 2> "${logs_root}/store-backend-local-test.stderr.log"
           cargo test --locked -q -p bijux-atlas --test store --no-default-features --features backend-s3 http_backend_reads_from_hermetic_cached_objects -- --exact > "${logs_root}/store-backend-s3-test.stdout.log" 2> "${logs_root}/store-backend-s3-test.stderr.log"
-          cargo fmt --locked --all -- --check --config-path configs/rust/rustfmt.toml > "${logs_root}/fmt-check.stdout.log" 2> "${logs_root}/fmt-check.stderr.log"
+          cargo fmt --locked --all -- --check --config-path configs/sources/repository/rust-tooling/rustfmt.toml > "${logs_root}/fmt-check.stdout.log" 2> "${logs_root}/fmt-check.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- configs verify --format json > "${report_root}/configs-verify.json" 2> "${logs_root}/configs-verify.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- check run --suite docs:required --include-internal --include-slow --format json > "${contracts_root}/docs-required.json" 2> "${logs_root}/docs-required.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- check run --suite configs:required --include-internal --include-slow --format json > "${contracts_root}/configs-required.json" 2> "${logs_root}/configs-required.stderr.log"
@@ -312,7 +312,7 @@ jobs:
           # Docs external link allowlist requires expiry and owner for each entry.
           python - <<'PY'
           import json, pathlib
-          allow = json.loads(pathlib.Path("configs/docs/external-link-allowlist.json").read_text())
+          allow = json.loads(pathlib.Path("configs/sources/repository/docs/external-link-allowlist.json").read_text())
           entries = allow.get("entries", [])
           errors = []
           for i, row in enumerate(entries):
@@ -918,9 +918,9 @@ jobs:
           ]
           # Docs governance sources of truth.
           registry = json.loads((root / "docs/_internal/registry/registry.json").read_text())
-          quality_policy = json.loads((root / "configs/docs/quality-policy.json").read_text())
+          quality_policy = json.loads((root / "configs/sources/repository/docs/quality-policy.json").read_text())
           stale_days = int(quality_policy.get("stale_days", 90))
-          external_allow = json.loads((root / "configs/docs/external-link-allowlist.json").read_text())
+          external_allow = json.loads((root / "configs/sources/repository/docs/external-link-allowlist.json").read_text())
           synonyms = json.loads((root / "docs/_internal/governance/metadata/search-synonyms.json").read_text())
           taxonomy = json.loads((root / "docs/_internal/governance/metadata/tag-taxonomy.json").read_text())
           nav_baseline_path = root / "docs/_internal/governance/metadata/nav-order.json"
@@ -1088,7 +1088,7 @@ jobs:
               "schema-map.json",
           }
           exclusion_prefixes = [
-              "configs/docs/.vale/styles/",
+              "configs/sources/repository/docs/.vale/styles/",
               "configs/ops/perf/baselines/",
           ]
           max_depth = 5
@@ -1461,7 +1461,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m pip install --upgrade pip
-          python3 -m pip install -r configs/docs/requirements.lock.txt
+          python3 -m pip install -r configs/sources/repository/docs/requirements.lock.txt
       - name: Run PR lane
         shell: bash
         env:
@@ -1478,9 +1478,9 @@ jobs:
           make make-target-list > "${logs_root}/make-target-list.stdout.log" 2> "${logs_root}/make-target-list.stderr.log"
           cp make/target-list.json "${report_root}/make-target-list.json"
           cargo run --locked -q -p bijux-dev-atlas -- check run --domain root --tag lint --format json > "${logs_root}/lint-policy-report.stdout.log" 2> "${logs_root}/lint-policy-report.stderr.log"
-          printf 'workspace_lints_file=Cargo.toml\nclippy_conf_dir=configs/rust\n' > "${report_root}/effective-clippy-policy.txt"
+          printf 'workspace_lints_file=Cargo.toml\nclippy_conf_dir=configs/sources/repository/rust-tooling\n' > "${report_root}/effective-clippy-policy.txt"
           cargo run --locked -q -p bijux-dev-atlas -- check run --domain root --tag lint --format json > "${logs_root}/lint-policy-enforce.stdout.log" 2> "${logs_root}/lint-policy-enforce.stderr.log"
-          CLIPPY_CONF_DIR=configs/rust cargo clippy --locked --workspace --all-targets --all-features --message-format=json -- -D warnings > "${report_root}/clippy.json" 2> "${logs_root}/lint-clippy-json.stderr.log"
+          CLIPPY_CONF_DIR=configs/sources/repository/rust-tooling cargo clippy --locked --workspace --all-targets --all-features --message-format=json -- -D warnings > "${report_root}/clippy.json" 2> "${logs_root}/lint-clippy-json.stderr.log"
           cargo tree --locked -p bijux-atlas --edges normal --no-default-features --features backend-local > "${report_root}/store-deps-backend-local.txt"
           cargo tree --locked -p bijux-atlas --edges normal --no-default-features --features backend-s3 > "${report_root}/store-deps-backend-s3.txt"
           local_dep_count="$(wc -l < "${report_root}/store-deps-backend-local.txt")"
@@ -1492,7 +1492,7 @@ jobs:
           cargo check --locked -q -p bijux-atlas --no-default-features --features backend-s3 > "${logs_root}/store-backend-s3-check.stdout.log" 2> "${logs_root}/store-backend-s3-check.stderr.log"
           cargo test --locked -q -p bijux-atlas --test store --no-default-features --features backend-local local_backend_roundtrip_is_hermetic -- --exact > "${logs_root}/store-backend-local-test.stdout.log" 2> "${logs_root}/store-backend-local-test.stderr.log"
           cargo test --locked -q -p bijux-atlas --test store --no-default-features --features backend-s3 http_backend_reads_from_hermetic_cached_objects -- --exact > "${logs_root}/store-backend-s3-test.stdout.log" 2> "${logs_root}/store-backend-s3-test.stderr.log"
-          cargo fmt --locked --all -- --check --config-path configs/rust/rustfmt.toml > "${logs_root}/fmt-check.stdout.log" 2> "${logs_root}/fmt-check.stderr.log"
+          cargo fmt --locked --all -- --check --config-path configs/sources/repository/rust-tooling/rustfmt.toml > "${logs_root}/fmt-check.stdout.log" 2> "${logs_root}/fmt-check.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- configs verify --format json > "${report_root}/configs-verify.json" 2> "${logs_root}/configs-verify.stderr.log"
           cargo test --locked --workspace > "${logs_root}/workspace-test.stdout.log" 2> "${logs_root}/workspace-test.stderr.log"
           cargo test --locked -q -p bijux-atlas --test api openapi_snapshot_is_deterministic_and_matches_committed_contract -- --exact > "${logs_root}/openapi-snapshot.stdout.log" 2> "${logs_root}/openapi-snapshot.stderr.log"

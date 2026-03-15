@@ -20,7 +20,7 @@
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/ci/*.json": [
+    "configs/sources/repository/ci/*.json": [
       "ci"
     ],
     "configs/sources/runtime/cli/*.toml": [
@@ -43,7 +43,7 @@
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/coverage/*": [
+    "configs/sources/repository/coverage/*": [
       "bijux-dev-atlas",
       "ci"
     ],
@@ -55,23 +55,23 @@
       "bijux-dev-atlas",
       "runtime"
     ],
-    "configs/docs/*.json": [
+    "configs/sources/repository/docs/*.json": [
       "docs-build",
       "ci"
     ],
-    "configs/docs/*.jsonc": [
+    "configs/sources/repository/docs/*.jsonc": [
       "docs-build",
       "ci"
     ],
-    "configs/docs/*.txt": [
+    "configs/sources/repository/docs/*.txt": [
       "docs-build",
       "ci"
     ],
-    "configs/docs/.markdownlint-cli2.jsonc": [
+    "configs/sources/repository/docs/.markdownlint-cli2.jsonc": [
       "docs-build",
       "ci"
     ],
-    "configs/docs/.vale.ini": [
+    "configs/sources/repository/docs/.vale.ini": [
       "docs-build",
       "ci"
     ],
@@ -92,7 +92,7 @@
       "bijux-dev-atlas",
       "runtime"
     ],
-    "configs/gates/*.json": [
+    "configs/sources/repository/gates/*.json": [
       "bijux-dev-atlas",
       "ci"
     ],
@@ -128,18 +128,18 @@
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/layout/*": [
+    "configs/sources/repository/layout/*": [
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/make/*.json": [
+    "configs/sources/repository/make/*.json": [
       "make",
       "bijux-dev-atlas"
     ],
-    "configs/meta/*.json": [
+    "configs/sources/repository/meta/*.json": [
       "bijux-dev-atlas"
     ],
-    "configs/nextest/*.toml": [
+    "configs/sources/repository/nextest/*.toml": [
       "ci"
     ],
     "configs/observability/*.yaml": [
@@ -219,7 +219,7 @@
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/repo/*.json": [
+    "configs/sources/repository/repo-surface/*.json": [
       "bijux-dev-atlas",
       "ci"
     ],
@@ -243,11 +243,11 @@
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/rust/*.json": [
+    "configs/sources/repository/rust-tooling/*.json": [
       "ci",
       "bijux-dev-atlas"
     ],
-    "configs/rust/*.toml": [
+    "configs/sources/repository/rust-tooling/*.toml": [
       "ci",
       "bijux-dev-atlas"
     ],
@@ -294,7 +294,7 @@
       "bijux-dev-atlas",
       "runtime"
     ],
-    "configs/shellcheck/*": [
+    "configs/sources/repository/shell/*": [
       "bijux-dev-atlas",
       "ci"
     ],

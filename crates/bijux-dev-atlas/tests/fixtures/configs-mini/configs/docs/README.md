@@ -2,7 +2,7 @@
 
 Canonical docs toolchain and lint configuration.
 
-Reference index: `configs/docs/README.md`
+Reference index: `configs/sources/repository/docs/README.md`
 
 ## Files
 

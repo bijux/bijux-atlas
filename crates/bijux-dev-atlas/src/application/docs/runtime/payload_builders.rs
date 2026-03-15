@@ -45,7 +45,7 @@ fn docs_verify_contracts_payload(
     let policy = load_quality_policy(&ctx.repo_root);
     let tags_allowlist_path = ctx
         .repo_root
-        .join("configs/docs/tag-vocabulary.json");
+        .join("configs/sources/repository/docs/tag-vocabulary.json");
     let allowed_tags = if tags_allowlist_path.exists() {
         let value: serde_json::Value = serde_json::from_str(
             &fs::read_to_string(&tags_allowlist_path).map_err(|e| {
@@ -296,11 +296,11 @@ pub(crate) fn docs_lint_payload(
     let mut errors = Vec::<String>::new();
     let docs_lint_root = ctx.repo_root.join("configs/docs");
     let required_lint_files = [
-        "configs/docs/.vale.ini",
-        "configs/docs/.markdownlint-cli2.jsonc",
-        "configs/docs/cspell.config.json",
-        "configs/docs/package.json",
-        "configs/docs/package-lock.json",
+        "configs/sources/repository/docs/.vale.ini",
+        "configs/sources/repository/docs/.markdownlint-cli2.jsonc",
+        "configs/sources/repository/docs/cspell.config.json",
+        "configs/sources/repository/docs/package.json",
+        "configs/sources/repository/docs/package-lock.json",
     ];
     for rel in required_lint_files {
         if !ctx.repo_root.join(rel).exists() {
@@ -323,7 +323,7 @@ pub(crate) fn docs_lint_payload(
         for key in ["markdownlint", "cspell"] {
             if !scripts.contains_key(key) {
                 errors.push(format!(
-                    "DOCS_LINT_CONFIG_INVALID: `configs/docs/package.json` missing script `{key}`"
+                    "DOCS_LINT_CONFIG_INVALID: `configs/sources/repository/docs/package.json` missing script `{key}`"
                 ));
             }
         }
@@ -334,14 +334,14 @@ pub(crate) fn docs_lint_payload(
             .map_err(|e| format!("failed to read {}: {e}", vale_ini_path.display()))?;
         if !vale_text.contains("StylesPath") {
             errors.push(
-                "DOCS_LINT_CONFIG_INVALID: `configs/docs/.vale.ini` must declare `StylesPath`"
+                "DOCS_LINT_CONFIG_INVALID: `configs/sources/repository/docs/.vale.ini` must declare `StylesPath`"
                     .to_string(),
             );
         }
         let styles_dir = docs_lint_root.join(".vale");
         if !styles_dir.exists() {
             errors.push(
-                "DOCS_LINT_CONFIG_INVALID: `configs/docs/.vale` directory must exist".to_string(),
+                "DOCS_LINT_CONFIG_INVALID: `configs/sources/repository/docs/.vale` directory must exist".to_string(),
             );
         }
     }

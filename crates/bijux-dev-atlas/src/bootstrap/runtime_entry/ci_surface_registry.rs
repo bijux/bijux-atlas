@@ -116,21 +116,21 @@ pub(super) struct WorkflowLintRow {
 }
 
 pub(super) fn load_ci_policy_registry(repo_root: &Path) -> Result<CiPolicyRegistry, String> {
-    let path = repo_root.join("configs/ci/policy-outside-control-plane.json");
+    let path = repo_root.join("configs/sources/repository/ci/policy-outside-control-plane.json");
     let text = fs::read_to_string(&path)
         .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
 fn load_ci_policy_exceptions(repo_root: &Path) -> Result<CiPolicyExceptions, String> {
-    let path = repo_root.join("configs/ci/policy-exceptions.json");
+    let path = repo_root.join("configs/sources/repository/ci/policy-exceptions.json");
     let text = fs::read_to_string(&path)
         .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
 pub(super) fn load_ci_lane_surface(repo_root: &Path) -> Result<CiLaneSurfaceRegistry, String> {
-    let path = repo_root.join("configs/ci/lane-surface.json");
+    let path = repo_root.join("configs/sources/repository/ci/lane-surface.json");
     let text = fs::read_to_string(&path)
         .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
@@ -172,21 +172,21 @@ pub(super) struct CiLaneRegistryEntry {
 }
 
 pub(super) fn load_ci_lanes_registry(repo_root: &Path) -> Result<CiLaneRegistry, String> {
-    let path = repo_root.join("configs/ci/lanes.json");
+    let path = repo_root.join("configs/sources/repository/ci/lanes.json");
     let text = fs::read_to_string(&path)
         .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
 fn load_workflow_step_patterns(repo_root: &Path) -> Result<WorkflowStepPatterns, String> {
-    let path = repo_root.join("configs/ci/workflow-step-patterns.json");
+    let path = repo_root.join("configs/sources/repository/ci/workflow-step-patterns.json");
     let text = fs::read_to_string(&path)
         .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
 fn load_workflow_allowlist(repo_root: &Path) -> Result<WorkflowAllowlist, String> {
-    let path = repo_root.join("configs/ci/workflow-allowlist.json");
+    let path = repo_root.join("configs/sources/repository/ci/workflow-allowlist.json");
     let text = fs::read_to_string(&path)
         .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))

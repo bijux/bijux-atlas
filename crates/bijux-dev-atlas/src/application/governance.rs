@@ -1239,7 +1239,7 @@ fn validate_command_order(commands: &[String]) -> bool {
 
 fn known_commands(root: &Path) -> Result<BTreeSet<String>, String> {
     let mut commands = BTreeSet::new();
-    let public_targets = read_json_value(&root.join("configs/make/public-targets.json"))?;
+    let public_targets = read_json_value(&root.join("configs/sources/repository/make/public-targets.json"))?;
     for row in public_targets
         .get("public_targets")
         .and_then(serde_json::Value::as_array)

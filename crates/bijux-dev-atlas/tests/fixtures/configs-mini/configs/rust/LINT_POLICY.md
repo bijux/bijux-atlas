@@ -4,7 +4,7 @@ This document mirrors the enforced CI lint commands.
 
 ## Commands
 
-- `cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml`
+- `cargo fmt --all -- --check --config-path configs/sources/repository/rust-tooling/rustfmt.toml`
 - `CLIPPY_CONF_DIR=configs/rust cargo clippy --workspace --all-targets --all-features --locked -- -D warnings`
 - `cargo test --workspace --locked`
 

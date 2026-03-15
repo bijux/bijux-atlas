@@ -78,7 +78,7 @@ impl Default for DocsQualityPolicy {
 }
 
 pub(crate) fn load_quality_policy(repo_root: &Path) -> DocsQualityPolicy {
-    let path = repo_root.join("configs/docs/quality-policy.json");
+    let path = repo_root.join("configs/sources/repository/docs/quality-policy.json");
     let Ok(text) = fs::read_to_string(path) else {
         return DocsQualityPolicy::default();
     };

@@ -210,7 +210,7 @@ pub(crate) fn run_ops_evidence_collect(
     )
     .map_err(|err| format!("failed to write {}: {err}", identity_path.display()))?;
     let docker_bases = repo_root.join("ops/docker/bases.lock");
-    let toolchain_inventory = repo_root.join("configs/rust/toolchain.json");
+    let toolchain_inventory = repo_root.join("configs/sources/repository/rust-tooling/toolchain.json");
     let auth_model = repo_root.join("configs/security/auth-model.yaml");
     let access_policy = repo_root.join("configs/security/policy.yaml");
     let audit_schema = repo_root.join("configs/observability/audit-log.schema.json");

@@ -3,7 +3,7 @@
     {
       "approved_by": "docs-governance",
       "expires_on": "2027-12-31",
-      "pattern": "configs/docs/.vale/styles/**",
+      "pattern": "configs/sources/repository/docs/.vale/styles/**",
       "reason": "vale style bundles stay explicitly excluded until docs config flattening lands"
     },
     {
@@ -48,13 +48,13 @@
         "schemas": 1
       },
       "files": [
-        "configs/ci/env-contract.json",
-        "configs/ci/lane-surface.json",
-        "configs/ci/lanes.json",
-        "configs/ci/policy-exceptions.json",
-        "configs/ci/policy-outside-control-plane.json",
-        "configs/ci/workflow-allowlist.json",
-        "configs/ci/workflow-step-patterns.json"
+        "configs/sources/repository/ci/env-contract.json",
+        "configs/sources/repository/ci/lane-surface.json",
+        "configs/sources/repository/ci/lanes.json",
+        "configs/sources/repository/ci/policy-exceptions.json",
+        "configs/sources/repository/ci/policy-outside-control-plane.json",
+        "configs/sources/repository/ci/workflow-allowlist.json",
+        "configs/sources/repository/ci/workflow-step-patterns.json"
       ],
       "name": "ci",
       "owner": "platform",
@@ -150,23 +150,23 @@
         "schemas": 3
       },
       "files": [
-        "configs/docs/.markdownlint-cli2.jsonc",
-        "configs/docs/.vale.ini",
-        "configs/docs/artifact-link-allowlist.json",
-        "configs/docs/codespell-ignore-words.txt",
-        "configs/docs/cspell.config.json",
-        "configs/docs/depth-budget.json",
-        "configs/docs/external-link-allowlist.json",
-        "configs/docs/frontmatter.schema.json",
-        "configs/docs/generated-files-freshness-policy.json",
-        "configs/docs/generated-files-registry.json",
-        "configs/docs/package-lock.json",
-        "configs/docs/package.json",
-        "configs/docs/quality-policy.json",
-        "configs/docs/requirements.lock.txt",
-        "configs/docs/requirements.txt",
-        "configs/docs/site-output-contract.json",
-        "configs/docs/tag-vocabulary.json"
+        "configs/sources/repository/docs/.markdownlint-cli2.jsonc",
+        "configs/sources/repository/docs/.vale.ini",
+        "configs/sources/repository/docs/artifact-link-allowlist.json",
+        "configs/sources/repository/docs/codespell-ignore-words.txt",
+        "configs/sources/repository/docs/cspell.config.json",
+        "configs/sources/repository/docs/depth-budget.json",
+        "configs/sources/repository/docs/external-link-allowlist.json",
+        "configs/sources/repository/docs/frontmatter.schema.json",
+        "configs/sources/repository/docs/generated-files-freshness-policy.json",
+        "configs/sources/repository/docs/generated-files-registry.json",
+        "configs/sources/repository/docs/package-lock.json",
+        "configs/sources/repository/docs/package.json",
+        "configs/sources/repository/docs/quality-policy.json",
+        "configs/sources/repository/docs/requirements.lock.txt",
+        "configs/sources/repository/docs/requirements.txt",
+        "configs/sources/repository/docs/site-output-contract.json",
+        "configs/sources/repository/docs/tag-vocabulary.json"
       ],
       "name": "docs",
       "owner": "docs-governance",
@@ -316,15 +316,6 @@
         "schemas": 1
       },
       "files": [
-        "configs/coverage/README.md",
-        "configs/coverage/thresholds.toml",
-        "configs/gates/lanes.json",
-        "configs/layout/README.md",
-        "configs/layout/generated-files.json",
-        "configs/layout/inventory-budgets.json",
-        "configs/layout/ops-markdown-naming-policy.json",
-        "configs/layout/root-markdown-allowlist.json",
-        "configs/layout/root_markdown_allowlist.json",
         "configs/release/crate-package-policy.json",
         "configs/release/dependency-policy.json",
         "configs/release/feature-policy.json",
@@ -339,15 +330,24 @@
         "configs/release/reproducibility-policy.json",
         "configs/release/semver-api-policy.json",
         "configs/release/version-policy.json",
-        "configs/repo/generated-path-allowlist.json",
-        "configs/repo/root-file-allowlist.json",
-        "configs/repo/script-extension-allowlist.json",
-        "configs/repo/surface-snapshot.json",
-        "configs/repo/surfaces.json",
-        "configs/repo/symlink-allowlist.json",
-        "configs/repo/tree-budget-exceptions.json",
-        "configs/shellcheck/README.md",
-        "configs/shellcheck/shellcheckrc",
+        "configs/sources/repository/coverage/README.md",
+        "configs/sources/repository/coverage/thresholds.toml",
+        "configs/sources/repository/gates/lanes.json",
+        "configs/sources/repository/layout/README.md",
+        "configs/sources/repository/layout/generated-files.json",
+        "configs/sources/repository/layout/inventory-budgets.json",
+        "configs/sources/repository/layout/ops-markdown-naming-policy.json",
+        "configs/sources/repository/layout/root-markdown-allowlist.json",
+        "configs/sources/repository/layout/root_markdown_allowlist.json",
+        "configs/sources/repository/repo-surface/generated-path-allowlist.json",
+        "configs/sources/repository/repo-surface/root-file-allowlist.json",
+        "configs/sources/repository/repo-surface/script-extension-allowlist.json",
+        "configs/sources/repository/repo-surface/surface-snapshot.json",
+        "configs/sources/repository/repo-surface/surfaces.json",
+        "configs/sources/repository/repo-surface/symlink-allowlist.json",
+        "configs/sources/repository/repo-surface/tree-budget-exceptions.json",
+        "configs/sources/repository/shell/README.md",
+        "configs/sources/repository/shell/shellcheckrc",
         "configs/sources/runtime/product/README.md",
         "configs/sources/runtime/product/artifact-manifest.schema.json",
         "configs/sources/runtime/product/external-tools-manifest.json"
@@ -373,9 +373,9 @@
         "schemas": 1
       },
       "files": [
-        "configs/make/public-targets.json",
-        "configs/make/retired-makefiles.json",
-        "configs/make/targets.json"
+        "configs/sources/repository/make/public-targets.json",
+        "configs/sources/repository/make/retired-makefiles.json",
+        "configs/sources/repository/make/targets.json"
       ],
       "name": "make",
       "owner": "platform",
@@ -398,8 +398,8 @@
         "schemas": 1
       },
       "files": [
-        "configs/meta/owners.json",
-        "configs/registry/owners/identities.json"
+        "configs/registry/owners/identities.json",
+        "configs/sources/repository/meta/owners.json"
       ],
       "name": "meta",
       "owner": "platform",
@@ -421,7 +421,7 @@
         "schemas": 0
       },
       "files": [
-        "configs/nextest/nextest.toml"
+        "configs/sources/repository/nextest/nextest.toml"
       ],
       "name": "nextest",
       "owner": "platform",
@@ -684,9 +684,9 @@
         "schemas": 1
       },
       "files": [
-        "configs/rust/clippy.toml",
-        "configs/rust/rustfmt.toml",
-        "configs/rust/toolchain.json"
+        "configs/sources/repository/rust-tooling/clippy.toml",
+        "configs/sources/repository/rust-tooling/rustfmt.toml",
+        "configs/sources/repository/rust-tooling/toolchain.json"
       ],
       "name": "rust",
       "owner": "rust-foundation",

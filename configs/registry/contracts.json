@@ -110,10 +110,10 @@
       "severity": "must",
       "title": "required lockfile pairs exist for tool-managed config inputs",
       "touched_paths": [
-        "configs/docs/package.json",
-        "configs/docs/package-lock.json",
-        "configs/docs/requirements.txt",
-        "configs/docs/requirements.lock.txt"
+        "configs/sources/repository/docs/package.json",
+        "configs/sources/repository/docs/package-lock.json",
+        "configs/sources/repository/docs/requirements.txt",
+        "configs/sources/repository/docs/requirements.lock.txt"
       ]
     },
     {
@@ -272,7 +272,7 @@
       "severity": "must",
       "title": "no root-level symlink shims unless explicitly allowed",
       "touched_paths": [
-        "configs/repo/*.json",
+        "configs/sources/repository/repo-surface/*.json",
         "configs/registry/inventory/configs.json"
       ]
     },
@@ -459,7 +459,7 @@
       "severity": "blocker",
       "title": "docs tooling directory contains no nested markdown",
       "touched_paths": [
-        "configs/docs/**"
+        "configs/sources/repository/docs/**"
       ]
     },
     {
@@ -474,7 +474,7 @@
       "severity": "must",
       "title": "docs tooling directory stays tooling-only",
       "touched_paths": [
-        "configs/docs/**",
+        "configs/sources/repository/docs/**",
         "configs/registry/inventory/configs.json"
       ]
     },

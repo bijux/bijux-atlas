@@ -9,7 +9,7 @@
       "mode": "pure",
       "inputs": [
         "workspace source files",
-        "configs/rust/rustfmt.toml"
+        "configs/sources/repository/rust-tooling/rustfmt.toml"
       ],
       "outputs": [
         "format validation status",
@@ -53,7 +53,7 @@
       "mode": "effect",
       "inputs": [
         "workspace crates",
-        "configs/rust/clippy.toml"
+        "configs/sources/repository/rust-tooling/clippy.toml"
       ],
       "outputs": [
         "clippy diagnostics",

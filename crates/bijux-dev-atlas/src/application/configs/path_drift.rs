@@ -127,8 +127,8 @@ fn config_reference_path_errors(ctx: &ConfigsContext) -> Result<Vec<String>, Str
             .map_err(|e| format!("failed to read {}: {e}", path.display()))?;
         for (idx, line) in text.lines().enumerate() {
             if forbidden_root_refs.iter().any(|pat| line.contains(pat))
-                && !(line.contains("configs/rust/rustfmt.toml")
-                    || line.contains("configs/rust/clippy.toml")
+                && !(line.contains("configs/sources/repository/rust-tooling/rustfmt.toml")
+                    || line.contains("configs/sources/repository/rust-tooling/clippy.toml")
                     || line.contains("configs/security/deny.toml"))
             {
                 errors.push(format!(

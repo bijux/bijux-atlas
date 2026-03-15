@@ -2,7 +2,7 @@
   "files": [
     {
       "kind": "txt",
-      "path": "configs/layout/make-command-allowlist.txt",
+      "path": "configs/sources/repository/layout/make-command-allowlist.txt",
       "requires_metadata": false,
       "type": "make"
     },

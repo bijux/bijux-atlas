@@ -335,7 +335,7 @@ fn render_ci_env_contract_validate(
     format: FormatArg,
     out: Option<PathBuf>,
 ) -> Result<(String, i32), String> {
-    let path = repo_root.join("configs/ci/env-contract.json");
+    let path = repo_root.join("configs/sources/repository/ci/env-contract.json");
     let text =
         fs::read_to_string(&path).map_err(|err| format!("read {} failed: {err}", path.display()))?;
     let value: serde_json::Value =
@@ -353,7 +353,7 @@ fn render_ci_env_contract_validate(
         "schema_version": 1,
         "kind": "ci_env_contract_validate",
         "status": status,
-        "path": "configs/ci/env-contract.json"
+        "path": "configs/sources/repository/ci/env-contract.json"
     });
     let code = if status == "ok" { 0 } else { 1 };
     let rendered = emit_payload(format, out, &payload)?;
@@ -572,9 +572,9 @@ fn lane_domain_from_id(lane_id: &str) -> &'static str {
 
 fn domain_path_prefixes(domain: &str) -> &'static [&'static str] {
     match domain {
-        "docs" => &["docs/", "mkdocs.yml", "configs/docs/"],
+        "docs" => &["docs/", "mkdocs.yml", "configs/sources/repository/docs/"],
         "ops" => &["ops/", "configs/ops/", ".github/workflows/ops-"],
-        "ci" => &[".github/workflows/", "configs/ci/", "crates/bijux-dev-atlas/"],
+        "ci" => &[".github/workflows/", "configs/sources/repository/ci/", "crates/bijux-dev-atlas/"],
         "release" => &["ops/release/", "docs/", "configs/release/", ".github/workflows/release-"],
         "dependency" => &["Cargo.lock", ".github/workflows/dependency-"],
         _ => &[".github/workflows/"],
@@ -646,8 +646,8 @@ fn run_ci_verify_gate(
             for required in [
                 ".github/dependabot.yml",
                 ".github/CODEOWNERS",
-                "configs/ci/policy-outside-control-plane.json",
-                "configs/ci/lane-surface.json",
+                "configs/sources/repository/ci/policy-outside-control-plane.json",
+                "configs/sources/repository/ci/lane-surface.json",
             ] {
                 if !repo_root.join(required).exists() {
                     errors.push(format!("missing required workflow policy file `{required}`"));
@@ -764,7 +764,7 @@ fn run_ci_verify_gate(
                             "workflow `{workflow_path}` uses secrets but mapped lanes are not allowed for secret use"
                         ));
                     }
-                    let secret_registry_path = repo_root.join("configs/ci/secret-registry.json");
+                    let secret_registry_path = repo_root.join("configs/sources/repository/ci/secret-registry.json");
                     if secret_registry_path.exists() {
                         let registry_text = fs::read_to_string(&secret_registry_path).map_err(|err| {
                             format!("read {} failed: {err}", secret_registry_path.display())
@@ -783,7 +783,7 @@ fn run_ci_verify_gate(
                         for secret in secret_names {
                             if !allowed.contains(secret.as_str()) {
                                 errors.push(format!(
-                                    "workflow `{workflow_path}` references secret `{secret}` not listed in configs/ci/secret-registry.json"
+                                    "workflow `{workflow_path}` references secret `{secret}` not listed in configs/sources/repository/ci/secret-registry.json"
                                 ));
                             }
                         }
@@ -798,7 +798,7 @@ fn run_ci_verify_gate(
             for mapped_lane in lane_surface.lanes.iter().map(|row| row.lane.as_str()) {
                 if !canonical_lane_ids.contains(mapped_lane) {
                     errors.push(format!(
-                        "lane surface references lane `{mapped_lane}` not present in configs/ci/lanes.json"
+                        "lane surface references lane `{mapped_lane}` not present in configs/sources/repository/ci/lanes.json"
                     ));
                 }
             }
@@ -973,7 +973,7 @@ fn run_ci_verify_gate(
                     "HEAD~1...HEAD",
                     "--",
                     "docs/**",
-                    "configs/docs/**",
+                    "configs/sources/repository/docs/**",
                     "ops/report/docs/**",
                     "ops/docker/**",
                     "make/**",
@@ -1026,7 +1026,7 @@ fn run_ci_verify_gate(
             }
             let output = ProcessCommand::new("cargo")
                 .current_dir(repo_root)
-                .args(["fmt", "--all", "--", "--check", "--config-path", "configs/rust/rustfmt.toml"])
+                .args(["fmt", "--all", "--", "--check", "--config-path", "configs/sources/repository/rust-tooling/rustfmt.toml"])
                 .output()
                 .map_err(|err| format!("cargo fmt failed: {err}"))?;
             serde_json::json!({

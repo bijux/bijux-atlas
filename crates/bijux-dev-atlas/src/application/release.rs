@@ -3944,7 +3944,7 @@ fn run_release_sign(args: ReleaseSignArgs) -> Result<(String, i32), String> {
         "release_id": release_id,
         "git_sha": git_sha,
         "governance_version": governance_version,
-        "toolchain_inventory": "configs/rust/toolchain.json",
+        "toolchain_inventory": "configs/sources/repository/rust-tooling/toolchain.json",
         "signing_policy_path": repo_rel(&root, &policy_path),
         "evidence_manifest_path": repo_rel(&root, &manifest_path),
         "checksum_list_path": repo_rel(&root, &checksums_path)
@@ -4599,7 +4599,7 @@ fn collect_manifest_source(root: &Path) -> Result<serde_json::Value, String> {
 }
 
 fn collect_toolchain_versions(root: &Path) -> serde_json::Value {
-    let path = root.join("configs/rust/toolchain.json");
+    let path = root.join("configs/sources/repository/rust-tooling/toolchain.json");
     let value = read_json(&path).unwrap_or(serde_json::Value::Null);
     value
         .get("versions")
