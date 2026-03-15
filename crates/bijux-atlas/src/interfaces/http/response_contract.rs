@@ -51,8 +51,8 @@ pub(crate) fn api_error(code: ApiErrorCode, message: &str, details: Value) -> Ap
     ApiError {
         code,
         message: message.to_string(),
+        request_id: fallback_request_id(code, &details),
         details,
-        request_id: fallback_request_id(),
     }
 }
 
