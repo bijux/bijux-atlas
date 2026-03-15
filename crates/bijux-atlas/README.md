@@ -1,40 +1,42 @@
 # bijux-atlas
 
-`bijux-atlas` is the Atlas user-facing crate. It owns the CLI, the HTTP server binary, the OpenAPI generator, and the contract-driven domain logic behind dataset, catalog, ingest, policy, and query workflows.
+`bijux-atlas` is the product-facing Atlas crate. It owns the end-user CLI, the runtime HTTP server, the OpenAPI generator, and the contract-governed domain logic behind dataset, catalog, ingest, policy, and query workflows.
 
-This crate is for:
+Use this crate when you need to:
 
-- operators and developers running Atlas commands locally or in CI
-- consumers of the Atlas HTTP server and OpenAPI contract
-- contributors working on Atlas domain rules, runtime configuration, and adapter behavior
+- run Atlas workflows locally or in CI
+- serve Atlas over HTTP
+- generate or validate Atlas API contracts
+- work on Atlas domain behavior, runtime configuration, or adapters
 
-This crate is not the repository control plane. Repository governance, docs automation, policy audits, and maintenance workflows live in [`bijux-dev-atlas`](../bijux-dev-atlas/README.md).
+This crate is not the repository control plane. Repository governance, docs automation, registry maintenance, and workspace audits live in [`bijux-dev-atlas`](../bijux-dev-atlas/README.md).
 
-## What This Crate Owns
+## What Ships Here
 
-- user-facing CLI commands under `bijux-atlas`
-- server runtime and HTTP adapters under `bijux-atlas-server`
-- OpenAPI generation under `bijux-atlas-openapi`
-- domain rules for datasets, queries, ingest, policy, cluster, and security
-- contract-owned API errors, config schemas, and external payload shapes
-
-## Binaries
-
-- `bijux-atlas`: main Atlas CLI for dataset, catalog, ingest, policy, and OpenAPI workflows
-- `bijux-atlas-server`: Atlas HTTP server
+- `bijux-atlas`: main CLI for dataset, catalog, ingest, policy, config, diff, garbage-collection, and OpenAPI workflows
+- `bijux-atlas-server`: runtime server binary for Atlas HTTP traffic
 - `bijux-atlas-openapi`: OpenAPI generation utility
+- Rust modules for domain rules, application orchestration, adapters, contracts, and runtime configuration
 
-## Source Layout
+## Supported Entry Points
 
-The source tree is organized so ownership is obvious:
+- CLI users should start with `bijux-atlas`
+- server operators should start with `bijux-atlas-server`
+- API and schema consumers should start with the generated OpenAPI output and the documented API contracts
+- Rust contributors should start from the canonical module roots: `adapters`, `app`, `contracts`, `domain`, and `runtime`
 
-- `src/adapters`: inbound and outbound integrations such as CLI, HTTP, store, sqlite, redis, telemetry, and filesystem code
-- `src/app`: use-case orchestration, ports, cache services, and server application state
-- `src/contracts`: external schemas, runtime config contracts, and stable error definitions
-- `src/domain`: business rules for dataset, query, ingest, policy, cluster, and security behavior
-- `src/runtime`: runtime configuration and process-level setup
+The supported surface is the documented CLI, server behavior, API contracts, and canonical module owners. Undocumented helper paths are implementation detail.
 
-If a change affects transport or persistence details, it should usually land in `adapters`. If it changes business behavior, it should usually land in `domain`. If it changes an external schema or stable error surface, it belongs in `contracts`.
+## Primary Workflows
+
+- `config`: inspect and validate runtime configuration inputs
+- `catalog`: validate, publish, roll back, and promote catalog artifacts
+- `dataset`: verify dataset roots and dataset-level contracts
+- `ingest`: run governed ingest flows and validation
+- `diff`: compute governed dataset and catalog differences
+- `gc`: plan and apply garbage collection for managed artifacts
+- `policy`: validate and inspect policy-driven behavior
+- `openapi`: generate API descriptions from the contract-owned surface
 
 ## Quick Start
 
@@ -60,39 +62,76 @@ cargo run -p bijux-atlas --bin bijux-atlas -- dataset verify \
   --assembly GRCh38
 ```
 
-Inspect the server or OpenAPI utilities:
+Inspect the server runtime surface:
 
 ```bash
 cargo run -p bijux-atlas --bin bijux-atlas-server -- --help
-cargo run -p bijux-atlas --bin bijux-atlas-openapi -- --help
 ```
 
-## Stable User-Facing Guarantees
+Inspect the OpenAPI surface:
 
-- top-level command names and noun-first command families are treated as contract surfaces
-- `--json` output is deterministic and designed for CI snapshots and automation
-- error payloads and exit-code classes are documented and stable by contract
-- runtime configuration is owned by contract documents and validation logic, not ad hoc flags or scripts
-- API behavior is anchored in generated OpenAPI and contract tests
+```bash
+cargo run -p bijux-atlas --bin bijux-atlas -- openapi --help
+```
 
-## Environment
+## Runtime and Feature Flags
+
+Important environment variables:
 
 - `BIJUX_LOG_LEVEL`: overrides log verbosity
 - `BIJUX_CACHE_DIR`: sets the shared cache directory used by Atlas workflows
 
+Important Cargo features:
+
+- `backend-local`: enables the local filesystem-backed store integration
+- `backend-s3`: enables the S3-like store integration on top of the local backend support
+- `jemalloc`: enables the optional allocator override
+- `bench-ingest-throughput`: enables the heavier ingest benchmark targets
+
+## Stability and Contract Policy
+
+- top-level command names and noun-first command families are treated as contract surfaces
+- `--json` output is deterministic and intended for CI snapshots and automation
+- API errors, status mappings, and OpenAPI output are governed by contract tests
+- runtime configuration is owned by config contracts and validators, not ad hoc scripts
+- compatibility tests and contract tests are part of the supported maintenance model
+
+The following are not stable API promises:
+
+- undocumented helper functions
+- convenience imports outside the canonical module owners
+- benchmark-only or internal testing helpers
+
+## Source Layout
+
+The source tree is organized so ownership stays boring and obvious:
+
+- `src/adapters`: inbound and outbound integrations such as CLI, HTTP, store, sqlite, redis, telemetry, and filesystem code
+- `src/app`: use-case orchestration, ports, cache services, and server application state
+- `src/contracts`: external schemas, runtime config contracts, and stable error definitions
+- `src/domain`: business rules for dataset, query, ingest, policy, cluster, and security behavior
+- `src/runtime`: runtime configuration and process-level setup
+
+If a change affects transport or persistence details, it should usually land in `adapters`. If it changes business behavior, it should usually land in `domain`. If it changes an external schema or stable error surface, it belongs in `contracts`.
+
 ## Documentation Map
 
-- crate documentation index: [../../docs/bijux-atlas-crate/index.md](../../docs/bijux-atlas-crate/index.md)
-- CLI command reference: [../../docs/bijux-atlas-crate/cli-command-list.md](../../docs/bijux-atlas-crate/cli-command-list.md)
-- CLI UX and output contract: [../../docs/bijux-atlas-crate/cli-ux-contract.md](../../docs/bijux-atlas-crate/cli-ux-contract.md)
-- exit codes: [../../docs/bijux-atlas-crate/exit-codes.md](../../docs/bijux-atlas-crate/exit-codes.md)
-- plugin contract: [../../docs/bijux-atlas-crate/plugin-contract.md](../../docs/bijux-atlas-crate/plugin-contract.md)
-- API docs index: [../../docs/api/index.md](../../docs/api/index.md)
-- crate API stability reference: [../../docs/reference/crate-api-stability.md](../../docs/reference/crate-api-stability.md)
+Repository docs in this worktree:
 
-## Using The Library
+- crate documentation index: [../../docs/--archive/bijux-atlas-crate/index.md](../../docs/--archive/bijux-atlas-crate/index.md)
+- CLI command reference: [../../docs/--archive/bijux-atlas-crate/cli-command-list.md](../../docs/--archive/bijux-atlas-crate/cli-command-list.md)
+- CLI UX and output contract: [../../docs/--archive/bijux-atlas-crate/cli-ux-contract.md](../../docs/--archive/bijux-atlas-crate/cli-ux-contract.md)
+- exit codes: [../../docs/--archive/bijux-atlas-crate/exit-codes.md](../../docs/--archive/bijux-atlas-crate/exit-codes.md)
 
-The primary supported interface is the CLI and the documented server/API contracts. The Rust library is available for workspace use and integration tests, but contributors should prefer the canonical module roots:
+API and integration surfaces:
+
+- API docs index: [../../docs/--archive/api/index.md](../../docs/--archive/api/index.md)
+- plugin contract: [../../docs/--archive/bijux-atlas-crate/plugin-contract.md](../../docs/--archive/bijux-atlas-crate/plugin-contract.md)
+- crate API stability reference: [../../docs/--archive/reference/crate-api-stability.md](../../docs/--archive/reference/crate-api-stability.md)
+
+## Using the Library
+
+The primary supported interface is the CLI plus the documented server and API contracts. The Rust library is available for workspace use, tests, and integration code, but imports should stay anchored in the canonical owners:
 
 - `bijux_atlas::adapters`
 - `bijux_atlas::app`
@@ -106,5 +145,6 @@ Avoid depending on undocumented internal helpers or convenience paths outside th
 
 - the crate forbids unsafe Rust
 - deterministic behavior is an explicit design goal
-- contract tests, compatibility tests, and golden outputs are part of the maintenance model
+- contract tests, compatibility tests, golden outputs, and surface guardrails are part of the maintenance model
 - cache and artifact output are expected to live under the repository artifacts root, not crate-local scratch directories
+- contributor changes should preserve the canonical ownership model of `adapters`, `app`, `contracts`, `domain`, and `runtime`
