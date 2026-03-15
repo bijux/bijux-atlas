@@ -5,3 +5,4 @@ pub mod config;
 pub mod errors;
 pub mod generated;
 pub mod store;
+pub mod telemetry;

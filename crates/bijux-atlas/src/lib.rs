@@ -38,6 +38,7 @@ pub(crate) use tracing::{error, info, warn, Instrument};
 
 pub mod api;
 pub mod application;
+pub mod bootstrap;
 mod config;
 pub mod contracts;
 pub mod core;
@@ -67,6 +68,7 @@ pub use crate::domain::ingest;
 pub use crate::domain::policy as policies;
 pub use crate::domain::query;
 pub use crate::domain::routing::consistent_route_dataset;
+pub use crate::infrastructure::redis;
 pub use crate::infrastructure::store;
 pub use crate::infrastructure::telemetry;
 pub use crate::interfaces::cli;

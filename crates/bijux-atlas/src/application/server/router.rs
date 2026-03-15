@@ -110,7 +110,7 @@ impl AppState {
         limits: QueryLimits,
     ) -> Self {
         let runtime_policy_hash = Arc::new(Self::derive_runtime_policy_hash(&api, &limits));
-        let redis_policy = telemetry::redis_backend::RedisPolicy {
+        let redis_policy = crate::redis::RedisPolicy {
             timeout: Duration::from_millis(api.redis_timeout_ms),
             retry_attempts: api.redis_retry_attempts.max(1),
             breaker_failure_threshold: api.redis_breaker_failure_threshold,

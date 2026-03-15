@@ -5,7 +5,7 @@ use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 
 use crate::api::{ApiError, ApiErrorCode};
 use crate::application::server::cache;
-use crate::{http, telemetry};
+use crate::http;
 use async_trait::async_trait;
 use axum::body::Body;
 use axum::extract::{DefaultBodyLimit, State};
@@ -446,7 +446,7 @@ async fn cors_middleware(
     resp
 }
 
-pub use crate::application::runtime_config::{
+pub use crate::application::config::{
     effective_config_payload, effective_runtime_config_payload, load_runtime_config,
     load_runtime_startup_config, runtime_config_contract_snapshot,
     runtime_startup_config_docs_markdown, runtime_startup_config_schema_json,
@@ -525,7 +525,7 @@ pub(crate) struct StoreBreakerState {
 }
 
 use crate::telemetry::rate_limiter::RateLimiter;
-use crate::telemetry::redis_backend::RedisBackend;
+use crate::redis::RedisBackend;
 
 pub struct DatasetConnection {
     pub conn: Connection,
