@@ -150,4 +150,25 @@ test-all: ## Run all workspace tests including slow_ and ignored tests
 	trap - EXIT INT TERM; cleanup; \
 	test $$status -eq 0
 
-.PHONY: audit check coverage fmt lint lint-policy-report lint-policy-enforce lint-clippy-json test test-slow test-all
+publish-rs: ## Publish Rust crates and dry-run by default
+	@set -euo pipefail; \
+	if [ -z "$(RUST_PUBLISH_PACKAGES)" ]; then \
+		echo "RUST_PUBLISH_PACKAGES is empty; nothing to publish" >&2; \
+		exit 1; \
+	fi; \
+	dry_run_flag=""; \
+	if [ "$(RUST_PUBLISH_DRY_RUN)" = "1" ]; then \
+		dry_run_flag="--dry-run"; \
+	fi; \
+	for pkg in $(RUST_PUBLISH_PACKAGES); do \
+		if [ "$(RUST_PUBLISH_SKIP_EXISTING)" = "1" ] && [ "$(RUST_PUBLISH_DRY_RUN)" != "1" ]; then \
+			status="$$(curl -s -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/$$pkg/$(RELEASE_VERSION)" || true)"; \
+			if [ "$${status}" = "200" ]; then \
+				echo "skipping $$pkg $(RELEASE_VERSION); already present on crates.io"; \
+				continue; \
+			fi; \
+		fi; \
+		cargo publish --locked $$dry_run_flag -p "$$pkg"; \
+	done
+
+.PHONY: audit check coverage fmt lint lint-policy-report lint-policy-enforce lint-clippy-json test test-slow test-all publish-rs

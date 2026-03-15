@@ -10,6 +10,10 @@ docs: ## Canonical docs gate
 docs-doctor: ## Run docs doctor checks
 	@$(DEV_ATLAS) docs doctor --format $(FORMAT)
 
+docs-check: ## Validate and build the docs surface through dev-atlas
+	@$(MAKE) -s docs-validate FORMAT=$(FORMAT)
+	@$(MAKE) -s docs-build FORMAT=$(FORMAT)
+
 docs-validate: ## Run docs validation checks
 	@$(DEV_ATLAS) docs validate --format $(FORMAT)
 
@@ -31,4 +35,4 @@ docs-reference-regenerate: ## Regenerate docs operations reference pages from SS
 docs-reference-check: ## Check docs operations reference pages are regenerated
 	@$(DEV_ATLAS) docs reference check --allow-subprocess --format $(FORMAT)
 
-.PHONY: docs docs-doctor docs-validate docs-external-links docs-build docs-serve docs-clean docs-reference-regenerate docs-reference-check
+.PHONY: docs docs-doctor docs-check docs-validate docs-external-links docs-build docs-serve docs-clean docs-reference-regenerate docs-reference-check
