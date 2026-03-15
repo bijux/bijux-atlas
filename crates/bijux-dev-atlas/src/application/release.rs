@@ -378,7 +378,7 @@ fn read_publish_policy(root: &Path) -> Result<serde_json::Value, String> {
 }
 
 fn read_crates_release_spec(root: &Path) -> Result<toml::Value, String> {
-    let path = root.join("ops/release/crates-v0.1.toml");
+    let path = root.join("ops/release/crates-release.toml");
     toml::from_str(
         &fs::read_to_string(&path)
             .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
@@ -387,7 +387,7 @@ fn read_crates_release_spec(root: &Path) -> Result<toml::Value, String> {
 }
 
 fn read_images_release_spec(root: &Path) -> Result<toml::Value, String> {
-    let path = root.join("ops/release/images-v0.1.toml");
+    let path = root.join("ops/release/images-release.toml");
     toml::from_str(
         &fs::read_to_string(&path)
             .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
@@ -1247,7 +1247,7 @@ fn run_release_images_changelog_extract(
 }
 
 fn read_ops_release_spec(root: &Path) -> Result<toml::Value, String> {
-    let path = root.join("ops/release/ops-v0.1.toml");
+    let path = root.join("ops/release/ops-release.toml");
     toml::from_str(
         &fs::read_to_string(&path)
             .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
@@ -1768,7 +1768,7 @@ fn run_release_ops_push(args: ReleaseOpsPushArgs) -> Result<(String, i32), Strin
                     "ops_control_plane": "bijux-dev-atlas"
                 },
                 "source_files": {
-                    "ops_release_spec": "ops/release/ops-v0.1.toml",
+                    "ops_release_spec": "ops/release/ops-release.toml",
                     "workspace_manifest": "Cargo.toml"
                 }
             }),

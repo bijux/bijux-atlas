@@ -12,7 +12,7 @@
   "kind": "ops_release_bundle_manifest",
   "schema_version": 1,
   "source_files": {
-    "ops_release_spec": "ops/release/ops-v0.1.toml",
+    "ops_release_spec": "ops/release/ops-release.toml",
     "workspace_manifest": "Cargo.toml"
   },
   "workspace_version": "0.1.0"
