@@ -20,7 +20,7 @@ _contracts_guard:
 	}
 
 contracts-help: ## Show contracts gate targets
-	@$(MAKE) -s help-contract
+	@printf '%s\n' "docs: $(MAKE_README_PATH)" "target-list: make/target-list.json"
 
 contract: _contracts_guard ## Run static contract execution through the canonical contract runner
 	@$(DEV_ATLAS) --output-format $(GLOBAL_OUTPUT_FORMAT) contract run --mode static --jobs $(JOBS) $(CONTRACT_FAIL_FAST_FLAG) $(CONTRACT_NO_ANSI_FLAG) --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)

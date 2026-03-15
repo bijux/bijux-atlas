@@ -26,7 +26,7 @@ CURATED_TARGETS := \
 
 help: ## Show curated make targets owned by Rust control-plane wrappers
 	@$(DEV_ATLAS) make surface --format $(FORMAT)
-	@printf '%s\n' "docs: docs/development/tooling/make.md" "contracts: make/CONTRACT.md"
+	@printf '%s\n' "guide: docs/06-development/automation-control-plane.md" "reference: docs/07-reference/automation-command-surface.md" "make: make/README.md"
 
 _internal-list: ## Print curated make target names
 	@$(DEV_ATLAS) make list --format $(FORMAT)
@@ -37,7 +37,7 @@ _internal-explain: ## Explain curated target ownership (TARGET=<name>)
 
 _internal-surface: ## Print make surface and docs pointers for Rust control plane
 	@$(MAKE) -s help
-	@printf '%s\n' "Docs: docs/development/tooling/dev-atlas-ops.md docs/development/tooling/dev-atlas-docs.md"
+	@printf '%s\n' "Docs: docs/06-development/automation-control-plane.md docs/07-reference/automation-command-surface.md make/README.md"
 
 doctor: ## Run Rust control-plane doctor suite as JSON
 	@printf '%s\n' "run: $(DEV_ATLAS) registry doctor --format $(FORMAT)"
