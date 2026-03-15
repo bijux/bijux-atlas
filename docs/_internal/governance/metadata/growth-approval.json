@@ -1,7 +1,0 @@
-{
-  "approved_by": "bijux-atlas-operations",
-  "expires_on": "2026-12-31",
-  "justification": "Approve the committed operations doc additions required to keep the release lanes, kind profile, fixture ingest flow, pillar map, promotion record, and quality wall as canonical governed surfaces.",
-  "max_markdown_files": 464,
-  "schema_version": "v1"
-}

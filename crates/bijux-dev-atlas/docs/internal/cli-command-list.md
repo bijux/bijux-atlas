@@ -1,9 +1,0 @@
-ops
-docs
-contract
-demo
-configs
-policies
-ci
-check
-validate

@@ -1,9 +1,0 @@
-[
-  {
-    "path": "docs/reference/reports/index.md",
-    "section": "reference",
-    "reason": "Scheduled with reports taxonomy refresh already tracked in governance board.",
-    "owner": "docs-governance",
-    "expires_on": "2026-06-30"
-  }
-]

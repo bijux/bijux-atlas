@@ -1,9 +1,0 @@
-{
-  "build_hash": "dev",
-  "compatible_umbrella": ">=0.3.0,<0.4.0",
-  "compatible_umbrella_max_exclusive": "0.4.0",
-  "compatible_umbrella_min": "0.3.0",
-  "name": "bijux-atlas",
-  "schema_version": "v1",
-  "version": "__CARGO_PKG_VERSION__"
-}

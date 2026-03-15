@@ -1,8 +1,0 @@
-{
-  "rows": [
-    "CRATE_DOC_ALLOWED_TYPE_WARN: `bijux-atlas-python` has non-canonical root doc `CHANGELOG.md`",
-    "CRATE_DOC_ALLOWED_TYPE_WARN: `bijux-atlas-python` has non-canonical root doc `VERSIONING.md`",
-    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `troubleshooting.md` appears across crates: bijux-atlas-python, bijux-dev-atlas"
-  ],
-  "schema_version": 1
-}

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0"><channel>
-<title>bijux-atlas releases</title>
-<item><title>v0.1.2</title><link>artifacts/release/0.1.2/manifest.json</link></item>
-<item><title>v0.1.1</title><link>artifacts/release/0.1.1/manifest.json</link></item>
-<item><title>v0.1.0</title><link>artifacts/release/0.1.0/manifest.json</link></item>
-</channel></rss>
