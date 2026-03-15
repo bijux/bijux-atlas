@@ -18,9 +18,8 @@ pub use backend::HttpReadonlyStore;
 #[cfg(feature = "backend-s3")]
 pub use backend::S3LikeStore;
 pub use backend::{
-    enforce_dataset_immutability, ArtifactStore, LocalFsStore, NoopInstrumentation,
-    PublishLockGuard, StoreError, StoreErrorCode, StoreInstrumentation, StoreMetrics,
-    StoreMetricsCollector,
+    ArtifactStore, LocalFsStore, NoopInstrumentation, PublishLockGuard, StoreError,
+    StoreErrorCode, StoreInstrumentation, StoreMetrics, StoreMetricsCollector,
 };
 pub use backend_capabilities::{validate_backend_compiled, BackendKind};
 pub use catalog::{
