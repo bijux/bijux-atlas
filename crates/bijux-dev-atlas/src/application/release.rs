@@ -1927,7 +1927,7 @@ fn run_release_ops_bundle_build(args: ReleaseOpsBundleArgs) -> Result<(String, i
         root.join("ops/k8s/values"),
         root.join("ops/k8s/charts/bijux-atlas/values.schema.json"),
         root.join("ops/inventory"),
-        root.join("ops/evidence/schema/v1/ops-evidence-bundle.schema.json"),
+        root.join("ops/schema/report/ops-evidence-bundle.schema.json"),
         root.join("ops/k8s/tests/goldens/render-kind.summary.json"),
         root.join("ops/report/generated/ops-values-coverage.json"),
         root.join("ops/report/generated/ops-artifact-lineage.json"),
@@ -2037,7 +2037,7 @@ fn run_release_ops_bundle_verify(args: ReleaseOpsBundleArgs) -> Result<(String, 
         "checksums.json",
         "tool-version-requirements.json",
         "compatibility-notes.md",
-        "ops/evidence/schema/v1/ops-evidence-bundle.schema.json",
+        "ops/schema/report/ops-evidence-bundle.schema.json",
     ] {
         if !staging.join(required).exists() {
             errors.push(format!("bundle missing required file: {required}"));
@@ -2242,7 +2242,7 @@ fn run_release_ops_lineage_generate(args: ReleaseOpsPackageArgs) -> Result<(Stri
         }
     };
     let schema_version =
-        read_json(&root.join("ops/evidence/schema/v1/ops-evidence-bundle.schema.json"))?
+        read_json(&root.join("ops/schema/report/ops-evidence-bundle.schema.json"))?
             .get("schema_version")
             .and_then(serde_json::Value::as_i64)
             .unwrap_or(1);
@@ -2258,7 +2258,7 @@ fn run_release_ops_lineage_generate(args: ReleaseOpsPackageArgs) -> Result<(Stri
         "sources": {
             "chart_digest_path": repo_rel(&root, &chart_digest_path),
             "image_digest_path": image_digest_source,
-            "ops_evidence_schema_path": "ops/evidence/schema/v1/ops-evidence-bundle.schema.json"
+            "ops_evidence_schema_path": "ops/schema/report/ops-evidence-bundle.schema.json"
         },
         "errors": if chart_digest.is_empty() || image_digest.is_empty() {
             serde_json::json!(["lineage report requires both chart and image digest"])

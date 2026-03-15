@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bijux.dev/schema/ops/evidence/v1/ops-evidence-bundle.schema.json",
+  "$id": "https://bijux.dev/schema/ops/report/ops-evidence-bundle.schema.json",
   "title": "Ops Evidence Bundle",
   "type": "object",
   "additionalProperties": false,

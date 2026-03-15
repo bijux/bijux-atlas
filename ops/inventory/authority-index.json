@@ -98,7 +98,6 @@
     "ops/drift/",
     "ops/e2e/",
     "ops/env/",
-    "ops/evidence/",
     "ops/governance/",
     "ops/invariants/",
     "ops/k8s/",

@@ -63,7 +63,6 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
     let embedded_schema_prefix_allowlist =
         [
             "ops/docker/schema/",
-            "ops/evidence/schema/",
             "ops/observe/",
             "ops/release/",
             "ops/reproducibility/",

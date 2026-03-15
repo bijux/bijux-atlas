@@ -10,7 +10,7 @@
   "sources": {
     "chart_digest_path": "ops/release/ops-chart-digest.json",
     "image_digest_path": "ops/release/evidence/ops-distribution/install-chart-from-oci/evidence.json",
-    "ops_evidence_schema_path": "ops/evidence/schema/v1/ops-evidence-bundle.schema.json"
+    "ops_evidence_schema_path": "ops/schema/report/ops-evidence-bundle.schema.json"
   },
   "status": "ok"
 }
