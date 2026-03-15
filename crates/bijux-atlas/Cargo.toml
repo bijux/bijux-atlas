@@ -169,11 +169,6 @@ path = "benches/domain/security_data_protection.rs"
 harness = false
 
 [[bench]]
-name = "domain_dataset_id_parse"
-path = "benches/domain/dataset_id_parse.rs"
-harness = false
-
-[[bench]]
 name = "domain_query_parse_validation"
 path = "benches/domain/query_parse_validation.rs"
 harness = false
@@ -336,11 +331,6 @@ path = "benches/api/openapi_generation.rs"
 harness = false
 
 [[bench]]
-name = "client_sdk"
-path = "benches/client/client_sdk.rs"
-harness = false
-
-[[bench]]
 name = "policy_evaluation"
 path = "benches/policy/evaluation.rs"
 harness = false
@@ -403,11 +393,6 @@ harness = false
 [[bench]]
 name = "server_gene_lookup_p99"
 path = "benches/server/gene_lookup_p99.rs"
-harness = false
-
-[[bench]]
-name = "server_query_validate"
-path = "benches/server/query_validate.rs"
 harness = false
 
 [[example]]
