@@ -1,14 +1,16 @@
 // SPDX-License-Identifier: Apache-2.0
 
-mod configs_path_drift;
-mod configs_payloads;
+#[path = "configs/path_drift.rs"]
+mod path_drift;
+#[path = "configs/payloads.rs"]
+mod payloads;
 
 use crate::*;
 use bijux_dev_atlas::registry::config_catalog;
-pub(crate) use configs_path_drift::configs_context;
-pub(crate) use configs_path_drift::parse_config_file;
-use configs_path_drift::{configs_files, configs_verify_payload};
-pub(crate) use configs_payloads::{
+pub(crate) use path_drift::configs_context;
+pub(crate) use path_drift::parse_config_file;
+use path_drift::{configs_files, configs_verify_payload};
+pub(crate) use payloads::{
     configs_artifact_dir, configs_compile_payload, configs_diff_payload, configs_inventory_payload,
     configs_lint_payload, configs_print_payload, configs_validate_payload,
 };
