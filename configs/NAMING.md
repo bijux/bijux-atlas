@@ -5,7 +5,7 @@
 Rules:
 - Use directory names to show role before detail. `registry/` stores metadata, `schemas/` stores validation contracts, and domain inputs live under dedicated domain directories.
 - Prefer kebab-case for new files and directories.
-- Keep filenames specific to the thing they govern. Choose names like `version-policy.json`, not transitional labels such as `phase-2.json`.
+- Keep filenames specific to the thing they govern. Prefer names that describe the governed surface directly instead of numbered or milestone-style labels.
 - Use singular names for a single policy or registry and plural names only when the file is a collection.
 - Keep path changes rare. Moving or renaming a config path is a contract change and needs the same care as changing a command or API surface.
 

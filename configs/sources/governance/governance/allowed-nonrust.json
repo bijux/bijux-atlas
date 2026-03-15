@@ -15,7 +15,7 @@
   },
   "directory_purpose": {
     "tutorials": "Tutorial artifacts and tutorial-facing static assets. Automation executes via bijux-dev-atlas commands.",
-    "clients": "Legacy path retired. Repo automation executes via bijux-dev-atlas commands."
+    "clients": "Client artifacts stay data-only in the repository. Automation executes via bijux-dev-atlas commands."
   },
   "policy_state": {
     "tutorials_script_enforcement": "active"

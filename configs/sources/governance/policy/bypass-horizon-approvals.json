@@ -5,7 +5,7 @@
       "key": "*",
       "owner": "platform",
       "issue_id": "ISSUE-BYPASS-HORIZON-0001",
-      "reason": "Temporary global approval while tightening bypass expiry horizons in phased cleanup.",
+      "reason": "Bounded global approval while expiry-horizon governance is being tightened across existing bypass records.",
       "expiry": "2026-06-30"
     }
   ]

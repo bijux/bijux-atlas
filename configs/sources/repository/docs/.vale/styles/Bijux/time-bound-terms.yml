@@ -1,5 +1,5 @@
 extends: existence
-message: "Avoid legacy temporal wording in docs: '%s'"
+message: "Avoid time-bound placeholder wording in docs: '%s'"
 level: error
 ignorecase: true
 tokens:
