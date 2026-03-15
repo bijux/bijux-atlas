@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
+use crate::application::config::ApiConfig;
 
 impl AppState {
     fn init_request_metrics() -> Arc<RequestMetrics> {

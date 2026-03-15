@@ -21,6 +21,3 @@ pub use query::{DatasetQuery, QueryFilter, QueryProjection, QueryResult, StreamQ
 pub use request::RequestBuilder;
 pub use retry::run_with_retry;
 pub use tracing::TraceContext;
-
-#[cfg(test)]
-use criterion as _;
