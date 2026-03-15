@@ -294,7 +294,7 @@ pub(crate) fn docs_lint_payload(
 ) -> Result<serde_json::Value, String> {
     let policy = load_quality_policy(&ctx.repo_root);
     let mut errors = Vec::<String>::new();
-    let docs_lint_root = ctx.repo_root.join("configs/docs");
+    let docs_lint_root = ctx.repo_root.join("configs/sources/repository/docs");
     let required_lint_files = [
         "configs/sources/repository/docs/.vale.ini",
         "configs/sources/repository/docs/.markdownlint-cli2.jsonc",

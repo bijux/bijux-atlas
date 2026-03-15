@@ -81,7 +81,7 @@ pub(crate) fn run_check_tree_budgets(
                     })
             {
                 errors.push(format!(
-                    "TREE_BUDGET_ERROR: `{rel}` uses forbidden directory name in configs/docs"
+                    "TREE_BUDGET_ERROR: `{rel}` uses forbidden directory name in configs/sources/repository/docs"
                 ));
             }
         }

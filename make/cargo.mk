@@ -85,7 +85,7 @@ lint: ## Run cargo clippy with warnings denied
 	@printf '%s\n' "run: cargo check -p bijux-atlas --all-targets --all-features --locked"
 	@mkdir -p $(ARTIFACT_ROOT)/lint/$(RUN_ID)
 	@{ \
-		CLIPPY_CONF_DIR=configs/rust CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo clippy -p bijux-dev-atlas --all-targets --all-features --locked --no-deps -- -D warnings && \
+		CLIPPY_CONF_DIR=configs/sources/repository/rust-tooling CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo clippy -p bijux-dev-atlas --all-targets --all-features --locked --no-deps -- -D warnings && \
 		CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo check -p bijux-atlas --all-targets --all-features --locked; \
 	} 2>&1 | tee $(ARTIFACT_ROOT)/lint/$(RUN_ID)/report.txt
 
@@ -102,7 +102,7 @@ lint-policy-enforce: ## Enforce repository lint drift guards
 
 lint-clippy-json: ## Emit clippy diagnostics as a machine-readable artifact
 	@mkdir -p artifacts/lint
-	@CLIPPY_CONF_DIR=configs/rust CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo clippy --workspace --all-targets --all-features --locked --message-format=json -- -D warnings > artifacts/lint/clippy.json
+	@CLIPPY_CONF_DIR=configs/sources/repository/rust-tooling CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo clippy --workspace --all-targets --all-features --locked --message-format=json -- -D warnings > artifacts/lint/clippy.json
 	@printf '%s\n' "artifacts/lint/clippy.json"
 
 test: ## Run workspace tests with cargo nextest

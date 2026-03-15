@@ -2,7 +2,7 @@
   "schema_version": 1,
   "areas": {
     "configs/coverage": "platform",
-    "configs/docs": "docs-governance",
+    "configs/sources/repository/docs": "docs-governance",
     "configs/layout": "platform",
     "configs/meta": "platform",
     "configs/make": "platform",
@@ -12,7 +12,7 @@
     "configs/sources/operations/perf": "bijux-atlas-performance",
     "configs/policy": "platform",
     "configs/repo": "platform",
-    "configs/rust": "rust-foundation",
+    "configs/sources/repository/rust-tooling": "rust-foundation",
     "configs/sources/security": "security",
     "configs/shellcheck": "platform",
     "configs/sources/operations/slo": "bijux-atlas-operations"

@@ -37,7 +37,7 @@ updates:
           - "major"
 
   - package-ecosystem: "npm"
-    directory: "/configs/docs"
+    directory: "/configs/sources/repository/docs"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -55,7 +55,7 @@ updates:
           - "major"
 
   - package-ecosystem: "pip"
-    directory: "/configs/docs"
+    directory: "/configs/sources/repository/docs"
     schedule:
       interval: "weekly"
       day: "monday"

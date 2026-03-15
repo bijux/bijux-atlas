@@ -1043,7 +1043,7 @@ fn run_ci_verify_gate(
             }
             let output = ProcessCommand::new("cargo")
                 .current_dir(repo_root)
-                .env("CLIPPY_CONF_DIR", "configs/rust")
+                .env("CLIPPY_CONF_DIR", "configs/sources/repository/rust-tooling")
                 .args(["clippy", "-q", "--workspace", "--all-targets", "--all-features", "--locked", "--", "-D", "warnings"])
                 .output()
                 .map_err(|err| format!("cargo clippy failed: {err}"))?;

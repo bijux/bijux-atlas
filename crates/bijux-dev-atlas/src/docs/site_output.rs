@@ -407,7 +407,7 @@ mod tests {
     }
 
     fn write_contract(root: &Path) {
-        let config_dir = root.join("configs/docs");
+        let config_dir = root.join("configs/sources/repository/docs");
         let contracts_dir = root.join("configs/schemas/contracts");
         fs::create_dir_all(&config_dir).expect("create config dir");
         fs::create_dir_all(&contracts_dir).expect("create contracts dir");

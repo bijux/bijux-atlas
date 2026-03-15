@@ -200,7 +200,7 @@ pub(super) fn check_root_rustfmt_toml_present(
         Ok(vec![violation(
             "ROOT_RUSTFMT_TOML_MISSING",
             "configs/sources/repository/rust-tooling/rustfmt.toml must exist".to_string(),
-            "define rustfmt policy under configs/rust and use explicit cargo fmt --config-path",
+            "define rustfmt policy under configs/sources/repository/rust-tooling and use explicit cargo fmt --config-path",
             Some(rel),
         )])
     }
@@ -216,7 +216,7 @@ pub(super) fn check_root_clippy_toml_present(
         Ok(vec![violation(
             "ROOT_CLIPPY_TOML_MISSING",
             "configs/sources/repository/rust-tooling/clippy.toml must exist".to_string(),
-            "define clippy policy under configs/rust and use explicit CLIPPY_CONF_DIR",
+            "define clippy policy under configs/sources/repository/rust-tooling and use explicit CLIPPY_CONF_DIR",
             Some(rel),
         )])
     }

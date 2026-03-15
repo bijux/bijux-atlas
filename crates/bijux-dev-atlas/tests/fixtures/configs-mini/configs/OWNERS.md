@@ -2,7 +2,7 @@
 
 - `configs/schemas/contracts`: `platform`
 - `configs/coverage`: `platform`
-- `configs/docs`: `docs-governance`
+- `configs/sources/repository/docs`: `docs-governance`
 - `configs/gates`: `platform`
 - `configs/inventory`: `platform`
 - `configs/layout`: `platform`
@@ -15,7 +15,7 @@
 - `configs/policy`: `platform`
 - `configs/product`: `product`
 - `configs/repo`: `platform`
-- `configs/rust`: `rust-foundation`
+- `configs/sources/repository/rust-tooling`: `rust-foundation`
 - `configs/schemas/registry`: `platform`
 - `configs/sources/security`: `security`
 - `configs/shellcheck`: `platform`
