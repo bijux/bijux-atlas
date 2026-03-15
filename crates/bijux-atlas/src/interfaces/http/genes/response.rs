@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
+use bijux_atlas::core as bijux_atlas_core;
 
 use crate::domain::dataset::DatasetId;
 use crate::http::handlers;
-use crate::query::{GeneQueryRequest, QueryClass};
+use crate::query::{BiotypePolicy, GeneNamePolicy, GeneQueryRequest, QueryClass};
 use serde_json::json;
 
 pub(super) fn build_success_payload(
@@ -40,8 +40,8 @@ pub(super) fn build_success_payload(
         Some(warnings),
     );
     if explain_mode {
-        let name_policy = bijux_atlas_model::GeneNamePolicy::default();
-        let biotype_policy = bijux_atlas_model::BiotypePolicy::default();
+        let name_policy = GeneNamePolicy::default();
+        let biotype_policy = BiotypePolicy::default();
         payload["data"]["explain"] = json!({
             "gene_identifier_policy": "gff3_id_first",
             "gene_name_attribute_priority": name_policy.attribute_keys,

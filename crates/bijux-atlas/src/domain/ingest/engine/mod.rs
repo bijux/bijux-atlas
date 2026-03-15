@@ -15,11 +15,12 @@ mod normalized;
 mod sqlite;
 mod write;
 
-use crate::model::{
-    BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy,
-    FeatureIdUniquenessPolicy, GeneIdentifierPolicy, GeneNamePolicy, IngestAnomalyReport,
-    SeqidNormalizationPolicy, ShardCatalog, ShardingPlan, StrictnessMode, TranscriptIdPolicy,
-    TranscriptTypePolicy, UnknownFeaturePolicy,
+use crate::domain::dataset::{ArtifactManifest, DatasetId, IngestAnomalyReport, ShardCatalog, ShardingPlan};
+use crate::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
+use crate::domain::query::{
+    BiotypePolicy, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
+    GeneNamePolicy, SeqidNormalizationPolicy, TranscriptIdPolicy, TranscriptTypePolicy,
+    UnknownFeaturePolicy,
 };
 use sqlite::explain_plan_for_region_query;
 #[cfg(test)]
@@ -141,7 +142,7 @@ pub struct IngestResult {
     pub normalized_debug_path: Option<PathBuf>,
     pub shard_catalog_path: Option<PathBuf>,
     pub shard_catalog: Option<ShardCatalog>,
-    pub manifest: crate::model::ArtifactManifest,
+    pub manifest: ArtifactManifest,
     pub anomaly_report: IngestAnomalyReport,
     pub events: Vec<IngestEvent>,
 }
